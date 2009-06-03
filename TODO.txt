@@ -1,3 +1,5 @@
+FIX
+
 TODO:
 
 - balicek pro debian/ubuntu pripadne dalsi distribuce ?
