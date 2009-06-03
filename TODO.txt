@@ -1,0 +1,25 @@
+TODO:
+
+- balicek pro debian/ubuntu pripadne dalsi distribuce ?
+- vypocet "plosnych" integralu
+- zaintegrovat skriptovani (qtscript ?, python ?, lua script ?)
+
+- moduly:
+    - magnetostatika
+      - podpora permanentnich magnetu
+      - podporu rychlostniho clenu
+    - proudove pole
+    - elasticita
+
+- 2d grafy velicin
+- adaptivita
+- predelat kresleni vektoru
+- krivocare elementy na obloucich
+
+otazky:
+- kombinace real a cplx
+- get_pt_value u filtru
+
+
+namety:
+

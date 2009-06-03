@@ -1,0 +1,40 @@
+<document>
+    <projects>
+        <project numberofrefinements="0" adaptivitysteps="5" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
+            <edges>
+                <edge temperature="-15" type="temperature" id="1" name="T inner" />
+                <edge h="20" external_temperature="20" type="heat_flux" id="2" name="T outer" heat_flux="0" />
+                <edge h="0" external_temperature="0" type="heat_flux" id="3" name="Neumann" heat_flux="0" />
+            </edges>
+            <labels>
+                <label thermal_conductivity="2" volume_heat="0" id="1" name="Material 1" />
+                <label thermal_conductivity="10" volume_heat="0" id="2" name="Material 2" />
+            </labels>
+        </project>
+    </projects>
+    <geometry>
+        <nodes>
+            <node x="0.05" y="0" id="0" />
+            <node x="0.1" y="0" id="1" />
+            <node x="0.1" y="0.15" id="2" />
+            <node x="0" y="0.15" id="3" />
+            <node x="0.05" y="0.1" id="4" />
+            <node x="0" y="0.1" id="5" />
+            <node x="0.1" y="0.1" id="6" />
+        </nodes>
+        <edges>
+            <edge end="3" marker="2" id="0" start="2" angle="0" />
+            <edge end="5" marker="3" id="1" start="3" angle="0" />
+            <edge end="4" marker="1" id="2" start="5" angle="0" />
+            <edge end="0" marker="1" id="3" start="4" angle="0" />
+            <edge end="1" marker="3" id="4" start="0" angle="0" />
+            <edge end="6" marker="0" id="5" start="4" angle="0" />
+            <edge end="6" marker="2" id="6" start="2" angle="0" />
+            <edge end="1" marker="2" id="7" start="6" angle="0" />
+        </edges>
+        <labels>
+            <label x="0.0553981" y="0.124595" marker="1" id="0" area="0.0003" />
+            <label x="0.070091" y="0.068229" marker="2" id="1" area="0.0003" />
+        </labels>
+    </geometry>
+</document>

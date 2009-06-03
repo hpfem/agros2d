@@ -1,0 +1,36 @@
+<document>
+    <projects>
+        <project numberofrefinements="2" polynomialorder="3" problemtype="axisymmetric" type="heat transfer" id="0" name="Heat transfer axisymmetric" >
+            <edges>
+                <edge h="0" external_temperature="0" type="heat_flux" id="1" name="Neumann" heat_flux="0" />
+                <edge h="0" external_temperature="0" type="heat_flux" id="2" name="Inlet" heat_flux="500000" />
+                <edge temperature="0" type="temperature" id="3" name="Temperature" />
+                <edge h="20" external_temperature="20" type="heat_flux" id="4" name="Convection" heat_flux="0" />
+            </edges>
+            <labels>
+                <label thermal_conductivity="52" volume_heat="4000000" id="1" name="Material" />
+            </labels>
+        </project>
+    </projects>
+    <geometry>
+        <nodes>
+            <node x="0.02" y="0" id="0" />
+            <node x="0.1" y="0" id="1" />
+            <node x="0.02" y="0.14" id="2" />
+            <node x="0.1" y="0.14" id="3" />
+            <node x="0.02" y="0.04" id="4" />
+            <node x="0.02" y="0.1" id="5" />
+        </nodes>
+        <edges>
+            <edge end="1" marker="3" id="0" start="0" angle="0" />
+            <edge end="3" marker="4" id="1" start="1" angle="0" />
+            <edge end="2" marker="3" id="2" start="3" angle="0" />
+            <edge end="5" marker="1" id="3" start="2" angle="0" />
+            <edge end="4" marker="2" id="4" start="5" angle="0" />
+            <edge end="0" marker="1" id="5" start="4" angle="0" />
+        </edges>
+        <labels>
+            <label x="0.0460134" y="0.08677169999999999" marker="1" id="0" area="0.0003" />
+        </labels>
+    </geometry>
+</document>

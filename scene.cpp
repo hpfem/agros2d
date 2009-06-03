@@ -1,0 +1,1352 @@
+#include "scene.h"
+
+DxfFilter::DxfFilter(Scene *scene)
+{
+    this->m_scene = scene;
+}
+
+void DxfFilter::addLine(const DL_LineData &d)
+{
+    // start node
+    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(d.x1, d.y1)));
+    // end node
+    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(d.x2, d.y2)));
+
+    // edge
+    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, m_scene->edgeMarkers[0], 0));
+}
+
+void DxfFilter::addArc(const DL_ArcData& a)
+{
+    // start node
+    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(a.angle1/180*M_PI), a.cy + a.radius*sin(a.angle1/180*M_PI))));
+    // end node
+    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(a.angle2/180*M_PI), a.cy + a.radius*sin(a.angle2/180*M_PI))));
+
+    // edge
+    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, m_scene->edgeMarkers[0], a.angle2-a.angle1));
+}
+
+// ************************************************************************************************************************
+
+Scene::Scene() {
+    createActions();
+    // threads for mesh a solver
+    m_solver = new ThreadSolver(this);
+    m_sceneSolution = new SceneSolution(this);
+
+    connect(m_solver, SIGNAL(finished()), this, SLOT(doSolved()));
+    connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+
+    clear();
+    // this->settings = new Settings();
+}
+
+Scene::~Scene() {
+    delete m_solver;
+    delete m_sceneSolution;
+}
+
+void Scene::createActions()
+{
+    // scene - add items
+    actNewNode = new QAction(getIcon("scenenode"), tr("New &node"), this);
+    actNewNode->setShortcut(tr("Alt+N"));
+    actNewNode->setStatusTip(tr("New node"));
+    connect(actNewNode, SIGNAL(triggered()), this, SLOT(doNewNode()));
+
+    actNewEdge = new QAction(getIcon("sceneedge"), tr("New &edge"), this);
+    actNewEdge->setShortcut(tr("Alt+E"));
+    actNewEdge->setStatusTip(tr("New edge"));
+    connect(actNewEdge, SIGNAL(triggered()), this, SLOT(doNewEdge()));
+
+    actNewLabel = new QAction(getIcon("scenelabel"), tr("New &label"), this);
+    actNewLabel->setShortcut(tr("Alt+L"));
+    actNewLabel->setStatusTip(tr("New label"));
+    connect(actNewLabel, SIGNAL(triggered()), this, SLOT(doNewLabel()));
+
+    actNewEdgeMarker = new QAction(getIcon("sceneedgemarker"), tr("New &boundary condition"), this);
+    actNewEdgeMarker->setShortcut(tr("Alt+B"));
+    actNewEdgeMarker->setStatusTip(tr("New boundary condition"));
+    connect(actNewEdgeMarker, SIGNAL(triggered()), this, SLOT(doNewEdgeMarker()));
+
+    actNewLabelMarker = new QAction(getIcon("scenelabelmarker"), tr("New &material"), this);
+    actNewLabelMarker->setShortcut(tr("Alt+M"));
+    actNewLabelMarker->setStatusTip(tr("New material"));
+    connect(actNewLabelMarker, SIGNAL(triggered()), this, SLOT(doNewLabelMarker()));
+
+    actTransform = new QAction(getIcon("scene-transform"), tr("Transform"), this);
+    actTransform->setStatusTip(tr("Transform"));
+    connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
+
+    actProjectProperties = new QAction(getIcon("scene-properties"), tr("Project properties"), this);
+    actProjectProperties->setStatusTip(tr("Project properties"));
+    connect(actProjectProperties, SIGNAL(triggered()), this, SLOT(doProjectProperties()));
+}
+
+SceneNode *Scene::addNode(SceneNode *node) {
+    // check if node doesn't exists
+    foreach (SceneNode *nodeCheck, nodes)
+    {
+        if ((fabs(nodeCheck->point.x-node->point.x) < EPS_ZERO) && (fabs(nodeCheck->point.y-node->point.y) < EPS_ZERO))
+            return nodeCheck;
+    }
+
+    nodes.append(node);
+    emit invalidated();
+
+    return node;
+}
+
+void Scene::removeNode(SceneNode *node) {
+    // remove all edges connected to this node
+    foreach (SceneEdge *edge, edges)
+    {
+        if ((edge->nodeStart == node) || (edge->nodeEnd == node))
+            removeEdge(edge);
+    }
+    nodes.removeOne(node);
+    emit invalidated();
+}
+
+SceneEdge *Scene::addEdge(SceneEdge *edge) {
+    // check if edge doesn't exists
+    foreach (SceneEdge *edgeCheck, edges)
+    {
+        if (((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) ||
+            ((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart)) &&
+            (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
+            return edgeCheck;
+    }
+
+    edges.append(edge);
+    emit invalidated();
+
+    return edge;
+}
+
+void Scene::removeEdge(SceneEdge *edge) {
+    edges.removeOne(edge);
+    emit invalidated();
+}
+
+SceneLabel *Scene::addLabel(SceneLabel *label) {
+    // check if label doesn't exists
+    foreach (SceneLabel *labelCheck, labels)
+    {
+        if ((fabs(labelCheck->point.x-label->point.x) < EPS_ZERO) && (fabs(labelCheck->point.y-label->point.y) < EPS_ZERO))
+            return labelCheck;
+    }
+
+    labels.append(label);
+    emit invalidated();
+
+    return label;
+}
+
+void Scene::removeLabel(SceneLabel *label) {
+    labels.removeOne(label);
+    emit invalidated();
+}
+
+void Scene::addEdgeMarker(SceneEdgeMarker *edgeMarker) {
+    edgeMarkers.append(edgeMarker);
+    emit invalidated();
+}
+
+void Scene::removeEdgeMarker(SceneEdgeMarker *edgeMarker) {
+    // set none marker
+    foreach (SceneEdge *edge, edges)
+    {
+        if (edge->marker == edgeMarker)
+            edge->marker = edgeMarkers[0];
+    }
+    this->edgeMarkers.removeOne(edgeMarker);
+    emit invalidated();
+}
+
+void Scene::setEdgeMarker(SceneEdgeMarker *edgeMarker)
+{
+    for (int i = 0; i<edges.count(); i++)
+    {
+        if (edges[i]->isSelected)
+            edges[i]->marker = edgeMarker;
+    }
+    selectNone();
+}
+
+void Scene::addLabelMarker(SceneLabelMarker *labelMarker) {
+    this->labelMarkers.append(labelMarker);
+    emit invalidated();
+}
+
+void Scene::removeLabelMarker(SceneLabelMarker *labelMarker) {
+    // set none marker
+    foreach (SceneLabel *label, labels)
+    {
+        if (label->marker == labelMarker)
+            label->marker = labelMarkers[0];
+    }
+    this->labelMarkers.removeOne(labelMarker);
+    emit invalidated();
+}
+
+void Scene::setLabelMarker(SceneLabelMarker *labelMarker)
+{
+    for (int i = 0; i<labels.count(); i++)
+    {
+        if (labels[i]->isSelected)
+            labels[i]->marker = labelMarker;
+    }
+    selectNone();
+}
+
+void Scene::clear() {
+    blockSignals(true);
+    
+
+    m_sceneSolution->clear();
+    m_projectInfo.clear();
+
+    m_isMeshed = false;
+
+    nodes.clear();
+    edges.clear();
+    labels.clear();
+
+    edgeMarkers.clear();
+    labelMarkers.clear();
+
+    // none edge
+    addEdgeMarker(new SceneEdgeMarkerNone());
+    // none label
+    addLabelMarker(new SceneLabelMarkerNone());
+
+    blockSignals(false);
+
+    emit invalidated();
+}
+
+RectPoint Scene::boundingBox()
+{
+    Point min( 1e100,  1e100);
+    Point max(-1e100, -1e100);
+
+    foreach (SceneNode *node, nodes) {
+        if (node->point.x<min.x) min.x = node->point.x;
+        if (node->point.x>max.x) max.x = node->point.x;
+        if (node->point.y<min.y) min.y = node->point.y;
+        if (node->point.y>max.y) max.y = node->point.y;
+    }
+
+    RectPoint rect;
+    if (nodes.length() > 0)
+        rect.set(min, max);
+    else
+        rect.set(Point(-0.5, -0.5), Point(0.5, 0.5));
+
+    return rect;
+}
+
+void Scene::selectNone()
+{
+    foreach (SceneNode *node, nodes)
+        node->isSelected = false;
+
+    foreach (SceneEdge *edge, edges)
+        edge->isSelected = false;
+
+    foreach (SceneLabel *label, labels)
+        label->isSelected = false;
+}
+
+void Scene::deleteSelected()
+{
+    foreach (SceneNode *node, nodes)
+        if (node->isSelected) removeNode(node);
+
+    foreach (SceneEdge *edge, edges)
+        if (edge->isSelected) removeEdge(edge);
+
+    foreach (SceneLabel *label, labels)
+        if (label->isSelected) removeLabel(label);
+}
+
+void Scene::highlightNone()
+{
+    foreach (SceneNode *node, nodes)
+        node->isHighlighted = false;
+
+    foreach (SceneEdge *edge, edges)
+        edge->isHighlighted = false;
+
+    foreach (SceneLabel *label, labels)
+        label->isHighlighted = false;
+}
+
+void Scene::transformTranslate(const Point &point, bool copy)
+{
+    foreach (SceneNode *node, nodes)
+        if (node->isSelected)
+        {
+        Point newPoint = node->point + point;
+        if (!copy)
+            node->point = newPoint;
+        else
+            addNode(new SceneNode(newPoint));
+    }
+
+    foreach (SceneLabel *label, labels)
+        if (label->isSelected)
+        {
+        Point newPoint = label->point + point;
+        if (!copy)
+            label->point = newPoint;
+        else
+            addLabel(new SceneLabel(newPoint, label->marker, label->area));
+    }
+
+    emit invalidated();
+}
+
+void Scene::transformRotate(const Point &point, double angle, bool copy)
+{
+    foreach (SceneNode *node, nodes)
+        if (node->isSelected)
+        {
+        double distanceNode = (node->point - point).magnitude();
+        double angleNode = (node->point - point).angle()/M_PI*180;
+
+        Point newPoint = point + Point(distanceNode * cos((angleNode - angle)/180.0*M_PI), distanceNode * sin((angleNode - angle)/180.0*M_PI));
+        if (!copy)
+            node->point = newPoint;
+        else
+            addNode(new SceneNode(newPoint));
+    }
+
+    foreach (SceneLabel *label, labels)
+        if (label->isSelected)
+        {
+        double distanceNode = (label->point - point).magnitude();
+        double angleNode = (label->point - point).angle()/M_PI*180;
+
+        Point newPoint = point + Point(distanceNode * cos((angleNode - angle)/180.0*M_PI), distanceNode * sin((angleNode - angle)/180.0*M_PI));
+        if (!copy)
+            label->point = newPoint;
+        else
+            addLabel(new SceneLabel(newPoint, label->marker, label->area));
+    }
+
+    emit invalidated();
+}
+
+void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
+{
+    foreach (SceneNode *node, nodes)
+        if (node->isSelected)
+        {
+        Point newPoint = point + (node->point - point) * scaleFactor;
+        if (!copy)
+            node->point = newPoint;
+        else
+            addNode(new SceneNode(newPoint));
+    }
+
+    foreach (SceneLabel *label, labels)
+        if (label->isSelected)
+        {
+        Point newPoint = point + (label->point - point) * scaleFactor;
+        if (!copy)
+            label->point = newPoint;
+        else
+            addLabel(new SceneLabel(newPoint, label->marker, label->area));
+    }
+
+    emit invalidated();
+}
+
+void Scene::createMesh()
+{
+    m_isMeshed = false;
+
+    sceneSolution()->mesh().free();
+    m_solver->setMode(SOLVER_MESH);
+    if (m_solver->isRunning())
+        m_solver->terminate();
+
+    m_solver->start();
+}
+
+void Scene::solve()
+{
+    sceneSolution()->clear();
+
+    m_solver->setMode(SOLVER_MESH_AND_SOLVE);
+    if (m_solver->isRunning())
+        m_solver->terminate();
+
+    m_solver->start();
+}
+
+void Scene::doSolved()
+{       
+    // this slot is called after triangle and solve process is finished
+    // linearizer only for mesh (on empty solution)
+    if (QFile::exists(m_projectInfo.fileName + ".mesh"))
+    {
+        // save locale
+        char *plocale = setlocale (LC_NUMERIC, "");
+        setlocale (LC_NUMERIC, "C");
+
+        sceneSolution()->mesh().load((m_projectInfo.fileName + ".mesh").toStdString().c_str());
+
+        // set system locale
+        setlocale(LC_NUMERIC, plocale);
+
+        emit invalidated();
+    }
+
+    // set solver results
+    if (m_solver->mode() == SOLVER_MESH_AND_SOLVE)
+    {
+        if (sceneSolution()->sln() != NULL)
+        {
+            emit solved();
+        }
+    }
+}
+
+void Scene::doInvalidated()
+{
+    actNewEdge->setEnabled((nodes.count() >= 2) && (edgeMarkers.count() >= 1));
+    actNewLabel->setEnabled(labelMarkers.count() >= 1);
+}
+
+void Scene::doNewNode(const Point &point)
+{
+    SceneNode *node = new SceneNode(point);
+    if (node->showDialog(this, NULL) == QDialog::Accepted)
+    {
+        addNode(node);
+    }
+    else
+        delete node;
+}
+
+void Scene::doNewEdge()
+{
+    SceneEdge *edge = new SceneEdge(nodes[0], nodes[1], edgeMarkers[0], 0);
+    if (edge->showDialog(this, NULL) == QDialog::Accepted)
+    {
+        addEdge(edge);
+    }
+    else
+        delete edge;
+}
+
+void Scene::doNewLabel()
+{
+    SceneLabel *label = new SceneLabel(Point(), labelMarkers[0], 0);
+    if (label->showDialog(this, NULL) == QDialog::Accepted)
+    {
+        addLabel(label);
+    }
+    else
+        delete label;
+}
+
+void Scene::doNewEdgeMarker()
+{
+    SceneEdgeMarker *marker;
+    switch (m_projectInfo.physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        // electrostatic markers
+        marker = new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, 0);
+        break;
+    case PHYSICFIELD_MAGNETOSTATIC:
+        // electrostatic markers
+        marker = new SceneEdgeMagnetostaticMarker("new boundary", PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, 0);
+        break;
+    case PHYSICFIELD_HEAT_TRANSFER:
+        // heat markers
+        marker = new SceneEdgeHeatMarker("new boundary", PHYSICFIELDBC_HEAT_TEMPERATURE, 0);
+        break;
+    case PHYSICFIELD_ELASTICITY:
+        // elasticity markers
+        marker = new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, 0, 0);
+        break;
+    default:
+        cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::doNewEdgeMarker()" << endl;
+        throw;
+        break;
+    }
+
+    if (marker->showDialog(this, NULL) == QDialog::Accepted)
+    {
+        addEdgeMarker(marker);
+    }
+    else
+        delete marker;
+}
+
+void Scene::doNewLabelMarker()
+{
+    SceneLabelMarker *marker;
+    switch (m_projectInfo.physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        // electrostatic markers
+        marker = new SceneLabelElectrostaticMarker("new material", 0, 1);
+        break;
+    case PHYSICFIELD_MAGNETOSTATIC:
+        // electrostatic markers
+        marker = new SceneLabelMagnetostaticMarker("new material", 0, 1);
+        break;
+    case PHYSICFIELD_HEAT_TRANSFER:
+        // heat markers
+        marker = new SceneLabelHeatMarker("new material", 0, 385);
+        break;
+    case PHYSICFIELD_ELASTICITY:
+        // elasticity markers
+        marker = new SceneLabelElasticityMarker("new material", 2e11, 0.33);
+        break;
+    default:
+        cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::doNewLabelMarker()" << endl;
+        throw;
+        break;
+    }
+
+    if (marker->showDialog(this, NULL) == QDialog::Accepted)
+    {
+        addLabelMarker(marker);
+    }
+    else
+        delete marker;
+}
+
+void Scene::doTransform()
+{
+    SceneTransformDialog *sceneTransformDialog = new SceneTransformDialog(this);
+    sceneTransformDialog->exec();
+}
+
+void Scene::doProjectProperties()
+{
+    ProjectDialog *projectDialog = new ProjectDialog(m_projectInfo, false);
+    if (projectDialog->showDialog() == QDialog::Accepted)
+    {
+        emit invalidated();
+    }
+}
+
+int Scene::writeToTriangle()
+{
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    QFile file(m_projectInfo.fileName + ".poly");
+
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        cerr << "Could not create triangle poly mesh file." << endl;
+        return 0;
+    }
+    QTextStream out(&file);
+
+
+    // nodes
+    QString outNodes;
+    int nodesCount = 0;
+    for (int i = 0; i<nodes.count(); i++)
+    {
+        outNodes += QString("%1  %2  %3  %4\n").arg(i).arg(nodes[i]->point.x, 0, 'f', 10).arg(nodes[i]->point.y, 0, 'f', 10).arg(0);
+        nodesCount++;
+    }
+
+    // edges
+    QString outEdges;
+    int edgesCount = 0;
+    for (int i = 0; i<edges.count(); i++)
+    {
+        if (edges[i]->angle == 0)
+        {
+            // line
+            outEdges += QString("%1  %2  %3  %4\n").arg(edgesCount).arg(nodes.indexOf(edges[i]->nodeStart)).arg(nodes.indexOf(edges[i]->nodeEnd)).arg(i+1);
+            edgesCount++;
+        }
+        else
+        {
+            // arc
+            // add pseudonodes
+            Point center = edges[i]->center();
+            double radius = edges[i]->radius();
+            double startAngle = atan2(center.y - edges[i]->nodeStart->point.y, center.x - edges[i]->nodeStart->point.x) / M_PI*180 - 180;
+            int segments = edges[i]->angle/5;
+            if (segments < 5) segments = 5; // minimum segments
+
+            double theta = edges[i]->angle / float(segments - 1);
+
+            int nodeStartIndex = 0;
+            int nodeEndIndex = 0;
+            for (int j = 0; j < segments; j++)
+            {
+                double arc = (startAngle + j*theta)/180.0*M_PI;
+                double x = radius * cos(arc);
+                double y = radius * sin(arc);
+
+                nodeEndIndex = nodesCount+1;
+                if (j == 0)
+                {
+                    nodeStartIndex = nodes.indexOf(edges[i]->nodeStart);
+                    nodeEndIndex = nodesCount;
+                }
+                if (j == segments-1)
+                {
+                    nodeEndIndex = nodes.indexOf(edges[i]->nodeEnd);
+                }
+                if ((j > 0) && (j < segments))
+                {
+                    outNodes += QString("%1  %2  %3  %4\n").arg(nodesCount).arg(center.x + x, 0, 'f', 10).arg(center.y + y, 0, 'f', 10).arg(0);
+                    nodesCount++;
+                }
+                outEdges += QString("%1  %2  %3  %4\n").arg(edgesCount).arg(nodeStartIndex).arg(nodeEndIndex).arg(i+1);
+                edgesCount++;
+                nodeStartIndex = nodeEndIndex;
+            }
+        }
+    }
+
+    // holes
+    int holesCount = 0;
+    for (int i = 0; i<labels.count(); i++) if (labelMarkers.indexOf(labels[i]->marker) == 0) holesCount++;
+    QString outHoles = QString("%1\n").arg(holesCount);
+    for (int i = 0; i<labels.count(); i++)
+        if (labelMarkers.indexOf(labels[i]->marker) == 0)
+            outHoles += QString("%1  %2  %3\n").arg(i).arg(labels[i]->point.x, 0, 'f', 10).arg(labels[i]->point.y, 0, 'f', 10);
+
+    // labels
+    QString outLabels;
+    int labelsCount = 0;
+    for(int i = 0; i<labels.count(); i++)
+        if (labelMarkers.indexOf(labels[i]->marker) > 0) 
+        {
+        outLabels += QString("%1  %2  %3  %4  %5\n").arg(labelsCount).arg(labels[i]->point.x, 0, 'f', 10).arg(labels[i]->point.y, 0, 'f', 10).arg(i).arg(labels[i]->area);
+        labelsCount++;
+    }
+
+
+    outNodes.insert(0, QString("%1 2 0 1\n").arg(nodesCount)); // + additional nodes
+    out << outNodes;
+    outEdges.insert(0, QString("%1 1\n").arg(edgesCount)); // + additional edges
+    out << outEdges;
+    out << outHoles;
+    outLabels.insert(0, QString("%1 1\n").arg(labelsCount)); // - holes
+    out << outLabels;
+
+    file.waitForBytesWritten(0);
+    file.close();
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
+void Scene::readFromDxf(const QString &fileName)
+{
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    blockSignals(true);
+
+    DxfFilter *filter = new DxfFilter(this);
+    DL_Dxf* dxf = new DL_Dxf();
+    if (!dxf->in(fileName.toStdString(), filter)) {
+        cerr << fileName.toStdString() << " could not be opened." << endl;
+        return;
+    }
+
+    delete dxf;
+    delete filter;
+
+    blockSignals(false);
+
+    emit invalidated();
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
+void Scene::writeToDxf(const QString &fileName)
+{
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    DL_Dxf* dxf = new DL_Dxf();
+    DL_Codes::version exportVersion = DL_Codes::AC1015;
+    DL_WriterA *dw = dxf->out(fileName.toStdString().c_str(), exportVersion);
+    if (dw == NULL) {
+        cerr << fileName.toStdString() << " could not be opened." << endl;
+        return;
+    }
+
+    dxf->writeHeader(*dw);
+    // int variable:
+    dw->dxfString(9, "$INSUNITS");
+    dw->dxfInt(70, 4);
+    // real (double, float) variable:
+    dw->dxfString(9, "$DIMEXE");
+    dw->dxfReal(40, 1.25);
+    // string variable:
+    dw->dxfString(9, "$TEXTSTYLE");
+    dw->dxfString(7, "Standard");
+    // vector variable:
+    dw->dxfString(9, "$LIMMIN");
+    dw->dxfReal(10, 0.0);
+    dw->dxfReal(20, 0.0);
+    dw->sectionEnd();
+    dw->sectionTables();
+    dxf->writeVPort(*dw);
+    dw->tableLineTypes(25);
+    dxf->writeLineType(*dw, DL_LineTypeData("BYBLOCK", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("BYLAYER", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("CONTINUOUS", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("ACAD_ISO02W100", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("ACAD_ISO03W100", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("ACAD_ISO04W100", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("ACAD_ISO05W100", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("BORDER", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("BORDER2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("BORDERX2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("CENTER", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("CENTER2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("CENTERX2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DASHDOT", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DASHDOT2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DASHDOTX2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DASHED", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DASHED2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DASHEDX2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DIVIDE", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DIVIDE2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DIVIDEX2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DOT", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DOT2", 0));
+    dxf->writeLineType(*dw, DL_LineTypeData("DOTX2", 0));
+    dw->tableEnd();
+
+    int numberOfLayers = 1;
+    dw->tableLayers(numberOfLayers);
+
+    dxf->writeLayer(*dw,
+                    DL_LayerData("main", 0),
+                    DL_Attributes(
+                            std::string(""),      // leave empty
+                            DL_Codes::black,      // default color
+                            100,                  // default width
+                            "CONTINUOUS"));       // default line style
+
+    dw->tableEnd();
+    dxf->writeStyle(*dw);
+    dxf->writeView(*dw);
+    dxf->writeUcs(*dw);
+
+    dw->tableAppid(1);
+    dw->tableAppidEntry(0x12);
+    dw->dxfString(2, "ACAD");
+    dw->dxfInt(70, 0);
+    dw->tableEnd();
+    dxf->writeDimStyle(*dw, 1, 1, 1, 1, 1);
+    dxf->writeBlockRecord(*dw);
+    dw->tableEnd();
+    dw->sectionEnd();
+    dw->sectionBlocks();
+
+    dw->sectionEnd();
+    dw->sectionEntities();
+
+    // edges
+    for (int i = 0; i<edges.length(); i++)
+    {
+        if (edges[i]->angle == 0)
+        {            
+            // line
+            double x1 = edges[i]->nodeStart->point.x;
+            double y1 = edges[i]->nodeStart->point.y;
+            double x2 = edges[i]->nodeEnd->point.x;
+            double y2 = edges[i]->nodeEnd->point.y;
+
+            dxf->writeLine(*dw, DL_LineData(x1, y1, 0.0, x2, y2, 0.0), DL_Attributes("main", 256, -1, "BYLAYER"));
+        }
+        else
+        {
+            // arc
+            double cx = edges[i]->center().x;
+            double cy = edges[i]->center().y;
+            double radius = edges[i]->radius();
+            double angle1 = atan2(cy - edges[i]->nodeStart->point.y, cx - edges[i]->nodeStart->point.x)/M_PI*180.0 - 180.0;
+            double angle2 = atan2(cy - edges[i]->nodeEnd->point.y, cx - edges[i]->nodeEnd->point.x)/M_PI*180.0 + 180.0;
+
+            dxf->writeArc(*dw, DL_ArcData(cx, cy, 0.0, radius, angle1, angle2), DL_Attributes("main", 256, -1, "BYLAYER"));
+        }
+    }
+
+    dw->sectionEnd();
+    dxf->writeObjects(*dw);
+    dxf->writeObjectsEnd(*dw);
+    dw->dxfEOF();
+    dw->close();
+
+    delete dw;
+    delete dxf;
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
+void Scene::readFromFile(const QString &fileName)
+{
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    clear();
+    this->m_projectInfo.fileName = fileName;
+
+    blockSignals(true);
+
+    QDomDocument doc;
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly))
+        return;
+
+    if (!doc.setContent(&file)) {
+        file.close();
+        return;
+    }
+    file.close();
+
+    QDomNode n;
+    QDomElement element;
+
+    // main document
+    QDomElement eleDoc = doc.documentElement();
+
+    // projects
+    QDomNode eleProjects = eleDoc.elementsByTagName("projects").at(0);
+    // first project
+    // TODO: zobecnit
+    QDomNode eleProject = eleProjects.toElement().elementsByTagName("project").at(0);
+    // name
+    m_projectInfo.name = eleProject.toElement().attribute("name");
+    // problem type                                                                                                                                                                                                                             `
+    if (eleProject.toElement().attribute("problemtype") == "planar") m_projectInfo.problemType = PROBLEMTYPE_PLANAR;
+    if (eleProject.toElement().attribute("problemtype") == "axisymmetric") m_projectInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
+    // physic field
+    if (eleProject.toElement().attribute("type") == "electrostatic") m_projectInfo.physicField = PHYSICFIELD_ELECTROSTATIC;
+    if (eleProject.toElement().attribute("type") == "magnetostatic") m_projectInfo.physicField = PHYSICFIELD_MAGNETOSTATIC;
+    if (eleProject.toElement().attribute("type") == "current") m_projectInfo.physicField = PHYSICFIELD_CURRENT;
+    if (eleProject.toElement().attribute("type") == "heat transfer") m_projectInfo.physicField = PHYSICFIELD_HEAT_TRANSFER;
+    if (eleProject.toElement().attribute("type") == "elasticity") m_projectInfo.physicField = PHYSICFIELD_ELASTICITY;
+    // number of refinements
+    m_projectInfo.numberOfRefinements = eleProject.toElement().attribute("numberofrefinements").toInt();
+    // polynomial order
+    m_projectInfo.polynomialOrder = eleProject.toElement().attribute("polynomialorder").toInt();
+    // adaptivity steps
+    m_projectInfo.adaptivitySteps = eleProject.toElement().attribute("adaptivitysteps").toInt();
+
+    // markers ***************************************************************************************************************
+
+    // edge marker
+    QDomNode eleEdgeMarkers = eleProject.toElement().elementsByTagName("edges").at(0);
+    n = eleEdgeMarkers.firstChild();
+    while(!n.isNull())
+    {
+        element = n.toElement();
+        QString name = element.toElement().attribute("name");
+
+        if (element.toElement().attribute("id") == 0)
+        {
+            // none marker
+            addEdgeMarker(new SceneEdgeMarkerNone());
+        }
+        else
+        {
+            PhysicFieldBC type;
+            PhysicFieldBC typeX;
+            PhysicFieldBC typeY;
+            switch (m_projectInfo.physicField)
+            {
+            case PHYSICFIELD_ELECTROSTATIC:
+                // electrostatic markers
+                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
+                if (element.toElement().attribute("type") == "potential") type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
+                if (element.toElement().attribute("type") == "surface_charge_density") type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
+                addEdgeMarker(new SceneEdgeElectrostaticMarker(name, type, element.toElement().attribute("value").toDouble()));
+                break;
+            case PHYSICFIELD_MAGNETOSTATIC:
+                // magnetostatic markers
+                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
+                if (element.toElement().attribute("type") == "vector_potential") type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
+                if (element.toElement().attribute("type") == "surface_current_density") type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
+                addEdgeMarker(new SceneEdgeMagnetostaticMarker(name, type, element.toElement().attribute("value").toDouble()));
+                break;
+            case PHYSICFIELD_HEAT_TRANSFER:
+                // heat markers
+                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
+                if (element.toElement().attribute("type") == "temperature")
+                {
+                    type = PHYSICFIELDBC_HEAT_TEMPERATURE;
+                    addEdgeMarker(new SceneEdgeHeatMarker(name, type, element.toElement().attribute("temperature").toDouble()));
+                }
+                if (element.toElement().attribute("type") == "heat_flux")
+                {
+                    type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
+                    addEdgeMarker(new SceneEdgeHeatMarker(name, type,
+                                                          element.toElement().attribute("heat_flux").toDouble(),
+                                                          element.toElement().attribute("h").toDouble(),
+                                                          element.toElement().attribute("external_temperature").toDouble()));
+                }
+                break;
+            case PHYSICFIELD_ELASTICITY:
+                {
+                    // elasticity markers
+                    if (element.toElement().attribute("typex") == "none") typeX = PHYSICFIELDBC_NONE;
+                    if (element.toElement().attribute("typey") == "none") typeY = PHYSICFIELDBC_NONE;
+
+                    if (element.toElement().attribute("typex") == "fixed") typeX = PHYSICFIELDBC_ELASTICITY_FIXED;
+                    if (element.toElement().attribute("typex") == "free") typeX = PHYSICFIELDBC_ELASTICITY_FREE;
+                    if (element.toElement().attribute("typey") == "fixed") typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
+                    if (element.toElement().attribute("typey") == "free") typeY = PHYSICFIELDBC_ELASTICITY_FREE;
+
+                    addEdgeMarker(new SceneEdgeElasticityMarker(name, typeX, typeY,
+                                                                element.toElement().attribute("forcex").toDouble(),
+                                                                element.toElement().attribute("forcey").toDouble()));
+                }
+                break;
+            default:
+                cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                throw;
+                break;
+            }
+        }
+
+        n = n.nextSibling();
+    }
+
+    // label marker
+    QDomNode eleLabelMarkers = eleProject.toElement().elementsByTagName("labels").at(0);
+    n = eleLabelMarkers.firstChild();
+    while(!n.isNull())
+    {
+        element = n.toElement();
+        QString name = element.toElement().attribute("name");
+
+        if (element.toElement().attribute("id") == 0)
+        {
+            // none marker
+            addLabelMarker(new SceneLabelMarkerNone());
+        }
+        else
+        {
+            switch (m_projectInfo.physicField)
+            {
+            case PHYSICFIELD_ELECTROSTATIC:
+                // electrostatic markers
+                addLabelMarker(new SceneLabelElectrostaticMarker(name,
+                                                                 element.toElement().attribute("charge_density").toDouble(),
+                                                                 element.toElement().attribute("permittivity").toDouble()));
+                break;
+            case PHYSICFIELD_MAGNETOSTATIC:
+                // magnetostatic markers
+                addLabelMarker(new SceneLabelMagnetostaticMarker(name,
+                                                                 element.toElement().attribute("current_density").toDouble(),
+                                                                 element.toElement().attribute("permeability").toDouble()));
+                break;
+            case PHYSICFIELD_HEAT_TRANSFER:
+                // heat markers
+                addLabelMarker(new SceneLabelHeatMarker(name,
+                                                        element.toElement().attribute("volume_heat").toDouble(),
+                                                        element.toElement().attribute("thermal_conductivity").toDouble()));
+                break;
+            case PHYSICFIELD_ELASTICITY:
+                // heat markers
+                addLabelMarker(new SceneLabelElasticityMarker(name,
+                                                        element.toElement().attribute("young_modulus").toDouble(),
+                                                        element.toElement().attribute("poisson_ratio").toDouble()));
+                break;            default:
+                cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                throw;
+                break;
+            }
+        }
+
+        n = n.nextSibling();
+    }
+
+    // geometry ***************************************************************************************************************
+
+    // geometry
+    QDomNode eleGeometry = eleDoc.elementsByTagName("geometry").at(0);
+
+    // nodes
+    QDomNode eleNodes = eleGeometry.toElement().elementsByTagName("nodes").at(0);
+    n = eleNodes.firstChild();
+    while(!n.isNull())
+    {
+        element = n.toElement();
+        Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
+
+        addNode(new SceneNode(point));
+        n = n.nextSibling();
+    }
+
+    // edges
+    QDomNode eleEdges = eleGeometry.toElement().elementsByTagName("edges").at(0);
+    n = eleEdges.firstChild();
+    while(!n.isNull())
+    {
+        element = n.toElement();
+        SceneNode *nodeFrom = nodes[element.attribute("start").toInt()];
+        SceneNode *nodeTo = nodes[element.attribute("end").toInt()];
+        SceneEdgeMarker *marker = edgeMarkers[element.attribute("marker").toInt()];
+        double angle = element.attribute("angle").toDouble();
+
+        addEdge(new SceneEdge(nodeFrom, nodeTo, marker, angle));
+        n = n.nextSibling();
+    }
+
+    // labels
+    QDomNode eleLabels = eleGeometry.toElement().elementsByTagName("labels").at(0);
+    n = eleLabels.firstChild();
+    while(!n.isNull())
+    {
+        element = n.toElement();
+        Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
+        SceneLabelMarker *marker = labelMarkers[element.attribute("marker").toInt()];
+        double area = element.attribute("area").toDouble();
+
+        addLabel(new SceneLabel(point, marker, area));
+        n = n.nextSibling();
+    }
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+
+    blockSignals(false);
+
+    emit invalidated();
+}
+
+void Scene::writeToFile(const QString &fileName) {
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    m_projectInfo.fileName = fileName;
+
+    QDomDocument doc;
+
+    // main document
+    QDomElement eleDoc = doc.createElement("document");
+    doc.appendChild(eleDoc);
+
+    // projects
+    QDomNode eleProjects = doc.createElement("projects");
+    eleDoc.appendChild(eleProjects);
+    // first project
+    // TODO: zobecnit
+    QDomNode eleProject = doc.createElement("project");
+    eleProjects.appendChild(eleProject);
+    // id
+    eleProject.toElement().setAttribute("id", 0);
+    // name
+    eleProject.toElement().setAttribute("name", m_projectInfo.name);
+    // problem type                                                                                                                                                                                                                             `
+    if (m_projectInfo.problemType == PROBLEMTYPE_PLANAR) eleProject.toElement().setAttribute("problemtype", "planar");
+    if (m_projectInfo.problemType == PROBLEMTYPE_AXISYMMETRIC) eleProject.toElement().setAttribute("problemtype", "axisymmetric");
+    // name
+    eleProject.toElement().setAttribute("type", m_projectInfo.physicFieldString());
+    // number of refinements
+    eleProject.toElement().setAttribute("numberofrefinements", m_projectInfo.numberOfRefinements);
+    // polynomial order
+    eleProject.toElement().setAttribute("polynomialorder", m_projectInfo.polynomialOrder);
+    // adaptivity steps
+    eleProject.toElement().setAttribute("adaptivitysteps", m_projectInfo.adaptivitySteps);
+
+    // geometry
+    QDomNode eleGeometry = doc.createElement("geometry");
+    eleDoc.appendChild(eleGeometry);
+
+    // geometry ***************************************************************************************************************
+
+    // nodes
+    QDomNode eleNodes = doc.createElement("nodes");
+    eleGeometry.appendChild(eleNodes);
+    for (int i = 0; i<nodes.length(); i++)
+    {
+        QDomNode eleNode = doc.createElement("node");
+
+        eleNode.toElement().setAttribute("id", i);
+        eleNode.toElement().setAttribute("x", nodes[i]->point.x);
+        eleNode.toElement().setAttribute("y", nodes[i]->point.y);
+
+        eleNodes.appendChild(eleNode);
+    }
+
+    // edges
+    QDomNode eleEdges = doc.createElement("edges");
+    eleGeometry.appendChild(eleEdges);
+    for (int i = 0; i<edges.length(); i++)
+    {
+        QDomNode eleEdge = doc.createElement("edge");
+
+        eleEdge.toElement().setAttribute("id", i);
+        eleEdge.toElement().setAttribute("start", nodes.indexOf(edges[i]->nodeStart));
+        eleEdge.toElement().setAttribute("end", nodes.indexOf(edges[i]->nodeEnd));
+        eleEdge.toElement().setAttribute("angle", edges[i]->angle);
+        eleEdge.toElement().setAttribute("marker", edgeMarkers.indexOf(edges[i]->marker));
+
+        eleEdges.appendChild(eleEdge);
+    }
+
+    // labels
+    QDomNode eleLabels = doc.createElement("labels");
+    eleGeometry.appendChild(eleLabels);
+    for (int i = 0; i<labels.length(); i++)
+    {
+        QDomNode eleLabel = doc.createElement("label");
+
+        eleLabel.toElement().setAttribute("id", i);
+        eleLabel.toElement().setAttribute("x", labels[i]->point.x);
+        eleLabel.toElement().setAttribute("y", labels[i]->point.y);
+        eleLabel.toElement().setAttribute("area", labels[i]->area);
+        eleLabel.toElement().setAttribute("marker", labelMarkers.indexOf(labels[i]->marker));
+
+        eleLabels.appendChild(eleLabel);
+    }
+
+    // markers ***************************************************************************************************************
+
+    // edge markers
+    QDomNode eleEdgeMarkers = doc.createElement("edges");
+    eleProject.appendChild(eleEdgeMarkers);
+    for (int i = 1; i<edgeMarkers.length(); i++)
+    {
+        QDomNode eleEdgeMarker = doc.createElement("edge");
+
+        eleEdgeMarker.toElement().setAttribute("id", i);
+        eleEdgeMarker.toElement().setAttribute("name", edgeMarkers[i]->name);
+        if (edgeMarkers[i]->type == PHYSICFIELDBC_NONE) eleEdgeMarker.toElement().setAttribute("type", "none");
+
+        if (i > 0)
+        {
+            // electrostatic
+            if (SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(edgeMarkers[i]))
+            {
+                if (edgeElectrostaticMarker->type == PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL) eleEdgeMarker.toElement().setAttribute("type", "potential");
+                if (edgeElectrostaticMarker->type == PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE) eleEdgeMarker.toElement().setAttribute("type", "surface_charge_density");
+                eleEdgeMarker.toElement().setAttribute("value", edgeElectrostaticMarker->value);
+            }
+            // magnetostatic
+            if (SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(edgeMarkers[i]))
+            {
+                if (edgeMagnetostaticMarker->type == PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL) eleEdgeMarker.toElement().setAttribute("type", "vector_potential");
+                if (edgeMagnetostaticMarker->type == PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT) eleEdgeMarker.toElement().setAttribute("type", "surface_current_density");
+                eleEdgeMarker.toElement().setAttribute("value", edgeMagnetostaticMarker->value);
+            }
+            // heat transfer
+            if (SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(edgeMarkers[i]))
+            {
+                if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_TEMPERATURE)
+                {
+                    eleEdgeMarker.toElement().setAttribute("type", "temperature");
+                    eleEdgeMarker.toElement().setAttribute("temperature", edgeHeatMarker->temperature);
+                }
+                if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
+                {
+                    eleEdgeMarker.toElement().setAttribute("type", "heat_flux");
+                    eleEdgeMarker.toElement().setAttribute("heat_flux", edgeHeatMarker->heatFlux);
+                    eleEdgeMarker.toElement().setAttribute("h", edgeHeatMarker->h);
+                    eleEdgeMarker.toElement().setAttribute("external_temperature", edgeHeatMarker->externalTemperature);
+                }
+            }
+            // elasticity
+            if (SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(edgeMarkers[i]))
+            {
+                if (edgeElasticityMarker->typeX == PHYSICFIELDBC_ELASTICITY_FREE) eleEdgeMarker.toElement().setAttribute("typex", "free");
+                if (edgeElasticityMarker->typeX == PHYSICFIELDBC_ELASTICITY_FIXED) eleEdgeMarker.toElement().setAttribute("typex", "fixed");
+                if (edgeElasticityMarker->typeY == PHYSICFIELDBC_ELASTICITY_FREE) eleEdgeMarker.toElement().setAttribute("typey", "free");
+                if (edgeElasticityMarker->typeY == PHYSICFIELDBC_ELASTICITY_FIXED) eleEdgeMarker.toElement().setAttribute("typey", "fixed");
+                eleEdgeMarker.toElement().setAttribute("forcex", edgeElasticityMarker->forceX);
+                eleEdgeMarker.toElement().setAttribute("forcey", edgeElasticityMarker->forceY);
+            }
+        }
+
+        eleEdgeMarkers.appendChild(eleEdgeMarker);
+    }
+
+    // label markers
+    QDomNode eleLabelMarkers = doc.createElement("labels");
+    eleProject.appendChild(eleLabelMarkers);
+    for (int i = 1; i<labelMarkers.length(); i++)
+    {
+        QDomNode eleLabelMarker = doc.createElement("label");
+
+        eleLabelMarker.toElement().setAttribute("id", i);
+        eleLabelMarker.toElement().setAttribute("name", labelMarkers[i]->name);
+
+        if (i > 0)
+        {
+            // electrostatic
+            if (SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarkers[i]))
+            {
+                eleLabelMarker.toElement().setAttribute("charge_density", labelElectrostaticMarker->charge_density);
+                eleLabelMarker.toElement().setAttribute("permittivity", labelElectrostaticMarker->permittivity);
+            }
+            // magnetostatic
+            if (SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarkers[i]))
+            {
+                eleLabelMarker.toElement().setAttribute("current_density", labelMagnetostaticMarker->current_density);
+                eleLabelMarker.toElement().setAttribute("permeability", labelMagnetostaticMarker->permeability);
+            }
+            // heat
+            if (SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(labelMarkers[i]))
+            {
+                eleLabelMarker.toElement().setAttribute("thermal_conductivity", labelHeatMarker->thermal_conductivity);
+                eleLabelMarker.toElement().setAttribute("volume_heat", labelHeatMarker->volume_heat);
+            }
+            // elasticity
+            if (SceneLabelElasticityMarker *labelHeatMarker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarkers[i]))
+            {
+                eleLabelMarker.toElement().setAttribute("young_modulus", labelHeatMarker->young_modulus);
+                eleLabelMarker.toElement().setAttribute("poisson_ratio", labelHeatMarker->poisson_ratio);
+            }
+        }
+
+        eleLabelMarkers.appendChild(eleLabelMarker);
+    }
+
+    // save to file
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    doc.save(out, 4);
+
+    file.waitForBytesWritten(0);
+    file.close();
+
+    emit invalidated();
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
+bool Scene::triangle2mesh(const QString &source, const QString &destination)
+{
+    bool returnValue = true;
+
+    int i, n, k, l, marker, node_1, node_2, node_3;
+    double x, y;
+
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    QFile fileMesh(destination + ".mesh");
+    if (!fileMesh.open(QIODevice::WriteOnly))
+    {
+        cerr << "Could not create hermes2d mesh file." << endl;
+        return 0;
+    }
+    QTextStream outMesh(&fileMesh);
+
+    QFile fileNode(source + ".node");
+    if (!fileNode.open(QIODevice::ReadOnly))
+    {
+        cerr << "Could not create triangle node file." << endl;
+        return 0;
+    }
+    QTextStream inNode(&fileNode);
+
+    QFile fileEdge(source + ".edge");
+    if (!fileEdge.open(QIODevice::ReadOnly))
+    {
+        cerr << "Could not create triangle edge file." << endl;
+        return 0;
+    }
+    QTextStream inEdge(&fileEdge);
+
+    QFile fileEle(source + ".ele");
+    if (!fileEle.open(QIODevice::ReadOnly))
+    {
+        cerr << "Could not create triangle ele file." << endl;
+        return 0;
+    }
+    QTextStream inEle(&fileEle);
+
+    // nodes
+    QString outNodes;
+    outNodes += "vertices = \n";
+    outNodes += "{ \n";
+    sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
+    for (int i = 0; i<k; i++)
+    {
+        sscanf(inNode.readLine().toStdString().c_str(), "%i   %lf %lf %i", &n, &x, &y, &marker);
+        outNodes += QString("\t{ %1,  %2 }, \n").arg(x, 0, 'f', 10).arg(y, 0, 'f', 10);
+    }
+    outNodes.truncate(outNodes.length()-3);
+    outNodes += "\n} \n\n";
+
+    // edges
+    QString outEdges;
+    outEdges += "boundaries = \n";
+    outEdges += "{ \n";
+    sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
+    for (int i = 0; i<k; i++)
+    {
+        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
+        if (marker != 0)
+        {
+            if (edges[marker-1]->marker->type != PHYSICFIELDBC_NONE)
+                outEdges += QString("\t{ %1, %2, %3 }, \n").arg(node_1).arg(node_2).arg(abs(marker));
+        }
+    }
+    outEdges.truncate(outEdges.length()-3);
+    outEdges += "\n} \n\n";
+
+    cout << PHYSICFIELDBC_NONE << endl;
+
+    // labels
+    QString outEle;
+    outEle += "elements = \n";
+    outEle += "{ \n";
+    sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
+    for (int i = 0; i<k; i++)
+    {
+        sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
+        outEle += QString("\t{ %1, %2, %3, %4  }, \n").arg(node_1).arg(node_2).arg(node_3).arg(abs(marker));
+    }
+    outEle.truncate(outEle.length()-3);
+    outEle += "\n} \n\n";
+
+    outMesh << outNodes;
+    outMesh << outEle;
+    outMesh << outEdges;
+
+    fileNode.close();
+    fileEdge.close();
+    fileEle.close();
+
+    fileMesh.waitForBytesWritten(0);
+    fileMesh.close();
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+
+    return returnValue;
+}

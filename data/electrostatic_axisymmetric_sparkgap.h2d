@@ -1,0 +1,39 @@
+<document>
+    <projects>
+        <project numberofrefinements="0" adaptivitysteps="7" polynomialorder="1" problemtype="axisymmetric" type="electrostatic" id="0" name="Jiskriste" >
+            <edges>
+                <edge type="potential" value="1000" id="1" name="U = 1000 V" />
+                <edge type="potential" value="0" id="2" name="U = 0 V" />
+                <edge type="surface_charge_density" value="0" id="3" name="Neumann" />
+            </edges>
+            <labels>
+                <label charge_density="0" id="1" name="air" permittivity="1" />
+            </labels>
+        </project>
+    </projects>
+    <geometry>
+        <nodes>
+            <node x="0" y="0.5" id="0" />
+            <node x="0.2" y="1" id="1" />
+            <node x="0" y="1" id="2" />
+            <node x="0" y="-0.25" id="3" />
+            <node x="0" y="0.25" id="4" />
+            <node x="0" y="-1" id="5" />
+            <node x="0" y="2" id="6" />
+            <node x="1.5" y="0.5" id="7" />
+        </nodes>
+        <edges>
+            <edge end="2" marker="3" id="0" start="6" angle="0" />
+            <edge end="1" marker="1" id="1" start="2" angle="0" />
+            <edge end="0" marker="1" id="2" start="1" angle="0" />
+            <edge end="4" marker="3" id="3" start="0" angle="0" />
+            <edge end="5" marker="3" id="4" start="3" angle="0" />
+            <edge end="4" marker="2" id="5" start="3" angle="180" />
+            <edge end="7" marker="3" id="6" start="5" angle="90" />
+            <edge end="6" marker="3" id="7" start="7" angle="90" />
+        </edges>
+        <labels>
+            <label x="0.879551" y="0.764057" marker="1" id="0" area="0.1" />
+        </labels>
+    </geometry>
+</document>
