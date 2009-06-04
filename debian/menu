@@ -1,0 +1,6 @@
+?package(carbon2d): \
+   needs="wm" \
+   section="Applications/Education" \
+   title="Carbon 2D" \
+   icon="/usr/share/pixmaps/carbon2d.png" \
+   command="/usr/bin/carbon2d"

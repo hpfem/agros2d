@@ -1,0 +1,39 @@
+This package was debianized by:
+
+    Pavel Karban <karban@kte.zcu.cz> on Thu, 04 Jun 2009 17:05:55 +0200
+
+It was downloaded from:
+
+    http://hpfem.math.unr.edu/projects/hermes2d-new/
+
+Upstream Author(s):
+
+    Pavel Karban <karban@kte.zcu.cz>
+
+Copyright:
+
+    Copyright (C) hp-fem group
+
+License:
+
+   This package is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License version 2 as
+   published by the Free Software Foundation.
+
+   This package is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this package; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+On Debian systems, the complete text of the GNU General
+Public License can be found in `/usr/share/common-licenses/GPL'.
+
+The Debian packaging is:
+
+    Copyright C) 2009, Pavel Karban <karban@kte.zcu.cz>
+
+and is licensed under the GPL, see above.

@@ -11,12 +11,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    a.setWindowIcon(icon("icon"));
-    a.setApplicationVersion("1.0.0");
+    a.setWindowIcon(icon("carbon2d"));
+    a.setApplicationVersion("0.5.0.0");
     
-    a.setOrganizationName("Hermes");
+    a.setOrganizationName("Carbon");
     a.setOrganizationDomain("hpfem.org");
-    a.setApplicationName("Hermes2D");
+    a.setApplicationName("Carbon2D");
 
     QSettings settings;
 

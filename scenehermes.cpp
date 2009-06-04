@@ -18,11 +18,14 @@ void ThreadSolver::run()
 
 void ThreadSolver::runMesh()
 {
+    // file info
+    QFileInfo fileInfo(m_scene->projectInfo().fileName);
+
     m_scene->setMeshed(false);
     m_errorMessage = "";
 
     m_scene->sceneSolution()->mesh().free();
-    QFile::remove(m_scene->projectInfo().fileName + ".mesh");
+    QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".mesh");
 
     // create triangle files
     m_scene->writeToTriangle();
@@ -31,12 +34,11 @@ void ThreadSolver::runMesh()
 
     // exec triangle
     QProcess *processTriangle = new QProcess();
-    processTriangle->setStandardOutputFile(m_scene->projectInfo().fileName + ".triangle.out");
-    processTriangle->setStandardErrorFile(m_scene->projectInfo().fileName + ".triangle.err");
+    processTriangle->setStandardOutputFile(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".triangle.out");
+    processTriangle->setStandardErrorFile(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".triangle.err");
     connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
 
-    QFileInfo fileInfo(m_scene->projectInfo().fileName);
-    processTriangle->start("triangle -p -P -q30.000000 -e -A -a -z -Q -I -p \"" + fileInfo.absoluteFilePath() + "\"");
+    processTriangle->start("triangle -p -P -q30.000000 -e -A -a -z -Q -I -p \"" + QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + "\"");
     updateProgress(30);
 
     if (!processTriangle->waitForStarted())
@@ -54,20 +56,23 @@ void ThreadSolver::doMeshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
+        // file info
+        QFileInfo fileInfo(m_scene->projectInfo().fileName);
+
         emit message(tr("Triangle mesh was created."));
         updateProgress(40);
 
         // convert triangle mesh to hermes mesh
-        if (m_scene->triangle2mesh(m_scene->projectInfo().fileName, m_scene->projectInfo().fileName))
+        if (m_scene->triangle2mesh(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName(), QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName()))
         {
             emit message(tr("Triangle mesh was converted to Hermes mesh file."));
 
-            QFile::remove(m_scene->projectInfo().fileName + ".poly");
-            QFile::remove(m_scene->projectInfo().fileName + ".node");
-            QFile::remove(m_scene->projectInfo().fileName + ".edge");
-            QFile::remove(m_scene->projectInfo().fileName + ".ele");
-            QFile::remove(m_scene->projectInfo().fileName + ".triangle.out");
-            QFile::remove(m_scene->projectInfo().fileName + ".triangle.err");
+            QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".poly");
+            QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".node");
+            QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".edge");
+            QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".ele");
+            QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".triangle.out");
+            QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".triangle.err");
 
             emit message(tr("Triangle files was deleted."));
             updateProgress(50);
@@ -105,6 +110,10 @@ void ThreadSolver::doMeshTriangleCreated(int exitCode)
 
 void ThreadSolver::runSolver()
 {
+    // file info
+    QFileInfo fileInfo(m_scene->projectInfo().fileName);
+    QString fileName(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".mesh");
+
     // benchmark
     QTime time;
     time.start();
@@ -113,7 +122,6 @@ void ThreadSolver::runSolver()
     updateProgress(60);
 
     SolutionArray *solutionArray;
-    QFileInfo fileInfo(m_scene->projectInfo().fileName + ".mesh");
 
     if (fileInfo.exists())
     {
@@ -156,7 +164,7 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                solutionArray = electrostatic_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
+                solutionArray = electrostatic_main(fileName.toStdString().c_str(),
                                                    electrostaticEdge, electrostaticLabel,
                                                    m_scene->projectInfo().numberOfRefinements,
                                                    m_scene->projectInfo().polynomialOrder,
@@ -205,7 +213,7 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                solutionArray = magnetostatic_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
+                solutionArray = magnetostatic_main(fileName.toStdString().c_str(),
                                               magnetostaticEdge, magnetostaticLabel,
                                               m_scene->projectInfo().numberOfRefinements,
                                               m_scene->projectInfo().polynomialOrder,
@@ -269,7 +277,7 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                solutionArray = heat_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
+                solutionArray = heat_main(fileName.toStdString().c_str(),
                                      heatEdge, heatLabel,
                                      m_scene->projectInfo().numberOfRefinements,
                                      m_scene->projectInfo().polynomialOrder,
@@ -324,7 +332,7 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                solutionArray = elasticity_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
+                solutionArray = elasticity_main(fileName.toStdString().c_str(),
                                            elasticityEdge, elasticityLabel,
                                            m_scene->projectInfo().numberOfRefinements,
                                            m_scene->projectInfo().polynomialOrder,

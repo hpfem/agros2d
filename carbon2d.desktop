@@ -1,0 +1,13 @@
+
+[Desktop Entry]
+Type=Application
+Name=Hermes 2D
+Comment=hp-FEM based application
+TryExec=carbon2d
+Exec=carbon2d
+Icon=carbon2d
+Categories=Science;
+X-KDE-StartupNotify=true
+Terminal=false
+InitialPreference=9
+Name[en_US]=Carbon 2D

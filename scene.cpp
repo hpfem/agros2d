@@ -389,16 +389,19 @@ void Scene::solve()
 }
 
 void Scene::doSolved()
-{       
+{
+    // file info
+    QFileInfo fileInfo(m_projectInfo.fileName);
+
     // this slot is called after triangle and solve process is finished
     // linearizer only for mesh (on empty solution)
-    if (QFile::exists(m_projectInfo.fileName + ".mesh"))
+    if (QFile::exists(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".mesh"))
     {
         // save locale
         char *plocale = setlocale (LC_NUMERIC, "");
         setlocale (LC_NUMERIC, "C");
 
-        sceneSolution()->mesh().load((m_projectInfo.fileName + ".mesh").toStdString().c_str());
+        m_sceneSolution->mesh().load((QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".mesh").toStdString().c_str());
 
         // set system locale
         setlocale(LC_NUMERIC, plocale);
@@ -542,11 +545,16 @@ void Scene::doProjectProperties()
 
 int Scene::writeToTriangle()
 {
+    // file info
+    QFileInfo fileInfo(m_projectInfo.fileName);
+
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    QFile file(m_projectInfo.fileName + ".poly");
+    QDir dir;
+    dir.mkdir(QDir::temp().absolutePath() + "/carbon2d");
+    QFile file(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".poly");
 
     if (!file.open(QIODevice::WriteOnly))
     {

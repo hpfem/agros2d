@@ -1,0 +1,13 @@
+Source: carbon2d
+Section: multiverse/science
+Priority: extra
+Maintainer: Pavel Karban <karban@kte.zcu.cz>
+Build-Depends: debhelper (>= 7), qt4-dev-tools (>= 4.5.0), libqt4-dev (>= 4.5.0), libsuitesparse-dev (>= 3.2.0)
+Standards-Version: 3.8.0
+Homepage: http://hpfem.math.unr.edu/projects/hermes2d-new/
+
+Package: carbon2d
+Architecture: any
+Depends: ${shlibs:Depends}, triangle-bin (>= 1.6), libsuitesparse-3.2.0 (>= 3.2.0), libglu1-mesa (>= 3.4.0)
+Description: hp-FEM multiphysics solver based on Hermes2D library
+
