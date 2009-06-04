@@ -5,7 +5,7 @@ SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialo
     this->m_sceneView = sceneView;
     
     setMinimumSize(350, 450);
-    setWindowIcon(getIcon("logo"));
+    setWindowIcon(icon("logo"));
     setWindowTitle(tr("Scene View"));
     setWindowModality(Qt::ApplicationModal);
     

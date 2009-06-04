@@ -42,7 +42,7 @@
  </data>
  <data>
   <variable>activebuildconfiguration</variable>
-  <value type="QString" >Debug</value>
+  <value type="QString" >Release</value>
  </data>
  <data>
   <variable>buildConfiguration-Debug</variable>
@@ -295,14 +295,14 @@
     <value type="QString" >XDG_SESSION_COOKIE=20a1319946c510bf1274f9b34a0eb613-1243796439.309962-1258829559</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
-    <value type="QString" >/home/karban/Projects/programovani/c/carbon2d/trunk/carbon2d.pro</value>
+    <value type="QString" >/home/karban/Projects/programovani/c/carbon2d/carbon2d.pro</value>
     <value type="QString" >-spec</value>
     <value type="QString" >/usr/share/qt4/mkspecs/linux-g++</value>
     <value type="QString" >-r</value>
    </valuelist>
    <value key="abstractProcess.command" type="QString" >/usr/bin/qmake-qt4</value>
    <value key="abstractProcess.enabled" type="bool" >false</value>
-   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d/trunk</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
    <value key="buildConfiguration" type="int" >0</value>
   </valuemap>
  </data>
@@ -362,7 +362,7 @@
    </valuelist>
    <value key="abstractProcess.command" type="QString" >/usr/bin/make</value>
    <value key="abstractProcess.enabled" type="bool" >true</value>
-   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d/trunk</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
    <valuelist key="makeargs" type="QVariantList" >
     <value type="QString" >-j</value>
     <value type="QString" >2</value>
@@ -373,6 +373,58 @@
   <variable>buildconfiguration-Release-cleanstep0</variable>
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-TCXRh1aBOG,guid=e05299ffd356cb9e5810317d4a22d3d7</value>
+    <value type="QString" >DESKTOP_SESSION=default</value>
+    <value type="QString" >DESKTOP_STARTUP_ID=</value>
+    <value type="QString" >DISPLAY=:0.0</value>
+    <value type="QString" >GDMSESSION=default</value>
+    <value type="QString" >GDM_LANG=en_US.UTF-8</value>
+    <value type="QString" >GDM_XSERVER_LOCATION=local</value>
+    <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
+    <value type="QString" >GNOME_KEYRING_PID=23636</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-1ukexi/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-0NjztJ/S.gpg-agent:23768:1</value>
+    <value type="QString" >GTK_MODULES=canberra-gtk-module</value>
+    <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/karban/.gtkrc-1.2-gnome2</value>
+    <value type="QString" >HOME=/home/karban</value>
+    <value type="QString" >LANG=en_US.UTF-8</value>
+    <value type="QString" >LC_ADDRESS=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_COLLATE=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_CTYPE=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_IDENTIFICATION=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_MEASUREMENT=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_MESSAGES=en_US.UTF-8</value>
+    <value type="QString" >LC_MONETARY=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_NAME=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_NUMERIC=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_PAPER=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_TELEPHONE=cs_CZ.UTF-8</value>
+    <value type="QString" >LC_TIME=cs_CZ.UTF-8</value>
+    <value type="QString" >LD_LIBRARY_PATH=/usr/local/src/qtcreator/qt-creator/lib/qtcreator:</value>
+    <value type="QString" >LOGNAME=karban</value>
+    <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-karban</value>
+    <value type="QString" >PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString" >PWD=/home/karban</value>
+    <value type="QString" >QTDIR=/usr</value>
+    <value type="QString" >SESSION_MANAGER=local/ek611-karban:/tmp/.ICE-unix/23648</value>
+    <value type="QString" >SHELL=/bin/bash</value>
+    <value type="QString" >SSH_AGENT_PID=23745</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-1ukexi/socket.ssh</value>
+    <value type="QString" >USER=karban</value>
+    <value type="QString" >USERNAME=karban</value>
+    <value type="QString" >WINDOWPATH=7:7</value>
+    <value type="QString" >XAUTHORITY=/home/karban/.Xauthority</value>
+    <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
+    <value type="QString" >XDG_SESSION_COOKIE=20a1319946c510bf1274f9b34a0eb613-1243796439.309962-1258829559</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >clean</value>
+    <value type="QString" >-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >/usr/bin/make</value>
+   <value key="abstractProcess.enabled" type="bool" >true</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
   </valuemap>
  </data>
  <data>

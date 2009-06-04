@@ -88,9 +88,9 @@ void SceneTransformDialog::createControls()
 
     // tab widget
     tabWidget = new QTabWidget(this);
-    tabWidget->addTab(widTranslate, getIcon(""), "Translate");
-    tabWidget->addTab(widRotate, getIcon(""), "Rotate");
-    tabWidget->addTab(widScale, getIcon(""), "Scale");
+    tabWidget->addTab(widTranslate, icon(""), "Translate");
+    tabWidget->addTab(widRotate, icon(""), "Rotate");
+    tabWidget->addTab(widScale, icon(""), "Scale");
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tabWidget);

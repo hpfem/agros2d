@@ -3,7 +3,7 @@
 OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent)
 {
     setMinimumSize(350, 450);
-    setWindowIcon(getIcon("logo"));
+    setWindowIcon(icon("logo"));
     setWindowTitle(tr("Options"));
     setWindowModality(Qt::ApplicationModal);
 
@@ -75,11 +75,11 @@ void OptionsDialog::createControls()
                this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
 
     // ListView items
-    QListWidgetItem *itemMain = new QListWidgetItem(getIcon("options-main"), tr("Main"), lstView);
+    QListWidgetItem *itemMain = new QListWidgetItem(icon("options-main"), tr("Main"), lstView);
     itemMain->setTextAlignment(Qt::AlignHCenter);
     itemMain->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-    QListWidgetItem *itemColors = new QListWidgetItem(getIcon("options-colors"), tr("Colors"), lstView);
+    QListWidgetItem *itemColors = new QListWidgetItem(icon("options-colors"), tr("Colors"), lstView);
     itemColors->setTextAlignment(Qt::AlignHCenter);
     itemColors->setFlags(Qt::ItemIsSelectable & Qt::ItemIsEnabled);
 

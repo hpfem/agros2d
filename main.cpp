@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    a.setWindowIcon(getIcon("icon"));
+    a.setWindowIcon(icon("icon"));
     a.setApplicationVersion("1.0.0");
     
     a.setOrganizationName("Hermes");

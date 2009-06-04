@@ -50,36 +50,36 @@ Scene::~Scene() {
 void Scene::createActions()
 {
     // scene - add items
-    actNewNode = new QAction(getIcon("scenenode"), tr("New &node"), this);
+    actNewNode = new QAction(icon("scene-node"), tr("New &node"), this);
     actNewNode->setShortcut(tr("Alt+N"));
     actNewNode->setStatusTip(tr("New node"));
     connect(actNewNode, SIGNAL(triggered()), this, SLOT(doNewNode()));
 
-    actNewEdge = new QAction(getIcon("sceneedge"), tr("New &edge"), this);
+    actNewEdge = new QAction(icon("scene-edge"), tr("New &edge"), this);
     actNewEdge->setShortcut(tr("Alt+E"));
     actNewEdge->setStatusTip(tr("New edge"));
     connect(actNewEdge, SIGNAL(triggered()), this, SLOT(doNewEdge()));
 
-    actNewLabel = new QAction(getIcon("scenelabel"), tr("New &label"), this);
+    actNewLabel = new QAction(icon("scene-label"), tr("New &label"), this);
     actNewLabel->setShortcut(tr("Alt+L"));
     actNewLabel->setStatusTip(tr("New label"));
     connect(actNewLabel, SIGNAL(triggered()), this, SLOT(doNewLabel()));
 
-    actNewEdgeMarker = new QAction(getIcon("sceneedgemarker"), tr("New &boundary condition"), this);
+    actNewEdgeMarker = new QAction(icon("scene-edgemarker"), tr("New &boundary condition"), this);
     actNewEdgeMarker->setShortcut(tr("Alt+B"));
     actNewEdgeMarker->setStatusTip(tr("New boundary condition"));
     connect(actNewEdgeMarker, SIGNAL(triggered()), this, SLOT(doNewEdgeMarker()));
 
-    actNewLabelMarker = new QAction(getIcon("scenelabelmarker"), tr("New &material"), this);
+    actNewLabelMarker = new QAction(icon("scene-labelmarker"), tr("New &material"), this);
     actNewLabelMarker->setShortcut(tr("Alt+M"));
     actNewLabelMarker->setStatusTip(tr("New material"));
     connect(actNewLabelMarker, SIGNAL(triggered()), this, SLOT(doNewLabelMarker()));
 
-    actTransform = new QAction(getIcon("scene-transform"), tr("Transform"), this);
+    actTransform = new QAction(icon("scene-transform"), tr("Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
-    actProjectProperties = new QAction(getIcon("scene-properties"), tr("Project properties"), this);
+    actProjectProperties = new QAction(icon("scene-properties"), tr("Project properties"), this);
     actProjectProperties->setStatusTip(tr("Project properties"));
     connect(actProjectProperties, SIGNAL(triggered()), this, SLOT(doProjectProperties()));
 }

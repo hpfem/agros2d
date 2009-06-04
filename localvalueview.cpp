@@ -26,7 +26,7 @@ LocalPointValueView::LocalPointValueView(Scene *scene, QWidget *parent): QDockWi
 
 void LocalPointValueView::createActions()
 {
-    actPoint = new QAction(getIcon("scenenode"), tr("Local point value"), this);
+    actPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
     connect(actPoint, SIGNAL(triggered()), this, SLOT(doPoint()));
 }
 

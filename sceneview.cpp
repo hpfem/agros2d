@@ -22,36 +22,36 @@ SceneView::~SceneView()
 void SceneView::createActions()
 {
     // scene - zoom
-    actSceneZoomIn = new QAction(getIcon("zoom-in"), tr("Zoom in"), this);
+    actSceneZoomIn = new QAction(icon("zoom-in"), tr("Zoom in"), this);
     actSceneZoomIn->setStatusTip(tr("Zoom in"));
     connect(actSceneZoomIn, SIGNAL(triggered()), this, SLOT(doZoomIn()));
 
-    actSceneZoomOut = new QAction(getIcon("zoom-out"), tr("Zoom out"), this);
+    actSceneZoomOut = new QAction(icon("zoom-out"), tr("Zoom out"), this);
     actSceneZoomOut->setStatusTip(tr("Zoom out"));
     connect(actSceneZoomOut, SIGNAL(triggered()), this, SLOT(doZoomOut()));
 
-    actSceneZoomBestFit = new QAction(getIcon("zoom-best-fit"), tr("Zoom best fit"), this);
+    actSceneZoomBestFit = new QAction(icon("zoom-best-fit"), tr("Zoom best fit"), this);
     actSceneZoomBestFit->setStatusTip(tr("Best fit"));
     connect(actSceneZoomBestFit, SIGNAL(triggered()), this, SLOT(doZoomBestFit()));
 
-    actSceneZoomRegion = new QAction(getIcon("zoom-region"), tr("Zoom region"), this);
+    actSceneZoomRegion = new QAction(icon("zoom-region"), tr("Zoom region"), this);
     actSceneZoomRegion->setStatusTip(tr("Zoom region"));
     actSceneZoomRegion->setCheckable(true);
 
     // scene - operate on items
-    actSceneModeNode = new QAction(getIcon("scenenode"), tr("Operate on &nodes"), this);
+    actSceneModeNode = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
     actSceneModeNode->setStatusTip(tr("Operate on nodes"));
     actSceneModeNode->setCheckable(true);
 
-    actSceneModeEdge = new QAction(getIcon("sceneedge"), tr("Operate on &edges"), this);
+    actSceneModeEdge = new QAction(icon("scene-edge"), tr("Operate on &edges"), this);
     actSceneModeEdge->setStatusTip(tr("Operate on edges"));
     actSceneModeEdge->setCheckable(true);
 
-    actSceneModeLabel = new QAction(getIcon("scenelabel"), tr("Operate on &label"), this);
+    actSceneModeLabel = new QAction(icon("scene-label"), tr("Operate on &label"), this);
     actSceneModeLabel->setStatusTip(tr("Operate on label"));
     actSceneModeLabel->setCheckable(true);
 
-    actSceneModePostprocessor = new QAction(getIcon("scenepostprocessor"), tr("&Postprocessor"), this);
+    actSceneModePostprocessor = new QAction(icon("scene-postprocessor"), tr("&Postprocessor"), this);
     actSceneModePostprocessor->setStatusTip(tr("Postprocessor"));
     actSceneModePostprocessor->setCheckable(true);
 
@@ -92,13 +92,13 @@ void SceneView::createActions()
     actShowGroup->addAction(actShowVectors);
 
     // postprocessor group
-    actPostprocessorModeLocalPointValue = new QAction(getIcon("mode-localpointvalue"), "Local Values", this);
+    actPostprocessorModeLocalPointValue = new QAction(icon("mode-localpointvalue"), "Local Values", this);
     actPostprocessorModeLocalPointValue->setCheckable(true);
 
-    actPostprocessorModeSurfaceIntegral = new QAction(getIcon("mode-surfaceintegral"), "Surface Integrals", this);
+    actPostprocessorModeSurfaceIntegral = new QAction(icon("mode-surfaceintegral"), "Surface Integrals", this);
     actPostprocessorModeSurfaceIntegral->setCheckable(true);
 
-    actPostprocessorModeVolumeIntegral = new QAction(getIcon("mode-volumeintegral"), "Volume Integrals", this);
+    actPostprocessorModeVolumeIntegral = new QAction(icon("mode-volumeintegral"), "Volume Integrals", this);
     actPostprocessorModeVolumeIntegral->setCheckable(true);
 
     actPostprocessorModeGroup = new QActionGroup(this);
@@ -108,12 +108,12 @@ void SceneView::createActions()
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
 
     // properties
-    actSceneViewProperties = new QAction(getIcon("scene-properties"), tr("&Properties"), this);
+    actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Properties"), this);
     actSceneViewProperties->setStatusTip(tr("Properties"));
     connect(actSceneViewProperties, SIGNAL(triggered()), this, SLOT(doSceneViewProperties()));
 
     // select region
-    actSceneViewSelectRegion = new QAction(getIcon("scene-select-region"), tr("Select region"), this);
+    actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("Select region"), this);
     actSceneViewSelectRegion->setStatusTip(tr("Select region"));
     actSceneViewSelectRegion->setCheckable(true);
 }

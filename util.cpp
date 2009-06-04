@@ -35,8 +35,9 @@ QStringList availableLanguages()
     return list;
 }
 
-QIcon getIcon(const QString &name) {
+QIcon icon(const QString &name) {
     QString fileName;
+    /*
     #ifdef Q_WS_WIN
     if (QFile::exists(QDir::current().absolutePath() + "/images/windows/" + name + ".png"))
         fileName = QDir::current().absolutePath() + "/images/windows/";
@@ -45,6 +46,7 @@ QIcon getIcon(const QString &name) {
     #else
         fileName = QDir::current().absolutePath() + "/images/";
     #endif
+    */
 
-    return QIcon(QPixmap(fileName + name + ".png"));
+    return QIcon(QPixmap(":images/" + name + ".png"));
 }

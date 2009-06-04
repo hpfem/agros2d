@@ -595,7 +595,7 @@ QLayout* DSceneLabelElectrostaticMarker::createContent()
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Permittivity:"), txtPermittivity);
-    layoutMarker->addRow(tr("Charge Density:"), txtChargeDensity);
+    layoutMarker->addRow(tr("Charge density:"), txtChargeDensity);
 
     return layoutMarker;
 }
@@ -647,7 +647,7 @@ QLayout* DSceneLabelMagnetostaticMarker::createContent()
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Permeability:"), txtPermeability);
-    layoutMarker->addRow(tr("Current Density:"), txtCurrentDensity);
+    layoutMarker->addRow(tr("Current density:"), txtCurrentDensity);
 
     return layoutMarker;
 }
@@ -698,8 +698,8 @@ QLayout* DSceneLabelHeatMarker::createContent()
     txtVolumeHeat = new SLineEdit("0", true);
 
     QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Thermal Conductivity:"), txtThermalConductivity);
-    layoutMarker->addRow(tr("Volume Heat:"), txtVolumeHeat);
+    layoutMarker->addRow(tr("Thermal conductivity:"), txtThermalConductivity);
+    layoutMarker->addRow(tr("Volume heat:"), txtVolumeHeat);
 
     return layoutMarker;
 }

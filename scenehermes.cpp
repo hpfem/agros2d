@@ -363,7 +363,7 @@ SolverDialog::SolverDialog(Scene *scene, QWidget *parent) : QDialog(parent)
 
     setMinimumSize(300, 120);
     setMaximumSize(minimumSize());
-    setWindowIcon(getIcon("logo"));
+    setWindowIcon(icon("logo"));
     setWindowTitle(tr("Solve problem ..."));
     setWindowModality(Qt::ApplicationModal);
 

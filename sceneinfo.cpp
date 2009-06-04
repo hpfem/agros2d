@@ -28,11 +28,11 @@ SceneInfoView::~SceneInfoView()
 
 void SceneInfoView::createActions()
 {
-    actProperties = new QAction(getIcon("scene-properties"), tr("&Properties"), this);
+    actProperties = new QAction(icon("scene-properties"), tr("&Properties"), this);
     actProperties->setStatusTip(tr("Properties"));
     connect(actProperties, SIGNAL(triggered()), this, SLOT(doProperties()));
 
-    actDelete = new QAction(getIcon("scene-delete"), tr("&Delete"), this);
+    actDelete = new QAction(icon("scene-delete"), tr("&Delete"), this);
     actDelete->setStatusTip(tr("Delete item"));
     connect(actDelete, SIGNAL(triggered()), this, SLOT(doDelete()));
 }
@@ -63,7 +63,7 @@ void SceneInfoView::createTreeView()
 
     // problem
     problemNode = new QTreeWidgetItem(trvWidget);
-    problemNode->setIcon(0, getIcon("project"));
+    problemNode->setIcon(0, icon("project"));
     problemNode->setText(0, tr("Problem"));
     problemNode->setExpanded(true);
     // general
@@ -76,36 +76,36 @@ void SceneInfoView::createTreeView()
 
     // boundary conditions
     boundaryConditionsNode = new QTreeWidgetItem(trvWidget);
-    boundaryConditionsNode->setIcon(0, getIcon("sceneedgemarker"));
+    boundaryConditionsNode->setIcon(0, icon("sceneedgemarker"));
     boundaryConditionsNode->setText(0, tr("Boundary conditions"));
     boundaryConditionsNode->setExpanded(true);
 
     // materials
     materialsNode = new QTreeWidgetItem(trvWidget);
-    materialsNode->setIcon(0, getIcon("scenelabelmarker"));
+    materialsNode->setIcon(0, icon("scenelabelmarker"));
     materialsNode->setText(0, tr("Materials"));
     materialsNode->setExpanded(true);
 
     // geometry
     geometryNode = new QTreeWidgetItem(trvWidget);
-    geometryNode->setIcon(0, getIcon("geometry"));
+    geometryNode->setIcon(0, icon("geometry"));
     geometryNode->setText(0, tr("Geometry"));
     geometryNode->setExpanded(false);
 
     // nodes
     nodesNode = new QTreeWidgetItem(geometryNode);
     nodesNode->setText(0, "Nodes");
-    nodesNode->setIcon(0, getIcon("scenenode"));
+    nodesNode->setIcon(0, icon("scenenode"));
 
     // edges
     edgesNode = new QTreeWidgetItem(geometryNode);
     edgesNode->setText(0, tr("Edges"));
-    edgesNode->setIcon(0, getIcon("sceneedge"));
+    edgesNode->setIcon(0, icon("sceneedge"));
 
     // labels
     labelsNode = new QTreeWidgetItem(geometryNode);
     labelsNode->setText(0, tr("Labels"));
-    labelsNode->setIcon(0, getIcon("scenelabel"));
+    labelsNode->setIcon(0, icon("scenelabel"));
 
     trvWidget->addTopLevelItem(problemNode);
     trvWidget->addTopLevelItem(geometryNode);
@@ -179,7 +179,7 @@ void SceneInfoView::doInvalidated()
         QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
         item->setText(0, scene->edgeMarkers[i]->name);
-        item->setIcon(0, getIcon("sceneedgemarker"));
+        item->setIcon(0, icon("scene-edgemarker"));
         item->setData(0, Qt::UserRole, scene->edgeMarkers[i]->variant());
     }
 
@@ -189,7 +189,7 @@ void SceneInfoView::doInvalidated()
         QTreeWidgetItem *item = new QTreeWidgetItem(materialsNode);
 
         item->setText(0, scene->labelMarkers[i]->name);
-        item->setIcon(0, getIcon("scenelabelmarker"));
+        item->setIcon(0, icon("scene-labelmarker"));
         item->setData(0, Qt::UserRole, scene->labelMarkers[i]->variant());
     }
 
@@ -200,7 +200,7 @@ void SceneInfoView::doInvalidated()
         QTreeWidgetItem *item = new QTreeWidgetItem(nodesNode);
 
         item->setText(0, QString("[%1; %2]").arg(scene->nodes[i]->point.x, 0, 'f', 3).arg(scene->nodes[i]->point.y, 0, 'f', 3));
-        item->setIcon(0, getIcon("scenenode"));
+        item->setIcon(0, icon("scene-node"));
         item->setData(0, Qt::UserRole, scene->nodes[i]->variant());
     }
 
@@ -210,7 +210,7 @@ void SceneInfoView::doInvalidated()
         QTreeWidgetItem *item = new QTreeWidgetItem(edgesNode);
 
         item->setText(0, QString("[%1; %2] - [%3; %4]").arg(scene->edges[i]->nodeStart->point.x, 0, 'f', 3).arg(scene->edges[i]->nodeStart->point.y, 0, 'f', 3).arg(scene->edges[i]->nodeEnd->point.x, 0, 'f', 3).arg(scene->edges[i]->nodeEnd->point.y, 0, 'f', 3));
-        item->setIcon(0, getIcon("sceneedge"));
+        item->setIcon(0, icon("scene-edge"));
         item->setData(0, Qt::UserRole, scene->edges[i]->variant());
     }    
 
@@ -220,7 +220,7 @@ void SceneInfoView::doInvalidated()
         QTreeWidgetItem *item = new QTreeWidgetItem(labelsNode);
 
         item->setText(0, QString("[%1; %2]").arg(scene->labels[i]->point.x, 0, 'f', 3).arg(scene->labels[i]->point.y, 0, 'f', 3));
-        item->setIcon(0, getIcon("scenelabel"));
+        item->setIcon(0, icon("scene-label"));
         item->setData(0, Qt::UserRole, scene->labels[i]->variant());
     }
 

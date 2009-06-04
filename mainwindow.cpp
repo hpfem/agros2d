@@ -43,17 +43,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::createActions()
 {
-    actDocumentNew = new QAction(getIcon("document-new"), tr("&New"), this);
+    actDocumentNew = new QAction(icon("document-new"), tr("&New"), this);
     actDocumentNew->setShortcuts(QKeySequence::New);
     actDocumentNew->setStatusTip(tr("Create a new file"));
     connect(actDocumentNew, SIGNAL(triggered()), this, SLOT(doDocumentNew()));
     
-    actDocumentOpen = new QAction(getIcon("document-open"), tr("&Open..."), this);
+    actDocumentOpen = new QAction(icon("document-open"), tr("&Open..."), this);
     actDocumentOpen->setShortcuts(QKeySequence::Open);
     actDocumentOpen->setStatusTip(tr("Open an existing file"));
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(doDocumentOpen()));
     
-    actDocumentSave = new QAction(getIcon("document-save"), tr("&Save"), this);
+    actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
     actDocumentSave->setStatusTip(tr("Save the document to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
@@ -75,27 +75,27 @@ void MainWindow::createActions()
     actDocumentSaveImageAs->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImageAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveImageAs()));
 
-    actExit = new QAction(getIcon("application-exit"), tr("E&xit"), this);
+    actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
     actExit->setStatusTip(tr("Exit the application"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
     
-    actCut = new QAction(getIcon("edit-cut"), tr("Cu&t"), this);
+    actCut = new QAction(icon("edit-cut"), tr("Cu&t"), this);
     actCut->setShortcuts(QKeySequence::Cut);
     actCut->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
     // connect(actCut, SIGNAL(triggered()), textEdit, SLOT(cut()));
     
-    actCopy = new QAction(getIcon("edit-copy"), tr("&Copy"), this);
+    actCopy = new QAction(icon("edit-copy"), tr("&Copy"), this);
     actCopy->setShortcuts(QKeySequence::Copy);
     actCopy->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
     // connect(actCopy, SIGNAL(triggered()), textEdit, SLOT(copy()));
     
-    actPaste = new QAction(getIcon("edit-paste"), tr("&Paste"), this);
+    actPaste = new QAction(icon("edit-paste"), tr("&Paste"), this);
     actPaste->setShortcuts(QKeySequence::Paste);
     actPaste->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
     connect(actPaste, SIGNAL(triggered()), this, SLOT(doPaste()));
     
-    actAbout = new QAction(getIcon("gtk-about"), tr("&About"), this);
+    actAbout = new QAction(icon("about"), tr("&About"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
     
@@ -108,20 +108,20 @@ void MainWindow::createActions()
     // connect(textEdit, SIGNAL(copyAvailable(bool)), actCut, SLOT(setEnabled(bool)));
     // connect(textEdit, SIGNAL(copyAvailable(bool)), actCopy, SLOT(setEnabled(bool)));
 
-    actOptions = new QAction(getIcon("options"), tr("Options"), this);
+    actOptions = new QAction(icon("options"), tr("Options"), this);
     actOptions->setStatusTip(tr("Options"));
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
-    actCreateMesh = new QAction(getIcon("scene-mesh"), tr("Mesh area"), this);
+    actCreateMesh = new QAction(icon("scene-mesh"), tr("Mesh area"), this);
     actCreateMesh->setStatusTip(tr("Mesh area"));
     connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));
 
-    actSolve = new QAction(getIcon("system-run"), tr("Solve problem"), this);
+    actSolve = new QAction(icon("system-run"), tr("Solve problem"), this);
     actSolve->setShortcut(QKeySequence(tr("Alt+s")));
     actSolve->setStatusTip(tr("Solve problem"));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
 
-    actChart = new QAction(getIcon("chart"), tr("Plot chart"), this);
+    actChart = new QAction(icon("chart"), tr("Plot chart"), this);
     actChart->setStatusTip(tr("Plot chart"));
     connect(actChart, SIGNAL(triggered()), this, SLOT(doChart()));
 

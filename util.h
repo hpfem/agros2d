@@ -353,6 +353,6 @@ void setLanguage(const QString &locale);
 QStringList availableLanguages();
 
 // get icon with respect to actual theme
-QIcon getIcon(const QString &name);
+QIcon icon(const QString &name);
 
 #endif // UTIL_H

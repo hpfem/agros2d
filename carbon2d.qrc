@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>images/icon.png</file>
+        <file>images/application-exit.png</file>
+        <file>images/about.png</file>
+        <file>images/document-new.png</file>
+        <file>images/document-open.png</file>
+        <file>images/document-save.png</file>
+        <file>images/edit-copy.png</file>
+        <file>images/edit-cut.png</file>
+        <file>images/edit-paste.png</file>
+        <file>images/geometry.png</file>
+        <file>images/chart.png</file>
+        <file>images/mode-localpointvalue.png</file>
+        <file>images/mode-surfaceintegral.png</file>
+        <file>images/mode-volumeintegral.png</file>
+        <file>images/options.png</file>
+        <file>images/options-main.png</file>
+        <file>images/options-colors.png</file>
+        <file>images/project.png</file>
+        <file>images/scene-node.png</file>
+        <file>images/scene-edge.png</file>
+        <file>images/scene-label.png</file>
+        <file>images/scene-edgemarker.png</file>
+        <file>images/scene-labelmarker.png</file>
+        <file>images/scene-postprocessor.png</file>
+        <file>images/scene-delete.png</file>
+        <file>images/scene-properties.png</file>
+        <file>images/scene-select-region.png</file>
+        <file>images/scene-transform.png</file>
+        <file>images/scene-mesh.png</file>
+        <file>images/system-run.png</file>
+        <file>images/zoom-best-fit.png</file>
+        <file>images/zoom-in.png</file>
+        <file>images/zoom-out.png</file>
+        <file>images/zoom-region.png</file>
+    </qresource>
+</RCC>

@@ -1,5 +1,6 @@
 *.o
 moc_*
+qrc_*
 Makefile
 carbon2d
 *~

@@ -8,6 +8,7 @@ TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
 CODECFORTR = UTF-8
 RC_FILE = carbon2d.rc
+RESOURCES = carbon2d.qrc
 TARGET = carbon2d
 TEMPLATE = app
 QMAKE_CXXFLAGS_DEBUG += -w
@@ -63,12 +64,11 @@ INCLUDEPATH += include/hermes2d \
     /usr/include \
     /usr/include/suitesparse
 LIBS += lib/liblibdxf.a \
-    -lhermes2d-real \
+    lib/libhermes2d-real-static.a \
     -lumfpack \
     -lamd \
     -lblas \
     -lJudy \
     -lpthread
-
 FORMS += 
 OTHER_FILES += TODO.txt
