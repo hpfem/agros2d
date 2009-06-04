@@ -1,10 +1,10 @@
 [Setup]
 
 AppName=Carbon 2D
-AppVerName=Carbon 2D 1.0
-OutputBaseFilename=Carbon2D_1.0.0
+AppVerName=Carbon 2D 0.5
+OutputBaseFilename=Carbon2D_0.5.0
 DefaultGroupName=Carbon 2D
-LicenseFile=install\win32\COPYING.txt
+LicenseFile=COPYING
 
 AppId=Carbon2D
 AppPublisher=hp-fem
@@ -13,20 +13,20 @@ AppPublisherURL=http://www.hpfem.org
 AppMutex=Carbon2D
 OutputDir=setup
 DefaultDirName={pf}\Carbon 2D
-UninstallDisplayIcon={app}\carbon2d-gui.ico
+UninstallDisplayIcon={app}\images\carbon2d.ico
 Compression=lzma/max
 PrivilegesRequired=admin
 
-WizardImageFile=install\win32\setup\images\SetupModern19.bmp
-WizardSmallImageFile=install\win32\setup\images\SetupModernSmall19.bmp
+WizardImageFile=install\win32\setup\SetupModern.bmp
+WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 
 [Languages]
 
 [Files]
-Source: release\carbon2d-gui.exe; DestDir: {app}; DestName: Carbon2D.exe
+Source: release\carbon2d.exe; DestDir: {app}; DestName: Carbon2D.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
-Source: install\win32\COPYING.txt; DestDir: {app}; DestName: COPYING
-Source: images\*.png; DestDir: {app}/images
+Source: COPYING; DestDir: {app}; DestName: COPYING
+Source: README; DestDir: {app}; DestName: README
 Source: data\*.h2d; DestDir: {app}/data
 Source: lang\*.qm; DestDir: {app}/lang
 Source: install\win32\*.dll; DestDir: {app}
