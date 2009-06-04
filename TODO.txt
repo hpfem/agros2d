@@ -1,29 +1,21 @@
-FIX
-=======
-POKUS
-
 TODO:
 
-- balicek pro debian/ubuntu pripadne dalsi distribuce ?
-- vypocet "plosnych" integralu
-- zaintegrovat skriptovani (qtscript ?, python ?, lua script ?)
+- package for debian/ubuntu
+- support for script (qtscript ?, python ?, lua script ?)
 
-- moduly:
-    - magnetostatika
-      - podpora permanentnich magnetu
-      - podporu rychlostniho clenu
-    - proudove pole
-    - elasticita
+ADD:
+- modules:
+    - magnetostatic
+      - support for permanent magnets
+      - support for velocity term
+    - electric current field
+    - field of elastic deformations
 
-- 2d grafy velicin
-- adaptivita
-- predelat kresleni vektoru
-- krivocare elementy na obloucich
+- 2d charts
+- rebase vector field drawing
+- curvilinear element on arcs
 
-otazky:
-- kombinace real a cplx
-- get_pt_value u filtru
-
-
-namety:
+QUESTIONS:
+- real a cplx
+- get_pt_value
 

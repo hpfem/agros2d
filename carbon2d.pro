@@ -62,7 +62,6 @@ INCLUDEPATH += include/hermes2d \
     include/dxflib \
     /usr/include \
     /usr/include/suitesparse
-
 LIBS += lib/liblibdxf.a \
     -lhermes2d-real \
     -lumfpack \

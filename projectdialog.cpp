@@ -22,6 +22,7 @@ ProjectDialog::~ProjectDialog()
     delete txtNumberOfRefinements;
     delete txtPolynomialOrder;
     delete txtAdaptivitySteps;
+    delete txtAdaptivityTolerance;
 }
 
 int ProjectDialog::showDialog()
@@ -46,6 +47,7 @@ void ProjectDialog::createControls()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(0);
     txtAdaptivitySteps->setMaximum(100);
+    txtAdaptivityTolerance = new SLineEdit("1", true, this);
 
     QGridLayout *layoutProject = new QGridLayout();
     layoutProject->addWidget(new QLabel(tr("Name:")), 0, 0);
@@ -65,6 +67,8 @@ void ProjectDialog::createControls()
     layoutProject->addWidget(txtPolynomialOrder, 5, 1);
     layoutProject->addWidget(new QLabel(tr("Adaptivity steps:")), 6, 0);
     layoutProject->addWidget(txtAdaptivitySteps, 6, 1);
+    layoutProject->addWidget(new QLabel(tr("Adaptivity tolerance:")), 7, 0);
+    layoutProject->addWidget(txtAdaptivityTolerance, 7, 1);
 
     fillComboBox();
 
@@ -106,6 +110,7 @@ void ProjectDialog::load() {
     txtNumberOfRefinements->setValue(m_projectInfo->numberOfRefinements);
     txtPolynomialOrder->setValue(m_projectInfo->polynomialOrder);
     txtAdaptivitySteps->setValue(m_projectInfo->adaptivitySteps);
+    txtAdaptivityTolerance->setValue(m_projectInfo->adaptivityTolerance);
 }
 
 void ProjectDialog::save() {
@@ -116,6 +121,7 @@ void ProjectDialog::save() {
     m_projectInfo->numberOfRefinements = txtNumberOfRefinements->value();
     m_projectInfo->polynomialOrder = txtPolynomialOrder->value();
     m_projectInfo->adaptivitySteps = txtAdaptivitySteps->value();
+    m_projectInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
 }
 
 void ProjectDialog::doAccept()

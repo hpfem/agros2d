@@ -33,6 +33,6 @@ static ElasticityEdge *elasticityEdge;
 static ElasticityLabel *elasticityLabel;
 static bool elasticityIsPlanar;
 
-SolutionArray elasticity_main(const char *fileName, ElasticityEdge *edge, ElasticityLabel *label, int numberOfRefinements, int polynomialOrder, bool isPlanar);
+SolutionArray *elasticity_main(const char *fileName, ElasticityEdge *edge, ElasticityLabel *label, int numberOfRefinements, int polynomialOrder, bool isPlanar);
 
 #endif // HERMES_ELASTICITY_H

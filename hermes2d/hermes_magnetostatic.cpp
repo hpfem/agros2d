@@ -61,7 +61,14 @@ scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
         return MU0 * magnetostaticLabel[marker].current_density * int_v(fv, rv);
 }
 
-SolutionArray magnetostatic_main(const char *fileName, MagnetostaticEdge *edge, MagnetostaticLabel *label, int numberOfRefinements, int polynomialOrder, int adaptivitySteps, bool isPlanar)
+SolutionArray *magnetostatic_main(const char *fileName,
+                                 MagnetostaticEdge *edge,
+                                 MagnetostaticLabel *label,
+                                 int numberOfRefinements,
+                                 int polynomialOrder,
+                                 int adaptivitySteps,
+                                 double adaptivityTolerance,
+                                 bool isPlanar)
 {
     magnetostaticEdge = edge;
     magnetostaticLabel = label;
@@ -125,15 +132,20 @@ SolutionArray magnetostatic_main(const char *fileName, MagnetostaticEdge *edge, 
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 
-            if (error < 0.1 || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(THRESHOLD, STRATEGY, H_ONLY);
+            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            hp.adapt(0.3, 0, 0);
         }
     }
 
-    // order
+    // output
     space.assign_dofs();
-    Orderizer *ord = new Orderizer();
-    ord->process_solution(&space);
 
-    return SolutionArray(sln, ord);
+    SolutionArray *solutionArray = new SolutionArray();
+    solutionArray->order1 = new Orderizer();
+    solutionArray->order1->process_solution(&space);
+    solutionArray->sln1 = sln;
+    solutionArray->adaptiveError = error;
+    solutionArray->adaptiveSteps = i-1;
+
+    return solutionArray;
 }

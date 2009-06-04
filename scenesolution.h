@@ -4,11 +4,14 @@
 #include "util.h"
 #include "scene.h"
 #include "scenemarker.h"
+#include "scenehermes.h"
 
 class Scene;
 class SceneLabelMarker;
 
 class ViewScalarFilter;
+
+struct SolutionArray;
 
 struct PointValue
 {
@@ -30,7 +33,7 @@ public:
     inline Solution *sln() { return m_sln1; }
     inline Solution *sln1() { return m_sln1; }
     inline Solution *sln2() { return m_sln2; }
-    void setSln(Solution *sln1, Space *space1, Solution *sln2, Space *space2, Orderizer *order);
+    void setSolutionArray(SolutionArray *solutionArray);
 
     inline bool isSolved() { return (m_sln1); }
 
@@ -51,13 +54,15 @@ public:
     inline Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     // order view
-    inline Orderizer &slnOrderView() { return m_slnOrderView; }
+    inline Orderizer &ordView() { return m_ordView; }
 
     PointValue pointValue(const Point &point);
     double volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume);
-    double surfaceIntegral(int labelIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface);
+    double surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface);
 
     inline int timeElapsed() { return m_timeElapsed; }
+    inline double adaptiveError() { return m_adaptiveError; }
+    inline int adaptiveSteps() { return m_adaptiveSteps; }
     inline int setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
     int findTriangleInMesh(Mesh &mesh, const Point &point);
@@ -66,6 +71,8 @@ public:
 private:
     Scene *m_scene;
     int m_timeElapsed;
+    double m_adaptiveError;
+    int m_adaptiveSteps;
 
     Solution *m_sln1; // general solution 1
     Solution *m_sln2; // general solution 2
@@ -84,7 +91,7 @@ private:
     Vectorizer m_vecVectorView; // vectorizer for vector view
 
     // order view
-    Orderizer m_slnOrderView;
+    Orderizer m_ordView;
 
     Mesh m_mesh; // linearizer only for mesh (on empty solution)
 

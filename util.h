@@ -25,6 +25,8 @@ using namespace std;
 const double EPS_ZERO = 1e-12;
 const double EPS0 = 8.854e-12;
 const double MU0 = 4*M_PI*1e-7;
+const int NDOF_STOP = 40000;
+
 
 struct Point
 {
@@ -247,7 +249,9 @@ enum PhysicFieldIntegralVolume
 
 enum PhysicFieldIntegralSurface
 {
-    PHYSICFIELDINTEGRAL_SURFACE_LENGTH
+    PHYSICFIELDINTEGRAL_SURFACE_LENGTH,
+    PHYSICFIELDINTEGRAL_SURFACE_SURFACE,
+    PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY
 };
 
 enum PhysicFieldVariableComp

@@ -7,6 +7,7 @@
 #include <QtGui/QDateTimeEdit>
 #include <QtGui/QSpinBox>
 
+#include "gui.h"
 #include "scene.h"
 
 struct ProjectInfo;
@@ -41,6 +42,7 @@ private:
     QSpinBox *txtNumberOfRefinements;
     QSpinBox *txtPolynomialOrder;
     QSpinBox *txtAdaptivitySteps;
+    SLineEdit *txtAdaptivityTolerance;
 
     void fillComboBox();
 };

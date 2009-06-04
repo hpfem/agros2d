@@ -29,6 +29,13 @@ static HeatEdge *heatEdge;
 static HeatLabel *heatLabel;
 static bool heatIsPlanar;
 
-SolutionArray heat_main(const char *fileName, HeatEdge *edge, HeatLabel *label, int numberOfRefinements, int polynomialOrder, int adaptivitySteps, bool isPlanar);
+SolutionArray *heat_main(const char *fileName,
+                        HeatEdge *edge,
+                        HeatLabel *label,
+                        int numberOfRefinements,
+                        int polynomialOrder,
+                        int adaptivitySteps,
+                        double adaptivityTolerance,
+                        bool isPlanar);
 
 #endif // HEAT_H

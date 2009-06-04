@@ -1,0 +1,7 @@
+*.o
+moc_*
+Makefile
+carbon2d
+*~
+include/*
+lib/*

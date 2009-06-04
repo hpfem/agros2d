@@ -8,9 +8,9 @@
 #include "scene.h"
 
 class SurfaceIntegralValue;
-class SurfaceIntegralValueElectrostatic2D;
-class SurfaceIntegralValueMagnetostatic2D;
-class SurfaceIntegralValueHeat2D;
+class SurfaceIntegralValueElectrostatic;
+class SurfaceIntegralValueMagnetostatic;
+class SurfaceIntegralValueHeat;
 
 SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene);
 
@@ -29,15 +29,16 @@ private:
 
     void addValue(QTreeWidgetItem *parent, QString name, QString text, QString unit);
 
-    void showElectrostatic2D(SurfaceIntegralValueElectrostatic2D *surfaceIntegralValueElectrostatic2D);
-    void showMagnetostatic2D(SurfaceIntegralValueMagnetostatic2D *surfaceIntegralValueMagnetostatic2D);
-    void showHeat2D(SurfaceIntegralValueHeat2D *surfaceIntegralValueHeat2D);
+    void showElectrostatic(SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic);
+    void showMagnetostatic(SurfaceIntegralValueMagnetostatic *surfaceIntegralValueMagnetostatic);
+    void showHeat(SurfaceIntegralValueHeat *surfaceIntegralValueHeat);
 };
 
 class SurfaceIntegralValue
 {
 public:
     double length;
+    double surface;
 
     SurfaceIntegralValue(Scene *scene);
 
@@ -49,24 +50,26 @@ protected:
     Scene *m_scene;
 };
 
-class SurfaceIntegralValueElectrostatic2D : public SurfaceIntegralValue
+class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
 {
 public:
-    SurfaceIntegralValueElectrostatic2D(Scene *scene);
+    double surfaceCharge;
+
+    SurfaceIntegralValueElectrostatic(Scene *scene);
     QString toString();
 };
 
-class SurfaceIntegralValueMagnetostatic2D : public SurfaceIntegralValue
+class SurfaceIntegralValueMagnetostatic : public SurfaceIntegralValue
 {
 public:
-    SurfaceIntegralValueMagnetostatic2D(Scene *scene);
+    SurfaceIntegralValueMagnetostatic(Scene *scene);
     QString toString();
 };
 
-class SurfaceIntegralValueHeat2D : public SurfaceIntegralValue
+class SurfaceIntegralValueHeat : public SurfaceIntegralValue
 {
 public:
-    SurfaceIntegralValueHeat2D(Scene *scene);
+    SurfaceIntegralValueHeat(Scene *scene);
     QString toString();
 };
 

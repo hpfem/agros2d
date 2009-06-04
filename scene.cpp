@@ -583,7 +583,7 @@ int Scene::writeToTriangle()
             Point center = edges[i]->center();
             double radius = edges[i]->radius();
             double startAngle = atan2(center.y - edges[i]->nodeStart->point.y, center.x - edges[i]->nodeStart->point.x) / M_PI*180 - 180;
-            int segments = edges[i]->angle/5;
+            int segments = edges[i]->angle/5.0 + 1;
             if (segments < 5) segments = 5; // minimum segments
 
             double theta = edges[i]->angle / float(segments - 1);
@@ -854,8 +854,9 @@ void Scene::readFromFile(const QString &fileName)
     m_projectInfo.numberOfRefinements = eleProject.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
     m_projectInfo.polynomialOrder = eleProject.toElement().attribute("polynomialorder").toInt();
-    // adaptivity steps
+    // adaptivity
     m_projectInfo.adaptivitySteps = eleProject.toElement().attribute("adaptivitysteps").toInt();
+    m_projectInfo.adaptivityTolerance = eleProject.toElement().attribute("adaptivitytolerance").toDouble();
 
     // markers ***************************************************************************************************************
 
@@ -974,10 +975,10 @@ void Scene::readFromFile(const QString &fileName)
             case PHYSICFIELD_ELASTICITY:
                 // heat markers
                 addLabelMarker(new SceneLabelElasticityMarker(name,
-                                                        element.toElement().attribute("young_modulus").toDouble(),
-                                                        element.toElement().attribute("poisson_ratio").toDouble()));
+                                                              element.toElement().attribute("young_modulus").toDouble(),
+                                                              element.toElement().attribute("poisson_ratio").toDouble()));
                 break;            default:
-                cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                        cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -1073,8 +1074,9 @@ void Scene::writeToFile(const QString &fileName) {
     eleProject.toElement().setAttribute("numberofrefinements", m_projectInfo.numberOfRefinements);
     // polynomial order
     eleProject.toElement().setAttribute("polynomialorder", m_projectInfo.polynomialOrder);
-    // adaptivity steps
+    // adaptivity
     eleProject.toElement().setAttribute("adaptivitysteps", m_projectInfo.adaptivitySteps);
+    eleProject.toElement().setAttribute("adaptivitytolerance", m_projectInfo.adaptivityTolerance);
 
     // geometry
     QDomNode eleGeometry = doc.createElement("geometry");
@@ -1302,7 +1304,7 @@ bool Scene::triangle2mesh(const QString &source, const QString &destination)
     outNodes.truncate(outNodes.length()-3);
     outNodes += "\n} \n\n";
 
-    // edges
+    // edges and curves
     QString outEdges;
     outEdges += "boundaries = \n";
     outEdges += "{ \n";
@@ -1318,24 +1320,22 @@ bool Scene::triangle2mesh(const QString &source, const QString &destination)
     }
     outEdges.truncate(outEdges.length()-3);
     outEdges += "\n} \n\n";
-
-    cout << PHYSICFIELDBC_NONE << endl;
-
-    // labels
-    QString outEle;
-    outEle += "elements = \n";
-    outEle += "{ \n";
+    
+    // elements
+    QString outElements;
+    outElements += "elements = \n";
+    outElements += "{ \n";
     sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
     for (int i = 0; i<k; i++)
     {
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
-        outEle += QString("\t{ %1, %2, %3, %4  }, \n").arg(node_1).arg(node_2).arg(node_3).arg(abs(marker));
+        outElements += QString("\t{ %1, %2, %3, %4  }, \n").arg(node_1).arg(node_2).arg(node_3).arg(abs(marker));
     }
-    outEle.truncate(outEle.length()-3);
-    outEle += "\n} \n\n";
+    outElements.truncate(outElements.length()-3);
+    outElements += "\n} \n\n";
 
     outMesh << outNodes;
-    outMesh << outEle;
+    outMesh << outElements;
     outMesh << outEdges;
 
     fileNode.close();

@@ -1,6 +1,10 @@
 <!DOCTYPE QtCreatorProject>
 <qtcreator>
  <data>
+  <variable>RunConfiguration0-BaseEnvironmentBase</variable>
+  <value type="int" >2</value>
+ </data>
+ <data>
   <variable>RunConfiguration0-CommandLineArguments</variable>
   <valuelist type="QVariantList" />
  </data>
@@ -108,7 +112,7 @@
     <value type="QString" >XDG_SESSION_COOKIE=20a1319946c510bf1274f9b34a0eb613-1243796439.309962-1258829559</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
-    <value type="QString" >/home/karban/Projects/programovani/c/carbon2d/trunk/carbon2d.pro</value>
+    <value type="QString" >/home/karban/Projects/programovani/c/carbon2d/carbon2d.pro</value>
     <value type="QString" >-spec</value>
     <value type="QString" >/usr/share/qt4/mkspecs/linux-g++</value>
     <value type="QString" >-r</value>
@@ -116,7 +120,7 @@
    </valuelist>
    <value key="abstractProcess.command" type="QString" >/usr/bin/qmake-qt4</value>
    <value key="abstractProcess.enabled" type="bool" >false</value>
-   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d/trunk</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
    <value key="buildConfiguration" type="int" >2</value>
   </valuemap>
  </data>
@@ -176,7 +180,7 @@
    </valuelist>
    <value key="abstractProcess.command" type="QString" >/usr/bin/make</value>
    <value key="abstractProcess.enabled" type="bool" >true</value>
-   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d/trunk</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
    <valuelist key="makeargs" type="QVariantList" >
     <value type="QString" >-j</value>
     <value type="QString" >2</value>
@@ -238,7 +242,7 @@
    </valuelist>
    <value key="abstractProcess.command" type="QString" >/usr/bin/make</value>
    <value key="abstractProcess.enabled" type="bool" >true</value>
-   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d/trunk</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
   </valuemap>
  </data>
  <data>

@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project numberofrefinements="0" adaptivitysteps="7" polynomialorder="1" problemtype="axisymmetric" type="electrostatic" id="0" name="Jiskriste" >
+        <project numberofrefinements="0" adaptivitysteps="3" polynomialorder="1" problemtype="axisymmetric" type="electrostatic" id="0" name="Jiskriste" >
             <edges>
                 <edge type="potential" value="1000" id="1" name="U = 1000 V" />
                 <edge type="potential" value="0" id="2" name="U = 0 V" />

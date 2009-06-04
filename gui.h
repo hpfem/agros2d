@@ -14,6 +14,7 @@ public:
     SLineEdit(const QString &contents, bool hasValidator = true, QWidget *parent = 0);
 
     double value();
+    void setValue(double value);
 };
 
 #endif // GUI_H

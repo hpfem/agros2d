@@ -470,18 +470,16 @@ void SceneView::paintOrder()
 {
     if (m_scene->sceneSolution()->isSolved())
     {
+        m_scene->sceneSolution()->ordView().lock_data();
 
-        m_scene->sceneSolution()->slnOrderView().lock_data();
-
-        double3* vert = m_scene->sceneSolution()->slnOrderView().get_vertices();
-        int3* tris = m_scene->sceneSolution()->slnOrderView().get_triangles();
+        double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
+        int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
 
         // draw mesh
-        glDisable(GL_TEXTURE_1D);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         int min = 11;
         int max = 1;
-        for (int i = 0; i < m_scene->sceneSolution()->slnOrderView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
@@ -491,7 +489,7 @@ void SceneView::paintOrder()
         // triangles
         const float* color;
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->slnOrderView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
             glColor3d(palette_order[color][0], palette_order[color][1], palette_order[color][2]);
@@ -501,27 +499,30 @@ void SceneView::paintOrder()
             glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
         }
         glEnd();
-        m_scene->sceneSolution()->slnOrderView().unlock_data();
+        m_scene->sceneSolution()->ordView().unlock_data();
 
         // boxes
         glPushMatrix();
         glLoadIdentity();
+
+        // glScaled(m_drawScaleY/m_drawScaleX, m_drawScaleX/m_drawScaleY, 1.0);
 
         double bottom = -0.98;
         double left = -0.98;
         double box_width = 0.08;
         double box_height = 0.09;
         double box_height_space = 0.02;
+        double border = 0.02;
 
         // blend box
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4f(1.0, 1.0, 1.0, 0.75);
         glBegin(GL_QUADS);
-        glVertex2d(left - 0.02, bottom - 0.02);
-        glVertex2d(left + box_width + 0.02, bottom - 0.02);
-        glVertex2d(left + box_width + 0.02, bottom + max*box_height);
-        glVertex2d(left - 0.02, bottom + max*box_height);
+        glVertex2d(left - border, bottom - border);
+        glVertex2d(left + box_width + border, bottom - border);
+        glVertex2d(left + box_width + border, bottom + max*box_height);
+        glVertex2d(left - border, bottom + max*box_height);
         glEnd();
 
         glBegin(GL_QUADS);
@@ -553,7 +554,6 @@ void SceneView::paintColorBar(double min, double max)
 {
     glPushMatrix();
     glLoadIdentity();
-    // glScaled(m_drawScaleX, m_drawScaleY, 0);
 
     double k = 700.0/(double) height() * (m_drawScaleX/m_drawScaleY);
 
@@ -1516,12 +1516,11 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
 
     m_offset.x = (start.x+end.x)/2.0;
     m_offset.y = (start.y+end.y)/2.0;
-    // if (m_sceneViewSettings.showScalarField) m_offset.x += 0.2/(m_scale*m_drawScaleY);
 
     double sceneWidth = end.x-start.x;
     double sceneHeight = end.y-start.y;
 
-    double maxScene = ((width() / height()) < (sceneWidth / sceneHeight)) ? sceneWidth : sceneHeight;
+    double maxScene = ((width() / height()) < (sceneWidth / sceneWidth)) ? sceneWidth : sceneHeight;
 
     m_scale = 1.95/maxScene;
     setZoom(0);
@@ -1529,9 +1528,9 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
 
 void SceneView::doDefaults()
 {
-    m_scale = 1;
-    m_offset.x = 0;
-    m_offset.y = 0;
+    m_scale = 1.0;
+    m_offset.x = 0.0;
+    m_offset.y = 0.0;
 
     m_sceneViewSettings.scalarRangeMin = 0;
     m_sceneViewSettings.scalarRangeMax = 1;

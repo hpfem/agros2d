@@ -112,7 +112,7 @@ void ThreadSolver::runSolver()
     emit message(tr("Solving ..."));
     updateProgress(60);
 
-    SolutionArray slnArray;
+    SolutionArray *solutionArray;
     QFileInfo fileInfo(m_scene->projectInfo().fileName + ".mesh");
 
     if (fileInfo.exists())
@@ -156,12 +156,13 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                slnArray = electrostatic_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
-                                              electrostaticEdge, electrostaticLabel,
-                                              m_scene->projectInfo().numberOfRefinements,
-                                              m_scene->projectInfo().polynomialOrder,
-                                              m_scene->projectInfo().adaptivitySteps,
-                                              (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                solutionArray = electrostatic_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
+                                                   electrostaticEdge, electrostaticLabel,
+                                                   m_scene->projectInfo().numberOfRefinements,
+                                                   m_scene->projectInfo().polynomialOrder,
+                                                   m_scene->projectInfo().adaptivitySteps,
+                                                   m_scene->projectInfo().adaptivityTolerance,
+                                                   (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] electrostaticEdge;
                 delete [] electrostaticLabel;
@@ -204,11 +205,12 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                slnArray = magnetostatic_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
+                solutionArray = magnetostatic_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
                                               magnetostaticEdge, magnetostaticLabel,
                                               m_scene->projectInfo().numberOfRefinements,
                                               m_scene->projectInfo().polynomialOrder,
                                               m_scene->projectInfo().adaptivitySteps,
+                                              m_scene->projectInfo().adaptivityTolerance,
                                               (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] magnetostaticEdge;
@@ -267,11 +269,12 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                slnArray = heat_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
+                solutionArray = heat_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
                                      heatEdge, heatLabel,
                                      m_scene->projectInfo().numberOfRefinements,
                                      m_scene->projectInfo().polynomialOrder,
                                      m_scene->projectInfo().adaptivitySteps,
+                                     m_scene->projectInfo().adaptivityTolerance,
                                      (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] heatEdge;
@@ -321,7 +324,7 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                slnArray = elasticity_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
+                solutionArray = elasticity_main((m_scene->projectInfo().fileName + ".mesh").toStdString().c_str(),
                                            elasticityEdge, elasticityLabel,
                                            m_scene->projectInfo().numberOfRefinements,
                                            m_scene->projectInfo().polynomialOrder,
@@ -337,7 +340,7 @@ void ThreadSolver::runSolver()
             break;
         }
 
-        m_scene->sceneSolution()->setSln(slnArray.sln1, slnArray.space1, slnArray.sln2, slnArray.space2, slnArray.order1);
+        m_scene->sceneSolution()->setSolutionArray(solutionArray);
 
         emit message(tr("Problem was solved."));
     }

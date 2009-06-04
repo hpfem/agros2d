@@ -8,9 +8,9 @@
 #include "scene.h"
 
 class VolumeIntegralValue;
-class VolumeIntegralValueElectrostatic2D;
-class VolumeIntegralValueMagnetostatic2D;
-class VolumeIntegralValueHeat2D;
+class VolumeIntegralValueElectrostatic;
+class VolumeIntegralValueMagnetostatic;
+class VolumeIntegralValueHeat;
 
 VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene);
 
@@ -29,16 +29,16 @@ private:
 
     void addValue(QTreeWidgetItem *parent, QString name, QString text, QString unit);
 
-    void showElectrostatic2D(VolumeIntegralValueElectrostatic2D *volumeIntegralValueElectrostatic2D);
-    void showMagnetostatic2D(VolumeIntegralValueMagnetostatic2D *volumeIntegralValueMagnetostatic2D);
-    void showHeat2D(VolumeIntegralValueHeat2D *volumeIntegralValueHeat2D);
+    void showElectrostatic(VolumeIntegralValueElectrostatic *volumeIntegralValueElectrostatic);
+    void showMagnetostatic(VolumeIntegralValueMagnetostatic *volumeIntegralValueMagnetostatic);
+    void showHeat(VolumeIntegralValueHeat *volumeIntegralValueHeat);
 };
 
 class VolumeIntegralValue
 {
 public:
     double volume;
-    double cross_section;
+    double crossSection;
 
     VolumeIntegralValue(Scene *scene);
 
@@ -50,7 +50,7 @@ protected:
     Scene *m_scene;
 };
 
-class VolumeIntegralValueElectrostatic2D : public VolumeIntegralValue
+class VolumeIntegralValueElectrostatic : public VolumeIntegralValue
 {
 public:
     double averageElectricFieldX;
@@ -61,11 +61,11 @@ public:
     double averageDisplacement;
     double energy;
 
-    VolumeIntegralValueElectrostatic2D(Scene *scene);
+    VolumeIntegralValueElectrostatic(Scene *scene);
     QString toString();
 };
 
-class VolumeIntegralValueMagnetostatic2D : public VolumeIntegralValue
+class VolumeIntegralValueMagnetostatic : public VolumeIntegralValue
 {
 public:
     double averageMagneticFieldX;
@@ -76,11 +76,11 @@ public:
     double averageFluxDensity;
     double energy;
 
-    VolumeIntegralValueMagnetostatic2D(Scene *scene);
+    VolumeIntegralValueMagnetostatic(Scene *scene);
     QString toString();
 };
 
-class VolumeIntegralValueHeat2D : public VolumeIntegralValue
+class VolumeIntegralValueHeat : public VolumeIntegralValue
 {
 public:
     double averageTemperature;
@@ -91,7 +91,7 @@ public:
     double averageHeatFluxY;
     double averageHeatFlux;
 
-    VolumeIntegralValueHeat2D(Scene *scene);
+    VolumeIntegralValueHeat(Scene *scene);
     QString toString();
 };
 

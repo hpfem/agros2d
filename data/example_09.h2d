@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project numberofrefinements="0" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Example 09" >
+        <project adaptivitytolerance="3" numberofrefinements="0" adaptivitysteps="2" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Example 09" >
             <edges>
                 <edge type="potential" value="0" id="1" name="U = 0 V" />
                 <edge type="surface_charge_density" value="0" id="2" name="neumann" />
@@ -23,9 +23,9 @@
             <node x="0.002" y="0.2" id="6" />
             <node x="0.0005" y="0.2" id="7" />
             <node x="0" y="0.3" id="8" />
-            <node x="0" y="0.1" id="9" />
-            <node x="0.1" y="0.1" id="10" />
-            <node x="0.1" y="0.3" id="11" />
+            <node x="0" y="0.15" id="9" />
+            <node x="0.05" y="0.15" id="10" />
+            <node x="0.05" y="0.3" id="11" />
         </nodes>
         <edges>
             <edge end="4" marker="0" id="0" start="3" angle="0" />
@@ -37,15 +37,15 @@
             <edge end="7" marker="0" id="6" start="1" angle="0" />
             <edge end="7" marker="3" id="7" start="6" angle="0" />
             <edge end="5" marker="3" id="8" start="6" angle="0" />
-            <edge end="11" marker="0" id="9" start="8" angle="0" />
-            <edge end="10" marker="0" id="10" start="11" angle="0" />
-            <edge end="9" marker="0" id="11" start="10" angle="0" />
-            <edge end="9" marker="0" id="12" start="0" angle="0" />
-            <edge end="8" marker="0" id="13" start="3" angle="0" />
+            <edge end="11" marker="2" id="9" start="8" angle="0" />
+            <edge end="10" marker="2" id="10" start="11" angle="0" />
+            <edge end="9" marker="2" id="11" start="10" angle="0" />
+            <edge end="9" marker="1" id="12" start="0" angle="0" />
+            <edge end="8" marker="1" id="13" start="3" angle="0" />
         </edges>
         <labels>
-            <label x="0.0257716" y="0.236416" marker="2" id="0" area="50" />
-            <label x="0.001202156951920997" y="0.2414455861807061" marker="0" id="1" area="0" />
+            <label x="0.0257716" y="0.236416" marker="2" id="0" area="0" />
+            <label x="0.00120216" y="0.241446" marker="0" id="1" area="0" />
             <label x="0.000335935" y="0.208878" marker="1" id="2" area="1e-07" />
         </labels>
     </geometry>

@@ -54,6 +54,7 @@ struct ProjectInfo
     int numberOfRefinements;
     int polynomialOrder;
     int adaptivitySteps;
+    double adaptivityTolerance;
 
     ProjectInfo()
     {
@@ -71,6 +72,7 @@ struct ProjectInfo
         numberOfRefinements = 1;
         polynomialOrder = 3;
         adaptivitySteps = 0;
+        adaptivityTolerance = 1.0; // %
     }
 
     QString problemTypeString()

@@ -8,7 +8,7 @@ SceneSolution::SceneSolution(Scene *scene)
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
     m_slnVectorYView = NULL;
-    
+
     m_scene = scene;
 }
 
@@ -24,19 +24,22 @@ void SceneSolution::clear()
         delete m_sln2;
         m_sln2 = NULL;
     }
-    
+
+    // countour
     if (m_slnContourView != NULL)
     {
         delete m_slnContourView;
         m_slnContourView = NULL;
     }
     
+    // scalar
     if (m_slnScalarView != NULL)
     {
         delete m_slnScalarView;
         m_slnScalarView = NULL;
     }
     
+    // vector
     if (m_slnVectorXView != NULL)
     {
         delete m_slnVectorXView;
@@ -47,6 +50,15 @@ void SceneSolution::clear()
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
     }
+
+    // order
+    /*
+    if (m_ordView != NULL)
+    {
+        delete m_ordView;
+        m_ordView = NULL;
+    }
+    */
 }
 
 double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume)
@@ -370,7 +382,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
     return integral;
 }
 
-double SceneSolution::surfaceIntegral(int labelIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface)
+double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface)
 {  
     double integral = 0.0;
     Quad2D* quad = &g_quad_2d_std;
@@ -383,38 +395,62 @@ double SceneSolution::surfaceIntegral(int labelIndex, PhysicFieldIntegralSurface
     {
         for (int edge = 0; edge < e->nvert; edge++)
         {
-            if (e->en[edge]->bnd && e->en[edge]->marker == labelIndex)
+            if (e->en[edge]->bnd && e->en[edge]->marker-1 == edgeIndex)
             {
-                update_limit_table(e->get_mode());
-
-                m_sln1->set_active_element(e);
-                RefMap* ru = m_sln1->get_refmap();
-
-                Quad2D* quad2d = ru->get_quad_2d();
-                int eo = quad2d->get_edge_points(edge);
-                m_sln1->set_quad_order(eo, FN_VAL);
-                scalar* uval = m_sln1->get_fn_values();
-                double3* tan = ru->get_tangent(edge);
-                double* x = ru->get_phys_x(eo);
-                double3* pt = quad2d->get_points(eo);
-
-                for (int i = 0; i < quad2d->get_num_points(eo); i++)
+                // cout << ((e->vn[0]->x-e->vn[1]->x)*e->vn[0]->y - (e->vn[0]->y-e->vn[1]->y)*e->vn[0]->x) << endl;
                 {
-                    switch (physicFieldIntegralSurface)
+                    update_limit_table(e->get_mode());
+
+                    m_sln1->set_active_element(e);
+                    RefMap* ru = m_sln1->get_refmap();
+
+                    Quad2D* quad2d = ru->get_quad_2d();
+                    int eo = quad2d->get_edge_points(edge);
+                    m_sln1->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
+                    double3* pt = quad2d->get_points(eo);
+                    double3* tan = ru->get_tangent(edge);
+                    // value
+                    scalar* uval = m_sln1->get_fn_values();
+                    // derivative
+                    scalar *dudx, *dudy;
+                    m_sln1->get_dx_dy_values(dudx, dudy);
+                    // x - coordinate
+                    double* x = ru->get_phys_x(eo);
+
+                    for (int i = 0; i < quad2d->get_num_points(eo); i++)
                     {
-                    case PHYSICFIELDINTEGRAL_SURFACE_LENGTH:
+                        switch (physicFieldIntegralSurface)
                         {
-                            integral += pt[i][2] * tan[i][2] * x[i];
+                        case PHYSICFIELDINTEGRAL_SURFACE_LENGTH:
+                            {
+                                integral += pt[i][2] * tan[i][2];
+                            }
+                            break;
+                        case PHYSICFIELDINTEGRAL_SURFACE_SURFACE:
+                            {
+                                if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                                    integral += pt[i][2] * tan[i][2];
+                                else
+                                    integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2];
+                            }
+                            break;
+                        case PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY:
+                            {
+                                SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
+                                if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                                    integral += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity * sqrt(sqr(dudx[i]) + sqr(dudy[i]));
+                                else
+                                    integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity * sqrt(sqr(dudx[i]) + sqr(dudy[i]));
+                            }
+                            break;
                         }
-                        break;
                     }
-                    // integral += pt[i][2] * uval[i].real() * tan[i][2] * x[i];
                 }
             }
         }
     }
 
-    return integral;
+    return integral / 2.0;
 }
 
 int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &point)
@@ -522,18 +558,20 @@ PointValue SceneSolution::pointValue(const Point &point)
     return PointValue(value, Point(dx, dy), labelMarker);
 }
 
-void SceneSolution::setSln(Solution *sln1, Space *space1, Solution *sln2, Space *space2, Orderizer *order)
+void SceneSolution::setSolutionArray(SolutionArray *solutionArray)
 {
-    this->m_sln1 = sln1;
-    this->m_sln2 = sln2;
+    this->m_sln1 = solutionArray->sln1;
+    this->m_sln2 = solutionArray->sln2;
     
     if (m_scene->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
         m_vec.process_solution(m_sln1, FN_DX_0, m_sln1, FN_DY_0, EPS_NORMAL);
     
     // order view
-    // cout << space1->get_max_dof() << endl;
-    m_slnOrderView = *order;
-    // cout << m_slnOrderView.get_num_vertices() << endl;
+    m_ordView = *solutionArray->order1;
+    // m_slnOrderView = *solutionArray->order2;
+
+    m_adaptiveError = solutionArray->adaptiveError;
+    m_adaptiveSteps = solutionArray->adaptiveSteps;
 }
 
 void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)

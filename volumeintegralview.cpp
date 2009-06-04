@@ -27,67 +27,67 @@ void VolumeIntegralValueView::doShowVolumeIntegral(VolumeIntegralValue *volumeIn
     pointGeometry->setExpanded(true);
 
     addValue(pointGeometry, tr("Volume:"), tr("%1").arg(volumeIntegralValue->volume, 0, 'e', 3), tr("m3"));
-    addValue(pointGeometry, tr("Cross Section:"), tr("%1").arg(volumeIntegralValue->cross_section, 0, 'e', 3), tr("m2"));
+    addValue(pointGeometry, tr("Cross Section:"), tr("%1").arg(volumeIntegralValue->crossSection, 0, 'e', 3), tr("m2"));
 
     trvWidget->insertTopLevelItem(0, pointGeometry);
 
     if (volumeIntegralValue->scene()->sceneSolution()->sln())
     {
-        if (VolumeIntegralValueElectrostatic2D *volumeIntegralValueElectrostatic2D = dynamic_cast<VolumeIntegralValueElectrostatic2D *>(volumeIntegralValue))
-            showElectrostatic2D(volumeIntegralValueElectrostatic2D);
-        if (VolumeIntegralValueMagnetostatic2D *volumeIntegralValueMagnetostatic2D = dynamic_cast<VolumeIntegralValueMagnetostatic2D *>(volumeIntegralValue))
-            showMagnetostatic2D(volumeIntegralValueMagnetostatic2D);
-        if (VolumeIntegralValueHeat2D *volumeIntegralValueHeat2D = dynamic_cast<VolumeIntegralValueHeat2D *>(volumeIntegralValue))
-            showHeat2D(volumeIntegralValueHeat2D);
+        if (VolumeIntegralValueElectrostatic *volumeIntegralValueElectrostatic = dynamic_cast<VolumeIntegralValueElectrostatic *>(volumeIntegralValue))
+            showElectrostatic(volumeIntegralValueElectrostatic);
+        if (VolumeIntegralValueMagnetostatic *volumeIntegralValueMagnetostatic = dynamic_cast<VolumeIntegralValueMagnetostatic *>(volumeIntegralValue))
+            showMagnetostatic(volumeIntegralValueMagnetostatic);
+        if (VolumeIntegralValueHeat *volumeIntegralValueHeat = dynamic_cast<VolumeIntegralValueHeat *>(volumeIntegralValue))
+            showHeat(volumeIntegralValueHeat);
     }
 }
 
-void VolumeIntegralValueView::showElectrostatic2D(VolumeIntegralValueElectrostatic2D *volumeIntegralValueElectrostatic2D)
+void VolumeIntegralValueView::showElectrostatic(VolumeIntegralValueElectrostatic *volumeIntegralValueElectrostatic)
 {
     // electrostatic
     QTreeWidgetItem *electrostaticNode = new QTreeWidgetItem(trvWidget);
     electrostaticNode->setText(0, tr("Electrostatic Field"));
     electrostaticNode->setExpanded(true);
 
-    addValue(electrostaticNode, tr("Ex avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic2D->averageElectricFieldX, 0, 'e', 3), tr("V/m"));
-    addValue(electrostaticNode, tr("Ey avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic2D->averageElectricFieldY, 0, 'e', 3), tr("V/m"));
-    addValue(electrostaticNode, tr("E avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic2D->averageElectricField, 0, 'e', 3), tr("V/m"));
-    addValue(electrostaticNode, tr("Dx avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic2D->averageDisplacementX, 0, 'e', 3), tr("C/m2"));
-    addValue(electrostaticNode, tr("Dy avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic2D->averageDisplacementY, 0, 'e', 3), tr("C/m2"));
-    addValue(electrostaticNode, tr("D avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic2D->averageDisplacement, 0, 'e', 3), tr("C/m2"));
-    addValue(electrostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueElectrostatic2D->energy, 0, 'e', 3), tr("J"));
+    addValue(electrostaticNode, tr("Ex avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldX, 0, 'e', 3), tr("V/m"));
+    addValue(electrostaticNode, tr("Ey avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldY, 0, 'e', 3), tr("V/m"));
+    addValue(electrostaticNode, tr("E avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricField, 0, 'e', 3), tr("V/m"));
+    addValue(electrostaticNode, tr("Dx avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementX, 0, 'e', 3), tr("C/m2"));
+    addValue(electrostaticNode, tr("Dy avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementY, 0, 'e', 3), tr("C/m2"));
+    addValue(electrostaticNode, tr("D avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacement, 0, 'e', 3), tr("C/m2"));
+    addValue(electrostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueElectrostatic->energy, 0, 'e', 3), tr("J"));
 }
 
-void VolumeIntegralValueView::showMagnetostatic2D(VolumeIntegralValueMagnetostatic2D *volumeIntegralValueMagnetostatic2D)
+void VolumeIntegralValueView::showMagnetostatic(VolumeIntegralValueMagnetostatic *volumeIntegralValueMagnetostatic)
 {
     // electrostatic
     QTreeWidgetItem *magnetostaticNode = new QTreeWidgetItem(trvWidget);
     magnetostaticNode->setText(0, tr("Magnetostatic Field"));
     magnetostaticNode->setExpanded(true);
 
-    addValue(magnetostaticNode, tr("Hx avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic2D->averageMagneticFieldX, 0, 'e', 3), tr("A/m"));
-    addValue(magnetostaticNode, tr("Hy avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic2D->averageMagneticFieldY, 0, 'e', 3), tr("A/m"));
-    addValue(magnetostaticNode, tr("H: avg."), tr("%1").arg(volumeIntegralValueMagnetostatic2D->averageMagneticField, 0, 'e', 3), tr("A/m"));
-    addValue(magnetostaticNode, tr("Bx avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic2D->averageFluxDensityX, 0, 'e', 3), tr("T"));
-    addValue(magnetostaticNode, tr("By avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic2D->averageFluxDensityY, 0, 'e', 3), tr("T"));
-    addValue(magnetostaticNode, tr("B avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic2D->averageFluxDensity, 0, 'e', 3), tr("T"));
-    addValue(magnetostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueMagnetostatic2D->energy, 0, 'e', 3), tr("J"));
+    addValue(magnetostaticNode, tr("Hx avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageMagneticFieldX, 0, 'e', 3), tr("A/m"));
+    addValue(magnetostaticNode, tr("Hy avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageMagneticFieldY, 0, 'e', 3), tr("A/m"));
+    addValue(magnetostaticNode, tr("H: avg."), tr("%1").arg(volumeIntegralValueMagnetostatic->averageMagneticField, 0, 'e', 3), tr("A/m"));
+    addValue(magnetostaticNode, tr("Bx avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensityX, 0, 'e', 3), tr("T"));
+    addValue(magnetostaticNode, tr("By avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensityY, 0, 'e', 3), tr("T"));
+    addValue(magnetostaticNode, tr("B avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensity, 0, 'e', 3), tr("T"));
+    addValue(magnetostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->energy, 0, 'e', 3), tr("J"));
 }
 
-void VolumeIntegralValueView::showHeat2D(VolumeIntegralValueHeat2D *volumeIntegralValueHeat2D)
+void VolumeIntegralValueView::showHeat(VolumeIntegralValueHeat *volumeIntegralValueHeat)
 {
     // heat
     QTreeWidgetItem *heatNode = new QTreeWidgetItem(trvWidget);
     heatNode->setText(0, tr("Heat Transfer"));
     heatNode->setExpanded(true);
 
-    addValue(heatNode, tr("Temperature:"), tr("%1").arg(volumeIntegralValueHeat2D->averageTemperature, 0, 'e', 3), tr("deg."));
-    addValue(heatNode, tr("Gx avg.:"), tr("%1").arg(volumeIntegralValueHeat2D->averageTemperatureGradientX, 0, 'e', 3), tr("K/m"));
-    addValue(heatNode, tr("Gy avg.:"), tr("%1").arg(volumeIntegralValueHeat2D->averageTemperatureGradientY, 0, 'e', 3), tr("K/m"));
-    addValue(heatNode, tr("G avg.:"), tr("%1").arg(volumeIntegralValueHeat2D->averageTemperatureGradient, 0, 'e', 3), tr("K/m"));
-    addValue(heatNode, tr("Fx avg.:"), tr("%1").arg(volumeIntegralValueHeat2D->averageHeatFluxX, 0, 'e', 3), tr("W/m2"));
-    addValue(heatNode, tr("Fy avg.:"), tr("%1").arg(volumeIntegralValueHeat2D->averageHeatFluxY, 0, 'e', 3), tr("W/m2"));
-    addValue(heatNode, tr("F avg.:"), tr("%1").arg(volumeIntegralValueHeat2D->averageHeatFlux, 0, 'e', 3), tr("W/m2"));
+    addValue(heatNode, tr("Temperature:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
+    addValue(heatNode, tr("Gx avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientX, 0, 'e', 3), tr("K/m"));
+    addValue(heatNode, tr("Gy avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientY, 0, 'e', 3), tr("K/m"));
+    addValue(heatNode, tr("G avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperatureGradient, 0, 'e', 3), tr("K/m"));
+    addValue(heatNode, tr("Fx avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageHeatFluxX, 0, 'e', 3), tr("W/m2"));
+    addValue(heatNode, tr("Fy avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageHeatFluxY, 0, 'e', 3), tr("W/m2"));
+    addValue(heatNode, tr("F avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageHeatFlux, 0, 'e', 3), tr("W/m2"));
 }
 
 void VolumeIntegralValueView::addValue(QTreeWidgetItem *parent, QString name, QString text, QString unit)
@@ -104,13 +104,13 @@ VolumeIntegralValue::VolumeIntegralValue(Scene *scene)
 {
     this->m_scene = scene;
 
-    cross_section = 0;
+    crossSection = 0;
     volume = 0;
     for (int i = 0; i<m_scene->labels.length(); i++)
     {
         if (m_scene->labels[i]->isSelected)
         {
-            cross_section += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CROSSSECTION);
+            crossSection += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CROSSSECTION);
             volume += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_VOLUME);
         }
     }
@@ -123,7 +123,7 @@ QString VolumeIntegralValue::toString()
 
 // ****************************************************************************************************************
 
-VolumeIntegralValueElectrostatic2D::VolumeIntegralValueElectrostatic2D(Scene *scene) : VolumeIntegralValue(scene)
+VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic(Scene *scene) : VolumeIntegralValue(scene)
 {
     if (scene->sceneSolution()->sln())
     {
@@ -160,14 +160,14 @@ VolumeIntegralValueElectrostatic2D::VolumeIntegralValueElectrostatic2D(Scene *sc
     }
 }
 
-QString VolumeIntegralValueElectrostatic2D::toString()
+QString VolumeIntegralValueElectrostatic::toString()
 {
     return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
 }
 
 // ****************************************************************************************************************
 
-VolumeIntegralValueMagnetostatic2D::VolumeIntegralValueMagnetostatic2D(Scene *scene) : VolumeIntegralValue(scene)
+VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic(Scene *scene) : VolumeIntegralValue(scene)
 {
     if (scene->sceneSolution()->sln())
     {
@@ -204,14 +204,14 @@ VolumeIntegralValueMagnetostatic2D::VolumeIntegralValueMagnetostatic2D(Scene *sc
     }
 }
 
-QString VolumeIntegralValueMagnetostatic2D::toString()
+QString VolumeIntegralValueMagnetostatic::toString()
 {
     return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
 }
 
 // ****************************************************************************************************************
 
-VolumeIntegralValueHeat2D::VolumeIntegralValueHeat2D(Scene *scene) : VolumeIntegralValue(scene)
+VolumeIntegralValueHeat::VolumeIntegralValueHeat(Scene *scene) : VolumeIntegralValue(scene)
 {
     if (scene->sceneSolution()->sln())
     {
@@ -249,7 +249,7 @@ VolumeIntegralValueHeat2D::VolumeIntegralValueHeat2D(Scene *scene) : VolumeInteg
     }
 }
 
-QString VolumeIntegralValueHeat2D::toString()
+QString VolumeIntegralValueHeat::toString()
 {
     return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
 }
@@ -262,15 +262,15 @@ VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         // electrostatic
-        return new VolumeIntegralValueElectrostatic2D(scene);
+        return new VolumeIntegralValueElectrostatic(scene);
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         // electrostatic
-        return new VolumeIntegralValueMagnetostatic2D(scene);
+        return new VolumeIntegralValueMagnetostatic(scene);
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         // heat transfer
-        return new VolumeIntegralValueHeat2D(scene);
+        return new VolumeIntegralValueHeat(scene);
         break;
     default:
         cerr << "Physical field '" + scene->projectInfo().physicFieldString().toStdString() + "' is not implemented. VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)" << endl;

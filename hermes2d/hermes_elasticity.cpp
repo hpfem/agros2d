@@ -93,7 +93,7 @@ scalar elasticity_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
     return elasticityEdge[ep->marker].forceY * surf_int_v(fv, rv, ep);
 }
 
-SolutionArray elasticity_main(const char *fileName, ElasticityEdge *edge, ElasticityLabel *label, int numberOfRefinements, int polynomialOrder, bool isPlanar)
+SolutionArray *elasticity_main(const char *fileName, ElasticityEdge *edge, ElasticityLabel *label, int numberOfRefinements, int polynomialOrder, bool isPlanar)
 {
     elasticityEdge = edge;
     elasticityLabel = label;
@@ -152,5 +152,19 @@ SolutionArray elasticity_main(const char *fileName, ElasticityEdge *edge, Elasti
     sys.assemble();
     sys.solve(2, sln1, sln2);
 
-    return SolutionArray(sln1, &xdisp, sln2, &ydisp);
+    // output
+    xdisp.assign_dofs();
+    ydisp.assign_dofs();
+
+    SolutionArray *solutionArray = new SolutionArray();
+    solutionArray->order1 = new Orderizer();
+    solutionArray->order1->process_solution(&xdisp);
+    solutionArray->order2 = new Orderizer();
+    solutionArray->order2->process_solution(&ydisp);
+    solutionArray->sln1 = sln1;
+    solutionArray->sln1 = sln2;
+    // solutionArray->adaptiveError = error;
+    // solutionArray->adaptiveSteps = i-1;
+
+    return solutionArray;
 }

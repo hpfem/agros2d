@@ -28,6 +28,13 @@ static MagnetostaticEdge *magnetostaticEdge;
 static MagnetostaticLabel *magnetostaticLabel;
 static bool magnetostaticIsPlanar;
 
-SolutionArray magnetostatic_main(const char *fileName, MagnetostaticEdge *edge, MagnetostaticLabel *label, int numberOfRefinements, int polynomialOrder, int adaptivitySteps, bool isPlanar);
+SolutionArray *magnetostatic_main(const char *fileName,
+                                 MagnetostaticEdge *edge,
+                                 MagnetostaticLabel *label,
+                                 int numberOfRefinements,
+                                 int polynomialOrder,
+                                 int adaptivitySteps,
+                                 double adaptivityTolerance,
+                                 bool isPlanar);
 
 #endif // MAGNETOSTATIC_H

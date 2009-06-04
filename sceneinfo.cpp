@@ -161,6 +161,15 @@ void SceneInfoView::doInvalidated()
             QTime time(0, scene->sceneSolution()->timeElapsed() / (60*100), scene->sceneSolution()->timeElapsed() / 1000, scene->sceneSolution()->timeElapsed() % 1000);
             QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);
             itemSolverTimeElapsed->setText(0, tr("Time elapsed: ") + time.toString("mm:ss.zzz"));
+
+            if (scene->sceneSolution()->adaptiveSteps() > 0)
+            {
+                QTreeWidgetItem *itemSolverAdaptiveError = new QTreeWidgetItem(problemInfoSolverNode);
+                itemSolverAdaptiveError->setText(0, tr("Adaptive error: ") + QString::number(scene->sceneSolution()->adaptiveError(), 'f', 3) + " %");
+
+                QTreeWidgetItem *itemSolverAdaptiveSteps = new QTreeWidgetItem(problemInfoSolverNode);
+                itemSolverAdaptiveSteps->setText(0, tr("Adaptive steps: ") + QString::number(scene->sceneSolution()->adaptiveSteps()));
+            }
         }
     }
 

@@ -20,16 +20,47 @@ class Scene;
 
 struct SolutionArray
 {
-    Orderizer *order1;
-    Space *space1;
-    Space *space2;
+    double adaptiveError;
+    int adaptiveSteps;
+
     Solution *sln1;
     Solution *sln2;
+    Orderizer *order1;
+    Orderizer *order2;
 
-    SolutionArray() { this->sln1 = NULL; this->sln2 = NULL; }
-    SolutionArray(Solution *sln1, Space *space1) { this->sln1 = sln1; this->sln2 = NULL; this->space1 = space1; this->space2 = NULL; }
-    SolutionArray(Solution *sln1, Orderizer *order1) { this->sln1 = sln1; this->sln2 = NULL; this->order1 = order1; this->space1 = NULL; this->space2 = NULL; }
-    SolutionArray(Solution *sln1, Space *space1, Solution *sln2, Space *space2) { this->sln1 = sln1; this->sln2 = sln2; this->space1 = space1; this->space2 = space2;  }
+    SolutionArray() {
+        this->sln1 = NULL;
+        this->sln2 = NULL;
+        this->order1 = NULL;
+        this->order2 = NULL;
+
+        this->adaptiveError = 100.0;
+        this->adaptiveSteps = 0;
+    }
+
+    void clear()
+    {
+        if (sln1 != NULL)
+        {
+            delete sln1;
+            sln1 = NULL;
+        }
+        if (sln2 != NULL)
+        {
+            delete sln2;
+            sln2 = NULL;
+        }
+        if (order1 != NULL)
+        {
+            delete order1;
+            order1 = NULL;
+        }
+        if (order2 != NULL)
+        {
+            delete order2;
+            order2 = NULL;
+        }
+    }
 };
 
 class ThreadSolver : public QThread

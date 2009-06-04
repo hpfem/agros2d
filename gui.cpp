@@ -18,3 +18,8 @@ double SLineEdit::value()
     if (engine.evaluate(text()).isNumber())
         return engine.evaluate(text()).toNumber();
 }
+
+void SLineEdit::setValue(double value)
+{
+    setText(QString::number(value));
+}
