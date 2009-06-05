@@ -79,7 +79,7 @@ void SceneTransformDialog::createControls()
     widScale->setLayout(layoutScale);
 
     // copy
-    chkCopy = new QCheckBox("Copy objects");
+    chkCopy = new QCheckBox(tr("Copy objects"));
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -88,9 +88,9 @@ void SceneTransformDialog::createControls()
 
     // tab widget
     tabWidget = new QTabWidget(this);
-    tabWidget->addTab(widTranslate, icon(""), "Translate");
-    tabWidget->addTab(widRotate, icon(""), "Rotate");
-    tabWidget->addTab(widScale, icon(""), "Scale");
+    tabWidget->addTab(widTranslate, icon(""), tr("Translate"));
+    tabWidget->addTab(widRotate, icon(""), tr("Rotate"));
+    tabWidget->addTab(widScale, icon(""), tr("Scale"));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tabWidget);

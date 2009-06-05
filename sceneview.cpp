@@ -47,8 +47,8 @@ void SceneView::createActions()
     actSceneModeEdge->setStatusTip(tr("Operate on edges"));
     actSceneModeEdge->setCheckable(true);
 
-    actSceneModeLabel = new QAction(icon("scene-label"), tr("Operate on &label"), this);
-    actSceneModeLabel->setStatusTip(tr("Operate on label"));
+    actSceneModeLabel = new QAction(icon("scene-label"), tr("Operate on &labels"), this);
+    actSceneModeLabel->setStatusTip(tr("Operate on labels"));
     actSceneModeLabel->setCheckable(true);
 
     actSceneModePostprocessor = new QAction(icon("scene-postprocessor"), tr("&Postprocessor"), this);
@@ -71,16 +71,16 @@ void SceneView::createActions()
     connect(actBoundaryGroup, SIGNAL(triggered(QAction *)), this, SLOT(doBoundaryGroup(QAction *)));
 
     // show
-    actShowSolutionMesh = new QAction("Solution mesh", this);
+    actShowSolutionMesh = new QAction(tr("Solution mesh"), this);
     actShowSolutionMesh->setCheckable(true);
 
-    actShowContours = new QAction("Contours", this);
+    actShowContours = new QAction(tr("Contours"), this);
     actShowContours->setCheckable(true);
 
-    actShowScalarField = new QAction("Scalar Field", this);
+    actShowScalarField = new QAction(tr("Scalar Field"), this);
     actShowScalarField->setCheckable(true);
 
-    actShowVectors = new QAction("Vectors", this);
+    actShowVectors = new QAction(tr("Vectors"), this);
     actShowVectors->setCheckable(true);
 
     actShowGroup = new QActionGroup(this);
@@ -121,10 +121,10 @@ void SceneView::createActions()
 void SceneView::createMenu()
 {
     mnuInfo = new QMenu(this);
-    mnuMarkerGroup = new QMenu("Set marker", this);
+    mnuMarkerGroup = new QMenu(tr("Set marker"), this);
 
     // show group
-    mnuShowGroup = new QMenu("Show", this);
+    mnuShowGroup = new QMenu(tr("Show"), this);
     mnuShowGroup->addAction(actShowSolutionMesh);
     mnuShowGroup->addAction(actShowContours);
     mnuShowGroup->addAction(actShowScalarField);

@@ -255,9 +255,9 @@ QLayout* DSceneEdge::createContent()
     txtAngle = new SLineEdit("0");
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(tr("Start Point:"), cmbNodeStart);
-    layout->addRow(tr("End Point:"), cmbNodeEnd);
-    layout->addRow(tr("Boundary Condition:"), cmbMarker);
+    layout->addRow(tr("Start point:"), cmbNodeStart);
+    layout->addRow(tr("End point:"), cmbNodeEnd);
+    layout->addRow(tr("Boundary condition:"), cmbMarker);
     layout->addRow(tr("Angle (deg):"), txtAngle);
 
     fillComboBox();
@@ -336,7 +336,7 @@ QLayout* DSceneLabel::createContent() {
     layout->addRow(tr("x (m):"), txtPointX);
     layout->addRow(tr("y (m):"), txtPointY);
     layout->addRow(tr("Material:"), cmbMarker);
-    layout->addRow(tr("Triangle Area (m):"), txtArea);
+    layout->addRow(tr("Triangle area (m):"), txtArea);
 
     fillComboBox();
 

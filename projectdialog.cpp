@@ -88,17 +88,17 @@ void ProjectDialog::createControls()
 void ProjectDialog::fillComboBox()
 {
     cmbProblemType->clear();
-    cmbProblemType->addItem("planar", PROBLEMTYPE_PLANAR);
-    cmbProblemType->addItem("axisymmetric", PROBLEMTYPE_AXISYMMETRIC);
+    cmbProblemType->addItem(tr("planar"), PROBLEMTYPE_PLANAR);
+    cmbProblemType->addItem(tr("axisymmetric"), PROBLEMTYPE_AXISYMMETRIC);
 
     if (this->m_newProject)
     {
         cmbPhysicField->clear();
-        cmbPhysicField->addItem("electrostatic", PHYSICFIELD_ELECTROSTATIC);
-        cmbPhysicField->addItem("magnetostatic", PHYSICFIELD_MAGNETOSTATIC);
-        // cmbPhysicField->addItem("current field", PHYSICFIELD_CURRENT);
-        cmbPhysicField->addItem("heat transfer", PHYSICFIELD_HEAT_TRANSFER);
-        // cmbPhysicField->addItem("elasticity", PHYSICFIELD_ELASTICITY);
+        cmbPhysicField->addItem(tr("electrostatic"), PHYSICFIELD_ELECTROSTATIC);
+        cmbPhysicField->addItem(tr("magnetostatic"), PHYSICFIELD_MAGNETOSTATIC);
+        // cmbPhysicField->addItem(tr("current field"), PHYSICFIELD_CURRENT);
+        cmbPhysicField->addItem(tr("heat transfer"), PHYSICFIELD_HEAT_TRANSFER);
+        // cmbPhysicField->addItem(tr("elasticity"), PHYSICFIELD_ELASTICITY);
     }
 }
 

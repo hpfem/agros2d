@@ -222,7 +222,7 @@ DSceneEdgeElectrostaticMarker::DSceneEdgeElectrostaticMarker(SceneEdgeElectrosta
     this->m_edgeMarker = edgeElectrostaticMarker;
 
     setMinimumSize(300, 160);
-    setWindowTitle(tr("Boundary Condition"));
+    setWindowTitle(tr("Boundary condition"));
 
     createDialog();
 
@@ -245,7 +245,7 @@ QLayout* DSceneEdgeElectrostaticMarker::createContent()
     txtValue = new SLineEdit("0", true);
 
     QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC Type:"), cmbType);
+    layoutMarker->addRow(tr("BC type:"), cmbType);
     layoutMarker->addRow(tr("Value:"), txtValue);
 
     return layoutMarker;
@@ -277,7 +277,7 @@ DSceneEdgeMagnetostaticMarker::DSceneEdgeMagnetostaticMarker(SceneEdgeMagnetosta
     this->m_edgeMarker = edgeMagnetostaticMarker;
 
     setMinimumSize(300, 160);
-    setWindowTitle(tr("Boundary Condition"));
+    setWindowTitle(tr("Boundary condition"));
 
     createDialog();
 
@@ -300,7 +300,7 @@ QLayout* DSceneEdgeMagnetostaticMarker::createContent()
     txtValue = new SLineEdit("0", true);
 
     QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC Type:"), cmbType);
+    layoutMarker->addRow(tr("BC type:"), cmbType);
     layoutMarker->addRow(tr("Value:"), txtValue);
 
     return layoutMarker;
@@ -332,7 +332,7 @@ DSceneEdgeHeatMarker::DSceneEdgeHeatMarker(SceneEdgeHeatMarker *edgeEdgeHeatMark
     this->m_edgeMarker = edgeEdgeHeatMarker;
 
     setMinimumSize(300, 160);
-    setWindowTitle(tr("Boundary Condition"));
+    setWindowTitle(tr("Boundary condition"));
 
     createDialog();
 
@@ -449,7 +449,7 @@ DSceneEdgeElasticityMarker::DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker
     this->m_edgeMarker = edgeEdgeElasticityMarker;
 
     setMinimumSize(300, 160);
-    setWindowTitle(tr("Boundary Condition"));
+    setWindowTitle(tr("Boundary condition"));
 
     createDialog();
 

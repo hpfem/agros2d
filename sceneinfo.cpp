@@ -63,7 +63,7 @@ void SceneInfoView::createTreeView()
 
     // problem
     problemNode = new QTreeWidgetItem(trvWidget);
-    problemNode->setIcon(0, icon("project"));
+    // problemNode->setIcon(0, icon("project"));
     problemNode->setText(0, tr("Problem"));
     problemNode->setExpanded(true);
     // general
@@ -88,7 +88,7 @@ void SceneInfoView::createTreeView()
 
     // geometry
     geometryNode = new QTreeWidgetItem(trvWidget);
-    geometryNode->setIcon(0, icon("geometry"));
+    // geometryNode->setIcon(0, icon("geometry"));
     geometryNode->setText(0, tr("Geometry"));
     geometryNode->setExpanded(false);
 
