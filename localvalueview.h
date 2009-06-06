@@ -16,6 +16,7 @@ class LocalPointValueHeat;
 class LocalPointValueElasticity;
 
 LocalPointValue *localPointValueFactory(Point &point, Scene *scene);
+QStringList localPointValueHeaderFactory(PhysicField physicField);
 
 class LocalPointValueView : public QDockWidget
 {
@@ -61,6 +62,7 @@ public:
 
     inline Scene *scene() { return m_scene; }
     virtual double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
+    virtual QStringList variables() = 0;
 
 protected:
     Scene *m_scene;
@@ -79,6 +81,7 @@ public:
 
     LocalPointValueElectrostatic(Point &point, Scene *scene);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    QStringList variables();
 };
 
 class LocalPointValueMagnetostatic : public LocalPointValue
@@ -93,6 +96,7 @@ public:
 
     LocalPointValueMagnetostatic(Point &point, Scene *scene);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    QStringList variables();
 };
 
 class LocalPointValueHeat : public LocalPointValue
@@ -106,6 +110,7 @@ public:
 
     LocalPointValueHeat(Point &point, Scene *scene);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    QStringList variables();
 };
 
 class LocalPointValueElasticity : public LocalPointValue
@@ -117,6 +122,7 @@ public:
 
     LocalPointValueElasticity(Point &point, Scene *scene);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    QStringList variables();
 };
 
 #endif // LOCALVALUE_H

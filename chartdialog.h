@@ -15,6 +15,8 @@
 #include <QtGui/QListWidget>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QRadioButton>
+#include <QtGui/QHeaderView>
+#include <QtGui/QTableWidget>
 #include <QFileDialog>
 #include <QColor>
 #include <QAction>
@@ -27,6 +29,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_zoomer.h>
 #include <qwt_plot_panner.h>
+#include <qwt_plot_printfilter.h>
 #include <qwt_counter.h>
 #include <qwt_legend.h>
 #include <qwt_text.h>
@@ -45,7 +48,6 @@ class ChartDialog : public QDialog
 
 public slots:
     void doPlot();
-    void doPrint();
 
 public:
     ChartDialog(Scene *scene, QWidget *parent = 0);
@@ -53,6 +55,8 @@ public:
 
 private:
     Scene *m_scene;
+
+    QTabWidget* tabWidget;
 
     QwtPlotPicker *picker;
 
@@ -70,22 +74,23 @@ private:
     QComboBox *cmbFieldVariableComp;
 
     Chart *chart;
+    QTableWidget *trvTable;
 
     void createControls();
 
 private slots:
     void doFieldVariable(int index);
+    void doPrint();
+    void doSaveImage();
+    void doExportData();
     void doMoved(const QPoint &);
-
 };
 
 class Chart : public QwtPlot
 {
     Q_OBJECT
 public:
-    Scene *m_scene;
-
-    Chart(Scene *scene, QWidget *parent = 0);
+    Chart(QWidget *parent = 0);
     ~Chart();
 
     inline QwtPlotCurve *curve() { return m_curve; }

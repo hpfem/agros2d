@@ -71,9 +71,9 @@ void MainWindow::createActions()
     actDocumentExportDXF->setStatusTip(tr("Export DXF"));
     connect(actDocumentExportDXF, SIGNAL(triggered()), this, SLOT(doDocumentExportDXF()));
 
-    actDocumentSaveImageAs = new QAction(tr("Export image..."), this);
-    actDocumentSaveImageAs->setStatusTip(tr("Export image to file"));
-    connect(actDocumentSaveImageAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveImageAs()));
+    actDocumentSaveImage = new QAction(tr("Export image..."), this);
+    actDocumentSaveImage->setStatusTip(tr("Export image to file"));
+    connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
@@ -142,7 +142,7 @@ void MainWindow::createMenus()
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentImportDXF);
     mnuFile->addAction(actDocumentExportDXF);
-    mnuFile->addAction(actDocumentSaveImageAs);
+    mnuFile->addAction(actDocumentSaveImage);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addSeparator();
@@ -396,7 +396,7 @@ void MainWindow::doDocumentExportDXF()
 
 }
 
-void MainWindow::doDocumentSaveImageAs()
+void MainWindow::doDocumentSaveImage()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", "PNG files (*.png)");
     if (!fileName.isEmpty())
