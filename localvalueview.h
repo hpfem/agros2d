@@ -60,8 +60,7 @@ public:
     LocalPointValue(Point &point, Scene *scene);
 
     inline Scene *scene() { return m_scene; }
-
-    virtual QString toString();
+    virtual double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
 
 protected:
     Scene *m_scene;
@@ -79,7 +78,7 @@ public:
     double we;
 
     LocalPointValueElectrostatic(Point &point, Scene *scene);
-    QString toString();
+    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueMagnetostatic : public LocalPointValue
@@ -93,7 +92,7 @@ public:
     double wm;
 
     LocalPointValueMagnetostatic(Point &point, Scene *scene);
-    QString toString();
+    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueHeat : public LocalPointValue
@@ -106,7 +105,7 @@ public:
     Point G;
 
     LocalPointValueHeat(Point &point, Scene *scene);
-    QString toString();
+    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueElasticity : public LocalPointValue
@@ -117,7 +116,7 @@ public:
     double von_mises_stress;
 
     LocalPointValueElasticity(Point &point, Scene *scene);
-    QString toString();
+    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 #endif // LOCALVALUE_H

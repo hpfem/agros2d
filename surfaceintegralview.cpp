@@ -67,6 +67,10 @@ void SurfaceIntegralValueView::showHeat(SurfaceIntegralValueHeat *surfaceIntegra
     QTreeWidgetItem *heatNode = new QTreeWidgetItem(trvWidget);
     heatNode->setText(0, tr("Heat Transfer"));
     heatNode->setExpanded(true);
+
+    addValue(heatNode, tr("Temperature avg.:"), tr("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("C"));
+    addValue(heatNode, tr("Temperature dif.:"), tr("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("C"));
+    addValue(heatNode, tr("Heat flux:"), tr("%1").arg(surfaceIntegralValueHeat->heatFlux, 0, 'e', 3), tr("C"));
 }
 
 void SurfaceIntegralValueView::addValue(QTreeWidgetItem *parent, QString name, QString text, QString unit)
@@ -142,9 +146,26 @@ QString SurfaceIntegralValueMagnetostatic::toString()
 
 SurfaceIntegralValueHeat::SurfaceIntegralValueHeat(Scene *scene) : SurfaceIntegralValue(scene)
 {
+    averageTemperature = 0;
+    temperatureDifference = 0;
+    heatFlux = 0;
+
     if (scene->sceneSolution()->sln())
     {
+        for (int i = 0; i<m_scene->edges.length(); i++)
+        {
+            if (m_scene->edges[i]->isSelected)
+            {
+                averageTemperature += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE);
+                temperatureDifference += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE);
+                heatFlux += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX);
+            }
+        }
 
+        if (length > 0)
+        {
+            averageTemperature /= length;
+        }
     }
 }
 
@@ -172,7 +193,7 @@ SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)
         return new SurfaceIntegralValueHeat(scene);
         break;
     default:
-        cerr << "Physical field '" + scene->projectInfo().physicFieldString().toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)" << endl;
+        cerr << "Physical field '" + physicFieldString(scene->projectInfo().physicField).toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)" << endl;
         throw;
         break;
     }

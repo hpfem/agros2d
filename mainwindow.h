@@ -33,7 +33,7 @@
 #include "localvalueview.h"
 #include "volumeintegralview.h"
 #include "surfaceintegralview.h"
-// #include "chartdialog.h"
+#include "chartdialog.h"
 #include "optionsdialog.h"
 
 class MainWindow : public QMainWindow

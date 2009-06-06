@@ -79,6 +79,7 @@ public:
     Point center();
     double radius();
     double distance(const Point &point);
+    inline int direction() { return (((nodeStart->point.x-nodeEnd->point.x)*nodeStart->point.y - (nodeStart->point.y-nodeEnd->point.y)*nodeStart->point.x) > 0) ? 1 : -1; }
 
     int showDialog(Scene *scene, QWidget *parent);
 };

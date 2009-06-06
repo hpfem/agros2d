@@ -7,3 +7,4 @@ carbon2d
 include/*
 lib/*
 configure-stamp
+*.anh

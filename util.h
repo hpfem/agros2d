@@ -78,6 +78,37 @@ enum ProblemType
     PROBLEMTYPE_AXISYMMETRIC
 };
 
+inline QString problemTypeString(ProblemType problemType)
+{
+    if (problemType == PROBLEMTYPE_PLANAR)
+        return "planar";
+    else
+        return "axisymmetric";
+}
+
+enum PhysicFieldVariableComp
+{
+    PHYSICFIELDVARIABLECOMP_SCALAR,
+    PHYSICFIELDVARIABLECOMP_MAGNITUDE,
+    PHYSICFIELDVARIABLECOMP_X,
+    PHYSICFIELDVARIABLECOMP_Y
+};
+
+inline QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp)
+{
+    switch (physicFieldVariableComp)
+    {
+    case PHYSICFIELDVARIABLECOMP_SCALAR:
+        return "Scalar";
+    case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+        return "Magnitude";
+    case PHYSICFIELDVARIABLECOMP_X:
+        return "X";
+    case PHYSICFIELDVARIABLECOMP_Y:
+        return "Y";
+    }
+}
+
 enum PhysicField
 {
     PHYSICFIELD_ELECTROSTATIC,
@@ -86,6 +117,27 @@ enum PhysicField
     PHYSICFIELD_HEAT_TRANSFER,
     PHYSICFIELD_ELASTICITY
 };
+
+inline QString physicFieldString(PhysicField physicField)
+{
+    switch (physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        return "electrostatic";
+    case PHYSICFIELD_MAGNETOSTATIC:
+        return "magnetostatic";
+    case PHYSICFIELD_CURRENT:
+        return "current field";
+    case PHYSICFIELD_HEAT_TRANSFER:
+        return "heat transfer";
+    case PHYSICFIELD_ELASTICITY:
+        return "elasticity";
+    default:
+        cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
+        throw;
+        break;
+    }
+}
 
 enum PhysicFieldVariable
 {
@@ -144,7 +196,7 @@ inline QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable
         return QObject::tr("Permeability");
         break;
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
-        return QObject::tr("Current potential");
+        return QObject::tr("Scalar potential");
         break;
     case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
         return QObject::tr("Temperature");
@@ -163,6 +215,65 @@ inline QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable
         break;
     default:
         cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
+        throw;
+        break;
+    }
+}
+
+inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
+{
+    switch (physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
+        return QObject::tr("V");
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
+        return QObject::tr("V/m");
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT:
+        return QObject::tr("C/m2");
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
+        return QObject::tr("J/m3");
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
+        return QObject::tr("F/m");
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL:
+        return QObject::tr("Wb/m");
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY:
+        return QObject::tr("T");
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD:
+        return QObject::tr("A/m");
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY:
+        return QObject::tr("J/m3");
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY:
+        return QObject::tr("H/m");
+        break;
+    case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
+        return QObject::tr("V");
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
+        return QObject::tr("deg.");
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT:
+        return QObject::tr("K/m");
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_FLUX:
+        return QObject::tr("W/m2");
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY:
+        return QObject::tr("W/m.K");
+        break;
+    case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
+        return QObject::tr("Pa");
+        break;
+    default:
+        cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
         break;
     }
@@ -251,15 +362,10 @@ enum PhysicFieldIntegralSurface
 {
     PHYSICFIELDINTEGRAL_SURFACE_LENGTH,
     PHYSICFIELDINTEGRAL_SURFACE_SURFACE,
-    PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY
-};
-
-enum PhysicFieldVariableComp
-{
-    PHYSICFIELDVARIABLECOMP_SCALAR,
-    PHYSICFIELDVARIABLECOMP_MAGNITUDE,
-    PHYSICFIELDVARIABLECOMP_X,
-    PHYSICFIELDVARIABLECOMP_Y
+    PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY,
+    PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE,
+    PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE,
+    PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)

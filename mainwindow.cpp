@@ -438,12 +438,16 @@ void MainWindow::doOptions()
 {
     OptionsDialog *optionsDialog = new OptionsDialog(this);
     optionsDialog->exec();
+
+    delete optionsDialog;
 }
 
 void MainWindow::doChart()
 {
-    // ChartDialog *chartDialog = new ChartDialog(m_scene, this);
-    // chartDialog->show();
+    ChartDialog *chartDialog = new ChartDialog(m_scene, this);
+    chartDialog->exec();
+
+    delete chartDialog;
 }
 
 void MainWindow::doPaste()
@@ -462,8 +466,8 @@ void MainWindow::doPaste()
     doSetActions();
     sceneView->doZoomBestFit();
 
-    // doSolve();
-    // sceneView->doZoomBestFit();
+    doSolve();
+    sceneView->doZoomBestFit();
 }
 
 void MainWindow::doSetActions()
@@ -475,8 +479,8 @@ void MainWindow::doSetActions()
     actSolve->setEnabled(isSaved);
     actChart->setEnabled(isSaved);
 
-    lblProblemType->setText(tr("Problem Type: ") + m_scene->projectInfo().problemTypeString());
-    lblPhysicField->setText(tr("Physic Field: ") + m_scene->projectInfo().physicFieldString());
+    lblProblemType->setText(tr("Problem Type: ") + problemTypeString(m_scene->projectInfo().problemType));
+    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(m_scene->projectInfo().physicField));
 }
 
 void MainWindow::doAbout()

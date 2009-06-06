@@ -145,44 +145,7 @@ void SceneViewDialog::createControls()
 
     // layout scalar field
     cmbScalarFieldVariable = new QComboBox();
-    switch (m_sceneView->scene()->projectInfo().physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        {
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL), PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD), PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT), PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY), PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY);
-        }
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        {
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL), PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY);
-        }
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        {
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_FLUX), PHYSICFIELDVARIABLE_HEAT_FLUX);
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY), PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY);
-        }
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        {
-            cmbScalarFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS), PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS);
-        }
-        break;
-    default:
-        cerr << "Physical field '" + m_sceneView->scene()->projectInfo().physicFieldString().toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
-        throw;
-        break;
-    }
+    fillComboBoxVariable(cmbScalarFieldVariable, m_sceneView->scene()->projectInfo().physicField);
     connect(cmbScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
 
     cmbPalette = new QComboBox();
@@ -263,7 +226,7 @@ void SceneViewDialog::createControls()
         }
         break;
     default:
-        cerr << "Physical field '" + m_sceneView->scene()->projectInfo().physicFieldString().toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
+        cerr << "Physical field '" + physicFieldString(m_sceneView->scene()->projectInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
         throw;
         break;
     }
@@ -334,7 +297,6 @@ void SceneViewDialog::doScalarFieldVariable(int index)
 
     if (cmbScalarFieldVariableComp->currentIndex() == -1)
         cmbScalarFieldVariableComp->setCurrentIndex(0);
-
 }
 
 void SceneViewDialog::doScalarFieldRangeAuto(int state)

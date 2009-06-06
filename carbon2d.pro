@@ -27,7 +27,7 @@ SOURCES += main.cpp \
     sceneinfo.cpp \
     sceneview.cpp \
     scene.cpp \
-    # chartdialog.cpp \
+    chartdialog.cpp \
     projectdialog.cpp \
     scenetransformdialog.cpp \
     sceneviewdialog.cpp \
@@ -50,7 +50,7 @@ HEADERS += mainwindow.h \
     sceneview_data.h \
     sceneview.h \
     scene.h \
-    # chartdialog.h \
+    chartdialog.h \
     projectdialog.h \
     scenetransformdialog.h \
     sceneviewdialog.h \
@@ -62,13 +62,15 @@ HEADERS += mainwindow.h \
 INCLUDEPATH += include/hermes2d \
     include/dxflib \
     /usr/include \
-    /usr/include/suitesparse
+    /usr/include/suitesparse \
+    /usr/include/qwt-qt4
 LIBS += lib/liblibdxf.a \
     lib/libhermes2d-real-static.a \
     -lumfpack \
     -lamd \
     -lblas \
     -lJudy \
-    -lpthread
+    -lpthread \
+    -lqwt-qt4
 FORMS += 
 OTHER_FILES += TODO.txt

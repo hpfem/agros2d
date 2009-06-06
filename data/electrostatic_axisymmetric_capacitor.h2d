@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="1" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic 2D" >
+        <project adaptivitytolerance="1" numberofrefinements="1" adaptivitysteps="0" polynomialorder="1" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic 2D" >
             <edges>
                 <edge type="potential" value="10" id="1" name="U = 10 V" />
                 <edge type="potential" value="0" id="2" name="U =  0 V" />
@@ -9,7 +9,7 @@
             <labels>
                 <label charge_density="0" id="1" name="air" permittivity="1" />
                 <label charge_density="0" id="2" name="diel 1" permittivity="10" />
-                <label charge_density="0" id="3" name="diel 2" permittivity="5" />
+                <label charge_density="0" id="3" name="diel 2" permittivity="3" />
             </labels>
         </project>
     </projects>
@@ -29,18 +29,18 @@
         </nodes>
         <edges>
             <edge end="5" marker="3" id="0" start="4" angle="0" />
-            <edge end="6" marker="1" id="1" start="5" angle="0" />
-            <edge end="0" marker="1" id="2" start="6" angle="0" />
-            <edge end="1" marker="3" id="3" start="0" angle="0" />
-            <edge end="7" marker="0" id="4" start="1" angle="0" />
-            <edge end="8" marker="0" id="5" start="7" angle="0" />
-            <edge end="1" marker="3" id="6" start="2" angle="0" />
-            <edge end="2" marker="2" id="7" start="8" angle="0" />
-            <edge end="9" marker="2" id="8" start="3" angle="0" />
-            <edge end="9" marker="2" id="9" start="8" angle="0" />
-            <edge end="10" marker="3" id="10" start="3" angle="0" />
-            <edge end="4" marker="3" id="11" start="10" angle="90" />
-            <edge end="7" marker="0" id="12" start="6" angle="0" />
+            <edge end="0" marker="1" id="1" start="6" angle="0" />
+            <edge end="1" marker="3" id="2" start="0" angle="0" />
+            <edge end="7" marker="0" id="3" start="1" angle="0" />
+            <edge end="8" marker="0" id="4" start="7" angle="0" />
+            <edge end="1" marker="3" id="5" start="2" angle="0" />
+            <edge end="2" marker="2" id="6" start="8" angle="0" />
+            <edge end="9" marker="2" id="7" start="3" angle="0" />
+            <edge end="9" marker="2" id="8" start="8" angle="0" />
+            <edge end="10" marker="3" id="9" start="3" angle="0" />
+            <edge end="4" marker="3" id="10" start="10" angle="90" />
+            <edge end="7" marker="0" id="11" start="6" angle="0" />
+            <edge end="5" marker="1" id="12" start="6" angle="0" />
         </edges>
         <labels>
             <label x="0.019" y="0.021" marker="2" id="0" area="0.0001" />

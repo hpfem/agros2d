@@ -8,12 +8,13 @@
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
-#include <QtGui/QFrame>
-#include <QtGui/QPainter>
-#include <QtGui/QPaintEngine>
+#include <QtGui/QSpinBox>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
 #include <QtGui/QPrintDialog>
+#include <QtGui/QListWidget>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QRadioButton>
 #include <QFileDialog>
 #include <QColor>
 #include <QAction>
@@ -47,33 +48,34 @@ public slots:
     void doPrint();
 
 public:
-    ChartDialog(Scene *scene, QWidget *parent);
+    ChartDialog(Scene *scene, QWidget *parent = 0);
     ~ChartDialog();
 
 private:
-    int m_N;
     Scene *m_scene;
 
-    QwtPlotZoomer *zoomer;
     QwtPlotPicker *picker;
-    QwtPlotPanner *panner;
 
-    QAction *actZoom;
+    SLineEdit *txtStartX;
+    SLineEdit *txtStartY;
+    SLineEdit *txtEndX;
+    SLineEdit *txtEndY;
 
-    QGroupBox *controls;
+    QRadioButton *radAxisLength;
+    QRadioButton *radAxisX;
+    QRadioButton *radAxisY;
+    QSpinBox *txtAxisPoints;
+
+    QComboBox *cmbFieldVariable;
+    QComboBox *cmbFieldVariableComp;
+
     Chart *chart;
-
-    QAction *actPlot;
 
     void createControls();
 
-    void showInfo(QString text = QString::null);
-
 private slots:
+    void doFieldVariable(int index);
     void doMoved(const QPoint &);
-    void doSelected(const QwtPolygon &);
-    void doZoomed(const QwtPolygon &);
-    void doEnableZoomMode(bool on);
 
 };
 
@@ -81,16 +83,18 @@ class Chart : public QwtPlot
 {
     Q_OBJECT
 public:
-    Chart(QWidget *parent);
+    Scene *m_scene;
+
+    Chart(Scene *scene, QWidget *parent = 0);
+    ~Chart();
 
     inline QwtPlotCurve *curve() { return m_curve; }
 
 public slots:
-   void setData();
+   void setData(double *xval, double *yval, int count);
 
 private:
     QwtPlotCurve *m_curve;
-    QwtPlotMarker *m_marker;
 };
 
 #endif // CHARTDIALOG_H

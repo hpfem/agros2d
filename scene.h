@@ -74,35 +74,6 @@ struct ProjectInfo
         adaptivitySteps = 0;
         adaptivityTolerance = 1.0; // %
     }
-
-    QString problemTypeString()
-    {
-        if (problemType == PROBLEMTYPE_PLANAR)
-            return "planar";
-        else
-            return "axisymmetric";
-    }
-
-    QString physicFieldString()
-    {
-        switch (physicField)
-        {
-        case PHYSICFIELD_ELECTROSTATIC:
-            return "electrostatic";
-        case PHYSICFIELD_MAGNETOSTATIC:
-            return "magnetostatic";
-        case PHYSICFIELD_CURRENT:
-            return "current field";
-        case PHYSICFIELD_HEAT_TRANSFER:
-            return "heat transfer";
-        case PHYSICFIELD_ELASTICITY:
-            return "elasticity";
-        default:
-            cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. ProjectInfo::physicFieldString()" << endl;
-            throw;
-            break;
-        }
-    }
 };
 
 class DxfFilter : public DL_CreationAdapter

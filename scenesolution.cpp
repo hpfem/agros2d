@@ -398,53 +398,77 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
             if (e->en[edge]->bnd && e->en[edge]->marker-1 == edgeIndex)
             {
                 // cout << ((e->vn[0]->x-e->vn[1]->x)*e->vn[0]->y - (e->vn[0]->y-e->vn[1]->y)*e->vn[0]->x) << endl;
+
+                update_limit_table(e->get_mode());
+
+                m_sln1->set_active_element(e);
+                RefMap* ru = m_sln1->get_refmap();
+
+                Quad2D* quad2d = ru->get_quad_2d();
+                int eo = quad2d->get_edge_points(edge);
+                m_sln1->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
+                double3* pt = quad2d->get_points(eo);
+                double3* tan = ru->get_tangent(edge);
+                // value
+                scalar* value = m_sln1->get_fn_values();
+                // derivative
+                scalar *dudx, *dudy;
+                m_sln1->get_dx_dy_values(dudx, dudy);
+                // x - coordinate
+                double* x = ru->get_phys_x(eo);
+
+                for (int i = 0; i < quad2d->get_num_points(eo); i++)
                 {
-                    update_limit_table(e->get_mode());
-
-                    m_sln1->set_active_element(e);
-                    RefMap* ru = m_sln1->get_refmap();
-
-                    Quad2D* quad2d = ru->get_quad_2d();
-                    int eo = quad2d->get_edge_points(edge);
-                    m_sln1->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
-                    double3* pt = quad2d->get_points(eo);
-                    double3* tan = ru->get_tangent(edge);
-                    // value
-                    scalar* uval = m_sln1->get_fn_values();
-                    // derivative
-                    scalar *dudx, *dudy;
-                    m_sln1->get_dx_dy_values(dudx, dudy);
-                    // x - coordinate
-                    double* x = ru->get_phys_x(eo);
-
-                    for (int i = 0; i < quad2d->get_num_points(eo); i++)
+                    switch (physicFieldIntegralSurface)
                     {
-                        switch (physicFieldIntegralSurface)
+                    case PHYSICFIELDINTEGRAL_SURFACE_LENGTH:
                         {
-                        case PHYSICFIELDINTEGRAL_SURFACE_LENGTH:
-                            {
-                                integral += pt[i][2] * tan[i][2];
-                            }
-                            break;
-                        case PHYSICFIELDINTEGRAL_SURFACE_SURFACE:
-                            {
-                                if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                    integral += pt[i][2] * tan[i][2];
-                                else
-                                    integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2];
-                            }
-                            break;
-                        case PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY:
-                            {
-                                SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
-                                if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                    integral += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity * sqrt(sqr(dudx[i]) + sqr(dudy[i]));
-                                else
-                                    integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity * sqrt(sqr(dudx[i]) + sqr(dudy[i]));
-                            }
-                            break;
+                            integral += pt[i][2] * tan[i][2];
                         }
-                    }
+                        break;
+                    case PHYSICFIELDINTEGRAL_SURFACE_SURFACE:
+                        {
+                            if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                                integral += pt[i][2] * tan[i][2];
+                            else
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2];
+                        }
+                        break;
+                    case PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY:
+                        {
+                            SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
+                            if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                                integral += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                            else
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                        }
+                        break;
+                    case PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE:
+                        {
+                            if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                                integral += pt[i][2] * tan[i][2] * tan[i][1] * value[i];
+                            else
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value[i];
+                        }
+                        break;
+                    case PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE:
+                        {
+                            if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                                integral += pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                            else
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                        }
+                        break;
+                    case PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX:
+                        {
+                            SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[e->marker]->marker);
+                            if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                                integral += pt[i][2] * tan[i][2] * marker->thermal_conductivity * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                            else
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                        }
+                        break;
+                    }                   
                 }
             }
         }
@@ -968,9 +992,14 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
             }
             break;
-        }        
+        default:
+            cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilter::precalculate(int order, int mask)" << endl;
+            throw;
+            break;
+
+        }
     }
-    
+
     replace_cur_node(node);
 }
 

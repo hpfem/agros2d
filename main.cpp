@@ -22,7 +22,6 @@ int main(int argc, char *argv[])
 
     // setting gui style
     setGUIStyle(settings.value("General/GUIStyle").value<QString>());
-    // setLanguage(settings.value("General/Language", QLocale::system().name()).value<QString>());
 
     // language
     QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();

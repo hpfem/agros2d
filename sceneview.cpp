@@ -1587,7 +1587,7 @@ void SceneView::doDefaults()
         }
         break;
     default:
-        cerr << "Physical field '" + m_scene->projectInfo().physicFieldString().toStdString() + "' is not implemented. SceneView::doDefaults()" << endl;
+        cerr << "Physical field '" + physicFieldString(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. SceneView::doDefaults()" << endl;
         throw;
         break;
     }

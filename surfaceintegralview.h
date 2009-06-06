@@ -69,6 +69,10 @@ public:
 class SurfaceIntegralValueHeat : public SurfaceIntegralValue
 {
 public:
+    double averageTemperature;
+    double temperatureDifference;
+    double heatFlux;
+
     SurfaceIntegralValueHeat(Scene *scene);
     QString toString();
 };

@@ -58,7 +58,7 @@ void ProjectDialog::createControls()
     layoutProject->addWidget(cmbProblemType, 2, 1);
     layoutProject->addWidget(new QLabel(tr("Physic field:")), 3, 0);
     if (!this->m_newProject)
-        layoutProject->addWidget(new QLabel(m_projectInfo->physicFieldString()), 3, 1);
+        layoutProject->addWidget(new QLabel(physicFieldString(m_projectInfo->physicField)), 3, 1);
     else
         layoutProject->addWidget(cmbPhysicField, 3, 1);
     layoutProject->addWidget(new QLabel(tr("Number of refinements:")), 4, 0);

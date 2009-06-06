@@ -22,7 +22,10 @@ void setLanguage(const QString &locale)
 
 QStringList availableLanguages()
 {
-    QDir dir(QDir::current().absolutePath() + "/lang");
+    QDir dir;
+    dir.setPath(QDir::current().absolutePath() + "/lang");
+    if (!dir.exists())
+        dir.setPath("/usr/share/carbon2d/lang");
 
     QStringList filters;
     filters << "*.qm";

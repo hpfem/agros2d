@@ -3,8 +3,13 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QLineEdit>
+#include <QtGui/QComboBox>
 #include <QScriptEngine>
 #include <QDoubleValidator>
+
+#include "util.h"
+
+void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField);
 
 class SLineEdit : public QLineEdit
 {

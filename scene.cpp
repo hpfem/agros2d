@@ -480,7 +480,7 @@ void Scene::doNewEdgeMarker()
         marker = new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, 0, 0);
         break;
     default:
-        cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::doNewEdgeMarker()" << endl;
+        cerr << "Physical field '" + physicFieldString(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::doNewEdgeMarker()" << endl;
         throw;
         break;
     }
@@ -515,7 +515,7 @@ void Scene::doNewLabelMarker()
         marker = new SceneLabelElasticityMarker("new material", 2e11, 0.33);
         break;
     default:
-        cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::doNewLabelMarker()" << endl;
+        cerr << "Physical field '" + physicFieldString(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::doNewLabelMarker()" << endl;
         throw;
         break;
     }
@@ -936,7 +936,7 @@ void Scene::readFromFile(const QString &fileName)
                 }
                 break;
             default:
-                cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                cerr << "Physical field '" + physicFieldString(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -986,7 +986,7 @@ void Scene::readFromFile(const QString &fileName)
                                                               element.toElement().attribute("young_modulus").toDouble(),
                                                               element.toElement().attribute("poisson_ratio").toDouble()));
                 break;            default:
-                        cerr << "Physical field '" + m_projectInfo.physicFieldString().toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                        cerr << "Physical field '" + physicFieldString(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -1077,7 +1077,7 @@ void Scene::writeToFile(const QString &fileName) {
     if (m_projectInfo.problemType == PROBLEMTYPE_PLANAR) eleProject.toElement().setAttribute("problemtype", "planar");
     if (m_projectInfo.problemType == PROBLEMTYPE_AXISYMMETRIC) eleProject.toElement().setAttribute("problemtype", "axisymmetric");
     // name
-    eleProject.toElement().setAttribute("type", m_projectInfo.physicFieldString());
+    eleProject.toElement().setAttribute("type", physicFieldString(m_projectInfo.physicField));
     // number of refinements
     eleProject.toElement().setAttribute("numberofrefinements", m_projectInfo.numberOfRefinements);
     // polynomial order

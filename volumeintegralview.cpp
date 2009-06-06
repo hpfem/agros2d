@@ -273,7 +273,7 @@ VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)
         return new VolumeIntegralValueHeat(scene);
         break;
     default:
-        cerr << "Physical field '" + scene->projectInfo().physicFieldString().toStdString() + "' is not implemented. VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)" << endl;
+        cerr << "Physical field '" + physicFieldString(scene->projectInfo().physicField).toStdString() + "' is not implemented. VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)" << endl;
         throw;
         break;
     }

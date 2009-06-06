@@ -59,7 +59,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <value key="QtVersionId" type="int" >2</value>
    <value key="addQDumper" type="" ></value>
-   <value key="buildDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d/trunk</value>
+   <value key="buildDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
   </valuemap>
  </data>
  <data>

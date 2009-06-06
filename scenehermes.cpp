@@ -343,7 +343,7 @@ void ThreadSolver::runSolver()
             }
             break;
         default:
-            cout << "Physical field '" + m_scene->projectInfo().physicFieldString().toStdString() + "' is not implemented. ThreadSolver::runSolver()" << endl;
+            cout << "Physical field '" +  physicFieldString(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. ThreadSolver::runSolver()" << endl;
             throw;
             break;
         }

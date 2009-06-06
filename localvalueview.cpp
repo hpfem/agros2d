@@ -224,11 +224,6 @@ LocalPointValue::LocalPointValue(Point &point, Scene *scene)
     this->point = point;
 }
 
-QString LocalPointValue::toString()
-{
-    return QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
-}
-
 // ****************************************************************************************************************
 
 LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point, Scene *scene) : LocalPointValue(point, scene)
@@ -267,9 +262,62 @@ LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point, Scene *
     }
 }
 
-QString LocalPointValueElectrostatic::toString()
+double LocalPointValueElectrostatic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    switch (physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
+        {
+            return potential;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return E.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return E.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return E.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return D.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return D.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return D.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
+        {
+            return we;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
+        {
+            return permittivity;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueElectrostatic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
+        throw;
+        break;
+    }
 }
 
 // ****************************************************************************************************************
@@ -321,9 +369,62 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point, Scene *
     }
 }
 
-QString LocalPointValueMagnetostatic::toString()
+double LocalPointValueMagnetostatic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    switch (physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL:
+        {
+            return potential;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return B.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return B.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return B.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return H.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return H.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return H.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY:
+        {
+            return wm;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY:
+        {
+            return permeability;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueMagnetostatic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
+        throw;
+        break;
+    }
 }
 
 // ****************************************************************************************************************
@@ -359,10 +460,59 @@ LocalPointValueHeat::LocalPointValueHeat(Point &point, Scene *scene) : LocalPoin
     }
 }
 
-QString LocalPointValueHeat::toString()
+double LocalPointValueHeat::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    switch (physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
+        {
+            return temperature;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return G.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return G.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return G.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_FLUX:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return F.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return F.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return F.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY:
+        {
+            return thermal_conductivity;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueHeat::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
+        throw;
+        break;
+    }
 }
+
 // ****************************************************************************************************************
 
 LocalPointValueElasticity::LocalPointValueElasticity(Point &point, Scene *scene) : LocalPointValue(point, scene)
@@ -393,9 +543,20 @@ LocalPointValueElasticity::LocalPointValueElasticity(Point &point, Scene *scene)
     }
 }
 
-QString LocalPointValueElasticity::toString()
+double LocalPointValueElasticity::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    switch (physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
+        {
+            return von_mises_stress;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueHeat::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
+        throw;
+        break;
+    }
 }
 
 // ***********************************************************************************************************************
@@ -422,7 +583,7 @@ LocalPointValue *localPointValueFactory(Point &point, Scene *scene)
         return new LocalPointValueElasticity(point, scene);
         break;
     default:
-        cerr << "Physical field '" + scene->projectInfo().physicFieldString().toStdString() + "' is not implemented. LocalPointValueView *localPointValueFactory(Point &point, Scene *scene)" << endl;
+        cerr << "Physical field '" + physicFieldString(scene->projectInfo().physicField).toStdString() + "' is not implemented. LocalPointValueView *localPointValueFactory(Point &point, Scene *scene)" << endl;
         throw;
         break;
     }

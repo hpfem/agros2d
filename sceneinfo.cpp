@@ -141,10 +141,10 @@ void SceneInfoView::doInvalidated()
     itemProblemFileName->setText(0, tr("Filename: ") + fileInfo.fileName());
     // problem type
     QTreeWidgetItem *itemProblemType = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemProblemType->setText(0, tr("Type: ") + scene->projectInfo().problemTypeString());
+    itemProblemType->setText(0, tr("Type: ") + problemTypeString(scene->projectInfo().problemType));
     // physic field
     QTreeWidgetItem *itemPhysicField = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemPhysicField->setText(0, tr("Field: ") + scene->projectInfo().physicFieldString());
+    itemPhysicField->setText(0, tr("Field: ") + physicFieldString(scene->projectInfo().physicField));
 
     // solver
     if (scene->isMeshed())
