@@ -96,13 +96,14 @@ scalar heat_linear_form(RealFunction* fv, RefMap* rv)
         return heatLabel[marker].volume_heat * 2 * M_PI * int_x_v(fv, rv);
 }
 
-SolutionArray *heat_main(const char *fileName,
-                        HeatEdge *edge, HeatLabel *label,
-                        int numberOfRefinements,
-                        int polynomialOrder,
-                        int adaptivitySteps,
-                        double adaptivityTolerance,
-                        bool isPlanar)
+SolutionArray *heat_main(SolverDialog *solverDialog,
+                         const char *fileName,
+                         HeatEdge *edge, HeatLabel *label,
+                         int numberOfRefinements,
+                         int polynomialOrder,
+                         int adaptivitySteps,
+                         double adaptivityTolerance,
+                         bool isPlanar)
 {
     heatEdge = edge;
     heatLabel = label;
@@ -139,7 +140,7 @@ SolutionArray *heat_main(const char *fileName,
     wf.add_biform_surf(0, 0, bilinear_form_surf);
     wf.add_liform_surf(0, linear_form_surf);
 
-// initialize the linear solver
+    // initialize the linear solver
     UmfpackSolver umfpack;
     Solution *sln = new Solution();
     Solution rsln;
@@ -167,6 +168,9 @@ SolutionArray *heat_main(const char *fileName,
         {
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
+
+            // emit signal
+            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %");
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3, 0, 0);

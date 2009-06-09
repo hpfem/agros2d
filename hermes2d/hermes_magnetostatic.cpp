@@ -61,14 +61,15 @@ scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
         return MU0 * magnetostaticLabel[marker].current_density * int_v(fv, rv);
 }
 
-SolutionArray *magnetostatic_main(const char *fileName,
-                                 MagnetostaticEdge *edge,
-                                 MagnetostaticLabel *label,
-                                 int numberOfRefinements,
-                                 int polynomialOrder,
-                                 int adaptivitySteps,
-                                 double adaptivityTolerance,
-                                 bool isPlanar)
+SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
+                                  const char *fileName,
+                                  MagnetostaticEdge *edge,
+                                  MagnetostaticLabel *label,
+                                  int numberOfRefinements,
+                                  int polynomialOrder,
+                                  int adaptivitySteps,
+                                  double adaptivityTolerance,
+                                  bool isPlanar)
 {
     magnetostaticEdge = edge;
     magnetostaticLabel = label;
@@ -103,7 +104,7 @@ SolutionArray *magnetostatic_main(const char *fileName,
     wf.add_biform(0, 0, magnetostatic_bilinear_form);
     wf.add_liform(0, magnetostatic_linear_form);
     
-// initialize the linear solver
+    // initialize the linear solver
     UmfpackSolver umfpack;
     Solution *sln = new Solution();
     Solution rsln;
@@ -131,6 +132,9 @@ SolutionArray *magnetostatic_main(const char *fileName,
         {
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
+
+            // emit signal
+            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %");
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3, 0, 0);

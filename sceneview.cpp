@@ -1543,7 +1543,7 @@ void SceneView::doDefaults()
     m_sceneViewSettings.showGrid = true;
     m_sceneViewSettings.showGeometry = true;
     m_sceneViewSettings.showInitialMesh = false;
-    // m_sceneViewSettings.showSolutionMesh = false;
+    m_sceneViewSettings.showSolutionMesh = false;
 
     // settings
     m_sceneViewSettings.gridStep = 0.05;
@@ -1673,10 +1673,12 @@ void SceneView::doSceneModeSet(QAction *)
     switch (m_sceneMode)
     {
     case SCENEMODE_OPERATE_ON_NODES:
+        break;
     case SCENEMODE_OPERATE_ON_EDGES:
         m_nodeLast = NULL;
         break;
     case SCENEMODE_OPERATE_ON_LABELS:
+        break;
     case SCENEMODE_POSTPROCESSOR:
         break;
     }

@@ -29,7 +29,7 @@
 #include "scenebasic.h"
 #include "sceneview.h"
 #include "sceneinfo.h"
-#include "scenehermes.h"
+#include "solverdialog.h"
 #include "localvalueview.h"
 #include "volumeintegralview.h"
 #include "surfaceintegralview.h"

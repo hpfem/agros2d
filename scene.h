@@ -21,7 +21,7 @@
 #include "projectdialog.h"
 #include "scenetransformdialog.h"
 
-#include "scenehermes.h"
+#include "solverdialog.h"
 #include "scenesolution.h"
 #include "hermes2d/hermes_electrostatic.h"
 #include "hermes2d/hermes_magnetostatic.h"
@@ -38,9 +38,9 @@ class SceneEdgeMarker;
 class SceneLabelMarker;
 
 struct SceneViewSettings;
-
 class SceneSolution;
 
+class SolverDialog;
 class ProjectDialog;
 class SceneTransformDialog;
 
@@ -159,9 +159,7 @@ public:
     inline ProjectInfo &projectInfo() { return m_projectInfo; }
 
     inline void refresh() { emit invalidated(); }
-    void createMesh();
-    void solve();
-    inline ThreadSolver *solver() { return m_solver; }
+    void createMeshAndSolve(SolverMode solverMode);
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
 
     int writeToTriangle();
@@ -173,22 +171,23 @@ public:
 
 protected:
 
-private:
+private:    
     bool m_isSolved;
     bool m_isMeshed;
 
     ProjectInfo m_projectInfo;
 
+    // scene solution
     SceneSolution *m_sceneSolution;
 
-    // Triangle and Hermes solve
-    ThreadSolver *m_solver;
+    // solver dialog
+    SolverDialog *solverDialog;
 
     void createActions();
 
-private slots:
-    void doSolved();
+private slots:    
     void doInvalidated();
+    void doSolved();
 };
 
 

@@ -41,14 +41,15 @@ scalar electrostatic_linear_form(RealFunction* fv, RefMap* rv)
         return electrostaticLabel[marker].charge_density / EPS0 * 2 * M_PI * int_x_v(fv, rv);
 }
 
-SolutionArray *electrostatic_main(const char *fileName,
-                                 ElectrostaticEdge *edge,
-                                 ElectrostaticLabel *label,
-                                 int numberOfRefinements,
-                                 int polynomialOrder,
-                                 int adaptivitySteps,
-                                 double adaptivityTolerance,
-                                 bool isPlanar)
+SolutionArray *electrostatic_main(SolverDialog *solverDialog,
+                                  const char *fileName,
+                                  ElectrostaticEdge *edge,
+                                  ElectrostaticLabel *label,
+                                  int numberOfRefinements,
+                                  int polynomialOrder,
+                                  int adaptivitySteps,
+                                  double adaptivityTolerance,
+                                  bool isPlanar)
 {
     electrostaticEdge = edge;
     electrostaticLabel = label;
@@ -111,6 +112,9 @@ SolutionArray *electrostatic_main(const char *fileName,
         {
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
+
+            // emit signal
+            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %");
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3, 0, 0);

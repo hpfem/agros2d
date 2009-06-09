@@ -1,9 +1,9 @@
 #include "projectdialog.h"
 
-ProjectDialog::ProjectDialog(ProjectInfo &projectInfo, bool newProject)
+ProjectDialog::ProjectDialog(ProjectInfo &projectInfo, bool isNewProject, QWidget *parent) : QDialog(parent)
 {
-    this->m_newProject = newProject;
-    this->m_projectInfo = &projectInfo;
+    m_isNewProject = isNewProject;
+    m_projectInfo = &projectInfo;
 
     setMinimumSize(300, 200);
     setWindowTitle(tr("Project properties"));
@@ -17,7 +17,7 @@ ProjectDialog::~ProjectDialog()
 {
     delete txtName;
     delete cmbProblemType;
-    delete cmbPhysicField;
+    if (m_isNewProject) delete cmbPhysicField;
     delete dtmDate;
     delete txtNumberOfRefinements;
     delete txtPolynomialOrder;
@@ -33,7 +33,7 @@ int ProjectDialog::showDialog()
 void ProjectDialog::createControls()
 {
     cmbProblemType = new QComboBox();
-    if (this->m_newProject) cmbPhysicField = new QComboBox();
+    if (this->m_isNewProject) cmbPhysicField = new QComboBox();
     txtName = new QLineEdit("");
     dtmDate = new QDateTimeEdit();
     dtmDate->setDisplayFormat("dd.MM.yyyy");
@@ -57,7 +57,7 @@ void ProjectDialog::createControls()
     layoutProject->addWidget(new QLabel(tr("Problem type:")), 2, 0);
     layoutProject->addWidget(cmbProblemType, 2, 1);
     layoutProject->addWidget(new QLabel(tr("Physic field:")), 3, 0);
-    if (!this->m_newProject)
+    if (!this->m_isNewProject)
         layoutProject->addWidget(new QLabel(physicFieldString(m_projectInfo->physicField)), 3, 1);
     else
         layoutProject->addWidget(cmbPhysicField, 3, 1);
@@ -91,7 +91,7 @@ void ProjectDialog::fillComboBox()
     cmbProblemType->addItem(tr("planar"), PROBLEMTYPE_PLANAR);
     cmbProblemType->addItem(tr("axisymmetric"), PROBLEMTYPE_AXISYMMETRIC);
 
-    if (this->m_newProject)
+    if (this->m_isNewProject)
     {
         cmbPhysicField->clear();
         cmbPhysicField->addItem(tr("electrostatic"), PHYSICFIELD_ELECTROSTATIC);
@@ -103,7 +103,7 @@ void ProjectDialog::fillComboBox()
 }
 
 void ProjectDialog::load() {
-    if (this->m_newProject) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_projectInfo->physicField));
+    if (this->m_isNewProject) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_projectInfo->physicField));
     txtName->setText(m_projectInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_projectInfo->problemType));
     dtmDate->setDate(m_projectInfo->date);
@@ -114,7 +114,7 @@ void ProjectDialog::load() {
 }
 
 void ProjectDialog::save() {
-    if (this->m_newProject) m_projectInfo->physicField = (PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt();
+    if (this->m_isNewProject) m_projectInfo->physicField = (PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt();
     m_projectInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
     m_projectInfo->name = txtName->text();
     m_projectInfo->date = dtmDate->date();

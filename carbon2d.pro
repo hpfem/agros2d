@@ -16,7 +16,7 @@ QMAKE_CXXFLAGS += -w
 SOURCES += main.cpp \
     util.cpp \
     gui.cpp \
-    scenehermes.cpp \
+    solverdialog.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
     hermes2d/hermes_magnetostatic.cpp \
@@ -39,7 +39,7 @@ SOURCES += main.cpp \
 HEADERS += mainwindow.h \
     util.h \
     gui.h \
-    scenehermes.h \
+    solverdialog.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
     hermes2d/hermes_magnetostatic.h \

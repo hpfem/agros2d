@@ -2,6 +2,9 @@
 #define SCENEHERMES_H
 
 #include <QtGui/QProgressBar>
+#include <QtGui/QProgressDialog>
+#include <QtGui/QListWidget>
+#include <QtGui/QTextEdit>
 #include <QThread>
 #include <QProcess>
 #include <QFileInfo>
@@ -63,41 +66,14 @@ struct SolutionArray
     }
 };
 
-class ThreadSolver : public QThread
+class SolverDialog : public QDialog
 {
     Q_OBJECT
 
 signals:
-    void message(QString);
+    void message(const QString &message);
     void updateProgress(int percent);
-
-public:
-    ThreadSolver(Scene *scene);
-    ~ThreadSolver();
-
-    inline ThreadSolverMode mode() { return m_mode; }
-    void setMode(ThreadSolverMode mode) { this->m_mode = mode; }
-    inline QString errorMessage() { return m_errorMessage; }
-
-protected:
-    QProcess *processTriangle;
-
-    ThreadSolverMode m_mode;
-    Scene *m_scene;
-    QString m_errorMessage;
-
-    void runMesh();
-    void runSolver();
-
-    void run();
-
-private slots:
-    void doMeshTriangleCreated(int exitCode);
-};
-
-class SolverDialog : public QDialog
-{
-    Q_OBJECT
+    void solved();
 
 public slots:
     void doShowMessage(const QString &message);
@@ -106,19 +82,29 @@ public:
     SolverDialog(Scene *scene, QWidget *parent);
     ~SolverDialog();
 
-    int showDialog();
+    void setMode(SolverMode mode) { this->m_mode = mode; }    
+    void solve();
 
 private slots:
-    void doSolved();
-    void doReject();
+    void doAccept();
 
 private:
+    SolverMode m_mode;
+    QString m_errorMessage;
+
     Scene *m_scene;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;
+    QTextEdit *lstMessage;
+
+    void runMesh();
+    void runSolver();
 
     void createControls();
+
+private slots:
+    void doMeshTriangleCreated(int exitCode);
 };
 
 #endif //SCENEHERMES_H

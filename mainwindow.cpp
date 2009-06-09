@@ -308,7 +308,7 @@ void MainWindow::setRecentFiles()
 void MainWindow::doDocumentNew()
 {
     ProjectInfo projectInfo;
-    ProjectDialog *projectDialog = new ProjectDialog(projectInfo, true);
+    ProjectDialog *projectDialog = new ProjectDialog(projectInfo, true, this);
     if (projectDialog->showDialog() == QDialog::Accepted)
     {
         m_scene->clear();
@@ -320,6 +320,7 @@ void MainWindow::doDocumentNew()
         doSetActions();
         sceneView->doZoomBestFit();
     }
+    delete projectDialog;
 }
 
 void MainWindow::doDocumentOpen()
@@ -409,7 +410,8 @@ void MainWindow::doDocumentSaveImage()
 
 void MainWindow::doCreateMesh()
 {
-    m_scene->createMesh();
+    // create mesh
+    m_scene->createMeshAndSolve(SOLVER_MESH);
 
     sceneView->actSceneModeLabel->trigger();
     sceneView->sceneViewSettings().showInitialMesh = true;
@@ -419,19 +421,14 @@ void MainWindow::doCreateMesh()
 
 void MainWindow::doSolve()
 {
-    // save project
-    m_scene->writeToFile(m_scene->projectInfo().fileName);
-
-    SolverDialog *solverDialog = new SolverDialog(m_scene, this);
-    if (solverDialog->showDialog() == QDialog::Accepted)
-    {
+    // solve project
+    m_scene->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
+    if (m_scene->sceneSolution()->isSolved())
         sceneView->actSceneModePostprocessor->trigger();
 
-        // show local point values
-        Point point = Point(0, 0);
-        localPointValueView->doShowPoint(localPointValueFactory(point, m_scene));
-        sceneView->doInvalidated();
-    }
+    // show local point values
+    Point point = Point(0, 0);
+    localPointValueView->doShowPoint(localPointValueFactory(point, m_scene));
 }
 
 void MainWindow::doOptions()
@@ -466,8 +463,8 @@ void MainWindow::doPaste()
     doSetActions();
     sceneView->doZoomBestFit();
 
-    doSolve();
-    sceneView->doZoomBestFit();
+    // doSolve();
+    // sceneView->doZoomBestFit();
 }
 
 void MainWindow::doSetActions()

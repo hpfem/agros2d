@@ -2,7 +2,7 @@
 #define MAGNETOSTATIC_H
 
 #include "util.h"
-#include "scenehermes.h"
+#include "solverdialog.h"
 #include "hermes2d.h"
 #include "solver_umfpack.h"
 
@@ -11,6 +11,7 @@
 using namespace std;
 
 struct SolutionArray;
+class SolverDialog;
 
 struct MagnetostaticEdge
 {
@@ -28,13 +29,14 @@ static MagnetostaticEdge *magnetostaticEdge;
 static MagnetostaticLabel *magnetostaticLabel;
 static bool magnetostaticIsPlanar;
 
-SolutionArray *magnetostatic_main(const char *fileName,
-                                 MagnetostaticEdge *edge,
-                                 MagnetostaticLabel *label,
-                                 int numberOfRefinements,
-                                 int polynomialOrder,
-                                 int adaptivitySteps,
-                                 double adaptivityTolerance,
-                                 bool isPlanar);
+SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
+                                  const char *fileName,
+                                  MagnetostaticEdge *edge,
+                                  MagnetostaticLabel *label,
+                                  int numberOfRefinements,
+                                  int polynomialOrder,
+                                  int adaptivitySteps,
+                                  double adaptivityTolerance,
+                                  bool isPlanar);
 
 #endif // MAGNETOSTATIC_H

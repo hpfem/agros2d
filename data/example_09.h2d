@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="3" numberofrefinements="0" adaptivitysteps="2" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Example 09" >
+        <project adaptivitytolerance="1" numberofrefinements="0" adaptivitysteps="10" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Example 09" >
             <edges>
                 <edge type="potential" value="0" id="1" name="U = 0 V" />
                 <edge type="surface_charge_density" value="0" id="2" name="neumann" />

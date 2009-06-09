@@ -66,7 +66,7 @@ struct RectPoint
     inline double height() { return fabs(end.y - start.y); }
 };
 
-enum ThreadSolverMode
+enum SolverMode
 {
     SOLVER_MESH,
     SOLVER_MESH_AND_SOLVE

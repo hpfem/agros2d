@@ -290,7 +290,7 @@ void SceneInfoView::doContextMenu(const QPoint &pos)
     QTreeWidgetItem *item = trvWidget->itemAt(pos);
     doItemSelected(item, 0);
 
-    if ((item != NULL) && (item->data(0, Qt::UserRole) != NULL))
+    if ((item != NULL) && (item->data(0, Qt::UserRole).isValid()))
     {
         trvWidget->setCurrentItem(item);
 

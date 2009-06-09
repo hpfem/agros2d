@@ -1,6 +1,6 @@
 #include "scenetransformdialog.h"
 
-SceneTransformDialog::SceneTransformDialog(Scene *scene)
+SceneTransformDialog::SceneTransformDialog(Scene *scene, QWidget *parent) : QDialog(parent)
 {
     this->m_scene = scene;
 

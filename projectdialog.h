@@ -16,7 +16,7 @@ class ProjectDialog: public QDialog
 {
     Q_OBJECT
 public:
-    ProjectDialog(ProjectInfo &projectInfo, bool newProject);
+    ProjectDialog(ProjectInfo &projectInfo, bool isNewProject, QWidget *parent = 0);
     ~ProjectDialog();
 
     int showDialog();
@@ -25,16 +25,10 @@ private slots:
     void doAccept();
     void doReject();
 
-protected:
-    bool m_newProject;
+private:
+    bool m_isNewProject;
     ProjectInfo *m_projectInfo;
 
-    void createControls();
-
-    void load();
-    void save();
-
-private:
     QLineEdit *txtName;
     QComboBox *cmbProblemType;
     QComboBox *cmbPhysicField;
@@ -44,7 +38,11 @@ private:
     QSpinBox *txtAdaptivitySteps;
     SLineEdit *txtAdaptivityTolerance;
 
+    void createControls();
     void fillComboBox();
+
+    void load();
+    void save();
 };
 
 #endif // PROJECTDIALOG_H

@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project numberofrefinements="0" adaptivitysteps="5" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
+        <project adaptivitytolerance="0" numberofrefinements="0" adaptivitysteps="5" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
             <edges>
                 <edge temperature="-15" type="temperature" id="1" name="T inner" />
                 <edge h="20" external_temperature="20" type="heat_flux" id="2" name="T outer" heat_flux="0" />

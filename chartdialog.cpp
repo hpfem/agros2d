@@ -107,8 +107,8 @@ void ChartDialog::createControls()
     // axis points
     txtAxisPoints = new QSpinBox(this);
     txtAxisPoints->setMinimum(2);
-    txtAxisPoints->setMaximum(200);
-    txtAxisPoints->setValue(50);
+    txtAxisPoints->setMaximum(500);
+    txtAxisPoints->setValue(200);
     
     QVBoxLayout *layoutAxisPoints = new QVBoxLayout();
     layoutAxisPoints->addWidget(txtAxisPoints);
@@ -188,7 +188,10 @@ void ChartDialog::doPlot()
     PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
     
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
-    chart->setAxisTitle(QwtPlot::yLeft, physicFieldVariableString(physicFieldVariable) + " (" + physicFieldVariableUnits(physicFieldVariable) + ")");
+    QwtText text("");
+    text.setFont(QFont("Helvetica", 11, QFont::Normal));
+    text.setText(physicFieldVariableString(physicFieldVariable) + " (" + physicFieldVariableUnits(physicFieldVariable) + ")");
+    chart->setAxisTitle(QwtPlot::yLeft, text);
     
     // table
     trvTable->clear();
@@ -198,10 +201,11 @@ void ChartDialog::doPlot()
     trvTable->setHorizontalHeaderLabels(headers);
     
     // chart
-    if (radAxisLength->isChecked()) chart->setAxisTitle(QwtPlot::xBottom, tr("Length (m)"));
-    if (radAxisX->isChecked()) chart->setAxisTitle(QwtPlot::xBottom, tr("X (m)"));
-    if (radAxisY->isChecked()) chart->setAxisTitle(QwtPlot::xBottom, tr("Y (m)"));
-    
+    if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
+    if (radAxisX->isChecked()) text.setText(tr("X (m)"));
+    if (radAxisY->isChecked()) text.setText(tr("Y (m)"));
+    chart->setAxisTitle(QwtPlot::xBottom, text);
+
     // line
     Point start(txtStartX->value(), txtStartY->value());
     Point end(txtEndX->value(), txtEndY->value());
@@ -225,8 +229,7 @@ void ChartDialog::doPlot()
         
         // table
         row.clear();
-        row << QString("%1").arg(start.x + i*diff.x, 0, 'e', 5) <<
-                QString("%1").arg(start.y + i*diff.y, 0, 'e', 5) <<
+        row << QString("%1").arg(start.x + i*diff.x, 0, 'e', 5) << QString("%1").arg(start.y + i*diff.y, 0, 'e', 5) <<
                 localPointValue->variables();
 
         for (int j = 0; j<row.count(); j++)
@@ -341,7 +344,7 @@ void ChartDialog::doExportData()
         // m-file
         if (fileInfo.suffix().toLower() == "m")
         {
-             // items
+            // items
             for (int j = 0; j < trvTable->columnCount(); j++)
             {
                 out << trvTable->horizontalHeaderItem(j)->text().replace(" ", "_") << " = [";
@@ -391,6 +394,10 @@ Chart::Chart(QWidget *parent) : QwtPlot(parent)
     grid->enableXMin(true);
     grid->setMajPen(QPen(Qt::darkGray, 0, Qt::DotLine));
     grid->setMinPen(QPen(Qt::gray, 0 , Qt::DotLine));
+    grid->enableX(true);
+    grid->enableY(true);
+    grid->enableXMin(true);
+    grid->enableYMin(true);
     grid->attach(this);
     
     // axes
@@ -425,8 +432,8 @@ void Chart::setData(double *xval, double *yval, int count)
     const bool doReplot = autoReplot();
     setAutoReplot(false);
     
-    m_curve->setData(xval, yval, count);
-    
+    m_curve->setData(xval, yval, count);    
+
     setAutoReplot(doReplot);
     
     replot();

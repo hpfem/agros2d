@@ -1,22 +1,77 @@
-#include "scenehermes.h"
+#include "solverdialog.h"
 
-ThreadSolver::ThreadSolver(Scene *scene)
+SolverDialog::SolverDialog(Scene *scene, QWidget *parent) : QDialog(parent)
 {
-    this->m_scene = scene;
-    this->m_mode = SOLVER_MESH;
+    m_scene = scene;
+
+    setMinimumSize(350, 260);
+    setMaximumSize(minimumSize());
+    setWindowIcon(icon("logo"));
+    setWindowTitle(tr("Solve problem ..."));   
+
+    connect(this, SIGNAL(message(QString)), this, SLOT(doShowMessage(QString)));
+
+    resize(minimumSize());
+
+    createControls();}
+
+SolverDialog::~SolverDialog()
+{
+    delete lblMessage;
+    delete progressBar;
+    delete lstMessage;
 }
 
-ThreadSolver::~ThreadSolver()
+void SolverDialog::solve()
 {
-    delete processTriangle;
-}
+    lblMessage->setText(tr("Solve problem ..."));
+    lstMessage->clear();
+    progressBar->setValue(0);
 
-void ThreadSolver::run()
-{
+    QApplication::processEvents();
+
     runMesh();
 }
 
-void ThreadSolver::runMesh()
+void SolverDialog::doShowMessage(const QString &message)
+{
+    lstMessage->insertPlainText(message + "\n");
+    lstMessage->ensureCursorVisible();
+    lblMessage->setText(message);
+
+    QApplication::processEvents();
+}
+
+void SolverDialog::createControls()
+{
+    lblMessage = new QLabel(this);
+
+    progressBar = new QProgressBar(this);
+    connect(this, SIGNAL(updateProgress(int)), progressBar, SLOT(setValue(int)));
+
+    lstMessage = new QTextEdit(this);
+    lstMessage->setReadOnly(true);
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(lblMessage);
+    layout->addWidget(progressBar);
+    layout->addWidget(lstMessage);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+}
+
+void SolverDialog::doAccept()
+{
+    hide();
+}
+
+void SolverDialog::runMesh()
 {
     // file info
     QFileInfo fileInfo(m_scene->projectInfo().fileName);
@@ -29,7 +84,7 @@ void ThreadSolver::runMesh()
 
     // create triangle files
     m_scene->writeToTriangle();
-    emit message(tr("Triangle files was created."));
+    emit message(tr("Triangle poly file was created."));
     updateProgress(20);
 
     // exec triangle
@@ -45,21 +100,22 @@ void ThreadSolver::runMesh()
     {
         emit message(tr("Could not start triangle."));
         processTriangle->kill();
+        emit solved();
         return;
     }
 
     while (!processTriangle->waitForFinished())
-        sleep(0.1);
+        sleep(0.1);       
 }
 
-void ThreadSolver::doMeshTriangleCreated(int exitCode)
+void SolverDialog::doMeshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
         // file info
         QFileInfo fileInfo(m_scene->projectInfo().fileName);
 
-        emit message(tr("Triangle mesh was created."));
+        emit message(tr("Triangle mesh files was created."));
         updateProgress(40);
 
         // convert triangle mesh to hermes mesh
@@ -73,9 +129,12 @@ void ThreadSolver::doMeshTriangleCreated(int exitCode)
             QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".ele");
             QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".triangle.out");
             QFile::remove(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".triangle.err");
+            emit message(tr("Triangle mesh files was deleted."));
 
-            emit message(tr("Triangle files was deleted."));
-            updateProgress(50);
+            if (m_mode == SOLVER_MESH)
+                updateProgress(100);
+            else
+                updateProgress(50);
         }
         else
         {
@@ -84,6 +143,7 @@ void ThreadSolver::doMeshTriangleCreated(int exitCode)
             QMessageBox::warning(NULL, tr("Triangle to Hermes error"), msg);
 
             emit message(msg);
+            emit solved();
             return;
         }
 
@@ -105,10 +165,12 @@ void ThreadSolver::doMeshTriangleCreated(int exitCode)
         QMessageBox::warning(NULL, tr("Triangle error"), m_errorMessage);
 
         file.close();
-    }    
+    }
+
+    emit solved();
 }
 
-void ThreadSolver::runSolver()
+void SolverDialog::runSolver()
 {
     // file info
     QFileInfo fileInfo(m_scene->projectInfo().fileName);
@@ -118,7 +180,7 @@ void ThreadSolver::runSolver()
     QTime time;
     time.start();
 
-    emit message(tr("Solving ..."));
+    emit message(tr("Solver was started: ") + physicFieldString(m_scene->projectInfo().physicField) + " (" + problemTypeString(m_scene->projectInfo().problemType) + ")");
     updateProgress(60);
 
     SolutionArray *solutionArray;
@@ -164,7 +226,8 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                solutionArray = electrostatic_main(fileName.toStdString().c_str(),
+                solutionArray = electrostatic_main(this,
+                                                   fileName.toStdString().c_str(),
                                                    electrostaticEdge, electrostaticLabel,
                                                    m_scene->projectInfo().numberOfRefinements,
                                                    m_scene->projectInfo().polynomialOrder,
@@ -213,13 +276,14 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                solutionArray = magnetostatic_main(fileName.toStdString().c_str(),
-                                              magnetostaticEdge, magnetostaticLabel,
-                                              m_scene->projectInfo().numberOfRefinements,
-                                              m_scene->projectInfo().polynomialOrder,
-                                              m_scene->projectInfo().adaptivitySteps,
-                                              m_scene->projectInfo().adaptivityTolerance,
-                                              (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                solutionArray = magnetostatic_main(this,
+                                                   fileName.toStdString().c_str(),
+                                                   magnetostaticEdge, magnetostaticLabel,
+                                                   m_scene->projectInfo().numberOfRefinements,
+                                                   m_scene->projectInfo().polynomialOrder,
+                                                   m_scene->projectInfo().adaptivitySteps,
+                                                   m_scene->projectInfo().adaptivityTolerance,
+                                                   (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] magnetostaticEdge;
                 delete [] magnetostaticLabel;
@@ -277,13 +341,14 @@ void ThreadSolver::runSolver()
                     }
                 }
 
-                solutionArray = heat_main(fileName.toStdString().c_str(),
-                                     heatEdge, heatLabel,
-                                     m_scene->projectInfo().numberOfRefinements,
-                                     m_scene->projectInfo().polynomialOrder,
-                                     m_scene->projectInfo().adaptivitySteps,
-                                     m_scene->projectInfo().adaptivityTolerance,
-                                     (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                solutionArray = heat_main(this,
+                                          fileName.toStdString().c_str(),
+                                          heatEdge, heatLabel,
+                                          m_scene->projectInfo().numberOfRefinements,
+                                          m_scene->projectInfo().polynomialOrder,
+                                          m_scene->projectInfo().adaptivitySteps,
+                                          m_scene->projectInfo().adaptivityTolerance,
+                                          (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] heatEdge;
                 delete [] heatLabel;
@@ -333,10 +398,10 @@ void ThreadSolver::runSolver()
                 }
 
                 solutionArray = elasticity_main(fileName.toStdString().c_str(),
-                                           elasticityEdge, elasticityLabel,
-                                           m_scene->projectInfo().numberOfRefinements,
-                                           m_scene->projectInfo().polynomialOrder,
-                                           (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                                                elasticityEdge, elasticityLabel,
+                                                m_scene->projectInfo().numberOfRefinements,
+                                                m_scene->projectInfo().polynomialOrder,
+                                                (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] elasticityEdge;
                 delete [] elasticityLabel;
@@ -361,74 +426,4 @@ void ThreadSolver::runSolver()
     updateProgress(100);
 
     m_scene->sceneSolution()->setTimeElapsed(time.elapsed());
-}
-
-// *************************************************************************************************************************
-
-SolverDialog::SolverDialog(Scene *scene, QWidget *parent) : QDialog(parent)
-{
-    this->m_scene = scene;
-
-    setMinimumSize(300, 120);
-    setMaximumSize(minimumSize());
-    setWindowIcon(icon("logo"));
-    setWindowTitle(tr("Solve problem ..."));
-    setWindowModality(Qt::ApplicationModal);
-
-    resize(minimumSize());
-
-    connect(m_scene->solver(), SIGNAL(finished()), this, SLOT(doSolved()));
-
-    createControls();
-}
-
-SolverDialog::~SolverDialog()
-{
-    delete lblMessage;
-    delete progressBar;
-}
-
-int SolverDialog::showDialog()
-{
-    m_scene->solve();
-
-    return exec();
-}
-
-void SolverDialog::doShowMessage(const QString &message)
-{
-    lblMessage->setText(message);
-}
-
-void SolverDialog::createControls()
-{
-    lblMessage = new QLabel(this);
-    lblMessage->setText(tr("Solve problem ..."));
-    connect(m_scene->solver(), SIGNAL(message(QString)), lblMessage, SLOT(setText(QString)));
-
-    progressBar = new QProgressBar(this);
-    connect(m_scene->solver(), SIGNAL(updateProgress(int)), progressBar, SLOT(setValue(int)));
-
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(lblMessage);
-    layout->addWidget(progressBar);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
-
-    setLayout(layout);
-}
-
-void SolverDialog::doSolved()
-{
-    accept();
-}
-
-void SolverDialog::doReject()
-{
-    m_scene->solver()->terminate();
-    reject();
 }

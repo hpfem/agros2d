@@ -1,5 +1,17 @@
 #include "scenesolution.h"
 
+void dxdyfilter(int n, scalar* a, scalar* dadx, scalar* dady,
+                   scalar* out, scalar* outdx, scalar* outdy)
+{
+    for (int i = 0; i < n; i++)
+    {
+        out[i] = a[i];
+        outdx[i] = dadx[i];
+        outdy[i] = dady[i];
+    }
+}
+
+
 SceneSolution::SceneSolution(Scene *scene)
 {
     m_sln1 = NULL;
@@ -18,6 +30,8 @@ void SceneSolution::clear()
     {
         delete m_sln1;
         m_sln1 = NULL;
+        // delete m_sln1DXDY;
+        // m_sln1DXDY = NULL;
     }
     if (m_sln2 != NULL)
     {
@@ -555,6 +569,7 @@ PointValue SceneSolution::pointValue(const Point &point)
     {
         value = m_sln1->get_pt_value(point.x, point.y, FN_VAL_0);
         
+        /*
         if (m_scene->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
         {
             index = findTriangleInVectorizer(m_vec, point);
@@ -568,6 +583,10 @@ PointValue SceneSolution::pointValue(const Point &point)
                 dy = (vecVert[vecTris[index][0]][3] + vecVert[vecTris[index][1]][3] + vecVert[vecTris[index][2]][3]) / 3.0;
             }
         }
+        */
+
+        dx =  m_sln1->get_pt_value(point.x, point.y, FN_DX_0);
+        dy =  m_sln1->get_pt_value(point.x, point.y, FN_DY_0);
     }
     
     // find marker
@@ -584,8 +603,9 @@ PointValue SceneSolution::pointValue(const Point &point)
 
 void SceneSolution::setSolutionArray(SolutionArray *solutionArray)
 {
-    this->m_sln1 = solutionArray->sln1;
-    this->m_sln2 = solutionArray->sln2;
+    m_sln1 = solutionArray->sln1;
+    // m_sln1DXDY = new DXDYFilter(dxdyfilter, m_sln1);
+    m_sln2 = solutionArray->sln2;
     
     if (m_scene->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
         m_vec.process_solution(m_sln1, FN_DX_0, m_sln1, FN_DY_0, EPS_NORMAL);

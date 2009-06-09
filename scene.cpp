@@ -31,20 +31,19 @@ void DxfFilter::addArc(const DL_ArcData& a)
 
 Scene::Scene() {
     createActions();
-    // threads for mesh a solver
-    m_solver = new ThreadSolver(this);
-    m_sceneSolution = new SceneSolution(this);
 
-    connect(m_solver, SIGNAL(finished()), this, SLOT(doSolved()));
+    m_sceneSolution = new SceneSolution(this);
+    solverDialog = new SolverDialog(this, QApplication::activeWindow());
+    connect(solverDialog, SIGNAL(solved()), this, SLOT(doSolved()));
+
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
     clear();
-    // this->settings = new Settings();
 }
 
 Scene::~Scene() {
-    delete m_solver;
     delete m_sceneSolution;
+    delete solverDialog;
 }
 
 void Scene::createActions()
@@ -365,31 +364,24 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
     emit invalidated();
 }
 
-void Scene::createMesh()
+void Scene::createMeshAndSolve(SolverMode solverMode)
 {
-    m_isMeshed = false;
-
-    sceneSolution()->mesh().free();
-    m_solver->setMode(SOLVER_MESH);
-    if (m_solver->isRunning())
-        m_solver->terminate();
-
-    m_solver->start();
-}
-
-void Scene::solve()
-{
+    // clear project
     sceneSolution()->clear();
 
-    m_solver->setMode(SOLVER_MESH_AND_SOLVE);
-    if (m_solver->isRunning())
-        m_solver->terminate();
+    // save project
+    writeToFile(m_projectInfo.fileName);
 
-    m_solver->start();
+    // solve
+    solverDialog->setMode(solverMode);
+    solverDialog->show();
+    solverDialog->solve();
 }
 
 void Scene::doSolved()
 {
+    solverDialog->hide();
+
     // file info
     QFileInfo fileInfo(m_projectInfo.fileName);
 
@@ -405,18 +397,13 @@ void Scene::doSolved()
 
         // set system locale
         setlocale(LC_NUMERIC, plocale);
-
-        emit invalidated();
     }
 
     // set solver results
-    if (m_solver->mode() == SOLVER_MESH_AND_SOLVE)
-    {
-        if (sceneSolution()->sln() != NULL)
-        {
-            emit solved();
-        }
-    }
+    if (m_sceneSolution->isSolved())
+        emit solved();
+
+    emit invalidated();
 }
 
 void Scene::doInvalidated()
@@ -428,7 +415,7 @@ void Scene::doInvalidated()
 void Scene::doNewNode(const Point &point)
 {
     SceneNode *node = new SceneNode(point);
-    if (node->showDialog(this, NULL) == QDialog::Accepted)
+    if (node->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
     {
         addNode(node);
     }
@@ -439,7 +426,7 @@ void Scene::doNewNode(const Point &point)
 void Scene::doNewEdge()
 {
     SceneEdge *edge = new SceneEdge(nodes[0], nodes[1], edgeMarkers[0], 0);
-    if (edge->showDialog(this, NULL) == QDialog::Accepted)
+    if (edge->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
     {
         addEdge(edge);
     }
@@ -450,7 +437,7 @@ void Scene::doNewEdge()
 void Scene::doNewLabel()
 {
     SceneLabel *label = new SceneLabel(Point(), labelMarkers[0], 0);
-    if (label->showDialog(this, NULL) == QDialog::Accepted)
+    if (label->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
     {
         addLabel(label);
     }
@@ -485,7 +472,7 @@ void Scene::doNewEdgeMarker()
         break;
     }
 
-    if (marker->showDialog(this, NULL) == QDialog::Accepted)
+    if (marker->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
     {
         addEdgeMarker(marker);
     }
@@ -520,7 +507,7 @@ void Scene::doNewLabelMarker()
         break;
     }
 
-    if (marker->showDialog(this, NULL) == QDialog::Accepted)
+    if (marker->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
     {
         addLabelMarker(marker);
     }
@@ -530,17 +517,19 @@ void Scene::doNewLabelMarker()
 
 void Scene::doTransform()
 {
-    SceneTransformDialog *sceneTransformDialog = new SceneTransformDialog(this);
+    SceneTransformDialog *sceneTransformDialog = new SceneTransformDialog(this, QApplication::activeWindow());
     sceneTransformDialog->exec();
+    delete sceneTransformDialog;
 }
 
 void Scene::doProjectProperties()
 {
-    ProjectDialog *projectDialog = new ProjectDialog(m_projectInfo, false);
+    ProjectDialog *projectDialog = new ProjectDialog(m_projectInfo, false, QApplication::activeWindow());
     if (projectDialog->showDialog() == QDialog::Accepted)
     {
         emit invalidated();
     }
+    delete projectDialog;
 }
 
 int Scene::writeToTriangle()
