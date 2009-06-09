@@ -10,4 +10,3 @@ Package: carbon2d
 Architecture: any
 Depends: ${shlibs:Depends}, triangle-bin (>= 1.6), libsuitesparse-3.2.0 (>= 3.2.0), libglu1-mesa (>= 3.4.0)
 Description: hp-FEM multiphysics solver based on Hermes2D library
-

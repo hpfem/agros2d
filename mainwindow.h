@@ -114,6 +114,8 @@ private:
     VolumeIntegralValueView *volumeIntegralValueView;
     SurfaceIntegralValueView *surfaceIntegralValueView;
 
+    ChartDialog *chartDialog;
+
     void setRecentFiles();
 
     void createActions();

@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project numberofrefinements="0" adaptivitysteps="6" polynomialorder="2" problemtype="axisymmetric" type="magnetostatic" id="0" name="unnamed" >
+        <project adaptivitytolerance="2" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" type="magnetostatic" id="0" name="unnamed" >
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
             </edges>

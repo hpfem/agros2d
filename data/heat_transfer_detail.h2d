@@ -1,31 +1,24 @@
 <document>
     <projects>
-        <project adaptivitytolerance="10" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="heat transfer" id="0" name="Detail" >
+        <project adaptivitytolerance="2" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="Detail" >
             <edges>
                 <edge h="25" external_temperature="-15" type="heat_flux" id="1" name="Exterier" heat_flux="0" />
                 <edge h="4" external_temperature="21" type="heat_flux" id="2" name="Interier" heat_flux="0" />
                 <edge h="0" external_temperature="0" type="heat_flux" id="3" name="Neumann" heat_flux="0" />
             </edges>
             <labels>
-                <label thermal_conductivity="0.407" volume_heat="0" id="1" name="Zdici prvky SENDWIX tl.175 mm" />
-                <label thermal_conductivity="0.418" volume_heat="0" id="2" name="Zdici prvky SENDWIX tl. 240 kontakt" />
-                <label thermal_conductivity="0.617" volume_heat="0" id="3" name="Zdici prvky SENDWIX tl. 240 mm sendwich" />
-                <label thermal_conductivity="0.042" volume_heat="0" id="4" name="Izolace Rockwool Fasrock L" />
-                <label thermal_conductivity="0.036" volume_heat="0" id="5" name="Flexibilni pena" />
-                <label thermal_conductivity="1.01" volume_heat="0" id="6" name="Naslapna vrstva podlahy" />
-                <label thermal_conductivity="0.037" volume_heat="0" id="7" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm" />
-                <label thermal_conductivity="0.039" volume_heat="0" id="8" name="Steprock ND" />
-                <label thermal_conductivity="0.035" volume_heat="0" id="9" name="Izolace Rockwool Airrock ND" />
-                <label thermal_conductivity="1.58" volume_heat="0" id="10" name="Stropní konstrukce Rector tl. 200 mm" />
-                <label thermal_conductivity="0.671" volume_heat="0" id="11" name="Vapenopiskovy preklad Sendwix 2DF" />
-                <label thermal_conductivity="0.57" volume_heat="0" id="12" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm" />
-                <label thermal_conductivity="0.57" volume_heat="0" id="13" name="Tenkovrstva silikonova omitka Cermix 2 mm" />
-                <label thermal_conductivity="0.57" volume_heat="0" id="14" name="Lepidlo Cermix Flex T" />
-                <label thermal_conductivity="0.47" volume_heat="0" id="15" name="Jednovrstva omitka Cemix 073 tl. 8 mm" />
-                <label thermal_conductivity="0.47" volume_heat="0" id="16" name="Spojovaci mustek Kontakt SX tl. 2 mm" />
-                <label thermal_conductivity="0.14" volume_heat="0" id="17" name="Sklo" />
-                <label thermal_conductivity="1.43" volume_heat="0" id="18" name="Betonova mazanina s KARI siti" />
-                <label thermal_conductivity="1.23" volume_heat="0" id="19" name="Betonovy zaklad" />
+                <label thermal_conductivity="0.418" volume_heat="0" id="1" name="Zdici prvky SENDWIX tl. 240 kontakt" />
+                <label thermal_conductivity="0.042" volume_heat="0" id="2" name="Izolace Rockwool Fasrock L" />
+                <label thermal_conductivity="0.036" volume_heat="0" id="3" name="Flexibilni pena" />
+                <label thermal_conductivity="1.01" volume_heat="0" id="4" name="Naslapna vrstva podlahy" />
+                <label thermal_conductivity="0.037" volume_heat="0" id="5" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm" />
+                <label thermal_conductivity="1.58" volume_heat="0" id="6" name="Stropní konstrukce Rector tl. 200 mm" />
+                <label thermal_conductivity="0.671" volume_heat="0" id="7" name="Vapenopiskovy preklad Sendwix 2DF" />
+                <label thermal_conductivity="0.57" volume_heat="0" id="8" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm" />
+                <label thermal_conductivity="0.57" volume_heat="0" id="9" name="Tenkovrstva silikonova omitka Cermix 2 mm" />
+                <label thermal_conductivity="0.47" volume_heat="0" id="10" name="Jednovrstva omitka Cemix 073 tl. 8 mm" />
+                <label thermal_conductivity="0.14" volume_heat="0" id="11" name="Sklo" />
+                <label thermal_conductivity="1.23" volume_heat="0" id="12" name="Betonovy zaklad" />
             </labels>
         </project>
     </projects>
@@ -171,21 +164,21 @@
             <edge end="47" marker="0" id="74" start="20" angle="0" />
         </edges>
         <labels>
-            <label x="0.548642" y="1.52308" marker="4" id="0" area="0" />
-            <label x="0.72758" y="1.53842" marker="2" id="1" area="0" />
-            <label x="0.9746860000000001" y="1.15327" marker="19" id="2" area="0" />
-            <label x="1.18089" y="1.11067" marker="7" id="3" area="0" />
-            <label x="0.9797979999999999" y="1.02376" marker="10" id="4" area="0" />
-            <label x="1.20089" y="0.883511" marker="15" id="5" area="0" />
-            <label x="0.740474" y="0.801808" marker="11" id="6" area="0" />
-            <label x="0.653573" y="0.545525" marker="17" id="7" area="0.001" />
-            <label x="0.677139" y="0.645682" marker="5" id="8" area="0" />
-            <label x="0.490513" y="1.26727" marker="13" id="9" area="0" />
-            <label x="0.493158" y="1.25838" marker="12" id="10" area="0" />
-            <label x="0.495586" y="1.24928" marker="12" id="11" area="0" />
-            <label x="0.868425" y="1.25275" marker="6" id="12" area="0" />
-            <label x="0.874732" y="1.21192" marker="6" id="13" area="0" />
-            <label x="0.862434" y="1.22563" marker="15" id="14" area="0" />
+            <label x="0.548642" y="1.52308" marker="2" id="0" area="0" />
+            <label x="0.72758" y="1.53842" marker="1" id="1" area="0" />
+            <label x="0.9746860000000001" y="1.15327" marker="12" id="2" area="0" />
+            <label x="1.18089" y="1.11067" marker="5" id="3" area="0" />
+            <label x="0.9797979999999999" y="1.02376" marker="6" id="4" area="0" />
+            <label x="1.20089" y="0.883511" marker="10" id="5" area="0" />
+            <label x="0.740474" y="0.801808" marker="7" id="6" area="0" />
+            <label x="0.653573" y="0.545525" marker="11" id="7" area="0.001" />
+            <label x="0.677139" y="0.645682" marker="3" id="8" area="0" />
+            <label x="0.490513" y="1.26727" marker="9" id="9" area="0" />
+            <label x="0.493158" y="1.25838" marker="8" id="10" area="0" />
+            <label x="0.495586" y="1.24928" marker="8" id="11" area="0" />
+            <label x="0.868425" y="1.25275" marker="4" id="12" area="0" />
+            <label x="0.874732" y="1.21192" marker="4" id="13" area="0" />
+            <label x="0.862434" y="1.22563" marker="10" id="14" area="0" />
         </labels>
     </geometry>
 </document>

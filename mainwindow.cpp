@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
 
+    chartDialog = new ChartDialog(m_scene, this);
+
     sceneView->actSceneModeNode->trigger();
     doSetActions();
     sceneView->doZoomBestFit();
@@ -173,6 +175,8 @@ void MainWindow::createMenus()
     mnuScene->addAction(m_scene->actProjectProperties);
 
     mnuTools = menuBar()->addMenu(tr("Tools"));
+    mnuTools->addAction(actChart);
+    mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
@@ -202,13 +206,13 @@ void MainWindow::createToolBars()
     tlbScene->addAction(sceneView->actSceneModePostprocessor);
     tlbScene->addSeparator();
     tlbScene->addAction(sceneView->actSceneViewSelectRegion);
+    tlbScene->addAction(m_scene->actTransform);
     tlbScene->addSeparator();
     tlbScene->addAction(actCreateMesh);
     tlbScene->addAction(actSolve);
     tlbScene->addAction(sceneView->actSceneViewProperties);
-    tlbScene->addAction(m_scene->actTransform);
     tlbScene->addAction(actChart);
-    
+
     tlbZoom = addToolBar(tr("Zoom"));
     tlbZoom->setObjectName("Zoom");
     tlbZoom->addAction(sceneView->actSceneZoomBestFit);
@@ -441,10 +445,7 @@ void MainWindow::doOptions()
 
 void MainWindow::doChart()
 {
-    ChartDialog *chartDialog = new ChartDialog(m_scene, this);
     chartDialog->exec();
-
-    delete chartDialog;
 }
 
 void MainWindow::doPaste()
@@ -482,5 +483,7 @@ void MainWindow::doSetActions()
 
 void MainWindow::doAbout()
 {
-    QMessageBox::about(this, tr("About Carbon 2D"), tr("<b>Carbon2D</b><br/> <i>hp</i>-FEM multiphysics solver based on Hermes2D library.<br/><br/>Web page: <a href=\"http://hpfem.org/\">http://hpfem.math.unr.edu/projects/hermes2d-new/</a><br/><br/><b>Authors:</b><p><table><tr><td>Carbon 2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a></td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr></table></p><br/><b>License:</b><p>Carbon 2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Hermes2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>"));
+    QString str(tr("<b>Carbon2D %1</b><br/> <i>hp</i>-FEM multiphysics solver based on Hermes2D library.<br/><br/>Web page: <a href=\"http://hpfem.org/\">http://hpfem.math.unr.edu/projects/hermes2d-new/</a><br/><br/><b>Authors:</b><p><table><tr><td>Carbon 2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a></td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr></table></p><br/><b>License:</b><p>Carbon 2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Hermes2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
+
+    QMessageBox::about(this, tr("About Carbon 2D"), str);
 }
