@@ -140,7 +140,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
         {
             QFile::remove(m_scene->projectInfo().fileName + ".mesh");
             QString msg(tr("Triangle mesh could not be converted to Hermes mesh file."));
-            QMessageBox::warning(NULL, tr("Triangle to Hermes error"), msg);
+            QMessageBox::warning(QApplication::activeWindow(), tr("Triangle to Hermes error"), msg);
 
             emit message(msg);
             emit solved();
@@ -289,6 +289,55 @@ void SolverDialog::runSolver()
                 delete [] magnetostaticLabel;
             }
             break;
+        case PHYSICFIELD_CURRENT:
+            {
+                // edge markers
+                CurrentEdge *currentEdge = new CurrentEdge[m_scene->edges.count()+1];
+                currentEdge[0].type = PHYSICFIELDBC_NONE;
+                currentEdge[0].value = 0;
+                for (int i = 0; i<m_scene->edges.count(); i++)
+                {
+                    if (m_scene->edgeMarkers.indexOf(m_scene->edges[i]->marker) == 0)
+                    {
+                        currentEdge[i+1].type = PHYSICFIELDBC_NONE;
+                        currentEdge[i+1].value = 0;
+                    }
+                    else
+                    {
+                        SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_scene->edges[i]->marker);
+                        currentEdge[i+1].type = edgeCurrentMarker->type;
+                        currentEdge[i+1].value = edgeCurrentMarker->value;
+                    }
+                }
+
+                // label markers
+                CurrentLabel *currentLabel = new CurrentLabel[m_scene->labels.count()];
+                for (int i = 0; i<m_scene->labels.count(); i++)
+                {
+                    if (m_scene->labelMarkers.indexOf(m_scene->labels[i]->marker) == 0)
+                    {
+                    }
+                    else
+                    {
+                        SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[i]->marker);
+
+                        currentLabel[i].conductivity = labelCurrentMarker->conductivity;
+                    }
+                }
+
+                solutionArray = current_main(this,
+                                             fileName.toStdString().c_str(),
+                                             currentEdge, currentLabel,
+                                             m_scene->projectInfo().numberOfRefinements,
+                                             m_scene->projectInfo().polynomialOrder,
+                                             m_scene->projectInfo().adaptivitySteps,
+                                             m_scene->projectInfo().adaptivityTolerance,
+                                             (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+
+                delete [] currentEdge;
+                delete [] currentLabel;
+            }
+            break;
         case PHYSICFIELD_HEAT_TRANSFER:
             {
                 // edge markers
@@ -408,7 +457,7 @@ void SolverDialog::runSolver()
             }
             break;
         default:
-            cout << "Physical field '" +  physicFieldString(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. ThreadSolver::runSolver()" << endl;
+            cout << "Physical field '" +  physicFieldString(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. SolverDialog::runSolver()" << endl;
             throw;
             break;
         }

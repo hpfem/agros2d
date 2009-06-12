@@ -20,7 +20,7 @@ SceneEdgeMarkerNone::SceneEdgeMarkerNone() : SceneEdgeMarker("none", PHYSICFIELD
 // *************************************************************************************************************************************
 
 SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, double value)
-    : SceneEdgeMarker(name, type)
+        : SceneEdgeMarker(name, type)
 {
     this->value = value;
 }
@@ -33,8 +33,7 @@ int SceneEdgeElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneEdgeMagnetostaticMarker::SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, double value)
-    : SceneEdgeMarker(name, type)
+SceneEdgeMagnetostaticMarker::SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, double value) : SceneEdgeMarker(name, type)
 {
     this->value = value;
 }
@@ -67,8 +66,20 @@ int SceneEdgeHeatMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
+SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, double value) : SceneEdgeMarker(name, type)
+{
+    this->value = value;
+}
+int SceneEdgeCurrentMarker::showDialog(Scene *scene, QWidget *parent)
+{
+    DSceneEdgeCurrentMarker *dialog = new DSceneEdgeCurrentMarker(this, parent);
+    return dialog->exec();
+}
+
+// *************************************************************************************************************************************
+
 SceneEdgeElasticityMarker::SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY, double forceX, double forceY)
-    : SceneEdgeMarker(name, typeX)
+        : SceneEdgeMarker(name, typeX)
 {
     this->typeX = typeX;
     this->typeY = typeY;
@@ -103,7 +114,7 @@ SceneLabelMarkerNone::SceneLabelMarkerNone() : SceneLabelMarker("none")
 // *************************************************************************************************************************************
 
 SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name, double charge_density, double permittivity)
-    : SceneLabelMarker(name)
+        : SceneLabelMarker(name)
 {
     this->charge_density = charge_density;
     this->permittivity = permittivity;
@@ -117,23 +128,8 @@ int SceneLabelElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, double volume_heat, double thermal_conductivity)
-    : SceneLabelMarker(name)
-{
-    this->thermal_conductivity = thermal_conductivity;
-    this->volume_heat = volume_heat;
-}
-
-int SceneLabelHeatMarker::showDialog(Scene *scene, QWidget *parent)
-{
-    DSceneLabelHeatMarker *dialog = new DSceneLabelHeatMarker(parent, this);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
 SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name, double current_density, double permeability)
-    : SceneLabelMarker(name)
+        : SceneLabelMarker(name)
 {
     this->permeability = permeability;
     this->current_density = current_density;
@@ -147,8 +143,36 @@ int SceneLabelMagnetostaticMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
+SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, double conductivity) : SceneLabelMarker(name)
+{
+    this->conductivity = conductivity;
+}
+
+int SceneLabelCurrentMarker::showDialog(Scene *scene, QWidget *parent)
+{
+    DSceneLabelCurrentMarker *dialog = new DSceneLabelCurrentMarker(parent, this);
+    return dialog->exec();
+}
+
+// *************************************************************************************************************************************
+
+SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, double volume_heat, double thermal_conductivity)
+        : SceneLabelMarker(name)
+{
+    this->thermal_conductivity = thermal_conductivity;
+    this->volume_heat = volume_heat;
+}
+
+int SceneLabelHeatMarker::showDialog(Scene *scene, QWidget *parent)
+{
+    DSceneLabelHeatMarker *dialog = new DSceneLabelHeatMarker(parent, this);
+    return dialog->exec();
+}
+
+// *************************************************************************************************************************************
+
 SceneLabelElasticityMarker::SceneLabelElasticityMarker(const QString &name, double young_modulus, double poisson_ratio)
-    : SceneLabelMarker(name)
+        : SceneLabelMarker(name)
 {
     this->young_modulus = young_modulus;
     this->poisson_ratio = poisson_ratio;
@@ -203,6 +227,16 @@ void DSceneEdgeMarker::save()
     m_edgeMarker->name = txtName->text();
 }
 
+void DSceneEdgeMarker::setSize()
+{
+    setWindowIcon(icon("scene-edgemarker"));
+    setWindowTitle(tr("Boundary condition"));
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
+}
+
 void DSceneEdgeMarker::doAccept()
 {
     save();
@@ -219,14 +253,11 @@ void DSceneEdgeMarker::doReject()
 
 DSceneEdgeElectrostaticMarker::DSceneEdgeElectrostaticMarker(SceneEdgeElectrostaticMarker *edgeElectrostaticMarker, QWidget *parent) : DSceneEdgeMarker(parent)
 {
-    this->m_edgeMarker = edgeElectrostaticMarker;
-
-    setMinimumSize(300, 160);
-    setWindowTitle(tr("Boundary condition"));
+    m_edgeMarker = edgeElectrostaticMarker;
 
     createDialog();
-
     load();
+    setSize();
 }
 
 DSceneEdgeElectrostaticMarker::~DSceneEdgeElectrostaticMarker()
@@ -274,14 +305,11 @@ void DSceneEdgeElectrostaticMarker::save() {
 
 DSceneEdgeMagnetostaticMarker::DSceneEdgeMagnetostaticMarker(SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker, QWidget *parent) : DSceneEdgeMarker(parent)
 {
-    this->m_edgeMarker = edgeMagnetostaticMarker;
-
-    setMinimumSize(300, 160);
-    setWindowTitle(tr("Boundary condition"));
+    m_edgeMarker = edgeMagnetostaticMarker;
 
     createDialog();
-
     load();
+    setSize();
 }
 
 DSceneEdgeMagnetostaticMarker::~DSceneEdgeMagnetostaticMarker()
@@ -329,14 +357,11 @@ void DSceneEdgeMagnetostaticMarker::save() {
 
 DSceneEdgeHeatMarker::DSceneEdgeHeatMarker(SceneEdgeHeatMarker *edgeEdgeHeatMarker, QWidget *parent) : DSceneEdgeMarker(parent)
 {
-    this->m_edgeMarker = edgeEdgeHeatMarker;
-
-    setMinimumSize(300, 160);
-    setWindowTitle(tr("Boundary condition"));
+    m_edgeMarker = edgeEdgeHeatMarker;
 
     createDialog();
-
     load();
+    setSize();
 }
 
 DSceneEdgeHeatMarker::~DSceneEdgeHeatMarker()
@@ -380,12 +405,12 @@ void DSceneEdgeHeatMarker::load()
     cmbType->setCurrentIndex(cmbType->findData(edgeHeatMarker->type));
     switch (edgeHeatMarker->type)
     {
-        case PHYSICFIELDBC_HEAT_TEMPERATURE:
+    case PHYSICFIELDBC_HEAT_TEMPERATURE:
         {
             txtTemperature->setText(QString::number(edgeHeatMarker->temperature));
         }
         break;
-        case PHYSICFIELDBC_HEAT_HEAT_FLUX:
+    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         {
             txtHeatFlux->setText(QString::number(edgeHeatMarker->heatFlux));
             txtHeatTransferCoefficient->setText(QString::number(edgeHeatMarker->h));
@@ -403,12 +428,12 @@ void DSceneEdgeHeatMarker::save() {
     edgeHeatMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
     switch (edgeHeatMarker->type)
     {
-        case PHYSICFIELDBC_HEAT_TEMPERATURE:
+    case PHYSICFIELDBC_HEAT_TEMPERATURE:
         {
             edgeHeatMarker->temperature = txtTemperature->text().toDouble();
         }
         break;
-        case PHYSICFIELDBC_HEAT_HEAT_FLUX:
+    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         {
             edgeHeatMarker->heatFlux = txtHeatFlux->text().toDouble();
             edgeHeatMarker->h = txtHeatTransferCoefficient->text().toDouble();
@@ -427,12 +452,12 @@ void DSceneEdgeHeatMarker::doTypeChanged(int index)
 
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
-        case PHYSICFIELDBC_HEAT_TEMPERATURE:
+    case PHYSICFIELDBC_HEAT_TEMPERATURE:
         {
             txtTemperature->setEnabled(true);
         }
         break;
-        case PHYSICFIELDBC_HEAT_HEAT_FLUX:
+    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         {
             txtHeatFlux->setEnabled(true);
             txtHeatTransferCoefficient->setEnabled(true);
@@ -444,16 +469,65 @@ void DSceneEdgeHeatMarker::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-DSceneEdgeElasticityMarker::DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker *edgeEdgeElasticityMarker, QWidget *parent) : DSceneEdgeMarker(parent)
+DSceneEdgeCurrentMarker::DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent) : DSceneEdgeMarker(parent)
 {
-    this->m_edgeMarker = edgeEdgeElasticityMarker;
-
-    setMinimumSize(300, 160);
-    setWindowTitle(tr("Boundary condition"));
+    m_edgeMarker = edgeCurrentMarker;
 
     createDialog();
-
     load();
+    setSize();
+}
+
+DSceneEdgeCurrentMarker::~DSceneEdgeCurrentMarker()
+{
+    delete cmbType;
+    delete txtValue;
+}
+
+QLayout* DSceneEdgeCurrentMarker::createContent()
+{
+    cmbType = new QComboBox();
+    cmbType->addItem("none", PHYSICFIELDBC_NONE);
+    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_POTENTIAL), PHYSICFIELDBC_CURRENT_POTENTIAL);
+    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW), PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW);
+
+    txtValue = new SLineEdit("0", true);
+
+    QFormLayout *layoutMarker = new QFormLayout();
+    layoutMarker->addRow(tr("BC type:"), cmbType);
+    layoutMarker->addRow(tr("Value:"), txtValue);
+
+    return layoutMarker;
+}
+
+void DSceneEdgeCurrentMarker::load()
+{
+    DSceneEdgeMarker::load();
+
+    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
+
+    cmbType->setCurrentIndex(cmbType->findData(edgeCurrentMarker->type));
+    txtValue->setText(QString::number(edgeCurrentMarker->value));
+}
+
+void DSceneEdgeCurrentMarker::save() {
+    DSceneEdgeMarker::save();
+
+    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
+
+    edgeCurrentMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
+    edgeCurrentMarker->value = txtValue->text().toDouble();
+}
+
+// *************************************************************************************************************************************
+
+DSceneEdgeElasticityMarker::DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker *edgeEdgeElasticityMarker, QWidget *parent) : DSceneEdgeMarker(parent)
+{
+    m_edgeMarker = edgeEdgeElasticityMarker;
+
+    createDialog();
+    load();
+    setSize();
 }
 
 DSceneEdgeElasticityMarker::~DSceneEdgeElasticityMarker()
@@ -545,6 +619,16 @@ void DSceneLabelMarker::createDialog()
     setLayout(layout);
 }
 
+void DSceneLabelMarker::setSize()
+{
+    setWindowIcon(icon("scene-labelmarker"));
+    setWindowTitle(tr("Material"));
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
+}
+
 void DSceneLabelMarker::load()
 {
     txtName->setText(m_labelMarker->name);
@@ -569,17 +653,13 @@ void DSceneLabelMarker::doReject()
 
 // *************************************************************************************************************************************
 
-DSceneLabelElectrostaticMarker::DSceneLabelElectrostaticMarker(QWidget *parent, SceneLabelElectrostaticMarker *labelElectrostaticMarker)
-    : DSceneLabelMarker(parent)
+DSceneLabelElectrostaticMarker::DSceneLabelElectrostaticMarker(QWidget *parent, SceneLabelElectrostaticMarker *labelElectrostaticMarker) : DSceneLabelMarker(parent)
 {
-    this->m_labelMarker = labelElectrostaticMarker;
-
-    setMinimumSize(300, 160);
-    setWindowTitle(tr("Material"));
+    m_labelMarker = labelElectrostaticMarker;
 
     createDialog();
-
     load();
+    setSize();
 }
 
 DSceneLabelElectrostaticMarker::~DSceneLabelElectrostaticMarker()
@@ -621,17 +701,13 @@ void DSceneLabelElectrostaticMarker::save() {
 
 // *************************************************************************************************************************************
 
-DSceneLabelMagnetostaticMarker::DSceneLabelMagnetostaticMarker(QWidget *parent, SceneLabelMagnetostaticMarker *labelMagnetostaticMarker)
-    : DSceneLabelMarker(parent)
+DSceneLabelMagnetostaticMarker::DSceneLabelMagnetostaticMarker(QWidget *parent, SceneLabelMagnetostaticMarker *labelMagnetostaticMarker) : DSceneLabelMarker(parent)
 {
-    this->m_labelMarker = labelMagnetostaticMarker;
-
-    setMinimumSize(300, 160);
-    setWindowTitle(tr("Material"));
+    m_labelMarker = labelMagnetostaticMarker;
 
     createDialog();
-
     load();
+    setSize();
 }
 
 DSceneLabelMagnetostaticMarker::~DSceneLabelMagnetostaticMarker()
@@ -673,17 +749,13 @@ void DSceneLabelMagnetostaticMarker::save() {
 
 // *************************************************************************************************************************************
 
-DSceneLabelHeatMarker::DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMarker *labelHeatMarker)
-    : DSceneLabelMarker(parent)
+DSceneLabelHeatMarker::DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMarker *labelHeatMarker) : DSceneLabelMarker(parent)
 {
-    this->m_labelMarker = labelHeatMarker;
-
-    setMinimumSize(300, 160);
-    setWindowTitle(tr("Material"));
+    m_labelMarker = labelHeatMarker;
 
     createDialog();
-
     load();
+    setSize();
 }
 
 DSceneLabelHeatMarker::~DSceneLabelHeatMarker()
@@ -726,17 +798,57 @@ void DSceneLabelHeatMarker::save()
 
 // *************************************************************************************************************************************
 
-DSceneLabelElasticityMarker::DSceneLabelElasticityMarker(QWidget *parent, SceneLabelElasticityMarker *labelElasticityMarker)
-    : DSceneLabelMarker(parent)
+DSceneLabelCurrentMarker::DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker) : DSceneLabelMarker(parent)
 {
-    this->m_labelMarker = labelElasticityMarker;
-
-    setMinimumSize(300, 160);
-    setWindowTitle(tr("Material"));
+    m_labelMarker = labelCurrentMarker;
 
     createDialog();
-
     load();
+    setSize();
+}
+
+DSceneLabelCurrentMarker::~DSceneLabelCurrentMarker()
+{
+    delete txtConductivity;
+}
+
+QLayout* DSceneLabelCurrentMarker::createContent()
+{
+    txtConductivity = new SLineEdit("0", true);
+
+    QFormLayout *layoutMarker = new QFormLayout();
+    layoutMarker->addRow(tr("Conductivity:"), txtConductivity);
+
+    return layoutMarker;
+}
+
+void DSceneLabelCurrentMarker::load()
+{
+    DSceneLabelMarker::load();
+
+    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
+
+    txtConductivity->setText(QString::number(labelCurrentMarker->conductivity));
+}
+
+void DSceneLabelCurrentMarker::save()
+{
+    DSceneLabelMarker::save();
+
+    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
+
+    labelCurrentMarker->conductivity = txtConductivity->text().toDouble();
+}
+
+// *************************************************************************************************************************************
+
+DSceneLabelElasticityMarker::DSceneLabelElasticityMarker(QWidget *parent, SceneLabelElasticityMarker *labelElasticityMarker) : DSceneLabelMarker(parent)
+{
+    m_labelMarker = labelElasticityMarker;
+
+    createDialog();
+    load();
+    setSize();
 }
 
 DSceneLabelElasticityMarker::~DSceneLabelElasticityMarker()

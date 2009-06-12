@@ -5,7 +5,7 @@ ProjectDialog::ProjectDialog(ProjectInfo &projectInfo, bool isNewProject, QWidge
     m_isNewProject = isNewProject;
     m_projectInfo = &projectInfo;
 
-    setMinimumSize(300, 200);
+
     setWindowTitle(tr("Project properties"));
 
     createControls();
@@ -96,7 +96,7 @@ void ProjectDialog::fillComboBox()
         cmbPhysicField->clear();
         cmbPhysicField->addItem(tr("electrostatic"), PHYSICFIELD_ELECTROSTATIC);
         cmbPhysicField->addItem(tr("magnetostatic"), PHYSICFIELD_MAGNETOSTATIC);
-        // cmbPhysicField->addItem(tr("current field"), PHYSICFIELD_CURRENT);
+        cmbPhysicField->addItem(tr("current field"), PHYSICFIELD_CURRENT);
         cmbPhysicField->addItem(tr("heat transfer"), PHYSICFIELD_HEAT_TRANSFER);
         // cmbPhysicField->addItem(tr("elasticity"), PHYSICFIELD_ELASTICITY);
     }

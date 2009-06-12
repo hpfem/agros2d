@@ -1,7 +1,7 @@
 #include "scenesolution.h"
 
 void dxdyfilter(int n, scalar* a, scalar* dadx, scalar* dady,
-                   scalar* out, scalar* outdx, scalar* outdy)
+                scalar* out, scalar* outdx, scalar* outdy)
 {
     for (int i = 0; i < n; i++)
     {
@@ -387,8 +387,96 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     }
                 }
                 break;
+            case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_X:
+                {
+                    if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                    {
+                        h1_integrate_expression(dudx[i]);
+                    }
+                    else
+                    {
+                        h1_integrate_expression(2 * M_PI * x[i] * dudx[i]);
+                    }
+                }
+                break;
+            case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_Y:
+                {
+                    if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                    {
+                        h1_integrate_expression(dudy[i]);
+                    }
+                    else
+                    {
+                        h1_integrate_expression(2 * M_PI * x[i] * dudy[i]);
+                    }
+                }
+                break;
+            case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD:
+                {
+                    if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                    {
+                        h1_integrate_expression(sqrt(sqr(dudx[i]) + sqr(dudy[i])));
+                    }
+                    else
+                    {
+                        h1_integrate_expression(2 * M_PI * x[i] * sqrt(sqr(dudx[i]) + sqr(dudy[i])));
+                    }
+                }
+                break;
+            case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_X:
+                {
+                    SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
+                    if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                    {
+                        h1_integrate_expression(marker->conductivity * dudx[i]);
+                    }
+                    else
+                    {
+                        h1_integrate_expression(2 * M_PI * x[i] * marker->conductivity * dudx[i]);
+                    }
+                }
+                break;
+            case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_Y:
+                {
+                    SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
+                    if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                    {
+                        h1_integrate_expression(marker->conductivity * dudy[i]);
+                    }
+                    else
+                    {
+                        h1_integrate_expression(2 * M_PI * x[i] * marker->conductivity * dudy[i]);
+                    }
+                }
+                break;
+            case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY:
+                {
+                    SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
+                    if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                    {
+                        h1_integrate_expression(marker->conductivity * sqrt(sqr(dudx[i]) + sqr(dudy[i])));
+                    }
+                    else
+                    {
+                        h1_integrate_expression(2 * M_PI * x[i] * marker->conductivity * sqrt(sqr(dudx[i]) + sqr(dudy[i])));
+                    }
+                }
+                break;
+            case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_LOSSES:
+                {
+                    SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
+                    if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                    {
+                        h1_integrate_expression(marker->conductivity * (sqr(dudx[i]) + sqr(dudy[i])));
+                    }
+                    else
+                    {
+                        h1_integrate_expression(2 * M_PI * x[i] * marker->conductivity * (sqr(dudx[i]) + sqr(dudy[i])));
+                    }
+                }
+                break;
             }
-            
+
             integral += result;
         }
     }
@@ -482,6 +570,19 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                                 integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
                         }
                         break;
+                    case PHYSICFIELDINTEGRAL_SURFACE_CURRENT_CURRENT_DENSITY:
+                        {
+                            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
+                            if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                                integral += pt[i][2] * tan[i][2] * marker->conductivity * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                            else
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                        }
+                        break;
+                    default:
+                        cerr << "Physical field boundary integral '" + QString::number(physicFieldIntegralSurface).toStdString() + "' is not implemented. SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface)" << endl;
+                        throw;
+                        break;
                     }                   
                 }
             }
@@ -568,10 +669,12 @@ PointValue SceneSolution::pointValue(const Point &point)
     if (m_sln1 != NULL)
     {
         value = m_sln1->get_pt_value(point.x, point.y, FN_VAL_0);
-        
-        /*
         if (m_scene->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
         {
+            dx =  m_sln1->get_pt_value(point.x, point.y, FN_DX_0);
+            dy =  m_sln1->get_pt_value(point.x, point.y, FN_DY_0);
+
+            /*
             index = findTriangleInVectorizer(m_vec, point);
             
             if (index > 0)
@@ -582,11 +685,8 @@ PointValue SceneSolution::pointValue(const Point &point)
                 dx = (vecVert[vecTris[index][0]][2] + vecVert[vecTris[index][1]][2] + vecVert[vecTris[index][2]][2]) / 3.0;
                 dy = (vecVert[vecTris[index][0]][3] + vecVert[vecTris[index][1]][3] + vecVert[vecTris[index][2]][3]) / 3.0;
             }
+            */
         }
-        */
-
-        dx =  m_sln1->get_pt_value(point.x, point.y, FN_DX_0);
-        dy =  m_sln1->get_pt_value(point.x, point.y, FN_DY_0);
     }
     
     // find marker
@@ -997,6 +1097,69 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 node->values[0][0][i] = marker->permeability;
             }
             break;
+        case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
+            {
+                node->values[0][0][i] = value[i];
+            }
+            break;
+        case PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD:
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = -dudx[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = -dudy[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudx[i]) + sqr(dudy[i]));
+                    }
+                    break;
+                }
+            }
+            break;
+        case PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY:
+            {
+                SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = -marker->conductivity * dudx[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = -marker->conductivity * dudy[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = marker->conductivity * sqrt(sqr(dudx[i]) + sqr(dudy[i]));
+                    }
+                    break;
+                }
+            }
+            break;
+        case PHYSICFIELDVARIABLE_CURRENT_LOSSES:
+            {
+                SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+                node->values[0][0][i] = marker->conductivity * (sqr(dudx[i]) + sqr(dudy[i]));
+            }
+            break;
+        case PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY:
+            {
+                SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+                node->values[0][0][i] = marker->conductivity;
+            }
+            break;
         case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
             {
                 SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
@@ -1016,7 +1179,6 @@ void ViewScalarFilter::precalculate(int order, int mask)
             cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilter::precalculate(int order, int mask)" << endl;
             throw;
             break;
-
         }
     }
 

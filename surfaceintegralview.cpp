@@ -39,7 +39,8 @@ void SurfaceIntegralValueView::doShowSurfaceIntegral(SurfaceIntegralValue *surfa
             showMagnetostatic(surfaceIntegralValueMagnetostatic);
         if (SurfaceIntegralValueHeat *surfaceIntegralValueHeat = dynamic_cast<SurfaceIntegralValueHeat *>(surfaceIntegralValue))
             showHeat(surfaceIntegralValueHeat);
-    }
+        if (SurfaceIntegralValueCurrent *surfaceIntegralValueCurrent = dynamic_cast<SurfaceIntegralValueCurrent *>(surfaceIntegralValue))
+            showCurrent(surfaceIntegralValueCurrent);    }
 }
 
 void SurfaceIntegralValueView::showElectrostatic(SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic)
@@ -71,6 +72,16 @@ void SurfaceIntegralValueView::showHeat(SurfaceIntegralValueHeat *surfaceIntegra
     addValue(heatNode, tr("Temperature avg.:"), tr("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("C"));
     addValue(heatNode, tr("Temperature dif.:"), tr("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("C"));
     addValue(heatNode, tr("Heat flux:"), tr("%1").arg(surfaceIntegralValueHeat->heatFlux, 0, 'e', 3), tr("C"));
+}
+
+void SurfaceIntegralValueView::showCurrent(SurfaceIntegralValueCurrent *surfaceIntegralValueCurrent)
+{
+    // current field
+    QTreeWidgetItem *currentNode = new QTreeWidgetItem(trvWidget);
+    currentNode->setText(0, tr("Current Field"));
+    currentNode->setExpanded(true);
+
+    addValue(currentNode, tr("Current:"), tr("%1").arg(surfaceIntegralValueCurrent->currentDensity, 0, 'e', 3), tr("A"));
 }
 
 void SurfaceIntegralValueView::addValue(QTreeWidgetItem *parent, QString name, QString text, QString unit)
@@ -144,6 +155,29 @@ QString SurfaceIntegralValueMagnetostatic::toString()
 
 // ****************************************************************************************************************
 
+SurfaceIntegralValueCurrent::SurfaceIntegralValueCurrent(Scene *scene) : SurfaceIntegralValue(scene)
+{
+    currentDensity = 0;
+
+    if (scene->sceneSolution()->sln())
+    {
+        for (int i = 0; i<m_scene->edges.length(); i++)
+        {
+            if (m_scene->edges[i]->isSelected)
+            {
+                currentDensity += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_CURRENT_CURRENT_DENSITY);
+            }
+        }
+    }
+}
+
+QString SurfaceIntegralValueCurrent::toString()
+{
+    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+}
+
+// ****************************************************************************************************************
+
 SurfaceIntegralValueHeat::SurfaceIntegralValueHeat(Scene *scene) : SurfaceIntegralValue(scene)
 {
     averageTemperature = 0;
@@ -181,16 +215,16 @@ SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)
     switch (scene->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        // electrostatic
         return new SurfaceIntegralValueElectrostatic(scene);
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        // electrostatic
         return new SurfaceIntegralValueMagnetostatic(scene);
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        // heat transfer
         return new SurfaceIntegralValueHeat(scene);
+        break;
+    case PHYSICFIELD_CURRENT:
+        return new SurfaceIntegralValueCurrent(scene);
         break;
     default:
         cerr << "Physical field '" + physicFieldString(scene->projectInfo().physicField).toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)" << endl;

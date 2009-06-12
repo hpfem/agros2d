@@ -13,6 +13,7 @@ class LocalPointValue;
 class LocalPointValueElectrostatic;
 class LocalPointValueMagnetostatic;
 class LocalPointValueHeat;
+class LocalPointValueCurrent;
 class LocalPointValueElasticity;
 
 LocalPointValue *localPointValueFactory(Point &point, Scene *scene);
@@ -46,6 +47,7 @@ private:
     void showMagnetostatic(LocalPointValueMagnetostatic *localPointValueMagnetostatic);
     void showHeat(LocalPointValueHeat *localPointValueHeat);
     void showElasticity(LocalPointValueElasticity *localPointValueElasticity);
+    void showCurrent(LocalPointValueCurrent *localPointValueCurrent);
 
 private slots:
     void doPoint();
@@ -109,6 +111,20 @@ public:
     Point G;
 
     LocalPointValueHeat(Point &point, Scene *scene);
+    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    QStringList variables();
+};
+
+class LocalPointValueCurrent : public LocalPointValue
+{
+public:
+    double conductivity;
+    double losses;
+    double potential;
+    Point J;
+    Point E;
+
+    LocalPointValueCurrent(Point &point, Scene *scene);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };

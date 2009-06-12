@@ -254,6 +254,50 @@ QString VolumeIntegralValueHeat::toString()
     return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
 }
 
+// ****************************************************************************************************************
+
+VolumeIntegralValueCurrent::VolumeIntegralValueCurrent(Scene *scene) : VolumeIntegralValue(scene)
+{
+    if (scene->sceneSolution()->sln())
+    {
+        averageElectricFieldX = 0;
+        averageElectricFieldY = 0;
+        averageElectricField = 0;
+        averageCurrentDensityX = 0;
+        averageCurrentDensityY = 0;
+        averageCurrentDensity = 0;
+        losses = 0;
+        for (int i = 0; i<m_scene->labels.length(); i++)
+        {
+            if (m_scene->labels[i]->isSelected)
+            {
+                averageElectricFieldX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_X);
+                averageElectricFieldY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_Y);
+                averageElectricField += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD);
+                averageCurrentDensityX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_X);
+                averageCurrentDensityY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_Y);
+                averageCurrentDensity += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY);
+                losses += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_LOSSES);
+            }
+        }
+
+        if (volume > 0)
+        {
+            averageElectricFieldX /= volume;
+            averageElectricFieldY /= volume;
+            averageElectricField /= volume;
+            averageCurrentDensityX /= volume;
+            averageCurrentDensityY /= volume;
+            averageCurrentDensity /= volume;
+        }
+    }
+}
+
+QString VolumeIntegralValueCurrent::toString()
+{
+    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+}
+
 // ***********************************************************************************************************************
 
 VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)
@@ -261,16 +305,16 @@ VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)
     switch (scene->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        // electrostatic
         return new VolumeIntegralValueElectrostatic(scene);
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        // electrostatic
         return new VolumeIntegralValueMagnetostatic(scene);
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        // heat transfer
         return new VolumeIntegralValueHeat(scene);
+        break;
+    case PHYSICFIELD_CURRENT:
+        return new VolumeIntegralValueCurrent(scene);
         break;
     default:
         cerr << "Physical field '" + physicFieldString(scene->projectInfo().physicField).toStdString() + "' is not implemented. VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)" << endl;

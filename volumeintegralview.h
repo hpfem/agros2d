@@ -11,6 +11,7 @@ class VolumeIntegralValue;
 class VolumeIntegralValueElectrostatic;
 class VolumeIntegralValueMagnetostatic;
 class VolumeIntegralValueHeat;
+class VolumeIntegralValueCurrent;
 
 VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene);
 
@@ -92,6 +93,21 @@ public:
     double averageHeatFlux;
 
     VolumeIntegralValueHeat(Scene *scene);
+    QString toString();
+};
+
+class VolumeIntegralValueCurrent : public VolumeIntegralValue
+{
+public:
+    double averageElectricFieldX;
+    double averageElectricFieldY;
+    double averageElectricField;
+    double averageCurrentDensityX;
+    double averageCurrentDensityY;
+    double averageCurrentDensity;
+    double losses;
+
+    VolumeIntegralValueCurrent(Scene *scene);
     QString toString();
 };
 

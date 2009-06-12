@@ -33,7 +33,7 @@ scalar heat_bc_values(int marker, double x, double y)
     }
 }
 
-scalar bilinear_form_surf(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv, EdgePos* ep)
+scalar heat_bilinear_form_surf(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv, EdgePos* ep)
 {
     int marker = ep->marker;
     double h = 0.0;
@@ -49,7 +49,7 @@ scalar bilinear_form_surf(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap
         return h * 2 * M_PI * surf_int_x_u_v(fu, fv, ru, rv, ep);
 }
 
-scalar linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
+scalar heat_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
 {
     int marker = ep->marker;
 
@@ -137,8 +137,8 @@ SolutionArray *heat_main(SolverDialog *solverDialog,
     WeakForm wf(1);
     wf.add_biform(0, 0, heat_bilinear_form);
     wf.add_liform(0, heat_linear_form);
-    wf.add_biform_surf(0, 0, bilinear_form_surf);
-    wf.add_liform_surf(0, linear_form_surf);
+    wf.add_biform_surf(0, 0, heat_bilinear_form_surf);
+    wf.add_liform_surf(0, heat_linear_form_surf);
 
     // initialize the linear solver
     UmfpackSolver umfpack;

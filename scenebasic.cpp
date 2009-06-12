@@ -181,15 +181,19 @@ void DSceneBasic::doReject()
 
 DSceneNode::DSceneNode(Scene *scene, SceneNode *node, QWidget *parent) : DSceneBasic(scene, parent)
 {
-    this->m_object = node;
+    m_object = node;
 
-    setMinimumSize(200, 100);
+    setWindowIcon(icon("scene-node"));
     setWindowTitle(tr("Node"));
 
     createControls();
 
     load();
-}
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
+}    
 
 DSceneNode::~DSceneNode()
 {
@@ -229,14 +233,18 @@ void DSceneNode::save()
 
 DSceneEdge::DSceneEdge(Scene *scene, SceneEdge *edge, QWidget *parent) : DSceneBasic(scene, parent)
 {
-    this->m_object = edge;
+    m_object = edge;
 
-    setMinimumSize(200, 100);
+    setWindowIcon(icon("scene-edge"));
     setWindowTitle(tr("Edge"));
 
     createControls();
 
     load();
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 DSceneEdge::~DSceneEdge()
@@ -307,14 +315,18 @@ void DSceneEdge::save() {
 // *************************************************************************************************************************************
 
 DSceneLabel::DSceneLabel(Scene *scene, SceneLabel *label, QWidget *parent) : DSceneBasic(scene, parent) {
-    this->m_object = label;
+    m_object = label;
 
-    setMinimumSize(200, 100);
+    setWindowIcon(icon("scene-label"));
     setWindowTitle(tr("Label"));
 
     createControls();
 
     load();
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 DSceneLabel::~DSceneLabel()

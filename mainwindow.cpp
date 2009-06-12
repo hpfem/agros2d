@@ -398,7 +398,6 @@ void MainWindow::doDocumentExportDXF()
         if (fileInfo.suffix().toLower() != "dxf") fileName += ".dxf";
         m_scene->writeToDxf(fileName);
     }
-
 }
 
 void MainWindow::doDocumentSaveImage()
@@ -420,6 +419,8 @@ void MainWindow::doCreateMesh()
     sceneView->actSceneModeLabel->trigger();
     sceneView->sceneViewSettings().showInitialMesh = true;
     sceneView->doInvalidated();
+
+    doSetActions();
 }
 
 
@@ -433,6 +434,8 @@ void MainWindow::doSolve()
     // show local point values
     Point point = Point(0, 0);
     localPointValueView->doShowPoint(localPointValueFactory(point, m_scene));
+
+    doSetActions();
 }
 
 void MainWindow::doOptions()
@@ -445,12 +448,12 @@ void MainWindow::doOptions()
 
 void MainWindow::doChart()
 {
-    chartDialog->exec();
+    chartDialog->showDialog();
 }
 
 void MainWindow::doPaste()
 {
-    m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
+    // m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
     // m_scene->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
     // m_scene->readFromFile("data/heat_transfer_axisymmetric.h2d");
     // m_scene->readFromFile("data/heat_transfer_planar.h2d");
@@ -458,6 +461,7 @@ void MainWindow::doPaste()
     // m_scene->readFromFile("data/magnetostatic_planar.h2d");
     // m_scene->readFromFile("data/magnetostatic_axisymmetric_actuator.h2d");
     // m_scene->readFromFile("data/magnetostatic_planar_magnet.h2d");
+    m_scene->readFromFile("data/current_feeder.h2d");
     // m_scene->readFromFile("data/elasticity_planar.h2d");
 
     sceneView->doDefaults();
@@ -472,10 +476,10 @@ void MainWindow::doSetActions()
 {
     bool isSaved = m_scene->projectInfo().fileName != "";
 
-    sceneView->actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->sln() != NULL);
+    sceneView->actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
     actCreateMesh->setEnabled(isSaved);
     actSolve->setEnabled(isSaved);
-    actChart->setEnabled(isSaved);
+    actChart->setEnabled(m_scene->sceneSolution()->isSolved());
 
     lblProblemType->setText(tr("Problem Type: ") + problemTypeString(m_scene->projectInfo().problemType));
     lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(m_scene->projectInfo().physicField));

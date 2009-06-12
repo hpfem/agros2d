@@ -2,16 +2,18 @@
 
 SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
-    this->m_sceneView = sceneView;
-    
-    setMinimumSize(350, 450);
-    setWindowIcon(icon("logo"));
+    m_sceneView = sceneView;
+       
+    setWindowIcon(icon("scene-properties"));
     setWindowTitle(tr("Scene View"));
-    setWindowModality(Qt::ApplicationModal);   
 
     createControls();
     
     load();
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 SceneViewDialog::~SceneViewDialog()
@@ -204,25 +206,31 @@ void SceneViewDialog::createControls()
     {
     case PHYSICFIELD_ELECTROSTATIC:
         {
-            cmbVectorFieldVariable->addItem(tr("Electric field"), PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD);
-            cmbVectorFieldVariable->addItem(tr("Displacement"), PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT);
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD), PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD);
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT), PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT);
         }
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         {
-            cmbVectorFieldVariable->addItem(tr("Flux density"), PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY);
-            cmbVectorFieldVariable->addItem(tr("Field intensity"), PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD);
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY);
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD);
         }
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         {
-            cmbVectorFieldVariable->addItem(tr("Temperature gradient"), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
-            cmbVectorFieldVariable->addItem(tr("Heat flux"), PHYSICFIELDVARIABLE_HEAT_FLUX);
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_FLUX), PHYSICFIELDVARIABLE_HEAT_FLUX);
+        }
+        break;
+    case PHYSICFIELD_CURRENT:
+        {
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD), PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD);
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY), PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY);
         }
         break;
     case PHYSICFIELD_ELASTICITY:
         {
-            cmbVectorFieldVariable->addItem(tr("Temperature gradient"), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
+            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
         }
         break;
     default:

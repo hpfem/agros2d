@@ -366,6 +366,21 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 
 void Scene::createMeshAndSolve(SolverMode solverMode)
 {
+    // check boundary conditions
+    /*
+    foreach (SceneEdge *edge, edges)
+    {
+        if (edge->marker->type == PHYSICFIELDBC_NONE)
+        {
+            selectNone();
+            edge->isSelected = true;
+            QMessageBox::warning(QApplication::activeWindow(),
+                                 tr("Missing marker"),
+                                 tr("Edge [%1; %2] - [%3; %4] has no marker.").arg(edge->nodeStart->point.x, 0, 'f', 3).arg(edge->nodeStart->point.y, 0, 'f', 3).arg(edge->nodeEnd->point.x, 0, 'f', 3).arg(edge->nodeEnd->point.y, 0, 'f', 3));
+        }
+    }
+    */
+
     // clear project
     sceneSolution()->clear();
 
@@ -451,19 +466,18 @@ void Scene::doNewEdgeMarker()
     switch (m_projectInfo.physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        // electrostatic markers
         marker = new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, 0);
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        // electrostatic markers
         marker = new SceneEdgeMagnetostaticMarker("new boundary", PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, 0);
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        // heat markers
         marker = new SceneEdgeHeatMarker("new boundary", PHYSICFIELDBC_HEAT_TEMPERATURE, 0);
         break;
+    case PHYSICFIELD_CURRENT:
+        marker = new SceneEdgeCurrentMarker("new boundary", PHYSICFIELDBC_CURRENT_POTENTIAL, 0);
+        break;
     case PHYSICFIELD_ELASTICITY:
-        // elasticity markers
         marker = new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, 0, 0);
         break;
     default:
@@ -486,19 +500,18 @@ void Scene::doNewLabelMarker()
     switch (m_projectInfo.physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        // electrostatic markers
         marker = new SceneLabelElectrostaticMarker("new material", 0, 1);
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        // electrostatic markers
         marker = new SceneLabelMagnetostaticMarker("new material", 0, 1);
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        // heat markers
         marker = new SceneLabelHeatMarker("new material", 0, 385);
         break;
+    case PHYSICFIELD_CURRENT:
+        marker = new SceneLabelCurrentMarker("new material", 57e6);
+        break;
     case PHYSICFIELD_ELASTICITY:
-        // elasticity markers
         marker = new SceneLabelElasticityMarker("new material", 2e11, 0.33);
         break;
     default:
@@ -842,11 +855,11 @@ void Scene::readFromFile(const QString &fileName)
     if (eleProject.toElement().attribute("problemtype") == "planar") m_projectInfo.problemType = PROBLEMTYPE_PLANAR;
     if (eleProject.toElement().attribute("problemtype") == "axisymmetric") m_projectInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
     // physic field
-    if (eleProject.toElement().attribute("type") == "electrostatic") m_projectInfo.physicField = PHYSICFIELD_ELECTROSTATIC;
-    if (eleProject.toElement().attribute("type") == "magnetostatic") m_projectInfo.physicField = PHYSICFIELD_MAGNETOSTATIC;
-    if (eleProject.toElement().attribute("type") == "current") m_projectInfo.physicField = PHYSICFIELD_CURRENT;
-    if (eleProject.toElement().attribute("type") == "heat transfer") m_projectInfo.physicField = PHYSICFIELD_HEAT_TRANSFER;
-    if (eleProject.toElement().attribute("type") == "elasticity") m_projectInfo.physicField = PHYSICFIELD_ELASTICITY;
+    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_ELECTROSTATIC)) m_projectInfo.physicField = PHYSICFIELD_ELECTROSTATIC;
+    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_HEAT_TRANSFER)) m_projectInfo.physicField = PHYSICFIELD_MAGNETOSTATIC;
+    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_CURRENT)) m_projectInfo.physicField = PHYSICFIELD_CURRENT;
+    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_HEAT_TRANSFER)) m_projectInfo.physicField = PHYSICFIELD_HEAT_TRANSFER;
+    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_ELASTICITY)) m_projectInfo.physicField = PHYSICFIELD_ELASTICITY;
     // number of refinements
     m_projectInfo.numberOfRefinements = eleProject.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
@@ -908,6 +921,13 @@ void Scene::readFromFile(const QString &fileName)
                                                           element.toElement().attribute("external_temperature").toDouble()));
                 }
                 break;
+            case PHYSICFIELD_CURRENT:
+                // current markers
+                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
+                if (element.toElement().attribute("type") == "potential") type = PHYSICFIELDBC_CURRENT_POTENTIAL;
+                if (element.toElement().attribute("type") == "inward_current_flow") type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
+                addEdgeMarker(new SceneEdgeCurrentMarker(name, type, element.toElement().attribute("value").toDouble()));
+                break;
             case PHYSICFIELD_ELASTICITY:
                 {
                     // elasticity markers
@@ -968,6 +988,11 @@ void Scene::readFromFile(const QString &fileName)
                 addLabelMarker(new SceneLabelHeatMarker(name,
                                                         element.toElement().attribute("volume_heat").toDouble(),
                                                         element.toElement().attribute("thermal_conductivity").toDouble()));
+                break;
+            case PHYSICFIELD_CURRENT:
+                // current markers
+                addLabelMarker(new SceneLabelCurrentMarker(name,
+                                                           element.toElement().attribute("conductivity").toDouble()));
                 break;
             case PHYSICFIELD_ELASTICITY:
                 // heat markers
@@ -1172,6 +1197,13 @@ void Scene::writeToFile(const QString &fileName) {
                     eleEdgeMarker.toElement().setAttribute("external_temperature", edgeHeatMarker->externalTemperature);
                 }
             }
+            // current
+            if (SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(edgeMarkers[i]))
+            {
+                if (edgeCurrentMarker->type == PHYSICFIELDBC_CURRENT_POTENTIAL) eleEdgeMarker.toElement().setAttribute("type", "potential");
+                if (edgeCurrentMarker->type == PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW) eleEdgeMarker.toElement().setAttribute("type", "inward_current_flow");
+                eleEdgeMarker.toElement().setAttribute("value", edgeCurrentMarker->value);
+            }
             // elasticity
             if (SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(edgeMarkers[i]))
             {
@@ -1216,6 +1248,11 @@ void Scene::writeToFile(const QString &fileName) {
             {
                 eleLabelMarker.toElement().setAttribute("thermal_conductivity", labelHeatMarker->thermal_conductivity);
                 eleLabelMarker.toElement().setAttribute("volume_heat", labelHeatMarker->volume_heat);
+            }
+            // current
+            if (SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarkers[i]))
+            {
+                eleLabelMarker.toElement().setAttribute("conductivity", labelCurrentMarker->conductivity);
             }
             // elasticity
             if (SceneLabelElasticityMarker *labelHeatMarker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarkers[i]))

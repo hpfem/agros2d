@@ -1579,6 +1579,13 @@ void SceneView::doDefaults()
             m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_FLUX;
         }
         break;
+    case PHYSICFIELD_CURRENT:
+        {
+            m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
+            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
+            m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY;
+        }
+        break;
     case PHYSICFIELD_ELASTICITY:
         {
             m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;

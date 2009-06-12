@@ -75,6 +75,8 @@ void LocalPointValueView::doShowPoint(LocalPointValue *localPointValue)
             showMagnetostatic(localPointValueMagnetostatic);
         if (LocalPointValueHeat *localPointValueHeat = dynamic_cast<LocalPointValueHeat *>(localPointValue))
             showHeat(localPointValueHeat);
+        if (LocalPointValueCurrent *localPointValueCurrent = dynamic_cast<LocalPointValueCurrent *>(localPointValue))
+            showCurrent(localPointValueCurrent);
         if (LocalPointValueElasticity *localPointValueElasticity = dynamic_cast<LocalPointValueElasticity *>(localPointValue))
             showElasticity(localPointValueElasticity);
     }
@@ -189,6 +191,41 @@ void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
     addValue(itemTemperatureGradient, tr("Gx:"), tr("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), tr("K/m"));
     addValue(itemTemperatureGradient, tr("Gy:"), tr("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), tr("K/m"));
     addValue(itemTemperatureGradient, tr("G:"), tr("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), tr("K/m"));
+}
+
+void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCurrent)
+{
+    // current field
+    QTreeWidgetItem *currentNode = new QTreeWidgetItem(trvWidget);
+    currentNode->setText(0, tr("Current field"));
+    currentNode->setExpanded(true);
+
+    // Conductivity
+    addValue(currentNode, tr("Conductivity:"), tr("%1").arg(localPointValueCurrent->conductivity, 0, 'e', 3), tr("S/m"));
+
+    // Potential
+    addValue(currentNode, tr("Potential:"), tr("%1").arg(localPointValueCurrent->potential, 0, 'f', 2), tr("V"));
+
+    // Electric Field
+    QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(currentNode);
+    itemElectricField->setText(0, tr("Electric field"));
+    itemElectricField->setExpanded(true);
+
+    addValue(itemElectricField, tr("Ex:"), tr("%1").arg(localPointValueCurrent->E.x, 0, 'f', 5), tr("V/m"));
+    addValue(itemElectricField, tr("Ey:"), tr("%1").arg(localPointValueCurrent->E.y, 0, 'f', 5), tr("V/m"));
+    addValue(itemElectricField, tr("E:"), tr("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'f', 5), tr("V/m"));
+
+    // Current Density
+    QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(currentNode);
+    itemCurrentDensity->setText(0, tr("Current density"));
+    itemCurrentDensity->setExpanded(true);
+
+    addValue(itemCurrentDensity, tr("Jx:"), tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), tr("A/m2"));
+    addValue(itemCurrentDensity, tr("Jy:"), tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), tr("A/m2"));
+    addValue(itemCurrentDensity, tr("J:"), tr("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), tr("A/m2"));
+
+    // Energy density
+    addValue(currentNode, tr("Power losses dens.:"), tr("%1").arg(localPointValueCurrent->losses, 0, 'e', 3), tr("W/m3"));
 }
 
 void LocalPointValueView::showElasticity(LocalPointValueElasticity *localPointValueElasticity)
@@ -562,6 +599,118 @@ QStringList LocalPointValueHeat::variables()
 
 // ****************************************************************************************************************
 
+LocalPointValueCurrent::LocalPointValueCurrent(Point &point, Scene *scene) : LocalPointValue(point, scene)
+{
+    conductivity = 0;
+
+    potential = 0;
+    J = Point();
+    E = Point();
+    losses = 0;
+
+    if (scene->sceneSolution()->sln())
+    {
+        PointValue value = scene->sceneSolution()->pointValue(point);
+        if (value.marker != NULL)
+        {
+            // potential
+            potential = value.value;
+
+            // magnetic field
+            Point der;
+            der = value.derivative;
+
+            E.x =  der.y;
+            E.y = -der.x;
+
+            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(value.marker);
+
+            conductivity = marker->conductivity;
+
+            // electric displacement
+            J = E * marker->conductivity;
+
+            // energy density
+            losses = J.magnitude() * E.magnitude();
+        }
+    }
+}
+
+double LocalPointValueCurrent::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+{
+    switch (physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
+        {
+            return potential;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return E.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return E.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return E.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return J.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return J.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return J.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_CURRENT_LOSSES:
+        {
+            return losses;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY:
+        {
+            return conductivity;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueCurrent::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
+        throw;
+        break;
+    }
+}
+
+QStringList LocalPointValueCurrent::variables()
+{
+    QStringList row;
+    row << QString("%1").arg(potential, 0, 'e', 5) <<
+            QString("%1").arg(J.x, 0, 'e', 5) <<
+            QString("%1").arg(J.y, 0, 'e', 5) <<
+            QString("%1").arg(J.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(E.x, 0, 'e', 5) <<
+            QString("%1").arg(E.y, 0, 'e', 5) <<
+            QString("%1").arg(E.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(losses, 0, 'e', 5) <<
+            QString("%1").arg(conductivity, 0, 'f', 3);
+
+    return QStringList(row);
+}
+// ****************************************************************************************************************
+
 LocalPointValueElasticity::LocalPointValueElasticity(Point &point, Scene *scene) : LocalPointValue(point, scene)
 {
     if (scene->sceneSolution()->sln())
@@ -620,19 +769,18 @@ LocalPointValue *localPointValueFactory(Point &point, Scene *scene)
     switch (scene->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        // electrostatic
         return new LocalPointValueElectrostatic(point, scene);
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        // electrostatic
         return new LocalPointValueMagnetostatic(point, scene);
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        // heat transfer
         return new LocalPointValueHeat(point, scene);
         break;
+    case PHYSICFIELD_CURRENT:
+        return new LocalPointValueCurrent(point, scene);
+        break;
     case PHYSICFIELD_ELASTICITY:
-        // elasticity transfer
         return new LocalPointValueElasticity(point, scene);
         break;
     default:
@@ -654,7 +802,7 @@ QStringList localPointValueHeaderFactory(PhysicField physicField)
         headers << "X" << "Y" << "Potential" << "Bx" << "By" << "B" << "Hx" << "Hy" << "H" << "Energy" << "Permeabilty";
         break;
     case PHYSICFIELD_CURRENT:
-        headers << "X" << "Y" << "Potential" << "Ex" << "Ey" << "E" << "Dx" << "Dy" << "D" << "Energy" << "Permittivity";
+        headers << "X" << "Y" << "Potential" << "Jx" << "Jy" << "J" << "Ex" << "Ey" << "E" << "Losses" << "Conductivitys";
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         headers << "X" << "Y" << "Temperature" << "Gx" << "Gy" << "G" << "Fx" << "Fy" << "F" << "Conductivity";

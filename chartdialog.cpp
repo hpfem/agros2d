@@ -7,12 +7,11 @@ ChartDialog::ChartDialog(Scene *scene, QWidget *parent) : QDialog(parent)
     
     m_scene = scene;
     
-    setMinimumSize(800, 600);
     setWindowIcon(icon("chart"));
     setWindowTitle(tr("Chart"));
-    setWindowModality(Qt::NonModal);
     
     createControls();   
+    setMinimumSize(sizeHint());
 }
 
 ChartDialog::~ChartDialog()
@@ -34,6 +33,12 @@ ChartDialog::~ChartDialog()
     
     delete picker;
     delete chart;    
+}
+
+void ChartDialog::showDialog()
+{
+    fillComboBoxVariable(cmbFieldVariable, m_scene->projectInfo().physicField);
+    exec();
 }
 
 void ChartDialog::createControls()
@@ -118,8 +123,7 @@ void ChartDialog::createControls()
     
     // plot   
     // variable
-    cmbFieldVariable = new QComboBox(this);
-    fillComboBoxVariable(cmbFieldVariable, m_scene->projectInfo().physicField);
+    cmbFieldVariable = new QComboBox(this);    
     connect(cmbFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariable(int)));
     // component
     cmbFieldVariableComp = new QComboBox(this);
@@ -189,7 +193,7 @@ void ChartDialog::doPlot()
     
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
     QwtText text("");
-    text.setFont(QFont("Helvetica", 11, QFont::Normal));
+    text.setFont(QFont("Helvetica", 10, QFont::Normal));
     text.setText(physicFieldVariableString(physicFieldVariable) + " (" + physicFieldVariableUnits(physicFieldVariable) + ")");
     chart->setAxisTitle(QwtPlot::yLeft, text);
     
@@ -226,6 +230,8 @@ void ChartDialog::doPlot()
         
         // y value
         yval[i] = localPointValue->variableValue(physicFieldVariable, physicFieldVariableComp);
+        // yval[i] = -m_scene->sceneSolution()->sln()->get_pt_value(point.x, point.y, FN_DX_0);
+        // yval[i] = 10/(point.x * (log(0.03/0.01)/10 + log(0.05/0.03)/3) * ((point.x<0.03) ? 10 : 3));
         
         // table
         row.clear();
@@ -402,9 +408,9 @@ Chart::Chart(QWidget *parent) : QwtPlot(parent)
     
     // axes
     setAxisTitle(QwtPlot::xBottom, " ");
-    setAxisFont(QwtPlot::xBottom, QFont("Helvetica", 10, QFont::Normal));
+    setAxisFont(QwtPlot::xBottom, QFont("Helvetica", 9, QFont::Normal));
     setAxisTitle(QwtPlot::yLeft, " ");
-    setAxisFont(QwtPlot::yLeft, QFont("Helvetica", 10, QFont::Normal));
+    setAxisFont(QwtPlot::yLeft, QFont("Helvetica", 9, QFont::Normal));
     
     // curve styles
     QwtSymbol sym;

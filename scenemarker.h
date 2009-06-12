@@ -87,6 +87,18 @@ public:
 
 // *************************************************************************************************************************************
 
+class SceneEdgeCurrentMarker : public SceneEdgeMarker {
+
+public:
+    double value;
+
+    SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, double value);
+
+    int showDialog(Scene *scene, QWidget *parent);
+};
+
+// *************************************************************************************************************************************
+
 class SceneEdgeElasticityMarker : public SceneEdgeMarker {
 
 public:
@@ -148,6 +160,18 @@ public:
 
 // *************************************************************************************************************************************
 
+class SceneLabelCurrentMarker : public SceneLabelMarker {
+
+public:
+    double conductivity;
+
+    SceneLabelCurrentMarker(const QString &name, double conductivity);
+
+    int showDialog(Scene *scene, QWidget *parent);
+};
+
+// *************************************************************************************************************************************
+
 class SceneLabelMagnetostaticMarker : public SceneLabelMarker {
 
 public:
@@ -194,6 +218,7 @@ protected:
 
     virtual void load();
     virtual void save();
+    void setSize();
 
 private slots:
     void doAccept();
@@ -273,6 +298,26 @@ private slots:
     void doTypeChanged(int index);
 };
 
+// *************************************************************************************************************************************
+
+class DSceneEdgeCurrentMarker : public DSceneEdgeMarker
+{
+    Q_OBJECT
+
+public:
+    DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent);
+    ~DSceneEdgeCurrentMarker();
+
+protected:
+    QLayout *createContent();
+
+    void load();
+    void save();
+
+private:
+    QComboBox *cmbType;
+    QLineEdit *txtValue;
+};
 
 // *************************************************************************************************************************************
 
@@ -313,6 +358,7 @@ protected:
 
     virtual QLayout *createContent() = 0;
     void createDialog();
+    void setSize();
 
     virtual void load();
     virtual void save();
@@ -387,6 +433,26 @@ protected:
 private:
     SLineEdit *txtThermalConductivity;
     SLineEdit *txtVolumeHeat;
+};
+
+// *************************************************************************************************************************************
+
+class DSceneLabelCurrentMarker : public DSceneLabelMarker
+{
+    Q_OBJECT
+
+public:
+    DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker);
+    ~DSceneLabelCurrentMarker();
+
+protected:
+    QLayout *createContent();
+
+    void load();
+    void save();
+
+private:
+    SLineEdit *txtConductivity;
 };
 
 // *************************************************************************************************************************************

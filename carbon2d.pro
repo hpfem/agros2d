@@ -20,6 +20,7 @@ SOURCES += main.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
     hermes2d/hermes_magnetostatic.cpp \
+    hermes2d/hermes_current.cpp \
     hermes2d/hermes_elasticity.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
@@ -43,6 +44,7 @@ HEADERS += mainwindow.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
     hermes2d/hermes_magnetostatic.h \
+    hermes2d/hermes_current.h \
     hermes2d/hermes_elasticity.h \
     scenebasic.h \
     sceneinfo.h \

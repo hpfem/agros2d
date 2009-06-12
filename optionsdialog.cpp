@@ -2,14 +2,15 @@
 
 OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent)
 {
-    setMinimumSize(350, 450);
-    setWindowIcon(icon("logo"));
+    setWindowIcon(icon("options"));
     setWindowTitle(tr("Options"));
-    setWindowModality(Qt::ApplicationModal);
-
+    
     createControls();
 
-    load();
+    load();    
+
+    setMinimumSize(350, 450);
+    setMaximumSize(350, 450);
 }
 
 OptionsDialog::~OptionsDialog()

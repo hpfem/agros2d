@@ -11,6 +11,7 @@ class SurfaceIntegralValue;
 class SurfaceIntegralValueElectrostatic;
 class SurfaceIntegralValueMagnetostatic;
 class SurfaceIntegralValueHeat;
+class SurfaceIntegralValueCurrent;
 
 SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene);
 
@@ -32,7 +33,10 @@ private:
     void showElectrostatic(SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic);
     void showMagnetostatic(SurfaceIntegralValueMagnetostatic *surfaceIntegralValueMagnetostatic);
     void showHeat(SurfaceIntegralValueHeat *surfaceIntegralValueHeat);
+    void showCurrent(SurfaceIntegralValueCurrent *surfaceIntegralValueCurrent);
 };
+
+// ******************************************************************************************************************
 
 class SurfaceIntegralValue
 {
@@ -50,6 +54,8 @@ protected:
     Scene *m_scene;
 };
 
+// ******************************************************************************************************************
+
 class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
 {
 public:
@@ -59,12 +65,16 @@ public:
     QString toString();
 };
 
+// ******************************************************************************************************************
+
 class SurfaceIntegralValueMagnetostatic : public SurfaceIntegralValue
 {
 public:
     SurfaceIntegralValueMagnetostatic(Scene *scene);
     QString toString();
 };
+
+// ******************************************************************************************************************
 
 class SurfaceIntegralValueHeat : public SurfaceIntegralValue
 {
@@ -76,5 +86,17 @@ public:
     SurfaceIntegralValueHeat(Scene *scene);
     QString toString();
 };
+
+// ******************************************************************************************************************
+
+class SurfaceIntegralValueCurrent : public SurfaceIntegralValue
+{
+public:
+    double currentDensity;
+
+    SurfaceIntegralValueCurrent(Scene *scene);
+    QString toString();
+};
+// ******************************************************************************************************************
 
 #endif // SURFACEINTEGRALVIEW_H

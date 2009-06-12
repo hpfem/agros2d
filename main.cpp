@@ -27,8 +27,6 @@ int main(int argc, char *argv[])
     QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 
-    cout << locale.toStdString() << endl;
-
     QTranslator translator;
     if (QFile::exists("/usr/share/carbon2d/lang/" + locale + ".qm"))
         translator.load("/usr/share/carbon2d/lang/" + locale + ".qm");

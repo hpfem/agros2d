@@ -2,6 +2,12 @@
 
 void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
 {
+    // store variable
+    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+
+    // clear combo
+    cmbFieldVariable->clear();
+
     switch (physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
@@ -30,6 +36,15 @@ void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
             cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY), PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY);
         }
         break;
+    case PHYSICFIELD_CURRENT:
+        {
+            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_POTENTIAL), PHYSICFIELDVARIABLE_CURRENT_POTENTIAL);
+            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD), PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD);
+            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY), PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY);
+            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_LOSSES), PHYSICFIELDVARIABLE_CURRENT_LOSSES);
+            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY), PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY);
+        }
+        break;
     case PHYSICFIELD_ELASTICITY:
         {
             cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS), PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS);
@@ -40,6 +55,10 @@ void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
         throw;
         break;
     }
+
+     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
+     if (cmbFieldVariable->currentIndex() == -1)
+         cmbFieldVariable->setCurrentIndex(0);
 }
 
 // ***********************************************************************************************************

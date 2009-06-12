@@ -53,6 +53,8 @@ public:
     ChartDialog(Scene *scene, QWidget *parent = 0);
     ~ChartDialog();
 
+    void showDialog();
+
 private:
     Scene *m_scene;
 

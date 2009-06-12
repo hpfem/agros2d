@@ -26,6 +26,7 @@
 #include "hermes2d/hermes_electrostatic.h"
 #include "hermes2d/hermes_magnetostatic.h"
 #include "hermes2d/hermes_heat.h"
+#include "hermes2d/hermes_current.h"
 #include "hermes2d/hermes_elasticity.h"
 
 class ThreadSolver;

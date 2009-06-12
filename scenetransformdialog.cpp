@@ -2,12 +2,16 @@
 
 SceneTransformDialog::SceneTransformDialog(Scene *scene, QWidget *parent) : QDialog(parent)
 {
-    this->m_scene = scene;
+    m_scene = scene;
 
-    setMinimumSize(300, 200);
+    setWindowIcon(icon("scene-transform"));
     setWindowTitle(tr("Transform"));
 
     createControls();
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 SceneTransformDialog::~SceneTransformDialog()

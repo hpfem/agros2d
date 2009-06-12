@@ -1,0 +1,35 @@
+<document>
+    <projects>
+        <project adaptivitytolerance="1" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="current field" id="0" name="Feeder" >
+            <edges>
+                <edge type="inward_current_flow" value="0" id="1" name="Neumann" />
+                <edge type="inward_current_flow" value="1000000" id="2" name="In" />
+                <edge type="inward_current_flow" value="-1000000" id="3" name="Out" />
+            </edges>
+            <labels>
+                <label conductivity="100" id="1" name="Salt" />
+            </labels>
+        </project>
+    </projects>
+    <geometry>
+        <nodes>
+            <node x="-0.6" y="-0.5291502622129181" id="0" />
+            <node x="0.6" y="0.5291502622129181" id="1" />
+            <node x="0.6" y="-0.5291502622129181" id="2" />
+            <node x="-0.6" y="0.5291502622129181" id="3" />
+            <node x="0" y="0.8" id="4" />
+            <node x="0" y="-0.8" id="5" />
+        </nodes>
+        <edges>
+            <edge end="4" marker="1" id="0" start="1" angle="48.59" />
+            <edge end="3" marker="1" id="1" start="4" angle="48.59" />
+            <edge end="5" marker="1" id="2" start="0" angle="48.59" />
+            <edge end="2" marker="1" id="3" start="5" angle="48.59" />
+            <edge end="1" marker="2" id="4" start="2" angle="0" />
+            <edge end="0" marker="3" id="5" start="3" angle="0" />
+        </edges>
+        <labels>
+            <label x="0.243292" y="0.326297" marker="1" id="0" area="0" />
+        </labels>
+    </geometry>
+</document>
