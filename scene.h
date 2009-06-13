@@ -154,9 +154,6 @@ public:
     void transformRotate(const Point &point, double angle, bool copy);
     void transformScale(const Point &point, double scaleFactor, bool copy);
 
-    inline bool isMeshed() { return m_isMeshed; }
-    inline bool setMeshed(bool value) { m_isMeshed = value; }
-
     inline ProjectInfo &projectInfo() { return m_projectInfo; }
 
     inline void refresh() { emit invalidated(); }
@@ -173,9 +170,6 @@ public:
 protected:
 
 private:    
-    bool m_isSolved;
-    bool m_isMeshed;
-
     ProjectInfo m_projectInfo;
 
     // scene solution

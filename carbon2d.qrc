@@ -34,5 +34,7 @@
         <file>images/zoom-out.png</file>
         <file>images/zoom-region.png</file>
         <file>images/carbon2d.png</file>
+        <file>images/script.png</file>
+        <file>images/script-create.png</file>
     </qresource>
 </RCC>

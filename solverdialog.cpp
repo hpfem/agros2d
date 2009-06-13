@@ -76,7 +76,6 @@ void SolverDialog::runMesh()
     // file info
     QFileInfo fileInfo(m_scene->projectInfo().fileName);
 
-    m_scene->setMeshed(false);
     m_errorMessage = "";
 
     m_scene->sceneSolution()->mesh().free();
@@ -147,8 +146,6 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             return;
         }
 
-        m_scene->setMeshed(true);
-
         if (m_mode == SOLVER_MESH_AND_SOLVE)
             runSolver();
     }
@@ -180,7 +177,7 @@ void SolverDialog::runSolver()
     QTime time;
     time.start();
 
-    emit message(tr("Solver was started: ") + physicFieldString(m_scene->projectInfo().physicField) + " (" + problemTypeString(m_scene->projectInfo().problemType) + ")");
+    emit message(tr("Solver was started: ") + physicFieldStringKey(m_scene->projectInfo().physicField) + " (" + problemTypeString(m_scene->projectInfo().problemType) + ")");
     updateProgress(60);
 
     SolutionArray *solutionArray;
@@ -457,7 +454,7 @@ void SolverDialog::runSolver()
             }
             break;
         default:
-            cout << "Physical field '" +  physicFieldString(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. SolverDialog::runSolver()" << endl;
+            cout << "Physical field '" +  physicFieldStringKey(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. SolverDialog::runSolver()" << endl;
             throw;
             break;
         }

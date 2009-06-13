@@ -234,7 +234,7 @@ void SceneViewDialog::createControls()
         }
         break;
     default:
-        cerr << "Physical field '" + physicFieldString(m_sceneView->scene()->projectInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(m_sceneView->scene()->projectInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
         throw;
         break;
     }

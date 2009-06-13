@@ -36,6 +36,7 @@ public:
     void setSolutionArray(SolutionArray *solutionArray);
 
     inline bool isSolved() { return (m_sln1); }
+    bool isMeshed() { return (m_mesh.get_num_elements() > 0); }
 
     // contour
     inline ViewScalarFilter *slnContourView() { return m_slnContourView; }
@@ -75,7 +76,6 @@ private:
     int m_adaptiveSteps;
 
     Solution *m_sln1; // general solution 1
-    // DXDYFilter *m_sln1DXDY; // general solution 1 - DXDY filter
     Solution *m_sln2; // general solution 2
 
     // contour

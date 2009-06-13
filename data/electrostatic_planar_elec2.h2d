@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="1" numberofrefinements="1" adaptivitysteps="20" polynomialorder="1" problemtype="planar" type="electrostatic" id="0" name="Elec2 (QuickField)" >
+        <project adaptivitytolerance="5" numberofrefinements="1" adaptivitysteps="20" polynomialorder="1" problemtype="planar" type="electrostatic" id="0" name="Elec2 (QuickField)" >
             <edges>
                 <edge type="surface_charge_density" value="0" id="1" name="neumann" />
                 <edge type="potential" value="0" id="2" name="U =  0 V" />

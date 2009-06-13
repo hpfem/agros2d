@@ -35,6 +35,7 @@ public:
 
     virtual int showDialog(Scene *scene, QWidget *parent) = 0;
 
+    virtual QString script() = 0;
     QVariant variant();
 };
 
@@ -42,6 +43,7 @@ class SceneEdgeMarkerNone : public SceneEdgeMarker {
 public:
     SceneEdgeMarkerNone();
 
+    QString script() { return ""; }
     virtual int showDialog(Scene *scene, QWidget *parent) {}
 };
 
@@ -54,6 +56,7 @@ public:
 
     SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, double value);
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 
@@ -66,6 +69,7 @@ public:
 
     SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, double value);
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 
@@ -82,6 +86,7 @@ public:
     SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, double temperature);
     SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, double heatFlux, double h, double externalTemperature);
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 
@@ -94,6 +99,7 @@ public:
 
     SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, double value);
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 
@@ -107,11 +113,14 @@ public:
     double forceX;
     double forceY;
 
+    QString script();
     SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY, double forceX, double forceY);
 
     int showDialog(Scene *scene, QWidget *parent);
 };
 
+// *************************************************************************************************************************************
+// *************************************************************************************************************************************
 // *************************************************************************************************************************************
 
 class SceneLabelMarker {
@@ -122,6 +131,7 @@ public:
 
     virtual int showDialog(Scene *scene, QWidget *parent) = 0;
 
+    virtual QString script() = 0;
     QVariant variant();
 };
 
@@ -129,6 +139,7 @@ class SceneLabelMarkerNone : public SceneLabelMarker {
 public:
     SceneLabelMarkerNone();
 
+    QString script() { return ""; }
     virtual int showDialog(Scene *scene, QWidget *parent) {}
 };
 
@@ -142,6 +153,7 @@ public:
 
     SceneLabelElectrostaticMarker(const QString &name, double charge_density, double permittivity);
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 
@@ -155,6 +167,7 @@ public:
 
     SceneLabelHeatMarker(const QString &name, double volume_heat, double thermal_conductivity);
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 
@@ -167,6 +180,7 @@ public:
 
     SceneLabelCurrentMarker(const QString &name, double conductivity);
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 
@@ -180,6 +194,7 @@ public:
 
     SceneLabelMagnetostaticMarker(const QString &name, double current_density, double permeability);
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 
@@ -197,6 +212,7 @@ public:
     inline double lambda() { return (young_modulus * poisson_ratio) / ((1 + poisson_ratio) * (1 - 2*poisson_ratio)); }
     inline double mu() { return young_modulus / (2*(1 + poisson_ratio)); }
 
+    QString script();
     int showDialog(Scene *scene, QWidget *parent);
 };
 

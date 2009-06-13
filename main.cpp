@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     a.setWindowIcon(icon("carbon2d"));  
-    a.setApplicationVersion("0.6.0 (2009-06-09)");
+    a.setApplicationVersion("0.7.0 (2009-06-13)");
     a.setOrganizationName("Carbon");
     a.setOrganizationDomain("hpfem.org");
     a.setApplicationName("Carbon2D");

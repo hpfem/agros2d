@@ -23,10 +23,12 @@ void SceneView::createActions()
 {
     // scene - zoom
     actSceneZoomIn = new QAction(icon("zoom-in"), tr("Zoom in"), this);
+    actSceneZoomIn->setShortcut(QKeySequence::ZoomIn);
     actSceneZoomIn->setStatusTip(tr("Zoom in"));
     connect(actSceneZoomIn, SIGNAL(triggered()), this, SLOT(doZoomIn()));
 
     actSceneZoomOut = new QAction(icon("zoom-out"), tr("Zoom out"), this);
+    actSceneZoomOut->setShortcut(QKeySequence::ZoomOut);
     actSceneZoomOut->setStatusTip(tr("Zoom out"));
     connect(actSceneZoomOut, SIGNAL(triggered()), this, SLOT(doZoomOut()));
 
@@ -1491,6 +1493,8 @@ void SceneView::doInvalidated()
         paletteCreate();
     }
 
+    actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
+
     updateGL();
 }
 
@@ -1594,7 +1598,7 @@ void SceneView::doDefaults()
         }
         break;
     default:
-        cerr << "Physical field '" + physicFieldString(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. SceneView::doDefaults()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. SceneView::doDefaults()" << endl;
         throw;
         break;
     }

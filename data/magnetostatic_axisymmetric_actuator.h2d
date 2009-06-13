@@ -1,13 +1,13 @@
 <document>
     <projects>
-        <project adaptivitytolerance="2" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" type="magnetostatic" id="0" name="unnamed" >
+        <project adaptivitytolerance="2" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="magnetostatic" id="0" name="unnamed" >
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
-                <label current_density="0" id="1" name="air" permeability="1" />
-                <label current_density="0" id="2" name="fe" permeability="500" />
-                <label current_density="1000000" id="3" name="cu" permeability="1" />
+                <label current_density="0" id="1" name="Air" permeability="1" />
+                <label current_density="0" id="2" name="Fe" permeability="300" />
+                <label current_density="1000000" id="3" name="Cu" permeability="1" />
             </labels>
         </project>
     </projects>

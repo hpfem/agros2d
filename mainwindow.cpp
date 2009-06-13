@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(m_scene, SIGNAL(invalidated()), sceneView, SLOT(doInvalidated()));
     connect(m_scene, SIGNAL(invalidated()), sceneInfoView, SLOT(doInvalidated()));
+    connect(m_scene, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+
     connect(m_scene, SIGNAL(solved()), sceneView, SLOT(doSolved()));
 
     connect(sceneView, SIGNAL(mousePressed(LocalPointValue *)), localPointValueView, SLOT(doShowPoint(LocalPointValue *)));
@@ -29,9 +31,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
 
     chartDialog = new ChartDialog(m_scene, this);
+    scriptEditorDialog = new ScriptEditorDialog(m_scene, this);
 
     sceneView->actSceneModeNode->trigger();
-    doSetActions();
     sceneView->doZoomBestFit();
 }
 
@@ -129,6 +131,10 @@ void MainWindow::createActions()
 
     actDocumentOpenRecentGroup = new QActionGroup(this);
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
+
+    actScriptEditor = new QAction(icon("script"), tr("Script editor"), this);
+    actScriptEditor->setStatusTip(tr("Script editor"));
+    connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 }
 
 void MainWindow::createMenus()
@@ -176,6 +182,7 @@ void MainWindow::createMenus()
 
     mnuTools = menuBar()->addMenu(tr("Tools"));
     mnuTools->addAction(actChart);
+    mnuTools->addAction(actScriptEditor);
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
 
@@ -212,6 +219,7 @@ void MainWindow::createToolBars()
     tlbScene->addAction(actSolve);
     tlbScene->addAction(sceneView->actSceneViewProperties);
     tlbScene->addAction(actChart);
+    tlbScene->addAction(actScriptEditor);
 
     tlbZoom = addToolBar(tr("Zoom"));
     tlbZoom->setObjectName("Zoom");
@@ -321,7 +329,6 @@ void MainWindow::doDocumentNew()
         m_scene->refresh();
 
         sceneView->actSceneModeNode->trigger();
-        doSetActions();
         sceneView->doZoomBestFit();
     }
     delete projectDialog;
@@ -329,14 +336,13 @@ void MainWindow::doDocumentNew()
 
 void MainWindow::doDocumentOpen()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), "data", "Carbon 2D files (*.h2d)");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), "data", tr("Carbon 2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {
         m_scene->readFromFile(fileName);
         setRecentFiles();
 
         sceneView->doDefaults();
-        doSetActions();
         sceneView->doZoomBestFit();
     }
 }
@@ -350,7 +356,6 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
         setRecentFiles();
 
         sceneView->doDefaults();
-        doSetActions();
         sceneView->doZoomBestFit();
     }
 }
@@ -365,15 +370,13 @@ void MainWindow::doDocumentSave()
 
 void MainWindow::doDocumentSaveAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "data", "Carbon 2D files (*.h2d)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Carbon 2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix() != "h2d") fileName += ".h2d";
         m_scene->writeToFile(fileName);
         setRecentFiles();
-
-        doSetActions();
     }
 }
 
@@ -383,8 +386,6 @@ void MainWindow::doDocumentImportDXF()
     if (!fileName.isEmpty())
     {
         m_scene->readFromDxf(fileName);
-
-        doSetActions();
         sceneView->doZoomBestFit();
     }
 }
@@ -420,7 +421,7 @@ void MainWindow::doCreateMesh()
     sceneView->sceneViewSettings().showInitialMesh = true;
     sceneView->doInvalidated();
 
-    doSetActions();
+    doInvalidated();
 }
 
 
@@ -435,7 +436,7 @@ void MainWindow::doSolve()
     Point point = Point(0, 0);
     localPointValueView->doShowPoint(localPointValueFactory(point, m_scene));
 
-    doSetActions();
+    doInvalidated();
 }
 
 void MainWindow::doOptions()
@@ -451,9 +452,14 @@ void MainWindow::doChart()
     chartDialog->showDialog();
 }
 
+void MainWindow::doScriptEditor()
+{    
+    scriptEditorDialog->showDialog();
+}
+
 void MainWindow::doPaste()
 {
-    // m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
+    m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
     // m_scene->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
     // m_scene->readFromFile("data/heat_transfer_axisymmetric.h2d");
     // m_scene->readFromFile("data/heat_transfer_planar.h2d");
@@ -461,28 +467,27 @@ void MainWindow::doPaste()
     // m_scene->readFromFile("data/magnetostatic_planar.h2d");
     // m_scene->readFromFile("data/magnetostatic_axisymmetric_actuator.h2d");
     // m_scene->readFromFile("data/magnetostatic_planar_magnet.h2d");
-    m_scene->readFromFile("data/current_feeder.h2d");
+    // m_scene->readFromFile("data/current_feeder.h2d");
     // m_scene->readFromFile("data/elasticity_planar.h2d");
 
     sceneView->doDefaults();
-    doSetActions();
+    doInvalidated();
     sceneView->doZoomBestFit();
 
     // doSolve();
     // sceneView->doZoomBestFit();
 }
 
-void MainWindow::doSetActions()
+void MainWindow::doInvalidated()
 {
-    bool isSaved = m_scene->projectInfo().fileName != "";
+    bool isSaved = !m_scene->projectInfo().fileName.isEmpty();
 
-    sceneView->actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
     actCreateMesh->setEnabled(isSaved);
     actSolve->setEnabled(isSaved);
     actChart->setEnabled(m_scene->sceneSolution()->isSolved());
 
     lblProblemType->setText(tr("Problem Type: ") + problemTypeString(m_scene->projectInfo().problemType));
-    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(m_scene->projectInfo().physicField));
+    lblPhysicField->setText(tr("Physic Field: ") + physicFieldStringKey(m_scene->projectInfo().physicField));
 }
 
 void MainWindow::doAbout()

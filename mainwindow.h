@@ -4,6 +4,8 @@
 #include <QStringList>
 #include <QFileInfo>
 #include <QActionGroup>
+#include <QScriptEngine>
+#include <QtScriptTools/QScriptEngineDebugger>
 #include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
 #include <QtGui/QListWidget>
@@ -35,6 +37,7 @@
 #include "surfaceintegralview.h"
 #include "chartdialog.h"
 #include "optionsdialog.h"
+#include "scripteditordialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -58,11 +61,13 @@ private slots:
     void doCreateMesh();
     void doSolve();
 
-    void doOptions();
     void doChart();
+    void doScriptEditor();
+    void doOptions();
+
     void doAbout();
     void doPaste();
-    void doSetActions();
+    void doInvalidated();
 
 private:
     Scene *m_scene;
@@ -100,6 +105,8 @@ private:
     QAction *actSolve;
     QAction *actChart; 
 
+    QAction *actScriptEditor;
+
     QAction *actAbout;
     QAction *actAboutQt;
 
@@ -115,6 +122,7 @@ private:
     SurfaceIntegralValueView *surfaceIntegralValueView;
 
     ChartDialog *chartDialog;
+    ScriptEditorDialog *scriptEditorDialog;
 
     void setRecentFiles();
 

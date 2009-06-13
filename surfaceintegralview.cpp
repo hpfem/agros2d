@@ -40,7 +40,8 @@ void SurfaceIntegralValueView::doShowSurfaceIntegral(SurfaceIntegralValue *surfa
         if (SurfaceIntegralValueHeat *surfaceIntegralValueHeat = dynamic_cast<SurfaceIntegralValueHeat *>(surfaceIntegralValue))
             showHeat(surfaceIntegralValueHeat);
         if (SurfaceIntegralValueCurrent *surfaceIntegralValueCurrent = dynamic_cast<SurfaceIntegralValueCurrent *>(surfaceIntegralValue))
-            showCurrent(surfaceIntegralValueCurrent);    }
+            showCurrent(surfaceIntegralValueCurrent);
+    }
 }
 
 void SurfaceIntegralValueView::showElectrostatic(SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic)
@@ -227,7 +228,7 @@ SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)
         return new SurfaceIntegralValueCurrent(scene);
         break;
     default:
-        cerr << "Physical field '" + physicFieldString(scene->projectInfo().physicField).toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(scene->projectInfo().physicField).toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)" << endl;
         throw;
         break;
     }

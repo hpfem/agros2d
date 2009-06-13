@@ -36,7 +36,8 @@ SOURCES += main.cpp \
     scenesolution.cpp \
     localvalueview.cpp \
     volumeintegralview.cpp \
-    surfaceintegralview.cpp
+    surfaceintegralview.cpp \
+    scripteditordialog.cpp
 HEADERS += mainwindow.h \
     util.h \
     gui.h \
@@ -60,7 +61,8 @@ HEADERS += mainwindow.h \
     scenesolution.h \
     localvalueview.h \
     volumeintegralview.h \
-    surfaceintegralview.h
+    surfaceintegralview.h \
+    scripteditordialog.h
 INCLUDEPATH += include/hermes2d \
     include/dxflib \
     /usr/include \

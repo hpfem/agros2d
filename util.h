@@ -80,9 +80,9 @@ enum ProblemType
 inline QString problemTypeString(ProblemType problemType)
 {
     if (problemType == PROBLEMTYPE_PLANAR)
-        return "planar";
+        return QObject::tr("planar");
     else
-        return "axisymmetric";
+        return QObject::tr("axisymmetric");
 }
 
 enum PhysicFieldVariableComp
@@ -98,13 +98,13 @@ inline QString physicFieldVariableCompString(PhysicFieldVariableComp physicField
     switch (physicFieldVariableComp)
     {
     case PHYSICFIELDVARIABLECOMP_SCALAR:
-        return "Scalar";
+        return QObject::tr("Scalar");
     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
-        return "Magnitude";
+        return QObject::tr("Magnitude");
     case PHYSICFIELDVARIABLECOMP_X:
-        return "X";
+        return QObject::tr("X");
     case PHYSICFIELDVARIABLECOMP_Y:
-        return "Y";
+        return QObject::tr("Y");
     }
 }
 
@@ -117,7 +117,7 @@ enum PhysicField
     PHYSICFIELD_ELASTICITY
 };
 
-inline QString physicFieldString(PhysicField physicField)
+inline QString physicFieldStringKey(PhysicField physicField)
 {
     switch (physicField)
     {
@@ -136,6 +136,22 @@ inline QString physicFieldString(PhysicField physicField)
         throw;
         break;
     }
+}
+
+inline PhysicField physicFieldFromStringKey(const QString &physicFieldString)
+{
+    if (physicFieldString == "electrostatic")
+        return PHYSICFIELD_ELECTROSTATIC;
+    if (physicFieldString == "magnetostatic")
+        return PHYSICFIELD_MAGNETOSTATIC;
+    if (physicFieldString == "current field")
+        return PHYSICFIELD_CURRENT;
+    if (physicFieldString == "heat transfer")
+        return PHYSICFIELD_HEAT_TRANSFER;
+    if (physicFieldString == "elasticity")
+        return PHYSICFIELD_ELASTICITY;
+    cerr << "Physical field '" + physicFieldString.toStdString() + "' is not implemented. physicFieldFromString(const QString &physicFieldString)" << endl;
+    throw;
 }
 
 enum PhysicFieldVariable
@@ -345,6 +361,47 @@ inline QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         break;
     default:
         cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
+        throw;
+        break;
+    }
+}
+
+inline QString physicFieldBCStringKey(PhysicFieldBC physicFieldBC)
+{
+    switch (physicFieldBC)
+    {
+    case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
+        return "potential";
+        break;
+    case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
+        return "surface_charge_density";
+        break;
+    case PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL:
+        return "vector_potential";
+        break;
+    case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
+        return "surface_current_density";
+        break;
+    case PHYSICFIELDBC_HEAT_TEMPERATURE:
+        return "temperature";
+        break;
+    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
+        return "heat_flux";
+        break;
+    case PHYSICFIELDBC_CURRENT_POTENTIAL:
+        return "potential";
+        break;
+    case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
+        return "inward_current_flow";
+        break;
+    case PHYSICFIELDBC_ELASTICITY_FIXED:
+        return "fixed";
+        break;
+    case PHYSICFIELDBC_ELASTICITY_FREE:
+        return "free";
+        break;
+    default:
+        cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCStringKey(PhysicFieldBC physicFieldBC)" << endl;
         throw;
         break;
     }

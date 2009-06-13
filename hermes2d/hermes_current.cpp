@@ -18,13 +18,12 @@ int current_bc_types(int marker)
 
 scalar current_bc_values(int marker, double x, double y)
 {
-    return 0.0; // currentEdge[marker].value;
+    return currentEdge[marker].value;
 }
 
 scalar current_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
 {
     int marker = ep->marker;
-    // cout << ep->t << endl;
 
     double J = 0.0;
 

@@ -202,12 +202,9 @@ void Scene::setLabelMarker(SceneLabelMarker *labelMarker)
 
 void Scene::clear() {
     blockSignals(true);
-    
 
     m_sceneSolution->clear();
     m_projectInfo.clear();
-
-    m_isMeshed = false;
 
     nodes.clear();
     edges.clear();
@@ -481,7 +478,7 @@ void Scene::doNewEdgeMarker()
         marker = new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, 0, 0);
         break;
     default:
-        cerr << "Physical field '" + physicFieldString(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::doNewEdgeMarker()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::doNewEdgeMarker()" << endl;
         throw;
         break;
     }
@@ -515,7 +512,7 @@ void Scene::doNewLabelMarker()
         marker = new SceneLabelElasticityMarker("new material", 2e11, 0.33);
         break;
     default:
-        cerr << "Physical field '" + physicFieldString(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::doNewLabelMarker()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::doNewLabelMarker()" << endl;
         throw;
         break;
     }
@@ -855,11 +852,7 @@ void Scene::readFromFile(const QString &fileName)
     if (eleProject.toElement().attribute("problemtype") == "planar") m_projectInfo.problemType = PROBLEMTYPE_PLANAR;
     if (eleProject.toElement().attribute("problemtype") == "axisymmetric") m_projectInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
     // physic field
-    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_ELECTROSTATIC)) m_projectInfo.physicField = PHYSICFIELD_ELECTROSTATIC;
-    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_HEAT_TRANSFER)) m_projectInfo.physicField = PHYSICFIELD_MAGNETOSTATIC;
-    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_CURRENT)) m_projectInfo.physicField = PHYSICFIELD_CURRENT;
-    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_HEAT_TRANSFER)) m_projectInfo.physicField = PHYSICFIELD_HEAT_TRANSFER;
-    if (eleProject.toElement().attribute("type") == physicFieldString(PHYSICFIELD_ELASTICITY)) m_projectInfo.physicField = PHYSICFIELD_ELASTICITY;
+    m_projectInfo.physicField = physicFieldFromStringKey(eleProject.toElement().attribute("type"));
     // number of refinements
     m_projectInfo.numberOfRefinements = eleProject.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
@@ -945,7 +938,7 @@ void Scene::readFromFile(const QString &fileName)
                 }
                 break;
             default:
-                cerr << "Physical field '" + physicFieldString(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                cerr << "Physical field '" + physicFieldStringKey(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -1000,7 +993,7 @@ void Scene::readFromFile(const QString &fileName)
                                                               element.toElement().attribute("young_modulus").toDouble(),
                                                               element.toElement().attribute("poisson_ratio").toDouble()));
                 break;            default:
-                        cerr << "Physical field '" + physicFieldString(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                        cerr << "Physical field '" + physicFieldStringKey(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -1091,7 +1084,7 @@ void Scene::writeToFile(const QString &fileName) {
     if (m_projectInfo.problemType == PROBLEMTYPE_PLANAR) eleProject.toElement().setAttribute("problemtype", "planar");
     if (m_projectInfo.problemType == PROBLEMTYPE_AXISYMMETRIC) eleProject.toElement().setAttribute("problemtype", "axisymmetric");
     // name
-    eleProject.toElement().setAttribute("type", physicFieldString(m_projectInfo.physicField));
+    eleProject.toElement().setAttribute("type", physicFieldStringKey(m_projectInfo.physicField));
     // number of refinements
     eleProject.toElement().setAttribute("numberofrefinements", m_projectInfo.numberOfRefinements);
     // polynomial order
@@ -1170,28 +1163,25 @@ void Scene::writeToFile(const QString &fileName) {
             // electrostatic
             if (SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(edgeMarkers[i]))
             {
-                if (edgeElectrostaticMarker->type == PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL) eleEdgeMarker.toElement().setAttribute("type", "potential");
-                if (edgeElectrostaticMarker->type == PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE) eleEdgeMarker.toElement().setAttribute("type", "surface_charge_density");
+                eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeElectrostaticMarker->type));
                 eleEdgeMarker.toElement().setAttribute("value", edgeElectrostaticMarker->value);
             }
             // magnetostatic
             if (SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(edgeMarkers[i]))
             {
-                if (edgeMagnetostaticMarker->type == PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL) eleEdgeMarker.toElement().setAttribute("type", "vector_potential");
-                if (edgeMagnetostaticMarker->type == PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT) eleEdgeMarker.toElement().setAttribute("type", "surface_current_density");
+                eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeMagnetostaticMarker->type));
                 eleEdgeMarker.toElement().setAttribute("value", edgeMagnetostaticMarker->value);
             }
             // heat transfer
             if (SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(edgeMarkers[i]))
             {
+                eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeHeatMarker->type));
                 if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_TEMPERATURE)
                 {
-                    eleEdgeMarker.toElement().setAttribute("type", "temperature");
                     eleEdgeMarker.toElement().setAttribute("temperature", edgeHeatMarker->temperature);
                 }
                 if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
                 {
-                    eleEdgeMarker.toElement().setAttribute("type", "heat_flux");
                     eleEdgeMarker.toElement().setAttribute("heat_flux", edgeHeatMarker->heatFlux);
                     eleEdgeMarker.toElement().setAttribute("h", edgeHeatMarker->h);
                     eleEdgeMarker.toElement().setAttribute("external_temperature", edgeHeatMarker->externalTemperature);
@@ -1200,17 +1190,14 @@ void Scene::writeToFile(const QString &fileName) {
             // current
             if (SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(edgeMarkers[i]))
             {
-                if (edgeCurrentMarker->type == PHYSICFIELDBC_CURRENT_POTENTIAL) eleEdgeMarker.toElement().setAttribute("type", "potential");
-                if (edgeCurrentMarker->type == PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW) eleEdgeMarker.toElement().setAttribute("type", "inward_current_flow");
+                eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeCurrentMarker->type));
                 eleEdgeMarker.toElement().setAttribute("value", edgeCurrentMarker->value);
             }
             // elasticity
             if (SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(edgeMarkers[i]))
             {
-                if (edgeElasticityMarker->typeX == PHYSICFIELDBC_ELASTICITY_FREE) eleEdgeMarker.toElement().setAttribute("typex", "free");
-                if (edgeElasticityMarker->typeX == PHYSICFIELDBC_ELASTICITY_FIXED) eleEdgeMarker.toElement().setAttribute("typex", "fixed");
-                if (edgeElasticityMarker->typeY == PHYSICFIELDBC_ELASTICITY_FREE) eleEdgeMarker.toElement().setAttribute("typey", "free");
-                if (edgeElasticityMarker->typeY == PHYSICFIELDBC_ELASTICITY_FIXED) eleEdgeMarker.toElement().setAttribute("typey", "fixed");
+                eleEdgeMarker.toElement().setAttribute("typex", physicFieldBCStringKey(edgeElasticityMarker->typeX));
+                eleEdgeMarker.toElement().setAttribute("typey", physicFieldBCStringKey(edgeElasticityMarker->typeY));
                 eleEdgeMarker.toElement().setAttribute("forcex", edgeElasticityMarker->forceX);
                 eleEdgeMarker.toElement().setAttribute("forcey", edgeElasticityMarker->forceY);
             }

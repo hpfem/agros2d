@@ -51,7 +51,7 @@ void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
         }
         break;
     default:
-        cerr << "Physical field '" + physicFieldString(physicField).toStdString() + "' is not implemented. fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)" << endl;
         throw;
         break;
     }

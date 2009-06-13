@@ -25,6 +25,14 @@ SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, 
     this->value = value;
 }
 
+QString SceneEdgeElectrostaticMarker::script()
+{
+    return QString("addBoundary(\"%1\", \"%2\", %3)").
+            arg(name).
+            arg(physicFieldBCStringKey(type)).
+            arg(value);
+}
+
 int SceneEdgeElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
 {
     DSceneEdgeElectrostaticMarker *dialog = new DSceneEdgeElectrostaticMarker(this, parent);
@@ -36,6 +44,14 @@ int SceneEdgeElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
 SceneEdgeMagnetostaticMarker::SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, double value) : SceneEdgeMarker(name, type)
 {
     this->value = value;
+}
+
+QString SceneEdgeMagnetostaticMarker::script()
+{
+    return QString("addBoundary(\"%1\", \"%2\", %3)").
+            arg(name).
+            arg(physicFieldBCStringKey(type)).
+            arg(value);
 }
 
 int SceneEdgeMagnetostaticMarker::showDialog(Scene *scene, QWidget *parent)
@@ -58,6 +74,26 @@ SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type
     this->externalTemperature = externalTemperature;
 }
 
+QString SceneEdgeHeatMarker::script()
+{
+    if (type == PHYSICFIELDBC_HEAT_TEMPERATURE)
+    {
+        return QString("addBoundary(\"%1\", \"%2\", %3)").
+                arg(name).
+                arg(physicFieldBCStringKey(type)).
+                arg(temperature);
+    }
+    if (type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
+    {
+        return QString("addBoundary(\"%1\", \"%2\", %3, %4, %5)").
+                arg(name).
+                arg(physicFieldBCStringKey(type)).
+                arg(heatFlux).
+                arg(h).
+                arg(externalTemperature);
+    }
+}
+
 int SceneEdgeHeatMarker::showDialog(Scene *scene, QWidget *parent)
 {
     DSceneEdgeHeatMarker *dialog = new DSceneEdgeHeatMarker(this, parent);
@@ -70,6 +106,15 @@ SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldB
 {
     this->value = value;
 }
+
+QString SceneEdgeCurrentMarker::script()
+{
+    return QString("addBoundary(\"%1\", \"%2\", %3)").
+            arg(name).
+            arg(physicFieldBCStringKey(type)).
+            arg(value);
+}
+
 int SceneEdgeCurrentMarker::showDialog(Scene *scene, QWidget *parent)
 {
     DSceneEdgeCurrentMarker *dialog = new DSceneEdgeCurrentMarker(this, parent);
@@ -85,6 +130,16 @@ SceneEdgeElasticityMarker::SceneEdgeElasticityMarker(const QString &name, Physic
     this->typeY = typeY;
     this->forceX = forceX;
     this->forceY = forceY;
+}
+
+QString SceneEdgeElasticityMarker::script()
+{
+    return QString("addEdge(\"%1\", \"%2\", \"%3\", %4, %5)").
+            arg(name).
+            arg(physicFieldBCStringKey(typeX)).
+            arg(physicFieldBCStringKey(typeY)).
+            arg(forceX).
+            arg(forceY);
 }
 
 int SceneEdgeElasticityMarker::showDialog(Scene *scene, QWidget *parent)
@@ -120,6 +175,14 @@ SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name
     this->permittivity = permittivity;
 }
 
+QString SceneLabelElectrostaticMarker::script()
+{
+    return QString("addMaterial(\"%1\", %2, %3)").
+            arg(name).
+            arg(charge_density).
+            arg(permittivity);
+}
+
 int SceneLabelElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
 {
     DSceneLabelElectrostaticMarker *dialog = new DSceneLabelElectrostaticMarker(parent, this);
@@ -135,6 +198,14 @@ SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name
     this->current_density = current_density;
 }
 
+QString SceneLabelMagnetostaticMarker::script()
+{
+    return QString("addMaterial(\"%1\", %2, %3)").
+            arg(name).
+            arg(current_density).
+            arg(permeability);
+}
+
 int SceneLabelMagnetostaticMarker::showDialog(Scene *scene, QWidget *parent)
 {
     DSceneLabelMagnetostaticMarker *dialog = new DSceneLabelMagnetostaticMarker(parent, this);
@@ -146,6 +217,13 @@ int SceneLabelMagnetostaticMarker::showDialog(Scene *scene, QWidget *parent)
 SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, double conductivity) : SceneLabelMarker(name)
 {
     this->conductivity = conductivity;
+}
+
+QString SceneLabelCurrentMarker::script()
+{
+    return QString("addMaterial(\"%1\", %3)").
+            arg(name).
+            arg(conductivity);
 }
 
 int SceneLabelCurrentMarker::showDialog(Scene *scene, QWidget *parent)
@@ -163,6 +241,14 @@ SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, double volume_he
     this->volume_heat = volume_heat;
 }
 
+QString SceneLabelHeatMarker::script()
+{
+    return QString("addMaterial(\"%1\", %2, %3)").
+            arg(name).
+            arg(volume_heat).
+            arg(thermal_conductivity);
+}
+
 int SceneLabelHeatMarker::showDialog(Scene *scene, QWidget *parent)
 {
     DSceneLabelHeatMarker *dialog = new DSceneLabelHeatMarker(parent, this);
@@ -176,6 +262,14 @@ SceneLabelElasticityMarker::SceneLabelElasticityMarker(const QString &name, doub
 {
     this->young_modulus = young_modulus;
     this->poisson_ratio = poisson_ratio;
+}
+
+QString SceneLabelElasticityMarker::script()
+{
+    return QString("addMaterial(\"%1\", %2, %3)").
+            arg(name).
+            arg(young_modulus).
+            arg(poisson_ratio);
 }
 
 int SceneLabelElasticityMarker::showDialog(Scene *scene, QWidget *parent)

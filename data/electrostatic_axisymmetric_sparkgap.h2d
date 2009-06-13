@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="5" numberofrefinements="0" adaptivitysteps="15" polynomialorder="1" problemtype="axisymmetric" type="electrostatic" id="0" name="Jiskriste" >
+        <project adaptivitytolerance="10" numberofrefinements="0" adaptivitysteps="15" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Jiskriste" >
             <edges>
                 <edge type="potential" value="1000" id="1" name="U = 1000 V" />
                 <edge type="potential" value="0" id="2" name="U = 0 V" />
@@ -33,7 +33,7 @@
             <edge end="6" marker="3" id="7" start="7" angle="90" />
         </edges>
         <labels>
-            <label x="0.879551" y="0.764057" marker="1" id="0" area="0.1" />
+            <label x="0.879551" y="0.764057" marker="1" id="0" area="0" />
         </labels>
     </geometry>
 </document>

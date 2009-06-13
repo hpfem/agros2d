@@ -673,25 +673,11 @@ PointValue SceneSolution::pointValue(const Point &point)
         {
             dx =  m_sln1->get_pt_value(point.x, point.y, FN_DX_0);
             dy =  m_sln1->get_pt_value(point.x, point.y, FN_DY_0);
-
-            /*
-            index = findTriangleInVectorizer(m_vec, point);
-            
-            if (index > 0)
-            {
-                double4* vecVert = m_vec.get_vertices();
-                int3* vecTris = m_vec.get_triangles();
-                
-                dx = (vecVert[vecTris[index][0]][2] + vecVert[vecTris[index][1]][2] + vecVert[vecTris[index][2]][2]) / 3.0;
-                dy = (vecVert[vecTris[index][0]][3] + vecVert[vecTris[index][1]][3] + vecVert[vecTris[index][2]][3]) / 3.0;
-            }
-            */
         }
     }
     
     // find marker
-    index = findTriangleInMesh(m_mesh, point);
-    
+    index = findTriangleInMesh(m_mesh, point);    
     if (index > 0)
     {
         Element *element = m_mesh.get_element_fast(index);
@@ -704,12 +690,11 @@ PointValue SceneSolution::pointValue(const Point &point)
 void SceneSolution::setSolutionArray(SolutionArray *solutionArray)
 {
     m_sln1 = solutionArray->sln1;
-    // m_sln1DXDY = new DXDYFilter(dxdyfilter, m_sln1);
     m_sln2 = solutionArray->sln2;
     
     if (m_scene->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
         m_vec.process_solution(m_sln1, FN_DX_0, m_sln1, FN_DY_0, EPS_NORMAL);
-    
+
     // order view
     m_ordView = *solutionArray->order1;
     // m_slnOrderView = *solutionArray->order2;

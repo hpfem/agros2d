@@ -144,16 +144,16 @@ void SceneInfoView::doInvalidated()
     itemProblemType->setText(0, tr("Type: ") + problemTypeString(scene->projectInfo().problemType));
     // physic field
     QTreeWidgetItem *itemPhysicField = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemPhysicField->setText(0, tr("Field: ") + physicFieldString(scene->projectInfo().physicField));
+    itemPhysicField->setText(0, tr("Field: ") + physicFieldStringKey(scene->projectInfo().physicField));
 
     // solver
-    if (scene->isMeshed())
+    if (scene->sceneSolution()->isMeshed())
     {
         QTreeWidgetItem *itemSolverVertices = new QTreeWidgetItem(problemInfoSolverNode);
         itemSolverVertices->setText(0, tr("Nodes: ") + QString::number(scene->sceneSolution()->mesh().get_num_nodes()));
         QTreeWidgetItem *itemSolverEdges = new QTreeWidgetItem(problemInfoSolverNode);
-        itemSolverEdges->setText(0, tr("Elements: ") + QString::number(scene->sceneSolution()->mesh().get_num_elements()));
-        if (scene->sceneSolution()->sln())
+        itemSolverEdges->setText(0, tr("Elements: ") + QString::number(scene->sceneSolution()->mesh().get_num_active_elements()));
+        if (scene->sceneSolution()->isSolved())
         {
             QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
             itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(scene->sceneSolution()->sln()->get_num_dofs()));

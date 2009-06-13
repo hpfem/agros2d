@@ -784,7 +784,7 @@ LocalPointValue *localPointValueFactory(Point &point, Scene *scene)
         return new LocalPointValueElasticity(point, scene);
         break;
     default:
-        cerr << "Physical field '" + physicFieldString(scene->projectInfo().physicField).toStdString() + "' is not implemented. LocalPointValueView *localPointValueFactory(Point &point, Scene *scene)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(scene->projectInfo().physicField).toStdString() + "' is not implemented. LocalPointValueView *localPointValueFactory(Point &point, Scene *scene)" << endl;
         throw;
         break;
     }
@@ -811,7 +811,7 @@ QStringList localPointValueHeaderFactory(PhysicField physicField)
         headers << "X" << "Y" << "Von Misses stress";
         break;
     default:
-        cerr << "Physical field '" + physicFieldString(physicField).toStdString() + "' is not implemented. localPointValueHeaderFactory(PhysicField physicField)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. localPointValueHeaderFactory(PhysicField physicField)" << endl;
         throw;
         break;
     }
