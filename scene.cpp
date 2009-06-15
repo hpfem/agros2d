@@ -1102,6 +1102,10 @@ void Scene::readFromFile(const QString &fileName)
 }
 
 void Scene::writeToFile(const QString &fileName) {
+    QSettings settings;
+    QFileInfo fileInfo(fileName);
+    settings.setValue("LastDataDir", fileInfo.absoluteFilePath());
+
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");

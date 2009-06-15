@@ -336,7 +336,10 @@ void MainWindow::doDocumentNew()
 
 void MainWindow::doDocumentOpen()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), "data", tr("Carbon 2D files (*.h2d)"));
+    QSettings settings;
+    QString dir = settings.value("LastDataDir", "data").toString();
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Carbon 2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {
         m_scene->readFromFile(fileName);
@@ -362,7 +365,8 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    if (QFile::exists(m_scene->projectInfo().fileName))
+    QFile file(m_scene->projectInfo().fileName);
+    if (QFile::exists(m_scene->projectInfo().fileName) && file.isWritable())
         m_scene->writeToFile(m_scene->projectInfo().fileName);
     else
         doDocumentSaveAs();
@@ -370,7 +374,10 @@ void MainWindow::doDocumentSave()
 
 void MainWindow::doDocumentSaveAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Carbon 2D files (*.h2d)"));
+    QSettings settings;
+    QString dir = settings.value("LastDataDir", "data").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Carbon 2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
