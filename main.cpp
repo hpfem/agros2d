@@ -28,10 +28,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 
     QTranslator translator;
-    if (QFile::exists("/usr/share/carbon2d/lang/" + locale + ".qm"))
-        translator.load("/usr/share/carbon2d/lang/" + locale + ".qm");
-    if (QFile::exists(QDir::current().absolutePath() + "/lang/" + locale + ".qm"))
-        translator.load(QDir::current().absolutePath() + "/lang/" + locale + ".qm");
+    translator.load(appdir() + "/lang/" + locale + ".qm");
     QApplication::installTranslator(&translator);
 
     MainWindow w;

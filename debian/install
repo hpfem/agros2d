@@ -3,3 +3,4 @@ carbon2d.desktop	usr/share/applications
 images/carbon2d.png	usr/share/pixmaps
 data/*.h2d		usr/share/carbon2d/data
 lang/*.qm		usr/share/carbon2d/lang
+doc/html/*		usr/share/carbon2d/doc/html

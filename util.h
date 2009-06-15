@@ -547,4 +547,7 @@ QStringList availableLanguages();
 // get icon with respect to actual theme
 QIcon icon(const QString &name);
 
+// get appdir
+QString appdir();
+
 #endif // UTIL_H

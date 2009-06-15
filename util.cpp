@@ -23,9 +23,7 @@ void setLanguage(const QString &locale)
 QStringList availableLanguages()
 {
     QDir dir;
-    dir.setPath(QDir::current().absolutePath() + "/lang");
-    if (!dir.exists())
-        dir.setPath("/usr/share/carbon2d/lang");
+    dir.setPath(appdir() + "/lang");
 
     QStringList filters;
     filters << "*.qm";
@@ -52,4 +50,16 @@ QIcon icon(const QString &name) {
     */
 
     return QIcon(QPixmap(":images/" + name + ".png"));
+}
+
+QString appdir()
+{
+    QDir dirData;
+    dirData.setPath(QDir::current().absolutePath() + "/data");
+    if (dirData.exists())
+        return QDir::current().absolutePath();
+
+    dirData.setPath("/usr/share/carbon2d/data");
+    if (dirData.exists())
+        return "/usr/share/carbon2d";
 }

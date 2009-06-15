@@ -1063,39 +1063,25 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     // select all
     if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))
     {
-        m_scene->selectNone();
-
-        // nodes
-        if (m_sceneMode == SCENEMODE_OPERATE_ON_NODES)
-            foreach (SceneNode *node, m_scene->nodes)
-                node->isSelected = true;
-        // edges
-        if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
-            foreach (SceneEdge *edge, m_scene->edges)
-                edge->isSelected = true;
-
-        // labels
-        if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
-            foreach (SceneLabel *label, m_scene->labels)
-                label->isSelected = true;
-
         if (m_sceneMode == SCENEMODE_POSTPROCESSOR)
         {
             // select volume integral area
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
-                foreach (SceneLabel *label, m_scene->labels)
-                    label->isSelected = true;
+                m_scene->selectAll(SCENEMODE_OPERATE_ON_LABELS);
                 emit mousePressed(volumeIntegralValueFactory(m_scene));
             }
 
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
             {
-                foreach (SceneEdge *edge, m_scene->edges)
-                    edge->isSelected = true;
+                m_scene->selectAll(SCENEMODE_OPERATE_ON_EDGES);
                 emit mousePressed(surfaceIntegralValueFactory(m_scene));
             }
+        }
+        else
+        {
+            m_scene->selectAll(m_sceneMode);
         }
 
         doRefresh();

@@ -14,6 +14,7 @@ class VolumeIntegralValueHeat;
 class VolumeIntegralValueCurrent;
 
 VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene);
+QStringList volumeIntegralValueHeaderFactory(PhysicField physicField);
 
 class VolumeIntegralValueView : public QDockWidget
 {
@@ -45,7 +46,7 @@ public:
 
     inline Scene *scene() { return m_scene; }
 
-    virtual QString toString();
+    virtual QStringList variables() = 0;
 
 protected:
     Scene *m_scene;
@@ -63,7 +64,7 @@ public:
     double energy;
 
     VolumeIntegralValueElectrostatic(Scene *scene);
-    QString toString();
+    QStringList variables();
 };
 
 class VolumeIntegralValueMagnetostatic : public VolumeIntegralValue
@@ -78,7 +79,7 @@ public:
     double energy;
 
     VolumeIntegralValueMagnetostatic(Scene *scene);
-    QString toString();
+    QStringList variables();
 };
 
 class VolumeIntegralValueHeat : public VolumeIntegralValue
@@ -93,7 +94,7 @@ public:
     double averageHeatFlux;
 
     VolumeIntegralValueHeat(Scene *scene);
-    QString toString();
+    QStringList variables();
 };
 
 class VolumeIntegralValueCurrent : public VolumeIntegralValue
@@ -108,7 +109,7 @@ public:
     double losses;
 
     VolumeIntegralValueCurrent(Scene *scene);
-    QString toString();
+    QStringList variables();
 };
 
 #endif // VOLUMEINTEGRALVIEW_H

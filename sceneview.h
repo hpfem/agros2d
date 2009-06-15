@@ -78,6 +78,7 @@ public:
 
     inline Scene *scene() { return m_scene; }
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
+    inline SceneMode sceneMode() { return m_sceneMode; }
 
     void saveImageToFile(const QString &fileName);
 

@@ -2,6 +2,7 @@
 #define SCENE_H
 
 #include <QtGui/QMessageBox>
+#include <QDesktopServices>
 #include <QObject>
 #include <QList>
 #include <QDate>
@@ -147,6 +148,7 @@ public:
     RectPoint boundingBox();
 
     void selectNone();
+    void selectAll(SceneMode sceneMode);
     void highlightNone();
     void deleteSelected();
 

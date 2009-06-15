@@ -256,6 +256,27 @@ void Scene::selectNone()
         label->isSelected = false;
 }
 
+void Scene::selectAll(SceneMode sceneMode)
+{
+    selectNone();
+
+    switch (sceneMode)
+    {
+    case SCENEMODE_OPERATE_ON_NODES:
+        foreach (SceneNode *node, nodes)
+            node->isSelected = true;
+        break;
+    case SCENEMODE_OPERATE_ON_EDGES:
+        foreach (SceneEdge *edge, edges)
+            edge->isSelected = true;
+        break;
+    case SCENEMODE_OPERATE_ON_LABELS:
+        foreach (SceneLabel *label, labels)
+            label->isSelected = true;
+        break;
+    }
+}
+
 void Scene::deleteSelected()
 {
     foreach (SceneNode *node, nodes)
@@ -282,24 +303,37 @@ void Scene::highlightNone()
 
 void Scene::transformTranslate(const Point &point, bool copy)
 {
+    foreach (SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            edge->nodeStart->isSelected = true;
+            edge->nodeEnd->isSelected = true;
+        }
+    }
+
     foreach (SceneNode *node, nodes)
+    {
         if (node->isSelected)
         {
-        Point newPoint = node->point + point;
-        if (!copy)
-            node->point = newPoint;
-        else
-            addNode(new SceneNode(newPoint));
+            Point newPoint = node->point + point;
+            if (!copy)
+                node->point = newPoint;
+            else
+                addNode(new SceneNode(newPoint));
+        }
     }
 
     foreach (SceneLabel *label, labels)
+    {
         if (label->isSelected)
         {
-        Point newPoint = label->point + point;
-        if (!copy)
-            label->point = newPoint;
-        else
-            addLabel(new SceneLabel(newPoint, label->marker, label->area));
+            Point newPoint = label->point + point;
+            if (!copy)
+                label->point = newPoint;
+            else
+                addLabel(new SceneLabel(newPoint, label->marker, label->area));
+        }
     }
 
     emit invalidated();
@@ -378,6 +412,10 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     }
     */
 
+    // save as temp name
+    if (m_projectInfo.fileName.isEmpty())
+        writeToFile(QDesktopServices::TempLocation + "/carbon_temp.h2d");
+
     // clear project
     sceneSolution()->clear();
 
@@ -416,6 +454,13 @@ void Scene::doSolved()
         emit solved();
 
     emit invalidated();
+
+    // delete temp file
+    if (m_projectInfo.fileName == QDesktopServices::TempLocation + "/carbon_temp.h2d")
+    {
+        QFile::remove(m_projectInfo.fileName);
+        m_projectInfo.fileName = "";
+    }
 }
 
 void Scene::doInvalidated()

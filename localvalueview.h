@@ -33,9 +33,7 @@ private:
     Scene *m_scene;
 
     QTreeWidget *trvWidget;
-
     QAction *actPoint;
-
     QMenu *mnuInfo;
 
     void createActions();

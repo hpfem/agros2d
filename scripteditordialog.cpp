@@ -106,7 +106,7 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
         // find marker by name
         foreach (SceneEdgeMarker *edgeMarker, m_scene->edgeMarkers)
             if (edgeMarker->name == context->argument(5).toString())
-            {             
+            {
         marker = edgeMarker;
         break;
     }
@@ -120,7 +120,7 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
 
 // addBoundary(name, type, value, ...)
 QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
-{ 
+{
     PhysicFieldBC type;
     switch (m_scene->projectInfo().physicField)
     {
@@ -160,9 +160,9 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED)) typeX = PHYSICFIELDBC_ELASTICITY_FIXED;
         if (context->argument(2).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FREE)) typeY = PHYSICFIELDBC_ELASTICITY_FREE;
         if (context->argument(2).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED)) typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
-                    m_scene->addEdgeMarker(new SceneEdgeElasticityMarker(context->argument(0).toString(), typeX, typeY,
-                                                           context->argument(3).toNumber(),
-                                                           context->argument(4).toNumber()));
+        m_scene->addEdgeMarker(new SceneEdgeElasticityMarker(context->argument(0).toString(), typeX, typeY,
+                                                             context->argument(3).toNumber(),
+                                                             context->argument(4).toNumber()));
         break;
     default:
         cerr << "Physical field '" + physicFieldStringKey(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
@@ -220,28 +220,187 @@ QScriptValue scriptSolve(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
+// mode(mode = {"node", "edge", "label", "postprocessor"})
+QScriptValue scriptMode(QScriptContext *context, QScriptEngine *engine)
+{
+    if (context->argument(0).toString() == "node")
+        m_sceneView->actSceneModeNode->trigger();
+    if (context->argument(0).toString() == "edge")
+        m_sceneView->actSceneModeEdge->trigger();
+    if (context->argument(0).toString() == "label")
+        m_sceneView->actSceneModeLabel->trigger();
+    if (context->argument(0).toString() == "postprocessor")
+        if (m_scene->sceneSolution()->isSolved())
+            m_sceneView->actSceneModePostprocessor->trigger();
+
+    return engine->undefinedValue();
+}
+
+// selectNone()
+QScriptValue scriptSelectNone(QScriptContext *context, QScriptEngine *engine)
+{
+    m_scene->selectNone();
+
+    return engine->undefinedValue();
+}
+
+// selectAll()
+QScriptValue scriptSelectAll(QScriptContext *context, QScriptEngine *engine)
+{
+    m_scene->selectAll(m_sceneView->sceneMode());
+    /*
+    if (m_sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
+    {
+        if (m_sceneView->actPostprocessorModeVolumeIntegral->isChecked())
+            m_scene->selectAll(SCENEMODE_OPERATE_ON_LABELS);
+        if (m_sceneView->actPostprocessorModeSurfaceIntegral->isChecked())
+            m_scene->selectAll(SCENEMODE_OPERATE_ON_EDGES);
+    }
+    */
+    return engine->undefinedValue();
+}
+
+// selectNode()
+QScriptValue scriptSelectNode(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->actSceneModeNode->trigger();
+    for (int i = 0; i<context->argumentCount(); i++)
+        m_scene->nodes[context->argument(i).toNumber()]->isSelected = true;
+
+    m_sceneView->doInvalidated();
+
+    return engine->undefinedValue();
+}
+
+// selectEdge()
+QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->actSceneModeEdge->trigger();
+    for (int i = 0; i<context->argumentCount(); i++)
+        m_scene->edges[context->argument(i).toNumber()]->isSelected = true;
+
+    m_sceneView->doInvalidated();
+
+    return engine->undefinedValue();
+}
+
+// selectLabel()
+QScriptValue scriptSelectLabel(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->actSceneModeLabel->trigger();
+    for (int i = 0; i<context->argumentCount(); i++)
+        m_scene->labels[context->argument(i).toNumber()]->isSelected = true;
+
+    m_sceneView->doInvalidated();
+
+    return engine->undefinedValue();
+}
+
+// moveSelection(dx, dy, copy = false)
+QScriptValue scriptMoveSelection(QScriptContext *context, QScriptEngine *engine)
+{
+    bool copy = (context->argumentCount() == 2) ? false : context->argument(2).toBoolean();
+    m_scene->transformTranslate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), copy);
+
+    return engine->undefinedValue();
+}
+
+// rotateSelection(x, y, angle, copy = false)
+QScriptValue scriptRotateSelection(QScriptContext *context, QScriptEngine *engine)
+{
+    bool copy = (context->argumentCount() == 3) ? false : context->argument(2).toBoolean();
+    m_scene->transformRotate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
+
+    return engine->undefinedValue();
+}
+
+// scaleSelection(x, y, scale, copy = false)
+QScriptValue scriptScaleSelection(QScriptContext *context, QScriptEngine *engine)
+{
+    bool copy = (context->argumentCount() == 2) ? false : context->argument(2).toBoolean();
+    m_scene->transformScale(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
+
+    return engine->undefinedValue();
+}
+
+// result = pointResult(x, y)
+QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
+{
+    Point point(context->argument(0).toNumber(), context->argument(1).toNumber());
+    LocalPointValue *localPointValue = localPointValueFactory(point, m_scene);
+
+    QStringList headers = localPointValueHeaderFactory(m_scene->projectInfo().physicField);
+    QStringList variables = localPointValue->variables();
+
+    QScriptValue value = engine->newObject();
+    for (int i = 0; i < variables.length(); i++)
+        value.setProperty(headers[i], QString(variables[i]).toDouble());
+
+    delete localPointValue;
+
+    return value;
+}
+
+// result = volumeIntegral(index ...)
+QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine)
+{
+    if (m_scene->sceneSolution()->isSolved())
+        m_sceneView->actSceneModePostprocessor->trigger();
+
+    if (m_sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
+    {
+        m_sceneView->actPostprocessorModeVolumeIntegral->trigger();
+        m_scene->selectNone();
+
+        // select all or indices
+        if (context->argumentCount() == 0)
+            foreach (SceneLabel *label, m_scene->labels)
+                label->isSelected = true;
+        else
+            for (int i = 0; i<context->argumentCount(); i++)
+                m_scene->labels[context->argument(i).toNumber()]->isSelected = true;
+
+        VolumeIntegralValue *volumeIntegral = volumeIntegralValueFactory(m_scene);
+
+        QStringList headers = volumeIntegralValueHeaderFactory(m_scene->projectInfo().physicField);
+        QStringList variables = volumeIntegral->variables();
+
+        QScriptValue value = engine->newObject();
+        for (int i = 0; i < variables.length(); i++)
+            value.setProperty(headers[i], QString(variables[i]).toDouble());
+
+        delete volumeIntegral;
+
+        return value;
+    }
+    else
+    {
+        return engine->undefinedValue();
+    }
+}
+
 // ***********************************************************************************************************
 
-ScriptEditorDialog::ScriptEditorDialog(Scene *scene, QWidget *parent) : QDialog(parent)
+ScriptEditorDialog::ScriptEditorDialog(Scene *scene, SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
     m_scene = scene;
+    m_sceneView = sceneView;
 
     setWindowIcon(icon("script"));
 
     createControls();
     createEngine();
 
+    // scriptEditorHelpDialog = new ScriptEditorHelpDialog(this);
+
     resize(600, 400);
-    // resize(sizeHint());
-    // setMinimumSize(sizeHint());
-    // setMaximumSize(sizeHint());
 
     QSettings settings;
     restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
     splitter->restoreState(settings.value("ScriptEditorDialog/SplitterState", splitter->saveState()).toByteArray());
 
-    doFileOpen("data/script/capacitor.js");
+    doFileOpen("data/script/capacitor.qs");
 }
 
 ScriptEditorDialog::~ScriptEditorDialog()
@@ -255,6 +414,7 @@ ScriptEditorDialog::~ScriptEditorDialog()
     delete txtOutput;
     delete m_engine;
     delete splitter;
+    // delete scriptEditorHelpDialog;
 }
 
 void ScriptEditorDialog::showDialog()
@@ -290,18 +450,28 @@ void ScriptEditorDialog::createControls()
     actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
     connect(actCreateFromModel, SIGNAL(triggered()), this, SLOT(doCreateFromModel()));
 
+    actHelp = new QAction(icon("help-browser"), tr("Help"), this);
+    actHelp->setShortcut(QKeySequence(tr("F1")));
+    connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
+
     tlbBar->addAction(actFileNew);
     tlbBar->addAction(actFileOpen);
     tlbBar->addAction(actFileSave);
     tlbBar->addSeparator();
     tlbBar->addAction(actRun);
     tlbBar->addAction(actCreateFromModel);
+    tlbBar->addSeparator();
+    tlbBar->addAction(actHelp);
 
     splitter = new QSplitter(this);
 
     txtEditor = new QPlainTextEdit(this);
     txtEditor->setFont(QFont("Monospace", 10));
     txtEditor->setTabStopWidth(40);
+    txtEditor->setLineWrapMode(QPlainTextEdit::NoWrap);
+
+    // highlighter
+    QScriptSyntaxHighlighter *highlighter = new QScriptSyntaxHighlighter(txtEditor->document());
 
     txtOutput = new QPlainTextEdit(this);
     txtOutput->setFont(QFont("Monospaced", 10));
@@ -312,8 +482,6 @@ void ScriptEditorDialog::createControls()
     splitter->addWidget(txtOutput);
     QSettings settings;
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
-
-    // highlighter = new Highlighter(editor->document());
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tlbBar);
@@ -343,6 +511,22 @@ void ScriptEditorDialog::createEngine()
     m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
 
     m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
+
+    m_engine->globalObject().setProperty("mode", m_engine->newFunction(scriptMode));
+
+    m_engine->globalObject().setProperty("selectNone", m_engine->newFunction(scriptSelectNone));
+    m_engine->globalObject().setProperty("selectAll", m_engine->newFunction(scriptSelectAll));
+    m_engine->globalObject().setProperty("selectNode", m_engine->newFunction(scriptSelectNode));
+    m_engine->globalObject().setProperty("selectEdge", m_engine->newFunction(scriptSelectEdge));
+    m_engine->globalObject().setProperty("selectLabel", m_engine->newFunction(scriptSelectLabel));
+
+    m_engine->globalObject().setProperty("moveSelection", m_engine->newFunction(scriptMoveSelection));
+    m_engine->globalObject().setProperty("rotateSelection", m_engine->newFunction(scriptRotateSelection));
+    m_engine->globalObject().setProperty("scaleSelection", m_engine->newFunction(scriptScaleSelection));
+
+
+    m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
+    m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
 }
 
 void ScriptEditorDialog::doFileNew()
@@ -358,7 +542,7 @@ void ScriptEditorDialog::doFileOpen(const QString &fileName)
     m_fileName = fileName;
 
     if (m_fileName.isEmpty())
-        m_fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Script files (*.js)"));
+        m_fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Script files (*.qs)"));
 
     if (!m_fileName.isEmpty()) {
         QFile file(m_fileName);
@@ -372,8 +556,8 @@ void ScriptEditorDialog::doFileOpen(const QString &fileName)
 void ScriptEditorDialog::doFileSave()
 {
     if (m_fileName.isEmpty())
-        m_fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Script files (*.js)"));
-    
+        m_fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Script files (*.qs)"));
+
     if (!m_fileName.isEmpty())
     {
         QFile file(m_fileName);
@@ -384,13 +568,6 @@ void ScriptEditorDialog::doFileSave()
             file.close();
         }
     }
-}
-
-void ScriptEditorDialog::doRun()
-{
-    txtOutput->clear();
-
-    QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), m_fileName);
 }
 
 void ScriptEditorDialog::doCreateFromModel()
@@ -451,4 +628,62 @@ void ScriptEditorDialog::doCreateFromModel()
     }
 
     txtEditor->setPlainText(str);
+}
+
+void ScriptEditorDialog::doHelp()
+{
+    QDesktopServices::openUrl(appdir() + "/doc/html/script.html");
+    // scriptEditorHelpDialog->showDialog();
+}
+
+void ScriptEditorDialog::doRun()
+{
+    txtOutput->clear();
+
+    m_scene->blockSignals(true);
+
+    QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), m_fileName);
+
+    m_scene->blockSignals(false);
+    m_scene->refresh();
+}
+
+// ***********************************************************************************************
+
+ScriptEditorHelpDialog::ScriptEditorHelpDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowIcon(icon("script"));
+    setWindowTitle(tr("Help"));
+
+    createControls();
+
+    resize(600, 400);
+
+    QSettings settings;
+    restoreGeometry(settings.value("ScriptEditorHelpDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ScriptEditorHelpDialog::~ScriptEditorHelpDialog()
+{
+    QSettings settings;
+    settings.setValue("ScriptEditorHelpDialog/Geometry", saveGeometry());
+
+    // delete webHelp;
+}
+
+
+void ScriptEditorHelpDialog::showDialog()
+{
+    show();
+}
+
+void ScriptEditorHelpDialog::createControls()
+{
+    // webHelp = new QWebView(this);
+    // webHelp->load(QUrl(appdir() + "/doc/html/script.html"));
+
+    // QVBoxLayout *layout = new QVBoxLayout();
+    // layout->addWidget(webHelp);
+
+    // setLayout(layout);
 }

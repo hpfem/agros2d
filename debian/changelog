@@ -1,3 +1,9 @@
+carbon2d (0.7-1ubuntu1) jaunty unstable; urgency=low
+
+  * electric current field, scripting support (qtscript)
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 04 Jun 2009 17:05:55 +0200
+
 carbon2d (0.6-1ubuntu1) jaunty unstable; urgency=low
 
   * Chart dialog, new solver dialog, adaptive solver

@@ -360,7 +360,9 @@ double LocalPointValueElectrostatic::variableValue(PhysicFieldVariable physicFie
 QStringList LocalPointValueElectrostatic::variables()
 {
     QStringList row;
-    row << QString("%1").arg(potential, 0, 'e', 5) <<
+    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
+            QString("%1").arg(point.y, 0, 'e', 5) <<
+            QString("%1").arg(potential, 0, 'e', 5) <<
             QString("%1").arg(E.x, 0, 'e', 5) <<
             QString("%1").arg(E.y, 0, 'e', 5) <<
             QString("%1").arg(E.magnitude(), 0, 'e', 5) <<
@@ -483,7 +485,9 @@ double LocalPointValueMagnetostatic::variableValue(PhysicFieldVariable physicFie
 QStringList LocalPointValueMagnetostatic::variables()
 {
     QStringList row;
-    row << QString("%1").arg(potential, 0, 'e', 5) <<
+    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
+            QString("%1").arg(point.y, 0, 'e', 5) <<
+            QString("%1").arg(potential, 0, 'e', 5) <<
             QString("%1").arg(B.x, 0, 'e', 5) <<
             QString("%1").arg(B.y, 0, 'e', 5) <<
             QString("%1").arg(B.magnitude(), 0, 'e', 5) <<
@@ -585,7 +589,9 @@ double LocalPointValueHeat::variableValue(PhysicFieldVariable physicFieldVariabl
 QStringList LocalPointValueHeat::variables()
 {
     QStringList row;
-    row << QString("%1").arg(temperature, 0, 'e', 5) <<
+    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
+            QString("%1").arg(point.y, 0, 'e', 5) <<
+            QString("%1").arg(temperature, 0, 'e', 5) <<
             QString("%1").arg(G.x, 0, 'e', 5) <<
             QString("%1").arg(G.y, 0, 'e', 5) <<
             QString("%1").arg(G.magnitude(), 0, 'e', 5) <<
@@ -697,7 +703,9 @@ double LocalPointValueCurrent::variableValue(PhysicFieldVariable physicFieldVari
 QStringList LocalPointValueCurrent::variables()
 {
     QStringList row;
-    row << QString("%1").arg(potential, 0, 'e', 5) <<
+    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
+            QString("%1").arg(point.y, 0, 'e', 5) <<
+            QString("%1").arg(potential, 0, 'e', 5) <<
             QString("%1").arg(J.x, 0, 'e', 5) <<
             QString("%1").arg(J.y, 0, 'e', 5) <<
             QString("%1").arg(J.magnitude(), 0, 'e', 5) <<
@@ -709,6 +717,7 @@ QStringList LocalPointValueCurrent::variables()
 
     return QStringList(row);
 }
+
 // ****************************************************************************************************************
 
 LocalPointValueElasticity::LocalPointValueElasticity(Point &point, Scene *scene) : LocalPointValue(point, scene)
@@ -799,10 +808,10 @@ QStringList localPointValueHeaderFactory(PhysicField physicField)
         headers << "X" << "Y" << "Potential" << "Ex" << "Ey" << "E" << "Dx" << "Dy" << "D" << "Energy" << "Permittivity";
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        headers << "X" << "Y" << "Potential" << "Bx" << "By" << "B" << "Hx" << "Hy" << "H" << "Energy" << "Permeabilty";
+        headers << "X" << "Y" << "Potential" << "Bx" << "By" << "B" << "Hx" << "Hy" << "H" << "Energy" << "Permeability";
         break;
     case PHYSICFIELD_CURRENT:
-        headers << "X" << "Y" << "Potential" << "Jx" << "Jy" << "J" << "Ex" << "Ey" << "E" << "Losses" << "Conductivitys";
+        headers << "X" << "Y" << "Potential" << "Jx" << "Jy" << "J" << "Ex" << "Ey" << "E" << "Losses" << "Conductivity";
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         headers << "X" << "Y" << "Temperature" << "Gx" << "Gy" << "G" << "Fx" << "Fy" << "F" << "Conductivity";

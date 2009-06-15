@@ -108,9 +108,7 @@ void SceneTransformDialog::createControls()
 void SceneTransformDialog::doAccept()
 {
     if (tabWidget->currentWidget() == widTranslate)
-    {
         m_scene->transformTranslate(Point(txtTranslateX->value(), txtTranslateY->value()), chkCopy->isChecked());
-    }
 
     if (tabWidget->currentWidget() == widRotate)
         m_scene->transformRotate(Point(txtRotateBasePointX->value(), txtRotateBasePointY->value()), txtRotateAngle->value(), chkCopy->isChecked());

@@ -116,11 +116,6 @@ VolumeIntegralValue::VolumeIntegralValue(Scene *scene)
     }
 }
 
-QString VolumeIntegralValue::toString()
-{
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
-}
-
 // ****************************************************************************************************************
 
 VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic(Scene *scene) : VolumeIntegralValue(scene)
@@ -160,9 +155,19 @@ VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic(Scene *scene)
     }
 }
 
-QString VolumeIntegralValueElectrostatic::toString()
+QStringList VolumeIntegralValueElectrostatic::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
+            QString("%1").arg(crossSection, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricFieldX, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricFieldY, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricField, 0, 'e', 5) <<
+            QString("%1").arg(averageDisplacementX, 0, 'e', 5) <<
+            QString("%1").arg(averageDisplacementY, 0, 'e', 5) <<
+            QString("%1").arg(averageDisplacement, 0, 'e', 5) <<
+            QString("%1").arg(energy, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ****************************************************************************************************************
@@ -204,9 +209,19 @@ VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic(Scene *scene)
     }
 }
 
-QString VolumeIntegralValueMagnetostatic::toString()
+QStringList VolumeIntegralValueMagnetostatic::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
+            QString("%1").arg(crossSection, 0, 'e', 5) <<
+            QString("%1").arg(averageMagneticFieldX, 0, 'e', 5) <<
+            QString("%1").arg(averageMagneticFieldY, 0, 'e', 5) <<
+            QString("%1").arg(averageMagneticField, 0, 'e', 5) <<
+            QString("%1").arg(averageFluxDensityX, 0, 'e', 5) <<
+            QString("%1").arg(averageFluxDensityY, 0, 'e', 5) <<
+            QString("%1").arg(averageFluxDensity, 0, 'e', 5) <<
+            QString("%1").arg(energy, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ****************************************************************************************************************
@@ -249,9 +264,19 @@ VolumeIntegralValueHeat::VolumeIntegralValueHeat(Scene *scene) : VolumeIntegralV
     }
 }
 
-QString VolumeIntegralValueHeat::toString()
+QStringList VolumeIntegralValueHeat::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
+            QString("%1").arg(crossSection, 0, 'e', 5) <<
+            QString("%1").arg(averageTemperature, 0, 'e', 5) <<
+            QString("%1").arg(averageTemperatureGradientX, 0, 'e', 5) <<
+            QString("%1").arg(averageTemperatureGradientY, 0, 'e', 5) <<
+            QString("%1").arg(averageTemperatureGradient, 0, 'e', 5) <<
+            QString("%1").arg(averageHeatFluxX, 0, 'e', 5) <<
+            QString("%1").arg(averageHeatFluxY, 0, 'e', 5) <<
+            QString("%1").arg(averageHeatFlux, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ****************************************************************************************************************
@@ -293,9 +318,18 @@ VolumeIntegralValueCurrent::VolumeIntegralValueCurrent(Scene *scene) : VolumeInt
     }
 }
 
-QString VolumeIntegralValueCurrent::toString()
+QStringList VolumeIntegralValueCurrent::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
+            QString("%1").arg(crossSection, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricFieldX, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricFieldY, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricField, 0, 'e', 5) <<
+            QString("%1").arg(averageCurrentDensityX, 0, 'e', 5) <<
+            QString("%1").arg(averageCurrentDensityY, 0, 'e', 5) <<
+            QString("%1").arg(averageCurrentDensity, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ***********************************************************************************************************************
@@ -321,4 +355,33 @@ VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)
         throw;
         break;
     }
+}
+
+QStringList volumeIntegralValueHeaderFactory(PhysicField physicField)
+{
+    QStringList headers;
+    switch (physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        headers << "Volume" << "CrossSection" << "Ex_avg" << "Ey_avg" << "E_avg" << "Dx_avg" << "Dy_avg" << "D_avg" << "Energy";
+        break;
+    case PHYSICFIELD_MAGNETOSTATIC:
+        headers << "Volume" << "CrossSection" << "Bx_avg" << "By_avg" << "B_avg" << "Hx_avg" << "Hy_avg" << "H_avg" << "Energy";
+        break;
+    case PHYSICFIELD_CURRENT:
+        headers << "Volume" << "CrossSection" << "Jx_avg" << "Jy_avg" << "J_avg" << "Ex_avg" << "Ey_avg" << "E_avg" << "Losses";
+        break;
+    case PHYSICFIELD_HEAT_TRANSFER:
+        headers << "Volume" << "CrossSection" << "Temperature" << "Gx_avg" << "Gy_avg" << "G_avg" << "Fx_avg" << "Fy_avg" << "F_avg";
+        break;
+    case PHYSICFIELD_ELASTICITY:
+        headers << "Volume" << "CrossSection";
+        break;
+    default:
+        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. volumeIntegralValueHeaderFactory(PhysicField physicField)" << endl;
+        throw;
+        break;
+    }
+
+    return QStringList(headers);
 }

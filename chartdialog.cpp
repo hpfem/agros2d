@@ -235,8 +235,7 @@ void ChartDialog::doPlot()
         
         // table
         row.clear();
-        row << QString("%1").arg(start.x + i*diff.x, 0, 'e', 5) << QString("%1").arg(start.y + i*diff.y, 0, 'e', 5) <<
-                localPointValue->variables();
+        row << localPointValue->variables();
 
         for (int j = 0; j<row.count(); j++)
             trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));

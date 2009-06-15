@@ -16,6 +16,8 @@ QMAKE_CXXFLAGS += -w
 SOURCES += main.cpp \
     util.cpp \
     gui.cpp \
+    scripteditordialog.cpp \
+    scripteditorhighlighter.cpp \
     solverdialog.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
@@ -36,11 +38,12 @@ SOURCES += main.cpp \
     scenesolution.cpp \
     localvalueview.cpp \
     volumeintegralview.cpp \
-    surfaceintegralview.cpp \
-    scripteditordialog.cpp
+    surfaceintegralview.cpp
 HEADERS += mainwindow.h \
     util.h \
     gui.h \
+    scripteditordialog.h \
+    scripteditorhighlighter.h \
     solverdialog.h \
     hermes2d/hermes_electrostatic.h \
     hermes2d/hermes_heat.h \
@@ -61,8 +64,7 @@ HEADERS += mainwindow.h \
     scenesolution.h \
     localvalueview.h \
     volumeintegralview.h \
-    surfaceintegralview.h \
-    scripteditordialog.h
+    surfaceintegralview.h
 INCLUDEPATH += include/hermes2d \
     include/dxflib \
     /usr/include \

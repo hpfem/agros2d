@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
 
     chartDialog = new ChartDialog(m_scene, this);
-    scriptEditorDialog = new ScriptEditorDialog(m_scene, this);
+    scriptEditorDialog = new ScriptEditorDialog(m_scene, sceneView, this);
 
     sceneView->actSceneModeNode->trigger();
     sceneView->doZoomBestFit();
@@ -480,10 +480,6 @@ void MainWindow::doPaste()
 
 void MainWindow::doInvalidated()
 {
-    bool isSaved = !m_scene->projectInfo().fileName.isEmpty();
-
-    actCreateMesh->setEnabled(isSaved);
-    actSolve->setEnabled(isSaved);
     actChart->setEnabled(m_scene->sceneSolution()->isSolved());
 
     lblProblemType->setText(tr("Problem Type: ") + problemTypeString(m_scene->projectInfo().problemType));

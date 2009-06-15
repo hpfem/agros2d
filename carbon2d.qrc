@@ -36,5 +36,6 @@
         <file>images/carbon2d.png</file>
         <file>images/script.png</file>
         <file>images/script-create.png</file>
+        <file>images/help-browser.png</file>
     </qresource>
 </RCC>
