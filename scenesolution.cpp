@@ -596,11 +596,11 @@ int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &
 {
     double4* vecVert = vec.get_vertices();
     int3* vecTris = vec.get_triangles();
-    
+
     for (int i = 0; i < vec.get_num_triangles(); i++)
-    {        
+    {
         bool inTriangle = true;
-        
+
         int k;
         double z;
         for (int l = 0; l < 3; l++)
@@ -608,21 +608,21 @@ int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &
             k = l + 1;
             if (k == 3)
                 k = 0;
-            
+
             z = (vecVert[vecTris[i][k]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
                 (vecVert[vecTris[i][k]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
-            
+
             if (z < 0)
             {
                 inTriangle = false;
                 break;
             }
         }
-        
+
         if (inTriangle)
             return i;
     }
-    
+
     return -1;
 }
 
@@ -692,6 +692,8 @@ void SceneSolution::setSolutionArray(SolutionArray *solutionArray)
     m_sln1 = solutionArray->sln1;
     m_sln2 = solutionArray->sln2;
     
+    cout << m_sln1 << endl;
+
     if (m_scene->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
         m_vec.process_solution(m_sln1, FN_DX_0, m_sln1, FN_DY_0, EPS_NORMAL);
 

@@ -1,150 +1,157 @@
+/**************************************************************************
+**
+** This file is part of Qt Creator
+**
+** Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact:  Qt Software Information (qt-info@nokia.com)
+**
+** Commercial Usage
+**
+** Licensees holding valid Qt Commercial licenses may use this file in
+** accordance with the Qt Commercial License Agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Nokia.
+**
+** GNU Lesser General Public License Usage
+**
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** If you are unsure which license is appropriate for your use, please
+** contact the sales department at qt-sales@nokia.com.
+**
+**************************************************************************/
+
 #include "scripteditorhighlighter.h"
 
-#ifndef QT_NO_SYNTAXHIGHLIGHTER
+#include <QtCore/QSet>
+#include <QtCore/QtAlgorithms>
+#include <QtCore/QDebug>
+#include <QSyntaxHighlighter>
 
-QT_BEGIN_NAMESPACE
-
-enum ScriptIds {
-    Comment = 1,
-    Number,
-    String,
-    Type,
-    Keyword,
-    PreProcessor,
-    Label
-};
-
-#define MAX_KEYWORD 63
-static const char *const keywords[MAX_KEYWORD] = {
-    "Infinity",
-    "NaN",
-    "abstract",
-    "boolean",
-    "break",
-    "byte",
-    "case",
-    "catch",
-    "char",
-    "class",
-    "const",
-    "constructor",
-    "continue",
-    "debugger",
-    "default",
-    "delete",
-    "do",
-    "double",
-    "else",
-    "enum",
-    "export",
-    "extends",
-    "false",
-    "final",
-    "finally",
-    "float",
-    "for",
-    "function",
-    "goto",
-    "if",
-    "implements",
-    "import",
-    "in",
-    "instanceof",
-    "int",
-    "interface",
-    "long",
-    "native",
-    "new",
-    "package",
-    "private",
-    "protected",
-    "public",
-    "return",
-    "short",
-    "static",
-    "super",
-    "switch",
-    "synchronized",
-    "this",
-    "throw",
-    "throws",
-    "transient",
-    "true",
-    "try",
-    "typeof",
-    "undefined",
-    "var",
-    "void",
-    "volatile",
-    "while",
-    "with",    // end of array
-    0
-};
-
-struct KeywordHelper
+QScriptSyntaxHighlighter::QScriptSyntaxHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 {
-    inline KeywordHelper(const QString &word) : needle(word) {}
-    const QString needle;
-};
+    qscriptKeywords.insert(QLatin1String("Infinity"));
+    qscriptKeywords.insert(QLatin1String("NaN"));
+    qscriptKeywords.insert(QLatin1String("abstract"));
+    qscriptKeywords.insert(QLatin1String("boolean"));
+    qscriptKeywords.insert(QLatin1String("break"));
+    qscriptKeywords.insert(QLatin1String("byte"));
+    qscriptKeywords.insert(QLatin1String("case"));
+    qscriptKeywords.insert(QLatin1String("catch"));
+    qscriptKeywords.insert(QLatin1String("char"));
+    qscriptKeywords.insert(QLatin1String("class"));
+    qscriptKeywords.insert(QLatin1String("const"));
+    qscriptKeywords.insert(QLatin1String("constructor"));
+    qscriptKeywords.insert(QLatin1String("continue"));
+    qscriptKeywords.insert(QLatin1String("debugger"));
+    qscriptKeywords.insert(QLatin1String("default"));
+    qscriptKeywords.insert(QLatin1String("delete"));
+    qscriptKeywords.insert(QLatin1String("do"));
+    qscriptKeywords.insert(QLatin1String("double"));
+    qscriptKeywords.insert(QLatin1String("else"));
+    qscriptKeywords.insert(QLatin1String("enum"));
+    qscriptKeywords.insert(QLatin1String("export"));
+    qscriptKeywords.insert(QLatin1String("extends"));
+    qscriptKeywords.insert(QLatin1String("false"));
+    qscriptKeywords.insert(QLatin1String("final"));
+    qscriptKeywords.insert(QLatin1String("finally"));
+    qscriptKeywords.insert(QLatin1String("float"));
+    qscriptKeywords.insert(QLatin1String("for"));
+    qscriptKeywords.insert(QLatin1String("function"));
+    qscriptKeywords.insert(QLatin1String("goto"));
+    qscriptKeywords.insert(QLatin1String("if"));
+    qscriptKeywords.insert(QLatin1String("implements"));
+    qscriptKeywords.insert(QLatin1String("import"));
+    qscriptKeywords.insert(QLatin1String("in"));
+    qscriptKeywords.insert(QLatin1String("instanceof"));
+    qscriptKeywords.insert(QLatin1String("int"));
+    qscriptKeywords.insert(QLatin1String("interface"));
+    qscriptKeywords.insert(QLatin1String("long"));
+    qscriptKeywords.insert(QLatin1String("native"));
+    qscriptKeywords.insert(QLatin1String("new"));
+    qscriptKeywords.insert(QLatin1String("package"));
+    qscriptKeywords.insert(QLatin1String("private"));
+    qscriptKeywords.insert(QLatin1String("protected"));
+    qscriptKeywords.insert(QLatin1String("public"));
+    qscriptKeywords.insert(QLatin1String("return"));
+    qscriptKeywords.insert(QLatin1String("short"));
+    qscriptKeywords.insert(QLatin1String("static"));
+    qscriptKeywords.insert(QLatin1String("super"));
+    qscriptKeywords.insert(QLatin1String("switch"));
+    qscriptKeywords.insert(QLatin1String("synchronized"));
+    qscriptKeywords.insert(QLatin1String("this"));
+    qscriptKeywords.insert(QLatin1String("throw"));
+    qscriptKeywords.insert(QLatin1String("throws"));
+    qscriptKeywords.insert(QLatin1String("transient"));
+    qscriptKeywords.insert(QLatin1String("true"));
+    qscriptKeywords.insert(QLatin1String("try"));
+    qscriptKeywords.insert(QLatin1String("typeof"));
+    qscriptKeywords.insert(QLatin1String("undefined"));
+    qscriptKeywords.insert(QLatin1String("var"));
+    qscriptKeywords.insert(QLatin1String("void"));
+    qscriptKeywords.insert(QLatin1String("volatile"));
+    qscriptKeywords.insert(QLatin1String("while"));
+    qscriptKeywords.insert(QLatin1String("with"));    // end
 
-bool operator<(const KeywordHelper &helper, const char *kw)
-{
-    return helper.needle < QLatin1String(kw);
+    setFormats(defaultFormats());
 }
 
-bool operator<(const char *kw, const KeywordHelper &helper)
-{
-    return QLatin1String(kw) < helper.needle;
-}
+bool QScriptSyntaxHighlighter::isDuiEnabled() const
+{ return m_duiEnabled; }
 
-static bool isKeyword(const QString &word)
-{
-    const char * const *start = &keywords[0];
-    const char * const *end = &keywords[MAX_KEYWORD - 1];
-    const char * const *kw = qBinaryFind(start, end, KeywordHelper(word));
-
-    return kw != end;
-}
-
-QScriptSyntaxHighlighter::QScriptSyntaxHighlighter(QTextDocument *document)
-    : QSyntaxHighlighter(document)
-{
-
-    m_formats[ScriptNumberFormat].setForeground(Qt::darkBlue);
-    m_formats[ScriptStringFormat].setForeground(Qt::darkGreen);
-    m_formats[ScriptTypeFormat].setForeground(Qt::darkMagenta);
-    m_formats[ScriptKeywordFormat].setForeground(Qt::darkYellow);
-    m_formats[ScriptPreprocessorFormat].setForeground(Qt::darkBlue);
-    m_formats[ScriptLabelFormat].setForeground(Qt::darkRed);
-    m_formats[ScriptCommentFormat].setForeground(Qt::darkGreen);
-    m_formats[ScriptCommentFormat].setFontItalic(true);
-}
-
-QScriptSyntaxHighlighter::~QScriptSyntaxHighlighter()
-{
-}
+void QScriptSyntaxHighlighter::setDuiEnabled(bool enabled)
+{ m_duiEnabled = enabled; }
 
 void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
 {
-
     // states
-    enum States { StateStandard, StateCommentStart1, StateCCommentStart2,
-                  StateScriptCommentStart2, StateCComment, StateScriptComment, StateCCommentEnd1,
-                  StateCCommentEnd2, StateStringStart, StateString, StateStringEnd,
-                  StateString2Start, StateString2, StateString2End,
-                  StateNumber, StatePreProcessor, NumStates  };
-
+    enum {
+        StateStandard,
+        StateCommentStart1,
+        StateCCommentStart2,
+        StateCppCommentStart2,
+        StateCComment,
+        StateCppComment,
+        StateCCommentEnd1,
+        StateCCommentEnd2,
+        StateStringStart,
+        StateString,
+        StateStringEnd,
+        StateString2Start,
+        StateString2,
+        StateString2End,
+        StateNumber,
+        StatePreProcessor,
+        NumStates
+    };
     // tokens
-    enum Tokens { InputAlpha, InputNumber, InputAsterix, InputSlash, InputParen,
-                  InputSpace, InputHash, InputQuotation, InputApostrophe, InputSep, NumTokens };
+    enum {
+        InputAlpha,
+        InputNumber,
+        InputAsterix,
+        InputSlash,
+        InputParen,
+        InputSpace,
+        InputHash,
+        InputQuotation,
+        InputApostrophe,
+        InputSep,
+        NumInputs
+    };
 
-    static uchar table[NumStates][NumTokens] = {
+    static const uchar table[NumStates][NumInputs] = {
         { StateStandard,      StateNumber,     StateStandard,       StateCommentStart1,    StateStandard,   StateStandard,   StatePreProcessor, StateStringStart, StateString2Start, StateStandard }, // StateStandard
-        { StateStandard,      StateNumber,   StateCCommentStart2, StateScriptCommentStart2, StateStandard,   StateStandard,   StatePreProcessor, StateStringStart, StateString2Start, StateStandard }, // StateCommentStart1
+        { StateStandard,      StateNumber,   StateCCommentStart2, StateCppCommentStart2, StateStandard,   StateStandard,   StatePreProcessor, StateStringStart, StateString2Start, StateStandard }, // StateCommentStart1
         { StateCComment,      StateCComment,   StateCCommentEnd1,   StateCComment,         StateCComment,   StateCComment,   StateCComment,     StateCComment,    StateCComment,     StateCComment }, // StateCCommentStart2
-        { StateScriptComment,    StateScriptComment, StateScriptComment,     StateScriptComment,       StateScriptComment, StateScriptComment, StateScriptComment,   StateScriptComment,  StateScriptComment,   StateScriptComment }, // ScriptCommentStart2
+        { StateCppComment,    StateCppComment, StateCppComment,     StateCppComment,       StateCppComment, StateCppComment, StateCppComment,   StateCppComment,  StateCppComment,   StateCppComment }, // CppCommentStart2
         { StateCComment,      StateCComment,   StateCCommentEnd1,   StateCComment,         StateCComment,   StateCComment,   StateCComment,     StateCComment,    StateCComment,     StateCComment }, // StateCComment
-        { StateScriptComment,    StateScriptComment, StateScriptComment,     StateScriptComment,       StateScriptComment, StateScriptComment, StateScriptComment,   StateScriptComment,  StateScriptComment,   StateScriptComment }, // StateScriptComment
+        { StateCppComment,    StateCppComment, StateCppComment,     StateCppComment,       StateCppComment, StateCppComment, StateCppComment,   StateCppComment,  StateCppComment,   StateCppComment }, // StateCppComment
         { StateCComment,      StateCComment,   StateCCommentEnd1,   StateCCommentEnd2,     StateCComment,   StateCComment,   StateCComment,     StateCComment,    StateCComment,     StateCComment }, // StateCCommentEnd1
         { StateStandard,      StateNumber,     StateStandard,       StateCommentStart1,    StateStandard,   StateStandard,   StatePreProcessor, StateStringStart, StateString2Start, StateStandard }, // StateCCommentEnd2
         { StateString,        StateString,     StateString,         StateString,           StateString,     StateString,     StateString,       StateStringEnd,   StateString,       StateString }, // StateStringStart
@@ -159,92 +166,66 @@ void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
 
     QString buffer;
     buffer.reserve(text.length());
-
     QTextCharFormat emptyFormat;
 
-    int state = StateStandard;
-    int braceDepth = 0;
-    const int previousState = previousBlockState();
-    if (previousState != -1) {
-        state = previousState & 0xff;
-        braceDepth = previousState >> 8;
-    }
-
+    int state = onBlockStart();
     if (text.isEmpty()) {
-        setCurrentBlockState(previousState);
-#if 0
-        TextEditDocumentLayout::clearParentheses(currentBlock());
-#endif
+        onBlockEnd(state, 0);
         return;
     }
-#if 0
-    Parentheses parentheses;
-    parentheses.reserve(20); // assume wizard level ;-)
-#endif
+
     int input = -1;
     int i = 0;
     bool lastWasBackSlash = false;
     bool makeLastStandard = false;
 
     static const QString alphabeth = QLatin1String("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    static const QString mathChars = QLatin1String("xXeE");
-    static const QString numbers = QLatin1String("0123456789");
+    static const QString mathChars = QString::fromLatin1("xXeE");
+    static const QString numbers = QString::fromLatin1("0123456789");
     bool questionMark = false;
     QChar lastChar;
 
     int firstNonSpace = -1;
     int lastNonSpace = -1;
 
-    for (;;) {
+    forever {
         const QChar c = text.at(i);
+
+        bool lookAtBinding = false;
 
         if (lastWasBackSlash) {
             input = InputSep;
         } else {
-            switch (c.toAscii()) {
+            switch (c.toLatin1()) {
                 case '*':
                     input = InputAsterix;
                     break;
                 case '/':
                     input = InputSlash;
                     break;
-                case '{':
-                    braceDepth++;
-                    // fall through
-                case '(': case '[':
+                case '(': case '[': case '{':
                     input = InputParen;
-                    switch (state) {
-                    case StateStandard:
-                    case StateNumber:
-                    case StatePreProcessor:
-                    case StateCCommentEnd2:
-                    case StateCCommentEnd1:
-                    case StateString2End:
-                    case StateStringEnd:
-//                        parentheses.push_back(Parenthesis(Parenthesis::Opened, c, i));
-                        break;
-                    default:
-                        break;
-                    }
+                    if (state == StateStandard
+                        || state == StateNumber
+                        || state == StatePreProcessor
+                        || state == StateCCommentEnd2
+                        || state == StateCCommentEnd1
+                        || state == StateString2End
+                        || state == StateStringEnd
+                       )
+                    onOpeningParenthesis(c, i);
                     break;
-                case '}':
-                    if (--braceDepth < 0)
-                        braceDepth = 0;
-                    // fall through
-                case ')': case ']':
+                case ')': case ']': case '}':
                     input = InputParen;
-                    switch (state) {
-                    case StateStandard:
-                    case StateNumber:
-                    case StatePreProcessor:
-                    case StateCCommentEnd2:
-                    case StateCCommentEnd1:
-                    case StateString2End:
-                    case StateStringEnd:
-//                        parentheses.push_back(Parenthesis(Parenthesis::Closed, c, i));
-                        break;
-                    default:
-                        break;
+                    if (state == StateStandard
+                        || state == StateNumber
+                        || state == StatePreProcessor
+                        || state == StateCCommentEnd2
+                        || state == StateCCommentEnd1
+                        || state == StateString2End
+                        || state == StateStringEnd
+                       ) {
+                        onClosingParenthesis(c, i);
                     }
                     break;
                 case '#':
@@ -262,8 +243,7 @@ void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
                 case '1': case '2': case '3': case '4': case '5':
                 case '6': case '7': case '8': case '9': case '0':
                     if (alphabeth.contains(lastChar)
-                        && (!mathChars.contains(lastChar) || !numbers.contains(text.at(i - 1)))
-                       ) {
+                        && (!mathChars.contains(lastChar) || !numbers.contains(text.at(i - 1)))) {
                         input = InputAlpha;
                     } else {
                         if (input == InputAlpha && numbers.contains(lastChar))
@@ -273,25 +253,49 @@ void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
                     }
                     break;
                 case ':': {
-                              input = InputAlpha;
-                              const QChar colon = QLatin1Char(':');
-                              if (state == StateStandard && !questionMark && lastChar != colon) {
-                                  const QChar nextChar = i < text.length() - 1 ?  text.at(i + 1) : QLatin1Char(' ');
-                                  if (nextChar != colon)
-                                      for (int j = 0; j < i; ++j) {
-                                          if (format(j) == emptyFormat )
-                                              setFormat(j, 1, m_formats[ScriptLabelFormat]);
-                                      }
+                              input = InputSep;
+                              QChar nextChar = ' ';
+                              if (i < text.length() - 1)
+                                  nextChar = text.at(i + 1);
+
+                              if (state == StateStandard && !questionMark &&
+                                  lastChar != ':' && nextChar != ':') {
+                                  int start = i - 1;
+
+                                  // skip white spaces
+                                  for (; start != -1; --start) {
+                                      if (! text.at(start).isSpace())
+                                          break;
+                                  }
+
+                                  int lastNonSpace = start + 1;
+
+                                  for (; start != -1; --start) {
+                                      const QChar ch = text.at(start);
+                                      if (! (ch.isLetterOrNumber() || ch == QLatin1Char('_') || ch == QLatin1Char('.')))
+                                          break;
+                                  }
+
+                                  ++start;
+
+                                  lookAtBinding = true;
+
+                                  if (m_duiEnabled && text.midRef(start, lastNonSpace - start) == QLatin1String("id")) {
+                                      setFormat(start, i - start, m_formats[KeywordFormat]);
+                                  } else {
+                                      setFormat(start, i - start, m_formats[LabelFormat]);
+                                  }
                               }
-                          } break;
-                default:
-                    if (!questionMark && c == QLatin1Char('?'))
-                        questionMark = true;
-                    if (c.isLetter() || c == QLatin1Char('_'))
-                        input = InputAlpha;
-                    else
-                      input = InputSep;
-                break;
+                              break;
+                          }
+                default: {
+                             if (!questionMark && c == QLatin1Char('?'))
+                                 questionMark = true;
+                             if (c.isLetter() || c == QLatin1Char('_'))
+                                 input = InputAlpha;
+                             else
+                                 input = InputSep;
+                         } break;
             }
         }
 
@@ -314,189 +318,178 @@ void QScriptSyntaxHighlighter::highlightBlock(const QString &text)
                                     if (makeLastStandard)
                                         setFormat(i - 1, 1, emptyFormat);
                                     makeLastStandard = false;
-                                    if (input != InputAlpha) {
-                                        highlightWord(i, buffer);
-                                        buffer = QString::null;
+                                    if (!buffer.isEmpty() && input != InputAlpha ) {
+                                        if (! lookAtBinding)
+                                            highlightKeyword(i, buffer);
+                                        buffer.clear();
                                     }
                                 } break;
             case StateCommentStart1:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = true;
-                                buffer = QString::null;
+                                buffer.resize(0);
                                 break;
             case StateCCommentStart2:
-                                setFormat(i - 1, 2, m_formats[ScriptCommentFormat]);
+                                setFormat(i - 1, 2, m_formats[CommentFormat]);
                                 makeLastStandard = false;
-//                                parentheses.push_back(Parenthesis(Parenthesis::Opened, QLatin1Char('/'), i-1));
-                                buffer = QString::null;
+                                buffer.resize(0);
                                 break;
-            case StateScriptCommentStart2:
-                                setFormat(i - 1, 2, m_formats[ScriptCommentFormat]);
+            case StateCppCommentStart2:
+                                setFormat(i - 1, 2, m_formats[CommentFormat]);
                                 makeLastStandard = false;
-                                buffer = QString::null;
+                                buffer.resize(0);
                                 break;
             case StateCComment:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
-                                setFormat(i, 1, m_formats[ScriptCommentFormat]);
-                                buffer = QString::null;
+                                setFormat(i, 1, m_formats[CommentFormat]);
+                                buffer.resize(0);
                                 break;
-            case StateScriptComment:
+            case StateCppComment:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
-                                setFormat(i, 1, m_formats[ScriptCommentFormat]);
-                                buffer = QString::null;
+                                setFormat(i, 1, m_formats[CommentFormat]);
+                                buffer.resize(0);
                                 break;
             case StateCCommentEnd1:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
-                                setFormat(i, 1, m_formats[ScriptCommentFormat]);
-                                buffer = QString::null;
+                                setFormat(i, 1, m_formats[CommentFormat]);
+                                buffer.resize(0);
                                 break;
             case StateCCommentEnd2:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
-                                setFormat(i, 1, m_formats[ScriptCommentFormat]);
-//                                parentheses.push_back(Parenthesis(Parenthesis::Closed, QLatin1Char('/'), i));
-                                buffer = QString::null;
+                                setFormat(i, 1, m_formats[CommentFormat]);
+                                buffer.resize(0);
                                 break;
             case StateStringStart:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
                                 setFormat(i, 1, emptyFormat);
-                                buffer = QString::null;
+                                buffer.resize(0);
                                 break;
             case StateString:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
-                                setFormat(i, 1, m_formats[ScriptStringFormat]);
-                                buffer = QString::null;
+                                setFormat(i, 1, m_formats[StringFormat]);
+                                buffer.resize(0);
                                 break;
             case StateStringEnd:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
                                 setFormat(i, 1, emptyFormat);
-                                buffer = QString::null;
+                                buffer.resize(0);
                                 break;
             case StateString2Start:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
                                 setFormat(i, 1, emptyFormat);
-                                buffer = QString::null;
+                                buffer.resize(0);
                                 break;
             case StateString2:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
-                                setFormat(i, 1, m_formats[ScriptStringFormat]);
-                                buffer = QString::null;
+                                setFormat(i, 1, m_formats[StringFormat]);
+                                buffer.resize(0);
                                 break;
             case StateString2End:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
                                 setFormat(i, 1, emptyFormat);
-                                buffer = QString::null;
+                                buffer.resize(0);
                                 break;
             case StateNumber:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
-                                setFormat(i, 1, m_formats[ScriptNumberFormat]);
-                                buffer = QString::null;
+                                setFormat( i, 1, m_formats[NumberFormat]);
+                                buffer.resize(0);
                                 break;
             case StatePreProcessor:
                                 if (makeLastStandard)
                                     setFormat(i - 1, 1, emptyFormat);
                                 makeLastStandard = false;
-                                setFormat(i, 1, m_formats[ScriptPreprocessorFormat]);
-                                buffer = QString::null;
+                                setFormat(i, 1, m_formats[PreProcessorFormat]);
+                                buffer.resize(0);
                                 break;
         }
 
         lastChar = c;
         i++;
-        if (i >= text.length()) {
-#if 0
-            if (TextBlockUserData *userData = TextEditDocumentLayout::testUserData(currentBlock())) {
-                userData->setHasClosingCollapse(false);
-                userData->setCollapseMode(TextBlockUserData::NoCollapse);
-            }
-            int collapse = Parenthesis::collapseAtPos(parentheses);
-            if (collapse >= 0) {
-                if (collapse == firstNonSpace)
-                    TextEditDocumentLayout::userData(currentBlock())->setCollapseMode(TextBlockUserData::CollapseThis);
-                else
-                    TextEditDocumentLayout::userData(currentBlock())->setCollapseMode(TextBlockUserData::CollapseAfter);
-            }
-            if (Parenthesis::hasClosingCollapse(parentheses)) {
-                TextEditDocumentLayout::userData(currentBlock())->setHasClosingCollapse(true);
-            }
-#endif
-
+        if (i >= text.length())
             break;
-        }
     }
 
-    highlightWord(text.length(), buffer);
+    highlightKeyword(text.length(), buffer);
 
-    switch (state) {
-    case  StateCComment:
-    case  StateCCommentEnd1:
-    case  StateCCommentStart2:
+    if (state == StateCComment
+        || state == StateCCommentEnd1
+        || state == StateCCommentStart2
+       ) {
         state = StateCComment;
-        break;
-    case StateString:
-        // quotes cannot span multiple lines, so if somebody starts
-        // typing a quoted string we don't need to look for the ending
-        // quote in another line (or highlight until the end of the
-        // document) and therefore slow down editing.
+    } else {
         state = StateStandard;
-        break;
-    case StateString2:
-        state =  StateStandard;
-        break;
-    default:
-        state = StateStandard;
-        break;
     }
 
-#if 0
-    TextEditDocumentLayout::setParentheses(currentBlock(), parentheses);
-#endif
-
-    setCurrentBlockState((braceDepth << 8) | state);
+    onBlockEnd(state, firstNonSpace);
 }
 
-void QScriptSyntaxHighlighter::highlightWord(int currentPos, const QString &buffer)
+void QScriptSyntaxHighlighter::highlightKeyword(int currentPos, const QString &buffer)
 {
     if (buffer.isEmpty())
         return;
 
-    // try to highlight Qt 'identifiers' like QObject and Q_PROPERTY
-    // but don't highlight words like 'Query'
-    if (buffer.length() > 1
-        && buffer.at(0) == QLatin1Char('Q')
-        && (buffer.at(1).isUpper()
-            || buffer.at(1) == QLatin1Char('_')
-            || buffer.at(1) == QLatin1Char('t'))) {
-        setFormat(currentPos - buffer.length(), buffer.length(), m_formats[ScriptTypeFormat]);
+    if (m_duiEnabled && buffer.at(0).isUpper() || (! m_duiEnabled && buffer.at(0) == QLatin1Char('Q'))) {
+        setFormat(currentPos - buffer.length(), buffer.length(), m_formats[TypeFormat]);
     } else {
-        if (isKeyword(buffer))
-            setFormat(currentPos - buffer.length(), buffer.length(), m_formats[ScriptKeywordFormat]);
+        if (qscriptKeywords.contains(buffer))
+            setFormat(currentPos - buffer.length(), buffer.length(), m_formats[KeywordFormat]);
     }
 }
 
-QT_END_NAMESPACE
+const QVector<QTextCharFormat> &QScriptSyntaxHighlighter::defaultFormats()
+{
+    static QVector<QTextCharFormat> rc;
+    if (rc.empty()) {
+        rc.resize(NumFormats);
+        rc[NumberFormat].setForeground(Qt::blue);
+        rc[StringFormat].setForeground(Qt::darkGreen);
+        rc[TypeFormat].setForeground(Qt::darkMagenta);
+        rc[KeywordFormat].setForeground(Qt::darkYellow);
+        rc[LabelFormat].setForeground(Qt::darkRed);
+        rc[CommentFormat].setForeground(Qt::red);
+        rc[CommentFormat].setFontItalic(true);
+        rc[PreProcessorFormat].setForeground(Qt::darkBlue);
+    }
+    return rc;
+}
 
-#endif // QT_NO_SYNTAXHIGHLIGHTER
+void QScriptSyntaxHighlighter::setFormats(const QVector<QTextCharFormat> &s)
+{
+    qCopy(s.constBegin(), s.constEnd(), m_formats);
+}
+
+int QScriptSyntaxHighlighter::onBlockStart()
+{
+    int state = 0;
+    int previousState = previousBlockState();
+    if (previousState != -1)
+        state = previousState;
+    return state;
+}
+void QScriptSyntaxHighlighter::onOpeningParenthesis(QChar, int) {}
+void QScriptSyntaxHighlighter::onClosingParenthesis(QChar, int) {}
+void QScriptSyntaxHighlighter::onBlockEnd(int state, int) { return setCurrentBlockState(state); }
 

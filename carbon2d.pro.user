@@ -119,7 +119,7 @@
     <value type="QString" >CONFIG+=debug</value>
    </valuelist>
    <value key="abstractProcess.command" type="QString" >/usr/bin/qmake-qt4</value>
-   <value key="abstractProcess.enabled" type="bool" >false</value>
+   <value key="abstractProcess.enabled" type="bool" >true</value>
    <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
    <value key="buildConfiguration" type="int" >2</value>
   </valuemap>
@@ -192,7 +192,7 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-XHLIwQ1xz8,guid=b7a64a5f9938d8ffb9a0e2734a2aa59f</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-y1YHsxulr4,guid=5aa5ef3105a68f62a3d472ce4a3277ed</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -200,9 +200,9 @@
     <value type="QString" >GDM_LANG=en_US.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=32441</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-f6sIMg/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-F8yfUn/S.gpg-agent:32576:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=29830</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-QvGL7b/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-FFGrqF/S.gpg-agent:29924:1</value>
     <value type="QString" >GTK_MODULES=canberra-gtk-module</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/karban/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/karban</value>
@@ -225,16 +225,16 @@
     <value type="QString" >PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
     <value type="QString" >PWD=/home/karban</value>
     <value type="QString" >QTDIR=/usr</value>
-    <value type="QString" >SESSION_MANAGER=local/ek611-karban:/tmp/.ICE-unix/32455</value>
+    <value type="QString" >SESSION_MANAGER=local/ek611-karban:/tmp/.ICE-unix/29842</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SSH_AGENT_PID=32553</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-f6sIMg/socket.ssh</value>
+    <value type="QString" >SSH_AGENT_PID=29898</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-QvGL7b/socket.ssh</value>
     <value type="QString" >USER=karban</value>
     <value type="QString" >USERNAME=karban</value>
-    <value type="QString" >WINDOWPATH=7</value>
+    <value type="QString" >WINDOWPATH=7:7</value>
     <value type="QString" >XAUTHORITY=/home/karban/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=20a1319946c510bf1274f9b34a0eb613-1244308895.102725-1353475590</value>
+    <value type="QString" >XDG_SESSION_COOKIE=20a1319946c510bf1274f9b34a0eb613-1244821485.10888-1675560100</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >clean</value>

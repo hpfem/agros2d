@@ -412,12 +412,12 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     }
     */
 
-    // save as temp name
-    if (m_projectInfo.fileName.isEmpty())
-        writeToFile(QDesktopServices::TempLocation + "/carbon_temp.h2d");
-
     // clear project
     sceneSolution()->clear();
+
+    // save as temp name
+    if (m_projectInfo.fileName.isEmpty())
+        m_projectInfo.fileName = QDesktopServices::TempLocation + "/carbon_temp.h2d";
 
     // save project
     writeToFile(m_projectInfo.fileName);
@@ -1102,9 +1102,12 @@ void Scene::readFromFile(const QString &fileName)
 }
 
 void Scene::writeToFile(const QString &fileName) {
-    QSettings settings;
-    QFileInfo fileInfo(fileName);
-    settings.setValue("LastDataDir", fileInfo.absoluteFilePath());
+    if (projectInfo().fileName != QDesktopServices::TempLocation + "/carbon_temp.h2d")
+    {
+        QSettings settings;
+        QFileInfo fileInfo(fileName);
+        settings.setValue("LastDataDir", fileInfo.absoluteFilePath());
+    }
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");

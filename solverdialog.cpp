@@ -101,10 +101,9 @@ void SolverDialog::runMesh()
         processTriangle->kill();
         emit solved();
         return;
-    }
+    }  
 
-    while (!processTriangle->waitForFinished())
-        sleep(0.1);       
+    while (!processTriangle->waitForFinished()) {}
 }
 
 void SolverDialog::doMeshTriangleCreated(int exitCode)

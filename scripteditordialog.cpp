@@ -217,6 +217,8 @@ QScriptValue scriptSolve(QScriptContext *context, QScriptEngine *engine)
 {
     m_scene->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
     m_scene->refresh();
+
+    cout << m_scene->sceneSolution()->isSolved() << endl;
     return engine->undefinedValue();
 }
 
@@ -344,6 +346,7 @@ QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
 // result = volumeIntegral(index ...)
 QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine)
 {
+    cout << m_scene->sceneSolution()->isSolved() << endl;
     if (m_scene->sceneSolution()->isSolved())
         m_sceneView->actSceneModePostprocessor->trigger();
 
@@ -399,8 +402,7 @@ ScriptEditorDialog::ScriptEditorDialog(Scene *scene, SceneView *sceneView, QWidg
     restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
     splitter->restoreState(settings.value("ScriptEditorDialog/SplitterState", splitter->saveState()).toByteArray());
-
-    doFileOpen("data/script/capacitor.qs");
+    // doFileOpen("data/script/capacitor.qs");
 }
 
 ScriptEditorDialog::~ScriptEditorDialog()
@@ -488,6 +490,8 @@ void ScriptEditorDialog::createControls()
     layout->addWidget(splitter);
 
     setLayout(layout);
+
+    doFileOpen("data/script/capacitor.qs");
 }
 
 void ScriptEditorDialog::createEngine()
@@ -632,7 +636,7 @@ void ScriptEditorDialog::doCreateFromModel()
 
 void ScriptEditorDialog::doHelp()
 {
-    QDesktopServices::openUrl(appdir() + "/doc/html/script.html");
+    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/script.html");
     // scriptEditorHelpDialog->showDialog();
 }
 

@@ -1605,6 +1605,7 @@ void SceneView::doSolved()
     m_sceneViewSettings.showOrder = false;
 
     doInvalidated();
+    actSceneModePostprocessor->trigger();
 }
 
 void SceneView::doRefresh()
