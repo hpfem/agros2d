@@ -27,7 +27,7 @@ SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, 
 
 QString SceneEdgeElectrostaticMarker::script()
 {
-    return QString("addBoundary(\"%1\", \"%2\", %3)").
+    return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
             arg(physicFieldBCStringKey(type)).
             arg(value);
@@ -48,7 +48,7 @@ SceneEdgeMagnetostaticMarker::SceneEdgeMagnetostaticMarker(const QString &name, 
 
 QString SceneEdgeMagnetostaticMarker::script()
 {
-    return QString("addBoundary(\"%1\", \"%2\", %3)").
+    return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
             arg(physicFieldBCStringKey(type)).
             arg(value);
@@ -78,7 +78,7 @@ QString SceneEdgeHeatMarker::script()
 {
     if (type == PHYSICFIELDBC_HEAT_TEMPERATURE)
     {
-        return QString("addBoundary(\"%1\", \"%2\", %3)").
+        return QString("addBoundary(\"%1\", \"%2\", %3);").
                 arg(name).
                 arg(physicFieldBCStringKey(type)).
                 arg(temperature);
@@ -109,7 +109,7 @@ SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldB
 
 QString SceneEdgeCurrentMarker::script()
 {
-    return QString("addBoundary(\"%1\", \"%2\", %3)").
+    return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
             arg(physicFieldBCStringKey(type)).
             arg(value);
@@ -134,7 +134,7 @@ SceneEdgeElasticityMarker::SceneEdgeElasticityMarker(const QString &name, Physic
 
 QString SceneEdgeElasticityMarker::script()
 {
-    return QString("addEdge(\"%1\", \"%2\", \"%3\", %4, %5)").
+    return QString("addEdge(\"%1\", \"%2\", \"%3\", %4, %5);").
             arg(name).
             arg(physicFieldBCStringKey(typeX)).
             arg(physicFieldBCStringKey(typeY)).
@@ -177,7 +177,7 @@ SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name
 
 QString SceneLabelElectrostaticMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3)").
+    return QString("addMaterial(\"%1\", %2, %3);").
             arg(name).
             arg(charge_density).
             arg(permittivity);
@@ -200,7 +200,7 @@ SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name
 
 QString SceneLabelMagnetostaticMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3)").
+    return QString("addMaterial(\"%1\", %2, %3);").
             arg(name).
             arg(current_density).
             arg(permeability);
@@ -221,7 +221,7 @@ SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, double con
 
 QString SceneLabelCurrentMarker::script()
 {
-    return QString("addMaterial(\"%1\", %3)").
+    return QString("addMaterial(\"%1\", %3);").
             arg(name).
             arg(conductivity);
 }
@@ -243,7 +243,7 @@ SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, double volume_he
 
 QString SceneLabelHeatMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3)").
+    return QString("addMaterial(\"%1\", %2, %3);").
             arg(name).
             arg(volume_heat).
             arg(thermal_conductivity);
@@ -266,7 +266,7 @@ SceneLabelElasticityMarker::SceneLabelElasticityMarker(const QString &name, doub
 
 QString SceneLabelElasticityMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3)").
+    return QString("addMaterial(\"%1\", %2, %3);").
             arg(name).
             arg(young_modulus).
             arg(poisson_ratio);

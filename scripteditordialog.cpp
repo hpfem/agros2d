@@ -218,7 +218,6 @@ QScriptValue scriptSolve(QScriptContext *context, QScriptEngine *engine)
     m_scene->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
     m_scene->refresh();
 
-    cout << m_scene->sceneSolution()->isSolved() << endl;
     return engine->undefinedValue();
 }
 
@@ -345,8 +344,7 @@ QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
 
 // result = volumeIntegral(index ...)
 QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine)
-{
-    cout << m_scene->sceneSolution()->isSolved() << endl;
+{    
     if (m_scene->sceneSolution()->isSolved())
         m_sceneView->actSceneModePostprocessor->trigger();
 
@@ -467,10 +465,7 @@ void ScriptEditorDialog::createControls()
 
     splitter = new QSplitter(this);
 
-    txtEditor = new QPlainTextEdit(this);
-    txtEditor->setFont(QFont("Monospace", 10));
-    txtEditor->setTabStopWidth(40);
-    txtEditor->setLineWrapMode(QPlainTextEdit::NoWrap);
+    txtEditor = new ScriptEditor(this);
 
     // highlighter
     QScriptSyntaxHighlighter *highlighter = new QScriptSyntaxHighlighter(txtEditor->document());
@@ -580,7 +575,7 @@ void ScriptEditorDialog::doCreateFromModel()
 
     // model
     str += "// model\n";
-    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, %7)").
+    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, %7);").
            arg(m_scene->projectInfo().name).
            arg(problemTypeString(m_scene->projectInfo().problemType)).
            arg(physicFieldStringKey(m_scene->projectInfo().physicField)).
@@ -610,7 +605,7 @@ void ScriptEditorDialog::doCreateFromModel()
     str += "// edges\n";
     for (int i = 0; i<m_scene->edges.count(); i++)
     {
-        str += QString("addEdge(%1, %2, %3, %4, %5, \"%6\")").
+        str += QString("addEdge(%1, %2, %3, %4, %5, \"%6\");").
                arg(m_scene->edges[i]->nodeStart->point.x).
                arg(m_scene->edges[i]->nodeStart->point.y).
                arg(m_scene->edges[i]->nodeEnd->point.x).
@@ -624,7 +619,7 @@ void ScriptEditorDialog::doCreateFromModel()
     str += "// labels\n";
     for (int i = 0; i<m_scene->labels.count(); i++)
     {
-        str += QString("addLabel(%1, %2, %3, \"%4\")").
+        str += QString("addLabel(%1, %2, %3, \"%4\");").
                arg(m_scene->labels[i]->point.x).
                arg(m_scene->labels[i]->point.y).
                arg(m_scene->labels[i]->area).
@@ -650,6 +645,106 @@ void ScriptEditorDialog::doRun()
 
     m_scene->blockSignals(false);
     m_scene->refresh();
+}
+
+// ******************************************************************************************************
+
+ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
+{
+    lineNumberArea = new ScriptEditorLineNumberArea(this);
+
+    setFont(QFont("Monospace", 10));
+    setTabStopWidth(40);
+    setLineWrapMode(QPlainTextEdit::NoWrap);
+
+    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(doUpdateLineNumberAreaWidth(int)));
+    connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(doUpdateLineNumberArea(const QRect &, int)));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(doHighlightCurrentLine()));
+
+    doUpdateLineNumberAreaWidth(0);
+    doHighlightCurrentLine();
+}
+
+int ScriptEditor::lineNumberAreaWidth()
+{
+    int digits = 1;
+    int max = qMax(1, blockCount());
+    while (max >= 10) {
+        max /= 10;
+        ++digits;
+    }
+
+    int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
+
+    return space;
+}
+
+void ScriptEditor::resizeEvent(QResizeEvent *e)
+{
+    QPlainTextEdit::resizeEvent(e);
+
+    QRect cr = contentsRect();
+    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+}
+
+void ScriptEditor::doUpdateLineNumberAreaWidth(int /* newBlockCount */)
+{
+    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+}
+
+void ScriptEditor::doUpdateLineNumberArea(const QRect &rect, int dy)
+{
+    if (dy)
+        lineNumberArea->scroll(0, dy);
+    else
+        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+
+    if (rect.contains(viewport()->rect()))
+        doUpdateLineNumberAreaWidth(0);
+}
+
+void ScriptEditor::doHighlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    if (!isReadOnly()) {
+        QTextEdit::ExtraSelection selection;
+
+        QColor lineColor = QColor(Qt::yellow).lighter(180);
+
+        selection.format.setBackground(lineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = textCursor();
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+    }
+
+    setExtraSelections(extraSelections);
+}
+
+void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
+{
+    QPainter painter(lineNumberArea);
+    painter.fillRect(event->rect(), Qt::lightGray);
+
+    QTextBlock block = firstVisibleBlock();
+    int blockNumber = block.blockNumber();
+    int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
+    int bottom = top + (int) blockBoundingRect(block).height();
+
+   while (block.isValid() && top <= event->rect().bottom()) {
+        if (block.isVisible() && bottom >= event->rect().top()) {
+            QString number = QString::number(blockNumber + 1);
+            painter.setPen(Qt::black);
+            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+                             Qt::AlignRight, number);
+        }
+
+        block = block.next();
+        top = bottom;
+        bottom = top + (int) blockBoundingRect(block).height();
+        ++blockNumber;
+    }
 }
 
 // ***********************************************************************************************

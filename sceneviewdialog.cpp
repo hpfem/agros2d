@@ -43,6 +43,7 @@ SceneViewDialog::~SceneViewDialog()
     delete cmbPalette;
     delete chkPaletteFilter;
     delete txtPaletteSteps;    
+    delete chkView3D;
 
     // vector field
     delete cmbVectorFieldVariable;
@@ -83,6 +84,7 @@ void SceneViewDialog::load()
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
     txtScalarFieldRangeMin->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMin));
     txtScalarFieldRangeMax->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMax));
+    chkView3D->setChecked(m_sceneView->sceneViewSettings().scalarView3D);
 
     // vector field
     cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(m_sceneView->sceneViewSettings().vectorPhysicFieldVariable));
@@ -115,6 +117,7 @@ void SceneViewDialog::save()
     m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
     m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
     m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
+    m_sceneView->sceneViewSettings().scalarView3D = chkView3D->isChecked();
 
     // vector field
     m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = (PhysicFieldVariable) cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toInt();
@@ -175,6 +178,8 @@ void SceneViewDialog::createControls()
     txtPaletteSteps = new QLineEdit("0");
     txtPaletteSteps->setValidator(new QIntValidator(txtPaletteSteps));
 
+    chkView3D = new QCheckBox();
+
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutScalarField->addWidget(cmbScalarFieldVariable, 0, 1);
@@ -194,8 +199,11 @@ void SceneViewDialog::createControls()
     layoutScalarField->addWidget(new QLabel(tr("Minimum:")), 3, 2);
     layoutScalarField->addWidget(txtScalarFieldRangeMin, 3, 3);
 
+    layoutScalarField->addWidget(new QLabel(tr("View 3D:")), 4, 0);
+    layoutScalarField->addWidget(chkView3D, 4, 1);
     layoutScalarField->addWidget(new QLabel(tr("Maximum:")), 4, 2);
     layoutScalarField->addWidget(txtScalarFieldRangeMax, 4, 3);
+
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);

@@ -106,9 +106,9 @@ private:
     QPointF m_lastPos; // last position of cursor
     QPointF m_regionPos;
     double m_scale; // scale
-    double m_drawScaleX;
-    double m_drawScaleY;
-    Point m_offset; // offset
+    double m_aspect;
+    Point3 m_offset; // offset
+    Point3 m_rotation; // rotation
 
     SceneNode *m_nodeLast;
 
@@ -166,7 +166,7 @@ private:
     void setRangeScalar();
     void setRangeVector();
     void selectRegion(const Point &start, const Point &end);
-    inline Point &position(const Point &point) { Point p((2.0/width()*point.x-1)/m_scale*m_drawScaleY+m_offset.x, -(2.0/height()*point.y-1)/m_scale*m_drawScaleX+m_offset.y); return p; }  // cursor position
+    inline Point &position(const Point &point) { Point p((2.0/width()*point.x-1)/m_scale*m_aspect+m_offset.x, -(2.0/height()*point.y-1)/m_scale+m_offset.y); return p; }
 
 private slots:
     void doMaterialGroup(QAction *action);

@@ -341,7 +341,7 @@ void MainWindow::doDocumentOpen()
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Carbon 2D files (*.h2d)"));
     if (!fileName.isEmpty())
-    {
+    {        
         m_scene->readFromFile(fileName);
         setRecentFiles();
 
@@ -365,8 +365,7 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    QFile file(m_scene->projectInfo().fileName);
-    if (QFile::exists(m_scene->projectInfo().fileName) && file.isWritable())
+    if (QFile::exists(m_scene->projectInfo().fileName))
         m_scene->writeToFile(m_scene->projectInfo().fileName);
     else
         doDocumentSaveAs();
@@ -466,11 +465,12 @@ void MainWindow::doScriptEditor()
 
 void MainWindow::doPaste()
 {
-    m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
+    // m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
     // m_scene->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
     // m_scene->readFromFile("data/heat_transfer_axisymmetric.h2d");
     // m_scene->readFromFile("data/heat_transfer_planar.h2d");
     // m_scene->readFromFile("data/heat_transfer_detail.h2d");
+    m_scene->readFromFile("data/heat_transfer_actuator.h2d");
     // m_scene->readFromFile("data/magnetostatic_planar.h2d");
     // m_scene->readFromFile("data/magnetostatic_axisymmetric_actuator.h2d");
     // m_scene->readFromFile("data/magnetostatic_planar_magnet.h2d");

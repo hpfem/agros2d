@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="2" numberofrefinements="1" adaptivitysteps="0" polynomialorder="3" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic 2D" >
+        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
             <edges>
                 <edge type="potential" value="10" id="1" name="U = 10 V" />
                 <edge type="potential" value="0" id="2" name="U =  0 V" />
@@ -44,7 +44,7 @@
         </edges>
         <labels>
             <label x="0.019" y="0.021" marker="2" id="0" area="0" />
-            <label x="0.0284191" y="0.123601" marker="1" id="1" area="0" />
+            <label x="0.0284191" y="0.18" marker="1" id="1" area="0" />
             <label x="0.0410766" y="0.0589064" marker="3" id="2" area="0" />
         </labels>
     </geometry>

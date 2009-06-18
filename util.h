@@ -41,6 +41,7 @@ struct Point
 
     inline double magnitude() { return sqrt(x * x + y * y); }
     inline double angle() { return atan2(y, x); }
+
     Point normalizePoint()
     {
         double m = magnitude();
@@ -49,6 +50,35 @@ struct Point
         double my = y/m;
 
         return Point(mx, my);
+    }
+};
+
+struct Point3
+{
+    double x, y, z;
+
+    Point3() { this->x = 0; this->y = 0; this->z = 0; }
+    Point3(double x, double y, double z) { this->x = x; this->y = y; this->z = z; }
+
+    inline Point3 operator+(const Point3 &vec) const { return Point3(x + vec.x, y + vec.y, z + vec.z); }
+    inline Point3 operator-(const Point3 &vec) const { return Point3(x - vec.x, y - vec.y, z - vec.z); }
+    inline Point3 operator*(double num) const { return Point3(x * num, y * num, z * num); }
+    inline Point3 operator/(double num) const { return Point3(x / num, y / num, z / num); }
+
+    inline double magnitude() { return sqrt(x * x + y * y); }
+    inline double anglexy() { return atan2(y, x); }
+    inline double angleyz() { return atan2(z, y); }
+    inline double anglezx() { return atan2(x, z); }
+
+    Point3 normalizePoint()
+    {
+        double m = magnitude();
+
+        double mx = x/m;
+        double my = y/m;
+        double mz = z/m;
+
+        return Point3(mx, my, mz);
     }
 };
 
@@ -522,6 +552,7 @@ struct SceneViewSettings
     bool scalarRangeAuto;
     double scalarRangeMin;
     double scalarRangeMax;
+    bool scalarView3D;
 
     // vector view
     PhysicFieldVariable vectorPhysicFieldVariable;

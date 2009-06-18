@@ -9,7 +9,7 @@ ChartDialog::ChartDialog(Scene *scene, QWidget *parent) : QDialog(parent)
     
     setWindowIcon(icon("chart"));
     setWindowTitle(tr("Chart"));
-    
+
     createControls();   
     setMinimumSize(sizeHint());
 }
@@ -38,7 +38,7 @@ ChartDialog::~ChartDialog()
 void ChartDialog::showDialog()
 {
     fillComboBoxVariable(cmbFieldVariable, m_scene->projectInfo().physicField);
-    exec();
+    show();
 }
 
 void ChartDialog::createControls()

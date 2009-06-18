@@ -21,6 +21,8 @@ class SceneView;
 static Scene *m_scene;
 static SceneView *m_sceneView;
 
+class ScriptEditor;
+
 class ScriptEditorDialog : public QDialog
 {
     Q_OBJECT
@@ -52,7 +54,7 @@ protected:
     QAction *actCreateFromModel;
     QAction *actHelp;
 
-    QPlainTextEdit *txtEditor;
+    ScriptEditor *txtEditor;
     QPlainTextEdit *txtOutput;
 
     QSplitter *splitter;
@@ -61,6 +63,49 @@ protected:
     void createEngine();
     void setupEditor();
 };
+
+class ScriptEditor : public QPlainTextEdit
+{
+    Q_OBJECT
+
+public:
+    ScriptEditor(QWidget *parent = 0);
+
+    void lineNumberAreaPaintEvent(QPaintEvent *event);
+    int lineNumberAreaWidth();
+
+protected:
+    void resizeEvent(QResizeEvent *event);
+
+private slots:
+    void doUpdateLineNumberAreaWidth(int newBlockCount);
+    void doHighlightCurrentLine();
+    void doUpdateLineNumberArea(const QRect &, int);
+
+private:
+    QWidget *lineNumberArea;
+};
+
+class ScriptEditorLineNumberArea : public QWidget
+{
+public:
+    ScriptEditorLineNumberArea(ScriptEditor *editor) : QWidget(editor) {
+        codeEditor = editor;
+    }
+
+    QSize sizeHint() const {
+        return QSize(codeEditor->lineNumberAreaWidth(), 0);
+    }
+
+protected:
+    void paintEvent(QPaintEvent *event) {
+        codeEditor->lineNumberAreaPaintEvent(event);
+    }
+
+private:
+    ScriptEditor *codeEditor;
+};
+
 
 // *****************************************************************************************************************
 
