@@ -13,65 +13,70 @@ TARGET = carbon2d
 TEMPLATE = app
 QMAKE_CXXFLAGS_DEBUG += -w
 QMAKE_CXXFLAGS += -w
-SOURCES += main.cpp \
-    util.cpp \
-    gui.cpp \
-    scripteditordialog.cpp \
-    scripteditorhighlighter.cpp \
-    solverdialog.cpp \
-    hermes2d/hermes_electrostatic.cpp \
-    hermes2d/hermes_heat.cpp \
-    hermes2d/hermes_magnetostatic.cpp \
-    hermes2d/hermes_current.cpp \
-    hermes2d/hermes_elasticity.cpp \
-    mainwindow.cpp \
-    scenemarker.cpp \
-    scenebasic.cpp \
-    sceneinfo.cpp \
-    sceneview.cpp \
-    scene.cpp \
-    chartdialog.cpp \
-    projectdialog.cpp \
-    scenetransformdialog.cpp \
-    sceneviewdialog.cpp \
-    optionsdialog.cpp \
-    scenesolution.cpp \
-    localvalueview.cpp \
-    volumeintegralview.cpp \
-    surfaceintegralview.cpp
-HEADERS += mainwindow.h \
-    util.h \
-    gui.h \
-    scripteditordialog.h \
-    scripteditorhighlighter.h \
-    solverdialog.h \
-    hermes2d/hermes_electrostatic.h \
-    hermes2d/hermes_heat.h \
-    hermes2d/hermes_magnetostatic.h \
-    hermes2d/hermes_current.h \
-    hermes2d/hermes_elasticity.h \
-    scenebasic.h \
-    sceneinfo.h \
-    scenemarker.h \
-    sceneview_data.h \
-    sceneview.h \
-    scene.h \
-    chartdialog.h \
-    projectdialog.h \
-    scenetransformdialog.h \
-    sceneviewdialog.h \
-    optionsdialog.h \
-    scenesolution.h \
-    localvalueview.h \
-    volumeintegralview.h \
-    surfaceintegralview.h
-INCLUDEPATH += include/hermes2d \
-    include/dxflib \
+OBJECTS_DIR = build
+MOC_DIR = build
+SUBDIRS += src
+SOURCES += src/main.cpp \
+    src/util.cpp \
+    src/gui.cpp \
+    src/scripteditordialog.cpp \
+    src/scripteditorhighlighter.cpp \
+    src/solverdialog.cpp \
+    src/hermes2d/hermes_electrostatic.cpp \
+    src/hermes2d/hermes_heat.cpp \
+    src/hermes2d/hermes_magnetostatic.cpp \
+    src/hermes2d/hermes_current.cpp \
+    src/hermes2d/hermes_elasticity.cpp \
+    src/mainwindow.cpp \
+    src/scenemarker.cpp \
+    src/scenebasic.cpp \
+    src/sceneinfo.cpp \
+    src/sceneview.cpp \
+    src/scene.cpp \
+    src/chartdialog.cpp \
+    src/projectdialog.cpp \
+    src/scenetransformdialog.cpp \
+    src/sceneviewdialog.cpp \
+    src/optionsdialog.cpp \
+    src/scenesolution.cpp \
+    src/localvalueview.cpp \
+    src/volumeintegralview.cpp \
+    src/surfaceintegralview.cpp \
+    src/dxflib/dl_writer_ascii.cpp \
+    src/dxflib/dl_dxf.cpp
+HEADERS += src/mainwindow.h \
+    src/util.h \
+    src/gui.h \
+    src/scripteditordialog.h \
+    src/scripteditorhighlighter.h \
+    src/solverdialog.h \
+    src/hermes2d/hermes_electrostatic.h \
+    src/hermes2d/hermes_heat.h \
+    src/hermes2d/hermes_magnetostatic.h \
+    src/hermes2d/hermes_current.h \
+    src/hermes2d/hermes_elasticity.h \
+    src/scenebasic.h \
+    src/sceneinfo.h \
+    src/scenemarker.h \
+    src/sceneview_data.h \
+    src/sceneview.h \
+    src/scene.h \
+    src/chartdialog.h \
+    src/projectdialog.h \
+    src/scenetransformdialog.h \
+    src/sceneviewdialog.h \
+    src/optionsdialog.h \
+    src/scenesolution.h \
+    src/localvalueview.h \
+    src/volumeintegralview.h \
+    src/surfaceintegralview.h
+INCLUDEPATH +=  src \
+    src/dxflib \
+    /usr/include/hermes2d \
     /usr/include \
     /usr/include/suitesparse \
     /usr/include/qwt-qt4
-LIBS += lib/liblibdxf.a \
-    lib/libhermes2d-real-static.a \
+LIBS += -lhermes2d-real \
     -lumfpack \
     -lamd \
     -lblas \
