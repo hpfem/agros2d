@@ -46,6 +46,9 @@ class ChartDialog : public QDialog
 {
     Q_OBJECT
 
+signals:
+    void setChartLine(const Point &start, const Point &end);
+
 public slots:
     void doPlot();
 
@@ -54,6 +57,9 @@ public:
     ~ChartDialog();
 
     void showDialog();
+
+protected:
+    void hideEvent(QHideEvent *event);
 
 private:
     Scene *m_scene;
@@ -86,6 +92,7 @@ private slots:
     void doSaveImage();
     void doExportData();
     void doMoved(const QPoint &);
+    void doChartLine();
 };
 
 class Chart : public QwtPlot

@@ -1,24 +1,20 @@
 <!DOCTYPE QtCreatorProject>
 <qtcreator>
  <data>
+  <variable>RunConfiguration0-Arguments</variable>
+  <valuelist type="QVariantList" />
+ </data>
+ <data>
   <variable>RunConfiguration0-BaseEnvironmentBase</variable>
   <value type="int" >2</value>
  </data>
  <data>
-  <variable>RunConfiguration0-CommandLineArguments</variable>
-  <valuelist type="QVariantList" />
- </data>
- <data>
-  <variable>RunConfiguration0-ProFile</variable>
-  <value type="QString" >carbon2d.pro</value>
+  <variable>RunConfiguration0-Executable</variable>
+  <value type="QString" ></value>
  </data>
  <data>
   <variable>RunConfiguration0-RunConfiguration.name</variable>
-  <value type="QString" >carbon2d</value>
- </data>
- <data>
-  <variable>RunConfiguration0-UseDyldImageSuffix</variable>
-  <value type="bool" >false</value>
+  <value type="QString" >C</value>
  </data>
  <data>
   <variable>RunConfiguration0-UseTerminal</variable>
@@ -29,11 +25,55 @@
   <valuelist type="QVariantList" />
  </data>
  <data>
+  <variable>RunConfiguration0-UserName</variable>
+  <value type="QString" >C</value>
+ </data>
+ <data>
   <variable>RunConfiguration0-UserSetName</variable>
-  <value type="bool" >false</value>
+  <value type="bool" >true</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-WorkingDirectory</variable>
+  <value type="QString" >$BUILDDIR</value>
  </data>
  <data>
   <variable>RunConfiguration0-type</variable>
+  <value type="QString" >ProjectExplorer.CustomExecutableRunConfiguration</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-BaseEnvironmentBase</variable>
+  <value type="int" >2</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-CommandLineArguments</variable>
+  <valuelist type="QVariantList" />
+ </data>
+ <data>
+  <variable>RunConfiguration1-ProFile</variable>
+  <value type="QString" >carbon2d.pro</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-RunConfiguration.name</variable>
+  <value type="QString" >carbon2d</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-UseDyldImageSuffix</variable>
+  <value type="bool" >false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-UseTerminal</variable>
+  <value type="bool" >false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-UserEnvironmentChanges</variable>
+  <valuelist type="QVariantList" />
+ </data>
+ <data>
+  <variable>RunConfiguration1-UserSetName</variable>
+  <value type="bool" >false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-type</variable>
   <value type="QString" >Qt4ProjectManager.Qt4RunConfiguration</value>
  </data>
  <data>
@@ -118,7 +158,7 @@
     <value type="QString" >CONFIG+=debug</value>
    </valuelist>
    <value key="abstractProcess.command" type="QString" >/usr/bin/qmake-qt4</value>
-   <value key="abstractProcess.enabled" type="bool" >true</value>
+   <value key="abstractProcess.enabled" type="bool" >false</value>
    <value key="abstractProcess.workingDirectory" type="QString" >/home/karban/Projects/programovani/c/carbon2d</value>
    <value key="buildConfiguration" type="int" >2</value>
   </valuemap>

@@ -148,7 +148,6 @@ void SceneView::initializeGL()
 {
     glClearColor(0.99, 0.99, 0.99, 0);
     glShadeModel(GL_FLAT);
-    glShadeModel(GL_SMOOTH);
     glDepthFunc(GL_LEQUAL);
     glClearDepth(1.0f);
 
@@ -192,27 +191,9 @@ void SceneView::paintGL()
         if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
         if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
     }
-    
-    // zoom or select region
-    if (!m_regionPos.isNull())
-    {
-        Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
-        Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
-        
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glColor4d(1.0, 0.8, 0.7, 0.65);
 
-        glBegin(GL_QUADS);
-        glVertex2d(posStart.x, posStart.y);
-        glVertex2d(posEnd.x, posStart.y);
-        glVertex2d(posEnd.x, posEnd.y);
-        glVertex2d(posStart.x, posEnd.y);
-        glEnd();
-        glDisable(GL_BLEND);
-    }
-    
+    paintZoomRegion();
+    paintChartLine();
     paintSceneModeLabel();
 }
 
@@ -248,6 +229,7 @@ void SceneView::paintGrid()
     Point cornerMax = position(Point(width(), height()));
     
     glColor3f(0.85, 0.85, 0.85);
+    glLineWidth(1.0);
     glEnable(GL_LINE_STIPPLE);
     glLineStipple(1, 0x1C47);
     glBegin(GL_LINES);
@@ -676,13 +658,13 @@ void SceneView::paintScalarField()
         if (m_sceneViewSettings.scalarView3D && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
         {
             glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[0].x, point[0].y, (value[0] - m_sceneViewSettings.scalarRangeMin) * irange * 0.3);
+            glVertex3d(point[0].x, point[0].y, (value[0] - m_sceneViewSettings.scalarRangeMin) * irange * 0.4);
             
             glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[1].x, point[1].y, (value[1] - m_sceneViewSettings.scalarRangeMin) * irange * 0.3);
+            glVertex3d(point[1].x, point[1].y, (value[1] - m_sceneViewSettings.scalarRangeMin) * irange * 0.4);
             
             glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[2].x, point[2].y, (value[2] - m_sceneViewSettings.scalarRangeMin) * irange * 0.3);
+            glVertex3d(point[2].x, point[2].y, (value[2] - m_sceneViewSettings.scalarRangeMin) * irange * 0.4);
         }
         else
         {
@@ -901,6 +883,40 @@ void SceneView::paintSceneModeLabel()
     glPopMatrix();
 }
 
+void SceneView::paintZoomRegion()
+{
+    // zoom or select region
+    if (!m_regionPos.isNull())
+    {
+        Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
+        Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glColor4d(1.0, 0.8, 0.7, 0.65);
+
+        glBegin(GL_QUADS);
+        glVertex2d(posStart.x, posStart.y);
+        glVertex2d(posEnd.x, posStart.y);
+        glVertex2d(posEnd.x, posEnd.y);
+        glVertex2d(posStart.x, posEnd.y);
+        glEnd();
+        glDisable(GL_BLEND);
+    }
+}
+
+void SceneView::paintChartLine()
+{    
+    glColor3f(1.0, 0.3, 0.0);
+    glLineWidth(4.0);
+
+    glBegin(GL_LINES);
+    glVertex2d(m_chartLine.start.x, m_chartLine.start.y);
+    glVertex2d(m_chartLine.end.x, m_chartLine.end.y);
+    glEnd();
+}
+
 const float* SceneView::paletteColor(double x)
 {
     switch (m_sceneViewSettings.paletteType)
@@ -983,6 +999,9 @@ void SceneView::paletteCreate()
     
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
+    #ifndef GL_CLAMP_TO_EDGE // fixme: this is needed on Windows
+    #define GL_CLAMP_TO_EDGE 0x812F
+    #endif
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 }
@@ -992,6 +1011,7 @@ void SceneView::paletteFilter()
     int pal_filter = m_sceneViewSettings.paletteFilter ? GL_LINEAR : GL_NEAREST;
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, pal_filter);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, pal_filter);
     paletteUpdateTexAdjust();
 }
 
@@ -1549,6 +1569,15 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
     setZoom(0);
 }
 
+void SceneView::doSetChartLine(const Point &start, const Point &end)
+{
+    // set line for chart
+    m_chartLine.start = start;
+    m_chartLine.end = end;
+
+    updateGL();
+}
+
 void SceneView::doDefaults()
 {
     m_sceneViewSettings.scalarView3D = false;
@@ -1558,6 +1587,9 @@ void SceneView::doDefaults()
     m_offset.y = 0.0;
     m_offset.z = 0.0;
     
+    m_chartLine.start = Point();
+    m_chartLine.end = Point();
+
     m_sceneViewSettings.scalarRangeMin = 0;
     m_sceneViewSettings.scalarRangeMax = 1;
     

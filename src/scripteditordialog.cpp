@@ -221,6 +221,14 @@ QScriptValue scriptSolve(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
+// zoomBestFit()
+QScriptValue scriptZoomBestFit(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->doZoomBestFit();
+
+    return engine->undefinedValue();
+}
+
 // mode(mode = {"node", "edge", "label", "postprocessor"})
 QScriptValue scriptMode(QScriptContext *context, QScriptEngine *engine)
 {
@@ -510,6 +518,7 @@ void ScriptEditorDialog::createEngine()
     m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
 
     m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
+    m_engine->globalObject().setProperty("zoomBestFit", m_engine->newFunction(scriptZoomBestFit));
 
     m_engine->globalObject().setProperty("mode", m_engine->newFunction(scriptMode));
 
@@ -522,7 +531,6 @@ void ScriptEditorDialog::createEngine()
     m_engine->globalObject().setProperty("moveSelection", m_engine->newFunction(scriptMoveSelection));
     m_engine->globalObject().setProperty("rotateSelection", m_engine->newFunction(scriptRotateSelection));
     m_engine->globalObject().setProperty("scaleSelection", m_engine->newFunction(scriptScaleSelection));
-
 
     m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
     m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
@@ -745,44 +753,4 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
         bottom = top + (int) blockBoundingRect(block).height();
         ++blockNumber;
     }
-}
-
-// ***********************************************************************************************
-
-ScriptEditorHelpDialog::ScriptEditorHelpDialog(QWidget *parent) : QDialog(parent)
-{
-    setWindowIcon(icon("script"));
-    setWindowTitle(tr("Help"));
-
-    createControls();
-
-    resize(600, 400);
-
-    QSettings settings;
-    restoreGeometry(settings.value("ScriptEditorHelpDialog/Geometry", saveGeometry()).toByteArray());
-}
-
-ScriptEditorHelpDialog::~ScriptEditorHelpDialog()
-{
-    QSettings settings;
-    settings.setValue("ScriptEditorHelpDialog/Geometry", saveGeometry());
-
-    // delete webHelp;
-}
-
-
-void ScriptEditorHelpDialog::showDialog()
-{
-    show();
-}
-
-void ScriptEditorHelpDialog::createControls()
-{
-    // webHelp = new QWebView(this);
-    // webHelp->load(QUrl(appdir() + "/doc/html/script.html"));
-
-    // QVBoxLayout *layout = new QVBoxLayout();
-    // layout->addWidget(webHelp);
-
-    // setLayout(layout);
 }

@@ -70,18 +70,21 @@ HEADERS += src/mainwindow.h \
     src/localvalueview.h \
     src/volumeintegralview.h \
     src/surfaceintegralview.h
-INCLUDEPATH +=  src \
-    src/dxflib \
-    /usr/include/hermes2d \
-    /usr/include \
-    /usr/include/suitesparse \
-    /usr/include/qwt-qt4
+INCLUDEPATH += src \
+    src/dxflib
+    unix:INCLUDEPATH += /usr/include
+    unix:INCLUDEPATH += /usr/include/suitesparse
+    unix:INCLUDEPATH += /usr/include/qwt-qt4
+    unix:INCLUDEPATH += /usr/include/hermes2d
+    win32:INCLUDEPATH += c:/qt/mingw/include
+    win32:INCLUDEPATH += c:/qt/mingw/include/hermes2d
 LIBS += -lhermes2d-real \
     -lumfpack \
     -lamd \
     -lblas \
     -lJudy \
-    -lpthread \
-    -lqwt-qt4
-FORMS += 
+    -lpthread
+    unix:LIBS += -lqwt-qt4
+    win32:LIBS += -lqwt
+FORMS +=
 OTHER_FILES += TODO.txt

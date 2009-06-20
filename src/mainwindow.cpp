@@ -28,10 +28,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_scene->clear();
     sceneView->doDefaults();
 
-    restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
-
     chartDialog = new ChartDialog(m_scene, this);
     scriptEditorDialog = new ScriptEditorDialog(m_scene, sceneView, this);
+
+    connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
+
+    restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
 
     sceneView->actSceneModeNode->trigger();
     sceneView->doZoomBestFit();
@@ -465,12 +467,12 @@ void MainWindow::doScriptEditor()
 
 void MainWindow::doPaste()
 {
-    // m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
+    m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
     // m_scene->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
     // m_scene->readFromFile("data/heat_transfer_axisymmetric.h2d");
     // m_scene->readFromFile("data/heat_transfer_planar.h2d");
     // m_scene->readFromFile("data/heat_transfer_detail.h2d");
-    m_scene->readFromFile("data/heat_transfer_actuator.h2d");
+    // m_scene->readFromFile("data/heat_transfer_actuator.h2d");
     // m_scene->readFromFile("data/magnetostatic_planar.h2d");
     // m_scene->readFromFile("data/magnetostatic_axisymmetric_actuator.h2d");
     // m_scene->readFromFile("data/magnetostatic_planar_magnet.h2d");

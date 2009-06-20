@@ -1,9 +1,9 @@
 <document>
     <projects>
-        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
+        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="3" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
             <edges>
-                <edge type="potential" value="10" id="1" name="U = 10 V" />
-                <edge type="potential" value="0" id="2" name="U =  0 V" />
+                <edge type="potential" value="1" id="1" name="U = 1 V" />
+                <edge type="potential" value="0" id="2" name="U = 0 V" />
                 <edge type="surface_charge_density" value="0" id="3" name="neumann" />
             </edges>
             <labels>
@@ -15,37 +15,37 @@
     </projects>
     <geometry>
         <nodes>
-            <node x="0.01" y="0" id="0" />
-            <node x="0.03" y="0" id="1" />
-            <node x="0.05" y="0" id="2" />
-            <node x="0.06" y="0" id="3" />
-            <node x="0" y="0.2" id="4" />
-            <node x="0" y="0.08" id="5" />
-            <node x="0.01" y="0.08" id="6" />
-            <node x="0.03" y="0.08" id="7" />
-            <node x="0.05" y="0.08" id="8" />
+            <node x="0" y="0.2" id="0" />
+            <node x="0" y="0.08" id="1" />
+            <node x="0.01" y="0.08" id="2" />
+            <node x="0.01" y="0" id="3" />
+            <node x="0.03" y="0" id="4" />
+            <node x="0.03" y="0.08" id="5" />
+            <node x="0.05" y="0.08" id="6" />
+            <node x="0.05" y="0" id="7" />
+            <node x="0.06" y="0" id="8" />
             <node x="0.06" y="0.08" id="9" />
             <node x="0.2" y="0" id="10" />
         </nodes>
         <edges>
-            <edge end="5" marker="3" id="0" start="4" angle="0" />
-            <edge end="0" marker="1" id="1" start="6" angle="0" />
-            <edge end="1" marker="3" id="2" start="0" angle="0" />
-            <edge end="7" marker="0" id="3" start="1" angle="0" />
-            <edge end="8" marker="0" id="4" start="7" angle="0" />
-            <edge end="1" marker="3" id="5" start="2" angle="0" />
-            <edge end="2" marker="2" id="6" start="8" angle="0" />
-            <edge end="9" marker="2" id="7" start="3" angle="0" />
-            <edge end="9" marker="2" id="8" start="8" angle="0" />
-            <edge end="10" marker="3" id="9" start="3" angle="0" />
-            <edge end="4" marker="3" id="10" start="10" angle="90" />
-            <edge end="7" marker="0" id="11" start="6" angle="0" />
-            <edge end="5" marker="1" id="12" start="6" angle="0" />
+            <edge end="1" marker="3" id="0" start="0" angle="0" />
+            <edge end="3" marker="1" id="1" start="2" angle="0" />
+            <edge end="4" marker="3" id="2" start="3" angle="0" />
+            <edge end="5" marker="0" id="3" start="4" angle="0" />
+            <edge end="6" marker="0" id="4" start="5" angle="0" />
+            <edge end="4" marker="3" id="5" start="7" angle="0" />
+            <edge end="7" marker="2" id="6" start="6" angle="0" />
+            <edge end="9" marker="2" id="7" start="8" angle="0" />
+            <edge end="9" marker="2" id="8" start="6" angle="0" />
+            <edge end="10" marker="3" id="9" start="8" angle="0" />
+            <edge end="0" marker="3" id="10" start="10" angle="90" />
+            <edge end="5" marker="0" id="11" start="2" angle="0" />
+            <edge end="1" marker="1" id="12" start="2" angle="0" />
         </edges>
         <labels>
             <label x="0.019" y="0.021" marker="2" id="0" area="0" />
-            <label x="0.0284191" y="0.18" marker="1" id="1" area="0" />
-            <label x="0.0410766" y="0.0589064" marker="3" id="2" area="0" />
+            <label x="0.0379" y="0.051" marker="3" id="1" area="0" />
+            <label x="0.0284191" y="0.123601" marker="1" id="2" area="0" />
         </labels>
     </geometry>
 </document>

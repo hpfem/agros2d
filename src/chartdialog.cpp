@@ -37,8 +37,9 @@ ChartDialog::~ChartDialog()
 
 void ChartDialog::showDialog()
 {
-    fillComboBoxVariable(cmbFieldVariable, m_scene->projectInfo().physicField);
+    fillComboBoxVariable(cmbFieldVariable, m_scene->projectInfo().physicField);    
     show();
+    doChartLine();
 }
 
 void ChartDialog::createControls()
@@ -72,7 +73,12 @@ void ChartDialog::createControls()
     txtStartY = new SLineEdit("0.02", false);
     txtEndX = new SLineEdit("0.05", false);
     txtEndY = new SLineEdit("0.02", false);
-    
+
+    connect(txtStartX, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
+    connect(txtStartY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
+    connect(txtEndX, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
+    connect(txtEndY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
+
     // start
     QFormLayout *layoutStart = new QFormLayout();
     layoutStart->addRow(tr("X:"), txtStartX);
@@ -183,6 +189,8 @@ void ChartDialog::createControls()
 
 void ChartDialog::doPlot()
 {
+    doChartLine();
+
     int count = txtAxisPoints->value();
     double *xval = new double[count];
     double *yval = new double[count];
@@ -375,6 +383,19 @@ void ChartDialog::doMoved(const QPoint &pos)
 {
     QString info;
     info.sprintf("x=%g, y=%g", chart->invTransform(QwtPlot::xBottom, pos.x()), chart->invTransform(QwtPlot::yLeft, pos.y()));
+}
+
+void ChartDialog::doChartLine()
+{
+    if (isVisible())
+        emit setChartLine(Point(txtStartX->value(), txtStartY->value()), Point(txtEndX->value(), txtEndY->value()));
+    else
+        emit setChartLine(Point(), Point());
+}
+
+void ChartDialog::hideEvent(QHideEvent *event)
+{
+    doChartLine();
 }
 
 // *********************************************************************************************************************

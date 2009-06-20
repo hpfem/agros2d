@@ -1,7 +1,5 @@
 TODO:
 
-- package for debian/ubuntu
-- support for script (qtscript ?, python ?, lua script ?)
 
 ADD:
 - modules:
@@ -11,11 +9,9 @@ ADD:
     - electric current field
     - field of elastic deformations
 
-- 2d charts
 - rebase vector field drawing
 - curvilinear element on arcs
 
 QUESTIONS:
 - real a cplx
-- get_pt_value
 

@@ -106,23 +106,4 @@ private:
     ScriptEditor *codeEditor;
 };
 
-
-// *****************************************************************************************************************
-
-class ScriptEditorHelpDialog : public QDialog
-{
-    Q_OBJECT
-public:
-    ScriptEditorHelpDialog(QWidget *parent = 0);
-    ~ScriptEditorHelpDialog();
-
-    void showDialog();
-
-private:
-    // QWebView *webHelp;
-
-    void createControls();
-};
-
-
 #endif // SCRIPTEDITORDIALOG_H

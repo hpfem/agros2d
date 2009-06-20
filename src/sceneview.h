@@ -48,6 +48,7 @@ public slots:
     void doSolved();
     void doDefaults();
     void doRefresh();
+    void doSetChartLine(const Point &start, const Point &end);
 
 public:
     SceneView(Scene *scene, QWidget *parent = 0);
@@ -110,6 +111,8 @@ private:
     Point3 m_offset; // offset
     Point3 m_rotation; // rotation
 
+    RectPoint m_chartLine; // line
+
     SceneNode *m_nodeLast;
 
     Scene *m_scene;
@@ -156,6 +159,8 @@ private:
     void paintOrder();
     void paintColorBar(double min, double max);
     void paintSceneModeLabel();
+    void paintZoomRegion();
+    void paintChartLine();
 
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration

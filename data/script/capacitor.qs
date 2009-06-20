@@ -31,6 +31,8 @@ addLabel(0.019, 0.021, 0, "diel 1");
 addLabel(0.0379, 0.051, 0, "diel 2");
 addLabel(0.0284191, 0.123601, 0, "air");
 
+zoomBestFit();
+
 // capacitance
 selectNone();
 print("Capacitance:");
@@ -46,6 +48,7 @@ do
 	}
 
 	solve();
+
 	integral = volumeIntegral();
 	// Energy We = 1/2 C*U^2
 	print((2*2*integral.Energy)/(1^2));
