@@ -553,6 +553,7 @@ struct SceneViewSettings
     double scalarRangeMin;
     double scalarRangeMax;
     bool scalarView3D;
+    bool scalarView3DLighting;
 
     // vector view
     PhysicFieldVariable vectorPhysicFieldVariable;

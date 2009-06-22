@@ -44,6 +44,7 @@ SceneViewDialog::~SceneViewDialog()
     delete chkPaletteFilter;
     delete txtPaletteSteps;    
     delete chkView3D;
+    delete chkView3DLighting;
 
     // vector field
     delete cmbVectorFieldVariable;
@@ -85,6 +86,7 @@ void SceneViewDialog::load()
     txtScalarFieldRangeMin->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMin));
     txtScalarFieldRangeMax->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMax));
     chkView3D->setChecked(m_sceneView->sceneViewSettings().scalarView3D);
+    chkView3DLighting->setChecked(m_sceneView->sceneViewSettings().scalarView3DLighting);
 
     // vector field
     cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(m_sceneView->sceneViewSettings().vectorPhysicFieldVariable));
@@ -118,6 +120,7 @@ void SceneViewDialog::save()
     m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
     m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
     m_sceneView->sceneViewSettings().scalarView3D = chkView3D->isChecked();
+    m_sceneView->sceneViewSettings().scalarView3DLighting = chkView3DLighting->isChecked();
 
     // vector field
     m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = (PhysicFieldVariable) cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toInt();
@@ -178,7 +181,8 @@ void SceneViewDialog::createControls()
     txtPaletteSteps = new QLineEdit("0");
     txtPaletteSteps->setValidator(new QIntValidator(txtPaletteSteps));
 
-    chkView3D = new QCheckBox();
+    chkView3D = new QCheckBox(this);
+    chkView3DLighting = new QCheckBox(this);
 
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
@@ -204,6 +208,8 @@ void SceneViewDialog::createControls()
     layoutScalarField->addWidget(new QLabel(tr("Maximum:")), 4, 2);
     layoutScalarField->addWidget(txtScalarFieldRangeMax, 4, 3);
 
+    layoutScalarField->addWidget(new QLabel(tr("Enable ligthing:")), 5, 0);
+    layoutScalarField->addWidget(chkView3DLighting, 5, 1);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);

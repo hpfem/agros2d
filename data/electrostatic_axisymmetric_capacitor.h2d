@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="3" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
+        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
             <edges>
                 <edge type="potential" value="1" id="1" name="U = 1 V" />
                 <edge type="potential" value="0" id="2" name="U = 0 V" />

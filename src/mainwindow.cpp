@@ -89,12 +89,12 @@ void MainWindow::createActions()
     actCut = new QAction(icon("edit-cut"), tr("Cu&t"), this);
     actCut->setShortcuts(QKeySequence::Cut);
     actCut->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
-    // connect(actCut, SIGNAL(triggered()), textEdit, SLOT(cut()));
+    connect(actCut, SIGNAL(triggered()), this, SLOT(doCut()));
     
     actCopy = new QAction(icon("edit-copy"), tr("&Copy"), this);
     actCopy->setShortcuts(QKeySequence::Copy);
     actCopy->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
-    // connect(actCopy, SIGNAL(triggered()), textEdit, SLOT(copy()));
+    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopy()));
     
     actPaste = new QAction(icon("edit-paste"), tr("&Paste"), this);
     actPaste->setShortcuts(QKeySequence::Paste);
@@ -109,8 +109,9 @@ void MainWindow::createActions()
     actAboutQt->setStatusTip(tr("Show the Qt library's About box"));
     connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     
-    actCut->setEnabled(false);
-    actCopy->setEnabled(false);
+    actCut->setEnabled(true);
+    actCopy->setEnabled(true);
+    actPaste->setEnabled(true);
     // connect(textEdit, SIGNAL(copyAvailable(bool)), actCut, SLOT(setEnabled(bool)));
     // connect(textEdit, SIGNAL(copyAvailable(bool)), actCopy, SLOT(setEnabled(bool)));
 
@@ -185,6 +186,8 @@ void MainWindow::createMenus()
     mnuTools = menuBar()->addMenu(tr("Tools"));
     mnuTools->addAction(actChart);
     mnuTools->addAction(actScriptEditor);
+    mnuTools->addSeparator();
+    mnuTools->addAction(sceneView->actFullScreen);
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
 
@@ -465,10 +468,19 @@ void MainWindow::doScriptEditor()
     scriptEditorDialog->showDialog();
 }
 
+void MainWindow::doCut()
+{
+}
+
+void MainWindow::doCopy()
+{
+}
+
 void MainWindow::doPaste()
 {
     m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
     // m_scene->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
+    // m_scene->readFromFile("data/electrostatic_planar_poisson.h2d");
     // m_scene->readFromFile("data/heat_transfer_axisymmetric.h2d");
     // m_scene->readFromFile("data/heat_transfer_planar.h2d");
     // m_scene->readFromFile("data/heat_transfer_detail.h2d");

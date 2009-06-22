@@ -65,8 +65,11 @@ private slots:
     void doScriptEditor();
     void doOptions();
 
-    void doAbout();
+    void doCut();
+    void doCopy();
     void doPaste();
+
+    void doAbout();
     void doInvalidated();
 
 private:

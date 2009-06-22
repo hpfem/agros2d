@@ -54,6 +54,7 @@ private:
     QCheckBox *chkPaletteFilter;
     QLineEdit *txtPaletteSteps;
     QCheckBox *chkView3D;
+    QCheckBox *chkView3DLighting;
 
     // vector field
     QComboBox *cmbVectorFieldVariable;

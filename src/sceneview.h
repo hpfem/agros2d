@@ -2,6 +2,7 @@
 #define SCENEVIEW_H
 
 #include <QGLWidget>
+#include <QtGui/QMainWindow>
 #include <QtGui/QGroupBox>
 #include <QtGui/QCheckBox>
 #include <QWheelEvent>
@@ -38,6 +39,7 @@ class SceneView : public QGLWidget
     Q_OBJECT
     
 public slots:
+    void doFullScreen();
     void doZoomBestFit();
     void doZoomIn();
     void doZoomOut();
@@ -76,6 +78,7 @@ public:
 
     QAction *actSceneViewSelectRegion;
     QAction *actSceneViewProperties;
+    QAction *actFullScreen;
 
     inline Scene *scene() { return m_scene; }
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
@@ -93,7 +96,7 @@ protected:
     void initializeGL();
     void resizeGL(int width, int height);
     void paintGL();
-    void setupViewport(int width, int height);
+    void setupViewport();
     
     void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -104,12 +107,15 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
 private:
+    QMainWindow *m_mainWindow;
+
     QPointF m_lastPos; // last position of cursor
     QPointF m_regionPos;
     double m_scale; // scale
     double m_aspect;
     Point3 m_offset; // offset
-    Point3 m_rotation; // rotation
+    Point m_rotation; // rotation
+    double3* m_normals;
 
     RectPoint m_chartLine; // line
 

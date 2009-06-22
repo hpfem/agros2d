@@ -1,9 +1,12 @@
-#include "sceneview.h"
+    #include "sceneview.h"
 
 SceneView::SceneView(Scene *scene, QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
-    this->m_scene = scene;
+    m_mainWindow = (QMainWindow *) parent;
+    m_scene = scene;
     
+    m_normals = NULL;
+
     createActions();
     createMenu();
     
@@ -118,6 +121,11 @@ void SceneView::createActions()
     actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("Select region"), this);
     actSceneViewSelectRegion->setStatusTip(tr("Select region"));
     actSceneViewSelectRegion->setCheckable(true);
+
+    // fullscreen
+    actFullScreen = new QAction(icon(""), tr("Fullscreen mode"), this);
+    actFullScreen->setShortcut(QKeySequence(tr("F11")));
+    connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
 }
 
 void SceneView::createMenu()
@@ -146,31 +154,56 @@ void SceneView::createMenu()
 
 void SceneView::initializeGL()
 {
-    glClearColor(0.99, 0.99, 0.99, 0);
-    glShadeModel(GL_FLAT);
-    glDepthFunc(GL_LEQUAL);
-    glClearDepth(1.0f);
+    glShadeModel(GL_SMOOTH);
+}
 
-    setupViewport(width(), height());
+void SceneView::setupViewport()
+{
+    glViewport(0, 0, width(), height());
+
+    m_aspect = (double) width()/(double) height();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    {
+        double aspect = ((double) width()/(double) height());
+        gluPerspective(0.0, aspect, 1.0, 1000.0);
+    }
+    else
+        glOrtho(5.0, width()-10.0, height()-10.0, 5.0, -10.0, -10.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 void SceneView::paintGL()
 {
-    setupViewport(width(), height());
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-    
-    if (m_sceneViewSettings.scalarView3D && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    glClearColor(0.99, 0.99, 0.99, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    {
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+    }
+    else
+    {
+        glDisable(GL_DEPTH_TEST);
+    }     
+
+    setupViewport();
+
+    glScaled(m_scale/m_aspect, m_scale, m_scale);
+
+    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
     {
         glRotated(m_rotation.x, 1.0, 0.0, 0.0);
-        glRotated(m_rotation.y, 0.0, 1.0, 0.0);
-        glRotated(m_rotation.z, 0.0, 0.0, 1.0);
+        glRotated(m_rotation.y, 0.0, 0.0, 1.0);
     }
-    
-    glScaled(m_scale/m_aspect, m_scale, 1.0);
-    glTranslated(-m_offset.x, -m_offset.y, 0.0);
-    
+
+    glTranslated(-m_offset.x, -m_offset.y, -m_offset.z);
+
     if (m_sceneViewSettings.showGrid) paintGrid();
     if (m_scene->sceneSolution()->isSolved())
     {
@@ -182,6 +215,7 @@ void SceneView::paintGL()
             if (m_sceneViewSettings.showContours) paintContours();
         }
     }
+
     if (m_sceneViewSettings.showSolutionMesh) paintSolutionMesh();
     if (m_sceneViewSettings.showInitialMesh) paintInitialMesh();
     if (m_sceneViewSettings.showGeometry) paintGeometry();
@@ -199,32 +233,16 @@ void SceneView::paintGL()
 
 void SceneView::resizeGL(int width, int height)
 {
-    setupViewport(width, height);
-}
-
-void SceneView::setupViewport(int width, int height)
-{
-    int side = qMax(width, height);
-    
-    glViewport(0, 0, width, height);
-    
-    m_aspect = (double) width/(double) height;
-    
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    if (m_sceneViewSettings.scalarView3D && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
-        gluPerspective(0.0, 1.0, -5.0, 5.0);
-    else
-       glOrtho(5.0, width-10.0, height-10.0, 5.0, -5.0, -5.0);
-    
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    setupViewport();
 }
 
 // paint *****************************************************************************************************************************
 
 void SceneView::paintGrid()
 {
+    // if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    //    return;
+
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(width(), height()));
     
@@ -545,6 +563,7 @@ void SceneView::paintColorBar(double min, double max)
     double border = 0.007*k;
     double border_scale = 0.05*k;
     
+    glDisable(GL_DEPTH_TEST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     // background
@@ -610,6 +629,9 @@ void SceneView::paintColorBar(double min, double max)
         renderText(1.0 - labels_width + 0.022*(1.0/m_aspect), y_tick-h/4.0, 0, QString::number(value, '+e', 1));
     }
     
+    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+        glEnable(GL_DEPTH_TEST);
+
     glPopMatrix();
 }
 
@@ -626,14 +648,31 @@ void SceneView::paintScalarField()
     int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
     Point point[3];
     double value[3];
-    
+
+    double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
+
     // draw all triangles
-    glEnable(GL_DEPTH_TEST);
+    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    {
+        if (m_sceneViewSettings.scalarView3DLighting)
+        {
+            glEnable(GL_LIGHTING);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        }
+        else
+        {
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        }
+    }
+    else
+    {
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    }
     glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, 1);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1.0, 1.0);
 
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
@@ -655,16 +694,24 @@ void SceneView::paintScalarField()
                 continue;
         }
         
-        if (m_sceneViewSettings.scalarView3D && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+        if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
         {
+            double delta = 0.0;
+
+            if (m_sceneViewSettings.scalarView3DLighting)
+                glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
             glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[0].x, point[0].y, (value[0] - m_sceneViewSettings.scalarRangeMin) * irange * 0.4);
+            glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin) * irange * max/3.0);
             
+            if (m_sceneViewSettings.scalarView3DLighting)
+                glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
             glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[1].x, point[1].y, (value[1] - m_sceneViewSettings.scalarRangeMin) * irange * 0.4);
+            glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin) * irange * max/3.0);
             
+            if (m_sceneViewSettings.scalarView3DLighting)
+                glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
             glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[2].x, point[2].y, (value[2] - m_sceneViewSettings.scalarRangeMin) * irange * 0.4);
+            glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin) * irange * max/3.0);
         }
         else
         {
@@ -680,9 +727,9 @@ void SceneView::paintScalarField()
     }
     glEnd();
     glDisable(GL_POLYGON_OFFSET_FILL);
-    glDisable(GL_TEXTURE_1D);
-    glDisable(GL_DEPTH_TEST);
-    
+    glDisable(GL_TEXTURE_1D);    
+    glDisable(GL_LIGHTING);
+
     m_scene->sceneSolution()->linScalarView().unlock_data();
     
     paintColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
@@ -845,6 +892,8 @@ void SceneView::paintSceneModeLabel()
     glPushMatrix();
     glLoadIdentity();
     
+    glDisable(GL_DEPTH_TEST);
+
     switch (m_sceneMode)
     {
     case SCENEMODE_OPERATE_ON_NODES:
@@ -880,6 +929,9 @@ void SceneView::paintSceneModeLabel()
     glColor3f(0, 0, 0);
     renderText((width()-fontMetrics().width(text))/2, 14, text);
     
+    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+        glEnable(GL_DEPTH_TEST);
+
     glPopMatrix();
 }
 
@@ -999,9 +1051,9 @@ void SceneView::paletteCreate()
     
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
-    #ifndef GL_CLAMP_TO_EDGE // fixme: this is needed on Windows
-    #define GL_CLAMP_TO_EDGE 0x812F
-    #endif
+#ifndef GL_CLAMP_TO_EDGE // fixme: this is needed on Windows
+#define GL_CLAMP_TO_EDGE 0x812F
+#endif
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 }
@@ -1076,6 +1128,11 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             m_scene->deleteSelected();
         }
         break;
+    case Qt::Key_F11:
+        {
+            doFullScreen();
+        }
+        break;
     case Qt::Key_Escape:
         {
             m_scene->selectNone();
@@ -1148,7 +1205,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             return;
         }
         
-        if (m_sceneMode == SCENEMODE_POSTPROCESSOR)
+        if (!m_sceneViewSettings.scalarView3D && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
         {
             // local point value
             if (actPostprocessorModeLocalPointValue->isChecked())
@@ -1376,27 +1433,26 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     {
         setCursor(Qt::PointingHandCursor);
         
-        m_offset.x -= 2.0/width()*dx/m_scale;
-        m_offset.y += 2.0/width()*dy/m_scale/m_aspect;
-        
+        // m_offset.x += 2.0/width()*dx/m_scale*m_aspect;
+        // m_offset.y += 2.0/height()*dy/m_scale;
+        // m_offset.z = 0.0;
+
+        m_offset.x += 2.0/width() *(- dx * cos(m_rotation.y/180.0*M_PI) + dy * sin(m_rotation.y/180.0*M_PI))/m_scale*m_aspect;
+        m_offset.y += 2.0/height()*(  dy * cos(m_rotation.y/180.0*M_PI) + dx * sin(m_rotation.y/180.0*M_PI))/m_scale;
+        m_offset.z -= 2.0/height()*(  dy * sin(m_rotation.x/180.0*M_PI))/m_scale;
+
+        // cout << m_rotation.x << "  " << m_rotation.y << endl;
+
         updateGL();
     }
     
     // rotate
-    if (m_sceneViewSettings.scalarView3D && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
     {
         if (event->buttons() & Qt::LeftButton)
         {
-            if (event->modifiers() & Qt::ShiftModifier)
-            {
-                m_rotation.x += dy;
-                m_rotation.z += dx;
-            }
-            else
-            {
-                m_rotation.x += dy;
-                m_rotation.y += dx;
-            }
+            m_rotation.x -= dy;
+            m_rotation.y += dx;
             
             updateGL();
         }
@@ -1428,7 +1484,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                 setToolTip(QString("<h4>Edge</h4>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg.").arg(edge->nodeStart->point.x, 0, 'f', 3).arg(edge->nodeStart->point.y, 0, 'f', 3)
                            .arg(edge->nodeEnd->point.x, 0, 'f', 3).arg(edge->nodeEnd->point.y, 0, 'f', 3)
                            .arg(edge->marker->name).arg(edge->angle, 0, 'f', 0));
-                // edge->marker->name
+
                 updateGL();
             }
         }
@@ -1516,6 +1572,12 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
 
 void SceneView::doInvalidated()
 {
+    if (m_normals == NULL)
+    {
+        delete m_normals;
+        m_normals = NULL;
+    }
+
     if (m_scene->sceneSolution()->isSolved())
     {
         setRangeContour();
@@ -1579,13 +1641,10 @@ void SceneView::doSetChartLine(const Point &start, const Point &end)
 }
 
 void SceneView::doDefaults()
-{
-    m_sceneViewSettings.scalarView3D = false;
-    
+{   
     m_scale = 1.0;
     m_offset.x = 0.0;
     m_offset.y = 0.0;
-    m_offset.z = 0.0;
     
     m_chartLine.start = Point();
     m_chartLine.end = Point();
@@ -1613,7 +1672,8 @@ void SceneView::doDefaults()
     m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_NONE;
     m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
     m_sceneViewSettings.scalarRangeAuto = true;
-    m_sceneViewSettings.scalarView3D = false;
+    m_sceneViewSettings.scalarView3D = true;
+    m_sceneViewSettings.scalarView3DLighting = false;
 
     switch (m_scene->projectInfo().physicField)
     {
@@ -1717,6 +1777,22 @@ void SceneView::doSceneViewProperties()
     SceneViewDialog *sceneViewDialog = new SceneViewDialog(this, this);
     if (sceneViewDialog->showDialog() == QDialog::Accepted)
         doInvalidated();
+    delete sceneViewDialog;
+}
+
+void SceneView::doFullScreen()
+{
+    if (isFullScreen())
+    {
+        setParent(m_mainWindow);
+        m_mainWindow->setCentralWidget(this);
+        showNormal();
+    }
+    else
+    {
+        setParent(NULL);
+        showFullScreen();
+    }
 }
 
 void SceneView::doSceneModeSet(QAction *)
@@ -1789,6 +1865,83 @@ void SceneView::setRangeScalar()
         {
             m_sceneViewSettings.scalarRangeMin = m_scene->sceneSolution()->linScalarView().get_min_value();
             m_sceneViewSettings.scalarRangeMax = m_scene->sceneSolution()->linScalarView().get_max_value();
+        }
+
+        if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.scalarView3DLighting)
+        {
+            double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
+
+            // lighting
+            float light_specular[] = {1.0, 1.0, 1.0, 1.0};
+            float light_ambient[]  = {0.3, 0.3, 0.3, 1.0};
+            float light_diffuse[]  = {1.0, 1.0, 1.0, 1.0};   
+            float light_position[] = { -5.0*max, 8.0*max, 5.0*max, 0.0 };
+
+            glEnable(GL_LIGHT0);
+            glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+            glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
+            glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
+            glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+            float material_ambient[]  = {1.0, 1.0, 1.0, 1.0};
+            float material_diffuse[]  = {0.4, 0.4, 0.4, 1.0};
+            float material_specular[] = {0.3, 0.3, 0.3, 1.0};
+
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
+            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 1.0);
+            glDisable(GL_COLOR_MATERIAL);
+
+            glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+            #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
+            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+            #endif
+
+            // calculate normals
+            m_scene->sceneSolution()->linScalarView().lock_data();
+            int nv = m_scene->sceneSolution()->linScalarView().get_num_vertices();
+            int nt = m_scene->sceneSolution()->linScalarView().get_num_triangles();
+            double3* vert = m_scene->sceneSolution()->linScalarView().get_vertices();
+            int3* tris = m_scene->sceneSolution()->linScalarView().get_triangles();
+
+            m_normals = new double3[nv];
+            memset(m_normals, 0, nv * sizeof(double3));
+
+            for (int i = 0; i < nt; i++)
+            {
+                double ax = (vert[tris[i][1]][0] - vert[tris[i][0]][0]);
+                double ay = (vert[tris[i][1]][1] - vert[tris[i][0]][1]);
+                double az = (vert[tris[i][1]][2] - vert[tris[i][0]][2]);
+
+                double bx = (vert[tris[i][2]][0] - vert[tris[i][0]][0]);
+                double by = (vert[tris[i][2]][1] - vert[tris[i][0]][1]);
+                double bz = (vert[tris[i][2]][2] - vert[tris[i][0]][2]);
+
+                double nx = ay * bz - az * by;
+                double ny = az * bx - ax * bz;
+                double nz = ax * by - ay * bx;
+
+                // normalize
+                double l = 1.0 / sqrt(sqr(nx) + sqr(ny) + sqr(nz));
+                nx *= l; ny *= l; nz *= l;
+
+                for (int j = 0; j < 3; j++)
+                {
+                    m_normals[tris[i][j]][0] += nx;
+                    m_normals[tris[i][j]][1] += ny;
+                    m_normals[tris[i][j]][2] += nz;
+                }
+            }
+
+            for (int i = 0; i < nv; i++)
+            {
+                // normalize
+                double l = 1.0 / sqrt(sqr(m_normals[i][0]) + sqr(m_normals[i][1]) + sqr(m_normals[i][2]));
+                m_normals[i][0] *= l; m_normals[i][1] *= l; m_normals[i][2] *= l;
+            }
+
+            m_scene->sceneSolution()->linScalarView().unlock_data();
         }
     }
 }
