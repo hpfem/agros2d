@@ -658,11 +658,14 @@ void SceneView::paintScalarField()
         {
             glEnable(GL_LIGHTING);
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        }
+        }            
         else
         {
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
         }
+
+        glPushMatrix();
+        glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
     }
     else
     {
@@ -693,7 +696,7 @@ void SceneView::paintScalarField()
             if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
                 continue;
         }
-        
+                
         if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
         {
             double delta = 0.0;
@@ -701,17 +704,20 @@ void SceneView::paintScalarField()
             if (m_sceneViewSettings.scalarView3DLighting)
                 glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
             glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin) * irange * max/3.0);
+            // glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
+            glVertex3d(point[0].x, point[0].y, - delta - value[0]);
             
             if (m_sceneViewSettings.scalarView3DLighting)
                 glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
             glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin) * irange * max/3.0);
-            
+            // glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
+            glVertex3d(point[1].x, point[1].y, - delta - value[1]);
+
             if (m_sceneViewSettings.scalarView3DLighting)
                 glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
             glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin) * irange * max/3.0);
+            // glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
+            glVertex3d(point[2].x, point[2].y, - delta - value[2]);
         }
         else
         {
@@ -729,6 +735,11 @@ void SceneView::paintScalarField()
     glDisable(GL_POLYGON_OFFSET_FILL);
     glDisable(GL_TEXTURE_1D);    
     glDisable(GL_LIGHTING);
+
+    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    {
+        glPopMatrix();
+    }
 
     m_scene->sceneSolution()->linScalarView().unlock_data();
     
@@ -1672,7 +1683,7 @@ void SceneView::doDefaults()
     m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_NONE;
     m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
     m_sceneViewSettings.scalarRangeAuto = true;
-    m_sceneViewSettings.scalarView3D = true;
+    m_sceneViewSettings.scalarView3D = false;
     m_sceneViewSettings.scalarView3DLighting = false;
 
     switch (m_scene->projectInfo().physicField)

@@ -81,16 +81,16 @@ void ChartDialog::createControls()
 
     // start
     QFormLayout *layoutStart = new QFormLayout();
-    layoutStart->addRow(tr("X:"), txtStartX);
-    layoutStart->addRow(tr("Y:"), txtStartY);
+    layoutStart->addRow(m_scene->projectInfo().labelX() + ":", txtStartX);
+    layoutStart->addRow(m_scene->projectInfo().labelY() + ":", txtStartY);
     
     QGroupBox *grpStart = new QGroupBox(tr("Start"), this);
     grpStart->setLayout(layoutStart);
     
     // end
     QFormLayout *layoutEnd = new QFormLayout();
-    layoutEnd->addRow(tr("X:"), txtEndX);
-    layoutEnd->addRow(tr("Y:"), txtEndY);
+    layoutEnd->addRow(m_scene->projectInfo().labelX() + ":", txtEndX);
+    layoutEnd->addRow(m_scene->projectInfo().labelY() + ":", txtEndY);
     
     QGroupBox *grpEnd = new QGroupBox(tr("End"), this);
     grpEnd->setLayout(layoutEnd);
@@ -98,8 +98,8 @@ void ChartDialog::createControls()
     // x - axis
     radAxisLength = new QRadioButton(tr("Length"), this);
     radAxisLength->setChecked(true);
-    radAxisX = new QRadioButton(tr("X"), this);
-    radAxisY = new QRadioButton(tr("Y"), this);
+    radAxisX = new QRadioButton(m_scene->projectInfo().labelX(), this);
+    radAxisY = new QRadioButton(m_scene->projectInfo().labelY(), this);
     
     QButtonGroup *axisGroup = new QButtonGroup(this);
     axisGroup->addButton(radAxisLength);
@@ -214,8 +214,8 @@ void ChartDialog::doPlot()
     
     // chart
     if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
-    if (radAxisX->isChecked()) text.setText(tr("X (m)"));
-    if (radAxisY->isChecked()) text.setText(tr("Y (m)"));
+    if (radAxisX->isChecked()) text.setText(m_scene->projectInfo().labelX() + " (m):");
+    if (radAxisY->isChecked()) text.setText(m_scene->projectInfo().labelY() + " (m):");
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
@@ -269,8 +269,8 @@ void ChartDialog::doFieldVariable(int index)
     else
     {
         cmbFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbFieldVariableComp->addItem(tr("X"), PHYSICFIELDVARIABLECOMP_X);
-        cmbFieldVariableComp->addItem(tr("Y"), PHYSICFIELDVARIABLECOMP_Y);
+        cmbFieldVariableComp->addItem(m_scene->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
+        cmbFieldVariableComp->addItem(m_scene->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_Y);
     }
     
     if (cmbFieldVariableComp->currentIndex() == -1)

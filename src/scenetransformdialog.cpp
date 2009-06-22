@@ -41,9 +41,9 @@ void SceneTransformDialog::createControls()
     txtTranslateY = new SLineEdit("0", false);
 
     QGridLayout *layoutTranslate = new QGridLayout();
-    layoutTranslate->addWidget(new QLabel(tr("X:")), 0, 0);
+    layoutTranslate->addWidget(new QLabel(m_scene->projectInfo().labelX() + ":"), 0, 0);
     layoutTranslate->addWidget(txtTranslateX, 0, 1);
-    layoutTranslate->addWidget(new QLabel(tr("Y:")), 1, 0);
+    layoutTranslate->addWidget(new QLabel(m_scene->projectInfo().labelY() + ":"), 1, 0);
     layoutTranslate->addWidget(txtTranslateY, 1, 1);
     layoutTranslate->addWidget(new QLabel(""), 2, 0);
 
@@ -56,9 +56,9 @@ void SceneTransformDialog::createControls()
     txtRotateAngle = new SLineEdit("0", false);
 
     QGridLayout *layoutRotate = new QGridLayout();
-    layoutRotate->addWidget(new QLabel(tr("X:")), 0, 0);
+    layoutRotate->addWidget(new QLabel(m_scene->projectInfo().labelX() + ":"), 0, 0);
     layoutRotate->addWidget(txtRotateBasePointX, 0, 1);
-    layoutRotate->addWidget(new QLabel(tr("Y:")), 1, 0);
+    layoutRotate->addWidget(new QLabel(m_scene->projectInfo().labelY() + ":"), 1, 0);
     layoutRotate->addWidget(txtRotateBasePointY, 1, 1);
     layoutRotate->addWidget(new QLabel(tr("Angle:")), 2, 0);
     layoutRotate->addWidget(txtRotateAngle, 2, 1);
@@ -72,9 +72,9 @@ void SceneTransformDialog::createControls()
     txtScaleFactor = new SLineEdit("1");
 
     QGridLayout *layoutScale = new QGridLayout();
-    layoutScale->addWidget(new QLabel(tr("X:")), 0, 0);
+    layoutScale->addWidget(new QLabel(m_scene->projectInfo().labelX() + ":"), 0, 0);
     layoutScale->addWidget(txtScaleBasePointX, 0, 1);
-    layoutScale->addWidget(new QLabel(tr("Y:")), 1, 0);
+    layoutScale->addWidget(new QLabel(m_scene->projectInfo().labelY() + ":"), 1, 0);
     layoutScale->addWidget(txtScaleBasePointY, 1, 1);
     layoutScale->addWidget(new QLabel(tr("Scaling Factor:")), 2, 0);
     layoutScale->addWidget(txtScaleFactor, 2, 1);

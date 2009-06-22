@@ -208,7 +208,7 @@ void SceneViewDialog::createControls()
     layoutScalarField->addWidget(new QLabel(tr("Maximum:")), 4, 2);
     layoutScalarField->addWidget(txtScalarFieldRangeMax, 4, 3);
 
-    layoutScalarField->addWidget(new QLabel(tr("Enable ligthing:")), 5, 0);
+    layoutScalarField->addWidget(new QLabel(tr("Ligthing:")), 5, 0);
     layoutScalarField->addWidget(chkView3DLighting, 5, 1);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
@@ -313,8 +313,8 @@ void SceneViewDialog::doScalarFieldVariable(int index)
     else
     {
         cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbScalarFieldVariableComp->addItem(tr("X"), PHYSICFIELDVARIABLECOMP_X);
-        cmbScalarFieldVariableComp->addItem(tr("Y"), PHYSICFIELDVARIABLECOMP_Y);
+        cmbScalarFieldVariableComp->addItem(m_sceneView->scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
+        cmbScalarFieldVariableComp->addItem(m_sceneView->scene()->projectInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
     }
 
     if (cmbScalarFieldVariableComp->currentIndex() == -1)

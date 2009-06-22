@@ -62,8 +62,8 @@ void LocalPointValueView::doShowPoint(LocalPointValue *localPointValue)
     pointNode->setText(0, tr("Point"));
     pointNode->setExpanded(true);
 
-    addValue(pointNode, tr("x:"), tr("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
-    addValue(pointNode, tr("y:"), tr("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
+    addValue(pointNode, m_scene->projectInfo().labelX() + ":", tr("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
+    addValue(pointNode, m_scene->projectInfo().labelY() + ":", tr("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
 
     trvWidget->insertTopLevelItem(0, pointNode);
 

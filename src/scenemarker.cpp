@@ -768,8 +768,8 @@ QLayout* DSceneLabelElectrostaticMarker::createContent()
     txtChargeDensity = new SLineEdit("0", true);
 
     QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Permittivity:"), txtPermittivity);
-    layoutMarker->addRow(tr("Charge density:"), txtChargeDensity);
+    layoutMarker->addRow(tr("Permittivity (-):"), txtPermittivity);
+    layoutMarker->addRow(tr("Charge density (C/m3):"), txtChargeDensity);
 
     return layoutMarker;
 }
@@ -816,8 +816,8 @@ QLayout* DSceneLabelMagnetostaticMarker::createContent()
     txtCurrentDensity = new SLineEdit("0", true);
 
     QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Permeability:"), txtPermeability);
-    layoutMarker->addRow(tr("Current density:"), txtCurrentDensity);
+    layoutMarker->addRow(tr("Permeability (-):"), txtPermeability);
+    layoutMarker->addRow(tr("Current density (A/m2):"), txtCurrentDensity);
 
     return layoutMarker;
 }
@@ -864,8 +864,8 @@ QLayout* DSceneLabelHeatMarker::createContent()
     txtVolumeHeat = new SLineEdit("0", true);
 
     QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Thermal conductivity:"), txtThermalConductivity);
-    layoutMarker->addRow(tr("Volume heat:"), txtVolumeHeat);
+    layoutMarker->addRow(tr("Thermal conductivity (W/m.K):"), txtThermalConductivity);
+    layoutMarker->addRow(tr("Volume heat (J/m3):"), txtVolumeHeat);
 
     return layoutMarker;
 }
@@ -911,7 +911,7 @@ QLayout* DSceneLabelCurrentMarker::createContent()
     txtConductivity = new SLineEdit("0", true);
 
     QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Conductivity:"), txtConductivity);
+    layoutMarker->addRow(tr("Conductivity (S/m):"), txtConductivity);
 
     return layoutMarker;
 }
@@ -957,8 +957,8 @@ QLayout* DSceneLabelElasticityMarker::createContent()
     txtPoissonNumber = new SLineEdit("0", 0);
 
     QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Young modulus:"), txtYoungModulus);
-    layoutMarker->addRow(tr("Poisson number:"), txtPoissonNumber);
+    layoutMarker->addRow(tr("Young modulus (Pa):"), txtYoungModulus);
+    layoutMarker->addRow(tr("Poisson number (-):"), txtPoissonNumber);
 
     return layoutMarker;
 }

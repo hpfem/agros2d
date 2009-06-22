@@ -74,8 +74,11 @@ struct ProjectInfo
         numberOfRefinements = 1;
         polynomialOrder = 3;
         adaptivitySteps = 0;
-        adaptivityTolerance = 1.0; // %
+        adaptivityTolerance = 1.0;
     }
+
+    inline QString labelX() { return ((problemType = PROBLEMTYPE_PLANAR) ? "X" : "R");  }
+    inline QString labelY() { return ((problemType = PROBLEMTYPE_PLANAR) ? "Y" : "Z");  }
 };
 
 class DxfFilter : public DL_CreationAdapter
@@ -120,8 +123,6 @@ public:
     QAction *actNewLabelMarker;
     QAction *actProjectProperties;
     QAction *actTransform;
-
-    // Settings *settings;
 
     Scene();
     ~Scene();
