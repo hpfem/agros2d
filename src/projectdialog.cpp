@@ -58,7 +58,7 @@ void ProjectDialog::createControls()
     layoutProject->addWidget(cmbProblemType, 2, 1);
     layoutProject->addWidget(new QLabel(tr("Physic field:")), 3, 0);
     if (!this->m_isNewProject)
-        layoutProject->addWidget(new QLabel(physicFieldStringKey(m_projectInfo->physicField)), 3, 1);
+        layoutProject->addWidget(new QLabel(physicFieldString(m_projectInfo->physicField)), 3, 1);
     else
         layoutProject->addWidget(cmbPhysicField, 3, 1);
     layoutProject->addWidget(new QLabel(tr("Number of refinements:")), 4, 0);
@@ -88,17 +88,17 @@ void ProjectDialog::createControls()
 void ProjectDialog::fillComboBox()
 {
     cmbProblemType->clear();
-    cmbProblemType->addItem(tr("planar"), PROBLEMTYPE_PLANAR);
-    cmbProblemType->addItem(tr("axisymmetric"), PROBLEMTYPE_AXISYMMETRIC);
+    cmbProblemType->addItem(problemTypeString(PROBLEMTYPE_PLANAR), PROBLEMTYPE_PLANAR);
+    cmbProblemType->addItem(problemTypeString(PROBLEMTYPE_AXISYMMETRIC), PROBLEMTYPE_AXISYMMETRIC);
 
     if (this->m_isNewProject)
     {
         cmbPhysicField->clear();
-        cmbPhysicField->addItem(tr("electrostatic"), PHYSICFIELD_ELECTROSTATIC);
-        cmbPhysicField->addItem(tr("magnetostatic"), PHYSICFIELD_MAGNETOSTATIC);
-        cmbPhysicField->addItem(tr("current field"), PHYSICFIELD_CURRENT);
-        cmbPhysicField->addItem(tr("heat transfer"), PHYSICFIELD_HEAT_TRANSFER);
-        // cmbPhysicField->addItem(tr("elasticity"), PHYSICFIELD_ELASTICITY);
+        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELECTROSTATIC), PHYSICFIELD_ELECTROSTATIC);
+        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETOSTATIC), PHYSICFIELD_MAGNETOSTATIC);
+        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT_TRANSFER), PHYSICFIELD_CURRENT);
+        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT_TRANSFER), PHYSICFIELD_HEAT_TRANSFER);
+        // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
     }
 }
 

@@ -585,7 +585,7 @@ void ScriptEditorDialog::doCreateFromModel()
     str += "// model\n";
     str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, %7);").
            arg(m_scene->projectInfo().name).
-           arg(problemTypeString(m_scene->projectInfo().problemType)).
+           arg(problemTypeStringKey(m_scene->projectInfo().problemType)).
            arg(physicFieldStringKey(m_scene->projectInfo().physicField)).
            arg(m_scene->projectInfo().numberOfRefinements).
            arg(m_scene->projectInfo().polynomialOrder).

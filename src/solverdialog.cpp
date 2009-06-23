@@ -176,7 +176,7 @@ void SolverDialog::runSolver()
     QTime time;
     time.start();
 
-    emit message(tr("Solver was started: ") + physicFieldStringKey(m_scene->projectInfo().physicField) + " (" + problemTypeString(m_scene->projectInfo().problemType) + ")");
+    emit message(tr("Solver was started: ") + physicFieldString(m_scene->projectInfo().physicField) + " (" + problemTypeString(m_scene->projectInfo().problemType) + ")");
     updateProgress(60);
 
     SolutionArray *solutionArray;

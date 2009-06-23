@@ -3,11 +3,17 @@
         <file>images/application-exit.png</file>
         <file>images/about.png</file>
         <file>images/document-new.png</file>
+        <file>images/document-new-windows.png</file>
         <file>images/document-open.png</file>
+        <file>images/document-open-windows.png</file>
         <file>images/document-save.png</file>
+        <file>images/document-save-windows.png</file>
         <file>images/edit-copy.png</file>
+        <file>images/edit-copy-windows.png</file>
         <file>images/edit-cut.png</file>
+        <file>images/edit-cut-windows.png</file>
         <file>images/edit-paste.png</file>
+        <file>images/edit-paste-windows.png</file>
         <file>images/geometry.png</file>
         <file>images/chart.png</file>
         <file>images/mode-localpointvalue.png</file>

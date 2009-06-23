@@ -1,8 +1,8 @@
 [Setup]
 
 AppName=Carbon 2D
-AppVerName=Carbon 2D 0.5
-OutputBaseFilename=Carbon2D_0.5.0
+AppVerName=Carbon 2D 0.7
+OutputBaseFilename=Carbon2D_0.7.0
 DefaultGroupName=Carbon 2D
 LicenseFile=COPYING
 
@@ -29,6 +29,8 @@ Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
 Source: data\*.h2d; DestDir: {app}/data
 Source: lang\*.qm; DestDir: {app}/lang
+Source: doc\html\*; DestDir: {app}/doc/html
+Source: doc\html\style\*; DestDir: {app}/doc/html/style
 Source: install\win32\*.dll; DestDir: {app}
 
 [Icons]

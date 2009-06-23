@@ -504,7 +504,7 @@ void MainWindow::doInvalidated()
     actChart->setEnabled(m_scene->sceneSolution()->isSolved());
 
     lblProblemType->setText(tr("Problem Type: ") + problemTypeString(m_scene->projectInfo().problemType));
-    lblPhysicField->setText(tr("Physic Field: ") + physicFieldStringKey(m_scene->projectInfo().physicField));
+    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(m_scene->projectInfo().physicField));
 }
 
 void MainWindow::doAbout()

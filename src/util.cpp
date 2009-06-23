@@ -38,18 +38,14 @@ QStringList availableLanguages()
 
 QIcon icon(const QString &name) {
     QString fileName;
-    /*
-    #ifdef Q_WS_WIN
-    if (QFile::exists(QDir::current().absolutePath() + "/images/windows/" + name + ".png"))
-        fileName = QDir::current().absolutePath() + "/images/windows/";
-    else
-        fileName = QDir::current().absolutePath() + "/images/";
-    #else
-        fileName = QDir::current().absolutePath() + "/images/";
-    #endif
-    */
 
-    return QIcon(QPixmap(":images/" + name + ".png"));
+    fileName = name;
+    #ifdef Q_WS_WIN
+    if (QFile::exists(":/images/" + name + "-windows.png"))
+        fileName = name + "-windows";
+    #endif
+
+    return QIcon(QPixmap(":images/" + fileName + ".png"));
 }
 
 QString appdir()

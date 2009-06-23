@@ -144,7 +144,7 @@ void SceneInfoView::doInvalidated()
     itemProblemType->setText(0, tr("Type: ") + problemTypeString(scene->projectInfo().problemType));
     // physic field
     QTreeWidgetItem *itemPhysicField = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemPhysicField->setText(0, tr("Field: ") + physicFieldStringKey(scene->projectInfo().physicField));
+    itemPhysicField->setText(0, tr("Field: ") + physicFieldString(scene->projectInfo().physicField));
 
     // solver
     if (scene->sceneSolution()->isMeshed())

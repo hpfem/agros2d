@@ -107,12 +107,20 @@ enum ProblemType
     PROBLEMTYPE_AXISYMMETRIC
 };
 
+inline QString problemTypeStringKey(ProblemType problemType)
+{
+    if (problemType == PROBLEMTYPE_PLANAR)
+        return "planar";
+    else
+        return "axisymmetric";
+}
+
 inline QString problemTypeString(ProblemType problemType)
 {
     if (problemType == PROBLEMTYPE_PLANAR)
-        return QObject::tr("planar");
+        return QObject::tr("Planar");
     else
-        return QObject::tr("axisymmetric");
+        return QObject::tr("Axisymmetric");
 }
 
 enum PhysicFieldVariableComp
@@ -161,6 +169,27 @@ inline QString physicFieldStringKey(PhysicField physicField)
         return "heat transfer";
     case PHYSICFIELD_ELASTICITY:
         return "elasticity";
+    default:
+        cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldStringKey(PhysicField physicField)" << endl;
+        throw;
+        break;
+    }
+}
+
+inline QString physicFieldString(PhysicField physicField)
+{
+    switch (physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        return QObject::tr("Electrostatic");
+    case PHYSICFIELD_MAGNETOSTATIC:
+        return QObject::tr("Magnetostatic");
+    case PHYSICFIELD_CURRENT:
+        return QObject::tr("Current field");
+    case PHYSICFIELD_HEAT_TRANSFER:
+        return QObject::tr("Heat transfer");
+    case PHYSICFIELD_ELASTICITY:
+        return QObject::tr("Elasticity");
     default:
         cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
         throw;

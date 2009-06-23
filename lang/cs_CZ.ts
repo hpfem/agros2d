@@ -1179,263 +1179,290 @@
         <translation>Tolerence adaptivity:</translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="91"/>
         <source>planar</source>
-        <translation>kartézský</translation>
+        <translation type="obsolete">kartézský</translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="92"/>
         <source>axisymmetric</source>
-        <translation>osově symetrický</translation>
+        <translation type="obsolete">osově symetrický</translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="97"/>
         <source>electrostatic</source>
-        <translation>elektrostatika</translation>
+        <translation type="obsolete">elektrostatika</translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="98"/>
         <source>magnetostatic</source>
-        <translation>magnetostatika</translation>
+        <translation type="obsolete">magnetostatika</translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="99"/>
         <source>current field</source>
-        <translation>proudové pole</translation>
+        <translation type="obsolete">proudové pole</translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="100"/>
         <source>heat transfer</source>
-        <translation>teplotní pole</translation>
+        <translation type="obsolete">teplotní pole</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/util.h" line="218"/>
-        <location filename="../src/util.h" line="248"/>
+        <location filename="../src/util.h" line="247"/>
+        <location filename="../src/util.h" line="277"/>
         <source>Scalar potential</source>
         <translation>Skalární potenciál</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="221"/>
+        <location filename="../src/util.h" line="250"/>
         <source>Electric field</source>
         <translation>Intenzita elektrického pole</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="224"/>
+        <location filename="../src/util.h" line="253"/>
         <source>Displacement</source>
         <translation>Elektrická indukce</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="227"/>
-        <location filename="../src/util.h" line="242"/>
+        <location filename="../src/util.h" line="256"/>
+        <location filename="../src/util.h" line="271"/>
         <source>Energy density</source>
         <translation>Hustota energie</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="230"/>
+        <location filename="../src/util.h" line="259"/>
         <source>Permittivity</source>
         <translation>Permitivita</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="233"/>
-        <location filename="../src/util.h" line="369"/>
+        <location filename="../src/util.h" line="262"/>
+        <location filename="../src/util.h" line="398"/>
         <source>Vector potential</source>
         <translation>Vektorový magnetický potenciál</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="236"/>
+        <location filename="../src/util.h" line="265"/>
         <source>Flux density</source>
         <translation>Magnetická indukce</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="239"/>
+        <location filename="../src/util.h" line="268"/>
         <source>Magnetic field</source>
         <translation>Intenzita mag. pole</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="245"/>
+        <location filename="../src/util.h" line="274"/>
         <source>Permeability</source>
         <translation>Permeabilita</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="263"/>
-        <location filename="../src/util.h" line="375"/>
+        <location filename="../src/util.h" line="292"/>
+        <location filename="../src/util.h" line="404"/>
         <source>Temperature</source>
         <translation>Teplota</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="266"/>
+        <location filename="../src/util.h" line="295"/>
         <source>Temperature gradient</source>
         <translation>Gradient teploty</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="269"/>
-        <location filename="../src/util.h" line="378"/>
+        <location filename="../src/util.h" line="298"/>
+        <location filename="../src/util.h" line="407"/>
         <source>Heat flux</source>
         <translation>Tepelný tok</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="260"/>
-        <location filename="../src/util.h" line="272"/>
+        <location filename="../src/util.h" line="289"/>
+        <location filename="../src/util.h" line="301"/>
         <source>Conductivity</source>
         <translation>Teplotní vodivost</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="113"/>
         <source>planar</source>
-        <translation>kartézský</translation>
+        <translation type="obsolete">kartézský</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="115"/>
         <source>axisymmetric</source>
-        <translation>osově symetrický</translation>
+        <translation type="obsolete">osově symetrický</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="131"/>
+        <location filename="../src/util.h" line="121"/>
+        <source>Planar</source>
+        <translation>Kartézský</translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="123"/>
+        <source>Axisymmetric</source>
+        <translation>Osově symetrický</translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="139"/>
         <source>Scalar</source>
         <translation>Skalár</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="133"/>
+        <location filename="../src/util.h" line="141"/>
         <source>Magnitude</source>
         <translation>Modul</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="135"/>
+        <location filename="../src/util.h" line="143"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="137"/>
+        <location filename="../src/util.h" line="145"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="251"/>
+        <location filename="../src/util.h" line="184"/>
+        <source>Electrostatic</source>
+        <translation>Elektrostatika</translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="186"/>
+        <source>Magnetostatic</source>
+        <translation>Magnetostatika</translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="188"/>
+        <source>Current field</source>
+        <translation>El. proudové pole</translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="190"/>
+        <source>Heat transfer</source>
+        <translation>Teplotní pole</translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="192"/>
+        <source>Elasticity</source>
+        <translation>Elasticita</translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="280"/>
         <source>Electic field</source>
         <translation>Elektrické pole</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="254"/>
+        <location filename="../src/util.h" line="283"/>
         <source>Current density</source>
         <translation>Proudová hustota</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="257"/>
+        <location filename="../src/util.h" line="286"/>
         <source>Power losses</source>
         <translation>Měrné ztráty</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="275"/>
+        <location filename="../src/util.h" line="304"/>
         <source>Von Mises stress</source>
         <translation>Von Misses napětí</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="289"/>
-        <location filename="../src/util.h" line="319"/>
+        <location filename="../src/util.h" line="318"/>
+        <location filename="../src/util.h" line="348"/>
         <source>V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="292"/>
+        <location filename="../src/util.h" line="321"/>
         <source>V/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="295"/>
+        <location filename="../src/util.h" line="324"/>
         <source>C/m2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="298"/>
-        <location filename="../src/util.h" line="313"/>
+        <location filename="../src/util.h" line="327"/>
+        <location filename="../src/util.h" line="342"/>
         <source>J/m3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="301"/>
+        <location filename="../src/util.h" line="330"/>
         <source>F/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="304"/>
+        <location filename="../src/util.h" line="333"/>
         <source>Wb/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="307"/>
+        <location filename="../src/util.h" line="336"/>
         <source>T</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="310"/>
+        <location filename="../src/util.h" line="339"/>
         <source>A/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="316"/>
+        <location filename="../src/util.h" line="345"/>
         <source>H/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="322"/>
+        <location filename="../src/util.h" line="351"/>
         <source>deg.</source>
         <translation>st.</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="325"/>
+        <location filename="../src/util.h" line="354"/>
         <source>K/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="328"/>
+        <location filename="../src/util.h" line="357"/>
         <source>W/m2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="331"/>
+        <location filename="../src/util.h" line="360"/>
         <source>W/m.K</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="334"/>
+        <location filename="../src/util.h" line="363"/>
         <source>Pa</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="363"/>
+        <location filename="../src/util.h" line="392"/>
         <source>Fixed voltage</source>
         <translation>Potenciál</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="366"/>
+        <location filename="../src/util.h" line="395"/>
         <source>Surface charge density</source>
         <translation>Povrchová hustota náboje</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="372"/>
+        <location filename="../src/util.h" line="401"/>
         <source>Surface current density</source>
         <translation>Povrchová proudová hustota</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="381"/>
+        <location filename="../src/util.h" line="410"/>
         <source>Potential</source>
         <translation>Potenciál</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="384"/>
+        <location filename="../src/util.h" line="413"/>
         <source>Inward current flow</source>
         <translation>Vstupní proudová hustota</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="387"/>
+        <location filename="../src/util.h" line="416"/>
         <source>Fixed</source>
         <translation>Upevněno</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="390"/>
+        <location filename="../src/util.h" line="419"/>
         <source>Free</source>
         <translation>Volné</translation>
     </message>
@@ -1731,7 +1758,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="48"/>
-        <location filename="../src/sceneview.cpp" line="900"/>
+        <location filename="../src/sceneview.cpp" line="911"/>
         <source>Operate on nodes</source>
         <translation>Práce s uzly</translation>
     </message>
@@ -1742,7 +1769,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="52"/>
-        <location filename="../src/sceneview.cpp" line="903"/>
+        <location filename="../src/sceneview.cpp" line="914"/>
         <source>Operate on edges</source>
         <translation>Práce s hranami</translation>
     </message>
@@ -1766,7 +1793,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="60"/>
-        <location filename="../src/sceneview.cpp" line="912"/>
+        <location filename="../src/sceneview.cpp" line="923"/>
         <source>Postprocessor</source>
         <translation>Postprocesor</translation>
     </message>
@@ -1828,7 +1855,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="56"/>
-        <location filename="../src/sceneview.cpp" line="906"/>
+        <location filename="../src/sceneview.cpp" line="917"/>
         <source>Operate on labels</source>
         <translation>Práce s popisky</translation>
     </message>

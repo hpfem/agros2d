@@ -894,8 +894,8 @@ void Scene::readFromFile(const QString &fileName)
     // name
     m_projectInfo.name = eleProject.toElement().attribute("name");
     // problem type                                                                                                                                                                                                                             `
-    if (eleProject.toElement().attribute("problemtype") == "planar") m_projectInfo.problemType = PROBLEMTYPE_PLANAR;
-    if (eleProject.toElement().attribute("problemtype") == "axisymmetric") m_projectInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
+    if (eleProject.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_PLANAR)) m_projectInfo.problemType = PROBLEMTYPE_PLANAR;
+    if (eleProject.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_AXISYMMETRIC)) m_projectInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
     // physic field
     m_projectInfo.physicField = physicFieldFromStringKey(eleProject.toElement().attribute("type"));
     // number of refinements
