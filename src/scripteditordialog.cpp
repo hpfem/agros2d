@@ -127,32 +127,40 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
     case PHYSICFIELD_ELECTROSTATIC:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL)) type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE)) type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
-        m_scene->addEdgeMarker(new SceneEdgeElectrostaticMarker(context->argument(0).toString(), type, context->argument(2).toNumber()));
+        m_scene->addEdgeMarker(new SceneEdgeElectrostaticMarker(context->argument(0).toString(),
+                                                                type,
+                                                                Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL)) type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT)) type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
-        m_scene->addEdgeMarker(new SceneEdgeMagnetostaticMarker(context->argument(0).toString(), type, context->argument(2).toNumber()));
+        m_scene->addEdgeMarker(new SceneEdgeMagnetostaticMarker(context->argument(0).toString(),
+                                                                type,
+                                                                Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
         {
             type = PHYSICFIELDBC_HEAT_TEMPERATURE;
-            m_scene->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(), type, context->argument(2).toNumber()));
+            m_scene->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(),
+                                                           type,
+                                                           Value(context->argument(2).toString())));
         }
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
         {
             type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
             m_scene->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(), type,
-                                                           context->argument(2).toNumber(),
-                                                           context->argument(3).toNumber(),
-                                                           context->argument(4).toNumber()));
+                                                           Value(context->argument(2).toString()),
+                                                           Value(context->argument(3).toString()),
+                                                           Value(context->argument(4).toString())));
         }
         break;
     case PHYSICFIELD_CURRENT:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_POTENTIAL)) type = PHYSICFIELDBC_CURRENT_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)) type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
-        m_scene->addEdgeMarker(new SceneEdgeCurrentMarker(context->argument(0).toString(), type, context->argument(2).toNumber()));
+        m_scene->addEdgeMarker(new SceneEdgeCurrentMarker(context->argument(0).toString(),
+                                                          type,
+                                                          Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_ELASTICITY:
         PhysicFieldBC typeX, typeY;
@@ -181,22 +189,22 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         m_scene->addLabelMarker(new SceneLabelElectrostaticMarker(context->argument(0).toString(),
-                                                                  context->argument(1).toNumber(),
-                                                                  context->argument(2).toNumber()));
+                                                                  Value(context->argument(1).toString()),
+                                                                  Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         m_scene->addLabelMarker(new SceneLabelMagnetostaticMarker(context->argument(0).toString(),
-                                                                  context->argument(1).toNumber(),
-                                                                  context->argument(2).toNumber()));
+                                                                  Value(context->argument(1).toString()),
+                                                                  Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         m_scene->addLabelMarker(new SceneLabelHeatMarker(context->argument(0).toString(),
-                                                         context->argument(1).toNumber(),
-                                                         context->argument(2).toNumber()));
+                                                         Value(context->argument(1).toString()),
+                                                         Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_CURRENT:
         m_scene->addLabelMarker(new SceneLabelCurrentMarker(context->argument(0).toString(),
-                                                            context->argument(1).toNumber()));
+                                                            Value(context->argument(1).toString())));
         break;
     case PHYSICFIELD_ELASTICITY:
         m_scene->addLabelMarker(new SceneLabelElasticityMarker(context->argument(0).toString(),
@@ -459,7 +467,7 @@ void ScriptEditorDialog::createControls()
     connect(actCreateFromModel, SIGNAL(triggered()), this, SLOT(doCreateFromModel()));
 
     actHelp = new QAction(icon("help-browser"), tr("Help"), this);
-    actHelp->setShortcut(QKeySequence(tr("F1")));
+    actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 
     tlbBar->addAction(actFileNew);
@@ -474,9 +482,6 @@ void ScriptEditorDialog::createControls()
     splitter = new QSplitter(this);
 
     txtEditor = new ScriptEditor(this);
-
-    // highlighter
-    QScriptSyntaxHighlighter *highlighter = new QScriptSyntaxHighlighter(txtEditor->document());
 
     txtOutput = new QPlainTextEdit(this);
     txtOutput->setFont(QFont("Monospaced", 10));
@@ -643,16 +648,91 @@ void ScriptEditorDialog::doHelp()
     // scriptEditorHelpDialog->showDialog();
 }
 
+void eval(const QString &text)
+{
+}
+
 void ScriptEditorDialog::doRun()
 {
     txtOutput->clear();
 
-    m_scene->blockSignals(true);
+    // check syntax
+    QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(txtEditor->toPlainText());
 
-    QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), m_fileName);
+    if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
+    {
+        m_scene->blockSignals(true);
+        // startup script
+        m_engine->evaluate(m_scene->projectInfo().scriptStartup);
+        // result
+        QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), m_fileName);
+        m_scene->blockSignals(false);
+        m_scene->refresh();
+    }
+    else
+    {
+        txtOutput->appendPlainText(tr("Error: %1 (line %2, column %3)").arg(syntaxResult.errorMessage()).arg(syntaxResult.errorLineNumber()).arg(syntaxResult.errorColumnNumber()));
+        // txtOutput->setExtraSelections(
+    }
+}
 
-    m_scene->blockSignals(false);
-    m_scene->refresh();
+// ******************************************************************************************************
+
+ScriptStartupDialog::ScriptStartupDialog(ProjectInfo &projectInfo, QWidget *parent) : QDialog(parent)
+{
+    m_projectInfo = &projectInfo;
+
+    setWindowTitle(tr("Startup script"));
+    setMinimumSize(400, 300);
+
+    createControls();
+}
+
+ScriptStartupDialog::~ScriptStartupDialog()
+{
+    delete txtEditor;
+}
+
+int ScriptStartupDialog::showDialog()
+{
+    return exec();
+}
+
+void ScriptStartupDialog::createControls()
+{
+    txtEditor = new ScriptEditor(this);
+    txtEditor->setPlainText(m_scene->projectInfo().scriptStartup);
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(txtEditor);
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+}
+
+void ScriptStartupDialog::doAccept()
+{
+    QScriptEngine engine;
+
+    if (engine.canEvaluate(txtEditor->toPlainText()))
+    {
+        m_scene->projectInfo().scriptStartup = txtEditor->toPlainText();
+        accept();
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Error"), tr("Script cannot be evaluated."));
+    }
+}
+
+void ScriptStartupDialog::doReject()
+{
+    reject();
 }
 
 // ******************************************************************************************************
@@ -664,6 +744,9 @@ ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
     setFont(QFont("Monospace", 10));
     setTabStopWidth(40);
     setLineWrapMode(QPlainTextEdit::NoWrap);
+
+    // highlighter
+    new QScriptSyntaxHighlighter(document());
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(doUpdateLineNumberAreaWidth(int)));
     connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(doUpdateLineNumberArea(const QRect &, int)));
@@ -740,7 +823,7 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
     int bottom = top + (int) blockBoundingRect(block).height();
 
-   while (block.isValid() && top <= event->rect().bottom()) {
+    while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
             painter.setPen(Qt::black);

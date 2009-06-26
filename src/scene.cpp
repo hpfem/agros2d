@@ -508,16 +508,16 @@ void Scene::doNewEdgeMarker()
     switch (m_projectInfo.physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        marker = new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, 0);
+        marker = new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, Value("0"));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        marker = new SceneEdgeMagnetostaticMarker("new boundary", PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, 0);
+        marker = new SceneEdgeMagnetostaticMarker("new boundary", PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, Value("0"));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        marker = new SceneEdgeHeatMarker("new boundary", PHYSICFIELDBC_HEAT_TEMPERATURE, 0);
+        marker = new SceneEdgeHeatMarker("new boundary", PHYSICFIELDBC_HEAT_TEMPERATURE, Value("0"));
         break;
     case PHYSICFIELD_CURRENT:
-        marker = new SceneEdgeCurrentMarker("new boundary", PHYSICFIELDBC_CURRENT_POTENTIAL, 0);
+        marker = new SceneEdgeCurrentMarker("new boundary", PHYSICFIELDBC_CURRENT_POTENTIAL, Value("0"));
         break;
     case PHYSICFIELD_ELASTICITY:
         marker = new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, 0, 0);
@@ -542,16 +542,16 @@ void Scene::doNewLabelMarker()
     switch (m_projectInfo.physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        marker = new SceneLabelElectrostaticMarker("new material", 0, 1);
+        marker = new SceneLabelElectrostaticMarker("new material",  Value("0"), Value("1"));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        marker = new SceneLabelMagnetostaticMarker("new material", 0, 1);
+        marker = new SceneLabelMagnetostaticMarker("new material", Value("0"), Value("1"));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        marker = new SceneLabelHeatMarker("new material", 0, 385);
+        marker = new SceneLabelHeatMarker("new material", Value("0"), Value("385"));
         break;
     case PHYSICFIELD_CURRENT:
-        marker = new SceneLabelCurrentMarker("new material", 57e6);
+        marker = new SceneLabelCurrentMarker("new material", Value("57e6"));
         break;
     case PHYSICFIELD_ELASTICITY:
         marker = new SceneLabelElasticityMarker("new material", 2e11, 0.33);
@@ -889,7 +889,6 @@ void Scene::readFromFile(const QString &fileName)
     // projects
     QDomNode eleProjects = eleDoc.elementsByTagName("projects").at(0);
     // first project
-    // TODO: zobecnit
     QDomNode eleProject = eleProjects.toElement().elementsByTagName("project").at(0);
     // name
     m_projectInfo.name = eleProject.toElement().attribute("name");
@@ -905,6 +904,10 @@ void Scene::readFromFile(const QString &fileName)
     // adaptivity
     m_projectInfo.adaptivitySteps = eleProject.toElement().attribute("adaptivitysteps").toInt();
     m_projectInfo.adaptivityTolerance = eleProject.toElement().attribute("adaptivitytolerance").toDouble();
+
+    // startup script
+    QDomNode eleSriptStartup = eleProject.toElement().elementsByTagName("scriptstartup").at(0);
+    m_projectInfo.scriptStartup = eleSriptStartup.toElement().text();
 
     // markers ***************************************************************************************************************
 
@@ -933,14 +936,18 @@ void Scene::readFromFile(const QString &fileName)
                 if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
                 if (element.toElement().attribute("type") == "potential") type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
                 if (element.toElement().attribute("type") == "surface_charge_density") type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
-                addEdgeMarker(new SceneEdgeElectrostaticMarker(name, type, element.toElement().attribute("value").toDouble()));
+                addEdgeMarker(new SceneEdgeElectrostaticMarker(name,
+                                                               type,
+                                                               Value(element.toElement().attribute("value"))));
                 break;
             case PHYSICFIELD_MAGNETOSTATIC:
                 // magnetostatic markers
                 if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
                 if (element.toElement().attribute("type") == "vector_potential") type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
                 if (element.toElement().attribute("type") == "surface_current_density") type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
-                addEdgeMarker(new SceneEdgeMagnetostaticMarker(name, type, element.toElement().attribute("value").toDouble()));
+                addEdgeMarker(new SceneEdgeMagnetostaticMarker(name,
+                                                               type,
+                                                               Value(element.toElement().attribute("value"))));
                 break;
             case PHYSICFIELD_HEAT_TRANSFER:
                 // heat markers
@@ -948,15 +955,17 @@ void Scene::readFromFile(const QString &fileName)
                 if (element.toElement().attribute("type") == "temperature")
                 {
                     type = PHYSICFIELDBC_HEAT_TEMPERATURE;
-                    addEdgeMarker(new SceneEdgeHeatMarker(name, type, element.toElement().attribute("temperature").toDouble()));
+                    addEdgeMarker(new SceneEdgeHeatMarker(name,
+                                                          type,
+                                                          Value(element.toElement().attribute("temperature"))));
                 }
                 if (element.toElement().attribute("type") == "heat_flux")
                 {
                     type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
                     addEdgeMarker(new SceneEdgeHeatMarker(name, type,
-                                                          element.toElement().attribute("heat_flux").toDouble(),
-                                                          element.toElement().attribute("h").toDouble(),
-                                                          element.toElement().attribute("external_temperature").toDouble()));
+                                                          Value(element.toElement().attribute("heat_flux")),
+                                                          Value(element.toElement().attribute("h")),
+                                                          Value(element.toElement().attribute("external_temperature"))));
                 }
                 break;
             case PHYSICFIELD_CURRENT:
@@ -964,7 +973,9 @@ void Scene::readFromFile(const QString &fileName)
                 if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
                 if (element.toElement().attribute("type") == "potential") type = PHYSICFIELDBC_CURRENT_POTENTIAL;
                 if (element.toElement().attribute("type") == "inward_current_flow") type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
-                addEdgeMarker(new SceneEdgeCurrentMarker(name, type, element.toElement().attribute("value").toDouble()));
+                addEdgeMarker(new SceneEdgeCurrentMarker(name,
+                                                         type,
+                                                         Value(element.toElement().attribute("value"))));
                 break;
             case PHYSICFIELD_ELASTICITY:
                 {
@@ -1012,25 +1023,25 @@ void Scene::readFromFile(const QString &fileName)
             case PHYSICFIELD_ELECTROSTATIC:
                 // electrostatic markers
                 addLabelMarker(new SceneLabelElectrostaticMarker(name,
-                                                                 element.toElement().attribute("charge_density").toDouble(),
-                                                                 element.toElement().attribute("permittivity").toDouble()));
+                                                                 Value(element.toElement().attribute("charge_density")),
+                                                                 Value(element.toElement().attribute("permittivity"))));
                 break;
             case PHYSICFIELD_MAGNETOSTATIC:
                 // magnetostatic markers
                 addLabelMarker(new SceneLabelMagnetostaticMarker(name,
-                                                                 element.toElement().attribute("current_density").toDouble(),
-                                                                 element.toElement().attribute("permeability").toDouble()));
+                                                                 Value(element.toElement().attribute("current_density")),
+                                                                 Value(element.toElement().attribute("permeability"))));
                 break;
             case PHYSICFIELD_HEAT_TRANSFER:
                 // heat markers
                 addLabelMarker(new SceneLabelHeatMarker(name,
-                                                        element.toElement().attribute("volume_heat").toDouble(),
-                                                        element.toElement().attribute("thermal_conductivity").toDouble()));
+                                                        Value(element.toElement().attribute("volume_heat")),
+                                                        Value(element.toElement().attribute("thermal_conductivity"))));
                 break;
             case PHYSICFIELD_CURRENT:
                 // current markers
                 addLabelMarker(new SceneLabelCurrentMarker(name,
-                                                           element.toElement().attribute("conductivity").toDouble()));
+                                                           Value(element.toElement().attribute("conductivity"))));
                 break;
             case PHYSICFIELD_ELASTICITY:
                 // heat markers
@@ -1125,25 +1136,29 @@ void Scene::writeToFile(const QString &fileName) {
     QDomNode eleProjects = doc.createElement("projects");
     eleDoc.appendChild(eleProjects);
     // first project
-    // TODO: zobecnit
-    QDomNode eleProject = doc.createElement("project");
+    QDomElement eleProject = doc.createElement("project");
     eleProjects.appendChild(eleProject);
     // id
-    eleProject.toElement().setAttribute("id", 0);
+    eleProject.setAttribute("id", 0);
     // name
-    eleProject.toElement().setAttribute("name", m_projectInfo.name);
+    eleProject.setAttribute("name", m_projectInfo.name);
     // problem type                                                                                                                                                                                                                             `
     if (m_projectInfo.problemType == PROBLEMTYPE_PLANAR) eleProject.toElement().setAttribute("problemtype", "planar");
     if (m_projectInfo.problemType == PROBLEMTYPE_AXISYMMETRIC) eleProject.toElement().setAttribute("problemtype", "axisymmetric");
     // name
-    eleProject.toElement().setAttribute("type", physicFieldStringKey(m_projectInfo.physicField));
+    eleProject.setAttribute("type", physicFieldStringKey(m_projectInfo.physicField));
     // number of refinements
-    eleProject.toElement().setAttribute("numberofrefinements", m_projectInfo.numberOfRefinements);
+    eleProject.setAttribute("numberofrefinements", m_projectInfo.numberOfRefinements);
     // polynomial order
-    eleProject.toElement().setAttribute("polynomialorder", m_projectInfo.polynomialOrder);
+    eleProject.setAttribute("polynomialorder", m_projectInfo.polynomialOrder);
     // adaptivity
-    eleProject.toElement().setAttribute("adaptivitysteps", m_projectInfo.adaptivitySteps);
-    eleProject.toElement().setAttribute("adaptivitytolerance", m_projectInfo.adaptivityTolerance);
+    eleProject.setAttribute("adaptivitysteps", m_projectInfo.adaptivitySteps);
+    eleProject.setAttribute("adaptivitytolerance", m_projectInfo.adaptivityTolerance);
+
+    // startup script
+    QDomElement eleSriptStartup = doc.createElement("scriptstartup");
+    eleSriptStartup.appendChild(doc.createTextNode(m_projectInfo.scriptStartup));
+    eleProject.appendChild(eleSriptStartup);
 
     // geometry
     QDomNode eleGeometry = doc.createElement("geometry");
@@ -1156,11 +1171,11 @@ void Scene::writeToFile(const QString &fileName) {
     eleGeometry.appendChild(eleNodes);
     for (int i = 0; i<nodes.length(); i++)
     {
-        QDomNode eleNode = doc.createElement("node");
+        QDomElement eleNode = doc.createElement("node");
 
-        eleNode.toElement().setAttribute("id", i);
-        eleNode.toElement().setAttribute("x", nodes[i]->point.x);
-        eleNode.toElement().setAttribute("y", nodes[i]->point.y);
+        eleNode.setAttribute("id", i);
+        eleNode.setAttribute("x", nodes[i]->point.x);
+        eleNode.setAttribute("y", nodes[i]->point.y);
 
         eleNodes.appendChild(eleNode);
     }
@@ -1170,13 +1185,13 @@ void Scene::writeToFile(const QString &fileName) {
     eleGeometry.appendChild(eleEdges);
     for (int i = 0; i<edges.length(); i++)
     {
-        QDomNode eleEdge = doc.createElement("edge");
+        QDomElement eleEdge = doc.createElement("edge");
 
-        eleEdge.toElement().setAttribute("id", i);
-        eleEdge.toElement().setAttribute("start", nodes.indexOf(edges[i]->nodeStart));
-        eleEdge.toElement().setAttribute("end", nodes.indexOf(edges[i]->nodeEnd));
-        eleEdge.toElement().setAttribute("angle", edges[i]->angle);
-        eleEdge.toElement().setAttribute("marker", edgeMarkers.indexOf(edges[i]->marker));
+        eleEdge.setAttribute("id", i);
+        eleEdge.setAttribute("start", nodes.indexOf(edges[i]->nodeStart));
+        eleEdge.setAttribute("end", nodes.indexOf(edges[i]->nodeEnd));
+        eleEdge.setAttribute("angle", edges[i]->angle);
+        eleEdge.setAttribute("marker", edgeMarkers.indexOf(edges[i]->marker));
 
         eleEdges.appendChild(eleEdge);
     }
@@ -1186,13 +1201,13 @@ void Scene::writeToFile(const QString &fileName) {
     eleGeometry.appendChild(eleLabels);
     for (int i = 0; i<labels.length(); i++)
     {
-        QDomNode eleLabel = doc.createElement("label");
+        QDomElement eleLabel = doc.createElement("label");
 
-        eleLabel.toElement().setAttribute("id", i);
-        eleLabel.toElement().setAttribute("x", labels[i]->point.x);
-        eleLabel.toElement().setAttribute("y", labels[i]->point.y);
-        eleLabel.toElement().setAttribute("area", labels[i]->area);
-        eleLabel.toElement().setAttribute("marker", labelMarkers.indexOf(labels[i]->marker));
+        eleLabel.setAttribute("id", i);
+        eleLabel.setAttribute("x", labels[i]->point.x);
+        eleLabel.setAttribute("y", labels[i]->point.y);
+        eleLabel.setAttribute("area", labels[i]->area);
+        eleLabel.setAttribute("marker", labelMarkers.indexOf(labels[i]->marker));
 
         eleLabels.appendChild(eleLabel);
     }
@@ -1204,25 +1219,25 @@ void Scene::writeToFile(const QString &fileName) {
     eleProject.appendChild(eleEdgeMarkers);
     for (int i = 1; i<edgeMarkers.length(); i++)
     {
-        QDomNode eleEdgeMarker = doc.createElement("edge");
+        QDomElement eleEdgeMarker = doc.createElement("edge");
 
-        eleEdgeMarker.toElement().setAttribute("id", i);
-        eleEdgeMarker.toElement().setAttribute("name", edgeMarkers[i]->name);
-        if (edgeMarkers[i]->type == PHYSICFIELDBC_NONE) eleEdgeMarker.toElement().setAttribute("type", "none");
+        eleEdgeMarker.setAttribute("id", i);
+        eleEdgeMarker.setAttribute("name", edgeMarkers[i]->name);
+        if (edgeMarkers[i]->type == PHYSICFIELDBC_NONE) eleEdgeMarker.setAttribute("type", "none");
 
         if (i > 0)
         {
             // electrostatic
             if (SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(edgeMarkers[i]))
             {
-                eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeElectrostaticMarker->type));
-                eleEdgeMarker.toElement().setAttribute("value", edgeElectrostaticMarker->value);
+                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeElectrostaticMarker->type));
+                eleEdgeMarker.setAttribute("value", edgeElectrostaticMarker->value.text);
             }
             // magnetostatic
             if (SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(edgeMarkers[i]))
             {
-                eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeMagnetostaticMarker->type));
-                eleEdgeMarker.toElement().setAttribute("value", edgeMagnetostaticMarker->value);
+                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeMagnetostaticMarker->type));
+                eleEdgeMarker.setAttribute("value", edgeMagnetostaticMarker->value.text);
             }
             // heat transfer
             if (SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(edgeMarkers[i]))
@@ -1230,28 +1245,28 @@ void Scene::writeToFile(const QString &fileName) {
                 eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeHeatMarker->type));
                 if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_TEMPERATURE)
                 {
-                    eleEdgeMarker.toElement().setAttribute("temperature", edgeHeatMarker->temperature);
+                    eleEdgeMarker.setAttribute("temperature", edgeHeatMarker->temperature.text);
                 }
                 if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
                 {
-                    eleEdgeMarker.toElement().setAttribute("heat_flux", edgeHeatMarker->heatFlux);
-                    eleEdgeMarker.toElement().setAttribute("h", edgeHeatMarker->h);
-                    eleEdgeMarker.toElement().setAttribute("external_temperature", edgeHeatMarker->externalTemperature);
+                    eleEdgeMarker.setAttribute("heat_flux", edgeHeatMarker->heatFlux.text);
+                    eleEdgeMarker.setAttribute("h", edgeHeatMarker->h.text);
+                    eleEdgeMarker.setAttribute("external_temperature", edgeHeatMarker->externalTemperature.text);
                 }
             }
             // current
             if (SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(edgeMarkers[i]))
             {
-                eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeCurrentMarker->type));
-                eleEdgeMarker.toElement().setAttribute("value", edgeCurrentMarker->value);
+                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeCurrentMarker->type));
+                eleEdgeMarker.setAttribute("value", edgeCurrentMarker->value.text);
             }
             // elasticity
             if (SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(edgeMarkers[i]))
             {
-                eleEdgeMarker.toElement().setAttribute("typex", physicFieldBCStringKey(edgeElasticityMarker->typeX));
-                eleEdgeMarker.toElement().setAttribute("typey", physicFieldBCStringKey(edgeElasticityMarker->typeY));
-                eleEdgeMarker.toElement().setAttribute("forcex", edgeElasticityMarker->forceX);
-                eleEdgeMarker.toElement().setAttribute("forcey", edgeElasticityMarker->forceY);
+                eleEdgeMarker.setAttribute("typex", physicFieldBCStringKey(edgeElasticityMarker->typeX));
+                eleEdgeMarker.setAttribute("typey", physicFieldBCStringKey(edgeElasticityMarker->typeY));
+                eleEdgeMarker.setAttribute("forcex", edgeElasticityMarker->forceX);
+                eleEdgeMarker.setAttribute("forcey", edgeElasticityMarker->forceY);
             }
         }
 
@@ -1263,41 +1278,41 @@ void Scene::writeToFile(const QString &fileName) {
     eleProject.appendChild(eleLabelMarkers);
     for (int i = 1; i<labelMarkers.length(); i++)
     {
-        QDomNode eleLabelMarker = doc.createElement("label");
+        QDomElement eleLabelMarker = doc.createElement("label");
 
-        eleLabelMarker.toElement().setAttribute("id", i);
-        eleLabelMarker.toElement().setAttribute("name", labelMarkers[i]->name);
+        eleLabelMarker.setAttribute("id", i);
+        eleLabelMarker.setAttribute("name", labelMarkers[i]->name);
 
         if (i > 0)
         {
             // electrostatic
             if (SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarkers[i]))
             {
-                eleLabelMarker.toElement().setAttribute("charge_density", labelElectrostaticMarker->charge_density);
-                eleLabelMarker.toElement().setAttribute("permittivity", labelElectrostaticMarker->permittivity);
+                eleLabelMarker.setAttribute("charge_density", labelElectrostaticMarker->charge_density.text);
+                eleLabelMarker.setAttribute("permittivity", labelElectrostaticMarker->permittivity.text);
             }
             // magnetostatic
             if (SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarkers[i]))
             {
-                eleLabelMarker.toElement().setAttribute("current_density", labelMagnetostaticMarker->current_density);
-                eleLabelMarker.toElement().setAttribute("permeability", labelMagnetostaticMarker->permeability);
+                eleLabelMarker.setAttribute("current_density", labelMagnetostaticMarker->current_density.text);
+                eleLabelMarker.toElement().setAttribute("permeability", labelMagnetostaticMarker->permeability.text);
             }
             // heat
             if (SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(labelMarkers[i]))
             {
-                eleLabelMarker.toElement().setAttribute("thermal_conductivity", labelHeatMarker->thermal_conductivity);
-                eleLabelMarker.toElement().setAttribute("volume_heat", labelHeatMarker->volume_heat);
+                eleLabelMarker.setAttribute("thermal_conductivity", labelHeatMarker->thermal_conductivity.text);
+                eleLabelMarker.setAttribute("volume_heat", labelHeatMarker->volume_heat.text);
             }
             // current
             if (SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarkers[i]))
             {
-                eleLabelMarker.toElement().setAttribute("conductivity", labelCurrentMarker->conductivity);
+                eleLabelMarker.setAttribute("conductivity", labelCurrentMarker->conductivity.text);
             }
             // elasticity
             if (SceneLabelElasticityMarker *labelHeatMarker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarkers[i]))
             {
-                eleLabelMarker.toElement().setAttribute("young_modulus", labelHeatMarker->young_modulus);
-                eleLabelMarker.toElement().setAttribute("poisson_ratio", labelHeatMarker->poisson_ratio);
+                eleLabelMarker.setAttribute("young_modulus", labelHeatMarker->young_modulus);
+                eleLabelMarker.setAttribute("poisson_ratio", labelHeatMarker->poisson_ratio);
             }
         }
 

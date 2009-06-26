@@ -101,10 +101,15 @@ void MainWindow::createActions()
     actPaste->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
     connect(actPaste, SIGNAL(triggered()), this, SLOT(doPaste()));
     
+    actHelp = new QAction(icon("help-browser"), tr("&Help"), this);
+    actHelp->setStatusTip(tr("Show help"));
+    actHelp->setShortcut(QKeySequence::HelpContents);
+    connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
+
     actAbout = new QAction(icon("about"), tr("&About"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
-    
+
     actAboutQt = new QAction(tr("About &Qt"), this);
     actAboutQt->setStatusTip(tr("Show the Qt library's About box"));
     connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -128,8 +133,8 @@ void MainWindow::createActions()
     actSolve->setStatusTip(tr("Solve problem"));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
 
-    actChart = new QAction(icon("chart"), tr("Plot chart"), this);
-    actChart->setStatusTip(tr("Plot chart"));
+    actChart = new QAction(icon("chart"), tr("Chart"), this);
+    actChart->setStatusTip(tr("Chart"));
     connect(actChart, SIGNAL(triggered()), this, SLOT(doChart()));
 
     actDocumentOpenRecentGroup = new QActionGroup(this);
@@ -138,6 +143,10 @@ void MainWindow::createActions()
     actScriptEditor = new QAction(icon("script"), tr("Script editor"), this);
     actScriptEditor->setStatusTip(tr("Script editor"));
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
+
+    actScriptStartup = new QAction(icon("script"), tr("Startup script"), this);
+    actScriptStartup->setStatusTip(tr("Startup script"));
+    connect(actScriptStartup, SIGNAL(triggered()), this, SLOT(doScriptStartup()));
 }
 
 void MainWindow::createMenus()
@@ -181,9 +190,13 @@ void MainWindow::createMenus()
     mnuScene->addAction(m_scene->actNewEdgeMarker);
     mnuScene->addAction(m_scene->actNewLabelMarker);
     mnuScene->addSeparator();
+    mnuScene->addAction(actScriptStartup);
     mnuScene->addAction(m_scene->actProjectProperties);
 
     mnuTools = menuBar()->addMenu(tr("Tools"));
+    mnuTools->addAction(actCreateMesh);
+    mnuTools->addAction(actSolve);
+    mnuTools->addSeparator();
     mnuTools->addAction(actChart);
     mnuTools->addAction(actScriptEditor);
     mnuTools->addSeparator();
@@ -192,6 +205,8 @@ void MainWindow::createMenus()
     mnuTools->addAction(actOptions);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
+    mnuHelp->addAction(actHelp);
+    mnuHelp->addSeparator();
     mnuHelp->addAction(actAbout);
     mnuHelp->addAction(actAboutQt);
 }
@@ -224,7 +239,6 @@ void MainWindow::createToolBars()
     tlbScene->addAction(actSolve);
     tlbScene->addAction(sceneView->actSceneViewProperties);
     tlbScene->addAction(actChart);
-    tlbScene->addAction(actScriptEditor);
 
     tlbZoom = addToolBar(tr("Zoom"));
     tlbZoom->setObjectName("Zoom");
@@ -464,9 +478,19 @@ void MainWindow::doChart()
 }
 
 void MainWindow::doScriptEditor()
-{    
+{
     scriptEditorDialog->showDialog();
 }
+
+void MainWindow::doScriptStartup()
+{
+    ScriptStartupDialog *scriptStartup = new ScriptStartupDialog(m_scene->projectInfo(), this);
+    scriptStartup->showDialog();
+
+    delete scriptStartup;
+}
+
+
 
 void MainWindow::doCut()
 {
@@ -505,6 +529,11 @@ void MainWindow::doInvalidated()
 
     lblProblemType->setText(tr("Problem Type: ") + problemTypeString(m_scene->projectInfo().problemType));
     lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(m_scene->projectInfo().physicField));
+}
+
+void MainWindow::doHelp()
+{
+    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/index.html");
 }
 
 void MainWindow::doAbout()

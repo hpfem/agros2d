@@ -368,6 +368,7 @@ void SceneInfoView::doProperties() {
             if (objectEdgeMarker->showDialog(m_sceneView->scene(), this) == QDialog::Accepted)
             {
                 m_sceneView->doRefresh();
+                doInvalidated();
             }
         }
 
@@ -377,6 +378,7 @@ void SceneInfoView::doProperties() {
             if (objectLabelMarker->showDialog(m_sceneView->scene(), this) == QDialog::Accepted)
             {
                 m_sceneView->doRefresh();
+                doInvalidated();
             }
         }
     }

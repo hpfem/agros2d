@@ -19,7 +19,7 @@ SceneEdgeMarkerNone::SceneEdgeMarkerNone() : SceneEdgeMarker("none", PHYSICFIELD
 
 // *************************************************************************************************************************************
 
-SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, double value)
+SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, Value value)
         : SceneEdgeMarker(name, type)
 {
     this->value = value;
@@ -30,7 +30,7 @@ QString SceneEdgeElectrostaticMarker::script()
     return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
             arg(physicFieldBCStringKey(type)).
-            arg(value);
+            arg(value.text);
 }
 
 int SceneEdgeElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
@@ -41,7 +41,7 @@ int SceneEdgeElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneEdgeMagnetostaticMarker::SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, double value) : SceneEdgeMarker(name, type)
+SceneEdgeMagnetostaticMarker::SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, Value value) : SceneEdgeMarker(name, type)
 {
     this->value = value;
 }
@@ -51,7 +51,7 @@ QString SceneEdgeMagnetostaticMarker::script()
     return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
             arg(physicFieldBCStringKey(type)).
-            arg(value);
+            arg(value.text);
 }
 
 int SceneEdgeMagnetostaticMarker::showDialog(Scene *scene, QWidget *parent)
@@ -62,12 +62,12 @@ int SceneEdgeMagnetostaticMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, double temperature) : SceneEdgeMarker(name, type)
+SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value temperature) : SceneEdgeMarker(name, type)
 {
     this->temperature = temperature;
 }
 
-SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, double heatFlux, double h, double externalTemperature) : SceneEdgeMarker(name, type)
+SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature) : SceneEdgeMarker(name, type)
 {
     this->heatFlux = heatFlux;
     this->h = h;
@@ -81,16 +81,16 @@ QString SceneEdgeHeatMarker::script()
         return QString("addBoundary(\"%1\", \"%2\", %3);").
                 arg(name).
                 arg(physicFieldBCStringKey(type)).
-                arg(temperature);
+                arg(temperature.text);
     }
     if (type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
     {
         return QString("addBoundary(\"%1\", \"%2\", %3, %4, %5)").
                 arg(name).
                 arg(physicFieldBCStringKey(type)).
-                arg(heatFlux).
-                arg(h).
-                arg(externalTemperature);
+                arg(heatFlux.text).
+                arg(h.text).
+                arg(externalTemperature.text);
     }
 }
 
@@ -102,7 +102,7 @@ int SceneEdgeHeatMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, double value) : SceneEdgeMarker(name, type)
+SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, Value value) : SceneEdgeMarker(name, type)
 {
     this->value = value;
 }
@@ -112,7 +112,7 @@ QString SceneEdgeCurrentMarker::script()
     return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
             arg(physicFieldBCStringKey(type)).
-            arg(value);
+            arg(value.text);
 }
 
 int SceneEdgeCurrentMarker::showDialog(Scene *scene, QWidget *parent)
@@ -168,7 +168,7 @@ SceneLabelMarkerNone::SceneLabelMarkerNone() : SceneLabelMarker("none")
 
 // *************************************************************************************************************************************
 
-SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name, double charge_density, double permittivity)
+SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name, Value charge_density, Value permittivity)
         : SceneLabelMarker(name)
 {
     this->charge_density = charge_density;
@@ -179,8 +179,8 @@ QString SceneLabelElectrostaticMarker::script()
 {
     return QString("addMaterial(\"%1\", %2, %3);").
             arg(name).
-            arg(charge_density).
-            arg(permittivity);
+            arg(charge_density.text).
+            arg(permittivity.text);
 }
 
 int SceneLabelElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
@@ -191,7 +191,7 @@ int SceneLabelElectrostaticMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name, double current_density, double permeability)
+SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability)
         : SceneLabelMarker(name)
 {
     this->permeability = permeability;
@@ -202,8 +202,8 @@ QString SceneLabelMagnetostaticMarker::script()
 {
     return QString("addMaterial(\"%1\", %2, %3);").
             arg(name).
-            arg(current_density).
-            arg(permeability);
+            arg(current_density.text).
+            arg(permeability.text);
 }
 
 int SceneLabelMagnetostaticMarker::showDialog(Scene *scene, QWidget *parent)
@@ -214,7 +214,7 @@ int SceneLabelMagnetostaticMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, double conductivity) : SceneLabelMarker(name)
+SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, Value conductivity) : SceneLabelMarker(name)
 {
     this->conductivity = conductivity;
 }
@@ -223,7 +223,7 @@ QString SceneLabelCurrentMarker::script()
 {
     return QString("addMaterial(\"%1\", %3);").
             arg(name).
-            arg(conductivity);
+            arg(conductivity.text);
 }
 
 int SceneLabelCurrentMarker::showDialog(Scene *scene, QWidget *parent)
@@ -234,7 +234,7 @@ int SceneLabelCurrentMarker::showDialog(Scene *scene, QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, double volume_heat, double thermal_conductivity)
+SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity)
         : SceneLabelMarker(name)
 {
     this->thermal_conductivity = thermal_conductivity;
@@ -245,8 +245,8 @@ QString SceneLabelHeatMarker::script()
 {
     return QString("addMaterial(\"%1\", %2, %3);").
             arg(name).
-            arg(volume_heat).
-            arg(thermal_conductivity);
+            arg(volume_heat.text).
+            arg(thermal_conductivity.text);
 }
 
 int SceneLabelHeatMarker::showDialog(Scene *scene, QWidget *parent)
@@ -367,7 +367,7 @@ QLayout* DSceneEdgeElectrostaticMarker::createContent()
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL), PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE), PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE);
 
-    txtValue = new SLineEdit("0", true);
+    txtValue = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("BC type:"), cmbType);
@@ -383,7 +383,7 @@ void DSceneEdgeElectrostaticMarker::load()
     SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeElectrostaticMarker->type));
-    txtValue->setText(QString::number(edgeElectrostaticMarker->value));
+    txtValue->setText(edgeElectrostaticMarker->value.text);
 }
 
 void DSceneEdgeElectrostaticMarker::save() {
@@ -392,7 +392,7 @@ void DSceneEdgeElectrostaticMarker::save() {
     SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_edgeMarker);
 
     edgeElectrostaticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-    edgeElectrostaticMarker->value = txtValue->text().toDouble();
+    edgeElectrostaticMarker->value = Value(txtValue->text());
 }
 
 // *************************************************************************************************************************************
@@ -419,7 +419,7 @@ QLayout* DSceneEdgeMagnetostaticMarker::createContent()
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL), PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT), PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT);
 
-    txtValue = new SLineEdit("0", true);
+    txtValue = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("BC type:"), cmbType);
@@ -435,7 +435,7 @@ void DSceneEdgeMagnetostaticMarker::load()
     SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeMagnetostaticMarker->type));
-    txtValue->setText(QString::number(edgeMagnetostaticMarker->value));
+    txtValue->setText(edgeMagnetostaticMarker->value.text);
 }
 
 void DSceneEdgeMagnetostaticMarker::save() {
@@ -444,7 +444,7 @@ void DSceneEdgeMagnetostaticMarker::save() {
     SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(m_edgeMarker);
 
     edgeMagnetostaticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-    edgeMagnetostaticMarker->value = txtValue->text().toDouble();
+    edgeMagnetostaticMarker->value = Value(txtValue->text());
 }
 
 // *************************************************************************************************************************************
@@ -475,10 +475,10 @@ QLayout* DSceneEdgeHeatMarker::createContent()
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HEAT_HEAT_FLUX), PHYSICFIELDBC_HEAT_HEAT_FLUX);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
-    txtHeatFlux = new SLineEdit("0", true);
-    txtTemperature = new SLineEdit("0", true);
-    txtHeatTransferCoefficient = new SLineEdit("0", true);
-    txtExternalTemperature = new SLineEdit("0", true);
+    txtHeatFlux = new SLineEdit("0", false);
+    txtTemperature = new SLineEdit("0", false);
+    txtHeatTransferCoefficient = new SLineEdit("0", false);
+    txtExternalTemperature = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("BC Type:"), cmbType);
@@ -501,14 +501,14 @@ void DSceneEdgeHeatMarker::load()
     {
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
         {
-            txtTemperature->setText(QString::number(edgeHeatMarker->temperature));
+            txtTemperature->setText(edgeHeatMarker->temperature.text);
         }
         break;
     case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         {
-            txtHeatFlux->setText(QString::number(edgeHeatMarker->heatFlux));
-            txtHeatTransferCoefficient->setText(QString::number(edgeHeatMarker->h));
-            txtExternalTemperature->setText(QString::number(edgeHeatMarker->externalTemperature));
+            txtHeatFlux->setText(edgeHeatMarker->heatFlux.text);
+            txtHeatTransferCoefficient->setText(edgeHeatMarker->h.text);
+            txtExternalTemperature->setText(edgeHeatMarker->externalTemperature.text);
         }
         break;
     }
@@ -524,14 +524,14 @@ void DSceneEdgeHeatMarker::save() {
     {
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
         {
-            edgeHeatMarker->temperature = txtTemperature->text().toDouble();
+            edgeHeatMarker->temperature = Value(txtTemperature->text());
         }
         break;
     case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         {
-            edgeHeatMarker->heatFlux = txtHeatFlux->text().toDouble();
-            edgeHeatMarker->h = txtHeatTransferCoefficient->text().toDouble();
-            edgeHeatMarker->externalTemperature = txtExternalTemperature->text().toDouble();
+            edgeHeatMarker->heatFlux = Value(txtHeatFlux->text());
+            edgeHeatMarker->h = Value(txtHeatTransferCoefficient->text());
+            edgeHeatMarker->externalTemperature = Value(txtExternalTemperature->text());
         }
         break;
     }
@@ -585,7 +585,7 @@ QLayout* DSceneEdgeCurrentMarker::createContent()
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_POTENTIAL), PHYSICFIELDBC_CURRENT_POTENTIAL);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW), PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW);
 
-    txtValue = new SLineEdit("0", true);
+    txtValue = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("BC type:"), cmbType);
@@ -601,7 +601,7 @@ void DSceneEdgeCurrentMarker::load()
     SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeCurrentMarker->type));
-    txtValue->setText(QString::number(edgeCurrentMarker->value));
+    txtValue->setText(edgeCurrentMarker->value.text);
 }
 
 void DSceneEdgeCurrentMarker::save() {
@@ -610,7 +610,7 @@ void DSceneEdgeCurrentMarker::save() {
     SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
 
     edgeCurrentMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-    edgeCurrentMarker->value = txtValue->text().toDouble();
+    edgeCurrentMarker->value = Value(txtValue->text());
 }
 
 // *************************************************************************************************************************************
@@ -644,8 +644,8 @@ QLayout* DSceneEdgeElasticityMarker::createContent()
     cmbTypeY->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FREE), PHYSICFIELDBC_ELASTICITY_FREE);
     cmbTypeY->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FIXED), PHYSICFIELDBC_ELASTICITY_FIXED);
 
-    txtForceX = new SLineEdit("0", true);
-    txtForceY = new SLineEdit("0", true);
+    txtForceX = new SLineEdit("0", false);
+    txtForceY = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("BC Type X:"), cmbTypeX);
@@ -764,8 +764,8 @@ DSceneLabelElectrostaticMarker::~DSceneLabelElectrostaticMarker()
 
 QLayout* DSceneLabelElectrostaticMarker::createContent()
 {
-    txtPermittivity = new SLineEdit("0", true);
-    txtChargeDensity = new SLineEdit("0", true);
+    txtPermittivity = new SLineEdit("0", false);
+    txtChargeDensity = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Permittivity (-):"), txtPermittivity);
@@ -780,8 +780,8 @@ void DSceneLabelElectrostaticMarker::load()
 
     SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_labelMarker);
 
-    txtPermittivity->setText(QString::number(labelElectrostaticMarker->permittivity));
-    txtChargeDensity->setText(QString::number(labelElectrostaticMarker->charge_density));
+    txtPermittivity->setText(labelElectrostaticMarker->permittivity.text);
+    txtChargeDensity->setText(labelElectrostaticMarker->charge_density.text);
 }
 
 void DSceneLabelElectrostaticMarker::save() {
@@ -789,8 +789,8 @@ void DSceneLabelElectrostaticMarker::save() {
 
     SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_labelMarker);
 
-    labelElectrostaticMarker->permittivity = txtPermittivity->text().toDouble();
-    labelElectrostaticMarker->charge_density = txtChargeDensity->text().toDouble();
+    labelElectrostaticMarker->permittivity = Value(txtPermittivity->text());
+    labelElectrostaticMarker->charge_density = Value(txtChargeDensity->text());
 }
 
 // *************************************************************************************************************************************
@@ -812,8 +812,8 @@ DSceneLabelMagnetostaticMarker::~DSceneLabelMagnetostaticMarker()
 
 QLayout* DSceneLabelMagnetostaticMarker::createContent()
 {
-    txtPermeability= new SLineEdit("0", true);
-    txtCurrentDensity = new SLineEdit("0", true);
+    txtPermeability= new SLineEdit("0", false);
+    txtCurrentDensity = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Permeability (-):"), txtPermeability);
@@ -828,8 +828,8 @@ void DSceneLabelMagnetostaticMarker::load()
 
     SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_labelMarker);
 
-    txtPermeability->setText(QString::number(labelMagnetostaticMarker->permeability));
-    txtCurrentDensity->setText(QString::number(labelMagnetostaticMarker->current_density));
+    txtPermeability->setText(labelMagnetostaticMarker->permeability.text);
+    txtCurrentDensity->setText(labelMagnetostaticMarker->current_density.text);
 }
 
 void DSceneLabelMagnetostaticMarker::save() {
@@ -837,8 +837,8 @@ void DSceneLabelMagnetostaticMarker::save() {
 
     SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_labelMarker);
 
-    labelMagnetostaticMarker->permeability = txtPermeability->text().toDouble();
-    labelMagnetostaticMarker->current_density = txtCurrentDensity->text().toDouble();
+    labelMagnetostaticMarker->permeability = txtPermeability->text();
+    labelMagnetostaticMarker->current_density = txtCurrentDensity->text();
 }
 
 // *************************************************************************************************************************************
@@ -860,8 +860,8 @@ DSceneLabelHeatMarker::~DSceneLabelHeatMarker()
 
 QLayout* DSceneLabelHeatMarker::createContent()
 {
-    txtThermalConductivity= new SLineEdit("0", true);
-    txtVolumeHeat = new SLineEdit("0", true);
+    txtThermalConductivity= new SLineEdit("0", false);
+    txtVolumeHeat = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Thermal conductivity (W/m.K):"), txtThermalConductivity);
@@ -876,8 +876,8 @@ void DSceneLabelHeatMarker::load()
 
     SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_labelMarker);
 
-    txtThermalConductivity->setText(QString::number(labelHeatMarker->thermal_conductivity));
-    txtVolumeHeat->setText(QString::number(labelHeatMarker->volume_heat));
+    txtThermalConductivity->setText(labelHeatMarker->thermal_conductivity.text);
+    txtVolumeHeat->setText(labelHeatMarker->volume_heat.text);
 }
 
 void DSceneLabelHeatMarker::save()
@@ -886,8 +886,8 @@ void DSceneLabelHeatMarker::save()
 
     SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_labelMarker);
 
-    labelHeatMarker->thermal_conductivity = txtThermalConductivity->text().toDouble();
-    labelHeatMarker->volume_heat = txtVolumeHeat->text().toDouble();
+    labelHeatMarker->thermal_conductivity = Value(txtThermalConductivity->text());
+    labelHeatMarker->volume_heat = Value(txtVolumeHeat->text());
 }
 
 // *************************************************************************************************************************************
@@ -908,7 +908,7 @@ DSceneLabelCurrentMarker::~DSceneLabelCurrentMarker()
 
 QLayout* DSceneLabelCurrentMarker::createContent()
 {
-    txtConductivity = new SLineEdit("0", true);
+    txtConductivity = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Conductivity (S/m):"), txtConductivity);
@@ -922,7 +922,7 @@ void DSceneLabelCurrentMarker::load()
 
     SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
 
-    txtConductivity->setText(QString::number(labelCurrentMarker->conductivity));
+    txtConductivity->setText(labelCurrentMarker->conductivity.text);
 }
 
 void DSceneLabelCurrentMarker::save()
@@ -931,7 +931,7 @@ void DSceneLabelCurrentMarker::save()
 
     SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
 
-    labelCurrentMarker->conductivity = txtConductivity->text().toDouble();
+    labelCurrentMarker->conductivity = Value(txtConductivity->text());
 }
 
 // *************************************************************************************************************************************
@@ -953,8 +953,8 @@ DSceneLabelElasticityMarker::~DSceneLabelElasticityMarker()
 
 QLayout* DSceneLabelElasticityMarker::createContent()
 {
-    txtYoungModulus= new SLineEdit("0", 0);
-    txtPoissonNumber = new SLineEdit("0", 0);
+    txtYoungModulus = new SLineEdit("0", false);
+    txtPoissonNumber = new SLineEdit("0", false);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Young modulus (Pa):"), txtYoungModulus);

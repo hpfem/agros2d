@@ -11,7 +11,9 @@
 #include <QString>
 #include <QStyleFactory>
 #include <QStyle>
+#include <QScriptEngine>
 #include <QtGui/QIcon>
+#include <QtGui/QMessageBox>
 
 #include <typeinfo>
 #include <iostream>
@@ -26,6 +28,41 @@ const double EPS_ZERO = 1e-12;
 const double EPS0 = 8.854e-12;
 const double MU0 = 4*M_PI*1e-7;
 const int NDOF_STOP = 40000;
+
+struct Value
+{
+    QString text;
+    double value;
+
+    Value()
+    {
+        text = "";
+    }
+
+    Value(const QString &value)
+    {
+        text = value;
+    }
+
+    bool evaluate(const QString &script = "")
+    {
+        QScriptEngine engine;
+
+        // evaluate startup script
+        if (!script.isEmpty())
+            engine.evaluate(script);
+
+        QScriptValue scriptValue = engine.evaluate(text);
+        if (scriptValue.isNumber())
+        {
+            value = scriptValue.toNumber();
+            return true;
+        }
+
+        QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), QObject::tr("Expression '%1' cannot be evaluated.").arg(text));
+        return false;
+    };
+};
 
 struct Point
 {
@@ -109,18 +146,12 @@ enum ProblemType
 
 inline QString problemTypeStringKey(ProblemType problemType)
 {
-    if (problemType == PROBLEMTYPE_PLANAR)
-        return "planar";
-    else
-        return "axisymmetric";
+    return ((problemType == PROBLEMTYPE_PLANAR) ? "planar" : "axisymmetric");
 }
 
 inline QString problemTypeString(ProblemType problemType)
 {
-    if (problemType == PROBLEMTYPE_PLANAR)
-        return QObject::tr("Planar");
-    else
-        return QObject::tr("Axisymmetric");
+    return ((problemType == PROBLEMTYPE_PLANAR) ? QObject::tr("Planar") : QObject::tr("Axisymmetric"));
 }
 
 enum PhysicFieldVariableComp

@@ -64,7 +64,7 @@ void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
 // ***********************************************************************************************************
 
 SLineEdit::SLineEdit(QWidget *parent) : QLineEdit(parent)
-{
+{   
     SLineEdit::SLineEdit("", true, parent);
 }
 
@@ -78,8 +78,22 @@ double SLineEdit::value()
 {
     QScriptEngine engine;
 
-    if (engine.evaluate(text()).isNumber())
-        return engine.evaluate(text()).toNumber();
+    QScriptValue scriptValue = engine.evaluate(text());
+    if (scriptValue.isNumber())
+        return scriptValue.toNumber();
+}
+
+double SLineEdit::value(const QString &script)
+{
+    QScriptEngine engine;
+
+    // evaluate startup script
+    if (!script.isEmpty())
+        engine.evaluate(script);
+
+    QScriptValue scriptValue = engine.evaluate(text());
+    if (scriptValue.isNumber())
+        return scriptValue.toNumber();
 }
 
 void SLineEdit::setValue(double value)

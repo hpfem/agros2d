@@ -64,6 +64,27 @@ protected:
     void setupEditor();
 };
 
+class ScriptStartupDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    ScriptStartupDialog(ProjectInfo &projectInfo, QWidget *parent = 0);
+    ~ScriptStartupDialog();
+
+    int showDialog();
+
+private slots:
+    void doAccept();
+    void doReject();
+
+private:
+    ProjectInfo *m_projectInfo;
+
+    ScriptEditor *txtEditor;
+
+    void createControls();
+};
+
 class ScriptEditor : public QPlainTextEdit
 {
     Q_OBJECT

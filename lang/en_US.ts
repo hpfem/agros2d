@@ -469,28 +469,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/localvalueview.cpp" line="204"/>
-        <source>S/m</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/localvalueview.cpp" line="220"/>
         <source>Current density</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="223"/>
-        <source>Jx:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="224"/>
-        <source>Jy:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="225"/>
-        <source>J:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -506,12 +486,6 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="239"/>
         <source>Young modulus:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="239"/>
-        <location filename="../src/localvalueview.cpp" line="245"/>
-        <source>Pa</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -531,11 +505,6 @@
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="96"/>
-        <source>C/m3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="96"/>
         <source>Charge density:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -546,136 +515,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/localvalueview.cpp" line="99"/>
-        <location filename="../src/localvalueview.cpp" line="207"/>
-        <source>V</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="106"/>
-        <location filename="../src/localvalueview.cpp" line="214"/>
-        <source>Ex:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="106"/>
-        <location filename="../src/localvalueview.cpp" line="107"/>
-        <location filename="../src/localvalueview.cpp" line="108"/>
-        <location filename="../src/localvalueview.cpp" line="214"/>
-        <location filename="../src/localvalueview.cpp" line="215"/>
-        <location filename="../src/localvalueview.cpp" line="216"/>
-        <source>V/m</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="107"/>
-        <location filename="../src/localvalueview.cpp" line="215"/>
-        <source>Ey:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="108"/>
-        <location filename="../src/localvalueview.cpp" line="216"/>
-        <source>E:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="115"/>
-        <source>Dx:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="115"/>
-        <location filename="../src/localvalueview.cpp" line="116"/>
-        <location filename="../src/localvalueview.cpp" line="117"/>
-        <source>C/m2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="116"/>
-        <source>Dy:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="117"/>
-        <source>D:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="120"/>
-        <location filename="../src/localvalueview.cpp" line="158"/>
-        <source>J/m3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/localvalueview.cpp" line="131"/>
         <source>Permeability:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/localvalueview.cpp" line="134"/>
-        <location filename="../src/localvalueview.cpp" line="223"/>
-        <location filename="../src/localvalueview.cpp" line="224"/>
-        <location filename="../src/localvalueview.cpp" line="225"/>
-        <source>A/m2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="137"/>
-        <source>Wb/m</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="144"/>
-        <source>Bx:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="144"/>
-        <location filename="../src/localvalueview.cpp" line="145"/>
-        <location filename="../src/localvalueview.cpp" line="146"/>
-        <source>T</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="145"/>
-        <source>By:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="146"/>
-        <source>B:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="153"/>
-        <source>Hx:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="153"/>
-        <location filename="../src/localvalueview.cpp" line="154"/>
-        <location filename="../src/localvalueview.cpp" line="155"/>
-        <source>A/m</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="154"/>
-        <source>Hy:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="155"/>
-        <source>H:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="169"/>
-        <source>W/m.K</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="172"/>
         <location filename="../src/localvalueview.cpp" line="228"/>
         <source>W/m3</source>
         <translation type="unfinished"></translation>
@@ -688,55 +532,6 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="175"/>
         <source>Temperature:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="175"/>
-        <source>deg.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="182"/>
-        <source>Fx:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="182"/>
-        <location filename="../src/localvalueview.cpp" line="183"/>
-        <location filename="../src/localvalueview.cpp" line="184"/>
-        <source>W/m2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="183"/>
-        <source>Fy:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="184"/>
-        <source>F:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="191"/>
-        <source>Gx:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="191"/>
-        <location filename="../src/localvalueview.cpp" line="192"/>
-        <location filename="../src/localvalueview.cpp" line="193"/>
-        <source>K/m</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="192"/>
-        <source>Gy:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="193"/>
-        <source>G:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -902,12 +697,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="131"/>
-        <location filename="../src/mainwindow.cpp" line="132"/>
-        <source>Plot chart</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="138"/>
         <location filename="../src/mainwindow.cpp" line="139"/>
         <source>Script editor</source>
@@ -997,6 +786,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="347"/>
         <source>Open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="131"/>
+        <location filename="../src/mainwindow.cpp" line="132"/>
+        <source>Chart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1114,255 +909,255 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/util.h" line="247"/>
-        <location filename="../src/util.h" line="277"/>
+        <location filename="../src/util.h" line="241"/>
+        <location filename="../src/util.h" line="271"/>
         <source>Scalar potential</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="250"/>
+        <location filename="../src/util.h" line="244"/>
         <source>Electric field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="253"/>
+        <location filename="../src/util.h" line="247"/>
         <source>Displacement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="256"/>
-        <location filename="../src/util.h" line="271"/>
+        <location filename="../src/util.h" line="250"/>
+        <location filename="../src/util.h" line="265"/>
         <source>Energy density</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="259"/>
+        <location filename="../src/util.h" line="253"/>
         <source>Permittivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="262"/>
-        <location filename="../src/util.h" line="398"/>
+        <location filename="../src/util.h" line="256"/>
+        <location filename="../src/util.h" line="392"/>
         <source>Vector potential</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="265"/>
+        <location filename="../src/util.h" line="259"/>
         <source>Flux density</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="268"/>
+        <location filename="../src/util.h" line="262"/>
         <source>Magnetic field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="274"/>
+        <location filename="../src/util.h" line="268"/>
         <source>Permeability</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="292"/>
-        <location filename="../src/util.h" line="404"/>
+        <location filename="../src/util.h" line="286"/>
+        <location filename="../src/util.h" line="398"/>
         <source>Temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="295"/>
+        <location filename="../src/util.h" line="289"/>
         <source>Temperature gradient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="298"/>
-        <location filename="../src/util.h" line="407"/>
+        <location filename="../src/util.h" line="292"/>
+        <location filename="../src/util.h" line="401"/>
         <source>Heat flux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="289"/>
-        <location filename="../src/util.h" line="301"/>
+        <location filename="../src/util.h" line="283"/>
+        <location filename="../src/util.h" line="295"/>
         <source>Conductivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="121"/>
+        <location filename="../src/util.h" line="117"/>
         <source>Planar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="123"/>
+        <location filename="../src/util.h" line="117"/>
         <source>Axisymmetric</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="139"/>
+        <location filename="../src/util.h" line="133"/>
         <source>Scalar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="141"/>
+        <location filename="../src/util.h" line="135"/>
         <source>Magnitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="143"/>
+        <location filename="../src/util.h" line="137"/>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="145"/>
+        <location filename="../src/util.h" line="139"/>
         <source>Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="184"/>
+        <location filename="../src/util.h" line="178"/>
         <source>Electrostatic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="186"/>
+        <location filename="../src/util.h" line="180"/>
         <source>Magnetostatic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="188"/>
+        <location filename="../src/util.h" line="182"/>
         <source>Current field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="190"/>
+        <location filename="../src/util.h" line="184"/>
         <source>Heat transfer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="192"/>
+        <location filename="../src/util.h" line="186"/>
         <source>Elasticity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="280"/>
+        <location filename="../src/util.h" line="274"/>
         <source>Electic field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="283"/>
+        <location filename="../src/util.h" line="277"/>
         <source>Current density</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="286"/>
+        <location filename="../src/util.h" line="280"/>
         <source>Power losses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="304"/>
+        <location filename="../src/util.h" line="298"/>
         <source>Von Mises stress</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="318"/>
-        <location filename="../src/util.h" line="348"/>
+        <location filename="../src/util.h" line="312"/>
+        <location filename="../src/util.h" line="342"/>
         <source>V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="321"/>
+        <location filename="../src/util.h" line="315"/>
         <source>V/m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="324"/>
+        <location filename="../src/util.h" line="318"/>
         <source>C/m2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="327"/>
-        <location filename="../src/util.h" line="342"/>
+        <location filename="../src/util.h" line="321"/>
+        <location filename="../src/util.h" line="336"/>
         <source>J/m3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="330"/>
+        <location filename="../src/util.h" line="324"/>
         <source>F/m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="333"/>
+        <location filename="../src/util.h" line="327"/>
         <source>Wb/m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="336"/>
+        <location filename="../src/util.h" line="330"/>
         <source>T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="339"/>
+        <location filename="../src/util.h" line="333"/>
         <source>A/m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="345"/>
+        <location filename="../src/util.h" line="339"/>
         <source>H/m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="351"/>
+        <location filename="../src/util.h" line="345"/>
         <source>deg.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="354"/>
+        <location filename="../src/util.h" line="348"/>
         <source>K/m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="357"/>
+        <location filename="../src/util.h" line="351"/>
         <source>W/m2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="360"/>
+        <location filename="../src/util.h" line="354"/>
         <source>W/m.K</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="363"/>
+        <location filename="../src/util.h" line="357"/>
         <source>Pa</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="392"/>
+        <location filename="../src/util.h" line="386"/>
         <source>Fixed voltage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="395"/>
+        <location filename="../src/util.h" line="389"/>
         <source>Surface charge density</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="401"/>
+        <location filename="../src/util.h" line="395"/>
         <source>Surface current density</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="410"/>
+        <location filename="../src/util.h" line="404"/>
         <source>Potential</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="413"/>
+        <location filename="../src/util.h" line="407"/>
         <source>Inward current flow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="416"/>
+        <location filename="../src/util.h" line="410"/>
         <source>Fixed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="419"/>
+        <location filename="../src/util.h" line="413"/>
         <source>Free</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1991,6 +1786,11 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="566"/>
         <source>Save file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="662"/>
+        <source>Error: %1 (line %2, column %3)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

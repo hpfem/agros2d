@@ -20,6 +20,8 @@
 #include "scene.h"
 #include "scenemarker.h"
 
+class SLineEdit;
+
 struct Point;
 
 class Scene;

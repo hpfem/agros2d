@@ -201,8 +201,12 @@ void SolverDialog::runSolver()
                     else
                     {
                         SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_scene->edges[i]->marker);
+
+                        // evaluate script
+                        if (!edgeElectrostaticMarker->value.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
                         electrostaticEdge[i+1].type = edgeElectrostaticMarker->type;
-                        electrostaticEdge[i+1].value = edgeElectrostaticMarker->value;
+                        electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.value;
                     }
                 }
 
@@ -217,8 +221,12 @@ void SolverDialog::runSolver()
                     {
                         SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[i]->marker);
 
-                        electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density;
-                        electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity;
+                        // evaluate script
+                        if (!labelElectrostaticMarker->charge_density.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!labelElectrostaticMarker->permittivity.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
+                        electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.value;
+                        electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.value;
                     }
                 }
 
@@ -251,8 +259,12 @@ void SolverDialog::runSolver()
                     else
                     {
                         SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(m_scene->edges[i]->marker);
+
+                        // evaluate script
+                        if (!edgeMagnetostaticMarker->value.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
                         magnetostaticEdge[i+1].type = edgeMagnetostaticMarker->type;
-                        magnetostaticEdge[i+1].value = edgeMagnetostaticMarker->value;
+                        magnetostaticEdge[i+1].value = edgeMagnetostaticMarker->value.value;
                     }
                 }
 
@@ -267,8 +279,12 @@ void SolverDialog::runSolver()
                     {
                         SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[i]->marker);
 
-                        magnetostaticLabel[i].current_density = labelMagnetostaticMarker->current_density;
-                        magnetostaticLabel[i].permeability = labelMagnetostaticMarker->permeability;
+                        // evaluate script
+                        if (!labelMagnetostaticMarker->current_density.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!labelMagnetostaticMarker->permeability.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
+                        magnetostaticLabel[i].current_density = labelMagnetostaticMarker->current_density.value;
+                        magnetostaticLabel[i].permeability = labelMagnetostaticMarker->permeability.value;
                     }
                 }
 
@@ -301,8 +317,12 @@ void SolverDialog::runSolver()
                     else
                     {
                         SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_scene->edges[i]->marker);
+
+                        // evaluate script
+                        if (!edgeCurrentMarker->value.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
                         currentEdge[i+1].type = edgeCurrentMarker->type;
-                        currentEdge[i+1].value = edgeCurrentMarker->value;
+                        currentEdge[i+1].value = edgeCurrentMarker->value.value;
                     }
                 }
 
@@ -317,7 +337,10 @@ void SolverDialog::runSolver()
                     {
                         SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[i]->marker);
 
-                        currentLabel[i].conductivity = labelCurrentMarker->conductivity;
+                        // evaluate script
+                        if (!labelCurrentMarker->conductivity.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
+                        currentLabel[i].conductivity = labelCurrentMarker->conductivity.value;
                     }
                 }
 
@@ -357,14 +380,22 @@ void SolverDialog::runSolver()
                         {
                         case PHYSICFIELDBC_HEAT_TEMPERATURE:
                             {
-                                heatEdge[i+1].temperature = edgeHeatMarker->temperature;
+                                // evaluate script
+                                if (!edgeHeatMarker->temperature.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
+                                heatEdge[i+1].temperature = edgeHeatMarker->temperature.value;
                             }
                             break;
                         case PHYSICFIELDBC_HEAT_HEAT_FLUX:
                             {
-                                heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux;
-                                heatEdge[i+1].h = edgeHeatMarker->h;
-                                heatEdge[i+1].externalTemperature = edgeHeatMarker->externalTemperature;
+                                // evaluate script
+                                if (!edgeHeatMarker->heatFlux.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                                if (!edgeHeatMarker->h.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                                if (!edgeHeatMarker->externalTemperature.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
+                                heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.value;
+                                heatEdge[i+1].h = edgeHeatMarker->h.value;
+                                heatEdge[i+1].externalTemperature = edgeHeatMarker->externalTemperature.value;
                             }
                             break;
                         }
@@ -381,8 +412,13 @@ void SolverDialog::runSolver()
                     else
                     {
                         SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[i]->marker);
-                        heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity;
-                        heatLabel[i].volume_heat = labelHeatMarker->volume_heat;
+
+                        // evaluate script
+                        if (!labelHeatMarker->thermal_conductivity.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!labelHeatMarker->volume_heat.evaluate(m_scene->projectInfo().scriptStartup)) return;
+
+                        heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.value;
+                        heatLabel[i].volume_heat = labelHeatMarker->volume_heat.value;
                     }
                 }
 

@@ -19,6 +19,8 @@
 #include "gui.h"
 #include "scene.h"
 
+class SLineEdit;
+
 class Scene;
 class SceneEdgeMarker;
 class SceneLabelMarker;
@@ -52,9 +54,9 @@ public:
 class SceneEdgeElectrostaticMarker : public SceneEdgeMarker {
 
 public:
-    double value;
+    Value value;
 
-    SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, double value);
+    SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
     int showDialog(Scene *scene, QWidget *parent);
@@ -65,9 +67,9 @@ public:
 class SceneEdgeMagnetostaticMarker : public SceneEdgeMarker {
 
 public:
-    double value;
+    Value value;
 
-    SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, double value);
+    SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
     int showDialog(Scene *scene, QWidget *parent);
@@ -78,13 +80,13 @@ public:
 class SceneEdgeHeatMarker : public SceneEdgeMarker {
 
 public:
-    double temperature;
-    double heatFlux;
-    double h;
-    double externalTemperature;
+    Value temperature;
+    Value heatFlux;
+    Value h;
+    Value externalTemperature;
 
-    SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, double temperature);
-    SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, double heatFlux, double h, double externalTemperature);
+    SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value temperature);
+    SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
 
     QString script();
     int showDialog(Scene *scene, QWidget *parent);
@@ -95,9 +97,9 @@ public:
 class SceneEdgeCurrentMarker : public SceneEdgeMarker {
 
 public:
-    double value;
+    Value value;
 
-    SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, double value);
+    SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
     int showDialog(Scene *scene, QWidget *parent);
@@ -148,10 +150,10 @@ public:
 class SceneLabelElectrostaticMarker : public SceneLabelMarker {
 
 public:
-    double charge_density;
-    double permittivity;
+    Value charge_density;
+    Value permittivity;
 
-    SceneLabelElectrostaticMarker(const QString &name, double charge_density, double permittivity);
+    SceneLabelElectrostaticMarker(const QString &name, Value charge_density, Value permittivity);
 
     QString script();
     int showDialog(Scene *scene, QWidget *parent);
@@ -162,10 +164,10 @@ public:
 class SceneLabelHeatMarker : public SceneLabelMarker {
 
 public:
-    double thermal_conductivity;
-    double volume_heat;
+    Value thermal_conductivity;
+    Value volume_heat;
 
-    SceneLabelHeatMarker(const QString &name, double volume_heat, double thermal_conductivity);
+    SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity);
 
     QString script();
     int showDialog(Scene *scene, QWidget *parent);
@@ -176,9 +178,9 @@ public:
 class SceneLabelCurrentMarker : public SceneLabelMarker {
 
 public:
-    double conductivity;
+    Value conductivity;
 
-    SceneLabelCurrentMarker(const QString &name, double conductivity);
+    SceneLabelCurrentMarker(const QString &name, Value conductivity);
 
     QString script();
     int showDialog(Scene *scene, QWidget *parent);
@@ -189,10 +191,10 @@ public:
 class SceneLabelMagnetostaticMarker : public SceneLabelMarker {
 
 public:
-    double permeability;
-    double current_density;
+    Value permeability;
+    Value current_density;
 
-    SceneLabelMagnetostaticMarker(const QString &name, double current_density, double permeability);
+    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability);
 
     QString script();
     int showDialog(Scene *scene, QWidget *parent);

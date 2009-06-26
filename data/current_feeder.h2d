@@ -4,7 +4,7 @@
             <edges>
                 <edge type="inward_current_flow" value="0" id="1" name="Neumann" />
                 <edge type="inward_current_flow" value="1000000" id="2" name="In" />
-                <edge type="inward_current_flow" value="1000000" id="3" name="Out" />
+                <edge type="inward_current_flow" value="-1000000" id="3" name="Out" />
             </edges>
             <labels>
                 <label conductivity="100" id="1" name="Salt" />

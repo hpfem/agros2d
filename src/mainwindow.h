@@ -63,12 +63,14 @@ private slots:
 
     void doChart();
     void doScriptEditor();
+    void doScriptStartup();
     void doOptions();
 
     void doCut();
     void doCopy();
     void doPaste();
 
+    void doHelp();
     void doAbout();
     void doInvalidated();
 
@@ -109,7 +111,9 @@ private:
     QAction *actChart; 
 
     QAction *actScriptEditor;
+    QAction *actScriptStartup;
 
+    QAction *actHelp;
     QAction *actAbout;
     QAction *actAboutQt;
 

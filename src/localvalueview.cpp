@@ -93,31 +93,31 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     addValue(electrostaticNode, tr("Permittivity:"), tr("%1").arg(localPointValueElectrostatic->permittivity, 0, 'f', 2), tr(""));
 
     // Charge Density
-    addValue(electrostaticNode, tr("Charge density:"), tr("%1").arg(localPointValueElectrostatic->charge_density, 0, 'e', 3), tr("C/m3"));
+    addValue(electrostaticNode, tr("Charge density:"), tr("%1").arg(localPointValueElectrostatic->charge_density, 0, 'e', 3), "C/m3");
 
     // Potential
-    addValue(electrostaticNode, tr("Potential:"), tr("%1").arg(localPointValueElectrostatic->potential, 0, 'f', 2), tr("V"));
+    addValue(electrostaticNode, tr("Potential:"), tr("%1").arg(localPointValueElectrostatic->potential, 0, 'f', 2), "V");
 
     // Electric Field
     QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(electrostaticNode);
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, tr("Ex:"), tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'f', 5), tr("V/m"));
-    addValue(itemElectricField, tr("Ey:"), tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'f', 5), tr("V/m"));
-    addValue(itemElectricField, tr("E:"), tr("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'f', 5), tr("V/m"));
+    addValue(itemElectricField, "E" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E", tr("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'f', 5), "V/m");
 
     // Electric Displacement
     QTreeWidgetItem *itemElectricDisplacement = new QTreeWidgetItem(electrostaticNode);
     itemElectricDisplacement->setText(0, tr("Electric displacement"));
     itemElectricDisplacement->setExpanded(true);
 
-    addValue(itemElectricDisplacement, tr("Dx:"), tr("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), tr("C/m2"));
-    addValue(itemElectricDisplacement, tr("Dy:"), tr("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), tr("C/m2"));
-    addValue(itemElectricDisplacement, tr("D:"), tr("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), tr("C/m2"));
+    addValue(itemElectricDisplacement, "D" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D:", tr("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
 
     // Energy density
-    addValue(electrostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueElectrostatic->we, 0, 'e', 3), tr("J/m3"));
+    addValue(electrostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueElectrostatic->we, 0, 'e', 3), "J/m3");
 }
 
 void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localPointValueMagnetostatic)
@@ -128,34 +128,34 @@ void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localP
     magnetostaticNode->setExpanded(true);
 
     // Permittivity
-    addValue(magnetostaticNode, tr("Permeability:"), tr("%1").arg(localPointValueMagnetostatic->permeability, 0, 'f', 2), tr(""));
+    addValue(magnetostaticNode, tr("Permeability:"), tr("%1").arg(localPointValueMagnetostatic->permeability, 0, 'f', 2), "");
 
     // Charge Density
-    addValue(magnetostaticNode, tr("Current density:"), tr("%1").arg(localPointValueMagnetostatic->current_density, 0, 'e', 3), tr("A/m2"));
+    addValue(magnetostaticNode, tr("Current density:"), tr("%1").arg(localPointValueMagnetostatic->current_density, 0, 'e', 3), "A/m2");
 
     // Potential
-    addValue(magnetostaticNode, tr("Vector potential:"), tr("%1").arg(localPointValueMagnetostatic->potential, 0, 'e', 2), tr("Wb/m"));
+    addValue(magnetostaticNode, tr("Vector potential:"), tr("%1").arg(localPointValueMagnetostatic->potential, 0, 'e', 2), "Wb/m");
 
     // Flux Density
     QTreeWidgetItem *itemFluxDensity = new QTreeWidgetItem(magnetostaticNode);
     itemFluxDensity->setText(0, tr("Flux density"));
     itemFluxDensity->setExpanded(true);
 
-    addValue(itemFluxDensity, tr("Bx:"), tr("%1").arg(localPointValueMagnetostatic->B.x, 0, 'f', 5), tr("T"));
-    addValue(itemFluxDensity, tr("By:"), tr("%1").arg(localPointValueMagnetostatic->B.y, 0, 'f', 5), tr("T"));
-    addValue(itemFluxDensity, tr("B:"), tr("%1").arg(localPointValueMagnetostatic->B.magnitude(), 0, 'f', 5), tr("T"));
+    addValue(itemFluxDensity, "B" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.x, 0, 'f', 5), "T");
+    addValue(itemFluxDensity, "B" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.y, 0, 'f', 5), "T");
+    addValue(itemFluxDensity, "B:", tr("%1").arg(localPointValueMagnetostatic->B.magnitude(), 0, 'f', 5), "T");
 
     // Magnetic Field
     QTreeWidgetItem *itemMagneticField = new QTreeWidgetItem(magnetostaticNode);
     itemMagneticField->setText(0, tr("Magnetic field"));
     itemMagneticField->setExpanded(true);
 
-    addValue(itemMagneticField, tr("Hx:"), tr("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), tr("A/m"));
-    addValue(itemMagneticField, tr("Hy:"), tr("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), tr("A/m"));
-    addValue(itemMagneticField, tr("H:"), tr("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), tr("A/m"));
+    addValue(itemMagneticField, "H" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H", tr("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), "A/m");
 
     // Energy density
-    addValue(magnetostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueMagnetostatic->wm, 0, 'e', 3), tr("J/m3"));
+    addValue(magnetostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueMagnetostatic->wm, 0, 'e', 3), "J/m3");
 }
 
 void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
@@ -166,31 +166,31 @@ void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
     heatNode->setExpanded(true);
 
     // Thermal Conductivity
-    addValue(heatNode, tr("Thermal conductivity:"), tr("%1").arg(localPointValueHeat->thermal_conductivity, 0, 'f', 2), tr("W/m.K"));
+    addValue(heatNode, tr("Thermal conductivity:"), tr("%1").arg(localPointValueHeat->thermal_conductivity, 0, 'f', 2), "W/m.K");
 
     // Volume Heat
-    addValue(heatNode, tr("Volume heat:"), tr("%1").arg(localPointValueHeat->volume_heat, 0, 'e', 3), tr("W/m3"));
+    addValue(heatNode, tr("Volume heat:"), tr("%1").arg(localPointValueHeat->volume_heat, 0, 'e', 3), "W/m3");
 
     // Temperature
-    addValue(heatNode, tr("Temperature:"), tr("%1").arg(localPointValueHeat->temperature, 0, 'f', 2), tr("deg."));
+    addValue(heatNode, tr("Temperature:"), tr("%1").arg(localPointValueHeat->temperature, 0, 'f', 2), "deg.");
 
     // Heat Flux
     QTreeWidgetItem *itemHeatFlux = new QTreeWidgetItem(heatNode);
     itemHeatFlux->setText(0, tr("Heat flux"));
     itemHeatFlux->setExpanded(true);
 
-    addValue(itemHeatFlux, tr("Fx:"), tr("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), tr("W/m2"));
-    addValue(itemHeatFlux, tr("Fy:"), tr("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), tr("W/m2"));
-    addValue(itemHeatFlux, tr("F:"), tr("%1").arg(localPointValueHeat->F.magnitude(), 0, 'e', 3), tr("W/m2"));
+    addValue(itemHeatFlux, "F" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F:", tr("%1").arg(localPointValueHeat->F.magnitude(), 0, 'e', 3), "W/m2");
 
     // Temperature Gradient
     QTreeWidgetItem *itemTemperatureGradient = new QTreeWidgetItem(heatNode);
     itemTemperatureGradient->setText(0, tr("Temperature gradient"));
     itemTemperatureGradient->setExpanded(true);
 
-    addValue(itemTemperatureGradient, tr("Gx:"), tr("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), tr("K/m"));
-    addValue(itemTemperatureGradient, tr("Gy:"), tr("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), tr("K/m"));
-    addValue(itemTemperatureGradient, tr("G:"), tr("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), tr("K/m"));
+    addValue(itemTemperatureGradient, "G" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G:", tr("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "K/m");
 }
 
 void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCurrent)
@@ -201,28 +201,28 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     currentNode->setExpanded(true);
 
     // Conductivity
-    addValue(currentNode, tr("Conductivity:"), tr("%1").arg(localPointValueCurrent->conductivity, 0, 'e', 3), tr("S/m"));
+    addValue(currentNode, tr("Conductivity:"), tr("%1").arg(localPointValueCurrent->conductivity, 0, 'e', 3), "S/m");
 
     // Potential
-    addValue(currentNode, tr("Potential:"), tr("%1").arg(localPointValueCurrent->potential, 0, 'f', 2), tr("V"));
+    addValue(currentNode, tr("Potential:"), tr("%1").arg(localPointValueCurrent->potential, 0, 'f', 2), "V");
 
     // Electric Field
     QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(currentNode);
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, tr("Ex:"), tr("%1").arg(localPointValueCurrent->E.x, 0, 'f', 5), tr("V/m"));
-    addValue(itemElectricField, tr("Ey:"), tr("%1").arg(localPointValueCurrent->E.y, 0, 'f', 5), tr("V/m"));
-    addValue(itemElectricField, tr("E:"), tr("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'f', 5), tr("V/m"));
+    addValue(itemElectricField, "E" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.x, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.y, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E:", tr("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'f', 5), "V/m");
 
     // Current Density
     QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(currentNode);
     itemCurrentDensity->setText(0, tr("Current density"));
     itemCurrentDensity->setExpanded(true);
 
-    addValue(itemCurrentDensity, tr("Jx:"), tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), tr("A/m2"));
-    addValue(itemCurrentDensity, tr("Jy:"), tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), tr("A/m2"));
-    addValue(itemCurrentDensity, tr("J:"), tr("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), tr("A/m2"));
+    addValue(itemCurrentDensity, "J" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J:", tr("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), "A/m2");
 
     // Energy density
     addValue(currentNode, tr("Power losses dens.:"), tr("%1").arg(localPointValueCurrent->losses, 0, 'e', 3), tr("W/m3"));
@@ -236,13 +236,13 @@ void LocalPointValueView::showElasticity(LocalPointValueElasticity *localPointVa
     heatNode->setExpanded(true);
 
     // Young modulus
-    addValue(heatNode, tr("Young modulus:"), tr("%1").arg(localPointValueElasticity->young_modulus, 0, 'e', 3), tr("Pa"));
+    addValue(heatNode, tr("Young modulus:"), tr("%1").arg(localPointValueElasticity->young_modulus, 0, 'e', 3), "Pa");
 
     // Poisson ratio
-    addValue(heatNode, tr("Poisson ratio:"), tr("%1").arg(localPointValueElasticity->poisson_ratio, 0, 'f', 3), tr(""));
+    addValue(heatNode, tr("Poisson ratio:"), tr("%1").arg(localPointValueElasticity->poisson_ratio, 0, 'f', 3), "");
 
     // Von Mises stress
-    addValue(heatNode, tr("Von Mises stress:"), tr("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), tr("Pa"));
+    addValue(heatNode, tr("Von Mises stress:"), tr("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
 }
 
 void LocalPointValueView::addValue(QTreeWidgetItem *parent, QString name, QString text, QString unit)
@@ -287,11 +287,11 @@ LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point, Scene *
 
             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(value.marker);
 
-            charge_density = marker->charge_density;
-            permittivity = marker->permittivity;
+            charge_density = marker->charge_density.value;
+            permittivity = marker->permittivity.value;
 
             // electric displacement
-            D = E * (marker->permittivity * EPS0);
+            D = E * (marker->permittivity.value * EPS0);
 
             // energy density
             we = 0.5 * E.magnitude() * D.magnitude();
@@ -412,11 +412,11 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point, Scene *
 
             SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(value.marker);
 
-            current_density = marker->current_density;
-            permeability = marker->permeability;
+            current_density = marker->current_density.value;
+            permeability = marker->permeability.value;
 
             // electric displacement
-            H = B / (marker->permeability * MU0);
+            H = B / (marker->permeability.value * MU0);
 
             // energy density
             wm = 0.5 * H.magnitude() * B.magnitude();
@@ -524,11 +524,11 @@ LocalPointValueHeat::LocalPointValueHeat(Point &point, Scene *scene) : LocalPoin
 
             SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(value.marker);
 
-            thermal_conductivity = marker->thermal_conductivity;
-            volume_heat = marker->volume_heat;
+            thermal_conductivity = marker->thermal_conductivity.value;
+            volume_heat = marker->volume_heat.value;
 
             // heat flux
-            F = G * marker->thermal_conductivity;
+            F = G * marker->thermal_conductivity.value;
         }
     }
 }
@@ -631,10 +631,10 @@ LocalPointValueCurrent::LocalPointValueCurrent(Point &point, Scene *scene) : Loc
 
             SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(value.marker);
 
-            conductivity = marker->conductivity;
+            conductivity = marker->conductivity.value;
 
             // electric displacement
-            J = E * marker->conductivity;
+            J = E * marker->conductivity.value;
 
             // energy density
             losses = J.magnitude() * E.magnitude();

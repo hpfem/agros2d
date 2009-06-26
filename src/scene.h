@@ -57,6 +57,7 @@ struct ProjectInfo
     int polynomialOrder;
     int adaptivitySteps;
     double adaptivityTolerance;
+    QString scriptStartup;
 
     ProjectInfo()
     {
@@ -68,6 +69,7 @@ struct ProjectInfo
         name = "unnamed";
         date = QDate::currentDate();
         fileName = "";
+        scriptStartup = "";
         physicField = PHYSICFIELD_ELECTROSTATIC;
         problemType = PROBLEMTYPE_PLANAR;
 
@@ -77,8 +79,8 @@ struct ProjectInfo
         adaptivityTolerance = 1.0;
     }
 
-    inline QString labelX() { return ((problemType = PROBLEMTYPE_PLANAR) ? "X" : "R");  }
-    inline QString labelY() { return ((problemType = PROBLEMTYPE_PLANAR) ? "Y" : "Z");  }
+    inline QString labelX() { return ((problemType == PROBLEMTYPE_PLANAR) ? "X" : "R");  }
+    inline QString labelY() { return ((problemType == PROBLEMTYPE_PLANAR) ? "Y" : "Z");  }
 };
 
 class DxfFilter : public DL_CreationAdapter
