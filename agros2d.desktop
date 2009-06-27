@@ -1,11 +1,11 @@
 
 [Desktop Entry]
 Type=Application
-Name=Hermes 2D
+Name=Agros 2D
 Comment=hp-FEM based application
-TryExec=carbon2d
-Exec=carbon2d
-Icon=carbon2d
+TryExec=agros2d
+Exec=agros2d
+Icon=agros2d
 Categories=Science;
 X-KDE-StartupNotify=true
 Terminal=false

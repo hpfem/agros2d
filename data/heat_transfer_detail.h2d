@@ -1,6 +1,7 @@
 <document>
     <projects>
         <project adaptivitytolerance="5" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="Detail" >
+            <scriptstartup></scriptstartup>
             <edges>
                 <edge h="25" external_temperature="-15" type="heat_flux" id="1" name="Exterier" heat_flux="0" />
                 <edge h="4" external_temperature="21" type="heat_flux" id="2" name="Interier" heat_flux="0" />

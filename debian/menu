@@ -1,6 +1,6 @@
-?package(carbon2d): \
+?package(agros2d): \
    needs="wm" \
    section="Applications/Education" \
-   title="Carbon 2D" \
-   icon="/usr/share/pixmaps/carbon2d.png" \
-   command="/usr/bin/carbon2d"
+   title="Agros 2D" \
+   icon="/usr/share/pixmaps/agros2d.png" \
+   command="/usr/bin/agros2d"

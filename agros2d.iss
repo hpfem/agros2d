@@ -1,19 +1,19 @@
 [Setup]
 
-AppName=Carbon 2D
-AppVerName=Carbon 2D 0.7
-OutputBaseFilename=Carbon2D_0.7.0
-DefaultGroupName=Carbon 2D
+AppName=Agros 2D
+AppVerName=Agros 2D 0.7
+OutputBaseFilename=Agros2D_0.7.0
+DefaultGroupName=Agros 2D
 LicenseFile=COPYING
 
-AppId=Carbon2D
+AppId=Agros2D
 AppPublisher=hp-fem
 AppCopyright=hp-fem
 AppPublisherURL=http://www.hpfem.org
-AppMutex=Carbon2D
+AppMutex=Agros2D
 OutputDir=setup
-DefaultDirName={pf}\Carbon 2D
-UninstallDisplayIcon={app}\images\carbon2d.ico
+DefaultDirName={pf}\Agros 2D
+UninstallDisplayIcon={app}\images\Agros2d.ico
 Compression=lzma/max
 PrivilegesRequired=admin
 
@@ -23,7 +23,7 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 [Languages]
 
 [Files]
-Source: release\carbon2d.exe; DestDir: {app}; DestName: Carbon2D.exe
+Source: release\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
@@ -34,10 +34,10 @@ Source: doc\html\style\*; DestDir: {app}/doc/html/style
 Source: install\win32\*.dll; DestDir: {app}
 
 [Icons]
-Name: {group}\Carbon 2D; Filename: {app}\Carbon2D.exe; WorkingDir: {app}
+Name: {group}\Agros 2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
 Name: {group}\COPYING; Filename: {app}\COPYING
 Name: {group}\Uninstall; Filename: {uninstallexe}
-Name: {commondesktop}\Carbon 2D; Filename: {app}\Carbon2D.exe; WorkingDir: {app}; Tasks: desktopicon
+Name: {commondesktop}\Agros 2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}; Tasks: desktopicon
 
 [Tasks]
 Name: desktopicon; Description: Create icon on desktop

@@ -417,7 +417,7 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
 
     // save as temp name
     if (m_projectInfo.fileName.isEmpty())
-        m_projectInfo.fileName = QDesktopServices::TempLocation + "/carbon_temp.h2d";
+        m_projectInfo.fileName = QDesktopServices::TempLocation + "/agros_temp.h2d";
 
     // save project
     writeToFile(m_projectInfo.fileName);
@@ -437,13 +437,13 @@ void Scene::doSolved()
 
     // this slot is called after triangle and solve process is finished
     // linearizer only for mesh (on empty solution)
-    if (QFile::exists(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".mesh"))
+    if (QFile::exists(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".mesh"))
     {
         // save locale
         char *plocale = setlocale (LC_NUMERIC, "");
         setlocale (LC_NUMERIC, "C");
 
-        m_sceneSolution->mesh().load((QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".mesh").toStdString().c_str());
+        m_sceneSolution->mesh().load((QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".mesh").toStdString().c_str());
 
         // set system locale
         setlocale(LC_NUMERIC, plocale);
@@ -456,7 +456,7 @@ void Scene::doSolved()
     emit invalidated();
 
     // delete temp file
-    if (m_projectInfo.fileName == QDesktopServices::TempLocation + "/carbon_temp.h2d")
+    if (m_projectInfo.fileName == QDesktopServices::TempLocation + "/agros_temp.h2d")
     {
         QFile::remove(m_projectInfo.fileName);
         m_projectInfo.fileName = "";
@@ -597,8 +597,8 @@ int Scene::writeToTriangle()
     setlocale (LC_NUMERIC, "C");
 
     QDir dir;
-    dir.mkdir(QDir::temp().absolutePath() + "/carbon2d");
-    QFile file(QDir::temp().absolutePath() + "/carbon2d/" + fileInfo.fileName() + ".poly");
+    dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
+    QFile file(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".poly");
 
     if (!file.open(QIODevice::WriteOnly))
     {
@@ -1113,7 +1113,7 @@ void Scene::readFromFile(const QString &fileName)
 }
 
 void Scene::writeToFile(const QString &fileName) {
-    if (projectInfo().fileName != QDesktopServices::TempLocation + "/carbon_temp.h2d")
+    if (projectInfo().fileName != QDesktopServices::TempLocation + "/agros_temp.h2d")
     {
         QSettings settings;
         QFileInfo fileInfo(fileName);

@@ -291,7 +291,7 @@ void MainWindow::createScene()
     widget->setLayout(layout);
     
     setCentralWidget(widget);
-    setWindowTitle(tr("Carbon 2D"));
+    setWindowTitle(tr("Agros 2D"));
 }
 
 void MainWindow::createViews()
@@ -358,7 +358,7 @@ void MainWindow::doDocumentOpen()
     QSettings settings;
     QString dir = settings.value("LastDataDir", "data").toString();
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Carbon 2D files (*.h2d)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros 2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {        
         m_scene->readFromFile(fileName);
@@ -395,7 +395,7 @@ void MainWindow::doDocumentSaveAs()
     QSettings settings;
     QString dir = settings.value("LastDataDir", "data").toString();
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Carbon 2D files (*.h2d)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros 2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
@@ -533,12 +533,12 @@ void MainWindow::doInvalidated()
 
 void MainWindow::doHelp()
 {
-    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/index.html");
+    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/main/index.html");
 }
 
 void MainWindow::doAbout()
 {
-    QString str(tr("<b>Carbon2D %1</b><br/> <i>hp</i>-FEM multiphysics solver based on Hermes2D library.<br/><br/>Web page: <a href=\"http://hpfem.org/\">http://hpfem.math.unr.edu/projects/hermes2d-new/</a><br/><br/><b>Authors:</b><p><table><tr><td>Carbon 2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a></td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr></table></p><br/><b>License:</b><p>Carbon 2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Hermes2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
+    QString str(tr("<b>Agros 2D %1</b><br/> <i>hp</i>-FEM multiphysics solver based on Hermes2D library.<br/><br/>Web page: <a href=\"http://hpfem.org/\">http://hpfem.math.unr.edu/projects/hermes2d-new/</a><br/><br/><b>Authors:</b><p><table><tr><td>Agros 2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a></td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr></table></p><br/><b>License:</b><p>Agros 2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Hermes2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
 
-    QMessageBox::about(this, tr("About Carbon 2D"), str);
+    QMessageBox::about(this, tr("About Agros 2D"), str);
 }

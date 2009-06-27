@@ -1,6 +1,7 @@
 <document>
     <projects>
-        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="heat transfer" id="0" name="Actuator" >
+        <project adaptivitytolerance="1" numberofrefinements="1" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" type="heat transfer" id="0" name="Actuator" >
+            <scriptstartup></scriptstartup>
             <edges>
                 <edge h="0" external_temperature="0" type="heat_flux" id="1" name="Flux" heat_flux="0" />
                 <edge h="10" external_temperature="20" type="heat_flux" id="2" name="Convection" heat_flux="0" />

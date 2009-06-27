@@ -1,8 +1,14 @@
+agros2d (0.8-1ubuntu1) jaunty unstable; urgency=low
+
+  * extension of scripting support, bugfixes
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 27 Jun 2009 17:05:55 +0200
+
 carbon2d (0.7-1ubuntu1) jaunty unstable; urgency=low
 
   * electric current field, scripting support (qtscript)
 
- -- Pavel Karban <pkarban@gmail.com>  Thu, 04 Jun 2009 17:05:55 +0200
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 09 Jun 2009 17:05:55 +0200
 
 carbon2d (0.6-1ubuntu1) jaunty unstable; urgency=low
 
@@ -14,4 +20,4 @@ carbon2d (0.5-1ubuntu1) jaunty unstable; urgency=low
 
   * Initial Release.
 
- -- Pavel Karban <karban@kte.zcu.cz>  Thu, 04 Jun 2009 17:05:55 +0200
+ -- Pavel Karban <karban@kte.zcu.cz>  Thu, 02 Jun 2009 17:05:55 +0200

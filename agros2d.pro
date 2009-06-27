@@ -7,9 +7,9 @@ QT += opengl \
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
 CODECFORTR = UTF-8
-RC_FILE = carbon2d.rc
-RESOURCES = carbon2d.qrc
-TARGET = carbon2d
+RC_FILE = agros2d.rc
+RESOURCES = agros2d.qrc
+TARGET = agros2d
 TEMPLATE = app
 QMAKE_CXXFLAGS_DEBUG += -w
 QMAKE_CXXFLAGS += -w

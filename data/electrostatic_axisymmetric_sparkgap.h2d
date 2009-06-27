@@ -1,6 +1,7 @@
 <document>
     <projects>
-        <project adaptivitytolerance="5" numberofrefinements="0" adaptivitysteps="15" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Jiskriste" >
+        <project adaptivitytolerance="5" numberofrefinements="0" adaptivitysteps="15" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Sparkgap" >
+            <scriptstartup></scriptstartup>
             <edges>
                 <edge type="potential" value="1000" id="1" name="U = 1000 V" />
                 <edge type="potential" value="0" id="2" name="U = 0 V" />

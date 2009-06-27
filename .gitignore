@@ -10,4 +10,4 @@ configure-stamp
 *.anh
 *.log
 *.debhelper
-carbon2d.substvars
+agros2d.substvars
