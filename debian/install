@@ -1,6 +1,6 @@
 agros2d		usr/bin
 agros2d.desktop	usr/share/applications
-images/agros2d.png	usr/share/pixmaps
+images/agros2d.xpm	usr/share/pixmaps
 data/*.h2d		usr/share/agros2d/data
 data/script/*.qs	usr/share/agros2d/data/script
 lang/*.qm		usr/share/agros2d/lang

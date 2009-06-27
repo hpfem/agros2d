@@ -10,3 +10,4 @@ Package: agros2d
 Architecture: any
 Depends: ${shlibs:Depends}, triangle-bin (>= 1.6), libsuitesparse-3.2.0 (>= 3.2.0), libglu1-mesa (>= 3.4.0), libqwt5-qt4 (>= 5.1.0), libhermes2d (>= 1.0)
 Description: hp-FEM multiphysics solver based on Hermes2D library
+ hp-FEM multiphysics solver based on Hermes2D library
