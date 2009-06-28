@@ -16,8 +16,9 @@ QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
-SOURCES += src/main.cpp \
+SOURCES +=  src/scene.cpp \
     src/util.cpp \
+    src/main.cpp \    
     src/gui.cpp \
     src/scripteditordialog.cpp \
     src/scripteditorhighlighter.cpp \
@@ -31,8 +32,7 @@ SOURCES += src/main.cpp \
     src/scenemarker.cpp \
     src/scenebasic.cpp \
     src/sceneinfo.cpp \
-    src/sceneview.cpp \
-    src/scene.cpp \
+    src/sceneview.cpp \   
     src/chartdialog.cpp \
     src/projectdialog.cpp \
     src/scenetransformdialog.cpp \
@@ -44,8 +44,9 @@ SOURCES += src/main.cpp \
     src/surfaceintegralview.cpp \
     src/dxflib/dl_writer_ascii.cpp \
     src/dxflib/dl_dxf.cpp
-HEADERS += src/mainwindow.h \
+HEADERS += src/scene.h \
     src/util.h \
+    src/mainwindow.h \    
     src/gui.h \
     src/scripteditordialog.h \
     src/scripteditorhighlighter.h \
@@ -60,7 +61,6 @@ HEADERS += src/mainwindow.h \
     src/scenemarker.h \
     src/sceneview_data.h \
     src/sceneview.h \
-    src/scene.h \
     src/chartdialog.h \
     src/projectdialog.h \
     src/scenetransformdialog.h \

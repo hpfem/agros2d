@@ -33,9 +33,9 @@ double SceneNode::distance(const Point &point)
     return (this->point - point).magnitude();
 }
 
-int SceneNode::showDialog(Scene *scene, QWidget *parent)
+int SceneNode::showDialog(QWidget *parent)
 {
-    DSceneNode *dialog = new DSceneNode(scene, this, parent);
+    DSceneNode *dialog = new DSceneNode(this, parent);
     return dialog->exec();
 }
 
@@ -108,9 +108,9 @@ double SceneEdge::distance(const Point &point)
     }
 }
 
-int SceneEdge::showDialog(Scene *scene, QWidget *parent)
+int SceneEdge::showDialog(QWidget *parent)
 {
-    DSceneEdge *dialog = new DSceneEdge(scene, this, parent);
+    DSceneEdge *dialog = new DSceneEdge(this, parent);
     return dialog->exec();
 }
 
@@ -132,17 +132,16 @@ double SceneLabel::distance(const Point &point)
     return (this->point - point).magnitude();
 }
 
-int SceneLabel::showDialog(Scene *scene, QWidget *parent)
+int SceneLabel::showDialog(QWidget *parent)
 {
-    DSceneLabel *dialog = new DSceneLabel(scene, this, parent);
+    DSceneLabel *dialog = new DSceneLabel(this, parent);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-DSceneBasic::DSceneBasic(Scene *scene, QWidget *parent) : QDialog(parent)
+DSceneBasic::DSceneBasic(QWidget *parent) : QDialog(parent)
 {
-    this->m_scene = scene;
     layout = new QVBoxLayout();
 }
 
@@ -179,7 +178,7 @@ void DSceneBasic::doReject()
 
 // *************************************************************************************************************************************
 
-DSceneNode::DSceneNode(Scene *scene, SceneNode *node, QWidget *parent) : DSceneBasic(scene, parent)
+DSceneNode::DSceneNode(SceneNode *node, QWidget *parent) : DSceneBasic(parent)
 {
     m_object = node;
 
@@ -207,8 +206,8 @@ QLayout* DSceneNode::createContent()
     txtPointY = new SLineEdit("0", false);
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(m_scene->projectInfo().labelX() + " (m):", txtPointX);
-    layout->addRow(m_scene->projectInfo().labelY() + " (m):", txtPointY);
+    layout->addRow(Util::scene()->projectInfo().labelX() + " (m):", txtPointX);
+    layout->addRow(Util::scene()->projectInfo().labelY() + " (m):", txtPointY);
 
     return layout;
 }
@@ -231,7 +230,7 @@ void DSceneNode::save()
 
 // *************************************************************************************************************************************
 
-DSceneEdge::DSceneEdge(Scene *scene, SceneEdge *edge, QWidget *parent) : DSceneBasic(scene, parent)
+DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent) : DSceneBasic(parent)
 {
     m_object = edge;
 
@@ -278,19 +277,19 @@ void DSceneEdge::fillComboBox()
     // start and end nodes
     cmbNodeStart->clear();
     cmbNodeEnd->clear();
-    for (int i = 0; i<m_scene->nodes.count(); i++)
+    for (int i = 0; i<Util::scene()->nodes.count(); i++)
     {
-        cmbNodeStart->addItem(QString("[%1; %2]").arg(m_scene->nodes[i]->point.x, 0, 'f', 3).arg(m_scene->nodes[i]->point.y, 0, 'f', 3),
-                              m_scene->nodes[i]->variant());
-        cmbNodeEnd->addItem(QString("[%1; %2]").arg(m_scene->nodes[i]->point.x, 0, 'f', 3).arg(m_scene->nodes[i]->point.y, 0, 'f', 3),
-                            m_scene->nodes[i]->variant());
+        cmbNodeStart->addItem(QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'f', 3).arg(Util::scene()->nodes[i]->point.y, 0, 'f', 3),
+                              Util::scene()->nodes[i]->variant());
+        cmbNodeEnd->addItem(QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'f', 3).arg(Util::scene()->nodes[i]->point.y, 0, 'f', 3),
+                            Util::scene()->nodes[i]->variant());
     }
 
     // markers
     cmbMarker->clear();
-    for (int i = 0; i<m_scene->edgeMarkers.count(); i++)
+    for (int i = 0; i<Util::scene()->edgeMarkers.count(); i++)
     {
-        cmbMarker->addItem(m_scene->edgeMarkers[i]->name, m_scene->edgeMarkers[i]->variant());
+        cmbMarker->addItem(Util::scene()->edgeMarkers[i]->name, Util::scene()->edgeMarkers[i]->variant());
     }
 }
 
@@ -314,7 +313,7 @@ void DSceneEdge::save() {
 
 // *************************************************************************************************************************************
 
-DSceneLabel::DSceneLabel(Scene *scene, SceneLabel *label, QWidget *parent) : DSceneBasic(scene, parent) {
+DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent) : DSceneBasic(parent) {
     m_object = label;
 
     setWindowIcon(icon("scene-label"));
@@ -345,8 +344,8 @@ QLayout* DSceneLabel::createContent() {
     txtArea->setValidator(new QDoubleValidator(txtArea));
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(m_scene->projectInfo().labelX() + " (m):", txtPointX);
-    layout->addRow(m_scene->projectInfo().labelY() + " (m):", txtPointY);
+    layout->addRow(Util::scene()->projectInfo().labelX() + " (m):", txtPointX);
+    layout->addRow(Util::scene()->projectInfo().labelY() + " (m):", txtPointY);
     layout->addRow(tr("Material:"), cmbMarker);
     layout->addRow(tr("Triangle area (m):"), txtArea);
 
@@ -359,9 +358,9 @@ void DSceneLabel::fillComboBox()
 {
     // markers
     cmbMarker->clear();
-    for (int i = 0; i<m_scene->labelMarkers.count(); i++)
+    for (int i = 0; i<Util::scene()->labelMarkers.count(); i++)
     {
-        cmbMarker->addItem(m_scene->labelMarkers[i]->name, m_scene->labelMarkers[i]->variant());
+        cmbMarker->addItem(Util::scene()->labelMarkers[i]->name, Util::scene()->labelMarkers[i]->variant());
     }
 }
 

@@ -1,9 +1,7 @@
 #include "scenetransformdialog.h"
 
-SceneTransformDialog::SceneTransformDialog(Scene *scene, QWidget *parent) : QDialog(parent)
+SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 {
-    m_scene = scene;
-
     setWindowIcon(icon("scene-transform"));
     setWindowTitle(tr("Transform"));
 
@@ -41,9 +39,9 @@ void SceneTransformDialog::createControls()
     txtTranslateY = new SLineEdit("0", false);
 
     QGridLayout *layoutTranslate = new QGridLayout();
-    layoutTranslate->addWidget(new QLabel(m_scene->projectInfo().labelX() + ":"), 0, 0);
+    layoutTranslate->addWidget(new QLabel(Util::scene()->projectInfo().labelX() + ":"), 0, 0);
     layoutTranslate->addWidget(txtTranslateX, 0, 1);
-    layoutTranslate->addWidget(new QLabel(m_scene->projectInfo().labelY() + ":"), 1, 0);
+    layoutTranslate->addWidget(new QLabel(Util::scene()->projectInfo().labelY() + ":"), 1, 0);
     layoutTranslate->addWidget(txtTranslateY, 1, 1);
     layoutTranslate->addWidget(new QLabel(""), 2, 0);
 
@@ -56,9 +54,9 @@ void SceneTransformDialog::createControls()
     txtRotateAngle = new SLineEdit("0", false);
 
     QGridLayout *layoutRotate = new QGridLayout();
-    layoutRotate->addWidget(new QLabel(m_scene->projectInfo().labelX() + ":"), 0, 0);
+    layoutRotate->addWidget(new QLabel(Util::scene()->projectInfo().labelX() + ":"), 0, 0);
     layoutRotate->addWidget(txtRotateBasePointX, 0, 1);
-    layoutRotate->addWidget(new QLabel(m_scene->projectInfo().labelY() + ":"), 1, 0);
+    layoutRotate->addWidget(new QLabel(Util::scene()->projectInfo().labelY() + ":"), 1, 0);
     layoutRotate->addWidget(txtRotateBasePointY, 1, 1);
     layoutRotate->addWidget(new QLabel(tr("Angle:")), 2, 0);
     layoutRotate->addWidget(txtRotateAngle, 2, 1);
@@ -72,9 +70,9 @@ void SceneTransformDialog::createControls()
     txtScaleFactor = new SLineEdit("1");
 
     QGridLayout *layoutScale = new QGridLayout();
-    layoutScale->addWidget(new QLabel(m_scene->projectInfo().labelX() + ":"), 0, 0);
+    layoutScale->addWidget(new QLabel(Util::scene()->projectInfo().labelX() + ":"), 0, 0);
     layoutScale->addWidget(txtScaleBasePointX, 0, 1);
-    layoutScale->addWidget(new QLabel(m_scene->projectInfo().labelY() + ":"), 1, 0);
+    layoutScale->addWidget(new QLabel(Util::scene()->projectInfo().labelY() + ":"), 1, 0);
     layoutScale->addWidget(txtScaleBasePointY, 1, 1);
     layoutScale->addWidget(new QLabel(tr("Scaling Factor:")), 2, 0);
     layoutScale->addWidget(txtScaleFactor, 2, 1);
@@ -108,13 +106,13 @@ void SceneTransformDialog::createControls()
 void SceneTransformDialog::doAccept()
 {
     if (tabWidget->currentWidget() == widTranslate)
-        m_scene->transformTranslate(Point(txtTranslateX->value(), txtTranslateY->value()), chkCopy->isChecked());
+        Util::scene()->transformTranslate(Point(txtTranslateX->value(), txtTranslateY->value()), chkCopy->isChecked());
 
     if (tabWidget->currentWidget() == widRotate)
-        m_scene->transformRotate(Point(txtRotateBasePointX->value(), txtRotateBasePointY->value()), txtRotateAngle->value(), chkCopy->isChecked());
+        Util::scene()->transformRotate(Point(txtRotateBasePointX->value(), txtRotateBasePointY->value()), txtRotateAngle->value(), chkCopy->isChecked());
 
     if (tabWidget->currentWidget() == widScale)
-        m_scene->transformScale(Point(txtScaleBasePointX->value(), txtScaleBasePointY->value()), txtScaleFactor->value(), chkCopy->isChecked());
+        Util::scene()->transformScale(Point(txtScaleBasePointX->value(), txtScaleBasePointY->value()), txtScaleFactor->value(), chkCopy->isChecked());
 
     accept();
 }

@@ -18,7 +18,6 @@
 class Scene;
 class SceneView;
 
-static Scene *m_scene;
 static SceneView *m_sceneView;
 
 class ScriptEditor;
@@ -27,7 +26,7 @@ class ScriptEditorDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ScriptEditorDialog(Scene *scene, SceneView *sceneView, QWidget *parent = 0);
+    ScriptEditorDialog(SceneView *sceneView, QWidget *parent = 0);
     ~ScriptEditorDialog();
 
     void showDialog();

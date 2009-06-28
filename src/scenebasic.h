@@ -45,7 +45,7 @@ public:
     SceneBasic();
     virtual ~SceneBasic();
 
-    virtual int showDialog(Scene *scene, QWidget *parent) = 0;
+    virtual int showDialog(QWidget *parent) = 0;
 
     QVariant variant();
 };
@@ -62,7 +62,7 @@ public:
 
     double distance(const Point &point);
 
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -83,7 +83,7 @@ public:
     double distance(const Point &point);
     inline int direction() { return (((nodeStart->point.x-nodeEnd->point.x)*nodeStart->point.y - (nodeStart->point.y-nodeEnd->point.y)*nodeStart->point.x) > 0) ? 1 : -1; }
 
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -100,7 +100,7 @@ public:
 
     double distance(const Point &point);
 
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -110,7 +110,7 @@ class DSceneBasic: public QDialog
     Q_OBJECT
 
 public:
-    DSceneBasic(Scene *scene, QWidget *parent);
+    DSceneBasic(QWidget *parent);
     ~DSceneBasic();
 
 private slots:
@@ -118,7 +118,6 @@ private slots:
     void doReject();
 
 protected:
-    Scene *m_scene;
     SceneBasic *m_object;
 
     virtual QLayout *createContent() = 0;
@@ -138,7 +137,7 @@ class DSceneNode : public DSceneBasic
     Q_OBJECT
 
 public:
-    DSceneNode(Scene *scene, SceneNode *node, QWidget *parent);
+    DSceneNode(SceneNode *node, QWidget *parent);
     ~DSceneNode();
 
 protected:
@@ -159,7 +158,7 @@ class DSceneEdge : public DSceneBasic
     Q_OBJECT
 
 public:
-    DSceneEdge(Scene *scene, SceneEdge *edge, QWidget *parent);
+    DSceneEdge(SceneEdge *edge, QWidget *parent);
     ~DSceneEdge();
 
 protected:
@@ -184,7 +183,7 @@ class DSceneLabel : public DSceneBasic
     Q_OBJECT
 
 public:
-    DSceneLabel(Scene *scene, SceneLabel *label, QWidget *parent);
+    DSceneLabel(SceneLabel *label, QWidget *parent);
     ~DSceneLabel();
 
 protected:

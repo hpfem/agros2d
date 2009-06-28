@@ -20,6 +20,7 @@
 #include "scene.h"
 
 class SLineEdit;
+class SLineEditValue;
 
 class Scene;
 class SceneEdgeMarker;
@@ -35,7 +36,7 @@ public:
 
     SceneEdgeMarker(const QString &name, PhysicFieldBC type);
 
-    virtual int showDialog(Scene *scene, QWidget *parent) = 0;
+    virtual int showDialog(QWidget *parent) = 0;
 
     virtual QString script() = 0;
     QVariant variant();
@@ -46,7 +47,7 @@ public:
     SceneEdgeMarkerNone();
 
     QString script() { return ""; }
-    virtual int showDialog(Scene *scene, QWidget *parent) {}
+    virtual int showDialog(QWidget *parent) {}
 };
 
 // *************************************************************************************************************************************
@@ -59,7 +60,7 @@ public:
     SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -72,7 +73,7 @@ public:
     SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -89,7 +90,7 @@ public:
     SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature);
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -102,7 +103,7 @@ public:
     SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -118,7 +119,7 @@ public:
     QString script();
     SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY, double forceX, double forceY);
 
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -131,7 +132,7 @@ public:
 
     SceneLabelMarker(const QString &name);
 
-    virtual int showDialog(Scene *scene, QWidget *parent) = 0;
+    virtual int showDialog(QWidget *parent) = 0;
 
     virtual QString script() = 0;
     QVariant variant();
@@ -142,7 +143,7 @@ public:
     SceneLabelMarkerNone();
 
     QString script() { return ""; }
-    virtual int showDialog(Scene *scene, QWidget *parent) {}
+    virtual int showDialog(QWidget *parent) {}
 };
 
 // *************************************************************************************************************************************
@@ -156,7 +157,7 @@ public:
     SceneLabelElectrostaticMarker(const QString &name, Value charge_density, Value permittivity);
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -170,7 +171,7 @@ public:
     SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity);
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -183,7 +184,7 @@ public:
     SceneLabelCurrentMarker(const QString &name, Value conductivity);
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -197,7 +198,7 @@ public:
     SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability);
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -215,7 +216,7 @@ public:
     inline double mu() { return young_modulus / (2*(1 + poisson_ratio)); }
 
     QString script();
-    int showDialog(Scene *scene, QWidget *parent);
+    int showDialog(QWidget *parent);
 };
 
 // *************************************************************************************************************************************
@@ -235,7 +236,7 @@ protected:
     void createDialog();
 
     virtual void load();
-    virtual void save();
+    virtual bool save();
     void setSize();
 
 private slots:
@@ -261,11 +262,11 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
     QComboBox *cmbType;
-    SLineEdit *txtValue;
+    SLineEditValue *txtValue;
 };
 
 // *************************************************************************************************************************************
@@ -282,11 +283,11 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
     QComboBox *cmbType;
-    QLineEdit *txtValue;
+    SLineEditValue *txtValue;
 };
 
 // *************************************************************************************************************************************
@@ -303,14 +304,14 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
     QComboBox *cmbType;
-    SLineEdit *txtTemperature;
-    SLineEdit *txtHeatFlux;
-    SLineEdit *txtHeatTransferCoefficient;
-    SLineEdit *txtExternalTemperature;
+    SLineEditValue *txtTemperature;
+    SLineEditValue *txtHeatFlux;
+    SLineEditValue *txtHeatTransferCoefficient;
+    SLineEditValue *txtExternalTemperature;
 
 private slots:
     void doTypeChanged(int index);
@@ -330,11 +331,11 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
     QComboBox *cmbType;
-    QLineEdit *txtValue;
+    SLineEditValue *txtValue;
 };
 
 // *************************************************************************************************************************************
@@ -351,7 +352,7 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
     QComboBox *cmbTypeX;
@@ -359,7 +360,6 @@ private:
     SLineEdit *txtForceX;
     SLineEdit *txtForceY;
 };
-
 
 // *************************************************************************************************************************************
 
@@ -379,7 +379,7 @@ protected:
     void setSize();
 
     virtual void load();
-    virtual void save();
+    virtual bool save();
 
 private slots:
     void doAccept();
@@ -404,11 +404,11 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
-    SLineEdit *txtPermittivity;
-    SLineEdit *txtChargeDensity;
+    SLineEditValue *txtPermittivity;
+    SLineEditValue *txtChargeDensity;
 };
 
 // *************************************************************************************************************************************
@@ -425,11 +425,11 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
-    SLineEdit *txtPermeability;
-    SLineEdit *txtCurrentDensity;
+    SLineEditValue *txtPermeability;
+    SLineEditValue *txtCurrentDensity;
 };
 
 // *************************************************************************************************************************************
@@ -446,11 +446,11 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
-    SLineEdit *txtThermalConductivity;
-    SLineEdit *txtVolumeHeat;
+    SLineEditValue *txtThermalConductivity;
+    SLineEditValue *txtVolumeHeat;
 };
 
 // *************************************************************************************************************************************
@@ -467,10 +467,10 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
-    SLineEdit *txtConductivity;
+    SLineEditValue *txtConductivity;
 };
 
 // *************************************************************************************************************************************
@@ -487,7 +487,7 @@ protected:
     QLayout *createContent();
 
     void load();
-    void save();
+    bool save();
 
 private:
     SLineEdit *txtYoungModulus;

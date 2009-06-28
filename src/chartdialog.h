@@ -53,7 +53,7 @@ public slots:
     void doPlot();
 
 public:
-    ChartDialog(Scene *scene, QWidget *parent = 0);
+    ChartDialog(QWidget *parent = 0);
     ~ChartDialog();
 
     void showDialog();
@@ -62,8 +62,6 @@ protected:
     void hideEvent(QHideEvent *event);
 
 private:
-    Scene *m_scene;
-
     QTabWidget* tabWidget;
 
     QwtPlotPicker *picker;

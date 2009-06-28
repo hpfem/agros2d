@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="3" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
+        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
             <scriptstartup>U = 1;
 eps1 = 10;
 eps2 = 3;</scriptstartup>

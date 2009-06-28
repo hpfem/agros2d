@@ -79,7 +79,7 @@ public slots:
     void doShowMessage(const QString &message);
 
 public:
-    SolverDialog(Scene *scene, QWidget *parent);
+    SolverDialog(QWidget *parent);
     ~SolverDialog();
 
     void setMode(SolverMode mode) { this->m_mode = mode; }    
@@ -91,8 +91,6 @@ private slots:
 private:
     SolverMode m_mode;
     QString m_errorMessage;
-
-    Scene *m_scene;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;

@@ -31,7 +31,7 @@ void SurfaceIntegralValueView::doShowSurfaceIntegral(SurfaceIntegralValue *surfa
 
     trvWidget->insertTopLevelItem(0, pointGeometry);
 
-    if (surfaceIntegralValue->scene()->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
         if (SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic = dynamic_cast<SurfaceIntegralValueElectrostatic *>(surfaceIntegralValue))
             showElectrostatic(surfaceIntegralValueElectrostatic);
@@ -95,18 +95,16 @@ void SurfaceIntegralValueView::addValue(QTreeWidgetItem *parent, QString name, Q
     item->setTextAlignment(2, Qt::AlignLeft);
 }
 
-SurfaceIntegralValue::SurfaceIntegralValue(Scene *scene)
+SurfaceIntegralValue::SurfaceIntegralValue()
 {
-    this->m_scene = scene;
-
     length = 0;
     surface = 0;
-    for (int i = 0; i<m_scene->edges.length(); i++)
+    for (int i = 0; i<Util::scene()->edges.length(); i++)
     {
-        if (m_scene->edges[i]->isSelected)
+        if (Util::scene()->edges[i]->isSelected)
         {
-            length += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_LENGTH);
-            surface += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_SURFACE);
+            length += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_LENGTH);
+            surface += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_SURFACE);
         }
     }
 }
@@ -118,17 +116,17 @@ QString SurfaceIntegralValue::toString()
 
 // ****************************************************************************************************************
 
-SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic(Scene *scene) : SurfaceIntegralValue(scene)
+SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic() : SurfaceIntegralValue()
 {
     surfaceCharge = 0;
 
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        for (int i = 0; i<m_scene->edges.length(); i++)
+        for (int i = 0; i<Util::scene()->edges.length(); i++)
         {
-            if (m_scene->edges[i]->isSelected)
+            if (Util::scene()->edges[i]->isSelected)
             {
-                surfaceCharge += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY);
+                surfaceCharge += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY);
             }
         }
     }
@@ -141,9 +139,9 @@ QString SurfaceIntegralValueElectrostatic::toString()
 
 // ****************************************************************************************************************
 
-SurfaceIntegralValueMagnetostatic::SurfaceIntegralValueMagnetostatic(Scene *scene) : SurfaceIntegralValue(scene)
+SurfaceIntegralValueMagnetostatic::SurfaceIntegralValueMagnetostatic() : SurfaceIntegralValue()
 {
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
 
     }
@@ -156,17 +154,17 @@ QString SurfaceIntegralValueMagnetostatic::toString()
 
 // ****************************************************************************************************************
 
-SurfaceIntegralValueCurrent::SurfaceIntegralValueCurrent(Scene *scene) : SurfaceIntegralValue(scene)
+SurfaceIntegralValueCurrent::SurfaceIntegralValueCurrent() : SurfaceIntegralValue()
 {
     currentDensity = 0;
 
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        for (int i = 0; i<m_scene->edges.length(); i++)
+        for (int i = 0; i<Util::scene()->edges.length(); i++)
         {
-            if (m_scene->edges[i]->isSelected)
+            if (Util::scene()->edges[i]->isSelected)
             {
-                currentDensity += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_CURRENT_CURRENT_DENSITY);
+                currentDensity += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_CURRENT_CURRENT_DENSITY);
             }
         }
     }
@@ -179,21 +177,21 @@ QString SurfaceIntegralValueCurrent::toString()
 
 // ****************************************************************************************************************
 
-SurfaceIntegralValueHeat::SurfaceIntegralValueHeat(Scene *scene) : SurfaceIntegralValue(scene)
+SurfaceIntegralValueHeat::SurfaceIntegralValueHeat() : SurfaceIntegralValue()
 {
     averageTemperature = 0;
     temperatureDifference = 0;
     heatFlux = 0;
 
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        for (int i = 0; i<m_scene->edges.length(); i++)
+        for (int i = 0; i<Util::scene()->edges.length(); i++)
         {
-            if (m_scene->edges[i]->isSelected)
+            if (Util::scene()->edges[i]->isSelected)
             {
-                averageTemperature += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE);
-                temperatureDifference += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE);
-                heatFlux += m_scene->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX);
+                averageTemperature += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE);
+                temperatureDifference += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE);
+                heatFlux += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX);
             }
         }
 
@@ -211,24 +209,24 @@ QString SurfaceIntegralValueHeat::toString()
 
 // ***********************************************************************************************************************
 
-SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)
+SurfaceIntegralValue *surfaceIntegralValueFactory()
 {
-    switch (scene->projectInfo().physicField)
+    switch (Util::scene()->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        return new SurfaceIntegralValueElectrostatic(scene);
+        return new SurfaceIntegralValueElectrostatic();
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        return new SurfaceIntegralValueMagnetostatic(scene);
+        return new SurfaceIntegralValueMagnetostatic();
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        return new SurfaceIntegralValueHeat(scene);
+        return new SurfaceIntegralValueHeat();
         break;
     case PHYSICFIELD_CURRENT:
-        return new SurfaceIntegralValueCurrent(scene);
+        return new SurfaceIntegralValueCurrent();
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(scene->projectInfo().physicField).toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory()" << endl;
         throw;
         break;
     }

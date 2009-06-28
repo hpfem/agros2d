@@ -51,7 +51,7 @@ void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
         }
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)" << endl;
+        std::cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)" << endl;
         throw;
         break;
     }
@@ -83,22 +83,41 @@ double SLineEdit::value()
         return scriptValue.toNumber();
 }
 
-double SLineEdit::value(const QString &script)
-{
-    QScriptEngine engine;
-
-    // evaluate startup script
-    if (!script.isEmpty())
-        engine.evaluate(script);
-
-    QScriptValue scriptValue = engine.evaluate(text());
-    if (scriptValue.isNumber())
-        return scriptValue.toNumber();
-}
-
 void SLineEdit::setValue(double value)
 {
     setText(QString::number(value));
 }
 
 // ***********************************************************************************************************
+
+SLineEditValue::SLineEditValue(QWidget *parent) : QLineEdit(parent)
+{
+    setToolTip(tr("This textedit allows using variables."));
+    setText("0");
+}
+
+Value SLineEditValue::value()
+{
+    return Value(text());
+}
+
+bool SLineEditValue::evaluate()
+{
+    Value val = value();
+    if (val.evaluate(Util::scene()->projectInfo().scriptStartup))
+    {
+        m_number = val.number;
+        return true;
+    }
+    else
+    {
+        setFocus();
+        return false;
+    }
+}
+
+double SLineEditValue::number()
+{
+    if (evaluate())
+        return m_number;
+}

@@ -13,7 +13,7 @@ class SurfaceIntegralValueMagnetostatic;
 class SurfaceIntegralValueHeat;
 class SurfaceIntegralValueCurrent;
 
-SurfaceIntegralValue *surfaceIntegralValueFactory(Scene *scene);
+SurfaceIntegralValue *surfaceIntegralValueFactory();
 
 class SurfaceIntegralValueView : public QDockWidget
 {
@@ -44,14 +44,11 @@ public:
     double length;
     double surface;
 
-    SurfaceIntegralValue(Scene *scene);
-
-    inline Scene *scene() { return m_scene; }
+    SurfaceIntegralValue();
 
     virtual QString toString();
 
 protected:
-    Scene *m_scene;
 };
 
 // ******************************************************************************************************************
@@ -61,7 +58,7 @@ class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
 public:
     double surfaceCharge;
 
-    SurfaceIntegralValueElectrostatic(Scene *scene);
+    SurfaceIntegralValueElectrostatic();
     QString toString();
 };
 
@@ -70,7 +67,7 @@ public:
 class SurfaceIntegralValueMagnetostatic : public SurfaceIntegralValue
 {
 public:
-    SurfaceIntegralValueMagnetostatic(Scene *scene);
+    SurfaceIntegralValueMagnetostatic();
     QString toString();
 };
 
@@ -83,7 +80,7 @@ public:
     double temperatureDifference;
     double heatFlux;
 
-    SurfaceIntegralValueHeat(Scene *scene);
+    SurfaceIntegralValueHeat();
     QString toString();
 };
 
@@ -94,7 +91,7 @@ class SurfaceIntegralValueCurrent : public SurfaceIntegralValue
 public:
     double currentDensity;
 
-    SurfaceIntegralValueCurrent(Scene *scene);
+    SurfaceIntegralValueCurrent();
     QString toString();
 };
 // ******************************************************************************************************************

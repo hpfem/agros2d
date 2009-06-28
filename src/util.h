@@ -22,8 +22,6 @@
 #include <math.h>
 #include <locale.h>
 
-using namespace std;
-
 const double EPS_ZERO = 1e-12;
 const double EPS0 = 8.854e-12;
 const double MU0 = 4*M_PI*1e-7;
@@ -32,17 +30,10 @@ const int NDOF_STOP = 40000;
 struct Value
 {
     QString text;
-    double value;
+    double number;
 
-    Value()
-    {
-        text = "";
-    }
-
-    Value(const QString &value)
-    {
-        text = value;
-    }
+    Value() { text = ""; }
+    Value(const QString &value) { text = value; }
 
     bool evaluate(const QString &script = "")
     {
@@ -55,7 +46,7 @@ struct Value
         QScriptValue scriptValue = engine.evaluate(text);
         if (scriptValue.isNumber())
         {
-            value = scriptValue.toNumber();
+            number = scriptValue.toNumber();
             return true;
         }
 
@@ -201,7 +192,7 @@ inline QString physicFieldStringKey(PhysicField physicField)
     case PHYSICFIELD_ELASTICITY:
         return "elasticity";
     default:
-        cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldStringKey(PhysicField physicField)" << endl;
+        std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldStringKey(PhysicField physicField)" << endl;
         throw;
         break;
     }
@@ -222,7 +213,7 @@ inline QString physicFieldString(PhysicField physicField)
     case PHYSICFIELD_ELASTICITY:
         return QObject::tr("Elasticity");
     default:
-        cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
+        std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
         throw;
         break;
     }
@@ -240,7 +231,7 @@ inline PhysicField physicFieldFromStringKey(const QString &physicFieldString)
         return PHYSICFIELD_HEAT_TRANSFER;
     if (physicFieldString == "elasticity")
         return PHYSICFIELD_ELASTICITY;
-    cerr << "Physical field '" + physicFieldString.toStdString() + "' is not implemented. physicFieldFromString(const QString &physicFieldString)" << endl;
+    std::cerr << "Physical field '" + physicFieldString.toStdString() + "' is not implemented. physicFieldFromString(const QString &physicFieldString)" << endl;
     throw;
 }
 
@@ -335,7 +326,7 @@ inline QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable
         return QObject::tr("Von Mises stress");
         break;
     default:
-        cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
+        std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
         break;
     }
@@ -394,7 +385,7 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Pa");
         break;
     default:
-        cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
+        std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
         break;
     }
@@ -450,7 +441,7 @@ inline QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Free");
         break;
     default:
-        cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
+        std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
         break;
     }
@@ -491,7 +482,7 @@ inline QString physicFieldBCStringKey(PhysicFieldBC physicFieldBC)
         return "free";
         break;
     default:
-        cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCStringKey(PhysicFieldBC physicFieldBC)" << endl;
+        std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCStringKey(PhysicFieldBC physicFieldBC)" << endl;
         throw;
         break;
     }

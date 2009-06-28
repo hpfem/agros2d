@@ -15,7 +15,7 @@ class SceneTransformDialog : public QDialog
 {
     Q_OBJECT
 public:
-    SceneTransformDialog(Scene *scene, QWidget *parent = 0);
+    SceneTransformDialog(QWidget *parent = 0);
     ~SceneTransformDialog();
 
 private slots:
@@ -23,8 +23,6 @@ private slots:
     void doReject();
 
 protected:
-    Scene *m_scene;
-
     void createControls();
 
 private:

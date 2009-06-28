@@ -31,7 +31,7 @@ void VolumeIntegralValueView::doShowVolumeIntegral(VolumeIntegralValue *volumeIn
 
     trvWidget->insertTopLevelItem(0, pointGeometry);
 
-    if (volumeIntegralValue->scene()->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
         if (VolumeIntegralValueElectrostatic *volumeIntegralValueElectrostatic = dynamic_cast<VolumeIntegralValueElectrostatic *>(volumeIntegralValue))
             showElectrostatic(volumeIntegralValueElectrostatic);
@@ -100,27 +100,25 @@ void VolumeIntegralValueView::addValue(QTreeWidgetItem *parent, QString name, QS
     item->setTextAlignment(2, Qt::AlignLeft);
 }
 
-VolumeIntegralValue::VolumeIntegralValue(Scene *scene)
+VolumeIntegralValue::VolumeIntegralValue()
 {
-    this->m_scene = scene;
-
     crossSection = 0;
     volume = 0;
-    for (int i = 0; i<m_scene->labels.length(); i++)
+    for (int i = 0; i<Util::scene()->labels.length(); i++)
     {
-        if (m_scene->labels[i]->isSelected)
+        if (Util::scene()->labels[i]->isSelected)
         {
-            crossSection += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CROSSSECTION);
-            volume += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_VOLUME);
+            crossSection += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CROSSSECTION);
+            volume += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_VOLUME);
         }
     }
 }
 
 // ****************************************************************************************************************
 
-VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic(Scene *scene) : VolumeIntegralValue(scene)
+VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic() : VolumeIntegralValue()
 {
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
         averageElectricFieldX = 0;
         averageElectricFieldY = 0;
@@ -129,17 +127,17 @@ VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic(Scene *scene)
         averageDisplacementY = 0;
         averageDisplacement = 0;
         energy = 0;
-        for (int i = 0; i<m_scene->labels.length(); i++)
+        for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
-            if (m_scene->labels[i]->isSelected)
+            if (Util::scene()->labels[i]->isSelected)
             {
-                averageElectricFieldX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_X);
-                averageElectricFieldY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_Y);
-                averageElectricField += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD);
-                averageDisplacementX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_X);
-                averageDisplacementY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_Y);
-                averageDisplacement += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT);
-                energy += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ENERGY_DENSITY);
+                averageElectricFieldX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_X);
+                averageElectricFieldY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_Y);
+                averageElectricField += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD);
+                averageDisplacementX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_X);
+                averageDisplacementY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_Y);
+                averageDisplacement += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT);
+                energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ENERGY_DENSITY);
             }
         }
 
@@ -172,9 +170,9 @@ QStringList VolumeIntegralValueElectrostatic::variables()
 
 // ****************************************************************************************************************
 
-VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic(Scene *scene) : VolumeIntegralValue(scene)
+VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic() : VolumeIntegralValue()
 {
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
         averageMagneticFieldX = 0;
         averageMagneticFieldY = 0;
@@ -183,17 +181,17 @@ VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic(Scene *scene)
         averageFluxDensityY = 0;
         averageFluxDensity = 0;
         energy = 0;
-        for (int i = 0; i<m_scene->labels.length(); i++)
+        for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
-            if (m_scene->labels[i]->isSelected)
+            if (Util::scene()->labels[i]->isSelected)
             {
-                averageMagneticFieldX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD_X);
-                averageMagneticFieldY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD_Y);
-                averageMagneticField += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD);
-                averageFluxDensityX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY_X);
-                averageFluxDensityY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY_Y);
-                averageFluxDensity += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY);
-                energy += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_ENERGY_DENSITY);
+                averageMagneticFieldX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD_X);
+                averageMagneticFieldY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD_Y);
+                averageMagneticField += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD);
+                averageFluxDensityX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY_X);
+                averageFluxDensityY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY_Y);
+                averageFluxDensity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY);
+                energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_ENERGY_DENSITY);
             }
         }
 
@@ -226,9 +224,9 @@ QStringList VolumeIntegralValueMagnetostatic::variables()
 
 // ****************************************************************************************************************
 
-VolumeIntegralValueHeat::VolumeIntegralValueHeat(Scene *scene) : VolumeIntegralValue(scene)
+VolumeIntegralValueHeat::VolumeIntegralValueHeat() : VolumeIntegralValue()
 {
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
         averageTemperature = 0;
         averageTemperatureGradientX = 0;
@@ -237,17 +235,17 @@ VolumeIntegralValueHeat::VolumeIntegralValueHeat(Scene *scene) : VolumeIntegralV
         averageHeatFluxX = 0;
         averageHeatFluxY = 0;
         averageHeatFlux = 0;
-        for (int i = 0; i<m_scene->labels.length(); i++)
+        for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
-            if (m_scene->labels[i]->isSelected)
+            if (Util::scene()->labels[i]->isSelected)
             {
-                averageTemperature += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE);
-                averageTemperatureGradientX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_X);
-                averageTemperatureGradientY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_Y);
-                averageTemperatureGradient += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT);
-                averageHeatFluxX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX_X);
-                averageHeatFluxY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX_Y);
-                averageHeatFlux += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX);
+                averageTemperature += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE);
+                averageTemperatureGradientX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_X);
+                averageTemperatureGradientY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_Y);
+                averageTemperatureGradient += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT);
+                averageHeatFluxX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX_X);
+                averageHeatFluxY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX_Y);
+                averageHeatFlux += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX);
             }
         }
 
@@ -281,9 +279,9 @@ QStringList VolumeIntegralValueHeat::variables()
 
 // ****************************************************************************************************************
 
-VolumeIntegralValueCurrent::VolumeIntegralValueCurrent(Scene *scene) : VolumeIntegralValue(scene)
+VolumeIntegralValueCurrent::VolumeIntegralValueCurrent() : VolumeIntegralValue()
 {
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
         averageElectricFieldX = 0;
         averageElectricFieldY = 0;
@@ -292,17 +290,17 @@ VolumeIntegralValueCurrent::VolumeIntegralValueCurrent(Scene *scene) : VolumeInt
         averageCurrentDensityY = 0;
         averageCurrentDensity = 0;
         losses = 0;
-        for (int i = 0; i<m_scene->labels.length(); i++)
+        for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
-            if (m_scene->labels[i]->isSelected)
+            if (Util::scene()->labels[i]->isSelected)
             {
-                averageElectricFieldX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_X);
-                averageElectricFieldY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_Y);
-                averageElectricField += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD);
-                averageCurrentDensityX += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_X);
-                averageCurrentDensityY += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_Y);
-                averageCurrentDensity += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY);
-                losses += m_scene->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_LOSSES);
+                averageElectricFieldX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_X);
+                averageElectricFieldY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_Y);
+                averageElectricField += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD);
+                averageCurrentDensityX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_X);
+                averageCurrentDensityY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_Y);
+                averageCurrentDensity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY);
+                losses += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_LOSSES);
             }
         }
 
@@ -334,24 +332,24 @@ QStringList VolumeIntegralValueCurrent::variables()
 
 // ***********************************************************************************************************************
 
-VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)
+VolumeIntegralValue *volumeIntegralValueFactory()
 {
-    switch (scene->projectInfo().physicField)
+    switch (Util::scene()->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        return new VolumeIntegralValueElectrostatic(scene);
+        return new VolumeIntegralValueElectrostatic();
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        return new VolumeIntegralValueMagnetostatic(scene);
+        return new VolumeIntegralValueMagnetostatic();
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        return new VolumeIntegralValueHeat(scene);
+        return new VolumeIntegralValueHeat();
         break;
     case PHYSICFIELD_CURRENT:
-        return new VolumeIntegralValueCurrent(scene);
+        return new VolumeIntegralValueCurrent();
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(scene->projectInfo().physicField).toStdString() + "' is not implemented. VolumeIntegralValue *volumeIntegralValueFactory(Scene *scene)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. VolumeIntegralValue *volumeIntegralValueFactory()" << endl;
         throw;
         break;
     }

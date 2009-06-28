@@ -6,8 +6,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
 
-    m_scene = new Scene();
-
     createActions();
     createScene();
     createViews();
@@ -15,21 +13,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createToolBars();
     createStatusBar();
 
-    connect(m_scene, SIGNAL(invalidated()), sceneView, SLOT(doInvalidated()));
-    connect(m_scene, SIGNAL(invalidated()), sceneInfoView, SLOT(doInvalidated()));
-    connect(m_scene, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(invalidated()), sceneView, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(invalidated()), sceneInfoView, SLOT(doInvalidated()));
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
-    connect(m_scene, SIGNAL(solved()), sceneView, SLOT(doSolved()));
+    connect(Util::scene(), SIGNAL(solved()), sceneView, SLOT(doSolved()));
 
     connect(sceneView, SIGNAL(mousePressed(LocalPointValue *)), localPointValueView, SLOT(doShowPoint(LocalPointValue *)));
     connect(sceneView, SIGNAL(mousePressed(VolumeIntegralValue *)), volumeIntegralValueView, SLOT(doShowVolumeIntegral(VolumeIntegralValue *)));
     connect(sceneView, SIGNAL(mousePressed(SurfaceIntegralValue *)), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral(SurfaceIntegralValue *)));
 
-    m_scene->clear();
+    Util::scene()->clear();
     sceneView->doDefaults();
 
-    chartDialog = new ChartDialog(m_scene, this);
-    scriptEditorDialog = new ScriptEditorDialog(m_scene, sceneView, this);
+    chartDialog = new ChartDialog(this);
+    scriptEditorDialog = new ScriptEditorDialog(sceneView, this);
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
@@ -183,15 +181,15 @@ void MainWindow::createMenus()
     mnuScene->addAction(sceneView->actSceneZoomIn);
     mnuScene->addAction(sceneView->actSceneZoomOut);
     mnuScene->addSeparator();
-    mnuScene->addAction(m_scene->actNewNode);
-    mnuScene->addAction(m_scene->actNewEdge);
-    mnuScene->addAction(m_scene->actNewLabel);
+    mnuScene->addAction(Util::scene()->actNewNode);
+    mnuScene->addAction(Util::scene()->actNewEdge);
+    mnuScene->addAction(Util::scene()->actNewLabel);
     mnuScene->addSeparator();
-    mnuScene->addAction(m_scene->actNewEdgeMarker);
-    mnuScene->addAction(m_scene->actNewLabelMarker);
+    mnuScene->addAction(Util::scene()->actNewEdgeMarker);
+    mnuScene->addAction(Util::scene()->actNewLabelMarker);
     mnuScene->addSeparator();
     mnuScene->addAction(actScriptStartup);
-    mnuScene->addAction(m_scene->actProjectProperties);
+    mnuScene->addAction(Util::scene()->actProjectProperties);
 
     mnuTools = menuBar()->addMenu(tr("Tools"));
     mnuTools->addAction(actCreateMesh);
@@ -233,7 +231,7 @@ void MainWindow::createToolBars()
     tlbScene->addAction(sceneView->actSceneModePostprocessor);
     tlbScene->addSeparator();
     tlbScene->addAction(sceneView->actSceneViewSelectRegion);
-    tlbScene->addAction(m_scene->actTransform);
+    tlbScene->addAction(Util::scene()->actTransform);
     tlbScene->addSeparator();
     tlbScene->addAction(actCreateMesh);
     tlbScene->addAction(actSolve);
@@ -284,7 +282,7 @@ void MainWindow::createScene()
 {
     QHBoxLayout *layout = new QHBoxLayout;
     
-    sceneView = new SceneView(m_scene, this);
+    sceneView = new SceneView(this);
     layout->addWidget(sceneView);
     
     QWidget *widget = new QWidget;
@@ -300,7 +298,7 @@ void MainWindow::createViews()
     sceneInfoView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, sceneInfoView);
     
-    localPointValueView = new LocalPointValueView(m_scene, this);
+    localPointValueView = new LocalPointValueView(this);
     localPointValueView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::RightDockWidgetArea, localPointValueView);
 
@@ -316,9 +314,9 @@ void MainWindow::createViews()
 void MainWindow::setRecentFiles()
 {
     // recent files
-    if (m_scene->projectInfo().fileName != "")
+    if (Util::scene()->projectInfo().fileName != "")
     {
-        QFileInfo fileInfo(m_scene->projectInfo().fileName);
+        QFileInfo fileInfo(Util::scene()->projectInfo().fileName);
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -342,10 +340,10 @@ void MainWindow::doDocumentNew()
     ProjectDialog *projectDialog = new ProjectDialog(projectInfo, true, this);
     if (projectDialog->showDialog() == QDialog::Accepted)
     {
-        m_scene->clear();
+        Util::scene()->clear();
         sceneView->doDefaults();
-        m_scene->projectInfo() = projectInfo;
-        m_scene->refresh();
+        Util::scene()->projectInfo() = projectInfo;
+        Util::scene()->refresh();
 
         sceneView->actSceneModeNode->trigger();
         sceneView->doZoomBestFit();
@@ -361,7 +359,7 @@ void MainWindow::doDocumentOpen()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros 2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {        
-        m_scene->readFromFile(fileName);
+        Util::scene()->readFromFile(fileName);
         setRecentFiles();
 
         sceneView->doDefaults();
@@ -374,7 +372,7 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
     QString fileName = action->text();
     if (QFile::exists(fileName))
     {
-        m_scene->readFromFile(fileName);
+        Util::scene()->readFromFile(fileName);
         setRecentFiles();
 
         sceneView->doDefaults();
@@ -384,8 +382,8 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    if (QFile::exists(m_scene->projectInfo().fileName))
-        m_scene->writeToFile(m_scene->projectInfo().fileName);
+    if (QFile::exists(Util::scene()->projectInfo().fileName))
+        Util::scene()->writeToFile(Util::scene()->projectInfo().fileName);
     else
         doDocumentSaveAs();
 }
@@ -400,7 +398,7 @@ void MainWindow::doDocumentSaveAs()
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix() != "h2d") fileName += ".h2d";
-        m_scene->writeToFile(fileName);
+        Util::scene()->writeToFile(fileName);
         setRecentFiles();
     }
 }
@@ -410,7 +408,7 @@ void MainWindow::doDocumentImportDXF()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Import file"), "data", "DXF files (*.dxf)");
     if (!fileName.isEmpty())
     {
-        m_scene->readFromDxf(fileName);
+        Util::scene()->readFromDxf(fileName);
         sceneView->doZoomBestFit();
     }
 }
@@ -422,7 +420,7 @@ void MainWindow::doDocumentExportDXF()
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix().toLower() != "dxf") fileName += ".dxf";
-        m_scene->writeToDxf(fileName);
+        Util::scene()->writeToDxf(fileName);
     }
 }
 
@@ -440,7 +438,7 @@ void MainWindow::doDocumentSaveImage()
 void MainWindow::doCreateMesh()
 {
     // create mesh
-    m_scene->createMeshAndSolve(SOLVER_MESH);
+    Util::scene()->createMeshAndSolve(SOLVER_MESH);
 
     sceneView->actSceneModeLabel->trigger();
     sceneView->sceneViewSettings().showInitialMesh = true;
@@ -453,13 +451,13 @@ void MainWindow::doCreateMesh()
 void MainWindow::doSolve()
 {
     // solve project
-    m_scene->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
-    if (m_scene->sceneSolution()->isSolved())
+    Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
+    if (Util::scene()->sceneSolution()->isSolved())
         sceneView->actSceneModePostprocessor->trigger();
 
     // show local point values
     Point point = Point(0, 0);
-    localPointValueView->doShowPoint(localPointValueFactory(point, m_scene));
+    localPointValueView->doShowPoint(localPointValueFactory(point));
 
     doInvalidated();
 }
@@ -484,7 +482,7 @@ void MainWindow::doScriptEditor()
 
 void MainWindow::doScriptStartup()
 {
-    ScriptStartupDialog *scriptStartup = new ScriptStartupDialog(m_scene->projectInfo(), this);
+    ScriptStartupDialog *scriptStartup = new ScriptStartupDialog(Util::scene()->projectInfo(), this);
     scriptStartup->showDialog();
 
     delete scriptStartup;
@@ -502,18 +500,18 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    m_scene->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
-    // m_scene->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
-    // m_scene->readFromFile("data/electrostatic_planar_poisson.h2d");
-    // m_scene->readFromFile("data/heat_transfer_axisymmetric.h2d");
-    // m_scene->readFromFile("data/heat_transfer_planar.h2d");
-    // m_scene->readFromFile("data/heat_transfer_detail.h2d");
-    // m_scene->readFromFile("data/heat_transfer_actuator.h2d");
-    // m_scene->readFromFile("data/magnetostatic_planar.h2d");
-    // m_scene->readFromFile("data/magnetostatic_axisymmetric_actuator.h2d");
-    // m_scene->readFromFile("data/magnetostatic_planar_magnet.h2d");
-    // m_scene->readFromFile("data/current_feeder.h2d");
-    // m_scene->readFromFile("data/elasticity_planar.h2d");
+    Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
+    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
+    // Util::scene()->readFromFile("data/electrostatic_planar_poisson.h2d");
+    // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.h2d");
+    // Util::scene()->readFromFile("data/heat_transfer_planar.h2d");
+    // Util::scene()->readFromFile("data/heat_transfer_detail.h2d");
+    // Util::scene()->readFromFile("data/heat_transfer_actuator.h2d");
+    // Util::scene()->readFromFile("data/magnetostatic_planar.h2d");
+    // Util::scene()->readFromFile("data/magnetostatic_axisymmetric_actuator.h2d");
+    // Util::scene()->readFromFile("data/magnetostatic_planar_magnet.h2d");
+    // Util::scene()->readFromFile("data/current_feeder.h2d");
+    // Util::scene()->readFromFile("data/elasticity_planar.h2d");
 
     sceneView->doDefaults();
     doInvalidated();
@@ -525,10 +523,10 @@ void MainWindow::doPaste()
 
 void MainWindow::doInvalidated()
 {
-    actChart->setEnabled(m_scene->sceneSolution()->isSolved());
+    actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-    lblProblemType->setText(tr("Problem Type: ") + problemTypeString(m_scene->projectInfo().problemType));
-    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(m_scene->projectInfo().physicField));
+    lblProblemType->setText(tr("Problem Type: ") + problemTypeString(Util::scene()->projectInfo().problemType));
+    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->projectInfo().physicField));
 }
 
 void MainWindow::doHelp()

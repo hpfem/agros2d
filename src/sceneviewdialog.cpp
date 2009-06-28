@@ -83,7 +83,7 @@ void SceneViewDialog::load()
     txtGridStep->setText(QString::number(m_sceneView->sceneViewSettings().gridStep));
 
     // contours
-    txtContoursCount->setText(QString::number(m_sceneView->sceneViewSettings().contoursCount));
+    txtContoursCount->setValue(m_sceneView->sceneViewSettings().contoursCount);
 
     // scalar field
     cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable));
@@ -92,7 +92,7 @@ void SceneViewDialog::load()
     cmbPalette->setCurrentIndex(cmbPalette->findData(m_sceneView->sceneViewSettings().paletteType));
     chkPaletteFilter->setChecked(m_sceneView->sceneViewSettings().paletteFilter);
     doPaletteFilter(chkPaletteFilter->checkState());
-    txtPaletteSteps->setText(QString::number(m_sceneView->sceneViewSettings().paletteSteps));
+    txtPaletteSteps->setValue(m_sceneView->sceneViewSettings().paletteSteps);
     chkScalarFieldRangeAuto->setChecked(m_sceneView->sceneViewSettings().scalarRangeAuto);
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
     txtScalarFieldRangeMin->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMin));
@@ -126,14 +126,14 @@ void SceneViewDialog::save()
     m_sceneView->sceneViewSettings().gridStep = txtGridStep->text().toDouble();
 
     // contours
-    m_sceneView->sceneViewSettings().contoursCount = txtContoursCount->text().toInt();
+    m_sceneView->sceneViewSettings().contoursCount = txtContoursCount->value();
 
     // scalar field
     m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) cmbScalarFieldVariable->itemData(cmbScalarFieldVariable->currentIndex()).toInt();
     m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
     m_sceneView->sceneViewSettings().paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
     m_sceneView->sceneViewSettings().paletteFilter = chkPaletteFilter->isChecked();
-    m_sceneView->sceneViewSettings().paletteSteps = txtPaletteSteps->text().toInt();
+    m_sceneView->sceneViewSettings().paletteSteps = txtPaletteSteps->value();
     m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
     m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
     m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
@@ -202,7 +202,7 @@ void SceneViewDialog::createControls()
 
     // layout scalar field
     cmbScalarFieldVariable = new QComboBox();
-    fillComboBoxVariable(cmbScalarFieldVariable, m_sceneView->scene()->projectInfo().physicField);
+    fillComboBoxVariable(cmbScalarFieldVariable, Util::scene()->projectInfo().physicField);
     connect(cmbScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
 
     cmbPalette = new QComboBox();
@@ -227,8 +227,9 @@ void SceneViewDialog::createControls()
     chkPaletteFilter = new QCheckBox();
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
 
-    txtPaletteSteps = new QLineEdit("0");
-    txtPaletteSteps->setValidator(new QIntValidator(txtPaletteSteps));
+    txtPaletteSteps = new QSpinBox(this);
+    txtPaletteSteps->setMinimum(5);
+    txtPaletteSteps->setMaximum(100);
 
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
@@ -257,7 +258,7 @@ void SceneViewDialog::createControls()
 
     // layout vector field
     cmbVectorFieldVariable = new QComboBox();
-    switch (m_sceneView->scene()->projectInfo().physicField)
+    switch (Util::scene()->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         {
@@ -289,7 +290,7 @@ void SceneViewDialog::createControls()
         }
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(m_sceneView->scene()->projectInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
         throw;
         break;
     }
@@ -315,8 +316,9 @@ void SceneViewDialog::createControls()
     // grpGrid->setLayout(layoutGrid);
 
     // layout contours
-    txtContoursCount = new QLineEdit("0");
-    txtContoursCount->setValidator(new QIntValidator(txtContoursCount));
+    txtContoursCount = new QSpinBox(this);
+    txtContoursCount->setMinimum(1);
+    txtContoursCount->setMaximum(100);
 
     QGridLayout *layoutContours = new QGridLayout();
     layoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
@@ -372,8 +374,8 @@ void SceneViewDialog::doScalarFieldVariable(int index)
     else
     {
         cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbScalarFieldVariableComp->addItem(m_sceneView->scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
-        cmbScalarFieldVariableComp->addItem(m_sceneView->scene()->projectInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
+        cmbScalarFieldVariableComp->addItem(Util::scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
+        cmbScalarFieldVariableComp->addItem(Util::scene()->projectInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
     }
 
     if (cmbScalarFieldVariableComp->currentIndex() == -1)

@@ -1,11 +1,9 @@
 #include "chartdialog.h"
 
-ChartDialog::ChartDialog(Scene *scene, QWidget *parent) : QDialog(parent)
+ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 {
     QSettings settings;
     restoreGeometry(settings.value("ChartDialog/Geometry", saveGeometry()).toByteArray());
-    
-    m_scene = scene;
     
     setWindowIcon(icon("chart"));
     setWindowTitle(tr("Chart"));
@@ -37,7 +35,7 @@ ChartDialog::~ChartDialog()
 
 void ChartDialog::showDialog()
 {
-    fillComboBoxVariable(cmbFieldVariable, m_scene->projectInfo().physicField);    
+    fillComboBoxVariable(cmbFieldVariable, Util::scene()->projectInfo().physicField);
     show();
     doChartLine();
 }
@@ -81,16 +79,16 @@ void ChartDialog::createControls()
 
     // start
     QFormLayout *layoutStart = new QFormLayout();
-    layoutStart->addRow(m_scene->projectInfo().labelX() + ":", txtStartX);
-    layoutStart->addRow(m_scene->projectInfo().labelY() + ":", txtStartY);
+    layoutStart->addRow(Util::scene()->projectInfo().labelX() + ":", txtStartX);
+    layoutStart->addRow(Util::scene()->projectInfo().labelY() + ":", txtStartY);
     
     QGroupBox *grpStart = new QGroupBox(tr("Start"), this);
     grpStart->setLayout(layoutStart);
     
     // end
     QFormLayout *layoutEnd = new QFormLayout();
-    layoutEnd->addRow(m_scene->projectInfo().labelX() + ":", txtEndX);
-    layoutEnd->addRow(m_scene->projectInfo().labelY() + ":", txtEndY);
+    layoutEnd->addRow(Util::scene()->projectInfo().labelX() + ":", txtEndX);
+    layoutEnd->addRow(Util::scene()->projectInfo().labelY() + ":", txtEndY);
     
     QGroupBox *grpEnd = new QGroupBox(tr("End"), this);
     grpEnd->setLayout(layoutEnd);
@@ -98,8 +96,8 @@ void ChartDialog::createControls()
     // x - axis
     radAxisLength = new QRadioButton(tr("Length"), this);
     radAxisLength->setChecked(true);
-    radAxisX = new QRadioButton(m_scene->projectInfo().labelX(), this);
-    radAxisY = new QRadioButton(m_scene->projectInfo().labelY(), this);
+    radAxisX = new QRadioButton(Util::scene()->projectInfo().labelX(), this);
+    radAxisY = new QRadioButton(Util::scene()->projectInfo().labelY(), this);
     
     QButtonGroup *axisGroup = new QButtonGroup(this);
     axisGroup->addButton(radAxisLength);
@@ -208,14 +206,14 @@ void ChartDialog::doPlot()
     // table
     trvTable->clear();
     trvTable->setRowCount(count);
-    QStringList headers = localPointValueHeaderFactory(m_scene->projectInfo().physicField);
+    QStringList headers = localPointValueHeaderFactory(Util::scene()->projectInfo().physicField);
     trvTable->setColumnCount(headers.count());
     trvTable->setHorizontalHeaderLabels(headers);
     
     // chart
     if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
-    if (radAxisX->isChecked()) text.setText(m_scene->projectInfo().labelX() + " (m):");
-    if (radAxisY->isChecked()) text.setText(m_scene->projectInfo().labelY() + " (m):");
+    if (radAxisX->isChecked()) text.setText(Util::scene()->projectInfo().labelX() + " (m):");
+    if (radAxisY->isChecked()) text.setText(Util::scene()->projectInfo().labelY() + " (m):");
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
@@ -229,7 +227,7 @@ void ChartDialog::doPlot()
     for (int i = 0; i<count; i++)
     {
         Point point(start.x + i*diff.x, start.y + i*diff.y);
-        LocalPointValue *localPointValue = localPointValueFactory(point, m_scene);
+        LocalPointValue *localPointValue = localPointValueFactory(point);
         
         // x value
         if (radAxisLength->isChecked()) xval[i] = sqrt(sqr(i*diff.x) + sqr(i*diff.y));
@@ -238,8 +236,6 @@ void ChartDialog::doPlot()
         
         // y value
         yval[i] = localPointValue->variableValue(physicFieldVariable, physicFieldVariableComp);
-        // yval[i] = -m_scene->sceneSolution()->sln()->get_pt_value(point.x, point.y, FN_DX_0);
-        // yval[i] = 10/(point.x * (log(0.03/0.01)/10 + log(0.05/0.03)/3) * ((point.x<0.03) ? 10 : 3));
         
         // table
         row.clear();
@@ -269,8 +265,8 @@ void ChartDialog::doFieldVariable(int index)
     else
     {
         cmbFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbFieldVariableComp->addItem(m_scene->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
-        cmbFieldVariableComp->addItem(m_scene->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_Y);
+        cmbFieldVariableComp->addItem(Util::scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
+        cmbFieldVariableComp->addItem(Util::scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_Y);
     }
     
     if (cmbFieldVariableComp->currentIndex() == -1)

@@ -53,7 +53,7 @@ public slots:
     void doSetChartLine(const Point &start, const Point &end);
 
 public:
-    SceneView(Scene *scene, QWidget *parent = 0);
+    SceneView(QWidget *parent = 0);
     ~SceneView();
 
     QAction *actSceneZoomIn;
@@ -80,7 +80,6 @@ public:
     QAction *actSceneViewProperties;
     QAction *actFullScreen;
 
-    inline Scene *scene() { return m_scene; }
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
     inline SceneMode sceneMode() { return m_sceneMode; }
 
@@ -121,7 +120,6 @@ private:
 
     SceneNode *m_nodeLast;
 
-    Scene *m_scene;
     SceneMode m_sceneMode;
     SceneViewSettings m_sceneViewSettings;
 

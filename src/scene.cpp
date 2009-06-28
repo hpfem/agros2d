@@ -33,7 +33,7 @@ Scene::Scene() {
     createActions();
 
     m_sceneSolution = new SceneSolution(this);
-    solverDialog = new SolverDialog(this, QApplication::activeWindow());
+    solverDialog = new SolverDialog(QApplication::activeWindow());
     connect(solverDialog, SIGNAL(solved()), this, SLOT(doSolved()));
 
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
@@ -472,7 +472,7 @@ void Scene::doInvalidated()
 void Scene::doNewNode(const Point &point)
 {
     SceneNode *node = new SceneNode(point);
-    if (node->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
+    if (node->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
         addNode(node);
     }
@@ -483,7 +483,7 @@ void Scene::doNewNode(const Point &point)
 void Scene::doNewEdge()
 {
     SceneEdge *edge = new SceneEdge(nodes[0], nodes[1], edgeMarkers[0], 0);
-    if (edge->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
+    if (edge->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
         addEdge(edge);
     }
@@ -494,7 +494,7 @@ void Scene::doNewEdge()
 void Scene::doNewLabel()
 {
     SceneLabel *label = new SceneLabel(Point(), labelMarkers[0], 0);
-    if (label->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
+    if (label->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
         addLabel(label);
     }
@@ -528,7 +528,7 @@ void Scene::doNewEdgeMarker()
         break;
     }
 
-    if (marker->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
+    if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
         addEdgeMarker(marker);
     }
@@ -562,7 +562,7 @@ void Scene::doNewLabelMarker()
         break;
     }
 
-    if (marker->showDialog(this, QApplication::activeWindow()) == QDialog::Accepted)
+    if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
         addLabelMarker(marker);
     }
@@ -572,7 +572,7 @@ void Scene::doNewLabelMarker()
 
 void Scene::doTransform()
 {
-    SceneTransformDialog *sceneTransformDialog = new SceneTransformDialog(this, QApplication::activeWindow());
+    SceneTransformDialog *sceneTransformDialog = new SceneTransformDialog(QApplication::activeWindow());
     sceneTransformDialog->exec();
     delete sceneTransformDialog;
 }

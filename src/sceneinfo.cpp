@@ -41,12 +41,12 @@ void SceneInfoView::createMenu()
 {
     mnuInfo = new QMenu(this);
 
-    mnuInfo->addAction(m_sceneView->scene()->actNewNode);
-    mnuInfo->addAction(m_sceneView->scene()->actNewEdge);
-    mnuInfo->addAction(m_sceneView->scene()->actNewLabel);
+    mnuInfo->addAction(Util::scene()->actNewNode);
+    mnuInfo->addAction(Util::scene()->actNewEdge);
+    mnuInfo->addAction(Util::scene()->actNewLabel);
     mnuInfo->addSeparator();
-    mnuInfo->addAction(m_sceneView->scene()->actNewEdgeMarker);
-    mnuInfo->addAction(m_sceneView->scene()->actNewLabelMarker);
+    mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
+    mnuInfo->addAction(Util::scene()->actNewLabelMarker);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actProperties);
     mnuInfo->addAction(actDelete);
@@ -130,98 +130,96 @@ void SceneInfoView::doInvalidated()
 
     clearNodes();
 
-    Scene *scene = m_sceneView->scene();
-
     // problem name
     QTreeWidgetItem *itemProblemName = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemProblemName->setText(0, tr("Name: ") + scene->projectInfo().name);
+    itemProblemName->setText(0, tr("Name: ") + Util::scene()->projectInfo().name);
     // problem filename
     QTreeWidgetItem *itemProblemFileName = new QTreeWidgetItem(problemInfoGeneralNode);
-    QFileInfo fileInfo(scene->projectInfo().fileName);
+    QFileInfo fileInfo(Util::scene()->projectInfo().fileName);
     itemProblemFileName->setText(0, tr("Filename: ") + fileInfo.fileName());
     // problem type
     QTreeWidgetItem *itemProblemType = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemProblemType->setText(0, tr("Type: ") + problemTypeString(scene->projectInfo().problemType));
+    itemProblemType->setText(0, tr("Type: ") + problemTypeString(Util::scene()->projectInfo().problemType));
     // physic field
     QTreeWidgetItem *itemPhysicField = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemPhysicField->setText(0, tr("Field: ") + physicFieldString(scene->projectInfo().physicField));
+    itemPhysicField->setText(0, tr("Field: ") + physicFieldString(Util::scene()->projectInfo().physicField));
 
     // solver
-    if (scene->sceneSolution()->isMeshed())
+    if (Util::scene()->sceneSolution()->isMeshed())
     {
         QTreeWidgetItem *itemSolverVertices = new QTreeWidgetItem(problemInfoSolverNode);
-        itemSolverVertices->setText(0, tr("Nodes: ") + QString::number(scene->sceneSolution()->mesh().get_num_nodes()));
+        itemSolverVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->mesh().get_num_nodes()));
         QTreeWidgetItem *itemSolverEdges = new QTreeWidgetItem(problemInfoSolverNode);
-        itemSolverEdges->setText(0, tr("Elements: ") + QString::number(scene->sceneSolution()->mesh().get_num_active_elements()));
-        if (scene->sceneSolution()->isSolved())
+        itemSolverEdges->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->mesh().get_num_active_elements()));
+        if (Util::scene()->sceneSolution()->isSolved())
         {
             QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
-            itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(scene->sceneSolution()->sln()->get_num_dofs()));
+            itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
 
-            QTime time(0, scene->sceneSolution()->timeElapsed() / (60*100), scene->sceneSolution()->timeElapsed() / 1000, scene->sceneSolution()->timeElapsed() % 1000);
+            QTime time(0, Util::scene()->sceneSolution()->timeElapsed() / (60*100), Util::scene()->sceneSolution()->timeElapsed() / 1000, Util::scene()->sceneSolution()->timeElapsed() % 1000);
             QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);
             itemSolverTimeElapsed->setText(0, tr("Time elapsed: ") + time.toString("mm:ss.zzz"));
 
-            if (scene->sceneSolution()->adaptiveSteps() > 0)
+            if (Util::scene()->sceneSolution()->adaptiveSteps() > 0)
             {
                 QTreeWidgetItem *itemSolverAdaptiveError = new QTreeWidgetItem(problemInfoSolverNode);
-                itemSolverAdaptiveError->setText(0, tr("Adaptive error: ") + QString::number(scene->sceneSolution()->adaptiveError(), 'f', 3) + " %");
+                itemSolverAdaptiveError->setText(0, tr("Adaptive error: ") + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %");
 
                 QTreeWidgetItem *itemSolverAdaptiveSteps = new QTreeWidgetItem(problemInfoSolverNode);
-                itemSolverAdaptiveSteps->setText(0, tr("Adaptive steps: ") + QString::number(scene->sceneSolution()->adaptiveSteps()));
+                itemSolverAdaptiveSteps->setText(0, tr("Adaptive steps: ") + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()));
             }
         }
     }
 
     // boundary conditions
-    for (int i = 1; i<scene->edgeMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
-        item->setText(0, scene->edgeMarkers[i]->name);
+        item->setText(0, Util::scene()->edgeMarkers[i]->name);
         item->setIcon(0, icon("scene-edgemarker"));
-        item->setData(0, Qt::UserRole, scene->edgeMarkers[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->edgeMarkers[i]->variant());
     }
 
     // materials
-    for (int i = 1; i<scene->labelMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(materialsNode);
 
-        item->setText(0, scene->labelMarkers[i]->name);
+        item->setText(0, Util::scene()->labelMarkers[i]->name);
         item->setIcon(0, icon("scene-labelmarker"));
-        item->setData(0, Qt::UserRole, scene->labelMarkers[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->labelMarkers[i]->variant());
     }
 
     // geometry
     // nodes
-    for (int i = 0; i<scene->nodes.count(); i++)
+    for (int i = 0; i<Util::scene()->nodes.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(nodesNode);
 
-        item->setText(0, QString("[%1; %2]").arg(scene->nodes[i]->point.x, 0, 'f', 3).arg(scene->nodes[i]->point.y, 0, 'f', 3));
+        item->setText(0, QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'f', 3).arg(Util::scene()->nodes[i]->point.y, 0, 'f', 3));
         item->setIcon(0, icon("scene-node"));
-        item->setData(0, Qt::UserRole, scene->nodes[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->nodes[i]->variant());
     }
 
     // edges
-    for (int i = 0; i<scene->edges.count(); i++)
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(edgesNode);
 
-        item->setText(0, QString("[%1; %2] - [%3; %4]").arg(scene->edges[i]->nodeStart->point.x, 0, 'f', 3).arg(scene->edges[i]->nodeStart->point.y, 0, 'f', 3).arg(scene->edges[i]->nodeEnd->point.x, 0, 'f', 3).arg(scene->edges[i]->nodeEnd->point.y, 0, 'f', 3));
+        item->setText(0, QString("[%1; %2] - [%3; %4]").arg(Util::scene()->edges[i]->nodeStart->point.x, 0, 'f', 3).arg(Util::scene()->edges[i]->nodeStart->point.y, 0, 'f', 3).arg(Util::scene()->edges[i]->nodeEnd->point.x, 0, 'f', 3).arg(Util::scene()->edges[i]->nodeEnd->point.y, 0, 'f', 3));
         item->setIcon(0, icon("scene-edge"));
-        item->setData(0, Qt::UserRole, scene->edges[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->edges[i]->variant());
     }    
 
     // labels
-    for (int i = 0; i<scene->labels.count(); i++)
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(labelsNode);
 
-        item->setText(0, QString("[%1; %2]").arg(scene->labels[i]->point.x, 0, 'f', 3).arg(scene->labels[i]->point.y, 0, 'f', 3));
+        item->setText(0, QString("[%1; %2]").arg(Util::scene()->labels[i]->point.x, 0, 'f', 3).arg(Util::scene()->labels[i]->point.y, 0, 'f', 3));
         item->setIcon(0, icon("scene-label"));
-        item->setData(0, Qt::UserRole, scene->labels[i]->variant());
+        item->setData(0, Qt::UserRole, Util::scene()->labels[i]->variant());
     }
 
     blockSignals(false);
@@ -301,7 +299,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
 
     if (item != NULL)
     {
-        m_sceneView->scene()->highlightNone();
+        Util::scene()->highlightNone();
 
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
@@ -317,10 +315,10 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneEdgeMarker *objectEdgeMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneEdgeMarker *>())
         {
             // select all edges
-            for (int i = 0; i<m_sceneView->scene()->edges.count(); i++)
+            for (int i = 0; i<Util::scene()->edges.count(); i++)
             {
-                if (m_sceneView->scene()->edges[i]->marker == objectEdgeMarker)
-                    m_sceneView->scene()->edges[i]->isHighlighted = true;
+                if (Util::scene()->edges[i]->marker == objectEdgeMarker)
+                    Util::scene()->edges[i]->isHighlighted = true;
             }
             m_sceneView->doRefresh();
 
@@ -332,10 +330,10 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
         {
             // select all labels
-            for (int i = 0; i<m_sceneView->scene()->labels.count(); i++)
+            for (int i = 0; i<Util::scene()->labels.count(); i++)
             {
-                if (m_sceneView->scene()->labels[i]->marker == objectLabelMarker)
-                    m_sceneView->scene()->labels[i]->isHighlighted = true;
+                if (Util::scene()->labels[i]->marker == objectLabelMarker)
+                    Util::scene()->labels[i]->isHighlighted = true;
             }
             m_sceneView->doRefresh();
 
@@ -355,7 +353,7 @@ void SceneInfoView::doProperties() {
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic*>())
         {
-            if (objectBasic->showDialog(m_sceneView->scene(), this) == QDialog::Accepted)
+            if (objectBasic->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneView->doRefresh();
                 doInvalidated();
@@ -365,7 +363,7 @@ void SceneInfoView::doProperties() {
         // edge marker
         if (SceneEdgeMarker *objectEdgeMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneEdgeMarker *>())
         {
-            if (objectEdgeMarker->showDialog(m_sceneView->scene(), this) == QDialog::Accepted)
+            if (objectEdgeMarker->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneView->doRefresh();
                 doInvalidated();
@@ -375,7 +373,7 @@ void SceneInfoView::doProperties() {
         // label marker
         if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
         {
-            if (objectLabelMarker->showDialog(m_sceneView->scene(), this) == QDialog::Accepted)
+            if (objectLabelMarker->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneView->doRefresh();
                 doInvalidated();
@@ -393,29 +391,29 @@ void SceneInfoView::doDelete()
         {
             if (SceneNode *node = dynamic_cast<SceneNode *>(objectBasic))
             {
-                m_sceneView->scene()->removeNode(node);
+                Util::scene()->removeNode(node);
             }
 
             if (SceneEdge *edge = dynamic_cast<SceneEdge *>(objectBasic))
             {
-                m_sceneView->scene()->removeEdge(edge);
+                Util::scene()->removeEdge(edge);
             }
 
             if (SceneLabel *label = dynamic_cast<SceneLabel *>(objectBasic))
             {
-                m_sceneView->scene()->removeLabel(label);
+                Util::scene()->removeLabel(label);
             }
         }
         // edge marker
         if (SceneEdgeMarker *objectEdgeMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneEdgeMarker *>())
         {
-            m_sceneView->scene()->removeEdgeMarker(objectEdgeMarker);
+            Util::scene()->removeEdgeMarker(objectEdgeMarker);
         }
 
         // label marker
         if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
         {
-            m_sceneView->scene()->removeLabelMarker(objectLabelMarker);
+            Util::scene()->removeLabelMarker(objectLabelMarker);
         }
 
         m_sceneView->doRefresh();

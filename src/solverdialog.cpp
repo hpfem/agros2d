@@ -1,9 +1,7 @@
 #include "solverdialog.h"
 
-SolverDialog::SolverDialog(Scene *scene, QWidget *parent) : QDialog(parent)
+SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 {
-    m_scene = scene;
-
     setMinimumSize(350, 260);
     setMaximumSize(minimumSize());
     setWindowIcon(icon("logo"));
@@ -74,15 +72,15 @@ void SolverDialog::doAccept()
 void SolverDialog::runMesh()
 {
     // file info
-    QFileInfo fileInfo(m_scene->projectInfo().fileName);
+    QFileInfo fileInfo(Util::scene()->projectInfo().fileName);
 
     m_errorMessage = "";
 
-    m_scene->sceneSolution()->mesh().free();
+    Util::scene()->sceneSolution()->mesh().free();
     QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".mesh");
 
     // create triangle files
-    m_scene->writeToTriangle();
+    Util::scene()->writeToTriangle();
     emit message(tr("Triangle poly file was created."));
     updateProgress(20);
 
@@ -111,13 +109,13 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
     if (exitCode == 0)
     {
         // file info
-        QFileInfo fileInfo(m_scene->projectInfo().fileName);
+        QFileInfo fileInfo(Util::scene()->projectInfo().fileName);
 
         emit message(tr("Triangle mesh files was created."));
         updateProgress(40);
 
         // convert triangle mesh to hermes mesh
-        if (m_scene->triangle2mesh(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName(), QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName()))
+        if (Util::scene()->triangle2mesh(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName(), QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName()))
         {
             emit message(tr("Triangle mesh was converted to Hermes mesh file."));
 
@@ -136,7 +134,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
         }
         else
         {
-            QFile::remove(m_scene->projectInfo().fileName + ".mesh");
+            QFile::remove(Util::scene()->projectInfo().fileName + ".mesh");
             QString msg(tr("Triangle mesh could not be converted to Hermes mesh file."));
             QMessageBox::warning(QApplication::activeWindow(), tr("Triangle to Hermes error"), msg);
 
@@ -150,7 +148,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
     }
     else
     {
-        QFile file(m_scene->projectInfo().fileName + ".triangle.out");
+        QFile file(Util::scene()->projectInfo().fileName + ".triangle.out");
 
         if (!file.open(QIODevice::ReadOnly))
             return;
@@ -169,75 +167,75 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
 void SolverDialog::runSolver()
 {
     // file info
-    QFileInfo fileInfo(m_scene->projectInfo().fileName);
+    QFileInfo fileInfo(Util::scene()->projectInfo().fileName);
     QString fileName(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".mesh");
 
     // benchmark
     QTime time;
     time.start();
 
-    emit message(tr("Solver was started: ") + physicFieldString(m_scene->projectInfo().physicField) + " (" + problemTypeString(m_scene->projectInfo().problemType) + ")");
+    emit message(tr("Solver was started: ") + physicFieldString(Util::scene()->projectInfo().physicField) + " (" + problemTypeString(Util::scene()->projectInfo().problemType) + ")");
     updateProgress(60);
 
     SolutionArray *solutionArray;
 
     if (fileInfo.exists())
     {
-        switch (m_scene->projectInfo().physicField)
+        switch (Util::scene()->projectInfo().physicField)
         {
         case PHYSICFIELD_ELECTROSTATIC:
             {
                 // edge markers
-                ElectrostaticEdge *electrostaticEdge = new ElectrostaticEdge[m_scene->edges.count()+1];
+                ElectrostaticEdge *electrostaticEdge = new ElectrostaticEdge[Util::scene()->edges.count()+1];
                 electrostaticEdge[0].type = PHYSICFIELDBC_NONE;
                 electrostaticEdge[0].value = 0;
-                for (int i = 0; i<m_scene->edges.count(); i++)
+                for (int i = 0; i<Util::scene()->edges.count(); i++)
                 {
-                    if (m_scene->edgeMarkers.indexOf(m_scene->edges[i]->marker) == 0)
+                    if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
                     {
                         electrostaticEdge[i+1].type = PHYSICFIELDBC_NONE;
                         electrostaticEdge[i+1].value = 0;
                     }
                     else
                     {
-                        SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_scene->edges[i]->marker);
+                        SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edges[i]->marker);
 
                         // evaluate script
-                        if (!edgeElectrostaticMarker->value.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!edgeElectrostaticMarker->value.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
                         electrostaticEdge[i+1].type = edgeElectrostaticMarker->type;
-                        electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.value;
+                        electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.number;
                     }
                 }
 
                 // label markers
-                ElectrostaticLabel *electrostaticLabel = new ElectrostaticLabel[m_scene->labels.count()];
-                for (int i = 0; i<m_scene->labels.count(); i++)
+                ElectrostaticLabel *electrostaticLabel = new ElectrostaticLabel[Util::scene()->labels.count()];
+                for (int i = 0; i<Util::scene()->labels.count(); i++)
                 {
-                    if (m_scene->labelMarkers.indexOf(m_scene->labels[i]->marker) == 0)
+                    if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
                     {
                     }
                     else
                     {
-                        SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[i]->marker);
+                        SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[i]->marker);
 
                         // evaluate script
-                        if (!labelElectrostaticMarker->charge_density.evaluate(m_scene->projectInfo().scriptStartup)) return;
-                        if (!labelElectrostaticMarker->permittivity.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!labelElectrostaticMarker->charge_density.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+                        if (!labelElectrostaticMarker->permittivity.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
-                        electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.value;
-                        electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.value;
+                        electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.number;
+                        electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.number;
                     }
                 }
 
                 solutionArray = electrostatic_main(this,
                                                    fileName.toStdString().c_str(),
                                                    electrostaticEdge, electrostaticLabel,
-                                                   m_scene->projectInfo().numberOfRefinements,
-                                                   m_scene->projectInfo().polynomialOrder,
-                                                   m_scene->projectInfo().adaptivitySteps,
-                                                   m_scene->projectInfo().adaptivityTolerance,
-                                                   (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                                                   Util::scene()->projectInfo().numberOfRefinements,
+                                                   Util::scene()->projectInfo().polynomialOrder,
+                                                   Util::scene()->projectInfo().adaptivitySteps,
+                                                   Util::scene()->projectInfo().adaptivityTolerance,
+                                                   (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] electrostaticEdge;
                 delete [] electrostaticLabel;
@@ -246,56 +244,56 @@ void SolverDialog::runSolver()
         case PHYSICFIELD_MAGNETOSTATIC:
             {
                 // edge markers
-                MagnetostaticEdge *magnetostaticEdge = new MagnetostaticEdge[m_scene->edges.count()+1];
+                MagnetostaticEdge *magnetostaticEdge = new MagnetostaticEdge[Util::scene()->edges.count()+1];
                 magnetostaticEdge[0].type = PHYSICFIELDBC_NONE;
                 magnetostaticEdge[0].value = 0;
-                for (int i = 0; i<m_scene->edges.count(); i++)
+                for (int i = 0; i<Util::scene()->edges.count(); i++)
                 {
-                    if (m_scene->edgeMarkers.indexOf(m_scene->edges[i]->marker) == 0)
+                    if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
                     {
                         magnetostaticEdge[i+1].type = PHYSICFIELDBC_NONE;
                         magnetostaticEdge[i+1].value = 0;
                     }
                     else
                     {
-                        SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(m_scene->edges[i]->marker);
+                        SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(Util::scene()->edges[i]->marker);
 
                         // evaluate script
-                        if (!edgeMagnetostaticMarker->value.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!edgeMagnetostaticMarker->value.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
                         magnetostaticEdge[i+1].type = edgeMagnetostaticMarker->type;
-                        magnetostaticEdge[i+1].value = edgeMagnetostaticMarker->value.value;
+                        magnetostaticEdge[i+1].value = edgeMagnetostaticMarker->value.number;
                     }
                 }
 
                 // label markers
-                MagnetostaticLabel *magnetostaticLabel = new MagnetostaticLabel[m_scene->labels.count()];
-                for (int i = 0; i<m_scene->labels.count(); i++)
+                MagnetostaticLabel *magnetostaticLabel = new MagnetostaticLabel[Util::scene()->labels.count()];
+                for (int i = 0; i<Util::scene()->labels.count(); i++)
                 {
-                    if (m_scene->labelMarkers.indexOf(m_scene->labels[i]->marker) == 0)
+                    if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
                     {
                     }
                     else
                     {
-                        SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[i]->marker);
+                        SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[i]->marker);
 
                         // evaluate script
-                        if (!labelMagnetostaticMarker->current_density.evaluate(m_scene->projectInfo().scriptStartup)) return;
-                        if (!labelMagnetostaticMarker->permeability.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!labelMagnetostaticMarker->current_density.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+                        if (!labelMagnetostaticMarker->permeability.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
-                        magnetostaticLabel[i].current_density = labelMagnetostaticMarker->current_density.value;
-                        magnetostaticLabel[i].permeability = labelMagnetostaticMarker->permeability.value;
+                        magnetostaticLabel[i].current_density = labelMagnetostaticMarker->current_density.number;
+                        magnetostaticLabel[i].permeability = labelMagnetostaticMarker->permeability.number;
                     }
                 }
 
                 solutionArray = magnetostatic_main(this,
                                                    fileName.toStdString().c_str(),
                                                    magnetostaticEdge, magnetostaticLabel,
-                                                   m_scene->projectInfo().numberOfRefinements,
-                                                   m_scene->projectInfo().polynomialOrder,
-                                                   m_scene->projectInfo().adaptivitySteps,
-                                                   m_scene->projectInfo().adaptivityTolerance,
-                                                   (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                                                   Util::scene()->projectInfo().numberOfRefinements,
+                                                   Util::scene()->projectInfo().polynomialOrder,
+                                                   Util::scene()->projectInfo().adaptivitySteps,
+                                                   Util::scene()->projectInfo().adaptivityTolerance,
+                                                   (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] magnetostaticEdge;
                 delete [] magnetostaticLabel;
@@ -304,54 +302,54 @@ void SolverDialog::runSolver()
         case PHYSICFIELD_CURRENT:
             {
                 // edge markers
-                CurrentEdge *currentEdge = new CurrentEdge[m_scene->edges.count()+1];
+                CurrentEdge *currentEdge = new CurrentEdge[Util::scene()->edges.count()+1];
                 currentEdge[0].type = PHYSICFIELDBC_NONE;
                 currentEdge[0].value = 0;
-                for (int i = 0; i<m_scene->edges.count(); i++)
+                for (int i = 0; i<Util::scene()->edges.count(); i++)
                 {
-                    if (m_scene->edgeMarkers.indexOf(m_scene->edges[i]->marker) == 0)
+                    if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
                     {
                         currentEdge[i+1].type = PHYSICFIELDBC_NONE;
                         currentEdge[i+1].value = 0;
                     }
                     else
                     {
-                        SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_scene->edges[i]->marker);
+                        SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->marker);
 
                         // evaluate script
-                        if (!edgeCurrentMarker->value.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!edgeCurrentMarker->value.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
                         currentEdge[i+1].type = edgeCurrentMarker->type;
-                        currentEdge[i+1].value = edgeCurrentMarker->value.value;
+                        currentEdge[i+1].value = edgeCurrentMarker->value.number;
                     }
                 }
 
                 // label markers
-                CurrentLabel *currentLabel = new CurrentLabel[m_scene->labels.count()];
-                for (int i = 0; i<m_scene->labels.count(); i++)
+                CurrentLabel *currentLabel = new CurrentLabel[Util::scene()->labels.count()];
+                for (int i = 0; i<Util::scene()->labels.count(); i++)
                 {
-                    if (m_scene->labelMarkers.indexOf(m_scene->labels[i]->marker) == 0)
+                    if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
                     {
                     }
                     else
                     {
-                        SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[i]->marker);
+                        SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[i]->marker);
 
                         // evaluate script
-                        if (!labelCurrentMarker->conductivity.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!labelCurrentMarker->conductivity.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
-                        currentLabel[i].conductivity = labelCurrentMarker->conductivity.value;
+                        currentLabel[i].conductivity = labelCurrentMarker->conductivity.number;
                     }
                 }
 
                 solutionArray = current_main(this,
                                              fileName.toStdString().c_str(),
                                              currentEdge, currentLabel,
-                                             m_scene->projectInfo().numberOfRefinements,
-                                             m_scene->projectInfo().polynomialOrder,
-                                             m_scene->projectInfo().adaptivitySteps,
-                                             m_scene->projectInfo().adaptivityTolerance,
-                                             (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                                             Util::scene()->projectInfo().numberOfRefinements,
+                                             Util::scene()->projectInfo().polynomialOrder,
+                                             Util::scene()->projectInfo().adaptivitySteps,
+                                             Util::scene()->projectInfo().adaptivityTolerance,
+                                             (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] currentEdge;
                 delete [] currentLabel;
@@ -360,42 +358,42 @@ void SolverDialog::runSolver()
         case PHYSICFIELD_HEAT_TRANSFER:
             {
                 // edge markers
-                HeatEdge *heatEdge = new HeatEdge[m_scene->edges.count()+1];
+                HeatEdge *heatEdge = new HeatEdge[Util::scene()->edges.count()+1];
                 heatEdge[0].type = PHYSICFIELDBC_NONE;
                 heatEdge[0].temperature = 0;
                 heatEdge[0].heatFlux = 0;
                 heatEdge[0].h = 0;
                 heatEdge[0].externalTemperature = 0;
-                for (int i = 0; i<m_scene->edges.count(); i++)
+                for (int i = 0; i<Util::scene()->edges.count(); i++)
                 {
-                    if (m_scene->edgeMarkers.indexOf(m_scene->edges[i]->marker) == 0)
+                    if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
                     {
                         heatEdge[i+1].type = PHYSICFIELDBC_NONE;
                     }
                     else
                     {
-                        SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(m_scene->edges[i]->marker);
+                        SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(Util::scene()->edges[i]->marker);
                         heatEdge[i+1].type = edgeHeatMarker->type;
                         switch (edgeHeatMarker->type)
                         {
                         case PHYSICFIELDBC_HEAT_TEMPERATURE:
                             {
                                 // evaluate script
-                                if (!edgeHeatMarker->temperature.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                                if (!edgeHeatMarker->temperature.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
-                                heatEdge[i+1].temperature = edgeHeatMarker->temperature.value;
+                                heatEdge[i+1].temperature = edgeHeatMarker->temperature.number;
                             }
                             break;
                         case PHYSICFIELDBC_HEAT_HEAT_FLUX:
                             {
                                 // evaluate script
-                                if (!edgeHeatMarker->heatFlux.evaluate(m_scene->projectInfo().scriptStartup)) return;
-                                if (!edgeHeatMarker->h.evaluate(m_scene->projectInfo().scriptStartup)) return;
-                                if (!edgeHeatMarker->externalTemperature.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                                if (!edgeHeatMarker->heatFlux.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+                                if (!edgeHeatMarker->h.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+                                if (!edgeHeatMarker->externalTemperature.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
-                                heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.value;
-                                heatEdge[i+1].h = edgeHeatMarker->h.value;
-                                heatEdge[i+1].externalTemperature = edgeHeatMarker->externalTemperature.value;
+                                heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.number;
+                                heatEdge[i+1].h = edgeHeatMarker->h.number;
+                                heatEdge[i+1].externalTemperature = edgeHeatMarker->externalTemperature.number;
                             }
                             break;
                         }
@@ -403,33 +401,33 @@ void SolverDialog::runSolver()
                 }
 
                 // label markers
-                HeatLabel *heatLabel = new HeatLabel[m_scene->labels.count()];
-                for (int i = 0; i<m_scene->labels.count(); i++)
+                HeatLabel *heatLabel = new HeatLabel[Util::scene()->labels.count()];
+                for (int i = 0; i<Util::scene()->labels.count(); i++)
                 {
-                    if (m_scene->labelMarkers.indexOf(m_scene->labels[i]->marker) == 0)
+                    if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
                     {
                     }
                     else
                     {
-                        SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[i]->marker);
+                        SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
 
                         // evaluate script
-                        if (!labelHeatMarker->thermal_conductivity.evaluate(m_scene->projectInfo().scriptStartup)) return;
-                        if (!labelHeatMarker->volume_heat.evaluate(m_scene->projectInfo().scriptStartup)) return;
+                        if (!labelHeatMarker->thermal_conductivity.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+                        if (!labelHeatMarker->volume_heat.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
 
-                        heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.value;
-                        heatLabel[i].volume_heat = labelHeatMarker->volume_heat.value;
+                        heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;
+                        heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
                     }
                 }
 
                 solutionArray = heat_main(this,
                                           fileName.toStdString().c_str(),
                                           heatEdge, heatLabel,
-                                          m_scene->projectInfo().numberOfRefinements,
-                                          m_scene->projectInfo().polynomialOrder,
-                                          m_scene->projectInfo().adaptivitySteps,
-                                          m_scene->projectInfo().adaptivityTolerance,
-                                          (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                                          Util::scene()->projectInfo().numberOfRefinements,
+                                          Util::scene()->projectInfo().polynomialOrder,
+                                          Util::scene()->projectInfo().adaptivitySteps,
+                                          Util::scene()->projectInfo().adaptivityTolerance,
+                                          (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] heatEdge;
                 delete [] heatLabel;
@@ -438,14 +436,14 @@ void SolverDialog::runSolver()
         case PHYSICFIELD_ELASTICITY:
             {
                 // edge markers
-                ElasticityEdge *elasticityEdge = new ElasticityEdge[m_scene->edges.count()+1];
+                ElasticityEdge *elasticityEdge = new ElasticityEdge[Util::scene()->edges.count()+1];
                 elasticityEdge[0].typeX = PHYSICFIELDBC_NONE;
                 elasticityEdge[0].typeY = PHYSICFIELDBC_NONE;
                 elasticityEdge[0].forceX = 0;
                 elasticityEdge[0].forceY = 0;
-                for (int i = 0; i<m_scene->edges.count(); i++)
+                for (int i = 0; i<Util::scene()->edges.count(); i++)
                 {
-                    if (m_scene->edgeMarkers.indexOf(m_scene->edges[i]->marker) == 0)
+                    if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
                     {
                         elasticityEdge[i+1].typeX = PHYSICFIELDBC_NONE;
                         elasticityEdge[i+1].typeY = PHYSICFIELDBC_NONE;
@@ -454,7 +452,7 @@ void SolverDialog::runSolver()
                     }
                     else
                     {
-                        SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(m_scene->edges[i]->marker);
+                        SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(Util::scene()->edges[i]->marker);
                         elasticityEdge[i+1].typeX = edgeElasticityMarker->typeX;
                         elasticityEdge[i+1].typeY = edgeElasticityMarker->typeY;
                         elasticityEdge[i+1].forceX = edgeElasticityMarker->forceX;
@@ -463,15 +461,15 @@ void SolverDialog::runSolver()
                 }
 
                 // label markers
-                ElasticityLabel *elasticityLabel = new ElasticityLabel[m_scene->labels.count()];
-                for (int i = 0; i<m_scene->labels.count(); i++)
+                ElasticityLabel *elasticityLabel = new ElasticityLabel[Util::scene()->labels.count()];
+                for (int i = 0; i<Util::scene()->labels.count(); i++)
                 {
-                    if (m_scene->labelMarkers.indexOf(m_scene->labels[i]->marker) == 0)
+                    if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
                     {
                     }
                     else
                     {
-                        SceneLabelElasticityMarker *labelElasticityMarker = dynamic_cast<SceneLabelElasticityMarker *>(m_scene->labels[i]->marker);
+                        SceneLabelElasticityMarker *labelElasticityMarker = dynamic_cast<SceneLabelElasticityMarker *>(Util::scene()->labels[i]->marker);
 
                         elasticityLabel[i].young_modulus = labelElasticityMarker->young_modulus;
                         elasticityLabel[i].poisson_ratio = labelElasticityMarker->poisson_ratio;
@@ -480,21 +478,21 @@ void SolverDialog::runSolver()
 
                 solutionArray = elasticity_main(fileName.toStdString().c_str(),
                                                 elasticityEdge, elasticityLabel,
-                                                m_scene->projectInfo().numberOfRefinements,
-                                                m_scene->projectInfo().polynomialOrder,
-                                                (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+                                                Util::scene()->projectInfo().numberOfRefinements,
+                                                Util::scene()->projectInfo().polynomialOrder,
+                                                (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR));
 
                 delete [] elasticityEdge;
                 delete [] elasticityLabel;
             }
             break;
         default:
-            cout << "Physical field '" +  physicFieldStringKey(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. SolverDialog::runSolver()" << endl;
+            cout << "Physical field '" +  physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. SolverDialog::runSolver()" << endl;
             throw;
             break;
         }
 
-        m_scene->sceneSolution()->setSolutionArray(solutionArray);
+        Util::scene()->sceneSolution()->setSolutionArray(solutionArray);
 
         emit message(tr("Problem was solved."));
     }
@@ -506,5 +504,5 @@ void SolverDialog::runSolver()
 
     updateProgress(100);
 
-    m_scene->sceneSolution()->setTimeElapsed(time.elapsed());
+    Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
 }

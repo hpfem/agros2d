@@ -11,8 +11,6 @@
 #include "util.h"
 #include "scene.h"
 
-class Scene;
-
 void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField);
 
 class SLineEdit : public QLineEdit
@@ -23,10 +21,21 @@ public:
     SLineEdit(const QString &contents, bool hasValidator = true, QWidget *parent = 0);
 
     double value();
-    double value(const QString &script);
     void setValue(double value);
+};
+
+class SLineEditValue : public QLineEdit
+{
+    Q_OBJECT
+public:
+    SLineEditValue(QWidget *parent = 0);
+
+    Value value();
+    double number();
+    bool evaluate();
+    void setValue(Value value);
 private:
-    QString m_scriptStartup;
+    double m_number;
 };
 
 #endif // GUI_H

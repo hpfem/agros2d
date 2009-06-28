@@ -16,7 +16,7 @@ class LocalPointValueHeat;
 class LocalPointValueCurrent;
 class LocalPointValueElasticity;
 
-LocalPointValue *localPointValueFactory(Point &point, Scene *scene);
+LocalPointValue *localPointValueFactory(Point &point);
 QStringList localPointValueHeaderFactory(PhysicField physicField);
 
 class LocalPointValueView : public QDockWidget
@@ -27,11 +27,9 @@ public slots:
     void doShowPoint(LocalPointValue *localPointValue);
 
 public:
-    LocalPointValueView(Scene *scene, QWidget *parent = 0);
+    LocalPointValueView(QWidget *parent = 0);
 
 private:
-    Scene *m_scene;
-
     QTreeWidget *trvWidget;
     QAction *actPoint;
     QMenu *mnuInfo;
@@ -58,14 +56,12 @@ class LocalPointValue
 public:
     Point point;
 
-    LocalPointValue(Point &point, Scene *scene);
+    LocalPointValue(Point &point);
 
-    inline Scene *scene() { return m_scene; }
     virtual double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
     virtual QStringList variables() = 0;
 
 protected:
-    Scene *m_scene;
     Vectorizer m_vec;
 };
 
@@ -79,7 +75,7 @@ public:
     Point D;
     double we;
 
-    LocalPointValueElectrostatic(Point &point, Scene *scene);
+    LocalPointValueElectrostatic(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -94,7 +90,7 @@ public:
     Point B;
     double wm;
 
-    LocalPointValueMagnetostatic(Point &point, Scene *scene);
+    LocalPointValueMagnetostatic(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -108,7 +104,7 @@ public:
     Point F;
     Point G;
 
-    LocalPointValueHeat(Point &point, Scene *scene);
+    LocalPointValueHeat(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -122,7 +118,7 @@ public:
     Point J;
     Point E;
 
-    LocalPointValueCurrent(Point &point, Scene *scene);
+    LocalPointValueCurrent(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
@@ -134,7 +130,7 @@ public:
     double poisson_ratio;
     double von_mises_stress;
 
-    LocalPointValueElasticity(Point &point, Scene *scene);
+    LocalPointValueElasticity(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };

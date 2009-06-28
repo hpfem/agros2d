@@ -1,9 +1,7 @@
 #include "localvalueview.h"
 
-LocalPointValueView::LocalPointValueView(Scene *scene, QWidget *parent): QDockWidget(tr("Local Values"), parent)
+LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local Values"), parent)
 {
-    m_scene = scene;
-
     setMinimumWidth(280);
     setObjectName("LocalPointValueView");
 
@@ -41,9 +39,9 @@ void LocalPointValueView::doPoint()
 {
     Point point;
     SceneNode *node = new SceneNode(point);
-    if (node->showDialog(m_scene, this) == QDialog::Accepted)
+    if (node->showDialog(this) == QDialog::Accepted)
     {
-        doShowPoint(localPointValueFactory(node->point, m_scene));
+        doShowPoint(localPointValueFactory(node->point));
     }
     delete node;
 }
@@ -62,12 +60,12 @@ void LocalPointValueView::doShowPoint(LocalPointValue *localPointValue)
     pointNode->setText(0, tr("Point"));
     pointNode->setExpanded(true);
 
-    addValue(pointNode, m_scene->projectInfo().labelX() + ":", tr("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
-    addValue(pointNode, m_scene->projectInfo().labelY() + ":", tr("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
+    addValue(pointNode, Util::scene()->projectInfo().labelX() + ":", tr("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
+    addValue(pointNode, Util::scene()->projectInfo().labelY() + ":", tr("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
 
     trvWidget->insertTopLevelItem(0, pointNode);
 
-    if (localPointValue->scene()->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->sln())
     {
         if (LocalPointValueElectrostatic *localPointValueElectrostatic = dynamic_cast<LocalPointValueElectrostatic *>(localPointValue))
             showElectrostatic(localPointValueElectrostatic);
@@ -103,8 +101,8 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, "E" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'f', 5), "V/m");
-    addValue(itemElectricField, "E" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'f', 5), "V/m");
     addValue(itemElectricField, "E", tr("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'f', 5), "V/m");
 
     // Electric Displacement
@@ -112,8 +110,8 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     itemElectricDisplacement->setText(0, tr("Electric displacement"));
     itemElectricDisplacement->setExpanded(true);
 
-    addValue(itemElectricDisplacement, "D" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
-    addValue(itemElectricDisplacement, "D" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
     addValue(itemElectricDisplacement, "D:", tr("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
 
     // Energy density
@@ -141,8 +139,8 @@ void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localP
     itemFluxDensity->setText(0, tr("Flux density"));
     itemFluxDensity->setExpanded(true);
 
-    addValue(itemFluxDensity, "B" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.x, 0, 'f', 5), "T");
-    addValue(itemFluxDensity, "B" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.y, 0, 'f', 5), "T");
+    addValue(itemFluxDensity, "B" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.x, 0, 'f', 5), "T");
+    addValue(itemFluxDensity, "B" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.y, 0, 'f', 5), "T");
     addValue(itemFluxDensity, "B:", tr("%1").arg(localPointValueMagnetostatic->B.magnitude(), 0, 'f', 5), "T");
 
     // Magnetic Field
@@ -150,8 +148,8 @@ void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localP
     itemMagneticField->setText(0, tr("Magnetic field"));
     itemMagneticField->setExpanded(true);
 
-    addValue(itemMagneticField, "H" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
-    addValue(itemMagneticField, "H" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
     addValue(itemMagneticField, "H", tr("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), "A/m");
 
     // Energy density
@@ -179,8 +177,8 @@ void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
     itemHeatFlux->setText(0, tr("Heat flux"));
     itemHeatFlux->setExpanded(true);
 
-    addValue(itemHeatFlux, "F" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
-    addValue(itemHeatFlux, "F" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
     addValue(itemHeatFlux, "F:", tr("%1").arg(localPointValueHeat->F.magnitude(), 0, 'e', 3), "W/m2");
 
     // Temperature Gradient
@@ -188,8 +186,8 @@ void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
     itemTemperatureGradient->setText(0, tr("Temperature gradient"));
     itemTemperatureGradient->setExpanded(true);
 
-    addValue(itemTemperatureGradient, "G" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
-    addValue(itemTemperatureGradient, "G" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
     addValue(itemTemperatureGradient, "G:", tr("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "K/m");
 }
 
@@ -211,8 +209,8 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, "E" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.x, 0, 'f', 5), "V/m");
-    addValue(itemElectricField, "E" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.y, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.x, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.y, 0, 'f', 5), "V/m");
     addValue(itemElectricField, "E:", tr("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'f', 5), "V/m");
 
     // Current Density
@@ -220,8 +218,8 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     itemCurrentDensity->setText(0, tr("Current density"));
     itemCurrentDensity->setExpanded(true);
 
-    addValue(itemCurrentDensity, "J" + m_scene->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensity, "J" + m_scene->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
     addValue(itemCurrentDensity, "J:", tr("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), "A/m2");
 
     // Energy density
@@ -255,15 +253,14 @@ void LocalPointValueView::addValue(QTreeWidgetItem *parent, QString name, QStrin
     item->setTextAlignment(2, Qt::AlignLeft);
 }
 
-LocalPointValue::LocalPointValue(Point &point, Scene *scene)
+LocalPointValue::LocalPointValue(Point &point)
 {
-    this->m_scene = scene;
     this->point = point;
 }
 
 // ****************************************************************************************************************
 
-LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point, Scene *scene) : LocalPointValue(point, scene)
+LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point) : LocalPointValue(point)
 {
     charge_density = 0;
     permittivity = 0;
@@ -273,9 +270,9 @@ LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point, Scene *
     D = Point();
     we = 0;
 
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->sln())
     {
-        PointValue value = scene->sceneSolution()->pointValue(point);       
+        PointValue value = Util::scene()->sceneSolution()->pointValue(point);
 
         if (value.marker != NULL)
         {
@@ -287,11 +284,11 @@ LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point, Scene *
 
             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(value.marker);
 
-            charge_density = marker->charge_density.value;
-            permittivity = marker->permittivity.value;
+            charge_density = marker->charge_density.number;
+            permittivity = marker->permittivity.number;
 
             // electric displacement
-            D = E * (marker->permittivity.value * EPS0);
+            D = E * (marker->permittivity.number * EPS0);
 
             // energy density
             we = 0.5 * E.magnitude() * D.magnitude();
@@ -377,7 +374,7 @@ QStringList LocalPointValueElectrostatic::variables()
 
 // ****************************************************************************************************************
 
-LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point, Scene *scene) : LocalPointValue(point, scene)
+LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point) : LocalPointValue(point)
 {
     current_density = 0;
     permeability = 0;
@@ -387,9 +384,9 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point, Scene *
     B = Point();
     wm = 0;
 
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->sln())
     {
-        PointValue value = scene->sceneSolution()->pointValue(point);
+        PointValue value = Util::scene()->sceneSolution()->pointValue(point);
         if (value.marker != NULL)
         {
             // potential
@@ -399,7 +396,7 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point, Scene *
             Point der;
             der = value.derivative;
 
-            if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+            if (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR)
             {
                 B.x =  der.y;
                 B.y = -der.x;
@@ -412,11 +409,11 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point, Scene *
 
             SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(value.marker);
 
-            current_density = marker->current_density.value;
-            permeability = marker->permeability.value;
+            current_density = marker->current_density.number;
+            permeability = marker->permeability.number;
 
             // electric displacement
-            H = B / (marker->permeability.value * MU0);
+            H = B / (marker->permeability.number * MU0);
 
             // energy density
             wm = 0.5 * H.magnitude() * B.magnitude();
@@ -502,7 +499,7 @@ QStringList LocalPointValueMagnetostatic::variables()
 
 // ****************************************************************************************************************
 
-LocalPointValueHeat::LocalPointValueHeat(Point &point, Scene *scene) : LocalPointValue(point, scene)
+LocalPointValueHeat::LocalPointValueHeat(Point &point) : LocalPointValue(point)
 {
     thermal_conductivity = 0;
     volume_heat = 0;
@@ -511,9 +508,9 @@ LocalPointValueHeat::LocalPointValueHeat(Point &point, Scene *scene) : LocalPoin
     G = Point();
     F = Point();
 
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->sln())
     {
-        PointValue value = scene->sceneSolution()->pointValue(point);
+        PointValue value = Util::scene()->sceneSolution()->pointValue(point);
         if (value.marker != NULL)
         {
             // temperature
@@ -524,11 +521,11 @@ LocalPointValueHeat::LocalPointValueHeat(Point &point, Scene *scene) : LocalPoin
 
             SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(value.marker);
 
-            thermal_conductivity = marker->thermal_conductivity.value;
-            volume_heat = marker->volume_heat.value;
+            thermal_conductivity = marker->thermal_conductivity.number;
+            volume_heat = marker->volume_heat.number;
 
             // heat flux
-            F = G * marker->thermal_conductivity.value;
+            F = G * marker->thermal_conductivity.number;
         }
     }
 }
@@ -605,7 +602,7 @@ QStringList LocalPointValueHeat::variables()
 
 // ****************************************************************************************************************
 
-LocalPointValueCurrent::LocalPointValueCurrent(Point &point, Scene *scene) : LocalPointValue(point, scene)
+LocalPointValueCurrent::LocalPointValueCurrent(Point &point) : LocalPointValue(point)
 {
     conductivity = 0;
 
@@ -614,9 +611,9 @@ LocalPointValueCurrent::LocalPointValueCurrent(Point &point, Scene *scene) : Loc
     E = Point();
     losses = 0;
 
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->sln())
     {
-        PointValue value = scene->sceneSolution()->pointValue(point);
+        PointValue value = Util::scene()->sceneSolution()->pointValue(point);
         if (value.marker != NULL)
         {
             // potential
@@ -631,10 +628,10 @@ LocalPointValueCurrent::LocalPointValueCurrent(Point &point, Scene *scene) : Loc
 
             SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(value.marker);
 
-            conductivity = marker->conductivity.value;
+            conductivity = marker->conductivity.number;
 
             // electric displacement
-            J = E * marker->conductivity.value;
+            J = E * marker->conductivity.number;
 
             // energy density
             losses = J.magnitude() * E.magnitude();
@@ -720,15 +717,15 @@ QStringList LocalPointValueCurrent::variables()
 
 // ****************************************************************************************************************
 
-LocalPointValueElasticity::LocalPointValueElasticity(Point &point, Scene *scene) : LocalPointValue(point, scene)
+LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointValue(point)
 {
-    if (scene->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->sln())
     {
         von_mises_stress = 0;
         // G = Point();
         // F = Point();
 
-        PointValue value = scene->sceneSolution()->pointValue(point);
+        PointValue value = Util::scene()->sceneSolution()->pointValue(point);
         if (value.marker != NULL)
         {
             // Von Mises stress
@@ -773,27 +770,27 @@ QStringList LocalPointValueElasticity::variables()
 }
 // ***********************************************************************************************************************
 
-LocalPointValue *localPointValueFactory(Point &point, Scene *scene)
+LocalPointValue *localPointValueFactory(Point &point)
 {
-    switch (scene->projectInfo().physicField)
+    switch (Util::scene()->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        return new LocalPointValueElectrostatic(point, scene);
+        return new LocalPointValueElectrostatic(point);
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        return new LocalPointValueMagnetostatic(point, scene);
+        return new LocalPointValueMagnetostatic(point);
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        return new LocalPointValueHeat(point, scene);
+        return new LocalPointValueHeat(point);
         break;
     case PHYSICFIELD_CURRENT:
-        return new LocalPointValueCurrent(point, scene);
+        return new LocalPointValueCurrent(point);
         break;
     case PHYSICFIELD_ELASTICITY:
-        return new LocalPointValueElasticity(point, scene);
+        return new LocalPointValueElasticity(point);
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(scene->projectInfo().physicField).toStdString() + "' is not implemented. LocalPointValueView *localPointValueFactory(Point &point, Scene *scene)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. LocalPointValueView *localPointValueFactory(Point &point)" << endl;
         throw;
         break;
     }

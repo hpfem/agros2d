@@ -3,6 +3,7 @@
 
 #include <QtGui/QDialog>
 #include <QtGui/QCheckBox>
+#include <QtGui/QSpinBox>
 #include <QtGui/QRadioButton>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QLineEdit>
@@ -50,7 +51,7 @@ private:
     QLineEdit *txtGridStep;
 
     // contours
-    QLineEdit *txtContoursCount;
+    QSpinBox *txtContoursCount;
 
     // scalar field
     QComboBox *cmbScalarFieldVariable;
@@ -60,7 +61,7 @@ private:
     QLineEdit *txtScalarFieldRangeMax;
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
-    QLineEdit *txtPaletteSteps;
+    QSpinBox *txtPaletteSteps;
 
     // 3d
     QCheckBox *chkView3DLighting;

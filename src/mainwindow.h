@@ -75,7 +75,6 @@ private slots:
     void doInvalidated();
 
 private:
-    Scene *m_scene;
     QStringList recentFiles;
 
     QMenu *mnuFile;

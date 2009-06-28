@@ -22,39 +22,39 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 {
     ProjectInfo projectInfo;
 
-    m_scene->clear();
-    m_scene->projectInfo() = projectInfo;
-    m_scene->projectInfo().name = context->argument(0).toString();
+    Util::scene()->clear();
+    Util::scene()->projectInfo() = projectInfo;
+    Util::scene()->projectInfo().name = context->argument(0).toString();
     if (context->argument(1).toString() == "planar")
-        m_scene->projectInfo().problemType = PROBLEMTYPE_PLANAR;
+        Util::scene()->projectInfo().problemType = PROBLEMTYPE_PLANAR;
     else
-        m_scene->projectInfo().problemType = PROBLEMTYPE_AXISYMMETRIC;
-    m_scene->projectInfo().physicField = physicFieldFromStringKey(context->argument(2).toString());
-    m_scene->projectInfo().numberOfRefinements = context->argument(3).toNumber();
-    m_scene->projectInfo().polynomialOrder = context->argument(4).toNumber();
-    m_scene->projectInfo().adaptivitySteps = context->argument(5).toNumber();
-    m_scene->projectInfo().adaptivityTolerance = context->argument(6).toNumber();
+        Util::scene()->projectInfo().problemType = PROBLEMTYPE_AXISYMMETRIC;
+    Util::scene()->projectInfo().physicField = physicFieldFromStringKey(context->argument(2).toString());
+    Util::scene()->projectInfo().numberOfRefinements = context->argument(3).toNumber();
+    Util::scene()->projectInfo().polynomialOrder = context->argument(4).toNumber();
+    Util::scene()->projectInfo().adaptivitySteps = context->argument(5).toNumber();
+    Util::scene()->projectInfo().adaptivityTolerance = context->argument(6).toNumber();
 
-    m_scene->refresh();
+    Util::scene()->refresh();
     return engine->undefinedValue();
 }
 
 // openDocument(filename)
 QScriptValue scriptOpenDocument(QScriptContext *context, QScriptEngine *engine)
 {
-    m_scene->readFromFile(context->argument(0).toString());
+    Util::scene()->readFromFile(context->argument(0).toString());
 }
 
 // saveDocument(filename)
 QScriptValue scriptSaveDocument(QScriptContext *context, QScriptEngine *engine)
 {
-    m_scene->writeToFile(context->argument(0).toString());
+    Util::scene()->writeToFile(context->argument(0).toString());
 }
 
 // addNode(x, y)
 QScriptValue scriptAddNode(QScriptContext *context, QScriptEngine *engine)
 {
-    m_scene->addNode(new SceneNode(Point(context->argument(0).toNumber(), context->argument(1).toNumber())));
+    Util::scene()->addNode(new SceneNode(Point(context->argument(0).toNumber(), context->argument(1).toNumber())));
     return engine->undefinedValue();
 }
 
@@ -72,16 +72,16 @@ QScriptValue scriptAddLabel(QScriptContext *context, QScriptEngine *engine)
     SceneLabelMarker *marker;
     if (context->argumentCount() == 4)
         // find marker by name
-        foreach (SceneLabelMarker *labelMarker, m_scene->labelMarkers)
+        foreach (SceneLabelMarker *labelMarker, Util::scene()->labelMarkers)
             if (labelMarker->name == context->argument(3).toString())
             {
         marker = labelMarker;
         break;
     }
     else
-        marker = m_scene->labelMarkers[0];
+        marker = Util::scene()->labelMarkers[0];
 
-    m_scene->addLabel(new SceneLabel(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), marker, area));
+    Util::scene()->addLabel(new SceneLabel(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), marker, area));
     return engine->undefinedValue();
 }
 
@@ -89,9 +89,9 @@ QScriptValue scriptAddLabel(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
 {
     // start node
-    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(context->argument(0).toNumber(), context->argument(1).toNumber())));
+    SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(context->argument(0).toNumber(), context->argument(1).toNumber())));
     // end node
-    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(context->argument(2).toNumber(), context->argument(3).toNumber())));
+    SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(context->argument(2).toNumber(), context->argument(3).toNumber())));
 
     // angle
     double angle;
@@ -104,17 +104,17 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
     SceneEdgeMarker *marker;
     if (context->argumentCount() == 6)
         // find marker by name
-        foreach (SceneEdgeMarker *edgeMarker, m_scene->edgeMarkers)
+        foreach (SceneEdgeMarker *edgeMarker, Util::scene()->edgeMarkers)
             if (edgeMarker->name == context->argument(5).toString())
             {
         marker = edgeMarker;
         break;
     }
     else
-        marker = m_scene->edgeMarkers[0];
+        marker = Util::scene()->edgeMarkers[0];
 
     // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, marker, angle));
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, marker, angle));
     return engine->undefinedValue();
 }
 
@@ -122,19 +122,19 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
 {
     PhysicFieldBC type;
-    switch (m_scene->projectInfo().physicField)
+    switch (Util::scene()->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL)) type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE)) type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
-        m_scene->addEdgeMarker(new SceneEdgeElectrostaticMarker(context->argument(0).toString(),
+        Util::scene()->addEdgeMarker(new SceneEdgeElectrostaticMarker(context->argument(0).toString(),
                                                                 type,
                                                                 Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL)) type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT)) type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
-        m_scene->addEdgeMarker(new SceneEdgeMagnetostaticMarker(context->argument(0).toString(),
+        Util::scene()->addEdgeMarker(new SceneEdgeMagnetostaticMarker(context->argument(0).toString(),
                                                                 type,
                                                                 Value(context->argument(2).toString())));
         break;
@@ -142,14 +142,14 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
         {
             type = PHYSICFIELDBC_HEAT_TEMPERATURE;
-            m_scene->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(),
+            Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(),
                                                            type,
                                                            Value(context->argument(2).toString())));
         }
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
         {
             type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
-            m_scene->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(), type,
+            Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(), type,
                                                            Value(context->argument(2).toString()),
                                                            Value(context->argument(3).toString()),
                                                            Value(context->argument(4).toString())));
@@ -158,7 +158,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
     case PHYSICFIELD_CURRENT:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_POTENTIAL)) type = PHYSICFIELDBC_CURRENT_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)) type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
-        m_scene->addEdgeMarker(new SceneEdgeCurrentMarker(context->argument(0).toString(),
+        Util::scene()->addEdgeMarker(new SceneEdgeCurrentMarker(context->argument(0).toString(),
                                                           type,
                                                           Value(context->argument(2).toString())));
         break;
@@ -168,12 +168,12 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED)) typeX = PHYSICFIELDBC_ELASTICITY_FIXED;
         if (context->argument(2).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FREE)) typeY = PHYSICFIELDBC_ELASTICITY_FREE;
         if (context->argument(2).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED)) typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
-        m_scene->addEdgeMarker(new SceneEdgeElasticityMarker(context->argument(0).toString(), typeX, typeY,
+        Util::scene()->addEdgeMarker(new SceneEdgeElasticityMarker(context->argument(0).toString(), typeX, typeY,
                                                              context->argument(3).toNumber(),
                                                              context->argument(4).toNumber()));
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
         throw;
         break;
     }
@@ -185,34 +185,34 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
 {
     PhysicFieldBC type;
-    switch (m_scene->projectInfo().physicField)
+    switch (Util::scene()->projectInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        m_scene->addLabelMarker(new SceneLabelElectrostaticMarker(context->argument(0).toString(),
+        Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(context->argument(0).toString(),
                                                                   Value(context->argument(1).toString()),
                                                                   Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        m_scene->addLabelMarker(new SceneLabelMagnetostaticMarker(context->argument(0).toString(),
+        Util::scene()->addLabelMarker(new SceneLabelMagnetostaticMarker(context->argument(0).toString(),
                                                                   Value(context->argument(1).toString()),
                                                                   Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        m_scene->addLabelMarker(new SceneLabelHeatMarker(context->argument(0).toString(),
+        Util::scene()->addLabelMarker(new SceneLabelHeatMarker(context->argument(0).toString(),
                                                          Value(context->argument(1).toString()),
                                                          Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_CURRENT:
-        m_scene->addLabelMarker(new SceneLabelCurrentMarker(context->argument(0).toString(),
+        Util::scene()->addLabelMarker(new SceneLabelCurrentMarker(context->argument(0).toString(),
                                                             Value(context->argument(1).toString())));
         break;
     case PHYSICFIELD_ELASTICITY:
-        m_scene->addLabelMarker(new SceneLabelElasticityMarker(context->argument(0).toString(),
+        Util::scene()->addLabelMarker(new SceneLabelElasticityMarker(context->argument(0).toString(),
                                                                context->argument(2).toNumber(),
                                                                context->argument(3).toNumber()));
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(m_scene->projectInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
         throw;
         break;
     }
@@ -223,8 +223,8 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
 // solve()
 QScriptValue scriptSolve(QScriptContext *context, QScriptEngine *engine)
 {
-    m_scene->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
-    m_scene->refresh();
+    Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
+    Util::scene()->refresh();
 
     return engine->undefinedValue();
 }
@@ -247,7 +247,7 @@ QScriptValue scriptMode(QScriptContext *context, QScriptEngine *engine)
     if (context->argument(0).toString() == "label")
         m_sceneView->actSceneModeLabel->trigger();
     if (context->argument(0).toString() == "postprocessor")
-        if (m_scene->sceneSolution()->isSolved())
+        if (Util::scene()->sceneSolution()->isSolved())
             m_sceneView->actSceneModePostprocessor->trigger();
 
     return engine->undefinedValue();
@@ -256,7 +256,7 @@ QScriptValue scriptMode(QScriptContext *context, QScriptEngine *engine)
 // selectNone()
 QScriptValue scriptSelectNone(QScriptContext *context, QScriptEngine *engine)
 {
-    m_scene->selectNone();
+    Util::scene()->selectNone();
 
     return engine->undefinedValue();
 }
@@ -264,14 +264,14 @@ QScriptValue scriptSelectNone(QScriptContext *context, QScriptEngine *engine)
 // selectAll()
 QScriptValue scriptSelectAll(QScriptContext *context, QScriptEngine *engine)
 {
-    m_scene->selectAll(m_sceneView->sceneMode());
+    Util::scene()->selectAll(m_sceneView->sceneMode());
     /*
     if (m_sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
     {
         if (m_sceneView->actPostprocessorModeVolumeIntegral->isChecked())
-            m_scene->selectAll(SCENEMODE_OPERATE_ON_LABELS);
+            Util::scene()->selectAll(SCENEMODE_OPERATE_ON_LABELS);
         if (m_sceneView->actPostprocessorModeSurfaceIntegral->isChecked())
-            m_scene->selectAll(SCENEMODE_OPERATE_ON_EDGES);
+            Util::scene()->selectAll(SCENEMODE_OPERATE_ON_EDGES);
     }
     */
     return engine->undefinedValue();
@@ -282,7 +282,7 @@ QScriptValue scriptSelectNode(QScriptContext *context, QScriptEngine *engine)
 {
     m_sceneView->actSceneModeNode->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
-        m_scene->nodes[context->argument(i).toNumber()]->isSelected = true;
+        Util::scene()->nodes[context->argument(i).toNumber()]->isSelected = true;
 
     m_sceneView->doInvalidated();
 
@@ -294,7 +294,7 @@ QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
 {
     m_sceneView->actSceneModeEdge->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
-        m_scene->edges[context->argument(i).toNumber()]->isSelected = true;
+        Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
 
     m_sceneView->doInvalidated();
 
@@ -306,7 +306,7 @@ QScriptValue scriptSelectLabel(QScriptContext *context, QScriptEngine *engine)
 {
     m_sceneView->actSceneModeLabel->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
-        m_scene->labels[context->argument(i).toNumber()]->isSelected = true;
+        Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
 
     m_sceneView->doInvalidated();
 
@@ -317,7 +317,7 @@ QScriptValue scriptSelectLabel(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptMoveSelection(QScriptContext *context, QScriptEngine *engine)
 {
     bool copy = (context->argumentCount() == 2) ? false : context->argument(2).toBoolean();
-    m_scene->transformTranslate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), copy);
+    Util::scene()->transformTranslate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), copy);
 
     return engine->undefinedValue();
 }
@@ -326,7 +326,7 @@ QScriptValue scriptMoveSelection(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptRotateSelection(QScriptContext *context, QScriptEngine *engine)
 {
     bool copy = (context->argumentCount() == 3) ? false : context->argument(2).toBoolean();
-    m_scene->transformRotate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
+    Util::scene()->transformRotate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
 
     return engine->undefinedValue();
 }
@@ -335,7 +335,7 @@ QScriptValue scriptRotateSelection(QScriptContext *context, QScriptEngine *engin
 QScriptValue scriptScaleSelection(QScriptContext *context, QScriptEngine *engine)
 {
     bool copy = (context->argumentCount() == 2) ? false : context->argument(2).toBoolean();
-    m_scene->transformScale(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
+    Util::scene()->transformScale(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
 
     return engine->undefinedValue();
 }
@@ -344,9 +344,9 @@ QScriptValue scriptScaleSelection(QScriptContext *context, QScriptEngine *engine
 QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
 {
     Point point(context->argument(0).toNumber(), context->argument(1).toNumber());
-    LocalPointValue *localPointValue = localPointValueFactory(point, m_scene);
+    LocalPointValue *localPointValue = localPointValueFactory(point);
 
-    QStringList headers = localPointValueHeaderFactory(m_scene->projectInfo().physicField);
+    QStringList headers = localPointValueHeaderFactory(Util::scene()->projectInfo().physicField);
     QStringList variables = localPointValue->variables();
 
     QScriptValue value = engine->newObject();
@@ -361,25 +361,25 @@ QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
 // result = volumeIntegral(index ...)
 QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine)
 {    
-    if (m_scene->sceneSolution()->isSolved())
+    if (Util::scene()->sceneSolution()->isSolved())
         m_sceneView->actSceneModePostprocessor->trigger();
 
     if (m_sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
     {
         m_sceneView->actPostprocessorModeVolumeIntegral->trigger();
-        m_scene->selectNone();
+        Util::scene()->selectNone();
 
         // select all or indices
         if (context->argumentCount() == 0)
-            foreach (SceneLabel *label, m_scene->labels)
+            foreach (SceneLabel *label, Util::scene()->labels)
                 label->isSelected = true;
         else
             for (int i = 0; i<context->argumentCount(); i++)
-                m_scene->labels[context->argument(i).toNumber()]->isSelected = true;
+                Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
 
-        VolumeIntegralValue *volumeIntegral = volumeIntegralValueFactory(m_scene);
+        VolumeIntegralValue *volumeIntegral = volumeIntegralValueFactory();
 
-        QStringList headers = volumeIntegralValueHeaderFactory(m_scene->projectInfo().physicField);
+        QStringList headers = volumeIntegralValueHeaderFactory(Util::scene()->projectInfo().physicField);
         QStringList variables = volumeIntegral->variables();
 
         QScriptValue value = engine->newObject();
@@ -398,9 +398,8 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
 
 // ***********************************************************************************************************
 
-ScriptEditorDialog::ScriptEditorDialog(Scene *scene, SceneView *sceneView, QWidget *parent) : QDialog(parent)
+ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
-    m_scene = scene;
     m_sceneView = sceneView;
 
     setWindowIcon(icon("script"));
@@ -589,54 +588,54 @@ void ScriptEditorDialog::doCreateFromModel()
     // model
     str += "// model\n";
     str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, %7);").
-           arg(m_scene->projectInfo().name).
-           arg(problemTypeStringKey(m_scene->projectInfo().problemType)).
-           arg(physicFieldStringKey(m_scene->projectInfo().physicField)).
-           arg(m_scene->projectInfo().numberOfRefinements).
-           arg(m_scene->projectInfo().polynomialOrder).
-           arg(m_scene->projectInfo().adaptivitySteps).
-           arg(m_scene->projectInfo().adaptivityTolerance) + "\n";
+           arg(Util::scene()->projectInfo().name).
+           arg(problemTypeStringKey(Util::scene()->projectInfo().problemType)).
+           arg(physicFieldStringKey(Util::scene()->projectInfo().physicField)).
+           arg(Util::scene()->projectInfo().numberOfRefinements).
+           arg(Util::scene()->projectInfo().polynomialOrder).
+           arg(Util::scene()->projectInfo().adaptivitySteps).
+           arg(Util::scene()->projectInfo().adaptivityTolerance) + "\n";
     str += "\n";
 
     // boundaries
     str += "// boundaries\n";
-    for (int i = 1; i<m_scene->edgeMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
     {
-        str += m_scene->edgeMarkers[i]->script() + "\n";
+        str += Util::scene()->edgeMarkers[i]->script() + "\n";
     }
     str += "\n";
 
     // materials
     str += "// materials\n";
-    for (int i = 1; i<m_scene->labelMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
     {
-        str += m_scene->labelMarkers[i]->script() + "\n";
+        str += Util::scene()->labelMarkers[i]->script() + "\n";
     }
     str += "\n";
 
     // edges
     str += "// edges\n";
-    for (int i = 0; i<m_scene->edges.count(); i++)
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         str += QString("addEdge(%1, %2, %3, %4, %5, \"%6\");").
-               arg(m_scene->edges[i]->nodeStart->point.x).
-               arg(m_scene->edges[i]->nodeStart->point.y).
-               arg(m_scene->edges[i]->nodeEnd->point.x).
-               arg(m_scene->edges[i]->nodeEnd->point.y).
-               arg(m_scene->edges[i]->angle).
-               arg(m_scene->edges[i]->marker->name) + "\n";
+               arg(Util::scene()->edges[i]->nodeStart->point.x).
+               arg(Util::scene()->edges[i]->nodeStart->point.y).
+               arg(Util::scene()->edges[i]->nodeEnd->point.x).
+               arg(Util::scene()->edges[i]->nodeEnd->point.y).
+               arg(Util::scene()->edges[i]->angle).
+               arg(Util::scene()->edges[i]->marker->name) + "\n";
     }
     str += "\n";
 
     // labels
     str += "// labels\n";
-    for (int i = 0; i<m_scene->labels.count(); i++)
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
         str += QString("addLabel(%1, %2, %3, \"%4\");").
-               arg(m_scene->labels[i]->point.x).
-               arg(m_scene->labels[i]->point.y).
-               arg(m_scene->labels[i]->area).
-               arg(m_scene->labels[i]->marker->name) + "\n";
+               arg(Util::scene()->labels[i]->point.x).
+               arg(Util::scene()->labels[i]->point.y).
+               arg(Util::scene()->labels[i]->area).
+               arg(Util::scene()->labels[i]->marker->name) + "\n";
     }
 
     txtEditor->setPlainText(str);
@@ -661,13 +660,13 @@ void ScriptEditorDialog::doRun()
 
     if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
     {
-        m_scene->blockSignals(true);
+        Util::scene()->blockSignals(true);
         // startup script
-        m_engine->evaluate(m_scene->projectInfo().scriptStartup);
+        m_engine->evaluate(Util::scene()->projectInfo().scriptStartup);
         // result
         QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), m_fileName);
-        m_scene->blockSignals(false);
-        m_scene->refresh();
+        Util::scene()->blockSignals(false);
+        Util::scene()->refresh();
     }
     else
     {
@@ -701,7 +700,7 @@ int ScriptStartupDialog::showDialog()
 void ScriptStartupDialog::createControls()
 {
     txtEditor = new ScriptEditor(this);
-    txtEditor->setPlainText(m_scene->projectInfo().scriptStartup);
+    txtEditor->setPlainText(Util::scene()->projectInfo().scriptStartup);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -721,7 +720,7 @@ void ScriptStartupDialog::doAccept()
 
     if (engine.canEvaluate(txtEditor->toPlainText()))
     {
-        m_scene->projectInfo().scriptStartup = txtEditor->toPlainText();
+        Util::scene()->projectInfo().scriptStartup = txtEditor->toPlainText();
         accept();
     }
     else
