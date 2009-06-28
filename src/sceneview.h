@@ -136,10 +136,9 @@ private:
     QActionGroup *actPostprocessorModeGroup;
     QActionGroup *actShowGroup;
 
-    QAction *actShowSolutionMesh;
     QAction *actShowContours;
-    QAction *actShowScalarField;
     QAction *actShowVectors;
+    QAction *actShowSolutionMesh;
 
     void createActions();
     void createMenu();
@@ -156,13 +155,18 @@ private:
 
     void paintGrid(); // paint grid
     void paintGeometry(); // paint nodes, edges and labels
-    void paintScalarField(); // paint scalar field surface
+    void paintInitialMesh();
+
     void paintContours(); // paint scalar field contours
     void paintContoursTri(double3* vert, int3* tri, double step);
     void paintVectors(); // paint vector field vectors
-    void paintInitialMesh();
     void paintSolutionMesh();
+
+    void paintScalarField(); // paint scalar field surface
+    void paintScalarField3D(); // paint scalar field 3d surface
+    void paintScalarField3DSolid(); // paint scalar field 3d solid
     void paintOrder();
+
     void paintColorBar(double min, double max);
     void paintSceneModeLabel();
     void paintZoomRegion();

@@ -22,11 +22,17 @@ SceneViewDialog::~SceneViewDialog()
     delete chkShowGrid;
     delete chkShowGeometry;
     delete chkShowInitialMesh;
-    delete chkShowSolutionMesh;
+
+    delete butPostprocessorGroup;
+    delete radPostprocessorNone;
+    delete radPostprocessorScalarField;
+    delete radPostprocessorScalarField3D;
+    delete radPostprocessorScalarField3DSolid;
+    delete radPostprocessorOrder;
+
     delete chkShowContours;
-    delete chkShowScalarField;
     delete chkShowVectors;
-    delete chkShowOrder;
+    delete chkShowSolutionMesh;
 
     // grid
     delete txtGridStep;
@@ -43,7 +49,8 @@ SceneViewDialog::~SceneViewDialog()
     delete cmbPalette;
     delete chkPaletteFilter;
     delete txtPaletteSteps;    
-    delete chkView3D;
+
+    // 3d
     delete chkView3DLighting;
 
     // vector field
@@ -61,11 +68,16 @@ void SceneViewDialog::load()
     chkShowGrid->setChecked(m_sceneView->sceneViewSettings().showGrid);
     chkShowGeometry->setChecked(m_sceneView->sceneViewSettings().showGeometry);
     chkShowInitialMesh->setChecked(m_sceneView->sceneViewSettings().showInitialMesh);
-    chkShowSolutionMesh->setChecked(m_sceneView->sceneViewSettings().showSolutionMesh);
-    chkShowOrder->setChecked(m_sceneView->sceneViewSettings().showOrder);
+
+    radPostprocessorNone->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_NONE);
+    radPostprocessorScalarField->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW);
+    radPostprocessorScalarField3D->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D);
+    radPostprocessorScalarField3DSolid->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID);
+    radPostprocessorOrder->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_ORDER);
+
     chkShowContours->setChecked(m_sceneView->sceneViewSettings().showContours);
-    chkShowScalarField->setChecked(m_sceneView->sceneViewSettings().showScalarField);
     chkShowVectors->setChecked(m_sceneView->sceneViewSettings().showVectors);
+    chkShowSolutionMesh->setChecked(m_sceneView->sceneViewSettings().showSolutionMesh);
 
     // grid
     txtGridStep->setText(QString::number(m_sceneView->sceneViewSettings().gridStep));
@@ -85,7 +97,8 @@ void SceneViewDialog::load()
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
     txtScalarFieldRangeMin->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMin));
     txtScalarFieldRangeMax->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMax));
-    chkView3D->setChecked(m_sceneView->sceneViewSettings().scalarView3D);
+
+    // 3d
     chkView3DLighting->setChecked(m_sceneView->sceneViewSettings().scalarView3DLighting);
 
     // vector field
@@ -98,11 +111,16 @@ void SceneViewDialog::save()
     m_sceneView->sceneViewSettings().showGrid = chkShowGrid->isChecked();
     m_sceneView->sceneViewSettings().showGeometry = chkShowGeometry->isChecked();
     m_sceneView->sceneViewSettings().showInitialMesh = chkShowInitialMesh->isChecked();
-    m_sceneView->sceneViewSettings().showSolutionMesh = chkShowSolutionMesh->isChecked();
-    m_sceneView->sceneViewSettings().showOrder = chkShowOrder->isChecked();
+
+    if (radPostprocessorNone->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_NONE;
+    if (radPostprocessorScalarField->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
+    if (radPostprocessorScalarField3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D;
+    if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID;
+    if (radPostprocessorOrder->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
+
     m_sceneView->sceneViewSettings().showContours = chkShowContours->isChecked();
-    m_sceneView->sceneViewSettings().showScalarField = chkShowScalarField->isChecked();
     m_sceneView->sceneViewSettings().showVectors = chkShowVectors->isChecked();
+    m_sceneView->sceneViewSettings().showSolutionMesh = chkShowSolutionMesh->isChecked();
 
     // grid
     m_sceneView->sceneViewSettings().gridStep = txtGridStep->text().toDouble();
@@ -119,7 +137,8 @@ void SceneViewDialog::save()
     m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
     m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
     m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
-    m_sceneView->sceneViewSettings().scalarView3D = chkView3D->isChecked();
+
+    // 3d
     m_sceneView->sceneViewSettings().scalarView3DLighting = chkView3DLighting->isChecked();
 
     // vector field
@@ -128,28 +147,58 @@ void SceneViewDialog::save()
 
 void SceneViewDialog::createControls()
 {
-    // layoutShow
+    // layout show
     chkShowGrid = new QCheckBox(tr("Grid"));
     chkShowGeometry = new QCheckBox(tr("Geometry"));
     chkShowInitialMesh = new QCheckBox(tr("Initial mesh"));
-    chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
-    chkShowOrder = new QCheckBox(tr("Order"));
-    chkShowContours = new QCheckBox(tr("Contours"));
-    chkShowScalarField = new QCheckBox(tr("Scalar field"));
-    chkShowVectors = new QCheckBox(tr("Vectors"));
 
-    QGridLayout *layoutShow = new QGridLayout();
-    layoutShow->addWidget(chkShowGrid, 0, 0);
-    layoutShow->addWidget(chkShowGeometry, 1, 0);
-    layoutShow->addWidget(chkShowInitialMesh, 2, 0);
-    layoutShow->addWidget(chkShowSolutionMesh, 3, 0);
-    layoutShow->addWidget(chkShowContours, 0, 1);
-    layoutShow->addWidget(chkShowScalarField, 1, 1);
-    layoutShow->addWidget(chkShowVectors, 2, 1);
-    layoutShow->addWidget(chkShowOrder, 3, 1);
+    QHBoxLayout *layoutShow = new QHBoxLayout();
+    layoutShow->addWidget(chkShowGrid);
+    layoutShow->addWidget(chkShowGeometry);
+    layoutShow->addWidget(chkShowInitialMesh);
 
     QGroupBox *grpShow = new QGroupBox(tr("Show"));
     grpShow->setLayout(layoutShow);
+
+    // postprocessor mode
+    radPostprocessorNone = new QRadioButton("None", this);
+    radPostprocessorScalarField = new QRadioButton("Scalar view", this);
+    radPostprocessorScalarField3D = new QRadioButton("Scalar view 3D", this);
+    radPostprocessorScalarField3DSolid = new QRadioButton("Scalar view 3D solid", this);
+    radPostprocessorOrder = new QRadioButton("Order", this);
+
+    butPostprocessorGroup = new QButtonGroup(this);
+    butPostprocessorGroup->addButton(radPostprocessorNone);
+    butPostprocessorGroup->addButton(radPostprocessorScalarField);
+    butPostprocessorGroup->addButton(radPostprocessorScalarField3D);
+    butPostprocessorGroup->addButton(radPostprocessorScalarField3DSolid);
+    butPostprocessorGroup->addButton(radPostprocessorOrder);
+
+    QVBoxLayout *layoutPostprocessorMode = new QVBoxLayout();
+    layoutPostprocessorMode->addWidget(radPostprocessorNone);
+    layoutPostprocessorMode->addWidget(radPostprocessorScalarField);
+    layoutPostprocessorMode->addWidget(radPostprocessorScalarField3D);
+    layoutPostprocessorMode->addWidget(radPostprocessorScalarField3DSolid);
+    layoutPostprocessorMode->addWidget(radPostprocessorOrder);
+
+    // postprocessor show
+    chkShowContours = new QCheckBox(tr("Contours"));
+    chkShowVectors = new QCheckBox(tr("Vectors"));
+    chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
+
+    QVBoxLayout *layoutPostprocessorShow = new QVBoxLayout();
+    layoutPostprocessorShow->addWidget(chkShowContours);
+    layoutPostprocessorShow->addWidget(chkShowVectors);
+    layoutPostprocessorShow->addWidget(chkShowSolutionMesh);
+    layoutPostprocessorShow->addStretch();
+
+    // postprocessor
+    QHBoxLayout *layoutPostprocessor = new QHBoxLayout();
+    layoutPostprocessor->addLayout(layoutPostprocessorMode);
+    layoutPostprocessor->addLayout(layoutPostprocessorShow);
+
+    QGroupBox *grpPostprocessor = new QGroupBox(tr("Postprocessor"));
+    grpPostprocessor->setLayout(layoutPostprocessor);
 
     // layout scalar field
     cmbScalarFieldVariable = new QComboBox();
@@ -181,9 +230,6 @@ void SceneViewDialog::createControls()
     txtPaletteSteps = new QLineEdit("0");
     txtPaletteSteps->setValidator(new QIntValidator(txtPaletteSteps));
 
-    chkView3D = new QCheckBox(this);
-    chkView3DLighting = new QCheckBox(this);
-
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutScalarField->addWidget(cmbScalarFieldVariable, 0, 1);
@@ -203,13 +249,8 @@ void SceneViewDialog::createControls()
     layoutScalarField->addWidget(new QLabel(tr("Minimum:")), 3, 2);
     layoutScalarField->addWidget(txtScalarFieldRangeMin, 3, 3);
 
-    layoutScalarField->addWidget(new QLabel(tr("View 3D:")), 4, 0);
-    layoutScalarField->addWidget(chkView3D, 4, 1);
     layoutScalarField->addWidget(new QLabel(tr("Maximum:")), 4, 2);
     layoutScalarField->addWidget(txtScalarFieldRangeMax, 4, 3);
-
-    layoutScalarField->addWidget(new QLabel(tr("Ligthing:")), 5, 0);
-    layoutScalarField->addWidget(chkView3DLighting, 5, 1);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
@@ -267,22 +308,40 @@ void SceneViewDialog::createControls()
     txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
 
     QGridLayout *layoutGrid = new QGridLayout();
-    layoutGrid->addWidget(new QLabel(tr("Step:")), 0, 0);
+    layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
     layoutGrid->addWidget(txtGridStep, 0, 1);
 
-    QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
-    grpGrid->setLayout(layoutGrid);
+    // QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
+    // grpGrid->setLayout(layoutGrid);
 
     // layout contours
     txtContoursCount = new QLineEdit("0");
     txtContoursCount->setValidator(new QIntValidator(txtContoursCount));
 
     QGridLayout *layoutContours = new QGridLayout();
-    layoutContours->addWidget(new QLabel(tr("Count:")), 0, 0);
+    layoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
     layoutContours->addWidget(txtContoursCount, 0, 1);
 
-    QGroupBox *grpContours = new QGroupBox(tr("Contours"));
-    grpContours->setLayout(layoutContours);
+    // QGroupBox *grpContours = new QGroupBox(tr("Contours"));
+    // grpContours->setLayout(layoutContours);
+
+    // layout 3d
+    chkView3DLighting = new QCheckBox("Ligthing", this);
+
+    QHBoxLayout *layout3D = new QHBoxLayout();
+    layout3D->addWidget(chkView3DLighting);
+
+    // QGroupBox *grp3D = new QGroupBox(tr("3D"));
+    // grp3D->setLayout(layout3D);
+
+    // grid + contours + 3d
+    QHBoxLayout *layoutGroup = new QHBoxLayout();
+    layoutGroup->addLayout(layoutGrid);
+    layoutGroup->addLayout(layoutContours);
+    layoutGroup->addLayout(layout3D);
+
+    QGroupBox *grpSettings = new QGroupBox(tr("Settings"));
+    grpSettings->setLayout(layoutGroup);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -291,8 +350,8 @@ void SceneViewDialog::createControls()
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpShow);
-    layout->addWidget(grpGrid);
-    layout->addWidget(grpContours);
+    layout->addWidget(grpPostprocessor);
+    layout->addWidget(grpSettings);
     layout->addWidget(grpScalarField);
     layout->addWidget(grpVectorField);
     layout->addStretch();

@@ -590,19 +590,31 @@ enum PaletteType
     PALETTE_BW_DESC
 };
 
+enum SceneViewPostprocessorShow
+{
+    SCENEVIEW_POSTPROCESSOR_SHOW_NONE,
+    SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW,
+    SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D,
+    SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID,
+    SCENEVIEW_POSTPROCESSOR_SHOW_ORDER
+};
+
 struct SceneViewSettings
 {
-    bool showOrder;
-    bool showScalarField;
-    bool showVectors;
-    bool showContours;
     bool showGeometry;
-    bool showInitialMesh;
-    bool showSolutionMesh;
     bool showGrid;
+    bool showInitialMesh;
 
+    SceneViewPostprocessorShow postprocessorShow;
+
+    bool showContours;
+    bool showVectors;
+    bool showSolutionMesh;
+
+    // grid
     double gridStep;
 
+    // contour
     int contoursCount;
     PhysicFieldVariable contourPhysicFieldVariable;
 
@@ -612,14 +624,15 @@ struct SceneViewSettings
     bool scalarRangeAuto;
     double scalarRangeMin;
     double scalarRangeMax;
-    bool scalarView3D;
-    bool scalarView3DLighting;
 
     // vector view
     PhysicFieldVariable vectorPhysicFieldVariable;
     bool vectorRangeAuto;
     double vectorRangeMin;
     double vectorRangeMax;
+
+    // 3d
+    bool scalarView3DLighting;
 
     // palete
     PaletteType paletteType;

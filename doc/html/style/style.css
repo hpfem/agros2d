@@ -4,7 +4,7 @@ body {
   font-family: verdana, helvetica, arial, sans-serif;
   font-size: 73%;  /* Enables font size scaling in MSIE */
   margin: 14px auto;
-  width: 780px;
+  width: 900px;
   padding: 0;
   background-color: #ddd;
   border: 1px solid #999;
@@ -233,7 +233,7 @@ h5 {
   background-color: transparent;
   font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
   font-weight: bold;
-  font-size: 10pt;
+  font-size: 9pt;
   margin: 0;
   padding: 9px 0 5px 0;
 }

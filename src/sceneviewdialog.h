@@ -3,6 +3,8 @@
 
 #include <QtGui/QDialog>
 #include <QtGui/QCheckBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QButtonGroup>
 #include <QtGui/QLineEdit>
 #include <QtGui/QComboBox>
 
@@ -32,11 +34,17 @@ private:
     QCheckBox *chkShowGrid;
     QCheckBox *chkShowGeometry;
     QCheckBox *chkShowInitialMesh;
-    QCheckBox *chkShowSolutionMesh;
-    QCheckBox *chkShowOrder;
+
+    QButtonGroup *butPostprocessorGroup;
+    QRadioButton *radPostprocessorNone;
+    QRadioButton *radPostprocessorScalarField;
+    QRadioButton *radPostprocessorScalarField3D;
+    QRadioButton *radPostprocessorScalarField3DSolid;
+    QRadioButton *radPostprocessorOrder;
+
     QCheckBox *chkShowContours;
-    QCheckBox *chkShowScalarField;
     QCheckBox *chkShowVectors;
+    QCheckBox *chkShowSolutionMesh;
 
     // grid
     QLineEdit *txtGridStep;
@@ -53,7 +61,8 @@ private:
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
     QLineEdit *txtPaletteSteps;
-    QCheckBox *chkView3D;
+
+    // 3d
     QCheckBox *chkView3DLighting;
 
     // vector field

@@ -1,4 +1,4 @@
-    #include "sceneview.h"
+#include "sceneview.h"
 
 SceneView::SceneView(Scene *scene, QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
@@ -81,10 +81,7 @@ void SceneView::createActions()
     
     actShowContours = new QAction(tr("Contours"), this);
     actShowContours->setCheckable(true);
-    
-    actShowScalarField = new QAction(tr("Scalar Field"), this);
-    actShowScalarField->setCheckable(true);
-    
+        
     actShowVectors = new QAction(tr("Vectors"), this);
     actShowVectors->setCheckable(true);
     
@@ -93,7 +90,6 @@ void SceneView::createActions()
     connect(actShowGroup, SIGNAL(triggered(QAction *)), this, SLOT(doShowGroup(QAction *)));
     actShowGroup->addAction(actShowSolutionMesh);
     actShowGroup->addAction(actShowContours);
-    actShowGroup->addAction(actShowScalarField);
     actShowGroup->addAction(actShowVectors);
     
     // postprocessor group
@@ -135,11 +131,10 @@ void SceneView::createMenu()
     
     // show group
     mnuShowGroup = new QMenu(tr("Show"), this);
-    mnuShowGroup->addAction(actShowSolutionMesh);
     mnuShowGroup->addAction(actShowContours);
-    mnuShowGroup->addAction(actShowScalarField);
     mnuShowGroup->addAction(actShowVectors);
-    
+    mnuShowGroup->addAction(actShowSolutionMesh);
+
     mnuInfo->addAction(m_scene->actNewNode);
     mnuInfo->addAction(m_scene->actNewEdge);
     mnuInfo->addAction(m_scene->actNewLabel);
@@ -166,7 +161,8 @@ void SceneView::setupViewport()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         double aspect = ((double) width()/(double) height());
         gluPerspective(0.0, aspect, 1.0, 1000.0);
@@ -182,7 +178,9 @@ void SceneView::paintGL()
 {
     glClearColor(0.99, 0.99, 0.99, 0);
     glClear(GL_COLOR_BUFFER_BIT);
-    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         glClear(GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
@@ -196,7 +194,8 @@ void SceneView::paintGL()
 
     glScaled(m_scale/m_aspect, m_scale, m_scale);
 
-    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         glRotated(m_rotation.x, 1.0, 0.0, 0.0);
         glRotated(m_rotation.y, 0.0, 0.0, 1.0);
@@ -209,14 +208,28 @@ void SceneView::paintGL()
     {
         if (m_sceneMode == SCENEMODE_POSTPROCESSOR)
         {
-            if (m_sceneViewSettings.showOrder) paintOrder();
-            if (m_sceneViewSettings.showScalarField) paintScalarField();
-            if (m_sceneViewSettings.showVectors) paintVectors();
+            switch (m_sceneViewSettings.postprocessorShow)
+            {
+            case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW:
+                paintScalarField();
+                break;
+            case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D:
+                paintScalarField3D();
+                break;
+            case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID:
+                paintScalarField3DSolid();
+                break;
+            case SCENEVIEW_POSTPROCESSOR_SHOW_ORDER:
+                paintOrder();
+                break;
+            }
+
             if (m_sceneViewSettings.showContours) paintContours();
+            if (m_sceneViewSettings.showVectors) paintVectors();
+            if (m_sceneViewSettings.showSolutionMesh) paintSolutionMesh();
         }
     }
 
-    if (m_sceneViewSettings.showSolutionMesh) paintSolutionMesh();
     if (m_sceneViewSettings.showInitialMesh) paintInitialMesh();
     if (m_sceneViewSettings.showGeometry) paintGeometry();
     
@@ -629,7 +642,8 @@ void SceneView::paintColorBar(double min, double max)
         renderText(1.0 - labels_width + 0.022*(1.0/m_aspect), y_tick-h/4.0, 0, QString::number(value, '+e', 1));
     }
     
-    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         glEnable(GL_DEPTH_TEST);
 
     glPopMatrix();
@@ -641,9 +655,9 @@ void SceneView::paintScalarField()
     double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
     // special case: constant solution
     if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.scalarRangeMin -= 0.5; }
-    
+
     m_scene->sceneSolution()->linScalarView().lock_data();
-    
+
     double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
     int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
     Point point[3];
@@ -651,26 +665,7 @@ void SceneView::paintScalarField()
 
     double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
-    // draw all triangles
-    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
-    {
-        if (m_sceneViewSettings.scalarView3DLighting)
-        {
-            glEnable(GL_LIGHTING);
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        }            
-        else
-        {
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-        }
-
-        glPushMatrix();
-        glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
-    }
-    else
-    {
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-    }
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -689,61 +684,122 @@ void SceneView::paintScalarField()
         point[2].x = linVert[linTris[i][2]][0];
         point[2].y = linVert[linTris[i][2]][1];
         value[2]   = linVert[linTris[i][2]][2];
-        
+
         if (!m_sceneViewSettings.scalarRangeAuto)
         {
             double avgValue = (value[0] + value[1] + value[2]) / 3.0;
             if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
                 continue;
         }
-                
-        if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
-        {
-            double delta = 0.0;
 
-            if (m_sceneViewSettings.scalarView3DLighting)
-                glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
-            glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            // glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
-            glVertex3d(point[0].x, point[0].y, - delta - value[0]);
-            
-            if (m_sceneViewSettings.scalarView3DLighting)
-                glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
-            glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            // glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
-            glVertex3d(point[1].x, point[1].y, - delta - value[1]);
+        glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        glVertex2d(point[0].x, point[0].y);
 
-            if (m_sceneViewSettings.scalarView3DLighting)
-                glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
-            glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            // glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
-            glVertex3d(point[2].x, point[2].y, - delta - value[2]);
-        }
-        else
-        {
-            glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex2d(point[0].x, point[0].y);
-            
-            glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex2d(point[1].x, point[1].y);
-            
-            glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-            glVertex2d(point[2].x, point[2].y);
-        }
+        glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        glVertex2d(point[1].x, point[1].y);
+
+        glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        glVertex2d(point[2].x, point[2].y);
     }
     glEnd();
     glDisable(GL_POLYGON_OFFSET_FILL);
-    glDisable(GL_TEXTURE_1D);    
+    glDisable(GL_TEXTURE_1D);
     glDisable(GL_LIGHTING);
 
-    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    m_scene->sceneSolution()->linScalarView().unlock_data();
+
+    paintColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
+}
+
+void SceneView::paintScalarField3D()
+{
+    // range
+    double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
+    // special case: constant solution
+    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.scalarRangeMin -= 0.5; }
+
+    m_scene->sceneSolution()->linScalarView().lock_data();
+
+    double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
+    int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
+    Point point[3];
+    double value[3];
+
+    double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
+
+    if (m_sceneViewSettings.scalarView3DLighting)
     {
-        glPopMatrix();
+        glEnable(GL_LIGHTING);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    }
+    else
+    {
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     }
 
+    glPushMatrix();
+    glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
+
+    glEnable(GL_TEXTURE_1D);
+    glBindTexture(GL_TEXTURE_1D, 1);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1.0, 1.0);
+
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+    {
+        point[0].x = linVert[linTris[i][0]][0];
+        point[0].y = linVert[linTris[i][0]][1];
+        value[0]   = linVert[linTris[i][0]][2];
+        point[1].x = linVert[linTris[i][1]][0];
+        point[1].y = linVert[linTris[i][1]][1];
+        value[1]   = linVert[linTris[i][1]][2];
+        point[2].x = linVert[linTris[i][2]][0];
+        point[2].y = linVert[linTris[i][2]][1];
+        value[2]   = linVert[linTris[i][2]][2];
+
+        if (!m_sceneViewSettings.scalarRangeAuto)
+        {
+            double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+            if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                continue;
+        }
+
+        double delta = 0.0;
+
+        if (m_sceneViewSettings.scalarView3DLighting)
+            glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
+        glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        // glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
+        glVertex3d(point[0].x, point[0].y, - delta - value[0]);
+
+        if (m_sceneViewSettings.scalarView3DLighting)
+            glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
+        glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        // glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
+        glVertex3d(point[1].x, point[1].y, - delta - value[1]);
+
+        if (m_sceneViewSettings.scalarView3DLighting)
+            glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
+        glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        // glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
+        glVertex3d(point[2].x, point[2].y, - delta - value[2]);
+    }
+    glEnd();
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glDisable(GL_TEXTURE_1D);
+    glDisable(GL_LIGHTING);
+
+    glPopMatrix();
+
     m_scene->sceneSolution()->linScalarView().unlock_data();
-    
+
     paintColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
+}
+
+void SceneView::paintScalarField3DSolid()
+{
 }
 
 void SceneView::paintContours()
@@ -917,10 +973,19 @@ void SceneView::paintSceneModeLabel()
         text = tr("Operate on labels");
         break;
     case SCENEMODE_POSTPROCESSOR:
-        if (m_sceneViewSettings.showScalarField)
+        switch (m_sceneViewSettings.postprocessorShow)
+        {
+        case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW:
+        case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D:
+        case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID:
             text = physicFieldVariableString(m_sceneViewSettings.scalarPhysicFieldVariable);
-        else
+            break;
+        case SCENEVIEW_POSTPROCESSOR_SHOW_ORDER:
+            text = tr("Order");
+            break;
+        default:
             text = tr("Postprocessor");
+        }
         break;
     }
     
@@ -940,7 +1005,8 @@ void SceneView::paintSceneModeLabel()
     glColor3f(0, 0, 0);
     renderText((width()-fontMetrics().width(text))/2, 14, text);
     
-    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         glEnable(GL_DEPTH_TEST);
 
     glPopMatrix();
@@ -1216,7 +1282,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             return;
         }
         
-        if (!m_sceneViewSettings.scalarView3D && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+        if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+            !(m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         {
             // local point value
             if (actPostprocessorModeLocalPointValue->isChecked())
@@ -1443,28 +1510,35 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     if (event->buttons() & Qt::MidButton)
     {
         setCursor(Qt::PointingHandCursor);
-        
-        // m_offset.x += 2.0/width()*dx/m_scale*m_aspect;
-        // m_offset.y += 2.0/height()*dy/m_scale;
-        // m_offset.z = 0.0;
 
-        m_offset.x += 2.0/width() *(- dx * cos(m_rotation.y/180.0*M_PI) + dy * sin(m_rotation.y/180.0*M_PI))/m_scale*m_aspect;
-        m_offset.y += 2.0/height()*(  dy * cos(m_rotation.y/180.0*M_PI) + dx * sin(m_rotation.y/180.0*M_PI))/m_scale;
-        m_offset.z -= 2.0/height()*(  dy * sin(m_rotation.x/180.0*M_PI))/m_scale;
-
-        // cout << m_rotation.x << "  " << m_rotation.y << endl;
+        if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+            (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
+        {
+            m_offset.x += 2.0/width() *(- dx * cos(m_rotation.y/180.0*M_PI) + dy * sin(m_rotation.y/180.0*M_PI))/m_scale*m_aspect;
+            m_offset.y += 2.0/height()*(  dy * cos(m_rotation.y/180.0*M_PI) + dx * sin(m_rotation.y/180.0*M_PI))/m_scale;
+            m_offset.z -= 2.0/height()*(  dy * sin(m_rotation.x/180.0*M_PI))/m_scale;
+        }
+        else
+        {
+            m_offset.x -= 2.0/width() * dx / m_scale*m_aspect;
+            m_offset.y += 2.0/height() * dy / m_scale;
+            m_offset.z = 0.0;
+        }
 
         updateGL();
     }
     
     // rotate
-    if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.showScalarField && (m_sceneMode == SCENEMODE_POSTPROCESSOR))
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         if (event->buttons() & Qt::LeftButton)
         {
+            setCursor(Qt::PointingHandCursor);
+
             m_rotation.x -= dy;
             m_rotation.y += dx;
-            
+
             updateGL();
         }
     }
@@ -1571,10 +1645,9 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
     
     // show group
     mnuShowGroup->setEnabled((m_sceneMode == SCENEMODE_POSTPROCESSOR));
-    actShowSolutionMesh->setChecked(m_sceneViewSettings.showSolutionMesh);
     actShowContours->setChecked(m_sceneViewSettings.showContours);
-    actShowScalarField->setChecked(m_sceneViewSettings.showScalarField);
     actShowVectors->setChecked(m_sceneViewSettings.showVectors);
+    actShowSolutionMesh->setChecked(m_sceneViewSettings.showSolutionMesh);
     
     mnuInfo->exec(event->globalPos());
 }
@@ -1664,13 +1737,14 @@ void SceneView::doDefaults()
     m_sceneViewSettings.scalarRangeMax = 1;
     
     // visible objects
-    m_sceneViewSettings.showOrder = false;
-    m_sceneViewSettings.showScalarField = true;
-    m_sceneViewSettings.showVectors = false;
-    m_sceneViewSettings.showContours = false;
     m_sceneViewSettings.showGrid = true;
     m_sceneViewSettings.showGeometry = true;
     m_sceneViewSettings.showInitialMesh = false;
+
+    m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
+
+    m_sceneViewSettings.showContours = false;
+    m_sceneViewSettings.showVectors = false;
     m_sceneViewSettings.showSolutionMesh = false;
     
     // settings
@@ -1683,7 +1757,8 @@ void SceneView::doDefaults()
     m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_NONE;
     m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
     m_sceneViewSettings.scalarRangeAuto = true;
-    m_sceneViewSettings.scalarView3D = false;
+
+    // 3d
     m_sceneViewSettings.scalarView3DLighting = false;
 
     switch (m_scene->projectInfo().physicField)
@@ -1738,13 +1813,16 @@ void SceneView::doDefaults()
 
 void SceneView::doSolved()
 {
+    m_sceneViewSettings.showGeometry = true;
+    m_sceneViewSettings.showGrid = true;
     m_sceneViewSettings.showInitialMesh = false;
-    m_sceneViewSettings.showSolutionMesh = false;
-    m_sceneViewSettings.showScalarField = true;
+
+    m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
+
     m_sceneViewSettings.showContours = false;
     m_sceneViewSettings.showVectors = false;
-    m_sceneViewSettings.showOrder = false;
-    
+    m_sceneViewSettings.showSolutionMesh = false;
+
     doInvalidated();
     actSceneModePostprocessor->trigger();
 }
@@ -1769,11 +1847,10 @@ void SceneView::doBoundaryGroup(QAction *action)
 
 void SceneView::doShowGroup(QAction *action)
 {
-    m_sceneViewSettings.showSolutionMesh = actShowSolutionMesh->isChecked();
     m_sceneViewSettings.showContours = actShowContours->isChecked();
-    m_sceneViewSettings.showScalarField = actShowScalarField->isChecked();
     m_sceneViewSettings.showVectors = actShowVectors->isChecked();
-    
+    m_sceneViewSettings.showSolutionMesh = actShowSolutionMesh->isChecked();
+
     doInvalidated();
 }
 
@@ -1785,9 +1862,30 @@ void SceneView::doPostprocessorModeGroup(QAction *action)
 
 void SceneView::doSceneViewProperties()
 {
+    SceneViewPostprocessorShow postprocessorShow = m_sceneViewSettings.postprocessorShow;
+
     SceneViewDialog *sceneViewDialog = new SceneViewDialog(this, this);
     if (sceneViewDialog->showDialog() == QDialog::Accepted)
+    {
+        // set defaults
+        if (postprocessorShow != m_sceneViewSettings.postprocessorShow)
+        {
+            if (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID)
+            {
+                m_rotation.x =  66.0;
+                m_rotation.y = -35.0;
+                doZoomBestFit();
+            }
+            else
+            {
+                m_rotation.x = 0.0;
+                m_rotation.y = 0.0;
+                doZoomBestFit();
+            }
+        }
+
         doInvalidated();
+    }
     delete sceneViewDialog;
 }
 
@@ -1855,7 +1953,10 @@ void SceneView::setRangeContour()
 
 void SceneView::setRangeScalar()
 {
-    if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showScalarField)
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW ||
+         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || 
+         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         ViewScalarFilter *viewScalarFilter;
         if (m_scene->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
@@ -1878,7 +1979,7 @@ void SceneView::setRangeScalar()
             m_sceneViewSettings.scalarRangeMax = m_scene->sceneSolution()->linScalarView().get_max_value();
         }
 
-        if (m_sceneViewSettings.scalarView3D && m_sceneViewSettings.scalarView3DLighting)
+        if (m_sceneViewSettings.scalarView3DLighting)
         {
             double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
@@ -1905,9 +2006,9 @@ void SceneView::setRangeScalar()
             glDisable(GL_COLOR_MATERIAL);
 
             glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-            #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
+#if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
             glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-            #endif
+#endif
 
             // calculate normals
             m_scene->sceneSolution()->linScalarView().lock_data();
