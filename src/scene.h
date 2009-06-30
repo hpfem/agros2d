@@ -190,16 +190,14 @@ private slots:
     void doSolved();
 };
 
-namespace Util
+class Util
 {
-    // global variable
-    static Scene *m_scene = NULL;
-    inline Scene *scene()
+public:
+    static Scene *scene()
     {
-        if (m_scene == NULL)
-            m_scene = new Scene();
-        return m_scene;
+        static Scene m_scene;
+        return &m_scene;
     }
-}
+};
 
 #endif /* SCENE_H */

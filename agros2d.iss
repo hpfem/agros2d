@@ -1,8 +1,8 @@
 [Setup]
 
 AppName=Agros 2D
-AppVerName=Agros 2D 0.7
-OutputBaseFilename=Agros2D_0.7.0
+AppVerName=Agros 2D 0.8
+OutputBaseFilename=Agros2D_0.8.0
 DefaultGroupName=Agros 2D
 LicenseFile=COPYING
 

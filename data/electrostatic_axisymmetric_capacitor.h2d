@@ -1,24 +1,22 @@
 <document>
     <projects>
-        <project adaptivitytolerance="0" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
-            <scriptstartup>U = 1;
-eps1 = 10;
-eps2 = 3;</scriptstartup>
+        <project adaptivitytolerance="1" numberofrefinements="1" adaptivitysteps="20" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Electrostatic" >
+            <scriptstartup></scriptstartup>
             <edges>
-                <edge type="potential" value="U" id="1" name="U = 1 V" />
+                <edge type="potential" value="1" id="1" name="U = 1 V" />
                 <edge type="potential" value="0" id="2" name="U = 0 V" />
                 <edge type="surface_charge_density" value="0" id="3" name="neumann" />
             </edges>
             <labels>
                 <label charge_density="0" id="1" name="air" permittivity="1" />
-                <label charge_density="0" id="2" name="diel 1" permittivity="eps1" />
-                <label charge_density="0" id="3" name="diel 2" permittivity="eps2" />
+                <label charge_density="0" id="2" name="diel 1" permittivity="10" />
+                <label charge_density="0" id="3" name="diel 2" permittivity="3" />
             </labels>
         </project>
     </projects>
     <geometry>
         <nodes>
-            <node x="0" y="0.2" id="0" />
+            <node x="0" y="0.24" id="0" />
             <node x="0" y="0.08" id="1" />
             <node x="0.01" y="0.08" id="2" />
             <node x="0.01" y="0" id="3" />
@@ -28,7 +26,7 @@ eps2 = 3;</scriptstartup>
             <node x="0.05" y="0" id="7" />
             <node x="0.06" y="0" id="8" />
             <node x="0.06" y="0.08" id="9" />
-            <node x="0.2" y="0" id="10" />
+            <node x="0.24" y="0" id="10" />
         </nodes>
         <edges>
             <edge end="1" marker="3" id="0" start="0" angle="0" />

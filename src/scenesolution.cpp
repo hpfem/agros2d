@@ -499,8 +499,6 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
         {
             if (e->en[edge]->bnd && e->en[edge]->marker-1 == edgeIndex)
             {
-                // cout << ((e->vn[0]->x-e->vn[1]->x)*e->vn[0]->y - (e->vn[0]->y-e->vn[1]->y)*e->vn[0]->x) << endl;
-
                 update_limit_table(e->get_mode());
 
                 m_sln1->set_active_element(e);
@@ -692,8 +690,6 @@ void SceneSolution::setSolutionArray(SolutionArray *solutionArray)
     m_sln1 = solutionArray->sln1;
     m_sln2 = solutionArray->sln2;
     
-    cout << m_sln1 << endl;
-
     if (m_scene->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
         m_vec.process_solution(m_sln1, FN_DX_0, m_sln1, FN_DY_0, EPS_NORMAL);
 

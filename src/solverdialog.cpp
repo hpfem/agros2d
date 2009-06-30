@@ -90,7 +90,7 @@ void SolverDialog::runMesh()
     processTriangle->setStandardErrorFile(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".triangle.err");
     connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
 
-    processTriangle->start("triangle -p -P -q30.000000 -e -A -a -z -Q -I -p \"" + QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + "\"");
+    processTriangle->start("triangle -p -P -q20 -e -A -a -z -Q -I -p \"" + QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + "\"");
     updateProgress(30);
 
     if (!processTriangle->waitForStarted())
@@ -487,7 +487,7 @@ void SolverDialog::runSolver()
             }
             break;
         default:
-            cout << "Physical field '" +  physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. SolverDialog::runSolver()" << endl;
+            cerr << "Physical field '" +  physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. SolverDialog::runSolver()" << endl;
             throw;
             break;
         }
