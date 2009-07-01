@@ -1,11 +1,12 @@
 <document>
     <projects>
-        <project adaptivitytolerance="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="1" problemtype="planar" type="magnetostatic" id="0" name="unnamed" >
+        <project adaptivitytolerance="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="magnetostatic" id="0" name="unnamed" >
+            <scriptstartup></scriptstartup>
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
-                <label current_density="0" id="1" name="med" permeability="1" />
+                <label current_density="1e6" id="1" name="magnet" permeability="1.07" />
                 <label current_density="0" id="2" name="vzduch" permeability="1" />
             </labels>
         </project>
@@ -32,7 +33,7 @@
             <edge end="6" marker="0" id="7" start="5" angle="0" />
         </edges>
         <labels>
-            <label x="0.00301448" y="0.0404858" marker="1" id="0" area="0.005" />
+            <label x="0.00301448" y="0.0404858" marker="1" id="0" area="0.0005" />
             <label x="-0.145434" y="-0.706253" marker="2" id="1" area="0.01" />
         </labels>
     </geometry>

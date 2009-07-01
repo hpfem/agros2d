@@ -96,7 +96,7 @@ void ProjectDialog::fillComboBox()
         cmbPhysicField->clear();
         cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELECTROSTATIC), PHYSICFIELD_ELECTROSTATIC);
         cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETOSTATIC), PHYSICFIELD_MAGNETOSTATIC);
-        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT_TRANSFER), PHYSICFIELD_CURRENT);
+        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_CURRENT), PHYSICFIELD_CURRENT);
         cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT_TRANSFER), PHYSICFIELD_HEAT_TRANSFER);
         // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
     }

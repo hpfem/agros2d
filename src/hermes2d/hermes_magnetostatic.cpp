@@ -19,6 +19,40 @@ inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, 
     return result;
 }
 
+inline double int_dvdx(RealFunction* fu, RefMap* ru)
+{
+    Quad2D* quad = fu->get_quad_2d();
+
+    int o = fu->get_fn_order() + ru->get_inv_ref_order();
+    limit_order(o);
+    fu->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
+
+    double *dvdx, *dvdy;
+    fu->get_dx_dy_values(dvdx, dvdy);
+    double* uval = fu->get_fn_values();
+
+    double result = 0.0;
+    h1_integrate_expression(dvdx[i]);
+    return result;
+}
+
+inline double int_dvdy(RealFunction* fu, RefMap* ru)
+{
+    Quad2D* quad = fu->get_quad_2d();
+
+    int o = fu->get_fn_order() + ru->get_inv_ref_order();
+    limit_order(o);
+    fu->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
+
+    double *dvdx, *dvdy;
+    fu->get_dx_dy_values(dvdx, dvdy);
+    double* uval = fu->get_fn_values();
+
+    double result = 0.0;
+    h1_integrate_expression(dvdy[i]);
+    return result;
+}
+
 int magnetostatic_bc_types(int marker)
 {
     switch (magnetostaticEdge[marker].type)
@@ -45,10 +79,10 @@ scalar magnetostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* r
     int marker = rv->get_active_element()->marker;
 
     if (magnetostaticIsPlanar)
-        return 1.0 / (MU0 * magnetostaticLabel[marker].permeability) * int_grad_u_grad_v(fu, fv, ru, rv);
+        return 1.0 / (magnetostaticLabel[marker].permeability) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
     {
-        return 1.0 / (MU0 * magnetostaticLabel[marker].permeability) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
+        return 1.0 / (magnetostaticLabel[marker].permeability) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
     }   
 }
 
@@ -56,10 +90,15 @@ scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
+    if (marker == 0)
+        cout << 1.5 / (MU0 * magnetostaticLabel[marker].permeability) * int_dvdx(fv, rv) << " : "
+                << 1.5 / (MU0 * magnetostaticLabel[marker].permeability) * int_dvdy(fv, rv) << endl;
+
     if (magnetostaticIsPlanar)
-        return magnetostaticLabel[marker].current_density * int_v(fv, rv);
+        return MU0 * magnetostaticLabel[marker].current_density * int_v(fv, rv); // +
+                // ((marker == 0) ? (1.5 / (magnetostaticLabel[marker].permeability) * int_dvdy(fv, rv)) : 0.0);
     else
-        return magnetostaticLabel[marker].current_density * int_v(fv, rv);
+        return MU0 * magnetostaticLabel[marker].current_density * int_v(fv, rv);
 }
 
 SolutionArray *magnetostatic_main(SolverDialog *solverDialog,

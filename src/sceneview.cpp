@@ -1772,7 +1772,7 @@ void SceneView::doDefaults()
     case PHYSICFIELD_MAGNETOSTATIC:
         {
             m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL;
-            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
+            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL; // PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
             m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_MAGNITUDE;
             m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
         }
