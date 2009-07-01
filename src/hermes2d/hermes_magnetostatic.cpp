@@ -49,7 +49,7 @@ scalar magnetostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* r
     else
     {
         return 1.0 / (MU0 * magnetostaticLabel[marker].permeability) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
-    }
+    }   
 }
 
 scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)

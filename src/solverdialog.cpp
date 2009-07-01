@@ -90,7 +90,7 @@ void SolverDialog::runMesh()
     processTriangle->setStandardErrorFile(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".triangle.err");
     connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
 
-    processTriangle->start("triangle -p -P -q20 -e -A -a -z -Q -I -p \"" + QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + "\"");
+    processTriangle->start("triangle -p -P -q30.0 -e -A -a -z -Q -I -p \"" + QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + "\"");
     updateProgress(30);
 
     if (!processTriangle->waitForStarted())

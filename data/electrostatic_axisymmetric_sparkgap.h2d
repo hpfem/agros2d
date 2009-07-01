@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="5" numberofrefinements="0" adaptivitysteps="15" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Sparkgap" >
+        <project adaptivitytolerance="1" numberofrefinements="0" adaptivitysteps="20" polynomialorder="2" problemtype="axisymmetric" type="electrostatic" id="0" name="Sparkgap" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="potential" value="1000" id="1" name="U = 1000 V" />
@@ -34,7 +34,7 @@
             <edge end="6" marker="3" id="7" start="7" angle="90" />
         </edges>
         <labels>
-            <label x="0.879551" y="0.764057" marker="1" id="0" area="0" />
+            <label x="0.879551" y="0.764057" marker="1" id="0" area="0.01" />
         </labels>
     </geometry>
 </document>

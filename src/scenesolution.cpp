@@ -509,6 +509,7 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                 m_sln1->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
                 double3* pt = quad2d->get_points(eo);
                 double3* tan = ru->get_tangent(edge);
+
                 // value
                 scalar* value = m_sln1->get_fn_values();
                 // derivative
@@ -538,9 +539,13 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                         {
                             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                                integral += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]) * 1.00;
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]) * 1.00;
+
+
+                            // if (edgeIndex == 6)
+                                cout << tan[i][0] << "; " << tan[i][1] << "; " << tan[i][2] << endl;
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE:
@@ -554,27 +559,27 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE:
                         {
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                                integral += pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]) * 1.00;
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]) * 1.00;
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX:
                         {
                             SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[e->marker]->marker);
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                                integral += pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]) * 1.00;
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]) * 1.00;
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_CURRENT_CURRENT_DENSITY:
                         {
                             SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                                integral += pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]) * 1.00;
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] + tan[i][0] * dudy[i]) * m_scene->edges[edgeIndex]->direction();
+                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (- tan[i][1] * dudx[i] - tan[i][0] * dudy[i]) * 1.00;
                         }
                         break;
                     default:

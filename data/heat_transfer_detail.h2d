@@ -26,143 +26,111 @@
     <geometry>
         <nodes>
             <node x="0.616656" y="0.647324" id="0" />
-            <node x="0.624812" y="0.647324" id="1" />
-            <node x="0.856656" y="0.647324" id="2" />
-            <node x="0.856656" y="0.885324" id="3" />
-            <node x="0.616656" y="0.885324" id="4" />
-            <node x="0.616656" y="0.887324" id="5" />
-            <node x="0.687656" y="0.887324" id="6" />
-            <node x="0.616656" y="1.135324" id="7" />
-            <node x="0.616656" y="1.087324" id="8" />
-            <node x="0.616656" y="1.375324" id="9" />
-            <node x="0.616656" y="1.137324" id="10" />
-            <node x="0.496656" y="1.700008" id="11" />
-            <node x="0.496656" y="0.607324" id="12" />
-            <node x="0.6966560000000001" y="0.637324" id="13" />
-            <node x="0.866656" y="0.637324" id="14" />
-            <node x="0.856656" y="0.887324" id="15" />
-            <node x="0.866656" y="0.877324" id="16" />
-            <node x="0.616656" y="0.895324" id="17" />
-            <node x="0.6966560000000001" y="0.647324" id="18" />
-            <node x="0.616656" y="0.607324" id="19" />
-            <node x="0.871656" y="0.887324" id="20" />
-            <node x="0.616656" y="1.377324" id="21" />
-            <node x="0.616656" y="1.700008" id="22" />
-            <node x="0.616656" y="0.637324" id="23" />
-            <node x="0.6966560000000001" y="0.26741" id="24" />
-            <node x="0.616656" y="0.26741" id="25" />
-            <node x="0.616656" y="0.600324" id="26" />
-            <node x="0.616656" y="0.640324" id="27" />
-            <node x="1.936884" y="0.877324" id="28" />
-            <node x="0.856656" y="1.087324" id="29" />
-            <node x="0.631656" y="1.087324" id="30" />
-            <node x="0.857532" y="1.087324" id="31" />
-            <node x="0.856656" y="1.269324" id="32" />
-            <node x="0.856656" y="1.270009" id="33" />
-            <node x="0.856656" y="1.279324" id="34" />
-            <node x="0.856656" y="1.700008" id="35" />
-            <node x="0.866656" y="1.700008" id="36" />
-            <node x="0.866656" y="1.279324" id="37" />
-            <node x="0.866656" y="1.087324" id="38" />
-            <node x="0.866656" y="1.187324" id="39" />
-            <node x="1.936884" y="1.087324" id="40" />
-            <node x="1.936884" y="1.187324" id="41" />
-            <node x="0.876656" y="1.187324" id="42" />
-            <node x="1.936884" y="1.199324" id="43" />
-            <node x="0.878656" y="1.199324" id="44" />
-            <node x="0.876656" y="1.127324" id="45" />
-            <node x="1.936884" y="1.127324" id="46" />
-            <node x="1.936884" y="0.887324" id="47" />
-            <node x="1.936884" y="1.190324" id="48" />
-            <node x="0.869656" y="1.190324" id="49" />
-            <node x="0.869656" y="1.279324" id="50" />
-            <node x="0.869656" y="1.199324" id="51" />
-            <node x="0.878656" y="1.279324" id="52" />
-            <node x="0.494156" y="1.700008" id="53" />
-            <node x="0.494156" y="0.604824" id="54" />
-            <node x="0.491656" y="1.700008" id="55" />
-            <node x="0.491656" y="0.602324" id="56" />
-            <node x="0.616656" y="0.604824" id="57" />
-            <node x="0.616656" y="0.602324" id="58" />
-            <node x="0.489656" y="0.600324" id="59" />
-            <node x="0.489656" y="1.700008" id="60" />
+            <node x="0.856656" y="0.647324" id="1" />
+            <node x="0.616656" y="1.087324" id="2" />
+            <node x="0.496656" y="1.700008" id="3" />
+            <node x="0.496656" y="0.607324" id="4" />
+            <node x="0.6966560000000001" y="0.637324" id="5" />
+            <node x="0.866656" y="0.637324" id="6" />
+            <node x="0.856656" y="0.887324" id="7" />
+            <node x="0.866656" y="0.877324" id="8" />
+            <node x="0.6966560000000001" y="0.647324" id="9" />
+            <node x="0.616656" y="0.607324" id="10" />
+            <node x="0.616656" y="1.700008" id="11" />
+            <node x="0.616656" y="0.637324" id="12" />
+            <node x="0.6966560000000001" y="0.26741" id="13" />
+            <node x="0.616656" y="0.26741" id="14" />
+            <node x="0.616656" y="0.600324" id="15" />
+            <node x="1.936884" y="0.877324" id="16" />
+            <node x="0.856656" y="1.087324" id="17" />
+            <node x="0.856656" y="1.700008" id="18" />
+            <node x="0.866656" y="1.700008" id="19" />
+            <node x="0.866656" y="1.279324" id="20" />
+            <node x="0.866656" y="1.087324" id="21" />
+            <node x="0.866656" y="1.187324" id="22" />
+            <node x="1.936884" y="1.087324" id="23" />
+            <node x="1.936884" y="1.187324" id="24" />
+            <node x="0.876656" y="1.187324" id="25" />
+            <node x="1.936884" y="1.199324" id="26" />
+            <node x="0.878656" y="1.199324" id="27" />
+            <node x="0.876656" y="1.127324" id="28" />
+            <node x="1.936884" y="1.127324" id="29" />
+            <node x="1.936884" y="0.887324" id="30" />
+            <node x="1.936884" y="1.190324" id="31" />
+            <node x="0.869656" y="1.190324" id="32" />
+            <node x="0.869656" y="1.279324" id="33" />
+            <node x="0.869656" y="1.199324" id="34" />
+            <node x="0.878656" y="1.279324" id="35" />
+            <node x="0.494156" y="1.700008" id="36" />
+            <node x="0.494156" y="0.604824" id="37" />
+            <node x="0.491656" y="1.700008" id="38" />
+            <node x="0.491656" y="0.602324" id="39" />
+            <node x="0.616656" y="0.604824" id="40" />
+            <node x="0.616656" y="0.602324" id="41" />
+            <node x="0.489656" y="0.600324" id="42" />
+            <node x="0.489656" y="1.700008" id="43" />
+            <node x="0.616656" y="0.887324" id="44" />
         </nodes>
         <edges>
-            <edge end="1" marker="0" id="0" start="0" angle="0" />
-            <edge end="3" marker="0" id="1" start="2" angle="0" />
-            <edge end="0" marker="0" id="2" start="4" angle="0" />
-            <edge end="6" marker="0" id="3" start="5" angle="0" />
-            <edge end="8" marker="0" id="4" start="7" angle="0" />
-            <edge end="10" marker="0" id="5" start="9" angle="0" />
-            <edge end="12" marker="0" id="6" start="11" angle="0" />
-            <edge end="14" marker="2" id="7" start="13" angle="0" />
-            <edge end="15" marker="0" id="8" start="3" angle="0" />
-            <edge end="16" marker="2" id="9" start="14" angle="0" />
-            <edge end="5" marker="0" id="10" start="17" angle="0" />
-            <edge end="4" marker="0" id="11" start="5" angle="0" />
-            <edge end="2" marker="0" id="12" start="18" angle="0" />
-            <edge end="18" marker="0" id="13" start="1" angle="0" />
-            <edge end="18" marker="0" id="14" start="13" angle="0" />
-            <edge end="12" marker="0" id="15" start="19" angle="0" />
-            <edge end="22" marker="0" id="16" start="21" angle="0" />
-            <edge end="13" marker="0" id="17" start="23" angle="0" />
-            <edge end="13" marker="2" id="18" start="24" angle="0" />
-            <edge end="26" marker="1" id="19" start="25" angle="0" />
-            <edge end="23" marker="0" id="20" start="19" angle="0" />
-            <edge end="27" marker="0" id="21" start="23" angle="0" />
-            <edge end="15" marker="0" id="22" start="20" angle="0" />
-            <edge end="28" marker="2" id="23" start="16" angle="0" />
-            <edge end="10" marker="0" id="24" start="7" angle="0" />
-            <edge end="21" marker="0" id="25" start="9" angle="0" />
-            <edge end="15" marker="0" id="26" start="6" angle="0" />
-            <edge end="17" marker="0" id="27" start="8" angle="0" />
-            <edge end="30" marker="0" id="28" start="29" angle="0" />
-            <edge end="8" marker="0" id="29" start="30" angle="0" />
-            <edge end="31" marker="0" id="30" start="29" angle="0" />
-            <edge end="32" marker="0" id="31" start="29" angle="0" />
-            <edge end="33" marker="0" id="32" start="32" angle="0" />
-            <edge end="34" marker="0" id="33" start="33" angle="0" />
-            <edge end="35" marker="0" id="34" start="34" angle="0" />
-            <edge end="37" marker="2" id="35" start="36" angle="0" />
-            <edge end="39" marker="0" id="36" start="38" angle="0" />
-            <edge end="38" marker="0" id="37" start="31" angle="0" />
-            <edge end="37" marker="0" id="38" start="39" angle="0" />
-            <edge end="42" marker="0" id="39" start="41" angle="0" />
-            <edge end="44" marker="2" id="40" start="43" angle="0" />
-            <edge end="46" marker="0" id="41" start="45" angle="0" />
-            <edge end="49" marker="0" id="42" start="48" angle="0" />
-            <edge end="39" marker="0" id="43" start="42" angle="0" />
-            <edge end="45" marker="0" id="44" start="42" angle="0" />
-            <edge end="51" marker="0" id="45" start="50" angle="0" />
-            <edge end="44" marker="2" id="46" start="52" angle="0" />
-            <edge end="49" marker="0" id="47" start="51" angle="0" />
-            <edge end="50" marker="2" id="48" start="37" angle="0" />
-            <edge end="52" marker="2" id="49" start="50" angle="0" />
-            <edge end="0" marker="0" id="50" start="27" angle="0" />
-            <edge end="54" marker="0" id="51" start="53" angle="0" />
-            <edge end="56" marker="0" id="52" start="55" angle="0" />
-            <edge end="19" marker="0" id="53" start="57" angle="0" />
-            <edge end="54" marker="0" id="54" start="57" angle="0" />
-            <edge end="57" marker="0" id="55" start="58" angle="0" />
-            <edge end="56" marker="0" id="56" start="58" angle="0" />
-            <edge end="58" marker="0" id="57" start="26" angle="0" />
-            <edge end="59" marker="1" id="58" start="26" angle="0" />
-            <edge end="59" marker="1" id="59" start="60" angle="0" />
-            <edge end="24" marker="3" id="60" start="25" angle="0" />
-            <edge end="48" marker="3" id="61" start="43" angle="0" />
-            <edge end="41" marker="3" id="62" start="48" angle="0" />
-            <edge end="46" marker="3" id="63" start="41" angle="0" />
-            <edge end="40" marker="3" id="64" start="46" angle="0" />
-            <edge end="47" marker="3" id="65" start="40" angle="0" />
-            <edge end="28" marker="3" id="66" start="47" angle="0" />
-            <edge end="55" marker="3" id="67" start="60" angle="0" />
-            <edge end="53" marker="3" id="68" start="55" angle="0" />
-            <edge end="11" marker="3" id="69" start="53" angle="0" />
-            <edge end="22" marker="3" id="70" start="11" angle="0" />
-            <edge end="35" marker="3" id="71" start="22" angle="0" />
-            <edge end="36" marker="3" id="72" start="35" angle="0" />
-            <edge end="40" marker="0" id="73" start="38" angle="0" />
-            <edge end="47" marker="0" id="74" start="20" angle="0" />
+            <edge end="4" marker="0" id="0" start="3" angle="0" />
+            <edge end="6" marker="2" id="1" start="5" angle="0" />
+            <edge end="8" marker="2" id="2" start="6" angle="0" />
+            <edge end="1" marker="0" id="3" start="9" angle="0" />
+            <edge end="9" marker="0" id="4" start="5" angle="0" />
+            <edge end="4" marker="0" id="5" start="10" angle="0" />
+            <edge end="5" marker="0" id="6" start="12" angle="0" />
+            <edge end="5" marker="2" id="7" start="13" angle="0" />
+            <edge end="15" marker="1" id="8" start="14" angle="0" />
+            <edge end="12" marker="0" id="9" start="10" angle="0" />
+            <edge end="16" marker="2" id="10" start="8" angle="0" />
+            <edge end="20" marker="2" id="11" start="19" angle="0" />
+            <edge end="22" marker="0" id="12" start="21" angle="0" />
+            <edge end="20" marker="0" id="13" start="22" angle="0" />
+            <edge end="25" marker="0" id="14" start="24" angle="0" />
+            <edge end="27" marker="2" id="15" start="26" angle="0" />
+            <edge end="29" marker="0" id="16" start="28" angle="0" />
+            <edge end="32" marker="0" id="17" start="31" angle="0" />
+            <edge end="22" marker="0" id="18" start="25" angle="0" />
+            <edge end="28" marker="0" id="19" start="25" angle="0" />
+            <edge end="34" marker="0" id="20" start="33" angle="0" />
+            <edge end="27" marker="2" id="21" start="35" angle="0" />
+            <edge end="32" marker="0" id="22" start="34" angle="0" />
+            <edge end="33" marker="2" id="23" start="20" angle="0" />
+            <edge end="35" marker="2" id="24" start="33" angle="0" />
+            <edge end="37" marker="0" id="25" start="36" angle="0" />
+            <edge end="39" marker="0" id="26" start="38" angle="0" />
+            <edge end="10" marker="0" id="27" start="40" angle="0" />
+            <edge end="37" marker="0" id="28" start="40" angle="0" />
+            <edge end="40" marker="0" id="29" start="41" angle="0" />
+            <edge end="39" marker="0" id="30" start="41" angle="0" />
+            <edge end="41" marker="0" id="31" start="15" angle="0" />
+            <edge end="42" marker="1" id="32" start="15" angle="0" />
+            <edge end="42" marker="1" id="33" start="43" angle="0" />
+            <edge end="13" marker="3" id="34" start="14" angle="0" />
+            <edge end="31" marker="3" id="35" start="26" angle="0" />
+            <edge end="24" marker="3" id="36" start="31" angle="0" />
+            <edge end="29" marker="3" id="37" start="24" angle="0" />
+            <edge end="23" marker="3" id="38" start="29" angle="0" />
+            <edge end="30" marker="3" id="39" start="23" angle="0" />
+            <edge end="16" marker="3" id="40" start="30" angle="0" />
+            <edge end="38" marker="3" id="41" start="43" angle="0" />
+            <edge end="36" marker="3" id="42" start="38" angle="0" />
+            <edge end="3" marker="3" id="43" start="36" angle="0" />
+            <edge end="11" marker="3" id="44" start="3" angle="0" />
+            <edge end="18" marker="3" id="45" start="11" angle="0" />
+            <edge end="19" marker="3" id="46" start="18" angle="0" />
+            <edge end="23" marker="0" id="47" start="21" angle="0" />
+            <edge end="17" marker="0" id="48" start="2" angle="0" />
+            <edge end="21" marker="0" id="49" start="17" angle="0" />
+            <edge end="11" marker="0" id="50" start="2" angle="0" />
+            <edge end="18" marker="0" id="51" start="17" angle="0" />
+            <edge end="44" marker="0" id="52" start="2" angle="0" />
+            <edge end="0" marker="0" id="53" start="44" angle="0" />
+            <edge end="44" marker="0" id="54" start="7" angle="0" />
+            <edge end="1" marker="0" id="55" start="7" angle="0" />
+            <edge end="30" marker="0" id="56" start="7" angle="0" />
+            <edge end="12" marker="0" id="57" start="0" angle="0" />
+            <edge end="9" marker="0" id="58" start="0" angle="0" />
         </edges>
         <labels>
             <label x="0.548642" y="1.52308" marker="2" id="0" area="0" />
