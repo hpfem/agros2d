@@ -36,6 +36,7 @@ ChartDialog::~ChartDialog()
 void ChartDialog::showDialog()
 {
     fillComboBoxVariable(cmbFieldVariable, Util::scene()->projectInfo().physicField);
+
     show();
     doChartLine();
 }

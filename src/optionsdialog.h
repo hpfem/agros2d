@@ -15,12 +15,13 @@
 #include <QtGui/QStackedWidget>
 
 #include "util.h"
+#include "scene.h"
 
 class OptionsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    OptionsDialog(QWidget *parent);
+    OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *parent);
     ~OptionsDialog();
 
 private slots:
@@ -30,6 +31,8 @@ private slots:
     void doReject();
 
 private:
+    SceneViewSettings *m_sceneViewSettings;
+
     QListWidget *lstView;
     QStackedWidget *pages;
     QWidget *panMain;

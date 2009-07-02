@@ -629,6 +629,21 @@ struct SceneViewSettings
     PaletteType paletteType;
     int paletteSteps;
     bool paletteFilter;    
+
+    // colors
+    QColor colorContours;
+
+    void load()
+    {
+        QSettings settings;
+        colorContours = settings.value("SceneViewSettings/ColorContours", QColor::fromRgb(0.0, 0.0, 0.0, 0.0)).value<QColor>();
+    }
+
+    void save()
+    {
+        QSettings settings;
+        settings.setValue("SceneViewSettings/ColorContours", colorContours);
+    }
 };
 
 // set gui style

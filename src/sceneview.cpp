@@ -15,6 +15,8 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    m_sceneViewSettings.load();
 }
 
 SceneView::~SceneView()
@@ -827,7 +829,8 @@ void SceneView::paintContours()
     double step = (rangeMax-rangeMin)/m_sceneViewSettings.contoursCount;
     
     // draw contours
-    glColor3f(0.0, 0.0, 0.0);
+    // glColor3f(0.0, 0.0, 0.0);
+    glColor3f(m_sceneViewSettings.colorContours.red(), m_sceneViewSettings.colorContours.green(), m_sceneViewSettings.colorContours.blue());
     glBegin(GL_LINES);
     for (int i = 0; i < Util::scene()->sceneSolution()->linContourView().get_num_triangles(); i++)
     {

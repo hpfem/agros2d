@@ -1,6 +1,7 @@
 TODO:
 
 General
+- GUI for scene settings (using QSettings)
 - handle errors during meshing
 - check Czech translation
 - prepare tutorials 

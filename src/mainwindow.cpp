@@ -464,7 +464,7 @@ void MainWindow::doSolve()
 
 void MainWindow::doOptions()
 {
-    OptionsDialog *optionsDialog = new OptionsDialog(this);
+    OptionsDialog *optionsDialog = new OptionsDialog(&sceneView->sceneViewSettings(), this);
     optionsDialog->exec();
 
     delete optionsDialog;

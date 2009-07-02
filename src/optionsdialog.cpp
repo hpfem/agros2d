@@ -1,7 +1,9 @@
 #include "optionsdialog.h"
 
-OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent)
+OptionsDialog::OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *parent) : QDialog(parent)
 {
+    m_sceneViewSettings = sceneViewSettings;
+
     setWindowIcon(icon("options"));
     setWindowTitle(tr("Options"));
     
@@ -39,7 +41,7 @@ void OptionsDialog::load()
         }
     }
 
-    // txtGridStep->setText(QString::number(m_sceneView->sceneViewSettings().gridStep));
+    m_sceneViewSettings->save();
 }
 
 void OptionsDialog::save()
