@@ -62,6 +62,27 @@ int SceneEdgeMagnetostaticMarker::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
+SceneEdgeHarmonicMagneticMarker::SceneEdgeHarmonicMagneticMarker(const QString &name, PhysicFieldBC type, Value value) : SceneEdgeMarker(name, type)
+{
+    this->value = value;
+}
+
+QString SceneEdgeHarmonicMagneticMarker::script()
+{
+    return QString("addBoundary(\"%1\", \"%2\", %3);").
+            arg(name).
+            arg(physicFieldBCStringKey(type)).
+            arg(value.text);
+}
+
+int SceneEdgeHarmonicMagneticMarker::showDialog(QWidget *parent)
+{
+    DSceneEdgeHarmonicMagneticMarker *dialog = new DSceneEdgeHarmonicMagneticMarker(this, parent);
+    return dialog->exec();
+}
+
+// *************************************************************************************************************************************
+
 SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value temperature) : SceneEdgeMarker(name, type)
 {
     this->temperature = temperature;
@@ -209,6 +230,33 @@ QString SceneLabelMagnetostaticMarker::script()
 int SceneLabelMagnetostaticMarker::showDialog(QWidget *parent)
 {
     DSceneLabelMagnetostaticMarker *dialog = new DSceneLabelMagnetostaticMarker(parent, this);
+    return dialog->exec();
+}
+
+// *************************************************************************************************************************************
+
+SceneLabelHarmonicMagneticMarker::SceneLabelHarmonicMagneticMarker(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity)
+        : SceneLabelMarker(name)
+{
+    this->permeability = permeability;
+    this->conductivity = conductivity;
+    this->current_density_real = current_density_real;
+    this->current_density_imag = current_density_imag;
+}
+
+QString SceneLabelHarmonicMagneticMarker::script()
+{
+    return QString("addMaterial(\"%1\", %2, %3, %4, %5);").
+            arg(name).
+            arg(current_density_real.text).
+            arg(current_density_imag.text).
+            arg(permeability.text).
+            arg(conductivity.text);
+}
+
+int SceneLabelHarmonicMagneticMarker::showDialog(QWidget *parent)
+{
+    DSceneLabelHarmonicMagneticMarker *dialog = new DSceneLabelHarmonicMagneticMarker(parent, this);
     return dialog->exec();
 }
 
@@ -453,6 +501,65 @@ bool DSceneEdgeMagnetostaticMarker::save() {
 
     if (txtValue->evaluate())
         edgeMagnetostaticMarker->value  = txtValue->value();
+    else
+        return false;
+
+    return true;
+}
+
+
+// *************************************************************************************************************************************
+
+DSceneEdgeHarmonicMagneticMarker::DSceneEdgeHarmonicMagneticMarker(SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker, QWidget *parent) : DSceneEdgeMarker(parent)
+{
+    m_edgeMarker = edgeHarmonicMagneticMarker;
+
+    createDialog();
+    load();
+    setSize();
+}
+
+DSceneEdgeHarmonicMagneticMarker::~DSceneEdgeHarmonicMagneticMarker()
+{
+    delete cmbType;
+    delete txtValue;
+}
+
+QLayout* DSceneEdgeHarmonicMagneticMarker::createContent()
+{
+    cmbType = new QComboBox();
+    cmbType->addItem("none", PHYSICFIELDBC_NONE);
+    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL);
+    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT), PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT);
+
+    txtValue = new SLineEditValue(this);
+
+    QFormLayout *layoutMarker = new QFormLayout();
+    layoutMarker->addRow(tr("BC type:"), cmbType);
+    layoutMarker->addRow(tr("Value:"), txtValue);
+
+    return layoutMarker;
+}
+
+void DSceneEdgeHarmonicMagneticMarker::load()
+{
+    DSceneEdgeMarker::load();
+
+    SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(m_edgeMarker);
+
+    cmbType->setCurrentIndex(cmbType->findData(edgeHarmonicMagneticMarker->type));
+    txtValue->setText(edgeHarmonicMagneticMarker->value.text);
+}
+
+bool DSceneEdgeHarmonicMagneticMarker::save() {
+    DSceneEdgeMarker::save();
+
+    SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(m_edgeMarker);
+
+    edgeHarmonicMagneticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
+
+    if (txtValue->evaluate())
+        edgeHarmonicMagneticMarker->value  = txtValue->value();
     else
         return false;
 
@@ -888,6 +995,85 @@ bool DSceneLabelMagnetostaticMarker::save() {
 
     if (txtCurrentDensity->evaluate())
         labelMagnetostaticMarker->current_density  = txtCurrentDensity->value();
+    else
+        return false;
+
+    return true;
+}
+
+// *************************************************************************************************************************************
+
+DSceneLabelHarmonicMagneticMarker::DSceneLabelHarmonicMagneticMarker(QWidget *parent, SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker) : DSceneLabelMarker(parent)
+{
+    m_labelMarker = labelHarmonicMagneticMarker;
+
+    createDialog();
+    load();
+    setSize();
+}
+
+DSceneLabelHarmonicMagneticMarker::~DSceneLabelHarmonicMagneticMarker()
+{
+    delete txtPermeability;
+    delete txtConductivity;
+    delete txtCurrentDensityReal;
+    delete txtCurrentDensityImag;
+}
+
+QLayout* DSceneLabelHarmonicMagneticMarker::createContent()
+{
+    txtPermeability = new SLineEditValue(this);
+    txtConductivity = new SLineEditValue(this);
+    txtCurrentDensityReal = new SLineEditValue(this);
+    txtCurrentDensityImag = new SLineEditValue(this);
+
+    QHBoxLayout *layoutCurrentDensity = new QHBoxLayout();
+    layoutCurrentDensity->addWidget(txtCurrentDensityReal);
+    layoutCurrentDensity->addWidget(new QLabel(" + j "));
+    layoutCurrentDensity->addWidget(txtCurrentDensityImag);
+
+    QFormLayout *layoutMarker = new QFormLayout();
+    layoutMarker->addRow(tr("Permeability (-):"), txtPermeability);
+    layoutMarker->addRow(tr("Conductivity (-):"), txtConductivity);
+    layoutMarker->addRow(tr("Current density (A/m2):"), layoutCurrentDensity);
+
+    return layoutMarker;
+}
+
+void DSceneLabelHarmonicMagneticMarker::load()
+{
+    DSceneLabelMarker::load();
+
+    SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_labelMarker);
+
+    txtPermeability->setText(labelHarmonicMagneticMarker->permeability.text);
+    txtConductivity->setText(labelHarmonicMagneticMarker->conductivity.text);
+    txtCurrentDensityReal->setText(labelHarmonicMagneticMarker->current_density_real.text);
+    txtCurrentDensityImag->setText(labelHarmonicMagneticMarker->current_density_imag.text);
+}
+
+bool DSceneLabelHarmonicMagneticMarker::save() {
+    DSceneLabelMarker::save();
+
+    SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_labelMarker);
+
+    if (txtPermeability->evaluate())
+        labelHarmonicMagneticMarker->permeability  = txtPermeability->value();
+    else
+        return false;
+
+    if (txtConductivity->evaluate())
+        labelHarmonicMagneticMarker->conductivity  = txtConductivity->value();
+    else
+        return false;
+
+    if (txtCurrentDensityReal->evaluate())
+        labelHarmonicMagneticMarker->current_density_real  = txtCurrentDensityReal->value();
+    else
+        return false;
+
+    if (txtCurrentDensityImag->evaluate())
+        labelHarmonicMagneticMarker->current_density_imag  = txtCurrentDensityImag->value();
     else
         return false;
 

@@ -26,6 +26,7 @@
 #include "scenesolution.h"
 #include "hermes2d/hermes_electrostatic.h"
 #include "hermes2d/hermes_magnetostatic.h"
+#include "hermes2d/hermes_harmonicmagnetic.h"
 #include "hermes2d/hermes_heat.h"
 #include "hermes2d/hermes_current.h"
 #include "hermes2d/hermes_elasticity.h"
@@ -58,6 +59,7 @@ struct ProjectInfo
     int adaptivitySteps;
     double adaptivityTolerance;
     QString scriptStartup;
+    int frequency;
 
     ProjectInfo()
     {
@@ -66,17 +68,20 @@ struct ProjectInfo
 
     void clear()
     {
-        name = "unnamed";
+        name = QObject::tr("unnamed");
         date = QDate::currentDate();
         fileName = "";
         scriptStartup = "";
-        physicField = PHYSICFIELD_ELECTROSTATIC;
+        // physicField = PHYSICFIELD_ELECTROSTATIC;
+        physicField = PHYSICFIELD_HARMONIC_MAGNETIC;
         problemType = PROBLEMTYPE_PLANAR;
 
         numberOfRefinements = 1;
         polynomialOrder = 3;
         adaptivitySteps = 0;
         adaptivityTolerance = 1.0;
+
+        frequency = 0.0;
     }
 
     inline QString labelX() { return ((problemType == PROBLEMTYPE_PLANAR) ? "X" : "R");  }

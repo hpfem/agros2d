@@ -78,6 +78,19 @@ public:
 
 // *************************************************************************************************************************************
 
+class SceneEdgeHarmonicMagneticMarker : public SceneEdgeMarker {
+
+public:
+    Value value;
+
+    SceneEdgeHarmonicMagneticMarker(const QString &name, PhysicFieldBC type, Value value);
+
+    QString script();
+    int showDialog(QWidget *parent);
+};
+
+// *************************************************************************************************************************************
+
 class SceneEdgeHeatMarker : public SceneEdgeMarker {
 
 public:
@@ -162,6 +175,36 @@ public:
 
 // *************************************************************************************************************************************
 
+class SceneLabelMagnetostaticMarker : public SceneLabelMarker {
+
+public:
+    Value permeability;
+    Value current_density;
+
+    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability);
+
+    QString script();
+    int showDialog(QWidget *parent);
+};
+
+// *************************************************************************************************************************************
+
+class SceneLabelHarmonicMagneticMarker : public SceneLabelMarker {
+
+public:
+    Value permeability;
+    Value conductivity;
+    Value current_density_real;
+    Value current_density_imag;
+
+    SceneLabelHarmonicMagneticMarker(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity);
+
+    QString script();
+    int showDialog(QWidget *parent);
+};
+
+// *************************************************************************************************************************************
+
 class SceneLabelHeatMarker : public SceneLabelMarker {
 
 public:
@@ -182,20 +225,6 @@ public:
     Value conductivity;
 
     SceneLabelCurrentMarker(const QString &name, Value conductivity);
-
-    QString script();
-    int showDialog(QWidget *parent);
-};
-
-// *************************************************************************************************************************************
-
-class SceneLabelMagnetostaticMarker : public SceneLabelMarker {
-
-public:
-    Value permeability;
-    Value current_density;
-
-    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability);
 
     QString script();
     int showDialog(QWidget *parent);
@@ -278,6 +307,27 @@ class DSceneEdgeMagnetostaticMarker : public DSceneEdgeMarker
 public:
     DSceneEdgeMagnetostaticMarker(SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker, QWidget *parent);
     ~DSceneEdgeMagnetostaticMarker();
+
+protected:
+    QLayout *createContent();
+
+    void load();
+    bool save();
+
+private:
+    QComboBox *cmbType;
+    SLineEditValue *txtValue;
+};
+
+// *************************************************************************************************************************************
+
+class DSceneEdgeHarmonicMagneticMarker : public DSceneEdgeMarker
+{
+    Q_OBJECT
+
+public:
+    DSceneEdgeHarmonicMagneticMarker(SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker, QWidget *parent);
+    ~DSceneEdgeHarmonicMagneticMarker();
 
 protected:
     QLayout *createContent();
@@ -430,6 +480,29 @@ protected:
 private:
     SLineEditValue *txtPermeability;
     SLineEditValue *txtCurrentDensity;
+};
+
+// *************************************************************************************************************************************
+
+class DSceneLabelHarmonicMagneticMarker : public DSceneLabelMarker
+{
+    Q_OBJECT
+
+public:
+    DSceneLabelHarmonicMagneticMarker(QWidget *parent, SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker);
+    ~DSceneLabelHarmonicMagneticMarker();
+
+protected:
+    QLayout *createContent();
+
+    void load();
+    bool save();
+
+private:
+    SLineEditValue *txtPermeability;
+    SLineEditValue *txtConductivity;
+    SLineEditValue *txtCurrentDensityReal;
+    SLineEditValue *txtCurrentDensityImag;
 };
 
 // *************************************************************************************************************************************

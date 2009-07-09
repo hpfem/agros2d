@@ -1,0 +1,47 @@
+<document>
+    <projects>
+        <project adaptivitytolerance="1" frequency="50000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
+            <scriptstartup></scriptstartup>
+            <edges>
+                <edge type="surface_current_density" value="0" id="1" name="Neumann" />
+                <edge type="vector_potential" value="0" id="2" name="A = 0" />
+            </edges>
+            <labels>
+                <label current_density_real="0" conductivity="0" id="1" name="Air" current_density_imag="0" permeability="1" />
+                <label current_density_real="1e6" conductivity="57e6" id="2" name="Copper" current_density_imag="0" permeability="1" />
+            </labels>
+        </project>
+    </projects>
+    <geometry>
+        <nodes>
+            <node x="0" y="0.000768" id="0" />
+            <node x="0.000768" y="0" id="1" />
+            <node x="0.000575999998324484" y="0.000192" id="2" />
+            <node x="0.000192" y="0.000575999998324484" id="3" />
+            <node x="nan" y="0.000192" id="4" />
+            <node x="nan" y="0.000192" id="5" />
+            <node x="0.000384" y="0.000192" id="6" />
+            <node x="0.000192" y="0.000384" id="7" />
+            <node x="nan" y="0" id="8" />
+            <node x="0.002" y="0" id="9" />
+            <node x="0" y="0.002" id="10" />
+            <node x="0" y="0" id="11" />
+        </nodes>
+        <edges>
+            <edge end="0" marker="1" id="0" start="10" angle="0" />
+            <edge end="11" marker="1" id="1" start="0" angle="0" />
+            <edge end="1" marker="1" id="2" start="11" angle="0" />
+            <edge end="9" marker="1" id="3" start="1" angle="0" />
+            <edge end="10" marker="2" id="4" start="9" angle="90" />
+            <edge end="2" marker="0" id="5" start="1" angle="90" />
+            <edge end="6" marker="0" id="6" start="2" angle="0" />
+            <edge end="6" marker="0" id="7" start="7" angle="90" />
+            <edge end="7" marker="0" id="8" start="3" angle="0" />
+            <edge end="0" marker="0" id="9" start="3" angle="90" />
+        </edges>
+        <labels>
+            <label x="0.000585418" y="0.00126858" marker="1" id="0" area="0" />
+            <label x="0.000109549" y="8.6116e-05" marker="2" id="1" area="0" />
+        </labels>
+    </geometry>
+</document>

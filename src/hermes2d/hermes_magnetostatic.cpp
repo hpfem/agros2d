@@ -90,10 +90,6 @@ scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (marker == 0)
-        cout << 1.5 / (MU0 * magnetostaticLabel[marker].permeability) * int_dvdx(fv, rv) << " : "
-                << 1.5 / (MU0 * magnetostaticLabel[marker].permeability) * int_dvdy(fv, rv) << endl;
-
     if (magnetostaticIsPlanar)
         return MU0 * magnetostaticLabel[marker].current_density * int_v(fv, rv); // +
                 // ((marker == 0) ? (1.5 / (magnetostaticLabel[marker].permeability) * int_dvdy(fv, rv)) : 0.0);

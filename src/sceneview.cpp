@@ -82,7 +82,7 @@ void SceneView::createActions()
     
     actShowContours = new QAction(tr("Contours"), this);
     actShowContours->setCheckable(true);
-        
+
     actShowVectors = new QAction(tr("Vectors"), this);
     actShowVectors->setCheckable(true);
     
@@ -1775,9 +1775,17 @@ void SceneView::doDefaults()
     case PHYSICFIELD_MAGNETOSTATIC:
         {
             m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL;
-            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL; // PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
+            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
             m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_MAGNITUDE;
             m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
+        }
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        {
+            m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
+            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
+            m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
+            m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY;
         }
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
@@ -1945,10 +1953,20 @@ void SceneView::setRangeContour()
 {
     if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours)
     {
-        ViewScalarFilter *viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
-                                                                  Util::scene(),
-                                                                  m_sceneViewSettings.contourPhysicFieldVariable,
-                                                                  PHYSICFIELDVARIABLECOMP_SCALAR);
+        ViewScalarFilter *viewScalarFilter;
+        if (numberOfSolution(Util::scene()->projectInfo().physicField) == 1)
+            viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
+                                                                      Util::scene(),
+                                                                      m_sceneViewSettings.contourPhysicFieldVariable,
+                                                                      PHYSICFIELDVARIABLECOMP_SCALAR);
+
+        if (numberOfSolution(Util::scene()->projectInfo().physicField) == 2)
+            viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
+                                                    Util::scene()->sceneSolution()->sln2(),
+                                                    Util::scene(),
+                                                    m_sceneViewSettings.scalarPhysicFieldVariable,
+                                                    m_sceneViewSettings.scalarPhysicFieldVariableComp);
+
         Util::scene()->sceneSolution()->setSlnContourView(viewScalarFilter);
     }
 }
@@ -1961,12 +1979,13 @@ void SceneView::setRangeScalar()
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         ViewScalarFilter *viewScalarFilter;
-        if (Util::scene()->projectInfo().physicField != PHYSICFIELD_ELASTICITY)
+        if (numberOfSolution(Util::scene()->projectInfo().physicField) == 1)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
                                                     Util::scene(),
                                                     m_sceneViewSettings.scalarPhysicFieldVariable,
                                                     m_sceneViewSettings.scalarPhysicFieldVariableComp);
-        else
+
+        if (numberOfSolution(Util::scene()->projectInfo().physicField) == 2)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
                                                     Util::scene()->sceneSolution()->sln2(),
                                                     Util::scene(),

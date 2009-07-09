@@ -6,13 +6,17 @@ SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget
     setObjectName("SurfaceIntegralValueView");
 
     trvWidget = new QTreeWidget();
-    trvWidget->setHeaderHidden(true);
+    trvWidget->setHeaderHidden(false);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     trvWidget->setMouseTracking(true);
     trvWidget->setColumnCount(3);
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setColumnWidth(1, 80);
     trvWidget->setColumnWidth(2, 20);
+
+    QStringList labels;
+    labels << tr("Label") << tr("Number") << "Unit";
+    trvWidget->setHeaderLabels(labels);
 
     setWidget(trvWidget);
 }
@@ -154,6 +158,21 @@ QString SurfaceIntegralValueMagnetostatic::toString()
 
 // ****************************************************************************************************************
 
+SurfaceIntegralValueHarmonicMagnetic::SurfaceIntegralValueHarmonicMagnetic() : SurfaceIntegralValue()
+{
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+
+    }
+}
+
+QString SurfaceIntegralValueHarmonicMagnetic::toString()
+{
+    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+}
+
+// ****************************************************************************************************************
+
 SurfaceIntegralValueCurrent::SurfaceIntegralValueCurrent() : SurfaceIntegralValue()
 {
     currentDensity = 0;
@@ -218,6 +237,9 @@ SurfaceIntegralValue *surfaceIntegralValueFactory()
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         return new SurfaceIntegralValueMagnetostatic();
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        return new SurfaceIntegralValueHarmonicMagnetic();
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         return new SurfaceIntegralValueHeat();

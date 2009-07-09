@@ -174,7 +174,8 @@ enum PhysicField
     PHYSICFIELD_MAGNETOSTATIC,
     PHYSICFIELD_CURRENT,
     PHYSICFIELD_HEAT_TRANSFER,
-    PHYSICFIELD_ELASTICITY
+    PHYSICFIELD_ELASTICITY,
+    PHYSICFIELD_HARMONIC_MAGNETIC
 };
 
 inline QString physicFieldStringKey(PhysicField physicField)
@@ -191,6 +192,8 @@ inline QString physicFieldStringKey(PhysicField physicField)
         return "heat transfer";
     case PHYSICFIELD_ELASTICITY:
         return "elasticity";
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        return "harmonic magnetic";
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldStringKey(PhysicField physicField)" << endl;
         throw;
@@ -206,6 +209,8 @@ inline QString physicFieldString(PhysicField physicField)
         return QObject::tr("Electrostatic");
     case PHYSICFIELD_MAGNETOSTATIC:
         return QObject::tr("Magnetostatic");
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        return "Harmonic magnetic";
     case PHYSICFIELD_CURRENT:
         return QObject::tr("Current field");
     case PHYSICFIELD_HEAT_TRANSFER:
@@ -225,6 +230,8 @@ inline PhysicField physicFieldFromStringKey(const QString &physicFieldString)
         return PHYSICFIELD_ELECTROSTATIC;
     if (physicFieldString == "magnetostatic")
         return PHYSICFIELD_MAGNETOSTATIC;
+    if (physicFieldString == "harmonic magnetic")
+        return PHYSICFIELD_HARMONIC_MAGNETIC;
     if (physicFieldString == "current field")
         return PHYSICFIELD_CURRENT;
     if (physicFieldString == "heat transfer")
@@ -249,6 +256,24 @@ enum PhysicFieldVariable
     PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD,
     PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY,
     PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY,
+    PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY,
     PHYSICFIELDVARIABLE_CURRENT_POTENTIAL,
     PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD,
     PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY,
@@ -293,6 +318,60 @@ inline QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable
         return QObject::tr("Energy density");
         break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY:
+        return QObject::tr("Permeability");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+        return QObject::tr("Vector potential");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
+        return QObject::tr("Vector potential - real");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG:
+        return QObject::tr("Vector potential - imag");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY:
+        return QObject::tr("Flux density");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
+        return QObject::tr("Flux density - real");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG:
+        return QObject::tr("Flux density - imag");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD:
+        return QObject::tr("Magnetic field");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL:
+        return QObject::tr("Magnetic field - real");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG:
+        return QObject::tr("Magnetic field - imag");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL:
+        return QObject::tr("Total current density");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+        return QObject::tr("Total current density - real");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+        return QObject::tr("Total current density - imag");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED:
+        return QObject::tr("Induced current density");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
+        return QObject::tr("Induced current density - real");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
+        return QObject::tr("Induced current density - imag");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES:
+        return QObject::tr("Average power losses");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY:
+        return QObject::tr("Energy density");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY:
         return QObject::tr("Permeability");
         break;
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
@@ -366,6 +445,9 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY:
         return QObject::tr("H/m");
         break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+        return QObject::tr("Wb/m");
+        break;
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
         return QObject::tr("V");
         break;
@@ -398,6 +480,8 @@ enum PhysicFieldBC
     PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE,
     PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL,
     PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT,
+    PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL,
+    PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT,
     PHYSICFIELDBC_HEAT_TEMPERATURE,
     PHYSICFIELDBC_HEAT_HEAT_FLUX,
     PHYSICFIELDBC_CURRENT_POTENTIAL,
@@ -420,6 +504,12 @@ inline QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Vector potential");
         break;
     case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
+        return QObject::tr("Surface current density");
+        break;
+    case PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+        return QObject::tr("Vector potential");
+        break;
+    case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
         return QObject::tr("Surface current density");
         break;
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
@@ -461,6 +551,12 @@ inline QString physicFieldBCStringKey(PhysicFieldBC physicFieldBC)
         return "vector_potential";
         break;
     case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
+        return "surface_current_density";
+        break;
+    case PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+        return "vector_potential";
+        break;
+    case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
         return "surface_current_density";
         break;
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
@@ -506,6 +602,8 @@ enum PhysicFieldIntegralVolume
     PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY_Y,
     PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY,
     PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_ENERGY_DENSITY,
+    PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_POWER_LOSSES,
+    PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_ENERGY_DENSITY,
     PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE,
     PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_X,
     PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_Y,
@@ -519,7 +617,7 @@ enum PhysicFieldIntegralVolume
     PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_X,
     PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_Y,
     PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY,
-    PHYSICFIELDINTEGRAL_VOLUME_CURRENT_LOSSES
+    PHYSICFIELDINTEGRAL_VOLUME_CURRENT_LOSSES,
 };
 
 enum PhysicFieldIntegralSurface
@@ -543,6 +641,18 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL:
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY:
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY:
     case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
     case PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY:
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
@@ -553,6 +663,27 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     }
 
     return false;
+}
+
+inline int numberOfSolution(PhysicField physicField)
+{
+    switch (physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+    case PHYSICFIELD_MAGNETOSTATIC:
+    case PHYSICFIELD_HEAT_TRANSFER:
+    case PHYSICFIELD_CURRENT:
+        return 1;
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+    case PHYSICFIELD_ELASTICITY:
+        return 2;
+        break;
+    default:
+        std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. numberOfSolution(PhysicField physicField)" << endl;
+        throw;
+        break;
+    }
 }
 
 enum SceneMode

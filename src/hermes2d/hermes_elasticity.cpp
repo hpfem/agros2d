@@ -162,7 +162,7 @@ SolutionArray *elasticity_main(const char *fileName, ElasticityEdge *edge, Elast
     solutionArray->order2 = new Orderizer();
     solutionArray->order2->process_solution(&ydisp);
     solutionArray->sln1 = sln1;
-    solutionArray->sln1 = sln2;
+    solutionArray->sln2 = sln2;
     // solutionArray->adaptiveError = error;
     // solutionArray->adaptiveSteps = i-1;
 

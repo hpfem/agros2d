@@ -57,7 +57,7 @@ public:
     // order view
     inline Orderizer &ordView() { return m_ordView; }
 
-    PointValue pointValue(const Point &point);
+    PointValue pointValue(const Point &point, Solution *sln);
     double volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume);
     double surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface);
 

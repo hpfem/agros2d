@@ -12,6 +12,7 @@ class Scene;
 class LocalPointValue;
 class LocalPointValueElectrostatic;
 class LocalPointValueMagnetostatic;
+class LocalPointValueHarmonicMagnetic;
 class LocalPointValueHeat;
 class LocalPointValueCurrent;
 class LocalPointValueElasticity;
@@ -41,6 +42,7 @@ private:
 
     void showElectrostatic(LocalPointValueElectrostatic *localPointValueElectrostatic);
     void showMagnetostatic(LocalPointValueMagnetostatic *localPointValueMagnetostatic);
+    void showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *localPointValueHarmonicMagnetic);
     void showHeat(LocalPointValueHeat *localPointValueHeat);
     void showElasticity(LocalPointValueElasticity *localPointValueElasticity);
     void showCurrent(LocalPointValueCurrent *localPointValueCurrent);
@@ -91,6 +93,30 @@ public:
     double wm;
 
     LocalPointValueMagnetostatic(Point &point);
+    double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    QStringList variables();
+};
+
+class LocalPointValueHarmonicMagnetic : public LocalPointValue
+{
+public:
+    double current_density_real;
+    double current_density_imag;
+    double current_density_total_real;
+    double current_density_total_imag;
+    double current_density_induced_real;
+    double current_density_induced_imag;
+    double permeability;
+    double potential_real;
+    double potential_imag;
+    Point H_real;
+    Point H_imag;
+    Point B_real;
+    Point B_imag;
+    double pj;
+    double wm;
+
+    LocalPointValueHarmonicMagnetic(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };

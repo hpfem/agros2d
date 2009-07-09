@@ -513,6 +513,9 @@ void Scene::doNewEdgeMarker()
     case PHYSICFIELD_MAGNETOSTATIC:
         marker = new SceneEdgeMagnetostaticMarker("new boundary", PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, Value("0"));
         break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        marker = new SceneEdgeHarmonicMagneticMarker("new boundary", PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL, Value("0"));
+        break;
     case PHYSICFIELD_HEAT_TRANSFER:
         marker = new SceneEdgeHeatMarker("new boundary", PHYSICFIELDBC_HEAT_TEMPERATURE, Value("0"));
         break;
@@ -546,6 +549,9 @@ void Scene::doNewLabelMarker()
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         marker = new SceneLabelMagnetostaticMarker("new material", Value("0"), Value("1"));
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        marker = new SceneLabelHarmonicMagneticMarker("new material", Value("0"), Value("0"), Value("1"), Value("0"));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         marker = new SceneLabelHeatMarker("new material", Value("0"), Value("385"));
@@ -904,6 +910,8 @@ void Scene::readFromFile(const QString &fileName)
     // adaptivity
     m_projectInfo.adaptivitySteps = eleProject.toElement().attribute("adaptivitysteps").toInt();
     m_projectInfo.adaptivityTolerance = eleProject.toElement().attribute("adaptivitytolerance").toDouble();
+    // time harmonic
+    m_projectInfo.frequency = eleProject.toElement().attribute("frequency").toDouble();
 
     // startup script
     QDomNode eleSriptStartup = eleProject.toElement().elementsByTagName("scriptstartup").at(0);
@@ -946,6 +954,15 @@ void Scene::readFromFile(const QString &fileName)
                 if (element.toElement().attribute("type") == "vector_potential") type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
                 if (element.toElement().attribute("type") == "surface_current_density") type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
                 addEdgeMarker(new SceneEdgeMagnetostaticMarker(name,
+                                                               type,
+                                                               Value(element.toElement().attribute("value"))));
+                break;
+            case PHYSICFIELD_HARMONIC_MAGNETIC:
+                // harmonic magnetic markers
+                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
+                if (element.toElement().attribute("type") == "vector_potential") type = PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
+                if (element.toElement().attribute("type") == "surface_current_density") type = PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT;
+                addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(name,
                                                                type,
                                                                Value(element.toElement().attribute("value"))));
                 break;
@@ -1031,6 +1048,14 @@ void Scene::readFromFile(const QString &fileName)
                 addLabelMarker(new SceneLabelMagnetostaticMarker(name,
                                                                  Value(element.toElement().attribute("current_density")),
                                                                  Value(element.toElement().attribute("permeability"))));
+                break;
+            case PHYSICFIELD_HARMONIC_MAGNETIC:
+                // magnetostatic markers
+                addLabelMarker(new SceneLabelHarmonicMagneticMarker(name,
+                                                                 Value(element.toElement().attribute("current_density_real")),
+                                                                 Value(element.toElement().attribute("current_density_imag")),
+                                                                 Value(element.toElement().attribute("permeability")),
+                                                                 Value(element.toElement().attribute("conductivity"))));
                 break;
             case PHYSICFIELD_HEAT_TRANSFER:
                 // heat markers
@@ -1154,6 +1179,8 @@ void Scene::writeToFile(const QString &fileName) {
     // adaptivity
     eleProject.setAttribute("adaptivitysteps", m_projectInfo.adaptivitySteps);
     eleProject.setAttribute("adaptivitytolerance", m_projectInfo.adaptivityTolerance);
+    // time harmonic
+    eleProject.setAttribute("frequency", m_projectInfo.frequency);
 
     // startup script
     QDomElement eleSriptStartup = doc.createElement("scriptstartup");
@@ -1239,6 +1266,12 @@ void Scene::writeToFile(const QString &fileName) {
                 eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeMagnetostaticMarker->type));
                 eleEdgeMarker.setAttribute("value", edgeMagnetostaticMarker->value.text);
             }
+            // harmonic magnetic
+            if (SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(edgeMarkers[i]))
+            {
+                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeHarmonicMagneticMarker->type));
+                eleEdgeMarker.setAttribute("value", edgeHarmonicMagneticMarker->value.text);
+            }
             // heat transfer
             if (SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(edgeMarkers[i]))
             {
@@ -1295,7 +1328,15 @@ void Scene::writeToFile(const QString &fileName) {
             if (SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarkers[i]))
             {
                 eleLabelMarker.setAttribute("current_density", labelMagnetostaticMarker->current_density.text);
-                eleLabelMarker.toElement().setAttribute("permeability", labelMagnetostaticMarker->permeability.text);
+                eleLabelMarker.setAttribute("permeability", labelMagnetostaticMarker->permeability.text);
+            }
+            // harmonic magnetic
+            if (SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarkers[i]))
+            {
+                eleLabelMarker.setAttribute("current_density_real", labelHarmonicMagneticMarker->current_density_real.text);
+                eleLabelMarker.setAttribute("current_density_imag", labelHarmonicMagneticMarker->current_density_imag.text);
+                eleLabelMarker.setAttribute("permeability", labelHarmonicMagneticMarker->permeability.text);
+                eleLabelMarker.setAttribute("conductivity", labelHarmonicMagneticMarker->conductivity.text);
             }
             // heat
             if (SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(labelMarkers[i]))

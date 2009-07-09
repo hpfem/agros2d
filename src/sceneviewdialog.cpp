@@ -272,6 +272,10 @@ void SceneViewDialog::createControls()
             cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD);
         }
         break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        {
+        }
+        break;
     case PHYSICFIELD_HEAT_TRANSFER:
         {
             cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);

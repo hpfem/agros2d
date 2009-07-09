@@ -6,13 +6,17 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
     setObjectName("VolumeIntegralValueView");
 
     trvWidget = new QTreeWidget();
-    trvWidget->setHeaderHidden(true);
+    trvWidget->setHeaderHidden(false);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     trvWidget->setMouseTracking(true);
     trvWidget->setColumnCount(3);
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setColumnWidth(1, 80);
     trvWidget->setColumnWidth(2, 20);
+
+    QStringList labels;
+    labels << tr("Label") << tr("Number") << "Unit";
+    trvWidget->setHeaderLabels(labels);
 
     setWidget(trvWidget);
 }
@@ -27,7 +31,7 @@ void VolumeIntegralValueView::doShowVolumeIntegral(VolumeIntegralValue *volumeIn
     pointGeometry->setExpanded(true);
 
     addValue(pointGeometry, tr("Volume:"), tr("%1").arg(volumeIntegralValue->volume, 0, 'e', 3), tr("m3"));
-    addValue(pointGeometry, tr("Cross Section:"), tr("%1").arg(volumeIntegralValue->crossSection, 0, 'e', 3), tr("m2"));
+    addValue(pointGeometry, tr("Cross section:"), tr("%1").arg(volumeIntegralValue->crossSection, 0, 'e', 3), tr("m2"));
 
     trvWidget->insertTopLevelItem(0, pointGeometry);
 
@@ -37,6 +41,8 @@ void VolumeIntegralValueView::doShowVolumeIntegral(VolumeIntegralValue *volumeIn
             showElectrostatic(volumeIntegralValueElectrostatic);
         if (VolumeIntegralValueMagnetostatic *volumeIntegralValueMagnetostatic = dynamic_cast<VolumeIntegralValueMagnetostatic *>(volumeIntegralValue))
             showMagnetostatic(volumeIntegralValueMagnetostatic);
+        if (VolumeIntegralValueHarmonicMagnetic *volumeIntegralValueHarmonicMagnetic = dynamic_cast<VolumeIntegralValueHarmonicMagnetic *>(volumeIntegralValue))
+            showHarmonicMagnetic(volumeIntegralValueHarmonicMagnetic);
         if (VolumeIntegralValueHeat *volumeIntegralValueHeat = dynamic_cast<VolumeIntegralValueHeat *>(volumeIntegralValue))
             showHeat(volumeIntegralValueHeat);
     }
@@ -46,7 +52,7 @@ void VolumeIntegralValueView::showElectrostatic(VolumeIntegralValueElectrostatic
 {
     // electrostatic
     QTreeWidgetItem *electrostaticNode = new QTreeWidgetItem(trvWidget);
-    electrostaticNode->setText(0, tr("Electrostatic Field"));
+    electrostaticNode->setText(0, tr("Electrostatic field"));
     electrostaticNode->setExpanded(true);
 
     addValue(electrostaticNode, tr("Ex avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldX, 0, 'e', 3), tr("V/m"));
@@ -62,7 +68,7 @@ void VolumeIntegralValueView::showMagnetostatic(VolumeIntegralValueMagnetostatic
 {
     // electrostatic
     QTreeWidgetItem *magnetostaticNode = new QTreeWidgetItem(trvWidget);
-    magnetostaticNode->setText(0, tr("Magnetostatic Field"));
+    magnetostaticNode->setText(0, tr("Magnetostatic field"));
     magnetostaticNode->setExpanded(true);
 
     addValue(magnetostaticNode, tr("Hx avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageMagneticFieldX, 0, 'e', 3), tr("A/m"));
@@ -74,11 +80,22 @@ void VolumeIntegralValueView::showMagnetostatic(VolumeIntegralValueMagnetostatic
     addValue(magnetostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->energy, 0, 'e', 3), tr("J"));
 }
 
+void VolumeIntegralValueView::showHarmonicMagnetic(VolumeIntegralValueHarmonicMagnetic *volumeIntegralValueHarmonicMagnetic)
+{
+    // electrostatic
+    QTreeWidgetItem *harmonicMagneticNode = new QTreeWidgetItem(trvWidget);
+    harmonicMagneticNode->setText(0, tr("Harmonic magnetic field"));
+    harmonicMagneticNode->setExpanded(true);
+
+    addValue(harmonicMagneticNode, tr("Power losses avg.:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->powerLosses, 0, 'e', 3), tr("T"));
+    addValue(harmonicMagneticNode, tr("Energy avg.:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->energy, 0, 'e', 3), tr("J"));
+}
+
 void VolumeIntegralValueView::showHeat(VolumeIntegralValueHeat *volumeIntegralValueHeat)
 {
     // heat
     QTreeWidgetItem *heatNode = new QTreeWidgetItem(trvWidget);
-    heatNode->setText(0, tr("Heat Transfer"));
+    heatNode->setText(0, tr("Heat transfer"));
     heatNode->setExpanded(true);
 
     addValue(heatNode, tr("Temperature:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
@@ -224,6 +241,38 @@ QStringList VolumeIntegralValueMagnetostatic::variables()
 
 // ****************************************************************************************************************
 
+VolumeIntegralValueHarmonicMagnetic::VolumeIntegralValueHarmonicMagnetic() : VolumeIntegralValue()
+{
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        powerLosses = 0;
+        energy = 0;
+        for (int i = 0; i<Util::scene()->labels.length(); i++)
+        {
+            if (Util::scene()->labels[i]->isSelected)
+            {
+                powerLosses += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_POWER_LOSSES);
+                energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_ENERGY_DENSITY);
+            }
+        }
+
+        if (volume > 0)
+        {
+        }
+    }
+}
+
+QStringList VolumeIntegralValueHarmonicMagnetic::variables()
+{
+    QStringList row;
+    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
+            QString("%1").arg(powerLosses, 0, 'e', 5) <<
+            QString("%1").arg(energy, 0, 'e', 5);
+    return QStringList(row);
+}
+
+// ****************************************************************************************************************
+
 VolumeIntegralValueHeat::VolumeIntegralValueHeat() : VolumeIntegralValue()
 {
     if (Util::scene()->sceneSolution()->isSolved())
@@ -341,6 +390,9 @@ VolumeIntegralValue *volumeIntegralValueFactory()
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         return new VolumeIntegralValueMagnetostatic();
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        return new VolumeIntegralValueHarmonicMagnetic();
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         return new VolumeIntegralValueHeat();

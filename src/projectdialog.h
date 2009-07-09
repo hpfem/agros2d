@@ -22,6 +22,7 @@ public:
     int showDialog();
 
 private slots:
+    void doPhysicFieldChanged(int index);
     void doAccept();
     void doReject();
 
@@ -37,6 +38,7 @@ private:
     QSpinBox *txtPolynomialOrder;
     QSpinBox *txtAdaptivitySteps;
     SLineEdit *txtAdaptivityTolerance;
+    SLineEdit *txtFrequency;
 
     void createControls();
     void fillComboBox();

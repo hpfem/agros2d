@@ -16,9 +16,9 @@ QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
-SOURCES +=  src/scene.cpp \
+SOURCES += src/scene.cpp \
     src/util.cpp \
-    src/main.cpp \    
+    src/main.cpp \
     src/gui.cpp \
     src/scripteditordialog.cpp \
     src/scripteditorhighlighter.cpp \
@@ -26,13 +26,14 @@ SOURCES +=  src/scene.cpp \
     src/hermes2d/hermes_electrostatic.cpp \
     src/hermes2d/hermes_heat.cpp \
     src/hermes2d/hermes_magnetostatic.cpp \
+    src/hermes2d/hermes_harmonicmagnetic.cpp \
     src/hermes2d/hermes_current.cpp \
     src/hermes2d/hermes_elasticity.cpp \
     src/mainwindow.cpp \
     src/scenemarker.cpp \
     src/scenebasic.cpp \
     src/sceneinfo.cpp \
-    src/sceneview.cpp \   
+    src/sceneview.cpp \
     src/chartdialog.cpp \
     src/projectdialog.cpp \
     src/scenetransformdialog.cpp \
@@ -46,7 +47,7 @@ SOURCES +=  src/scene.cpp \
     src/dxflib/dl_dxf.cpp
 HEADERS += src/scene.h \
     src/util.h \
-    src/mainwindow.h \    
+    src/mainwindow.h \
     src/gui.h \
     src/scripteditordialog.h \
     src/scripteditorhighlighter.h \
@@ -54,6 +55,7 @@ HEADERS += src/scene.h \
     src/hermes2d/hermes_electrostatic.h \
     src/hermes2d/hermes_heat.h \
     src/hermes2d/hermes_magnetostatic.h \
+    src/hermes2d/hermes_harmonicmagnetic.h \
     src/hermes2d/hermes_current.h \
     src/hermes2d/hermes_elasticity.h \
     src/scenebasic.h \
@@ -72,19 +74,19 @@ HEADERS += src/scene.h \
     src/surfaceintegralview.h
 INCLUDEPATH += src \
     src/dxflib
-    unix:INCLUDEPATH += /usr/include
-    unix:INCLUDEPATH += /usr/include/suitesparse
-    unix:INCLUDEPATH += /usr/include/qwt-qt4
-    unix:INCLUDEPATH += /usr/include/hermes2d
-    win32:INCLUDEPATH += c:/qt/mingw/include
-    win32:INCLUDEPATH += c:/qt/mingw/include/hermes2d
+unix:INCLUDEPATH += /usr/include
+unix:INCLUDEPATH += /usr/include/suitesparse
+unix:INCLUDEPATH += /usr/include/qwt-qt4
+unix:INCLUDEPATH += /usr/include/hermes2d
+win32:INCLUDEPATH += c:/qt/mingw/include
+win32:INCLUDEPATH += c:/qt/mingw/include/hermes2d
 LIBS += -lhermes2d-real \
     -lumfpack \
     -lamd \
     -lblas \
     -lJudy \
     -lpthread
-    unix:LIBS += -lqwt-qt4
-    win32:LIBS += -lqwt
-FORMS +=
+unix:LIBS += -lqwt-qt4
+win32:LIBS += -lqwt
+FORMS += 
 OTHER_FILES += TODO.txt

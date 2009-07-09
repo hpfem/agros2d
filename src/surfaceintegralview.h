@@ -10,6 +10,7 @@
 class SurfaceIntegralValue;
 class SurfaceIntegralValueElectrostatic;
 class SurfaceIntegralValueMagnetostatic;
+class SurfaceIntegralValueHarmonicMagnetic;
 class SurfaceIntegralValueHeat;
 class SurfaceIntegralValueCurrent;
 
@@ -32,6 +33,7 @@ private:
 
     void showElectrostatic(SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic);
     void showMagnetostatic(SurfaceIntegralValueMagnetostatic *surfaceIntegralValueMagnetostatic);
+    void showHarmonicMagnetic(SurfaceIntegralValueHarmonicMagnetic *surfaceIntegralValueHarmonicMagnetic);
     void showHeat(SurfaceIntegralValueHeat *surfaceIntegralValueHeat);
     void showCurrent(SurfaceIntegralValueCurrent *surfaceIntegralValueCurrent);
 };
@@ -68,6 +70,15 @@ class SurfaceIntegralValueMagnetostatic : public SurfaceIntegralValue
 {
 public:
     SurfaceIntegralValueMagnetostatic();
+    QString toString();
+};
+
+// ******************************************************************************************************************
+
+class SurfaceIntegralValueHarmonicMagnetic : public SurfaceIntegralValue
+{
+public:
+    SurfaceIntegralValueHarmonicMagnetic();
     QString toString();
 };
 

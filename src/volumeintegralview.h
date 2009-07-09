@@ -10,6 +10,7 @@
 class VolumeIntegralValue;
 class VolumeIntegralValueElectrostatic;
 class VolumeIntegralValueMagnetostatic;
+class VolumeIntegralValueHarmonicMagnetic;
 class VolumeIntegralValueHeat;
 class VolumeIntegralValueCurrent;
 
@@ -33,6 +34,7 @@ private:
 
     void showElectrostatic(VolumeIntegralValueElectrostatic *volumeIntegralValueElectrostatic);
     void showMagnetostatic(VolumeIntegralValueMagnetostatic *volumeIntegralValueMagnetostatic);
+    void showHarmonicMagnetic(VolumeIntegralValueHarmonicMagnetic *volumeIntegralValueHarmonicMagnetic);
     void showHeat(VolumeIntegralValueHeat *volumeIntegralValueHeat);
 };
 
@@ -76,6 +78,16 @@ public:
     double energy;
 
     VolumeIntegralValueMagnetostatic();
+    QStringList variables();
+};
+
+class VolumeIntegralValueHarmonicMagnetic : public VolumeIntegralValue
+{
+public:
+    double powerLosses;
+    double energy;
+
+    VolumeIntegralValueHarmonicMagnetic();
     QStringList variables();
 };
 

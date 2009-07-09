@@ -5,12 +5,15 @@ ProjectDialog::ProjectDialog(ProjectInfo &projectInfo, bool isNewProject, QWidge
     m_isNewProject = isNewProject;
     m_projectInfo = &projectInfo;
 
-
     setWindowTitle(tr("Project properties"));
 
     createControls();
 
     load();
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 ProjectDialog::~ProjectDialog()
@@ -33,7 +36,7 @@ int ProjectDialog::showDialog()
 void ProjectDialog::createControls()
 {
     cmbProblemType = new QComboBox();
-    if (this->m_isNewProject) cmbPhysicField = new QComboBox();
+    cmbPhysicField = new QComboBox();
     txtName = new QLineEdit("");
     dtmDate = new QDateTimeEdit();
     dtmDate->setDisplayFormat("dd.MM.yyyy");
@@ -48,6 +51,7 @@ void ProjectDialog::createControls()
     txtAdaptivitySteps->setMinimum(0);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEdit("1", true, this);
+    txtFrequency = new SLineEdit("0", true, this);
 
     QGridLayout *layoutProject = new QGridLayout();
     layoutProject->addWidget(new QLabel(tr("Name:")), 0, 0);
@@ -57,21 +61,23 @@ void ProjectDialog::createControls()
     layoutProject->addWidget(new QLabel(tr("Problem type:")), 2, 0);
     layoutProject->addWidget(cmbProblemType, 2, 1);
     layoutProject->addWidget(new QLabel(tr("Physic field:")), 3, 0);
-    if (!this->m_isNewProject)
-        layoutProject->addWidget(new QLabel(physicFieldString(m_projectInfo->physicField)), 3, 1);
-    else
-        layoutProject->addWidget(cmbPhysicField, 3, 1);
-    layoutProject->addWidget(new QLabel(tr("Number of refinements:")), 4, 0);
-    layoutProject->addWidget(txtNumberOfRefinements, 4, 1);
-    layoutProject->addWidget(new QLabel(tr("Polynomial order:")), 5, 0);
-    layoutProject->addWidget(txtPolynomialOrder, 5, 1);
-    layoutProject->addWidget(new QLabel(tr("Adaptivity steps:")), 6, 0);
-    layoutProject->addWidget(txtAdaptivitySteps, 6, 1);
-    layoutProject->addWidget(new QLabel(tr("Adaptivity tolerance:")), 7, 0);
-    layoutProject->addWidget(txtAdaptivityTolerance, 7, 1);
+    layoutProject->addWidget(cmbPhysicField, 3, 1);
+    layoutProject->addWidget(new QLabel(tr("Frequency:")), 4, 0);
+    layoutProject->addWidget(txtFrequency, 4, 1);
+    layoutProject->addWidget(new QLabel(tr("Number of refinements:")), 5, 0);
+    layoutProject->addWidget(txtNumberOfRefinements, 5, 1);
+    layoutProject->addWidget(new QLabel(tr("Polynomial order:")), 6, 0);
+    layoutProject->addWidget(txtPolynomialOrder, 6, 1);
+    layoutProject->addWidget(new QLabel(tr("Adaptivity steps:")), 7, 0);
+    layoutProject->addWidget(txtAdaptivitySteps, 7, 1);
+    layoutProject->addWidget(new QLabel(tr("Adaptivity tolerance:")), 8, 0);
+    layoutProject->addWidget(txtAdaptivityTolerance, 8, 1);
 
+    connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
     fillComboBox();
 
+    // physicFieldString(m_projectInfo->physicField)
+    
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
@@ -91,19 +97,19 @@ void ProjectDialog::fillComboBox()
     cmbProblemType->addItem(problemTypeString(PROBLEMTYPE_PLANAR), PROBLEMTYPE_PLANAR);
     cmbProblemType->addItem(problemTypeString(PROBLEMTYPE_AXISYMMETRIC), PROBLEMTYPE_AXISYMMETRIC);
 
-    if (this->m_isNewProject)
-    {
-        cmbPhysicField->clear();
-        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELECTROSTATIC), PHYSICFIELD_ELECTROSTATIC);
-        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETOSTATIC), PHYSICFIELD_MAGNETOSTATIC);
-        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_CURRENT), PHYSICFIELD_CURRENT);
-        cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT_TRANSFER), PHYSICFIELD_HEAT_TRANSFER);
-        // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
-    }
+    cmbPhysicField->clear();
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELECTROSTATIC), PHYSICFIELD_ELECTROSTATIC);
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETOSTATIC), PHYSICFIELD_MAGNETOSTATIC);
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HARMONIC_MAGNETIC), PHYSICFIELD_HARMONIC_MAGNETIC);
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_CURRENT), PHYSICFIELD_CURRENT);
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT_TRANSFER), PHYSICFIELD_HEAT_TRANSFER);
+    // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
+
+    cmbPhysicField->setEnabled(m_isNewProject);
 }
 
 void ProjectDialog::load() {
-    if (this->m_isNewProject) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_projectInfo->physicField));
+    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_projectInfo->physicField));
     txtName->setText(m_projectInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_projectInfo->problemType));
     dtmDate->setDate(m_projectInfo->date);
@@ -111,6 +117,7 @@ void ProjectDialog::load() {
     txtPolynomialOrder->setValue(m_projectInfo->polynomialOrder);
     txtAdaptivitySteps->setValue(m_projectInfo->adaptivitySteps);
     txtAdaptivityTolerance->setValue(m_projectInfo->adaptivityTolerance);
+    txtFrequency->setValue(m_projectInfo->frequency);
 }
 
 void ProjectDialog::save() {
@@ -122,6 +129,7 @@ void ProjectDialog::save() {
     m_projectInfo->polynomialOrder = txtPolynomialOrder->value();
     m_projectInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_projectInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
+    m_projectInfo->frequency = txtFrequency->value();
 }
 
 void ProjectDialog::doAccept()
@@ -133,4 +141,18 @@ void ProjectDialog::doAccept()
 void ProjectDialog::doReject()
 {
     reject();
+}
+
+void ProjectDialog::doPhysicFieldChanged(int index)
+{
+    txtFrequency->setEnabled(false);
+
+    switch ((PhysicField) cmbPhysicField->itemData(index).toInt())
+    {
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        {
+            txtFrequency->setEnabled(true);
+        }
+        break;
+    }
 }

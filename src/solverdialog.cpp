@@ -299,6 +299,68 @@ void SolverDialog::runSolver()
                 delete [] magnetostaticLabel;
             }
             break;
+        case PHYSICFIELD_HARMONIC_MAGNETIC:
+            {
+                // edge markers
+                HarmonicMagneticEdge *harmonicMagneticEdge = new HarmonicMagneticEdge[Util::scene()->edges.count()+1];
+                harmonicMagneticEdge[0].type = PHYSICFIELDBC_NONE;
+                harmonicMagneticEdge[0].value = 0;
+                for (int i = 0; i<Util::scene()->edges.count(); i++)
+                {
+                    if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
+                    {
+                        harmonicMagneticEdge[i+1].type = PHYSICFIELDBC_NONE;
+                        harmonicMagneticEdge[i+1].value = 0;
+                    }
+                    else
+                    {
+                        SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(Util::scene()->edges[i]->marker);
+
+                        // evaluate script
+                        if (!edgeHarmonicMagneticMarker->value.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+
+                        harmonicMagneticEdge[i+1].type = edgeHarmonicMagneticMarker->type;
+                        harmonicMagneticEdge[i+1].value = edgeHarmonicMagneticMarker->value.number;
+                    }
+                }
+
+                // label markers
+                HarmonicMagneticLabel *harmonicMagneticLabel = new HarmonicMagneticLabel[Util::scene()->labels.count()];
+                for (int i = 0; i<Util::scene()->labels.count(); i++)
+                {
+                    if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
+                    {
+                    }
+                    else
+                    {
+                        SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(Util::scene()->labels[i]->marker);
+
+                        // evaluate script
+                        if (!labelHarmonicMagneticMarker->current_density_real.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+                        if (!labelHarmonicMagneticMarker->current_density_imag.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+                        if (!labelHarmonicMagneticMarker->permeability.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+                        if (!labelHarmonicMagneticMarker->conductivity.evaluate(Util::scene()->projectInfo().scriptStartup)) return;
+
+                        harmonicMagneticLabel[i].current_density_real = labelHarmonicMagneticMarker->current_density_real.number;
+                        harmonicMagneticLabel[i].current_density_imag = labelHarmonicMagneticMarker->current_density_imag.number;
+                        harmonicMagneticLabel[i].permeability = labelHarmonicMagneticMarker->permeability.number;
+                        harmonicMagneticLabel[i].conductivity = labelHarmonicMagneticMarker->conductivity.number;
+                    }
+                }
+
+                solutionArray = harmonicmagnetic_main(this,
+                                                      fileName.toStdString().c_str(),
+                                                      harmonicMagneticEdge, harmonicMagneticLabel,
+                                                      Util::scene()->projectInfo().numberOfRefinements,
+                                                      Util::scene()->projectInfo().polynomialOrder,
+                                                      Util::scene()->projectInfo().adaptivitySteps,
+                                                      Util::scene()->projectInfo().adaptivityTolerance,
+                                                      (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR));
+
+                delete [] magnetostaticEdge;
+                delete [] magnetostaticLabel;
+            }
+            break;
         case PHYSICFIELD_CURRENT:
             {
                 // edge markers
