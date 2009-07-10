@@ -1,0 +1,55 @@
+<h1>Screenshots</h1>
+
+<table id="images">
+	<tr>  
+		<td>
+      <a href="./images/screenshots/ubuntu_actuator.png">
+      <img src="./images/screenshots/ubuntu_actuator_thumb.png" alt="Magnetostatic actuator"></a>
+      <br>Magnetostatic actuator
+    </td>
+		<td>
+      <a href="./images/screenshots/ubuntu_sparkgap.png">
+      <img src="./images/screenshots/ubuntu_sparkgap_thumb.png" alt="Sparkgap"></a>
+      <br>Sparkgap
+    </td>
+		<td>
+      <a href="./images/screenshots/kubuntu_heat.png">
+      <img src="./images/screenshots/kubuntu_heat_thumb.png" alt="Heat transfer"></a>
+      <br>Heat transfer
+    </td>
+	</tr>
+	<tr>
+		<td>
+      <a href="./images/screenshots/windows_7_heat.png">
+      <img src="./images/screenshots/windows_7_heat_thumb.png" alt="Heat transfer - house detail"></a>
+      <br>Heat transfer - house detail
+    </td>
+		<td>
+      <a href="./images/screenshots/windows_xp_capacitor.png">
+      <img src="./images/screenshots/windows_xp_capacitor_thumb.png" alt="Axisymmetric capacitor"></a>
+      <br>Axisymmetric capacitor
+    </td>
+		<td>
+      <a href="./images/screenshots/ubuntu_heat_actuator.png">
+      <img src="./images/screenshots/ubuntu_heat_actuator_thumb.png" alt="Solving problem"></a>
+      <br>Solving problem
+    </td>
+	</tr>
+	<tr>  
+		<td>
+      <a href="./images/screenshots/ubuntu_chart.png">
+      <img src="./images/screenshots/ubuntu_chart_thumb.png" alt="Chart dialog"></a>
+      <br>Chart dialog
+    </td>
+		<td>
+      <a href="./images/screenshots/ubuntu_script.png">
+      <img src="./images/screenshots/ubuntu_script_thumb.png" alt="Script dialog"></a>
+      <br>Script dialog
+    </td>
+		<td>
+      <a href="./images/screenshots/ubuntu_sceneviewdialog.png">
+      <img src="./images/screenshots/ubuntu_sceneviewdialog_thumb.png" alt="Scene view dialog"></a>
+      <br>Scene view dialog
+    </td>
+	</tr>
+</table>

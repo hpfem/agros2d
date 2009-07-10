@@ -101,7 +101,7 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="268"/>
         <source>Angle (deg):</source>
-        <translation>Úhel (st.):</translation>
+        <translation>Úhel (stupně):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="265"/>
@@ -271,7 +271,7 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="807"/>
         <source>Charge density (C/m3):</source>
-        <translation>Hustota náboje: (C/m3):</translation>
+        <translation>Hustota náboje (C/m3):</translation>
     </message>
 </context>
 <context>
@@ -326,7 +326,7 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="3"/>
         <source>Local Values</source>
-        <translation>Lokální vel.</translation>
+        <translation>Lokální veličiny</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="27"/>
@@ -383,7 +383,7 @@
         <location filename="../src/localvalueview.cpp" line="240"/>
         <location filename="../src/localvalueview.cpp" line="243"/>
         <source>%1</source>
-        <translation></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="63"/>
@@ -540,7 +540,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="50"/>
         <source>&amp;New</source>
-        <translation>Nový soubor</translation>
+        <translation>&amp;Nový soubor</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="52"/>
@@ -550,7 +550,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="55"/>
         <source>&amp;Open...</source>
-        <translation>Otevřít...</translation>
+        <translation>&amp;Otevřít...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="57"/>
@@ -560,7 +560,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="60"/>
         <source>&amp;Save</source>
-        <translation>Uložit</translation>
+        <translation>&amp;Uložit</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="62"/>
@@ -611,7 +611,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="82"/>
         <source>E&amp;xit</source>
-        <translation>Ukončit</translation>
+        <translation>U&amp;končit</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="83"/>
@@ -631,7 +631,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="89"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="92"/>
@@ -641,7 +641,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="94"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="97"/>
@@ -651,7 +651,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="99"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="103"/>
@@ -661,7 +661,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="107"/>
         <source>&amp;About</source>
-        <translation>O aplikaci</translation>
+        <translation>O Agros 2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="108"/>
@@ -731,28 +731,28 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="174"/>
         <source>&amp;Project</source>
-        <translation>Projekt</translation>
+        <translation>&amp;Projekt</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="194"/>
         <source>Tools</source>
-        <translation>&amp;Nástroje</translation>
+        <translation>Nástroje</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="539"/>
         <source>&lt;b&gt;Agros 2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics solver based on Hermes2D library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/&quot;&gt;http://hpfem.math.unr.edu/projects/hermes2d-new/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros 2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros 2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Hermes2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Agros 2D %1&lt;/b&gt;&lt;br/&gt; Program pro řešení fyzikálních polí založený na&lt;i&gt;hp&lt;/i&gt;-FEM využívající knihovny Hermes2D.&lt;br/&gt;&lt;br/&gt;Internetové stránky: &lt;a href=&quot;http://hpfem.org/&quot;&gt;http://hpfem.math.unr.edu/projects/hermes2d-new/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros 2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Šolín &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Červený &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcová &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros 2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Hermes2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="541"/>
         <source>About Agros 2D</source>
-        <translation type="unfinished"></translation>
+        <translation>O programu</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="102"/>
         <location filename="../src/mainwindow.cpp" line="205"/>
         <source>&amp;Help</source>
-        <translation>Nápověda</translation>
+        <translation>&amp;Nápověda</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="214"/>
@@ -798,13 +798,13 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="292"/>
         <source>Agros 2D</source>
-        <translation type="unfinished"></translation>
+        <translation>Agros 2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="359"/>
         <location filename="../src/mainwindow.cpp" line="396"/>
         <source>Agros 2D files (*.h2d)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory Agros 2D (*.h2d)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="396"/>
@@ -994,12 +994,12 @@
     <message>
         <location filename="../src/util.h" line="53"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../src/util.h" line="53"/>
         <source>Expression &apos;%1&apos; cannot be evaluated.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/util.h" line="145"/>
@@ -1197,7 +1197,7 @@
     <message>
         <location filename="../src/gui.cpp" line="95"/>
         <source>This textedit allows using variables.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1527,7 +1527,7 @@
     <message>
         <location filename="../src/sceneview.cpp" line="983"/>
         <source>Order</source>
-        <translation type="unfinished">Řád</translation>
+        <translation>Řád</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="84"/>
@@ -1612,7 +1612,7 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="200"/>
         <source>Postprocessor</source>
-        <translation type="unfinished">Postprocesor</translation>
+        <translation>Postprocesor</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="214"/>
@@ -1653,17 +1653,17 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="312"/>
         <source>Grid step:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="324"/>
         <source>Contours count:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="345"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="153"/>
@@ -1741,17 +1741,17 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="444"/>
         <source>&amp;New</source>
-        <translation>Nový soubor</translation>
+        <translation>&amp;Nový soubor</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="448"/>
         <source>&amp;Open...</source>
-        <translation>Otevřít...</translation>
+        <translation>&amp;Otevřít...</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="452"/>
         <source>&amp;Save</source>
-        <translation>Uložit</translation>
+        <translation>&amp;Uložit</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="460"/>
@@ -1808,7 +1808,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="673"/>
         <source>Error: %1 (line %2, column %3)</source>
-        <translation>Chyba: %1 (řádka %1, sloupec %3)</translation>
+        <translation>Chyba: %1 (řádka %2, sloupec %3)</translation>
     </message>
 </context>
 <context>
@@ -1816,17 +1816,17 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="684"/>
         <source>Startup script</source>
-        <translation type="unfinished"></translation>
+        <translation>Definice proměnných</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="728"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="728"/>
         <source>Script cannot be evaluated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Při spracování skriptu došlo k chybě.</translation>
     </message>
 </context>
 <context>
@@ -1865,7 +1865,7 @@
     <message>
         <location filename="../src/solverdialog.cpp" line="138"/>
         <source>Triangle mesh could not be converted to Hermes mesh file.</source>
-        <translation>Trojúhelníkovou síť nelze vytvořit</translation>
+        <translation>Trojúhelníkovou síť nelze vytvořit.</translation>
     </message>
     <message>
         <location filename="../src/solverdialog.cpp" line="139"/>
@@ -1880,7 +1880,7 @@
     <message>
         <location filename="../src/solverdialog.cpp" line="177"/>
         <source>Solver was started: </source>
-        <translation>Spuštění řešiče</translation>
+        <translation>Spuštění řešiče:</translation>
     </message>
     <message>
         <location filename="../src/solverdialog.cpp" line="497"/>
@@ -1898,7 +1898,7 @@
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="3"/>
         <source>Surface Integral</source>
-        <translation>Povrchové int.</translation>
+        <translation>Povrchové integrály</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="26"/>
@@ -1919,7 +1919,7 @@
         <location filename="../src/surfaceintegralview.cpp" line="75"/>
         <location filename="../src/surfaceintegralview.cpp" line="85"/>
         <source>%1</source>
-        <translation>s</translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="29"/>
@@ -1967,12 +1967,12 @@
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="73"/>
         <source>Temperature avg.:</source>
-        <translation>Průměrná teplota</translation>
+        <translation>Průměrná teplota:</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="74"/>
         <source>Temperature dif.:</source>
-        <translation>Rozdíl teplot</translation>
+        <translation>Rozdíl teplot:</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="75"/>
@@ -2000,7 +2000,7 @@
     <message>
         <location filename="../src/volumeintegralview.cpp" line="3"/>
         <source>Volume Integral</source>
-        <translation>Objemové int.</translation>
+        <translation>Objemové integrály</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="26"/>
@@ -2140,7 +2140,7 @@
     <message>
         <location filename="../src/volumeintegralview.cpp" line="70"/>
         <source>H: avg.</source>
-        <translation>H prům.:</translation>
+        <translation>H prům.</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="71"/>

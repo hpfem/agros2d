@@ -30,56 +30,51 @@
   </div>
 </div>
 <div id="main-copy">
-<div class="right"><img src="./images/main/screenshot.png" alt="Agros 2D sreenshot"></div>
+<h1>Planar capacitor</h1>
 
-<h1>Agros 2D</h1>
-<p><i>hp</i>-FEM multiphysics solver based on Hermes2D library</p>
+<h2>Introduction</h2>
 
-<h2>Key features</h2>
-<ul>
-  <li>interactive creation of geometry + dxf import</li>
-  <li>visualization of field variables</li>
-  <li>chart and data export</li>
-  <li>local values, surface and volume integrals</li>
-  <li>scripting support</li>
-</ul>
+<h2>Model</h2>
 
-<h3>Supported physical fields</h3>
-<ul>
-  <li>electrostatic</li>
-  <li>magnetostatic</li>
-  <li>heat transfer</li>
-  <li>electric current field</li>
-</ul>
+<h3>Geometry</h3>
+<p class="centered">
+<img src="./images/example1/model.png" alt="Geometry of the model"><br>
+Geometry of the model
+</p>
 
-<h3>Download Agros 2D</h3>
-<h4>Requirements</h4>
-<ul>
-  <li>Hermes2d 1.0</li>
-  <li>Nokia Qt 4.5 (<a href="http://www.qtsoftware.com/products/">http://www.qtsoftware.com/products/</a>)</li>
-  <li>Qwt 5.0 (<a href="http://qwt.sourceforge.net/">http://qwt.sourceforge.net/</a>)</li>
-</ul>
+<h4>Nodes</h4>
+Select "Operate on nodes" button from main toolbar and place 6 points with coordinates [0.1, 0.0], 
+[0.2, 0.0], [0.1, 0.2], [0.0, 0.2], [0.0, 0.3] and [0.1, 0.0]. You can move mouse to requested place
+and press left button together with control key, or by pressing &lt;Alt&gt;+n and entering the
+point coordinates.
 
-<h4>Binaries</h4>
-<ul>
-  <li>Ubuntu 32 bit:
-    <pre><a href="./other/libhermes2d_1.0-1ubuntu2_i386.deb">libhermes2d_1.0-1ubuntu2_i386.deb</a></pre>
-    <pre><a href="./other/agros2d_0.7-1ubuntu1_i386.deb">agros2d_0.7-1ubuntu1_i386.deb</a></pre>
-  </li>
-  <li>Windows
-    <pre><a href="./other/Agros2D_0.7.0.exe">Agros2D_0.7.0.exe</a></pre>
-  </li>
-</ul>
+<h4>Edges</h4>
+Select "Operate on edges" button from main toolbar and draw edges. Press &lt;Control&gt; key
+and select in sequence start and end node of the line.
 
-<h4>Sources</h4>
-<ul>
-  <li>To obtain the source code, type:
-    <pre>git clone git://hpfem.math.unr.edu/git/carbon2d.git</pre>
-  </li>
-  <li>You can also browse the repository online at:
-    <pre><a href="http://hpfem.math.unr.edu/git/gitweb.cgi/carbon2d.git/">http://hpfem.math.unr.edu/git/gitweb.cgi/carbon2d.git/</a></pre>
-  </li>
-</ul>
+<h4>Labels</h4>
+Select "Operate on labels" button and place block label into inner area of the capacitor. 
+To place label you can use left mouse button together with control key or &lt;Alt&gt;+l shortcut.
+
+<h3>Boundary conditions and Materials</h3>
+
+<h4>Nodes</h4>
+
+<h4>Edges</h4>
+
+<h2>Results</h2>
+
+<h3>Electric field potential</h3>
+<p class="centered">
+<img src="./images/example1/potential.png" alt="Distribution of electric field potential" /><br />
+Distribution of electric field potential
+</p>
+
+<h3>Electric field</h3>
+
+<h3>Capacity</h3>
+We = 1.576e-8 J/m
+C = 4*2*We/U^2 = 1.26 pF
 <div style="clear: both;">&nbsp;</div>
 </div>
 <div id="footer">

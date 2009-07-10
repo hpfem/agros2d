@@ -534,7 +534,7 @@ void MainWindow::doInvalidated()
 
 void MainWindow::doHelp()
 {
-    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/main/index.html");
+    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/index.html");
 }
 
 void MainWindow::doAbout()

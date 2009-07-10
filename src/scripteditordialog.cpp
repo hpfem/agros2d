@@ -643,7 +643,7 @@ void ScriptEditorDialog::doCreateFromModel()
 
 void ScriptEditorDialog::doHelp()
 {
-    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/script/script.html");
+    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/script.html");
     // scriptEditorHelpDialog->showDialog();
 }
 

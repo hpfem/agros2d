@@ -1,10 +1,7 @@
-<script language="javascript" src="../_header.js"></script>
-
 <h1>Script manual</h1>
 QtScript is based on the ECMAScript scripting language.
 
 <h2>Reference documentation</h2>
-
 <h4>newDocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitysteps, adaptivitytolerance)</h4>
 Create new document.
 
@@ -23,45 +20,44 @@ Save document.
 <h4>addBoundary(name, type, value, ...)</h4>
 Add boundary marker.
 <ul>
-    <li>
-        <h5>Electrostatic</h5>
-        addBoundary(name, type = {"potential", "surface_charge_density"}, value)
-    </li>
-    <li>
-        <h5>Magnetostatic</h5>
-        addBoundary(name, type = {"vector_potential", "surface_current_density"}, value)
-    </li>
-    <li>
-        <h5>Heat transfer</h5>
-        addBoundary(name, type = "temperature", temperature)<br/>
-        addBoundary(name, type = "heat_flux", heat_flux, h, external_temperature)
-    </li>
-    <li>
-        <h5>Current field</h5>
-        addBoundary(name, type = {"potential", "inward_current_flow"}, value)
-    </li>
+  <li>
+    <h5>Electrostatic</h5>
+    addBoundary(name, type = {"potential", "surface_charge_density"}, value)
+  </li>
+  <li>
+    <h5>Magnetostatic</h5>
+    addBoundary(name, type = {"vector_potential", "surface_current_density"}, value)
+  </li>
+  <li>
+    <h5>Heat transfer</h5>
+    addBoundary(name, type = "temperature", temperature)<br>
+    addBoundary(name, type = "heat_flux", heat_flux, h, external_temperature)
+  </li>
+  <li>
+    <h5>Current field</h5>
+    addBoundary(name, type = {"potential", "inward_current_flow"}, value)
+  </li>
 </ul>
 
 <h4>addMaterial(name, type, value, ...)</h4>
 Add label marker.
-
 <ul>
-    <li>
-        <h5>Electrostatic</h5>
-        addMaterial(name, charge_density, permittivity)
-    </li>
-    <li>
-        <h5>Magnetostatic</h5>
-        addBoundary(name, current_density, double permeability)
-    </li>
-    <li>
-        <h5>Heat transfer</h5>
-        addBoundary(name, volume_heat, thermal_conductivity)
-    </li>
-    <li>
-        <h5>Current field</h5>
-        addBoundary(name, conductivity)
-    </li>
+  <li>
+    <h5>Electrostatic</h5>
+    addMaterial(name, charge_density, permittivity)
+  </li>
+  <li>
+    <h5>Magnetostatic</h5>
+    addBoundary(name, current_density, double permeability)
+  </li>
+  <li>
+    <h5>Heat transfer</h5>
+    addBoundary(name, volume_heat, thermal_conductivity)
+  </li>
+  <li>
+    <h5>Current field</h5>
+    addBoundary(name, conductivity)
+  </li>
 </ul>
 
 <h4>solve()</h4>
@@ -100,23 +96,24 @@ Scale selected objects.
 <h4>result = pointResult(x, y)</h4>
 Local variables at point [x, y].
 <ul>
-    <li>
-        <h5>Electrostatic</h5>
-        Properties: Potential, Ex, Ey, E, Dx, Dy, Energy, Permittivity.
-    </li>
-    <li>
-        <h5>Magnetostatic</h5>
-        Properties: Potential, Bx, By, B, Hx, Hy, H, Energy, Permeability.
-    </li>
-    <li>
-        <h5>Heat transfer</h5>
-        Properties: Temperature, Gx, Gy, G, Fx, Fy, F, Conductivity.
-    </li>
-    <li>
-        <h5>Current field</h5>
-        Properties: Potential, Jx, Jy, J, Ex, Ey, E, Losses, Conductivity.
-    </li>
+  <li>
+    <h5>Electrostatic</h5>
+    Properties: Potential, Ex, Ey, E, Dx, Dy, Energy, Permittivity.
+  </li>
+  <li>
+    <h5>Magnetostatic</h5>
+    Properties: Potential, Bx, By, B, Hx, Hy, H, Energy, Permeability.
+  </li>
+  <li>
+    <h5>Heat transfer</h5>
+    Properties: Temperature, Gx, Gy, G, Fx, Fy, F, Conductivity.
+  </li>
+  <li>
+    <h5>Current field</h5>
+    Properties: Potential, Jx, Jy, J, Ex, Ey, E, Losses, Conductivity.
+  </li>
 </ul>
+
 <h5>Example:</h5>
 <pre>
 // local point result
@@ -127,23 +124,24 @@ print("Potential = " + result.Potential);
 <h4>integral = volumeIntegral(index, ...)</h4>
 Volume integral in areas with given index.
 <ul>
-    <li>
-        <h5>Electrostatic</h5>
-        Properties: Volume, CrossSection, Ex_avg, Ey_avg, E_avg, Dx_avg, Dy_avg, D_avg, Energy.
-    </li>
-    <li>
-        <h5>Magnetostatic</h5>
-        Properties: Volume, CrossSection, Bx_avg, By_avg, B_avg, Hx_avg, Hy_avg, H_avg, Energy.    
-    </li>
-    <li>
-        <h5>Heat transfer</h5>
-        Properties: Volume, CrossSection, Temperature, Gx_avg, Gy_avg, G_avg, Fx_avg, Fy_avg, F_avg.
-    </li>
-    <li>
-        <h5>Current field</h5>
-        Properties: Volume, CrossSection, Jx_avg, Jy_avg, J_avg, Ex_avg, Ey_avg, E_avg, Losses.
-    </li>
+  <li>
+    <h5>Electrostatic</h5>
+    Properties: Volume, CrossSection, Ex_avg, Ey_avg, E_avg, Dx_avg, Dy_avg, D_avg, Energy.
+  </li>
+  <li>
+    <h5>Magnetostatic</h5>
+    Properties: Volume, CrossSection, Bx_avg, By_avg, B_avg, Hx_avg, Hy_avg, H_avg, Energy.    
+  </li>
+  <li>
+    <h5>Heat transfer</h5>
+    Properties: Volume, CrossSection, Temperature, Gx_avg, Gy_avg, G_avg, Fx_avg, Fy_avg, F_avg.
+  </li>
+  <li>
+    <h5>Current field</h5>
+    Properties: Volume, CrossSection, Jx_avg, Jy_avg, J_avg, Ex_avg, Ey_avg, E_avg, Losses.
+  </li>
 </ul>
+
 <h5>Example:</h5>
 <pre>
 // volume integral
@@ -152,11 +150,9 @@ print("Volume = " + integral.Volume);
 </pre>
 
 <h2>Examples</h2>
-
 <h3>Capacitor</h3>
-
 <pre class="code">
-/// model
+// model
 newDocument("Electrostatic 2D", "axisymmetric", "electrostatic", 1, 2, 0, 0)
 
 // boundaries
@@ -195,20 +191,18 @@ var dx = 0.01;
 var i = 0;
 do
 {
-	// move edges
-	if (i > 0)
-	{
-		selectNone();	
-		selectEdge(6, 7, 8);
-		moveSelection(dx, 0);	
-	}
+  // move edges
+  if (i > 0)
+  {
+    selectNone();	
+    selectEdge(6, 7, 8);
+    moveSelection(dx, 0);	
+  }
 
-	solve();
-	integral = volumeIntegral();
-	print((2*2*integral.Energy)/(1^2));
+  solve();
+  integral = volumeIntegral();
+  print((2*2*integral.Energy)/(1^2));
 
-	i++;
+  i++;
 } while (i<5);
 </pre>
-
-<script language="javascript" src="../_footer.js"></script>
