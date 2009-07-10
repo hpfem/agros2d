@@ -340,6 +340,26 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL:
+                    {
+                        SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
+                        if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i] * dudx[i]);
+                        }
+                        else
+                        {
+                            h1_integrate_expression(2 * M_PI * x[i] * 0.25 * sqr(sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0));
+                        }
+                    }
+                    break;
+/*
+            FL_real.x = - (current_density_total_real*B_real.x - current_density_total_imag*B_imag.x);
+            FL_real.y =   (current_density_total_real*B_real.y - current_density_total_imag*B_imag.y);
+            FL_imag.x = - (current_density_total_imag*B_real.x + current_density_total_real*B_imag.x);
+            FL_imag.y =   (current_density_total_imag*B_real.y - current_density_total_real*B_imag.y);
+*/
+
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE:
                     {
                         if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1237,46 +1257,12 @@ void ViewScalarFilter::precalculate(int order, int mask)
             {
                 if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
                 {
-                    switch (m_physicFieldVariableComp)
-                    {
-                    case PHYSICFIELDVARIABLECOMP_X:
-                        {
-                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]));
-                        }
-                        break;
-                    case PHYSICFIELDVARIABLECOMP_Y:
-                        {
-                            node->values[0][0][i] = sqrt(sqr(dudx[i]) + sqr(dvdx[i]));
-                        }
-                        break;
-                    case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
-                        {
-                            node->values[0][0][i] = sqrt(sqr(dudx[i]) + sqr(dvdx[i]) + sqr(dudy[i]) + sqr(dvdy[i]));
-                        }
-                        break;
-                    }
+                    node->values[0][0][i] = sqrt(sqr(dudx[i]) + sqr(dvdx[i]) + sqr(dudy[i]) + sqr(dvdy[i]));
                 }
                 else
                 {
-                    switch (m_physicFieldVariableComp)
-                    {
-                    case PHYSICFIELDVARIABLECOMP_X:
-                        {
-                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]));
-                        }
-                        break;
-                    case PHYSICFIELDVARIABLECOMP_Y:
-                        {
-                            node->values[0][0][i] = sqrt(sqr(dudx[i] + valueu[i] / x[i]) + sqr(dvdx[i] + valuev[i] / x[i]));
-                        }
-                        break;
-                    case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
-                        {
-                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + valueu[i] / x[i]) + sqr(dvdx[i] + valuev[i] / x[i]));
-                        }
-                        break;
-                    }
-                }
+
+                    node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + valueu[i] / x[i]) + sqr(dvdx[i] + valuev[i] / x[i]));                }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
@@ -1642,7 +1628,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 node->values[0][0][i] = marker->permeability.number;
             }
-            break;
+            break;                
         case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
             {
                 node->values[0][0][i] = valueu[i];

@@ -50,9 +50,9 @@ scalar harmonicmagnetic_bilinear_form_real_real(RealFunction* fu, RealFunction* 
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticIsPlanar)
-        return int_grad_u_grad_v(fu, fv, ru, rv);
+        return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
-        return int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv);
+        return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
 }
 
 scalar harmonicmagnetic_bilinear_form_real_imag(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
@@ -60,9 +60,9 @@ scalar harmonicmagnetic_bilinear_form_real_imag(RealFunction* fu, RealFunction* 
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticIsPlanar)
-        return - 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * harmonicmagneticLabel[marker].permeability * MU0 * int_u_v(fu, fv, ru, rv);
+        return - 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
-        return - 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * harmonicmagneticLabel[marker].permeability * MU0 * int_x_u_v(fu, fv, ru, rv);
+        return - 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
 }
 
 scalar harmonicmagnetic_bilinear_form_imag_real(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
@@ -70,9 +70,9 @@ scalar harmonicmagnetic_bilinear_form_imag_real(RealFunction* fu, RealFunction* 
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticIsPlanar)
-        return + 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * harmonicmagneticLabel[marker].permeability * MU0 * int_u_v(fu, fv, ru, rv);
+        return + 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
-        return + 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * harmonicmagneticLabel[marker].permeability * MU0 * int_x_u_v(fu, fv, ru, rv);
+        return + 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
 }
 
 scalar harmonicmagnetic_bilinear_form_imag_imag(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
@@ -80,9 +80,9 @@ scalar harmonicmagnetic_bilinear_form_imag_imag(RealFunction* fu, RealFunction* 
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticIsPlanar)
-        return int_grad_u_grad_v(fu, fv, ru, rv);
+        return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
-        return int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv);
+        return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
 }
 
 scalar harmonicmagnetic_linear_form_real(RealFunction* fv, RefMap* rv)
@@ -90,9 +90,9 @@ scalar harmonicmagnetic_linear_form_real(RealFunction* fv, RefMap* rv)
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticIsPlanar)
-        return harmonicmagneticLabel[marker].permeability * MU0 * harmonicmagneticLabel[marker].current_density_real * int_v(fv, rv);
+        return harmonicmagneticLabel[marker].current_density_real * int_v(fv, rv);
     else
-        return harmonicmagneticLabel[marker].permeability * MU0 * harmonicmagneticLabel[marker].current_density_real * int_v(fv, rv);
+        return harmonicmagneticLabel[marker].current_density_real * int_v(fv, rv);
 }
 
 scalar harmonicmagnetic_linear_form_imag(RealFunction* fv, RefMap* rv)
@@ -100,9 +100,9 @@ scalar harmonicmagnetic_linear_form_imag(RealFunction* fv, RefMap* rv)
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticIsPlanar)
-        return harmonicmagneticLabel[marker].permeability * MU0 * harmonicmagneticLabel[marker].current_density_imag * int_v(fv, rv);
+        return harmonicmagneticLabel[marker].current_density_imag * int_v(fv, rv);
     else
-        return harmonicmagneticLabel[marker].permeability * MU0 * harmonicmagneticLabel[marker].current_density_imag * int_v(fv, rv);
+        return harmonicmagneticLabel[marker].current_density_imag * int_v(fv, rv);
 }
 
 SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,

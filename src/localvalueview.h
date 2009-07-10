@@ -113,6 +113,8 @@ public:
     Point H_imag;
     Point B_real;
     Point B_imag;
+    Point FL_real;
+    Point FL_imag;
     double pj;
     double wm;
 

@@ -1784,7 +1784,6 @@ void SceneView::doDefaults()
         {
             m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
             m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-            m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
             m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY;
         }
         break;
@@ -1964,8 +1963,8 @@ void SceneView::setRangeContour()
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
                                                     Util::scene()->sceneSolution()->sln2(),
                                                     Util::scene(),
-                                                    m_sceneViewSettings.scalarPhysicFieldVariable,
-                                                    m_sceneViewSettings.scalarPhysicFieldVariableComp);
+                                                    m_sceneViewSettings.contourPhysicFieldVariable,
+                                                    PHYSICFIELDVARIABLECOMP_SCALAR);
 
         Util::scene()->sceneSolution()->setSlnContourView(viewScalarFilter);
     }

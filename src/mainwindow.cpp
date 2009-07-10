@@ -509,7 +509,9 @@ void MainWindow::doPaste()
     // Util::scene()->readFromFile("data/magnetostatic_axisymmetric_actuator.h2d");
     // Util::scene()->readFromFile("data/magnetostatic_planar_magnet.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.h2d");
-    Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.h2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.h2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.h2d");
+    Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.h2d");
     // Util::scene()->readFromFile("data/current_feeder.h2d");
     // Util::scene()->readFromFile("data/elasticity_planar.h2d");

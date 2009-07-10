@@ -99,6 +99,9 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     // Charge Density
     addValue(electrostaticNode, tr("Charge density:"), tr("%1").arg(localPointValueElectrostatic->charge_density, 0, 'e', 3), "C/m3");
 
+    // Energy density
+    addValue(electrostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueElectrostatic->we, 0, 'e', 3), "J/m3");
+
     // Potential
     addValue(electrostaticNode, tr("Potential:"), tr("%1").arg(localPointValueElectrostatic->potential, 0, 'e', 3), "V");
 
@@ -119,9 +122,6 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     addValue(itemElectricDisplacement, "D" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
     addValue(itemElectricDisplacement, "D" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
     addValue(itemElectricDisplacement, "D:", tr("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
-
-    // Energy density
-    addValue(electrostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueElectrostatic->we, 0, 'e', 3), "J/m3");
 }
 
 void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localPointValueMagnetostatic)
@@ -131,11 +131,14 @@ void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localP
     magnetostaticNode->setText(0, tr("Magnetostatic field"));
     magnetostaticNode->setExpanded(true);
 
-    // Permittivity
+    // Permeability
     addValue(magnetostaticNode, tr("Permeability:"), tr("%1").arg(localPointValueMagnetostatic->permeability, 0, 'f', 2), "");
 
-    // Charge Density
+    // Current Density
     addValue(magnetostaticNode, tr("Current density:"), tr("%1").arg(localPointValueMagnetostatic->current_density, 0, 'e', 3), "A/m2");
+
+    // Energy density
+    addValue(magnetostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueMagnetostatic->wm, 0, 'e', 3), "J/m3");
 
     // Potential
     addValue(magnetostaticNode, tr("Vector potential:"), tr("%1").arg(localPointValueMagnetostatic->potential, 0, 'e', 3), "Wb/m");
@@ -157,9 +160,6 @@ void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localP
     addValue(itemMagneticField, "H" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
     addValue(itemMagneticField, "H" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
     addValue(itemMagneticField, "H", tr("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), "A/m");
-
-    // Energy density
-    addValue(magnetostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueMagnetostatic->wm, 0, 'e', 3), "J/m3");
 }
 
 void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *localPointValueHarmonicMagnetic)
@@ -181,6 +181,12 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     addValue(itemChargeDensity, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_imag, 0, 'e', 3), "A/m2");
     addValue(itemChargeDensity, tr("magnitude:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_real) + sqr(localPointValueHarmonicMagnetic->current_density_imag)), 0, 'e', 3), "A/m2");
 
+    // Average power losses
+    addValue(harmonicMagneticNode, tr("Average power losses dens.:"), tr("%1").arg(localPointValueHarmonicMagnetic->pj, 0, 'e', 3), "W/m3");
+
+    // Energy density
+    addValue(harmonicMagneticNode, tr("Energy density:"), tr("%1").arg(localPointValueHarmonicMagnetic->wm, 0, 'e', 3), "J/m3");
+
     // Potential
     QTreeWidgetItem *itemPotential = new QTreeWidgetItem(harmonicMagneticNode);
     itemPotential->setText(0, tr("Vector potential"));
@@ -191,13 +197,7 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     addValue(itemPotential, tr("magnitude:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->potential_real) + sqr(localPointValueHarmonicMagnetic->potential_imag)), 0, 'e', 3), "Wb/m");
 
     // Flux Density
-    QTreeWidgetItem *itemFluxDensity = new QTreeWidgetItem(harmonicMagneticNode);
-    itemFluxDensity->setText(0, tr("Flux density - magnitude"));
-    itemFluxDensity->setExpanded(true);
-
-    addValue(itemFluxDensity, "B" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->B_real.x) + sqr(localPointValueHarmonicMagnetic->B_imag.x)), 0, 'e', 3), "T");
-    addValue(itemFluxDensity, "B" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->B_real.y) + sqr(localPointValueHarmonicMagnetic->B_imag.y)), 0, 'e', 3), "T");
-    addValue(itemFluxDensity, "B:", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->B_real.x) + sqr(localPointValueHarmonicMagnetic->B_imag.x) + sqr(localPointValueHarmonicMagnetic->B_real.y) + sqr(localPointValueHarmonicMagnetic->B_imag.y)), 0, 'e', 3), "T");
+    addValue(harmonicMagneticNode, "Flux density:", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->B_real.x) + sqr(localPointValueHarmonicMagnetic->B_imag.x) + sqr(localPointValueHarmonicMagnetic->B_real.y) + sqr(localPointValueHarmonicMagnetic->B_imag.y)), 0, 'e', 3), "T");
 
     // Flux Density - real
     QTreeWidgetItem *itemFluxDensityReal = new QTreeWidgetItem(harmonicMagneticNode);
@@ -218,13 +218,7 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     addValue(itemFluxDensityImag, "B:", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.magnitude(), 0, 'e', 3), "T");
 
     // Magnetic Field
-    QTreeWidgetItem *itemMagneticField = new QTreeWidgetItem(harmonicMagneticNode);
-    itemMagneticField->setText(0, tr("Magnetic field - magnitude"));
-    itemMagneticField->setExpanded(true);
-
-    addValue(itemMagneticField, "H" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->H_real.x) + sqr(localPointValueHarmonicMagnetic->H_imag.x)), 0, 'e', 3), "A/m");
-    addValue(itemMagneticField, "H" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->H_real.y) + sqr(localPointValueHarmonicMagnetic->H_imag.y)), 0, 'e', 3), "A/m");
-    addValue(itemMagneticField, "H:", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->H_real.x) + sqr(localPointValueHarmonicMagnetic->H_imag.x) + sqr(localPointValueHarmonicMagnetic->H_real.y) + sqr(localPointValueHarmonicMagnetic->H_imag.y)), 0, 'e', 3), "A/m");
+    addValue(harmonicMagneticNode, "Magnetic field:", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->H_real.x) + sqr(localPointValueHarmonicMagnetic->H_imag.x) + sqr(localPointValueHarmonicMagnetic->H_real.y) + sqr(localPointValueHarmonicMagnetic->H_imag.y)), 0, 'e', 3), "A/m");
 
     // Magnetic Field - real
     QTreeWidgetItem *itemMagneticFieldReal = new QTreeWidgetItem(harmonicMagneticNode);
@@ -245,28 +239,45 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     addValue(itemMagneticFieldImag, "H", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.magnitude(), 0, 'e', 3), "A/m");
 
     // Total current density
+    addValue(harmonicMagneticNode, tr("Total current density:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_total_real) + sqr(localPointValueHarmonicMagnetic->current_density_total_imag)), 0, 'e', 3), "A/m2");
+
     QTreeWidgetItem *itemCurrentDensityTotal = new QTreeWidgetItem(harmonicMagneticNode);
     itemCurrentDensityTotal->setText(0, tr("Total current density"));
-    itemCurrentDensityTotal->setExpanded(true);
+    itemCurrentDensityTotal->setExpanded(false);
 
     addValue(itemCurrentDensityTotal, tr("real:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_total_real, 0, 'e', 3), "A/m2");
     addValue(itemCurrentDensityTotal, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_total_imag, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensityTotal, tr("magnitude:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_total_real) + sqr(localPointValueHarmonicMagnetic->current_density_total_imag)), 0, 'e', 3), "A/m2");
 
     // Induced current density
+    addValue(harmonicMagneticNode, tr("Induced current density:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_induced_real) + sqr(localPointValueHarmonicMagnetic->current_density_induced_imag)), 0, 'e', 3), "A/m2");
+
     QTreeWidgetItem *itemCurrentDensityInduced = new QTreeWidgetItem(harmonicMagneticNode);
     itemCurrentDensityInduced->setText(0, tr("Induced current density"));
-    itemCurrentDensityInduced->setExpanded(true);
+    itemCurrentDensityInduced->setExpanded(false);
 
     addValue(itemCurrentDensityInduced, tr("real:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_induced_real, 0, 'e', 3), "A/m2");
     addValue(itemCurrentDensityInduced, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_induced_imag, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensityInduced, tr("magnitude:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_induced_real) + sqr(localPointValueHarmonicMagnetic->current_density_induced_imag)), 0, 'e', 3), "A/m2");
 
-    // Average power losses
-    addValue(harmonicMagneticNode, tr("Average power losses:"), tr("%1").arg(localPointValueHarmonicMagnetic->pj, 0, 'e', 3), "W/m3");
+    // Magnetic Field
+    addValue(harmonicMagneticNode, "Lorentz force:", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->FL_real.x) + sqr(localPointValueHarmonicMagnetic->FL_imag.x) + sqr(localPointValueHarmonicMagnetic->FL_real.y) + sqr(localPointValueHarmonicMagnetic->FL_imag.y)), 0, 'e', 3), "A/m");
 
-    // Energy density
-    addValue(harmonicMagneticNode, tr("Energy density:"), tr("%1").arg(localPointValueHarmonicMagnetic->wm, 0, 'e', 3), "J/m3");
+    // Lorentz force - real
+    QTreeWidgetItem *itemLorentzForceReal = new QTreeWidgetItem(harmonicMagneticNode);
+    itemLorentzForceReal->setText(0, tr("Lorentz force - real"));
+    itemLorentzForceReal->setExpanded(false);
+
+    addValue(itemLorentzForceReal, "FL" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.x, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceReal, "FL" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.y, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceReal, "FL", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.magnitude(), 0, 'e', 3), "N/m3");
+
+    // Lorentz force - imag
+    QTreeWidgetItem *itemLorentzForceImag = new QTreeWidgetItem(harmonicMagneticNode);
+    itemLorentzForceImag->setText(0, tr("Lorentz force - imag"));
+    itemLorentzForceImag->setExpanded(false);
+
+    addValue(itemLorentzForceImag, "FL" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.x, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceImag, "FL" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.y, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceImag, "FL", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.magnitude(), 0, 'e', 3), "N/m3");
 }
 
 void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
@@ -314,6 +325,9 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     // Conductivity
     addValue(currentNode, tr("Conductivity:"), tr("%1").arg(localPointValueCurrent->conductivity, 0, 'e', 3), "S/m");
 
+    // Energy density
+    addValue(currentNode, tr("Power losses dens.:"), tr("%1").arg(localPointValueCurrent->losses, 0, 'e', 3), tr("W/m3"));
+
     // Potential
     addValue(currentNode, tr("Potential:"), tr("%1").arg(localPointValueCurrent->potential, 0, 'f', 2), "V");
 
@@ -334,9 +348,6 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     addValue(itemCurrentDensity, "J" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
     addValue(itemCurrentDensity, "J" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
     addValue(itemCurrentDensity, "J:", tr("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), "A/m2");
-
-    // Energy density
-    addValue(currentNode, tr("Power losses dens.:"), tr("%1").arg(localPointValueCurrent->losses, 0, 'e', 3), tr("W/m3"));
 }
 
 void LocalPointValueView::showElasticity(LocalPointValueElasticity *localPointValueElasticity)
@@ -683,6 +694,12 @@ LocalPointValueHarmonicMagnetic::LocalPointValueHarmonicMagnetic(Point &point) :
             // electric displacement
             H_real = B_real / (marker->permeability.number * MU0);
             H_imag = B_imag / (marker->permeability.number * MU0);
+
+            // Lorentz force
+            FL_real.x = - (current_density_total_real*B_real.y - current_density_total_imag*B_imag.y);
+            FL_real.y =   (current_density_total_real*B_real.x - current_density_total_imag*B_imag.x);
+            FL_imag.x = - (current_density_total_imag*B_real.y + current_density_total_real*B_imag.y);
+            FL_imag.y =   (current_density_total_imag*B_real.x + current_density_total_real*B_imag.x);
 
             // power losses
             pj = (marker->conductivity.number > 0.0) ?

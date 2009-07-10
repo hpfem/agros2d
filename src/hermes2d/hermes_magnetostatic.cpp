@@ -79,10 +79,10 @@ scalar magnetostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* r
     int marker = rv->get_active_element()->marker;
 
     if (magnetostaticIsPlanar)
-        return 1.0 / (magnetostaticLabel[marker].permeability) * int_grad_u_grad_v(fu, fv, ru, rv);
+        return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
     {
-        return 1.0 / (magnetostaticLabel[marker].permeability) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
+        return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
     }   
 }
 
@@ -91,10 +91,10 @@ scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
     int marker = rv->get_active_element()->marker;
 
     if (magnetostaticIsPlanar)
-        return MU0 * magnetostaticLabel[marker].current_density * int_v(fv, rv); // +
+        return magnetostaticLabel[marker].current_density * int_v(fv, rv); // +
                 // ((marker == 0) ? (1.5 / (magnetostaticLabel[marker].permeability) * int_dvdy(fv, rv)) : 0.0);
     else
-        return MU0 * magnetostaticLabel[marker].current_density * int_v(fv, rv);
+        return magnetostaticLabel[marker].current_density * int_v(fv, rv);
 }
 
 SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
