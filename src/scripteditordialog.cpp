@@ -407,8 +407,6 @@ ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : 
     createControls();
     createEngine();
 
-    // scriptEditorHelpDialog = new ScriptEditorHelpDialog(this);
-
     resize(600, 400);
 
     QSettings settings;
@@ -429,7 +427,6 @@ ScriptEditorDialog::~ScriptEditorDialog()
     delete txtOutput;
     delete m_engine;
     delete splitter;
-    // delete scriptEditorHelpDialog;
 }
 
 void ScriptEditorDialog::showDialog()
@@ -643,8 +640,8 @@ void ScriptEditorDialog::doCreateFromModel()
 
 void ScriptEditorDialog::doHelp()
 {
-    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/script.html");
-    // scriptEditorHelpDialog->showDialog();
+    Util::helpDialog()->setSource(QUrl("qthelp://agros2d/help/script/script.html"));
+    Util::helpDialog()->show();
 }
 
 void eval(const QString &text)

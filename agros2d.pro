@@ -3,7 +3,10 @@
 # -------------------------------------------------
 QT += opengl \
     xml \
-    script
+    script \
+    webkit \
+    network
+CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
 CODECFORTR = UTF-8
@@ -44,7 +47,8 @@ SOURCES += src/scene.cpp \
     src/volumeintegralview.cpp \
     src/surfaceintegralview.cpp \
     src/dxflib/dl_writer_ascii.cpp \
-    src/dxflib/dl_dxf.cpp
+    src/dxflib/dl_dxf.cpp \
+    src/helpdialog.cpp
 HEADERS += src/scene.h \
     src/util.h \
     src/mainwindow.h \
@@ -71,7 +75,8 @@ HEADERS += src/scene.h \
     src/scenesolution.h \
     src/localvalueview.h \
     src/volumeintegralview.h \
-    src/surfaceintegralview.h
+    src/surfaceintegralview.h \
+    src/helpdialog.h
 INCLUDEPATH += src \
     src/dxflib
 unix:INCLUDEPATH += /usr/include
@@ -88,5 +93,3 @@ LIBS += -lhermes2d-real \
     -lpthread
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt
-FORMS += 
-OTHER_FILES += TODO.txt

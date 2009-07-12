@@ -14,6 +14,7 @@
 #include <QScriptEngine>
 #include <QtGui/QIcon>
 #include <QtGui/QMessageBox>
+#include <QtHelp/QHelpEngine>
 
 #include <typeinfo>
 #include <iostream>
@@ -26,6 +27,8 @@ const double EPS_ZERO = 1e-12;
 const double EPS0 = 8.854e-12;
 const double MU0 = 4*M_PI*1e-7;
 const int NDOF_STOP = 40000;
+
+using namespace std;
 
 struct Value
 {

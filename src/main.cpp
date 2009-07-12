@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     a.setWindowIcon(icon("agros2d"));
-    a.setApplicationVersion("0.8.0 (2009-06-27)");
+    a.setApplicationVersion("0.9.0 (2009-07-11)");
     a.setOrganizationName("Agros");
     a.setOrganizationDomain("hpfem.org");
     a.setApplicationName("Agros 2D");

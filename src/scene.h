@@ -15,14 +15,15 @@
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
 
-#include "locale.h"
 #include "util.h"
+#include "locale.h"
 #include "scenemarker.h"
 #include "scenebasic.h"
 #include "projectdialog.h"
 #include "scenetransformdialog.h"
 
 #include "solverdialog.h"
+#include "helpdialog.h"
 #include "scenesolution.h"
 #include "hermes2d/hermes_electrostatic.h"
 #include "hermes2d/hermes_magnetostatic.h"
@@ -195,6 +196,8 @@ private slots:
     void doSolved();
 };
 
+// **************************************************************************************
+
 class Util
 {
 public:
@@ -202,6 +205,12 @@ public:
     {
         static Scene m_scene;
         return &m_scene;
+    }
+
+    static HelpDialog *helpDialog()
+    {
+        static HelpDialog helpDialog;
+        return &helpDialog;
     }
 };
 

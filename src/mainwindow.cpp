@@ -511,7 +511,8 @@ void MainWindow::doPaste()
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.h2d");
-    Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.h2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.h2d");
+    Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_heating.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.h2d");
     // Util::scene()->readFromFile("data/current_feeder.h2d");
     // Util::scene()->readFromFile("data/elasticity_planar.h2d");
@@ -534,7 +535,7 @@ void MainWindow::doInvalidated()
 
 void MainWindow::doHelp()
 {
-    QDesktopServices::openUrl("file:///" + appdir() + "/doc/html/index.html");
+    Util::helpDialog()->show();
 }
 
 void MainWindow::doAbout()

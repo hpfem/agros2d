@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitysteps="20" polynomialorder="1" problemtype="planar" type="harmonic magnetic" id="0" name="3 phase cable" >
+        <project adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="3 phase cable" >
             <scriptstartup>J0 = 1e6;
 J01r = J0;
 J01i = 0.0;
@@ -77,9 +77,9 @@ gamma = 57e6;</scriptstartup>
         <labels>
             <label x="0.0162468" y="0.0243702" marker="1" id="0" area="0" />
             <label x="0.00559029" y="0.00375598" marker="1" id="1" area="0" />
-            <label x="0" y="0.00497885" marker="2" id="2" area="0" />
-            <label x="0.00384333" y="-0.0023584" marker="3" id="3" area="0" />
-            <label x="-0.00419272" y="-0.00288249" marker="4" id="4" area="0" />
+            <label x="0" y="0.00497885" marker="2" id="2" area="1e-07" />
+            <label x="0.00384333" y="-0.0023584" marker="3" id="3" area="1e-07" />
+            <label x="-0.00419272" y="-0.00288249" marker="4" id="4" area="1e-07" />
             <label x="0.00758341" y="0.0059684" marker="1" id="5" area="0" />
         </labels>
     </geometry>
