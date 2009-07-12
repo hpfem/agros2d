@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QHelpCollectionProject version="1.0">
+    <assistant>
+        <title>Agros 2d</title>
+        <applicationIcon>images/agros2d_logo.png</applicationIcon>
+        <cacheDirectory>Agros2d</cacheDirectory>
+        <startPage>qthelp://agros2d/main/index.html</startPage>
+        <aboutMenuText>
+            <text>About Agros2d</text>
+        </aboutMenuText>
+        <aboutDialog>
+            <file>agros2d.txt</file>
+            <icon>images/agros2d_logo.png</icon>
+        </aboutDialog>
+        <enableDocumentationManager>false</enableDocumentationManager>
+        <enableAddressBar>false</enableAddressBar>
+        <enableFilterFunctionality>false</enableFilterFunctionality>
+    </assistant>
+    <docFiles>
+        <generate>
+            <file>
+                <input>agros2d.qhp</input>
+                <output>agros2d.qch</output>
+            </file>
+        </generate>
+        <register>
+            <file>agros2d.qch</file>
+        </register>
+    </docFiles>
+</QHelpCollectionProject>

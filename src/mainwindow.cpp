@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     Util::scene()->clear();
     sceneView->doDefaults();
 
+    helpDialog = new HelpDialog(this);
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new ScriptEditorDialog(sceneView, this);
 
