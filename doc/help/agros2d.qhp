@@ -17,6 +17,7 @@
         </toc>
         <keywords>
             <keyword name="Script" ref="script/script.html"/>
+            <keyword name="Script" ref="examples/electrostatic_capacitor_axisymmetric.html"/>
         </keywords>
         <files>
             <file>examples/examples.html</file>

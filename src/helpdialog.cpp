@@ -14,6 +14,7 @@
 #include <QtGui/QDesktopServices>
 #include <QtGui/QLineEdit>
 #include <QtGui/QLabel>
+#include <QtGui/QDialogButtonBox>
 
 #include <QtHelp/QHelpEngine>
 #include <QHelpContentWidget>
@@ -27,6 +28,8 @@ HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("help-browser"));
     setWindowTitle(tr("Help dialog"));
+
+    topicChooser = new TopicChooser(this);
 
     createControls();
 
@@ -90,6 +93,8 @@ void HelpDialog::createControls()
 
     connect(helpEngine->contentWidget(), SIGNAL(linkActivated(const QUrl &)), centralWidget, SLOT(setSource(const QUrl &)));
     connect(helpEngine->indexWidget(), SIGNAL(linkActivated(const QUrl &, const QString &)), centralWidget, SLOT(setSource(const QUrl &)));
+    connect(helpEngine->indexWidget(), SIGNAL(linksActivated(const QMap<QString, QUrl> &, const QString &)), topicChooser, SLOT(doLinksActivated(QMap<QString, QUrl>, QString)));
+    connect(topicChooser, SIGNAL(linkActivated(const QUrl &)), centralWidget, SLOT(setSource(const QUrl &)));
 }
 
 void HelpDialog::showPage(const QString &str)
@@ -1028,4 +1033,71 @@ QString CentralWidget::quoteTabTitle(const QString &title) const
 {
     QString s = title;
     return s.replace(QLatin1Char('&'), QLatin1String("&&"));
+}
+
+// *******************************************************************************************
+
+TopicChooser::TopicChooser(QWidget *parent) : QDialog(parent)
+{
+    setWindowIcon(icon("help-browser"));
+    setWindowTitle(tr("Topic browser"));
+
+    createControls();
+
+    resize(350, 200);
+    setMinimumSize(size());
+    setMaximumSize(size());
+}
+
+TopicChooser::~TopicChooser()
+{
+    delete lstView;
+}
+
+void TopicChooser::createControls()
+{
+    QVBoxLayout *layout = new QVBoxLayout();
+
+    QLabel *lblLabel = new QLabel(tr("Display"));
+
+    lstView = new QListWidget(this);
+    connect(lstView, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(doAccept()));
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+
+    layout->addWidget(lblLabel);
+    layout->addWidget(lstView);
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+}
+
+void TopicChooser::doLinksActivated(const QMap<QString, QUrl> &links, const QString &keyword)
+{
+    m_links = links;
+
+    lstView->clear();
+
+    QMapIterator<QString, QUrl> i(m_links);
+    while (i.hasNext())
+    {
+        i.next();
+        lstView->addItem(i.key());
+    }
+
+    exec();
+}
+
+void TopicChooser::doAccept()
+{
+    emit linkActivated(m_links[lstView->currentItem()->text()]);
+    accept();
+}
+
+void TopicChooser::doReject()
+{
+    reject();
 }

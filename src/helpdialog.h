@@ -7,10 +7,12 @@
 #include <QtGui/QSplitter>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QTabWidget>
+#include <QtGui/QListWidget>
 #include <QAction>
 #include <QWebView>
 
 class CentralWidget;
+class TopicChooser;
 
 class HelpDialog : public QDialog
 {
@@ -29,6 +31,7 @@ private:
     QHelpEngine *helpEngine;
     QSplitter *splitter;
     CentralWidget *centralWidget;
+    TopicChooser *topicChooser;
 };
 
 // ***********************************************************************************************************
@@ -171,6 +174,34 @@ private:
     QTabWidget *tabWidget;
     QHelpEngine *helpEngine;
     QPrinter *printer;
+};
+
+// ************************************************************************************************
+
+class TopicChooser : public QDialog
+{
+    Q_OBJECT
+
+public:
+    TopicChooser(QWidget *parent = 0);
+    ~TopicChooser();
+
+signals:
+    void linkActivated(const QUrl &link);
+
+public slots:
+    void doLinksActivated(const QMap<QString, QUrl> &links, const QString &keyword);
+
+protected:
+    void createControls();
+
+private slots:
+    void doAccept();
+    void doReject();
+
+private:
+    QListWidget *lstView;
+    QMap<QString, QUrl> m_links;
 };
 
 #endif // HELPDIALOG_H
