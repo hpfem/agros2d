@@ -12,9 +12,12 @@
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
 #include <QtGui/QDesktopServices>
+#include <QtGui/QLineEdit>
+#include <QtGui/QLabel>
 
 #include <QtHelp/QHelpEngine>
 #include <QHelpContentWidget>
+#include <QHelpIndexWidget>
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -27,7 +30,7 @@ HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
-    resize(600, 400);
+    resize(800, 600);
 
     QSettings settings;
     restoreGeometry(settings.value("HelpDialog/Geometry", saveGeometry()).toByteArray());
@@ -42,33 +45,56 @@ HelpDialog::~HelpDialog()
     settings.setValue("HelpDialog/SplitterGeometry", splitter->saveGeometry());
     settings.setValue("HelpDialog/SplitterState", splitter->saveState());
 
-    delete centralWidget;
-    delete splitter;
+    // delete helpEngine;
+    // delete centralWidget;
+    // delete splitter;
 }
 
 void HelpDialog::createControls()
 {
-    QHelpEngine *helpEngine = new QHelpEngine(appdir() + "/doc/help/agros2d.qhc", this);
+    helpEngine = new QHelpEngine(appdir() + "/doc/help/agros2d.qhc", this);
     helpEngine->setupData();
 
     splitter = new QSplitter(Qt::Horizontal);
     centralWidget = new CentralWidget(helpEngine, this);
 
-    splitter->insertWidget(0, helpEngine->contentWidget());
+    // index
+    QLineEdit *txtIndexFilter = new QLineEdit("", this);
+
+    QHBoxLayout *layoutFilter = new QHBoxLayout();
+    layoutFilter->addWidget(new QLabel(tr("Filter:")));
+    layoutFilter->addWidget(txtIndexFilter);
+
+    QVBoxLayout *layoutIndex = new QVBoxLayout();
+    layoutIndex->addLayout(layoutFilter);
+    layoutIndex->addWidget(helpEngine->indexWidget());
+
+    QWidget *widIndex = new QWidget();
+    widIndex->setLayout(layoutIndex);
+
+    connect(txtIndexFilter, SIGNAL(textChanged(QString)), helpEngine->indexWidget(), SLOT(filterIndices(QString)));
+
+    // tab
+    QTabWidget *tabLeft = new QTabWidget(this);
+    tabLeft->setMinimumWidth(250);
+    tabLeft->addTab(helpEngine->contentWidget(), icon(""), tr("Content"));
+    tabLeft->addTab(widIndex, icon(""), tr("Index"));
+
+    splitter->insertWidget(0, tabLeft);
     splitter->insertWidget(1, centralWidget);
-    splitter->setStretchFactor(1, 1);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(splitter);
 
-    setSource(QUrl("qthelp://agros2d/help/main/index.html"));
+    showPage("main/index.html");
 
     connect(helpEngine->contentWidget(), SIGNAL(linkActivated(const QUrl &)), centralWidget, SLOT(setSource(const QUrl &)));
+    connect(helpEngine->indexWidget(), SIGNAL(linkActivated(const QUrl &, const QString &)), centralWidget, SLOT(setSource(const QUrl &)));
 }
 
-void HelpDialog::setSource(const QUrl &url)
+void HelpDialog::showPage(const QString &str)
 {
-    centralWidget->setSource(url);
+    centralWidget->setSource(QUrl("qthelp://agros2d/help/" + str));
 }
 
 // ***********************************************************************************************************

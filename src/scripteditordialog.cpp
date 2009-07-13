@@ -640,7 +640,7 @@ void ScriptEditorDialog::doCreateFromModel()
 
 void ScriptEditorDialog::doHelp()
 {
-    Util::helpDialog()->setSource(QUrl("qthelp://agros2d/help/script/script.html"));
+    Util::helpDialog()->showPage("script/script.html");
     Util::helpDialog()->show();
 }
 

@@ -11,3 +11,9 @@ configure-stamp
 *.log
 *.debhelper
 agros2d.substvars
+agros2d
+agros2d.pro.user
+debian/files
+doc/latex
+setup
+install

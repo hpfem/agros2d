@@ -209,7 +209,7 @@ public:
 
     static HelpDialog *helpDialog()
     {
-        static HelpDialog helpDialog;
+        static HelpDialog helpDialog(QApplication::activeWindow());
         return &helpDialog;
     }
 };

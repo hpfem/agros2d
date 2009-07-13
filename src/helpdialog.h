@@ -20,12 +20,13 @@ public:
     HelpDialog(QWidget *parent = 0);
     ~HelpDialog();
 
-    void setSource(const QUrl &url);
+    void showPage(const QString &str);
 
 protected:
     void createControls();
 
 private:
+    QHelpEngine *helpEngine;
     QSplitter *splitter;
     CentralWidget *centralWidget;
 };

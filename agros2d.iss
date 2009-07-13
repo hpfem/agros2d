@@ -1,8 +1,8 @@
 [Setup]
 
 AppName=Agros 2D
-AppVerName=Agros 2D 0.8
-OutputBaseFilename=Agros2D_0.8.0
+AppVerName=Agros 2D 0.9
+OutputBaseFilename=Agros2D_0.9.0
 DefaultGroupName=Agros 2D
 LicenseFile=COPYING
 
@@ -29,8 +29,8 @@ Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
 Source: data\*.h2d; DestDir: {app}/data
 Source: lang\*.qm; DestDir: {app}/lang
-Source: doc\html\*; DestDir: {app}/doc/html
-Source: doc\html\style\*; DestDir: {app}/doc/html/style
+Source: doc\help\agros2d.qhc; DestDir: {app}/doc/help
+Source: doc\help\agros2d.qch; DestDir: {app}/doc/help
 Source: install\win32\*.dll; DestDir: {app}
 
 [Icons]
