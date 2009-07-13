@@ -353,13 +353,6 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-/*
-            FL_real.x = - (current_density_total_real*B_real.x - current_density_total_imag*B_imag.x);
-            FL_real.y =   (current_density_total_real*B_real.y - current_density_total_imag*B_imag.y);
-            FL_imag.x = - (current_density_total_imag*B_real.x + current_density_total_real*B_imag.x);
-            FL_imag.y =   (current_density_total_imag*B_real.y - current_density_total_real*B_imag.y);
-*/
-
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE:
                     {
                         if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1139,12 +1132,12 @@ void ViewScalarFilter::precalculate(int order, int mask)
                         break;
                     case PHYSICFIELDVARIABLECOMP_Y:
                         {
-                            node->values[0][0][i] = dudx[i] + valueu[i] / x[i];
+                            node->values[0][0][i] = dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0);
                         }
                         break;
                     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
                         {
-                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dudx[i] + valueu[i] / x[i]));
+                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)));
                         }
                         break;
                     }
@@ -1186,12 +1179,12 @@ void ViewScalarFilter::precalculate(int order, int mask)
                         break;
                     case PHYSICFIELDVARIABLECOMP_Y:
                         {
-                            node->values[0][0][i] = (dudx[i] + valueu[i] / x[i]) / (marker->permeability.number * MU0);
+                            node->values[0][0][i] = (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
                         }
                         break;
                     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
                         {
-                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dudx[i] + valueu[i] / x[i])) / (marker->permeability.number * MU0);
+                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
                         }
                         break;
                     }
@@ -1207,7 +1200,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
                 else
                 {
-                    node->values[0][0][i] = 0.5 * sqr(sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x > 0) ? valueu[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0);
+                    node->values[0][0][i] = 0.5 * sqr(sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0);
                 }
             }
             break;
@@ -1262,7 +1255,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 else
                 {
 
-                    node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + valueu[i] / x[i]) + sqr(dvdx[i] + valuev[i] / x[i]));                }
+                    node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)) + sqr(dvdx[i] + ((x > 0) ? valuev[i] / x[i] : 0.0)));                }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
@@ -1299,12 +1292,12 @@ void ViewScalarFilter::precalculate(int order, int mask)
                         break;
                     case PHYSICFIELDVARIABLECOMP_Y:
                         {
-                            node->values[0][0][i] = - dudx[i] - valueu[i] / x[i];
+                            node->values[0][0][i] = - dudx[i] - ((x[i] > 0) ? valueu[i] / x[i] : 0.0);
                         }
                         break;
                     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
                         {
-                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dudx[i] + valueu[i] / x[i]));
+                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)));
                         }
                         break;
                     }
@@ -1345,12 +1338,12 @@ void ViewScalarFilter::precalculate(int order, int mask)
                         break;
                     case PHYSICFIELDVARIABLECOMP_Y:
                         {
-                            node->values[0][0][i] = - dvdx[i] - valuev[i] / x[i];
+                            node->values[0][0][i] = - dvdx[i] - ((x > 0) ? valuev[i] / x[i] : 0.0);
                         }
                         break;
                     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
                         {
-                            node->values[0][0][i] = sqrt(sqr(dvdy[i]) + sqr(dvdx[i] + valuev[i] / x[i]));
+                            node->values[0][0][i] = sqrt(sqr(dvdy[i]) + sqr(dvdx[i] + ((x > 0) ? valuev[i] / x[i] : 0.0)));
                         }
                         break;
                     }
@@ -1392,12 +1385,12 @@ void ViewScalarFilter::precalculate(int order, int mask)
                         break;
                     case PHYSICFIELDVARIABLECOMP_Y:
                         {
-                            node->values[0][0][i] = sqrt(sqr(dudx[i] + valueu[i] / x[i]) + sqr(dvdx[i] + valuev[i] / x[i])) / (marker->permeability.number * MU0);
+                            node->values[0][0][i] = sqrt(sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)) + sqr(dvdx[i] + ((x > 0) ? valuev[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
                         }
                         break;
                     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
                         {
-                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + valueu[i] / x[i]) + sqr(dvdx[i] + valuev[i] / x[i])) / (marker->permeability.number * MU0);
+                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)) + sqr(dvdx[i] + ((x > 0) ? valuev[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
                         }
                         break;
                     }
@@ -1439,12 +1432,12 @@ void ViewScalarFilter::precalculate(int order, int mask)
                         break;
                     case PHYSICFIELDVARIABLECOMP_Y:
                         {
-                            node->values[0][0][i] = - (dudx[i] - valueu[i] / x[i]) / (marker->permeability.number * MU0);
+                            node->values[0][0][i] = - (dudx[i] - ((x[i] > 0) ? valueu[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
                         }
                         break;
                     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
                         {
-                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dudx[i] + valueu[i] / x[i])) / (marker->permeability.number * MU0);
+                            node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
                         }
                         break;
                     }
@@ -1486,12 +1479,12 @@ void ViewScalarFilter::precalculate(int order, int mask)
                         break;
                     case PHYSICFIELDVARIABLECOMP_Y:
                         {
-                            node->values[0][0][i] = - (dvdx[i] - valuev[i] / x[i]) / (marker->permeability.number * MU0);
+                            node->values[0][0][i] = - (dvdx[i] - ((x > 0) ? valuev[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
                         }
                         break;
                     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
                         {
-                            node->values[0][0][i] = sqrt(sqr(dvdy[i]) + sqr(dvdx[i] + valuev[i] / x[i])) / (marker->permeability.number * MU0);
+                            node->values[0][0][i] = sqrt(sqr(dvdy[i]) + sqr(dvdx[i] + ((x > 0) ? valuev[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
                         }
                         break;
                     }
@@ -1511,8 +1504,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 {
                     node->values[0][0][i] = sqrt(
                             sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]) +
-                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i])) *
-                            x[i];
+                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]));
                 }
             }
             break;
@@ -1525,7 +1517,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
                 else
                 {
-                    node->values[0][0][i] = marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i] * x[i];
+                    node->values[0][0][i] = marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i];
                 }
             }
             break;
@@ -1538,7 +1530,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
                 else
                 {
-                    node->values[0][0][i] = marker->current_density_imag.number - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i] * x[i];
+                    node->values[0][0][i] = marker->current_density_imag.number - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i];
                 }
             }
             break;
@@ -1555,8 +1547,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 {
                     node->values[0][0][i] = sqrt(
                             sqr(2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]) +
-                            sqr(2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i])) *
-                            x[i];
+                            sqr(2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]));
                 }
             }
             break;
@@ -1565,11 +1556,11 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
                 {
-                    node->values[0][0][i] =   2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i];
+                    node->values[0][0][i] = 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i];
                 }
                 else
                 {
-                    node->values[0][0][i] = - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i] * x[i];
+                    node->values[0][0][i] = 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i];
                 }
             }
             break;
@@ -1582,7 +1573,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
                 else
                 {
-                    node->values[0][0][i] = - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i] * x[i];
+                    node->values[0][0][i] = - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i];
                 }
             }
             break;
@@ -1603,8 +1594,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                     node->values[0][0][i] = (marker->conductivity.number > 0.0) ?
                                             0.5 / marker->conductivity.number * (
                                                     sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]) +
-                                                    sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i])) *
-                                            x[i]
+                                                    sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]))
                                             :
                                             0.0;
                 }
@@ -1619,7 +1609,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
                 else
                 {
-                    node->values[0][0][i] = 0.25 * (sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + valueu[i] / x[i]) + sqr(dvdx[i] + valuev[i] / x[i])) / (marker->permeability.number * MU0);
+                    node->values[0][0][i] = 0.25 * (sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)) + sqr(dvdx[i] + ((x > 0) ? valuev[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
                 }
             }
             break;
