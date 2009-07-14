@@ -829,8 +829,7 @@ void SceneView::paintContours()
     double step = (rangeMax-rangeMin)/m_sceneViewSettings.contoursCount;
     
     // draw contours
-    // glColor3f(0.0, 0.0, 0.0);
-    glColor3f(m_sceneViewSettings.colorContours.red(), m_sceneViewSettings.colorContours.green(), m_sceneViewSettings.colorContours.blue());
+    glColor3f(m_sceneViewSettings.colorContours.redF(), m_sceneViewSettings.colorContours.greenF(), m_sceneViewSettings.colorContours.blueF());
     glBegin(GL_LINES);
     for (int i = 0; i < Util::scene()->sceneSolution()->linContourView().get_num_triangles(); i++)
     {

@@ -28,6 +28,7 @@ HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("help-browser"));
     setWindowTitle(tr("Help dialog"));
+    setWindowFlags(Qt::Window);
 
     topicChooser = new TopicChooser(this);
 

@@ -17,7 +17,14 @@ OptionsDialog::OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *pare
 
 OptionsDialog::~OptionsDialog()
 {
-    delete txtGridStep;
+    // main
+    delete cmbGUIStyle;
+    delete cmbLanguage;
+
+    delete lstView;
+    delete panMain;
+    delete panColors;
+    delete pages;
 }
 
 void OptionsDialog::load()
@@ -41,7 +48,8 @@ void OptionsDialog::load()
         }
     }
 
-    m_sceneViewSettings->save();
+    // colors
+    colorContours->setColor(m_sceneViewSettings->colorContours);
 }
 
 void OptionsDialog::save()
@@ -55,7 +63,10 @@ void OptionsDialog::save()
     settings.setValue("General/Language", cmbLanguage->currentText());
     setLanguage(cmbLanguage->currentText());
 
-    // m_sceneView->sceneViewSettings().gridStep = txtGridStep->text().toDouble();
+    // color
+    m_sceneViewSettings->colorContours = colorContours->color();
+
+    m_sceneViewSettings->save();
 }
 
 void OptionsDialog::createControls()
@@ -64,7 +75,7 @@ void OptionsDialog::createControls()
     pages = new QStackedWidget(this);
 
     panMain = createMainWidget();
-    panColors = new QWidget(this);
+    panColors = createColorsWidget();
 
     // List View
     lstView->setCurrentRow(0);
@@ -77,14 +88,14 @@ void OptionsDialog::createControls()
     connect(lstView, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
                this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
 
-    // ListView items
+    // listView items
     QListWidgetItem *itemMain = new QListWidgetItem(icon("options-main"), tr("Main"), lstView);
     itemMain->setTextAlignment(Qt::AlignHCenter);
     itemMain->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *itemColors = new QListWidgetItem(icon("options-colors"), tr("Colors"), lstView);
     itemColors->setTextAlignment(Qt::AlignHCenter);
-    itemColors->setFlags(Qt::ItemIsSelectable & Qt::ItemIsEnabled);
+    itemColors->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     pages->addWidget(panMain);
     pages->addWidget(panColors);
@@ -92,17 +103,6 @@ void OptionsDialog::createControls()
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
     layoutHorizontal->addWidget(lstView);
     layoutHorizontal->addWidget(pages);
-
-    // layout grid
-    txtGridStep = new QLineEdit("0.1");
-    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
-
-    QGridLayout *layoutGrid = new QGridLayout();
-    layoutGrid->addWidget(new QLabel(tr("Step:")), 0, 0);
-    layoutGrid->addWidget(txtGridStep, 0, 1);
-
-    QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
-    grpGrid->setLayout(layoutGrid);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -142,6 +142,26 @@ QWidget *OptionsDialog::createMainWidget()
     return mainWidget;
 }
 
+QWidget *OptionsDialog::createColorsWidget()
+{
+    QWidget *colorsWidget = new QWidget(this);
+
+    // colors
+    colorContours = new ColorButton(this);
+
+    QGridLayout *layoutColors = new QGridLayout();
+    layoutColors->addWidget(new QLabel(tr("Contours")), 0, 0);
+    layoutColors->addWidget(colorContours, 0, 1);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutColors);
+    layout->addStretch();
+
+    colorsWidget->setLayout(layout);
+
+    return colorsWidget;
+}
+
 void OptionsDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     pages->setCurrentIndex(lstView->row(current));
@@ -157,4 +177,42 @@ void OptionsDialog::doAccept()
 void OptionsDialog::doReject()
 {
     reject();
+}
+
+// *******************************************************************************************************
+
+ColorButton::ColorButton(QWidget *parent) : QPushButton(parent)
+{
+    setAutoFillBackground(false);
+    connect(this, SIGNAL(clicked()), this, SLOT(doClicked()));
+}
+
+ColorButton::~ColorButton()
+{
+}
+
+void ColorButton::setColor(const QColor &color)
+{
+    m_color = color;
+    repaint();
+}
+
+void ColorButton::paintEvent(QPaintEvent *event)
+{
+    QPushButton::paintEvent(event);
+
+    QPainter painter(this);
+    painter.setPen(m_color);
+    painter.setBrush(m_color);
+    painter.drawRect(rect());
+}
+
+void ColorButton::doClicked()
+{
+    QColor color = QColorDialog::getColor();
+
+    if (color.isValid())
+    {
+        setColor(color);
+    }
 }
