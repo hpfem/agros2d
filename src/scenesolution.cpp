@@ -311,19 +311,19 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
-                                            0.5 / marker->conductivity.number * (
-                                                    sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]))
-                                            :
-                                            0.0);
+                                                    0.5 / marker->conductivity.number * (
+                                                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]))
+                                                    :
+                                                    0.0);
                         }
                         else
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
-                                            0.5 / marker->conductivity.number * (
-                                                    sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i])) *
-                                            x[i]
-                                            :
-                                            0.0);
+                                                    0.5 / marker->conductivity.number * (
+                                                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i])) *
+                                                    x[i]
+                                                    :
+                                                    0.0);
                         }
                     }
                     break;
@@ -572,19 +572,19 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
-                                            0.5 / marker->conductivity.number * (
-                                                    sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]))
-                                            :
-                                            0.0);
+                                                    0.5 / marker->conductivity.number * (
+                                                            sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]))
+                                                    :
+                                                    0.0);
                         }
                         else
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
-                                            0.5 / marker->conductivity.number * (
-                                                    sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i])) *
-                                            x[i]
-                                            :
-                                            0.0);
+                                                    0.5 / marker->conductivity.number * (
+                                                            sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i])) *
+                                                    x[i]
+                                                    :
+                                                    0.0);
                         }
                     }
                     break;
@@ -1254,8 +1254,8 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
                 else
                 {
-
-                    node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)) + sqr(dvdx[i] + ((x > 0) ? valuev[i] / x[i] : 0.0)));                }
+                    node->values[0][0][i] = sqrt(sqr(dudy[i]) + sqr(dvdy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)) + sqr(dvdx[i] + ((x > 0) ? valuev[i] / x[i] : 0.0)));
+                }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:

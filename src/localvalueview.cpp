@@ -730,37 +730,113 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
             return potential_imag;
         }
         break;
-    /*
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY:
+        {
+           return sqrt(sqr(B_real.x) + sqr(B_imag.x) + sqr(B_real.y) + sqr(B_imag.y));
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
         {
             switch (physicFieldVariableComp)
             {
             case PHYSICFIELDVARIABLECOMP_X:
-                return B.x;
+                return B_real.x;
                 break;
             case PHYSICFIELDVARIABLECOMP_Y:
-                return B.y;
+                return B_real.y;
                 break;
             case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
-                return B.magnitude();
+                return B_real.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return B_imag.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return B_imag.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return B_imag.magnitude();
                 break;
             }
         }
         break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD:
         {
+           return sqrt(sqr(H_real.x) + sqr(H_imag.x) + sqr(H_real.y) + sqr(H_imag.y));
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL:
+        {
             switch (physicFieldVariableComp)
             {
             case PHYSICFIELDVARIABLECOMP_X:
-                return H.x;
+                return H_real.x;
                 break;
             case PHYSICFIELDVARIABLECOMP_Y:
-                return H.y;
+                return H_real.y;
                 break;
             case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
-                return H.magnitude();
+                return H_real.magnitude();
                 break;
             }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return H_imag.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return H_imag.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return H_imag.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL:
+        {
+            return sqrt(sqr(current_density_total_real) + sqr(current_density_total_imag));
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+        {
+            return current_density_total_real;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+        {
+            return current_density_total_imag;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED:
+        {
+            return sqrt(sqr(current_density_induced_real) + sqr(current_density_induced_imag));
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
+        {
+            return current_density_induced_real;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
+        {
+            return current_density_induced_imag;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES:
+        {
+            return pj;
         }
         break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY:
@@ -773,7 +849,6 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
             return permeability;
         }
         break;
-    */
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
         throw;
@@ -788,8 +863,7 @@ QStringList LocalPointValueHarmonicMagnetic::variables()
             QString("%1").arg(point.y, 0, 'e', 5) <<
             QString("%1").arg(potential_real, 0, 'e', 5) <<
             QString("%1").arg(potential_imag, 0, 'e', 5) <<
-            QString("%1").arg(sqrt(sqr(B_real.x) + sqr(B_imag.x)), 0, 'e', 5) <<
-            QString("%1").arg(sqrt(sqr(B_real.y) + sqr(B_imag.y)), 0, 'e', 5) <<
+            QString("%1").arg(sqr(potential_real) + sqr(potential_imag), 0, 'e', 5) <<
             QString("%1").arg(sqrt(sqr(B_real.x) + sqr(B_imag.x) + sqr(B_real.y) + sqr(B_imag.y)), 0, 'e', 5) <<
             QString("%1").arg(B_real.x, 0, 'e', 5) <<
             QString("%1").arg(B_real.y, 0, 'e', 5) <<
@@ -797,8 +871,6 @@ QStringList LocalPointValueHarmonicMagnetic::variables()
             QString("%1").arg(B_imag.x, 0, 'e', 5) <<
             QString("%1").arg(B_imag.y, 0, 'e', 5) <<
             QString("%1").arg(B_imag.magnitude(), 0, 'e', 5) <<
-            QString("%1").arg(sqrt(sqr(H_real.x) + sqr(H_imag.x)), 0, 'e', 5) <<
-            QString("%1").arg(sqrt(sqr(H_real.y) + sqr(H_imag.y)), 0, 'e', 5) <<
             QString("%1").arg(sqrt(sqr(H_real.x) + sqr(H_imag.x) + sqr(H_real.y) + sqr(H_imag.y)), 0, 'e', 5) <<
             QString("%1").arg(H_real.x, 0, 'e', 5) <<
             QString("%1").arg(H_real.y, 0, 'e', 5) <<
@@ -1131,6 +1203,14 @@ QStringList localPointValueHeaderFactory(PhysicField physicField)
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         headers << "X" << "Y" << "Potential" << "Bx" << "By" << "B" << "Hx" << "Hy" << "H" << "Energy" << "Permeability";
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        headers << "X" << "Y" << "Potential_real" << "Potential_imag" << "Potential"
+                << "B" << "Bx_real" << "By_real" << "B_real" << "Bx_imag" << "By_imag" << "B_imag"
+                << "H" << "Hx_real" << "Hy_real" << "H_real" << "Hx_imag" << "Hy_imag" << "H_imag"
+                << "Ji_real" << "Ji_imag" << "Ji_real"
+                << "J_real" << "J_imag" << "J_real"
+                << "Losses" << "Energy" << "Permeability";
         break;
     case PHYSICFIELD_CURRENT:
         headers << "X" << "Y" << "Potential" << "Jx" << "Jy" << "J" << "Ex" << "Ey" << "E" << "Losses" << "Conductivity";

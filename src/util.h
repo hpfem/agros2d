@@ -431,7 +431,7 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("J/m3");
         break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
-        return QObject::tr("F/m");
+        return QObject::tr("-");
         break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL:
         return QObject::tr("Wb/m");
@@ -446,10 +446,61 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("J/m3");
         break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY:
-        return QObject::tr("H/m");
+        return QObject::tr("-");
         break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
         return QObject::tr("Wb/m");
+        break;
+case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
+        return QObject::tr("Wb/m");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG:
+        return QObject::tr("Wb/m");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY:
+        return QObject::tr("T");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
+        return QObject::tr("T");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG:
+        return QObject::tr("T");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD:
+        return QObject::tr("A/m");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL:
+        return QObject::tr("A/m");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG:
+        return QObject::tr("A/m");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL:
+        return QObject::tr("A/m2");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+        return QObject::tr("A/m2");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+        return QObject::tr("A/m2");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED:
+        return QObject::tr("A/m2");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
+        return QObject::tr("A/m2");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
+        return QObject::tr("A/m2");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES:
+        return QObject::tr("W/m3");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY:
+        return QObject::tr("J/m3");
+        break;
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY:
+        return QObject::tr("-");
         break;
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
         return QObject::tr("V");

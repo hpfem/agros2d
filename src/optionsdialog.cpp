@@ -150,7 +150,7 @@ QWidget *OptionsDialog::createColorsWidget()
     colorContours = new ColorButton(this);
 
     QGridLayout *layoutColors = new QGridLayout();
-    layoutColors->addWidget(new QLabel(tr("Contours")), 0, 0);
+    layoutColors->addWidget(new QLabel(tr("Contours:")), 0, 0);
     layoutColors->addWidget(colorContours, 0, 1);
 
     QVBoxLayout *layout = new QVBoxLayout();

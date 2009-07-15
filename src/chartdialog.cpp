@@ -68,10 +68,10 @@ void ChartDialog::createControls()
     // btnPrint->setText(tr("Print"));
     // connect(btnPrint, SIGNAL(clicked()), SLOT(doPrint()));
     
-    txtStartX = new SLineEdit("0.01", false);
-    txtStartY = new SLineEdit("0.02", false);
-    txtEndX = new SLineEdit("0.05", false);
-    txtEndY = new SLineEdit("0.02", false);
+    txtStartX = new SLineEdit("0", false);
+    txtStartY = new SLineEdit("0", false);
+    txtEndX = new SLineEdit("0.0035", false);
+    txtEndY = new SLineEdit("0", false);
 
     connect(txtStartX, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
     connect(txtStartY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
@@ -267,7 +267,7 @@ void ChartDialog::doFieldVariable(int index)
     {
         cmbFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
         cmbFieldVariableComp->addItem(Util::scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
-        cmbFieldVariableComp->addItem(Util::scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_Y);
+        cmbFieldVariableComp->addItem(Util::scene()->projectInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
     }
     
     if (cmbFieldVariableComp->currentIndex() == -1)
