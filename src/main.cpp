@@ -20,6 +20,13 @@ int main(int argc, char *argv[])
 
     QSettings settings;
 
+    #ifdef Q_WS_X11
+        settings.setValue("General/GUIStyle", "GTK+");
+    #endif
+    #ifdef Q_WS_WIN
+        settings.setValue("General/GUIStyle", "WindowsXP");
+    #endif
+
     // setting gui style
     setGUIStyle(settings.value("General/GUIStyle").value<QString>());
 
