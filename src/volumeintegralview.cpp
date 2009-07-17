@@ -82,12 +82,30 @@ void VolumeIntegralValueView::showMagnetostatic(VolumeIntegralValueMagnetostatic
 
 void VolumeIntegralValueView::showHarmonicMagnetic(VolumeIntegralValueHarmonicMagnetic *volumeIntegralValueHarmonicMagnetic)
 {
-    // electrostatic
+    // harmonic magnetic
     QTreeWidgetItem *harmonicMagneticNode = new QTreeWidgetItem(trvWidget);
     harmonicMagneticNode->setText(0, tr("Harmonic magnetic field"));
     harmonicMagneticNode->setExpanded(true);
 
-    addValue(harmonicMagneticNode, tr("Power losses avg.:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->powerLosses, 0, 'e', 3), tr("T"));
+    // total current
+    QTreeWidgetItem *itemCurrentTotal = new QTreeWidgetItem(harmonicMagneticNode);
+    itemCurrentTotal->setText(0, tr("Total current"));
+    itemCurrentTotal->setExpanded(true);
+
+    addValue(itemCurrentTotal, tr("real:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->currentTotalReal, 0, 'e', 3), "A");
+    addValue(itemCurrentTotal, tr("imag:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->currentTotalImag, 0, 'e', 3), "A");
+    addValue(itemCurrentTotal, tr("magnitude:"), tr("%1").arg(sqrt(sqr(volumeIntegralValueHarmonicMagnetic->currentTotalReal) + sqr(volumeIntegralValueHarmonicMagnetic->currentTotalImag)), 0, 'e', 3), "A");
+
+    // induced current
+    QTreeWidgetItem *itemCurrentInduced = new QTreeWidgetItem(harmonicMagneticNode);
+    itemCurrentInduced->setText(0, tr("Induced current"));
+    itemCurrentInduced->setExpanded(true);
+
+    addValue(itemCurrentInduced, tr("real:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->currentInducedReal, 0, 'e', 3), "A");
+    addValue(itemCurrentInduced, tr("imag:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->currentInducedImag, 0, 'e', 3), "A");
+    addValue(itemCurrentInduced, tr("magnitude:"), tr("%1").arg(sqrt(sqr(volumeIntegralValueHarmonicMagnetic->currentInducedReal) + sqr(volumeIntegralValueHarmonicMagnetic->currentInducedImag)), 0, 'e', 3), "A");
+
+    addValue(harmonicMagneticNode, tr("Power losses avg.:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->powerLosses, 0, 'e', 3), tr("W"));
     addValue(harmonicMagneticNode, tr("Energy avg.:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->energy, 0, 'e', 3), tr("J"));
 }
 
@@ -245,12 +263,20 @@ VolumeIntegralValueHarmonicMagnetic::VolumeIntegralValueHarmonicMagnetic() : Vol
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
+        currentInducedReal = 0;
+        currentInducedImag = 0;
+        currentTotalReal = 0;
+        currentTotalImag = 0;
         powerLosses = 0;
         energy = 0;
         for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
             if (Util::scene()->labels[i]->isSelected)
             {
+                currentInducedReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL);
+                currentInducedImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG);
+                currentTotalReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL);
+                currentTotalImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG);
                 powerLosses += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_POWER_LOSSES);
                 energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_ENERGY_DENSITY);
             }

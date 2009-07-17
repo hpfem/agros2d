@@ -1,0 +1,78 @@
+[Format]      =  1
+[Precision]   =  1e-008
+[MinAngle]    =  30
+[Depth]       =  1
+[LengthUnits] =  meters
+[ProblemType] =  axisymmetric
+[Coordinates] =  cartesian
+[Comment]     =  "Add comments here."
+[PointProps]   = 0
+[BdryProps]   = 2
+  <BeginBdry>
+    <BdryName> = "U = 0"
+    <BdryType> = 0
+    <Vs> = 0
+    <qs> = 0
+    <c0> = 0
+    <c1> = 0
+  <EndBdry>
+  <BeginBdry>
+    <BdryName> = "U = 10 V"
+    <BdryType> = 0
+    <Vs> = 10
+    <qs> = 0
+    <c0> = 0
+    <c1> = 0
+  <EndBdry>
+[BlockProps]  = 3
+  <BeginBlock>
+    <BlockName> = "Air"
+    <ex> = 1
+    <ey> = 1
+    <qv> = 0
+  <EndBlock>
+  <BeginBlock>
+    <BlockName> = "Diel 1"
+    <ex> = 10
+    <ey> = 10
+    <qv> = 0
+  <EndBlock>
+  <BeginBlock>
+    <BlockName> = "Diel 2"
+    <ex> = 3
+    <ey> = 3
+    <qv> = 0
+  <EndBlock>
+[ConductorProps]  = 0
+[NumPoints] = 11
+0	0.20000000000000001	0	0	0
+0	0.080000000000000002	0	0	0
+0.01	0.080000000000000002	0	0	0
+0.01	0	0	0	0
+0.029999999999999999	0	0	0	0
+0.029999999999999999	0.080000000000000002	0	0	0
+0.050000000000000003	0.080000000000000002	0	0	0
+0.050000000000000003	0	0	0	0
+0.059999999999999998	0	0	0	0
+0.059999999999999998	0.080000000000000002	0	0	0
+0.20000000000000001	0	0	0	0
+[NumSegments] = 12
+0	1	-1	0	0	0	0
+2	3	-1	2	0	0	0
+3	4	-1	0	0	0	0
+4	5	-1	0	0	0	0
+5	6	-1	0	0	0	0
+7	4	-1	0	0	0	0
+6	7	-1	1	0	0	0
+8	9	-1	1	0	0	0
+6	9	-1	1	0	0	0
+8	10	-1	0	0	0	0
+2	5	-1	0	0	0	0
+2	1	-1	2	0	0	0
+[NumArcSegments] = 1
+10	0	90	5	0	0	0	0
+[NumHoles] = 0
+[NumBlockLabels] = 3
+0.021999999999999999	0.048000000000000001	2	0.001	0	0
+0.039	0.027	3	0.001	0	0
+0.13600000000000001	0.048000000000000001	1	0.0030000000000000001	0	0

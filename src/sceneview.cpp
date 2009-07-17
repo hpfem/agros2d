@@ -1875,6 +1875,8 @@ void SceneView::doSceneViewProperties()
     SceneViewDialog *sceneViewDialog = new SceneViewDialog(this, this);
     if (sceneViewDialog->showDialog() == QDialog::Accepted)
     {
+        doInvalidated();
+
         // set defaults
         if (postprocessorShow != m_sceneViewSettings.postprocessorShow)
         {
@@ -1891,8 +1893,6 @@ void SceneView::doSceneViewProperties()
                 doZoomBestFit();
             }
         }
-
-        doInvalidated();
     }
     delete sceneViewDialog;
 }
@@ -2021,16 +2021,17 @@ void SceneView::setRangeScalar()
             glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
             glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
             glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
-            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 1.0);
+            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 32.0);
             glDisable(GL_COLOR_MATERIAL);
 
             glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-#if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
+            #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
             glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-#endif
+            #endif
 
             // calculate normals
             Util::scene()->sceneSolution()->linScalarView().lock_data();
+
             int nv = Util::scene()->sceneSolution()->linScalarView().get_num_vertices();
             int nt = Util::scene()->sceneSolution()->linScalarView().get_num_triangles();
             double3* vert = Util::scene()->sceneSolution()->linScalarView().get_vertices();

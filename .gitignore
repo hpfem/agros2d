@@ -17,3 +17,4 @@ debian/files
 doc/latex
 setup
 install
+*.res

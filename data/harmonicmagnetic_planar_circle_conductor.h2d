@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="1" frequency="5000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
+        <project adaptivitytolerance="0.02" frequency="5000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />

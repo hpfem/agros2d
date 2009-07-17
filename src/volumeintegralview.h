@@ -84,6 +84,10 @@ public:
 class VolumeIntegralValueHarmonicMagnetic : public VolumeIntegralValue
 {
 public:
+    double currentInducedReal;
+    double currentInducedImag;
+    double currentTotalReal;
+    double currentTotalImag;
     double powerLosses;
     double energy;
 

@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="1" numberofrefinements="0" adaptivitysteps="0" polynomialorder="4" problemtype="planar" type="electrostatic" id="0" name="unnamed" >
+        <project adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="4" problemtype="planar" type="electrostatic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="potential" value="0" id="1" name="Ground" />

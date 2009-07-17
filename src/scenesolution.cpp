@@ -305,6 +305,32 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
+                    {
+                        SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
+                        if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(- 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]);
+                        }
+                        else
+                        {
+                            h1_integrate_expression(- 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]);
+                        }
+                    }
+                    break;
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+                    {
+                        SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
+                        if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(marker->current_density_imag.number - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]);
+                        }
+                        else
+                        {
+                            h1_integrate_expression(marker->current_density_imag.number - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]);
+                        }
+                    }
+                    break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_POWER_LOSSES:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
@@ -320,8 +346,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
                                                     0.5 / marker->conductivity.number * (
-                                                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i])) *
-                                                    x[i]
+                                                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]))
                                                     :
                                                     0.0);
                         }
@@ -566,6 +591,32 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 double result = 0;
                 switch (physicFieldIntegralVolume)
                 {
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
+                    {
+                        SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
+                        if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]);
+                        }
+                        else
+                        {
+                            h1_integrate_expression(2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]);
+                        }
+                    }
+                    break;
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+                    {
+                        SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
+                        if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]);
+                        }
+                        else
+                        {
+                            h1_integrate_expression(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]);
+                        }
+                    }
+                    break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_POWER_LOSSES:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
@@ -581,8 +632,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
                                                     0.5 / marker->conductivity.number * (
-                                                            sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i])) *
-                                                    x[i]
+                                                            sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]))
                                                     :
                                                     0.0);
                         }

@@ -197,7 +197,7 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
             solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %");
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(0.3, 0, 0, 0);
+            hp.adapt(0.3);
         }
     }
 

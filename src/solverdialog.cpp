@@ -4,6 +4,7 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 {
     setMinimumSize(350, 260);
     setMaximumSize(minimumSize());
+
     setWindowIcon(icon("logo"));
     setWindowTitle(tr("Solve problem ..."));   
 
@@ -16,8 +17,8 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 SolverDialog::~SolverDialog()
 {
     delete lblMessage;
-    delete progressBar;
     delete lstMessage;
+    delete progressBar;
 }
 
 void SolverDialog::solve()

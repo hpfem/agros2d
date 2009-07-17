@@ -173,13 +173,13 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     addValue(harmonicMagneticNode, tr("Permeability:"), tr("%1").arg(localPointValueHarmonicMagnetic->permeability, 0, 'f', 2), "");
 
     // Current Density
-    QTreeWidgetItem *itemChargeDensity = new QTreeWidgetItem(harmonicMagneticNode);
-    itemChargeDensity->setText(0, tr("Current density"));
-    itemChargeDensity->setExpanded(true);
+    QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(harmonicMagneticNode);
+    itemCurrentDensity->setText(0, tr("External current density"));
+    itemCurrentDensity->setExpanded(true);
 
-    addValue(itemChargeDensity, tr("real:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_real, 0, 'e', 3), "A/m2");
-    addValue(itemChargeDensity, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_imag, 0, 'e', 3), "A/m2");
-    addValue(itemChargeDensity, tr("magnitude:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_real) + sqr(localPointValueHarmonicMagnetic->current_density_imag)), 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, tr("real:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_real, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_imag, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, tr("magnitude:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_real) + sqr(localPointValueHarmonicMagnetic->current_density_imag)), 0, 'e', 3), "A/m2");
 
     // Average power losses
     addValue(harmonicMagneticNode, tr("Average power losses dens.:"), tr("%1").arg(localPointValueHarmonicMagnetic->pj, 0, 'e', 3), "W/m3");

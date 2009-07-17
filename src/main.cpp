@@ -20,12 +20,39 @@ int main(int argc, char *argv[])
 
     QSettings settings;
 
-    #ifdef Q_WS_X11
-        settings.setValue("General/GUIStyle", "GTK+");
-    #endif
-    #ifdef Q_WS_WIN
-        settings.setValue("General/GUIStyle", "WindowsXP");
-    #endif
+    // first run
+    if (settings.value("General/GUIStyle").value<QString>().isEmpty())
+    {
+        QString style = "";
+
+        QStringList styles = QStyleFactory::keys();
+
+        #ifdef Q_WS_X11
+        // kde 3
+        if (getenv("KDE_FULL_SESSION") != NULL)
+            style = "Plastique";
+        // kde 4
+        if (getenv("KDE_SESSION_VERSION") != NULL)
+        {
+            if (styles.contains("Oxygen"))
+                style = "Oxygen";
+            else
+                style = "Plastique";
+        }
+        // gtk+
+        if (style == "")
+            style = "GTK+";
+        #endif
+
+        #ifdef Q_WS_WIN
+            if (styles.contains("WindowsXP"))
+                style = "WindowsXP";
+            else
+                style = "Windows";
+        #endif
+
+        settings.setValue("General/GUIStyle", style);
+    }
 
     // setting gui style
     setGUIStyle(settings.value("General/GUIStyle").value<QString>());
