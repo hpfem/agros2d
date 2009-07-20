@@ -365,16 +365,16 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(marker->current_density_imag.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i] * dudx[i]);
+                            h1_integrate_expression((marker->current_density_imag.number - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]) * dudx[i]);
                         }
                         else
                         {
-                            h1_integrate_expression(2 * M_PI * x[i] * 0.25 * sqr(sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0));
+                            h1_integrate_expression((marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valueu[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)));
                         }
                     }
                     break;
@@ -651,6 +651,19 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_IMAG:
+                    {
+                        SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
+                        if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression((marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]) * dvdx[i]);
+                        }
+                        else
+                        {
+                            h1_integrate_expression((marker->current_density_real.number + 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * valuev[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0)));
+                        }
+                    }
+                    break;
                 }
 
                 integral += result;
@@ -670,12 +683,45 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
     Element* e;
     Mesh* mesh = m_sln1->get_mesh();
 
+    /*
+    // mark unpaired edges
+    int count = 0;
+    for_all_active_elements(e, mesh)
+    {
+        for (int edge = 0; edge < e->nvert; edge++)
+        {
+            if (e->marker == 1)
+            {
+                if (e->en[edge]->id > count) count = e->en[edge]->id;
+            }
+        }
+    }
+
+    int edges[count];
+    for (int i = 0; i < count; i++)
+        edges[i] = 0;
+    
+    for_all_active_elements(e, mesh)
+    {
+        for (int edge = 0; edge < e->nvert; edge++)
+        {
+            if (e->marker == 1)
+            {
+                edges[e->en[edge]->id]++;
+            }
+        }
+    }
+    */
+
     for_all_active_elements(e, mesh)
     {
         for (int edge = 0; edge < e->nvert; edge++)
         {
             if (e->en[edge]->bnd && e->en[edge]->marker-1 == edgeIndex)
+            // if (e->marker == 1)
             {
+                // if (edges[e->en[edge]->id] != 1) continue;
+
                 update_limit_table(e->get_mode());
 
                 m_sln1->set_active_element(e);
@@ -695,64 +741,65 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                 // x - coordinate
                 double* x = ru->get_phys_x(eo);
 
+                double result = 0;
                 for (int i = 0; i < quad2d->get_num_points(eo); i++)
                 {
                     switch (physicFieldIntegralSurface)
                     {
                     case PHYSICFIELDINTEGRAL_SURFACE_LENGTH:
                         {
-                            integral += pt[i][2] * tan[i][2];
+                            result += pt[i][2] * tan[i][2];
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_SURFACE:
                         {
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2];
+                                result += pt[i][2] * tan[i][2];
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2];
+                                result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2];
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY:
                         {
                             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+                                result += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+                                result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE:
                         {
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * tan[i][1] * valueu[i];
+                                result += pt[i][2] * tan[i][2] * valueu[i];
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * valueu[i];
+                                result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * valueu[i];
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE:
                         {
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
+                                result += pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
+                                result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX:
                         {
                             SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[e->marker]->marker);
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+                                result += pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+                                result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                         }
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_CURRENT_CURRENT_DENSITY:
                         {
                             SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
                             if (m_scene->projectInfo().problemType == PROBLEMTYPE_PLANAR)
-                                integral += pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+                                result += pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                             else
-                                integral += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (- tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+                                result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (- tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                         }
                         break;
                     default:
@@ -761,6 +808,9 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                         break;
                     }                   
                 }
+
+                integral += result;
+                // cout << e->en[edge]->marker << " : " << e->en[edge]->id << " : " << result << endl;
             }
         }
     }

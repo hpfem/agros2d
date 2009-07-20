@@ -1,0 +1,132 @@
+body {
+  font-family: verdana, helvetica, arial, sans-serif;
+  font-size: 73%;
+  margin: 0;
+  padding: 12px 18px;
+  background-color: #fff;
+}
+
+html > body {
+  font-size: 9pt;
+}
+
+a {
+  color: rgb(61,92,122);
+  background-color: transparent;
+  text-decoration: underline;
+  margin: 0;
+  padding: 0 1px 2px 1px;
+}
+
+a:hover {
+  color: rgb(250,82,20);
+  text-decoration: none;
+}
+
+ul {
+  list-style-type: square;
+  margin: 1em 0 1.5em 0;
+  padding-left: 2em;
+}
+
+ul li {
+  line-height: 1em;
+  margin: 5px 0 0 5px;
+  padding-left: 0;
+}
+
+h1 {
+  color: rgb(117,144,174);
+  font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+  font-size: 16pt;
+  margin: 0;
+  padding: 8px 0;
+}
+
+h2 {
+  color: rgb(117,144,174);
+  background-color: transparent;
+  font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+  font-weight: bold;
+  font-size: 13pt;
+  margin: 0;
+  padding: 10px 0 4px 0;
+}
+
+h3 {
+  color: rgb(139,69,19);
+  background-color: transparent;
+  font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+  font-weight: bold;
+  font-size: 11pt;
+  margin: 0;
+  padding: 16px 0 5px 0;
+}
+
+h4 {
+  color: black;
+  background-color: transparent;
+  font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+  font-weight: bold;
+  font-size: 9pt;
+  margin: 0;
+  padding: 16px 0 5px 0;
+}
+
+h5 {
+  color: black;
+  background-color: transparent;
+  font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+  text-decoration: underline;
+  font-size: 9pt;
+  margin: 0;
+  padding: 16px 0 5px 0;
+}
+
+p {
+  line-height: 1.5em;
+  margin: 0.5em 0 0.5em 0;
+  padding: 0;
+}
+
+a {
+  font-weight: bold;
+}
+
+.a img {
+  border-width: 0px;
+}
+
+div.right {
+  padding: 15px;
+  float: right;
+}
+
+pre.code
+{
+  border: 1px solid #CCCCCC;
+  background-color: #f5f5f5;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-left: 2px;
+  margin-right: 8px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#images td {
+  padding: 10px 10px 10px 10px;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+#images a {
+  border: none;
+  text-decoration: none;
+}
+
+#images a:hover {
+  border: none;
+}

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QHelpCollectionProject version="1.0">
     <assistant>
-        <title>Agros 2d</title>
-        <applicationIcon>images/agros2d_logo.png</applicationIcon>
-        <cacheDirectory>Agros2d</cacheDirectory>
+        <title>Agros 2D</title>
+        <applicationIcon>agros2d_logo.png</applicationIcon>
+        <cacheDirectory>agros2d</cacheDirectory>
         <startPage>qthelp://agros2d/main/index.html</startPage>
         <aboutMenuText>
-            <text>About Agros2d</text>
+            <text>About Agros 2D</text>
         </aboutMenuText>
         <aboutDialog>
             <file>agros2d.txt</file>
-            <icon>images/agros2d_logo.png</icon>
+            <icon>agros2d_logo.png</icon>
         </aboutDialog>
         <enableDocumentationManager>false</enableDocumentationManager>
         <enableAddressBar>false</enableAddressBar>

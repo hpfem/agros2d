@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="1" numberofrefinements="1" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
+        <project adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge temperature="-15" type="temperature" id="1" name="T inner" />
@@ -34,8 +34,8 @@
             <edge end="1" marker="2" id="7" start="6" angle="0" />
         </edges>
         <labels>
-            <label x="0.0553981" y="0.124595" marker="1" id="0" area="0.0003" />
-            <label x="0.070091" y="0.068229" marker="2" id="1" area="0.0003" />
+            <label x="0.0553981" y="0.124595" marker="1" id="0" area="0.003" />
+            <label x="0.070091" y="0.068229" marker="2" id="1" area="0.003" />
         </labels>
     </geometry>
 </document>

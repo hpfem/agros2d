@@ -4,54 +4,56 @@
     <virtualFolder>help</virtualFolder>
     <filterSection>
         <toc>
-            <section title="Main" ref="main/index.html" />
-            <section title="Script" ref="script/script.html" />
-            <section title="Examples" ref="examples/examples.html">
+            <section title="Main" ref="./main/index.html"/>
+            <section title="Introduction" ref="./introduction/introduction.html">
+                <section title="Installation" ref="./introduction/installation.html"/>
+                <section title="Getting Started" ref="./introduction/getting_started.html"/>
+                <section title="Screenshots" ref="./introduction/screenshots.html"/>
+            </section>
+            <section title="Scripting" ref="./scripting/scripting.html"/>
+            <section title="Examples" ref="./examples/examples.html">
+
                 <section title="Electrostatic">
-                    <section title="Planar capacitor" ref="examples/electrostatic_capacitor_planar.html" />
-                    <section title="Axisymmetric capacitor" ref="examples/electrostatic_capacitor_axisymmetric.html" />
-                    <section title="Sparkgap" ref="examples/electrostatic_sparkgap.html" />
+                    <section title="Planar capacitor" ref="./examples/planar_electrostatic_capacitor.html"/>
                 </section>
             </section>
-            <section title="Screenshots" ref="screenshots/screenshots.html" />
         </toc>
         <keywords>
-            <keyword name="Script" ref="script/script.html"/>
-            <keyword name="Script" ref="examples/electrostatic_capacitor_axisymmetric.html"/>
+            <keyword name="Scripting" ref="./scripting/scripting.html"/>
+            <keyword name="Scripting" ref="./examples/planar_electrostatic_capacitor.html"/>
         </keywords>
         <files>
-            <file>examples/examples.html</file>
-            <file>examples/electrostatic_capacitor_planar.html</file>
-            <file>examples/electrostatic_capacitor_planar/model.png</file>
-            <file>examples/electrostatic_capacitor_planar/potential.png</file>
-            <file>examples/electrostatic_capacitor_axisymmetric.html</file>
-            <file>examples/electrostatic_sparkgap.html</file>
-            <file>images/agros2d_logo.png</file>
-            <file>images/fel_logo.gif</file>
-            <file>images/unr_logo.jpg</file>
-            <file>main/index.html</file>
-            <file>main/images/promo.png</file>
-            <file>screenshots/screenshots.html</file>
-            <file>screenshots/screenshot/kubuntu_heat.png</file>
-            <file>screenshots/screenshot/kubuntu_heat_thumb.png</file>
-            <file>screenshots/screenshot/ubuntu_actuator.png</file>
-            <file>screenshots/screenshot/ubuntu_actuator_thumb.png</file>
-            <file>screenshots/screenshot/ubuntu_heat_actuator.png</file>
-            <file>screenshots/screenshot/ubuntu_heat_actuator_thumb.png</file>
-            <file>screenshots/screenshot/ubuntu_chart.png</file>
-            <file>screenshots/screenshot/ubuntu_chart_thumb.png</file>
-            <file>screenshots/screenshot/ubuntu_sceneviewdialog.png</file>
-            <file>screenshots/screenshot/ubuntu_sceneviewdialog_thumb.png</file>
-            <file>screenshots/screenshot/ubuntu_script.png</file>
-            <file>screenshots/screenshot/ubuntu_script_thumb.png</file>
-            <file>screenshots/screenshot/ubuntu_sparkgap.png</file>
-            <file>screenshots/screenshot/ubuntu_sparkgap_thumb.png</file>
-            <file>screenshots/screenshot/windows_xp_capacitor.png</file>
-            <file>screenshots/screenshot/windows_xp_capacitor_thumb.png</file>
-            <file>screenshots/screenshot/windows_7_heat.png</file>
-            <file>screenshots/screenshot/windows_7_heat_thumb.png</file>
-            <file>script/script.html</file>
-            <file>style/style.css</file>
+            <file>./main/index.html</file>
+            <file>./agros2d_logo.png</file>
+            <file>./introduction/introduction.html</file>
+            <file>./introduction/installation.html</file>
+            <file>./introduction/getting_started.html</file>
+            <file>./introduction/screenshots.html</file>
+            <file>./introduction/screenshots/kubuntu_heat.png</file>
+            <file>./introduction/screenshots/kubuntu_heat_thumb.png</file>
+            <file>./introduction/screenshots/ubuntu_actuator.png</file>
+            <file>./introduction/screenshots/ubuntu_actuator_thumb.png</file>
+            <file>./introduction/screenshots/ubuntu_heat_actuator.png</file>
+            <file>./introduction/screenshots/ubuntu_heat_actuator_thumb.png</file>
+            <file>./introduction/screenshots/ubuntu_chart.png</file>
+            <file>./introduction/screenshots/ubuntu_chart_thumb.png</file>
+            <file>./introduction/screenshots/ubuntu_sceneviewdialog.png</file>
+            <file>./introduction/screenshots/ubuntu_sceneviewdialog_thumb.png</file>
+            <file>./introduction/screenshots/ubuntu_script.png</file>
+            <file>./introduction/screenshots/ubuntu_script_thumb.png</file>
+            <file>./introduction/screenshots/ubuntu_sparkgap.png</file>
+            <file>./introduction/screenshots/ubuntu_sparkgap_thumb.png</file>
+            <file>./introduction/screenshots/windows_xp_capacitor.png</file>
+            <file>./introduction/screenshots/windows_xp_capacitor_thumb.png</file>
+            <file>./introduction/screenshots/windows_7_heat.png</file>
+            <file>./introduction/screenshots/windows_7_heat_thumb.png</file>
+            <file>./scripting/scripting.html</file>
+            <file>./examples/examples.html</file>
+            <file>./examples/planar_electrostatic_capacitor.html</file>
+            <file>./examples/planar_electrostatic_capacitor/preprocessing.png</file>
+            <file>./examples/planar_electrostatic_capacitor/processing.png</file>
+            <file>./examples/planar_electrostatic_capacitor/postprocessing.png</file>
+            <file>./style.css</file>
          </files>
     </filterSection>
 </QtHelpProject>

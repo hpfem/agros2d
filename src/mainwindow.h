@@ -79,10 +79,11 @@ private:
     QStringList recentFiles;
 
     QMenu *mnuFile;
-    QMenu *mnuRecentFiles;    
+    QMenu *mnuRecentFiles;
+    QMenu *mnuEdit;
+    QMenu *mnuView;
     QMenu *mnuScene;
     QMenu *mnuTools;
-    QMenu *mnuEdit;
     QMenu *mnuHelp;
 
     QToolBar *tlbFile;

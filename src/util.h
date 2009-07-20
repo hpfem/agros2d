@@ -213,7 +213,7 @@ inline QString physicFieldString(PhysicField physicField)
     case PHYSICFIELD_MAGNETOSTATIC:
         return QObject::tr("Magnetostatic");
     case PHYSICFIELD_HARMONIC_MAGNETIC:
-        return "Harmonic magnetic";
+        return QObject::tr("Harmonic magnetic");
     case PHYSICFIELD_CURRENT:
         return QObject::tr("Current field");
     case PHYSICFIELD_HEAT_TRANSFER:

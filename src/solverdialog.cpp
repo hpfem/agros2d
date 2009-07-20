@@ -6,7 +6,7 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
     setMaximumSize(minimumSize());
 
     setWindowIcon(icon("logo"));
-    setWindowTitle(tr("Solve problem ..."));   
+    setWindowTitle(tr("Solve problem..."));
 
     connect(this, SIGNAL(message(QString)), this, SLOT(doShowMessage(QString)));
 
@@ -23,7 +23,7 @@ SolverDialog::~SolverDialog()
 
 void SolverDialog::solve()
 {
-    lblMessage->setText(tr("Solve problem ..."));
+    lblMessage->setText(tr("Solve problem..."));
     lstMessage->clear();
     progressBar->setValue(0);
 
@@ -96,7 +96,7 @@ void SolverDialog::runMesh()
 
     if (!processTriangle->waitForStarted())
     {
-        emit message(tr("Could not start triangle."));
+        emit message(tr("Could not start Triangle."));
         processTriangle->kill();
         emit solved();
         return;
@@ -118,7 +118,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
         // convert triangle mesh to hermes mesh
         if (Util::scene()->triangle2mesh(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName(), QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName()))
         {
-            emit message(tr("Triangle mesh was converted to Hermes mesh file."));
+            emit message(tr("Triangle mesh was converted to Hermes2D mesh file."));
 
             QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".poly");
             QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".node");
@@ -136,8 +136,8 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
         else
         {
             QFile::remove(Util::scene()->projectInfo().fileName + ".mesh");
-            QString msg(tr("Triangle mesh could not be converted to Hermes mesh file."));
-            QMessageBox::warning(QApplication::activeWindow(), tr("Triangle to Hermes error"), msg);
+            QString msg(tr("Triangle mesh could not be converted to Hermes2D mesh file."));
+            QMessageBox::warning(QApplication::activeWindow(), tr("Triangle to Hermes2D error."), msg);
 
             emit message(msg);
             emit solved();
@@ -157,7 +157,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
         QTextStream standardOutput(&file);
         m_errorMessage = standardOutput.readAll();
 
-        QMessageBox::warning(NULL, tr("Triangle error"), m_errorMessage);
+        QMessageBox::warning(NULL, tr("Triangle error."), m_errorMessage);
 
         file.close();
     }
@@ -561,7 +561,7 @@ void SolverDialog::runSolver()
     }
     else
     {
-        emit message(tr("Hermes mesh file doesn't exist."));
+        emit message(tr("Hermes2D mesh file doesn't exist."));
         return;
     }
 

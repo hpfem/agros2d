@@ -1,6 +1,6 @@
 <document>
     <projects>
-        <project adaptivitytolerance="1" frequency="50" numberofrefinements="0" adaptivitysteps="0" polynomialorder="4" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
+        <project adaptivitytolerance="1" frequency="50" numberofrefinements="0" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
@@ -43,8 +43,8 @@
         </edges>
         <labels>
             <label x="0.035349" y="0.036683" marker="1" id="0" area="0" />
-            <label x="0.00778124" y="0.00444642" marker="2" id="1" area="0" />
-            <label x="-0.0111161" y="-0.00311249" marker="3" id="2" area="0" />
+            <label x="0.00778124" y="0.00444642" marker="2" id="1" area="1e-05" />
+            <label x="-0.0111161" y="-0.00311249" marker="3" id="2" area="1e-05" />
         </labels>
     </geometry>
 </document>

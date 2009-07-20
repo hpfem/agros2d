@@ -171,16 +171,21 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actCut);
     mnuEdit->addAction(actCopy);
     mnuEdit->addAction(actPaste);
+    mnuEdit->addSeparator();
+    mnuEdit->addAction(actOptions);
+
+    mnuView = menuBar()->addMenu(tr("&View"));
+    mnuView->addAction(sceneView->actSceneZoomBestFit);
+    mnuView->addAction(sceneView->actSceneZoomIn);
+    mnuView->addAction(sceneView->actSceneZoomOut);
+    mnuView->addSeparator();
+    mnuView->addAction(sceneView->actFullScreen);
     
     mnuScene = menuBar()->addMenu(tr("&Project"));
     mnuScene->addAction(sceneView->actSceneModeNode);
     mnuScene->addAction(sceneView->actSceneModeEdge);
     mnuScene->addAction(sceneView->actSceneModeLabel);
     mnuScene->addAction(sceneView->actSceneModePostprocessor);
-    mnuScene->addSeparator();
-    mnuScene->addAction(sceneView->actSceneZoomBestFit);
-    mnuScene->addAction(sceneView->actSceneZoomIn);
-    mnuScene->addAction(sceneView->actSceneZoomOut);
     mnuScene->addSeparator();
     mnuScene->addAction(Util::scene()->actNewNode);
     mnuScene->addAction(Util::scene()->actNewEdge);
@@ -189,7 +194,6 @@ void MainWindow::createMenus()
     mnuScene->addAction(Util::scene()->actNewEdgeMarker);
     mnuScene->addAction(Util::scene()->actNewLabelMarker);
     mnuScene->addSeparator();
-    mnuScene->addAction(actScriptStartup);
     mnuScene->addAction(Util::scene()->actProjectProperties);
 
     mnuTools = menuBar()->addMenu(tr("Tools"));
@@ -197,11 +201,9 @@ void MainWindow::createMenus()
     mnuTools->addAction(actSolve);
     mnuTools->addSeparator();
     mnuTools->addAction(actChart);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actScriptStartup);
     mnuTools->addAction(actScriptEditor);
-    mnuTools->addSeparator();
-    mnuTools->addAction(sceneView->actFullScreen);
-    mnuTools->addSeparator();
-    mnuTools->addAction(actOptions);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
