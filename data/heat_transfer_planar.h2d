@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
+    <problems>
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge temperature="-15" type="temperature" id="1" name="T inner" />
@@ -11,8 +11,8 @@
                 <label thermal_conductivity="2" volume_heat="0" id="1" name="Material 1" />
                 <label thermal_conductivity="10" volume_heat="0" id="2" name="Material 2" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0.05" y="0" id="0" />

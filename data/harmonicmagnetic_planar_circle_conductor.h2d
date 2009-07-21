@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="0.02" frequency="5000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
+    <problems>
+        <problem adaptivitytolerance="0.02" frequency="5000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
@@ -8,8 +8,8 @@
             <labels>
                 <label current_density_real="1e6" conductivity="57e6" id="1" name="Copper" current_density_imag="0" permeability="1" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0.0035" y="0" id="0" />

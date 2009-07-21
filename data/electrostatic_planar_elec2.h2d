@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="5" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Elec2 (QuickField)" >
+    <problems>
+        <problem adaptivitytolerance="5" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Elec2 (QuickField)" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="surface_charge_density" value="0" id="1" name="neumann" />
@@ -13,8 +13,8 @@
                 <label charge_density="0" id="2" name="vzduch" permittivity="1" />
                 <label charge_density="0" id="3" name="vodic" permittivity="1000000" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="-20" y="0" id="0" />

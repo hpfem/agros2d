@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="5" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="Detail" >
+    <problems>
+        <problem adaptivitytolerance="5" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="Detail" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge h="25" external_temperature="-15" type="heat_flux" id="1" name="Exterier" heat_flux="0" />
@@ -21,8 +21,8 @@
                 <label thermal_conductivity="0.14" volume_heat="0" id="11" name="Sklo" />
                 <label thermal_conductivity="1.23" volume_heat="0" id="12" name="Betonovy zaklad" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0.616656" y="0.647324" id="0" />

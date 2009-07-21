@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="1" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" type="heat transfer" id="0" name="Heat transfer axisymmetric" >
+    <problems>
+        <problem adaptivitytolerance="1" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" type="heat transfer" id="0" name="Heat transfer axisymmetric" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge h="0" external_temperature="0" type="heat_flux" id="1" name="Neumann" heat_flux="0" />
@@ -11,8 +11,8 @@
             <labels>
                 <label thermal_conductivity="52" volume_heat="4000000" id="1" name="Material" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0.02" y="0" id="0" />

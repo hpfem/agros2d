@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="1" numberofrefinements="0" adaptivitysteps="10" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Example 09" >
+    <problems>
+        <problem adaptivitytolerance="1" numberofrefinements="0" adaptivitysteps="10" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Example 09" >
             <edges>
                 <edge type="potential" value="0" id="1" name="U = 0 V" />
                 <edge type="surface_charge_density" value="0" id="2" name="neumann" />
@@ -10,8 +10,8 @@
                 <label charge_density="0" id="1" name="core" permittivity="10" />
                 <label charge_density="0" id="2" name="air" permittivity="1" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0" y="0.175" id="0" />

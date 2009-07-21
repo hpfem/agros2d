@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="1" frequency="50" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="harmonic magnetic" id="0" name="Furnace" >
+    <problems>
+        <problem adaptivitytolerance="1" frequency="50" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="axisymmetric" type="harmonic magnetic" id="0" name="Furnace" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
@@ -11,8 +11,8 @@
                 <label current_density_real="0" conductivity="0" id="3" name="Isolation" current_density_imag="0" permeability="1" />
                 <label current_density_real="0" conductivity="1e5" id="4" name="Steel" current_density_imag="0" permeability="500" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0.3" y="0.1" id="0" />

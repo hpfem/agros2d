@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="0.05" numberofrefinements="3" adaptivitysteps="0" polynomialorder="4" problemtype="planar" type="electrostatic" id="0" name="Planar capacitor" >
+    <problems>
+        <problem adaptivitytolerance="0.05" numberofrefinements="3" adaptivitysteps="0" polynomialorder="4" problemtype="planar" type="electrostatic" id="0" name="Planar capacitor" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="surface_charge_density" value="0" id="1" name="Neumann" />
@@ -10,8 +10,8 @@
             <labels>
                 <label charge_density="0" id="1" name="Dielectric" permittivity="10" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0.1" y="0" id="0" />

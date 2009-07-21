@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="magnetostatic" id="0" name="unnamed" >
+    <problems>
+        <problem adaptivitytolerance="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="magnetostatic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
@@ -9,8 +9,8 @@
                 <label current_density="1e6" id="1" name="magnet" permeability="1.07" />
                 <label current_density="0" id="2" name="vzduch" permeability="1" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="-0.5" y="1" id="0" />

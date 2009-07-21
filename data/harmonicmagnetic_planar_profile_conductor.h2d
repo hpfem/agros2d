@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="1" frequency="50000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
+    <problems>
+        <problem adaptivitytolerance="1" frequency="50000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="surface_current_density" value="0" id="1" name="Neumann" />
@@ -10,8 +10,8 @@
                 <label current_density_real="0" conductivity="0" id="1" name="Air" current_density_imag="0" permeability="1" />
                 <label current_density_real="1e6" conductivity="57e6" id="2" name="Copper" current_density_imag="0" permeability="1" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0" y="0.000768" id="0" />

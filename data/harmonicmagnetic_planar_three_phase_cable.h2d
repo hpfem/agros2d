@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonic magnetic" id="0" name="3 phase cable" >
+    <problems>
+        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonic magnetic" id="0" name="3 phase cable" >
             <scriptstartup>J0 = 1e6;
 J01r = J0;
 J01i = 0.0;
@@ -19,8 +19,8 @@ gamma = 57e6;</scriptstartup>
                 <label current_density_real="J02r" conductivity="gamma" id="3" name="L2" current_density_imag="J02i" permeability="1" />
                 <label current_density_real="J03r" conductivity="gamma" id="4" name="L3" current_density_imag="J03i" permeability="1" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0.002255" y="0.00492" id="0" />

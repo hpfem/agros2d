@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="1" frequency="500" numberofrefinements="0" adaptivitysteps="0" polynomialorder="4" problemtype="axisymmetric" type="harmonic magnetic" id="0" name="Heating" >
+    <problems>
+        <problem adaptivitytolerance="1" frequency="500" numberofrefinements="0" adaptivitysteps="0" polynomialorder="4" problemtype="axisymmetric" type="harmonic magnetic" id="0" name="Heating" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="surface_current_density" value="0" id="1" name="Neumann" />
@@ -11,8 +11,8 @@
                 <label current_density_real="0" conductivity="5e5" id="2" name="Mandrel" current_density_imag="0" permeability="500" />
                 <label current_density_real="0" conductivity="0" id="3" name="Air" current_density_imag="0" permeability="1" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0" y="0.05" id="0" />

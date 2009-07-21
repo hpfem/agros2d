@@ -1,6 +1,6 @@
 <document>
-    <projects>
-        <project adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" type="heat transfer" id="0" name="Actuator" >
+    <problems>
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" type="heat transfer" id="0" name="Actuator" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge h="0" external_temperature="0" type="heat_flux" id="1" name="Flux" heat_flux="0" />
@@ -12,8 +12,8 @@
                 <label thermal_conductivity="60" volume_heat="0" id="3" name="Fe" />
                 <label thermal_conductivity="100" volume_heat="0" id="4" name="Mosaz" />
             </labels>
-        </project>
-    </projects>
+        </problem>
+    </problems>
     <geometry>
         <nodes>
             <node x="0" y="0.18" id="0" />
