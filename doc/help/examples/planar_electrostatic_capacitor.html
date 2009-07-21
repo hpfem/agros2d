@@ -9,15 +9,14 @@
 <h1>Planar electrostatic capacitor</h1>
 
 <h2>Introduction</h2>
-<p>Capacitor is a passive electrical component. It used to store electric charge. It consists of electrodes that are separated between dieletric and have a different electrical potential.</p>
+<p>Capacitor is a passive electrical component. It consists of electrodes that are separated between dieletric and have a different electrical potential. It used to store electric charge.</p>
 <p>For more information about capacitors visit <a href="http://en.wikipedia.org/wiki/Capacitor">http://en.wikipedia.org/wiki/Capacitor</a>.</p>
 
-<h2>Model analysis</h2>
+<h2>Problem analysis</h2>
 
 <h2>Preprocessing</h2>
-<p>Select "New" in the menu "File", or in main toolbar and enter project properties.</p>
+<p>Select "New" in the menu "File", or in main toolbar and enter "Problem properties".</p>
 
-<h3>Geometry</h3>
 <ul>
   <li>Name: Planar electrostatic capacitor</li>
   <li>Date: (actual date)</li>
@@ -29,22 +28,18 @@
   <li>Adaptivity tolerance: 0.05</li>
 </ul>
 
+<h3>Geometry</h3>
 <h4>Nodes </h4>
-<p>Select "Operate on nodes" in the "Project" menu, or in main toolbar and place 6 points with coordinates [0.1, 0.0], [0.2, 0.0], [0.0, 0.2], [0.0, 0.3], [0.1, 0.2] and [0.2, 0.3]. You can move mouse to requested place and press left button together with control key, or by pressing &lt;Alt&gt;+N and entering the point coordinates.</p>
+<p>Select "Operate on nodes" in the "Problem" menu, or in main toolbar and place 6 points with coordinates [0.1, 0.0], [0.2, 0.0], [0.0, 0.2], [0.0, 0.3], [0.1, 0.2] and [0.2, 0.3]. You can move mouse to requested place and press left button together with control key, or by pressing &lt;Alt&gt;+N and entering the point coordinates.</p>
 
 <h4>Edges</h4>
-<p>Select "Operate on edges" in the "Project" menu, or in main toolbar and draw 6 edges according to definition area. Press &lt;Control&gt; key and select in sequence start and end node of the line, or by pressing &lt;Alt&gt;+E and these point select from offer.</p>
+<p>Select "Operate on edges" in the "Problem" menu, or in main toolbar and draw 6 edges according to definition area. Press &lt;Control&gt; key and select in sequence start and end node of the line, or by pressing &lt;Alt&gt;+E and these point select from offer.</p>
 
 <h4>Labels</h4>
-<p>Select "Operate on labels" in menu "Project", or in main toolbar and place block label into inner area. To place label you can use left mouse button together with control key or pressing &lt;Alt&gt;+L and entering the label point coordinates.</p>
-
-<p class="centered">
-<img src="planar_electrostatic_capacitor/preprocessing.png" alt="*"><br>
-Geometry of the model
-</p>
+<p>Select "Operate on labels" in menu "Problem", or in main toolbar and place block label into inner area. To place label you can use left mouse button together with control key or pressing &lt;Alt&gt;+L and entering the label point coordinates.</p>
 
 <h3>Boundary conditions</h3>
-<p>Select "New boundery condition" from the menu "Project", or press &lt;Alt&gt;+B and gradually define three BC, which are described in chapter Model analysis.</p>
+<p>Select "New boundery condition" from the menu "Problem", or press &lt;Alt&gt;+B and gradually define three BC, which are described in chapter Problem analysis.</p>
 <ul>
   <li>Name: Source electrode</li>
   <li>BC type: Fixed voltage</li>
@@ -61,9 +56,8 @@ Geometry of the model
   <li>Value: 0</li>
 </ul>
 
-
 <h3>Materials</h3>
-<p>Select "New material" from the menu "Project", or press &lt;Alt&gt;+M and define dieletric material embedded between the electrodes.</p>
+<p>Select "New material" from the menu "Problem", or press &lt;Alt&gt;+M and define dieletric material embedded between the electrodes.</p>
 <ul>
   <li>Name: Dieletric</li>
   <li>Permitiviti: 10</li>
@@ -74,28 +68,12 @@ Geometry of the model
 <h3>Mesh</h3>
 <p>Select "Mesh area" from the menu "Tools", or main toolbar.</p>
 
-<p class="centered">
-<img src="planar_electrostatic_capacitor/processing.png" alt="*"><br>
-Mesh of the model
-</p>
-
 <h3>Solve</h3>
 <p>Select "Solve problem" from the menu "Tools", or main toolbar.</p>
 
 <h2>Postprocessing</h2>
 <h3>Calculation of capacity</h3>
 <p>Select "Volume integrals" from the main toolbar and mark area "Dieletric". In subwindow "Volume integral" find value of "Energy" in group "Electostatic field".</p>
-
 <p>Capacity of capacitor may be calculated according to formula W<sub>e</sub> = 4 &times; 1/2 &times; CU<sup>2</sup>, which can be adjusted to shape C = 4 &times; 2 &times; W<sub>e</sub>/U<sup>2</sup></p>
-
-<p class="centered">
-<img src="planar_electrostatic_capacitor/postprocessing.png" alt="*"><br>
-Distribution of electric field potential of model
-</p>
-
-<h2>Related</h2>
-<ul>
-  <li><a href="../introduction/getting_started.html">Getting Started</a></i>
-</ul>
 </body>
 </html>

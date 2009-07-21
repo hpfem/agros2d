@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QHelpCollectionProject version="1.0">
-    <assistant>
-        <title>Agros 2D</title>
-        <applicationIcon>agros2d_logo.png</applicationIcon>
-        <cacheDirectory>agros2d</cacheDirectory>
-        <startPage>qthelp://agros2d/main/index.html</startPage>
-        <aboutMenuText>
-            <text>About Agros 2D</text>
-        </aboutMenuText>
-        <aboutDialog>
-            <file>agros2d.txt</file>
-            <icon>agros2d_logo.png</icon>
-        </aboutDialog>
-        <enableDocumentationManager>false</enableDocumentationManager>
-        <enableAddressBar>false</enableAddressBar>
-        <enableFilterFunctionality>false</enableFilterFunctionality>
-    </assistant>
-    <docFiles>
-        <generate>
-            <file>
-                <input>agros2d.qhp</input>
-                <output>agros2d.qch</output>
-            </file>
-        </generate>
-        <register>
-            <file>agros2d.qch</file>
-        </register>
-    </docFiles>
+  <assistant>
+    <title>Agros 2D</title>
+    <applicationIcon>agros2d_logo.png</applicationIcon>
+    <cacheDirectory>agros2d</cacheDirectory>
+    <startPage>qthelp://agros2d/introduction/index.html</startPage>
+    <aboutMenuText>
+      <text>About Agros 2D</text>
+    </aboutMenuText>
+    <aboutDialog>
+      <file>agros2d.txt</file>
+      <icon>agros2d_logo.png</icon>
+    </aboutDialog>
+    <enableDocumentationManager>false</enableDocumentationManager>
+    <enableAddressBar>false</enableAddressBar>
+    <enableFilterFunctionality>false</enableFilterFunctionality>
+  </assistant>
+  <docFiles>
+    <generate>
+      <file>
+        <input>agros2d.qhp</input>
+        <output>agros2d.qch</output>
+      </file>
+    </generate>
+    <register>
+      <file>agros2d.qch</file>
+    </register>
+  </docFiles>
 </QHelpCollectionProject>

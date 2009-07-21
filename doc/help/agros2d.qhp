@@ -1,59 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QtHelpProject version="1.0">
-    <namespace>agros2d</namespace>
-    <virtualFolder>help</virtualFolder>
-    <filterSection>
-        <toc>
-            <section title="Main" ref="./main/index.html"/>
-            <section title="Introduction" ref="./introduction/introduction.html">
-                <section title="Installation" ref="./introduction/installation.html"/>
-                <section title="Getting Started" ref="./introduction/getting_started.html"/>
-                <section title="Screenshots" ref="./introduction/screenshots.html"/>
-            </section>
-            <section title="Scripting" ref="./scripting/scripting.html"/>
-            <section title="Examples" ref="./examples/examples.html">
-
-                <section title="Electrostatic">
-                    <section title="Planar capacitor" ref="./examples/planar_electrostatic_capacitor.html"/>
-                </section>
-            </section>
-        </toc>
-        <keywords>
-            <keyword name="Scripting" ref="./scripting/scripting.html"/>
-            <keyword name="Scripting" ref="./examples/planar_electrostatic_capacitor.html"/>
-        </keywords>
-        <files>
-            <file>./main/index.html</file>
-            <file>./agros2d_logo.png</file>
-            <file>./introduction/introduction.html</file>
-            <file>./introduction/installation.html</file>
-            <file>./introduction/getting_started.html</file>
-            <file>./introduction/screenshots.html</file>
-            <file>./introduction/screenshots/kubuntu_heat.png</file>
-            <file>./introduction/screenshots/kubuntu_heat_thumb.png</file>
-            <file>./introduction/screenshots/ubuntu_actuator.png</file>
-            <file>./introduction/screenshots/ubuntu_actuator_thumb.png</file>
-            <file>./introduction/screenshots/ubuntu_heat_actuator.png</file>
-            <file>./introduction/screenshots/ubuntu_heat_actuator_thumb.png</file>
-            <file>./introduction/screenshots/ubuntu_chart.png</file>
-            <file>./introduction/screenshots/ubuntu_chart_thumb.png</file>
-            <file>./introduction/screenshots/ubuntu_sceneviewdialog.png</file>
-            <file>./introduction/screenshots/ubuntu_sceneviewdialog_thumb.png</file>
-            <file>./introduction/screenshots/ubuntu_script.png</file>
-            <file>./introduction/screenshots/ubuntu_script_thumb.png</file>
-            <file>./introduction/screenshots/ubuntu_sparkgap.png</file>
-            <file>./introduction/screenshots/ubuntu_sparkgap_thumb.png</file>
-            <file>./introduction/screenshots/windows_xp_capacitor.png</file>
-            <file>./introduction/screenshots/windows_xp_capacitor_thumb.png</file>
-            <file>./introduction/screenshots/windows_7_heat.png</file>
-            <file>./introduction/screenshots/windows_7_heat_thumb.png</file>
-            <file>./scripting/scripting.html</file>
-            <file>./examples/examples.html</file>
-            <file>./examples/planar_electrostatic_capacitor.html</file>
-            <file>./examples/planar_electrostatic_capacitor/preprocessing.png</file>
-            <file>./examples/planar_electrostatic_capacitor/processing.png</file>
-            <file>./examples/planar_electrostatic_capacitor/postprocessing.png</file>
-            <file>./style.css</file>
-         </files>
-    </filterSection>
+  <namespace>agros2d</namespace>
+  <virtualFolder>help</virtualFolder>
+  <filterSection>
+    <toc>
+      <section title="Introduction" ref="./introduction/index.html"/>
+      <section title="Getting Started" ref="./getting_started/getting_started.html">
+        <section title="Installation" ref="./getting_started/installation.html"/>
+      </section>
+      <section title="Scripting" ref="./scripting/scripting.html"/>
+      <section title="Program Features" ref="./program_features/program_features.html"/>
+      <section title="Examples" ref="./examples/examples.html">
+        <section title="Electrostatic field">
+          <section title="Planar electrostatic capacitor" ref="./examples/planar_electrostatic_capacitor.html"/>
+        </section>
+      </section>
+    </toc>
+    <keywords>
+      <keyword name="Scripting" ref="./scripting/scripting.html"/>
+    </keywords>
+    <files>
+      <file>./agros2d_logo.png</file>
+      <file>./style.css</file>
+      <file>./introduction/index.html</file>
+      <file>./getting_started/getting_started.html</file>
+      <file>./getting_started/installation.html</file>
+      <file>./scripting/scripting.html</file>
+      <file>./program_features/program_features.html</file>
+      <file>./examples/examples.html</file>
+      <file>./examples/planar_electrostatic_capacitor.html</file>
+    </files>
+  </filterSection>
 </QtHelpProject>
