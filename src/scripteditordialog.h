@@ -67,7 +67,7 @@ class ScriptStartupDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ScriptStartupDialog(ProjectInfo &projectInfo, QWidget *parent = 0);
+    ScriptStartupDialog(ProblemInfo &problemInfo, QWidget *parent = 0);
     ~ScriptStartupDialog();
 
     int showDialog();
@@ -77,7 +77,7 @@ private slots:
     void doReject();
 
 private:
-    ProjectInfo *m_projectInfo;
+    ProblemInfo *m_problemInfo;
 
     ScriptEditor *txtEditor;
 

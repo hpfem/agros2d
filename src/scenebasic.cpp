@@ -206,8 +206,8 @@ QLayout* DSceneNode::createContent()
     txtPointY = new SLineEdit("0", false);
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(Util::scene()->projectInfo().labelX() + " (m):", txtPointX);
-    layout->addRow(Util::scene()->projectInfo().labelY() + " (m):", txtPointY);
+    layout->addRow(Util::scene()->problemInfo().labelX() + " (m):", txtPointX);
+    layout->addRow(Util::scene()->problemInfo().labelY() + " (m):", txtPointY);
 
     return layout;
 }
@@ -265,7 +265,7 @@ QLayout* DSceneEdge::createContent()
     layout->addRow(tr("Start point:"), cmbNodeStart);
     layout->addRow(tr("End point:"), cmbNodeEnd);
     layout->addRow(tr("Boundary condition:"), cmbMarker);
-    layout->addRow(tr("Angle (deg):"), txtAngle);
+    layout->addRow(tr("Angle (deg.):"), txtAngle);
 
     fillComboBox();
 
@@ -344,8 +344,8 @@ QLayout* DSceneLabel::createContent() {
     txtArea->setValidator(new QDoubleValidator(txtArea));
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(Util::scene()->projectInfo().labelX() + " (m):", txtPointX);
-    layout->addRow(Util::scene()->projectInfo().labelY() + " (m):", txtPointY);
+    layout->addRow(Util::scene()->problemInfo().labelX() + " (m):", txtPointX);
+    layout->addRow(Util::scene()->problemInfo().labelY() + " (m):", txtPointY);
     layout->addRow(tr("Material:"), cmbMarker);
     layout->addRow(tr("Triangle area (m):"), txtArea);
 

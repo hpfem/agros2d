@@ -1762,7 +1762,7 @@ void SceneView::doDefaults()
     // 3d
     m_sceneViewSettings.scalarView3DLighting = false;
 
-    switch (Util::scene()->projectInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         {
@@ -1808,7 +1808,7 @@ void SceneView::doDefaults()
         }
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. SceneView::doDefaults()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SceneView::doDefaults()" << endl;
         throw;
         break;
     }
@@ -1952,13 +1952,13 @@ void SceneView::setRangeContour()
     if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours)
     {
         ViewScalarFilter *viewScalarFilter;
-        if (numberOfSolution(Util::scene()->projectInfo().physicField) == 1)
+        if (numberOfSolution(Util::scene()->problemInfo().physicField) == 1)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
                                                                       Util::scene(),
                                                                       m_sceneViewSettings.contourPhysicFieldVariable,
                                                                       PHYSICFIELDVARIABLECOMP_SCALAR);
 
-        if (numberOfSolution(Util::scene()->projectInfo().physicField) == 2)
+        if (numberOfSolution(Util::scene()->problemInfo().physicField) == 2)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
                                                     Util::scene()->sceneSolution()->sln2(),
                                                     Util::scene(),
@@ -1977,13 +1977,13 @@ void SceneView::setRangeScalar()
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         ViewScalarFilter *viewScalarFilter;
-        if (numberOfSolution(Util::scene()->projectInfo().physicField) == 1)
+        if (numberOfSolution(Util::scene()->problemInfo().physicField) == 1)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
                                                     Util::scene(),
                                                     m_sceneViewSettings.scalarPhysicFieldVariable,
                                                     m_sceneViewSettings.scalarPhysicFieldVariableComp);
 
-        if (numberOfSolution(Util::scene()->projectInfo().physicField) == 2)
+        if (numberOfSolution(Util::scene()->problemInfo().physicField) == 2)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
                                                     Util::scene()->sceneSolution()->sln2(),
                                                     Util::scene(),

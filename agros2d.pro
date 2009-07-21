@@ -38,7 +38,7 @@ SOURCES += src/scene.cpp \
     src/sceneinfo.cpp \
     src/sceneview.cpp \
     src/chartdialog.cpp \
-    src/projectdialog.cpp \
+    src/problemdialog.cpp \
     src/scenetransformdialog.cpp \
     src/sceneviewdialog.cpp \
     src/optionsdialog.cpp \
@@ -68,7 +68,7 @@ HEADERS += src/scene.h \
     src/sceneview_data.h \
     src/sceneview.h \
     src/chartdialog.h \
-    src/projectdialog.h \
+    src/problemdialog.h \
     src/scenetransformdialog.h \
     src/sceneviewdialog.h \
     src/optionsdialog.h \

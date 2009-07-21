@@ -126,7 +126,7 @@ Value SLineEditValue::value()
 bool SLineEditValue::evaluate()
 {
     Value val = value();
-    if (val.evaluate(Util::scene()->projectInfo().scriptStartup))
+    if (val.evaluate(Util::scene()->problemInfo().scriptStartup))
     {
         m_number = val.number;
         return true;

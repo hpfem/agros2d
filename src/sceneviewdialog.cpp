@@ -202,7 +202,7 @@ void SceneViewDialog::createControls()
 
     // layout scalar field
     cmbScalarFieldVariable = new QComboBox();
-    fillComboBoxVariable(cmbScalarFieldVariable, Util::scene()->projectInfo().physicField);
+    fillComboBoxVariable(cmbScalarFieldVariable, Util::scene()->problemInfo().physicField);
     connect(cmbScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
 
     cmbPalette = new QComboBox();
@@ -258,7 +258,7 @@ void SceneViewDialog::createControls()
 
     // layout vector field
     cmbVectorFieldVariable = new QComboBox();
-    switch (Util::scene()->projectInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         {
@@ -294,7 +294,7 @@ void SceneViewDialog::createControls()
         }
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
         throw;
         break;
     }
@@ -378,8 +378,8 @@ void SceneViewDialog::doScalarFieldVariable(int index)
     else
     {
         cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbScalarFieldVariableComp->addItem(Util::scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
-        cmbScalarFieldVariableComp->addItem(Util::scene()->projectInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
+        cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
+        cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
     }
 
     if (cmbScalarFieldVariableComp->currentIndex() == -1)

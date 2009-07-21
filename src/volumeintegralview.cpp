@@ -15,7 +15,7 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
     trvWidget->setColumnWidth(2, 20);
 
     QStringList labels;
-    labels << tr("Label") << tr("Number") << "Unit";
+    labels << tr("Label") << tr("Value") << tr("Unit");
     trvWidget->setHeaderLabels(labels);
 
     setWidget(trvWidget);
@@ -410,7 +410,7 @@ QStringList VolumeIntegralValueCurrent::variables()
 
 VolumeIntegralValue *volumeIntegralValueFactory()
 {
-    switch (Util::scene()->projectInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         return new VolumeIntegralValueElectrostatic();
@@ -428,7 +428,7 @@ VolumeIntegralValue *volumeIntegralValueFactory()
         return new VolumeIntegralValueCurrent();
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. VolumeIntegralValue *volumeIntegralValueFactory()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. VolumeIntegralValue *volumeIntegralValueFactory()" << endl;
         throw;
         break;
     }

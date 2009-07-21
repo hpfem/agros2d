@@ -35,7 +35,7 @@ ChartDialog::~ChartDialog()
 
 void ChartDialog::showDialog()
 {
-    fillComboBoxVariable(cmbFieldVariable, Util::scene()->projectInfo().physicField);
+    fillComboBoxVariable(cmbFieldVariable, Util::scene()->problemInfo().physicField);
 
     show();
     doChartLine();
@@ -80,16 +80,16 @@ void ChartDialog::createControls()
 
     // start
     QFormLayout *layoutStart = new QFormLayout();
-    layoutStart->addRow(Util::scene()->projectInfo().labelX() + ":", txtStartX);
-    layoutStart->addRow(Util::scene()->projectInfo().labelY() + ":", txtStartY);
+    layoutStart->addRow(Util::scene()->problemInfo().labelX() + ":", txtStartX);
+    layoutStart->addRow(Util::scene()->problemInfo().labelY() + ":", txtStartY);
     
     QGroupBox *grpStart = new QGroupBox(tr("Start"), this);
     grpStart->setLayout(layoutStart);
     
     // end
     QFormLayout *layoutEnd = new QFormLayout();
-    layoutEnd->addRow(Util::scene()->projectInfo().labelX() + ":", txtEndX);
-    layoutEnd->addRow(Util::scene()->projectInfo().labelY() + ":", txtEndY);
+    layoutEnd->addRow(Util::scene()->problemInfo().labelX() + ":", txtEndX);
+    layoutEnd->addRow(Util::scene()->problemInfo().labelY() + ":", txtEndY);
     
     QGroupBox *grpEnd = new QGroupBox(tr("End"), this);
     grpEnd->setLayout(layoutEnd);
@@ -97,8 +97,8 @@ void ChartDialog::createControls()
     // x - axis
     radAxisLength = new QRadioButton(tr("Length"), this);
     radAxisLength->setChecked(true);
-    radAxisX = new QRadioButton(Util::scene()->projectInfo().labelX(), this);
-    radAxisY = new QRadioButton(Util::scene()->projectInfo().labelY(), this);
+    radAxisX = new QRadioButton(Util::scene()->problemInfo().labelX(), this);
+    radAxisY = new QRadioButton(Util::scene()->problemInfo().labelY(), this);
     
     QButtonGroup *axisGroup = new QButtonGroup(this);
     axisGroup->addButton(radAxisLength);
@@ -207,14 +207,14 @@ void ChartDialog::doPlot()
     // table
     trvTable->clear();
     trvTable->setRowCount(count);
-    QStringList headers = localPointValueHeaderFactory(Util::scene()->projectInfo().physicField);
+    QStringList headers = localPointValueHeaderFactory(Util::scene()->problemInfo().physicField);
     trvTable->setColumnCount(headers.count());
     trvTable->setHorizontalHeaderLabels(headers);
     
     // chart
     if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
-    if (radAxisX->isChecked()) text.setText(Util::scene()->projectInfo().labelX() + " (m):");
-    if (radAxisY->isChecked()) text.setText(Util::scene()->projectInfo().labelY() + " (m):");
+    if (radAxisX->isChecked()) text.setText(Util::scene()->problemInfo().labelX() + " (m):");
+    if (radAxisY->isChecked()) text.setText(Util::scene()->problemInfo().labelY() + " (m):");
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
@@ -266,8 +266,8 @@ void ChartDialog::doFieldVariable(int index)
     else
     {
         cmbFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbFieldVariableComp->addItem(Util::scene()->projectInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
-        cmbFieldVariableComp->addItem(Util::scene()->projectInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
+        cmbFieldVariableComp->addItem(Util::scene()->problemInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
+        cmbFieldVariableComp->addItem(Util::scene()->problemInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
     }
     
     if (cmbFieldVariableComp->currentIndex() == -1)

@@ -1,5 +1,5 @@
-#ifndef VIEWPROJECT_H
-#define VIEWPROJECT_H
+#ifndef VIEWPROBLEM_H
+#define VIEWPROBLEM_H
 
 #include <QtGui/QDockWidget>
 #include <QtGui/QTreeWidget>
@@ -61,4 +61,4 @@ private slots:
     void doItemSelected(QTreeWidgetItem *item, int role);
 };
 
-#endif // VIEWPROJECT_H
+#endif // VIEWPROBLEM_H

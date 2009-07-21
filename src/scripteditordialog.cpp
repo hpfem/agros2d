@@ -20,20 +20,20 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
 // newDocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitysteps, adaptivitytolerance)
 QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 {
-    ProjectInfo projectInfo;
+    ProblemInfo problemInfo;
 
     Util::scene()->clear();
-    Util::scene()->projectInfo() = projectInfo;
-    Util::scene()->projectInfo().name = context->argument(0).toString();
+    Util::scene()->problemInfo() = problemInfo;
+    Util::scene()->problemInfo().name = context->argument(0).toString();
     if (context->argument(1).toString() == "planar")
-        Util::scene()->projectInfo().problemType = PROBLEMTYPE_PLANAR;
+        Util::scene()->problemInfo().problemType = PROBLEMTYPE_PLANAR;
     else
-        Util::scene()->projectInfo().problemType = PROBLEMTYPE_AXISYMMETRIC;
-    Util::scene()->projectInfo().physicField = physicFieldFromStringKey(context->argument(2).toString());
-    Util::scene()->projectInfo().numberOfRefinements = context->argument(3).toNumber();
-    Util::scene()->projectInfo().polynomialOrder = context->argument(4).toNumber();
-    Util::scene()->projectInfo().adaptivitySteps = context->argument(5).toNumber();
-    Util::scene()->projectInfo().adaptivityTolerance = context->argument(6).toNumber();
+        Util::scene()->problemInfo().problemType = PROBLEMTYPE_AXISYMMETRIC;
+    Util::scene()->problemInfo().physicField = physicFieldFromStringKey(context->argument(2).toString());
+    Util::scene()->problemInfo().numberOfRefinements = context->argument(3).toNumber();
+    Util::scene()->problemInfo().polynomialOrder = context->argument(4).toNumber();
+    Util::scene()->problemInfo().adaptivitySteps = context->argument(5).toNumber();
+    Util::scene()->problemInfo().adaptivityTolerance = context->argument(6).toNumber();
 
     Util::scene()->refresh();
     return engine->undefinedValue();
@@ -122,7 +122,7 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
 {
     PhysicFieldBC type;
-    switch (Util::scene()->projectInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL)) type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
@@ -173,7 +173,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
                                                              context->argument(4).toNumber()));
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
         throw;
         break;
     }
@@ -185,7 +185,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
 {
     PhysicFieldBC type;
-    switch (Util::scene()->projectInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(context->argument(0).toString(),
@@ -212,7 +212,7 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
                                                                context->argument(3).toNumber()));
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
         throw;
         break;
     }
@@ -346,7 +346,7 @@ QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
     Point point(context->argument(0).toNumber(), context->argument(1).toNumber());
     LocalPointValue *localPointValue = localPointValueFactory(point);
 
-    QStringList headers = localPointValueHeaderFactory(Util::scene()->projectInfo().physicField);
+    QStringList headers = localPointValueHeaderFactory(Util::scene()->problemInfo().physicField);
     QStringList variables = localPointValue->variables();
 
     QScriptValue value = engine->newObject();
@@ -379,7 +379,7 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
 
         VolumeIntegralValue *volumeIntegral = volumeIntegralValueFactory();
 
-        QStringList headers = volumeIntegralValueHeaderFactory(Util::scene()->projectInfo().physicField);
+        QStringList headers = volumeIntegralValueHeaderFactory(Util::scene()->problemInfo().physicField);
         QStringList variables = volumeIntegral->variables();
 
         QScriptValue value = engine->newObject();
@@ -585,13 +585,13 @@ void ScriptEditorDialog::doCreateFromModel()
     // model
     str += "// model\n";
     str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, %7);").
-           arg(Util::scene()->projectInfo().name).
-           arg(problemTypeStringKey(Util::scene()->projectInfo().problemType)).
-           arg(physicFieldStringKey(Util::scene()->projectInfo().physicField)).
-           arg(Util::scene()->projectInfo().numberOfRefinements).
-           arg(Util::scene()->projectInfo().polynomialOrder).
-           arg(Util::scene()->projectInfo().adaptivitySteps).
-           arg(Util::scene()->projectInfo().adaptivityTolerance) + "\n";
+           arg(Util::scene()->problemInfo().name).
+           arg(problemTypeStringKey(Util::scene()->problemInfo().problemType)).
+           arg(physicFieldStringKey(Util::scene()->problemInfo().physicField)).
+           arg(Util::scene()->problemInfo().numberOfRefinements).
+           arg(Util::scene()->problemInfo().polynomialOrder).
+           arg(Util::scene()->problemInfo().adaptivitySteps).
+           arg(Util::scene()->problemInfo().adaptivityTolerance) + "\n";
     str += "\n";
 
     // boundaries
@@ -659,7 +659,7 @@ void ScriptEditorDialog::doRun()
     {
         Util::scene()->blockSignals(true);
         // startup script
-        m_engine->evaluate(Util::scene()->projectInfo().scriptStartup);
+        m_engine->evaluate(Util::scene()->problemInfo().scriptStartup);
         // result
         QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), m_fileName);
         Util::scene()->blockSignals(false);
@@ -674,9 +674,9 @@ void ScriptEditorDialog::doRun()
 
 // ******************************************************************************************************
 
-ScriptStartupDialog::ScriptStartupDialog(ProjectInfo &projectInfo, QWidget *parent) : QDialog(parent)
+ScriptStartupDialog::ScriptStartupDialog(ProblemInfo &problemInfo, QWidget *parent) : QDialog(parent)
 {
-    m_projectInfo = &projectInfo;
+    m_problemInfo = &problemInfo;
 
     setWindowTitle(tr("Startup script"));
     setMinimumSize(400, 300);
@@ -697,7 +697,7 @@ int ScriptStartupDialog::showDialog()
 void ScriptStartupDialog::createControls()
 {
     txtEditor = new ScriptEditor(this);
-    txtEditor->setPlainText(Util::scene()->projectInfo().scriptStartup);
+    txtEditor->setPlainText(Util::scene()->problemInfo().scriptStartup);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -717,7 +717,7 @@ void ScriptStartupDialog::doAccept()
 
     if (engine.canEvaluate(txtEditor->toPlainText()))
     {
-        Util::scene()->projectInfo().scriptStartup = txtEditor->toPlainText();
+        Util::scene()->problemInfo().scriptStartup = txtEditor->toPlainText();
         accept();
     }
     else

@@ -15,7 +15,7 @@ SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget
     trvWidget->setColumnWidth(2, 20);
 
     QStringList labels;
-    labels << tr("Label") << tr("Number") << "Unit";
+    labels << tr("Label") << tr("Value") << tr("Unit");
     trvWidget->setHeaderLabels(labels);
 
     setWidget(trvWidget);
@@ -230,7 +230,7 @@ QString SurfaceIntegralValueHeat::toString()
 
 SurfaceIntegralValue *surfaceIntegralValueFactory()
 {
-    switch (Util::scene()->projectInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         return new SurfaceIntegralValueElectrostatic();
@@ -248,7 +248,7 @@ SurfaceIntegralValue *surfaceIntegralValueFactory()
         return new SurfaceIntegralValueCurrent();
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SurfaceIntegralValue *surfaceIntegralValueFactory()" << endl;
         throw;
         break;
     }

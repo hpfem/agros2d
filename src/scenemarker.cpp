@@ -745,7 +745,7 @@ bool DSceneEdgeCurrentMarker::save() {
     edgeCurrentMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
     Value value = Value(txtValue->text());
-    if (value.evaluate(Util::scene()->projectInfo().scriptStartup))
+    if (value.evaluate(Util::scene()->problemInfo().scriptStartup))
         edgeCurrentMarker->value = value;
     else
         return false;

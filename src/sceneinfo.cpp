@@ -1,6 +1,6 @@
 #include "sceneinfo.h"
 
-SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Project"), parent)
+SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
 {
     this->m_sceneView = sceneView;
 
@@ -63,7 +63,7 @@ void SceneInfoView::createTreeView()
 
     // problem
     problemNode = new QTreeWidgetItem(trvWidget);
-    // problemNode->setIcon(0, icon("project"));
+    // problemNode->setIcon(0, icon("problem"));
     problemNode->setText(0, tr("Problem"));
     problemNode->setExpanded(true);
     // general
@@ -132,17 +132,17 @@ void SceneInfoView::doInvalidated()
 
     // problem name
     QTreeWidgetItem *itemProblemName = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemProblemName->setText(0, tr("Name: ") + Util::scene()->projectInfo().name);
+    itemProblemName->setText(0, tr("Name: ") + Util::scene()->problemInfo().name);
     // problem filename
     QTreeWidgetItem *itemProblemFileName = new QTreeWidgetItem(problemInfoGeneralNode);
-    QFileInfo fileInfo(Util::scene()->projectInfo().fileName);
+    QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
     itemProblemFileName->setText(0, tr("Filename: ") + fileInfo.fileName());
     // problem type
     QTreeWidgetItem *itemProblemType = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemProblemType->setText(0, tr("Type: ") + problemTypeString(Util::scene()->projectInfo().problemType));
+    itemProblemType->setText(0, tr("Type: ") + problemTypeString(Util::scene()->problemInfo().problemType));
     // physic field
     QTreeWidgetItem *itemPhysicField = new QTreeWidgetItem(problemInfoGeneralNode);
-    itemPhysicField->setText(0, tr("Field: ") + physicFieldString(Util::scene()->projectInfo().physicField));
+    itemPhysicField->setText(0, tr("Field: ") + physicFieldString(Util::scene()->problemInfo().physicField));
 
     // solver
     if (Util::scene()->sceneSolution()->isMeshed())

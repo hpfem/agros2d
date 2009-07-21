@@ -18,7 +18,7 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     trvWidget->setColumnWidth(2, 20);
 
     QStringList labels;
-    labels << tr("Label") << tr("Number") << "Unit";
+    labels << tr("Label") << tr("Value") << tr("Unit");
     trvWidget->setHeaderLabels(labels);
 
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
@@ -64,8 +64,8 @@ void LocalPointValueView::doShowPoint(LocalPointValue *localPointValue)
     pointNode->setText(0, tr("Point"));
     pointNode->setExpanded(true);
 
-    addValue(pointNode, Util::scene()->projectInfo().labelX() + ":", tr("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
-    addValue(pointNode, Util::scene()->projectInfo().labelY() + ":", tr("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
+    addValue(pointNode, Util::scene()->problemInfo().labelX() + ":", tr("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
+    addValue(pointNode, Util::scene()->problemInfo().labelY() + ":", tr("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
 
     trvWidget->insertTopLevelItem(0, pointNode);
 
@@ -110,8 +110,8 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, "E" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'f', 5), "V/m");
-    addValue(itemElectricField, "E" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'f', 5), "V/m");
     addValue(itemElectricField, "E", tr("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'f', 5), "V/m");
 
     // Electric Displacement
@@ -119,8 +119,8 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     itemElectricDisplacement->setText(0, tr("Electric displacement"));
     itemElectricDisplacement->setExpanded(true);
 
-    addValue(itemElectricDisplacement, "D" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
-    addValue(itemElectricDisplacement, "D" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
     addValue(itemElectricDisplacement, "D:", tr("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
 }
 
@@ -148,8 +148,8 @@ void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localP
     itemFluxDensity->setText(0, tr("Flux density"));
     itemFluxDensity->setExpanded(true);
 
-    addValue(itemFluxDensity, "B" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.x, 0, 'e', 3), "T");
-    addValue(itemFluxDensity, "B" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.y, 0, 'e', 3), "T");
+    addValue(itemFluxDensity, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.x, 0, 'e', 3), "T");
+    addValue(itemFluxDensity, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.y, 0, 'e', 3), "T");
     addValue(itemFluxDensity, "B:", tr("%1").arg(localPointValueMagnetostatic->B.magnitude(), 0, 'e', 3), "T");
 
     // Magnetic Field
@@ -157,8 +157,8 @@ void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localP
     itemMagneticField->setText(0, tr("Magnetic field"));
     itemMagneticField->setExpanded(true);
 
-    addValue(itemMagneticField, "H" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
-    addValue(itemMagneticField, "H" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
     addValue(itemMagneticField, "H", tr("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), "A/m");
 }
 
@@ -204,8 +204,8 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     itemFluxDensityReal->setText(0, tr("Flux density - real"));
     itemFluxDensityReal->setExpanded(false);
 
-    addValue(itemFluxDensityReal, "B" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_real.x, 0, 'e', 3), "T");
-    addValue(itemFluxDensityReal, "B" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_real.y, 0, 'e', 3), "T");
+    addValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_real.x, 0, 'e', 3), "T");
+    addValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_real.y, 0, 'e', 3), "T");
     addValue(itemFluxDensityReal, "B:", tr("%1").arg(localPointValueHarmonicMagnetic->B_real.magnitude(), 0, 'e', 3), "T");
 
     // Flux Density - imag
@@ -213,8 +213,8 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     itemFluxDensityImag->setText(0, tr("Flux density - imag"));
     itemFluxDensityImag->setExpanded(false);
 
-    addValue(itemFluxDensityImag, "B" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.x, 0, 'e', 3), "T");
-    addValue(itemFluxDensityImag, "B" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.y, 0, 'e', 3), "T");
+    addValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.x, 0, 'e', 3), "T");
+    addValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.y, 0, 'e', 3), "T");
     addValue(itemFluxDensityImag, "B:", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.magnitude(), 0, 'e', 3), "T");
 
     // Magnetic Field
@@ -225,8 +225,8 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     itemMagneticFieldReal->setText(0, tr("Magnetic field - real"));
     itemMagneticFieldReal->setExpanded(false);
 
-    addValue(itemMagneticFieldReal, "H" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_real.x, 0, 'e', 3), "A/m");
-    addValue(itemMagneticFieldReal, "H" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_real.y, 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_real.x, 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_real.y, 0, 'e', 3), "A/m");
     addValue(itemMagneticFieldReal, "H", tr("%1").arg(localPointValueHarmonicMagnetic->H_real.magnitude(), 0, 'e', 3), "A/m");
 
     // Magnetic Field - imag
@@ -234,8 +234,8 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     itemMagneticFieldImag->setText(0, tr("Magnetic field - imag"));
     itemMagneticFieldImag->setExpanded(false);
 
-    addValue(itemMagneticFieldImag, "H" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.x, 0, 'e', 3), "A/m");
-    addValue(itemMagneticFieldImag, "H" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.y, 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.x, 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.y, 0, 'e', 3), "A/m");
     addValue(itemMagneticFieldImag, "H", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.magnitude(), 0, 'e', 3), "A/m");
 
     // Total current density
@@ -266,8 +266,8 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     itemLorentzForceReal->setText(0, tr("Lorentz force - real"));
     itemLorentzForceReal->setExpanded(false);
 
-    addValue(itemLorentzForceReal, "FL" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.x, 0, 'e', 3), "N/m3");
-    addValue(itemLorentzForceReal, "FL" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.y, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.x, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.y, 0, 'e', 3), "N/m3");
     addValue(itemLorentzForceReal, "FL", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.magnitude(), 0, 'e', 3), "N/m3");
 
     // Lorentz force - imag
@@ -275,8 +275,8 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     itemLorentzForceImag->setText(0, tr("Lorentz force - imag"));
     itemLorentzForceImag->setExpanded(false);
 
-    addValue(itemLorentzForceImag, "FL" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.x, 0, 'e', 3), "N/m3");
-    addValue(itemLorentzForceImag, "FL" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.y, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.x, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.y, 0, 'e', 3), "N/m3");
     addValue(itemLorentzForceImag, "FL", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.magnitude(), 0, 'e', 3), "N/m3");
 }
 
@@ -301,8 +301,8 @@ void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
     itemHeatFlux->setText(0, tr("Heat flux"));
     itemHeatFlux->setExpanded(true);
 
-    addValue(itemHeatFlux, "F" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
-    addValue(itemHeatFlux, "F" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
     addValue(itemHeatFlux, "F:", tr("%1").arg(localPointValueHeat->F.magnitude(), 0, 'e', 3), "W/m2");
 
     // Temperature Gradient
@@ -310,8 +310,8 @@ void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
     itemTemperatureGradient->setText(0, tr("Temperature gradient"));
     itemTemperatureGradient->setExpanded(true);
 
-    addValue(itemTemperatureGradient, "G" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
-    addValue(itemTemperatureGradient, "G" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
     addValue(itemTemperatureGradient, "G:", tr("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "K/m");
 }
 
@@ -336,8 +336,8 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, "E" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.x, 0, 'f', 5), "V/m");
-    addValue(itemElectricField, "E" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.y, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.x, 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.y, 0, 'f', 5), "V/m");
     addValue(itemElectricField, "E:", tr("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'f', 5), "V/m");
 
     // Current Density
@@ -345,8 +345,8 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     itemCurrentDensity->setText(0, tr("Current density"));
     itemCurrentDensity->setExpanded(true);
 
-    addValue(itemCurrentDensity, "J" + Util::scene()->projectInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensity, "J" + Util::scene()->projectInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
     addValue(itemCurrentDensity, "J:", tr("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), "A/m2");
 }
 
@@ -520,7 +520,7 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point) : Local
             Point der;
             der = value.derivative;
 
-            if (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+            if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
             {
                 B.x =  der.y;
                 B.y = -der.x;
@@ -651,7 +651,7 @@ LocalPointValueHarmonicMagnetic::LocalPointValueHarmonicMagnetic(Point &point) :
             Point derReal;
             derReal = valueReal.derivative;
 
-            if (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+            if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
             {
                 B_real.x =  derReal.y;
                 B_real.y = -derReal.x;
@@ -665,7 +665,7 @@ LocalPointValueHarmonicMagnetic::LocalPointValueHarmonicMagnetic(Point &point) :
             Point derImag;
             derImag = valueImag.derivative;
 
-            if (Util::scene()->projectInfo().problemType == PROBLEMTYPE_PLANAR)
+            if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
             {
                 B_imag.x =  derImag.y;
                 B_imag.y = -derImag.x;
@@ -684,8 +684,8 @@ LocalPointValueHarmonicMagnetic::LocalPointValueHarmonicMagnetic(Point &point) :
             current_density_imag = marker->current_density_imag.number;
 
             // induced current density
-            current_density_induced_real =   2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * potential_imag;
-            current_density_induced_imag = - 2 * M_PI * Util::scene()->projectInfo().frequency * marker->conductivity.number * potential_real;
+            current_density_induced_real =   2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * potential_imag;
+            current_density_induced_imag = - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * potential_real;
 
             // total current density
             current_density_total_real = current_density_real + current_density_induced_real;
@@ -1166,7 +1166,7 @@ QStringList LocalPointValueElasticity::variables()
 
 LocalPointValue *localPointValueFactory(Point &point)
 {
-    switch (Util::scene()->projectInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         return new LocalPointValueElectrostatic(point);
@@ -1187,7 +1187,7 @@ LocalPointValue *localPointValueFactory(Point &point)
         return new LocalPointValueElasticity(point);
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->projectInfo().physicField).toStdString() + "' is not implemented. LocalPointValueView *localPointValueFactory(Point &point)" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. LocalPointValueView *localPointValueFactory(Point &point)" << endl;
         throw;
         break;
     }

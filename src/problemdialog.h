@@ -1,5 +1,5 @@
-#ifndef PROJECTDIALOG_H
-#define PROJECTDIALOG_H
+#ifndef PROBLEMDIALOG_H
+#define PROBLEMDIALOG_H
 
 #include <QtGui/QDialog>
 #include <QtGui/QLineEdit>
@@ -10,14 +10,14 @@
 #include "gui.h"
 #include "scene.h"
 
-struct ProjectInfo;
+struct ProblemInfo;
 
-class ProjectDialog: public QDialog
+class ProblemDialog: public QDialog
 {
     Q_OBJECT
 public:
-    ProjectDialog(ProjectInfo &projectInfo, bool isNewProject, QWidget *parent = 0);
-    ~ProjectDialog();
+    ProblemDialog(ProblemInfo &problemInfo, bool isNewProblem, QWidget *parent = 0);
+    ~ProblemDialog();
 
     int showDialog();
 
@@ -27,8 +27,8 @@ private slots:
     void doReject();
 
 private:
-    bool m_isNewProject;
-    ProjectInfo *m_projectInfo;
+    bool m_isNewProblem;
+    ProblemInfo *m_problemInfo;
 
     QLineEdit *txtName;
     QComboBox *cmbProblemType;
@@ -47,4 +47,4 @@ private:
     void save();
 };
 
-#endif // PROJECTDIALOG_H
+#endif // PROBLEMDIALOG_H

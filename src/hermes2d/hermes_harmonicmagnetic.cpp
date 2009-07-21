@@ -60,9 +60,9 @@ scalar harmonicmagnetic_bilinear_form_real_imag(RealFunction* fu, RealFunction* 
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticIsPlanar)
-        return - 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
+        return - 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
-        return - 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
+        return - 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
 }
 
 scalar harmonicmagnetic_bilinear_form_imag_real(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
@@ -70,9 +70,9 @@ scalar harmonicmagnetic_bilinear_form_imag_real(RealFunction* fu, RealFunction* 
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticIsPlanar)
-        return + 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
+        return + 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
-        return + 2 * M_PI * Util::scene()->projectInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
+        return + 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
 }
 
 scalar harmonicmagnetic_bilinear_form_imag_imag(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)

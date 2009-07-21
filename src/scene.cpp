@@ -49,27 +49,27 @@ Scene::~Scene() {
 void Scene::createActions()
 {
     // scene - add items
-    actNewNode = new QAction(icon("scene-node"), tr("New &node"), this);
+    actNewNode = new QAction(icon("scene-node"), tr("New &node..."), this);
     actNewNode->setShortcut(tr("Alt+N"));
     actNewNode->setStatusTip(tr("New node"));
     connect(actNewNode, SIGNAL(triggered()), this, SLOT(doNewNode()));
 
-    actNewEdge = new QAction(icon("scene-edge"), tr("New &edge"), this);
+    actNewEdge = new QAction(icon("scene-edge"), tr("New &edge..."), this);
     actNewEdge->setShortcut(tr("Alt+E"));
     actNewEdge->setStatusTip(tr("New edge"));
     connect(actNewEdge, SIGNAL(triggered()), this, SLOT(doNewEdge()));
 
-    actNewLabel = new QAction(icon("scene-label"), tr("New &label"), this);
+    actNewLabel = new QAction(icon("scene-label"), tr("New &label..."), this);
     actNewLabel->setShortcut(tr("Alt+L"));
     actNewLabel->setStatusTip(tr("New label"));
     connect(actNewLabel, SIGNAL(triggered()), this, SLOT(doNewLabel()));
 
-    actNewEdgeMarker = new QAction(icon("scene-edgemarker"), tr("New &boundary condition"), this);
+    actNewEdgeMarker = new QAction(icon("scene-edgemarker"), tr("New &boundary condition..."), this);
     actNewEdgeMarker->setShortcut(tr("Alt+B"));
     actNewEdgeMarker->setStatusTip(tr("New boundary condition"));
     connect(actNewEdgeMarker, SIGNAL(triggered()), this, SLOT(doNewEdgeMarker()));
 
-    actNewLabelMarker = new QAction(icon("scene-labelmarker"), tr("New &material"), this);
+    actNewLabelMarker = new QAction(icon("scene-labelmarker"), tr("New &material..."), this);
     actNewLabelMarker->setShortcut(tr("Alt+M"));
     actNewLabelMarker->setStatusTip(tr("New material"));
     connect(actNewLabelMarker, SIGNAL(triggered()), this, SLOT(doNewLabelMarker()));
@@ -78,9 +78,9 @@ void Scene::createActions()
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
-    actProjectProperties = new QAction(icon("scene-properties"), tr("Project properties"), this);
-    actProjectProperties->setStatusTip(tr("Project properties"));
-    connect(actProjectProperties, SIGNAL(triggered()), this, SLOT(doProjectProperties()));
+    actProblemProperties = new QAction(icon("scene-properties"), tr("Problem properties..."), this);
+    actProblemProperties->setStatusTip(tr("Problem properties"));
+    connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
 }
 
 SceneNode *Scene::addNode(SceneNode *node) {
@@ -204,7 +204,7 @@ void Scene::clear() {
     blockSignals(true);
 
     m_sceneSolution->clear();
-    m_projectInfo.clear();
+    m_problemInfo.clear();
 
     nodes.clear();
     edges.clear();
@@ -412,15 +412,15 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     }
     */
 
-    // clear project
+    // clear problem
     sceneSolution()->clear();
 
     // save as temp name
-    if (m_projectInfo.fileName.isEmpty())
-        m_projectInfo.fileName = QDesktopServices::TempLocation + "/agros_temp.h2d";
+    if (m_problemInfo.fileName.isEmpty())
+        m_problemInfo.fileName = QDesktopServices::TempLocation + "/agros_temp.h2d";
 
-    // save project
-    writeToFile(m_projectInfo.fileName);
+    // save problem
+    writeToFile(m_problemInfo.fileName);
 
     // solve
     solverDialog->setMode(solverMode);
@@ -433,7 +433,7 @@ void Scene::doSolved()
     solverDialog->hide();
 
     // file info
-    QFileInfo fileInfo(m_projectInfo.fileName);
+    QFileInfo fileInfo(m_problemInfo.fileName);
 
     // this slot is called after triangle and solve process is finished
     // linearizer only for mesh (on empty solution)
@@ -456,10 +456,10 @@ void Scene::doSolved()
     emit invalidated();
 
     // delete temp file
-    if (m_projectInfo.fileName == QDesktopServices::TempLocation + "/agros_temp.h2d")
+    if (m_problemInfo.fileName == QDesktopServices::TempLocation + "/agros_temp.h2d")
     {
-        QFile::remove(m_projectInfo.fileName);
-        m_projectInfo.fileName = "";
+        QFile::remove(m_problemInfo.fileName);
+        m_problemInfo.fileName = "";
     }
 }
 
@@ -505,7 +505,7 @@ void Scene::doNewLabel()
 void Scene::doNewEdgeMarker()
 {
     SceneEdgeMarker *marker;
-    switch (m_projectInfo.physicField)
+    switch (m_problemInfo.physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         marker = new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, Value("0"));
@@ -526,7 +526,7 @@ void Scene::doNewEdgeMarker()
         marker = new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, 0, 0);
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::doNewEdgeMarker()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField).toStdString() + "' is not implemented. Scene::doNewEdgeMarker()" << endl;
         throw;
         break;
     }
@@ -542,7 +542,7 @@ void Scene::doNewEdgeMarker()
 void Scene::doNewLabelMarker()
 {
     SceneLabelMarker *marker;
-    switch (m_projectInfo.physicField)
+    switch (m_problemInfo.physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         marker = new SceneLabelElectrostaticMarker("new material",  Value("0"), Value("1"));
@@ -563,7 +563,7 @@ void Scene::doNewLabelMarker()
         marker = new SceneLabelElasticityMarker("new material", 2e11, 0.33);
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::doNewLabelMarker()" << endl;
+        cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField).toStdString() + "' is not implemented. Scene::doNewLabelMarker()" << endl;
         throw;
         break;
     }
@@ -583,20 +583,20 @@ void Scene::doTransform()
     delete sceneTransformDialog;
 }
 
-void Scene::doProjectProperties()
+void Scene::doProblemProperties()
 {
-    ProjectDialog *projectDialog = new ProjectDialog(m_projectInfo, false, QApplication::activeWindow());
-    if (projectDialog->showDialog() == QDialog::Accepted)
+    ProblemDialog *problemDialog = new ProblemDialog(m_problemInfo, false, QApplication::activeWindow());
+    if (problemDialog->showDialog() == QDialog::Accepted)
     {
         emit invalidated();
     }
-    delete projectDialog;
+    delete problemDialog;
 }
 
 int Scene::writeToTriangle()
 {
     // file info
-    QFileInfo fileInfo(m_projectInfo.fileName);
+    QFileInfo fileInfo(m_problemInfo.fileName);
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -871,7 +871,7 @@ void Scene::readFromFile(const QString &fileName)
     setlocale (LC_NUMERIC, "C");
 
     clear();
-    this->m_projectInfo.fileName = fileName;
+    this->m_problemInfo.fileName = fileName;
 
     blockSignals(true);
 
@@ -892,35 +892,35 @@ void Scene::readFromFile(const QString &fileName)
     // main document
     QDomElement eleDoc = doc.documentElement();
 
-    // projects
-    QDomNode eleProjects = eleDoc.elementsByTagName("projects").at(0);
-    // first project
-    QDomNode eleProject = eleProjects.toElement().elementsByTagName("project").at(0);
+    // problems
+    QDomNode eleProblems = eleDoc.elementsByTagName("problems").at(0);
+    // first problem
+    QDomNode eleProblem = eleProblems.toElement().elementsByTagName("problem").at(0);
     // name
-    m_projectInfo.name = eleProject.toElement().attribute("name");
+    m_problemInfo.name = eleProblem.toElement().attribute("name");
     // problem type                                                                                                                                                                                                                             `
-    if (eleProject.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_PLANAR)) m_projectInfo.problemType = PROBLEMTYPE_PLANAR;
-    if (eleProject.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_AXISYMMETRIC)) m_projectInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
+    if (eleProblem.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_PLANAR)) m_problemInfo.problemType = PROBLEMTYPE_PLANAR;
+    if (eleProblem.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_AXISYMMETRIC)) m_problemInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
     // physic field
-    m_projectInfo.physicField = physicFieldFromStringKey(eleProject.toElement().attribute("type"));
+    m_problemInfo.physicField = physicFieldFromStringKey(eleProblem.toElement().attribute("type"));
     // number of refinements
-    m_projectInfo.numberOfRefinements = eleProject.toElement().attribute("numberofrefinements").toInt();
+    m_problemInfo.numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
-    m_projectInfo.polynomialOrder = eleProject.toElement().attribute("polynomialorder").toInt();
+    m_problemInfo.polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
     // adaptivity
-    m_projectInfo.adaptivitySteps = eleProject.toElement().attribute("adaptivitysteps").toInt();
-    m_projectInfo.adaptivityTolerance = eleProject.toElement().attribute("adaptivitytolerance").toDouble();
+    m_problemInfo.adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
+    m_problemInfo.adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
     // time harmonic
-    m_projectInfo.frequency = eleProject.toElement().attribute("frequency").toDouble();
+    m_problemInfo.frequency = eleProblem.toElement().attribute("frequency").toDouble();
 
     // startup script
-    QDomNode eleSriptStartup = eleProject.toElement().elementsByTagName("scriptstartup").at(0);
-    m_projectInfo.scriptStartup = eleSriptStartup.toElement().text();
+    QDomNode eleSriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
+    m_problemInfo.scriptStartup = eleSriptStartup.toElement().text();
 
     // markers ***************************************************************************************************************
 
     // edge marker
-    QDomNode eleEdgeMarkers = eleProject.toElement().elementsByTagName("edges").at(0);
+    QDomNode eleEdgeMarkers = eleProblem.toElement().elementsByTagName("edges").at(0);
     n = eleEdgeMarkers.firstChild();
     while(!n.isNull())
     {
@@ -937,7 +937,7 @@ void Scene::readFromFile(const QString &fileName)
             PhysicFieldBC type;
             PhysicFieldBC typeX;
             PhysicFieldBC typeY;
-            switch (m_projectInfo.physicField)
+            switch (m_problemInfo.physicField)
             {
             case PHYSICFIELD_ELECTROSTATIC:
                 // electrostatic markers
@@ -1011,7 +1011,7 @@ void Scene::readFromFile(const QString &fileName)
                 }
                 break;
             default:
-                cerr << "Physical field '" + physicFieldStringKey(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -1021,7 +1021,7 @@ void Scene::readFromFile(const QString &fileName)
     }
 
     // label marker
-    QDomNode eleLabelMarkers = eleProject.toElement().elementsByTagName("labels").at(0);
+    QDomNode eleLabelMarkers = eleProblem.toElement().elementsByTagName("labels").at(0);
     n = eleLabelMarkers.firstChild();
     while(!n.isNull())
     {
@@ -1035,7 +1035,7 @@ void Scene::readFromFile(const QString &fileName)
         }
         else
         {
-            switch (m_projectInfo.physicField)
+            switch (m_problemInfo.physicField)
             {
             case PHYSICFIELD_ELECTROSTATIC:
                 // electrostatic markers
@@ -1074,7 +1074,7 @@ void Scene::readFromFile(const QString &fileName)
                                                               element.toElement().attribute("young_modulus").toDouble(),
                                                               element.toElement().attribute("poisson_ratio").toDouble()));
                 break;            default:
-                        cerr << "Physical field '" + physicFieldStringKey(m_projectInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                        cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -1138,7 +1138,7 @@ void Scene::readFromFile(const QString &fileName)
 }
 
 void Scene::writeToFile(const QString &fileName) {
-    if (projectInfo().fileName != QDesktopServices::TempLocation + "/agros_temp.h2d")
+    if (problemInfo().fileName != QDesktopServices::TempLocation + "/agros_temp.h2d")
     {
         QSettings settings;
         QFileInfo fileInfo(fileName);
@@ -1149,7 +1149,7 @@ void Scene::writeToFile(const QString &fileName) {
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    m_projectInfo.fileName = fileName;
+    m_problemInfo.fileName = fileName;
 
     QDomDocument doc;
 
@@ -1157,35 +1157,35 @@ void Scene::writeToFile(const QString &fileName) {
     QDomElement eleDoc = doc.createElement("document");
     doc.appendChild(eleDoc);
 
-    // projects
-    QDomNode eleProjects = doc.createElement("projects");
-    eleDoc.appendChild(eleProjects);
-    // first project
-    QDomElement eleProject = doc.createElement("project");
-    eleProjects.appendChild(eleProject);
+    // problems
+    QDomNode eleProblems = doc.createElement("problems");
+    eleDoc.appendChild(eleProblems);
+    // first problem
+    QDomElement eleProblem = doc.createElement("problem");
+    eleProblems.appendChild(eleProblem);
     // id
-    eleProject.setAttribute("id", 0);
+    eleProblem.setAttribute("id", 0);
     // name
-    eleProject.setAttribute("name", m_projectInfo.name);
+    eleProblem.setAttribute("name", m_problemInfo.name);
     // problem type                                                                                                                                                                                                                             `
-    if (m_projectInfo.problemType == PROBLEMTYPE_PLANAR) eleProject.toElement().setAttribute("problemtype", "planar");
-    if (m_projectInfo.problemType == PROBLEMTYPE_AXISYMMETRIC) eleProject.toElement().setAttribute("problemtype", "axisymmetric");
+    if (m_problemInfo.problemType == PROBLEMTYPE_PLANAR) eleProblem.toElement().setAttribute("problemtype", "planar");
+    if (m_problemInfo.problemType == PROBLEMTYPE_AXISYMMETRIC) eleProblem.toElement().setAttribute("problemtype", "axisymmetric");
     // name
-    eleProject.setAttribute("type", physicFieldStringKey(m_projectInfo.physicField));
+    eleProblem.setAttribute("type", physicFieldStringKey(m_problemInfo.physicField));
     // number of refinements
-    eleProject.setAttribute("numberofrefinements", m_projectInfo.numberOfRefinements);
+    eleProblem.setAttribute("numberofrefinements", m_problemInfo.numberOfRefinements);
     // polynomial order
-    eleProject.setAttribute("polynomialorder", m_projectInfo.polynomialOrder);
+    eleProblem.setAttribute("polynomialorder", m_problemInfo.polynomialOrder);
     // adaptivity
-    eleProject.setAttribute("adaptivitysteps", m_projectInfo.adaptivitySteps);
-    eleProject.setAttribute("adaptivitytolerance", m_projectInfo.adaptivityTolerance);
+    eleProblem.setAttribute("adaptivitysteps", m_problemInfo.adaptivitySteps);
+    eleProblem.setAttribute("adaptivitytolerance", m_problemInfo.adaptivityTolerance);
     // time harmonic
-    eleProject.setAttribute("frequency", m_projectInfo.frequency);
+    eleProblem.setAttribute("frequency", m_problemInfo.frequency);
 
     // startup script
     QDomElement eleSriptStartup = doc.createElement("scriptstartup");
-    eleSriptStartup.appendChild(doc.createTextNode(m_projectInfo.scriptStartup));
-    eleProject.appendChild(eleSriptStartup);
+    eleSriptStartup.appendChild(doc.createTextNode(m_problemInfo.scriptStartup));
+    eleProblem.appendChild(eleSriptStartup);
 
     // geometry
     QDomNode eleGeometry = doc.createElement("geometry");
@@ -1243,7 +1243,7 @@ void Scene::writeToFile(const QString &fileName) {
 
     // edge markers
     QDomNode eleEdgeMarkers = doc.createElement("edges");
-    eleProject.appendChild(eleEdgeMarkers);
+    eleProblem.appendChild(eleEdgeMarkers);
     for (int i = 1; i<edgeMarkers.length(); i++)
     {
         QDomElement eleEdgeMarker = doc.createElement("edge");
@@ -1308,7 +1308,7 @@ void Scene::writeToFile(const QString &fileName) {
 
     // label markers
     QDomNode eleLabelMarkers = doc.createElement("labels");
-    eleProject.appendChild(eleLabelMarkers);
+    eleProblem.appendChild(eleLabelMarkers);
     for (int i = 1; i<labelMarkers.length(); i++)
     {
         QDomElement eleLabelMarker = doc.createElement("label");

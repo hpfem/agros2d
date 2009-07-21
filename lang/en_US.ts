@@ -430,6 +430,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/localvalueview.cpp" line="21"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/localvalueview.cpp" line="21"/>
+        <source>Unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/localvalueview.cpp" line="31"/>
         <source>Local point value</source>
         <translation type="unfinished"></translation>
@@ -554,11 +564,6 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="21"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/localvalueview.cpp" line="21"/>
-        <source>Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -779,11 +784,6 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="51"/>
-        <source>&amp;New</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="53"/>
         <source>Create a new file</source>
         <translation type="unfinished"></translation>
@@ -824,18 +824,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="72"/>
-        <source>Import DXF</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="75"/>
         <source>Export DXF...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="76"/>
-        <source>Export DXF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -845,7 +835,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="80"/>
-        <location filename="../src/mainwindow.cpp" line="432"/>
+        <location filename="../src/mainwindow.cpp" line="433"/>
         <source>Export image to file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -900,11 +890,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="108"/>
-        <source>&amp;About</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="109"/>
         <source>Show the application&apos;s About box</source>
         <translation type="unfinished"></translation>
@@ -955,11 +940,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="153"/>
-        <source>Recent projects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="156"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
@@ -975,63 +955,53 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="184"/>
-        <source>&amp;Project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="199"/>
+        <location filename="../src/mainwindow.cpp" line="200"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="546"/>
+        <location filename="../src/mainwindow.cpp" line="547"/>
         <source>&lt;b&gt;Agros 2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics solver based on Hermes2D library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;http://hpfem.org/hermes2d/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros 2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros 2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Hermes2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="548"/>
+        <location filename="../src/mainwindow.cpp" line="549"/>
         <source>About Agros 2D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="103"/>
-        <location filename="../src/mainwindow.cpp" line="208"/>
+        <location filename="../src/mainwindow.cpp" line="209"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="217"/>
+        <location filename="../src/mainwindow.cpp" line="218"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="223"/>
+        <location filename="../src/mainwindow.cpp" line="224"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="229"/>
-        <source>Project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="244"/>
+        <location filename="../src/mainwindow.cpp" line="245"/>
         <source>Zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="270"/>
+        <location filename="../src/mainwindow.cpp" line="271"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="281"/>
+        <location filename="../src/mainwindow.cpp" line="282"/>
         <source>Position: [%1; %2]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="362"/>
+        <location filename="../src/mainwindow.cpp" line="363"/>
         <source>Open file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1042,38 +1012,73 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="295"/>
+        <location filename="../src/mainwindow.cpp" line="51"/>
+        <source>&amp;New...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="72"/>
+        <source>Import AutoCAD DXF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="76"/>
+        <source>Export AutoCAD DXF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="108"/>
+        <source>&amp;About Agros 2D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="153"/>
+        <source>Recent files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="184"/>
+        <source>&amp;Problem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="230"/>
+        <source>Problem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="296"/>
         <source>Agros 2D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="362"/>
-        <location filename="../src/mainwindow.cpp" line="399"/>
+        <location filename="../src/mainwindow.cpp" line="363"/>
+        <location filename="../src/mainwindow.cpp" line="400"/>
         <source>Agros 2D files (*.h2d)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="399"/>
+        <location filename="../src/mainwindow.cpp" line="400"/>
         <source>Save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="411"/>
+        <location filename="../src/mainwindow.cpp" line="412"/>
         <source>Import file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="421"/>
+        <location filename="../src/mainwindow.cpp" line="422"/>
         <source>Export file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="535"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Problem Type: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="536"/>
+        <location filename="../src/mainwindow.cpp" line="537"/>
         <source>Physic Field: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1112,54 +1117,54 @@
     </message>
 </context>
 <context>
-    <name>ProjectDialog</name>
+    <name>ProblemDialog</name>
     <message>
-        <location filename="../src/projectdialog.cpp" line="8"/>
-        <source>Project properties</source>
+        <location filename="../src/problemdialog.cpp" line="8"/>
+        <source>Problem properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="57"/>
+        <location filename="../src/problemdialog.cpp" line="57"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="59"/>
+        <location filename="../src/problemdialog.cpp" line="59"/>
         <source>Date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="61"/>
+        <location filename="../src/problemdialog.cpp" line="61"/>
         <source>Problem type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="63"/>
+        <location filename="../src/problemdialog.cpp" line="63"/>
         <source>Physic field:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="65"/>
+        <location filename="../src/problemdialog.cpp" line="65"/>
         <source>Frequency:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="67"/>
+        <location filename="../src/problemdialog.cpp" line="67"/>
         <source>Number of refinements:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="69"/>
+        <location filename="../src/problemdialog.cpp" line="69"/>
         <source>Polynomial order:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="71"/>
+        <location filename="../src/problemdialog.cpp" line="71"/>
         <source>Adaptivity steps:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/projectdialog.cpp" line="73"/>
+        <location filename="../src/problemdialog.cpp" line="73"/>
         <source>Adaptivity tolerance:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1545,11 +1550,6 @@
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../src/scene.cpp" line="52"/>
-        <source>New &amp;node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/scene.cpp" line="53"/>
         <source>Alt+N</source>
         <translation type="unfinished"></translation>
@@ -1557,11 +1557,6 @@
     <message>
         <location filename="../src/scene.cpp" line="54"/>
         <source>New node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/scene.cpp" line="57"/>
-        <source>New &amp;edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1575,11 +1570,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="62"/>
-        <source>New &amp;label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/scene.cpp" line="63"/>
         <source>Alt+L</source>
         <translation type="unfinished"></translation>
@@ -1587,11 +1577,6 @@
     <message>
         <location filename="../src/scene.cpp" line="64"/>
         <source>New label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/scene.cpp" line="67"/>
-        <source>New &amp;boundary condition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1605,8 +1590,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/scene.cpp" line="52"/>
+        <source>New &amp;node...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="57"/>
+        <source>New &amp;edge...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="62"/>
+        <source>New &amp;label...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="67"/>
+        <source>New &amp;boundary condition...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/scene.cpp" line="72"/>
-        <source>New &amp;material</source>
+        <source>New &amp;material...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1627,18 +1632,17 @@
     </message>
     <message>
         <location filename="../src/scene.cpp" line="81"/>
+        <source>Problem properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/scene.cpp" line="82"/>
-        <source>Project properties</source>
+        <source>Problem properties</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SceneInfoView</name>
-    <message>
-        <location filename="../src/sceneinfo.cpp" line="3"/>
-        <source>Project</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../src/sceneinfo.cpp" line="31"/>
         <source>&amp;Properties</source>
@@ -1660,6 +1664,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/sceneinfo.cpp" line="3"/>
         <location filename="../src/sceneinfo.cpp" line="67"/>
         <source>Problem</source>
         <translation type="unfinished"></translation>
@@ -2249,7 +2254,12 @@
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="18"/>
-        <source>Number</source>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/surfaceintegralview.cpp" line="18"/>
+        <source>Unit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2370,11 +2380,6 @@
     <message>
         <location filename="../src/volumeintegralview.cpp" line="18"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/volumeintegralview.cpp" line="18"/>
-        <source>Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2560,6 +2565,16 @@
     <message>
         <location filename="../src/volumeintegralview.cpp" line="74"/>
         <source>Hx avg.:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/volumeintegralview.cpp" line="18"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/volumeintegralview.cpp" line="18"/>
+        <source>Unit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

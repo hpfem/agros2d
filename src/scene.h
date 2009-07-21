@@ -19,7 +19,7 @@
 #include "locale.h"
 #include "scenemarker.h"
 #include "scenebasic.h"
-#include "projectdialog.h"
+#include "problemdialog.h"
 #include "scenetransformdialog.h"
 
 #include "solverdialog.h"
@@ -45,10 +45,10 @@ struct SceneViewSettings;
 class SceneSolution;
 
 class SolverDialog;
-class ProjectDialog;
+class ProblemDialog;
 class SceneTransformDialog;
 
-struct ProjectInfo
+struct ProblemInfo
 {
     QString name;
     QDate date;
@@ -62,7 +62,7 @@ struct ProjectInfo
     QString scriptStartup;
     int frequency;
 
-    ProjectInfo()
+    ProblemInfo()
     {
         clear();
     }
@@ -110,7 +110,7 @@ public slots:
     void doNewEdgeMarker();
     void doNewLabelMarker();  
     void doTransform();
-    void doProjectProperties();
+    void doProblemProperties();
 
 signals:
     void invalidated();
@@ -129,7 +129,7 @@ public:
     QAction *actNewLabel;
     QAction *actNewEdgeMarker;
     QAction *actNewLabelMarker;
-    QAction *actProjectProperties;
+    QAction *actProblemProperties;
     QAction *actTransform;
 
     Scene();
@@ -165,7 +165,7 @@ public:
     void transformRotate(const Point &point, double angle, bool copy);
     void transformScale(const Point &point, double scaleFactor, bool copy);
 
-    inline ProjectInfo &projectInfo() { return m_projectInfo; }
+    inline ProblemInfo &problemInfo() { return m_problemInfo; }
 
     inline void refresh() { emit invalidated(); }
     void createMeshAndSolve(SolverMode solverMode);
@@ -181,7 +181,7 @@ public:
 protected:
 
 private:    
-    ProjectInfo m_projectInfo;
+    ProblemInfo m_problemInfo;
 
     // scene solution
     SceneSolution *m_sceneSolution;

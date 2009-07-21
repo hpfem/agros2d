@@ -48,7 +48,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::createActions()
 {
-    actDocumentNew = new QAction(icon("document-new"), tr("&New"), this);
+    actDocumentNew = new QAction(icon("document-new"), tr("&New..."), this);
     actDocumentNew->setShortcuts(QKeySequence::New);
     actDocumentNew->setStatusTip(tr("Create a new file"));
     connect(actDocumentNew, SIGNAL(triggered()), this, SLOT(doDocumentNew()));
@@ -69,11 +69,11 @@ void MainWindow::createActions()
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
     
     actDocumentImportDXF = new QAction(tr("Import DXF..."), this);
-    actDocumentImportDXF->setStatusTip(tr("Import DXF"));
+    actDocumentImportDXF->setStatusTip(tr("Import AutoCAD DXF"));
     connect(actDocumentImportDXF, SIGNAL(triggered()), this, SLOT(doDocumentImportDXF()));
 
     actDocumentExportDXF = new QAction(tr("Export DXF..."), this);
-    actDocumentExportDXF->setStatusTip(tr("Export DXF"));
+    actDocumentExportDXF->setStatusTip(tr("Export AutoCAD DXF"));
     connect(actDocumentExportDXF, SIGNAL(triggered()), this, SLOT(doDocumentExportDXF()));
 
     actDocumentSaveImage = new QAction(tr("Export image..."), this);
@@ -105,7 +105,7 @@ void MainWindow::createActions()
     actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 
-    actAbout = new QAction(icon("about"), tr("&About"), this);
+    actAbout = new QAction(icon("about"), tr("&About Agros 2D"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
 
@@ -150,7 +150,7 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
-    mnuRecentFiles = new QMenu(tr("Recent projects"), this);
+    mnuRecentFiles = new QMenu(tr("Recent files"), this);
     setRecentFiles();
 
     mnuFile = menuBar()->addMenu(tr("&File"));
@@ -181,11 +181,12 @@ void MainWindow::createMenus()
     mnuView->addSeparator();
     mnuView->addAction(sceneView->actFullScreen);
     
-    mnuScene = menuBar()->addMenu(tr("&Project"));
+    mnuScene = menuBar()->addMenu(tr("&Problem"));
+    mnuScene->addAction(sceneView->actSceneModePostprocessor);
+    mnuScene->addSeparator();
     mnuScene->addAction(sceneView->actSceneModeNode);
     mnuScene->addAction(sceneView->actSceneModeEdge);
     mnuScene->addAction(sceneView->actSceneModeLabel);
-    mnuScene->addAction(sceneView->actSceneModePostprocessor);
     mnuScene->addSeparator();
     mnuScene->addAction(Util::scene()->actNewNode);
     mnuScene->addAction(Util::scene()->actNewEdge);
@@ -194,7 +195,7 @@ void MainWindow::createMenus()
     mnuScene->addAction(Util::scene()->actNewEdgeMarker);
     mnuScene->addAction(Util::scene()->actNewLabelMarker);
     mnuScene->addSeparator();
-    mnuScene->addAction(Util::scene()->actProjectProperties);
+    mnuScene->addAction(Util::scene()->actProblemProperties);
 
     mnuTools = menuBar()->addMenu(tr("Tools"));
     mnuTools->addAction(actCreateMesh);
@@ -226,8 +227,8 @@ void MainWindow::createToolBars()
     tlbEdit->addAction(actCopy);
     tlbEdit->addAction(actPaste);
     
-    tlbScene = addToolBar(tr("Project"));
-    tlbScene->setObjectName("Project");
+    tlbScene = addToolBar(tr("Problem"));
+    tlbScene->setObjectName("Problem");
     tlbScene->addAction(sceneView->actSceneModeNode);
     tlbScene->addAction(sceneView->actSceneModeEdge);
     tlbScene->addAction(sceneView->actSceneModeLabel);
@@ -317,9 +318,9 @@ void MainWindow::createViews()
 void MainWindow::setRecentFiles()
 {
     // recent files
-    if (Util::scene()->projectInfo().fileName != "")
+    if (Util::scene()->problemInfo().fileName != "")
     {
-        QFileInfo fileInfo(Util::scene()->projectInfo().fileName);
+        QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -339,19 +340,19 @@ void MainWindow::setRecentFiles()
 
 void MainWindow::doDocumentNew()
 {
-    ProjectInfo projectInfo;
-    ProjectDialog *projectDialog = new ProjectDialog(projectInfo, true, this);
-    if (projectDialog->showDialog() == QDialog::Accepted)
+    ProblemInfo problemInfo;
+    ProblemDialog *problemDialog = new ProblemDialog(problemInfo, true, this);
+    if (problemDialog->showDialog() == QDialog::Accepted)
     {
         Util::scene()->clear();
         sceneView->doDefaults();
-        Util::scene()->projectInfo() = projectInfo;
+        Util::scene()->problemInfo() = problemInfo;
         Util::scene()->refresh();
 
         sceneView->actSceneModeNode->trigger();
         sceneView->doZoomBestFit();
     }
-    delete projectDialog;
+    delete problemDialog;
 }
 
 void MainWindow::doDocumentOpen()
@@ -385,8 +386,8 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    if (QFile::exists(Util::scene()->projectInfo().fileName))
-        Util::scene()->writeToFile(Util::scene()->projectInfo().fileName);
+    if (QFile::exists(Util::scene()->problemInfo().fileName))
+        Util::scene()->writeToFile(Util::scene()->problemInfo().fileName);
     else
         doDocumentSaveAs();
 }
@@ -453,7 +454,7 @@ void MainWindow::doCreateMesh()
 
 void MainWindow::doSolve()
 {
-    // solve project
+    // solve problem
     Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
     if (Util::scene()->sceneSolution()->isSolved())
         sceneView->actSceneModePostprocessor->trigger();
@@ -485,7 +486,7 @@ void MainWindow::doScriptEditor()
 
 void MainWindow::doScriptStartup()
 {
-    ScriptStartupDialog *scriptStartup = new ScriptStartupDialog(Util::scene()->projectInfo(), this);
+    ScriptStartupDialog *scriptStartup = new ScriptStartupDialog(Util::scene()->problemInfo(), this);
     scriptStartup->showDialog();
 
     delete scriptStartup;
@@ -532,8 +533,8 @@ void MainWindow::doInvalidated()
 {
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-    lblProblemType->setText(tr("Problem Type: ") + problemTypeString(Util::scene()->projectInfo().problemType));
-    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->projectInfo().physicField));
+    lblProblemType->setText(tr("Problem Type: ") + problemTypeString(Util::scene()->problemInfo().problemType));
+    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->problemInfo().physicField));
 }
 
 void MainWindow::doHelp()
