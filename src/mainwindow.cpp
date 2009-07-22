@@ -199,10 +199,10 @@ void MainWindow::createMenus()
     mnuAdd->addSeparator();
     mnuAdd->addAction(Util::scene()->actNewEdgeMarker);
     mnuAdd->addAction(Util::scene()->actNewLabelMarker);
+    mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
     mnuProblem->addAction(Util::scene()->actTransform);
     mnuProblem->addSeparator();
-
     mnuProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
     mnuProblem->addAction(sceneView->actPostprocessorModeVolumeIntegral);
