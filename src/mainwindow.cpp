@@ -150,6 +150,7 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
+    mnuAdd = new QMenu(tr("Add"), this);
     mnuRecentFiles = new QMenu(tr("Recent files"), this);
     setRecentFiles();
 
@@ -161,6 +162,7 @@ void MainWindow::createMenus()
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentImportDXF);
     mnuFile->addAction(actDocumentExportDXF);
+    mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSaveImage);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
@@ -176,31 +178,39 @@ void MainWindow::createMenus()
 
     mnuView = menuBar()->addMenu(tr("&View"));
     mnuView->addAction(sceneView->actSceneZoomBestFit);
+    mnuView->addAction(sceneView->actSceneZoomRegion);
     mnuView->addAction(sceneView->actSceneZoomIn);
     mnuView->addAction(sceneView->actSceneZoomOut);
     mnuView->addSeparator();
     mnuView->addAction(sceneView->actFullScreen);
-    
-    mnuScene = menuBar()->addMenu(tr("&Problem"));
-    mnuScene->addAction(sceneView->actSceneModePostprocessor);
-    mnuScene->addSeparator();
-    mnuScene->addAction(sceneView->actSceneModeNode);
-    mnuScene->addAction(sceneView->actSceneModeEdge);
-    mnuScene->addAction(sceneView->actSceneModeLabel);
-    mnuScene->addSeparator();
-    mnuScene->addAction(Util::scene()->actNewNode);
-    mnuScene->addAction(Util::scene()->actNewEdge);
-    mnuScene->addAction(Util::scene()->actNewLabel);
-    mnuScene->addSeparator();
-    mnuScene->addAction(Util::scene()->actNewEdgeMarker);
-    mnuScene->addAction(Util::scene()->actNewLabelMarker);
-    mnuScene->addSeparator();
-    mnuScene->addAction(Util::scene()->actProblemProperties);
+    mnuView->addSeparator();
+    mnuView->addAction(sceneView->actSceneViewProperties);
+
+    mnuProblem = menuBar()->addMenu(tr("&Problem"));
+    mnuProblem->addAction(sceneView->actSceneModeNode);
+    mnuProblem->addAction(sceneView->actSceneModeEdge);
+    mnuProblem->addAction(sceneView->actSceneModeLabel);
+    mnuProblem->addMenu(mnuAdd);
+    mnuAdd->addAction(Util::scene()->actNewNode);
+    mnuAdd->addAction(Util::scene()->actNewEdge);
+    mnuAdd->addAction(Util::scene()->actNewLabel);
+    mnuAdd->addSeparator();
+    mnuAdd->addAction(Util::scene()->actNewEdgeMarker);
+    mnuAdd->addAction(Util::scene()->actNewLabelMarker);
+    mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
+    mnuProblem->addAction(Util::scene()->actTransform);
+    mnuProblem->addSeparator();
+    mnuProblem->addAction(sceneView->actSceneModePostprocessor);
+    mnuProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
+    mnuProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
+    mnuProblem->addAction(sceneView->actPostprocessorModeVolumeIntegral);
+    mnuProblem->addSeparator();
+    mnuProblem->addAction(actCreateMesh);
+    mnuProblem->addAction(actSolve);
+    mnuProblem->addSeparator();
+    mnuProblem->addAction(Util::scene()->actProblemProperties);
 
     mnuTools = menuBar()->addMenu(tr("Tools"));
-    mnuTools->addAction(actCreateMesh);
-    mnuTools->addAction(actSolve);
-    mnuTools->addSeparator();
     mnuTools->addAction(actChart);
     mnuTools->addSeparator();
     mnuTools->addAction(actScriptStartup);
@@ -220,40 +230,46 @@ void MainWindow::createToolBars()
     tlbFile->addAction(actDocumentNew);
     tlbFile->addAction(actDocumentOpen);
     tlbFile->addAction(actDocumentSave);
-    
+
     tlbEdit = addToolBar(tr("Edit"));
     tlbEdit->setObjectName("Edit");
+    tlbEdit->hide();
     tlbEdit->addAction(actCut);
     tlbEdit->addAction(actCopy);
     tlbEdit->addAction(actPaste);
-    
-    tlbScene = addToolBar(tr("Problem"));
-    tlbScene->setObjectName("Problem");
-    tlbScene->addAction(sceneView->actSceneModeNode);
-    tlbScene->addAction(sceneView->actSceneModeEdge);
-    tlbScene->addAction(sceneView->actSceneModeLabel);
-    tlbScene->addAction(sceneView->actSceneModePostprocessor);
-    tlbScene->addSeparator();
-    tlbScene->addAction(sceneView->actSceneViewSelectRegion);
-    tlbScene->addAction(Util::scene()->actTransform);
-    tlbScene->addSeparator();
-    tlbScene->addAction(actCreateMesh);
-    tlbScene->addAction(actSolve);
-    tlbScene->addAction(sceneView->actSceneViewProperties);
-    tlbScene->addAction(actChart);
 
-    tlbZoom = addToolBar(tr("Zoom"));
-    tlbZoom->setObjectName("Zoom");
-    tlbZoom->addAction(sceneView->actSceneZoomBestFit);
-    tlbZoom->addAction(sceneView->actSceneZoomRegion);
-    tlbZoom->addAction(sceneView->actSceneZoomIn);
-    tlbZoom->addAction(sceneView->actSceneZoomOut);
+    tlbView = addToolBar(tr("View"));
+    tlbView->setObjectName("View");
+    tlbView->addAction(sceneView->actSceneZoomBestFit);
+    tlbView->addAction(sceneView->actSceneZoomRegion);
+    tlbView->addAction(sceneView->actSceneZoomIn);
+    tlbView->addAction(sceneView->actSceneZoomOut);
+    tlbView->addSeparator();
+    tlbView->addAction(sceneView->actSceneViewProperties);
 
-    tlbPostprocessor = addToolBar("Postprocessor");
-    tlbPostprocessor->setObjectName("Postprocessor");
-    tlbPostprocessor->addAction(sceneView->actPostprocessorModeLocalPointValue);
-    tlbPostprocessor->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
-    tlbPostprocessor->addAction(sceneView->actPostprocessorModeVolumeIntegral);
+    tlbProblem = addToolBar(tr("Problem"));
+    tlbProblem->setObjectName("Problem");
+    tlbProblem->addAction(sceneView->actSceneModeNode);
+    tlbProblem->addAction(sceneView->actSceneModeEdge);
+    tlbProblem->addAction(sceneView->actSceneModeLabel);
+    tlbProblem->addAction(sceneView->actSceneViewSelectRegion);
+    tlbProblem->addAction(Util::scene()->actTransform);
+    tlbProblem->addSeparator();
+    tlbProblem->addAction(sceneView->actSceneModePostprocessor);
+    tlbProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
+    tlbProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
+    tlbProblem->addAction(sceneView->actPostprocessorModeVolumeIntegral);
+    tlbProblem->addSeparator();
+    tlbProblem->addAction(actCreateMesh);
+    tlbProblem->addAction(actSolve);
+
+    tlbTools = addToolBar(tr("Tools"));
+    tlbTools->setObjectName("Tools");
+    tlbTools->hide();
+    tlbTools->addAction(actChart);
+    tlbTools->addSeparator();
+    tlbTools->addAction(actScriptStartup);
+    tlbTools->addAction(actScriptEditor);
 }
 
 void MainWindow::createStatusBar()

@@ -78,7 +78,7 @@ void Scene::createActions()
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
-    actProblemProperties = new QAction(icon("scene-properties"), tr("Problem properties..."), this);
+    actProblemProperties = new QAction(icon("scene-properties"), tr("Problem properties"), this);
     actProblemProperties->setStatusTip(tr("Problem properties"));
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
 }

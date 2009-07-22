@@ -94,13 +94,13 @@ void SceneView::createActions()
     actShowGroup->addAction(actShowVectors);
     
     // postprocessor group
-    actPostprocessorModeLocalPointValue = new QAction(icon("mode-localpointvalue"), "Local Values", this);
+    actPostprocessorModeLocalPointValue = new QAction(icon("mode-localpointvalue"), tr("Local Values"), this);
     actPostprocessorModeLocalPointValue->setCheckable(true);
     
-    actPostprocessorModeSurfaceIntegral = new QAction(icon("mode-surfaceintegral"), "Surface Integrals", this);
+    actPostprocessorModeSurfaceIntegral = new QAction(icon("mode-surfaceintegral"), tr("Surface Integrals"), this);
     actPostprocessorModeSurfaceIntegral->setCheckable(true);
     
-    actPostprocessorModeVolumeIntegral = new QAction(icon("mode-volumeintegral"), "Volume Integrals", this);
+    actPostprocessorModeVolumeIntegral = new QAction(icon("mode-volumeintegral"), tr("Volume Integrals"), this);
     actPostprocessorModeVolumeIntegral->setCheckable(true);
     
     actPostprocessorModeGroup = new QActionGroup(this);
@@ -110,7 +110,7 @@ void SceneView::createActions()
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
     
     // properties
-    actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Properties"), this);
+    actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Scene properties"), this);
     actSceneViewProperties->setStatusTip(tr("Properties"));
     connect(actSceneViewProperties, SIGNAL(triggered()), this, SLOT(doSceneViewProperties()));
     

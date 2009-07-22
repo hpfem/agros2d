@@ -82,15 +82,16 @@ private:
     QMenu *mnuRecentFiles;
     QMenu *mnuEdit;
     QMenu *mnuView;
-    QMenu *mnuScene;
+    QMenu *mnuProblem;
+    QMenu *mnuAdd;
     QMenu *mnuTools;
     QMenu *mnuHelp;
 
     QToolBar *tlbFile;
     QToolBar *tlbEdit;
-    QToolBar *tlbScene;
-    QToolBar *tlbZoom;
-    QToolBar *tlbPostprocessor;
+    QToolBar *tlbView;
+    QToolBar *tlbProblem;
+    QToolBar *tlbTools;
 
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
