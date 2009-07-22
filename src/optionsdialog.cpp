@@ -49,7 +49,13 @@ void OptionsDialog::load()
     }
 
     // colors
+    colorNodes->setColor(m_sceneViewSettings->colorNodes);
+    colorEdges->setColor(m_sceneViewSettings->colorEdges);
+    colorLabels->setColor(m_sceneViewSettings->colorLabels);
     colorContours->setColor(m_sceneViewSettings->colorContours);
+    colorVectors->setColor(m_sceneViewSettings->colorVectors);
+    colorInitialMesh->setColor(m_sceneViewSettings->colorInitialMesh);
+    colorSolutionMesh->setColor(m_sceneViewSettings->colorSolutionMesh);
 }
 
 void OptionsDialog::save()
@@ -64,7 +70,13 @@ void OptionsDialog::save()
     setLanguage(cmbLanguage->currentText());
 
     // color
+    m_sceneViewSettings->colorNodes = colorNodes->color();
+    m_sceneViewSettings->colorEdges = colorEdges->color();
+    m_sceneViewSettings->colorLabels = colorLabels->color();
     m_sceneViewSettings->colorContours = colorContours->color();
+    m_sceneViewSettings->colorVectors = colorVectors->color();
+    m_sceneViewSettings->colorInitialMesh = colorInitialMesh->color();
+    m_sceneViewSettings->colorSolutionMesh = colorSolutionMesh->color();
 
     m_sceneViewSettings->save();
 }
@@ -147,11 +159,29 @@ QWidget *OptionsDialog::createColorsWidget()
     QWidget *colorsWidget = new QWidget(this);
 
     // colors
+    colorNodes = new ColorButton(this);
+    colorEdges = new ColorButton(this);
+    colorLabels = new ColorButton(this);
     colorContours = new ColorButton(this);
+    colorVectors = new ColorButton(this);
+    colorInitialMesh = new ColorButton(this);
+    colorSolutionMesh = new ColorButton(this);
 
     QGridLayout *layoutColors = new QGridLayout();
-    layoutColors->addWidget(new QLabel(tr("Contours:")), 0, 0);
-    layoutColors->addWidget(colorContours, 0, 1);
+    layoutColors->addWidget(new QLabel(tr("Nodes:")), 0, 0);
+    layoutColors->addWidget(new QLabel(tr("Edges:")), 1, 0);
+    layoutColors->addWidget(new QLabel(tr("Labels:")), 2, 0);
+    layoutColors->addWidget(new QLabel(tr("Contours:")), 3, 0);
+    layoutColors->addWidget(new QLabel(tr("Vectors:")), 4, 0);
+    layoutColors->addWidget(new QLabel(tr("Initial mesh:")), 5, 0);
+    layoutColors->addWidget(new QLabel(tr("Solution mesh:")), 6, 0);
+    layoutColors->addWidget(colorNodes, 0, 1);
+    layoutColors->addWidget(colorEdges, 1, 1);
+    layoutColors->addWidget(colorLabels, 2, 1);
+    layoutColors->addWidget(colorContours, 3, 1);
+    layoutColors->addWidget(colorVectors, 4, 1);
+    layoutColors->addWidget(colorInitialMesh, 5, 1);
+    layoutColors->addWidget(colorSolutionMesh, 6, 1);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutColors);

@@ -313,7 +313,7 @@ void SceneView::paintGeometry()
     // edges
     foreach (SceneEdge *edge, Util::scene()->edges)
     {
-        glColor3f(0.0, 0.1, 0.6);
+        glColor3f(m_sceneViewSettings.colorEdges.redF(), m_sceneViewSettings.colorEdges.greenF(), m_sceneViewSettings.colorEdges.blueF());
         glLineWidth(2.0);
         if (edge->isHighlighted)
         {
@@ -349,7 +349,7 @@ void SceneView::paintGeometry()
     {
         foreach (SceneNode *node, Util::scene()->nodes)
         {
-            glColor3f(0.7, 0, 0);
+            glColor3f(m_sceneViewSettings.colorNodes.redF(), m_sceneViewSettings.colorNodes.greenF(), m_sceneViewSettings.colorNodes.blueF());
             glPointSize(7.0);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
@@ -378,9 +378,9 @@ void SceneView::paintGeometry()
     // labels
     if (!(m_sceneMode == SCENEMODE_POSTPROCESSOR))
     {
-        foreach (SceneLabel *label, Util::scene()->labels) {
-            glColor3f(0.0, 0.7, 0.0);
-            
+        foreach (SceneLabel *label, Util::scene()->labels)
+        {
+            glColor3f(m_sceneViewSettings.colorLabels.redF(), m_sceneViewSettings.colorLabels.greenF(), m_sceneViewSettings.colorLabels.blueF());
             glPointSize(7.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
@@ -436,7 +436,7 @@ void SceneView::paintInitialMesh()
 {
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3f(0.83, 0.83, 0.0);
+    glColor3f(m_sceneViewSettings.colorInitialMesh.redF(), m_sceneViewSettings.colorInitialMesh.greenF(), m_sceneViewSettings.colorInitialMesh.blueF());
     
     // triangles
     glBegin(GL_TRIANGLES);
@@ -459,7 +459,7 @@ void SceneView::paintSolutionMesh()
     {
         // draw solution mesh
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glColor3d(0.1, 0.1, 0.0);
+        glColor3f(m_sceneViewSettings.colorSolutionMesh.redF(), m_sceneViewSettings.colorSolutionMesh.greenF(), m_sceneViewSettings.colorSolutionMesh.blueF());
         
         // triangles
         glBegin(GL_TRIANGLES);
@@ -910,7 +910,7 @@ void SceneView::paintVectors()
     double4* vecVert = Util::scene()->sceneSolution()->vecVectorView().get_vertices();
     int3* vecTris = Util::scene()->sceneSolution()->vecVectorView().get_triangles();
     
-    glColor3f(0.7, 0, 0);
+    glColor3f(m_sceneViewSettings.colorVectors.redF(), m_sceneViewSettings.colorVectors.greenF(), m_sceneViewSettings.colorVectors.blueF());
     // glEnable(GL_TEXTURE_1D);
     // glBindTexture(GL_TEXTURE_1D, 1);
     // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
