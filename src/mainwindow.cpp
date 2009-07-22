@@ -190,6 +190,8 @@ void MainWindow::createMenus()
     mnuProblem->addAction(sceneView->actSceneModeNode);
     mnuProblem->addAction(sceneView->actSceneModeEdge);
     mnuProblem->addAction(sceneView->actSceneModeLabel);
+    mnuProblem->addAction(sceneView->actSceneModePostprocessor);
+    mnuProblem->addSeparator();
     mnuProblem->addMenu(mnuAdd);
     mnuAdd->addAction(Util::scene()->actNewNode);
     mnuAdd->addAction(Util::scene()->actNewEdge);
@@ -200,7 +202,7 @@ void MainWindow::createMenus()
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
     mnuProblem->addAction(Util::scene()->actTransform);
     mnuProblem->addSeparator();
-    mnuProblem->addAction(sceneView->actSceneModePostprocessor);
+
     mnuProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
     mnuProblem->addAction(sceneView->actPostprocessorModeVolumeIntegral);
@@ -252,10 +254,11 @@ void MainWindow::createToolBars()
     tlbProblem->addAction(sceneView->actSceneModeNode);
     tlbProblem->addAction(sceneView->actSceneModeEdge);
     tlbProblem->addAction(sceneView->actSceneModeLabel);
+    tlbProblem->addAction(sceneView->actSceneModePostprocessor);
+    tlbProblem->addSeparator();
     tlbProblem->addAction(sceneView->actSceneViewSelectRegion);
     tlbProblem->addAction(Util::scene()->actTransform);
     tlbProblem->addSeparator();
-    tlbProblem->addAction(sceneView->actSceneModePostprocessor);
     tlbProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
     tlbProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
     tlbProblem->addAction(sceneView->actPostprocessorModeVolumeIntegral);

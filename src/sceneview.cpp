@@ -140,6 +140,9 @@ void SceneView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdge);
     mnuInfo->addAction(Util::scene()->actNewLabel);
     mnuInfo->addSeparator();
+    mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
+    mnuInfo->addAction(Util::scene()->actNewLabelMarker);
+    mnuInfo->addSeparator();
     mnuInfo->addAction(Util::scene()->actTransform);
     mnuInfo->addSeparator();
     mnuInfo->addMenu(mnuMarkerGroup);
