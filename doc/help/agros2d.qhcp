@@ -4,7 +4,7 @@
     <title>Agros 2D</title>
     <applicationIcon>agros2d_logo.png</applicationIcon>
     <cacheDirectory>agros2d</cacheDirectory>
-    <startPage>qthelp://agros2d/introduction/index.html</startPage>
+    <startPage>qthelp://agros2d/main/index.html</startPage>
     <aboutMenuText>
       <text>About Agros 2D</text>
     </aboutMenuText>
