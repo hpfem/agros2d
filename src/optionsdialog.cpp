@@ -239,7 +239,7 @@ void ColorButton::paintEvent(QPaintEvent *event)
 
 void ColorButton::doClicked()
 {
-    QColor color = QColorDialog::getColor();
+    QColor color = QColorDialog::getColor(m_color);
 
     if (color.isValid())
     {

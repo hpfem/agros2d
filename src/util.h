@@ -838,13 +838,13 @@ struct SceneViewSettings
     void load()
     {
         QSettings settings;
-        colorNodes = settings.value("SceneViewSettings/ColorNodes", QColor::fromRgb(180, 0, 0, 0)).value<QColor>();
-        colorEdges = settings.value("SceneViewSettings/ColorEdges", QColor::fromRgb(0, 25, 150, 0)).value<QColor>();
-        colorLabels = settings.value("SceneViewSettings/ColorLabels", QColor::fromRgb(0, 180, 0, 0)).value<QColor>();
-        colorContours = settings.value("SceneViewSettings/ColorContours", QColor::fromRgb(0, 0, 0, 0)).value<QColor>();
-        colorVectors = settings.value("SceneViewSettings/ColorVectors", QColor::fromRgb(180, 0, 0, 0)).value<QColor>();
-        colorInitialMesh = settings.value("SceneViewSettings/ColorInitialMesh", QColor::fromRgb(210, 210, 0, 0)).value<QColor>();
-        colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", QColor::fromRgb(25, 25, 0, 0)).value<QColor>();
+        colorNodes = settings.value("SceneViewSettings/ColorNodes", QColor::fromRgb(180, 0, 0)).value<QColor>();
+        colorEdges = settings.value("SceneViewSettings/ColorEdges", QColor::fromRgb(0, 25, 150)).value<QColor>();
+        colorLabels = settings.value("SceneViewSettings/ColorLabels", QColor::fromRgb(0, 180, 0)).value<QColor>();
+        colorContours = settings.value("SceneViewSettings/ColorContours", QColor::fromRgb(0, 0, 0)).value<QColor>();
+        colorVectors = settings.value("SceneViewSettings/ColorVectors", QColor::fromRgb(180, 0, 0)).value<QColor>();
+        colorInitialMesh = settings.value("SceneViewSettings/ColorInitialMesh", QColor::fromRgb(210, 210, 0)).value<QColor>();
+        colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", QColor::fromRgb(25, 25, 0)).value<QColor>();
     }
 
     void save()
