@@ -49,6 +49,9 @@ void OptionsDialog::load()
     }
 
     // colors
+    colorBackground->setColor(m_sceneViewSettings->colorBackground);
+    colorGrid->setColor(m_sceneViewSettings->colorGrid);
+    colorCross->setColor(m_sceneViewSettings->colorCross);
     colorNodes->setColor(m_sceneViewSettings->colorNodes);
     colorEdges->setColor(m_sceneViewSettings->colorEdges);
     colorLabels->setColor(m_sceneViewSettings->colorLabels);
@@ -56,6 +59,8 @@ void OptionsDialog::load()
     colorVectors->setColor(m_sceneViewSettings->colorVectors);
     colorInitialMesh->setColor(m_sceneViewSettings->colorInitialMesh);
     colorSolutionMesh->setColor(m_sceneViewSettings->colorSolutionMesh);
+    colorHighlighted->setColor(m_sceneViewSettings->colorHighlighted);
+    colorSelected->setColor(m_sceneViewSettings->colorSelected);
 }
 
 void OptionsDialog::save()
@@ -70,6 +75,9 @@ void OptionsDialog::save()
     setLanguage(cmbLanguage->currentText());
 
     // color
+    m_sceneViewSettings->colorBackground = colorBackground->color();
+    m_sceneViewSettings->colorGrid = colorGrid->color();
+    m_sceneViewSettings->colorCross = colorCross->color();
     m_sceneViewSettings->colorNodes = colorNodes->color();
     m_sceneViewSettings->colorEdges = colorEdges->color();
     m_sceneViewSettings->colorLabels = colorLabels->color();
@@ -77,6 +85,8 @@ void OptionsDialog::save()
     m_sceneViewSettings->colorVectors = colorVectors->color();
     m_sceneViewSettings->colorInitialMesh = colorInitialMesh->color();
     m_sceneViewSettings->colorSolutionMesh = colorSolutionMesh->color();
+    m_sceneViewSettings->colorHighlighted = colorHighlighted->color();
+    m_sceneViewSettings->colorSelected = colorSelected->color();
 
     m_sceneViewSettings->save();
 }
@@ -159,6 +169,10 @@ QWidget *OptionsDialog::createColorsWidget()
     QWidget *colorsWidget = new QWidget(this);
 
     // colors
+    colorBackground = new ColorButton(this);
+    colorGrid = new ColorButton(this);
+    colorCross = new ColorButton(this);
+
     colorNodes = new ColorButton(this);
     colorEdges = new ColorButton(this);
     colorLabels = new ColorButton(this);
@@ -167,21 +181,35 @@ QWidget *OptionsDialog::createColorsWidget()
     colorInitialMesh = new ColorButton(this);
     colorSolutionMesh = new ColorButton(this);
 
+    colorHighlighted = new ColorButton(this);
+    colorSelected = new ColorButton(this);
+
     QGridLayout *layoutColors = new QGridLayout();
-    layoutColors->addWidget(new QLabel(tr("Nodes:")), 0, 0);
-    layoutColors->addWidget(new QLabel(tr("Edges:")), 1, 0);
-    layoutColors->addWidget(new QLabel(tr("Labels:")), 2, 0);
-    layoutColors->addWidget(new QLabel(tr("Contours:")), 3, 0);
-    layoutColors->addWidget(new QLabel(tr("Vectors:")), 4, 0);
-    layoutColors->addWidget(new QLabel(tr("Initial mesh:")), 5, 0);
-    layoutColors->addWidget(new QLabel(tr("Solution mesh:")), 6, 0);
-    layoutColors->addWidget(colorNodes, 0, 1);
-    layoutColors->addWidget(colorEdges, 1, 1);
-    layoutColors->addWidget(colorLabels, 2, 1);
-    layoutColors->addWidget(colorContours, 3, 1);
-    layoutColors->addWidget(colorVectors, 4, 1);
-    layoutColors->addWidget(colorInitialMesh, 5, 1);
-    layoutColors->addWidget(colorSolutionMesh, 6, 1);
+    layoutColors->addWidget(new QLabel(tr("Background:")), 0, 0);
+    layoutColors->addWidget(new QLabel(tr("Grid:")), 1, 0);
+    layoutColors->addWidget(new QLabel(tr("Cross:")), 2, 0);
+    layoutColors->addWidget(new QLabel(tr("Nodes:")), 3, 0);
+    layoutColors->addWidget(new QLabel(tr("Edges:")), 4, 0);
+    layoutColors->addWidget(new QLabel(tr("Labels:")), 5, 0);
+    layoutColors->addWidget(new QLabel(tr("Contours:")), 6, 0);
+    layoutColors->addWidget(new QLabel(tr("Vectors:")), 7, 0);
+    layoutColors->addWidget(new QLabel(tr("Initial mesh:")), 8, 0);
+    layoutColors->addWidget(new QLabel(tr("Solution mesh:")), 9, 0);
+    layoutColors->addWidget(new QLabel(tr("Highlighted elements:")), 10, 0);
+    layoutColors->addWidget(new QLabel(tr("Selected elements:")), 11, 0);
+
+    layoutColors->addWidget(colorBackground, 0, 1);
+    layoutColors->addWidget(colorGrid, 1, 1);
+    layoutColors->addWidget(colorCross, 2, 1);
+    layoutColors->addWidget(colorNodes, 3, 1);
+    layoutColors->addWidget(colorEdges, 4, 1);
+    layoutColors->addWidget(colorLabels, 5, 1);
+    layoutColors->addWidget(colorContours, 6, 1);
+    layoutColors->addWidget(colorVectors, 7, 1);
+    layoutColors->addWidget(colorInitialMesh, 8, 1);
+    layoutColors->addWidget(colorSolutionMesh, 9, 1);
+    layoutColors->addWidget(colorHighlighted, 10, 1);
+    layoutColors->addWidget(colorSelected, 11, 1);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutColors);

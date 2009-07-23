@@ -180,7 +180,7 @@ void SceneView::setupViewport()
 
 void SceneView::paintGL()
 {
-    glClearColor(0.99, 0.99, 0.99, 0);
+    glClearColor(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
@@ -263,7 +263,7 @@ void SceneView::paintGrid()
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(width(), height()));
     
-    glColor3f(0.85, 0.85, 0.85);
+    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
     glLineWidth(1.0);
     glEnable(GL_LINE_STIPPLE);
     glLineStipple(1, 0x1C47);
@@ -300,7 +300,7 @@ void SceneView::paintGrid()
     glDisable(GL_LINE_STIPPLE);
     
     // axes
-    glColor3f(0.5, 1.0, 0.7);
+    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
     glBegin(GL_LINES);
     // y axis
     glVertex2d(0, cornerMin.y);
@@ -320,12 +320,12 @@ void SceneView::paintGeometry()
         glLineWidth(2.0);
         if (edge->isHighlighted)
         {
-            glColor3d(0.8, 0.5, 0.2);
+            glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
             glLineWidth(3.0);
         }
         if (edge->isSelected)
         {
-            glColor3f(1.0, 0.0, 0.0);
+            glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
             glLineWidth(3.0);
         }
         
@@ -366,8 +366,8 @@ void SceneView::paintGeometry()
             
             if ((node->isSelected) || (node->isHighlighted))
             {
-                if (node->isHighlighted) glColor3d(0.8, 0.5, 0.2);
-                if (node->isSelected) glColor3f(1.0, 0.0, 0.0);
+                if (node->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
+                if (node->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
                 
                 glPointSize(5.0);
                 glBegin(GL_POINTS);
@@ -384,7 +384,7 @@ void SceneView::paintGeometry()
         foreach (SceneLabel *label, Util::scene()->labels)
         {
             glColor3f(m_sceneViewSettings.colorLabels.redF(), m_sceneViewSettings.colorLabels.greenF(), m_sceneViewSettings.colorLabels.blueF());
-            glPointSize(7.0);
+            glPointSize(9.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
             glEnd();
@@ -398,8 +398,8 @@ void SceneView::paintGeometry()
             if ((label->isSelected) || (label->isHighlighted))
             {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                if (label->isHighlighted) glColor3d(0.8, 0.5, 0.2);
-                if (label->isSelected) glColor3f(1.0, 0.0, 0.0);
+                if (label->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
+                if (label->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
                 
                 glPointSize(5.0);
                 glBegin(GL_POINTS);
@@ -619,7 +619,7 @@ void SceneView::paintColorBar(double min, double max)
     glDisable(GL_TEXTURE_1D);
     
     // ticks
-    glColor3f(0, 0, 0);
+    glColor3f(0.0, 0.0, 0.0);
 
     glLineWidth(1.0);
     glBegin(GL_LINES);
@@ -1006,7 +1006,7 @@ void SceneView::paintSceneModeLabel()
     glEnd();
     glDisable(GL_BLEND);
     
-    glColor3f(0, 0, 0);
+    glColor3f(0.0, 0.0, 0.0);
     renderText((width()-fontMetrics().width(text))/2, 14, text);
     
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
@@ -1027,7 +1027,7 @@ void SceneView::paintZoomRegion()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glColor4d(1.0, 0.8, 0.7, 0.65);
+        glColor4d(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF(), 0.75);
 
         glBegin(GL_QUADS);
         glVertex2d(posStart.x, posStart.y);
@@ -1041,8 +1041,8 @@ void SceneView::paintZoomRegion()
 
 void SceneView::paintChartLine()
 {    
-    glColor3f(1.0, 0.3, 0.0);
-    glLineWidth(4.0);
+    glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
+    glLineWidth(3.0);
 
     glBegin(GL_LINES);
     glVertex2d(m_chartLine.start.x, m_chartLine.start.y);
@@ -2215,7 +2215,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glColor4d(0.2, 0.5, 0.2, 0.7);
+    glColor4d(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF(), 0.5);
     
     // triangles
     glBegin(GL_TRIANGLES);
@@ -2240,7 +2240,7 @@ void SceneView::paintPostprocessorSelectedSurface()
 {
     // edges
     foreach (SceneEdge *edge, Util::scene()->edges) {
-        glColor3d(0.8, 0.5, 0.2);
+        glColor3d(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
         glLineWidth(3.0);
         
         if (edge->isSelected)

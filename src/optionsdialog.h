@@ -47,6 +47,9 @@ private:
     QComboBox *cmbLanguage;
 
     // colors
+    ColorButton *colorBackground;
+    ColorButton *colorGrid;
+    ColorButton *colorCross;
     ColorButton *colorNodes;
     ColorButton *colorEdges;
     ColorButton *colorLabels;
@@ -54,6 +57,8 @@ private:
     ColorButton *colorVectors;
     ColorButton *colorInitialMesh;
     ColorButton *colorSolutionMesh;
+    ColorButton *colorHighlighted;
+    ColorButton *colorSelected;
 
     void load();
     void save();
