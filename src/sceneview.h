@@ -34,8 +34,9 @@ class LocalPointValue;
 class VolumeIntegralValue;
 class SurfaceIntegralValue;
 
-struct SceneViewSettings
+class SceneViewSettings
 {
+public:
     bool showGeometry;
     bool showGrid;
     bool showInitialMesh;

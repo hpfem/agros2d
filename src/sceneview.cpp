@@ -2314,6 +2314,6 @@ void SceneView::saveImageToFile(const QString &fileName)
     // copy image
     QImage *image = new QImage(grabFrameBuffer(true));
     image->save(fileName, "PNG");
-    
+
     delete image;
 }
