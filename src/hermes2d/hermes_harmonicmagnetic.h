@@ -2,13 +2,9 @@
 #define HARMONICMAGNETIC_H
 
 #include "util.h"
+#include "util.h"
 #include "solverdialog.h"
-#include "hermes2d.h"
 #include "solver_umfpack.h"
-
-#include <iostream>
-
-using namespace std;
 
 struct SolutionArray;
 class SolverDialog;

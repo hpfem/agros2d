@@ -18,8 +18,11 @@
 
 #include "util.h"
 #include "scene.h"
+#include "sceneview.h"
 
 class ColorButton;
+
+struct SceneViewSettings;
 
 class OptionsDialog : public QDialog
 {

@@ -16,13 +16,13 @@
 #include <iostream>
 
 #include "util.h"
+#include "scene.h"
 
 #include "sceneviewdialog.h"
 #include "scenebasic.h"
 #include "localvalueview.h"
 #include "volumeintegralview.h"
 #include "surfaceintegralview.h"
-#include "scene.h"
 
 #include "sceneview_data.h"
 
@@ -33,6 +33,65 @@ class SceneLabel;
 class LocalPointValue;
 class VolumeIntegralValue;
 class SurfaceIntegralValue;
+
+struct SceneViewSettings
+{
+    bool showGeometry;
+    bool showGrid;
+    bool showInitialMesh;
+
+    SceneViewPostprocessorShow postprocessorShow;
+
+    bool showContours;
+    bool showVectors;
+    bool showSolutionMesh;
+
+    // grid
+    double gridStep;
+
+    // contour
+    int contoursCount;
+    PhysicFieldVariable contourPhysicFieldVariable;
+
+    // scalar view
+    PhysicFieldVariable scalarPhysicFieldVariable;
+    PhysicFieldVariableComp scalarPhysicFieldVariableComp;
+    bool scalarRangeAuto;
+    double scalarRangeMin;
+    double scalarRangeMax;
+
+    // vector view
+    PhysicFieldVariable vectorPhysicFieldVariable;
+    bool vectorRangeAuto;
+    double vectorRangeMin;
+    double vectorRangeMax;
+
+    // 3d
+    bool scalarView3DLighting;
+
+    // palete
+    PaletteType paletteType;
+    int paletteSteps;
+    bool paletteFilter;
+
+    // colors
+    QColor colorBackground;
+    QColor colorGrid;
+    QColor colorCross;
+    QColor colorNodes;
+    QColor colorEdges;
+    QColor colorLabels;
+    QColor colorContours;
+    QColor colorVectors;
+    QColor colorInitialMesh;
+    QColor colorSolutionMesh;
+    QColor colorHighlighted;
+    QColor colorSelected;    
+
+    void defaultValues();
+    void load();
+    void save();
+};
 
 class SceneView : public QGLWidget
 {

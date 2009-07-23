@@ -1,5 +1,7 @@
 #include "hermes_harmonicmagnetic.h"
 
+#include "scene.h"
+
 inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
 {
     Quad2D* quad = fu->get_quad_2d();

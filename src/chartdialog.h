@@ -39,6 +39,7 @@
 
 #include "scene.h"
 #include "util.h"
+#include "localvalueview.h"
 
 class Chart;
 

@@ -3,6 +3,7 @@
 
 #include <QtGui/QDockWidget>
 #include <QtGui/QTreeWidget>
+#include <QtGui/QMenu>
 
 #include "util.h"
 #include "scene.h"

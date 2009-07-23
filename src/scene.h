@@ -19,12 +19,13 @@
 #include "locale.h"
 #include "scenemarker.h"
 #include "scenebasic.h"
+#include "scenesolution.h"
+
+#include "helpdialog.h"
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
-
 #include "solverdialog.h"
-#include "helpdialog.h"
-#include "scenesolution.h"
+
 #include "hermes2d/hermes_electrostatic.h"
 #include "hermes2d/hermes_magnetostatic.h"
 #include "hermes2d/hermes_harmonicmagnetic.h"
@@ -47,6 +48,7 @@ class SceneSolution;
 class SolverDialog;
 class ProblemDialog;
 class SceneTransformDialog;
+class HelpDialog;
 
 struct ProblemInfo
 {
@@ -196,8 +198,6 @@ private slots:
     void doSolved();
 };
 
-// **************************************************************************************
-
 class Util
 {
 public:
@@ -213,5 +213,7 @@ public:
         return &helpDialog;
     }
 };
+
+// **************************************************************************************
 
 #endif /* SCENE_H */

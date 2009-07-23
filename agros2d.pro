@@ -42,13 +42,13 @@ SOURCES += src/scene.cpp \
     src/scenetransformdialog.cpp \
     src/sceneviewdialog.cpp \
     src/optionsdialog.cpp \
+    src/helpdialog.cpp \
     src/scenesolution.cpp \
     src/localvalueview.cpp \
     src/volumeintegralview.cpp \
     src/surfaceintegralview.cpp \
     src/dxflib/dl_writer_ascii.cpp \
-    src/dxflib/dl_dxf.cpp \
-    src/helpdialog.cpp
+    src/dxflib/dl_dxf.cpp
 HEADERS += src/scene.h \
     src/util.h \
     src/mainwindow.h \
@@ -72,11 +72,11 @@ HEADERS += src/scene.h \
     src/scenetransformdialog.h \
     src/sceneviewdialog.h \
     src/optionsdialog.h \
+    src/helpdialog.h \
     src/scenesolution.h \
     src/localvalueview.h \
     src/volumeintegralview.h \
-    src/surfaceintegralview.h \
-    src/helpdialog.h
+    src/surfaceintegralview.h
 INCLUDEPATH += src \
     src/dxflib
 unix:INCLUDEPATH += /usr/include

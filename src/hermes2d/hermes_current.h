@@ -1,10 +1,9 @@
 #ifndef HERMES_CURRENT_H
 #define HERMES_CURRENT_H
 
-
 #include "util.h"
-#include "solverdialog.h"
 #include "hermes2d.h"
+#include "solverdialog.h"
 #include "solver_umfpack.h"
 
 struct SolutionArray;

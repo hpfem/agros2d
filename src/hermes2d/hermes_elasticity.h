@@ -2,11 +2,9 @@
 #define HERMES_ELASTICITY_H
 
 #include "util.h"
-#include "solverdialog.h"
 #include "hermes2d.h"
+#include "solverdialog.h"
 #include "solver_umfpack.h"
-
-using namespace std;
 
 struct SolutionArray;
 class SolverDialog;

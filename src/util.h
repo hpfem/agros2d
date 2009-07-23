@@ -451,7 +451,7 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
         return QObject::tr("Wb/m");
         break;
-case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
+    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
         return QObject::tr("Wb/m");
         break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG:
@@ -784,95 +784,6 @@ enum SceneViewPostprocessorShow
     SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D,
     SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID,
     SCENEVIEW_POSTPROCESSOR_SHOW_ORDER
-};
-
-struct SceneViewSettings
-{
-    bool showGeometry;
-    bool showGrid;
-    bool showInitialMesh;
-
-    SceneViewPostprocessorShow postprocessorShow;
-
-    bool showContours;
-    bool showVectors;
-    bool showSolutionMesh;
-
-    // grid
-    double gridStep;
-
-    // contour
-    int contoursCount;
-    PhysicFieldVariable contourPhysicFieldVariable;
-
-    // scalar view
-    PhysicFieldVariable scalarPhysicFieldVariable;
-    PhysicFieldVariableComp scalarPhysicFieldVariableComp;
-    bool scalarRangeAuto;
-    double scalarRangeMin;
-    double scalarRangeMax;
-
-    // vector view
-    PhysicFieldVariable vectorPhysicFieldVariable;
-    bool vectorRangeAuto;
-    double vectorRangeMin;
-    double vectorRangeMax;
-
-    // 3d
-    bool scalarView3DLighting;
-
-    // palete
-    PaletteType paletteType;
-    int paletteSteps;
-    bool paletteFilter;    
-
-    // colors
-    QColor colorBackground;
-    QColor colorGrid;
-    QColor colorCross;
-    QColor colorNodes;
-    QColor colorEdges;
-    QColor colorLabels;
-    QColor colorContours;
-    QColor colorVectors;
-    QColor colorInitialMesh;
-    QColor colorSolutionMesh;
-    QColor colorHighlighted;
-    QColor colorSelected;
-
-    void load()
-    {
-        QSettings settings;
-        colorBackground = settings.value("SceneViewSettings/ColorBackground", QColor::fromRgb(255, 255, 255)).value<QColor>();
-        colorGrid = settings.value("SceneViewSettings/ColorGrid", QColor::fromRgb(200, 200, 200)).value<QColor>();
-        colorCross = settings.value("SceneViewSettings/ColorCross", QColor::fromRgb(150, 150, 150)).value<QColor>();
-        colorNodes = settings.value("SceneViewSettings/ColorNodes", QColor::fromRgb(150, 0, 0)).value<QColor>();
-        colorEdges = settings.value("SceneViewSettings/ColorEdges", QColor::fromRgb(0, 0, 150)).value<QColor>();
-        colorLabels = settings.value("SceneViewSettings/ColorLabels", QColor::fromRgb(0, 150, 0)).value<QColor>();
-        colorContours = settings.value("SceneViewSettings/ColorContours", QColor::fromRgb(0, 0, 0)).value<QColor>();
-        colorVectors = settings.value("SceneViewSettings/ColorVectors", QColor::fromRgb(0, 0, 0)).value<QColor>();
-        colorInitialMesh = settings.value("SceneViewSettings/ColorInitialMesh", QColor::fromRgb(250, 250, 0)).value<QColor>();
-        colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", QColor::fromRgb(150, 70, 0)).value<QColor>();
-        colorHighlighted = settings.value("SceneViewSettings/ColorHighlighted", QColor::fromRgb(250, 150, 0)).value<QColor>();
-        colorSelected = settings.value("SceneViewSettings/ColorSelected", QColor::fromRgb(150, 0, 0)).value<QColor>();
-    }
-
-    void save()
-    {
-        QSettings settings;
-        settings.setValue("SceneViewSettings/ColorBackground", colorBackground);
-        settings.setValue("SceneViewSettings/ColorGrid", colorGrid);
-        settings.setValue("SceneViewSettings/ColorCross", colorCross);
-        settings.setValue("SceneViewSettings/ColorNodes", colorNodes);
-        settings.setValue("SceneViewSettings/ColorEdges", colorEdges);
-        settings.setValue("SceneViewSettings/ColorLabels", colorLabels);
-        settings.setValue("SceneViewSettings/ColorContours", colorContours);
-        settings.setValue("SceneViewSettings/ColorVectors", colorVectors);
-        settings.setValue("SceneViewSettings/ColorInitialMesh", colorInitialMesh);
-        settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSolutionMesh);
-        settings.setValue("SceneViewSettings/ColorInitialMesh", colorHighlighted);
-        settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSelected);
-    }
 };
 
 // set gui style

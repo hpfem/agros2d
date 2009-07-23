@@ -2,9 +2,9 @@
 #define SCENESOLUTION_H
 
 #include "util.h"
+#include "hermes2d.h"
 #include "scene.h"
 #include "scenemarker.h"
-#include "solverdialog.h"
 
 class Scene;
 class SceneLabelMarker;
@@ -12,6 +12,12 @@ class SceneLabelMarker;
 class ViewScalarFilter;
 
 struct SolutionArray;
+
+class Solution;
+class Linearizer;
+class Vectorizer;
+class Orderizer;
+class Mesh;
 
 struct PointValue
 {

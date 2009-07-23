@@ -30,7 +30,7 @@ scalar current_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
     if (currentEdge[marker].type == PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)
         J = currentEdge[marker].value;
 
-    if (heatIsPlanar)
+    if (currentIsPlanar)
         return J * surf_int_v(fv, rv, ep);
     else
         return J * 2 * M_PI * surf_int_x_v(fv, rv, ep);

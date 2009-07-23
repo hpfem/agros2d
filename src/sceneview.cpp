@@ -1,5 +1,123 @@
 #include "sceneview.h"
 
+void SceneViewSettings::defaultValues()
+{
+    scalarRangeMin = 0;
+    scalarRangeMax = 1;
+
+    // visible objects
+    showGrid = true;
+    showGeometry = true;
+    showInitialMesh = false;
+
+    postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
+
+    showContours = false;
+    showVectors = false;
+    showSolutionMesh = false;
+
+    // settings
+    gridStep = 0.05;
+
+    contoursCount = 15;
+    paletteType = PALETTE_JET;
+    paletteFilter = false;
+    paletteSteps = 30;
+    scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_NONE;
+    scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
+    scalarRangeAuto = true;
+
+    // 3d
+    scalarView3DLighting = false;
+
+    switch (Util::scene()->problemInfo().physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        {
+            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL;
+            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL;
+            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD;
+        }
+        break;
+    case PHYSICFIELD_MAGNETOSTATIC:
+        {
+            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL;
+            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
+            scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_MAGNITUDE;
+            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
+        }
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        {
+            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
+            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
+            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY;
+        }
+        break;
+    case PHYSICFIELD_HEAT_TRANSFER:
+        {
+            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_TEMPERATURE;
+            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_TEMPERATURE;
+            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_FLUX;
+        }
+        break;
+    case PHYSICFIELD_CURRENT:
+        {
+            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
+            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
+            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY;
+        }
+        break;
+    case PHYSICFIELD_ELASTICITY:
+        {
+            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;
+            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;
+            // vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_FLUX;
+        }
+        break;
+    default:
+        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SceneViewSettings::defaultValues()" << endl;
+        throw;
+        break;
+    }
+}
+
+void SceneViewSettings::load()
+{
+    QSettings settings;
+    colorBackground = settings.value("SceneViewSettings/ColorBackground", QColor::fromRgb(255, 255, 255)).value<QColor>();
+    colorGrid = settings.value("SceneViewSettings/ColorGrid", QColor::fromRgb(200, 200, 200)).value<QColor>();
+    colorCross = settings.value("SceneViewSettings/ColorCross", QColor::fromRgb(150, 150, 150)).value<QColor>();
+    colorNodes = settings.value("SceneViewSettings/ColorNodes", QColor::fromRgb(150, 0, 0)).value<QColor>();
+    colorEdges = settings.value("SceneViewSettings/ColorEdges", QColor::fromRgb(0, 0, 150)).value<QColor>();
+    colorLabels = settings.value("SceneViewSettings/ColorLabels", QColor::fromRgb(0, 150, 0)).value<QColor>();
+    colorContours = settings.value("SceneViewSettings/ColorContours", QColor::fromRgb(0, 0, 0)).value<QColor>();
+    colorVectors = settings.value("SceneViewSettings/ColorVectors", QColor::fromRgb(0, 0, 0)).value<QColor>();
+    colorInitialMesh = settings.value("SceneViewSettings/ColorInitialMesh", QColor::fromRgb(250, 250, 0)).value<QColor>();
+    colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", QColor::fromRgb(150, 70, 0)).value<QColor>();
+    colorHighlighted = settings.value("SceneViewSettings/ColorHighlighted", QColor::fromRgb(250, 150, 0)).value<QColor>();
+    colorSelected = settings.value("SceneViewSettings/ColorSelected", QColor::fromRgb(150, 0, 0)).value<QColor>();
+}
+
+void SceneViewSettings::save()
+{
+    QSettings settings;
+    settings.setValue("SceneViewSettings/ColorBackground", colorBackground);
+    settings.setValue("SceneViewSettings/ColorGrid", colorGrid);
+    settings.setValue("SceneViewSettings/ColorCross", colorCross);
+    settings.setValue("SceneViewSettings/ColorNodes", colorNodes);
+    settings.setValue("SceneViewSettings/ColorEdges", colorEdges);
+    settings.setValue("SceneViewSettings/ColorLabels", colorLabels);
+    settings.setValue("SceneViewSettings/ColorContours", colorContours);
+    settings.setValue("SceneViewSettings/ColorVectors", colorVectors);
+    settings.setValue("SceneViewSettings/ColorInitialMesh", colorInitialMesh);
+    settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSolutionMesh);
+    settings.setValue("SceneViewSettings/ColorInitialMesh", colorHighlighted);
+    settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSelected);
+}
+
+// *******************************************************************************************************
+
 SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     m_mainWindow = (QMainWindow *) parent;
@@ -1737,84 +1855,7 @@ void SceneView::doDefaults()
     m_chartLine.start = Point();
     m_chartLine.end = Point();
 
-    m_sceneViewSettings.scalarRangeMin = 0;
-    m_sceneViewSettings.scalarRangeMax = 1;
-    
-    // visible objects
-    m_sceneViewSettings.showGrid = true;
-    m_sceneViewSettings.showGeometry = true;
-    m_sceneViewSettings.showInitialMesh = false;
-
-    m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
-
-    m_sceneViewSettings.showContours = false;
-    m_sceneViewSettings.showVectors = false;
-    m_sceneViewSettings.showSolutionMesh = false;
-    
-    // settings
-    m_sceneViewSettings.gridStep = 0.05;
-    
-    m_sceneViewSettings.contoursCount = 15;
-    m_sceneViewSettings.paletteType = PALETTE_JET;
-    m_sceneViewSettings.paletteFilter = false;
-    m_sceneViewSettings.paletteSteps = 30;
-    m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_NONE;
-    m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
-    m_sceneViewSettings.scalarRangeAuto = true;
-
-    // 3d
-    m_sceneViewSettings.scalarView3DLighting = false;
-
-    switch (Util::scene()->problemInfo().physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        {
-            m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL;
-            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL;
-            m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD;
-        }
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        {
-            m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL;
-            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
-            m_sceneViewSettings.scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_MAGNITUDE;
-            m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
-        }
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        {
-            m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-            m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY;
-        }
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        {
-            m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_TEMPERATURE;
-            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_TEMPERATURE;
-            m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_FLUX;
-        }
-        break;
-    case PHYSICFIELD_CURRENT:
-        {
-            m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
-            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
-            m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY;
-        }
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        {
-            m_sceneViewSettings.contourPhysicFieldVariable = PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;
-            m_sceneViewSettings.scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;
-            // m_sceneViewSettings.vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_FLUX;
-        }
-        break;
-    default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SceneView::doDefaults()" << endl;
-        throw;
-        break;
-    }
+    m_sceneViewSettings.defaultValues();
     
     doInvalidated();
     doZoomBestFit();
@@ -1957,9 +1998,9 @@ void SceneView::setRangeContour()
         ViewScalarFilter *viewScalarFilter;
         if (numberOfSolution(Util::scene()->problemInfo().physicField) == 1)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
-                                                                      Util::scene(),
-                                                                      m_sceneViewSettings.contourPhysicFieldVariable,
-                                                                      PHYSICFIELDVARIABLECOMP_SCALAR);
+                                                    Util::scene(),
+                                                    m_sceneViewSettings.contourPhysicFieldVariable,
+                                                    PHYSICFIELDVARIABLECOMP_SCALAR);
 
         if (numberOfSolution(Util::scene()->problemInfo().physicField) == 2)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
@@ -2028,9 +2069,9 @@ void SceneView::setRangeScalar()
             glDisable(GL_COLOR_MATERIAL);
 
             glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-            #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
+#if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
             glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-            #endif
+#endif
 
             // calculate normals
             Util::scene()->sceneSolution()->linScalarView().lock_data();
@@ -2268,9 +2309,10 @@ void SceneView::paintPostprocessorSelectedSurface()
 void SceneView::saveImageToFile(const QString &fileName)
 {
     makeCurrent();
-    
+    // glReadBuffer(GL_FRONT);
+
     // copy image
-    QImage *image = new QImage(grabFrameBuffer());
+    QImage *image = new QImage(grabFrameBuffer(true));
     image->save(fileName, "PNG");
     
     delete image;

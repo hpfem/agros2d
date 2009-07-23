@@ -12,6 +12,7 @@
 #include <QtGui/QDesktopServices>
 
 #include "scene.h"
+#include "sceneview.h"
 #include "scenemarker.h"
 #include "scripteditorhighlighter.h"
 

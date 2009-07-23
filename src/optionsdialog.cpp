@@ -242,6 +242,7 @@ void OptionsDialog::doReject()
 ColorButton::ColorButton(QWidget *parent) : QPushButton(parent)
 {
     setAutoFillBackground(false);
+    setCursor(Qt::PointingHandCursor);    
     connect(this, SIGNAL(clicked()), this, SLOT(doClicked()));
 }
 

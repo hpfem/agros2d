@@ -2,24 +2,19 @@
 #define SCENEHERMES_H
 
 #include <QtGui/QProgressBar>
-#include <QtGui/QProgressDialog>
 #include <QtGui/QListWidget>
 #include <QtGui/QTextEdit>
-#include <QThread>
-#include <QProcess>
-#include <QFileInfo>
+#include <QtGui/QLabel>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QVBoxLayout>
 
 #include "util.h"
-#include "hermes2d.h"
-#include "scene.h"
-#include "sceneview.h"
 
 class Solution;
 class Linearizer;
 class Vectorizer;
+class Orderizer;
 class Mesh;
-
-class Scene;
 
 struct SolutionArray
 {
@@ -31,7 +26,8 @@ struct SolutionArray
     Orderizer *order1;
     Orderizer *order2;
 
-    SolutionArray() {
+    SolutionArray()
+    {
         this->sln1 = NULL;
         this->sln2 = NULL;
         this->order1 = NULL;
@@ -39,6 +35,11 @@ struct SolutionArray
 
         this->adaptiveError = 100.0;
         this->adaptiveSteps = 0;
+    }
+
+    ~SolutionArray()
+    {
+        clear();
     }
 
     void clear()
