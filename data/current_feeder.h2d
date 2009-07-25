@@ -1,6 +1,7 @@
 <document>
     <problems>
         <problem adaptivitytolerance="1" numberofrefinements="1" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="current field" id="0" name="Feeder" >
+            <scriptstartup></scriptstartup>
             <edges>
                 <edge type="inward_current_flow" value="0" id="1" name="Neumann" />
                 <edge type="inward_current_flow" value="1000000" id="2" name="In" />
