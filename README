@@ -1,0 +1,67 @@
+Welcome to Agros 2D.
+
+This manual is intended for Debian-based systems. For other systems is very similar.
+
+Requirements
+============
+
+You must first install the needed requirements. They are Hermes2D (http://www.hpfem.org/hermes2d), Nokia Qt 4.5 (http://www.qtsoftware.com/products), Qwt 5.0 (http://qwt.sourceforge.net) and Triangle (http://www.cs.cmu.edu/~quake/triangle.html).
+
+Install the required libraries:
+
+$ apt-get install libqt4-dev qt4-dev-tools libsuitesparse-dev libqwt5-qt4-dev libtriangle-1.6
+
+Hermes2D can not install from the repositories, but it is necessary to compile it.
+
+To compile Agros 2D you need qmake, and q++, install this packages:
+
+$ apt-get install qmake q++
+
+Documentation
+=============
+
+Agros 2D manual is available from the program by pressing F1. To generate this help run:
+
+qhelpgenerator ./doc/help/agros2d.qhp -o ./doc/help/agros2d.qch
+
+or
+
+$ ./agros2d.debian.sh -h
+
+Location
+========
+
+Agros 2D is available in two languages (Czech and English). To generate files with localization run:
+
+lrelease ./lang/*.ts ./lang/*.qm
+
+or
+
+$ ./agros2d.debian.sh -l
+
+Compilation
+===========
+
+For compile run:
+
+$ qmake agros2d.pro
+$ make
+
+or
+
+$ ./agros2d.debian.sh -c
+
+For build binary package run:
+
+dpkg-buildpackage -sgpg -rfakeroot
+
+or
+
+$ ./agros2d.debian.sh -p
+
+Tips
+====
+
+To simplify the described steps (generate documentation and location, compilation, create package) run:
+
+$ ./agros2d.debian.sh -a
