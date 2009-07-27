@@ -22,9 +22,9 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 
 SolverDialog::~SolverDialog()
 {
+    delete progressBar;
     delete lblMessage;
     delete lstMessage;
-    delete progressBar;
 }
 
 void SolverDialog::solve()

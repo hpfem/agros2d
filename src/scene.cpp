@@ -42,8 +42,8 @@ Scene::Scene() {
 }
 
 Scene::~Scene() {
-    delete m_sceneSolution;
-    delete solverDialog;
+    // delete solverDialog;
+    // delete m_sceneSolution;
 }
 
 void Scene::createActions()
