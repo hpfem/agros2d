@@ -164,18 +164,22 @@ void SceneView::createActions()
     
     // scene - operate on items
     actSceneModeNode = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
+    actSceneModeNode->setShortcut(Qt::Key_F5);
     actSceneModeNode->setStatusTip(tr("Operate on nodes"));
     actSceneModeNode->setCheckable(true);
     
     actSceneModeEdge = new QAction(icon("scene-edge"), tr("Operate on &edges"), this);
+    actSceneModeEdge->setShortcut(Qt::Key_F6);
     actSceneModeEdge->setStatusTip(tr("Operate on edges"));
     actSceneModeEdge->setCheckable(true);
     
     actSceneModeLabel = new QAction(icon("scene-label"), tr("Operate on &labels"), this);
+    actSceneModeLabel->setShortcut(Qt::Key_F7);
     actSceneModeLabel->setStatusTip(tr("Operate on labels"));
     actSceneModeLabel->setCheckable(true);
     
     actSceneModePostprocessor = new QAction(icon("scene-postprocessor"), tr("&Postprocessor"), this);
+    actSceneModePostprocessor->setShortcut(Qt::Key_F8);
     actSceneModePostprocessor->setStatusTip(tr("Postprocessor"));
     actSceneModePostprocessor->setCheckable(true);
     
