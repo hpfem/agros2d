@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="50" numberofrefinements="0" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
+        <problem adaptivitytolerance="1" frequency="50" numberofrefinements="1" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
@@ -19,11 +19,11 @@
             <node x="0.075" y="0.06" id="2" />
             <node x="-0.075" y="-0.06" id="3" />
             <node x="0.075" y="-0.06" id="4" />
-            <node x="0.015" y="0.01" id="5" />
-            <node x="0.015" y="-0.01" id="6" />
+            <node x="0.015" y="0.02" id="5" />
+            <node x="0.015" y="0" id="6" />
             <node x="-0.015" y="0.01" id="7" />
-            <node x="0.005" y="0.01" id="8" />
-            <node x="0.005" y="-0.01" id="9" />
+            <node x="0.005" y="0.02" id="8" />
+            <node x="0.005" y="0" id="9" />
             <node x="-0.005" y="0.01" id="10" />
             <node x="-0.005" y="-0.01" id="11" />
         </nodes>

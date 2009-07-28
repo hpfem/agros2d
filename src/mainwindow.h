@@ -54,9 +54,11 @@ private slots:
     void doDocumentOpenRecent(QAction *action);
     void doDocumentSave();
     void doDocumentSaveAs();
+    void doDocumentClose();
     void doDocumentImportDXF();
     void doDocumentExportDXF();
     void doDocumentSaveImage();
+
     void doSceneMouseMoved(const QPointF &position);
 
     void doCreateMesh();
@@ -72,6 +74,7 @@ private slots:
     void doPaste();
 
     void doHelp();
+    void doHelpShortCut();
     void doAbout();
     void doInvalidated();
 
@@ -98,6 +101,7 @@ private:
     QActionGroup *actDocumentOpenRecentGroup;
     QAction *actDocumentSave;
     QAction *actDocumentSaveAs;
+    QAction *actDocumentClose;
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;
     QAction *actDocumentSaveImage;
@@ -116,6 +120,7 @@ private:
     QAction *actScriptStartup;
 
     QAction *actHelp;
+    QAction *actHelpShortCut;
     QAction *actAbout;
     QAction *actAboutQt;
 

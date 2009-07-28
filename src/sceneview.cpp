@@ -558,7 +558,8 @@ void SceneView::paintInitialMesh()
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(m_sceneViewSettings.colorInitialMesh.redF(), m_sceneViewSettings.colorInitialMesh.greenF(), m_sceneViewSettings.colorInitialMesh.blueF());
-    
+    glLineWidth(1.0);
+
     // triangles
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < Util::scene()->sceneSolution()->mesh().get_num_elements(); i++)
@@ -581,7 +582,8 @@ void SceneView::paintSolutionMesh()
         // draw solution mesh
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glColor3f(m_sceneViewSettings.colorSolutionMesh.redF(), m_sceneViewSettings.colorSolutionMesh.greenF(), m_sceneViewSettings.colorSolutionMesh.blueF());
-        
+        glLineWidth(1.0);
+
         // triangles
         glBegin(GL_TRIANGLES);
         for (int i = 0; i < Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_elements(); i++)
@@ -952,6 +954,8 @@ void SceneView::paintContours()
     // draw contours
     glColor3f(m_sceneViewSettings.colorContours.redF(), m_sceneViewSettings.colorContours.greenF(), m_sceneViewSettings.colorContours.blueF());
     glBegin(GL_LINES);
+    glLineWidth(1.0);
+
     for (int i = 0; i < Util::scene()->sceneSolution()->linContourView().get_num_triangles(); i++)
     {
         if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))

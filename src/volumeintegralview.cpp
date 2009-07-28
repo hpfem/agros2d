@@ -107,6 +107,14 @@ void VolumeIntegralValueView::showHarmonicMagnetic(VolumeIntegralValueHarmonicMa
 
     addValue(harmonicMagneticNode, tr("Power losses avg.:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->powerLosses, 0, 'e', 3), tr("W"));
     addValue(harmonicMagneticNode, tr("Energy avg.:"), tr("%1").arg(volumeIntegralValueHarmonicMagnetic->energy, 0, 'e', 3), tr("J"));
+
+    // force
+    QTreeWidgetItem *itemForce = new QTreeWidgetItem(harmonicMagneticNode);
+    itemForce->setText(0, tr("Lorentz force avg."));
+    itemForce->setExpanded(true);
+
+    addValue(itemForce, Util::scene()->problemInfo().labelX(), tr("%1").arg(-volumeIntegralValueHarmonicMagnetic->forceXReal/2.0, 0, 'e', 3), "N");
+    addValue(itemForce, Util::scene()->problemInfo().labelY(), tr("%1").arg(-volumeIntegralValueHarmonicMagnetic->forceYReal/2.0, 0, 'e', 3), "N");
 }
 
 void VolumeIntegralValueView::showHeat(VolumeIntegralValueHeat *volumeIntegralValueHeat)
@@ -269,6 +277,10 @@ VolumeIntegralValueHarmonicMagnetic::VolumeIntegralValueHarmonicMagnetic() : Vol
         currentTotalImag = 0;
         powerLosses = 0;
         energy = 0;
+        forceXReal = 0;
+        forceXImag = 0;
+        forceYReal = 0;
+        forceYImag = 0;
         for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
             if (Util::scene()->labels[i]->isSelected)
@@ -279,7 +291,10 @@ VolumeIntegralValueHarmonicMagnetic::VolumeIntegralValueHarmonicMagnetic() : Vol
                 currentTotalImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG);
                 powerLosses += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_POWER_LOSSES);
                 energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_ENERGY_DENSITY);
-                // energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL);
+                forceXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL);
+                forceXImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_IMAG);
+                forceYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_REAL);
+                forceYImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_IMAG);
             }
         }
 

@@ -138,6 +138,13 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
                                                                 type,
                                                                 Value(context->argument(2).toString())));
         break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL)) type = PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
+        if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT)) type = PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT;
+        Util::scene()->addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(context->argument(0).toString(),
+                                                                type,
+                                                                Value(context->argument(2).toString())));
+        break;
     case PHYSICFIELD_HEAT_TRANSFER:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
         {
@@ -196,6 +203,13 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
         Util::scene()->addLabelMarker(new SceneLabelMagnetostaticMarker(context->argument(0).toString(),
                                                                   Value(context->argument(1).toString()),
                                                                   Value(context->argument(2).toString())));
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        Util::scene()->addLabelMarker(new SceneLabelHarmonicMagneticMarker(context->argument(0).toString(),
+                                                                  Value(context->argument(1).toString()),
+                                                                  Value(context->argument(2).toString()),
+                                                                  Value(context->argument(3).toString()),
+                                                                  Value(context->argument(4).toString())));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         Util::scene()->addLabelMarker(new SceneLabelHeatMarker(context->argument(0).toString(),
@@ -640,7 +654,7 @@ void ScriptEditorDialog::doCreateFromModel()
 
 void ScriptEditorDialog::doHelp()
 {
-    Util::helpDialog()->showPage("script/script.html");
+    Util::helpDialog()->showPage("scripting/scripting.html");
     Util::helpDialog()->show();
 }
 

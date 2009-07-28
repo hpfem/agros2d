@@ -90,6 +90,10 @@ public:
     double currentTotalImag;
     double powerLosses;
     double energy;
+    double forceXReal;
+    double forceXImag;
+    double forceYReal;
+    double forceYImag;
 
     VolumeIntegralValueHarmonicMagnetic();
     QStringList variables();

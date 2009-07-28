@@ -68,6 +68,11 @@ void MainWindow::createActions()
     actDocumentSaveAs->setStatusTip(tr("Save the document under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
     
+    actDocumentClose = new QAction(tr("Close"), this);
+    actDocumentClose->setShortcuts(QKeySequence::Close);
+    actDocumentClose->setStatusTip(tr("Close document"));
+    connect(actDocumentClose, SIGNAL(triggered()), this, SLOT(doDocumentClose()));
+
     actDocumentImportDXF = new QAction(tr("Import DXF..."), this);
     actDocumentImportDXF->setStatusTip(tr("Import AutoCAD DXF"));
     connect(actDocumentImportDXF, SIGNAL(triggered()), this, SLOT(doDocumentImportDXF()));
@@ -104,6 +109,10 @@ void MainWindow::createActions()
     actHelp->setStatusTip(tr("Show help"));
     actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
+
+    actHelpShortCut = new QAction(icon(""), tr("Shortcuts"), this);
+    actHelpShortCut->setStatusTip(tr("Shortcuts"));
+    connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
 
     actAbout = new QAction(icon("about"), tr("&About Agros 2D"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
@@ -159,6 +168,7 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addAction(actDocumentSave);
     mnuFile->addAction(actDocumentSaveAs);
+    mnuFile->addAction(actDocumentClose);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentImportDXF);
     mnuFile->addAction(actDocumentExportDXF);
@@ -220,6 +230,7 @@ void MainWindow::createMenus()
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
+    mnuHelp->addAction(actHelpShortCut);
     mnuHelp->addSeparator();
     mnuHelp->addAction(actAbout);
     mnuHelp->addAction(actAboutQt);
@@ -246,8 +257,10 @@ void MainWindow::createToolBars()
     tlbView->addAction(sceneView->actSceneZoomRegion);
     tlbView->addAction(sceneView->actSceneZoomIn);
     tlbView->addAction(sceneView->actSceneZoomOut);
+    #ifdef Q_WS_X11
     tlbView->addSeparator();
     tlbView->addAction(sceneView->actSceneViewProperties);
+    #endif
 
     tlbProblem = addToolBar(tr("Problem"));
     tlbProblem->setObjectName("Problem");
@@ -273,6 +286,11 @@ void MainWindow::createToolBars()
     tlbTools->addSeparator();
     tlbTools->addAction(actScriptStartup);
     tlbTools->addAction(actScriptEditor);
+    #ifdef Q_WS_WIN
+    tlbTools->addSeparator();
+    tlbTools->addAction(sceneView->actSceneViewProperties);
+    #endif
+
 }
 
 void MainWindow::createStatusBar()
@@ -426,6 +444,19 @@ void MainWindow::doDocumentSaveAs()
     }
 }
 
+void MainWindow::doDocumentClose()
+{
+    ProblemInfo problemInfo;
+    ProblemDialog *problemDialog = new ProblemDialog(problemInfo, true, this);
+    Util::scene()->clear();
+    sceneView->doDefaults();
+    Util::scene()->problemInfo() = problemInfo;
+    Util::scene()->refresh();
+
+    sceneView->actSceneModeNode->trigger();
+    sceneView->doZoomBestFit();
+}
+
 void MainWindow::doDocumentImportDXF()
 {    
     QString fileName = QFileDialog::getOpenFileName(this, tr("Import file"), "data", "DXF files (*.dxf)");
@@ -523,7 +554,7 @@ void MainWindow::doPaste()
 {
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
-    Util::scene()->readFromFile("data/electrostatic_planar_poisson.h2d");
+    // Util::scene()->readFromFile("data/electrostatic_planar_poisson.h2d");
     // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.h2d");
     // Util::scene()->readFromFile("data/heat_transfer_planar.h2d");
     // Util::scene()->readFromFile("data/heat_transfer_detail.h2d");
@@ -533,7 +564,7 @@ void MainWindow::doPaste()
     // Util::scene()->readFromFile("data/magnetostatic_planar_magnet.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.h2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.h2d");
+    Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_heating.h2d");
@@ -558,6 +589,12 @@ void MainWindow::doInvalidated()
 
 void MainWindow::doHelp()
 {
+    Util::helpDialog()->show();
+}
+
+void MainWindow::doHelpShortCut()
+{
+    Util::helpDialog()->showPage("program_features/program_features.html");
     Util::helpDialog()->show();
 }
 
