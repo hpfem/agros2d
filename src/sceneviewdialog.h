@@ -47,24 +47,12 @@ private:
     QCheckBox *chkShowVectors;
     QCheckBox *chkShowSolutionMesh;
 
-    // grid
-    QLineEdit *txtGridStep;
-
-    // contours
-    QSpinBox *txtContoursCount;
-
     // scalar field
     QComboBox *cmbScalarFieldVariable;
     QComboBox *cmbScalarFieldVariableComp;
     QCheckBox *chkScalarFieldRangeAuto;
     QLineEdit *txtScalarFieldRangeMin;
     QLineEdit *txtScalarFieldRangeMax;
-    QComboBox *cmbPalette;
-    QCheckBox *chkPaletteFilter;
-    QSpinBox *txtPaletteSteps;
-
-    // 3d
-    QCheckBox *chkView3DLighting;
 
     // vector field
     QComboBox *cmbVectorFieldVariable;
@@ -77,7 +65,6 @@ private:
 private slots:
     void doScalarFieldVariable(int index);
     void doScalarFieldRangeAuto(int state);
-    void doPaletteFilter(int state);
 };
 
 #endif // SCENEVIEWDIALOG_H

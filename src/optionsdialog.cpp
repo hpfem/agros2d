@@ -11,8 +11,9 @@ OptionsDialog::OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *pare
 
     load();    
 
-    setMinimumSize(350, 450);
-    setMaximumSize(350, 450);
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 OptionsDialog::~OptionsDialog()
@@ -20,6 +21,20 @@ OptionsDialog::~OptionsDialog()
     // main
     delete cmbGUIStyle;
     delete cmbLanguage;
+
+    // grid
+    delete txtGridStep;
+
+    // contours
+    delete txtContoursCount;
+
+    // scalar field
+    delete cmbPalette;
+    delete chkPaletteFilter;
+    delete txtPaletteSteps;
+
+    // 3d
+    delete chkView3DLighting;
 
     delete lstView;
     delete panMain;
@@ -61,6 +76,21 @@ void OptionsDialog::load()
     colorSolutionMesh->setColor(m_sceneViewSettings->colorSolutionMesh);
     colorHighlighted->setColor(m_sceneViewSettings->colorHighlighted);
     colorSelected->setColor(m_sceneViewSettings->colorSelected);
+
+    // grid
+    txtGridStep->setText(QString::number(m_sceneViewSettings->gridStep));
+
+    // contours
+    txtContoursCount->setValue(m_sceneViewSettings->contoursCount);
+
+    // scalar field
+    cmbPalette->setCurrentIndex(cmbPalette->findData(m_sceneViewSettings->paletteType));
+    chkPaletteFilter->setChecked(m_sceneViewSettings->paletteFilter);
+    doPaletteFilter(chkPaletteFilter->checkState());
+    txtPaletteSteps->setValue(m_sceneViewSettings->paletteSteps);
+
+    // 3d
+    chkView3DLighting->setChecked(m_sceneViewSettings->scalarView3DLighting);
 }
 
 void OptionsDialog::save()
@@ -88,6 +118,21 @@ void OptionsDialog::save()
     m_sceneViewSettings->colorHighlighted = colorHighlighted->color();
     m_sceneViewSettings->colorSelected = colorSelected->color();
 
+    // grid
+    m_sceneViewSettings->gridStep = txtGridStep->text().toDouble();
+
+    // contours
+    m_sceneViewSettings->contoursCount = txtContoursCount->value();
+
+    // scalar field
+    m_sceneViewSettings->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
+    m_sceneViewSettings->paletteFilter = chkPaletteFilter->isChecked();
+    m_sceneViewSettings->paletteSteps = txtPaletteSteps->value();
+
+    // 3d
+    m_sceneViewSettings->scalarView3DLighting = chkView3DLighting->isChecked();
+
+    // save
     m_sceneViewSettings->save();
 }
 
@@ -143,20 +188,90 @@ QWidget *OptionsDialog::createMainWidget()
 {
     QWidget *mainWidget = new QWidget(this);
 
+    // general
     cmbGUIStyle = new QComboBox(mainWidget);
     cmbGUIStyle->addItems(QStyleFactory::keys());
 
     cmbLanguage = new QComboBox(mainWidget);
     cmbLanguage->addItems(availableLanguages());
 
-    QGridLayout *layoutMain = new QGridLayout();
-    layoutMain->addWidget(new QLabel(tr("UI:")), 0, 0);
-    layoutMain->addWidget(cmbGUIStyle, 0, 1);
-    layoutMain->addWidget(new QLabel(tr("Language:")), 1, 0);
-    layoutMain->addWidget(cmbLanguage, 1, 1);
+    QGridLayout *layoutGeneral = new QGridLayout();
+    layoutGeneral->addWidget(new QLabel(tr("UI:")), 0, 0);
+    layoutGeneral->addWidget(cmbGUIStyle, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Language:")), 1, 0);
+    layoutGeneral->addWidget(cmbLanguage, 1, 1);
 
+    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
+    grpGeneral->setLayout(layoutGeneral);
+
+    // layout grid
+    txtGridStep = new QLineEdit("0.1");
+    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
+
+    QGridLayout *layoutGrid = new QGridLayout();
+    layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
+    layoutGrid->addWidget(txtGridStep, 0, 1);
+
+    QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
+    grpGrid->setLayout(layoutGrid);
+
+    // layout palette
+    cmbPalette = new QComboBox();
+    cmbPalette->addItem(tr("Jet"), PALETTE_JET);
+    cmbPalette->addItem(tr("Autumn"), PALETTE_AUTUMN);
+    cmbPalette->addItem(tr("Hot"), PALETTE_HOT);
+    cmbPalette->addItem(tr("Copper"), PALETTE_COPPER);
+    cmbPalette->addItem(tr("Cool"), PALETTE_COOL);
+    cmbPalette->addItem(tr("B/W ascending"), PALETTE_BW_ASC);
+    cmbPalette->addItem(tr("B/W descending"), PALETTE_BW_DESC);
+
+    chkPaletteFilter = new QCheckBox();
+    connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
+
+    txtPaletteSteps = new QSpinBox(this);
+    txtPaletteSteps->setMinimum(5);
+    txtPaletteSteps->setMaximum(100);
+
+    QGridLayout *layoutScalarField = new QGridLayout();
+    layoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
+    layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 3);
+
+    layoutScalarField->addWidget(new QLabel(tr("Filter:")), 1, 0);
+    layoutScalarField->addWidget(chkPaletteFilter, 1, 1);
+    layoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 2);
+    layoutScalarField->addWidget(txtPaletteSteps, 1, 3);
+
+    QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
+    grpScalarView->setLayout(layoutScalarField);
+
+    // layout contours    
+    txtContoursCount = new QSpinBox(this);
+    txtContoursCount->setMinimum(1);
+    txtContoursCount->setMaximum(100);
+
+    QGridLayout *layoutContours = new QGridLayout();
+    layoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
+    layoutContours->addWidget(txtContoursCount, 0, 1);
+
+    QGroupBox *grpContours = new QGroupBox(tr("Contours"));
+    grpContours->setLayout(layoutContours);
+
+    // layout 3d
+    chkView3DLighting = new QCheckBox("Ligthing", this);
+
+    QHBoxLayout *layout3D = new QHBoxLayout();
+    layout3D->addWidget(chkView3DLighting);
+
+    QGroupBox *grp3D = new QGroupBox(tr("3D"));
+    grp3D->setLayout(layout3D);
+
+    // layout
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutMain);
+    layout->addWidget(grpGeneral);
+    layout->addWidget(grpGrid);
+    layout->addWidget(grpContours);
+    layout->addWidget(grpScalarView);
+    layout->addWidget(grp3D);
     layout->addStretch();
 
     mainWidget->setLayout(layout);
@@ -235,6 +350,11 @@ void OptionsDialog::doAccept()
 void OptionsDialog::doReject()
 {
     reject();
+}
+
+void OptionsDialog::doPaletteFilter(int state)
+{
+    txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
 }
 
 // *******************************************************************************************************

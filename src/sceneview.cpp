@@ -16,19 +16,9 @@ void SceneViewSettings::defaultValues()
     showVectors = false;
     showSolutionMesh = false;
 
-    // settings
-    gridStep = 0.05;
-
-    contoursCount = 15;
-    paletteType = PALETTE_JET;
-    paletteFilter = false;
-    paletteSteps = 30;
     scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_NONE;
     scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
     scalarRangeAuto = true;
-
-    // 3d
-    scalarView3DLighting = false;
 
     switch (Util::scene()->problemInfo().physicField)
     {
@@ -85,6 +75,8 @@ void SceneViewSettings::defaultValues()
 void SceneViewSettings::load()
 {
     QSettings settings;
+
+    // colors
     colorBackground = settings.value("SceneViewSettings/ColorBackground", QColor::fromRgb(255, 255, 255)).value<QColor>();
     colorGrid = settings.value("SceneViewSettings/ColorGrid", QColor::fromRgb(200, 200, 200)).value<QColor>();
     colorCross = settings.value("SceneViewSettings/ColorCross", QColor::fromRgb(150, 150, 150)).value<QColor>();
@@ -97,11 +89,27 @@ void SceneViewSettings::load()
     colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", QColor::fromRgb(150, 70, 0)).value<QColor>();
     colorHighlighted = settings.value("SceneViewSettings/ColorHighlighted", QColor::fromRgb(250, 150, 0)).value<QColor>();
     colorSelected = settings.value("SceneViewSettings/ColorSelected", QColor::fromRgb(150, 0, 0)).value<QColor>();
+
+    // grid
+    gridStep = settings.value("SceneViewSettings/GridStep", 0.05).value<double>();
+
+    // countour
+    contoursCount = settings.value("SceneViewSettings/ContoursCount", 15).value<int>();
+
+    // scalar view
+    paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", PALETTE_JET).value<int>();
+    paletteFilter = settings.value("SceneViewSettings/PaletteFilter", false).value<bool>();
+    paletteSteps = settings.value("SceneViewSettings/PaletteSteps", 30).value<int>();
+
+    // 3d
+    scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).value<bool>();
 }
 
 void SceneViewSettings::save()
 {
     QSettings settings;
+
+    // colors
     settings.setValue("SceneViewSettings/ColorBackground", colorBackground);
     settings.setValue("SceneViewSettings/ColorGrid", colorGrid);
     settings.setValue("SceneViewSettings/ColorCross", colorCross);
@@ -114,6 +122,20 @@ void SceneViewSettings::save()
     settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSolutionMesh);
     settings.setValue("SceneViewSettings/ColorInitialMesh", colorHighlighted);
     settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSelected);
+
+    // grid
+    settings.setValue("SceneViewSettings/GridStep", gridStep);
+
+    // countour
+    settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
+
+    // scalar view
+    settings.setValue("SceneViewSettings/PaletteType", paletteType);
+    settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
+    settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
+
+    // 3d
+    settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
 }
 
 // *******************************************************************************************************

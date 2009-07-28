@@ -33,6 +33,7 @@ public:
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void doPaletteFilter(int state);
 
     void doAccept();
     void doReject();
@@ -62,6 +63,20 @@ private:
     ColorButton *colorSolutionMesh;
     ColorButton *colorHighlighted;
     ColorButton *colorSelected;
+
+    // grid
+    QLineEdit *txtGridStep;
+
+    // contours
+    QSpinBox *txtContoursCount;
+
+    // scalar field
+    QComboBox *cmbPalette;
+    QCheckBox *chkPaletteFilter;
+    QSpinBox *txtPaletteSteps;
+
+    // 3d
+    QCheckBox *chkView3DLighting;
 
     void load();
     void save();
