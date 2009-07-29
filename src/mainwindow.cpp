@@ -520,6 +520,7 @@ void MainWindow::doOptions()
 {
     OptionsDialog *optionsDialog = new OptionsDialog(&sceneView->sceneViewSettings(), this);
     optionsDialog->exec();
+    sceneView->doInvalidated();
 
     delete optionsDialog;
 }

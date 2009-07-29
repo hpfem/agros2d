@@ -505,6 +505,18 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
         return QObject::tr("V");
         break;
+    case PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD:
+        return QObject::tr("V/m");
+        break;
+    case PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY:
+        return QObject::tr("A/m2");
+        break;
+    case PHYSICFIELDVARIABLE_CURRENT_LOSSES:
+        return QObject::tr("W/m3");
+        break;
+    case PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY:
+        return QObject::tr("S/m");
+        break;
     case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
         return QObject::tr("deg.");
         break;

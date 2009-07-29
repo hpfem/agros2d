@@ -110,9 +110,9 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'f', 5), "V/m");
-    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'f', 5), "V/m");
-    addValue(itemElectricField, "E", tr("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E:", tr("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'e', 3), "V/m");
 
     // Electric Displacement
     QTreeWidgetItem *itemElectricDisplacement = new QTreeWidgetItem(electrostaticNode);
@@ -336,9 +336,9 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.x, 0, 'f', 5), "V/m");
-    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.y, 0, 'f', 5), "V/m");
-    addValue(itemElectricField, "E:", tr("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'f', 5), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.x, 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.y, 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E:", tr("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'e', 3), "V/m");
 
     // Current Density
     QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(currentNode);
