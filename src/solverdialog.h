@@ -54,7 +54,8 @@ public:
     SolverDialog(QWidget *parent);
     ~SolverDialog();
 
-    void setMode(SolverMode mode) { this->m_mode = mode; }    
+    void setFileNameOrig(const QString &fileNameOrig) { m_fileNameOrig = fileNameOrig; }
+    void setMode(SolverMode mode) { m_mode = mode; }
     void solve();
 
 private slots:
@@ -63,6 +64,7 @@ private slots:
 private:
     SolverMode m_mode;
     QString m_errorMessage;
+    QString m_fileNameOrig;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;

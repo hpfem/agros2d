@@ -174,7 +174,7 @@ public:
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
 
     int writeToTriangle();
-    bool triangle2mesh(const QString &source, const QString &destination);
+    bool triangleToHermes2D();
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
     void readFromFile(const QString &fileName);

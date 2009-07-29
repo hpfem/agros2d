@@ -89,6 +89,8 @@ public:
     QColor colorHighlighted;
     QColor colorSelected;    
 
+    SceneViewSettings();
+
     void defaultValues();
     void load();
     void save();

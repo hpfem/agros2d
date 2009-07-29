@@ -423,17 +423,24 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     // clear problem
     sceneSolution()->clear();
     
+    // store orig name
+    QString fileNameOrig = m_problemInfo.fileName;
+
     // save as temp name
-    if (m_problemInfo.fileName.isEmpty())
-        m_problemInfo.fileName = QDesktopServices::TempLocation + "/agros_temp.h2d";
-    
+    m_problemInfo.fileName = QDir::temp().absolutePath() + "/agros2d/temp.h2d";
+
     // save problem
     writeToFile(m_problemInfo.fileName);
     
     // solve
+    QFileInfo fileInfoOrig(fileNameOrig);
+    solverDialog->setFileNameOrig(fileInfoOrig.absoluteFilePath());
     solverDialog->setMode(solverMode);
     solverDialog->show();
     solverDialog->solve();
+
+    // restore orig name
+    m_problemInfo.fileName = fileNameOrig;
 }
 
 void Scene::doSolved()
@@ -445,26 +452,26 @@ void Scene::doSolved()
     
     // this slot is called after triangle and solve process is finished
     // linearizer only for mesh (on empty solution)
-    if (QFile::exists(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".mesh"))
+    if (QFile::exists(QDir::temp().absolutePath() + "/agros2d/temp.mesh"))
     {
         // save locale
         char *plocale = setlocale (LC_NUMERIC, "");
         setlocale (LC_NUMERIC, "C");
         
-        m_sceneSolution->mesh().load((QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".mesh").toStdString().c_str());
+        m_sceneSolution->mesh().load((QDir::temp().absolutePath() + "/agros2d/temp.mesh").toStdString().c_str());
         
         // set system locale
         setlocale(LC_NUMERIC, plocale);
     }
-    
+
     // set solver results
     if (m_sceneSolution->isSolved())
         emit solved();
-    
+
     emit invalidated();
-    
+
     // delete temp file
-    if (m_problemInfo.fileName == QDesktopServices::TempLocation + "/agros_temp.h2d")
+    if (m_problemInfo.fileName == QDir::temp().absolutePath() + "/agros2d/temp.h2d")
     {
         QFile::remove(m_problemInfo.fileName);
         m_problemInfo.fileName = "";
@@ -612,7 +619,7 @@ int Scene::writeToTriangle()
     
     QDir dir;
     dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
-    QFile file(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.fileName() + ".poly");
+    QFile file(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".poly");
     
     if (!file.open(QIODevice::WriteOnly))
     {
@@ -1151,11 +1158,11 @@ void Scene::readFromFile(const QString &fileName)
 }
 
 void Scene::writeToFile(const QString &fileName) {
-    if (problemInfo().fileName != QDesktopServices::TempLocation + "/agros_temp.h2d")
+    if (problemInfo().fileName != QDir::temp().absolutePath() + "/agros2d/temp.h2d")
     {
         QSettings settings;
         QFileInfo fileInfo(fileName);
-        settings.setValue("LastDataDir", fileInfo.absoluteFilePath());
+        settings.setValue("General/LastDataDir", fileInfo.absoluteFilePath());
     }
     
     // save current locale
@@ -1390,7 +1397,7 @@ void Scene::writeToFile(const QString &fileName) {
     setlocale(LC_NUMERIC, plocale);
 }
 
-bool Scene::triangle2mesh(const QString &source, const QString &destination)
+bool Scene::triangleToHermes2D()
 {
     bool returnValue = true;
     
@@ -1401,34 +1408,37 @@ bool Scene::triangle2mesh(const QString &source, const QString &destination)
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
     
-    QFile fileMesh(destination + ".mesh");
+    // file info
+    QFileInfo fileInfo(m_problemInfo.fileName);
+
+    QFile fileMesh(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".mesh");
     if (!fileMesh.open(QIODevice::WriteOnly))
     {
         cerr << "Could not create hermes2d mesh file." << endl;
         return 0;
     }
     QTextStream outMesh(&fileMesh);
-    
-    QFile fileNode(source + ".node");
+
+    QFile fileNode(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly))
     {
-        cerr << "Could not create triangle node file." << endl;
+        cerr << "Could not read triangle node file." << endl;
         return 0;
     }
     QTextStream inNode(&fileNode);
     
-    QFile fileEdge(source + ".edge");
+    QFile fileEdge(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".edge");
     if (!fileEdge.open(QIODevice::ReadOnly))
     {
-        cerr << "Could not create triangle edge file." << endl;
+        cerr << "Could not read triangle edge file." << endl;
         return 0;
     }
     QTextStream inEdge(&fileEdge);
     
-    QFile fileEle(source + ".ele");
+    QFile fileEle(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele");
     if (!fileEle.open(QIODevice::ReadOnly))
     {
-        cerr << "Could not create triangle ele file." << endl;
+        cerr << "Could not read triangle ele file." << endl;
         return 0;
     }
     QTextStream inEle(&fileEle);

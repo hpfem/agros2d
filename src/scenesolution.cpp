@@ -1058,7 +1058,6 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     m_slnScalarView = slnScalarView;
     m_linScalarView.process_solution(m_slnScalarView, FN_VAL_0);
 
-
     // deformed shape
     if (m_scene->problemInfo().physicField == PHYSICFIELD_ELASTICITY)
     {

@@ -553,7 +553,7 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
+    Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
     // Util::scene()->readFromFile("data/electrostatic_planar_poisson.h2d");
     // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.h2d");
@@ -565,7 +565,7 @@ void MainWindow::doPaste()
     // Util::scene()->readFromFile("data/magnetostatic_planar_magnet.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.h2d");
-    Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.h2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.h2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_heating.h2d");

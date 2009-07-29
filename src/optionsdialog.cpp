@@ -36,6 +36,10 @@ OptionsDialog::~OptionsDialog()
     // 3d
     delete chkView3DLighting;
 
+    // delete files
+    delete chkDeleteTriangleMeshFiles;
+    delete chkDeleteHermes2DMeshFile;
+
     delete lstView;
     delete panMain;
     delete panColors;
@@ -62,6 +66,10 @@ void OptionsDialog::load()
             break;
         }
     }
+
+    // delete files
+    chkDeleteTriangleMeshFiles->setChecked(settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>());
+    chkDeleteHermes2DMeshFile->setChecked(settings.value("Solver/DeleteHermes2DMeshFile", true).value<bool>());
 
     // colors
     colorBackground->setColor(m_sceneViewSettings->colorBackground);
@@ -103,6 +111,10 @@ void OptionsDialog::save()
     // language
     settings.setValue("General/Language", cmbLanguage->currentText());
     setLanguage(cmbLanguage->currentText());
+
+    // delete files
+    settings.setValue("Solver/DeleteTriangleMeshFiles", chkDeleteTriangleMeshFiles->isChecked());
+    settings.setValue("Solver/DeleteHermes2DMeshFile", chkDeleteHermes2DMeshFile->isChecked());
 
     // color
     m_sceneViewSettings->colorBackground = colorBackground->color();
@@ -204,6 +216,17 @@ QWidget *OptionsDialog::createMainWidget()
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
 
+    // solver layout
+    chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete Triangle mesh files"), mainWidget);
+    chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete Hermes2D mesh file"), mainWidget);
+
+    QVBoxLayout *layoutSolver = new QVBoxLayout();
+    layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
+    layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
+
+    QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
+    grpSolver->setLayout(layoutSolver);
+
     // layout grid
     txtGridStep = new QLineEdit("0.1");
     txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
@@ -268,6 +291,7 @@ QWidget *OptionsDialog::createMainWidget()
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeneral);
+    layout->addWidget(grpSolver);
     layout->addWidget(grpGrid);
     layout->addWidget(grpContours);
     layout->addWidget(grpScalarView);

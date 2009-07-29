@@ -78,6 +78,10 @@ private:
     // 3d
     QCheckBox *chkView3DLighting;
 
+    // delete files
+    QCheckBox *chkDeleteTriangleMeshFiles;
+    QCheckBox *chkDeleteHermes2DMeshFile;
+
     void load();
     void save();
 

@@ -1,5 +1,10 @@
 #include "sceneview.h"
 
+SceneViewSettings::SceneViewSettings()
+{
+    defaultValues();
+}
+
 void SceneViewSettings::defaultValues()
 {
     scalarRangeMin = 0;
@@ -1819,7 +1824,7 @@ void SceneView::doInvalidated()
         setRangeContour();
         setRangeScalar();
         setRangeVector();
-        
+
         paletteFilter();
         paletteUpdateTexAdjust();
         paletteCreate();
@@ -2063,9 +2068,9 @@ void SceneView::setRangeScalar()
                                                     Util::scene(),
                                                     m_sceneViewSettings.scalarPhysicFieldVariable,
                                                     m_sceneViewSettings.scalarPhysicFieldVariableComp);
-        
+
         Util::scene()->sceneSolution()->setSlnScalarView(viewScalarFilter);
-        
+
         if (m_sceneViewSettings.scalarRangeAuto)
         {
             m_sceneViewSettings.scalarRangeMin = Util::scene()->sceneSolution()->linScalarView().get_min_value();

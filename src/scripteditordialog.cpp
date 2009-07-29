@@ -34,7 +34,9 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
     Util::scene()->problemInfo().polynomialOrder = context->argument(4).toNumber();
     Util::scene()->problemInfo().adaptivitySteps = context->argument(5).toNumber();
     Util::scene()->problemInfo().adaptivityTolerance = context->argument(6).toNumber();
+    Util::scene()->problemInfo().frequency = context->argument(7).toNumber();
 
+    m_sceneView->doDefaults();
     Util::scene()->refresh();
     return engine->undefinedValue();
 }
