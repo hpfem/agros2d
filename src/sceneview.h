@@ -189,7 +189,6 @@ private:
 
     QMenu *mnuInfo;
     QMenu *mnuMarkerGroup;
-    QMenu *mnuShowGroup;
 
     QActionGroup *actMaterialGroup;
     QActionGroup *actBoundaryGroup;

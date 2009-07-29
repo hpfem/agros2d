@@ -69,6 +69,8 @@ private slots:
     void doScriptStartup();
     void doOptions();
 
+    void doUndo();
+    void doRedo();
     void doCut();
     void doCopy();
     void doPaste();
@@ -107,6 +109,8 @@ private:
     QAction *actDocumentSaveImage;
     QAction *actExit;
 
+    QAction *actUndo;
+    QAction *actRedo;
     QAction *actCut;
     QAction *actCopy;
     QAction *actPaste;

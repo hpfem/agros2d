@@ -48,8 +48,9 @@ void SceneInfoView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
     mnuInfo->addAction(Util::scene()->actNewLabelMarker);
     mnuInfo->addSeparator();
-    mnuInfo->addAction(actProperties);
     mnuInfo->addAction(actDelete);
+    mnuInfo->addSeparator();
+    mnuInfo->addAction(actProperties);
 }
 
 void SceneInfoView::createTreeView()
@@ -94,7 +95,7 @@ void SceneInfoView::createTreeView()
 
     // nodes
     nodesNode = new QTreeWidgetItem(geometryNode);
-    nodesNode->setText(0, "Nodes");
+    nodesNode->setText(0, tr("Nodes"));
     nodesNode->setIcon(0, icon("scenenode"));
 
     // edges

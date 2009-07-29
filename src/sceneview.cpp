@@ -278,13 +278,12 @@ void SceneView::createMenu()
 {
     mnuInfo = new QMenu(this);
     mnuMarkerGroup = new QMenu(tr("Set marker"), this);
-    
-    // show group
-    mnuShowGroup = new QMenu(tr("Show"), this);
-    mnuShowGroup->addAction(actShowContours);
-    mnuShowGroup->addAction(actShowVectors);
-    mnuShowGroup->addAction(actShowSolutionMesh);
 
+    mnuInfo->addAction(actSceneModeNode);
+    mnuInfo->addAction(actSceneModeEdge);
+    mnuInfo->addAction(actSceneModeLabel);
+    mnuInfo->addAction(actSceneModePostprocessor);
+    mnuInfo->addSeparator();
     mnuInfo->addAction(Util::scene()->actNewNode);
     mnuInfo->addAction(Util::scene()->actNewEdge);
     mnuInfo->addAction(Util::scene()->actNewLabel);
@@ -292,10 +291,10 @@ void SceneView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
     mnuInfo->addAction(Util::scene()->actNewLabelMarker);
     mnuInfo->addSeparator();
+    mnuInfo->addAction(actSceneViewSelectRegion);
     mnuInfo->addAction(Util::scene()->actTransform);
     mnuInfo->addSeparator();
     mnuInfo->addMenu(mnuMarkerGroup);
-    mnuInfo->addMenu(mnuShowGroup);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actSceneViewProperties);
 }
@@ -1799,13 +1798,7 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
             mnuMarkerGroup->addAction(actMenuLabelMarkerItem);
         }
     }
-    
-    // show group
-    mnuShowGroup->setEnabled((m_sceneMode == SCENEMODE_POSTPROCESSOR));
-    actShowContours->setChecked(m_sceneViewSettings.showContours);
-    actShowVectors->setChecked(m_sceneViewSettings.showVectors);
-    actShowSolutionMesh->setChecked(m_sceneViewSettings.showSolutionMesh);
-    
+
     mnuInfo->exec(event->globalPos());
 }
 

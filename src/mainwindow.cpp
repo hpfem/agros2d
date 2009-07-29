@@ -89,22 +89,30 @@ void MainWindow::createActions()
     actExit->setShortcut(tr("Ctrl+Q"));
     actExit->setStatusTip(tr("Exit the application"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
-    
+
+    actUndo = new QAction(tr("&Undo"), this);
+    actUndo->setShortcuts(QKeySequence::Undo);
+    actUndo->setStatusTip(tr("Undo operation"));
+
+    actRedo = new QAction(tr("&Redo"), this);
+    actRedo->setShortcuts(QKeySequence::Redo);
+    actRedo->setStatusTip(tr("Redo operation"));
+
     actCut = new QAction(icon("edit-cut"), tr("Cu&t"), this);
     actCut->setShortcuts(QKeySequence::Cut);
     actCut->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
     connect(actCut, SIGNAL(triggered()), this, SLOT(doCut()));
-    
+
     actCopy = new QAction(icon("edit-copy"), tr("&Copy"), this);
     actCopy->setShortcuts(QKeySequence::Copy);
     actCopy->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
     connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopy()));
-    
+
     actPaste = new QAction(icon("edit-paste"), tr("&Paste"), this);
     actPaste->setShortcuts(QKeySequence::Paste);
     actPaste->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
     connect(actPaste, SIGNAL(triggered()), this, SLOT(doPaste()));
-    
+
     actHelp = new QAction(icon("help-browser"), tr("&Help"), this);
     actHelp->setStatusTip(tr("Show help"));
     actHelp->setShortcut(QKeySequence::HelpContents);
@@ -114,7 +122,7 @@ void MainWindow::createActions()
     actHelpShortCut->setStatusTip(tr("Shortcuts"));
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
 
-    actAbout = new QAction(icon("about"), tr("&About Agros 2D"), this);
+    actAbout = new QAction(icon("about"), tr("&About Agros2D"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
 
@@ -180,11 +188,16 @@ void MainWindow::createMenus()
     mnuFile->addAction(actExit);
     
     mnuEdit = menuBar()->addMenu(tr("&Edit"));
-    mnuEdit->addAction(actCut);
-    mnuEdit->addAction(actCopy);
+    // mnuEdit->addAction(actUndo);
+    // mnuEdit->addAction(actRedo);
+    // mnuEdit->addSeparator();
+    // mnuEdit->addAction(actCut);
+    // mnuEdit->addAction(actCopy);
     mnuEdit->addAction(actPaste);
+    #ifdef Q_WS_X11
     mnuEdit->addSeparator();
     mnuEdit->addAction(actOptions);
+    #endif
 
     mnuView = menuBar()->addMenu(tr("&View"));
     mnuView->addAction(sceneView->actSceneZoomBestFit);
@@ -227,6 +240,10 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actScriptStartup);
     mnuTools->addAction(actScriptEditor);
+    #ifdef Q_WS_WIN
+    mnuTools->addSeparator();
+    mnuTools->addAction(actOptions);
+    #endif
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
@@ -247,8 +264,11 @@ void MainWindow::createToolBars()
     tlbEdit = addToolBar(tr("Edit"));
     tlbEdit->setObjectName("Edit");
     tlbEdit->hide();
-    tlbEdit->addAction(actCut);
-    tlbEdit->addAction(actCopy);
+    // tlbEdit->addAction(actUndo);
+    // tlbEdit->addAction(actRedo);
+    // tlbEdit->addSeparator();
+    // tlbEdit->addAction(actCut);
+    // tlbEdit->addAction(actCopy);
     tlbEdit->addAction(actPaste);
 
     tlbView = addToolBar(tr("View"));
@@ -257,10 +277,6 @@ void MainWindow::createToolBars()
     tlbView->addAction(sceneView->actSceneZoomRegion);
     tlbView->addAction(sceneView->actSceneZoomIn);
     tlbView->addAction(sceneView->actSceneZoomOut);
-    #ifdef Q_WS_X11
-    tlbView->addSeparator();
-    tlbView->addAction(sceneView->actSceneViewProperties);
-    #endif
 
     tlbProblem = addToolBar(tr("Problem"));
     tlbProblem->setObjectName("Problem");
@@ -286,11 +302,6 @@ void MainWindow::createToolBars()
     tlbTools->addSeparator();
     tlbTools->addAction(actScriptStartup);
     tlbTools->addAction(actScriptEditor);
-    #ifdef Q_WS_WIN
-    tlbTools->addSeparator();
-    tlbTools->addAction(sceneView->actSceneViewProperties);
-    #endif
-
 }
 
 void MainWindow::createStatusBar()
@@ -330,7 +341,7 @@ void MainWindow::createScene()
     widget->setLayout(layout);
     
     setCentralWidget(widget);
-    setWindowTitle(tr("Agros 2D"));
+    setWindowTitle(tr("Agros2D"));
 }
 
 void MainWindow::createViews()
@@ -397,7 +408,7 @@ void MainWindow::doDocumentOpen()
     QSettings settings;
     QString dir = settings.value("LastDataDir", "data").toString();
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros 2D files (*.h2d)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {        
         Util::scene()->readFromFile(fileName);
@@ -434,7 +445,7 @@ void MainWindow::doDocumentSaveAs()
     QSettings settings;
     QString dir = settings.value("LastDataDir", "data").toString();
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros 2D files (*.h2d)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros2D files (*.h2d)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
@@ -543,6 +554,14 @@ void MainWindow::doScriptStartup()
     delete scriptStartup;
 }
 
+void MainWindow::doUndo()
+{
+}
+
+void MainWindow::doRedo()
+{
+}
+
 void MainWindow::doCut()
 {
 }
@@ -601,7 +620,7 @@ void MainWindow::doHelpShortCut()
 
 void MainWindow::doAbout()
 {
-    QString str(tr("<b>Agros 2D %1</b><br/> <i>hp</i>-FEM multiphysics solver based on <a href=\"http://hpfem.org/hermes2d/\">hermes2d</a> library.<br/><br/>Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>Issues: <a href=\"http://code.google.com/p/agros2d/issues/list\">http://code.google.com/p/agros2d/issues/list</a><br/><br/><b>Authors:</b><p><table><tr><td>Agros 2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a></td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr></table></p><br/><b>License:</b><p>Agros 2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Hermes2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
+    QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics solver based on <a href=\"http://hpfem.org/hermes2d/\">hermes2d</a> library.<br/><br/>Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>Issues: <a href=\"http://code.google.com/p/agros2d/issues/list\">http://code.google.com/p/agros2d/issues/list</a><br/><br/><b>Authors:</b><p><table><tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a></td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr></table></p><br/><b>License:</b><p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Hermes2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
 
-    QMessageBox::about(this, tr("About Agros 2D"), str);
+    QMessageBox::about(this, tr("About Agros2D"), str);
 }
