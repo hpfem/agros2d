@@ -608,148 +608,7 @@ void Scene::doProblemProperties()
     delete problemDialog;
 }
 
-int Scene::writeToTriangle()
-{
-    // file info
-    QFileInfo fileInfo(m_problemInfo.fileName);
-    
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-    
-    QDir dir;
-    dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
-    QFile file(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".poly");
-    
-    if (!file.open(QIODevice::WriteOnly))
-    {
-        cerr << "Could not create triangle poly mesh file." << endl;
-        return 0;
-    }
-    QTextStream out(&file);
-    
-    
-    // nodes
-    QString outNodes;
-    int nodesCount = 0;
-    for (int i = 0; i<nodes.count(); i++)
-    {
-        outNodes += QString("%1  %2  %3  %4\n").arg(i).arg(nodes[i]->point.x, 0, 'f', 10).arg(nodes[i]->point.y, 0, 'f', 10).arg(0);
-        nodesCount++;
-    }
-    
-    // edges
-    QString outEdges;
-    int edgesCount = 0;
-    for (int i = 0; i<edges.count(); i++)
-    {
-        if (edges[i]->angle == 0)
-        {
-            // line
-            outEdges += QString("%1  %2  %3  %4\n").arg(edgesCount).arg(nodes.indexOf(edges[i]->nodeStart)).arg(nodes.indexOf(edges[i]->nodeEnd)).arg(i+1);
-            edgesCount++;
-        }
-        else
-        {
-            // arc
-            // add pseudonodes
-            Point center = edges[i]->center();
-            double radius = edges[i]->radius();
-            double startAngle = atan2(center.y - edges[i]->nodeStart->point.y, center.x - edges[i]->nodeStart->point.x) / M_PI*180 - 180;
-            int segments = edges[i]->angle/5.0 + 1;
-            if (segments < 5) segments = 5; // minimum segments
-            
-            double theta = edges[i]->angle / float(segments - 1);
-            
-            int nodeStartIndex = 0;
-            int nodeEndIndex = 0;
-            for (int j = 0; j < segments; j++)
-            {
-                double arc = (startAngle + j*theta)/180.0*M_PI;
-                double x = radius * cos(arc);
-                double y = radius * sin(arc);
-                
-                nodeEndIndex = nodesCount+1;
-                if (j == 0)
-                {
-                    nodeStartIndex = nodes.indexOf(edges[i]->nodeStart);
-                    nodeEndIndex = nodesCount;
-                }
-                if (j == segments-1)
-                {
-                    nodeEndIndex = nodes.indexOf(edges[i]->nodeEnd);
-                }
-                if ((j > 0) && (j < segments))
-                {
-                    outNodes += QString("%1  %2  %3  %4\n").arg(nodesCount).arg(center.x + x, 0, 'f', 10).arg(center.y + y, 0, 'f', 10).arg(0);
-                    nodesCount++;
-                }
-                outEdges += QString("%1  %2  %3  %4\n").arg(edgesCount).arg(nodeStartIndex).arg(nodeEndIndex).arg(i+1);
-                edgesCount++;
-                nodeStartIndex = nodeEndIndex;
-            }
-        }
-    }
-    
-    // holes
-    int holesCount = 0;
-    for (int i = 0; i<labels.count(); i++) if (labelMarkers.indexOf(labels[i]->marker) == 0) holesCount++;
-    QString outHoles = QString("%1\n").arg(holesCount);
-    for (int i = 0; i<labels.count(); i++)
-        if (labelMarkers.indexOf(labels[i]->marker) == 0)
-            outHoles += QString("%1  %2  %3\n").arg(i).arg(labels[i]->point.x, 0, 'f', 10).arg(labels[i]->point.y, 0, 'f', 10);
-    
-    // labels
-    QString outLabels;
-    int labelsCount = 0;
-    for(int i = 0; i<labels.count(); i++)
-        if (labelMarkers.indexOf(labels[i]->marker) > 0) 
-        {
-        outLabels += QString("%1  %2  %3  %4  %5\n").arg(labelsCount).arg(labels[i]->point.x, 0, 'f', 10).arg(labels[i]->point.y, 0, 'f', 10).arg(i).arg(labels[i]->area);
-        labelsCount++;
-    }
-    
-    
-    outNodes.insert(0, QString("%1 2 0 1\n").arg(nodesCount)); // + additional nodes
-    out << outNodes;
-    outEdges.insert(0, QString("%1 1\n").arg(edgesCount)); // + additional edges
-    out << outEdges;
-    out << outHoles;
-    outLabels.insert(0, QString("%1 1\n").arg(labelsCount)); // - holes
-    out << outLabels;
-    
-    file.waitForBytesWritten(0);
-    file.close();
-    
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-}
 
-void Scene::readFromDxf(const QString &fileName)
-{
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-    
-    blockSignals(true);
-    
-    DxfFilter *filter = new DxfFilter(this);
-    DL_Dxf* dxf = new DL_Dxf();
-    if (!dxf->in(fileName.toStdString(), filter)) {
-        cerr << fileName.toStdString() << " could not be opened." << endl;
-        return;
-    }
-    
-    delete dxf;
-    delete filter;
-    
-    blockSignals(false);
-    
-    emit invalidated();
-    
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-}
 
 void Scene::writeToDxf(const QString &fileName)
 {
@@ -880,6 +739,33 @@ void Scene::writeToDxf(const QString &fileName)
     delete dw;
     delete dxf;
     
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
+
+void Scene::readFromDxf(const QString &fileName)
+{
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    blockSignals(true);
+
+    DxfFilter *filter = new DxfFilter(this);
+    DL_Dxf* dxf = new DL_Dxf();
+    if (!dxf->in(fileName.toStdString(), filter)) {
+        cerr << fileName.toStdString() << " could not be opened." << endl;
+        return;
+    }
+
+    delete dxf;
+    delete filter;
+
+    blockSignals(false);
+
+    emit invalidated();
+
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }
@@ -1395,110 +1281,4 @@ void Scene::writeToFile(const QString &fileName) {
     
     // set system locale
     setlocale(LC_NUMERIC, plocale);
-}
-
-bool Scene::triangleToHermes2D()
-{
-    bool returnValue = true;
-    
-    int i, n, k, l, marker, node_1, node_2, node_3;
-    double x, y;
-    
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-    
-    // file info
-    QFileInfo fileInfo(m_problemInfo.fileName);
-
-    QFile fileMesh(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".mesh");
-    if (!fileMesh.open(QIODevice::WriteOnly))
-    {
-        cerr << "Could not create hermes2d mesh file." << endl;
-        return 0;
-    }
-    QTextStream outMesh(&fileMesh);
-
-    QFile fileNode(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".node");
-    if (!fileNode.open(QIODevice::ReadOnly))
-    {
-        cerr << "Could not read triangle node file." << endl;
-        return 0;
-    }
-    QTextStream inNode(&fileNode);
-    
-    QFile fileEdge(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".edge");
-    if (!fileEdge.open(QIODevice::ReadOnly))
-    {
-        cerr << "Could not read triangle edge file." << endl;
-        return 0;
-    }
-    QTextStream inEdge(&fileEdge);
-    
-    QFile fileEle(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele");
-    if (!fileEle.open(QIODevice::ReadOnly))
-    {
-        cerr << "Could not read triangle ele file." << endl;
-        return 0;
-    }
-    QTextStream inEle(&fileEle);
-    
-    // nodes
-    QString outNodes;
-    outNodes += "vertices = \n";
-    outNodes += "{ \n";
-    sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
-    for (int i = 0; i<k; i++)
-    {
-        sscanf(inNode.readLine().toStdString().c_str(), "%i   %lf %lf %i", &n, &x, &y, &marker);
-        outNodes += QString("\t{ %1,  %2 }, \n").arg(x, 0, 'f', 10).arg(y, 0, 'f', 10);
-    }
-    outNodes.truncate(outNodes.length()-3);
-    outNodes += "\n} \n\n";
-    
-    // edges and curves
-    QString outEdges;
-    outEdges += "boundaries = \n";
-    outEdges += "{ \n";
-    sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
-    for (int i = 0; i<k; i++)
-    {
-        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
-        if (marker != 0)
-        {
-            if (edges[marker-1]->marker->type != PHYSICFIELDBC_NONE)
-                outEdges += QString("\t{ %1, %2, %3 }, \n").arg(node_1).arg(node_2).arg(abs(marker));
-        }
-    }
-    outEdges.truncate(outEdges.length()-3);
-    outEdges += "\n} \n\n";
-    
-    // elements
-    QString outElements;
-    outElements += "elements = \n";
-    outElements += "{ \n";
-    sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
-    for (int i = 0; i<k; i++)
-    {
-        sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
-        outElements += QString("\t{ %1, %2, %3, %4  }, \n").arg(node_1).arg(node_2).arg(node_3).arg(abs(marker));
-    }
-    outElements.truncate(outElements.length()-3);
-    outElements += "\n} \n\n";
-    
-    outMesh << outNodes;
-    outMesh << outElements;
-    outMesh << outEdges;
-    
-    fileNode.close();
-    fileEdge.close();
-    fileEle.close();
-    
-    fileMesh.waitForBytesWritten(0);
-    fileMesh.close();
-    
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-    
-    return returnValue;
 }

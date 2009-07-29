@@ -173,8 +173,6 @@ public:
     void createMeshAndSolve(SolverMode solverMode);
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
 
-    int writeToTriangle();
-    bool triangleToHermes2D();
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
     void readFromFile(const QString &fileName);

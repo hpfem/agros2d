@@ -73,6 +73,9 @@ private:
     void runMesh();
     void runSolver();
 
+    int writeToTriangle();
+    bool triangleToHermes2D();
+
     void createControls();
 
 private slots:
