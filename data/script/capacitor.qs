@@ -32,4 +32,4 @@ addLabel(0.0379, 0.051, 0, "diel 2");
 addLabel(0.0284191, 0.123601, 0, "air");
 
 zoomBestFit();
-// solve();
+solve();

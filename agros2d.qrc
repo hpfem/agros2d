@@ -15,6 +15,9 @@
         <file>images/edit-cut-windows.png</file>
         <file>images/edit-paste.png</file>
         <file>images/edit-paste-windows.png</file>
+        <file>images/edit-find.png</file>
+        <file>images/edit-redo.png</file>
+        <file>images/edit-undo.png</file>
         <file>images/geometry.png</file>
         <file>images/chart.png</file>
         <file>images/mode-localpointvalue.png</file>
@@ -48,5 +51,8 @@
         <file>images/tabclose.png</file>
         <file>images/problem.png</file>
         <file>images/document-save-as.png</file>
+        <file>images/edit-find.png</file>
+        <file>images/edit-redo.png</file>
+        <file>images/edit-undo.png</file>
     </qresource>
 </RCC>
