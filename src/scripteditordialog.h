@@ -57,6 +57,7 @@ protected:
     QMenu *mnuFile;
     QMenu *mnuEdit;
     QMenu *mnuTools;
+    QMenu *mnuHelp;
 
     QToolBar *tlbBar;
 
