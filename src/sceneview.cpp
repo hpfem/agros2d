@@ -279,11 +279,12 @@ void SceneView::createMenu()
     mnuInfo = new QMenu(this);
     mnuMarkerGroup = new QMenu(tr("Set marker"), this);
 
-    mnuInfo->addAction(actSceneModeNode);
-    mnuInfo->addAction(actSceneModeEdge);
-    mnuInfo->addAction(actSceneModeLabel);
-    mnuInfo->addAction(actSceneModePostprocessor);
-    mnuInfo->addSeparator();
+    QMenu *mnuModeGroup = new QMenu(tr("Set mode"), this);
+    mnuModeGroup->addAction(actSceneModeNode);
+    mnuModeGroup->addAction(actSceneModeEdge);
+    mnuModeGroup->addAction(actSceneModeLabel);
+    mnuModeGroup->addAction(actSceneModePostprocessor);
+
     mnuInfo->addAction(Util::scene()->actNewNode);
     mnuInfo->addAction(Util::scene()->actNewEdge);
     mnuInfo->addAction(Util::scene()->actNewLabel);
@@ -295,6 +296,7 @@ void SceneView::createMenu()
     mnuInfo->addAction(Util::scene()->actTransform);
     mnuInfo->addSeparator();
     mnuInfo->addMenu(mnuMarkerGroup);
+    mnuInfo->addMenu(mnuModeGroup);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actSceneViewProperties);
 }

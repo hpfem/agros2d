@@ -63,7 +63,7 @@ void MainWindow::createActions()
     actDocumentSave->setStatusTip(tr("Save the document to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
     
-    actDocumentSaveAs = new QAction(tr("Save &As..."), this);
+    actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
     actDocumentSaveAs->setStatusTip(tr("Save the document under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
@@ -160,7 +160,7 @@ void MainWindow::createActions()
     actScriptEditor->setStatusTip(tr("Script editor"));
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
-    actScriptStartup = new QAction(icon("script"), tr("Startup script"), this);
+    actScriptStartup = new QAction(icon("script-startup"), tr("Startup script"), this);
     actScriptStartup->setStatusTip(tr("Startup script"));
     connect(actScriptStartup, SIGNAL(triggered()), this, SLOT(doScriptStartup()));
 }
@@ -302,6 +302,8 @@ void MainWindow::createToolBars()
     tlbTools->addSeparator();
     tlbTools->addAction(actScriptStartup);
     tlbTools->addAction(actScriptEditor);
+    tlbTools->addSeparator();
+    tlbTools->addAction(sceneView->actSceneViewProperties);
 }
 
 void MainWindow::createStatusBar()

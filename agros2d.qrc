@@ -8,6 +8,7 @@
         <file>images/document-open-windows.png</file>
         <file>images/document-save.png</file>
         <file>images/document-save-windows.png</file>
+        <file>images/document-save-as.png</file>
         <file>images/edit-copy.png</file>
         <file>images/edit-copy-windows.png</file>
         <file>images/edit-cut.png</file>
@@ -40,10 +41,12 @@
         <file>images/zoom-region.png</file>
         <file>images/agros2d.png</file>
         <file>images/script.png</file>
+        <file>images/script-startup.png</file>
         <file>images/script-create.png</file>
         <file>images/help-browser.png</file>
         <file>images/tabadd.png</file>
         <file>images/tabclose.png</file>
         <file>images/problem.png</file>
+        <file>images/document-save-as.png</file>
     </qresource>
 </RCC>
