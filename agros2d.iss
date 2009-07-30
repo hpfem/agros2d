@@ -1,18 +1,18 @@
 [Setup]
 
-AppName=Agros 2D
-AppVerName=Agros 2D 0.9
-OutputBaseFilename=Agros2D_0.9.0
-DefaultGroupName=Agros 2D
+AppName=Agros2D
+AppVerName=Agros2D 0.9
+OutputBaseFilename=Agros2D_0.9.1
+DefaultGroupName=Agros2D
 LicenseFile=COPYING
 
 AppId=Agros2D
 AppPublisher=hp-fem
 AppCopyright=hp-fem
-AppPublisherURL=http://www.hpfem.org
+AppPublisherURL=http://www.hpfem.org/agros2d
 AppMutex=Agros2D
 OutputDir=setup
-DefaultDirName={pf}\Agros 2D
+DefaultDirName={pf}\Agros2D
 UninstallDisplayIcon={app}\images\Agros2d.ico
 Compression=lzma/max
 PrivilegesRequired=admin
@@ -34,10 +34,11 @@ Source: doc\help\agros2d.qch; DestDir: {app}/doc/help
 Source: install\win32\*.dll; DestDir: {app}
 
 [Icons]
-Name: {group}\Agros 2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
+Name: {group}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
+Name: {group}\Web pages; Filename: {app}\Agros2D.url
 Name: {group}\COPYING; Filename: {app}\COPYING
 Name: {group}\Uninstall; Filename: {uninstallexe}
-Name: {commondesktop}\Agros 2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}; Tasks: desktopicon
+Name: {commondesktop}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}; Tasks: desktopicon
 
 [Tasks]
 Name: desktopicon; Description: Create icon on desktop
@@ -49,10 +50,10 @@ Name: desktopicon; Description: Create icon on desktop
 ;
 
 [INI]
-;Filename: {app}\OverHead.url; Section: InternetShortcut; Key: URL; String: http://www.skeleton.cz/overhead
+Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http://www.hpfem.org/agros2d
 
 [UninstallDelete]
-;Type: files; Name: {app}\OverHead.url
+Type: files; Name: {app}\Agros2D.url
 
 [Code]
 
