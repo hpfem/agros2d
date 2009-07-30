@@ -475,7 +475,7 @@ void ScriptEditorDialog::createControls()
     actFileSave->setShortcuts(QKeySequence::Save);
     connect(actFileSave, SIGNAL(triggered()), this, SLOT(doFileSave()));
 
-    actFileSaveAs = new QAction(tr("Save &As..."), this);
+    actFileSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actFileSaveAs->setShortcuts(QKeySequence::SaveAs);
     connect(actFileSaveAs, SIGNAL(triggered()), this, SLOT(doFileSaveAs()));
 
@@ -484,23 +484,23 @@ void ScriptEditorDialog::createControls()
     actExit->setStatusTip(tr("Exit script editor"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    actUndo = new QAction(tr("Undo"), this);
+    actUndo = new QAction(icon("edit-undo"), tr("Undo"), this);
     actUndo->setShortcut(QKeySequence::Undo);
     connect(actUndo, SIGNAL(triggered()), txtEditor, SLOT(undo()));
 
-    actRedo = new QAction(tr("Redo"), this);
+    actRedo = new QAction(icon("edit-redo"), tr("Redo"), this);
     actRedo->setShortcut(QKeySequence::Redo);
     connect(actRedo, SIGNAL(triggered()), txtEditor, SLOT(redo()));
 
-    actCut = new QAction(tr("Cut"), this);
+    actCut = new QAction(icon("edit-cut"), tr("Cut"), this);
     actCut->setShortcut(QKeySequence::Cut);
     connect(actCut, SIGNAL(triggered()), txtEditor, SLOT(cut()));
 
-    actCopy = new QAction(tr("Copy"), this);
+    actCopy = new QAction(icon("edit-copy"), tr("Copy"), this);
     actCopy->setShortcut(QKeySequence::Copy);
     connect(actCopy, SIGNAL(triggered()), txtEditor, SLOT(copy()));
 
-    actPaste = new QAction(tr("Paste"), this);
+    actPaste = new QAction(icon("edit-paste"), tr("Paste"), this);
     actPaste->setShortcut(QKeySequence::Paste);
     connect(actPaste, SIGNAL(triggered()), txtEditor, SLOT(paste()));
     
@@ -536,19 +536,23 @@ void ScriptEditorDialog::createControls()
     mnuEdit->addAction(actPaste);
 
     mnuTools = mnuBar->addMenu(tr("&Tools"));
-    mnuTools->addAction(actCreateFromModel);
     mnuTools->addAction(actRun);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actCreateFromModel);
+
+    mnuHelp = mnuBar->addMenu(tr("&Help"));
+    mnuHelp->addAction(actHelp);
 
     tlbBar->addAction(actFileNew);
     tlbBar->addAction(actFileOpen);
     tlbBar->addAction(actFileSave);
-    // tlbBar->addAction(actUndo);
-    // tlbBar->addAction(actRedo);
+    tlbBar->addSeparator();
+    tlbBar->addAction(actUndo);
+    tlbBar->addAction(actRedo);
     tlbBar->addSeparator();
     tlbBar->addAction(actRun);
-    tlbBar->addAction(actCreateFromModel);
     tlbBar->addSeparator();
-    tlbBar->addAction(actHelp);
+    tlbBar->addAction(actCreateFromModel);
 
     txtOutput->setFont(QFont("Monospaced", 10));
     txtOutput->setReadOnly(true);
@@ -815,7 +819,6 @@ void ScriptStartupDialog::createControls()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(txtEditor);
     layout->addWidget(buttonBox);
-    layout->setMargin(0);
     setLayout(layout);
 }
 
