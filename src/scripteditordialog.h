@@ -6,7 +6,9 @@
 #include <QtGui/QDialog>
 #include <QtGui/QPlainTextEdit>
 #include <QtGui/QTextEdit>
+#include <QtGui/QClipboard>
 #include <QtGui/QFileDialog>
+#include <QtGui/QMenuBar>
 #include <QtGui/QToolBar>
 #include <QtGui/QSplitter>
 #include <QtGui/QDesktopServices>
@@ -34,30 +36,46 @@ public:
 
  public slots:
      void doFileNew();
-     void doFileOpen(const QString &fileName = QString());
+     void doFileOpen(const QString &file = QString());
      void doFileSave();
+     void doFileSaveAs();
+     void doDataChanged();
      void doRun();
      void doCreateFromModel();
      void doHelp();
 
 protected:
-    QString m_fileName;
+    QString m_file;
     QScriptEngine *m_engine;
 
-    // ScriptEditorHelpDialog *scriptEditorHelpDialog;
+    ScriptEditor *txtEditor;
+    QPlainTextEdit *txtOutput;
+    QSplitter *splitter;
+    QVBoxLayout *layout;
+
+    QMenuBar *mnuBar;
+    QMenu *mnuFile;
+    QMenu *mnuEdit;
+    QMenu *mnuTools;
+
+    QToolBar *tlbBar;
 
     QAction *actFileNew;
     QAction *actFileOpen;
     QAction *actFileSave;
     QAction *actFileSaveAs;
+    QAction *actExit;
+
+    QAction *actUndo;
+    QAction *actRedo;
+    QAction *actCut;
+    QAction *actCopy;
+    QAction *actPaste;
+
     QAction *actRun;
     QAction *actCreateFromModel;
+
     QAction *actHelp;
-
-    ScriptEditor *txtEditor;
-    QPlainTextEdit *txtOutput;
-
-    QSplitter *splitter;
 
     void createControls();
     void createEngine();
