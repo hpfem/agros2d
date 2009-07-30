@@ -1804,6 +1804,11 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
     mnuInfo->exec(event->globalPos());
 }
 
+void SceneView::closeEvent(QCloseEvent *event)
+{
+    event->ignore();
+}
+
 // slots *****************************************************************************************************************************
 
 void SceneView::doInvalidated()
@@ -1973,14 +1978,19 @@ void SceneView::doSceneViewProperties()
 
 void SceneView::doFullScreen()
 {
+    QSettings settings;
     if (isFullScreen())
     {
         setParent(m_mainWindow);
         m_mainWindow->setCentralWidget(this);
         showNormal();
+
+        m_mainWindow->restoreState(settings.value("MainWindow/State", m_mainWindow->saveState()).toByteArray());
     }
     else
     {
+        settings.setValue("MainWindow/State", m_mainWindow->saveState());
+
         setParent(NULL);
         showFullScreen();
     }

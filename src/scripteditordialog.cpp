@@ -694,6 +694,8 @@ ScriptStartupDialog::ScriptStartupDialog(ProblemInfo &problemInfo, QWidget *pare
 {
     m_problemInfo = &problemInfo;
 
+    setWindowIcon(icon("script-startup"));
+
     setWindowTitle(tr("Startup script"));
     setMinimumSize(400, 300);
 
