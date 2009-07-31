@@ -305,7 +305,7 @@ void ChartDialog::doPrint()
 
 void ChartDialog::doSaveImage()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", "PNG files (*.png)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", tr("PNG files (*.png)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
@@ -320,7 +320,7 @@ void ChartDialog::doSaveImage()
 void ChartDialog::doExportData()
 {
     QString selectedFilter;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), "data", "CSV files (*.csv);;Matlab/Octave script (*.m)", &selectedFilter);
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), "data", tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
     if (!fileName.isEmpty())
     {
         // open file for write

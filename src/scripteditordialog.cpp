@@ -461,7 +461,7 @@ void ScriptEditorDialog::createControls()
     layout = new QVBoxLayout();
 
     mnuBar = new QMenuBar();
-    tlbBar = new QToolBar("Toolbar", this);
+    tlbBar = new QToolBar(tr("Toolbar"), this);
 
     actFileNew = new QAction(icon("document-new"), tr("&New"), this);
     actFileNew->setShortcuts(QKeySequence::New);
@@ -484,38 +484,38 @@ void ScriptEditorDialog::createControls()
     actExit->setStatusTip(tr("Exit script editor"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    actUndo = new QAction(icon("edit-undo"), tr("Undo"), this);
+    actUndo = new QAction(icon("edit-undo"), tr("&Undo"), this);
     actUndo->setShortcut(QKeySequence::Undo);
     connect(actUndo, SIGNAL(triggered()), txtEditor, SLOT(undo()));
 
-    actRedo = new QAction(icon("edit-redo"), tr("Redo"), this);
+    actRedo = new QAction(icon("edit-redo"), tr("&Redo"), this);
     actRedo->setShortcut(QKeySequence::Redo);
     connect(actRedo, SIGNAL(triggered()), txtEditor, SLOT(redo()));
 
-    actCut = new QAction(icon("edit-cut"), tr("Cut"), this);
+    actCut = new QAction(icon("edit-cut"), tr("Cu&t"), this);
     actCut->setShortcut(QKeySequence::Cut);
     connect(actCut, SIGNAL(triggered()), txtEditor, SLOT(cut()));
 
-    actCopy = new QAction(icon("edit-copy"), tr("Copy"), this);
+    actCopy = new QAction(icon("edit-copy"), tr("&Copy"), this);
     actCopy->setShortcut(QKeySequence::Copy);
     connect(actCopy, SIGNAL(triggered()), txtEditor, SLOT(copy()));
 
-    actPaste = new QAction(icon("edit-paste"), tr("Paste"), this);
+    actPaste = new QAction(icon("edit-paste"), tr("&Paste"), this);
     actPaste->setShortcut(QKeySequence::Paste);
     connect(actPaste, SIGNAL(triggered()), txtEditor, SLOT(paste()));
     
     actCut->setEnabled(false);
     actCopy->setEnabled(false);
 
-    actRun = new QAction(icon("system-run"), tr("Run"), this);
+    actRun = new QAction(icon("system-run"), tr("&Run"), this);
     actRun->setShortcut(QKeySequence(tr("Ctrl+R")));
     connect(actRun, SIGNAL(triggered()), this, SLOT(doRun()));
 
-    actCreateFromModel = new QAction(icon("script-create"), tr("Create script from model"), this);
+    actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
     actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
     connect(actCreateFromModel, SIGNAL(triggered()), this, SLOT(doCreateFromModel()));
 
-    actHelp = new QAction(icon("help-browser"), tr("Help"), this);
+    actHelp = new QAction(icon("help-browser"), tr("&Help"), this);
     actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 

@@ -60,17 +60,17 @@ void MainWindow::createActions()
     
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
-    actDocumentSave->setStatusTip(tr("Save the document to disk"));
+    actDocumentSave->setStatusTip(tr("Save the file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
     
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
-    actDocumentSaveAs->setStatusTip(tr("Save the document under a new name"));
+    actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
     
-    actDocumentClose = new QAction(tr("Close"), this);
+    actDocumentClose = new QAction(tr("&Close"), this);
     actDocumentClose->setShortcuts(QKeySequence::Close);
-    actDocumentClose->setStatusTip(tr("Close document"));
+    actDocumentClose->setStatusTip(tr("Close the file"));
     connect(actDocumentClose, SIGNAL(triggered()), this, SLOT(doDocumentClose()));
 
     actDocumentImportDXF = new QAction(tr("Import DXF..."), this);
@@ -122,7 +122,7 @@ void MainWindow::createActions()
     actHelpShortCut->setStatusTip(tr("Shortcuts"));
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
 
-    actAbout = new QAction(icon("about"), tr("&About Agros2D"), this);
+    actAbout = new QAction(icon("about"), tr("About &Agros2D"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
 
@@ -133,41 +133,39 @@ void MainWindow::createActions()
     actCut->setEnabled(true);
     actCopy->setEnabled(true);
     actPaste->setEnabled(true);
-    // connect(textEdit, SIGNAL(copyAvailable(bool)), actCut, SLOT(setEnabled(bool)));
-    // connect(textEdit, SIGNAL(copyAvailable(bool)), actCopy, SLOT(setEnabled(bool)));
 
-    actOptions = new QAction(icon("options"), tr("Options"), this);
+    actOptions = new QAction(icon("options"), tr("&Options"), this);
     actOptions->setStatusTip(tr("Options"));
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
-    actCreateMesh = new QAction(icon("scene-mesh"), tr("Mesh area"), this);
+    actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh area"), this);
     actCreateMesh->setStatusTip(tr("Mesh area"));
     connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));
 
-    actSolve = new QAction(icon("system-run"), tr("Solve problem"), this);
-    actSolve->setShortcut(QKeySequence(tr("Alt+s")));
+    actSolve = new QAction(icon("system-run"), tr("&Solve problem"), this);
+    actSolve->setShortcut(QKeySequence(tr("Alt+S")));
     actSolve->setStatusTip(tr("Solve problem"));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
 
-    actChart = new QAction(icon("chart"), tr("Chart"), this);
+    actChart = new QAction(icon("chart"), tr("&Chart"), this);
     actChart->setStatusTip(tr("Chart"));
     connect(actChart, SIGNAL(triggered()), this, SLOT(doChart()));
 
     actDocumentOpenRecentGroup = new QActionGroup(this);
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
 
-    actScriptEditor = new QAction(icon("script"), tr("Script editor"), this);
+    actScriptEditor = new QAction(icon("script"), tr("&Script editor"), this);
     actScriptEditor->setStatusTip(tr("Script editor"));
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
-    actScriptStartup = new QAction(icon("script-startup"), tr("Startup script"), this);
+    actScriptStartup = new QAction(icon("script-startup"), tr("S&tartup script"), this);
     actScriptStartup->setStatusTip(tr("Startup script"));
     connect(actScriptStartup, SIGNAL(triggered()), this, SLOT(doScriptStartup()));
 }
 
 void MainWindow::createMenus()
 {
-    mnuAdd = new QMenu(tr("Add"), this);
+    mnuAdd = new QMenu(tr("&Add"), this);
     mnuRecentFiles = new QMenu(tr("Recent files"), this);
     setRecentFiles();
 
@@ -235,7 +233,7 @@ void MainWindow::createMenus()
     mnuProblem->addSeparator();
     mnuProblem->addAction(Util::scene()->actProblemProperties);
 
-    mnuTools = menuBar()->addMenu(tr("Tools"));
+    mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actChart);
     mnuTools->addSeparator();
     mnuTools->addAction(actScriptStartup);
@@ -472,7 +470,7 @@ void MainWindow::doDocumentClose()
 
 void MainWindow::doDocumentImportDXF()
 {    
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Import file"), "data", "DXF files (*.dxf)");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Import file"), "data", tr("DXF files (*.dxf)"));
     if (!fileName.isEmpty())
     {
         Util::scene()->readFromDxf(fileName);
@@ -482,7 +480,7 @@ void MainWindow::doDocumentImportDXF()
 
 void MainWindow::doDocumentExportDXF()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export file"), "data", "DXF files (*.dxf)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export file"), "data", tr("DXF files (*.dxf)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
@@ -493,7 +491,7 @@ void MainWindow::doDocumentExportDXF()
 
 void MainWindow::doDocumentSaveImage()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", "PNG files (*.png)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", tr("PNG files (*.png)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);

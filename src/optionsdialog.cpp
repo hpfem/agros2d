@@ -217,8 +217,8 @@ QWidget *OptionsDialog::createMainWidget()
     grpGeneral->setLayout(layoutGeneral);
 
     // solver layout
-    chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete Triangle mesh files"), mainWidget);
-    chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete Hermes2D mesh file"), mainWidget);
+    chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"), mainWidget);
+    chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"), mainWidget);
 
     QVBoxLayout *layoutSolver = new QVBoxLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
@@ -280,7 +280,7 @@ QWidget *OptionsDialog::createMainWidget()
     grpContours->setLayout(layoutContours);
 
     // layout 3d
-    chkView3DLighting = new QCheckBox("Ligthing", this);
+    chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
 
     QHBoxLayout *layout3D = new QHBoxLayout();
     layout3D->addWidget(chkView3DLighting);

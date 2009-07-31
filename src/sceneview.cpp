@@ -264,7 +264,7 @@ void SceneView::createActions()
     connect(actSceneViewProperties, SIGNAL(triggered()), this, SLOT(doSceneViewProperties()));
     
     // select region
-    actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("Select region"), this);
+    actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("&Select region"), this);
     actSceneViewSelectRegion->setStatusTip(tr("Select region"));
     actSceneViewSelectRegion->setCheckable(true);
 

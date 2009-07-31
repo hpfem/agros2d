@@ -124,11 +124,11 @@ void SceneViewDialog::createControls()
     grpShow->setLayout(layoutShow);
 
     // postprocessor mode
-    radPostprocessorNone = new QRadioButton("None", this);
-    radPostprocessorScalarField = new QRadioButton("Scalar view", this);
-    radPostprocessorScalarField3D = new QRadioButton("Scalar view 3D", this);
+    radPostprocessorNone = new QRadioButton(tr("None"), this);
+    radPostprocessorScalarField = new QRadioButton(tr("Scalar view"), this);
+    radPostprocessorScalarField3D = new QRadioButton(tr("Scalar view 3D"), this);
     // radPostprocessorScalarField3DSolid = new QRadioButton("Scalar view 3D solid", this);
-    radPostprocessorOrder = new QRadioButton("Order", this);
+    radPostprocessorOrder = new QRadioButton(tr("Order"), this);
 
     butPostprocessorGroup = new QButtonGroup(this);
     butPostprocessorGroup->addButton(radPostprocessorNone);

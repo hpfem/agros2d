@@ -82,11 +82,11 @@ void Scene::createActions()
     actNewLabelMarker->setStatusTip(tr("New material"));
     connect(actNewLabelMarker, SIGNAL(triggered()), this, SLOT(doNewLabelMarker()));
     
-    actTransform = new QAction(icon("scene-transform"), tr("Transform"), this);
+    actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
     
-    actProblemProperties = new QAction(icon("scene-properties"), tr("Problem properties"), this);
+    actProblemProperties = new QAction(icon("scene-properties"), tr("&Problem properties"), this);
     actProblemProperties->setStatusTip(tr("Problem properties"));
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
 }
