@@ -34,7 +34,7 @@ HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
-    resize(800, 600);
+    resize(900, 600);
 
     QSettings settings;
     restoreGeometry(settings.value("HelpDialog/Geometry", saveGeometry()).toByteArray());
@@ -83,6 +83,8 @@ void HelpDialog::createControls()
     tabLeft->setMinimumWidth(250);
     tabLeft->addTab(helpEngine->contentWidget(), icon(""), tr("Content"));
     tabLeft->addTab(widIndex, icon(""), tr("Index"));
+    tabLeft->setMinimumWidth(150);
+    tabLeft->setMaximumWidth(220);
 
     splitter->insertWidget(0, tabLeft);
     splitter->insertWidget(1, centralWidget);

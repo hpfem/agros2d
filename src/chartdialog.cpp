@@ -8,7 +8,10 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
     setWindowIcon(icon("chart"));
     setWindowTitle(tr("Chart"));
 
-    createControls();   
+    createControls();
+
+    resize(900, 600);
+
     setMinimumSize(sizeHint());
 }
 
