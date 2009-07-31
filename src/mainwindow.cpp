@@ -192,6 +192,7 @@ void MainWindow::createMenus()
     // mnuEdit->addAction(actCut);
     // mnuEdit->addAction(actCopy);
     mnuEdit->addAction(actPaste);
+    mnuEdit->addAction(Util::scene()->actDeleteSelected);
     #ifdef Q_WS_X11
     mnuEdit->addSeparator();
     mnuEdit->addAction(actOptions);
@@ -267,7 +268,8 @@ void MainWindow::createToolBars()
     // tlbEdit->addSeparator();
     // tlbEdit->addAction(actCut);
     // tlbEdit->addAction(actCopy);
-    tlbEdit->addAction(actPaste);
+    // tlbEdit->addAction(actPaste);
+    tlbEdit->addAction(Util::scene()->actDeleteSelected);
 
     tlbView = addToolBar(tr("View"));
     tlbView->setObjectName("View");

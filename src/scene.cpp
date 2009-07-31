@@ -42,7 +42,6 @@ Scene::Scene() {
     
     m_sceneSolution = new SceneSolution(this);
     solverDialog = new SolverDialog(QApplication::activeWindow());
-    connect(solverDialog, SIGNAL(meshed()), this, SLOT(doMeshed()));
     connect(solverDialog, SIGNAL(solved()), this, SLOT(doSolved()));
     
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
@@ -73,6 +72,10 @@ void Scene::createActions()
     actNewLabel->setStatusTip(tr("New label"));
     connect(actNewLabel, SIGNAL(triggered()), this, SLOT(doNewLabel()));
     
+    actDeleteSelected = new QAction(icon("edit-delete"), tr("Delete selected objects"), this);
+    actDeleteSelected->setStatusTip(tr("Delete selected objects"));
+    connect(actDeleteSelected, SIGNAL(triggered()), this, SLOT(doDeleteSelected()));
+
     actNewEdgeMarker = new QAction(icon("scene-edgemarker"), tr("New &boundary condition..."), this);
     actNewEdgeMarker->setShortcut(tr("Alt+B"));
     actNewEdgeMarker->setStatusTip(tr("New boundary condition"));
@@ -298,6 +301,21 @@ void Scene::deleteSelected()
         if (label->isSelected) removeLabel(label);
 }
 
+int Scene::selectedCount()
+{
+    int count = 0;
+    foreach (SceneNode *node, nodes)
+        if (node->isSelected) count++;
+
+    foreach (SceneEdge *edge, edges)
+        if (edge->isSelected) count++;
+
+    foreach (SceneLabel *label, labels)
+        if (label->isSelected) count++;
+
+    return count;
+}
+
 void Scene::highlightNone()
 {
     foreach (SceneNode *node, nodes)
@@ -444,23 +462,6 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     m_problemInfo.fileName = fileNameOrig;
 }
 
-void Scene::doMeshed()
-{
-    // this slot is called after triangle and solve process is finished
-    // linearizer only for mesh (on empty solution)
-    if (QFile::exists(QDir::temp().absolutePath() + "/agros2d/temp.mesh"))
-    {
-        // save locale
-        char *plocale = setlocale (LC_NUMERIC, "");
-        setlocale (LC_NUMERIC, "C");
-
-        m_sceneSolution->mesh().load((QDir::temp().absolutePath() + "/agros2d/temp.mesh").toStdString().c_str());
-
-        // set system locale
-        setlocale(LC_NUMERIC, plocale);
-    }
-}
-
 void Scene::doSolved()
 {
     solverDialog->hide();
@@ -516,6 +517,11 @@ void Scene::doNewLabel()
     }
     else
         delete label;
+}
+
+void Scene::doDeleteSelected()
+{
+    deleteSelected();
 }
 
 void Scene::doNewEdgeMarker()

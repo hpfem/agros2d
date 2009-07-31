@@ -109,6 +109,7 @@ public slots:
     void doNewNode(const Point &point = Point());
     void doNewEdge();
     void doNewLabel();
+    void doDeleteSelected();
     void doNewEdgeMarker();
     void doNewLabelMarker();  
     void doTransform();
@@ -129,6 +130,7 @@ public:
     QAction *actNewNode;
     QAction *actNewEdge;
     QAction *actNewLabel;
+    QAction *actDeleteSelected;
     QAction *actNewEdgeMarker;
     QAction *actNewLabelMarker;
     QAction *actProblemProperties;
@@ -160,6 +162,7 @@ public:
 
     void selectNone();
     void selectAll(SceneMode sceneMode);
+    int selectedCount();
     void highlightNone();
     void deleteSelected();
 
@@ -193,7 +196,6 @@ private:
 
 private slots:    
     void doInvalidated();
-    void doMeshed();
     void doSolved();
 };
 
