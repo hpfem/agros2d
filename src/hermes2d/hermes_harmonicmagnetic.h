@@ -25,16 +25,10 @@ struct HarmonicMagneticLabel
 
 static HarmonicMagneticEdge *harmonicmagneticEdge;
 static HarmonicMagneticLabel *harmonicmagneticLabel;
-static bool harmonicmagneticIsPlanar;
 
 SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
                                      const char *fileName,
                                      HarmonicMagneticEdge *edge,
-                                     HarmonicMagneticLabel *label,
-                                     int numberOfRefinements,
-                                     int polynomialOrder,
-                                     int adaptivitySteps,
-                                     double adaptivityTolerance,
-                                     bool isPlanar);
+                                     HarmonicMagneticLabel *label);
 
 #endif // HARMONICMAGNETIC_H

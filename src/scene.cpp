@@ -42,6 +42,7 @@ Scene::Scene() {
     
     m_sceneSolution = new SceneSolution(this);
     solverDialog = new SolverDialog(QApplication::activeWindow());
+    connect(solverDialog, SIGNAL(meshed()), this, SLOT(doMeshed()));
     connect(solverDialog, SIGNAL(solved()), this, SLOT(doSolved()));
     
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
@@ -443,13 +444,8 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     m_problemInfo.fileName = fileNameOrig;
 }
 
-void Scene::doSolved()
+void Scene::doMeshed()
 {
-    solverDialog->hide();
-    
-    // file info
-    QFileInfo fileInfo(m_problemInfo.fileName);
-    
     // this slot is called after triangle and solve process is finished
     // linearizer only for mesh (on empty solution)
     if (QFile::exists(QDir::temp().absolutePath() + "/agros2d/temp.mesh"))
@@ -457,13 +453,18 @@ void Scene::doSolved()
         // save locale
         char *plocale = setlocale (LC_NUMERIC, "");
         setlocale (LC_NUMERIC, "C");
-        
+
         m_sceneSolution->mesh().load((QDir::temp().absolutePath() + "/agros2d/temp.mesh").toStdString().c_str());
-        
+
         // set system locale
         setlocale(LC_NUMERIC, plocale);
     }
+}
 
+void Scene::doSolved()
+{
+    solverDialog->hide();
+    
     // set solver results
     if (m_sceneSolution->isSolved())
         emit solved();

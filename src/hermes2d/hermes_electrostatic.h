@@ -2,6 +2,7 @@
 #define ELECTROSTATIC_H
 
 #include "util.h"
+#include "scene.h"
 #include "hermes2d.h"
 #include "solverdialog.h"
 #include "solver_umfpack.h"
@@ -24,16 +25,10 @@ struct ElectrostaticLabel
 
 static ElectrostaticEdge *electrostaticEdge;
 static ElectrostaticLabel *electrostaticLabel;
-static bool electrostaticIsPlanar;
 
 SolutionArray *electrostatic_main(SolverDialog *solverDialog,
                                   const char *fileName,
                                   ElectrostaticEdge *edge,
-                                  ElectrostaticLabel *label,
-                                  int numberOfRefinements,
-                                  int polynomialOrder,
-                                  int adaptivitySteps,
-                                  double adaptivityTolerance,
-                                  bool isPlanar);
+                                  ElectrostaticLabel *label);
 
 #endif // ELECTROSTATIC_H

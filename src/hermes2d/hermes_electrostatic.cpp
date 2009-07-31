@@ -25,7 +25,7 @@ scalar electrostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* r
 {
     int marker = rv->get_active_element()->marker;
 
-    if (electrostaticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return electrostaticLabel[marker].permittivity * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return electrostaticLabel[marker].permittivity * 2 * M_PI * int_x_grad_u_grad_v(fu, fv, ru, rv);
@@ -35,7 +35,7 @@ scalar electrostatic_linear_form(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (electrostaticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return electrostaticLabel[marker].charge_density / EPS0 * int_v(fv, rv);
     else
         return electrostaticLabel[marker].charge_density / EPS0 * 2 * M_PI * int_x_v(fv, rv);
@@ -44,16 +44,10 @@ scalar electrostatic_linear_form(RealFunction* fv, RefMap* rv)
 SolutionArray *electrostatic_main(SolverDialog *solverDialog,
                                   const char *fileName,
                                   ElectrostaticEdge *edge,
-                                  ElectrostaticLabel *label,
-                                  int numberOfRefinements,
-                                  int polynomialOrder,
-                                  int adaptivitySteps,
-                                  double adaptivityTolerance,
-                                  bool isPlanar)
+                                  ElectrostaticLabel *label)
 {
     electrostaticEdge = edge;
     electrostaticLabel = label;
-    electrostaticIsPlanar = isPlanar;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -62,7 +56,7 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
     // load the mesh file
     Mesh mesh;
     mesh.load(fileName);
-    for (int i = 0; i < numberOfRefinements; i++)
+    for (int i = 0; i < Util::scene()->problemInfo().numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
     // set system locale
@@ -76,7 +70,7 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
     H1Space space(&mesh, &shapeset);
     space.set_bc_types(electrostatic_bc_types);
     space.set_bc_values(electrostatic_bc_values);
-    space.set_uniform_order(polynomialOrder);
+    space.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
     space.assign_dofs(0);
 
     // initialize the weak formulation
@@ -92,7 +86,7 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    for (i = 0; i<(adaptivitySteps+1); i++)
+    for (i = 0; i<(Util::scene()->problemInfo().adaptivitySteps+1); i++)
     {
         space.assign_dofs();
 
@@ -108,15 +102,15 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
         rs.solve(1, &rsln);
 
         // calculate errors and adapt the solution
-        if (adaptivitySteps > 0)
+        if (Util::scene()->problemInfo().adaptivitySteps > 0)
         {
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %");
+            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %", false);
 
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            if (error < Util::scene()->problemInfo().adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3);
         }
     }

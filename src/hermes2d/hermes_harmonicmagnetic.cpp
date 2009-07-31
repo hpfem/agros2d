@@ -51,7 +51,7 @@ scalar harmonicmagnetic_bilinear_form_real_real(RealFunction* fu, RealFunction* 
 {
     int marker = rv->get_active_element()->marker;
 
-    if (harmonicmagneticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
@@ -61,7 +61,7 @@ scalar harmonicmagnetic_bilinear_form_real_imag(RealFunction* fu, RealFunction* 
 {
     int marker = rv->get_active_element()->marker;
 
-    if (harmonicmagneticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return - 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
         return - 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
@@ -71,7 +71,7 @@ scalar harmonicmagnetic_bilinear_form_imag_real(RealFunction* fu, RealFunction* 
 {
     int marker = rv->get_active_element()->marker;
 
-    if (harmonicmagneticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return + 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
         return + 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
@@ -81,7 +81,7 @@ scalar harmonicmagnetic_bilinear_form_imag_imag(RealFunction* fu, RealFunction* 
 {
     int marker = rv->get_active_element()->marker;
 
-    if (harmonicmagneticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
@@ -91,7 +91,7 @@ scalar harmonicmagnetic_linear_form_real(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (harmonicmagneticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return harmonicmagneticLabel[marker].current_density_real * int_v(fv, rv);
     else
         return harmonicmagneticLabel[marker].current_density_real * int_v(fv, rv);
@@ -101,7 +101,7 @@ scalar harmonicmagnetic_linear_form_imag(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (harmonicmagneticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return harmonicmagneticLabel[marker].current_density_imag * int_v(fv, rv);
     else
         return harmonicmagneticLabel[marker].current_density_imag * int_v(fv, rv);
@@ -110,16 +110,10 @@ scalar harmonicmagnetic_linear_form_imag(RealFunction* fv, RefMap* rv)
 SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
                                      const char *fileName,
                                      HarmonicMagneticEdge *edge,
-                                     HarmonicMagneticLabel *label,
-                                     int numberOfRefinements,
-                                     int polynomialOrder,
-                                     int adaptivitySteps,
-                                     double adaptivityTolerance,
-                                     bool isPlanar)
+                                     HarmonicMagneticLabel *label)
 {
     harmonicmagneticEdge = edge;
     harmonicmagneticLabel = label;
-    harmonicmagneticIsPlanar = isPlanar;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -130,7 +124,7 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
     // load the mesh file
     Mesh mesh;
     mesh.load(fileName);
-    for (int i = 0; i < numberOfRefinements; i++)
+    for (int i = 0; i < Util::scene()->problemInfo().numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
     // set system locale
@@ -145,15 +139,14 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
     H1Space spacereal(&mesh, &shapeset);
     spacereal.set_bc_types(harmonicmagnetic_bc_types);
     spacereal.set_bc_values(harmonicmagnetic_bc_values_real);
-    spacereal.set_uniform_order(polynomialOrder);
+    spacereal.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
     ndof = spacereal.assign_dofs(0);
 
     // create the y displacement space
     H1Space spaceimag(&mesh, &shapeset);
     spaceimag.set_bc_types(harmonicmagnetic_bc_types);
     spaceimag.set_bc_values(harmonicmagnetic_bc_values_imag);
-    spaceimag.set_uniform_order(polynomialOrder);
-
+    spaceimag.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
 
     // initialize the weak formulation
     WeakForm wf(2);
@@ -173,7 +166,7 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    for (i = 0; i<(adaptivitySteps+1); i++)
+    for (i = 0; i<(Util::scene()->problemInfo().adaptivitySteps+1); i++)
     {
         int ndof = spacereal.assign_dofs(0);
         spaceimag.assign_dofs(ndof);
@@ -190,15 +183,15 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
         rs.solve(2, &rsln1, &rsln2);
 
         // calculate errors and adapt the solution
-        if (adaptivitySteps > 0)
+        if (Util::scene()->problemInfo().adaptivitySteps > 0)
         {
             H1OrthoHP hp(2, &spacereal, &spaceimag);
             error = hp.calc_error_2(sln1, sln2, &rsln1, &rsln2) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %");
+            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %", false);
 
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            if (error < Util::scene()->problemInfo().adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3);
         }
     }

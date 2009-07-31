@@ -30,7 +30,7 @@ scalar current_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
     if (currentEdge[marker].type == PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)
         J = currentEdge[marker].value;
 
-    if (currentIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return J * surf_int_v(fv, rv, ep);
     else
         return J * 2 * M_PI * surf_int_x_v(fv, rv, ep);
@@ -40,7 +40,7 @@ scalar current_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* ru, Ref
 {
     int marker = rv->get_active_element()->marker;
 
-    if (currentIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return currentLabel[marker].conductivity * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return currentLabel[marker].conductivity * 2 * M_PI * int_x_grad_u_grad_v(fu, fv, ru, rv);
@@ -62,16 +62,10 @@ scalar current_linear_form(RealFunction* fv, RefMap* rv)
 SolutionArray *current_main(SolverDialog *solverDialog,
                                   const char *fileName,
                                   CurrentEdge *edge,
-                                  CurrentLabel *label,
-                                  int numberOfRefinements,
-                                  int polynomialOrder,
-                                  int adaptivitySteps,
-                                  double adaptivityTolerance,
-                                  bool isPlanar)
+                                  CurrentLabel *label)
 {
     currentEdge = edge;
     currentLabel = label;
-    currentIsPlanar = isPlanar;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -80,7 +74,7 @@ SolutionArray *current_main(SolverDialog *solverDialog,
     // load the mesh file
     Mesh mesh;
     mesh.load(fileName);
-    for (int i = 0; i < numberOfRefinements; i++)
+    for (int i = 0; i < Util::scene()->problemInfo().numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
     // set system locale
@@ -94,7 +88,7 @@ SolutionArray *current_main(SolverDialog *solverDialog,
     H1Space space(&mesh, &shapeset);
     space.set_bc_types(current_bc_types);
     space.set_bc_values(current_bc_values);
-    space.set_uniform_order(polynomialOrder);
+    space.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
     space.assign_dofs(0);
 
     // initialize the weak formulation
@@ -112,7 +106,7 @@ SolutionArray *current_main(SolverDialog *solverDialog,
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    for (i = 0; i<(adaptivitySteps+1); i++)
+    for (i = 0; i<(Util::scene()->problemInfo().adaptivitySteps+1); i++)
     {
         space.assign_dofs();
 
@@ -128,15 +122,15 @@ SolutionArray *current_main(SolverDialog *solverDialog,
         rs.solve(1, &rsln);
 
         // calculate errors and adapt the solution
-        if (adaptivitySteps > 0)
+        if (Util::scene()->problemInfo().adaptivitySteps > 0)
         {
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %");
+            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %", false);
 
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            if (error < Util::scene()->problemInfo().adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3);
         }
     }

@@ -93,11 +93,12 @@ scalar elasticity_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
     return elasticityEdge[ep->marker].forceY * surf_int_v(fv, rv, ep);
 }
 
-SolutionArray *elasticity_main(const char *fileName, ElasticityEdge *edge, ElasticityLabel *label, int numberOfRefinements, int polynomialOrder, bool isPlanar)
+SolutionArray *elasticity_main(const char *fileName,
+                               ElasticityEdge *edge,
+                               ElasticityLabel *label)
 {
     elasticityEdge = edge;
     elasticityLabel = label;
-    elasticityIsPlanar = isPlanar;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -106,7 +107,7 @@ SolutionArray *elasticity_main(const char *fileName, ElasticityEdge *edge, Elast
     // load the mesh file
     Mesh xmesh, ymesh;
     xmesh.load(fileName);
-    for (int i = 0; i < numberOfRefinements; i++)
+    for (int i = 0; i < Util::scene()->problemInfo().numberOfRefinements; i++)
         xmesh.refine_all_elements(0);
     ymesh.copy(&xmesh);
 
@@ -122,14 +123,14 @@ SolutionArray *elasticity_main(const char *fileName, ElasticityEdge *edge, Elast
     H1Space xdisp(&xmesh, &shapeset);
     xdisp.set_bc_types(elasticity_bc_types_x);
     xdisp.set_bc_values(elasticity_bc_values_x);
-    xdisp.set_uniform_order(polynomialOrder);
-    xdisp.assign_dofs();
+    xdisp.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
+    int ndof = xdisp.assign_dofs(0);
 
     // create the y displacement space
     H1Space ydisp(&ymesh, &shapeset);
     ydisp.set_bc_types(elasticity_bc_types_y);
     ydisp.set_bc_values(elasticity_bc_values_y);
-    ydisp.set_uniform_order(8);
+    ydisp.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
     ydisp.assign_dofs();
 
     // initialize the weak formulation

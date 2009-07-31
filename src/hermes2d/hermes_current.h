@@ -2,6 +2,7 @@
 #define HERMES_CURRENT_H
 
 #include "util.h"
+#include "scene.h"
 #include "hermes2d.h"
 #include "solverdialog.h"
 #include "solver_umfpack.h"
@@ -23,16 +24,10 @@ struct CurrentLabel
 
 static CurrentEdge *currentEdge;
 static CurrentLabel *currentLabel;
-static bool currentIsPlanar;
 
 SolutionArray *current_main(SolverDialog *solverDialog,
                                   const char *fileName,
                                   CurrentEdge *edge,
-                                  CurrentLabel *label,
-                                  int numberOfRefinements,
-                                  int polynomialOrder,
-                                  int adaptivitySteps,
-                                  double adaptivityTolerance,
-                                  bool isPlanar);
+                                  CurrentLabel *label);
 
 #endif // HERMES_CURRENT_H

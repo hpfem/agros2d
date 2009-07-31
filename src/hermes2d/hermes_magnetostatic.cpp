@@ -78,7 +78,7 @@ scalar magnetostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* r
 {
     int marker = rv->get_active_element()->marker;
 
-    if (magnetostaticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
     {
@@ -90,7 +90,7 @@ scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (magnetostaticIsPlanar)
+    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
         return magnetostaticLabel[marker].current_density * int_v(fv, rv); // +
                 // ((marker == 0) ? (1.5 / (magnetostaticLabel[marker].permeability) * int_dvdy(fv, rv)) : 0.0);
     else
@@ -100,16 +100,10 @@ scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
 SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
                                   const char *fileName,
                                   MagnetostaticEdge *edge,
-                                  MagnetostaticLabel *label,
-                                  int numberOfRefinements,
-                                  int polynomialOrder,
-                                  int adaptivitySteps,
-                                  double adaptivityTolerance,
-                                  bool isPlanar)
+                                  MagnetostaticLabel *label)
 {
     magnetostaticEdge = edge;
     magnetostaticLabel = label;
-    magnetostaticIsPlanar = isPlanar;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -118,7 +112,7 @@ SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
     // load the mesh file
     Mesh mesh;
     mesh.load(fileName);
-    for (int i = 0; i < numberOfRefinements; i++)
+    for (int i = 0; i < Util::scene()->problemInfo().numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
     // set system locale
@@ -132,7 +126,7 @@ SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
     H1Space space(&mesh, &shapeset);
     space.set_bc_types(magnetostatic_bc_types);
     space.set_bc_values(magnetostatic_bc_values);
-    space.set_uniform_order(polynomialOrder);
+    space.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
     space.assign_dofs();
 
     // initialize the weak formulation
@@ -148,7 +142,7 @@ SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    for (i = 0; i<(adaptivitySteps+1); i++)
+    for (i = 0; i<(Util::scene()->problemInfo().adaptivitySteps+1); i++)
     {
         space.assign_dofs();
 
@@ -164,15 +158,15 @@ SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
         rs.solve(1, &rsln);
 
         // calculate errors and adapt the solution
-        if (adaptivitySteps > 0)
+        if (Util::scene()->problemInfo().adaptivitySteps > 0)
         {
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %");
+            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %", false);
 
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            if (error < Util::scene()->problemInfo().adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3);
         }
     }

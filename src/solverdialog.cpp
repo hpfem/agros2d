@@ -14,7 +14,7 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
     setWindowIcon(icon("logo"));
     setWindowTitle(tr("Solve problem..."));
 
-    connect(this, SIGNAL(message(QString)), this, SLOT(doShowMessage(QString)));
+    connect(this, SIGNAL(message(QString, bool)), this, SLOT(doShowMessage(QString, bool)));
 
     resize(minimumSize());
 
@@ -29,7 +29,7 @@ SolverDialog::~SolverDialog()
 
 void SolverDialog::solve()
 {
-    lblMessage->setText(tr("Solve problem..."));
+    lblMessage->setText(tr("Solver: solve problem..."));
     lstMessage->clear();
     progressBar->setValue(0);
 
@@ -40,8 +40,13 @@ void SolverDialog::solve()
     setFileNameOrig("");
 }
 
-void SolverDialog::doShowMessage(const QString &message)
+void SolverDialog::doShowMessage(const QString &message, bool isError)
 {
+    if (isError)
+        lstMessage->setTextColor(QColor(Qt::red));
+    else
+        lstMessage->setTextColor(QColor(Qt::black));
+
     lstMessage->insertPlainText(message + "\n");
     lstMessage->ensureCursorVisible();
     lblMessage->setText(message);
@@ -83,48 +88,56 @@ void SolverDialog::runMesh()
     // file info
     QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
 
-    m_errorMessage = "";
-
     Util::scene()->sceneSolution()->mesh().free();
     QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".mesh");
 
     // create triangle files
-    writeToTriangle();
-    emit message(tr("Triangle poly file was created."));
-    updateProgress(20);
-
-    // exec triangle
-    QProcess *processTriangle = new QProcess();
-    processTriangle->setStandardOutputFile(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.out");
-    processTriangle->setStandardErrorFile(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.err");
-    connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
-
-    processTriangle->start("triangle -p -P -q30.0 -e -A -a -z -Q -I -p \"" + QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + "\"");
-    updateProgress(30);
-
-    if (!processTriangle->waitForStarted())
+    if (writeToTriangle())
     {
-        emit message(tr("Could not start Triangle."));
-        processTriangle->kill();
-        emit solved();
-        return;
-    }  
+        emit message(tr("Triangle: poly file was created."), false);
+        updateProgress(20);
 
-    // copy triangle files
-    QSettings settings;
-    bool deleteTriangleFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>();
+        // exec triangle
+        QProcess *processTriangle = new QProcess();
+        processTriangle->setStandardOutputFile(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.out");
+        processTriangle->setStandardErrorFile(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.err");
+        connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
 
-    if ((!deleteTriangleFiles) && (!m_fileNameOrig.isEmpty()))
-    {
-        QFileInfo fileInfoOrig(m_fileNameOrig);
+        processTriangle->start("triangle -p -P -q30.0 -e -A -a -z -Q -I -p \"" + QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + "\"");
+        updateProgress(30);
 
-        QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".poly", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".poly");
-        QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".node", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".node");
-        QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".edge", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".edge");
-        QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".ele");
+        if (!processTriangle->waitForStarted())
+        {
+            emit message(tr("Triangle: could not start Triangle."), false);
+            processTriangle->kill();
+
+            updateProgress(100);
+            emit solved();
+            return;
+        }
+
+        // copy triangle files
+        QSettings settings;
+        bool deleteTriangleFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>();
+
+        if ((!deleteTriangleFiles) && (!m_fileNameOrig.isEmpty()))
+        {
+            QFileInfo fileInfoOrig(m_fileNameOrig);
+
+            QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".poly", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".poly");
+            QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".node", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".node");
+            QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".edge", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".edge");
+            QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".ele");
+        }
+
+        while (!processTriangle->waitForFinished()) {}
     }
-
-    while (!processTriangle->waitForFinished()) {}
+    else
+    {
+        // error
+        updateProgress(100);
+        return;
+    }
 }
 
 void SolverDialog::doMeshTriangleCreated(int exitCode)
@@ -134,13 +147,13 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
         // file info
         QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
 
-        emit message(tr("Triangle mesh files was created."));
+        emit message(tr("Triangle: mesh files was created."), false);
         updateProgress(40);
 
         // convert triangle mesh to hermes mesh
         if (triangleToHermes2D())
         {
-            emit message(tr("Triangle mesh was converted to Hermes2D mesh file."));
+            emit message(tr("Triangle: mesh was converted to Hermes2D mesh file."), false);
 
             // copy triangle files
             QSettings settings;
@@ -160,43 +173,69 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele");
             QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.out");
             QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.err");
-            emit message(tr("Triangle mesh files was deleted."));
+            emit message(tr("Triangle: mesh files was deleted."), false);
 
             if (m_mode == SOLVER_MESH)
                 updateProgress(100);
             else
                 updateProgress(50);
+
+            // load mesh
+            // save locale
+            char *plocale = setlocale (LC_NUMERIC, "");
+            setlocale (LC_NUMERIC, "C");
+
+            Util::scene()->sceneSolution()->mesh().load((QDir::temp().absolutePath() + "/agros2d/temp.mesh").toStdString().c_str());
+
+            // set system locale
+            setlocale(LC_NUMERIC, plocale);
+
+            // check that all boundary edges have a marker assigned
+            for (int i = 0; i < Util::scene()->sceneSolution()->mesh().get_max_node_id(); i++)
+            {
+                if (Node *node = Util::scene()->sceneSolution()->mesh().get_node(i))
+                {
+                    if (node->used)
+                    {
+                        if (node->ref < 2 && node->marker == 0)
+                        {
+                            emit message(tr("Hermes2D: boundary edge node does not have a boundary marker."), true);
+                            Util::scene()->sceneSolution()->mesh().free();
+                            return;
+                        }
+                    }
+                }
+            }
         }
         else
         {
-            QFile::remove(Util::scene()->problemInfo().fileName + ".mesh");
-            QString msg(tr("Triangle mesh could not be converted to Hermes2D mesh file."));
-            QMessageBox::warning(QApplication::activeWindow(), tr("Triangle to Hermes2D error."), msg);
+            // error
+            updateProgress(100);
 
-            emit message(msg);
-            emit solved();
+            QFile::remove(Util::scene()->problemInfo().fileName + ".mesh");
             return;
         }
 
         if (m_mode == SOLVER_MESH_AND_SOLVE)
             runSolver();
+
+        emit solved();
     }
     else
     {
+        // error
+        updateProgress(100);
+
         QFile file(Util::scene()->problemInfo().fileName + ".triangle.out");
+
+        QTextStream standardOutput(&file);
+        QString errorMessage = standardOutput.readAll();
+        emit message(tr("Triangle: ") + errorMessage, true);
 
         if (!file.open(QIODevice::ReadOnly))
             return;
-
-        QTextStream standardOutput(&file);
-        m_errorMessage = standardOutput.readAll();
-
-        QMessageBox::warning(NULL, tr("Triangle error."), m_errorMessage);
-
         file.close();
     }
-
-    emit solved();
 }
 
 void SolverDialog::runSolver()
@@ -209,7 +248,7 @@ void SolverDialog::runSolver()
     QTime time;
     time.start();
 
-    emit message(tr("Solver was started: ") + physicFieldString(Util::scene()->problemInfo().physicField) + " (" + problemTypeString(Util::scene()->problemInfo().problemType) + ")");
+    emit message(tr("Solver: solver was started: ") + physicFieldString(Util::scene()->problemInfo().physicField) + " (" + problemTypeString(Util::scene()->problemInfo().problemType) + ")", false);
     updateProgress(60);
 
     SolutionArray *solutionArray;
@@ -265,12 +304,7 @@ void SolverDialog::runSolver()
 
                 solutionArray = electrostatic_main(this,
                                                    fileName.toStdString().c_str(),
-                                                   electrostaticEdge, electrostaticLabel,
-                                                   Util::scene()->problemInfo().numberOfRefinements,
-                                                   Util::scene()->problemInfo().polynomialOrder,
-                                                   Util::scene()->problemInfo().adaptivitySteps,
-                                                   Util::scene()->problemInfo().adaptivityTolerance,
-                                                   (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR));
+                                                   electrostaticEdge, electrostaticLabel);
 
                 delete [] electrostaticEdge;
                 delete [] electrostaticLabel;
@@ -323,12 +357,7 @@ void SolverDialog::runSolver()
 
                 solutionArray = magnetostatic_main(this,
                                                    fileName.toStdString().c_str(),
-                                                   magnetostaticEdge, magnetostaticLabel,
-                                                   Util::scene()->problemInfo().numberOfRefinements,
-                                                   Util::scene()->problemInfo().polynomialOrder,
-                                                   Util::scene()->problemInfo().adaptivitySteps,
-                                                   Util::scene()->problemInfo().adaptivityTolerance,
-                                                   (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR));
+                                                   magnetostaticEdge, magnetostaticLabel);
 
                 delete [] magnetostaticEdge;
                 delete [] magnetostaticLabel;
@@ -385,12 +414,7 @@ void SolverDialog::runSolver()
 
                 solutionArray = harmonicmagnetic_main(this,
                                                       fileName.toStdString().c_str(),
-                                                      harmonicMagneticEdge, harmonicMagneticLabel,
-                                                      Util::scene()->problemInfo().numberOfRefinements,
-                                                      Util::scene()->problemInfo().polynomialOrder,
-                                                      Util::scene()->problemInfo().adaptivitySteps,
-                                                      Util::scene()->problemInfo().adaptivityTolerance,
-                                                      (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR));
+                                                      harmonicMagneticEdge, harmonicMagneticLabel);
 
                 delete [] magnetostaticEdge;
                 delete [] magnetostaticLabel;
@@ -441,12 +465,7 @@ void SolverDialog::runSolver()
 
                 solutionArray = current_main(this,
                                              fileName.toStdString().c_str(),
-                                             currentEdge, currentLabel,
-                                             Util::scene()->problemInfo().numberOfRefinements,
-                                             Util::scene()->problemInfo().polynomialOrder,
-                                             Util::scene()->problemInfo().adaptivitySteps,
-                                             Util::scene()->problemInfo().adaptivityTolerance,
-                                             (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR));
+                                             currentEdge, currentLabel);
 
                 delete [] currentEdge;
                 delete [] currentLabel;
@@ -519,12 +538,7 @@ void SolverDialog::runSolver()
 
                 solutionArray = heat_main(this,
                                           fileName.toStdString().c_str(),
-                                          heatEdge, heatLabel,
-                                          Util::scene()->problemInfo().numberOfRefinements,
-                                          Util::scene()->problemInfo().polynomialOrder,
-                                          Util::scene()->problemInfo().adaptivitySteps,
-                                          Util::scene()->problemInfo().adaptivityTolerance,
-                                          (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR));
+                                          heatEdge, heatLabel);
 
                 delete [] heatEdge;
                 delete [] heatLabel;
@@ -574,10 +588,7 @@ void SolverDialog::runSolver()
                 }
 
                 solutionArray = elasticity_main(fileName.toStdString().c_str(),
-                                                elasticityEdge, elasticityLabel,
-                                                Util::scene()->problemInfo().numberOfRefinements,
-                                                Util::scene()->problemInfo().polynomialOrder,
-                                                (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR));
+                                                elasticityEdge, elasticityLabel);
 
                 delete [] elasticityEdge;
                 delete [] elasticityLabel;
@@ -591,21 +602,70 @@ void SolverDialog::runSolver()
 
         Util::scene()->sceneSolution()->setSolutionArray(solutionArray);
 
-        emit message(tr("Problem was solved."));
-    }
-    else
-    {
-        emit message(tr("Hermes2D mesh file doesn't exist."));
-        return;
+        emit message(tr("Solver: problem was solved."), false);
+        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
     }
 
     updateProgress(100);
-
-    Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
 }
 
-int SolverDialog::writeToTriangle()
-{
+bool SolverDialog::writeToTriangle()
+{    
+    // basic check
+    if (Util::scene()->nodes.count() < 3)
+    {
+        emit message(tr("Triangle: invalid number of nodes (%1 < 3).").arg(Util::scene()->nodes.count()), true);
+        return false;
+    }
+    if (Util::scene()->edges.count() < 3)
+    {
+        emit message(tr("Triangle: invalid number of edges (%1 < 3).").arg(Util::scene()->edges.count()), true);
+        return false;
+    }
+    else
+    {
+        // at least one boundary condition has to be assigned
+        int count = 0;
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+            if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) > 0)
+                count++;
+
+        if (count == 0)
+        {
+            emit message(tr("Triangle: at least one boundary condition has to be assigned."), true);
+            return false;
+        }
+    }
+    if (Util::scene()->labels.count() < 1)
+    {
+        emit message(tr("Triangle: invalid number of labels (%1 < 1).").arg(Util::scene()->labels.count()), true);
+        return false;
+    }
+    else
+    {
+        // at least one material has to be assigned
+        int count = 0;
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+            if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) > 0)
+                count++;
+
+        if (count == 0)
+        {
+            emit message(tr("Triangle: at least one material has to be assigned."), true);
+            return false;
+        }
+    }
+    if (Util::scene()->edgeMarkers.count() < 2) // + none marker
+    {
+        emit message(tr("Triangle: invalid number of boundary conditions (%1 < 2).").arg(Util::scene()->edgeMarkers.count()), true);
+        return false;
+    }
+    if (Util::scene()->labelMarkers.count() < 2) // + none marker
+    {
+        emit message(tr("Triangle: invalid number of materials (%1 < 2).").arg(Util::scene()->labelMarkers.count()), true);
+        return false;
+    }
+
     // file info
     QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
 
@@ -619,8 +679,8 @@ int SolverDialog::writeToTriangle()
 
     if (!file.open(QIODevice::WriteOnly))
     {
-        cerr << "Could not create triangle poly mesh file." << endl;
-        return 0;
+        emit message(tr("Triangle: Could not create triangle poly mesh file."), true);
+        return false;
     }
     QTextStream out(&file);
 
@@ -719,14 +779,13 @@ int SolverDialog::writeToTriangle()
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
-}
 
+    return true;
+}
 
 bool SolverDialog::triangleToHermes2D()
 {
-    bool returnValue = true;
-
-    int i, n, k, l, marker, node_1, node_2, node_3;
+    int i, n, k, l, count, marker, node_1, node_2, node_3;
     double x, y;
 
     // save current locale
@@ -739,36 +798,36 @@ bool SolverDialog::triangleToHermes2D()
     QFile fileMesh(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".mesh");
     if (!fileMesh.open(QIODevice::WriteOnly))
     {
-        cerr << "Could not create hermes2d mesh file." << endl;
-        return 0;
+        emit message(tr("Hermes2D: could not create hermes2d mesh file."), true);
+        return false;
     }
     QTextStream outMesh(&fileMesh);
 
     QFile fileNode(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly))
     {
-        cerr << "Could not read triangle node file." << endl;
-        return 0;
+        emit message(tr("Hermes2D: could not read triangle node file."), true);
+        return false;
     }
     QTextStream inNode(&fileNode);
 
     QFile fileEdge(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".edge");
     if (!fileEdge.open(QIODevice::ReadOnly))
     {
-        cerr << "Could not read triangle edge file." << endl;
-        return 0;
+        emit message(tr("Hermes2D: could not read triangle edge file."), true);
+        return false;
     }
     QTextStream inEdge(&fileEdge);
 
     QFile fileEle(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele");
     if (!fileEle.open(QIODevice::ReadOnly))
     {
-        cerr << "Could not read triangle ele file." << endl;
-        return 0;
+        emit message(tr("Hermes2D: could not read triangle ele file."), true);
+        return false;
     }
     QTextStream inEle(&fileEle);
 
-    // Util::scene()->nodes
+    // nodes
     QString outNodes;
     outNodes += "vertices = \n";
     outNodes += "{ \n";
@@ -786,30 +845,46 @@ bool SolverDialog::triangleToHermes2D()
     outEdges += "boundaries = \n";
     outEdges += "{ \n";
     sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
+    count = 0;
     for (int i = 0; i<k; i++)
     {
         sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
         if (marker != 0)
-        {
+        {            
             if (Util::scene()->edges[marker-1]->marker->type != PHYSICFIELDBC_NONE)
+            {
+                count++;
                 outEdges += QString("\t{ %1, %2, %3 }, \n").arg(node_1).arg(node_2).arg(abs(marker));
+            }
         }
     }
     outEdges.truncate(outEdges.length()-3);
     outEdges += "\n} \n\n";
+    if (count < 1)
+    {
+        emit message(tr("Hermes2D: invalid number of edge markers."), true);
+        return false;
+    }
 
     // elements
     QString outElements;
     outElements += "elements = \n";
     outElements += "{ \n";
     sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
+    count = 0;
     for (int i = 0; i<k; i++)
     {
+        count++;
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
         outElements += QString("\t{ %1, %2, %3, %4  }, \n").arg(node_1).arg(node_2).arg(node_3).arg(abs(marker));
     }
     outElements.truncate(outElements.length()-3);
     outElements += "\n} \n\n";
+    if (count < 1)
+    {
+        emit message(tr("Hermes2D: invalid number of label markers."), true);
+        return false;
+    }
 
     outMesh << outNodes;
     outMesh << outElements;
@@ -825,5 +900,5 @@ bool SolverDialog::triangleToHermes2D()
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 
-    return returnValue;
+    return true;
 }

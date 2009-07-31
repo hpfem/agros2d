@@ -43,12 +43,13 @@ class SolverDialog : public QDialog
     Q_OBJECT
 
 signals:
-    void message(const QString &message);
+    void message(const QString &message, bool isError);
     void updateProgress(int percent);
+    void meshed();
     void solved();
 
 public slots:
-    void doShowMessage(const QString &message);
+    void doShowMessage(const QString &message, bool isError);
 
 public:
     SolverDialog(QWidget *parent);
@@ -63,7 +64,6 @@ private slots:
 
 private:
     SolverMode m_mode;
-    QString m_errorMessage;
     QString m_fileNameOrig;
 
     QLabel *lblMessage;
@@ -73,7 +73,7 @@ private:
     void runMesh();
     void runSolver();
 
-    int writeToTriangle();
+    bool writeToTriangle();
     bool triangleToHermes2D();
 
     void createControls();

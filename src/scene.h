@@ -193,6 +193,7 @@ private:
 
 private slots:    
     void doInvalidated();
+    void doMeshed();
     void doSolved();
 };
 

@@ -2,6 +2,7 @@
 #define HERMES_ELASTICITY_H
 
 #include "util.h"
+#include "scene.h"
 #include "hermes2d.h"
 #include "solverdialog.h"
 #include "solver_umfpack.h"
@@ -30,8 +31,9 @@ struct ElasticityLabel
 
 static ElasticityEdge *elasticityEdge;
 static ElasticityLabel *elasticityLabel;
-static bool elasticityIsPlanar;
 
-SolutionArray *elasticity_main(const char *fileName, ElasticityEdge *edge, ElasticityLabel *label, int numberOfRefinements, int polynomialOrder, bool isPlanar);
+SolutionArray *elasticity_main(const char *fileName,
+                               ElasticityEdge *edge,
+                               ElasticityLabel *label);
 
 #endif // HERMES_ELASTICITY_H
