@@ -1,5 +1,9 @@
 #include "hermes_heat.h"
 
+static HeatEdge *heatEdge;
+static HeatLabel *heatLabel;
+static bool heatPlanar;
+
 int heat_bc_types(int marker)
 {
     switch (heatEdge[marker].type)
@@ -43,7 +47,7 @@ scalar heat_bilinear_form_surf(RealFunction* fu, RealFunction* fv, RefMap* ru, R
         h = heatEdge[marker].h;
     }
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (heatPlanar)
         return h * surf_int_u_v(fu, fv, ru, rv, ep);
     else
         return h * 2 * M_PI * surf_int_x_u_v(fu, fv, ru, rv, ep);
@@ -67,7 +71,7 @@ scalar heat_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
         Text = heatEdge[marker].externalTemperature;
     }
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (heatPlanar)
         return (q + Text * h) * surf_int_v(fv, rv, ep);
     else
         return (q + Text * h) * 2 * M_PI * surf_int_x_v(fv, rv, ep);
@@ -78,7 +82,7 @@ scalar heat_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (heatPlanar)
         return heatLabel[marker].thermal_conductivity * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return heatLabel[marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v(fu, fv, ru, rv);
@@ -88,7 +92,7 @@ scalar heat_linear_form(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (heatPlanar)
         // planar
         return heatLabel[marker].volume_heat * int_v(fv, rv);
     else
@@ -102,6 +106,7 @@ SolutionArray *heat_main(SolverDialog *solverDialog,
 {
     heatEdge = edge;
     heatLabel = label;
+    heatPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");

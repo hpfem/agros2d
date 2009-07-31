@@ -1,5 +1,9 @@
 #include "hermes_electrostatic.h"
 
+ElectrostaticEdge *electrostaticEdge;
+ElectrostaticLabel *electrostaticLabel;
+bool electrostaticPlanar;
+
 int electrostatic_bc_types(int marker)
 {
     switch (electrostaticEdge[marker].type)
@@ -25,7 +29,7 @@ scalar electrostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* r
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (electrostaticPlanar)
         return electrostaticLabel[marker].permittivity * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return electrostaticLabel[marker].permittivity * 2 * M_PI * int_x_grad_u_grad_v(fu, fv, ru, rv);
@@ -35,7 +39,7 @@ scalar electrostatic_linear_form(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (electrostaticPlanar)
         return electrostaticLabel[marker].charge_density / EPS0 * int_v(fv, rv);
     else
         return electrostaticLabel[marker].charge_density / EPS0 * 2 * M_PI * int_x_v(fv, rv);
@@ -48,6 +52,7 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
 {
     electrostaticEdge = edge;
     electrostaticLabel = label;
+    electrostaticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");

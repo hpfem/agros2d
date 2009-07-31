@@ -29,9 +29,6 @@ struct ElasticityLabel
     inline double mu() { return young_modulus / (2*(1 + poisson_ratio)); }
 };
 
-static ElasticityEdge *elasticityEdge;
-static ElasticityLabel *elasticityLabel;
-
 SolutionArray *elasticity_main(const char *fileName,
                                ElasticityEdge *edge,
                                ElasticityLabel *label);

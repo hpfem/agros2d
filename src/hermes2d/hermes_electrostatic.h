@@ -23,9 +23,6 @@ struct ElectrostaticLabel
     double permittivity;
 };
 
-static ElectrostaticEdge *electrostaticEdge;
-static ElectrostaticLabel *electrostaticLabel;
-
 SolutionArray *electrostatic_main(SolverDialog *solverDialog,
                                   const char *fileName,
                                   ElectrostaticEdge *edge,

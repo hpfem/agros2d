@@ -1,5 +1,9 @@
 #include "hermes_magnetostatic.h"
 
+static MagnetostaticEdge *magnetostaticEdge;
+static MagnetostaticLabel *magnetostaticLabel;
+static bool magnetostaticPlanar;
+
 inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
 {
     Quad2D* quad = fu->get_quad_2d();
@@ -15,7 +19,7 @@ inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, 
     double* x = ru->get_phys_x(o);
 
     double result;
-    h1_integrate_dd_expression(t_dvdx * uval[i] / x[i]);
+    h1_integrate_dd_expression((x[i] > 0.0) ? 0.0 : t_dvdx * uval[i] / x[i]);
     return result;
 }
 
@@ -78,7 +82,7 @@ scalar magnetostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* r
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (magnetostaticPlanar)
         return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
     {
@@ -90,7 +94,7 @@ scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (magnetostaticPlanar)
         return magnetostaticLabel[marker].current_density * int_v(fv, rv); // +
                 // ((marker == 0) ? (1.5 / (magnetostaticLabel[marker].permeability) * int_dvdy(fv, rv)) : 0.0);
     else
@@ -104,6 +108,7 @@ SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
 {
     magnetostaticEdge = edge;
     magnetostaticLabel = label;
+    magnetostaticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");

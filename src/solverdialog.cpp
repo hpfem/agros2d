@@ -416,8 +416,8 @@ void SolverDialog::runSolver()
                                                       fileName.toStdString().c_str(),
                                                       harmonicMagneticEdge, harmonicMagneticLabel);
 
-                delete [] magnetostaticEdge;
-                delete [] magnetostaticLabel;
+                delete [] harmonicMagneticEdge;
+                delete [] harmonicMagneticLabel;
             }
             break;
         case PHYSICFIELD_CURRENT:

@@ -2,7 +2,8 @@
 #define HARMONICMAGNETIC_H
 
 #include "util.h"
-#include "util.h"
+#include "scene.h"
+#include "hermes2d.h"
 #include "solverdialog.h"
 #include "solver_umfpack.h"
 
@@ -22,9 +23,6 @@ struct HarmonicMagneticLabel
     double permeability;
     double conductivity;
 };
-
-static HarmonicMagneticEdge *harmonicmagneticEdge;
-static HarmonicMagneticLabel *harmonicmagneticLabel;
 
 SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
                                      const char *fileName,

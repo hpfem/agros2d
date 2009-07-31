@@ -1,6 +1,8 @@
 #include "hermes_harmonicmagnetic.h"
 
-#include "scene.h"
+static HarmonicMagneticEdge *harmonicmagneticEdge;
+static HarmonicMagneticLabel *harmonicmagneticLabel;
+static bool harmonicmagneticPlanar;
 
 inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
 {
@@ -17,7 +19,7 @@ inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, 
     double* x = ru->get_phys_x(o);
 
     double result;
-    h1_integrate_dd_expression(t_dvdx * uval[i] / x[i]);
+    h1_integrate_dd_expression((x[i] > 0.0) ? 0.0 : t_dvdx * uval[i] / x[i]);
     return result;
 }
 
@@ -51,7 +53,7 @@ scalar harmonicmagnetic_bilinear_form_real_real(RealFunction* fu, RealFunction* 
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (harmonicmagneticPlanar)
         return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
@@ -61,7 +63,7 @@ scalar harmonicmagnetic_bilinear_form_real_imag(RealFunction* fu, RealFunction* 
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (harmonicmagneticPlanar)
         return - 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
         return - 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
@@ -71,7 +73,7 @@ scalar harmonicmagnetic_bilinear_form_imag_real(RealFunction* fu, RealFunction* 
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (harmonicmagneticPlanar)
         return + 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
         return + 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
@@ -81,7 +83,7 @@ scalar harmonicmagnetic_bilinear_form_imag_imag(RealFunction* fu, RealFunction* 
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (harmonicmagneticPlanar)
         return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return 1.0 / (harmonicmagneticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
@@ -91,7 +93,7 @@ scalar harmonicmagnetic_linear_form_real(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (harmonicmagneticPlanar)
         return harmonicmagneticLabel[marker].current_density_real * int_v(fv, rv);
     else
         return harmonicmagneticLabel[marker].current_density_real * int_v(fv, rv);
@@ -101,7 +103,7 @@ scalar harmonicmagnetic_linear_form_imag(RealFunction* fv, RefMap* rv)
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (harmonicmagneticPlanar)
         return harmonicmagneticLabel[marker].current_density_imag * int_v(fv, rv);
     else
         return harmonicmagneticLabel[marker].current_density_imag * int_v(fv, rv);
@@ -114,6 +116,7 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
 {
     harmonicmagneticEdge = edge;
     harmonicmagneticLabel = label;
+    harmonicmagneticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");

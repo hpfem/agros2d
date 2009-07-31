@@ -22,9 +22,6 @@ struct CurrentLabel
     double conductivity;
 };
 
-static CurrentEdge *currentEdge;
-static CurrentLabel *currentLabel;
-
 SolutionArray *current_main(SolverDialog *solverDialog,
                                   const char *fileName,
                                   CurrentEdge *edge,

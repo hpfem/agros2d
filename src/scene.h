@@ -11,6 +11,7 @@
 #include <QLocale>
 #include <QFile>
 #include <QAction>
+#include <QMutex>
 
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
@@ -199,6 +200,9 @@ private slots:
     void doSolved();
 };
 
+// **************************************************************************************
+
+/*
 class Util
 {
 public:
@@ -214,7 +218,26 @@ public:
         return &helpDialog;
     }
 };
+*/
 
-// **************************************************************************************
+class Util
+{
+public:
+    static Util* singleton();
+    static inline Scene *scene() { return Util::singleton()->m_scene; }
+    static inline HelpDialog *helpDialog() { return Util::singleton()->m_helpDialog; }
+
+protected:
+    Util();
+    Util(const Util &);
+    Util & operator = (const Util &);
+    ~Util();
+
+private:
+    static Util* m_singleton;
+
+    Scene *m_scene;
+    HelpDialog *m_helpDialog;
+};
 
 #endif /* SCENE_H */

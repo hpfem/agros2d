@@ -37,15 +37,48 @@ void DxfFilter::addArc(const DL_ArcData& a)
 
 // ************************************************************************************************************************
 
+// initialize pointer
+Util *Util::m_singleton = NULL;
+
+Util::Util()
+{
+    m_scene = new Scene();
+    m_helpDialog = new HelpDialog(QApplication::activeWindow());
+}
+
+Util::~Util()
+{
+    delete m_scene;
+    delete m_helpDialog;
+}
+
+Util *Util::singleton()
+{
+    if (!m_singleton)
+    {
+        static QMutex mutex;
+        mutex.lock();
+
+        if (!m_singleton)
+            m_singleton = new Util();
+
+        mutex.unlock();
+    }
+
+    return m_singleton;
+}
+
+// ************************************************************************************************************************
+
 Scene::Scene() {
     createActions();
-    
+
     m_sceneSolution = new SceneSolution(this);
     solverDialog = new SolverDialog(QApplication::activeWindow());
     connect(solverDialog, SIGNAL(solved()), this, SLOT(doSolved()));
-    
+
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-    
+
     clear();
 }
 
@@ -61,17 +94,17 @@ void Scene::createActions()
     actNewNode->setShortcut(tr("Alt+N"));
     actNewNode->setStatusTip(tr("New node"));
     connect(actNewNode, SIGNAL(triggered()), this, SLOT(doNewNode()));
-    
+
     actNewEdge = new QAction(icon("scene-edge"), tr("New &edge..."), this);
     actNewEdge->setShortcut(tr("Alt+E"));
     actNewEdge->setStatusTip(tr("New edge"));
     connect(actNewEdge, SIGNAL(triggered()), this, SLOT(doNewEdge()));
-    
+
     actNewLabel = new QAction(icon("scene-label"), tr("New &label..."), this);
     actNewLabel->setShortcut(tr("Alt+L"));
     actNewLabel->setStatusTip(tr("New label"));
     connect(actNewLabel, SIGNAL(triggered()), this, SLOT(doNewLabel()));
-    
+
     actDeleteSelected = new QAction(icon("edit-delete"), tr("Delete selected objects"), this);
     actDeleteSelected->setStatusTip(tr("Delete selected objects"));
     connect(actDeleteSelected, SIGNAL(triggered()), this, SLOT(doDeleteSelected()));
@@ -80,16 +113,16 @@ void Scene::createActions()
     actNewEdgeMarker->setShortcut(tr("Alt+B"));
     actNewEdgeMarker->setStatusTip(tr("New boundary condition"));
     connect(actNewEdgeMarker, SIGNAL(triggered()), this, SLOT(doNewEdgeMarker()));
-    
+
     actNewLabelMarker = new QAction(icon("scene-labelmarker"), tr("New &material..."), this);
     actNewLabelMarker->setShortcut(tr("Alt+M"));
     actNewLabelMarker->setStatusTip(tr("New material"));
     connect(actNewLabelMarker, SIGNAL(triggered()), this, SLOT(doNewLabelMarker()));
-    
+
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
-    
+
     actProblemProperties = new QAction(icon("scene-properties"), tr("&Problem properties"), this);
     actProblemProperties->setStatusTip(tr("Problem properties"));
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
@@ -102,10 +135,10 @@ SceneNode *Scene::addNode(SceneNode *node) {
         if ((fabs(nodeCheck->point.x-node->point.x) < EPS_ZERO) && (fabs(nodeCheck->point.y-node->point.y) < EPS_ZERO))
             return nodeCheck;
     }
-    
+
     nodes.append(node);
     emit invalidated();
-    
+
     return node;
 }
 
@@ -129,10 +162,10 @@ SceneEdge *Scene::addEdge(SceneEdge *edge) {
             (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
             return edgeCheck;
     }
-    
+
     edges.append(edge);
     emit invalidated();
-    
+
     return edge;
 }
 
@@ -148,10 +181,10 @@ SceneLabel *Scene::addLabel(SceneLabel *label) {
         if ((fabs(labelCheck->point.x-label->point.x) < EPS_ZERO) && (fabs(labelCheck->point.y-label->point.y) < EPS_ZERO))
             return labelCheck;
     }
-    
+
     labels.append(label);
     emit invalidated();
-    
+
     return label;
 }
 
@@ -214,24 +247,24 @@ void Scene::setLabelMarker(SceneLabelMarker *labelMarker)
 
 void Scene::clear() {
     blockSignals(true);
-    
+
     m_sceneSolution->clear();
     m_problemInfo.clear();
-    
+
     nodes.clear();
     edges.clear();
     labels.clear();
-    
+
     edgeMarkers.clear();
     labelMarkers.clear();
-    
+
     // none edge
     addEdgeMarker(new SceneEdgeMarkerNone());
     // none label
     addLabelMarker(new SceneLabelMarkerNone());
-    
+
     blockSignals(false);
-    
+
     emit invalidated();
 }
 
@@ -239,20 +272,20 @@ RectPoint Scene::boundingBox()
 {
     Point min( 1e100,  1e100);
     Point max(-1e100, -1e100);
-    
+
     foreach (SceneNode *node, nodes) {
         if (node->point.x<min.x) min.x = node->point.x;
         if (node->point.x>max.x) max.x = node->point.x;
         if (node->point.y<min.y) min.y = node->point.y;
         if (node->point.y>max.y) max.y = node->point.y;
     }
-    
+
     RectPoint rect;
     if (nodes.length() > 0)
         rect.set(min, max);
     else
         rect.set(Point(-0.5, -0.5), Point(0.5, 0.5));
-    
+
     return rect;
 }
 
@@ -260,10 +293,10 @@ void Scene::selectNone()
 {
     foreach (SceneNode *node, nodes)
         node->isSelected = false;
-    
+
     foreach (SceneEdge *edge, edges)
         edge->isSelected = false;
-    
+
     foreach (SceneLabel *label, labels)
         label->isSelected = false;
 }
@@ -271,7 +304,7 @@ void Scene::selectNone()
 void Scene::selectAll(SceneMode sceneMode)
 {
     selectNone();
-    
+
     switch (sceneMode)
     {
     case SCENEMODE_OPERATE_ON_NODES:
@@ -293,10 +326,10 @@ void Scene::deleteSelected()
 {
     foreach (SceneNode *node, nodes)
         if (node->isSelected) removeNode(node);
-    
+
     foreach (SceneEdge *edge, edges)
         if (edge->isSelected) removeEdge(edge);
-    
+
     foreach (SceneLabel *label, labels)
         if (label->isSelected) removeLabel(label);
 }
@@ -320,10 +353,10 @@ void Scene::highlightNone()
 {
     foreach (SceneNode *node, nodes)
         node->isHighlighted = false;
-    
+
     foreach (SceneEdge *edge, edges)
         edge->isHighlighted = false;
-    
+
     foreach (SceneLabel *label, labels)
         label->isHighlighted = false;
 }
@@ -338,7 +371,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
             edge->nodeEnd->isSelected = true;
         }
     }
-    
+
     foreach (SceneNode *node, nodes)
     {
         if (node->isSelected)
@@ -350,7 +383,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
                 addNode(new SceneNode(newPoint));
         }
     }
-    
+
     foreach (SceneLabel *label, labels)
     {
         if (label->isSelected)
@@ -362,7 +395,7 @@ void Scene::transformTranslate(const Point &point, bool copy)
                 addLabel(new SceneLabel(newPoint, label->marker, label->area));
         }
     }
-    
+
     emit invalidated();
 }
 
@@ -373,27 +406,27 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
         {
         double distanceNode = (node->point - point).magnitude();
         double angleNode = (node->point - point).angle()/M_PI*180;
-        
+
         Point newPoint = point + Point(distanceNode * cos((angleNode - angle)/180.0*M_PI), distanceNode * sin((angleNode - angle)/180.0*M_PI));
         if (!copy)
             node->point = newPoint;
         else
             addNode(new SceneNode(newPoint));
     }
-    
+
     foreach (SceneLabel *label, labels)
         if (label->isSelected)
         {
         double distanceNode = (label->point - point).magnitude();
         double angleNode = (label->point - point).angle()/M_PI*180;
-        
+
         Point newPoint = point + Point(distanceNode * cos((angleNode - angle)/180.0*M_PI), distanceNode * sin((angleNode - angle)/180.0*M_PI));
         if (!copy)
             label->point = newPoint;
         else
             addLabel(new SceneLabel(newPoint, label->marker, label->area));
     }
-    
+
     emit invalidated();
 }
 
@@ -408,7 +441,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
         else
             addNode(new SceneNode(newPoint));
     }
-    
+
     foreach (SceneLabel *label, labels)
         if (label->isSelected)
         {
@@ -418,7 +451,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
         else
             addLabel(new SceneLabel(newPoint, label->marker, label->area));
     }
-    
+
     emit invalidated();
 }
 
@@ -438,10 +471,10 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
         }
     }
     */
-    
+
     // clear problem
     sceneSolution()->clear();
-    
+
     // store orig name
     QString fileNameOrig = m_problemInfo.fileName;
 
@@ -450,7 +483,7 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
 
     // save problem
     writeToFile(m_problemInfo.fileName);
-    
+
     // solve
     QFileInfo fileInfoOrig(fileNameOrig);
     solverDialog->setFileNameOrig(fileInfoOrig.absoluteFilePath());
@@ -465,7 +498,7 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
 void Scene::doSolved()
 {
     solverDialog->hide();
-    
+
     // set solver results
     if (m_sceneSolution->isSolved())
         emit solved();
@@ -552,7 +585,7 @@ void Scene::doNewEdgeMarker()
         throw;
         break;
     }
-    
+
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
         addEdgeMarker(marker);
@@ -589,7 +622,7 @@ void Scene::doNewLabelMarker()
         throw;
         break;
     }
-    
+
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
         addLabelMarker(marker);
@@ -622,7 +655,7 @@ void Scene::writeToDxf(const QString &fileName)
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
-    
+
     DL_Dxf* dxf = new DL_Dxf();
     DL_Codes::version exportVersion = DL_Codes::AC1015;
     DL_WriterA *dw = dxf->out(fileName.toStdString().c_str(), exportVersion);
@@ -630,7 +663,7 @@ void Scene::writeToDxf(const QString &fileName)
         cerr << fileName.toStdString() << " could not be opened." << endl;
         return;
     }
-    
+
     dxf->writeHeader(*dw);
     // int variable:
     dw->dxfString(9, "$INSUNITS");
@@ -675,10 +708,10 @@ void Scene::writeToDxf(const QString &fileName)
     dxf->writeLineType(*dw, DL_LineTypeData("DOT2", 0));
     dxf->writeLineType(*dw, DL_LineTypeData("DOTX2", 0));
     dw->tableEnd();
-    
+
     int numberOfLayers = 1;
     dw->tableLayers(numberOfLayers);
-    
+
     dxf->writeLayer(*dw,
                     DL_LayerData("main", 0),
                     DL_Attributes(
@@ -686,12 +719,12 @@ void Scene::writeToDxf(const QString &fileName)
                             DL_Codes::black,      // default color
                             100,                  // default width
                             "CONTINUOUS"));       // default line style
-    
+
     dw->tableEnd();
     dxf->writeStyle(*dw);
     dxf->writeView(*dw);
     dxf->writeUcs(*dw);
-    
+
     dw->tableAppid(1);
     dw->tableAppidEntry(0x12);
     dw->dxfString(2, "ACAD");
@@ -702,21 +735,21 @@ void Scene::writeToDxf(const QString &fileName)
     dw->tableEnd();
     dw->sectionEnd();
     dw->sectionBlocks();
-    
+
     dw->sectionEnd();
     dw->sectionEntities();
-    
+
     // edges
     for (int i = 0; i<edges.length(); i++)
     {
         if (edges[i]->angle == 0)
-        {            
+        {
             // line
             double x1 = edges[i]->nodeStart->point.x;
             double y1 = edges[i]->nodeStart->point.y;
             double x2 = edges[i]->nodeEnd->point.x;
             double y2 = edges[i]->nodeEnd->point.y;
-            
+
             dxf->writeLine(*dw, DL_LineData(x1, y1, 0.0, x2, y2, 0.0), DL_Attributes("main", 256, -1, "BYLAYER"));
         }
         else
@@ -727,7 +760,7 @@ void Scene::writeToDxf(const QString &fileName)
             double radius = edges[i]->radius();
             double angle1 = atan2(cy - edges[i]->nodeStart->point.y, cx - edges[i]->nodeStart->point.x)/M_PI*180.0 + 180.0;
             double angle2 = atan2(cy - edges[i]->nodeEnd->point.y, cx - edges[i]->nodeEnd->point.x)/M_PI*180.0 + 180.0;
-            
+
             while (angle1 < 0.0) angle1 += 360.0;
             while (angle1 >= 360.0) angle1 -= 360.0;
             while (angle2 < 0.0) angle2 += 360.0;
@@ -736,16 +769,16 @@ void Scene::writeToDxf(const QString &fileName)
             dxf->writeArc(*dw, DL_ArcData(cx, cy, 0.0, radius, angle1, angle2), DL_Attributes("main", 256, -1, "BYLAYER"));
         }
     }
-    
+
     dw->sectionEnd();
     dxf->writeObjects(*dw);
     dxf->writeObjectsEnd(*dw);
     dw->dxfEOF();
     dw->close();
-    
+
     delete dw;
     delete dxf;
-    
+
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }
@@ -782,29 +815,29 @@ void Scene::readFromFile(const QString &fileName)
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
-    
+
     clear();
     this->m_problemInfo.fileName = fileName;
-    
+
     blockSignals(true);
-    
+
     QDomDocument doc;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
         return;
-    
+
     if (!doc.setContent(&file)) {
         file.close();
         return;
     }
     file.close();
-    
+
     QDomNode n;
     QDomElement element;
-    
+
     // main document
     QDomElement eleDoc = doc.documentElement();
-    
+
     // problems
     QDomNode eleProblems = eleDoc.elementsByTagName("problems").at(0);
     // first problem
@@ -825,13 +858,13 @@ void Scene::readFromFile(const QString &fileName)
     m_problemInfo.adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
     // time harmonic
     m_problemInfo.frequency = eleProblem.toElement().attribute("frequency").toDouble();
-    
+
     // startup script
     QDomNode eleSriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
     m_problemInfo.scriptStartup = eleSriptStartup.toElement().text();
-    
+
     // markers ***************************************************************************************************************
-    
+
     // edge marker
     QDomNode eleEdgeMarkers = eleProblem.toElement().elementsByTagName("edges").at(0);
     n = eleEdgeMarkers.firstChild();
@@ -839,7 +872,7 @@ void Scene::readFromFile(const QString &fileName)
     {
         element = n.toElement();
         QString name = element.toElement().attribute("name");
-        
+
         if (element.toElement().attribute("id") == 0)
         {
             // none marker
@@ -912,12 +945,12 @@ void Scene::readFromFile(const QString &fileName)
                     // elasticity markers
                     if (element.toElement().attribute("typex") == "none") typeX = PHYSICFIELDBC_NONE;
                     if (element.toElement().attribute("typey") == "none") typeY = PHYSICFIELDBC_NONE;
-                    
+
                     if (element.toElement().attribute("typex") == "fixed") typeX = PHYSICFIELDBC_ELASTICITY_FIXED;
                     if (element.toElement().attribute("typex") == "free") typeX = PHYSICFIELDBC_ELASTICITY_FREE;
                     if (element.toElement().attribute("typey") == "fixed") typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
                     if (element.toElement().attribute("typey") == "free") typeY = PHYSICFIELDBC_ELASTICITY_FREE;
-                    
+
                     addEdgeMarker(new SceneEdgeElasticityMarker(name, typeX, typeY,
                                                                 element.toElement().attribute("forcex").toDouble(),
                                                                 element.toElement().attribute("forcey").toDouble()));
@@ -929,10 +962,10 @@ void Scene::readFromFile(const QString &fileName)
                 break;
             }
         }
-        
+
         n = n.nextSibling();
     }
-    
+
     // label marker
     QDomNode eleLabelMarkers = eleProblem.toElement().elementsByTagName("labels").at(0);
     n = eleLabelMarkers.firstChild();
@@ -940,7 +973,7 @@ void Scene::readFromFile(const QString &fileName)
     {
         element = n.toElement();
         QString name = element.toElement().attribute("name");
-        
+
         if (element.toElement().attribute("id") == 0)
         {
             // none marker
@@ -992,15 +1025,15 @@ void Scene::readFromFile(const QString &fileName)
                 break;
             }
         }
-        
+
         n = n.nextSibling();
     }
-    
+
     // geometry ***************************************************************************************************************
-    
+
     // geometry
     QDomNode eleGeometry = eleDoc.elementsByTagName("geometry").at(0);
-    
+
     // nodes
     QDomNode eleNodes = eleGeometry.toElement().elementsByTagName("nodes").at(0);
     n = eleNodes.firstChild();
@@ -1008,11 +1041,11 @@ void Scene::readFromFile(const QString &fileName)
     {
         element = n.toElement();
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
-        
+
         addNode(new SceneNode(point));
         n = n.nextSibling();
     }
-    
+
     // edges
     QDomNode eleEdges = eleGeometry.toElement().elementsByTagName("edges").at(0);
     n = eleEdges.firstChild();
@@ -1023,11 +1056,11 @@ void Scene::readFromFile(const QString &fileName)
         SceneNode *nodeTo = nodes[element.attribute("end").toInt()];
         SceneEdgeMarker *marker = edgeMarkers[element.attribute("marker").toInt()];
         double angle = element.attribute("angle").toDouble();
-        
+
         addEdge(new SceneEdge(nodeFrom, nodeTo, marker, angle));
         n = n.nextSibling();
     }
-    
+
     // labels
     QDomNode eleLabels = eleGeometry.toElement().elementsByTagName("labels").at(0);
     n = eleLabels.firstChild();
@@ -1037,16 +1070,16 @@ void Scene::readFromFile(const QString &fileName)
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
         SceneLabelMarker *marker = labelMarkers[element.attribute("marker").toInt()];
         double area = element.attribute("area").toDouble();
-        
+
         addLabel(new SceneLabel(point, marker, area));
         n = n.nextSibling();
     }
-    
+
     // set system locale
     setlocale(LC_NUMERIC, plocale);
-    
+
     blockSignals(false);
-    
+
     emit invalidated();
 }
 
@@ -1057,19 +1090,19 @@ void Scene::writeToFile(const QString &fileName) {
         QFileInfo fileInfo(fileName);
         settings.setValue("General/LastDataDir", fileInfo.absoluteFilePath());
     }
-    
+
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
-    
+
     m_problemInfo.fileName = fileName;
-    
+
     QDomDocument doc;
-    
+
     // main document
     QDomElement eleDoc = doc.createElement("document");
     doc.appendChild(eleDoc);
-    
+
     // problems
     QDomNode eleProblems = doc.createElement("problems");
     eleDoc.appendChild(eleProblems);
@@ -1094,77 +1127,77 @@ void Scene::writeToFile(const QString &fileName) {
     eleProblem.setAttribute("adaptivitytolerance", m_problemInfo.adaptivityTolerance);
     // time harmonic
     eleProblem.setAttribute("frequency", m_problemInfo.frequency);
-    
+
     // startup script
     QDomElement eleSriptStartup = doc.createElement("scriptstartup");
     eleSriptStartup.appendChild(doc.createTextNode(m_problemInfo.scriptStartup));
     eleProblem.appendChild(eleSriptStartup);
-    
+
     // geometry
     QDomNode eleGeometry = doc.createElement("geometry");
     eleDoc.appendChild(eleGeometry);
-    
+
     // geometry ***************************************************************************************************************
-    
+
     // nodes
     QDomNode eleNodes = doc.createElement("nodes");
     eleGeometry.appendChild(eleNodes);
     for (int i = 0; i<nodes.length(); i++)
     {
         QDomElement eleNode = doc.createElement("node");
-        
+
         eleNode.setAttribute("id", i);
         eleNode.setAttribute("x", nodes[i]->point.x);
         eleNode.setAttribute("y", nodes[i]->point.y);
-        
+
         eleNodes.appendChild(eleNode);
     }
-    
+
     // edges
     QDomNode eleEdges = doc.createElement("edges");
     eleGeometry.appendChild(eleEdges);
     for (int i = 0; i<edges.length(); i++)
     {
         QDomElement eleEdge = doc.createElement("edge");
-        
+
         eleEdge.setAttribute("id", i);
         eleEdge.setAttribute("start", nodes.indexOf(edges[i]->nodeStart));
         eleEdge.setAttribute("end", nodes.indexOf(edges[i]->nodeEnd));
         eleEdge.setAttribute("angle", edges[i]->angle);
         eleEdge.setAttribute("marker", edgeMarkers.indexOf(edges[i]->marker));
-        
+
         eleEdges.appendChild(eleEdge);
     }
-    
+
     // labels
     QDomNode eleLabels = doc.createElement("labels");
     eleGeometry.appendChild(eleLabels);
     for (int i = 0; i<labels.length(); i++)
     {
         QDomElement eleLabel = doc.createElement("label");
-        
+
         eleLabel.setAttribute("id", i);
         eleLabel.setAttribute("x", labels[i]->point.x);
         eleLabel.setAttribute("y", labels[i]->point.y);
         eleLabel.setAttribute("area", labels[i]->area);
         eleLabel.setAttribute("marker", labelMarkers.indexOf(labels[i]->marker));
-        
+
         eleLabels.appendChild(eleLabel);
     }
-    
+
     // markers ***************************************************************************************************************
-    
+
     // edge markers
     QDomNode eleEdgeMarkers = doc.createElement("edges");
     eleProblem.appendChild(eleEdgeMarkers);
     for (int i = 1; i<edgeMarkers.length(); i++)
     {
         QDomElement eleEdgeMarker = doc.createElement("edge");
-        
+
         eleEdgeMarker.setAttribute("id", i);
         eleEdgeMarker.setAttribute("name", edgeMarkers[i]->name);
         if (edgeMarkers[i]->type == PHYSICFIELDBC_NONE) eleEdgeMarker.setAttribute("type", "none");
-        
+
         if (i > 0)
         {
             // electrostatic
@@ -1215,20 +1248,20 @@ void Scene::writeToFile(const QString &fileName) {
                 eleEdgeMarker.setAttribute("forcey", edgeElasticityMarker->forceY);
             }
         }
-        
+
         eleEdgeMarkers.appendChild(eleEdgeMarker);
     }
-    
+
     // label markers
     QDomNode eleLabelMarkers = doc.createElement("labels");
     eleProblem.appendChild(eleLabelMarkers);
     for (int i = 1; i<labelMarkers.length(); i++)
     {
         QDomElement eleLabelMarker = doc.createElement("label");
-        
+
         eleLabelMarker.setAttribute("id", i);
         eleLabelMarker.setAttribute("name", labelMarkers[i]->name);
-        
+
         if (i > 0)
         {
             // electrostatic
@@ -1269,23 +1302,23 @@ void Scene::writeToFile(const QString &fileName) {
                 eleLabelMarker.setAttribute("poisson_ratio", labelHeatMarker->poisson_ratio);
             }
         }
-        
+
         eleLabelMarkers.appendChild(eleLabelMarker);
     }
-    
+
     // save to file
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
-    
+
     QTextStream out(&file);
     doc.save(out, 4);
-    
+
     file.waitForBytesWritten(0);
     file.close();
-    
+
     emit invalidated();
-    
+
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }

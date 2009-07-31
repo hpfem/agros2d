@@ -25,9 +25,6 @@ struct HeatLabel
     double volume_heat;
 };
 
-static HeatEdge *heatEdge;
-static HeatLabel *heatLabel;
-
 SolutionArray *heat_main(SolverDialog *solverDialog,
                          const char *fileName,
                          HeatEdge *edge,

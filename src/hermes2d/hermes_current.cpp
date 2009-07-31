@@ -1,5 +1,9 @@
 #include "hermes_current.h"
 
+static CurrentEdge *currentEdge;
+static CurrentLabel *currentLabel;
+static bool currentPlanar;
+
 int current_bc_types(int marker)
 {
     switch (currentEdge[marker].type)
@@ -30,7 +34,7 @@ scalar current_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
     if (currentEdge[marker].type == PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)
         J = currentEdge[marker].value;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (currentPlanar)
         return J * surf_int_v(fv, rv, ep);
     else
         return J * 2 * M_PI * surf_int_x_v(fv, rv, ep);
@@ -40,7 +44,7 @@ scalar current_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* ru, Ref
 {
     int marker = rv->get_active_element()->marker;
 
-    if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+    if (currentPlanar)
         return currentLabel[marker].conductivity * int_grad_u_grad_v(fu, fv, ru, rv);
     else
         return currentLabel[marker].conductivity * 2 * M_PI * int_x_grad_u_grad_v(fu, fv, ru, rv);
@@ -66,6 +70,7 @@ SolutionArray *current_main(SolverDialog *solverDialog,
 {
     currentEdge = edge;
     currentLabel = label;
+    currentPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");

@@ -1,5 +1,9 @@
 #include "hermes_elasticity.h"
 
+static ElasticityEdge *elasticityEdge;
+static ElasticityLabel *elasticityLabel;
+static bool elasticityPlanar;
+
 int elasticity_bc_types_x(int marker)
 {
     switch (elasticityEdge[marker].typeX)
@@ -99,6 +103,7 @@ SolutionArray *elasticity_main(const char *fileName,
 {
     elasticityEdge = edge;
     elasticityLabel = label;
+    elasticityPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");

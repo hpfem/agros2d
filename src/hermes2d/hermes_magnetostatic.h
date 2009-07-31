@@ -22,9 +22,6 @@ struct MagnetostaticLabel
     double permeability;
 };
 
-static MagnetostaticEdge *magnetostaticEdge;
-static MagnetostaticLabel *magnetostaticLabel;
-
 SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
                                   const char *fileName,
                                   MagnetostaticEdge *edge,
