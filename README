@@ -72,3 +72,29 @@ To simplify the above steps (documentation generation, localization, and build) 
 
 $ ./agros2d.debian.sh -a
 
+If you install hermes2d in a different prefix than /usr, set the includepath
+and libpath by editing agros2d.pro, for example by applying a similar patch to
+this:
+
+diff --git a/agros2d.pro b/agros2d.pro
+index 1264fbb..b4cae08 100644
+--- a/agros2d.pro
++++ b/agros2d.pro
+@@ -82,7 +82,7 @@ INCLUDEPATH += src \
+ unix:INCLUDEPATH += /usr/include
+ unix:INCLUDEPATH += /usr/include/suitesparse
+ unix:INCLUDEPATH += /usr/include/qwt-qt4
+-unix:INCLUDEPATH += /usr/include/hermes2d
++unix:INCLUDEPATH += /home/ondrej/usr/include/hermes2d
+ win32:INCLUDEPATH += c:/qt/mingw/include
+ win32:INCLUDEPATH += c:/qt/mingw/include/hermes2d
+ LIBS += -lhermes2d-real \
+@@ -93,3 +93,4 @@ LIBS += -lhermes2d-real \
+     -lpthread
+ unix:LIBS += -lqwt-qt4
+ win32:LIBS += -lqwt
++unix:LIBPATH += /home/ondrej/usr/lib/
+
+or by passing the paths directly on the commandline, like this:
+
+qmake-qt4 "INCLUDEPATH += $HOME/usr/include/hermes2d" "LIBPATH += $HOME/usr/lib/" agros2d.pro

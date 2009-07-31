@@ -55,6 +55,10 @@ QString appdir()
     if (dirData.exists())
         return QDir::current().absolutePath();
 
+    dirData.setPath(QDir::current().absolutePath() + "/../share/agros2d/data");
+    if (dirData.exists())
+        return QDir::current().absolutePath() + "/../share/agros2d";
+
     dirData.setPath("/usr/share/agros2d/data");
     if (dirData.exists())
         return "/usr/share/agros2d";
