@@ -45,12 +45,14 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptOpenDocument(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->readFromFile(context->argument(0).toString());
+    return engine->undefinedValue();
 }
 
 // saveDocument(filename)
 QScriptValue scriptSaveDocument(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->writeToFile(context->argument(0).toString());
+    return engine->undefinedValue();
 }
 
 // addNode(x, y)
@@ -584,6 +586,14 @@ void ScriptEditorDialog::createControls()
 void ScriptEditorDialog::createEngine()
 {
     m_engine = new QScriptEngine();
+
+    // scene
+    QScriptValue sceneValue = m_engine->newQObject(Util::scene());
+    m_engine->globalObject().setProperty("scene", sceneValue);
+
+    // scene view
+    QScriptValue sceneViewValue = m_engine->newQObject(m_sceneView);
+    m_engine->globalObject().setProperty("sceneView", sceneViewValue);
 
     // print
     QScriptValue funPrint = m_engine->newFunction(scriptPrint);

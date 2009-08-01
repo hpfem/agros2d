@@ -8,10 +8,11 @@
 
 SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 {
+    setWindowModality(Qt::ApplicationModal);
     setMinimumSize(350, 260);
     setMaximumSize(minimumSize());
 
-    setWindowIcon(icon("logo"));
+    setWindowIcon(icon("system-run"));
     setWindowTitle(tr("Solve problem..."));
 
     connect(this, SIGNAL(message(QString, bool)), this, SLOT(doShowMessage(QString, bool)));
