@@ -812,12 +812,16 @@ void Scene::readFromDxf(const QString &fileName)
 
 void Scene::readFromFile(const QString &fileName)
 {
+    QSettings settings;
+    QFileInfo fileInfo(fileName);
+    settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
     clear();
-    this->m_problemInfo.fileName = fileName;
+    m_problemInfo.fileName = fileName;
 
     blockSignals(true);
 

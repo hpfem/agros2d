@@ -408,7 +408,7 @@ void MainWindow::doDocumentNew()
 void MainWindow::doDocumentOpen()
 {
     QSettings settings;
-    QString dir = settings.value("LastDataDir", "data").toString();
+    QString dir = settings.value("General/LastDataDir", "data").toString();
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.h2d)"));
     if (!fileName.isEmpty())

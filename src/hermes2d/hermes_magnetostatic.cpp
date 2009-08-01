@@ -19,7 +19,7 @@ inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, 
     double* x = ru->get_phys_x(o);
 
     double result;
-    h1_integrate_dd_expression((x[i] > 0.0) ? 0.0 : t_dvdx * uval[i] / x[i]);
+    h1_integrate_dd_expression((x[i] > 0.0) ? t_dvdx * uval[i] / x[i] : 0.0);
     return result;
 }
 
