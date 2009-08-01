@@ -71,6 +71,11 @@ SolutionArray *current_main(SolverDialog *solverDialog,
     currentEdge = edge;
     currentLabel = label;
     currentPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -79,7 +84,7 @@ SolutionArray *current_main(SolverDialog *solverDialog,
     // load the mesh file
     Mesh mesh;
     mesh.load(fileName);
-    for (int i = 0; i < Util::scene()->problemInfo().numberOfRefinements; i++)
+    for (int i = 0; i < numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
     // set system locale
@@ -93,7 +98,7 @@ SolutionArray *current_main(SolverDialog *solverDialog,
     H1Space space(&mesh, &shapeset);
     space.set_bc_types(current_bc_types);
     space.set_bc_values(current_bc_values);
-    space.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
+    space.set_uniform_order(polynomialOrder);
     space.assign_dofs(0);
 
     // initialize the weak formulation
@@ -111,7 +116,8 @@ SolutionArray *current_main(SolverDialog *solverDialog,
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    for (i = 0; i<(Util::scene()->problemInfo().adaptivitySteps+1); i++)
+    int steps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
+    for (i = 0; i<(steps); i++)
     {
         space.assign_dofs();
 
@@ -127,16 +133,16 @@ SolutionArray *current_main(SolverDialog *solverDialog,
         rs.solve(1, &rsln);
 
         // calculate errors and adapt the solution
-        if (Util::scene()->problemInfo().adaptivitySteps > 0)
+        if ((adaptivityType != ADAPTIVITYTYPE_NONE))
         {
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %", false);
+            solverDialog->doShowMessage(QObject::tr("Relative error: %1 %").arg(error, 0, 'f', 5), false);
 
-            if (error < Util::scene()->problemInfo().adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(0.3);
+            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            hp.adapt(0.3, 0, (adaptivityType == ADAPTIVITYTYPE_H));
         }
     }
 

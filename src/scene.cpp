@@ -858,6 +858,9 @@ void Scene::readFromFile(const QString &fileName)
     // polynomial order
     m_problemInfo.polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
     // adaptivity
+    if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_NONE)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_NONE;
+    if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_H)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_H;
+    if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_HP)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_HP;
     m_problemInfo.adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo.adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
     // time harmonic

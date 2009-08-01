@@ -23,6 +23,7 @@ public:
 
 private slots:
     void doPhysicFieldChanged(int index);
+    void doAdaptivityChanged(int index);
     void doAccept();
     void doReject();
 
@@ -36,6 +37,7 @@ private:
     QDateTimeEdit *dtmDate;
     QSpinBox *txtNumberOfRefinements;
     QSpinBox *txtPolynomialOrder;
+    QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     SLineEdit *txtAdaptivityTolerance;
     SLineEdit *txtFrequency;

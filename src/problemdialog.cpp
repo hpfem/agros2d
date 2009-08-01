@@ -26,6 +26,7 @@ ProblemDialog::~ProblemDialog()
     delete txtPolynomialOrder;
     delete txtAdaptivitySteps;
     delete txtAdaptivityTolerance;
+    delete cmbAdaptivityType;
 }
 
 int ProblemDialog::showDialog()
@@ -36,7 +37,7 @@ int ProblemDialog::showDialog()
 void ProblemDialog::createControls()
 {
     cmbProblemType = new QComboBox();
-    cmbPhysicField = new QComboBox();
+    cmbPhysicField = new QComboBox();    
     txtName = new QLineEdit("");
     dtmDate = new QDateTimeEdit();
     dtmDate->setDisplayFormat("dd.MM.yyyy");
@@ -47,8 +48,9 @@ void ProblemDialog::createControls()
     txtPolynomialOrder = new QSpinBox(this);
     txtPolynomialOrder->setMinimum(1);
     txtPolynomialOrder->setMaximum(10);
+    cmbAdaptivityType = new QComboBox();
     txtAdaptivitySteps = new QSpinBox(this);
-    txtAdaptivitySteps->setMinimum(0);
+    txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEdit("1", true, this);
     txtFrequency = new SLineEdit("0", true, this);
@@ -68,16 +70,17 @@ void ProblemDialog::createControls()
     layoutProblem->addWidget(txtNumberOfRefinements, 5, 1);
     layoutProblem->addWidget(new QLabel(tr("Polynomial order:")), 6, 0);
     layoutProblem->addWidget(txtPolynomialOrder, 6, 1);
-    layoutProblem->addWidget(new QLabel(tr("Adaptivity steps:")), 7, 0);
-    layoutProblem->addWidget(txtAdaptivitySteps, 7, 1);
-    layoutProblem->addWidget(new QLabel(tr("Adaptivity tolerance:")), 8, 0);
-    layoutProblem->addWidget(txtAdaptivityTolerance, 8, 1);
+    layoutProblem->addWidget(new QLabel(tr("Adaptivity:")), 7, 0);
+    layoutProblem->addWidget(cmbAdaptivityType, 7, 1);
+    layoutProblem->addWidget(new QLabel(tr("Adaptivity steps:")), 8, 0);
+    layoutProblem->addWidget(txtAdaptivitySteps, 8, 1);
+    layoutProblem->addWidget(new QLabel(tr("Adaptivity tolerance:")), 9, 0);
+    layoutProblem->addWidget(txtAdaptivityTolerance, 9, 1);
 
     connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
+    connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     fillComboBox();
 
-    // physicFieldString(m_problemInfo->physicField)
-    
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
@@ -105,6 +108,11 @@ void ProblemDialog::fillComboBox()
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT_TRANSFER), PHYSICFIELD_HEAT_TRANSFER);
     // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
 
+    cmbAdaptivityType->clear();
+    cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_NONE), ADAPTIVITYTYPE_NONE);
+    cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_H), ADAPTIVITYTYPE_H);
+    cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_HP), ADAPTIVITYTYPE_HP);
+
     cmbPhysicField->setEnabled(m_isNewProblem);
 }
 
@@ -115,6 +123,7 @@ void ProblemDialog::load() {
     dtmDate->setDate(m_problemInfo->date);
     txtNumberOfRefinements->setValue(m_problemInfo->numberOfRefinements);
     txtPolynomialOrder->setValue(m_problemInfo->polynomialOrder);
+    cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_problemInfo->adaptivityType));
     txtAdaptivitySteps->setValue(m_problemInfo->adaptivitySteps);
     txtAdaptivityTolerance->setValue(m_problemInfo->adaptivityTolerance);
     txtFrequency->setValue(m_problemInfo->frequency);
@@ -127,6 +136,7 @@ void ProblemDialog::save() {
     m_problemInfo->date = dtmDate->date();
     m_problemInfo->numberOfRefinements = txtNumberOfRefinements->value();
     m_problemInfo->polynomialOrder = txtPolynomialOrder->value();
+    m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
     m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
     m_problemInfo->frequency = txtFrequency->value();
@@ -155,4 +165,10 @@ void ProblemDialog::doPhysicFieldChanged(int index)
         }
         break;
     }
+}
+
+void ProblemDialog::doAdaptivityChanged(int index)
+{
+    txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != ADAPTIVITYTYPE_NONE);
+    txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != ADAPTIVITYTYPE_NONE);
 }

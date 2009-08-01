@@ -60,6 +60,7 @@ struct ProblemInfo
     PhysicField physicField;
     int numberOfRefinements;
     int polynomialOrder;
+    AdaptivityType adaptivityType;
     int adaptivitySteps;
     double adaptivityTolerance;
     QString scriptStartup;
@@ -76,12 +77,11 @@ struct ProblemInfo
         date = QDate::currentDate();
         fileName = "";
         scriptStartup = "";
-        // physicField = PHYSICFIELD_ELECTROSTATIC;
-        physicField = PHYSICFIELD_HARMONIC_MAGNETIC;
+        physicField = PHYSICFIELD_ELECTROSTATIC;
         problemType = PROBLEMTYPE_PLANAR;
-
         numberOfRefinements = 1;
-        polynomialOrder = 3;
+        polynomialOrder = 2;
+        adaptivityType = ADAPTIVITYTYPE_NONE;
         adaptivitySteps = 0;
         adaptivityTolerance = 1.0;
 

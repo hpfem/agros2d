@@ -578,8 +578,8 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    Util::scene()->readFromFile("data/pokus.h2d");
-    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
+    // Util::scene()->readFromFile("data/pokus.h2d");
+    Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
     // Util::scene()->readFromFile("data/electrostatic_planar_poisson.h2d");
     // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.h2d");

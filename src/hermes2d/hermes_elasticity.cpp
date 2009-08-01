@@ -104,6 +104,10 @@ SolutionArray *elasticity_main(const char *fileName,
     elasticityEdge = edge;
     elasticityLabel = label;
     elasticityPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
+    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -112,7 +116,7 @@ SolutionArray *elasticity_main(const char *fileName,
     // load the mesh file
     Mesh xmesh, ymesh;
     xmesh.load(fileName);
-    for (int i = 0; i < Util::scene()->problemInfo().numberOfRefinements; i++)
+    for (int i = 0; i < numberOfRefinements; i++)
         xmesh.refine_all_elements(0);
     ymesh.copy(&xmesh);
 
@@ -128,14 +132,14 @@ SolutionArray *elasticity_main(const char *fileName,
     H1Space xdisp(&xmesh, &shapeset);
     xdisp.set_bc_types(elasticity_bc_types_x);
     xdisp.set_bc_values(elasticity_bc_values_x);
-    xdisp.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
+    xdisp.set_uniform_order(polynomialOrder);
     int ndof = xdisp.assign_dofs(0);
 
     // create the y displacement space
     H1Space ydisp(&ymesh, &shapeset);
     ydisp.set_bc_types(elasticity_bc_types_y);
     ydisp.set_bc_values(elasticity_bc_values_y);
-    ydisp.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
+    ydisp.set_uniform_order(polynomialOrder);
     ydisp.assign_dofs();
 
     // initialize the weak formulation

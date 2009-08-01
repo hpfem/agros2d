@@ -5,38 +5,38 @@
 <context>
     <name>CentralWidget</name>
     <message>
-        <location filename="../src/helpdialog.cpp" line="471"/>
+        <location filename="../src/helpdialog.cpp" line="473"/>
         <source>Add new page</source>
         <translation>Přidat novou stránku</translation>
     </message>
     <message>
-        <location filename="../src/helpdialog.cpp" line="699"/>
+        <location filename="../src/helpdialog.cpp" line="701"/>
         <source>Print Document</source>
         <translation>Vytisknout dokument</translation>
     </message>
     <message>
-        <location filename="../src/helpdialog.cpp" line="819"/>
         <location filename="../src/helpdialog.cpp" line="821"/>
+        <location filename="../src/helpdialog.cpp" line="823"/>
         <source>unknown</source>
         <translation>Neznámý</translation>
     </message>
     <message>
-        <location filename="../src/helpdialog.cpp" line="912"/>
+        <location filename="../src/helpdialog.cpp" line="914"/>
         <source>Add New Page</source>
         <translation>Přidat novou stránku</translation>
     </message>
     <message>
-        <location filename="../src/helpdialog.cpp" line="915"/>
+        <location filename="../src/helpdialog.cpp" line="917"/>
         <source>Close This Page</source>
         <translation>Zavřít tuto stránku</translation>
     </message>
     <message>
-        <location filename="../src/helpdialog.cpp" line="918"/>
+        <location filename="../src/helpdialog.cpp" line="920"/>
         <source>Close Other Pages</source>
         <translation>Zavřít ostatní stránky</translation>
     </message>
     <message>
-        <location filename="../src/helpdialog.cpp" line="923"/>
+        <location filename="../src/helpdialog.cpp" line="925"/>
         <source>Add Bookmark for this Page...</source>
         <translation>Přidat záložku na tuto stránku...</translation>
     </message>
@@ -45,97 +45,97 @@
     <name>ChartDialog</name>
     <message>
         <location filename="../src/chartdialog.cpp" line="9"/>
-        <location filename="../src/chartdialog.cpp" line="166"/>
+        <location filename="../src/chartdialog.cpp" line="169"/>
         <source>Chart</source>
         <translation>Graf veličin</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="56"/>
+        <location filename="../src/chartdialog.cpp" line="59"/>
         <source>Plot</source>
         <translation>Vykreslit</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="60"/>
+        <location filename="../src/chartdialog.cpp" line="63"/>
         <source>Save image</source>
         <translation>Uložit obrázek</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="64"/>
+        <location filename="../src/chartdialog.cpp" line="67"/>
         <source>Export</source>
         <translation>Export dat</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="86"/>
+        <location filename="../src/chartdialog.cpp" line="89"/>
         <source>Start</source>
         <translation>Počátek</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="94"/>
+        <location filename="../src/chartdialog.cpp" line="97"/>
         <source>End</source>
         <translation>Konec</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="98"/>
+        <location filename="../src/chartdialog.cpp" line="101"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="114"/>
+        <location filename="../src/chartdialog.cpp" line="117"/>
         <source>Horizontal axis</source>
         <translation>Horizontální osa</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="126"/>
+        <location filename="../src/chartdialog.cpp" line="129"/>
         <source>Points:</source>
         <translation>Počet bodů:</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="141"/>
+        <location filename="../src/chartdialog.cpp" line="144"/>
         <source>Variable</source>
         <translation>Veličina</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="167"/>
+        <location filename="../src/chartdialog.cpp" line="170"/>
         <source>Table</source>
         <translation>Tabulka</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="215"/>
+        <location filename="../src/chartdialog.cpp" line="218"/>
         <source>Length (m)</source>
         <translation>Délka (m)</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="264"/>
+        <location filename="../src/chartdialog.cpp" line="267"/>
         <source>Scalar</source>
         <translation>Skalár</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="268"/>
+        <location filename="../src/chartdialog.cpp" line="271"/>
         <source>Magnitude</source>
         <translation>Modul</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="284"/>
+        <location filename="../src/chartdialog.cpp" line="287"/>
         <source> -- </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="308"/>
+        <location filename="../src/chartdialog.cpp" line="311"/>
         <source>Export image to file</source>
         <translation>Export obrázku do souboru</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="308"/>
+        <location filename="../src/chartdialog.cpp" line="311"/>
         <source>PNG files (*.png)</source>
         <translation>Soubory PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="323"/>
+        <location filename="../src/chartdialog.cpp" line="326"/>
         <source>Export data to file</source>
         <translation>Export dat do souboru</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="323"/>
+        <location filename="../src/chartdialog.cpp" line="326"/>
         <source>CSV files (*.csv);;Matlab/Octave script (*.m)</source>
         <translation>Soubory CVS (*.cvs);;Matlab/Octave skripty (*.m)</translation>
     </message>
@@ -427,7 +427,7 @@
 <context>
     <name>HelpViewer</name>
     <message>
-        <location filename="../src/helpdialog.cpp" line="299"/>
+        <location filename="../src/helpdialog.cpp" line="301"/>
         <source>Open Link in New Tab</source>
         <translation>Otevřít odkaz na nové stránce</translation>
     </message>
@@ -835,7 +835,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="85"/>
-        <location filename="../src/mainwindow.cpp" line="494"/>
+        <location filename="../src/mainwindow.cpp" line="496"/>
         <source>Export image to file</source>
         <translation>Export obrázku do souboru</translation>
     </message>
@@ -966,69 +966,69 @@
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="200"/>
+        <location filename="../src/mainwindow.cpp" line="201"/>
         <source>&amp;View</source>
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="296"/>
+        <location filename="../src/mainwindow.cpp" line="298"/>
         <source>Tools</source>
         <translation>Nástroje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="272"/>
+        <location filename="../src/mainwindow.cpp" line="630"/>
+        <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics solver based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://code.google.com/p/agros2d/issues/list&quot;&gt;http://code.google.com/p/agros2d/issues/list&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;František Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Hermes2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="274"/>
         <source>View</source>
         <translation>Zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="411"/>
-        <location filename="../src/mainwindow.cpp" line="448"/>
+        <location filename="../src/mainwindow.cpp" line="413"/>
+        <location filename="../src/mainwindow.cpp" line="450"/>
         <source>Agros2D files (*.h2d)</source>
         <translation>Soubory Agros2D (*.h2d)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="623"/>
-        <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics solver based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://code.google.com/p/agros2d/issues/list&quot;&gt;http://code.google.com/p/agros2d/issues/list&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;FrantiÅ¡ek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Hermes2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="625"/>
+        <location filename="../src/mainwindow.cpp" line="632"/>
         <source>About Agros2D</source>
         <translation>O Agros2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="116"/>
-        <location filename="../src/mainwindow.cpp" line="246"/>
+        <location filename="../src/mainwindow.cpp" line="247"/>
         <source>&amp;Help</source>
         <translation>&amp;Nápověda</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="256"/>
+        <location filename="../src/mainwindow.cpp" line="257"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="262"/>
+        <location filename="../src/mainwindow.cpp" line="263"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="319"/>
+        <location filename="../src/mainwindow.cpp" line="321"/>
         <source>Ready</source>
         <translation>Připraveno</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="330"/>
+        <location filename="../src/mainwindow.cpp" line="332"/>
         <source>Position: [%1; %2]</source>
         <translation>Pozice: [%1; %2]</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="344"/>
+        <location filename="../src/mainwindow.cpp" line="346"/>
         <source>Agros2D</source>
         <translation>Agros2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="411"/>
+        <location filename="../src/mainwindow.cpp" line="413"/>
         <source>Open file</source>
         <translation>Otevřít soubor</translation>
     </message>
@@ -1123,53 +1123,53 @@
         <translation>Nedávné soubory</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="210"/>
+        <location filename="../src/mainwindow.cpp" line="211"/>
         <source>&amp;Problem</source>
         <translation>&amp;Problém</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="236"/>
+        <location filename="../src/mainwindow.cpp" line="237"/>
         <source>&amp;Tools</source>
         <translation>Nás&amp;troje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="279"/>
+        <location filename="../src/mainwindow.cpp" line="281"/>
         <source>Problem</source>
         <translation>Problém</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="448"/>
+        <location filename="../src/mainwindow.cpp" line="450"/>
         <source>Save file</source>
         <translation>Uložit soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="473"/>
+        <location filename="../src/mainwindow.cpp" line="475"/>
         <source>Import file</source>
         <translation>Importovat soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="473"/>
-        <location filename="../src/mainwindow.cpp" line="483"/>
+        <location filename="../src/mainwindow.cpp" line="475"/>
+        <location filename="../src/mainwindow.cpp" line="485"/>
         <source>DXF files (*.dxf)</source>
         <translation>Soubory AUTOCAD DXF (*.dxf)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="483"/>
+        <location filename="../src/mainwindow.cpp" line="485"/>
         <source>Export file</source>
         <translation>Exportovat soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="494"/>
+        <location filename="../src/mainwindow.cpp" line="496"/>
         <source>PNG files (*.png)</source>
         <translation>Soubory PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="606"/>
+        <location filename="../src/mainwindow.cpp" line="613"/>
         <source>Problem Type: </source>
         <translation>Typ problému:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="607"/>
+        <location filename="../src/mainwindow.cpp" line="614"/>
         <source>Physic Field: </source>
         <translation>Fyzikální pole:</translation>
     </message>
@@ -1793,9 +1793,18 @@
         <translation>Volné</translation>
     </message>
     <message>
-        <location filename="../src/scene.h" line="74"/>
+        <location filename="../src/scene.h" line="75"/>
         <source>unnamed</source>
         <translation>nepojmenovaný</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="136"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="116"/>
+        <location filename="../src/hermes2d/hermes_harmonicmagnetic.cpp" line="195"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="172"/>
+        <location filename="../src/hermes2d/hermes_magnetostatic.cpp" line="172"/>
+        <source>Relative error: </source>
+        <translation>Relativní chyba:</translation>
     </message>
 </context>
 <context>
@@ -1809,97 +1818,103 @@
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../src/scene.cpp" line="61"/>
+        <location filename="../src/scene.cpp" line="94"/>
         <source>Alt+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="62"/>
+        <location filename="../src/scene.cpp" line="95"/>
         <source>New node</source>
         <translation>Nový uzel</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="66"/>
+        <location filename="../src/scene.cpp" line="99"/>
         <source>Alt+E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="67"/>
+        <location filename="../src/scene.cpp" line="100"/>
         <source>New edge</source>
         <translation>Nová hrana</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="71"/>
+        <location filename="../src/scene.cpp" line="104"/>
         <source>Alt+L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="72"/>
+        <location filename="../src/scene.cpp" line="105"/>
         <source>New label</source>
         <translation>Nová značka oblasti</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="76"/>
+        <location filename="../src/scene.cpp" line="113"/>
         <source>Alt+B</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="77"/>
+        <location filename="../src/scene.cpp" line="114"/>
         <source>New boundary condition</source>
         <translation>Nová okrajová podmínka</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="60"/>
+        <location filename="../src/scene.cpp" line="93"/>
         <source>New &amp;node...</source>
         <translation>Nový &amp;uzel...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="65"/>
+        <location filename="../src/scene.cpp" line="98"/>
         <source>New &amp;edge...</source>
         <translation>Nová &amp;hrana...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="70"/>
+        <location filename="../src/scene.cpp" line="103"/>
         <source>New &amp;label...</source>
         <translation>Nová &amp;značka oblasti...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="75"/>
+        <location filename="../src/scene.cpp" line="108"/>
+        <location filename="../src/scene.cpp" line="109"/>
+        <source>Delete selected objects</source>
+        <translation>Smazat vybrané objekty</translation>
+    </message>
+    <message>
+        <location filename="../src/scene.cpp" line="112"/>
         <source>New &amp;boundary condition...</source>
         <translation>Nová okrajová &amp;podmínka...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="80"/>
+        <location filename="../src/scene.cpp" line="117"/>
         <source>New &amp;material...</source>
         <translation>Nový &amp;materiál...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="81"/>
+        <location filename="../src/scene.cpp" line="118"/>
         <source>Alt+M</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="82"/>
+        <location filename="../src/scene.cpp" line="119"/>
         <source>New material</source>
         <translation>Nový materiál</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="85"/>
+        <location filename="../src/scene.cpp" line="122"/>
         <source>&amp;Transform</source>
         <translation>&amp;Transformace</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="86"/>
+        <location filename="../src/scene.cpp" line="123"/>
         <source>Transform</source>
         <translation>Transformace</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="89"/>
+        <location filename="../src/scene.cpp" line="126"/>
         <source>&amp;Problem properties</source>
         <translation>Nastavení &amp;problému</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="90"/>
+        <location filename="../src/scene.cpp" line="127"/>
         <source>Problem properties</source>
         <translation>Nastavení problému</translation>
     </message>
@@ -2489,65 +2504,129 @@
 <context>
     <name>SolverDialog</name>
     <message>
-        <location filename="../src/solverdialog.cpp" line="93"/>
-        <source>Triangle poly file was created.</source>
-        <translation>Soubor sítě Triangle &quot;poly&quot; byl vytvořen.</translation>
-    </message>
-    <message>
-        <location filename="../src/solverdialog.cpp" line="137"/>
-        <source>Triangle mesh files was created.</source>
-        <translation>Soubory sítě Triangle byly vytvořeny.</translation>
-    </message>
-    <message>
-        <location filename="../src/solverdialog.cpp" line="163"/>
-        <source>Triangle mesh files was deleted.</source>
-        <translation>Soubory sítě Triangle byly smazány.</translation>
-    </message>
-    <message>
         <location filename="../src/solverdialog.cpp" line="15"/>
-        <location filename="../src/solverdialog.cpp" line="32"/>
         <source>Solve problem...</source>
         <translation>Řešení problému...</translation>
     </message>
     <message>
-        <location filename="../src/solverdialog.cpp" line="107"/>
-        <source>Could not start Triangle.</source>
-        <translation>Program Tringle nelze najít.</translation>
+        <location filename="../src/solverdialog.cpp" line="32"/>
+        <source>Solver: solve problem...</source>
+        <translation>Řešič: řešení problému...</translation>
     </message>
     <message>
-        <location filename="../src/solverdialog.cpp" line="143"/>
-        <source>Triangle mesh was converted to Hermes2D mesh file.</source>
-        <translation>Síť byla převedena do formátu Hermes2D.</translation>
+        <location filename="../src/solverdialog.cpp" line="97"/>
+        <source>Triangle: poly file was created.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/solverdialog.cpp" line="173"/>
-        <source>Triangle mesh could not be converted to Hermes2D mesh file.</source>
-        <translation>Síť nebyla převedena do formátu Hermes2D.</translation>
+        <location filename="../src/solverdialog.cpp" line="111"/>
+        <source>Triangle: could not start Triangle.</source>
+        <translation>Triangle: program Tringle nelze najít.</translation>
     </message>
     <message>
-        <location filename="../src/solverdialog.cpp" line="174"/>
-        <source>Triangle to Hermes2D error.</source>
-        <translation>Chyba při konverzi souborů Triangle do Hermes2D.</translation>
+        <location filename="../src/solverdialog.cpp" line="150"/>
+        <source>Triangle: mesh files was created.</source>
+        <translation>Triangle: soubory sítě Triangle byly vytvořeny.</translation>
     </message>
     <message>
-        <location filename="../src/solverdialog.cpp" line="194"/>
-        <source>Triangle error.</source>
-        <translation>Chyba při tvorbě disktretizační sítě.</translation>
+        <location filename="../src/solverdialog.cpp" line="156"/>
+        <source>Triangle: mesh was converted to Hermes2D mesh file.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/solverdialog.cpp" line="212"/>
-        <source>Solver was started: </source>
-        <translation>Spuštění řešiče: </translation>
+        <location filename="../src/solverdialog.cpp" line="176"/>
+        <source>Triangle: mesh files was deleted.</source>
+        <translation>Triangle: soubory sítě Triangle byly smazány.</translation>
     </message>
     <message>
-        <location filename="../src/solverdialog.cpp" line="594"/>
-        <source>Problem was solved.</source>
-        <translation>Problém byl vyřešen.</translation>
+        <location filename="../src/solverdialog.cpp" line="202"/>
+        <source>Hermes2D: boundary edge node does not have a boundary marker.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/solverdialog.cpp" line="598"/>
-        <source>Hermes2D mesh file doesn&apos;t exist.</source>
-        <translation>Soubor sítě Hermes2D neexistuje.</translation>
+        <location filename="../src/solverdialog.cpp" line="233"/>
+        <source>Triangle: </source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="251"/>
+        <source>Solver: solver was started: </source>
+        <translation>Řešič: spuštění řešiče: </translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="605"/>
+        <source>Solver: problem was solved.</source>
+        <translation>Řešič: problém byl vyřešen.</translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="617"/>
+        <source>Triangle: invalid number of nodes (%1 &lt; 3).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="622"/>
+        <source>Triangle: invalid number of edges (%1 &lt; 3).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="635"/>
+        <source>Triangle: at least one boundary condition has to be assigned.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="641"/>
+        <source>Triangle: invalid number of labels (%1 &lt; 1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="654"/>
+        <source>Triangle: at least one material has to be assigned.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="660"/>
+        <source>Triangle: invalid number of boundary conditions (%1 &lt; 2).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="665"/>
+        <source>Triangle: invalid number of materials (%1 &lt; 2).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="682"/>
+        <source>Triangle: Could not create triangle poly mesh file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="801"/>
+        <source>Hermes2D: could not create hermes2d mesh file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="809"/>
+        <source>Hermes2D: could not read triangle node file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="817"/>
+        <source>Hermes2D: could not read triangle edge file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="825"/>
+        <source>Hermes2D: could not read triangle ele file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="865"/>
+        <source>Hermes2D: invalid number of edge markers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/solverdialog.cpp" line="885"/>
+        <source>Hermes2D: invalid number of label markers.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2670,12 +2749,12 @@
 <context>
     <name>TopicChooser</name>
     <message>
-        <location filename="../src/helpdialog.cpp" line="1044"/>
+        <location filename="../src/helpdialog.cpp" line="1046"/>
         <source>Topic browser</source>
         <translation>Témata</translation>
     </message>
     <message>
-        <location filename="../src/helpdialog.cpp" line="1062"/>
+        <location filename="../src/helpdialog.cpp" line="1064"/>
         <source>Display</source>
         <translation>Zobrazit</translation>
     </message>

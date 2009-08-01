@@ -148,6 +148,47 @@ inline QString problemTypeString(ProblemType problemType)
     return ((problemType == PROBLEMTYPE_PLANAR) ? QObject::tr("Planar") : QObject::tr("Axisymmetric"));
 }
 
+enum AdaptivityType
+{
+    ADAPTIVITYTYPE_NONE,
+    ADAPTIVITYTYPE_H,
+    ADAPTIVITYTYPE_HP
+};
+
+inline QString adaptivityTypeStringKey(AdaptivityType adaptivityType)
+{
+    switch (adaptivityType)
+    {
+    case ADAPTIVITYTYPE_NONE:
+        return "disabled";
+    case ADAPTIVITYTYPE_H:
+        return "h-adaptivity";
+    case ADAPTIVITYTYPE_HP:
+        return "hp-adaptivity";
+    default:
+        std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
+        throw;
+        break;
+    }
+}
+
+inline QString adaptivityTypeString(AdaptivityType adaptivityType)
+{
+    switch (adaptivityType)
+    {
+    case ADAPTIVITYTYPE_NONE:
+        return QObject::tr("Disabled");
+    case ADAPTIVITYTYPE_H:
+        return QObject::tr("h-adaptivity");
+    case ADAPTIVITYTYPE_HP:
+        return QObject::tr("hp-adaptivity");
+    default:
+        std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
+        throw;
+        break;
+    }
+}
+
 enum PhysicFieldVariableComp
 {
     PHYSICFIELDVARIABLECOMP_SCALAR,

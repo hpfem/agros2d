@@ -3,6 +3,7 @@
 static HarmonicMagneticEdge *harmonicmagneticEdge;
 static HarmonicMagneticLabel *harmonicmagneticLabel;
 static bool harmonicmagneticPlanar;
+static double frequency;
 
 inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
 {
@@ -64,9 +65,9 @@ scalar harmonicmagnetic_bilinear_form_real_imag(RealFunction* fu, RealFunction* 
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticPlanar)
-        return - 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
+        return - 2 * M_PI * frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
-        return - 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
+        return - 2 * M_PI * frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
 }
 
 scalar harmonicmagnetic_bilinear_form_imag_real(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
@@ -74,9 +75,9 @@ scalar harmonicmagnetic_bilinear_form_imag_real(RealFunction* fu, RealFunction* 
     int marker = rv->get_active_element()->marker;
 
     if (harmonicmagneticPlanar)
-        return + 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
+        return + 2 * M_PI * frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
     else
-        return + 2 * M_PI * Util::scene()->problemInfo().frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
+        return + 2 * M_PI * frequency * harmonicmagneticLabel[marker].conductivity * int_u_v(fu, fv, ru, rv);
 }
 
 scalar harmonicmagnetic_bilinear_form_imag_imag(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
@@ -116,7 +117,13 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
 {
     harmonicmagneticEdge = edge;
     harmonicmagneticLabel = label;
+    frequency = Util::scene()->problemInfo().frequency;
     harmonicmagneticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -127,7 +134,7 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
     // load the mesh file
     Mesh mesh;
     mesh.load(fileName);
-    for (int i = 0; i < Util::scene()->problemInfo().numberOfRefinements; i++)
+    for (int i = 0; i < numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
     // set system locale
@@ -142,14 +149,14 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
     H1Space spacereal(&mesh, &shapeset);
     spacereal.set_bc_types(harmonicmagnetic_bc_types);
     spacereal.set_bc_values(harmonicmagnetic_bc_values_real);
-    spacereal.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
+    spacereal.set_uniform_order(polynomialOrder);
     ndof = spacereal.assign_dofs(0);
 
     // create the y displacement space
     H1Space spaceimag(&mesh, &shapeset);
     spaceimag.set_bc_types(harmonicmagnetic_bc_types);
     spaceimag.set_bc_values(harmonicmagnetic_bc_values_imag);
-    spaceimag.set_uniform_order(Util::scene()->problemInfo().polynomialOrder);
+    spaceimag.set_uniform_order(polynomialOrder);
 
     // initialize the weak formulation
     WeakForm wf(2);
@@ -169,7 +176,8 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    for (i = 0; i<(Util::scene()->problemInfo().adaptivitySteps+1); i++)
+    int steps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
+    for (i = 0; i<(steps); i++)
     {
         int ndof = spacereal.assign_dofs(0);
         spaceimag.assign_dofs(ndof);
@@ -186,17 +194,17 @@ SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
         rs.solve(2, &rsln1, &rsln2);
 
         // calculate errors and adapt the solution
-        if (Util::scene()->problemInfo().adaptivitySteps > 0)
+        if (adaptivityType != ADAPTIVITYTYPE_NONE)
         {
             H1OrthoHP hp(2, &spacereal, &spaceimag);
             error = hp.calc_error_2(sln1, sln2, &rsln1, &rsln2) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: ") + QString::number(error, 'f', 5) + " %", false);
+            solverDialog->doShowMessage(QObject::tr("Relative error: %1 %").arg(error, 0, 'f', 5), false);
 
-            if (error < Util::scene()->problemInfo().adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(0.3);
-        }
+            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            hp.adapt(0.3, 0, (adaptivityType == ADAPTIVITYTYPE_H));
+        }        
     }
 
     // output
