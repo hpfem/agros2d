@@ -109,8 +109,11 @@ void OptionsDialog::save()
     setGUIStyle(cmbGUIStyle->currentText());
 
     // language
+    if (settings.value("General/Language") != cmbLanguage->currentText())
+        QMessageBox::warning(QApplication::activeWindow(),
+                                 tr("Language change"),
+                                 tr("Interface language has been changed. You must restart the application."));
     settings.setValue("General/Language", cmbLanguage->currentText());
-    setLanguage(cmbLanguage->currentText());
 
     // delete files
     settings.setValue("Solver/DeleteTriangleMeshFiles", chkDeleteTriangleMeshFiles->isChecked());

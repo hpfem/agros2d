@@ -15,9 +15,9 @@ void setLanguage(const QString &locale)
     // non latin-1 chars
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 
-    QTranslator translator;
-    translator.load(QDir::current().absolutePath() + "/lang/" + locale + ".qm");
-    QApplication::installTranslator(&translator);
+    QTranslator *translator = new QTranslator();
+    translator->load(appdir() + "/lang/" + locale + ".qm");
+    QApplication::installTranslator(translator);
 }
 
 QStringList availableLanguages()

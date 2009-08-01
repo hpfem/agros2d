@@ -59,11 +59,7 @@ int main(int argc, char *argv[])
 
     // language
     QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
-
-    QTranslator translator;
-    translator.load(appdir() + "/lang/" + locale + ".qm");
-    QApplication::installTranslator(&translator);
+    setLanguage(locale);
 
     MainWindow w;
     w.show();
