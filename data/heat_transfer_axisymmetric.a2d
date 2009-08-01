@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" numberofrefinements="0" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" type="heat transfer" id="0" name="Heat transfer axisymmetric" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" type="heat transfer" id="0" name="Heat transfer axisymmetric" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge h="0" external_temperature="0" type="heat_flux" id="1" name="Neumann" heat_flux="0" />

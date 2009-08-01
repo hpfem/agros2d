@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonic magnetic" id="0" name="3 phase cable" >
+        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonic magnetic" id="0" name="3 phase cable" >
             <scriptstartup>J0 = 1e6;
 J01r = J0;
 J01i = 0.0;

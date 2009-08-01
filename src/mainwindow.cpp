@@ -410,7 +410,7 @@ void MainWindow::doDocumentOpen()
     QSettings settings;
     QString dir = settings.value("General/LastDataDir", "data").toString();
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.h2d)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.a2d)"));
     if (!fileName.isEmpty())
     {        
         Util::scene()->readFromFile(fileName);
@@ -447,11 +447,11 @@ void MainWindow::doDocumentSaveAs()
     QSettings settings;
     QString dir = settings.value("LastDataDir", "data").toString();
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros2D files (*.h2d)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros2D files (*.a2d)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
-        if (fileInfo.suffix() != "h2d") fileName += ".h2d";
+        if (fileInfo.suffix() != "a2d") fileName += ".a2d";
         Util::scene()->writeToFile(fileName);
         setRecentFiles();
     }
@@ -578,25 +578,25 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    // Util::scene()->readFromFile("data/pokus.h2d");
-    Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.h2d");
-    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.h2d");
-    // Util::scene()->readFromFile("data/electrostatic_planar_poisson.h2d");
-    // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.h2d");
-    // Util::scene()->readFromFile("data/heat_transfer_planar.h2d");
-    // Util::scene()->readFromFile("data/heat_transfer_detail.h2d");
-    // Util::scene()->readFromFile("data/heat_transfer_actuator.h2d");
-    // Util::scene()->readFromFile("data/magnetostatic_planar.h2d");
-    // Util::scene()->readFromFile("data/magnetostatic_axisymmetric_actuator.h2d");
-    // Util::scene()->readFromFile("data/magnetostatic_planar_magnet.h2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.h2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.h2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.h2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.h2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.h2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_heating.h2d");
-    // Util::scene()->readFromFile("data/current_feeder.h2d");
-    // Util::scene()->readFromFile("data/elasticity_planar.h2d");
+    // Util::scene()->readFromFile("data/pokus.a2d");
+    Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
+    // Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
+    // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");
+    // Util::scene()->readFromFile("data/heat_transfer_planar.a2d");
+    // Util::scene()->readFromFile("data/heat_transfer_detail.a2d");
+    // Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
+    // Util::scene()->readFromFile("data/magnetostatic_planar.a2d");
+    // Util::scene()->readFromFile("data/magnetostatic_axisymmetric_actuator.a2d");
+    // Util::scene()->readFromFile("data/magnetostatic_planar_magnet.a2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.a2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.a2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.a2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.a2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.a2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_heating.a2d");
+    // Util::scene()->readFromFile("data/current_feeder.a2d");
+    // Util::scene()->readFromFile("data/elasticity_planar.a2d");
 
     sceneView->doDefaults();
     doInvalidated();

@@ -479,7 +479,7 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     QString fileNameOrig = m_problemInfo.fileName;
 
     // save as temp name
-    m_problemInfo.fileName = QDir::temp().absolutePath() + "/agros2d/temp.h2d";
+    m_problemInfo.fileName = QDir::temp().absolutePath() + "/agros2d/temp.a2d";
 
     // save problem
     writeToFile(m_problemInfo.fileName);
@@ -506,7 +506,7 @@ void Scene::doSolved()
     emit invalidated();
 
     // delete temp file
-    if (m_problemInfo.fileName == QDir::temp().absolutePath() + "/agros2d/temp.h2d")
+    if (m_problemInfo.fileName == QDir::temp().absolutePath() + "/agros2d/temp.a2d")
     {
         QFile::remove(m_problemInfo.fileName);
         m_problemInfo.fileName = "";
@@ -1091,7 +1091,7 @@ void Scene::readFromFile(const QString &fileName)
 }
 
 void Scene::writeToFile(const QString &fileName) {
-    if (problemInfo().fileName != QDir::temp().absolutePath() + "/agros2d/temp.h2d")
+    if (problemInfo().fileName != QDir::temp().absolutePath() + "/agros2d/temp.a2d")
     {
         QSettings settings;
         QFileInfo fileInfo(fileName);
@@ -1130,6 +1130,7 @@ void Scene::writeToFile(const QString &fileName) {
     // polynomial order
     eleProblem.setAttribute("polynomialorder", m_problemInfo.polynomialOrder);
     // adaptivity
+    eleProblem.setAttribute("adaptivitytype", adaptivityTypeStringKey(m_problemInfo.adaptivityType));
     eleProblem.setAttribute("adaptivitysteps", m_problemInfo.adaptivitySteps);
     eleProblem.setAttribute("adaptivitytolerance", m_problemInfo.adaptivityTolerance);
     // time harmonic

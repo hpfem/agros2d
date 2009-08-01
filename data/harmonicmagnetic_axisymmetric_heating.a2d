@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="500" numberofrefinements="0" adaptivitysteps="0" polynomialorder="4" problemtype="axisymmetric" type="harmonic magnetic" id="0" name="Heating" >
+        <problem adaptivitytolerance="1" frequency="500" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="4" problemtype="axisymmetric" type="harmonic magnetic" id="0" name="Heating" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="surface_current_density" value="0" id="1" name="Neumann" />

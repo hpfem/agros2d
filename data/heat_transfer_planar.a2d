@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitysteps="0" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
+        <problem adaptivitytolerance="0.5" frequency="0" numberofrefinements="0" adaptivitytype="hp-adaptivity" adaptivitysteps="10" polynomialorder="1" problemtype="planar" type="heat transfer" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge temperature="-15" type="temperature" id="1" name="T inner" />
