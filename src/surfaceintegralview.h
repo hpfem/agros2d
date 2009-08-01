@@ -25,6 +25,7 @@ public slots:
 
 public:
     SurfaceIntegralValueView(QWidget *parent = 0);
+    ~SurfaceIntegralValueView();
 
 private:
     QTreeWidget *trvWidget;

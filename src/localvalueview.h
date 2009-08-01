@@ -30,6 +30,7 @@ public slots:
 
 public:
     LocalPointValueView(QWidget *parent = 0);
+    ~LocalPointValueView();
 
 private:
     QTreeWidget *trvWidget;

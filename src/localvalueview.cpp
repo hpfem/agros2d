@@ -2,20 +2,22 @@
 
 LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local Values"), parent)
 {
+    QSettings settings;
+    
     setMinimumWidth(280);
     setObjectName("LocalPointValueView");
 
     createActions();
     createMenu();
-
+        
     trvWidget = new QTreeWidget();
     trvWidget->setHeaderHidden(false);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     trvWidget->setMouseTracking(true);
     trvWidget->setColumnCount(3);
-    trvWidget->setColumnWidth(0, 180);
-    trvWidget->setColumnWidth(1, 80);
-    trvWidget->setColumnWidth(2, 20);
+    trvWidget->setColumnWidth(0, settings.value("LocalPointValueView/TreeViewColumn0", 180).value<int>());
+    trvWidget->setColumnWidth(1, settings.value("LocalPointValueView/TreeViewColumn1", 80).value<int>());
+    trvWidget->setColumnWidth(2, settings.value("LocalPointValueView/TreeViewColumn2", 20).value<int>());
 
     QStringList labels;
     labels << tr("Label") << tr("Value") << tr("Unit");
@@ -24,6 +26,14 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
 
     setWidget(trvWidget);
+}
+
+LocalPointValueView::~LocalPointValueView()
+{
+    QSettings settings;
+    settings.setValue("LocalPointValueView/TreeViewColumn0", trvWidget->columnWidth(0));
+    settings.setValue("LocalPointValueView/TreeViewColumn1", trvWidget->columnWidth(1));
+    settings.setValue("LocalPointValueView/TreeViewColumn2", trvWidget->columnWidth(2));
 }
 
 void LocalPointValueView::createActions()

@@ -2,6 +2,8 @@
 
 VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(tr("Volume Integral"), parent)
 {
+    QSettings settings;
+
     setMinimumWidth(280);
     setObjectName("VolumeIntegralValueView");
 
@@ -10,15 +12,23 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     trvWidget->setMouseTracking(true);
     trvWidget->setColumnCount(3);
-    trvWidget->setColumnWidth(0, 150);
-    trvWidget->setColumnWidth(1, 80);
-    trvWidget->setColumnWidth(2, 20);
+    trvWidget->setColumnWidth(0, settings.value("VolumeIntegralValueView/TreeViewColumn0", 150).value<int>());
+    trvWidget->setColumnWidth(1, settings.value("VolumeIntegralValueView/TreeViewColumn1", 80).value<int>());
+    trvWidget->setColumnWidth(2, settings.value("VolumeIntegralValueView/TreeViewColumn2", 20).value<int>());
 
     QStringList labels;
     labels << tr("Label") << tr("Value") << tr("Unit");
     trvWidget->setHeaderLabels(labels);
 
     setWidget(trvWidget);
+}
+
+VolumeIntegralValueView::~VolumeIntegralValueView()
+{
+    QSettings settings;
+    settings.setValue("VolumeIntegralValueView/TreeViewColumn0", trvWidget->columnWidth(0));
+    settings.setValue("VolumeIntegralValueView/TreeViewColumn1", trvWidget->columnWidth(1));
+    settings.setValue("VolumeIntegralValueView/TreeViewColumn2", trvWidget->columnWidth(2));
 }
 
 void VolumeIntegralValueView::doShowVolumeIntegral(VolumeIntegralValue *volumeIntegralValue)

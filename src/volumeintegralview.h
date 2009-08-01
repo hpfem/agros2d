@@ -26,6 +26,7 @@ public slots:
 
 public:
     VolumeIntegralValueView(QWidget *parent = 0);
+    ~VolumeIntegralValueView();
 
 private:
     QTreeWidget *trvWidget;
