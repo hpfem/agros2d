@@ -8,25 +8,29 @@
 <body>
 <h1>Planar electrostatic capacitor</h1>
 
-<h2>Introduction</h2>
-<p>Capacitor is a passive electrical component. It consists of electrodes that are separated between dieletric and have a different electrical potential. It used to store electric charge.</p>
-<p>For more information about capacitors visit <a href="http://en.wikipedia.org/wiki/Capacitor">http://en.wikipedia.org/wiki/Capacitor</a>.</p>
+<p>This example demonstrates the basics of working in Agros2D. The resulting model can be found <i>/data/electrostatic_planar_capacitor.a2d</i>.</p>
 
-<h2>Problem analysis</h2>
+<h2>Introduction</h2>
+<p>Capacitor is a passive electrical component. It consists of electrodes that are separated between dieletric and have a different electrical potential. It used to store electric charge. The basic type of a capacitor is a plate capacitor.</p>
+<p>For more information about capacitors visit <a href="http://en.wikipedia.org/wiki/Capacitor">http://en.wikipedia.org/wiki/Capacitor</a>.</p>
 
 <h2>Preprocessing</h2>
 <p>Select "New" in the menu "File", or in main toolbar and enter "Problem properties".</p>
 
 <ul>
   <li>Name: Planar electrostatic capacitor</li>
-  <li>Date: (actual date)</li>
+  <li>Date: Actual date</li>
   <li>Problem type: Planar</li>
   <li>Physic field: Electrostatic</li>
   <li>Number of refinements: 1</li>
   <li>Polynomial order: 4</li>
-  <li>Adaptivity steps: 0</li>
+  <li>Adaptivity: hp-adaptivity</li>
+  <li>Adaptivity steps: 1</li>
   <li>Adaptivity tolerance: 0.05</li>
 </ul>
+
+<img src="./planar_electrostatic_capacitor/editing_problem.png"><br>
+<span>Image 1.: Editing problem</span>
 
 <h3>Geometry</h3>
 <h4>Nodes </h4>
@@ -34,6 +38,9 @@
 
 <h4>Edges</h4>
 <p>Select "Operate on edges" in the "Problem" menu, or in main toolbar and draw 6 edges according to definition area. Press &lt;Control&gt; key and select in sequence start and end node of the line, or by pressing &lt;Alt&gt;+E and these point select from offer.</p>
+
+<img src="./planar_electrostatic_capacitor/editing_geometry.png"><br>
+<span>Image 2.: Editing geometry</span>
 
 <h4>Labels</h4>
 <p>Select "Operate on labels" in menu "Problem", or in main toolbar and place block label into inner area. To place label you can use left mouse button together with control key or pressing &lt;Alt&gt;+L and entering the label point coordinates.</p>
@@ -66,14 +73,23 @@
 
 <h2>Processing</h2>
 <h3>Mesh</h3>
-<p>Select "Mesh area" from the menu "Tools", or main toolbar.</p>
+<p>Select "Mesh area" from the menu "Problem", or main toolbar.</p>
 
 <h3>Solve</h3>
-<p>Select "Solve problem" from the menu "Tools", or main toolbar.</p>
+<p>Select "Solve problem" from the menu "Problem", or main toolbar.</p>
 
 <h2>Postprocessing</h2>
 <h3>Calculation of capacity</h3>
 <p>Select "Volume integrals" from the main toolbar and mark area "Dieletric". In subwindow "Volume integral" find value of "Energy" in group "Electostatic field".</p>
-<p>Capacity of capacitor may be calculated according to formula W<sub>e</sub> = 4 &times; 1/2 &times; CU<sup>2</sup>, which can be adjusted to shape C = 4 &times; 2 &times; W<sub>e</sub>/U<sup>2</sup></p>
+
+<img src="./planar_electrostatic_capacitor/calculation_of_energy.png"><br>
+<span>Image 3.: Calculation of energy</span>
+
+<p>Capacity of capacitor may be calculated according to formula <br>W<sub>e</sub> = 4 &times; 1/2 &times; CU<sup>2</sup>,<br> which can be adjusted to shape <br>C = 4 &times; 2 &times; W<sub>e</sub>/U<sup>2</sup>.</p>
+
+<h2>Related</h2>
+<ul>
+  <li><a href="../getting_started/getting_started.html">Getting Started</a></li>
+</ul>
 </body>
 </html>

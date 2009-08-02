@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QHelpCollectionProject version="1.0">
   <assistant>
-    <title>Agros 2D</title>
+    <title>Agros2D</title>
     <applicationIcon>agros2d_logo.png</applicationIcon>
     <cacheDirectory>agros2d</cacheDirectory>
     <startPage>qthelp://agros2d/main/index.html</startPage>
     <aboutMenuText>
-      <text>About Agros 2D</text>
+      <text>About Agros2D</text>
     </aboutMenuText>
     <aboutDialog>
       <file>agros2d.txt</file>
