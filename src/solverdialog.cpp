@@ -680,7 +680,7 @@ bool SolverDialog::writeToTriangle()
 
     if (!file.open(QIODevice::WriteOnly))
     {
-        emit message(tr("Triangle: Could not create triangle poly mesh file."), true);
+        emit message(tr("Triangle: could not create triangle poly mesh file."), true);
         return false;
     }
     QTextStream out(&file);
