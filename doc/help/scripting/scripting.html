@@ -10,8 +10,38 @@
 <p>QtScript is based on the ECMAScript scripting language.</p>
 
 <h2>Reference documentation</h2>
-<h3>newDocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitysteps, adaptivitytolerance, frequency)</h3>
+<h3>newDocument(name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance)</h3>
 <p>Create new document.</p>
+<ul>
+  <li>
+    <p>type = {"planar", "axisymmetric"}</p>
+  </li>
+  <li>
+    <p>numberofrefinements >= 0</p>
+  </li>
+  <li>
+    <p>polynomialorder = 1 to 10</p>
+  </li>
+  <li>
+    <p>physicfield = {"electrostatic", "magnetostatic", "current field", "heat transfer", "harmonic magnetic"}</p>
+  </li>
+  <li>
+    <p>adaptivitytype = {"disabled", "h-adaptivity", "hp-adaptivity"}</p>
+  </li>
+  <li>
+    <p>frequency >= 0 (only for harmonic magnetic field)</p>
+  </li>
+  <li>
+    <p>adaptivitysteps > 0</p>
+  </li>
+  <li>
+    <p>adaptivitytolerance > 0</p>
+  </li>
+</ul>
+
+<pre class="code">
+newDocument("Electrostatic", "axisymmetric", "electrostatic", 0, 2, 0, "hp-adaptivity", 10, 0.5);
+</pre>
 
 <h3>openDocument(filename)</h3>
 <p>Open document.</p>
@@ -41,6 +71,10 @@
     <p>addBoundary(name, type = {"vector_potential", "surface_current_density"}, value)</p>
   </li>
   <li>
+    <h4>Harmonic magnetic field</h4>
+    <p>addBoundary(name, type = {"vector_potential", "surface_current_density"}, value)</p>
+  </li>
+  <li>
     <h4>Heat transfer</h4>
     <p>addBoundary(name, type = "temperature", temperature)</p>
     <p>addBoundary(name, type = "heat_flux", heat_flux, h, external_temperature)</p>
@@ -56,15 +90,19 @@
   </li>
   <li>
     <h4>Electric current field</h4>
-    <p>addBoundary(name, conductivity)</p>
+    <p>addMaterial(name, conductivity)</p>
   </li>
   <li>
     <h4>Magnetostatic field</h4>
-    <p>addBoundary(name, current_density, double permeability)</p>
+    <p>addMaterial(name, current_density, double permeability)</p>
+  </li>
+  <li>
+    <h4>Harmonic magnetic field</h4>
+    <p>addMaterial(name, current_density_real, current_density_imag, double permeability, conductivity)</p>
   </li>
   <li>
     <h4>Heat transfer</h4>
-    <p>addBoundary(name, volume_heat, thermal_conductivity)</p>
+    <p>addMaterial(name, volume_heat, thermal_conductivity)</p>
   </li>
 </ul>
 

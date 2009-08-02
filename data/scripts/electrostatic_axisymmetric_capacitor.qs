@@ -1,5 +1,5 @@
 // Problem properties
-newDocument("Axisymmetric electrostatic capacitor", "axisymmetric", "electrostatic", 1, 2, 0, 0);
+newDocument("Axisymmetric electrostatic capacitor", "axisymmetric", "electrostatic", 1, 2, 0, "disabled", 0, 0);
 
 // Variables
 r1 = 0.01;

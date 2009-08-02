@@ -17,7 +17,7 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
-// newDocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitysteps, adaptivitytolerance, frequency)
+// newDocument(name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance)
 QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 {
     ProblemInfo problemInfo;
@@ -25,16 +25,17 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
     Util::scene()->clear();
     Util::scene()->problemInfo() = problemInfo;
     Util::scene()->problemInfo().name = context->argument(0).toString();
-    if (context->argument(1).toString() == "planar")
-        Util::scene()->problemInfo().problemType = PROBLEMTYPE_PLANAR;
-    else
-        Util::scene()->problemInfo().problemType = PROBLEMTYPE_AXISYMMETRIC;
+    if (context->argument(1).toString() == problemTypeStringKey(PROBLEMTYPE_PLANAR)) Util::scene()->problemInfo().problemType = PROBLEMTYPE_PLANAR;
+    if (context->argument(1).toString() == problemTypeStringKey(PROBLEMTYPE_AXISYMMETRIC)) Util::scene()->problemInfo().problemType = PROBLEMTYPE_AXISYMMETRIC;
     Util::scene()->problemInfo().physicField = physicFieldFromStringKey(context->argument(2).toString());
     Util::scene()->problemInfo().numberOfRefinements = context->argument(3).toNumber();
     Util::scene()->problemInfo().polynomialOrder = context->argument(4).toNumber();
-    Util::scene()->problemInfo().adaptivitySteps = context->argument(5).toNumber();
-    Util::scene()->problemInfo().adaptivityTolerance = context->argument(6).toNumber();
-    Util::scene()->problemInfo().frequency = context->argument(7).toNumber();
+    Util::scene()->problemInfo().frequency = context->argument(5).toNumber();
+    if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_NONE)) Util::scene()->problemInfo().adaptivityType = ADAPTIVITYTYPE_NONE;
+    if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_H)) Util::scene()->problemInfo().adaptivityType = ADAPTIVITYTYPE_H;
+    if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_HP)) Util::scene()->problemInfo().adaptivityType = ADAPTIVITYTYPE_HP;
+    Util::scene()->problemInfo().adaptivitySteps = context->argument(7).toNumber();
+    Util::scene()->problemInfo().adaptivityTolerance = context->argument(8).toNumber();
 
     m_sceneView->doDefaults();
     Util::scene()->refresh();
@@ -704,12 +705,14 @@ void ScriptEditorDialog::doCreateFromModel()
 
     // model
     str += "// model\n";
-    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, %7);").
+    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, \"%7\", %8, %9);").
            arg(Util::scene()->problemInfo().name).
            arg(problemTypeStringKey(Util::scene()->problemInfo().problemType)).
            arg(physicFieldStringKey(Util::scene()->problemInfo().physicField)).
            arg(Util::scene()->problemInfo().numberOfRefinements).
            arg(Util::scene()->problemInfo().polynomialOrder).
+           arg(Util::scene()->problemInfo().frequency).
+           arg(adaptivityTypeStringKey(Util::scene()->problemInfo().adaptivityType)).
            arg(Util::scene()->problemInfo().adaptivitySteps).
            arg(Util::scene()->problemInfo().adaptivityTolerance) + "\n";
     str += "\n";
@@ -762,10 +765,6 @@ void ScriptEditorDialog::doHelp()
 {
     Util::helpDialog()->showPage("scripting/scripting.html");
     Util::helpDialog()->show();
-}
-
-void eval(const QString &text)
-{
 }
 
 void ScriptEditorDialog::doRun()
