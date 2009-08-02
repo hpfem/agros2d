@@ -1,20 +1,20 @@
 #!/bin/sh
 
 case "$1" in
-  -h )
+  help )
     qhelpgenerator ./doc/help/agros2d.qhp -o ./doc/help/agros2d.qch
     ;;
-  -l )
-    lrelease ./lang/*.ts ./lang/*.qm
+  lang )
+    lrelease ./lang/*.ts
     ;;
-  -c )
+  comp )
     if qmake ./agros2d.pro ; then make ; fi
     ;;
-  -p )
+  pack )
     rm ../agros2d_*
     dpkg-buildpackage -sgpg -rfakeroot
     ;;
-  -a )
+  all )
     qhelpgenerator ./doc/help/agros2d.qhp -o ./doc/help/agros2d.qch
     lrelease ./lang/*.ts ./lang/*.qm
     if qmake ./agros2d.pro ; then make ; fi
@@ -22,6 +22,6 @@ case "$1" in
     dpkg-buildpackage -sgpg -rfakeroot
     ;;
   * )
-    echo "Usage: agros2d.sh  [-h generate help files] [-l generate language files] [-c compile] [-p bild package] [-a all operations]"
+    echo "Usage: agros2d.debian.sh  [help - generate help files] [lang - generate language files] [comp - compile] [pack - build package] [all - all operations]"
     ;;
 esac
