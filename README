@@ -98,3 +98,10 @@ index 1264fbb..b4cae08 100644
 or by passing the paths directly on the commandline, like this:
 
 qmake-qt4 "INCLUDEPATH += $HOME/usr/include/hermes2d" "LIBPATH += $HOME/usr/lib/" agros2d.pro
+
+
+To install agros2d into different location than /usr/local/bin, use:
+
+qmake PREFIX=$HOME/usr
+
+This will install it into the "usr" directory in your home directory.
