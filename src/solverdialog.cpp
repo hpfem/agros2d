@@ -658,12 +658,12 @@ bool SolverDialog::writeToTriangle()
     }
     if (Util::scene()->edgeMarkers.count() < 2) // + none marker
     {
-        emit message(tr("Triangle: invalid number of boundary conditions (%1 < 2).").arg(Util::scene()->edgeMarkers.count()), true);
+        emit message(tr("Triangle: invalid number of boundary conditions (%1 < 1).").arg(Util::scene()->edgeMarkers.count()), true);
         return false;
     }
     if (Util::scene()->labelMarkers.count() < 2) // + none marker
     {
-        emit message(tr("Triangle: invalid number of materials (%1 < 2).").arg(Util::scene()->labelMarkers.count()), true);
+        emit message(tr("Triangle: invalid number of materials (%1 < 1).").arg(Util::scene()->labelMarkers.count()), true);
         return false;
     }
 

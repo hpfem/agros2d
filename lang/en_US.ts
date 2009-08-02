@@ -976,13 +976,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="630"/>
-        <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics solver based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://code.google.com/p/agros2d/issues/list&quot;&gt;http://code.google.com/p/agros2d/issues/list&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;FrantiÅ¡ek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Hermes2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
+        <location filename="../src/mainwindow.cpp" line="274"/>
+        <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="274"/>
-        <source>View</source>
+        <location filename="../src/mainwindow.cpp" line="630"/>
+        <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics solver based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://code.google.com/p/agros2d/issues/list&quot;&gt;http://code.google.com/p/agros2d/issues/list&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;František Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Hermes2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1827,6 +1827,15 @@
         <source>unnamed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="142"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="122"/>
+        <location filename="../src/hermes2d/hermes_harmonicmagnetic.cpp" line="203"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="178"/>
+        <location filename="../src/hermes2d/hermes_magnetostatic.cpp" line="178"/>
+        <source>Relative error: %1 %</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SLineEditValue</name>
@@ -2364,142 +2373,142 @@
 <context>
     <name>ScriptEditorDialog</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="468"/>
+        <location filename="../src/scripteditordialog.cpp" line="469"/>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="472"/>
+        <location filename="../src/scripteditordialog.cpp" line="473"/>
         <source>&amp;Open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="476"/>
+        <location filename="../src/scripteditordialog.cpp" line="477"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="480"/>
+        <location filename="../src/scripteditordialog.cpp" line="481"/>
         <source>Save &amp;As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="484"/>
+        <location filename="../src/scripteditordialog.cpp" line="485"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="485"/>
+        <location filename="../src/scripteditordialog.cpp" line="486"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="486"/>
+        <location filename="../src/scripteditordialog.cpp" line="487"/>
         <source>Exit script editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="513"/>
+        <location filename="../src/scripteditordialog.cpp" line="514"/>
         <source>Ctrl+R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="517"/>
+        <location filename="../src/scripteditordialog.cpp" line="518"/>
         <source>Ctrl+M</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="524"/>
+        <location filename="../src/scripteditordialog.cpp" line="525"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="532"/>
+        <location filename="../src/scripteditordialog.cpp" line="533"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="540"/>
+        <location filename="../src/scripteditordialog.cpp" line="541"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="520"/>
-        <location filename="../src/scripteditordialog.cpp" line="545"/>
+        <location filename="../src/scripteditordialog.cpp" line="521"/>
+        <location filename="../src/scripteditordialog.cpp" line="546"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="466"/>
+        <location filename="../src/scripteditordialog.cpp" line="467"/>
         <source>Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="489"/>
+        <location filename="../src/scripteditordialog.cpp" line="490"/>
         <source>&amp;Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="493"/>
+        <location filename="../src/scripteditordialog.cpp" line="494"/>
         <source>&amp;Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="497"/>
+        <location filename="../src/scripteditordialog.cpp" line="498"/>
         <source>Cu&amp;t</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="501"/>
+        <location filename="../src/scripteditordialog.cpp" line="502"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="505"/>
+        <location filename="../src/scripteditordialog.cpp" line="506"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="512"/>
+        <location filename="../src/scripteditordialog.cpp" line="513"/>
         <source>&amp;Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="516"/>
+        <location filename="../src/scripteditordialog.cpp" line="517"/>
         <source>&amp;Create script from model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="638"/>
-        <location filename="../src/scripteditordialog.cpp" line="654"/>
+        <location filename="../src/scripteditordialog.cpp" line="639"/>
+        <location filename="../src/scripteditordialog.cpp" line="655"/>
         <source>Script editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="638"/>
+        <location filename="../src/scripteditordialog.cpp" line="639"/>
         <source>untitled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="646"/>
+        <location filename="../src/scripteditordialog.cpp" line="647"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="646"/>
-        <location filename="../src/scripteditordialog.cpp" line="660"/>
-        <location filename="../src/scripteditordialog.cpp" line="679"/>
+        <location filename="../src/scripteditordialog.cpp" line="647"/>
+        <location filename="../src/scripteditordialog.cpp" line="661"/>
+        <location filename="../src/scripteditordialog.cpp" line="680"/>
         <source>Agros2D script files (*.qs)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="660"/>
-        <location filename="../src/scripteditordialog.cpp" line="679"/>
+        <location filename="../src/scripteditordialog.cpp" line="661"/>
+        <location filename="../src/scripteditordialog.cpp" line="680"/>
         <source>Save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="790"/>
+        <location filename="../src/scripteditordialog.cpp" line="789"/>
         <source>Error: %1 (line %2, column %3)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2507,17 +2516,17 @@
 <context>
     <name>ScriptStartupDialog</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="803"/>
+        <location filename="../src/scripteditordialog.cpp" line="802"/>
         <source>Startup script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="846"/>
+        <location filename="../src/scripteditordialog.cpp" line="845"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="846"/>
+        <location filename="../src/scripteditordialog.cpp" line="845"/>
         <source>Script cannot be evaluated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2606,12 +2615,12 @@
     </message>
     <message>
         <location filename="../src/solverdialog.cpp" line="661"/>
-        <source>Triangle: invalid number of boundary conditions (%1 &lt; 2).</source>
+        <source>Triangle: invalid number of boundary conditions (%1 &lt; 1).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/solverdialog.cpp" line="666"/>
-        <source>Triangle: invalid number of materials (%1 &lt; 2).</source>
+        <source>Triangle: invalid number of materials (%1 &lt; 1).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
