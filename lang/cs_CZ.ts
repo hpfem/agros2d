@@ -958,7 +958,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="172"/>
         <source>&amp;File</source>
-        <translation>&amp;Soubor</translation>
+        <translation>S&amp;oubor</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="188"/>
@@ -994,7 +994,7 @@
         <location filename="../src/mainwindow.cpp" line="116"/>
         <location filename="../src/mainwindow.cpp" line="247"/>
         <source>&amp;Help</source>
-        <translation>&amp;Nápověda</translation>
+        <translation>Nápověda</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="257"/>
