@@ -32,7 +32,7 @@ qhelpgenerator ./doc/help/agros2d.qhp -o ./doc/help/agros2d.qch
 
 or by using the following script:
 
-$ ./agros2d.debian.sh -h
+$ ./agros2d.debian.sh help
 
 Localization
 ============
@@ -43,7 +43,7 @@ lrelease ./lang/*.ts ./lang/*.qm
 
 or using the script
 
-$ ./agros2d.debian.sh -l
+$ ./agros2d.debian.sh lang
 
 Compilation
 ===========
@@ -55,7 +55,7 @@ $ make
 
 or using the script
 
-$ ./agros2d.debian.sh -c
+$ ./agros2d.debian.sh comp
 
 The binary package can be build as follows:
 
@@ -63,14 +63,14 @@ dpkg-buildpackage -sgpg -rfakeroot
 
 or using the script
 
-$ ./agros2d.debian.sh -p
+$ ./agros2d.debian.sh pack
 
 Hints
 =====
 
 To simplify the above steps (documentation generation, localization, and build) run:
 
-$ ./agros2d.debian.sh -a
+$ ./agros2d.debian.sh all
 
 If you install hermes2d in a different prefix than /usr, set the includepath
 and libpath by editing agros2d.pro, for example by applying a similar patch to

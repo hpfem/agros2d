@@ -18,6 +18,34 @@ QMAKE_CXXFLAGS_DEBUG += -w
 QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
+unix {
+  # use qmake PREFIX=... to customize your installation
+  isEmpty(PREFIX) {
+    PREFIX=/usr/local
+  }
+
+  # install examples
+  examples.path = $${PREFIX}/share/agros2d/data
+  examples.files = data/*.a2d
+
+  # install script
+  script.path = $${PREFIX}/share/agros2d/data/script
+  script.files = data/script/*.qs
+
+  # install help
+  help.path = $${PREFIX}/share/agros2d/doc/help
+  help.files = doc/help/agros2d.qch doc/help/agros2d.qhc
+
+  # install translations
+  lang.path = $${PREFIX}/share/agros2d/lang
+  lang.files = lang/*.qm
+
+  # install library
+  target.path = $${PREFIX}/bin
+
+  # "make install" configuration options
+  INSTALLS *= target examples script help lang
+}
 SUBDIRS += src
 SOURCES += src/scene.cpp \
     src/util.cpp \
