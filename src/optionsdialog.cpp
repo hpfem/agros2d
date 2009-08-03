@@ -109,7 +109,7 @@ void OptionsDialog::save()
     setGUIStyle(cmbGUIStyle->currentText());
 
     // language
-    if (settings.value("General/Language") != cmbLanguage->currentText())
+    if (settings.value("General/Language", QLocale::system().name()) != cmbLanguage->currentText())
         QMessageBox::warning(QApplication::activeWindow(),
                                  tr("Language change"),
                                  tr("Interface language has been changed. You must restart the application."));
