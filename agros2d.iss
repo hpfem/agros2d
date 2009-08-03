@@ -27,7 +27,8 @@ Source: release\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
-Source: data\*.h2d; DestDir: {app}/data
+Source: data\*.a2d; DestDir: {app}/data
+Source: data\scripts\*.qs; DestDir: {app}/data/scripts
 Source: lang\*.qm; DestDir: {app}/lang
 Source: doc\help\agros2d.qhc; DestDir: {app}/doc/help
 Source: doc\help\agros2d.qch; DestDir: {app}/doc/help

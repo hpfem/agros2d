@@ -82,6 +82,11 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
             {
                 update_limit_table(e->get_mode());
 
+                if (m_sln2 == NULL)
+                    m_sln1->set_active_element(e);
+                else
+                    m_sln2->set_active_element(e);
+
                 RefMap *ru = m_sln1->get_refmap();
 
                 int o;
@@ -105,8 +110,6 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 // x - coordinate
                 x = ru->get_phys_x(o);
 
-                m_sln1->set_active_element(e);
-
                 // solution 2
                 if (m_sln2 != NULL)
                 {
@@ -115,13 +118,11 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     valuev = m_sln2->get_fn_values();
                     // derivative
                     m_sln2->get_dx_dy_values(dvdx, dvdy);
-
-                    m_sln2->set_active_element(e);
                 }
 
                 update_limit_table(e->get_mode());
 
-                double result = 0;
+                double result = 0.0;
                 switch (physicFieldIntegralVolume)
                 {
                 case PHYSICFIELDINTEGRAL_VOLUME_CROSSSECTION:
@@ -648,135 +649,6 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
         }
     }
 
-    // solution 2
-    /*
-    if (m_sln2 != NULL)
-    {
-        quad = &g_quad_2d_std;
-        m_sln2->set_quad_2d(quad);
-        
-        mesh = m_sln2->get_mesh();
-
-        for_all_active_elements(e, mesh)
-        {
-            if (e->marker == labelIndex)
-            {
-                update_limit_table(e->get_mode());
-
-                m_sln2->set_active_element(e);
-                RefMap* ru = m_sln2->get_refmap();
-
-                int o = m_sln2->get_fn_order() + ru->get_inv_ref_order();
-                limit_order(o);
-                m_sln2->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
-                // value
-                scalar *valuev = m_sln2->get_fn_values();
-                // derivative
-                scalar *dvdx, *dvdy;
-                m_sln2->get_dx_dy_values(dvdx, dvdy);
-                // x - coordinate
-                double* x = ru->get_phys_x(o);
-
-                double result = 0;
-                switch (physicFieldIntegralVolume)
-                {
-
-                integral2 += result;
-            }
-        }
-    }
-
-    if ((physicFieldIntegralVolume == PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL) ||
-        (physicFieldIntegralVolume == PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_REAL))
-    {
-        double integral = 0.0;
-
-        Quad2D* quad;
-        Mesh *mesh;
-        Element* e;
-
-        quad = &g_quad_2d_std;
-        m_sln1->set_quad_2d(quad);
-        m_sln2->set_quad_2d(quad);
-
-        mesh = m_sln1->get_mesh();
-
-        double result;
-        for_all_active_elements(e, mesh)
-        {
-            result = 0.0;
-            if (e->marker == labelIndex)
-            {
-                SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-
-                update_limit_table(e->get_mode());
-
-                m_sln1->set_active_element(e);
-                m_sln2->set_active_element(e);
-                RefMap* ru = m_sln1->get_refmap();
-
-                int o = m_sln1->get_fn_order() + m_sln2->get_fn_order() + ru->get_inv_ref_order();
-                limit_order(o);
-                m_sln1->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
-                m_sln2->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
-                // value
-                scalar *valueu = m_sln1->get_fn_values();
-                scalar *valuev = m_sln2->get_fn_values();
-                // derivative
-                scalar *dudx, *dudy, *dvdx, *dvdy;
-                m_sln1->get_dx_dy_values(dudx, dudy);
-                m_sln2->get_dx_dy_values(dvdx, dvdy);
-                // x - coordinate
-                double* x = ru->get_phys_x(o);
-
-                double3* pt = quad->get_points(o);
-                int np = quad->get_num_points(o);
-                if (ru->is_jacobian_const())
-                {
-                    for (int i = 0; i < np; i++)
-                    {
-                        if (physicFieldIntegralVolume == PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL)
-                        {
-                            if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
-                                result += pt[i][2] * (- (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudx[i]
-                                                      + (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdx[i]);
-                            else
-                                result += pt[i][2] * (- (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0))
-                                                      + (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0)));
-                        }
-                        if (physicFieldIntegralVolume == PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_REAL)
-                        {
-                            if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
-                                result += pt[i][2] * (- (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudy[i]
-                                                      + (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdy[i]);
-                            else
-                                result += pt[i][2] * (- (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudy[i]
-                                                      + (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdy[i]);
-                        }
-                    }
-                    result *= ru->get_const_jacobian();
-                }
-                else
-                {
-                    double* jac = ru->get_jacobian(o);
-                    for (int i = 0; i < np; i++)
-                    {
-                        if (physicFieldIntegralVolume == PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL)
-                            result += pt[i][2] * jac[i] * (- (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudx[i]
-                                                           + (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdx[i]);
-                        if (physicFieldIntegralVolume == PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_REAL)
-                            result += pt[i][2] * jac[i] * (- (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudy[i]
-                                                           + (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdy[i]);
-                    }
-                }
-            }
-            integral += result;
-        }
-
-        return integral;
-    }
-    else
-    */
     return integral;
 }
 
