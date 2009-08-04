@@ -86,7 +86,7 @@ void SurfaceIntegralValueView::showHeat(SurfaceIntegralValueHeat *surfaceIntegra
 
     addValue(heatNode, tr("Temperature avg.:"), tr("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("C"));
     addValue(heatNode, tr("Temperature dif.:"), tr("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("C"));
-    addValue(heatNode, tr("Heat flux:"), tr("%1").arg(surfaceIntegralValueHeat->heatFlux, 0, 'e', 3), tr("C"));
+    addValue(heatNode, tr("Heat flux:"), tr("%1").arg(surfaceIntegralValueHeat->heatFlux, 0, 'e', 3), tr("W"));
 }
 
 void SurfaceIntegralValueView::showCurrent(SurfaceIntegralValueCurrent *surfaceIntegralValueCurrent)
@@ -123,11 +123,6 @@ SurfaceIntegralValue::SurfaceIntegralValue()
     }
 }
 
-QString SurfaceIntegralValue::toString()
-{
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
-}
-
 // ****************************************************************************************************************
 
 SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic() : SurfaceIntegralValue()
@@ -146,9 +141,13 @@ SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic() : Surface
     }
 }
 
-QString SurfaceIntegralValueElectrostatic::toString()
+QStringList SurfaceIntegralValueElectrostatic::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(length, 0, 'e', 5) <<
+            QString("%1").arg(surface, 0, 'e', 5) <<
+            QString("%1").arg(surfaceCharge, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ****************************************************************************************************************
@@ -161,9 +160,12 @@ SurfaceIntegralValueMagnetostatic::SurfaceIntegralValueMagnetostatic() : Surface
     }
 }
 
-QString SurfaceIntegralValueMagnetostatic::toString()
+QStringList SurfaceIntegralValueMagnetostatic::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(length, 0, 'e', 5) <<
+            QString("%1").arg(surface, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ****************************************************************************************************************
@@ -176,9 +178,12 @@ SurfaceIntegralValueHarmonicMagnetic::SurfaceIntegralValueHarmonicMagnetic() : S
     }
 }
 
-QString SurfaceIntegralValueHarmonicMagnetic::toString()
+QStringList SurfaceIntegralValueHarmonicMagnetic::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(length, 0, 'e', 5) <<
+            QString("%1").arg(surface, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ****************************************************************************************************************
@@ -199,9 +204,13 @@ SurfaceIntegralValueCurrent::SurfaceIntegralValueCurrent() : SurfaceIntegralValu
     }
 }
 
-QString SurfaceIntegralValueCurrent::toString()
+QStringList SurfaceIntegralValueCurrent::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(length, 0, 'e', 5) <<
+            QString("%1").arg(surface, 0, 'e', 5) <<
+            QString("%1").arg(currentDensity, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ****************************************************************************************************************
@@ -231,9 +240,15 @@ SurfaceIntegralValueHeat::SurfaceIntegralValueHeat() : SurfaceIntegralValue()
     }
 }
 
-QString SurfaceIntegralValueHeat::toString()
+QStringList SurfaceIntegralValueHeat::variables()
 {
-    return ""; // QString::number(point.x, 'f', 5) + "; " + QString::number(point.y, 'f', 5);
+    QStringList row;
+    row <<  QString("%1").arg(length, 0, 'e', 5) <<
+            QString("%1").arg(surface, 0, 'e', 5) <<
+            QString("%1").arg(averageTemperature, 0, 'e', 5) <<
+            QString("%1").arg(temperatureDifference, 0, 'e', 5) <<
+            QString("%1").arg(heatFlux, 0, 'e', 5);
+    return QStringList(row);
 }
 
 // ***********************************************************************************************************************
@@ -262,4 +277,37 @@ SurfaceIntegralValue *surfaceIntegralValueFactory()
         throw;
         break;
     }
+}
+
+
+QStringList surfaceIntegralValueHeaderFactory(PhysicField physicField)
+{
+    QStringList headers;
+    switch (physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        headers << "Length" << "Surface" << "Q";
+        break;
+    case PHYSICFIELD_MAGNETOSTATIC:
+        headers << "Length" << "Surface";
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        headers << "Length" << "Surface";
+        break;
+    case PHYSICFIELD_CURRENT:
+        headers << "Length" << "Surface" << "I";
+        break;
+    case PHYSICFIELD_HEAT_TRANSFER:
+        headers << "Length" << "Surface" << "T_avg" << "T_diff" << "F";
+        break;
+    case PHYSICFIELD_ELASTICITY:
+        headers << "Length" << "Surface";
+        break;
+    default:
+        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. surfaceIntegralValueHeaderFactory(PhysicField physicField)" << endl;
+        throw;
+        break;
+    }
+
+    return QStringList(headers);
 }

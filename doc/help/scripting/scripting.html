@@ -10,6 +10,10 @@
 <p>QtScript is based on the ECMAScript scripting language.</p>
 
 <h2>Reference documentation</h2>
+
+<h3>include(fileName)</h3>
+<p>Include and run script with filename.</p>
+
 <h3>newDocument(name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance)</h3>
 <p>Create new document.</p>
 <ul>
@@ -155,6 +159,10 @@ newDocument("Electrostatic", "axisymmetric", "electrostatic", 0, 2, 0, "hp-adapt
     <p>Properties: Potential, Bx, By, B, Hx, Hy, H, Energy, Permeability.</p>
   </li>
   <li>
+    <h4>Harmonic magnetic field</h4>
+    <p>Properties: Potential.</p>
+  </li>
+  <li>
     <h4>Heat transfer</h4>
     <p>Properties: Temperature, Gx, Gy, G, Fx, Fy, F, Conductivity.</p>
   </li>
@@ -183,6 +191,10 @@ print("Potential = " + result.Potential);
     <p>Properties: Volume, CrossSection, Bx_avg, By_avg, B_avg, Hx_avg, Hy_avg, H_avg, Energy.</p>
   </li>
   <li>
+    <h4>Harmonic magnetic field</h4>
+    <p>Properties: Volume, CrossSection.</p>
+  </li>
+  <li>
     <h4>Heat transfer</h4>
     <p>Properties: Volume, CrossSection, Temperature, Gx_avg, Gy_avg, G_avg, Fx_avg, Fy_avg, F_avg.</p>
   </li>
@@ -195,62 +207,103 @@ integral = volumeIntegral(0, 1);
 print("Volume = " + integral.Volume);
 </pre>
 
+<h3>integral = surfaceIntegral(index, ...)</h3>
+<p>Surface integral in edges with given index.</p>
+<ul>
+  <li>
+    <h4>Electrostatic field</h4>
+    <p>Properties: Length, Surface, Q.</p>
+  </li>
+  <li>
+    <h4>Electric current field</h4>
+    <p>Properties: Length, Surface, I.</p>
+  </li>
+  <li>
+    <h4>Magnetostatic field</h4>
+    <p>Properties: Length, Surface.</p>
+  </li>
+  <li>
+    <h4>Harmonic magnetic field</h4>
+    <p>Properties: Length, Surface.</p>
+  </li>
+  <li>
+    <h4>Heat transfer</h4>
+    <p>Properties: Length, Surface, T_avg, T_diff, F.</p>
+  </li>
+</ul>
+
+<h4>Example:</h4>
+<pre class="code">
+// surface integral
+integral = surfaceIntegral(1, 3);
+print("Charge = " + integral.Q);
+</pre>
+
 <h2>Examples</h2>
 
 <h3>Capacitor</h3>
 <pre class="code">
-/// model
-newDocument("Electrostatic 2D", "axisymmetric", "electrostatic", 1, 2, 0, 0)
+// Problem properties
+newDocument("Axisymmetric electrostatic capacitor", "axisymmetric", "electrostatic", 1, 2, 0, "disabled", 0, 0);
 
-// boundaries
-addBoundary("U = 1 V", "potential", 1)
-addBoundary("U = 0 V", "potential", 0)
-addBoundary("neumann", "surface_charge_density", 0)
+// Variables
+r1 = 0.01;
+r2 = 0.03;
+r3 = 0.05;
+r4 = 0.06;
+l =  0.16;
+eps1 = 10;
+eps2 = 3;
+U = 10;
+dr = 0.01;
 
-// materials
-addMaterial("air", 0, 1)
-addMaterial("diel 1", 0, 10)
-addMaterial("diel 2", 0, 3)
+// Boundary conditions
+addBoundary("Source electrode", "potential", U);
+addBoundary("Ground electrode", "potential", 0);
+addBoundary("Neumann BC", "surface_charge_density", 0);
 
-// edges
-addEdge(0, 0.2, 0, 0.08, 0, "neumann")
-addEdge(0.01, 0.08, 0.01, 0, 0, "U = 1 V")
-addEdge(0.01, 0, 0.03, 0, 0, "neumann")
-addEdge(0.03, 0, 0.03, 0.08, 0, "none")
-addEdge(0.03, 0.08, 0.05, 0.08, 0, "none")
-addEdge(0.05, 0, 0.03, 0, 0, "neumann")
-addEdge(0.05, 0.08, 0.05, 0, 0, "U = 0 V")
-addEdge(0.06, 0, 0.06, 0.08, 0, "U = 0 V")
-addEdge(0.05, 0.08, 0.06, 0.08, 0, "U = 0 V")
-addEdge(0.06, 0, 0.2, 0, 0, "neumann")
-addEdge(0.2, 0, 0, 0.2, 90, "neumann")
-addEdge(0.01, 0.08, 0.03, 0.08, 0, "none")
-addEdge(0.01, 0.08, 0, 0.08, 0, "U = 1 V")
+// Materials
+addMaterial("Air", 0, 1);
+addMaterial("Dielectric n.1", 0, eps1);
+addMaterial("Dielectric n.2", 0, eps2);
 
-// labels
-addLabel(0.019, 0.021, 0, "diel 1")
-addLabel(0.0379, 0.051, 0, "diel 2")
-addLabel(0.0284191, 0.123601, 0, "air")
+// Edges
+addEdge(0, 3/2*l, 0, l/2, 0, "Neumann BC");
+addEdge(r1, l/2, r1, 0, 0, "Source electrode");
+addEdge(r1, 0, r2, 0, 0, "Neumann BC");
+addEdge(r2, 0, r2, l/2, 0, "none");
+addEdge(r2, l/2, r3, l/2, 0, "none");
+addEdge(r3, 0, r2, 0, 0, "Neumann BC");
+addEdge(r3, l/2, r3, 0, 0, "Ground electrode");
+addEdge(r4, 0, r4, l/2, 0, "Ground electrode");
+addEdge(r3, l/2, r4, l/2, 0, "Ground electrode");
+addEdge(r4, 0, 3/2*l, 0, 0, "Neumann BC");
+addEdge(3/2*l, 0, 0, 3/2*l, 90, "Neumann BC");
+addEdge(r1, l/2, r2, l/2, 0, "none");
+addEdge(r1, l/2, 0, l/2, 0, "Source electrode");
 
-// capacitance
-print("Capacitance:");
-var dx = 0.01;
-var i = 0;
+// Labels
+addLabel(0.019, 0.021, 0, "Dielectric n.1");
+addLabel(0.0379, 0.051, 0, "Dielectric n.2");
+addLabel(0.0284191, 0.123601, 0, "Air");
+
+// Calculation of capacity
+zoomBestFit();
+selectNone();
+print("C = f(r) (F):");
+i = 0;
 do
 {
-  // move edges
-  if (i > 0)
-  {
-    selectNone();	
-    selectEdge(6, 7, 8);
-    moveSelection(dx, 0);	
-  }
+	if (i > 0)
+	{                       
+		selectEdge(6, 7, 8);
+		moveSelection(dr, 0);   
+	}
+	solve();
+	integral = volumeIntegral();
 
-  solve();
-  integral = volumeIntegral();
-  print((2*2*integral.Energy)/(1^2));
-
-  i++;
+	print((2*2*integral.Energy)/(U^2));
+	i++;
 } while (i<5);
 </pre>
 </body>

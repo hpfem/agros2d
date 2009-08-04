@@ -82,9 +82,8 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
             {
                 update_limit_table(e->get_mode());
 
-                if (m_sln2 == NULL)
-                    m_sln1->set_active_element(e);
-                else
+                m_sln1->set_active_element(e);
+                if (m_sln2 != NULL)
                     m_sln2->set_active_element(e);
 
                 RefMap *ru = m_sln1->get_refmap();

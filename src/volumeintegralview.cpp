@@ -470,6 +470,9 @@ QStringList volumeIntegralValueHeaderFactory(PhysicField physicField)
     case PHYSICFIELD_MAGNETOSTATIC:
         headers << "Volume" << "CrossSection" << "Bx_avg" << "By_avg" << "B_avg" << "Hx_avg" << "Hy_avg" << "H_avg" << "Energy";
         break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        headers << "Volume" << "CrossSection"; // TODO
+        break;
     case PHYSICFIELD_CURRENT:
         headers << "Volume" << "CrossSection" << "Jx_avg" << "Jy_avg" << "J_avg" << "Ex_avg" << "Ey_avg" << "E_avg" << "Losses";
         break;

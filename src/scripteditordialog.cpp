@@ -17,6 +17,30 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
+// include(fileName)
+QScriptValue scriptInclude(QScriptContext *context, QScriptEngine *engine)
+{
+    if (QFile::exists(context->argument(0).toString()))
+    {
+        QFile file(context->argument(0).toString());
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            return QString("Could not open file '%1'.").arg(context->argument(0).toString());
+        }
+
+        QTextStream inFile(&file);
+        engine->currentContext()->setActivationObject(engine->currentContext()->parentContext()->activationObject());
+        engine->evaluate(inFile.readAll(), context->argument(0).toString());
+        file.close();
+
+        return true;
+    }
+    else
+    {
+        return QString("File not found '%1'.").arg(context->argument(0).toString());
+    }
+}
+
 // newDocument(name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance)
 QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 {
@@ -133,46 +157,46 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL)) type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE)) type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
         Util::scene()->addEdgeMarker(new SceneEdgeElectrostaticMarker(context->argument(0).toString(),
-                                                                type,
-                                                                Value(context->argument(2).toString())));
+                                                                      type,
+                                                                      Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL)) type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT)) type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
         Util::scene()->addEdgeMarker(new SceneEdgeMagnetostaticMarker(context->argument(0).toString(),
-                                                                type,
-                                                                Value(context->argument(2).toString())));
+                                                                      type,
+                                                                      Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_HARMONIC_MAGNETIC:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL)) type = PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT)) type = PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT;
         Util::scene()->addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(context->argument(0).toString(),
-                                                                type,
-                                                                Value(context->argument(2).toString())));
+                                                                         type,
+                                                                         Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
         {
             type = PHYSICFIELDBC_HEAT_TEMPERATURE;
             Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(),
-                                                           type,
-                                                           Value(context->argument(2).toString())));
+                                                                 type,
+                                                                 Value(context->argument(2).toString())));
         }
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
         {
             type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
             Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(), type,
-                                                           Value(context->argument(2).toString()),
-                                                           Value(context->argument(3).toString()),
-                                                           Value(context->argument(4).toString())));
+                                                                 Value(context->argument(2).toString()),
+                                                                 Value(context->argument(3).toString()),
+                                                                 Value(context->argument(4).toString())));
         }
         break;
     case PHYSICFIELD_CURRENT:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_POTENTIAL)) type = PHYSICFIELDBC_CURRENT_POTENTIAL;
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)) type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
         Util::scene()->addEdgeMarker(new SceneEdgeCurrentMarker(context->argument(0).toString(),
-                                                          type,
-                                                          Value(context->argument(2).toString())));
+                                                                type,
+                                                                Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_ELASTICITY:
         PhysicFieldBC typeX, typeY;
@@ -181,8 +205,8 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
         if (context->argument(2).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FREE)) typeY = PHYSICFIELDBC_ELASTICITY_FREE;
         if (context->argument(2).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED)) typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
         Util::scene()->addEdgeMarker(new SceneEdgeElasticityMarker(context->argument(0).toString(), typeX, typeY,
-                                                             context->argument(3).toNumber(),
-                                                             context->argument(4).toNumber()));
+                                                                   context->argument(3).toNumber(),
+                                                                   context->argument(4).toNumber()));
         break;
     default:
         cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
@@ -201,34 +225,34 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
     {
     case PHYSICFIELD_ELECTROSTATIC:
         Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(context->argument(0).toString(),
-                                                                  Value(context->argument(1).toString()),
-                                                                  Value(context->argument(2).toString())));
+                                                                        Value(context->argument(1).toString()),
+                                                                        Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
         Util::scene()->addLabelMarker(new SceneLabelMagnetostaticMarker(context->argument(0).toString(),
-                                                                  Value(context->argument(1).toString()),
-                                                                  Value(context->argument(2).toString())));
+                                                                        Value(context->argument(1).toString()),
+                                                                        Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_HARMONIC_MAGNETIC:
         Util::scene()->addLabelMarker(new SceneLabelHarmonicMagneticMarker(context->argument(0).toString(),
-                                                                  Value(context->argument(1).toString()),
-                                                                  Value(context->argument(2).toString()),
-                                                                  Value(context->argument(3).toString()),
-                                                                  Value(context->argument(4).toString())));
+                                                                           Value(context->argument(1).toString()),
+                                                                           Value(context->argument(2).toString()),
+                                                                           Value(context->argument(3).toString()),
+                                                                           Value(context->argument(4).toString())));
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
         Util::scene()->addLabelMarker(new SceneLabelHeatMarker(context->argument(0).toString(),
-                                                         Value(context->argument(1).toString()),
-                                                         Value(context->argument(2).toString())));
+                                                               Value(context->argument(1).toString()),
+                                                               Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_CURRENT:
         Util::scene()->addLabelMarker(new SceneLabelCurrentMarker(context->argument(0).toString(),
-                                                            Value(context->argument(1).toString())));
+                                                                  Value(context->argument(1).toString())));
         break;
     case PHYSICFIELD_ELASTICITY:
         Util::scene()->addLabelMarker(new SceneLabelElasticityMarker(context->argument(0).toString(),
-                                                               context->argument(2).toNumber(),
-                                                               context->argument(3).toNumber()));
+                                                                     context->argument(2).toNumber(),
+                                                                     context->argument(3).toNumber()));
         break;
     default:
         cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
@@ -299,6 +323,8 @@ QScriptValue scriptSelectAll(QScriptContext *context, QScriptEngine *engine)
 // selectNode()
 QScriptValue scriptSelectNode(QScriptContext *context, QScriptEngine *engine)
 {
+    Util::scene()->selectNone();
+
     m_sceneView->actSceneModeNode->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
         Util::scene()->nodes[context->argument(i).toNumber()]->isSelected = true;
@@ -311,6 +337,8 @@ QScriptValue scriptSelectNode(QScriptContext *context, QScriptEngine *engine)
 // selectEdge()
 QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
 {
+    Util::scene()->selectNone();
+
     m_sceneView->actSceneModeEdge->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
         Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
@@ -323,6 +351,8 @@ QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
 // selectLabel()
 QScriptValue scriptSelectLabel(QScriptContext *context, QScriptEngine *engine)
 {
+    Util::scene()->selectNone();
+
     m_sceneView->actSceneModeLabel->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
         Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
@@ -377,7 +407,7 @@ QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
     return value;
 }
 
-// result = volumeIntegral(index ...)
+// result = scriptVolumeIntegral(index ...)
 QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine)
 {    
     if (Util::scene()->sceneSolution()->isSolved())
@@ -406,6 +436,44 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
             value.setProperty(headers[i], QString(variables[i]).toDouble());
 
         delete volumeIntegral;
+
+        return value;
+    }
+    else
+    {
+        return engine->undefinedValue();
+    }
+}
+
+// result = surfaceIntegral(index ...)
+QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engine)
+{
+    if (Util::scene()->sceneSolution()->isSolved())
+        m_sceneView->actSceneModePostprocessor->trigger();
+
+    if (m_sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
+    {
+        m_sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+        Util::scene()->selectNone();
+
+        // select all or indices
+        if (context->argumentCount() == 0)
+            foreach (SceneEdge *edge, Util::scene()->edges)
+                edge->isSelected = true;
+        else
+            for (int i = 0; i<context->argumentCount(); i++)
+                Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
+
+        SurfaceIntegralValue *surfaceIntegral = surfaceIntegralValueFactory();
+
+        QStringList headers = surfaceIntegralValueHeaderFactory(Util::scene()->problemInfo().physicField);
+        QStringList variables = surfaceIntegral->variables();
+
+        QScriptValue value = engine->newObject();
+        for (int i = 0; i < variables.length(); i++)
+            value.setProperty(headers[i], QString(variables[i]).toDouble());
+
+        delete surfaceIntegral;
 
         return value;
     }
@@ -601,6 +669,8 @@ void ScriptEditorDialog::createEngine()
     funPrint.setData(m_engine->newQObject(txtOutput));
     m_engine->globalObject().setProperty("print", funPrint);
 
+    m_engine->globalObject().setProperty("include", m_engine->newFunction(scriptInclude));
+
     m_engine->globalObject().setProperty("newDocument", m_engine->newFunction(scriptNewDocument));
     m_engine->globalObject().setProperty("openDocument", m_engine->newFunction(scriptOpenDocument));
     m_engine->globalObject().setProperty("saveDocument", m_engine->newFunction(scriptSaveDocument));
@@ -629,6 +699,7 @@ void ScriptEditorDialog::createEngine()
 
     m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
     m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
+    m_engine->globalObject().setProperty("surfaceIntegral", m_engine->newFunction(scriptSurfaceIntegral));
 }
 
 void ScriptEditorDialog::doFileNew()

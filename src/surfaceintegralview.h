@@ -15,6 +15,7 @@ class SurfaceIntegralValueHeat;
 class SurfaceIntegralValueCurrent;
 
 SurfaceIntegralValue *surfaceIntegralValueFactory();
+QStringList surfaceIntegralValueHeaderFactory(PhysicField physicField);
 
 class SurfaceIntegralValueView : public QDockWidget
 {
@@ -49,7 +50,7 @@ public:
 
     SurfaceIntegralValue();
 
-    virtual QString toString();
+    virtual QStringList variables() = 0;
 
 protected:
 };
@@ -62,7 +63,7 @@ public:
     double surfaceCharge;
 
     SurfaceIntegralValueElectrostatic();
-    QString toString();
+    QStringList variables();
 };
 
 // ******************************************************************************************************************
@@ -71,7 +72,7 @@ class SurfaceIntegralValueMagnetostatic : public SurfaceIntegralValue
 {
 public:
     SurfaceIntegralValueMagnetostatic();
-    QString toString();
+    QStringList variables();
 };
 
 // ******************************************************************************************************************
@@ -80,7 +81,7 @@ class SurfaceIntegralValueHarmonicMagnetic : public SurfaceIntegralValue
 {
 public:
     SurfaceIntegralValueHarmonicMagnetic();
-    QString toString();
+    QStringList variables();
 };
 
 // ******************************************************************************************************************
@@ -93,7 +94,7 @@ public:
     double heatFlux;
 
     SurfaceIntegralValueHeat();
-    QString toString();
+    QStringList variables();
 };
 
 // ******************************************************************************************************************
@@ -104,7 +105,7 @@ public:
     double currentDensity;
 
     SurfaceIntegralValueCurrent();
-    QString toString();
+    QStringList variables();
 };
 // ******************************************************************************************************************
 
