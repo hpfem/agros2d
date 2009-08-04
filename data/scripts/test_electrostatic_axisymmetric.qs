@@ -10,7 +10,7 @@ addBoundary("Neumann BC", "surface_charge_density", 0);
 
 // materials
 addMaterial("Air", 0, 1);
-addMaterial("Dielectric n.1", 0, 10);
+addMaterial("Dielectric n.1", 1e-5, 10);
 addMaterial("Dielectric n.2", 0, 3);
 
 // edges
@@ -38,18 +38,18 @@ zoomBestFit();
 solve();
 
 // point value
-point = pointResult(0.023834,0.068108);
-testPotential = Math.abs(point.Potential - 6.699811) < 1e-2;
+point = pointResult(0.026532,0.070937);
+testPotential = (Math.abs(point.Potential) - 26.078318) < 0.1;
 if (!testPotential) print(point.Potential);
 
 // energy
 integral = volumeIntegral();
-testEnergy = Math.abs(integral.Energy - 8.311842e-10) < 1e-10;
+testEnergy = (Math.abs(integral.Energy) - 1.799349e-8) < 1e-11;
 if (!testEnergy) print(integral.Energy);
 
 // charge
 integral = surfaceIntegral(1, 12);
-testQ = Math.abs(integral.Q - 1.658438e-10) < 1e-11;
+testQ = (Math.abs(integral.Q) - 1.291778e-9) < 1e-14;
 if (!testQ) print(integral.Q);
 
 print(testPotential && testEnergy && testQ);

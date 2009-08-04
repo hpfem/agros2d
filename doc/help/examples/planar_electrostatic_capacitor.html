@@ -8,11 +8,11 @@
 <body>
 <h1>Planar electrostatic capacitor</h1>
 
-<p>This example demonstrates the basics of working in Agros2D. The resulting model can be found <i>/data/electrostatic_planar_capacitor.a2d</i>.</p>
+<p>This example demonstrates the basics of working with Agros2D. The resulting model can be found <i>/data/electrostatic_planar_capacitor.a2d</i>.</p>
 
 <h2>Introduction</h2>
-<p>Capacitor is a passive electrical component. It consists of electrodes that are separated between dieletric and have a different electrical potential. It used to store electric charge. The basic type of a capacitor is a plate capacitor.</p>
-<p>For more information about capacitors visit <a href="http://en.wikipedia.org/wiki/Capacitor">http://en.wikipedia.org/wiki/Capacitor</a>.</p>
+<p>Capacitor is a passive electrical component. It consists of electrodes that are separated between dieletric and have a different electrical potential. It is used to store electric charge. The basic type of the capacitor is a plate capacitor.</p>
+<p>For more information visit <a href="http://en.wikipedia.org/wiki/Capacitor">http://en.wikipedia.org/wiki/Capacitor</a>.</p>
 
 <h2>Preprocessing</h2>
 <p>Select "New" in the menu "File", or in main toolbar and enter "Problem properties".</p>
@@ -46,7 +46,7 @@
 <p>Select "Operate on labels" in menu "Problem", or in main toolbar and place block label into inner area. To place label you can use left mouse button together with control key or pressing &lt;Alt&gt;+L and entering the label point coordinates.</p>
 
 <h3>Boundary conditions</h3>
-<p>Select "New boundery condition" from the menu "Problem", or press &lt;Alt&gt;+B and gradually define three BC, which are described in chapter Problem analysis.</p>
+<p>Select "New boundary condition" from the menu "Problem", or press &lt;Alt&gt;+B and gradually define three BC, which are described in chapter Problem analysis.</p>
 <ul>
   <li>Name: Source electrode</li>
   <li>BC type: Fixed voltage</li>
@@ -67,7 +67,7 @@
 <p>Select "New material" from the menu "Problem", or press &lt;Alt&gt;+M and define dieletric material embedded between the electrodes.</p>
 <ul>
   <li>Name: Dieletric</li>
-  <li>Permitiviti: 10</li>
+  <li>Permitivity: 10</li>
   <li>Charge density (C/m3): 0 </li>
 </ul>
 
@@ -85,7 +85,7 @@
 <img src="./planar_electrostatic_capacitor/calculation_of_energy.png"><br>
 <span>Image 3.: Calculation of energy</span>
 
-<p>Capacity of capacitor may be calculated according to formula <br>W<sub>e</sub> = 4 &times; 1/2 &times; CU<sup>2</sup>,<br> which can be adjusted to shape <br>C = 4 &times; 2 &times; W<sub>e</sub>/U<sup>2</sup>.</p>
+<p>Capacity of the capacitor can be calculated according to formula <br>W<sub>e</sub> = 4 &times; 1/2 &times; CU<sup>2</sup>,<br> which can be adjusted to shape <br>C = 4 &times; 2 &times; W<sub>e</sub>/U<sup>2</sup>.</p>
 
 <h2>Related</h2>
 <ul>
