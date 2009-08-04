@@ -17,7 +17,29 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
-// include(fileName)
+// printToFile(filename, string, mode)
+QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
+{
+    QFile file(context->argument(0).toString());
+    bool ok = true;
+    if (context->argument(2).toString() == "append")
+        ok = file.open(QIODevice::Append);
+    else
+        ok = file.open(QIODevice::WriteOnly);
+
+    if (!ok)
+    {
+        return QString("Could not open file '%1'.").arg(context->argument(0).toString());
+    }
+
+    QTextStream outFile(&file);
+    outFile << context->argument(1).toString() << endl;
+    file.close();
+
+    return true;
+}
+
+// include(filename)
 QScriptValue scriptInclude(QScriptContext *context, QScriptEngine *engine)
 {
     if (QFile::exists(context->argument(0).toString()))
@@ -670,6 +692,7 @@ void ScriptEditorDialog::createEngine()
     m_engine->globalObject().setProperty("print", funPrint);
 
     m_engine->globalObject().setProperty("include", m_engine->newFunction(scriptInclude));
+    m_engine->globalObject().setProperty("printToFile", m_engine->newFunction(scriptPrintToFile));
 
     m_engine->globalObject().setProperty("newDocument", m_engine->newFunction(scriptNewDocument));
     m_engine->globalObject().setProperty("openDocument", m_engine->newFunction(scriptOpenDocument));

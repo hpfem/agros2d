@@ -11,8 +11,15 @@
 
 <h2>Reference documentation</h2>
 
-<h3>include(fileName)</h3>
+<h3>include(filename)</h3>
 <p>Include and run script with filename.</p>
+
+<h3>printToFile(filename, string, mode = {"write", "append"})</h3>
+<p>Print string to file.</p>
+
+<pre class="code">
+printToFile("/tmp/print.txt", "hello", "append");
+</pre>
 
 <h3>newDocument(name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance)</h3>
 <p>Create new document.</p>
@@ -168,7 +175,6 @@ newDocument("Electrostatic", "axisymmetric", "electrostatic", 0, 2, 0, "hp-adapt
   </li>
 </ul>
 
-<h4>Example:</h4>
 <pre class="code">
 // local point result
 result = pointResult(0.03, 0.03);
@@ -200,7 +206,6 @@ print("Potential = " + result.Potential);
   </li>
 </ul>
 
-<h4>Example:</h4>
 <pre class="code">
 // volume integral
 integral = volumeIntegral(0, 1);
@@ -232,7 +237,6 @@ print("Volume = " + integral.Volume);
   </li>
 </ul>
 
-<h4>Example:</h4>
 <pre class="code">
 // surface integral
 integral = surfaceIntegral(1, 3);

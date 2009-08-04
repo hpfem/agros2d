@@ -33,6 +33,7 @@ Source: lang\*.qm; DestDir: {app}/lang
 Source: doc\help\agros2d.qhc; DestDir: {app}/doc/help
 Source: doc\help\agros2d.qch; DestDir: {app}/doc/help
 Source: install\win32\*.dll; DestDir: {app}
+Source: install\win32\sqldrivers\*.dll; DestDir: {app}/sqldrivers
 
 [Icons]
 Name: {group}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}

@@ -3,7 +3,7 @@
   <assistant>
     <title>Agros2D</title>
     <applicationIcon>agros2d_logo.png</applicationIcon>
-    <cacheDirectory>agros2d</cacheDirectory>
+    <cacheDirectory>hpfem.org/agros2d</cacheDirectory>
     <startPage>qthelp://agros2d/main/index.html</startPage>
     <aboutMenuText>
       <text>About Agros2D</text>
@@ -12,9 +12,6 @@
       <file>agros2d.txt</file>
       <icon>agros2d_logo.png</icon>
     </aboutDialog>
-    <enableDocumentationManager>false</enableDocumentationManager>
-    <enableAddressBar>false</enableAddressBar>
-    <enableFilterFunctionality>false</enableFilterFunctionality>
   </assistant>
   <docFiles>
     <generate>
