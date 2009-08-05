@@ -465,8 +465,7 @@ CentralWidget::CentralWidget(QHelpEngine *engine, QWidget *parent)
     tabWidget->setDocumentMode(true);
     tabWidget->setMovable(true);
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
-    connect(tabWidget, SIGNAL(currentChanged(int)), this,
-            SLOT(currentPageChanged(int)));
+    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(currentPageChanged(int)));
 
     QToolButton *newTabButton = new QToolButton(this);
     newTabButton->setAutoRaise(true);

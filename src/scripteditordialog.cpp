@@ -507,293 +507,131 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
 
 // ***********************************************************************************************************
 
-ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
+ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
 {
-    m_sceneView = sceneView;
+    file = "";
 
-    setWindowFlags(Qt::Window);
-    setWindowIcon(icon("script"));
+    txtEditor = new ScriptEditor(this);
+    txtOutput = new QPlainTextEdit(this);
+    splitter = new QSplitter(this);
 
     createControls();
     createEngine();
-
-    resize(600, 400);
 
     QSettings settings;
     restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
     splitter->restoreState(settings.value("ScriptEditorDialog/SplitterState", splitter->saveState()).toByteArray());
-
-    doFileNew();
-    // doFileOpen("data/script/capacitor.qs");
 }
 
-ScriptEditorDialog::~ScriptEditorDialog()
+ScriptEditorWidget::~ScriptEditorWidget()
 {
     QSettings settings;
-    settings.setValue("ScriptEditorDialog/Geometry", saveGeometry());
     settings.setValue("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry());
     settings.setValue("ScriptEditorDialog/SplitterState", splitter->saveState());
 
     delete txtEditor;
     delete txtOutput;
-    delete m_engine;
     delete splitter;
 }
 
-void ScriptEditorDialog::showDialog()
+void ScriptEditorWidget::createControls()
 {
-    show();
-}
-
-void ScriptEditorDialog::createControls()
-{
-    txtEditor = new ScriptEditor(this);
-    txtOutput = new QPlainTextEdit(this);
-    splitter = new QSplitter(this);
-    layout = new QVBoxLayout();
-
-    mnuBar = new QMenuBar();
-    tlbBar = new QToolBar(tr("Toolbar"), this);
-
-    actFileNew = new QAction(icon("document-new"), tr("&New"), this);
-    actFileNew->setShortcuts(QKeySequence::New);
-    connect(actFileNew, SIGNAL(triggered()), this, SLOT(doFileNew()));
-
-    actFileOpen = new QAction(icon("document-open"), tr("&Open..."), this);
-    actFileOpen->setShortcuts(QKeySequence::Open);
-    connect(actFileOpen, SIGNAL(triggered()), this, SLOT(doFileOpen()));
-
-    actFileSave = new QAction(icon("document-save"), tr("&Save"), this);
-    actFileSave->setShortcuts(QKeySequence::Save);
-    connect(actFileSave, SIGNAL(triggered()), this, SLOT(doFileSave()));
-
-    actFileSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
-    actFileSaveAs->setShortcuts(QKeySequence::SaveAs);
-    connect(actFileSaveAs, SIGNAL(triggered()), this, SLOT(doFileSaveAs()));
-
-    actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
-    actExit->setShortcut(tr("Ctrl+Q"));
-    actExit->setStatusTip(tr("Exit script editor"));
-    connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
-
-    actUndo = new QAction(icon("edit-undo"), tr("&Undo"), this);
-    actUndo->setShortcut(QKeySequence::Undo);
-    connect(actUndo, SIGNAL(triggered()), txtEditor, SLOT(undo()));
-
-    actRedo = new QAction(icon("edit-redo"), tr("&Redo"), this);
-    actRedo->setShortcut(QKeySequence::Redo);
-    connect(actRedo, SIGNAL(triggered()), txtEditor, SLOT(redo()));
-
-    actCut = new QAction(icon("edit-cut"), tr("Cu&t"), this);
-    actCut->setShortcut(QKeySequence::Cut);
-    connect(actCut, SIGNAL(triggered()), txtEditor, SLOT(cut()));
-
-    actCopy = new QAction(icon("edit-copy"), tr("&Copy"), this);
-    actCopy->setShortcut(QKeySequence::Copy);
-    connect(actCopy, SIGNAL(triggered()), txtEditor, SLOT(copy()));
-
-    actPaste = new QAction(icon("edit-paste"), tr("&Paste"), this);
-    actPaste->setShortcut(QKeySequence::Paste);
-    connect(actPaste, SIGNAL(triggered()), txtEditor, SLOT(paste()));
-    
-    actCut->setEnabled(false);
-    actCopy->setEnabled(false);
-
-    actRun = new QAction(icon("system-run"), tr("&Run"), this);
-    actRun->setShortcut(QKeySequence(tr("Ctrl+R")));
-    connect(actRun, SIGNAL(triggered()), this, SLOT(doRun()));
-
-    actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
-    actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
-    connect(actCreateFromModel, SIGNAL(triggered()), this, SLOT(doCreateFromModel()));
-
-    actHelp = new QAction(icon("help-browser"), tr("&Help"), this);
-    actHelp->setShortcut(QKeySequence::HelpContents);
-    connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
-
-    mnuFile = mnuBar->addMenu(tr("&File"));
-    mnuFile->addAction(actFileNew);
-    mnuFile->addAction(actFileOpen);
-    mnuFile->addAction(actFileSave);
-    mnuFile->addAction(actFileSaveAs);
-    mnuFile->addSeparator();
-    mnuFile->addAction(actExit);
-
-    mnuEdit = mnuBar->addMenu(tr("&Edit"));
-    mnuEdit->addAction(actUndo);
-    mnuEdit->addAction(actRedo);
-    mnuEdit->addSeparator();
-    mnuEdit->addAction(actCut);
-    mnuEdit->addAction(actCopy);
-    mnuEdit->addAction(actPaste);
-
-    mnuTools = mnuBar->addMenu(tr("&Tools"));
-    mnuTools->addAction(actRun);
-    mnuTools->addSeparator();
-    mnuTools->addAction(actCreateFromModel);
-
-    mnuHelp = mnuBar->addMenu(tr("&Help"));
-    mnuHelp->addAction(actHelp);
-
-    tlbBar->addAction(actFileNew);
-    tlbBar->addAction(actFileOpen);
-    tlbBar->addAction(actFileSave);
-    tlbBar->addSeparator();
-    tlbBar->addAction(actUndo);
-    tlbBar->addAction(actRedo);
-    tlbBar->addSeparator();
-    tlbBar->addAction(actRun);
-    tlbBar->addSeparator();
-    tlbBar->addAction(actCreateFromModel);
-
     txtOutput->setFont(QFont("Monospaced", 10));
     txtOutput->setReadOnly(true);
 
+    // contents
     splitter->setOrientation(Qt::Vertical);
     splitter->addWidget(txtEditor);
     splitter->addWidget(txtOutput);
 
-    QSettings settings;
-    splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
-
-    layout->addWidget(mnuBar);
-    layout->addWidget(tlbBar);
+    QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(splitter);
-    layout->setMargin(0);
+
     setLayout(layout);
 
-    connect(txtEditor->document(), SIGNAL(undoAvailable(bool)), actUndo, SLOT(setEnabled(bool)));
-    connect(txtEditor->document(), SIGNAL(redoAvailable(bool)), actRedo, SLOT(setEnabled(bool)));
-    connect(txtEditor, SIGNAL(copyAvailable(bool)), actCut, SLOT(setEnabled(bool)));
-    connect(txtEditor, SIGNAL(copyAvailable(bool)), actCopy, SLOT(setEnabled(bool)));
-
-    actUndo->setEnabled(txtEditor->document()->isUndoAvailable());
-    actRedo->setEnabled(txtEditor->document()->isRedoAvailable());
-
-    connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(doDataChanged()));
+    QSettings settings;
+    splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
 }
 
-void ScriptEditorDialog::createEngine()
+void ScriptEditorWidget::createEngine()
 {
-    m_engine = new QScriptEngine();
+
+}
+
+void ScriptEditorWidget::doRun()
+{
+    QScriptEngine engine;
 
     // scene
-    QScriptValue sceneValue = m_engine->newQObject(Util::scene());
-    m_engine->globalObject().setProperty("scene", sceneValue);
+    QScriptValue sceneValue = engine.newQObject(Util::scene());
+    engine.globalObject().setProperty("scene", sceneValue);
 
     // scene view
-    QScriptValue sceneViewValue = m_engine->newQObject(m_sceneView);
-    m_engine->globalObject().setProperty("sceneView", sceneViewValue);
+    QScriptValue sceneViewValue = engine.newQObject(m_sceneView);
+    engine.globalObject().setProperty("sceneView", sceneViewValue);
 
     // print
-    QScriptValue funPrint = m_engine->newFunction(scriptPrint);
-    funPrint.setData(m_engine->newQObject(txtOutput));
-    m_engine->globalObject().setProperty("print", funPrint);
+    QScriptValue funPrint = engine.newFunction(scriptPrint);
+    funPrint.setData(engine.newQObject(txtOutput));
+    engine.globalObject().setProperty("print", funPrint);
 
-    m_engine->globalObject().setProperty("include", m_engine->newFunction(scriptInclude));
-    m_engine->globalObject().setProperty("printToFile", m_engine->newFunction(scriptPrintToFile));
+    engine.globalObject().setProperty("include", engine.newFunction(scriptInclude));
+    engine.globalObject().setProperty("printToFile", engine.newFunction(scriptPrintToFile));
 
-    m_engine->globalObject().setProperty("newDocument", m_engine->newFunction(scriptNewDocument));
-    m_engine->globalObject().setProperty("openDocument", m_engine->newFunction(scriptOpenDocument));
-    m_engine->globalObject().setProperty("saveDocument", m_engine->newFunction(scriptSaveDocument));
+    engine.globalObject().setProperty("newDocument", engine.newFunction(scriptNewDocument));
+    engine.globalObject().setProperty("openDocument", engine.newFunction(scriptOpenDocument));
+    engine.globalObject().setProperty("saveDocument", engine.newFunction(scriptSaveDocument));
 
-    m_engine->globalObject().setProperty("addNode", m_engine->newFunction(scriptAddNode));
-    m_engine->globalObject().setProperty("addEdge", m_engine->newFunction(scriptAddEdge));
-    m_engine->globalObject().setProperty("addLabel", m_engine->newFunction(scriptAddLabel));
+    engine.globalObject().setProperty("addNode", engine.newFunction(scriptAddNode));
+    engine.globalObject().setProperty("addEdge", engine.newFunction(scriptAddEdge));
+    engine.globalObject().setProperty("addLabel", engine.newFunction(scriptAddLabel));
 
-    m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
-    m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
+    engine.globalObject().setProperty("addBoundary", engine.newFunction(scriptAddBoundary));
+    engine.globalObject().setProperty("addMaterial", engine.newFunction(scriptAddMaterial));
 
-    m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
-    m_engine->globalObject().setProperty("zoomBestFit", m_engine->newFunction(scriptZoomBestFit));
+    engine.globalObject().setProperty("solve", engine.newFunction(scriptSolve));
+    engine.globalObject().setProperty("zoomBestFit", engine.newFunction(scriptZoomBestFit));
 
-    m_engine->globalObject().setProperty("mode", m_engine->newFunction(scriptMode));
+    engine.globalObject().setProperty("mode", engine.newFunction(scriptMode));
 
-    m_engine->globalObject().setProperty("selectNone", m_engine->newFunction(scriptSelectNone));
-    m_engine->globalObject().setProperty("selectAll", m_engine->newFunction(scriptSelectAll));
-    m_engine->globalObject().setProperty("selectNode", m_engine->newFunction(scriptSelectNode));
-    m_engine->globalObject().setProperty("selectEdge", m_engine->newFunction(scriptSelectEdge));
-    m_engine->globalObject().setProperty("selectLabel", m_engine->newFunction(scriptSelectLabel));
+    engine.globalObject().setProperty("selectNone", engine.newFunction(scriptSelectNone));
+    engine.globalObject().setProperty("selectAll", engine.newFunction(scriptSelectAll));
+    engine.globalObject().setProperty("selectNode", engine.newFunction(scriptSelectNode));
+    engine.globalObject().setProperty("selectEdge", engine.newFunction(scriptSelectEdge));
+    engine.globalObject().setProperty("selectLabel", engine.newFunction(scriptSelectLabel));
 
-    m_engine->globalObject().setProperty("moveSelection", m_engine->newFunction(scriptMoveSelection));
-    m_engine->globalObject().setProperty("rotateSelection", m_engine->newFunction(scriptRotateSelection));
-    m_engine->globalObject().setProperty("scaleSelection", m_engine->newFunction(scriptScaleSelection));
+    engine.globalObject().setProperty("moveSelection", engine.newFunction(scriptMoveSelection));
+    engine.globalObject().setProperty("rotateSelection", engine.newFunction(scriptRotateSelection));
+    engine.globalObject().setProperty("scaleSelection", engine.newFunction(scriptScaleSelection));
 
-    m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
-    m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
-    m_engine->globalObject().setProperty("surfaceIntegral", m_engine->newFunction(scriptSurfaceIntegral));
-}
+    engine.globalObject().setProperty("pointResult", engine.newFunction(scriptPointResult));
+    engine.globalObject().setProperty("volumeIntegral", engine.newFunction(scriptVolumeIntegral));
+    engine.globalObject().setProperty("surfaceIntegral", engine.newFunction(scriptSurfaceIntegral));
 
-void ScriptEditorDialog::doFileNew()
-{
-    m_file = "";
-    txtEditor->clear();
+    // run
+    txtOutput->clear();
 
-    setWindowTitle(tr("Script editor") + " - " + tr("untitled"));
-}
+    // check syntax
+    QScriptSyntaxCheckResult syntaxResult = engine.checkSyntax(txtEditor->toPlainText());
 
-void ScriptEditorDialog::doFileOpen(const QString &file)
-{
-    m_file = file;
-
-    if (m_file.isEmpty())
-        m_file = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Agros2D script files (*.qs)"));
-
-    if (!m_file.isEmpty()) {
-        QFile fileName(m_file);
-        if (fileName.open(QFile::ReadOnly | QFile::Text))
-            txtEditor->setPlainText(fileName.readAll());
-    }
-
-    setWindowTitle(tr("Script editor") + " - " + m_file);
-}
-
-void ScriptEditorDialog::doFileSave()
-{
-    if (m_file.isEmpty())
-        m_file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Agros2D script files (*.qs)"));
-
-    if (!m_file.isEmpty())
+    if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
     {
-        QFileInfo fileInfo(m_file);
-        if (fileInfo.suffix() != "qs") m_file += ".qs";
-
-        QFile fileName(m_file);
-        if (fileName.open(QFile::WriteOnly | QFile::Text))
-        {
-            QTextStream out(&fileName);
-            out << txtEditor->toPlainText();
-            fileName.close();
-        }
+        Util::scene()->blockSignals(true);
+        // startup script
+        engine.evaluate(Util::scene()->problemInfo().scriptStartup);
+        // result
+        QScriptValue result = engine.evaluate(txtEditor->toPlainText(), file);
+        Util::scene()->blockSignals(false);
+        Util::scene()->refresh();
     }
-}
-
-void ScriptEditorDialog::doFileSaveAs()
-{
-    m_file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Agros2D script files (*.qs)"));
-
-    if (!m_file.isEmpty())
+    else
     {
-        QFileInfo fileInfo(m_file);
-        if (fileInfo.suffix() != "qs") m_file += ".qs";
-
-        QFile fileName(m_file);
-        if (fileName.open(QFile::WriteOnly | QFile::Text))
-        {
-            QTextStream out(&fileName);
-            out << txtEditor->toPlainText();
-            fileName.close();
-        }
+        txtOutput->appendPlainText(tr("Error: %1 (line %2, column %3)").arg(syntaxResult.errorMessage()).arg(syntaxResult.errorLineNumber()).arg(syntaxResult.errorColumnNumber()));
     }
 }
 
-void ScriptEditorDialog::doDataChanged()
-{
-    actPaste->setEnabled(!QApplication::clipboard()->text().isEmpty());
-}
-
-void ScriptEditorDialog::doCreateFromModel()
+void ScriptEditorWidget::doCreateFromModel()
 {
     QString str;
 
@@ -855,34 +693,281 @@ void ScriptEditorDialog::doCreateFromModel()
     txtEditor->setPlainText(str);
 }
 
+// ***********************************************************************************************************
+
+
+ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : QMainWindow(parent)
+{
+    QSettings settings;
+    restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
+
+    m_sceneView = sceneView;
+
+    setWindowIcon(icon("script"));
+    setWindowTitle(tr("Script editor"));
+
+    createActions();
+    createControls();
+
+    setMinimumSize(600, 400);
+}
+
+ScriptEditorDialog::~ScriptEditorDialog()
+{
+    QSettings settings;
+    settings.setValue("ScriptEditorDialog/Geometry", saveGeometry());   
+}
+
+void ScriptEditorDialog::showDialog()
+{
+    show();
+}
+
+void ScriptEditorDialog::createActions()
+{
+    actFileNew = new QAction(icon("document-new"), tr("&New"), this);
+    actFileNew->setShortcuts(QKeySequence::New);
+    connect(actFileNew, SIGNAL(triggered()), this, SLOT(doFileNew()));
+
+    actFileOpen = new QAction(icon("document-open"), tr("&Open..."), this);
+    actFileOpen->setShortcuts(QKeySequence::Open);
+    connect(actFileOpen, SIGNAL(triggered()), this, SLOT(doFileOpen()));
+
+    actFileSave = new QAction(icon("document-save"), tr("&Save"), this);
+    actFileSave->setShortcuts(QKeySequence::Save);
+    connect(actFileSave, SIGNAL(triggered()), this, SLOT(doFileSave()));
+
+    actFileSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
+    actFileSaveAs->setShortcuts(QKeySequence::SaveAs);
+    connect(actFileSaveAs, SIGNAL(triggered()), this, SLOT(doFileSaveAs()));
+
+    actFileClose = new QAction(icon(""), tr("Close"), this);
+    actFileClose->setShortcuts(QKeySequence::Close);
+    connect(actFileClose, SIGNAL(triggered()), this, SLOT(doFileClose()));
+
+    actUndo = new QAction(icon("edit-undo"), tr("&Undo"), this);
+    actUndo->setShortcut(QKeySequence::Undo);
+
+    actRedo = new QAction(icon("edit-redo"), tr("&Redo"), this);
+    actRedo->setShortcut(QKeySequence::Redo);
+
+    actCut = new QAction(icon("edit-cut"), tr("Cu&t"), this);
+    actCut->setShortcut(QKeySequence::Cut);
+    actCut->setEnabled(false);
+
+    actCopy = new QAction(icon("edit-copy"), tr("&Copy"), this);
+    actCopy->setShortcut(QKeySequence::Copy);
+    actCopy->setEnabled(false);
+
+    actPaste = new QAction(icon("edit-paste"), tr("&Paste"), this);
+    actPaste->setShortcut(QKeySequence::Paste);
+
+    actRun = new QAction(icon("system-run"), tr("&Run"), this);
+    actRun->setShortcut(QKeySequence(tr("Ctrl+R")));
+    
+    actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
+    actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
+
+    actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
+    actExit->setShortcut(tr("Ctrl+Q"));
+    actExit->setStatusTip(tr("Exit script editor"));
+    connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
+
+    actHelp = new QAction(icon("help-browser"), tr("&Help"), this);
+    actHelp->setShortcut(QKeySequence::HelpContents);
+    connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
+}
+
+void ScriptEditorDialog::createControls()
+{
+    mnuFile = menuBar()->addMenu(tr("&File"));
+    mnuFile->addAction(actFileNew);
+    mnuFile->addAction(actFileOpen);
+    mnuFile->addAction(actFileSave);
+    mnuFile->addAction(actFileSaveAs);
+    mnuFile->addSeparator();
+    mnuFile->addAction(actFileClose);
+    mnuFile->addSeparator();
+    mnuFile->addAction(actExit);
+
+    mnuEdit = menuBar()->addMenu(tr("&Edit"));
+    mnuEdit->addAction(actUndo);
+    mnuEdit->addAction(actRedo);
+    mnuEdit->addSeparator();
+    mnuEdit->addAction(actCut);
+    mnuEdit->addAction(actCopy);
+    mnuEdit->addAction(actPaste);
+
+    mnuTools = menuBar()->addMenu(tr("&Tools"));
+    mnuTools->addAction(actRun);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actCreateFromModel);
+
+    mnuHelp = menuBar()->addMenu(tr("&Help"));
+    mnuHelp->addAction(actHelp);
+
+    tlbFile = addToolBar(tr("File"));
+    tlbFile->addAction(actFileNew);
+    tlbFile->addAction(actFileOpen);
+    tlbFile->addAction(actFileSave);
+    tlbEdit = addToolBar(tr("Edit"));
+    tlbEdit->addAction(actCut);
+    tlbEdit->addAction(actCopy);
+    tlbEdit->addAction(actPaste);
+    tlbEdit->addSeparator();
+    tlbEdit->addAction(actUndo);
+    tlbEdit->addAction(actRedo);
+    tlbTools = addToolBar(tr("Tools"));
+    tlbTools->addAction(actRun);
+    tlbTools->addSeparator();
+    tlbTools->addAction(actCreateFromModel);
+
+    // contents
+    tabWidget = new QTabWidget;
+    tabWidget->setDocumentMode(true);
+    tabWidget->setMovable(true);
+
+    QToolButton *btnNewTab = new QToolButton(this);
+    btnNewTab->setAutoRaise(true);
+    btnNewTab->setToolTip(tr("Add new page"));
+    btnNewTab->setIcon(icon("tabadd"));
+    tabWidget->setCornerWidget(btnNewTab, Qt::TopLeftCorner);
+    connect(btnNewTab, SIGNAL(clicked()), this, SLOT(doFileNew()));
+
+    doFileNew();
+
+    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doCloseTab(int)));
+    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(doCurrentPageChanged(int)));
+
+    setCentralWidget(tabWidget);
+
+    connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(doDataChanged()));
+}
+
+void ScriptEditorDialog::doFileNew()
+{
+    tabWidget->addTab(new ScriptEditorWidget(this), tr("unnamed"));
+    tabWidget->setCurrentIndex(tabWidget->count()-1);
+    doCurrentPageChanged(tabWidget->count()-1);
+}
+
+void ScriptEditorDialog::doFileOpen(const QString &file)
+{
+    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+
+    // open dialog
+    QString fileName = file;
+    if (fileName.isEmpty())
+        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Agros2D script files (*.qs)"));
+
+    // read text
+    if (!fileName.isEmpty()) {
+        // check empty document
+        if (!scriptEditorWidget->txtEditor->toPlainText().isEmpty())
+            doFileNew();
+
+        scriptEditorWidget->file = fileName;
+        QFile fileName(scriptEditorWidget->file);
+        if (fileName.open(QFile::ReadOnly | QFile::Text))
+            txtEditor->setPlainText(fileName.readAll());
+
+        QFileInfo fileInfo(scriptEditorWidget->file);
+        tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
+    }    
+}
+
+void ScriptEditorDialog::doFileSave()
+{
+    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+
+    // open dialog
+    if (scriptEditorWidget->file.isEmpty())
+        scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Agros2D script files (*.qs)"));
+
+    // write text
+    if (!scriptEditorWidget->file.isEmpty())
+    {
+        QFileInfo fileInfo(scriptEditorWidget->file);
+        if (fileInfo.suffix() != "qs") scriptEditorWidget->file += ".qs";
+
+        QFile fileName(dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget())->file);
+        if (fileName.open(QFile::WriteOnly | QFile::Text))
+        {
+            QTextStream out(&fileName);
+            out << txtEditor->toPlainText();
+            fileName.close();
+        }
+
+        tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
+    }
+}
+
+void ScriptEditorDialog::doFileSaveAs()
+{
+    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+
+    scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Agros2D script files (*.qs)"));
+    doFileSave();
+}
+
+void ScriptEditorDialog::doFileClose()
+{
+    doCloseTab(tabWidget->currentIndex());
+}
+
+void ScriptEditorDialog::doDataChanged()
+{
+    actPaste->setEnabled(!QApplication::clipboard()->text().isEmpty());
+}
+
 void ScriptEditorDialog::doHelp()
 {
     Util::helpDialog()->showPage("scripting/scripting.html");
     Util::helpDialog()->show();
 }
 
-void ScriptEditorDialog::doRun()
+void ScriptEditorDialog::doCloseTab(int index)
 {
-    txtOutput->clear();
+    tabWidget->removeTab(index);
+}
 
-    // check syntax
-    QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(txtEditor->toPlainText());
+void ScriptEditorDialog::doCurrentPageChanged(int index)
+{
+    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
 
-    if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
-    {
-        Util::scene()->blockSignals(true);
-        // startup script
-        m_engine->evaluate(Util::scene()->problemInfo().scriptStartup);
-        // result
-        QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), m_file);
-        Util::scene()->blockSignals(false);
-        Util::scene()->refresh();
-    }
-    else
-    {
-        txtOutput->appendPlainText(tr("Error: %1 (line %2, column %3)").arg(syntaxResult.errorMessage()).arg(syntaxResult.errorLineNumber()).arg(syntaxResult.errorColumnNumber()));
-        // txtOutput->setExtraSelections(
-    }
+    txtEditor = scriptEditorWidget->txtEditor;
+    txtOutput = scriptEditorWidget->txtOutput;
+
+    actRun->disconnect();
+    connect(actRun, SIGNAL(triggered()), scriptEditorWidget, SLOT(doRun()));
+    actCreateFromModel->disconnect();
+    connect(actCreateFromModel, SIGNAL(triggered()), scriptEditorWidget, SLOT(doCreateFromModel()));
+
+    actCut->disconnect();
+    connect(actCut, SIGNAL(triggered()), txtEditor, SLOT(cut()));
+    actCopy->disconnect();
+    connect(actCopy, SIGNAL(triggered()), txtEditor, SLOT(copy()));
+    actPaste->disconnect();
+    connect(actPaste, SIGNAL(triggered()), txtEditor, SLOT(paste()));
+    actUndo->disconnect();
+    connect(actUndo, SIGNAL(triggered()), txtEditor, SLOT(undo()));
+    actRedo->disconnect();
+    connect(actRedo, SIGNAL(triggered()), txtEditor, SLOT(redo()));
+
+    txtEditor->document()->disconnect(actUndo);
+    txtEditor->document()->disconnect(actRedo);
+    connect(txtEditor->document(), SIGNAL(undoAvailable(bool)), actUndo, SLOT(setEnabled(bool)));
+    connect(txtEditor->document(), SIGNAL(redoAvailable(bool)), actRedo, SLOT(setEnabled(bool)));
+    txtEditor->disconnect(actCut);
+    txtEditor->disconnect(actCopy);
+    connect(txtEditor, SIGNAL(copyAvailable(bool)), actCut, SLOT(setEnabled(bool)));
+    connect(txtEditor, SIGNAL(copyAvailable(bool)), actCopy, SLOT(setEnabled(bool)));
+
+    actUndo->setEnabled(txtEditor->document()->isUndoAvailable());
+    actRedo->setEnabled(txtEditor->document()->isRedoAvailable());
+
+    tabWidget->setTabsClosable(tabWidget->count() > 1);
+    tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
 }
 
 // ******************************************************************************************************
@@ -964,6 +1049,11 @@ ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
 
     doUpdateLineNumberAreaWidth(0);
     doHighlightCurrentLine();
+}
+
+ScriptEditor::~ScriptEditor()
+{
+    delete lineNumberArea;
 }
 
 int ScriptEditor::lineNumberAreaWidth()

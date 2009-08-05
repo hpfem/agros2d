@@ -12,6 +12,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QSplitter>
 #include <QtGui/QDesktopServices>
+#include <QtGui/QToolButton>
 
 #include "scene.h"
 #include "sceneview.h"
@@ -25,7 +26,30 @@ static SceneView *m_sceneView;
 
 class ScriptEditor;
 
-class ScriptEditorDialog : public QDialog
+class ScriptEditorWidget : public QWidget
+{
+    Q_OBJECT
+
+public slots:
+    void doRun();
+    void doCreateFromModel();
+
+public:
+    QString file;
+    ScriptEditor *txtEditor;
+    QPlainTextEdit *txtOutput;
+
+    ScriptEditorWidget(QWidget *parent);
+    ~ScriptEditorWidget();
+
+    void createControls();
+    void createEngine();
+
+private:
+    QSplitter *splitter;
+};
+
+class ScriptEditorDialog : public QMainWindow
 {
     Q_OBJECT
 public:
@@ -34,37 +58,37 @@ public:
 
     void showDialog();
 
- public slots:
-     void doFileNew();
-     void doFileOpen(const QString &file = QString());
-     void doFileSave();
-     void doFileSaveAs();
-     void doDataChanged();
-     void doRun();
-     void doCreateFromModel();
-     void doHelp();
+public slots:
+    void doFileNew();
+    void doFileOpen(const QString &file = QString());
+    void doFileSave();
+    void doFileSaveAs();
+    void doFileClose();
+
+    void doDataChanged();
+    void doHelp();
+
+    void doCloseTab(int index);
+    void doCurrentPageChanged(int index);
 
 protected:
-    QString m_file;
-    QScriptEngine *m_engine;
-
     ScriptEditor *txtEditor;
     QPlainTextEdit *txtOutput;
-    QSplitter *splitter;
-    QVBoxLayout *layout;
 
-    QMenuBar *mnuBar;
     QMenu *mnuFile;
     QMenu *mnuEdit;
     QMenu *mnuTools;
     QMenu *mnuHelp;
 
-    QToolBar *tlbBar;
+    QToolBar *tlbFile;
+    QToolBar *tlbEdit;
+    QToolBar *tlbTools;
 
     QAction *actFileNew;
     QAction *actFileOpen;
     QAction *actFileSave;
     QAction *actFileSaveAs;
+    QAction *actFileClose;
     QAction *actExit;
 
     QAction *actUndo;
@@ -78,9 +102,10 @@ protected:
 
     QAction *actHelp;
 
+    QTabWidget *tabWidget;
+
+    void createActions();
     void createControls();
-    void createEngine();
-    void setupEditor();
 };
 
 class ScriptStartupDialog : public QDialog
@@ -110,6 +135,7 @@ class ScriptEditor : public QPlainTextEdit
 
 public:
     ScriptEditor(QWidget *parent = 0);
+    ~ScriptEditor();
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
