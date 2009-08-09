@@ -839,7 +839,15 @@ void ScriptEditorDialog::createControls()
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doCloseTab(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(doCurrentPageChanged(int)));
 
-    setCentralWidget(tabWidget);
+    // main widget
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(tabWidget);
+    layout->setMargin(6);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    setCentralWidget(widget);
 
     connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(doDataChanged()));
 }
