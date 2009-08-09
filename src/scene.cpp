@@ -860,6 +860,7 @@ void Scene::readFromFile(const QString &fileName)
     // adaptivity
     if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_NONE)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_NONE;
     if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_H)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_H;
+    if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_P)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_P;
     if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_HP)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_HP;
     m_problemInfo.adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo.adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();

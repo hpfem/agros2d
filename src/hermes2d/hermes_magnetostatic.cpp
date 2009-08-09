@@ -178,7 +178,7 @@ SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
             solverDialog->doShowMessage(QObject::tr("Relative error: %1 %").arg(error, 0, 'f', 5), false);
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(0.3, 0, (adaptivityType == ADAPTIVITYTYPE_H));
+            hp.adapt(0.3, 0, (int) adaptivityType);
         }
     }
 

@@ -111,6 +111,7 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->clear();
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_NONE), ADAPTIVITYTYPE_NONE);
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_H), ADAPTIVITYTYPE_H);
+    cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_P), ADAPTIVITYTYPE_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_HP), ADAPTIVITYTYPE_HP);
 
     cmbPhysicField->setEnabled(m_isNewProblem);

@@ -150,9 +150,10 @@ inline QString problemTypeString(ProblemType problemType)
 
 enum AdaptivityType
 {
-    ADAPTIVITYTYPE_NONE,
-    ADAPTIVITYTYPE_H,
-    ADAPTIVITYTYPE_HP
+    ADAPTIVITYTYPE_NONE = 3,
+    ADAPTIVITYTYPE_H = 1,
+    ADAPTIVITYTYPE_P = 2,
+    ADAPTIVITYTYPE_HP = 0
 };
 
 inline QString adaptivityTypeStringKey(AdaptivityType adaptivityType)
@@ -163,6 +164,8 @@ inline QString adaptivityTypeStringKey(AdaptivityType adaptivityType)
         return "disabled";
     case ADAPTIVITYTYPE_H:
         return "h-adaptivity";
+    case ADAPTIVITYTYPE_P:
+        return "p-adaptivity";
     case ADAPTIVITYTYPE_HP:
         return "hp-adaptivity";
     default:
@@ -180,6 +183,8 @@ inline QString adaptivityTypeString(AdaptivityType adaptivityType)
         return QObject::tr("Disabled");
     case ADAPTIVITYTYPE_H:
         return QObject::tr("h-adaptivity");
+    case ADAPTIVITYTYPE_P:
+        return QObject::tr("p-adaptivity");
     case ADAPTIVITYTYPE_HP:
         return QObject::tr("hp-adaptivity");
     default:
