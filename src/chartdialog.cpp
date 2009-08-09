@@ -6,6 +6,7 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
     restoreGeometry(settings.value("ChartDialog/Geometry", saveGeometry()).toByteArray());
     
     setWindowIcon(icon("chart"));
+    setWindowFlags(Qt::Window);
     setWindowTitle(tr("Chart"));
 
     createControls();
@@ -19,7 +20,12 @@ ChartDialog::~ChartDialog()
 {
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
-    
+
+    delete lblStartX;
+    delete lblStartY;
+    delete lblEndX;
+    delete lblEndY;
+
     delete txtStartX;
     delete txtStartY;
     delete txtEndX;
@@ -31,7 +37,7 @@ ChartDialog::~ChartDialog()
     
     delete cmbFieldVariable;
     delete cmbFieldVariableComp;
-    
+
     delete picker;
     delete chart;    
 }
@@ -39,6 +45,14 @@ ChartDialog::~ChartDialog()
 void ChartDialog::showDialog()
 {
     fillComboBoxVariable(cmbFieldVariable, Util::scene()->problemInfo().physicField);
+
+    // correct labels
+    lblStartX->setText(Util::scene()->problemInfo().labelX() + ":");
+    lblStartY->setText(Util::scene()->problemInfo().labelY() + ":");
+    lblEndX->setText(Util::scene()->problemInfo().labelX() + ":");
+    lblEndY->setText(Util::scene()->problemInfo().labelY() + ":");
+    radAxisX->setText(Util::scene()->problemInfo().labelX());
+    radAxisY->setText(Util::scene()->problemInfo().labelY());
 
     show();
     doChartLine();
@@ -71,6 +85,11 @@ void ChartDialog::createControls()
     // btnPrint->setText(tr("Print"));
     // connect(btnPrint, SIGNAL(clicked()), SLOT(doPrint()));
     
+    lblStartX = new QLabel("X");
+    lblStartY = new QLabel("Y");
+    lblEndX = new QLabel("X");
+    lblEndY = new QLabel("Y");
+
     txtStartX = new SLineEdit("0", false);
     txtStartY = new SLineEdit("0", false);
     txtEndX = new SLineEdit("0.0035", false);
@@ -82,26 +101,30 @@ void ChartDialog::createControls()
     connect(txtEndY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
 
     // start
-    QFormLayout *layoutStart = new QFormLayout();
-    layoutStart->addRow(Util::scene()->problemInfo().labelX() + ":", txtStartX);
-    layoutStart->addRow(Util::scene()->problemInfo().labelY() + ":", txtStartY);
-    
+    QGridLayout *layoutStart = new QGridLayout();
+    layoutStart->addWidget(lblStartX, 0, 0);
+    layoutStart->addWidget(txtStartX, 0, 1);
+    layoutStart->addWidget(lblStartY, 1, 0);
+    layoutStart->addWidget(txtStartY, 1, 1);
+
     QGroupBox *grpStart = new QGroupBox(tr("Start"), this);
     grpStart->setLayout(layoutStart);
     
     // end
-    QFormLayout *layoutEnd = new QFormLayout();
-    layoutEnd->addRow(Util::scene()->problemInfo().labelX() + ":", txtEndX);
-    layoutEnd->addRow(Util::scene()->problemInfo().labelY() + ":", txtEndY);
-    
+    QGridLayout *layoutEnd = new QGridLayout();
+    layoutEnd->addWidget(lblEndX, 0, 0);
+    layoutEnd->addWidget(txtEndX, 0, 1);
+    layoutEnd->addWidget(lblEndY, 1, 0);
+    layoutEnd->addWidget(txtEndY, 1, 1);
+
     QGroupBox *grpEnd = new QGroupBox(tr("End"), this);
     grpEnd->setLayout(layoutEnd);
     
     // x - axis
     radAxisLength = new QRadioButton(tr("Length"), this);
     radAxisLength->setChecked(true);
-    radAxisX = new QRadioButton(Util::scene()->problemInfo().labelX(), this);
-    radAxisY = new QRadioButton(Util::scene()->problemInfo().labelY(), this);
+    radAxisX = new QRadioButton("X", this);
+    radAxisY = new QRadioButton("Y", this);
     
     QButtonGroup *axisGroup = new QButtonGroup(this);
     axisGroup->addButton(radAxisLength);

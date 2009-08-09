@@ -67,6 +67,11 @@ private:
 
     QwtPlotPicker *picker;
 
+    QLabel *lblStartX;
+    QLabel *lblStartY;
+    QLabel *lblEndX;
+    QLabel *lblEndY;
+
     SLineEdit *txtStartX;
     SLineEdit *txtStartY;
     SLineEdit *txtEndX;
