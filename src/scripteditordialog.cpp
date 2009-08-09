@@ -920,7 +920,10 @@ void ScriptEditorDialog::doFileSaveAs()
 
 void ScriptEditorDialog::doFileClose()
 {
-    doCloseTab(tabWidget->currentIndex());
+    if (tabWidget->count() > 1)
+        doCloseTab(tabWidget->currentIndex());
+    else
+        hide();
 }
 
 void ScriptEditorDialog::doDataChanged()
