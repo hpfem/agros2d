@@ -25,7 +25,22 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
 
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
 
-    setWidget(trvWidget);
+    QToolButton *btnPoint = new QToolButton();
+    btnPoint->setText(actPoint->text());
+    btnPoint->setIcon(actPoint->icon());
+    btnPoint->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    connect(btnPoint, SIGNAL(clicked()), this, SLOT(doPoint()));
+
+    // main widget
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(trvWidget);
+    layout->addWidget(btnPoint);
+    layout->setContentsMargins(0, 0, 0, 7);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);    
+    
+    setWidget(widget);
 }
 
 LocalPointValueView::~LocalPointValueView()
