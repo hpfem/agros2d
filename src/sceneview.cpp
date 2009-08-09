@@ -2009,6 +2009,7 @@ void SceneView::doSceneModeSet(QAction *)
     Util::scene()->selectNone();
     
     Util::scene()->actTransform->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
+    Util::scene()->actDeleteSelected->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
     actSceneViewSelectRegion->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
     
     actPostprocessorModeLocalPointValue->setEnabled((m_sceneMode == SCENEMODE_POSTPROCESSOR));
