@@ -18,33 +18,36 @@ QMAKE_CXXFLAGS_DEBUG += -w
 QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
-unix {
-  # use qmake PREFIX=... to customize your installation
-  isEmpty(PREFIX) {
-    PREFIX=/usr/local
-  }
-
-  # install examples
-  examples.path = $${PREFIX}/share/agros2d/data
-  examples.files = data/*.a2d
-
-  # install script
-  script.path = $${PREFIX}/share/agros2d/data/script
-  script.files = data/script/*.qs
-
-  # install help
-  help.path = $${PREFIX}/share/agros2d/doc/help
-  help.files = doc/help/agros2d.qch doc/help/agros2d.qhc
-
-  # install translations
-  lang.path = $${PREFIX}/share/agros2d/lang
-  lang.files = lang/*.qm
-
-  # install library
-  target.path = $${PREFIX}/bin
-
-  # "make install" configuration options
-  INSTALLS *= target examples script help lang
+unix { 
+    # use qmake PREFIX=... to customize your installation
+    isEmpty(PREFIX):PREFIX = /usr/local
+    
+    # install examples
+    examples.path = $${PREFIX}/share/agros2d/data
+    examples.files = data/*.a2d
+    
+    # install script
+    script.path = $${PREFIX}/share/agros2d/data/script
+    script.files = data/script/*.qs
+    
+    # install help
+    help.path = $${PREFIX}/share/agros2d/doc/help
+    help.files = doc/help/agros2d.qch \
+        doc/help/agros2d.qhc
+    
+    # install translations
+    lang.path = $${PREFIX}/share/agros2d/lang
+    lang.files = lang/*.qm
+    
+    # install library
+    target.path = $${PREFIX}/bin
+    
+    # "make install" configuration options
+    INSTALLS *= target \
+        examples \
+        script \
+        help \
+        lang
 }
 SUBDIRS += src
 SOURCES += src/scene.cpp \
@@ -76,7 +79,8 @@ SOURCES += src/scene.cpp \
     src/volumeintegralview.cpp \
     src/surfaceintegralview.cpp \
     src/dxflib/dl_writer_ascii.cpp \
-    src/dxflib/dl_dxf.cpp
+    src/dxflib/dl_dxf.cpp \
+    scripteditorcommandsecma.cpp
 HEADERS += src/scene.h \
     src/util.h \
     src/mainwindow.h \
@@ -119,5 +123,6 @@ LIBS += -lhermes2d-real \
     -lblas \
     -lJudy \
     -lpthread
+unix:LIBS += -lpython2.6
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt

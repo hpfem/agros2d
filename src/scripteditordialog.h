@@ -21,9 +21,6 @@
 
 class Scene;
 class SceneView;
-
-static SceneView *m_sceneView;
-
 class ScriptEditor;
 
 class ScriptEditorWidget : public QWidget
@@ -31,7 +28,7 @@ class ScriptEditorWidget : public QWidget
     Q_OBJECT
 
 public slots:
-    void doRun();
+    void doRunEcma();
     void doCreateFromModel();
 
 public:
@@ -97,7 +94,7 @@ protected:
     QAction *actCopy;
     QAction *actPaste;
 
-    QAction *actRun;
+    QAction *actRunEcma;
     QAction *actCreateFromModel;
 
     QAction *actHelp;

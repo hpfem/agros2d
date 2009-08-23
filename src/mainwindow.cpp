@@ -190,13 +190,13 @@ void MainWindow::createMenus()
     // mnuEdit->addAction(actRedo);
     // mnuEdit->addSeparator();
     // mnuEdit->addAction(actCut);
-    // mnuEdit->addAction(actCopy);
+    mnuEdit->addAction(actCopy);
     mnuEdit->addAction(actPaste);
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
-    #ifdef Q_WS_X11
+#ifdef Q_WS_X11
     mnuEdit->addSeparator();
     mnuEdit->addAction(actOptions);
-    #endif
+#endif
 
     mnuView = menuBar()->addMenu(tr("&View"));
     mnuView->addAction(sceneView->actSceneZoomBestFit);
@@ -239,10 +239,10 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actScriptStartup);
     mnuTools->addAction(actScriptEditor);
-    #ifdef Q_WS_WIN
+#ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
-    #endif
+#endif
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
@@ -410,14 +410,25 @@ void MainWindow::doDocumentOpen()
     QSettings settings;
     QString dir = settings.value("General/LastDataDir", "data").toString();
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.a2d)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.a2d *.qs);;Agros2D data files (*.a2d);;Agros2D script files (*.qs)"));
     if (!fileName.isEmpty())
     {        
-        Util::scene()->readFromFile(fileName);
-        setRecentFiles();
+        QFileInfo fileInfo(fileName);
+        if (fileInfo.suffix() == "a2d")
+        {
+            // a2d data file
+            Util::scene()->readFromFile(fileName);
+            setRecentFiles();
 
-        sceneView->doDefaults();
-        sceneView->doZoomBestFit();
+            sceneView->doDefaults();
+            sceneView->doZoomBestFit();
+        }
+        else
+        {
+            // a2d script
+            scriptEditorDialog->showDialog();
+            scriptEditorDialog->doFileOpen(fileName);
+        }
     }
 }
 
