@@ -18,8 +18,9 @@
 
 #include "util.h"
 #include "locale.h"
-#include "scenemarker.h"
 #include "scenebasic.h"
+#include "scenemarker.h"
+#include "scenefunction.h"
 #include "scenesolution.h"
 
 #include "helpdialog.h"
@@ -42,6 +43,8 @@ class SceneLabel;
 
 class SceneEdgeMarker;
 class SceneLabelMarker;
+
+class SceneFunction;
 
 struct SceneViewSettings;
 class SceneSolution;
@@ -112,7 +115,8 @@ public slots:
     void doNewLabel();
     void doDeleteSelected();
     void doNewEdgeMarker();
-    void doNewLabelMarker();  
+    void doNewLabelMarker();
+    void doNewFunction();
     void doTransform();
     void doProblemProperties();
 
@@ -124,6 +128,7 @@ public:
     QList<SceneNode *> nodes;
     QList<SceneEdge *> edges;
     QList<SceneLabel *> labels;
+    QList<SceneFunction *> functions;
 
     QList<SceneEdgeMarker *> edgeMarkers;
     QList<SceneLabelMarker *> labelMarkers;
@@ -134,6 +139,7 @@ public:
     QAction *actDeleteSelected;
     QAction *actNewEdgeMarker;
     QAction *actNewLabelMarker;
+    QAction *actNewFunction;
     QAction *actProblemProperties;
     QAction *actTransform;
 
@@ -156,6 +162,9 @@ public:
     void addLabelMarker(SceneLabelMarker *labelMarker);
     void removeLabelMarker(SceneLabelMarker *labelMarker);
     void setLabelMarker(SceneLabelMarker *labelMarker); // set label marker to selected labels
+
+    SceneFunction *addFunction(SceneFunction *function);
+    void removeFunction(SceneFunction *function);
 
     void clear();
 
@@ -201,24 +210,6 @@ private slots:
 };
 
 // **************************************************************************************
-
-/*
-class Util
-{
-public:
-    static Scene *scene()
-    {
-        static Scene m_scene;
-        return &m_scene;
-    }
-
-    static HelpDialog *helpDialog()
-    {
-        static HelpDialog helpDialog(QApplication::activeWindow());
-        return &helpDialog;
-    }
-};
-*/
 
 class Util
 {

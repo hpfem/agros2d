@@ -10,7 +10,7 @@ ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
     splitter = new QSplitter(this);
 
     createControls();
-    createEngine();
+    m_engine = scriptEngine();
 
     QSettings settings;
     restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
@@ -27,6 +27,8 @@ ScriptEditorWidget::~ScriptEditorWidget()
     delete txtEditor;
     delete txtOutput;
     delete splitter;
+
+    delete m_engine;
 }
 
 void ScriptEditorWidget::createControls()
@@ -48,74 +50,67 @@ void ScriptEditorWidget::createControls()
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
 }
 
-void ScriptEditorWidget::createEngine()
-{
-
-}
-
 void ScriptEditorWidget::doRunEcma()
 {
-    QScriptEngine engine;
-
     // scene
-    QScriptValue sceneValue = engine.newQObject(Util::scene());
-    engine.globalObject().setProperty("scene", sceneValue);
+    QScriptValue sceneValue = m_engine->newQObject(Util::scene());
+    m_engine->globalObject().setProperty("scene", sceneValue);
 
     // scene view
-    QScriptValue sceneViewValue = engine.newQObject(m_sceneView);
-    engine.globalObject().setProperty("sceneView", sceneViewValue);
+    QScriptValue sceneViewValue = m_engine->newQObject(m_sceneView);
+    m_engine->globalObject().setProperty("sceneView", sceneViewValue);
 
     // print
-    QScriptValue funPrint = engine.newFunction(scriptPrint);
-    funPrint.setData(engine.newQObject(txtOutput));
-    engine.globalObject().setProperty("print", funPrint);
+    QScriptValue funPrint = m_engine->newFunction(scriptPrint);
+    funPrint.setData(m_engine->newQObject(txtOutput));
+    m_engine->globalObject().setProperty("print", funPrint);
 
-    engine.globalObject().setProperty("include", engine.newFunction(scriptInclude));
-    engine.globalObject().setProperty("printToFile", engine.newFunction(scriptPrintToFile));
+    m_engine->globalObject().setProperty("include", m_engine->newFunction(scriptInclude));
+    m_engine->globalObject().setProperty("printToFile", m_engine->newFunction(scriptPrintToFile));
 
-    engine.globalObject().setProperty("newDocument", engine.newFunction(scriptNewDocument));
-    engine.globalObject().setProperty("openDocument", engine.newFunction(scriptOpenDocument));
-    engine.globalObject().setProperty("saveDocument", engine.newFunction(scriptSaveDocument));
+    m_engine->globalObject().setProperty("newDocument", m_engine->newFunction(scriptNewDocument));
+    m_engine->globalObject().setProperty("openDocument", m_engine->newFunction(scriptOpenDocument));
+    m_engine->globalObject().setProperty("saveDocument", m_engine->newFunction(scriptSaveDocument));
 
-    engine.globalObject().setProperty("addNode", engine.newFunction(scriptAddNode));
-    engine.globalObject().setProperty("addEdge", engine.newFunction(scriptAddEdge));
-    engine.globalObject().setProperty("addLabel", engine.newFunction(scriptAddLabel));
+    m_engine->globalObject().setProperty("addNode", m_engine->newFunction(scriptAddNode));
+    m_engine->globalObject().setProperty("addEdge", m_engine->newFunction(scriptAddEdge));
+    m_engine->globalObject().setProperty("addLabel", m_engine->newFunction(scriptAddLabel));
 
-    engine.globalObject().setProperty("addBoundary", engine.newFunction(scriptAddBoundary));
-    engine.globalObject().setProperty("addMaterial", engine.newFunction(scriptAddMaterial));
+    m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
+    m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
 
-    engine.globalObject().setProperty("solve", engine.newFunction(scriptSolve));
-    engine.globalObject().setProperty("zoomBestFit", engine.newFunction(scriptZoomBestFit));
+    m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
+    m_engine->globalObject().setProperty("zoomBestFit", m_engine->newFunction(scriptZoomBestFit));
 
-    engine.globalObject().setProperty("mode", engine.newFunction(scriptMode));
+    m_engine->globalObject().setProperty("mode", m_engine->newFunction(scriptMode));
 
-    engine.globalObject().setProperty("selectNone", engine.newFunction(scriptSelectNone));
-    engine.globalObject().setProperty("selectAll", engine.newFunction(scriptSelectAll));
-    engine.globalObject().setProperty("selectNode", engine.newFunction(scriptSelectNode));
-    engine.globalObject().setProperty("selectEdge", engine.newFunction(scriptSelectEdge));
-    engine.globalObject().setProperty("selectLabel", engine.newFunction(scriptSelectLabel));
+    m_engine->globalObject().setProperty("selectNone", m_engine->newFunction(scriptSelectNone));
+    m_engine->globalObject().setProperty("selectAll", m_engine->newFunction(scriptSelectAll));
+    m_engine->globalObject().setProperty("selectNode", m_engine->newFunction(scriptSelectNode));
+    m_engine->globalObject().setProperty("selectEdge", m_engine->newFunction(scriptSelectEdge));
+    m_engine->globalObject().setProperty("selectLabel", m_engine->newFunction(scriptSelectLabel));
 
-    engine.globalObject().setProperty("moveSelection", engine.newFunction(scriptMoveSelection));
-    engine.globalObject().setProperty("rotateSelection", engine.newFunction(scriptRotateSelection));
-    engine.globalObject().setProperty("scaleSelection", engine.newFunction(scriptScaleSelection));
+    m_engine->globalObject().setProperty("moveSelection", m_engine->newFunction(scriptMoveSelection));
+    m_engine->globalObject().setProperty("rotateSelection", m_engine->newFunction(scriptRotateSelection));
+    m_engine->globalObject().setProperty("scaleSelection", m_engine->newFunction(scriptScaleSelection));
 
-    engine.globalObject().setProperty("pointResult", engine.newFunction(scriptPointResult));
-    engine.globalObject().setProperty("volumeIntegral", engine.newFunction(scriptVolumeIntegral));
-    engine.globalObject().setProperty("surfaceIntegral", engine.newFunction(scriptSurfaceIntegral));
+    m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
+    m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
+    m_engine->globalObject().setProperty("surfaceIntegral", m_engine->newFunction(scriptSurfaceIntegral));
 
     // run
     txtOutput->clear();
 
     // check syntax
-    QScriptSyntaxCheckResult syntaxResult = engine.checkSyntax(txtEditor->toPlainText());
+    QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(txtEditor->toPlainText());
 
     if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
     {
         Util::scene()->blockSignals(true);
         // startup script
-        engine.evaluate(Util::scene()->problemInfo().scriptStartup);
+        m_engine->evaluate(Util::scene()->problemInfo().scriptStartup);
         // result
-        QScriptValue result = engine.evaluate(txtEditor->toPlainText(), file);
+        QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), file);
         Util::scene()->blockSignals(false);
         Util::scene()->refresh();
     }
@@ -520,9 +515,7 @@ void ScriptStartupDialog::createControls()
 
 void ScriptStartupDialog::doAccept()
 {
-    QScriptEngine engine;
-
-    if (engine.canEvaluate(txtEditor->toPlainText()))
+    if (m_engine->canEvaluate(txtEditor->toPlainText()))
     {
         Util::scene()->problemInfo().scriptStartup = txtEditor->toPlainText();
         accept();

@@ -48,6 +48,8 @@ void SceneInfoView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
     mnuInfo->addAction(Util::scene()->actNewLabelMarker);
     mnuInfo->addSeparator();
+    mnuInfo->addAction(Util::scene()->actNewFunction);
+    mnuInfo->addSeparator();
     mnuInfo->addAction(actDelete);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actProperties);
@@ -87,6 +89,12 @@ void SceneInfoView::createTreeView()
     materialsNode->setText(0, tr("Materials"));
     materialsNode->setExpanded(true);
 
+    // functions
+    functionsNode = new QTreeWidgetItem(trvWidget);
+    functionsNode->setText(0, tr("Functions"));
+    functionsNode->setIcon(0, icon("scenefunction"));
+    functionsNode->setExpanded(true);
+
     // geometry
     geometryNode = new QTreeWidgetItem(trvWidget);
     // geometryNode->setIcon(0, icon("geometry"));
@@ -107,11 +115,6 @@ void SceneInfoView::createTreeView()
     labelsNode = new QTreeWidgetItem(geometryNode);
     labelsNode->setText(0, tr("Labels"));
     labelsNode->setIcon(0, icon("scenelabel"));
-
-    trvWidget->addTopLevelItem(problemNode);
-    trvWidget->addTopLevelItem(geometryNode);
-    trvWidget->addTopLevelItem(boundaryConditionsNode);
-    trvWidget->addTopLevelItem(materialsNode);
 }
 
 void SceneInfoView::keyPressEvent(QKeyEvent *event)
@@ -192,6 +195,16 @@ void SceneInfoView::doInvalidated()
         item->setData(0, Qt::UserRole, Util::scene()->labelMarkers[i]->variant());
     }
 
+    // functions
+    for (int i = 0; i<Util::scene()->functions.count(); i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(functionsNode);
+
+        item->setText(0, Util::scene()->functions[i]->name);
+        item->setIcon(0, icon("scene-function"));
+        item->setData(0, Qt::UserRole, Util::scene()->functions[i]->variant());
+    }
+
     // geometry
     // nodes
     for (int i = 0; i<Util::scene()->nodes.count(); i++)
@@ -253,11 +266,20 @@ void SceneInfoView::clearNodes()
         boundaryConditionsNode->removeChild(item);
         delete item;
     }
+
     // materials
     while (materialsNode->childCount() > 0)
     {
         QTreeWidgetItem *item = materialsNode->child(0);
         materialsNode->removeChild(item);
+        delete item;
+    }
+
+    // functions
+    while (functionsNode->childCount() > 0)
+    {
+        QTreeWidgetItem *item = functionsNode->child(0);
+        functionsNode->removeChild(item);
         delete item;
     }
 
@@ -341,6 +363,13 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
         }
+
+        // function
+        if (SceneFunction *objectFunction = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneFunction *>())
+        {
+            actProperties->setEnabled(true);
+            actDelete->setEnabled(true);
+        }
     }
 }
 
@@ -352,7 +381,7 @@ void SceneInfoView::doItemDoubleClicked(QTreeWidgetItem *item, int role)
 void SceneInfoView::doProperties() {
     if (trvWidget->currentItem() != NULL) {
         // geometry
-        if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic*>())
+        if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
         {
             if (objectBasic->showDialog(this) == QDialog::Accepted)
             {
@@ -375,6 +404,16 @@ void SceneInfoView::doProperties() {
         if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
         {
             if (objectLabelMarker->showDialog(this) == QDialog::Accepted)
+            {
+                m_sceneView->doRefresh();
+                doInvalidated();
+            }
+        }
+
+        // function
+        if (SceneFunction *objectFunction = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneFunction *>())
+        {
+            if (objectFunction->showDialog(this) == QDialog::Accepted)
             {
                 m_sceneView->doRefresh();
                 doInvalidated();
@@ -415,6 +454,12 @@ void SceneInfoView::doDelete()
         if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
         {
             Util::scene()->removeLabelMarker(objectLabelMarker);
+        }
+
+        // function
+        if (SceneFunction *objectFunction = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneFunction *>())
+        {
+            Util::scene()->removeFunction(objectFunction);
         }
 
         m_sceneView->doRefresh();

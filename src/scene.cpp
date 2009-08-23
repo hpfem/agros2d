@@ -119,6 +119,11 @@ void Scene::createActions()
     actNewLabelMarker->setStatusTip(tr("New material"));
     connect(actNewLabelMarker, SIGNAL(triggered()), this, SLOT(doNewLabelMarker()));
 
+    actNewFunction = new QAction(icon(""), tr("New &function..."), this);
+    actNewFunction->setShortcut(tr("Alt+F"));
+    actNewFunction->setStatusTip(tr("New function"));
+    connect(actNewFunction, SIGNAL(triggered()), this, SLOT(doNewFunction()));
+
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
@@ -224,7 +229,8 @@ void Scene::addLabelMarker(SceneLabelMarker *labelMarker) {
     emit invalidated();
 }
 
-void Scene::removeLabelMarker(SceneLabelMarker *labelMarker) {
+void Scene::removeLabelMarker(SceneLabelMarker *labelMarker)
+{
     // set none marker
     foreach (SceneLabel *label, labels)
     {
@@ -245,18 +251,45 @@ void Scene::setLabelMarker(SceneLabelMarker *labelMarker)
     selectNone();
 }
 
-void Scene::clear() {
+SceneFunction *Scene::addFunction(SceneFunction *function)
+{
+    // check if function doesn't exists
+    foreach (SceneFunction *functionCheck, functions)
+    {
+        if ((functionCheck->name == function->name) && (functionCheck->function == function->function))
+            return functionCheck;
+    }
+
+    functions.append(function);
+    emit invalidated();
+
+    return function;
+}
+
+void Scene::removeFunction(SceneFunction *function)
+{
+    functions.removeOne(function);
+    emit invalidated();
+}
+
+void Scene::clear()
+{
     blockSignals(true);
 
     m_sceneSolution->clear();
     m_problemInfo.clear();
 
+    // geometry
     nodes.clear();
     edges.clear();
     labels.clear();
 
+    // markers
     edgeMarkers.clear();
     labelMarkers.clear();
+
+    // functions
+    functions.clear();
 
     // none edge
     addEdgeMarker(new SceneEdgeMarkerNone());
@@ -629,6 +662,17 @@ void Scene::doNewLabelMarker()
     }
     else
         delete marker;
+}
+
+void Scene::doNewFunction()
+{
+    SceneFunction *function = new SceneFunction(tr("unnamed function"), "x");
+    if (function->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
+    {
+        addFunction(function);
+    }
+    else
+        delete function;
 }
 
 void Scene::doTransform()
@@ -1083,6 +1127,17 @@ void Scene::readFromFile(const QString &fileName)
         n = n.nextSibling();
     }
 
+    // functions
+    QDomNode eleFunctions = eleDoc.elementsByTagName("functions").at(0);
+    n = eleFunctions.firstChild();
+    while(!n.isNull())
+    {
+        element = n.toElement();
+
+        addFunction(new SceneFunction(element.attribute("name"), element.attribute("function")));
+        n = n.nextSibling();
+    }
+
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 
@@ -1313,6 +1368,19 @@ void Scene::writeToFile(const QString &fileName) {
         }
 
         eleLabelMarkers.appendChild(eleLabelMarker);
+    }
+
+    // functions
+    QDomNode eleFunctions = doc.createElement("functions");
+    eleDoc.appendChild(eleFunctions);
+    for (int i = 0; i<functions.length(); i++)
+    {
+        QDomElement eleFunction = doc.createElement("function");
+
+        eleFunction.setAttribute("name", functions[i]->name);
+        eleFunction.setAttribute("function", functions[i]->function);
+
+        eleFunctions.appendChild(eleFunction);
     }
 
     // save to file

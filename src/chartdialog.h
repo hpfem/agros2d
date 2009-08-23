@@ -99,20 +99,4 @@ private slots:
     void doChartLine();
 };
 
-class Chart : public QwtPlot
-{
-    Q_OBJECT
-public:
-    Chart(QWidget *parent = 0);
-    ~Chart();
-
-    inline QwtPlotCurve *curve() { return m_curve; }
-
-public slots:
-   void setData(double *xval, double *yval, int count);
-
-private:
-    QwtPlotCurve *m_curve;
-};
-
 #endif // CHARTDIALOG_H

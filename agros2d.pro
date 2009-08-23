@@ -39,15 +39,19 @@ unix {
     lang.path = $${PREFIX}/share/agros2d/lang
     lang.files = lang/*.qm
     
-    # install library
+    # install script
+    script.path = $${PREFIX}/share/agros2d
+    script.files = *.js
+
+    # install binary
     target.path = $${PREFIX}/bin
     
     # "make install" configuration options
     INSTALLS *= target \
         examples \
-        script \
         help \
-        lang
+        lang \
+        script
 }
 SUBDIRS += src
 SOURCES += src/scene.cpp \
@@ -55,6 +59,7 @@ SOURCES += src/scene.cpp \
     src/main.cpp \
     src/gui.cpp \
     src/scripteditordialog.cpp \
+    src/scripteditorcommandsecma.cpp \
     src/scripteditorhighlighter.cpp \
     src/solverdialog.cpp \
     src/hermes2d/hermes_electrostatic.cpp \
@@ -66,6 +71,7 @@ SOURCES += src/scene.cpp \
     src/mainwindow.cpp \
     src/scenemarker.cpp \
     src/scenebasic.cpp \
+    src/scenefunction.cpp \
     src/sceneinfo.cpp \
     src/sceneview.cpp \
     src/chartdialog.cpp \
@@ -79,8 +85,7 @@ SOURCES += src/scene.cpp \
     src/volumeintegralview.cpp \
     src/surfaceintegralview.cpp \
     src/dxflib/dl_writer_ascii.cpp \
-    src/dxflib/dl_dxf.cpp \
-    scripteditorcommandsecma.cpp
+    src/dxflib/dl_dxf.cpp
 HEADERS += src/scene.h \
     src/util.h \
     src/mainwindow.h \
@@ -97,6 +102,7 @@ HEADERS += src/scene.h \
     src/scenebasic.h \
     src/sceneinfo.h \
     src/scenemarker.h \
+    src/scenefunction.h \
     src/sceneview_data.h \
     src/sceneview.h \
     src/chartdialog.h \

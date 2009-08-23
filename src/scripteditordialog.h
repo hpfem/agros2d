@@ -44,6 +44,7 @@ public:
 
 private:
     QSplitter *splitter;
+    QScriptEngine *m_engine;
 };
 
 class ScriptEditorDialog : public QMainWindow
@@ -120,6 +121,7 @@ private slots:
 
 private:
     ProblemInfo *m_problemInfo;
+    QScriptEngine *m_engine;
 
     ScriptEditor *txtEditor;
 

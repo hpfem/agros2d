@@ -1,6 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <QtGui>
+
 #include <QTextStream>
 #include <QTranslator>
 #include <QTextCodec>
@@ -30,6 +32,27 @@ const int NDOF_STOP = 40000;
 
 using namespace std;
 
+// set gui style
+void setGUIStyle(const QString &styleName);
+
+// set language
+void setLanguage(const QString &locale);
+
+// get available languages
+QStringList availableLanguages();
+
+// get icon with respect to actual theme
+QIcon icon(const QString &name);
+
+// get datadir
+QString datadir();
+
+// get external js functions
+QString externalFunctions();
+
+// get script engine
+QScriptEngine *scriptEngine();
+
 struct Value
 {
     QString text;
@@ -40,21 +63,25 @@ struct Value
 
     bool evaluate(const QString &script = "")
     {
-        QScriptEngine engine;
+        bool result = false;
+        QScriptEngine *engine = scriptEngine();
 
         // evaluate startup script
         if (!script.isEmpty())
-            engine.evaluate(script);
+            engine->evaluate(script);
 
-        QScriptValue scriptValue = engine.evaluate(text);
+        QScriptValue scriptValue = engine->evaluate(text);
         if (scriptValue.isNumber())
         {
             number = scriptValue.toNumber();
-            return true;
+            result = true;
         }
+        delete engine;
 
-        QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), QObject::tr("Expression '%1' cannot be evaluated.").arg(text));
-        return false;
+        if (!result)
+            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), QObject::tr("Expression '%1' cannot be evaluated.").arg(text));
+
+        return result;
     };
 };
 
@@ -843,20 +870,5 @@ enum SceneViewPostprocessorShow
     SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID,
     SCENEVIEW_POSTPROCESSOR_SHOW_ORDER
 };
-
-// set gui style
-void setGUIStyle(const QString &styleName);
-
-// set language
-void setLanguage(const QString &locale);
-
-// get available languages
-QStringList availableLanguages();
-
-// get icon with respect to actual theme
-QIcon icon(const QString &name);
-
-// get appdir
-QString appdir();
 
 #endif // UTIL_H

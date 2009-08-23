@@ -16,14 +16,14 @@ void setLanguage(const QString &locale)
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 
     QTranslator *translator = new QTranslator();
-    translator->load(appdir() + "/lang/" + locale + ".qm");
+    translator->load(datadir() + "/lang/" + locale + ".qm");
     QApplication::installTranslator(translator);
 }
 
 QStringList availableLanguages()
 {
     QDir dir;
-    dir.setPath(appdir() + "/lang");
+    dir.setPath(datadir() + "/lang");
 
     QStringList filters;
     filters << "*.qm";
@@ -36,19 +36,20 @@ QStringList availableLanguages()
     return list;
 }
 
-QIcon icon(const QString &name) {
+QIcon icon(const QString &name)
+{
     QString fileName;
 
     fileName = name;
-    #ifdef Q_WS_WIN
+#ifdef Q_WS_WIN
     if (QFile::exists(":/images/" + name + "-windows.png"))
         fileName = name + "-windows";
-    #endif
+#endif
 
     return QIcon(QPixmap(":images/" + fileName + ".png"));
 }
 
-QString appdir()
+QString datadir()
 {
     QDir dirData;
     dirData.setPath(QDir::current().absolutePath() + "/data");
@@ -61,4 +62,35 @@ QString appdir()
 
     cerr << "Datadir not found." << endl;
     exit(1);
+}
+
+QString externalFunctions()
+{
+    static QString m_externalFunctions;
+
+    if (m_externalFunctions.isEmpty())
+    {
+        QFile file(datadir() + "/functions.js");
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            m_externalFunctions = "";
+        }
+        else
+        {
+            QTextStream inFile(&file);
+            m_externalFunctions = inFile.readAll();
+
+            file.close();
+        }
+    }
+
+    return m_externalFunctions;
+}
+
+QScriptEngine *scriptEngine()
+{
+    QScriptEngine *engine = new QScriptEngine();
+    engine->evaluate(externalFunctions());
+
+    return engine;
 }

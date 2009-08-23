@@ -88,19 +88,26 @@ void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
 SLineEdit::SLineEdit(QWidget *parent) : QLineEdit(parent)
 {   
     SLineEdit::SLineEdit("", true, parent);
+
+    m_engine = scriptEngine();
 }
 
 SLineEdit::SLineEdit(const QString &contents, bool hasValidator, QWidget *parent) : QLineEdit(contents, parent)
 {
     if (hasValidator)
         this->setValidator(new QDoubleValidator(this));
+
+    m_engine = scriptEngine();
+}
+
+SLineEdit::~SLineEdit()
+{
+   delete m_engine;
 }
 
 double SLineEdit::value()
 {
-    QScriptEngine engine;
-
-    QScriptValue scriptValue = engine.evaluate(text());
+    QScriptValue scriptValue = m_engine->evaluate(text());
     if (scriptValue.isNumber())
         return scriptValue.toNumber();
 }
@@ -142,4 +149,96 @@ double SLineEditValue::number()
 {
     if (evaluate())
         return m_number;
+}
+
+// ****************************************************************************************************************
+
+
+Chart::Chart(QWidget *parent) : QwtPlot(parent)
+{
+    //  chart style
+    setAutoReplot(false);
+    setMargin(5);
+    setTitle("");
+    setCanvasBackground(QColor(Qt::white));
+    setMinimumSize(700, 450);
+
+    // legend
+    /*
+    QwtLegend *legend = new QwtLegend;
+    legend->setFrameStyle(QFrame::Box | QFrame::Sunken);
+    insertLegend(legend, QwtPlot::BottomLegend);
+    */
+
+    // grid
+    QwtPlotGrid *grid = new QwtPlotGrid;
+    grid->enableXMin(true);
+    grid->setMajPen(QPen(Qt::darkGray, 0, Qt::DotLine));
+    grid->setMinPen(QPen(Qt::gray, 0 , Qt::DotLine));
+    grid->enableX(true);
+    grid->enableY(true);
+    grid->enableXMin(true);
+    grid->enableYMin(true);
+    grid->attach(this);
+
+    // axes
+    setAxisTitle(QwtPlot::xBottom, " ");
+    setAxisFont(QwtPlot::xBottom, QFont("Helvetica", 9, QFont::Normal));
+    setAxisTitle(QwtPlot::yLeft, " ");
+    setAxisFont(QwtPlot::yLeft, QFont("Helvetica", 9, QFont::Normal));
+
+    // curve styles
+    QwtSymbol sym;
+
+    sym.setStyle(QwtSymbol::Cross);
+    sym.setPen(QColor(Qt::black));
+    sym.setSize(5);
+
+    // curve
+    m_curve = new QwtPlotCurve();
+    m_curve->setRenderHint(QwtPlotItem::RenderAntialiased);
+    m_curve->setPen(QPen(Qt::blue));
+    m_curve->setCurveAttribute(QwtPlotCurve::Inverted);
+    m_curve->setYAxis(QwtPlot::yLeft);
+    m_curve->attach(this);
+}
+
+Chart::~Chart()
+{
+    delete m_curve;
+}
+
+void Chart::saveImage(const QString &fileName)
+{
+    QString fileNameTemp;
+    if (fileName.isEmpty())
+    {
+        fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", tr("PNG files (*.png)"));
+    }
+    else
+    {
+        fileNameTemp = fileName;
+    }
+
+    if (!fileNameTemp.isEmpty())
+    {
+        QFileInfo fileInfo(fileNameTemp);
+        if (fileInfo.suffix().toLower() != "png") fileNameTemp += ".png";
+
+        QImage image(1024, 768, QImage::Format_ARGB32);
+        print(image);
+        image.save(fileNameTemp, "PNG");
+    }
+}
+
+void Chart::setData(double *xval, double *yval, int count)
+{
+    const bool doReplot = autoReplot();
+    setAutoReplot(false);
+
+    m_curve->setData(xval, yval, count);
+
+    setAutoReplot(doReplot);
+
+    replot();
 }

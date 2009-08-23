@@ -331,16 +331,7 @@ void ChartDialog::doPrint()
 
 void ChartDialog::doSaveImage()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", tr("PNG files (*.png)"));
-    if (!fileName.isEmpty())
-    {
-        QFileInfo fileInfo(fileName);
-        if (fileInfo.suffix().toLower() != "png") fileName += ".png";
-        
-        QImage image(1024, 768, QImage::Format_ARGB32);
-        chart->print(image);
-        image.save(fileName, "PNG");
-    }
+    chart->saveImage();
 }
 
 void ChartDialog::doExportData()
@@ -419,71 +410,4 @@ void ChartDialog::doChartLine()
 void ChartDialog::hideEvent(QHideEvent *event)
 {
     doChartLine();
-}
-
-// *********************************************************************************************************************
-
-Chart::Chart(QWidget *parent) : QwtPlot(parent)
-{
-    //  chart style
-    setAutoReplot(false);
-    setMargin(5);
-    setTitle("");
-    setCanvasBackground(QColor(Qt::white));
-    
-    // legend
-    /*
-    QwtLegend *legend = new QwtLegend;
-    legend->setFrameStyle(QFrame::Box | QFrame::Sunken);
-    insertLegend(legend, QwtPlot::BottomLegend);
-    */
-    
-    // grid
-    QwtPlotGrid *grid = new QwtPlotGrid;
-    grid->enableXMin(true);
-    grid->setMajPen(QPen(Qt::darkGray, 0, Qt::DotLine));
-    grid->setMinPen(QPen(Qt::gray, 0 , Qt::DotLine));
-    grid->enableX(true);
-    grid->enableY(true);
-    grid->enableXMin(true);
-    grid->enableYMin(true);
-    grid->attach(this);
-    
-    // axes
-    setAxisTitle(QwtPlot::xBottom, " ");
-    setAxisFont(QwtPlot::xBottom, QFont("Helvetica", 9, QFont::Normal));
-    setAxisTitle(QwtPlot::yLeft, " ");
-    setAxisFont(QwtPlot::yLeft, QFont("Helvetica", 9, QFont::Normal));
-    
-    // curve styles
-    QwtSymbol sym;
-    
-    sym.setStyle(QwtSymbol::Cross);
-    sym.setPen(QColor(Qt::black));
-    sym.setSize(5);
-    
-    // curve
-    m_curve = new QwtPlotCurve();
-    m_curve->setRenderHint(QwtPlotItem::RenderAntialiased);
-    m_curve->setPen(QPen(Qt::blue));
-    m_curve->setCurveAttribute(QwtPlotCurve::Inverted);
-    m_curve->setYAxis(QwtPlot::yLeft);
-    m_curve->attach(this);
-}
-
-Chart::~Chart()
-{
-    delete m_curve;
-}
-
-void Chart::setData(double *xval, double *yval, int count)
-{
-    const bool doReplot = autoReplot();
-    setAutoReplot(false);
-    
-    m_curve->setData(xval, yval, count);    
-
-    setAutoReplot(doReplot);
-    
-    replot();
 }

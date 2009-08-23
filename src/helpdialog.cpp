@@ -56,7 +56,7 @@ HelpDialog::~HelpDialog()
 
 void HelpDialog::createControls()
 {
-    helpEngine = new QHelpEngine(appdir() + "/doc/help/agros2d.qhc", this);
+    helpEngine = new QHelpEngine(datadir() + "/doc/help/agros2d.qhc", this);
     helpEngine->setupData();
 
     splitter = new QSplitter(Qt::Horizontal);

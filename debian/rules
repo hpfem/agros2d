@@ -7,7 +7,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	-$(MAKE) distclean
-	qmake-qt4 CONFIG-="debug" CONFIG+="release" 
+	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release" 
 	touch $@
 
 build: build-stamp
@@ -30,7 +30,7 @@ install: build
 	dh_clean -k
 	dh_install
 	dh_installdirs
-	$(MAKE)
+	$(MAKE) install
 
 binary-indep: build install
 
