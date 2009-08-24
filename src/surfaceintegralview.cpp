@@ -286,22 +286,22 @@ QStringList surfaceIntegralValueHeaderFactory(PhysicField physicField)
     switch (physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        headers << "Length" << "Surface" << "Q";
+        headers << "l" << "S" << "Q";
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        headers << "Length" << "Surface";
+        headers << "l" << "S";
         break;
     case PHYSICFIELD_HARMONIC_MAGNETIC:
-        headers << "Length" << "Surface";
+        headers << "l" << "S";
         break;
     case PHYSICFIELD_CURRENT:
-        headers << "Length" << "Surface" << "I";
+        headers << "l" << "S" << "I";
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        headers << "Length" << "Surface" << "T_avg" << "T_diff" << "F";
+        headers << "l" << "S" << "T_avg" << "T_diff" << "F";
         break;
     case PHYSICFIELD_ELASTICITY:
-        headers << "Length" << "Surface";
+        headers << "l" << "S";
         break;
     default:
         cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. surfaceIntegralValueHeaderFactory(PhysicField physicField)" << endl;

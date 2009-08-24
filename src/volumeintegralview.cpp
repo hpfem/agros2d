@@ -318,6 +318,15 @@ QStringList VolumeIntegralValueHarmonicMagnetic::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
+            QString("%1").arg(crossSection, 0, 'e', 5) <<
+            QString("%1").arg(currentInducedReal, 0, 'e', 5) <<
+            QString("%1").arg(currentInducedImag, 0, 'e', 5) <<
+            QString("%1").arg(currentTotalReal, 0, 'e', 5) <<
+            QString("%1").arg(currentTotalImag, 0, 'e', 5) <<
+            QString("%1").arg(forceXReal, 0, 'e', 5) <<
+            QString("%1").arg(forceXImag, 0, 'e', 5) <<
+            QString("%1").arg(forceYReal, 0, 'e', 5) <<
+            QString("%1").arg(forceYImag, 0, 'e', 5) <<
             QString("%1").arg(powerLosses, 0, 'e', 5) <<
             QString("%1").arg(energy, 0, 'e', 5);
     return QStringList(row);
@@ -465,22 +474,22 @@ QStringList volumeIntegralValueHeaderFactory(PhysicField physicField)
     switch (physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        headers << "Volume" << "CrossSection" << "Ex_avg" << "Ey_avg" << "E_avg" << "Dx_avg" << "Dy_avg" << "D_avg" << "Energy";
+        headers << "V" << "S" << "Ex_avg" << "Ey_avg" << "E_avg" << "Dx_avg" << "Dy_avg" << "D_avg" << "We";
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        headers << "Volume" << "CrossSection" << "Bx_avg" << "By_avg" << "B_avg" << "Hx_avg" << "Hy_avg" << "H_avg" << "Energy";
+        headers << "V" << "S" << "Bx_avg" << "By_avg" << "B_avg" << "Hx_avg" << "Hy_avg" << "H_avg" << "Wm";
         break;
     case PHYSICFIELD_HARMONIC_MAGNETIC:
-        headers << "Volume" << "CrossSection"; // TODO
+        headers << "V" << "S" << "Ii_real" << "Ii_imag" << "It_real" << "It_imag" << "Fx_real" << "Fx_imag" << "Fy_real" << "Fy_imag" << "Pj" << "Wm";
         break;
     case PHYSICFIELD_CURRENT:
-        headers << "Volume" << "CrossSection" << "Jx_avg" << "Jy_avg" << "J_avg" << "Ex_avg" << "Ey_avg" << "E_avg" << "Losses";
+        headers << "V" << "S" << "Jx_avg" << "Jy_avg" << "J_avg" << "Ex_avg" << "Ey_avg" << "E_avg" << "Pj";
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        headers << "Volume" << "CrossSection" << "Temperature" << "Gx_avg" << "Gy_avg" << "G_avg" << "Fx_avg" << "Fy_avg" << "F_avg";
+        headers << "V" << "S" << "T" << "Gx_avg" << "Gy_avg" << "G_avg" << "Fx_avg" << "Fy_avg" << "F_avg";
         break;
     case PHYSICFIELD_ELASTICITY:
-        headers << "Volume" << "CrossSection";
+        headers << "V" << "S";
         break;
     default:
         cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. volumeIntegralValueHeaderFactory(PhysicField physicField)" << endl;

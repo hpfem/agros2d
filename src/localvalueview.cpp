@@ -1224,24 +1224,24 @@ QStringList localPointValueHeaderFactory(PhysicField physicField)
     switch (physicField)
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        headers << "X" << "Y" << "Potential" << "Ex" << "Ey" << "E" << "Dx" << "Dy" << "D" << "Energy" << "Permittivity";
+        headers << "X" << "Y" << "V" << "Ex" << "Ey" << "E" << "Dx" << "Dy" << "D" << "we" << "epsr";
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        headers << "X" << "Y" << "Potential" << "Bx" << "By" << "B" << "Hx" << "Hy" << "H" << "Energy" << "Permeability";
+        headers << "X" << "Y" << "A" << "Bx" << "By" << "B" << "Hx" << "Hy" << "H" << "wm" << "mur";
         break;
     case PHYSICFIELD_HARMONIC_MAGNETIC:
-        headers << "X" << "Y" << "Potential_real" << "Potential_imag" << "Potential"
+        headers << "X" << "Y" << "A_real" << "A_imag" << "A"
                 << "B" << "Bx_real" << "By_real" << "B_real" << "Bx_imag" << "By_imag" << "B_imag"
                 << "H" << "Hx_real" << "Hy_real" << "H_real" << "Hx_imag" << "Hy_imag" << "H_imag"
                 << "Ji_real" << "Ji_imag" << "Ji_real"
                 << "J_real" << "J_imag" << "J_real"
-                << "Losses" << "Energy" << "Permeability";
+                << "pj" << "wm" << "mur";
         break;
     case PHYSICFIELD_CURRENT:
-        headers << "X" << "Y" << "Potential" << "Jx" << "Jy" << "J" << "Ex" << "Ey" << "E" << "Losses" << "Conductivity";
+        headers << "X" << "Y" << "V" << "Jx" << "Jy" << "J" << "Ex" << "Ey" << "E" << "pj" << "gamma";
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        headers << "X" << "Y" << "Temperature" << "Gx" << "Gy" << "G" << "Fx" << "Fy" << "F" << "Conductivity";
+        headers << "X" << "Y" << "T" << "Gx" << "Gy" << "G" << "Fx" << "Fy" << "F" << "lambda";
         break;
     case PHYSICFIELD_ELASTICITY:
         headers << "X" << "Y" << "Von Misses stress";

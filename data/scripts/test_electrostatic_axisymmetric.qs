@@ -39,13 +39,13 @@ solve();
 
 // point value
 point = pointResult(0.026532,0.070937);
-testPotential = (Math.abs(point.Potential) - 26.078318) < 0.1;
-if (!testPotential) print(point.Potential);
+testPotential = (Math.abs(point.V) - 26.078318) < 0.1;
+if (!testPotential) print(point.V);
 
 // energy
 integral = volumeIntegral();
-testEnergy = (Math.abs(integral.Energy) - 1.799349e-8) < 1e-11;
-if (!testEnergy) print(integral.Energy);
+testEnergy = (Math.abs(integral.We) - 1.799349e-8) < 1e-11;
+if (!testEnergy) print(integral.We);
 
 // charge
 integral = surfaceIntegral(1, 12);

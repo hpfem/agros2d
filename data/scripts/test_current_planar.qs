@@ -35,8 +35,8 @@ solve();
 
 // point value
 point = pointResult(0.11879,0.346203);
-testPotential = (Math.abs(point.Potential) - 0.928377) < 1e-2;
-if (!testPotential) print(point.Potential);
+testPotential = (Math.abs(point.V) - 0.928377) < 1e-2;
+if (!testPotential) print(point.V);
 
 // charge
 integral = surfaceIntegral(0);

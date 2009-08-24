@@ -57,6 +57,6 @@ do
 	solve();
 	integral = volumeIntegral();
 
-	print((2*2*integral.Energy)/(U^2));
+	print((2*2*integral.We)/(U^2));
 	i++;
 } while (i<5);
