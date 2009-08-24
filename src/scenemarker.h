@@ -1,20 +1,6 @@
 #ifndef SCENEMARKER_H
 #define SCENEMARKER_H
 
-#include <QtGui/QDoubleValidator>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QFormLayout>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QComboBox>
-#include <QtGui/QDialog>
-#include <QtGui/QLayout>
-#include <QtGui/QGroupBox>
-#include <QMetaType>
-#include <QString>
-#include <QVariant>
-
 #include "util.h"
 #include "gui.h"
 #include "scene.h"

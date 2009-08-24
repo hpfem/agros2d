@@ -1,21 +1,10 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <QtCore>
 #include <QtGui>
 
-#include <QTextStream>
-#include <QTranslator>
-#include <QTextCodec>
-#include <QDir>
-#include <QStringList>
-#include <QApplication>
-#include <QSettings>
-#include <QString>
-#include <QStyleFactory>
-#include <QStyle>
 #include <QScriptEngine>
-#include <QtGui/QIcon>
-#include <QtGui/QMessageBox>
 #include <QtHelp/QHelpEngine>
 
 #include <typeinfo>

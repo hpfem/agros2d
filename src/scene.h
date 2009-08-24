@@ -1,23 +1,12 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <QtGui/QMessageBox>
-#include <QDesktopServices>
-#include <QObject>
-#include <QList>
-#include <QDate>
 #include <QDomDocument>
-#include <QTextStream>
-#include <QLocale>
-#include <QFile>
-#include <QAction>
-#include <QMutex>
 
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
 
 #include "util.h"
-#include "locale.h"
 #include "scenebasic.h"
 #include "scenemarker.h"
 #include "scenefunction.h"

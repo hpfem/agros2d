@@ -1,32 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QStringList>
-#include <QFileInfo>
-#include <QActionGroup>
 #include <QScriptEngine>
 #include <QtScriptTools/QScriptEngineDebugger>
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#include <QtGui/QListWidget>
-#include <QtGui/QMenuBar>
-#include <QtGui/QToolBar>
-#include <QtGui/QStatusBar>
-#include <QtGui/QAction>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QGraphicsScene>
-#include <QtGui/QGraphicsRectItem>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QToolButton>
-#include <QtGui/QLabel>
-#include <QtGui/QToolBox>
-#include <QtGui/QHBoxLayout>
 
-#include <math.h>
-
+#include "util.h"
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneview.h"

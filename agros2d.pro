@@ -43,6 +43,10 @@ unix {
     script.path = $${PREFIX}/share/agros2d
     script.files = *.js
 
+    # install pixmap
+    pixmap.path = $${PREFIX}/share/pixmaps
+    pixmap.files = images/agros2d.xpm
+
     # install binary
     target.path = $${PREFIX}/bin
     
@@ -51,11 +55,12 @@ unix {
         examples \
         help \
         lang \
-        script
+        script \
+        pixmap
 }
 SUBDIRS += src
-SOURCES += src/scene.cpp \
-    src/util.cpp \
+SOURCES += src/util.cpp \
+    src/scene.cpp \
     src/main.cpp \
     src/gui.cpp \
     src/scripteditordialog.cpp \
@@ -86,8 +91,8 @@ SOURCES += src/scene.cpp \
     src/surfaceintegralview.cpp \
     src/dxflib/dl_writer_ascii.cpp \
     src/dxflib/dl_dxf.cpp
-HEADERS += src/scene.h \
-    src/util.h \
+HEADERS += src/util.h \
+    src/scene.h \
     src/mainwindow.h \
     src/gui.h \
     src/scripteditordialog.h \

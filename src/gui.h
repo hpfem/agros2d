@@ -1,12 +1,8 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QLineEdit>
-#include <QtGui/QComboBox>
 #include <QScriptEngine>
 #include <QScriptValue>
-#include <QDoubleValidator>
 
 #include <qwt_scale_map.h>
 #include <qwt_symbol.h>

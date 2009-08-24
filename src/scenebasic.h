@@ -1,20 +1,6 @@
 #ifndef SCENEBASIC_H
 #define SCENEBASIC_H
 
-#include <QtGui/QDoubleValidator>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QFormLayout>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QComboBox>
-#include <QtGui/QDialog>
-#include <QtGui/QLayout>
-#include <QtGui/QGroupBox>
-#include <QMetaType>
-#include <QVariant>
-#include <QString>
-
 #include "util.h"
 #include "gui.h"
 #include "scene.h"

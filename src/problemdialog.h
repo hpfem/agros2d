@@ -1,12 +1,6 @@
 #ifndef PROBLEMDIALOG_H
 #define PROBLEMDIALOG_H
 
-#include <QtGui/QDialog>
-#include <QtGui/QLineEdit>
-#include <QtGui/QComboBox>
-#include <QtGui/QDateTimeEdit>
-#include <QtGui/QSpinBox>
-
 #include "gui.h"
 #include "scene.h"
 

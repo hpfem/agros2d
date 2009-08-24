@@ -1,24 +1,8 @@
 #include "helpdialog.h"
 
-#include <QtCore/QDir>
-#include <QtCore/QEvent>
-#include <QtCore/QVariant>
-#include <QtCore/QByteArray>
-#include <QtCore/QTimer>
-
-#include <QtGui/QMenu>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QClipboard>
-#include <QtGui/QApplication>
-#include <QtGui/QMessageBox>
-#include <QtGui/QDesktopServices>
-#include <QtGui/QLineEdit>
-#include <QtGui/QLabel>
-#include <QtGui/QDialogButtonBox>
-
 #include <QtHelp/QHelpEngine>
-#include <QHelpContentWidget>
-#include <QHelpIndexWidget>
+#include <QtHelp/QHelpContentWidget>
+#include <QtHelp/QHelpIndexWidget>
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -412,31 +396,6 @@ void HelpViewer::mousePressEvent(QMouseEvent *event)
 }
 
 // ***********************************************************************************************************
-
-#include <QtCore/QEvent>
-#include <QtCore/QTimer>
-
-#include <QtGui/QMenu>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QPrinter>
-#include <QtGui/QLineEdit>
-#include <QtGui/QCheckBox>
-#include <QtGui/QTabBar>
-#include <QtGui/QTabWidget>
-#include <QtGui/QToolButton>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QFocusEvent>
-#include <QtGui/QMainWindow>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QTextCursor>
-#include <QtGui/QPrintDialog>
-#include <QtGui/QApplication>
-#include <QtGui/QTextDocumentFragment>
-#include <QtGui/QPrintPreviewDialog>
-#include <QtGui/QPageSetupDialog>
-
-#include <QtHelp/QHelpEngine>
 
 HelpViewer* helpViewerFromTabPosition(const QTabWidget *widget,
                                       const QPoint &point)

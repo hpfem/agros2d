@@ -1,9 +1,6 @@
 #ifndef SURFACEINTEGRALVIEW_H
 #define SURFACEINTEGRALVIEW_H
 
-#include <QtGui/QDockWidget>
-#include <QtGui/QTreeWidget>
-
 #include "util.h"
 #include "scene.h"
 

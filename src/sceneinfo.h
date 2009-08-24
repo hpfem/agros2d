@@ -1,13 +1,6 @@
 #ifndef VIEWPROBLEM_H
 #define VIEWPROBLEM_H
 
-#include <QtGui/QDockWidget>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QToolBar>
-#include <QtGui/QMenu>
-#include <QAction>
-#include <QFileInfo>
-
 #include "scene.h"
 #include "sceneview.h"
 

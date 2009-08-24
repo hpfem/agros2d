@@ -1,9 +1,6 @@
 #ifndef VOLUMEINTEGRALVIEW_H
 #define VOLUMEINTEGRALVIEW_H
 
-#include <QtGui/QDockWidget>
-#include <QtGui/QTreeWidget>
-
 #include "util.h"
 #include "scene.h"
 

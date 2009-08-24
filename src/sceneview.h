@@ -2,18 +2,6 @@
 #define SCENEVIEW_H
 
 #include <QGLWidget>
-#include <QtGui/QMainWindow>
-#include <QtGui/QGroupBox>
-#include <QtGui/QCheckBox>
-#include <QWheelEvent>
-#include <QTimer>
-#include <QPainter>
-#include <QAction>
-#include <QActionGroup>
-#include <QMenu>
-
-#include <math.h>
-#include <iostream>
 
 #include "util.h"
 #include "scene.h"

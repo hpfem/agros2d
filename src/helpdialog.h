@@ -3,12 +3,6 @@
 
 #include "util.h"
 
-#include <QtGui/QTextBrowser>
-#include <QtGui/QSplitter>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QTabWidget>
-#include <QtGui/QListWidget>
-#include <QAction>
 #include <QWebView>
 
 class CentralWidget;

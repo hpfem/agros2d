@@ -1,11 +1,6 @@
 #ifndef LOCALVALUE_H
 #define LOCALVALUE_H
 
-#include <QtGui/QDockWidget>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QMenu>
-#include <QtGui/QToolButton>
-
 #include "util.h"
 #include "scene.h"
 

@@ -1,25 +1,6 @@
 #ifndef SCENEFUNCTION_H
 #define SCENEFUNCTION_H
 
-#include <QMetaType>
-#include <QVariant>
-#include <QString>
-
-#include <qwt_scale_map.h>
-#include <qwt_symbol.h>
-#include <qwt_plot_grid.h>
-#include <qwt_plot_marker.h>
-#include <qwt_plot_curve.h>
-#include <qwt_plot_zoomer.h>
-#include <qwt_plot_panner.h>
-#include <qwt_plot_printfilter.h>
-#include <qwt_counter.h>
-#include <qwt_legend.h>
-#include <qwt_text.h>
-#include <qwt_plot.h>
-
-#include <math.h>
-
 #include "util.h"
 #include "gui.h"
 

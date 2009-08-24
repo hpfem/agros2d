@@ -1,6 +1,4 @@
 #include <QScriptEngine>
-#include <QtGui/QPlainTextEdit>
-#include <QtGui/QTextEdit>
 
 #include "scene.h"
 #include "sceneview.h"

@@ -1,13 +1,6 @@
 #ifndef SCENEHERMES_H
 #define SCENEHERMES_H
 
-#include <QtGui/QProgressBar>
-#include <QtGui/QListWidget>
-#include <QtGui/QTextEdit>
-#include <QtGui/QLabel>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QVBoxLayout>
-
 #include "util.h"
 
 class Solution;

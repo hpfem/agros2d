@@ -1,9 +1,5 @@
 #include "solverdialog.h"
 
-#include <QProcess>
-#include <QThread>
-#include <QFileInfo>
-
 #include "scene.h"
 
 SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)

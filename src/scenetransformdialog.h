@@ -1,10 +1,6 @@
 #ifndef SCENETRANSFORMDIALOG_H
 #define SCENETRANSFORMDIALOG_H
 
-#include <QtGui/QTabWidget>
-#include <QtGui/QLineEdit>
-#include <QtGui/QCheckBox>
-
 #include "util.h"
 #include "gui.h"
 #include "scene.h"

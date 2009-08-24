@@ -1,14 +1,6 @@
 #ifndef SCENEVIEWDIALOG_H
 #define SCENEVIEWDIALOG_H
 
-#include <QtGui/QDialog>
-#include <QtGui/QCheckBox>
-#include <QtGui/QSpinBox>
-#include <QtGui/QRadioButton>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QLineEdit>
-#include <QtGui/QComboBox>
-
 #include "util.h"
 #include "sceneview.h"
 

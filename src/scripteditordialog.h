@@ -2,17 +2,6 @@
 #define SCRIPTEDITORDIALOG_H
 
 #include <QScriptEngine>
-#include <QUrl>
-#include <QtGui/QDialog>
-#include <QtGui/QPlainTextEdit>
-#include <QtGui/QTextEdit>
-#include <QtGui/QClipboard>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMenuBar>
-#include <QtGui/QToolBar>
-#include <QtGui/QSplitter>
-#include <QtGui/QDesktopServices>
-#include <QtGui/QToolButton>
 
 #include "scene.h"
 #include "sceneview.h"

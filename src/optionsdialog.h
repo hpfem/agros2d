@@ -1,21 +1,6 @@
 #ifndef OPTIONSDIALOG_H
 #define OPTIONSDIALOG_H
 
-#include <QApplication>
-#include <QStyleFactory>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QLabel>
-#include <QtGui/QDialog>
-#include <QtGui/QLineEdit>
-#include <QtGui/QComboBox>
-#include <QtGui/QDateTimeEdit>
-#include <QtGui/QGridLayout>
-#include <QtGui/QGroupBox>
-#include <QtGui/QListWidget>
-#include <QtGui/QStackedWidget>
-#include <QtGui/QPushButton>
-#include <QtGui/QColorDialog>
-
 #include "util.h"
 #include "scene.h"
 #include "sceneview.h"
