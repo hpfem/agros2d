@@ -2,13 +2,13 @@
 
 AppName=Agros2D
 AppVerName=Agros2D 0.9
-OutputBaseFilename=Agros2D_0.9.1
+OutputBaseFilename=Agros2D_0.9.3
 DefaultGroupName=Agros2D
 LicenseFile=COPYING
 
 AppId=Agros2D
-AppPublisher=hp-fem
-AppCopyright=hp-fem
+AppPublisher=hpfem.org
+AppCopyright=hpfem.org
 AppPublisherURL=http://www.hpfem.org/agros2d
 AppMutex=Agros2D
 OutputDir=setup
@@ -27,6 +27,7 @@ Source: release\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
+Source: functions.js; DestDir: {app}; DestName: functions.js
 Source: data\*.a2d; DestDir: {app}/data
 Source: data\scripts\*.qs; DestDir: {app}/data/scripts
 Source: lang\*.qm; DestDir: {app}/lang

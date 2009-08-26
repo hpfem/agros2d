@@ -1,4 +1,4 @@
-print("Test: Current - planar");
+print("Test: Current field - planar");
 
 // model
 newDocument("Feeder", "planar", "current field", 3, 5, 0, "disabled", 1, 1);

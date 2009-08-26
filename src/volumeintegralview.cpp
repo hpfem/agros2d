@@ -486,7 +486,7 @@ QStringList volumeIntegralValueHeaderFactory(PhysicField physicField)
         headers << "V" << "S" << "Jx_avg" << "Jy_avg" << "J_avg" << "Ex_avg" << "Ey_avg" << "E_avg" << "Pj";
         break;
     case PHYSICFIELD_HEAT_TRANSFER:
-        headers << "V" << "S" << "T" << "Gx_avg" << "Gy_avg" << "G_avg" << "Fx_avg" << "Fy_avg" << "F_avg";
+        headers << "V" << "S" << "T_avg" << "Gx_avg" << "Gy_avg" << "G_avg" << "Fx_avg" << "Fy_avg" << "F_avg";
         break;
     case PHYSICFIELD_ELASTICITY:
         headers << "V" << "S";
