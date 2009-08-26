@@ -50,8 +50,14 @@ void ScriptEditorWidget::createControls()
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
 }
 
-void ScriptEditorWidget::doRunEcma()
+void ScriptEditorWidget::doRunEcma(const QString &script)
 {
+    QString scriptContent;
+    if (script.isEmpty())
+        scriptContent = txtEditor->toPlainText();
+    else
+        scriptContent = script;
+
     // scene
     QScriptValue sceneValue = m_engine->newQObject(Util::scene());
     m_engine->globalObject().setProperty("scene", sceneValue);
@@ -60,29 +66,34 @@ void ScriptEditorWidget::doRunEcma()
     QScriptValue sceneViewValue = m_engine->newQObject(m_sceneView);
     m_engine->globalObject().setProperty("sceneView", sceneViewValue);
 
+    // common functions
+    // clear
+    QScriptValue funClear = m_engine->newFunction(scriptClear);
+    funClear.setData(m_engine->newQObject(txtOutput));
+    m_engine->globalObject().setProperty("clear", funClear);
+
     // print
     QScriptValue funPrint = m_engine->newFunction(scriptPrint);
     funPrint.setData(m_engine->newQObject(txtOutput));
     m_engine->globalObject().setProperty("print", funPrint);
 
+    m_engine->globalObject().setProperty("messageBox", m_engine->newFunction(scriptMessageBox));
+    m_engine->globalObject().setProperty("quit", m_engine->newFunction(scriptQuit));
+
     m_engine->globalObject().setProperty("include", m_engine->newFunction(scriptInclude));
     m_engine->globalObject().setProperty("printToFile", m_engine->newFunction(scriptPrintToFile));
 
+    // document
     m_engine->globalObject().setProperty("newDocument", m_engine->newFunction(scriptNewDocument));
     m_engine->globalObject().setProperty("openDocument", m_engine->newFunction(scriptOpenDocument));
     m_engine->globalObject().setProperty("saveDocument", m_engine->newFunction(scriptSaveDocument));
 
+    m_engine->globalObject().setProperty("mode", m_engine->newFunction(scriptMode));
+
+    // geometry
     m_engine->globalObject().setProperty("addNode", m_engine->newFunction(scriptAddNode));
     m_engine->globalObject().setProperty("addEdge", m_engine->newFunction(scriptAddEdge));
     m_engine->globalObject().setProperty("addLabel", m_engine->newFunction(scriptAddLabel));
-
-    m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
-    m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
-
-    m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
-    m_engine->globalObject().setProperty("zoomBestFit", m_engine->newFunction(scriptZoomBestFit));
-
-    m_engine->globalObject().setProperty("mode", m_engine->newFunction(scriptMode));
 
     m_engine->globalObject().setProperty("selectNone", m_engine->newFunction(scriptSelectNone));
     m_engine->globalObject().setProperty("selectAll", m_engine->newFunction(scriptSelectAll));
@@ -94,6 +105,15 @@ void ScriptEditorWidget::doRunEcma()
     m_engine->globalObject().setProperty("rotateSelection", m_engine->newFunction(scriptRotateSelection));
     m_engine->globalObject().setProperty("scaleSelection", m_engine->newFunction(scriptScaleSelection));
 
+    // materials and boundary
+    m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
+    m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
+
+    // solver
+    m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
+    m_engine->globalObject().setProperty("zoomBestFit", m_engine->newFunction(scriptZoomBestFit));
+
+    // postprocessor
     m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
     m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
     m_engine->globalObject().setProperty("surfaceIntegral", m_engine->newFunction(scriptSurfaceIntegral));
@@ -110,7 +130,7 @@ void ScriptEditorWidget::doRunEcma()
         // startup script
         m_engine->evaluate(Util::scene()->problemInfo().scriptStartup);
         // result
-        QScriptValue result = m_engine->evaluate(txtEditor->toPlainText(), file);
+        QScriptValue result = m_engine->evaluate(scriptContent);
         Util::scene()->blockSignals(false);
         Util::scene()->refresh();
     }
@@ -209,6 +229,22 @@ ScriptEditorDialog::~ScriptEditorDialog()
 void ScriptEditorDialog::showDialog()
 {
     show();
+}
+
+void ScriptEditorDialog::runScript(const QString &fileName)
+{
+    if (QFile::exists(fileName))
+    {
+        QFile file(fileName);
+        if (file.open(QFile::ReadOnly | QFile::Text))
+        {
+            // run script
+            doFileNew();
+            ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+            scriptEditorWidget->doRunEcma(file.readAll());
+            doFileClose();
+        }
+    }
 }
 
 void ScriptEditorDialog::createActions()

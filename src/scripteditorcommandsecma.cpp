@@ -7,7 +7,17 @@
 
 static SceneView *m_sceneView;
 
-// print(text)
+// clear()
+QScriptValue scriptClear(QScriptContext *context, QScriptEngine *engine)
+{
+    QScriptValue calleeData = context->callee().data();
+    QPlainTextEdit *edit = qobject_cast<QPlainTextEdit*>(calleeData.toQObject());
+    edit->clear();
+
+    return engine->undefinedValue();
+}
+
+// print(string)
 QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
 {
     QString result;
@@ -24,26 +34,18 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
-// printToFile(filename, string, mode)
-QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
+// messageBox(string)
+QScriptValue scriptMessageBox(QScriptContext *context, QScriptEngine *engine)
 {
-    QFile file(context->argument(0).toString());
-    bool ok = true;
-    if (context->argument(2).toString() == "append")
-        ok = file.open(QIODevice::Append);
-    else
-        ok = file.open(QIODevice::WriteOnly);
+    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), context->argument(0).toString());
+    return engine->undefinedValue();
+}
 
-    if (!ok)
-    {
-        return QString("Could not open file '%1'.").arg(context->argument(0).toString());
-    }
-
-    QTextStream outFile(&file);
-    outFile << context->argument(1).toString() << endl;
-    file.close();
-
-    return true;
+// quit()
+QScriptValue scriptQuit(QScriptContext *context, QScriptEngine *engine)
+{
+    QApplication::quit();
+    return engine->undefinedValue();
 }
 
 // include(filename)
@@ -70,6 +72,28 @@ QScriptValue scriptInclude(QScriptContext *context, QScriptEngine *engine)
     }
 }
 
+// printToFile(filename, string, mode)
+QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
+{
+    QFile file(context->argument(0).toString());
+    bool ok = true;
+    if (context->argument(2).toString() == "append")
+        ok = file.open(QIODevice::Append);
+    else
+        ok = file.open(QIODevice::WriteOnly);
+
+    if (!ok)
+    {
+        return QString("Could not open file '%1'.").arg(context->argument(0).toString());
+    }
+
+    QTextStream outFile(&file);
+    outFile << context->argument(1).toString() << endl;
+    file.close();
+
+    return true;
+}
+
 // newDocument(name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance)
 QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 {
@@ -86,6 +110,7 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
     Util::scene()->problemInfo().frequency = context->argument(5).toNumber();
     if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_NONE)) Util::scene()->problemInfo().adaptivityType = ADAPTIVITYTYPE_NONE;
     if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_H)) Util::scene()->problemInfo().adaptivityType = ADAPTIVITYTYPE_H;
+    if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_P)) Util::scene()->problemInfo().adaptivityType = ADAPTIVITYTYPE_P;
     if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_HP)) Util::scene()->problemInfo().adaptivityType = ADAPTIVITYTYPE_HP;
     Util::scene()->problemInfo().adaptivitySteps = context->argument(7).toNumber();
     Util::scene()->problemInfo().adaptivityTolerance = context->argument(8).toNumber();

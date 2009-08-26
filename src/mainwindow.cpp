@@ -156,7 +156,12 @@ void MainWindow::createActions()
 
     actScriptEditor = new QAction(icon("script"), tr("&Script editor"), this);
     actScriptEditor->setStatusTip(tr("Script editor"));
+    actScriptEditor->setShortcut(Qt::Key_F4);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
+
+    actScriptEditorRun = new QAction(icon("script"), tr("&Run script..."), this);
+    actScriptEditorRun->setStatusTip(tr("Run script..."));
+    connect(actScriptEditorRun, SIGNAL(triggered()), this, SLOT(doScriptEditorRun()));
 
     actScriptStartup = new QAction(icon("script-startup"), tr("S&tartup script"), this);
     actScriptStartup->setStatusTip(tr("Startup script"));
@@ -239,6 +244,7 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actScriptStartup);
     mnuTools->addAction(actScriptEditor);
+    mnuTools->addAction(actScriptEditorRun);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
@@ -561,6 +567,17 @@ void MainWindow::doChart()
 void MainWindow::doScriptEditor()
 {
     scriptEditorDialog->showDialog();
+}
+
+void MainWindow::doScriptEditorRun()
+{
+    // open dialog
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Agros2D script files (*.qs)"));
+
+    // run script
+    if (!fileName.isEmpty()) {
+        scriptEditorDialog->runScript(fileName);
+    }  
 }
 
 void MainWindow::doScriptStartup()

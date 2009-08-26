@@ -17,7 +17,7 @@ class ScriptEditorWidget : public QWidget
     Q_OBJECT
 
 public slots:
-    void doRunEcma();
+    void doRunEcma(const QString &script = "");
     void doCreateFromModel();
 
 public:
@@ -43,6 +43,7 @@ public:
     ScriptEditorDialog(SceneView *sceneView, QWidget *parent = 0);
     ~ScriptEditorDialog();
 
+    void runScript(const QString &fileName);
     void showDialog();
 
 public slots:
