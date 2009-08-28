@@ -476,7 +476,8 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     }
     else
     {
-        QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameDocument));
+        if (!fileNameDocument.isEmpty())
+            QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameDocument));
     }
 }
 

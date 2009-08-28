@@ -9,7 +9,18 @@
 <h1>Scripting</h1>
 <p>QtScript is based on the ECMAScript scripting language.</p>
 
-<h2>Reference documentation</h2>
+<div id="toc">
+<h3>Contents</h3>
+<ul>
+  <li><a href="#general">General commands</a></li>
+  <li><a href="#document">Document commands</a></li>
+  <li><a href="#geometry">Geometry commands</a></li>
+  <li><a href="#materialsandboundaries">Materials and boundaries commands</a></li>
+  <li><a href="#postprocessor">Postprocessor commands</a></li>
+</ul>
+</div>
+
+<a id="general"></a><h2>General commands</h2>
 
 <h3>include(filename)</h3>
 <p>Include and run script with filename.</p>
@@ -20,18 +31,27 @@
 <h3>print(string)</h3>
 <p>Print string to console.</p>
 
-<h3>messageBox(string)</h3>
-<p>Show message box.</p>
-
-<h3>quit()</h3>
-<p>Quit application.</p>
+<pre class="code">
+printToFile("/tmp/print.txt", "hello", "append");
+</pre>
 
 <h3>printToFile(filename, string, mode = {"write", "append"})</h3>
 <p>Print string to file.</p>
 
-<pre class="code">
-printToFile("/tmp/print.txt", "hello", "append");
-</pre>
+<h3>message(string)</h3>
+<p>Show message box.</p>
+
+<h3>variable = input(string)</h3>
+<p>Show input box.</p>
+
+<h3>quit()</h3>
+<p>Quit application.</p>
+
+<h3>solve()</h3>
+<p>Solve problem.</p>
+
+
+<a id="document"></a><h2>Document commands</h2>
 
 <h3>newDocument(name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance)</h3>
 <p>Create new document.</p>
@@ -72,11 +92,72 @@ newDocument("Electrostatic", "axisymmetric", "electrostatic", 0, 2, 0, "hp-adapt
 <h3>saveDocument(filename)</h3>
 <p>Save document.</p>
 
-<h3>addNode(x, y)</h3>
+<h3>mode(mode = {"node", "edge", "label", "postprocessor"})</h3>
+<p>Set mode.</p>
 
-<h3>addLabel(x, y, area, marker)</h3>
+
+
+
+<a id="geometry"></a><h2>Geometry commands</h2>
+
+<h3>addNode(x, y)</h3>
+<p>Add new node with coordinates [x, y].</p>
 
 <h3>addEdge(x1, y1, x2, y2, angle, marker)</h3>
+<p>Add new edge with from coordinates [x1, y1] to [x2, y2], angle and marker.</p>
+
+<h3>addLabel(x, y, area, marker)</h3>
+<p>Add new label with coordinates [x, y], area of triangle and marker.</p>
+
+<h3>selectNone()</h3>
+<p>Unselect objects.</p>
+
+<h3>selectAll()</h3>
+<p>Select all objects.</p>
+
+<h3>selectNode(index, ...)</h3>
+<p>Select nodes with given index.</p>
+
+<h3>selectEdge(index, ...)</h3>
+<p>Select edges with given index.</p>
+
+<h3>selectLabel(index, ...)</h3>
+<p>Select labels with given index.</p>
+
+<h3>selectNodePoint(x, y)</h3>
+<p>Select the closest node with coordinates [x, y].</p>
+
+<h3>selectEdgePoint(x, y)</h3>
+<p>Select the closest edge with coordinates [x, y].</p>
+
+<h3>selectLabelPoint(x, y)</h3>
+<p>Select the closest label with coordinates [x, y].</p>
+
+<h3>deleteSelection()</h3>
+<p>Delete selected objects.</p>
+
+<h3>moveSelection(dx, dy, copy = false)</h3>
+<p>Move selected objects.</p>
+
+<h3>rotateSelection(x, y, angle, copy = false)</h3>
+<p>Rotate selected objects.</p>
+
+<h3>scaleSelection(x, y, scale, copy = false)</h3>
+<p>Scale selected objects.</p>
+
+<h3>zoomBestFit()</h3>
+<p>Zoom best fit.</p>
+
+<h3>zoomIn()</h3>
+<p>Zoom in.</p>
+
+<h3>zoomOut()</h3>
+<p>Zoom out.</p>
+
+<h3>zoomRegion(x1, y1, x2, y2)</h3>
+<p>Zoom region from [x1, y1] to [x2, y2].</p>
+
+<a id="materialsandboundaries"></a><h2>Materials and boundaries commands</h2>
 
 <h3>addBoundary(name, type, value, ...)</h3>
 <p>Add boundary marker.</p>
@@ -129,38 +210,9 @@ newDocument("Electrostatic", "axisymmetric", "electrostatic", 0, 2, 0, "hp-adapt
   </li>
 </ul>
 
-<h3>solve()</h3>
-<p>Solve problem.</p>
 
-<h3>zoomBestFit()</h3>
-<p>Zoom best fit.</p>
 
-<h3>mode(mode = {"node", "edge", "label", "postprocessor"})</h3>
-<p>Set mode.</p>
-
-<h3>selectNone()</h3>
-<p>Unselect objects.</p>
-
-<h3>selectAll()</h3>
-<p>Select all objects.</p>
-
-<h3>selectNode(index, ...)</h3>
-<p>Select nodes with given index.</p>
-
-<h3>selectEdge(index, ...)</h3>
-<p>Select edges with given index.</p>
-
-<h3>selectLabel(index, ...)</h3>
-<p>Select labels with given index.</p>
-
-<h3>moveSelection(dx, dy, copy = false)</h3>
-<p>Move selected objects.</p>
-
-<h3>rotateSelection(x, y, angle, copy = false)</h3>
-<p>Rotate selected objects.</p>
-
-<h3>scaleSelection(x, y, scale, copy = false)</h3>
-<p>Scale selected objects.</p>
+<a id="postprocessor"></a><h2> commands</h2>
 
 <h3>result = pointResult(x, y)</h3>
 <p>Local variables at point [x, y].</p>

@@ -5,7 +5,7 @@
 SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowModality(Qt::ApplicationModal);
-    setMinimumSize(350, 260);
+    setMinimumSize(380, 260);
     setMaximumSize(minimumSize());
 
     setWindowIcon(icon("system-run"));

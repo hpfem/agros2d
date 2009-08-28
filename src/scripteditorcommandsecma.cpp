@@ -13,7 +13,7 @@ QScriptValue scriptClear(QScriptContext *context, QScriptEngine *engine)
     QScriptValue calleeData = context->callee().data();
     QPlainTextEdit *edit = qobject_cast<QPlainTextEdit*>(calleeData.toQObject());
     edit->clear();
-
+    
     return engine->undefinedValue();
 }
 
@@ -26,19 +26,26 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
             result.append(" ");
         result.append(context->argument(i).toString());
     }
-
+    
     QScriptValue calleeData = context->callee().data();
     QPlainTextEdit *edit = qobject_cast<QPlainTextEdit*>(calleeData.toQObject());
     edit->appendPlainText(result);
-
+    
     return engine->undefinedValue();
 }
 
-// messageBox(string)
-QScriptValue scriptMessageBox(QScriptContext *context, QScriptEngine *engine)
+// message(string)
+QScriptValue scriptMessage(QScriptContext *context, QScriptEngine *engine)
 {
     QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), context->argument(0).toString());
     return engine->undefinedValue();
+}
+
+// variable = input(string)
+QScriptValue scriptInput(QScriptContext *context, QScriptEngine *engine)
+{
+    QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), context->argument(0).toString());
+    return text;
 }
 
 // quit()
@@ -58,12 +65,12 @@ QScriptValue scriptInclude(QScriptContext *context, QScriptEngine *engine)
         {
             return QString("Could not open file '%1'.").arg(context->argument(0).toString());
         }
-
+        
         QTextStream inFile(&file);
         engine->currentContext()->setActivationObject(engine->currentContext()->parentContext()->activationObject());
         engine->evaluate(inFile.readAll(), context->argument(0).toString());
         file.close();
-
+        
         return true;
     }
     else
@@ -81,16 +88,16 @@ QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
         ok = file.open(QIODevice::Append);
     else
         ok = file.open(QIODevice::WriteOnly);
-
+    
     if (!ok)
     {
         return QString("Could not open file '%1'.").arg(context->argument(0).toString());
     }
-
+    
     QTextStream outFile(&file);
     outFile << context->argument(1).toString() << endl;
     file.close();
-
+    
     return true;
 }
 
@@ -98,7 +105,7 @@ QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 {
     ProblemInfo problemInfo;
-
+    
     Util::scene()->clear();
     Util::scene()->problemInfo() = problemInfo;
     Util::scene()->problemInfo().name = context->argument(0).toString();
@@ -114,7 +121,7 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
     if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_HP)) Util::scene()->problemInfo().adaptivityType = ADAPTIVITYTYPE_HP;
     Util::scene()->problemInfo().adaptivitySteps = context->argument(7).toNumber();
     Util::scene()->problemInfo().adaptivityTolerance = context->argument(8).toNumber();
-
+    
     m_sceneView->doDefaults();
     Util::scene()->refresh();
     return engine->undefinedValue();
@@ -150,20 +157,24 @@ QScriptValue scriptAddLabel(QScriptContext *context, QScriptEngine *engine)
         area = context->argument(2).toNumber();
     else
         area = 0.0;
-
+    
     // marker
     SceneLabelMarker *marker;
     if (context->argumentCount() == 4)
+    {
         // find marker by name
         foreach (SceneLabelMarker *labelMarker, Util::scene()->labelMarkers)
+        {
             if (labelMarker->name == context->argument(3).toString())
             {
-        marker = labelMarker;
-        break;
+                marker = labelMarker;
+                break;
+            }
+        }
     }
     else
         marker = Util::scene()->labelMarkers[0];
-
+    
     Util::scene()->addLabel(new SceneLabel(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), marker, area));
     return engine->undefinedValue();
 }
@@ -175,27 +186,31 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
     SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(context->argument(0).toNumber(), context->argument(1).toNumber())));
     // end node
     SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(context->argument(2).toNumber(), context->argument(3).toNumber())));
-
+    
     // angle
     double angle;
     if (context->argumentCount() > 4)
         angle = context->argument(4).toNumber();
     else
         angle = 0.0;
-
+    
     // marker
     SceneEdgeMarker *marker;
     if (context->argumentCount() == 6)
+    {
         // find marker by name
         foreach (SceneEdgeMarker *edgeMarker, Util::scene()->edgeMarkers)
+        {
             if (edgeMarker->name == context->argument(5).toString())
             {
-        marker = edgeMarker;
-        break;
+                marker = edgeMarker;
+                break;
+            }
+        }
     }
     else
         marker = Util::scene()->edgeMarkers[0];
-
+    
     // edge
     Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, marker, angle));
     return engine->undefinedValue();
@@ -267,7 +282,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
         throw;
         break;
     }
-
+    
     return engine->undefinedValue();
 }
 
@@ -313,7 +328,7 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
         throw;
         break;
     }
-
+    
     return engine->undefinedValue();
 }
 
@@ -322,7 +337,7 @@ QScriptValue scriptSolve(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
     Util::scene()->refresh();
-
+    
     return engine->undefinedValue();
 }
 
@@ -330,6 +345,30 @@ QScriptValue scriptSolve(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptZoomBestFit(QScriptContext *context, QScriptEngine *engine)
 {
     m_sceneView->doZoomBestFit();
+    
+    return engine->undefinedValue();
+}
+
+// zoomIn()
+QScriptValue scriptZoomIn(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->doZoomIn();
+    
+    return engine->undefinedValue();
+}
+
+// zoomOut()
+QScriptValue scriptZoomOut(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->doZoomOut();
+    
+    return engine->undefinedValue();
+}
+
+// zoomRegion()
+QScriptValue scriptZoomRegion(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->doZoomRegion(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), Point(context->argument(2).toNumber(), context->argument(3).toNumber()));
 
     return engine->undefinedValue();
 }
@@ -346,7 +385,7 @@ QScriptValue scriptMode(QScriptContext *context, QScriptEngine *engine)
     if (context->argument(0).toString() == "postprocessor")
         if (Util::scene()->sceneSolution()->isSolved())
             m_sceneView->actSceneModePostprocessor->trigger();
-
+    
     return engine->undefinedValue();
 }
 
@@ -354,7 +393,7 @@ QScriptValue scriptMode(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptSelectNone(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
-
+    
     return engine->undefinedValue();
 }
 
@@ -378,13 +417,28 @@ QScriptValue scriptSelectAll(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptSelectNode(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
-
+    
     m_sceneView->actSceneModeNode->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
         Util::scene()->nodes[context->argument(i).toNumber()]->isSelected = true;
-
+    
     m_sceneView->doInvalidated();
+    
+    return engine->undefinedValue();
+}
 
+// selectNodePoint(x, y)
+QScriptValue scriptSelectNodePoint(QScriptContext *context, QScriptEngine *engine)
+{
+    Util::scene()->selectNone();
+    
+    SceneNode *node = m_sceneView->findClosestNode(Point(context->argument(0).toNumber(), context->argument(1).toNumber()));
+    if (node)
+    {
+        node->isSelected = true;
+        m_sceneView->doInvalidated();
+    }
+    
     return engine->undefinedValue();
 }
 
@@ -392,13 +446,28 @@ QScriptValue scriptSelectNode(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
-
+    
     m_sceneView->actSceneModeEdge->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
         Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
-
+    
     m_sceneView->doInvalidated();
+    
+    return engine->undefinedValue();
+}
 
+// selectEdgePoint(x, y)
+QScriptValue scriptSelectEdgePoint(QScriptContext *context, QScriptEngine *engine)
+{
+    Util::scene()->selectNone();
+    
+    SceneEdge *edge = m_sceneView->findClosestEdge(Point(context->argument(0).toNumber(), context->argument(1).toNumber()));
+    if (edge)
+    {
+        edge->isSelected = true;
+        m_sceneView->doInvalidated();
+    }
+    
     return engine->undefinedValue();
 }
 
@@ -406,14 +475,27 @@ QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptSelectLabel(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
-
+    
     m_sceneView->actSceneModeLabel->trigger();
     for (int i = 0; i<context->argumentCount(); i++)
         Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
-
+    
     m_sceneView->doInvalidated();
-
+    
     return engine->undefinedValue();
+}
+
+// selectLabelPoint(x, y)
+QScriptValue scriptSelectLabelPoint(QScriptContext *context, QScriptEngine *engine)
+{
+    Util::scene()->selectNone();
+    
+    SceneLabel *label = m_sceneView->findClosestLabel(Point(context->argument(0).toNumber(), context->argument(1).toNumber()));
+    if (label)
+    {
+        label->isSelected = true;
+        m_sceneView->doInvalidated();
+    }
 }
 
 // moveSelection(dx, dy, copy = false)
@@ -421,7 +503,7 @@ QScriptValue scriptMoveSelection(QScriptContext *context, QScriptEngine *engine)
 {
     bool copy = (context->argumentCount() == 2) ? false : context->argument(2).toBoolean();
     Util::scene()->transformTranslate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), copy);
-
+    
     return engine->undefinedValue();
 }
 
@@ -430,7 +512,7 @@ QScriptValue scriptRotateSelection(QScriptContext *context, QScriptEngine *engin
 {
     bool copy = (context->argumentCount() == 3) ? false : context->argument(2).toBoolean();
     Util::scene()->transformRotate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
-
+    
     return engine->undefinedValue();
 }
 
@@ -439,7 +521,15 @@ QScriptValue scriptScaleSelection(QScriptContext *context, QScriptEngine *engine
 {
     bool copy = (context->argumentCount() == 2) ? false : context->argument(2).toBoolean();
     Util::scene()->transformScale(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
+    
+    return engine->undefinedValue();
+}
 
+// deleteSelection(dx, dy, copy = false)
+QScriptValue scriptDeleteSelection(QScriptContext *context, QScriptEngine *engine)
+{
+    Util::scene()->deleteSelected();
+    
     return engine->undefinedValue();
 }
 
@@ -448,16 +538,16 @@ QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
 {
     Point point(context->argument(0).toNumber(), context->argument(1).toNumber());
     LocalPointValue *localPointValue = localPointValueFactory(point);
-
+    
     QStringList headers = localPointValueHeaderFactory(Util::scene()->problemInfo().physicField);
     QStringList variables = localPointValue->variables();
-
+    
     QScriptValue value = engine->newObject();
     for (int i = 0; i < variables.length(); i++)
         value.setProperty(headers[i], QString(variables[i]).toDouble());
-
+    
     delete localPointValue;
-
+    
     return value;
 }
 
@@ -466,12 +556,12 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
 {    
     if (Util::scene()->sceneSolution()->isSolved())
         m_sceneView->actSceneModePostprocessor->trigger();
-
+    
     if (m_sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
     {
         m_sceneView->actPostprocessorModeVolumeIntegral->trigger();
         Util::scene()->selectNone();
-
+        
         // select all or indices
         if (context->argumentCount() == 0)
             foreach (SceneLabel *label, Util::scene()->labels)
@@ -479,18 +569,18 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
         else
             for (int i = 0; i<context->argumentCount(); i++)
                 Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
-
+        
         VolumeIntegralValue *volumeIntegral = volumeIntegralValueFactory();
-
+        
         QStringList headers = volumeIntegralValueHeaderFactory(Util::scene()->problemInfo().physicField);
         QStringList variables = volumeIntegral->variables();
-
+        
         QScriptValue value = engine->newObject();
         for (int i = 0; i < variables.length(); i++)
             value.setProperty(headers[i], QString(variables[i]).toDouble());
-
+        
         delete volumeIntegral;
-
+        
         return value;
     }
     else
@@ -504,12 +594,12 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
 {
     if (Util::scene()->sceneSolution()->isSolved())
         m_sceneView->actSceneModePostprocessor->trigger();
-
+    
     if (m_sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
     {
         m_sceneView->actPostprocessorModeSurfaceIntegral->trigger();
         Util::scene()->selectNone();
-
+        
         // select all or indices
         if (context->argumentCount() == 0)
             foreach (SceneEdge *edge, Util::scene()->edges)
@@ -517,18 +607,18 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
         else
             for (int i = 0; i<context->argumentCount(); i++)
                 Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
-
+        
         SurfaceIntegralValue *surfaceIntegral = surfaceIntegralValueFactory();
-
+        
         QStringList headers = surfaceIntegralValueHeaderFactory(Util::scene()->problemInfo().physicField);
         QStringList variables = surfaceIntegral->variables();
-
+        
         QScriptValue value = engine->newObject();
         for (int i = 0; i < variables.length(); i++)
             value.setProperty(headers[i], QString(variables[i]).toDouble());
-
+        
         delete surfaceIntegral;
-
+        
         return value;
     }
     else

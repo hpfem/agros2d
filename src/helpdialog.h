@@ -145,9 +145,9 @@ signals:
     void addNewBookmark(const QString &title, const QString &url);
 
 private slots:
-    void newTab();
-    void closeTab();
-    void closeTab(int index);
+    void tabNew();
+    void tabClose();
+    void tabClose(int index);
     void setTabTitle(const QUrl& url);
     void currentPageChanged(int index);
     void showTabBarContextMenu(const QPoint &point);
@@ -168,6 +168,9 @@ private:
     QTabWidget *tabWidget;
     QHelpEngine *helpEngine;
     QPrinter *printer;
+
+    QToolButton *btnTabGoBack;
+    QToolButton *btnTabGoForward;
 };
 
 // ************************************************************************************************

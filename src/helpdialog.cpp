@@ -32,16 +32,13 @@ HelpDialog::~HelpDialog()
     settings.setValue("HelpDialog/Geometry", saveGeometry());
     settings.setValue("HelpDialog/SplitterGeometry", splitter->saveGeometry());
     settings.setValue("HelpDialog/SplitterState", splitter->saveState());
-
-    // delete helpEngine;
-    // delete centralWidget;
-    // delete splitter;
 }
 
 void HelpDialog::createControls()
 {
     helpEngine = new QHelpEngine(datadir() + "/doc/help/agros2d.qhc", this);
     helpEngine->setupData();
+    helpEngine->setCustomValue("HomePage", "qthelp://agros2d/help/index.html");
 
     splitter = new QSplitter(Qt::Horizontal);
     centralWidget = new CentralWidget(helpEngine, this);
@@ -76,7 +73,7 @@ void HelpDialog::createControls()
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(splitter);
 
-    showPage("main/index.html");
+    showPage("index.html");
 
     connect(helpEngine->contentWidget(), SIGNAL(linkActivated(const QUrl &)), centralWidget, SLOT(setSource(const QUrl &)));
     connect(helpEngine->indexWidget(), SIGNAL(linkActivated(const QUrl &, const QString &)), centralWidget, SLOT(setSource(const QUrl &)));
@@ -292,14 +289,10 @@ HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *parent)
     pageAction(QWebPage::DownloadImageToDisk)->setVisible(false);
     pageAction(QWebPage::OpenImageInNewWindow)->setVisible(false);
 
-    connect(pageAction(QWebPage::Copy), SIGNAL(changed()), this,
-            SLOT(actionChanged()));
-    connect(pageAction(QWebPage::Back), SIGNAL(changed()), this,
-            SLOT(actionChanged()));
-    connect(pageAction(QWebPage::Forward), SIGNAL(changed()), this,
-            SLOT(actionChanged()));
-    connect(page(), SIGNAL(linkHovered(QString, QString, QString)), this,
-            SIGNAL(highlighted(QString)));
+    connect(pageAction(QWebPage::Copy), SIGNAL(changed()), this, SLOT(actionChanged()));
+    connect(pageAction(QWebPage::Back), SIGNAL(changed()), this, SLOT(actionChanged()));
+    connect(pageAction(QWebPage::Forward), SIGNAL(changed()), this, SLOT(actionChanged()));
+    connect(page(), SIGNAL(linkHovered(QString, QString, QString)), this, SIGNAL(highlighted(QString)));
     connect(this, SIGNAL(urlChanged(QUrl)), this, SIGNAL(sourceChanged(QUrl)));
     setAcceptDrops(false);
 }
@@ -423,26 +416,56 @@ CentralWidget::CentralWidget(QHelpEngine *engine, QWidget *parent)
     tabWidget = new QTabWidget;
     tabWidget->setDocumentMode(true);
     tabWidget->setMovable(true);
-    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClose(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(currentPageChanged(int)));
 
-    QToolButton *newTabButton = new QToolButton(this);
-    newTabButton->setAutoRaise(true);
-    newTabButton->setToolTip(tr("Add new page"));
-    newTabButton->setIcon(icon("tabadd"));
-    tabWidget->setCornerWidget(newTabButton, Qt::TopLeftCorner);
-    connect(newTabButton, SIGNAL(clicked()), this, SLOT(newTab()));
+    QToolButton *btnTabNew = new QToolButton(this);
+    btnTabNew->setAutoRaise(true);
+    btnTabNew->setToolTip(tr("Add new page"));
+    btnTabNew->setIcon(icon("tabadd"));
+    connect(btnTabNew, SIGNAL(clicked()), this, SLOT(tabNew()));
+
+    btnTabGoBack = new QToolButton(this);
+    btnTabGoBack->setAutoRaise(true);
+    btnTabGoBack->setToolTip(tr("Go back"));
+    btnTabGoBack->setIcon(icon("tabback"));
+    btnTabGoBack->setEnabled(false);
+    connect(btnTabGoBack, SIGNAL(clicked()), this, SLOT(backward()));
+    connect(this, SIGNAL(backwardAvailable(bool)), btnTabGoBack, SLOT(setEnabled(bool)));
+
+    btnTabGoForward = new QToolButton(this);
+    btnTabGoForward->setAutoRaise(true);
+    btnTabGoForward->setToolTip(tr("Go forward"));
+    btnTabGoForward->setIcon(icon("tabforward"));
+    btnTabGoForward->setEnabled(false);
+    connect(btnTabGoForward, SIGNAL(clicked()), this, SLOT(forward()));
+    connect(this, SIGNAL(forwardAvailable(bool)), btnTabGoForward, SLOT(setEnabled(bool)));
+
+    QToolButton *btnTabGoHome = new QToolButton(this);
+    btnTabGoHome->setAutoRaise(true);
+    btnTabGoHome->setToolTip(tr("Go home"));
+    btnTabGoHome->setIcon(icon("tabhome"));
+    connect(btnTabGoHome, SIGNAL(clicked()), this, SLOT(home()));
+
+    // controls
+    QToolBar *tlbControls = new QToolBar();
+    tlbControls->addWidget(btnTabNew);
+    tlbControls->addWidget(btnTabGoHome);
+    tlbControls->addWidget(btnTabGoBack);
+    tlbControls->addWidget(btnTabGoForward);
+
+    tabWidget->setCornerWidget(tlbControls, Qt::TopLeftCorner);
 
     QVBoxLayout *vboxLayout = new QVBoxLayout(this);
     vboxLayout->setMargin(0);
     vboxLayout->addWidget(tabWidget);
 
     QTabBar *tabBar = qFindChild<QTabBar*>(tabWidget);
-    if (tabBar) {
+    if (tabBar)
+    {
         tabBar->installEventFilter(this);
         tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
-        connect(tabBar, SIGNAL(customContextMenuRequested(QPoint)), this,
-                SLOT(showTabBarContextMenu(QPoint)));
+        connect(tabBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showTabBarContextMenu(QPoint)));
     }
 
     staticCentralWidget = this;
@@ -478,7 +501,7 @@ CentralWidget *CentralWidget::instance()
     return staticCentralWidget;
 }
 
-void CentralWidget::newTab()
+void CentralWidget::tabNew()
 {
     HelpViewer* viewer = currentHelpViewer();
     if (viewer)
@@ -499,19 +522,19 @@ void CentralWidget::zoomOut()
         viewer->zoomOut();
 }
 
+void CentralWidget::resetZoom()
+{
+    HelpViewer* viewer = currentHelpViewer();
+    if (viewer)
+        viewer->resetZoom();
+}
+
 void CentralWidget::nextPage()
 {
     int index = tabWidget->currentIndex() + 1;
     if (index >= tabWidget->count())
         index = 0;
     tabWidget->setCurrentIndex(index);
-}
-
-void CentralWidget::resetZoom()
-{
-    HelpViewer* viewer = currentHelpViewer();
-    if (viewer)
-        viewer->resetZoom();
 }
 
 void CentralWidget::previousPage()
@@ -522,12 +545,12 @@ void CentralWidget::previousPage()
     tabWidget->setCurrentIndex(index);
 }
 
-void CentralWidget::closeTab()
+void CentralWidget::tabClose()
 {
-    closeTab(tabWidget->currentIndex());
+    tabClose(tabWidget->currentIndex());
 }
 
-void CentralWidget::closeTab(int index)
+void CentralWidget::tabClose(int index)
 {
     HelpViewer* viewer = helpViewerAtIndex(index);
     if (!viewer || tabWidget->count() == 1)
@@ -856,6 +879,9 @@ void CentralWidget::currentPageChanged(int index)
 
     tabWidget->setTabsClosable(tabWidget->count() > 1);
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
+
+    btnTabGoBack->setEnabled(isBackwardAvailable());
+    btnTabGoForward->setEnabled(isForwardAvailable());
 
     emit currentViewerChanged();
 }

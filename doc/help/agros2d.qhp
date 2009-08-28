@@ -4,7 +4,7 @@
   <virtualFolder>help</virtualFolder>
   <filterSection>
     <toc>
-      <section title="Introduction" ref="./main/index.html"/>
+      <section title="Introduction" ref="./index.html"/>
       <section title="Getting Started" ref="./getting_started/getting_started.html">
       </section>
       <section title="Scripting" ref="./scripting/scripting.html"/>
@@ -23,7 +23,7 @@
     <files>
       <file>./agros2d_logo.png</file>
       <file>./style.css</file>
-      <file>./main/index.html</file>
+      <file>./index.html</file>
       <file>./getting_started/getting_started.html</file>
       <file>./scripting/scripting.html</file>
       <file>./program_features/program_features.html</file>

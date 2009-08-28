@@ -51,6 +51,9 @@
         <file>images/help-browser.png</file>
         <file>images/tabadd.png</file>
         <file>images/tabclose.png</file>
+        <file>images/tabback.png</file>
+        <file>images/tabforward.png</file>
+        <file>images/tabhome.png</file>
         <file>images/problem.png</file>
     </qresource>
 </RCC>

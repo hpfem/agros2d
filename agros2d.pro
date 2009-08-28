@@ -52,11 +52,11 @@ unix {
     # install script
     script.path = $${PREFIX}/share/agros2d
     script.files = *.js
-
+    
     # install pixmap
     pixmap.path = $${PREFIX}/share/pixmaps
     pixmap.files = images/agros2d.xpm
-
+    
     # install binary
     target.path = $${PREFIX}/bin
     
@@ -147,3 +147,4 @@ LIBS += -lhermes2d-real \
 unix:LIBS += -lpython2.6
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt
+OTHER_FILES += 

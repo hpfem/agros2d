@@ -66,7 +66,7 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     QScriptValue sceneViewValue = m_engine->newQObject(m_sceneView);
     m_engine->globalObject().setProperty("sceneView", sceneViewValue);
 
-    // common functions
+    // general functions
     // clear
     QScriptValue funClear = m_engine->newFunction(scriptClear);
     funClear.setData(m_engine->newQObject(txtOutput));
@@ -77,7 +77,8 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     funPrint.setData(m_engine->newQObject(txtOutput));
     m_engine->globalObject().setProperty("print", funPrint);
 
-    m_engine->globalObject().setProperty("messageBox", m_engine->newFunction(scriptMessageBox));
+    m_engine->globalObject().setProperty("message", m_engine->newFunction(scriptMessage));
+    m_engine->globalObject().setProperty("input", m_engine->newFunction(scriptInput));
     m_engine->globalObject().setProperty("quit", m_engine->newFunction(scriptQuit));
 
     m_engine->globalObject().setProperty("include", m_engine->newFunction(scriptInclude));
@@ -100,18 +101,26 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     m_engine->globalObject().setProperty("selectNode", m_engine->newFunction(scriptSelectNode));
     m_engine->globalObject().setProperty("selectEdge", m_engine->newFunction(scriptSelectEdge));
     m_engine->globalObject().setProperty("selectLabel", m_engine->newFunction(scriptSelectLabel));
+    m_engine->globalObject().setProperty("selectNodePoint", m_engine->newFunction(scriptSelectNodePoint));
+    m_engine->globalObject().setProperty("selectEdgePoint", m_engine->newFunction(scriptSelectEdgePoint));
+    m_engine->globalObject().setProperty("selectLabelPoint", m_engine->newFunction(scriptSelectLabelPoint));
 
     m_engine->globalObject().setProperty("moveSelection", m_engine->newFunction(scriptMoveSelection));
     m_engine->globalObject().setProperty("rotateSelection", m_engine->newFunction(scriptRotateSelection));
     m_engine->globalObject().setProperty("scaleSelection", m_engine->newFunction(scriptScaleSelection));
+    m_engine->globalObject().setProperty("deleteSelection", m_engine->newFunction(scriptDeleteSelection));
 
-    // materials and boundary
+    m_engine->globalObject().setProperty("zoomBestFit", m_engine->newFunction(scriptZoomBestFit));
+    m_engine->globalObject().setProperty("zoomIn", m_engine->newFunction(scriptZoomIn));
+    m_engine->globalObject().setProperty("zoomOut", m_engine->newFunction(scriptZoomOut));
+    m_engine->globalObject().setProperty("zoomRegion", m_engine->newFunction(scriptZoomRegion));
+
+    // materials and boundaries
     m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
     m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
 
     // solver
     m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
-    m_engine->globalObject().setProperty("zoomBestFit", m_engine->newFunction(scriptZoomBestFit));
 
     // postprocessor
     m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
@@ -229,6 +238,7 @@ ScriptEditorDialog::~ScriptEditorDialog()
 void ScriptEditorDialog::showDialog()
 {
     show();
+    txtEditor->setFocus();
 }
 
 void ScriptEditorDialog::runScript(const QString &fileName)
@@ -507,6 +517,8 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
 
     tabWidget->setTabsClosable(tabWidget->count() > 1);
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
+
+    txtEditor->setFocus();
 }
 
 // ******************************************************************************************************

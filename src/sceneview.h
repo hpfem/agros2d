@@ -130,6 +130,10 @@ public:
     QAction *actSceneViewProperties;
     QAction *actFullScreen;
 
+    SceneNode *findClosestNode(const Point &point);
+    SceneEdge *findClosestEdge(const Point &point);
+    SceneLabel *findClosestLabel(const Point &point);
+
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
     inline SceneMode sceneMode() { return m_sceneMode; }
 
@@ -190,10 +194,6 @@ private:
 
     void createActions();
     void createMenu();
-
-    SceneNode *findClosestNode(const Point &point);
-    SceneEdge *findClosestEdge(const Point &point);
-    SceneLabel *findClosestLabel(const Point &point);
 
     // palette
     const float* paletteColor(double x);
