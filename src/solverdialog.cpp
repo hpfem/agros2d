@@ -710,7 +710,9 @@ bool SolverDialog::writeToTriangle()
             double radius = Util::scene()->edges[i]->radius();
             double startAngle = atan2(center.y - Util::scene()->edges[i]->nodeStart->point.y, center.x - Util::scene()->edges[i]->nodeStart->point.x) / M_PI*180 - 180;
             int segments = Util::scene()->edges[i]->angle/5.0 + 1;
-            if (segments < 5) segments = 5; // minimum segments
+            QSettings settings;
+            double angleSegmentsCount = settings.value("Geometry/AngleSegmentsCount", 5).value<double>();
+            if (segments < angleSegmentsCount) segments = angleSegmentsCount; // minimum segments
 
             double theta = Util::scene()->edges[i]->angle / float(segments - 1);
 

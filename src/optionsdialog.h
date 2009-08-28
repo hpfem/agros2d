@@ -35,6 +35,9 @@ private:
     QComboBox *cmbGUIStyle;
     QComboBox *cmbLanguage;
 
+    // geometry
+    QSpinBox *txtGeometryAngleSegmentsCount;
+
     // colors
     ColorButton *colorBackground;
     ColorButton *colorGrid;

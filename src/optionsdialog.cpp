@@ -67,6 +67,9 @@ void OptionsDialog::load()
         }
     }
 
+    // geometry
+    txtGeometryAngleSegmentsCount->setValue(settings.value("Geometry/AngleSegmentsCount", 5).value<int>());
+
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>());
     chkDeleteHermes2DMeshFile->setChecked(settings.value("Solver/DeleteHermes2DMeshFile", true).value<bool>());
@@ -114,6 +117,9 @@ void OptionsDialog::save()
                                  tr("Language change"),
                                  tr("Interface language has been changed. You must restart the application."));
     settings.setValue("General/Language", cmbLanguage->currentText());
+
+    // geometry
+    settings.setValue("Geometry/AngleSegmentsCount", txtGeometryAngleSegmentsCount->value());
 
     // delete files
     settings.setValue("Solver/DeleteTriangleMeshFiles", chkDeleteTriangleMeshFiles->isChecked());
@@ -219,6 +225,18 @@ QWidget *OptionsDialog::createMainWidget()
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
 
+    // geometry
+    txtGeometryAngleSegmentsCount = new QSpinBox(this);
+    txtGeometryAngleSegmentsCount->setMinimum(1);
+    txtGeometryAngleSegmentsCount->setMaximum(100);
+
+    QGridLayout *layoutGeometry = new QGridLayout();
+    layoutGeometry->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
+    layoutGeometry->addWidget(txtGeometryAngleSegmentsCount, 0, 1);
+
+    QGroupBox *grpGeometry = new QGroupBox(tr("Grid"));
+    grpGeometry->setLayout(layoutGeometry);
+
     // solver layout
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"), mainWidget);
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"), mainWidget);
@@ -294,6 +312,7 @@ QWidget *OptionsDialog::createMainWidget()
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeneral);
+    layout->addWidget(grpGeometry);
     layout->addWidget(grpSolver);
     layout->addWidget(grpGrid);
     layout->addWidget(grpContours);
@@ -353,8 +372,11 @@ QWidget *OptionsDialog::createColorsWidget()
     layoutColors->addWidget(colorHighlighted, 10, 1);
     layoutColors->addWidget(colorSelected, 11, 1);
 
+    QGroupBox *grpColor = new QGroupBox(tr("Colors"));
+    grpColor->setLayout(layoutColors);
+
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutColors);
+    layout->addWidget(grpColor);
     layout->addStretch();
 
     colorsWidget->setLayout(layout);
