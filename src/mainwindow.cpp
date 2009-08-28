@@ -223,9 +223,11 @@ void MainWindow::createMenus()
     // mnuEdit->addAction(actUndo);
     // mnuEdit->addAction(actRedo);
     // mnuEdit->addSeparator();
-    // mnuEdit->addAction(actCut);
+    #ifdef BETA
+    mnuEdit->addAction(actCut);
     mnuEdit->addAction(actCopy);
     mnuEdit->addAction(actPaste);
+    #endif
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
 #ifdef Q_WS_X11
     mnuEdit->addSeparator();
@@ -631,7 +633,8 @@ void MainWindow::doScriptEditorRun(const QString &fileName)
     }
     else
     {
-        QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameScript));
+        if (!fileNameScript.isEmpty())
+            QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameScript));
     }    
 }
 

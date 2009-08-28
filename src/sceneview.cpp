@@ -95,6 +95,11 @@ void SceneViewSettings::load()
     colorHighlighted = settings.value("SceneViewSettings/ColorHighlighted", QColor::fromRgb(250, 150, 0)).value<QColor>();
     colorSelected = settings.value("SceneViewSettings/ColorSelected", QColor::fromRgb(150, 0, 0)).value<QColor>();
 
+    // geometry
+    geometryNodeSize = settings.value("Geometry/NodeSize", 7.0).value<double>();
+    geometryEdgeWidth = settings.value("Geometry/EdgeWidth", 2.0).value<double>();
+    geometryLabelSize = settings.value("Geometry/LabelSize", 7.0).value<double>();
+
     // grid
     gridStep = settings.value("SceneViewSettings/GridStep", 0.05).value<double>();
 
@@ -127,6 +132,11 @@ void SceneViewSettings::save()
     settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSolutionMesh);
     settings.setValue("SceneViewSettings/ColorInitialMesh", colorHighlighted);
     settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSelected);
+
+    // geometry
+    settings.setValue("Geometry/NodeSize", geometryNodeSize);
+    settings.setValue("Geometry/EdgeWidth", geometryEdgeWidth);
+    settings.setValue("Geometry/LabelSize", geometryLabelSize);
 
     // grid
     settings.setValue("SceneViewSettings/GridStep", gridStep);
@@ -467,16 +477,16 @@ void SceneView::paintGeometry()
     foreach (SceneEdge *edge, Util::scene()->edges)
     {
         glColor3f(m_sceneViewSettings.colorEdges.redF(), m_sceneViewSettings.colorEdges.greenF(), m_sceneViewSettings.colorEdges.blueF());
-        glLineWidth(2.0);
+        glLineWidth(m_sceneViewSettings.geometryEdgeWidth);
         if (edge->isHighlighted)
         {
             glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
-            glLineWidth(3.0);
+            glLineWidth(m_sceneViewSettings.geometryEdgeWidth + 2.0);
         }
         if (edge->isSelected)
         {
             glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
-            glLineWidth(3.0);
+            glLineWidth(m_sceneViewSettings.geometryEdgeWidth + 2.0);
         }
         
         if (edge->angle == 0)
@@ -503,13 +513,13 @@ void SceneView::paintGeometry()
         foreach (SceneNode *node, Util::scene()->nodes)
         {
             glColor3f(m_sceneViewSettings.colorNodes.redF(), m_sceneViewSettings.colorNodes.greenF(), m_sceneViewSettings.colorNodes.blueF());
-            glPointSize(7.0);
+            glPointSize(m_sceneViewSettings.geometryNodeSize);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
             
             glColor3f(1.0, 1.0, 1.0);
-            glPointSize(5.0);
+            glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
@@ -519,7 +529,7 @@ void SceneView::paintGeometry()
                 if (node->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
                 if (node->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
                 
-                glPointSize(5.0);
+                glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
                 glBegin(GL_POINTS);
                 glVertex2d(node->point.x, node->point.y);
                 glEnd();
@@ -534,13 +544,13 @@ void SceneView::paintGeometry()
         foreach (SceneLabel *label, Util::scene()->labels)
         {
             glColor3f(m_sceneViewSettings.colorLabels.redF(), m_sceneViewSettings.colorLabels.greenF(), m_sceneViewSettings.colorLabels.blueF());
-            glPointSize(9.0);
+            glPointSize(m_sceneViewSettings.geometryLabelSize);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
             glEnd();
             
             glColor3f(1.0, 1.0, 1.0);
-            glPointSize(5.0);
+            glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
             glEnd();
@@ -551,7 +561,7 @@ void SceneView::paintGeometry()
                 if (label->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
                 if (label->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
                 
-                glPointSize(5.0);
+                glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
                 glBegin(GL_POINTS);
                 glVertex2d(label->point.x, label->point.y);
                 glEnd();

@@ -69,6 +69,9 @@ void OptionsDialog::load()
 
     // geometry
     txtGeometryAngleSegmentsCount->setValue(settings.value("Geometry/AngleSegmentsCount", 5).value<int>());
+    txtGeometryNodeSize->setValue(m_sceneViewSettings->geometryNodeSize);
+    txtGeometryEdgeWidth->setValue(m_sceneViewSettings->geometryEdgeWidth);
+    txtGeometryLabelSize->setValue(m_sceneViewSettings->geometryLabelSize);
 
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>());
@@ -120,6 +123,9 @@ void OptionsDialog::save()
 
     // geometry
     settings.setValue("Geometry/AngleSegmentsCount", txtGeometryAngleSegmentsCount->value());
+    m_sceneViewSettings->geometryNodeSize = txtGeometryNodeSize->value();
+    m_sceneViewSettings->geometryEdgeWidth = txtGeometryEdgeWidth->value();
+    m_sceneViewSettings->geometryLabelSize = txtGeometryLabelSize->value();
 
     // delete files
     settings.setValue("Solver/DeleteTriangleMeshFiles", chkDeleteTriangleMeshFiles->isChecked());
@@ -229,12 +235,21 @@ QWidget *OptionsDialog::createMainWidget()
     txtGeometryAngleSegmentsCount = new QSpinBox(this);
     txtGeometryAngleSegmentsCount->setMinimum(1);
     txtGeometryAngleSegmentsCount->setMaximum(100);
+    txtGeometryNodeSize = new SLineEdit("0", true, false, this);
+    txtGeometryEdgeWidth = new SLineEdit("0", true, false, this);
+    txtGeometryLabelSize = new SLineEdit("0", true, false, this);
 
     QGridLayout *layoutGeometry = new QGridLayout();
     layoutGeometry->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
     layoutGeometry->addWidget(txtGeometryAngleSegmentsCount, 0, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 1, 0);
+    layoutGeometry->addWidget(txtGeometryNodeSize, 1, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 2, 0);
+    layoutGeometry->addWidget(txtGeometryEdgeWidth, 2, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 3, 0);
+    layoutGeometry->addWidget(txtGeometryLabelSize, 3, 1);
 
-    QGroupBox *grpGeometry = new QGroupBox(tr("Grid"));
+    QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
     grpGeometry->setLayout(layoutGeometry);
 
     // solver layout

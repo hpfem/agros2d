@@ -78,21 +78,21 @@ void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
         break;
     }
 
-     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
-     if (cmbFieldVariable->currentIndex() == -1)
-         cmbFieldVariable->setCurrentIndex(0);
+    cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
+    if (cmbFieldVariable->currentIndex() == -1)
+        cmbFieldVariable->setCurrentIndex(0);
 }
 
 // ***********************************************************************************************************
 
 SLineEdit::SLineEdit(QWidget *parent) : QLineEdit(parent)
 {   
-    SLineEdit::SLineEdit("", true, parent);
+    SLineEdit::SLineEdit("", true, true, parent);
 
     m_engine = scriptEngine();
 }
 
-SLineEdit::SLineEdit(const QString &contents, bool hasValidator, QWidget *parent) : QLineEdit(contents, parent)
+SLineEdit::SLineEdit(const QString &contents, bool hasValidator, bool hasScriptEngine, QWidget *parent) : QLineEdit(contents, parent)
 {
     if (hasValidator)
         this->setValidator(new QDoubleValidator(this));
@@ -102,14 +102,22 @@ SLineEdit::SLineEdit(const QString &contents, bool hasValidator, QWidget *parent
 
 SLineEdit::~SLineEdit()
 {
-   delete m_engine;
+    if (m_engine)
+        delete m_engine;
 }
 
 double SLineEdit::value()
 {
-    QScriptValue scriptValue = m_engine->evaluate(text());
-    if (scriptValue.isNumber())
-        return scriptValue.toNumber();
+    if (m_engine)
+    {
+        QScriptValue scriptValue = m_engine->evaluate(text());
+        if (scriptValue.isNumber())
+            return scriptValue.toNumber();
+    }
+    else
+    {
+        return text().toDouble();
+    }
 }
 
 void SLineEdit::setValue(double value)

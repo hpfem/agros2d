@@ -35,7 +35,9 @@ private:
     QTreeWidgetItem *nodesNode;
     QTreeWidgetItem *edgesNode;
     QTreeWidgetItem *labelsNode;
+    #ifdef BETA
     QTreeWidgetItem *functionsNode;
+    #endif
 
     QAction *actProperties;
     QAction *actDelete;

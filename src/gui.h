@@ -27,7 +27,7 @@ class SLineEdit : public QLineEdit
     Q_OBJECT
 public:
     SLineEdit(QWidget *parent = 0);
-    SLineEdit(const QString &contents, bool hasValidator = true, QWidget *parent = 0);
+    SLineEdit(const QString &contents, bool hasValidator = true, bool hasScriptEngine = true, QWidget *parent = 0);
     ~SLineEdit();
 
     double value();

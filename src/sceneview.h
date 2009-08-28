@@ -35,6 +35,11 @@ public:
     bool showVectors;
     bool showSolutionMesh;
 
+    // geometry
+    double geometryNodeSize;
+    double geometryEdgeWidth;
+    double geometryLabelSize;
+
     // grid
     double gridStep;
 

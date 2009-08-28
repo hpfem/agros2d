@@ -48,8 +48,10 @@ void SceneInfoView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
     mnuInfo->addAction(Util::scene()->actNewLabelMarker);
     mnuInfo->addSeparator();
+    #ifdef BETA
     mnuInfo->addAction(Util::scene()->actNewFunction);
     mnuInfo->addSeparator();
+    #endif
     mnuInfo->addAction(actDelete);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actProperties);
@@ -90,10 +92,12 @@ void SceneInfoView::createTreeView()
     materialsNode->setExpanded(true);
 
     // functions
+    #ifdef BETA
     functionsNode = new QTreeWidgetItem(trvWidget);
     functionsNode->setText(0, tr("Functions"));
     functionsNode->setIcon(0, icon("scenefunction"));
     functionsNode->setExpanded(true);
+    #endif
 
     // geometry
     geometryNode = new QTreeWidgetItem(trvWidget);
@@ -195,6 +199,7 @@ void SceneInfoView::doInvalidated()
         item->setData(0, Qt::UserRole, Util::scene()->labelMarkers[i]->variant());
     }
 
+    #ifdef BETA
     // functions
     for (int i = 0; i<Util::scene()->functions.count(); i++)
     {
@@ -204,6 +209,7 @@ void SceneInfoView::doInvalidated()
         item->setIcon(0, icon("scene-function"));
         item->setData(0, Qt::UserRole, Util::scene()->functions[i]->variant());
     }
+    #endif
 
     // geometry
     // nodes
@@ -275,6 +281,7 @@ void SceneInfoView::clearNodes()
         delete item;
     }
 
+    #ifdef BETA
     // functions
     while (functionsNode->childCount() > 0)
     {
@@ -282,6 +289,7 @@ void SceneInfoView::clearNodes()
         functionsNode->removeChild(item);
         delete item;
     }
+    #endif
 
     // geometry
     while (nodesNode->childCount() > 0)

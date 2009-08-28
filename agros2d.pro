@@ -6,6 +6,7 @@ QT += opengl \
     script \
     webkit \
     network
+# DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
 unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
