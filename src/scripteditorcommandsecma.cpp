@@ -44,7 +44,7 @@ QScriptValue scriptMessageBox(QScriptContext *context, QScriptEngine *engine)
 // quit()
 QScriptValue scriptQuit(QScriptContext *context, QScriptEngine *engine)
 {
-    QApplication::quit();
+    QApplication::exit(0);
     return engine->undefinedValue();
 }
 

@@ -26,9 +26,12 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void open(const QString &fileName);
+    void runScript(const QString &fileName);
+
 private slots:
     void doDocumentNew();
-    void doDocumentOpen();
+    void doDocumentOpen(const QString &fileName = "");
     void doDocumentOpenRecent(QAction *action);
     void doDocumentSave();
     void doDocumentSaveAs();
@@ -44,7 +47,7 @@ private slots:
 
     void doChart();
     void doScriptEditor();
-    void doScriptEditorRun();
+    void doScriptEditorRun(const QString &fileName = "");
     void doScriptStartup();
     void doOptions();
 

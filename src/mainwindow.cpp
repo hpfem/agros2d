@@ -36,6 +36,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     sceneView->actSceneModeNode->trigger();
     sceneView->doZoomBestFit();
+
+    // parameters
+    QStringList args = QCoreApplication::arguments();
+    if (args.count() > 1)
+    {
+        if (args.count() == 2)
+        {
+            open(args[1]);
+        }
+
+        if (args.count() == 3)
+        {
+            if ((args[1] == "-run") || (args[1] == "-r"))
+            {
+                runScript(args[2]);
+            }
+        }
+    }
 }
 
 MainWindow::~MainWindow()
@@ -44,6 +62,17 @@ MainWindow::~MainWindow()
     settings.setValue("MainWindow/Geometry", saveGeometry());
     settings.setValue("MainWindow/State", saveState());
     settings.setValue("MainWindow/RecentFiles", recentFiles);
+}
+
+void MainWindow::open(const QString &fileName)
+{
+    doDocumentOpen(fileName);
+}
+
+void MainWindow::runScript(const QString &fileName)
+{
+    QApplication::processEvents();
+    doScriptEditorRun(fileName);
 }
 
 void MainWindow::createActions()
@@ -411,19 +440,28 @@ void MainWindow::doDocumentNew()
     delete problemDialog;
 }
 
-void MainWindow::doDocumentOpen()
+void MainWindow::doDocumentOpen(const QString &fileName)
 {
-    QSettings settings;
-    QString dir = settings.value("General/LastDataDir", "data").toString();
+    QString fileNameDocument;
+    if (fileName.isEmpty())
+    {
+        QSettings settings;
+        QString dir = settings.value("General/LastDataDir", "data").toString();
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.a2d *.qs);;Agros2D data files (*.a2d);;Agros2D script files (*.qs)"));
-    if (!fileName.isEmpty())
-    {        
-        QFileInfo fileInfo(fileName);
+        fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.a2d *.qs);;Agros2D data files (*.a2d);;Agros2D script files (*.qs)"));
+    }
+    else
+    {
+        fileNameDocument = fileName;
+    }
+
+    if (QFile::exists(fileNameDocument))
+    {
+        QFileInfo fileInfo(fileNameDocument);
         if (fileInfo.suffix() == "a2d")
         {
             // a2d data file
-            Util::scene()->readFromFile(fileName);
+            Util::scene()->readFromFile(fileNameDocument);
             setRecentFiles();
 
             sceneView->doDefaults();
@@ -433,8 +471,12 @@ void MainWindow::doDocumentOpen()
         {
             // a2d script
             scriptEditorDialog->showDialog();
-            scriptEditorDialog->doFileOpen(fileName);
+            scriptEditorDialog->doFileOpen(fileNameDocument);
         }
+    }
+    else
+    {
+        QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameDocument));
     }
 }
 
@@ -569,15 +611,27 @@ void MainWindow::doScriptEditor()
     scriptEditorDialog->showDialog();
 }
 
-void MainWindow::doScriptEditorRun()
+void MainWindow::doScriptEditorRun(const QString &fileName)
 {
-    // open dialog
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Agros2D script files (*.qs)"));
+    QString fileNameScript;
+    if (fileName.isEmpty())
+    {
+        // open dialog
+        fileNameScript = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Agros2D script files (*.qs)"));
+    }
+    else
+    {
+        fileNameScript = fileName;
+    }
 
-    // run script
-    if (!fileName.isEmpty()) {
-        scriptEditorDialog->runScript(fileName);
-    }  
+    if (QFile::exists(fileNameScript))
+    {
+        scriptEditorDialog->runScript(fileNameScript);
+    }
+    else
+    {
+        QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameScript));
+    }    
 }
 
 void MainWindow::doScriptStartup()

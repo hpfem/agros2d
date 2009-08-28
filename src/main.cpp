@@ -19,9 +19,9 @@ int main(int argc, char *argv[])
                             .arg(VERSION_GIT)
                             .arg(VERSION_YEAR)
                             .arg(QString("0%1")
-                            .arg(VERSION_MONTH).right(2))
+                                 .arg(VERSION_MONTH).right(2))
                             .arg(QString("0%1")
-                            .arg(VERSION_DAY).right(2)));
+                                 .arg(VERSION_DAY).right(2)));
     a.setOrganizationName("hpfem.org");
     a.setOrganizationDomain("hpfem.org");
     a.setApplicationName("Agros2D");
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
         QStringList styles = QStyleFactory::keys();
 
-        #ifdef Q_WS_X11
+#ifdef Q_WS_X11
         // kde 3
         if (getenv("KDE_FULL_SESSION") != NULL)
             style = "Plastique";
@@ -50,14 +50,14 @@ int main(int argc, char *argv[])
         // gtk+
         if (style == "")
             style = "GTK+";
-        #endif
+#endif
 
-        #ifdef Q_WS_WIN
-            if (styles.contains("WindowsXP"))
-                style = "WindowsXP";
-            else
-                style = "Windows";
-        #endif
+#ifdef Q_WS_WIN
+        if (styles.contains("WindowsXP"))
+            style = "WindowsXP";
+        else
+            style = "Windows";
+#endif
 
         settings.setValue("General/GUIStyle", style);
     }
@@ -69,7 +69,20 @@ int main(int argc, char *argv[])
     QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
     setLanguage(locale);
 
+    // parameters
+    QStringList args = QCoreApplication::arguments();
+    if (args.count() == 2)
+    {
+        if ((args[1] == "--help") || (args[1] == "/help"))
+        {
+            cout << "agros2d [fileName (*.a2d; *.qs) | -run fileName (*.qs) | --help]" << endl;
+            a.exit(0);
+            return 0;
+        }
+    }
+
     MainWindow w;
     w.show();
+
     return a.exec();
 }
