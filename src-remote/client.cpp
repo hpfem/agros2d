@@ -2,10 +2,6 @@
 
 Client::Client()
 {
-    // client
-    m_client_socket = new QLocalSocket();
-    connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
-
     // server
     m_server = new QLocalServer();
     QLocalServer::removeServer("agros2d-client");
@@ -14,7 +10,6 @@ Client::Client()
         cout << tr("Error: Unable to start the server (agros2d-client): %1.").arg(m_server->errorString()).toStdString() << endl;
         return;
     }
-
     connect(m_server, SIGNAL(newConnection()), this, SLOT(connected()));
 }
 
@@ -29,18 +24,23 @@ void Client::run(const QString &command)
     QByteArray block;
     if (!command.isEmpty())
     {
-        QDataStream out(&block, QIODevice::ReadWrite);
+        m_client_socket = new QLocalSocket();
+        connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
 
-        out.setVersion(QDataStream::Qt_4_5);
-        out << (quint16) 0;
-        out << command;
-        out.device()->seek(0);
-        out << (quint16)(block.size() - sizeof(quint16));
-
-        m_client_socket->abort();
         m_client_socket->connectToServer("agros2d-server");
-        m_client_socket->write(block);
-        m_client_socket->flush();
+        if (m_client_socket->waitForConnected(1000))
+        {
+            QTextStream out(m_client_socket);
+            out << command;
+            out.flush();
+            m_client_socket->waitForBytesWritten();
+        }
+        else
+        {
+            displayError(QLocalSocket::ConnectionRefusedError);
+        }
+
+        delete m_client_socket;
     }
     else
     {
@@ -50,39 +50,22 @@ void Client::run(const QString &command)
 
 void Client::connected()
 {
-    blockSize = 0;
     result = "";
 
     m_server_socket = m_server->nextPendingConnection();
     connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readResult()));
     connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-
-    while (m_server_socket->waitForReadyRead(10)) {}
-    m_server_socket->disconnectFromServer();
 }
 
 void Client::readResult()
 {
-    QDataStream in(m_server_socket);
-    in.setVersion(QDataStream::Qt_4_5);
-
-    if (blockSize == 0)
-    {
-        if (m_server_socket->bytesAvailable() < (int) sizeof(quint16))
-            return;
-        in >> blockSize;
-    }
-
-    if (in.atEnd())
-        return;
-
-    in >> result;
+    QTextStream in(m_server_socket);
+    result = in.readAll();
 }
 
 void Client::disconnected()
 {
     m_server_socket->deleteLater();
-
     cout << result.toStdString() << endl;
     exit(0);
 }
@@ -91,16 +74,13 @@ void Client::displayError(QLocalSocket::LocalSocketError socketError)
 {
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
-        cout << tr("Error: The host was not found.").toStdString() << endl;
+        cout << tr("Client error: The host was not found.").toStdString() << endl;
         break;
     case QLocalSocket::ConnectionRefusedError:
-        cout << tr("Error: The connection was refused by the peer. Make sure the agros2d-server server is running.").toStdString() << endl;
-        break;
-    case QLocalSocket::PeerClosedError:
+        cout << tr("Client error: The connection was refused by the peer. Make sure the agros2d-server server is running.").toStdString() << endl;
         break;
     default:
-        cout << tr("Error: The following error occurred: %1.").arg(m_client_socket->errorString()).toStdString() << endl;
+        cout << tr("Client error: The following error occurred: %1.").arg(m_client_socket->errorString()).toStdString() << endl;
     }
-
     exit(0);
 }

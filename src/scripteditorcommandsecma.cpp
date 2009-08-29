@@ -25,6 +25,12 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
+// version()
+QScriptValue scriptVersion(QScriptContext *context, QScriptEngine *engine)
+{
+    return QApplication::applicationVersion();
+}
+
 // message(string)
 QScriptValue scriptMessage(QScriptContext *context, QScriptEngine *engine)
 {

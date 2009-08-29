@@ -24,6 +24,7 @@ QString runEcma(const QString &script)
     QScriptValue funPrint = m_engine->newFunction(scriptPrint);
     m_engine->globalObject().setProperty("print", funPrint);
 
+    m_engine->globalObject().setProperty("version", m_engine->newFunction(scriptVersion));
     m_engine->globalObject().setProperty("message", m_engine->newFunction(scriptMessage));
     m_engine->globalObject().setProperty("input", m_engine->newFunction(scriptInput));
     m_engine->globalObject().setProperty("quit", m_engine->newFunction(scriptQuit));
@@ -100,10 +101,6 @@ QString runEcma(const QString &script)
 
 ScriptEngineRemote::ScriptEngineRemote()
 {
-    // client
-    m_client_socket = new QLocalSocket();
-    connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
-
     // server
     m_server = new QLocalServer();
     QLocalServer::removeServer("agros2d-server");
@@ -124,33 +121,17 @@ ScriptEngineRemote::~ScriptEngineRemote()
 
 void ScriptEngineRemote::connected()
 {
-    blockSize = 0;
     command = "";
 
     m_server_socket = m_server->nextPendingConnection();
     connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readCommand()));
-    connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-
-    while (m_server_socket->waitForReadyRead(10)) {}
-    m_server_socket->disconnectFromServer();
+    connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));   
 }
 
 void ScriptEngineRemote::readCommand()
 {
-    QDataStream in(m_server_socket);
-    in.setVersion(QDataStream::Qt_4_5);
-
-    if (blockSize == 0)
-    {
-        if (m_server_socket->bytesAvailable() < (int) sizeof(quint16))
-            return;
-        in >> blockSize;
-    }
-
-    if (in.atEnd())
-        return;
-
-    in >> command;
+    QTextStream in(m_server_socket);
+    command = in.readAll();
 }
 
 void ScriptEngineRemote::disconnected()
@@ -160,37 +141,40 @@ void ScriptEngineRemote::disconnected()
     QString result = "";
     if (!command.isEmpty())
     {
+        // cout << "Remote command: " << command.toStdString() << endl;
         result = runEcma(command);
     }
 
-    QByteArray block;
-    QDataStream out(&block, QIODevice::ReadWrite);
+    m_client_socket = new QLocalSocket();
+    connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
 
-    out.setVersion(QDataStream::Qt_4_5);
-    out << (quint16) 0;
-    out << result;
-    out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
-
-    m_client_socket->abort();
     m_client_socket->connectToServer("agros2d-client");
-    m_client_socket->write(block);
-    m_client_socket->flush();
+    if (m_client_socket->waitForConnected(1000))
+    {
+        QTextStream out(m_client_socket);
+        out << result;
+        out.flush();
+        m_client_socket->waitForBytesWritten();
+    }
+    else
+    {
+        displayError(QLocalSocket::ConnectionRefusedError);
+    }
+
+    delete m_client_socket;
 }
 
 void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError)
 {
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
-        cout << tr("Error: The host was not found.").toStdString() << endl;
+        cout << tr("Server error: The host was not found.").toStdString() << endl;
         break;
     case QLocalSocket::ConnectionRefusedError:
-        cout << tr("Error: The connection was refused by the peer. Make sure the agros2d-client server is running.").toStdString() << endl;
-        break;
-    case QLocalSocket::PeerClosedError:
+        cout << tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.").toStdString() << endl;
         break;
     default:
-        cout << tr("Error: The following error occurred: %1.").arg(m_client_socket->errorString()).toStdString() << endl;
+        cout << tr("Server error: The following error occurred: %1.").arg(m_client_socket->errorString()).toStdString() << endl;
     }
 }
 

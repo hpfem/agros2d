@@ -12,7 +12,7 @@ class Scene;
 class SceneView;
 class ScriptEditor;
 
-class ScriptEngineRemote : public QObject
+class ScriptEngineRemote : QObject
 {
     Q_OBJECT
 
@@ -33,8 +33,6 @@ private:
     QLocalServer *m_server;
     QLocalSocket *m_server_socket;
     QLocalSocket *m_client_socket;
-
-    quint16 blockSize;
 };
 
 class ScriptEditorWidget : public QWidget

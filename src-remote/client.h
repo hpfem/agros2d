@@ -33,8 +33,6 @@ private:
     QLocalServer *m_server;
     QLocalSocket *m_server_socket;
     QLocalSocket *m_client_socket;
-
-    quint16 blockSize;
 };
 
 #endif

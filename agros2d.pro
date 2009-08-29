@@ -5,7 +5,7 @@ QT += opengl \
     webkit \
     network
 SUBDIRS = src-remote
-DEFINES += BETA
+# DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
 DEFINES += VERSION_SUB=5
@@ -60,11 +60,13 @@ unix {
     
     # install binary
     target.path = $${PREFIX}/bin
-    target.files += agros2d
-    target.files += src-remote/agros2d-remote
+
+    target-remote.path = $${PREFIX}/bin
+    target-remote.files = src-remote/agros2d-remote
     
     # "make install" configuration options
     INSTALLS *= target \
+	target-remote \
         examples \
         help \
         lang \
@@ -147,7 +149,6 @@ LIBS += -lhermes2d-real \
     -lblas \
     -lJudy \
     -lpthread
-unix:LIBS += -lpython2.6
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt
 OTHER_FILES += 
