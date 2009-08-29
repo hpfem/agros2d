@@ -47,7 +47,8 @@ private slots:
 
     void doChart();
     void doScriptEditor();
-    void doScriptEditorRun(const QString &fileName = "");
+    void doScriptEditorRunScript(const QString &fileName = "");
+    void doScriptEditorRunCommand(const QString &command = "");
     void doScriptStartup();
     void doOptions();
 
@@ -103,7 +104,8 @@ private:
     QAction *actChart; 
 
     QAction *actScriptEditor;
-    QAction *actScriptEditorRun;
+    QAction *actScriptEditorRunScript;
+    QAction *actScriptEditorRunCommand;
     QAction *actScriptStartup;
 
     QAction *actHelp;

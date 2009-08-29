@@ -1,62 +1,15 @@
 #include "scripteditordialog.h"
 #include "scripteditorcommandsecma.cpp"
 
-ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
-{
-    file = "";
+QScriptEngine *m_engine;
 
-    txtEditor = new ScriptEditor(this);
-    txtOutput = new QPlainTextEdit(this);
-    splitter = new QSplitter(this);
+QString runEcma(const QString &script)
+{          
+    if (!m_engine)
+        m_engine = scriptEngine();
 
-    createControls();
-    m_engine = scriptEngine();
-
-    QSettings settings;
-    restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
-    splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
-    splitter->restoreState(settings.value("ScriptEditorDialog/SplitterState", splitter->saveState()).toByteArray());
-}
-
-ScriptEditorWidget::~ScriptEditorWidget()
-{
-    QSettings settings;
-    settings.setValue("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry());
-    settings.setValue("ScriptEditorDialog/SplitterState", splitter->saveState());
-
-    delete txtEditor;
-    delete txtOutput;
-    delete splitter;
-
-    delete m_engine;
-}
-
-void ScriptEditorWidget::createControls()
-{
-    txtOutput->setFont(QFont("Monospaced", 10));
-    txtOutput->setReadOnly(true);
-
-    // contents
-    splitter->setOrientation(Qt::Vertical);
-    splitter->addWidget(txtEditor);
-    splitter->addWidget(txtOutput);
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(splitter);
-
-    setLayout(layout);
-
-    QSettings settings;
-    splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
-}
-
-void ScriptEditorWidget::doRunEcma(const QString &script)
-{
-    QString scriptContent;
     if (script.isEmpty())
-        scriptContent = txtEditor->toPlainText();
-    else
-        scriptContent = script;
+        return "";
 
     // scene
     QScriptValue sceneValue = m_engine->newQObject(Util::scene());
@@ -67,14 +20,8 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     m_engine->globalObject().setProperty("sceneView", sceneViewValue);
 
     // general functions
-    // clear
-    QScriptValue funClear = m_engine->newFunction(scriptClear);
-    funClear.setData(m_engine->newQObject(txtOutput));
-    m_engine->globalObject().setProperty("clear", funClear);
-
     // print
     QScriptValue funPrint = m_engine->newFunction(scriptPrint);
-    funPrint.setData(m_engine->newQObject(txtOutput));
     m_engine->globalObject().setProperty("print", funPrint);
 
     m_engine->globalObject().setProperty("message", m_engine->newFunction(scriptMessage));
@@ -119,7 +66,8 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
     m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
 
-    // solver
+    // solver    
+    m_engine->globalObject().setProperty("mesh", m_engine->newFunction(scriptMesh));
     m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
 
     // postprocessor
@@ -127,11 +75,8 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
     m_engine->globalObject().setProperty("surfaceIntegral", m_engine->newFunction(scriptSurfaceIntegral));
 
-    // run
-    txtOutput->clear();
-
     // check syntax
-    QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(txtEditor->toPlainText());
+    QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(script);
 
     if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
     {
@@ -139,14 +84,174 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
         // startup script
         m_engine->evaluate(Util::scene()->problemInfo().scriptStartup);
         // result
-        QScriptValue result = m_engine->evaluate(scriptContent);
+        QScriptValue result = m_engine->evaluate(script);
         Util::scene()->blockSignals(false);
         Util::scene()->refresh();
+
+        return funPrint.data().toString().trimmed();
     }
     else
     {
-        txtOutput->appendPlainText(tr("Error: %1 (line %2, column %3)").arg(syntaxResult.errorMessage()).arg(syntaxResult.errorLineNumber()).arg(syntaxResult.errorColumnNumber()));
+        return QObject::tr("Error: %1 (line %2, column %3)").arg(syntaxResult.errorMessage()).arg(syntaxResult.errorLineNumber()).arg(syntaxResult.errorColumnNumber());
     }
+
+    return "";
+}
+
+ScriptEngineRemote::ScriptEngineRemote()
+{
+    // client
+    m_client_socket = new QLocalSocket();
+    connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
+
+    // server
+    m_server = new QLocalServer();
+    QLocalServer::removeServer("agros2d-server");
+    if (!m_server->listen("agros2d-server"))
+    {
+        cout << tr("Error: Unable to start the server (agros2d-server): %1.").arg(m_server->errorString()).toStdString() << endl;
+        return;
+    }
+
+    connect(m_server, SIGNAL(newConnection()), this, SLOT(connected()));
+}
+
+ScriptEngineRemote::~ScriptEngineRemote()
+{
+    delete m_server;
+    delete m_client_socket;
+}
+
+void ScriptEngineRemote::connected()
+{
+    blockSize = 0;
+    command = "";
+
+    m_server_socket = m_server->nextPendingConnection();
+    connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readCommand()));
+    connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+
+    while (m_server_socket->waitForReadyRead(10)) {}
+    m_server_socket->disconnectFromServer();
+}
+
+void ScriptEngineRemote::readCommand()
+{
+    QDataStream in(m_server_socket);
+    in.setVersion(QDataStream::Qt_4_5);
+
+    if (blockSize == 0)
+    {
+        if (m_server_socket->bytesAvailable() < (int) sizeof(quint16))
+            return;
+        in >> blockSize;
+    }
+
+    if (in.atEnd())
+        return;
+
+    in >> command;
+}
+
+void ScriptEngineRemote::disconnected()
+{
+    m_server_socket->deleteLater();
+
+    QString result = "";
+    if (!command.isEmpty())
+    {
+        result = runEcma(command);
+    }
+
+    QByteArray block;
+    QDataStream out(&block, QIODevice::ReadWrite);
+
+    out.setVersion(QDataStream::Qt_4_5);
+    out << (quint16) 0;
+    out << result;
+    out.device()->seek(0);
+    out << (quint16)(block.size() - sizeof(quint16));
+
+    m_client_socket->abort();
+    m_client_socket->connectToServer("agros2d-client");
+    m_client_socket->write(block);
+    m_client_socket->flush();
+}
+
+void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError)
+{
+    switch (socketError) {
+    case QLocalSocket::ServerNotFoundError:
+        cout << tr("Error: The host was not found.").toStdString() << endl;
+        break;
+    case QLocalSocket::ConnectionRefusedError:
+        cout << tr("Error: The connection was refused by the peer. Make sure the agros2d-client server is running.").toStdString() << endl;
+        break;
+    case QLocalSocket::PeerClosedError:
+        break;
+    default:
+        cout << tr("Error: The following error occurred: %1.").arg(m_client_socket->errorString()).toStdString() << endl;
+    }
+}
+
+// ***************************************************************************************************************************
+
+ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
+{
+    file = "";
+
+    txtEditor = new ScriptEditor(this);
+    txtOutput = new QPlainTextEdit(this);
+    splitter = new QSplitter(this);
+
+    createControls();
+
+    QSettings settings;
+    restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
+    splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
+    splitter->restoreState(settings.value("ScriptEditorDialog/SplitterState", splitter->saveState()).toByteArray());
+}
+
+ScriptEditorWidget::~ScriptEditorWidget()
+{
+    QSettings settings;
+    settings.setValue("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry());
+    settings.setValue("ScriptEditorDialog/SplitterState", splitter->saveState());
+
+    delete txtEditor;
+    delete txtOutput;
+    delete splitter;
+}
+
+void ScriptEditorWidget::createControls()
+{
+    txtOutput->setFont(QFont("Monospaced", 10));
+    txtOutput->setReadOnly(true);
+
+    // contents
+    splitter->setOrientation(Qt::Vertical);
+    splitter->addWidget(txtEditor);
+    splitter->addWidget(txtOutput);
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(splitter);
+
+    setLayout(layout);
+
+    QSettings settings;
+    splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
+}
+
+void ScriptEditorWidget::doRunEcma(const QString &script)
+{
+    QString scriptContent;
+    if (script.isEmpty())
+        scriptContent = txtEditor->toPlainText();
+    else
+        scriptContent = script;
+
+    QString output = runEcma(scriptContent);
+    txtOutput->setPlainText(output);
 }
 
 void ScriptEditorWidget::doCreateFromModel()
@@ -249,11 +354,18 @@ void ScriptEditorDialog::runScript(const QString &fileName)
         if (file.open(QFile::ReadOnly | QFile::Text))
         {
             // run script
-            doFileNew();
-            ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-            scriptEditorWidget->doRunEcma(file.readAll());
-            doFileClose();
+            runEcma(file.readAll());
         }
+        file.close();
+    }
+}
+
+void ScriptEditorDialog::runCommand(const QString &command)
+{
+    if (!command.isEmpty())
+    {
+        // run script
+        runEcma(command);
     }
 }
 
@@ -485,7 +597,6 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
 
     txtEditor = scriptEditorWidget->txtEditor;
-    txtOutput = scriptEditorWidget->txtOutput;
 
     actRunEcma->disconnect();
     connect(actRunEcma, SIGNAL(triggered()), scriptEditorWidget, SLOT(doRunEcma()));

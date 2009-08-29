@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QtNetwork>
 
 #include <QScriptEngine>
 #include <QtHelp/QHelpEngine>

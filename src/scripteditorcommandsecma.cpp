@@ -7,16 +7,6 @@
 
 static SceneView *m_sceneView;
 
-// clear()
-QScriptValue scriptClear(QScriptContext *context, QScriptEngine *engine)
-{
-    QScriptValue calleeData = context->callee().data();
-    QPlainTextEdit *edit = qobject_cast<QPlainTextEdit*>(calleeData.toQObject());
-    edit->clear();
-    
-    return engine->undefinedValue();
-}
-
 // print(string)
 QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
 {
@@ -27,10 +17,11 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
         result.append(context->argument(i).toString());
     }
     
-    QScriptValue calleeData = context->callee().data();
-    QPlainTextEdit *edit = qobject_cast<QPlainTextEdit*>(calleeData.toQObject());
-    edit->appendPlainText(result);
-    
+    // QScriptValue calleeData = context->callee().data();
+    // QPlainTextEdit *edit = qobject_cast<QPlainTextEdit*>(calleeData.toQObject());
+    // edit->appendPlainText(result);
+    context->callee().setData(context->callee().data().toString() + result + "\n");
+
     return engine->undefinedValue();
 }
 
@@ -329,6 +320,15 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
         break;
     }
     
+    return engine->undefinedValue();
+}
+
+// mesh()
+QScriptValue scriptMesh(QScriptContext *context, QScriptEngine *engine)
+{
+    Util::scene()->createMeshAndSolve(SOLVER_MESH);
+    Util::scene()->refresh();
+
     return engine->undefinedValue();
 }
 

@@ -54,6 +54,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             }
         }
     }
+
+    // run server
+    ScriptEngineRemote *scriptEngineRemote = new ScriptEngineRemote();
 }
 
 MainWindow::~MainWindow()
@@ -72,7 +75,7 @@ void MainWindow::open(const QString &fileName)
 void MainWindow::runScript(const QString &fileName)
 {
     QApplication::processEvents();
-    doScriptEditorRun(fileName);
+    doScriptEditorRunScript(fileName);
 }
 
 void MainWindow::createActions()
@@ -188,9 +191,14 @@ void MainWindow::createActions()
     actScriptEditor->setShortcut(Qt::Key_F4);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
-    actScriptEditorRun = new QAction(icon("script"), tr("&Run script..."), this);
-    actScriptEditorRun->setStatusTip(tr("Run script..."));
-    connect(actScriptEditorRun, SIGNAL(triggered()), this, SLOT(doScriptEditorRun()));
+    actScriptEditorRunScript = new QAction(icon("script"), tr("&Run script..."), this);
+    actScriptEditorRunScript->setStatusTip(tr("Run script..."));
+    connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
+
+    actScriptEditorRunCommand = new QAction(icon("script"), tr("&Run command..."), this);
+    actScriptEditorRunCommand->setShortcut(QKeySequence(tr("Alt+C")));
+    actScriptEditorRunCommand->setStatusTip(tr("Run command..."));
+    connect(actScriptEditorRunCommand, SIGNAL(triggered()), this, SLOT(doScriptEditorRunCommand()));
 
     actScriptStartup = new QAction(icon("script-startup"), tr("S&tartup script"), this);
     actScriptStartup->setStatusTip(tr("Startup script"));
@@ -275,7 +283,8 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actScriptStartup);
     mnuTools->addAction(actScriptEditor);
-    mnuTools->addAction(actScriptEditorRun);
+    mnuTools->addAction(actScriptEditorRunScript);
+    mnuTools->addAction(actScriptEditorRunCommand);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
@@ -614,7 +623,7 @@ void MainWindow::doScriptEditor()
     scriptEditorDialog->showDialog();
 }
 
-void MainWindow::doScriptEditorRun(const QString &fileName)
+void MainWindow::doScriptEditorRunScript(const QString &fileName)
 {
     QString fileNameScript;
     if (fileName.isEmpty())
@@ -636,6 +645,22 @@ void MainWindow::doScriptEditorRun(const QString &fileName)
         if (!fileNameScript.isEmpty())
             QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameScript));
     }    
+}
+
+void MainWindow::doScriptEditorRunCommand(const QString &command)
+{
+    QString commandLine;
+    if (command.isEmpty())
+    {
+        commandLine = QInputDialog::getText(this, tr("Command"), tr("Enter command:"), QLineEdit::Normal);
+    }
+    else
+    {
+        commandLine = command;
+    }
+
+    if (!commandLine.isEmpty())
+        scriptEditorDialog->runCommand(commandLine);
 }
 
 void MainWindow::doScriptStartup()
@@ -713,7 +738,7 @@ void MainWindow::doHelpShortCut()
 
 void MainWindow::doAbout()
 {
-    QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics solver based on <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library.<br/><br/>Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>Issues: <a href=\"http://code.google.com/p/agros2d/issues/list\">http://code.google.com/p/agros2d/issues/list</a><br/><br/><b>Authors:</b><p><table><tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a> (main developer)</td></tr><tr><td>&nbsp;</td><td>František Mach <a href=\"mailto:mach.frantisek@gmail.com\">mach.frantisek@gmail.com</a> (developer, documentation)</td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr><tr><td>Triangle:</td><td>Jonathan Richard Shewchuk (<a href=\"http://www.cs.cmu.edu/~quake/triangle.html\">Triangle</a>)</td></tr></table></p><br/><b>License:</b><p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Hermes2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
+    QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics application based on <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library.<br/><br/>Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>Issues: <a href=\"http://code.google.com/p/agros2d/issues/list\">http://code.google.com/p/agros2d/issues/list</a><br/><br/><b>Authors:</b><p><table><tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a> (main developer)</td></tr><tr><td>&nbsp;</td><td>František Mach <a href=\"mailto:mach.frantisek@gmail.com\">mach.frantisek@gmail.com</a> (developer, documentation)</td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr><tr><td>Triangle:</td><td>Jonathan Richard Shewchuk (<a href=\"http://www.cs.cmu.edu/~quake/triangle.html\">Triangle</a>)</td></tr></table></p><br/><b>License:</b><p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Hermes2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Hermes2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
 
     QMessageBox::about(this, tr("About Agros2D"), str);
 }

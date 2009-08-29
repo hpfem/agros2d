@@ -13,6 +13,8 @@ configure-stamp
 agros2d.substvars
 agros2d
 agros2d.pro.user
+agros2d-remote
+agros2d-remote.pro.user
 debian/files
 doc/latex
 setup

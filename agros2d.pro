@@ -1,11 +1,10 @@
-# -------------------------------------------------
-# Project created by QtCreator 2009-04-05T11:57:16
-# -------------------------------------------------
+# agros2d - hp-FEM multiphysics application based on Hermes2D library
 QT += opengl \
     xml \
     script \
     webkit \
     network
+SUBDIRS = src-remote
 DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
@@ -61,6 +60,8 @@ unix {
     
     # install binary
     target.path = $${PREFIX}/bin
+    target.files += agros2d
+    target.files += src-remote/agros2d-remote
     
     # "make install" configuration options
     INSTALLS *= target \

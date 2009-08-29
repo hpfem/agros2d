@@ -9,7 +9,7 @@ Homepage: http://hpfem.org/agros2d
 Package: agros2d
 Architecture: any
 Depends: ${shlibs:Depends}, triangle-bin (>= 1.6), libsuitesparse-3.2.0 (>= 3.2.0), libglu1-mesa (>= 3.4.0), libqwt5-qt4 (>= 5.1.0), libhermes2d (>= 1.0)
-Description: hp-FEM multiphysics solver based on Hermes2D library
+Description: hp-FEM multiphysics application based on Hermes2D library
  Agros2D is a multiplatform C++ application for the solution of two-dimensional 
  problems described by partial differential equations (PDE), based on the Hermes2D library. 
  The user can create models, solve them using adaptive higher-order finite 

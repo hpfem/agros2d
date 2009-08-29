@@ -12,6 +12,31 @@ class Scene;
 class SceneView;
 class ScriptEditor;
 
+class ScriptEngineRemote : public QObject
+{
+    Q_OBJECT
+
+public:
+    ScriptEngineRemote();
+    ~ScriptEngineRemote();
+
+private slots:
+    void connected();
+    void readCommand();
+    void disconnected();
+
+    void displayError(QLocalSocket::LocalSocketError socketError);
+
+private:
+    QString command;    
+
+    QLocalServer *m_server;
+    QLocalSocket *m_server_socket;
+    QLocalSocket *m_client_socket;
+
+    quint16 blockSize;
+};
+
 class ScriptEditorWidget : public QWidget
 {
     Q_OBJECT
@@ -33,7 +58,6 @@ public:
 
 private:
     QSplitter *splitter;
-    QScriptEngine *m_engine;
 };
 
 class ScriptEditorDialog : public QMainWindow
@@ -44,6 +68,7 @@ public:
     ~ScriptEditorDialog();
 
     void runScript(const QString &fileName);
+    void runCommand(const QString &command);
     void showDialog();
 
 public slots:
@@ -61,7 +86,6 @@ public slots:
 
 protected:
     ScriptEditor *txtEditor;
-    QPlainTextEdit *txtOutput;
 
     QMenu *mnuFile;
     QMenu *mnuEdit;
@@ -111,7 +135,6 @@ private slots:
 
 private:
     ProblemInfo *m_problemInfo;
-    QScriptEngine *m_engine;
 
     ScriptEditor *txtEditor;
 

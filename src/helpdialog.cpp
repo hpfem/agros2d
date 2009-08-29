@@ -4,10 +4,6 @@
 #include <QtHelp/QHelpContentWidget>
 #include <QtHelp/QHelpIndexWidget>
 
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-
 HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("help-browser"));
