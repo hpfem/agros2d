@@ -29,6 +29,7 @@ private:
     QListWidget *lstView;
     QStackedWidget *pages;
     QWidget *panMain;
+    QWidget *panView;
     QWidget *panColors;
 
     // main
@@ -78,6 +79,7 @@ private:
 
     void createControls();
     QWidget *createMainWidget();
+    QWidget *createViewWidget();
     QWidget *createColorsWidget();
 };
 

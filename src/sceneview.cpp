@@ -518,7 +518,7 @@ void SceneView::paintGeometry()
             glVertex2d(node->point.x, node->point.y);
             glEnd();
             
-            glColor3f(1.0, 1.0, 1.0);
+            glColor3f(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF());
             glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
@@ -549,7 +549,7 @@ void SceneView::paintGeometry()
             glVertex2d(label->point.x, label->point.y);
             glEnd();
             
-            glColor3f(1.0, 1.0, 1.0);
+            glColor3f(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF());
             glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);

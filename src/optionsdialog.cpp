@@ -42,6 +42,7 @@ OptionsDialog::~OptionsDialog()
 
     delete lstView;
     delete panMain;
+    delete panView;
     delete panColors;
     delete pages;
 }
@@ -169,6 +170,7 @@ void OptionsDialog::createControls()
     pages = new QStackedWidget(this);
 
     panMain = createMainWidget();
+    panView = createViewWidget();
     panColors = createColorsWidget();
 
     // List View
@@ -187,11 +189,16 @@ void OptionsDialog::createControls()
     itemMain->setTextAlignment(Qt::AlignHCenter);
     itemMain->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
+    QListWidgetItem *itemView = new QListWidgetItem(icon("options-view"), tr("View"), lstView);
+    itemView->setTextAlignment(Qt::AlignHCenter);
+    itemView->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
     QListWidgetItem *itemColors = new QListWidgetItem(icon("options-colors"), tr("Colors"), lstView);
     itemColors->setTextAlignment(Qt::AlignHCenter);
     itemColors->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     pages->addWidget(panMain);
+    pages->addWidget(panView);
     pages->addWidget(panColors);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
@@ -231,6 +238,32 @@ QWidget *OptionsDialog::createMainWidget()
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
 
+    // solver layout
+    chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
+    chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
+
+    QVBoxLayout *layoutSolver = new QVBoxLayout();
+    layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
+    layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
+
+    QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
+    grpSolver->setLayout(layoutSolver);
+
+    // layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(grpGeneral);
+    layout->addWidget(grpSolver);
+    layout->addStretch();
+
+    mainWidget->setLayout(layout);
+
+    return mainWidget;
+}
+
+QWidget *OptionsDialog::createViewWidget()
+{
+    QWidget *viewWidget = new QWidget(this);
+
     // geometry
     txtGeometryAngleSegmentsCount = new QSpinBox(this);
     txtGeometryAngleSegmentsCount->setMinimum(1);
@@ -251,17 +284,6 @@ QWidget *OptionsDialog::createMainWidget()
 
     QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
     grpGeometry->setLayout(layoutGeometry);
-
-    // solver layout
-    chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"), mainWidget);
-    chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"), mainWidget);
-
-    QVBoxLayout *layoutSolver = new QVBoxLayout();
-    layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
-    layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
-
-    QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
-    grpSolver->setLayout(layoutSolver);
 
     // layout grid
     txtGridStep = new QLineEdit("0.1");
@@ -303,7 +325,7 @@ QWidget *OptionsDialog::createMainWidget()
     QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
     grpScalarView->setLayout(layoutScalarField);
 
-    // layout contours    
+    // layout contours
     txtContoursCount = new QSpinBox(this);
     txtContoursCount->setMinimum(1);
     txtContoursCount->setMaximum(100);
@@ -326,18 +348,16 @@ QWidget *OptionsDialog::createMainWidget()
 
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpGeneral);
     layout->addWidget(grpGeometry);
-    layout->addWidget(grpSolver);
     layout->addWidget(grpGrid);
     layout->addWidget(grpContours);
     layout->addWidget(grpScalarView);
     layout->addWidget(grp3D);
     layout->addStretch();
 
-    mainWidget->setLayout(layout);
+    viewWidget->setLayout(layout);
 
-    return mainWidget;
+    return viewWidget;
 }
 
 QWidget *OptionsDialog::createColorsWidget()

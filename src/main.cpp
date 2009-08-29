@@ -13,15 +13,16 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     a.setWindowIcon(icon("agros2d"));
-    a.setApplicationVersion(QString("%1.%2.0.%3 (%4-%5-%6)")
+    a.setApplicationVersion(QString("%1.%2.%3.%4 (%5-%6-%7)")
                             .arg(VERSION_MAJOR)
                             .arg(VERSION_MINOR)
+                            .arg(VERSION_SUB)
                             .arg(VERSION_GIT)
                             .arg(VERSION_YEAR)
                             .arg(QString("0%1")
-                                 .arg(VERSION_MONTH).right(2))
+                            .arg(VERSION_MONTH).right(2))
                             .arg(QString("0%1")
-                                 .arg(VERSION_DAY).right(2)));
+                            .arg(VERSION_DAY).right(2)));
     a.setOrganizationName("hpfem.org");
     a.setOrganizationDomain("hpfem.org");
     a.setApplicationName("Agros2D");

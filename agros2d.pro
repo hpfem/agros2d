@@ -6,9 +6,10 @@ QT += opengl \
     script \
     webkit \
     network
-# DEFINES += BETA
+DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
+DEFINES += VERSION_SUB=5
 unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
 unix::DEFINES += VERSION_MONTH=$$system(date +%-m)
