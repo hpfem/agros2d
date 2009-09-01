@@ -343,6 +343,7 @@ QScriptValue scriptSolve(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
     Util::scene()->refresh();
+    m_sceneView->actSceneModePostprocessor->trigger();
     
     return engine->undefinedValue();
 }

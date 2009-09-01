@@ -115,13 +115,15 @@ void SceneViewDialog::createControls()
     chkShowGeometry = new QCheckBox(tr("Geometry"));
     chkShowInitialMesh = new QCheckBox(tr("Initial mesh"));
 
-    QHBoxLayout *layoutShow = new QHBoxLayout();
+    QVBoxLayout *layoutShow = new QVBoxLayout();
     layoutShow->addWidget(chkShowGrid);
     layoutShow->addWidget(chkShowGeometry);
     layoutShow->addWidget(chkShowInitialMesh);
+    layoutShow->addStretch();
 
     QGroupBox *grpShow = new QGroupBox(tr("Show"));
     grpShow->setLayout(layoutShow);
+
 
     // postprocessor mode
     radPostprocessorNone = new QRadioButton(tr("None"), this);
@@ -236,7 +238,7 @@ void SceneViewDialog::createControls()
         cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
         throw;
         break;
-    }
+    }    
 
     QGridLayout *layoutVectorField = new QGridLayout();
     layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
@@ -252,13 +254,37 @@ void SceneViewDialog::createControls()
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
+    QHBoxLayout *layoutShowPostprocessor = new QHBoxLayout();
+    layoutShowPostprocessor->addWidget(grpShow);
+    layoutShowPostprocessor->addWidget(grpPostprocessor);
+    layoutShowPostprocessor->addStretch();
+
+    // QWidget *widShowPostprocessor = new QWidget();
+    // widShowPostprocessor->setLayout(layoutShowPostprocessor);
+
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpShow);
-    layout->addWidget(grpPostprocessor);
+    layout->addLayout(layoutShowPostprocessor);
     layout->addWidget(grpScalarField);
     layout->addWidget(grpVectorField);
     layout->addStretch();
     layout->addWidget(buttonBox);
+
+    // enable controls
+    chkShowInitialMesh->setEnabled(Util::scene()->sceneSolution()->isMeshed());
+    chkShowSolutionMesh->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    chkShowContours->setEnabled(Util::scene()->sceneSolution()->isSolved() && (cmbScalarFieldVariable->count() > 0));
+    chkShowVectors->setEnabled(Util::scene()->sceneSolution()->isSolved() && (cmbVectorFieldVariable->count() > 0));
+    cmbScalarFieldVariable->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    cmbScalarFieldVariableComp->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    cmbVectorFieldVariable->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    radPostprocessorNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    radPostprocessorScalarField->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    radPostprocessorScalarField3D->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    // radPostprocessorScalarField3DSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    radPostprocessorOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    chkScalarFieldRangeAuto->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    txtScalarFieldRangeMin->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    txtScalarFieldRangeMax->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
     setLayout(layout);
 }

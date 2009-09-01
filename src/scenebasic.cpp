@@ -330,9 +330,9 @@ bool DSceneEdge::save() {
 
         sceneEdge->nodeStart = nodeStart;
         sceneEdge->nodeEnd = nodeEnd;
-        sceneEdge->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
-        sceneEdge->angle = txtAngle->value();
-    }
+    }   
+    sceneEdge->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
+    sceneEdge->angle = txtAngle->value();
 
     return true;
 }
@@ -412,9 +412,9 @@ bool DSceneLabel::save()
     {
         Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
         sceneLabel->point = point;
-        sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
-        sceneLabel->area = txtArea->value();
     }
+    sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
+    sceneLabel->area = txtArea->value();
 
     return true;
 }

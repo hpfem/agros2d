@@ -582,7 +582,7 @@ void SceneView::paintGeometry()
             // area size
             if ((m_sceneMode == SCENEMODE_OPERATE_ON_LABELS) || (m_sceneViewSettings.showInitialMesh))
             {
-                double radius = sqrt(label->area/(2.0*M_PI));
+                double radius = sqrt(label->area/M_PI);
                 glColor3f(0, 0.95, 0.9);
                 glBegin(GL_LINE_LOOP);
                 for (int i = 0; i<360; i = i + 10)
