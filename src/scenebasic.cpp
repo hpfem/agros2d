@@ -166,9 +166,8 @@ void DSceneBasic::createControls()
 
 void DSceneBasic::doAccept()
 {
-    save();
-
-    accept();
+    if (save())
+        accept();
 }
 
 void DSceneBasic::doReject()
@@ -212,20 +211,29 @@ QLayout* DSceneNode::createContent()
     return layout;
 }
 
-void DSceneNode::load()
+bool DSceneNode::load()
 {
     SceneNode *sceneNode = dynamic_cast<SceneNode *>(m_object);
 
     txtPointX->setText(QString::number(sceneNode->point.x));
     txtPointY->setText(QString::number(sceneNode->point.y));
+
+    return true;
 }
 
-void DSceneNode::save()
+bool DSceneNode::save()
 {
     SceneNode *sceneNode = dynamic_cast<SceneNode *>(m_object);
 
     Point point(txtPointX->value(), txtPointY->value());
-    sceneNode->point = point;
+
+    if (sceneNode->point != point)
+    {
+        Util::scene()->undoStack()->push(new SceneNodeCommandEdit(sceneNode->point, point));
+        sceneNode->point = point;
+    }
+
+    return true;
 }
 
 // *************************************************************************************************************************************
@@ -293,22 +301,40 @@ void DSceneEdge::fillComboBox()
     }
 }
 
-void DSceneEdge::load() {
+bool DSceneEdge::load() {
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
     cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
     cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
     cmbMarker->setCurrentIndex(cmbMarker->findData(sceneEdge->marker->variant()));
     txtAngle->setText(QString::number(sceneEdge->angle));
+
+    return true;
 }
 
-void DSceneEdge::save() {
+bool DSceneEdge::save() {
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
-    sceneEdge->nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
-    sceneEdge->nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
-    sceneEdge->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
-    sceneEdge->angle = txtAngle->value();
+    SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
+    SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
+
+    if (nodeStart == nodeEnd)
+    {
+        QMessageBox::warning(this, "Nodes", "Start and end node are same.");
+        return false;
+    }
+
+    if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd))
+    {
+        Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point));
+
+        sceneEdge->nodeStart = nodeStart;
+        sceneEdge->nodeEnd = nodeEnd;
+        sceneEdge->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
+        sceneEdge->angle = txtAngle->value();
+    }
+
+    return true;
 }
 
 // *************************************************************************************************************************************
@@ -364,7 +390,7 @@ void DSceneLabel::fillComboBox()
     }
 }
 
-void DSceneLabel::load()
+bool DSceneLabel::load()
 {
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
@@ -372,14 +398,229 @@ void DSceneLabel::load()
     txtPointY->setText(QString::number(sceneLabel->point.y));
     cmbMarker->setCurrentIndex(cmbMarker->findData(sceneLabel->marker->variant()));
     txtArea->setText(QString::number(sceneLabel->area));
+
+    return true;
 }
 
-void DSceneLabel::save()
+bool DSceneLabel::save()
 {
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
     Point point(txtPointX->value(), txtPointY->value());
-    sceneLabel->point = point;
-    sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
-    sceneLabel->area = txtArea->value();
+
+    if (sceneLabel->point != point)
+    {
+        Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
+        sceneLabel->point = point;
+        sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
+        sceneLabel->area = txtArea->value();
+    }
+
+    return true;
+}
+
+// undo framework *******************************************************************************************************************
+
+// Node
+
+SceneNodeCommandAdd::SceneNodeCommandAdd(const Point &point, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_point = point;
+}
+
+void SceneNodeCommandAdd::undo()
+{
+    SceneNode *node = Util::scene()->getNode(m_point);
+    if (node)
+    {
+        Util::scene()->removeNode(node);
+    }
+}
+
+void SceneNodeCommandAdd::redo()
+{
+    Util::scene()->addNode(new SceneNode(m_point));
+}
+
+SceneNodeCommandRemove::SceneNodeCommandRemove(const Point &point, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_point = point;
+}
+
+void SceneNodeCommandRemove::undo()
+{
+    Util::scene()->addNode(new SceneNode(m_point));
+}
+
+void SceneNodeCommandRemove::redo()
+{
+    SceneNode *node = Util::scene()->getNode(m_point);
+    if (node)
+    {
+        Util::scene()->removeNode(node);
+    }
+}
+
+SceneNodeCommandEdit::SceneNodeCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_point = point;
+    m_pointNew = pointNew;
+}
+
+void SceneNodeCommandEdit::undo()
+{
+    SceneNode *node = Util::scene()->getNode(m_pointNew);
+    if (node)
+    {
+        node->point = m_point;
+        Util::scene()->refresh();
+    }
+}
+
+void SceneNodeCommandEdit::redo()
+{
+    SceneNode *node = Util::scene()->getNode(m_point);
+    if (node)
+    {
+        node->point = m_pointNew;
+        Util::scene()->refresh();
+    }
+}
+
+// Label
+
+SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_point = point;
+    m_markerName = markerName;
+    m_area = area;
+}
+
+void SceneLabelCommandAdd::undo()
+{
+    Util::scene()->removeLabel(Util::scene()->getLabel(m_point));
+}
+
+void SceneLabelCommandAdd::redo()
+{
+    SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(m_markerName);
+    if (labelMarker == NULL) labelMarker = Util::scene()->labelMarkers[0];
+    Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area));
+}
+
+SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_point = point;
+    m_markerName = markerName;
+    m_area = area;
+}
+
+void SceneLabelCommandRemove::undo()
+{
+    SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(m_markerName);
+    if (labelMarker == NULL) labelMarker = Util::scene()->labelMarkers[0];
+    Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area));
+}
+
+void SceneLabelCommandRemove::redo()
+{
+    Util::scene()->removeLabel(Util::scene()->getLabel(m_point));
+}
+
+SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_point = point;
+    m_pointNew = pointNew;
+}
+
+void SceneLabelCommandEdit::undo()
+{
+    SceneLabel *label = Util::scene()->getLabel(m_pointNew);
+    if (label)
+    {
+        label->point = m_point;
+        Util::scene()->refresh();
+    }
+}
+
+void SceneLabelCommandEdit::redo()
+{
+    SceneLabel *label = Util::scene()->getLabel(m_point);
+    if (label)
+    {
+        label->point = m_pointNew;
+        Util::scene()->refresh();
+    }
+}
+
+// Edge
+
+SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_pointStart = pointStart;
+    m_pointEnd = pointEnd;
+    m_markerName = markerName;
+    m_angle = angle;
+}
+
+void SceneEdgeCommandAdd::undo()
+{
+    Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd));
+}
+
+void SceneEdgeCommandAdd::redo()
+{
+    SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(m_markerName);
+    if (edgeMarker == NULL) edgeMarker = Util::scene()->edgeMarkers[0];
+    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)), Util::scene()->addNode(new SceneNode(m_pointEnd)), edgeMarker, m_angle));
+}
+
+SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_pointStart = pointStart;
+    m_pointEnd = pointEnd;
+    m_markerName = markerName;
+    m_angle = angle;
+}
+
+void SceneEdgeCommandRemove::undo()
+{
+    SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(m_markerName);
+    if (edgeMarker == NULL) edgeMarker = Util::scene()->edgeMarkers[0];
+    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)), Util::scene()->addNode(new SceneNode(m_pointEnd)), edgeMarker, m_angle));
+}
+
+void SceneEdgeCommandRemove::redo()
+{
+    Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd));
+}
+
+SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_pointStart = pointStart;
+    m_pointEnd = pointEnd;
+    m_pointStartNew = pointStartNew;
+    m_pointEndNew = pointEndNew;
+}
+
+void SceneEdgeCommandEdit::undo()
+{
+    SceneEdge *edge = Util::scene()->getEdge(m_pointStartNew, m_pointEndNew);
+    if (edge)
+    {
+        edge->nodeStart = Util::scene()->getNode(m_pointStart);
+        edge->nodeEnd = Util::scene()->getNode(m_pointEnd);
+        Util::scene()->refresh();
+    }
+}
+
+void SceneEdgeCommandEdit::redo()
+{
+    SceneEdge *edge = Util::scene()->getEdge(m_pointStart, m_pointEnd);
+    if (edge)
+    {
+        edge->nodeStart = Util::scene()->getNode(m_pointStartNew);
+        edge->nodeEnd = Util::scene()->getNode(m_pointEndNew);
+        Util::scene()->refresh();
+    }
 }

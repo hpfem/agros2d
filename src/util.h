@@ -86,6 +86,8 @@ struct Point
     inline Point operator-(const Point &vec) const { return Point(x - vec.x, y - vec.y); }
     inline Point operator*(double num) const { return Point(x * num, y * num); }
     inline Point operator/(double num) const { return Point(x / num, y / num); }
+    inline bool operator!=(const Point &vec) const { return ((fabs(vec.x-x) > EPS_ZERO) || (fabs(vec.y-y) > EPS_ZERO)); }
+    inline bool operator==(const Point &vec) const { return ((fabs(vec.x-x) < EPS_ZERO) && (fabs(vec.y-y) < EPS_ZERO)); }
 
     inline double magnitude() { return sqrt(x * x + y * y); }
     inline double angle() { return atan2(y, x); }

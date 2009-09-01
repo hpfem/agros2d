@@ -109,8 +109,8 @@ protected:
     virtual QLayout *createContent() = 0;
     void createControls();
 
-    virtual void load() = 0;
-    virtual void save() = 0;
+    virtual bool load() = 0;
+    virtual bool save() = 0;
 
 private:
     QVBoxLayout *layout;
@@ -129,8 +129,8 @@ public:
 protected:
     QLayout *createContent();
 
-    void load();
-    void save();
+    bool load();
+    bool save();
 
 private:
     SLineEdit *txtPointX;
@@ -150,8 +150,8 @@ public:
 protected:
     QLayout *createContent();
 
-    void load();
-    void save();
+    bool load();
+    bool save();
 
 private:
     QComboBox *cmbNodeStart;
@@ -175,8 +175,8 @@ public:
 protected:
     QLayout *createContent();
 
-    void load();
-    void save();
+    bool load();
+    bool save();
 
 private:
     SLineEdit *txtPointX;
@@ -185,6 +185,128 @@ private:
     SLineEdit *txtArea;
 
     void fillComboBox();
+};
+
+// undo framework *******************************************************************************************************************
+
+// Node
+
+class SceneNodeCommandAdd : public QUndoCommand
+{
+public:
+    SceneNodeCommandAdd(const Point &point, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_point;
+};
+
+class SceneNodeCommandRemove : public QUndoCommand
+{
+public:
+    SceneNodeCommandRemove(const Point &point, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_point;
+};
+
+class SceneNodeCommandEdit : public QUndoCommand
+{
+public:
+    SceneNodeCommandEdit(const Point &point, const Point &pointNew,  QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_point;
+    Point m_pointNew;
+};
+
+// Label
+
+class SceneLabelCommandAdd : public QUndoCommand
+{
+public:
+    SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_point;
+    QString m_markerName;
+    double m_area;
+};
+
+class SceneLabelCommandRemove : public QUndoCommand
+{
+public:
+    SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_point;
+    QString m_markerName;
+    double m_area;
+};
+
+class SceneLabelCommandEdit : public QUndoCommand
+{
+public:
+    SceneLabelCommandEdit(const Point &point, const Point &pointNew,  QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_point;
+    Point m_pointNew;
+};
+
+// Edge
+
+class SceneEdgeCommandAdd : public QUndoCommand
+{
+public:
+    SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_pointStart;
+    Point m_pointEnd;
+    QString m_markerName;
+    double m_angle;
+};
+
+class SceneEdgeCommandRemove : public QUndoCommand
+{
+public:
+    SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_pointStart;
+    Point m_pointEnd;
+    QString m_markerName;
+    double m_angle;
+};
+
+class SceneEdgeCommandEdit : public QUndoCommand
+{
+public:
+    SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    Point m_pointStart;
+    Point m_pointEnd;
+    Point m_pointStartNew;
+    Point m_pointEndNew;
 };
 
 #endif // SCENEBASIC_H

@@ -1491,7 +1491,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SCENEMODE_OPERATE_ON_NODES)
         {
             SceneNode *node = new SceneNode(p);
-            Util::scene()->addNode(node);
+            SceneNode *nodeAdded = Util::scene()->addNode(node);
+            if (nodeAdded == node) Util::scene()->undoStack()->push(new SceneNodeCommandAdd(node->point));
             updateGL();
         }
         if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
@@ -1508,7 +1509,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 else
                 {
                     if (node != m_nodeLast)
-                        Util::scene()->addEdge(new SceneEdge(m_nodeLast, node, Util::scene()->edgeMarkers[0], 0));
+                    {
+                        SceneEdge *edge = new SceneEdge(m_nodeLast, node, Util::scene()->edgeMarkers[0], 0);
+                        SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
+                        if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point, edge->nodeEnd->point, edge->marker->name, edge->angle));
+                    }
                     
                     m_nodeLast->isSelected = false;
                     m_nodeLast = NULL;
@@ -1521,7 +1526,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
         {
             SceneLabel *label = new SceneLabel(p, Util::scene()->labelMarkers[0], 0);
-            Util::scene()->addLabel(label);
+            SceneLabel *labelAdded = Util::scene()->addLabel(label);
+            if (labelAdded == label) Util::scene()->undoStack()->push(new SceneLabelCommandAdd(label->point, label->marker->name, label->area));
             updateGL();
         }
     }

@@ -1,8 +1,8 @@
 [Setup]
 
 AppName=Agros2D
-AppVerName=Agros2D 0.9
-OutputBaseFilename=Agros2D_0.9.3
+AppVerName=Agros2D 0.9.5.132 (2009-08-29)
+OutputBaseFilename=Agros2D_0.9.5
 DefaultGroupName=Agros2D
 LicenseFile=COPYING
 
@@ -24,6 +24,7 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 
 [Files]
 Source: release\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
+Source: src-remote\release\Agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README

@@ -366,6 +366,18 @@ void DSceneEdgeMarker::load()
 
 bool DSceneEdgeMarker::save()
 {
+    // find name duplicities
+    foreach (SceneEdgeMarker *edgeMarker, Util::scene()->edgeMarkers)
+    {
+        if (edgeMarker->name == txtName->text())
+        {
+            if (m_edgeMarker == edgeMarker)
+                continue;
+
+            QMessageBox::warning(this, tr("Boundary marker"), tr("Boundary marker name already exists."));
+            return false;
+        }
+    }
     m_edgeMarker->name = txtName->text();
     return true;
 }
@@ -435,7 +447,7 @@ void DSceneEdgeElectrostaticMarker::load()
 }
 
 bool DSceneEdgeElectrostaticMarker::save() {
-    DSceneEdgeMarker::save();
+    if (!DSceneEdgeMarker::save()) return false;
 
     SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_edgeMarker);
 
@@ -493,7 +505,7 @@ void DSceneEdgeMagnetostaticMarker::load()
 }
 
 bool DSceneEdgeMagnetostaticMarker::save() {
-    DSceneEdgeMarker::save();
+    if (!DSceneEdgeMarker::save()) return false;;
 
     SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(m_edgeMarker);
 
@@ -552,7 +564,7 @@ void DSceneEdgeHarmonicMagneticMarker::load()
 }
 
 bool DSceneEdgeHarmonicMagneticMarker::save() {
-    DSceneEdgeMarker::save();
+    if (!DSceneEdgeMarker::save()) return false;;
 
     SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(m_edgeMarker);
 
@@ -634,7 +646,7 @@ void DSceneEdgeHeatMarker::load()
 }
 
 bool DSceneEdgeHeatMarker::save() {
-    DSceneEdgeMarker::save();
+    if (!DSceneEdgeMarker::save()) return false;;
 
     SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(m_edgeMarker);
 
@@ -738,7 +750,7 @@ void DSceneEdgeCurrentMarker::load()
 }
 
 bool DSceneEdgeCurrentMarker::save() {
-    DSceneEdgeMarker::save();
+    if (!DSceneEdgeMarker::save()) return false;;
 
     SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
 
@@ -810,7 +822,7 @@ void DSceneEdgeElasticityMarker::load()
 }
 
 bool DSceneEdgeElasticityMarker::save() {
-    DSceneEdgeMarker::save();
+    if (!DSceneEdgeMarker::save()) return false;;
 
     SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(m_edgeMarker);
 
@@ -872,6 +884,18 @@ void DSceneLabelMarker::load()
 
 bool DSceneLabelMarker::save()
 {
+    // find name duplicities
+    foreach (SceneLabelMarker *labelMarker, Util::scene()->labelMarkers)
+    {
+        if (labelMarker->name == txtName->text())
+        {
+            if (m_labelMarker == labelMarker)
+                continue;
+
+            QMessageBox::warning(this, tr("Material marker"), tr("Material marker name already exists."));
+            return false;
+        }
+    }
     m_labelMarker->name = txtName->text();
     return true;
 }
@@ -927,7 +951,7 @@ void DSceneLabelElectrostaticMarker::load()
 }
 
 bool DSceneLabelElectrostaticMarker::save() {
-    DSceneLabelMarker::save();
+    if (!DSceneLabelMarker::save()) return false;;
 
     SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_labelMarker);
 
@@ -984,7 +1008,7 @@ void DSceneLabelMagnetostaticMarker::load()
 }
 
 bool DSceneLabelMagnetostaticMarker::save() {
-    DSceneLabelMarker::save();
+    if (!DSceneLabelMarker::save()) return false;;
 
     SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_labelMarker);
 
@@ -1053,7 +1077,7 @@ void DSceneLabelHarmonicMagneticMarker::load()
 }
 
 bool DSceneLabelHarmonicMagneticMarker::save() {
-    DSceneLabelMarker::save();
+    if (!DSceneLabelMarker::save()) return false;;
 
     SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_labelMarker);
 
@@ -1121,7 +1145,7 @@ void DSceneLabelHeatMarker::load()
 
 bool DSceneLabelHeatMarker::save()
 {
-    DSceneLabelMarker::save();
+    if (!DSceneLabelMarker::save()) return false;;
 
     SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_labelMarker);
 
@@ -1175,7 +1199,7 @@ void DSceneLabelCurrentMarker::load()
 
 bool DSceneLabelCurrentMarker::save()
 {
-    DSceneLabelMarker::save();
+    if (!DSceneLabelMarker::save()) return false;;
 
     SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
 
@@ -1228,7 +1252,7 @@ void DSceneLabelElasticityMarker::load()
 
 bool DSceneLabelElasticityMarker::save()
 {
-    DSceneLabelMarker::save();
+    if (!DSceneLabelMarker::save()) return false;;
 
     SceneLabelElasticityMarker *labelElasticityMarker = dynamic_cast<SceneLabelElasticityMarker *>(m_labelMarker);
 

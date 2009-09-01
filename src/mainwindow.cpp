@@ -122,11 +122,16 @@ void MainWindow::createActions()
     actExit->setStatusTip(tr("Exit the application"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    actUndo = new QAction(tr("&Undo"), this);
+    // undo framework
+    actUndo = Util::scene()->undoStack()->createUndoAction(this);
+    actUndo->setIcon(icon("edit-undo"));
+    actUndo->setIconText(tr("&Undo"));
     actUndo->setShortcuts(QKeySequence::Undo);
     actUndo->setStatusTip(tr("Undo operation"));
 
-    actRedo = new QAction(tr("&Redo"), this);
+    actRedo = Util::scene()->undoStack()->createRedoAction(this);
+    actRedo->setIcon(icon("edit-redo"));
+    actRedo->setIconText(tr("&Redo"));
     actRedo->setShortcuts(QKeySequence::Redo);
     actRedo->setStatusTip(tr("Redo operation"));
 
@@ -228,9 +233,9 @@ void MainWindow::createMenus()
     mnuFile->addAction(actExit);
     
     mnuEdit = menuBar()->addMenu(tr("&Edit"));
-    // mnuEdit->addAction(actUndo);
-    // mnuEdit->addAction(actRedo);
-    // mnuEdit->addSeparator();
+    mnuEdit->addAction(actUndo);
+    mnuEdit->addAction(actRedo);
+    mnuEdit->addSeparator();
     #ifdef BETA
     mnuEdit->addAction(actCut);
     mnuEdit->addAction(actCopy);
@@ -308,10 +313,9 @@ void MainWindow::createToolBars()
 
     tlbEdit = addToolBar(tr("Edit"));
     tlbEdit->setObjectName("Edit");
-    tlbEdit->hide();
-    // tlbEdit->addAction(actUndo);
-    // tlbEdit->addAction(actRedo);
-    // tlbEdit->addSeparator();
+    tlbEdit->addAction(actUndo);
+    tlbEdit->addAction(actRedo);
+    tlbEdit->addSeparator();
     // tlbEdit->addAction(actCut);
     // tlbEdit->addAction(actCopy);
     // tlbEdit->addAction(actPaste);

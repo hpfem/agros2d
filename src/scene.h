@@ -137,20 +137,25 @@ public:
 
     SceneNode *addNode(SceneNode *node);
     void removeNode(SceneNode *node);
+    SceneNode *getNode(const Point &point);
 
     SceneEdge *addEdge(SceneEdge *edge);
     void removeEdge(SceneEdge *edge);
+    SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd);
 
     SceneLabel *addLabel(SceneLabel *label);
     void removeLabel(SceneLabel *label);
+    SceneLabel *getLabel(const Point &point);
 
     void addEdgeMarker(SceneEdgeMarker *edgeMarker);
     void removeEdgeMarker(SceneEdgeMarker *edgeMarker);
     void setEdgeMarker(SceneEdgeMarker *edgeMarker); // set edge marker to selected edges
+    SceneEdgeMarker *getEdgeMarker(const QString &name);
 
     void addLabelMarker(SceneLabelMarker *labelMarker);
     void removeLabelMarker(SceneLabelMarker *labelMarker);
     void setLabelMarker(SceneLabelMarker *labelMarker); // set label marker to selected labels
+    SceneLabelMarker *getLabelMarker(const QString &name);
 
     SceneFunction *addFunction(SceneFunction *function);
     void removeFunction(SceneFunction *function);
@@ -180,9 +185,12 @@ public:
     void readFromFile(const QString &fileName);
     void writeToFile(const QString &fileName);
 
+    inline QUndoStack *undoStack() { return m_undoStack; }
+
 protected:
 
 private:    
+    QUndoStack *m_undoStack;
     ProblemInfo m_problemInfo;
 
     // scene solution

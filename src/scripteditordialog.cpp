@@ -4,7 +4,7 @@
 QScriptEngine *m_engine;
 
 QString runEcma(const QString &script)
-{          
+{
     if (!m_engine)
         m_engine = scriptEngine();
 
@@ -81,6 +81,7 @@ QString runEcma(const QString &script)
 
     if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
     {
+        Util::scene()->undoStack()->setActive(false);
         Util::scene()->blockSignals(true);
         // startup script
         m_engine->evaluate(Util::scene()->problemInfo().scriptStartup);
@@ -88,6 +89,7 @@ QString runEcma(const QString &script)
         QScriptValue result = m_engine->evaluate(script);
         Util::scene()->blockSignals(false);
         Util::scene()->refresh();
+        Util::scene()->undoStack()->setActive(true);
 
         return funPrint.data().toString().trimmed();
     }
