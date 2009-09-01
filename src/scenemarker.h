@@ -245,6 +245,7 @@ public:
     ~DSceneEdgeMarker();
 
 protected:
+    QLineEdit *txtName;
     SceneEdgeMarker *m_edgeMarker;
 
     virtual QLayout *createContent() = 0;
@@ -260,7 +261,6 @@ private slots:
 
 private:
     QVBoxLayout *layout;
-    QLineEdit *txtName;
 };
 
 // *************************************************************************************************************************************
@@ -408,6 +408,7 @@ public:
     ~DSceneLabelMarker();
 
 protected:
+    QLineEdit *txtName;
     SceneLabelMarker *m_labelMarker;
 
     virtual QLayout *createContent() = 0;
@@ -423,7 +424,6 @@ private slots:
 
 private:
     QVBoxLayout *layout;
-    QLineEdit *txtName;
 };
 
 // *************************************************************************************************************************************

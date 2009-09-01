@@ -356,6 +356,8 @@ void DSceneEdgeMarker::createDialog()
     layout->addStretch();
     layout->addWidget(buttonBox);
 
+    txtName->setFocus();
+
     setLayout(layout);
 }
 
@@ -410,6 +412,11 @@ DSceneEdgeElectrostaticMarker::DSceneEdgeElectrostaticMarker(SceneEdgeElectrosta
     m_edgeMarker = edgeElectrostaticMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, cmbType);
+    setTabOrder(cmbType, txtValue);
+
     load();
     setSize();
 }
@@ -468,6 +475,11 @@ DSceneEdgeMagnetostaticMarker::DSceneEdgeMagnetostaticMarker(SceneEdgeMagnetosta
     m_edgeMarker = edgeMagnetostaticMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, cmbType);
+    setTabOrder(cmbType, txtValue);
+
     load();
     setSize();
 }
@@ -527,6 +539,11 @@ DSceneEdgeHarmonicMagneticMarker::DSceneEdgeHarmonicMagneticMarker(SceneEdgeHarm
     m_edgeMarker = edgeHarmonicMagneticMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, cmbType);
+    setTabOrder(cmbType, txtValue);
+
     load();
     setSize();
 }
@@ -585,6 +602,14 @@ DSceneEdgeHeatMarker::DSceneEdgeHeatMarker(SceneEdgeHeatMarker *edgeEdgeHeatMark
     m_edgeMarker = edgeEdgeHeatMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, cmbType);
+    setTabOrder(cmbType, txtTemperature);
+    setTabOrder(txtTemperature, txtHeatFlux);
+    setTabOrder(txtHeatFlux, txtHeatTransferCoefficient);
+    setTabOrder(txtHeatTransferCoefficient, txtExternalTemperature);
+
     load();
     setSize();
 }
@@ -712,7 +737,12 @@ DSceneEdgeCurrentMarker::DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCur
 {
     m_edgeMarker = edgeCurrentMarker;
 
-    createDialog();
+    createDialog(); 
+
+    // tab order
+    setTabOrder(txtName, cmbType);
+    setTabOrder(cmbType, txtValue);
+
     load();
     setSize();
 }
@@ -772,6 +802,11 @@ DSceneEdgeElasticityMarker::DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker
     m_edgeMarker = edgeEdgeElasticityMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, cmbTypeX);
+    setTabOrder(cmbTypeX, txtForceX);
+
     load();
     setSize();
 }
@@ -864,6 +899,8 @@ void DSceneLabelMarker::createDialog()
     layout->addStretch();
     layout->addWidget(buttonBox);
 
+    txtName->setFocus();
+
     setLayout(layout);
 }
 
@@ -918,6 +955,11 @@ DSceneLabelElectrostaticMarker::DSceneLabelElectrostaticMarker(QWidget *parent, 
     m_labelMarker = labelElectrostaticMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, txtPermittivity);
+    setTabOrder(txtPermittivity, txtChargeDensity);
+
     load();
     setSize();
 }
@@ -975,6 +1017,11 @@ DSceneLabelMagnetostaticMarker::DSceneLabelMagnetostaticMarker(QWidget *parent, 
     m_labelMarker = labelMagnetostaticMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, txtPermeability);
+    setTabOrder(txtPermeability, txtCurrentDensity);
+
     load();
     setSize();
 }
@@ -1032,6 +1079,13 @@ DSceneLabelHarmonicMagneticMarker::DSceneLabelHarmonicMagneticMarker(QWidget *pa
     m_labelMarker = labelHarmonicMagneticMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, txtPermeability);
+    setTabOrder(txtPermeability, txtConductivity);
+    setTabOrder(txtConductivity, txtCurrentDensityReal);
+    setTabOrder(txtCurrentDensityReal, txtCurrentDensityImag);
+
     load();
     setSize();
 }
@@ -1111,6 +1165,11 @@ DSceneLabelHeatMarker::DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMark
     m_labelMarker = labelHeatMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, txtThermalConductivity);
+    setTabOrder(txtThermalConductivity, txtVolumeHeat);
+
     load();
     setSize();
 }
@@ -1169,6 +1228,10 @@ DSceneLabelCurrentMarker::DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCu
     m_labelMarker = labelCurrentMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, txtConductivity);
+
     load();
     setSize();
 }
@@ -1218,6 +1281,11 @@ DSceneLabelElasticityMarker::DSceneLabelElasticityMarker(QWidget *parent, SceneL
     m_labelMarker = labelElasticityMarker;
 
     createDialog();
+
+    // tab order
+    setTabOrder(txtName, txtYoungModulus);
+    setTabOrder(txtYoungModulus, txtPoissonNumber);
+
     load();
     setSize();
 }
