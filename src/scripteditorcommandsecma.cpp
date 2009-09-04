@@ -5,8 +5,6 @@
 #include "scenemarker.h"
 #include "scripteditorhighlighter.h"
 
-static SceneView *m_sceneView;
-
 // print(string)
 QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
 {

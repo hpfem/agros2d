@@ -8,6 +8,8 @@
 #include "scenemarker.h"
 #include "scripteditorhighlighter.h"
 
+static SceneView *m_sceneView;
+
 class Scene;
 class SceneView;
 class ScriptEditor;

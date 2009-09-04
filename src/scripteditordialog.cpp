@@ -311,8 +311,7 @@ ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : 
 
     m_sceneView = sceneView;
 
-    setWindowIcon(icon("script"));
-    setWindowTitle(tr("Script editor"));
+    setWindowIcon(icon("script"));    
 
     createActions();
     createControls();
@@ -490,7 +489,7 @@ void ScriptEditorDialog::createControls()
 
 void ScriptEditorDialog::doFileNew()
 {
-    tabWidget->addTab(new ScriptEditorWidget(this), tr("unnamed"));
+    tabWidget->addTab(new ScriptEditorWidget(this), tr("Untitled"));
     tabWidget->setCurrentIndex(tabWidget->count()-1);
     doCurrentPageChanged(tabWidget->count()-1);
 }
@@ -506,9 +505,24 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
 
     // read text
     if (!fileName.isEmpty()) {
+        for (int i = 0; i < tabWidget->count(); i++)
+        {
+            ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->widget(i));
+            if (scriptEditorWidget->file == fileName)
+            {
+                tabWidget->setCurrentIndex(i);
+                QMessageBox::information(this, tr("Information"), tr("Script is already opened."));
+                return;
+            }
+        }
+
         // check empty document
         if (!scriptEditorWidget->txtEditor->toPlainText().isEmpty())
+        {
             doFileNew();
+            // new widget
+            scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+        }
 
         scriptEditorWidget->file = fileName;
         QFile fileName(scriptEditorWidget->file);
@@ -517,6 +531,8 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
 
         QFileInfo fileInfo(scriptEditorWidget->file);
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
+
+        doCurrentPageChanged(tabWidget->currentIndex());
     }    
 }
 
@@ -581,7 +597,6 @@ void ScriptEditorDialog::doCloseTab(int index)
 void ScriptEditorDialog::doCurrentPageChanged(int index)
 {
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-
     txtEditor = scriptEditorWidget->txtEditor;
 
     actRunEcma->disconnect();
@@ -614,6 +629,15 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
 
     tabWidget->setTabsClosable(tabWidget->count() > 1);
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
+
+    cout << scriptEditorWidget->file.toStdString() << endl;
+    QString fileName = tr("Untitled");
+    if (!scriptEditorWidget->file.isEmpty())
+    {
+        QFileInfo fileInfo(scriptEditorWidget->file);
+        fileName = fileInfo.completeBaseName();
+    }
+    setWindowTitle(tr("Script editor - %1").arg(fileName));
 
     txtEditor->setFocus();
 }
