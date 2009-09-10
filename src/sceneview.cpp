@@ -15,7 +15,8 @@ void SceneViewSettings::defaultValues()
     showGeometry = true;
     showInitialMesh = false;
 
-    postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
+    // postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
+    postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
 
     showContours = false;
     showVectors = false;
@@ -166,7 +167,7 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     
     doDefaults();
     
-    setMinimumSize(200, 200);
+    setMinimumSize(400, 400);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -654,7 +655,7 @@ void SceneView::paintOrder()
         // draw mesh
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         int min = 11;
-        int max = 1;
+        int max = 1;        
         for (int i = 0; i < Util::scene()->sceneSolution()->ordView().get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
@@ -676,54 +677,88 @@ void SceneView::paintOrder()
         }
         glEnd();
         Util::scene()->sceneSolution()->ordView().unlock_data();
-        
-        // boxes
+
         glPushMatrix();
         glLoadIdentity();
-        
+
         double k = 700.0/(double) height()/m_aspect;
-        
-        double bottom = -0.98;
-        double left = -0.98;
-        double box_width = 0.08*k;
-        double box_height = 0.09;
-        double box_height_space = 0.02;
-        double border = 0.02*k;
-        
-        // blend box
+
+        double labels_width = 0.08*k;
+        double scale_width = 0.04*k;
+        double scale_height = 0.93;
+        double border = 0.007*k;
+        double border_scale = 0.05*k;
+
+        glDisable(GL_DEPTH_TEST);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        // background
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4f(1.0, 1.0, 1.0, 0.75);
-
         glBegin(GL_QUADS);
-        glVertex2d(left - border, bottom - border);
-        glVertex2d(left + box_width + border, bottom - border);
-        glVertex2d(left + box_width + border, bottom + max*box_height);
-        glVertex2d(left - border, bottom + max*box_height);
-        glEnd();
-        
-        glBegin(GL_QUADS);
-        for (int i = 0; i < max; i++)
-        {
-            glColor3d(palette_order[i][0], palette_order[i][1], palette_order[i][2]);
-            
-            glVertex2d(left, bottom + (i*box_height));
-            glVertex2d(left + box_width, bottom + (i*box_height));
-            glVertex2d(left + box_width, bottom + ((i+1)*box_height-box_height_space));
-            glVertex2d(left, bottom + ((i+1)*box_height-box_height_space));
-        }
+        glVertex2d(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale);
+        glVertex2d(1.0 - border_scale/2.0, - scale_height - border_scale);
+        glVertex2d(1.0 - border_scale/2.0, scale_height + border_scale);
+        glVertex2d(1.0 - scale_width - labels_width - border_scale, scale_height + border_scale);
         glEnd();
         glDisable(GL_BLEND);
-        
-        // labels
-        for (int i = 0; i < max; i++)
+
+        // palette
+        glColor3f(0.0, 0.0, 0.0);
+        glBegin(GL_QUADS);
+        glVertex2d(1.0 - scale_width - labels_width - border, - scale_height - border);
+        glVertex2d(1.0 - labels_width + border, - scale_height - border);
+        glVertex2d(1.0 - labels_width + border, scale_height + border);
+        glVertex2d(1.0 - scale_width - labels_width - border, scale_height + border);
+        glEnd();
+
+        // bars
+        glBegin(GL_QUADS);
+        for (int i = 0; i < num_boxes; i++)
         {
-            glColor3f(0.0, 0.0, 0.0);
-            double w = 2.0*fontMetrics().width(QString::number(i+1))/height()*k;
-            renderText(left + box_width/2.0 - w/2.0, bottom + (i*box_height) + (box_height - box_height_space)/2.0-0.015, 0.0, QString::number(i+1),
-                       QFont("Helvetica", 10, QFont::Normal));
+            glColor3d(palette_order[max-i][0], palette_order[max-i][1], palette_order[max-i][2]);
+            double y_tick_1 = scale_height - (double) (i  ) * 2*scale_height / (num_boxes);
+            double y_tick_2 = scale_height - (double) (i+1) * 2*scale_height / (num_boxes);
+
+            glVertex2d(1.0 - scale_width - labels_width, y_tick_1);
+            glVertex2d(1.0 - labels_width, y_tick_1);
+            glVertex2d(1.0 - labels_width, y_tick_2);
+            glVertex2d(1.0 - scale_width - labels_width, y_tick_2);
         }
-        
+        glEnd();
+
+        // ticks
+        glColor3f(0.0, 0.0, 0.0);
+
+        glLineWidth(1.0);
+        glBegin(GL_LINES);
+        for (int i = 0; i < num_boxes; i++)
+        {
+            double y_tick = scale_height - (double) (i+1) * 2*scale_height / (num_boxes);
+
+            glVertex2d(1.0 - scale_width - labels_width - border, y_tick);
+            glVertex2d(1.0 - scale_width - labels_width + border, y_tick);
+            glVertex2d(1.0 - labels_width - border, y_tick);
+            glVertex2d(1.0 - labels_width + border, y_tick);
+        }
+        glEnd();
+
+        // labels
+        double h = 2.0*fontMetrics().height()/height();
+
+        for (int i = 0; i < num_boxes; i++)
+        {
+            int value = min + i;
+            double y_tick = - scale_height + (double) (i+0.5) * 2*scale_height / (num_boxes);
+
+            renderText(1.0 - labels_width + 0.022*(1.0/m_aspect) + border, y_tick-h/4.0, 0, QString::number(value));
+        }
+
+        if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+            (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
+            glEnable(GL_DEPTH_TEST);
+
         glPopMatrix();
     }
 }
@@ -746,7 +781,6 @@ void SceneView::paintColorBar(double min, double max)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     // background
-    const int b = 5;
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(1.0, 1.0, 1.0, 0.75);

@@ -143,7 +143,6 @@ void ScriptEngineRemote::disconnected()
     QString result = "";
     if (!command.isEmpty())
     {
-        // cout << "Remote command: " << command.toStdString() << endl;
         result = runEcma(command);
     }
 
@@ -630,7 +629,6 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     tabWidget->setTabsClosable(tabWidget->count() > 1);
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
 
-    cout << scriptEditorWidget->file.toStdString() << endl;
     QString fileName = tr("Untitled");
     if (!scriptEditorWidget->file.isEmpty())
     {
