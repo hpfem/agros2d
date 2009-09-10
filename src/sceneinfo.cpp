@@ -217,7 +217,7 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(nodesNode);
 
-        item->setText(0, QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'f', 3).arg(Util::scene()->nodes[i]->point.y, 0, 'f', 3));
+        item->setText(0, QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-node"));
         item->setData(0, Qt::UserRole, Util::scene()->nodes[i]->variant());
     }
@@ -227,17 +227,17 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(edgesNode);
 
-        item->setText(0, QString("[%1; %2] - [%3; %4]").arg(Util::scene()->edges[i]->nodeStart->point.x, 0, 'f', 3).arg(Util::scene()->edges[i]->nodeStart->point.y, 0, 'f', 3).arg(Util::scene()->edges[i]->nodeEnd->point.x, 0, 'f', 3).arg(Util::scene()->edges[i]->nodeEnd->point.y, 0, 'f', 3));
+        item->setText(0, QString("[%1; %2] - [%3; %4]").arg(Util::scene()->edges[i]->nodeStart->point.x, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeStart->point.y, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeEnd->point.x, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeEnd->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-edge"));
         item->setData(0, Qt::UserRole, Util::scene()->edges[i]->variant());
-    }    
+    }
 
     // labels
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(labelsNode);
 
-        item->setText(0, QString("[%1; %2]").arg(Util::scene()->labels[i]->point.x, 0, 'f', 3).arg(Util::scene()->labels[i]->point.y, 0, 'f', 3));
+        item->setText(0, QString("[%1; %2]").arg(Util::scene()->labels[i]->point.x, 0, 'e', 2).arg(Util::scene()->labels[i]->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-label"));
         item->setData(0, Qt::UserRole, Util::scene()->labels[i]->variant());
     }
@@ -326,7 +326,7 @@ void SceneInfoView::doContextMenu(const QPoint &pos)
 void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
 {
     actProperties->setEnabled(false);
-    actDelete->setEnabled(false);    
+    actDelete->setEnabled(false);
 
     if (item != NULL)
     {
@@ -334,7 +334,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
 
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
-        {            
+        {
             objectBasic->isHighlighted = true;
             m_sceneView->doRefresh();
 
