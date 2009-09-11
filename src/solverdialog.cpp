@@ -1,5 +1,4 @@
 #include "solverdialog.h"
-
 #include "scene.h"
 
 SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
@@ -15,10 +14,13 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 
     resize(minimumSize());
 
-    createControls();}
+    createControls();
+}
 
 SolverDialog::~SolverDialog()
 {
+    QFile::remove(tempProjectFileName() + ".mesh");
+
     delete progressBar;
     delete lblMessage;
     delete lstMessage;
@@ -82,11 +84,8 @@ void SolverDialog::doAccept()
 
 void SolverDialog::runMesh()
 {
-    // file info
-    QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
-
     Util::scene()->sceneSolution()->mesh().free();
-    QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".mesh");
+    QFile::remove(tempProjectFileName() + ".mesh");
 
     // create triangle files
     if (writeToTriangle())
@@ -96,11 +95,11 @@ void SolverDialog::runMesh()
 
         // exec triangle
         QProcess *processTriangle = new QProcess();
-        processTriangle->setStandardOutputFile(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.out");
-        processTriangle->setStandardErrorFile(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.err");
+        processTriangle->setStandardOutputFile(tempProjectFileName() + ".triangle.out");
+        processTriangle->setStandardErrorFile(tempProjectFileName() + ".triangle.err");
         connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
 
-        processTriangle->start("triangle -p -P -q30.0 -e -A -a -z -Q -I -p \"" + QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + "\"");
+        processTriangle->start("triangle -p -P -q30.0 -e -A -a -z -Q -I -p \"" + tempProjectFileName() + "\"");
         updateProgress(30);
 
         if (!processTriangle->waitForStarted())
@@ -121,10 +120,10 @@ void SolverDialog::runMesh()
         {
             QFileInfo fileInfoOrig(m_fileNameOrig);
 
-            QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".poly", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".poly");
-            QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".node", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".node");
-            QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".edge", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".edge");
-            QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".ele");
+            QFile::copy(tempProjectFileName() + ".poly", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".poly");
+            QFile::copy(tempProjectFileName() + ".node", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".node");
+            QFile::copy(tempProjectFileName() + ".edge", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".edge");
+            QFile::copy(tempProjectFileName() + ".ele", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".ele");
         }
 
         while (!processTriangle->waitForFinished()) {}
@@ -141,9 +140,6 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
-        // file info
-        QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
-
         emit message(tr("Triangle: mesh files was created."), false);
         updateProgress(40);
 
@@ -160,16 +156,16 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             {               
                 QFileInfo fileInfoOrig(m_fileNameOrig);
 
-                QFile::copy(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".mesh", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".mesh");
+                QFile::copy(tempProjectFileName() + ".mesh", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".mesh");
             }
 
             //  remove triangle temp files
-            QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".poly");
-            QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".node");
-            QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".edge");
-            QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele");
-            QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.out");
-            QFile::remove(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".triangle.err");
+            QFile::remove(tempProjectFileName() + ".poly");
+            QFile::remove(tempProjectFileName() + ".node");
+            QFile::remove(tempProjectFileName() + ".edge");
+            QFile::remove(tempProjectFileName() + ".ele");
+            QFile::remove(tempProjectFileName() + ".triangle.out");
+            QFile::remove(tempProjectFileName() + ".triangle.err");
             emit message(tr("Triangle: mesh files was deleted."), false);
 
             if (m_mode == SOLVER_MESH)
@@ -182,7 +178,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             char *plocale = setlocale (LC_NUMERIC, "");
             setlocale (LC_NUMERIC, "C");
 
-            Util::scene()->sceneSolution()->mesh().load((QDir::temp().absolutePath() + "/agros2d/temp.mesh").toStdString().c_str());
+            Util::scene()->sceneSolution()->mesh().load((tempProjectFileName() + ".mesh").toStdString().c_str());
 
             // set system locale
             setlocale(LC_NUMERIC, plocale);
@@ -237,9 +233,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
 
 void SolverDialog::runSolver()
 {
-    // file info
-    QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
-    QString fileName(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".mesh");
+    QString fileName(tempProjectFileName() + ".mesh");
 
     // benchmark
     QTime time;
@@ -250,7 +244,7 @@ void SolverDialog::runSolver()
 
     SolutionArray *solutionArray;
 
-    if (fileInfo.exists())
+    if (QFile::exists(fileName))
     {
         switch (Util::scene()->problemInfo().physicField)
         {
@@ -663,8 +657,8 @@ bool SolverDialog::writeToTriangle()
         return false;
     }
 
-    // file info
-    QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
+
+
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -672,7 +666,7 @@ bool SolverDialog::writeToTriangle()
 
     QDir dir;
     dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
-    QFile file(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".poly");
+    QFile file(tempProjectFileName() + ".poly");
 
     if (!file.open(QIODevice::WriteOnly))
     {
@@ -791,10 +785,10 @@ bool SolverDialog::triangleToHermes2D()
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    // file info
-    QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
 
-    QFile fileMesh(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".mesh");
+
+
+    QFile fileMesh(tempProjectFileName() + ".mesh");
     if (!fileMesh.open(QIODevice::WriteOnly))
     {
         emit message(tr("Hermes2D: could not create hermes2d mesh file."), true);
@@ -802,7 +796,7 @@ bool SolverDialog::triangleToHermes2D()
     }
     QTextStream outMesh(&fileMesh);
 
-    QFile fileNode(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".node");
+    QFile fileNode(tempProjectFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly))
     {
         emit message(tr("Hermes2D: could not read triangle node file."), true);
@@ -810,7 +804,7 @@ bool SolverDialog::triangleToHermes2D()
     }
     QTextStream inNode(&fileNode);
 
-    QFile fileEdge(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".edge");
+    QFile fileEdge(tempProjectFileName() + ".edge");
     if (!fileEdge.open(QIODevice::ReadOnly))
     {
         emit message(tr("Hermes2D: could not read triangle edge file."), true);
@@ -818,7 +812,7 @@ bool SolverDialog::triangleToHermes2D()
     }
     QTextStream inEdge(&fileEdge);
 
-    QFile fileEle(QDir::temp().absolutePath() + "/agros2d/" + fileInfo.baseName() + ".ele");
+    QFile fileEle(tempProjectFileName() + ".ele");
     if (!fileEle.open(QIODevice::ReadOnly))
     {
         emit message(tr("Hermes2D: could not read triangle ele file."), true);

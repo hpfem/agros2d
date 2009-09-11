@@ -5,18 +5,18 @@ QT += opengl \
     webkit \
     network
 SUBDIRS = src-remote
-DEFINES += BETA
+# DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
-DEFINES += VERSION_SUB=5
+DEFINES += VERSION_SUB=6
 unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
 unix::DEFINES += VERSION_MONTH=$$system(date +%-m)
 unix::DEFINES += VERSION_DAY=$$system(date +%d)
-win32:DEFINES += VERSION_GIT=132
+win32:DEFINES += VERSION_GIT=138
 win32::DEFINES += VERSION_YEAR=2009
-win32::DEFINES += VERSION_MONTH=8
-win32::DEFINES += VERSION_DAY=29
+win32::DEFINES += VERSION_MONTH=9
+win32::DEFINES += VERSION_DAY=11
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts

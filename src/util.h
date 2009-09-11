@@ -43,6 +43,9 @@ QString externalFunctions();
 // get script engine
 QScriptEngine *scriptEngine();
 
+// get temp filename
+QString tempProjectFileName();
+
 struct Value
 {
     QString text;

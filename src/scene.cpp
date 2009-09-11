@@ -662,7 +662,7 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     QString fileNameOrig = m_problemInfo.fileName;
 
     // save as temp name
-    m_problemInfo.fileName = QDir::temp().absolutePath() + "/agros2d/temp.a2d";
+    m_problemInfo.fileName = tempProjectFileName() + ".a2d";
 
     // save problem
     writeToFile(m_problemInfo.fileName);
@@ -689,7 +689,7 @@ void Scene::doSolved()
     emit invalidated();
 
     // delete temp file
-    if (m_problemInfo.fileName == QDir::temp().absolutePath() + "/agros2d/temp.a2d")
+    if (m_problemInfo.fileName == tempProjectFileName() + ".a2d")
     {
         QFile::remove(m_problemInfo.fileName);
         m_problemInfo.fileName = "";

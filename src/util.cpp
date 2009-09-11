@@ -1,4 +1,5 @@
 #include "util.h"
+#include "scene.h"
 
 void setGUIStyle(const QString &styleName)
 {
@@ -93,4 +94,9 @@ QScriptEngine *scriptEngine()
     engine->evaluate(externalFunctions());
 
     return engine;
+}
+
+QString tempProjectFileName()
+{
+    return QString("%1/agros2d/temp_%2").arg(QDir::temp().absolutePath()).arg(QApplication::applicationPid());
 }
