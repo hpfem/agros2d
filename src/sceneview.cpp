@@ -309,6 +309,7 @@ void SceneView::createMenu()
     mnuInfo->addMenu(mnuMarkerGroup);
     mnuInfo->addMenu(mnuModeGroup);
     mnuInfo->addSeparator();
+    mnuInfo->addAction(actFullScreen);
     mnuInfo->addAction(actSceneViewProperties);
 }
 
