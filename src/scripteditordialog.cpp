@@ -192,7 +192,6 @@ ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
     createControls();
 
     QSettings settings;
-    restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
     splitter->restoreState(settings.value("ScriptEditorDialog/SplitterState", splitter->saveState()).toByteArray());
 }
@@ -315,6 +314,8 @@ ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : 
     createActions();
     createControls();
 
+    restoreState(settings.value("ScriptEditorDialog/State", saveState()).toByteArray());
+
     setMinimumSize(600, 400);
 }
 
@@ -322,6 +323,7 @@ ScriptEditorDialog::~ScriptEditorDialog()
 {
     QSettings settings;
     settings.setValue("ScriptEditorDialog/Geometry", saveGeometry());   
+    settings.setValue("ScriptEditorDialog/State", saveState());
 }
 
 void ScriptEditorDialog::showDialog()
@@ -440,17 +442,22 @@ void ScriptEditorDialog::createControls()
     mnuHelp->addAction(actHelp);
 
     tlbFile = addToolBar(tr("File"));
+    tlbFile->setObjectName("File");
     tlbFile->addAction(actFileNew);
     tlbFile->addAction(actFileOpen);
     tlbFile->addAction(actFileSave);
+
     tlbEdit = addToolBar(tr("Edit"));
+    tlbEdit->setObjectName("Edit");
     tlbEdit->addAction(actCut);
     tlbEdit->addAction(actCopy);
     tlbEdit->addAction(actPaste);
     tlbEdit->addSeparator();
     tlbEdit->addAction(actUndo);
     tlbEdit->addAction(actRedo);
+
     tlbTools = addToolBar(tr("Tools"));
+    tlbTools->setObjectName("Tools");
     tlbTools->addAction(actRunEcma);
     // tlbTools->addAction(actRunPython);
     tlbTools->addSeparator();
