@@ -163,8 +163,8 @@ void SceneInfoView::doInvalidated()
         {
             QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
             itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
-
-            QTime time(0, Util::scene()->sceneSolution()->timeElapsed() / (60*100), Util::scene()->sceneSolution()->timeElapsed() / 1000, Util::scene()->sceneSolution()->timeElapsed() % 1000);
+            
+            QTime time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
             QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);
             itemSolverTimeElapsed->setText(0, tr("Time elapsed: ") + time.toString("mm:ss.zzz"));
 

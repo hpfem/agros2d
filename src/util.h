@@ -46,6 +46,9 @@ QScriptEngine *scriptEngine();
 // get temp filename
 QString tempProjectFileName();
 
+// convert time in ms to QTime
+QTime milliSecondsToTime(int ms);
+
 struct Value
 {
     QString text;
