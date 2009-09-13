@@ -96,14 +96,21 @@ QScriptEngine *scriptEngine()
     return engine;
 }
 
-QString tempProjectFileName()
+QString tempProblemDir()
 {
-    return QString("%1/agros2d/temp_%2").arg(QDir::temp().absolutePath()).arg(QApplication::applicationPid());
+    QDir(QString("%1/agros2d").arg(QDir::temp().absolutePath())).mkdir(QString::number(QApplication::applicationPid()));
+
+    return QString("%1/agros2d/%2").arg(QDir::temp().absolutePath()).arg(QApplication::applicationPid());
+}
+
+QString tempProblemFileName()
+{
+    return tempProblemDir() + "/temp";
 }
 
 QTime milliSecondsToTime(int ms)
 {
-     // store the current ms remaining
+    // store the current ms remaining
     int tmp_ms = ms;
 
     // the amount of days left
@@ -128,4 +135,37 @@ QTime milliSecondsToTime(int ms)
     tmp_ms = tmp_ms - (secs * 1000);
 
     return QTime(hours, mins, secs, tmp_ms);
+}
+
+bool removeDirectory(const QDir &dir)
+{
+    bool error = false;
+
+    if (dir.exists())
+    {
+        QFileInfoList entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+        int count = entries.size();
+        for (int idx = 0; idx < count; idx++)
+        {
+            QFileInfo entryInfo = entries[idx];
+            QString path = entryInfo.absoluteFilePath();
+            if (entryInfo.isDir())
+            {
+                error = removeDirectory(QDir(path));
+            }
+            else
+            {
+                QFile file(path);
+                if (!file.remove())
+                {
+                    error = true;
+                    break;
+                }
+            }
+        }
+        if (!dir.rmdir(dir.absolutePath()))
+            error = true;
+    }
+
+    return error;
 }

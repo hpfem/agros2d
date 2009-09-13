@@ -43,11 +43,17 @@ QString externalFunctions();
 // get script engine
 QScriptEngine *scriptEngine();
 
+// get temp dir
+QString tempProblemDir();
+
 // get temp filename
-QString tempProjectFileName();
+QString tempProblemFileName();
 
 // convert time in ms to QTime
 QTime milliSecondsToTime(int ms);
+
+// remove directory content
+bool removeDirectory(const QDir &dir);
 
 struct Value
 {

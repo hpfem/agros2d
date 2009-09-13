@@ -5,7 +5,7 @@ QT += opengl \
     webkit \
     network
 SUBDIRS = src-remote
-# DEFINES += BETA
+DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
 DEFINES += VERSION_SUB=6
@@ -60,13 +60,12 @@ unix {
     
     # install binary
     target.path = $${PREFIX}/bin
-
     target-remote.path = $${PREFIX}/bin
     target-remote.files = src-remote/agros2d-remote
     
     # "make install" configuration options
     INSTALLS *= target \
-	target-remote \
+        target-remote \
         examples \
         help \
         lang \
@@ -105,7 +104,8 @@ SOURCES += src/util.cpp \
     src/volumeintegralview.cpp \
     src/surfaceintegralview.cpp \
     src/dxflib/dl_writer_ascii.cpp \
-    src/dxflib/dl_dxf.cpp
+    src/dxflib/dl_dxf.cpp \
+    src/reportdialog.cpp
 HEADERS += src/util.h \
     src/scene.h \
     src/mainwindow.h \
@@ -134,7 +134,8 @@ HEADERS += src/util.h \
     src/scenesolution.h \
     src/localvalueview.h \
     src/volumeintegralview.h \
-    src/surfaceintegralview.h
+    src/surfaceintegralview.h \
+    src/reportdialog.h
 INCLUDEPATH += src \
     src/dxflib
 unix:INCLUDEPATH += /usr/include

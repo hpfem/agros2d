@@ -14,6 +14,8 @@ class Scene;
 class SceneView;
 class ScriptEditor;
 
+QString createEcmaFromModel();
+
 class ScriptEngineRemote : QObject
 {
     Q_OBJECT
@@ -43,7 +45,7 @@ class ScriptEditorWidget : public QWidget
 
 public slots:
     void doRunEcma(const QString &script = "");
-    void doCreateFromModel();
+    void doCreateEcmaFromModel();
 
 public:
     QString file;

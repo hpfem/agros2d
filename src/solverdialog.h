@@ -51,17 +51,20 @@ public:
     void setFileNameOrig(const QString &fileNameOrig) { m_fileNameOrig = fileNameOrig; }
     void setMode(SolverMode mode) { m_mode = mode; }
     void solve();
+    inline bool isCanceled() { return m_isCanceled; }
 
 private slots:
-    void doAccept();
+    void doCancel();
 
 private:
+    bool m_isCanceled;
     SolverMode m_mode;
     QString m_fileNameOrig;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;
     QTextEdit *lstMessage;
+    QPushButton *btnCancel;
 
     void runMesh();
     void runSolver();

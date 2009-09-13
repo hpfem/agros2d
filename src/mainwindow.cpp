@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     helpDialog = new HelpDialog(this);
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new ScriptEditorDialog(sceneView, this);
+    reportDialog = new ReportDialog(this);
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
@@ -65,6 +66,9 @@ MainWindow::~MainWindow()
     settings.setValue("MainWindow/Geometry", saveGeometry());
     settings.setValue("MainWindow/State", saveState());
     settings.setValue("MainWindow/RecentFiles", recentFiles);
+
+    // remove temp files
+    removeDirectory(tempProblemDir());
 }
 
 void MainWindow::open(const QString &fileName)
@@ -208,6 +212,10 @@ void MainWindow::createActions()
     actScriptStartup = new QAction(icon("script-startup"), tr("S&tartup script"), this);
     actScriptStartup->setStatusTip(tr("Startup script"));
     connect(actScriptStartup, SIGNAL(triggered()), this, SLOT(doScriptStartup()));
+
+    actReport = new QAction(icon(""), tr("Report..."), this);
+    actReport->setStatusTip(tr("Problem html report"));
+    connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 }
 
 void MainWindow::createMenus()
@@ -290,6 +298,8 @@ void MainWindow::createMenus()
     mnuTools->addAction(actScriptEditor);
     mnuTools->addAction(actScriptEditorRunScript);
     mnuTools->addAction(actScriptEditorRunCommand);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actReport);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
@@ -617,6 +627,11 @@ void MainWindow::doOptions()
     delete optionsDialog;
 }
 
+void MainWindow::doReport()
+{
+    reportDialog->showDialog();
+}
+
 void MainWindow::doChart()
 {
     chartDialog->showDialog();
@@ -693,8 +708,8 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    // Util::scene()->readFromFile("data/pokus.a2d");
-    Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    Util::scene()->readFromFile("data/pokus.a2d");
+    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     // Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
     // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");

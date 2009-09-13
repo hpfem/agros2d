@@ -96,8 +96,8 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    int steps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
-    for (i = 0; i<(steps); i++)
+    int steps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps + 1;
+    for (i = 0; i<steps; i++)
     {
         space.assign_dofs();
 
@@ -120,6 +120,7 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
 
             // emit signal
             solverDialog->doShowMessage(QObject::tr("Relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverDialog->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3, 0, (int) adaptivityType);

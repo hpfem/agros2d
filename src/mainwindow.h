@@ -17,6 +17,7 @@
 #include "chartdialog.h"
 #include "optionsdialog.h"
 #include "scripteditordialog.h"
+#include "reportdialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -51,6 +52,7 @@ private slots:
     void doScriptEditorRunCommand(const QString &command = "");
     void doScriptStartup();
     void doOptions();
+    void doReport();
 
     void doUndo();
     void doRedo();
@@ -107,6 +109,7 @@ private:
     QAction *actScriptEditorRunScript;
     QAction *actScriptEditorRunCommand;
     QAction *actScriptStartup;
+    QAction *actReport;
 
     QAction *actHelp;
     QAction *actHelpShortCut;
@@ -127,6 +130,7 @@ private:
     HelpDialog *helpDialog;
     ChartDialog *chartDialog;
     ScriptEditorDialog *scriptEditorDialog;
+    ReportDialog *reportDialog;
 
     void setRecentFiles();
 

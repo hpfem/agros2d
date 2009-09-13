@@ -101,6 +101,68 @@ QString runEcma(const QString &script)
     return "";
 }
 
+QString createEcmaFromModel()
+{
+    QString str;
+
+    // model
+    str += "// model\n";
+    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, \"%7\", %8, %9);").
+           arg(Util::scene()->problemInfo().name).
+           arg(problemTypeStringKey(Util::scene()->problemInfo().problemType)).
+           arg(physicFieldStringKey(Util::scene()->problemInfo().physicField)).
+           arg(Util::scene()->problemInfo().numberOfRefinements).
+           arg(Util::scene()->problemInfo().polynomialOrder).
+           arg(Util::scene()->problemInfo().frequency).
+           arg(adaptivityTypeStringKey(Util::scene()->problemInfo().adaptivityType)).
+           arg(Util::scene()->problemInfo().adaptivitySteps).
+           arg(Util::scene()->problemInfo().adaptivityTolerance) + "\n";
+    str += "\n";
+
+    // boundaries
+    str += "// boundaries\n";
+    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+    {
+        str += Util::scene()->edgeMarkers[i]->script() + "\n";
+    }
+    str += "\n";
+
+    // materials
+    str += "// materials\n";
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+    {
+        str += Util::scene()->labelMarkers[i]->script() + "\n";
+    }
+    str += "\n";
+
+    // edges
+    str += "// edges\n";
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        str += QString("addEdge(%1, %2, %3, %4, %5, \"%6\");").
+               arg(Util::scene()->edges[i]->nodeStart->point.x).
+               arg(Util::scene()->edges[i]->nodeStart->point.y).
+               arg(Util::scene()->edges[i]->nodeEnd->point.x).
+               arg(Util::scene()->edges[i]->nodeEnd->point.y).
+               arg(Util::scene()->edges[i]->angle).
+               arg(Util::scene()->edges[i]->marker->name) + "\n";
+    }
+    str += "\n";
+
+    // labels
+    str += "// labels\n";
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        str += QString("addLabel(%1, %2, %3, \"%4\");").
+               arg(Util::scene()->labels[i]->point.x).
+               arg(Util::scene()->labels[i]->point.y).
+               arg(Util::scene()->labels[i]->area).
+               arg(Util::scene()->labels[i]->marker->name) + "\n";
+    }
+
+    return str;
+}
+
 ScriptEngineRemote::ScriptEngineRemote()
 {
     // server
@@ -238,66 +300,9 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     txtOutput->setPlainText(output);
 }
 
-void ScriptEditorWidget::doCreateFromModel()
+void ScriptEditorWidget::doCreateEcmaFromModel()
 {
-    QString str;
-
-    // model
-    str += "// model\n";
-    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, \"%7\", %8, %9);").
-           arg(Util::scene()->problemInfo().name).
-           arg(problemTypeStringKey(Util::scene()->problemInfo().problemType)).
-           arg(physicFieldStringKey(Util::scene()->problemInfo().physicField)).
-           arg(Util::scene()->problemInfo().numberOfRefinements).
-           arg(Util::scene()->problemInfo().polynomialOrder).
-           arg(Util::scene()->problemInfo().frequency).
-           arg(adaptivityTypeStringKey(Util::scene()->problemInfo().adaptivityType)).
-           arg(Util::scene()->problemInfo().adaptivitySteps).
-           arg(Util::scene()->problemInfo().adaptivityTolerance) + "\n";
-    str += "\n";
-
-    // boundaries
-    str += "// boundaries\n";
-    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
-    {
-        str += Util::scene()->edgeMarkers[i]->script() + "\n";
-    }
-    str += "\n";
-
-    // materials
-    str += "// materials\n";
-    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
-    {
-        str += Util::scene()->labelMarkers[i]->script() + "\n";
-    }
-    str += "\n";
-
-    // edges
-    str += "// edges\n";
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        str += QString("addEdge(%1, %2, %3, %4, %5, \"%6\");").
-               arg(Util::scene()->edges[i]->nodeStart->point.x).
-               arg(Util::scene()->edges[i]->nodeStart->point.y).
-               arg(Util::scene()->edges[i]->nodeEnd->point.x).
-               arg(Util::scene()->edges[i]->nodeEnd->point.y).
-               arg(Util::scene()->edges[i]->angle).
-               arg(Util::scene()->edges[i]->marker->name) + "\n";
-    }
-    str += "\n";
-
-    // labels
-    str += "// labels\n";
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
-    {
-        str += QString("addLabel(%1, %2, %3, \"%4\");").
-               arg(Util::scene()->labels[i]->point.x).
-               arg(Util::scene()->labels[i]->point.y).
-               arg(Util::scene()->labels[i]->area).
-               arg(Util::scene()->labels[i]->marker->name) + "\n";
-    }
-
-    txtEditor->setPlainText(str);
+    txtEditor->setPlainText(createEcmaFromModel());
 }
 
 // ***********************************************************************************************************
@@ -608,7 +613,7 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     actRunEcma->disconnect();
     connect(actRunEcma, SIGNAL(triggered()), scriptEditorWidget, SLOT(doRunEcma()));
     actCreateFromModel->disconnect();
-    connect(actCreateFromModel, SIGNAL(triggered()), scriptEditorWidget, SLOT(doCreateFromModel()));
+    connect(actCreateFromModel, SIGNAL(triggered()), scriptEditorWidget, SLOT(doCreateEcmaFromModel()));
 
     actCut->disconnect();
     connect(actCut, SIGNAL(triggered()), txtEditor, SLOT(cut()));

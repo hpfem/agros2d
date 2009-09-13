@@ -1366,30 +1366,31 @@ void SceneView::paletteUpdateTexAdjust()
 void SceneView::keyPressEvent(QKeyEvent *event)
 {
     RectPoint rect = Util::scene()->boundingBox();
+    Point view = position(Point(width(), height()));
     
     switch (event->key())
     {
     case Qt::Key_Up:
         {
-            m_offset.y += rect.height()/m_scale;
+            m_offset.y -= view.y/10.0;
             doRefresh();
         }
         break;
     case Qt::Key_Down:
         {
-            m_offset.y -= rect.height()/m_scale;
+            m_offset.y += view.y/10.0;;
             doRefresh();
         }
         break;
     case Qt::Key_Left:
         {
-            m_offset.x -= rect.width()/m_scale;
+            m_offset.x -= view.x/10.0;
             doRefresh();
         }
         break;
     case Qt::Key_Right:
         {
-            m_offset.x += rect.width()/m_scale;
+            m_offset.x += view.x/10.0;
             doRefresh();
         }
         break;
