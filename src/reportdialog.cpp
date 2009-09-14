@@ -23,9 +23,11 @@ void ReportDialog::createControls()
     view = new QWebView(this);
 
     // dialog buttons
+    QPushButton *btnOpen = new QPushButton(tr("Open in external viewer"));
+    connect(btnOpen, SIGNAL(clicked()), this, SLOT(doOpen()));
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+    buttonBox->addButton(btnOpen, QDialogButtonBox::ApplyRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    // connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
@@ -40,17 +42,21 @@ void ReportDialog::doAccept()
     accept();
 }
 
+void ReportDialog::doOpen()
+{
+    QDesktopServices::openUrl(tempProblemDir() + "/report/index.html");
+}
+
 void ReportDialog::showDialog()
 {
     QDir(tempProblemDir()).mkdir("report");
 
     QFile::copy(QString("%1/doc/report/template/template.html").arg(datadir()), tempProblemDir() + "/report/template.html");
     QFile::copy(QString("%1/doc/report/template/default.css").arg(datadir()), tempProblemDir() + "/report/default.css");
-    QFile::copy(QString("%1/doc/report/template/agros2d.png").arg(datadir()), tempProblemDir() + "/report/agros2d.png");
 
     generateIndex();
 
-    view->load(QUrl(QString("file://" + tempProblemDir() + "/report/index.html")));
+    view->load(QUrl("file://" + tempProblemDir() + "/report/index.html"));
     view->show();
 
     show();

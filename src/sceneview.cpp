@@ -318,11 +318,11 @@ void SceneView::initializeGL()
     glShadeModel(GL_SMOOTH);
 }
 
-void SceneView::setupViewport()
+void SceneView::setupViewport(int w, int h)
 {
-    glViewport(0, 0, width(), height());
+    glViewport(0, 0, w, h);
 
-    m_aspect = (double) width()/(double) height();
+    m_aspect = (double) w/(double) h;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -330,11 +330,11 @@ void SceneView::setupViewport()
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
-        double aspect = ((double) width()/(double) height());
+        double aspect = ((double) w/(double) h);
         gluPerspective(0.0, aspect, 1.0, 1000.0);
     }
     else
-        glOrtho(5.0, width()-10.0, height()-10.0, 5.0, -10.0, -10.0);
+        glOrtho(5.0, w-10.0, h-10.0, 5.0, -10.0, -10.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -356,7 +356,7 @@ void SceneView::paintGL()
         glDisable(GL_DEPTH_TEST);
     }     
 
-    setupViewport();
+    setupViewport(width(), height());
 
     glScaled(m_scale/m_aspect, m_scale, m_scale);
 
@@ -410,9 +410,9 @@ void SceneView::paintGL()
     paintSceneModeLabel();
 }
 
-void SceneView::resizeGL(int width, int height)
+void SceneView::resizeGL(int w, int h)
 {
-    setupViewport();
+    setupViewport(w, h);
 }
 
 // paint *****************************************************************************************************************************
@@ -2401,12 +2401,13 @@ void SceneView::paintPostprocessorSelectedSurface()
 
 void SceneView::saveImageToFile(const QString &fileName)
 {
+    int w = width();
+    int h = height();
+
     makeCurrent();
-    // glReadBuffer(GL_FRONT);
 
     // copy image
-    QImage *image = new QImage(grabFrameBuffer(true));
+    QImage *image = new QImage(grabFrameBuffer());
     image->save(fileName, "PNG");
-
     delete image;
 }

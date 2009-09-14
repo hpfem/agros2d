@@ -25,6 +25,7 @@ private:
 
 private slots:
     void doAccept();
+    void doOpen();
 };
 
 #endif // REPORTDIALOG_H

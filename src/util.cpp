@@ -98,7 +98,7 @@ QScriptEngine *scriptEngine()
 
 QString tempProblemDir()
 {
-    QDir(QString("%1/agros2d").arg(QDir::temp().absolutePath())).mkdir(QString::number(QApplication::applicationPid()));
+    QDir(QDir::temp().absolutePath()).mkpath("agros2d/" + QString::number(QApplication::applicationPid()));
 
     return QString("%1/agros2d/%2").arg(QDir::temp().absolutePath()).arg(QApplication::applicationPid());
 }

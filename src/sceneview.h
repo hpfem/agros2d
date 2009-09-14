@@ -152,9 +152,9 @@ signals:
     
 protected:
     void initializeGL();
-    void resizeGL(int width, int height);
+    void resizeGL(int w, int h);
     void paintGL();
-    void setupViewport();
+    void setupViewport(int w, int h);
     
     void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
