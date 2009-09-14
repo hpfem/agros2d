@@ -71,7 +71,7 @@ QString externalFunctions()
 
     if (m_externalFunctions.isEmpty())
     {
-        QFile file(datadir() + "/functions.js");
+        QFile file(datadir() + "/functions.qs");
         if (!file.open(QIODevice::ReadOnly))
         {
             m_externalFunctions = "";
