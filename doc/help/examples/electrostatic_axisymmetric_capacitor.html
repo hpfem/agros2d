@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="../style.css" media="screen" title="Default">
+  <title>Electrostatic axisymmetric capacitor</title>
+</head>
+<body>
+<h1>Electrostatic axisymmetric capacitor</h1>
+
+<p>This example demonstrates the basics of scripting in Agros2D. The resulting script can be found if the file <i>/data/scripts/electrostatic_axisymmetric_capacitor.qs</i>.</p>
+
+<div id="content">
+<h2>Content</h2>
+<ul>
+  <li><a href="#introduction">Introduction</a></li>
+  <li><a href="#preprocessing">Preprocessing</a></li>
+  <li><a href="#processing">Processing</a></li>
+  <li><a href="#postprocessing">Postprocessing</a></li>
+  <li><a href="#related">Related</a></li>
+</ul>
+</div>
+
+<a id="introduction"></a><h2>Introduction</h2>
+<p>A special type of a capacitor is a cylindrical capacitor. Cylindrical capacitor has electrodes in the form of the concentric cylinders.</p>
+<p>For more information about capacitors visit the webpage <a href="http://en.wikipedia.org/wiki/Capacitor">http://en.wikipedia.org/wiki/Capacitor</a>.</p>
+
+<a id="preprocessing"></a><h2>Preprocessing</h2>
+<p>Select "Script editor" in the "Tools" menu and create new solution by command newDocument in form.</p>
+<pre class="code">
+newDocument("Electrostatic axisymmetric capacitor", "axisymmetric", "electrostatic", 1, 2, 0, "disabled", 0, 0);
+</pre>
+<p>In the script it is usefull to use local variables.</p>
+<pre class="code">
+r1 = 0.01;
+r2 = 0.03;
+r3 = 0.05;
+r4 = 0.06;
+l =  0.16;
+eps1 = 10;
+eps2 = 3;
+U = 10;
+dr = 0.01;
+</pre>
+
+<h3>Boundary conditions</h3>
+<p>At first we define boundary conditions. They can be assigned to individual edges in the geometry. Adding boundary conditions is carried out with the command addBoundary.</p>
+<pre class="code">
+addBoundary("Source electrode", "potential", U);
+addBoundary("Ground electrode", "potential", 0);
+addBoundary("Neumann BC", "surface_charge_density", 0);
+</pre>
+
+<h3>Materials</h3>
+<p>Next we define materials and then we assign them to individual areas (labels) in the geometry. Adding material is carried out with the command addMaterial.</p>
+<pre class="code">
+addMaterial("Air", 0, 1);
+addMaterial("Dielectric n.1", 0, eps1);
+addMaterial("Dielectric n.2", 0, eps2);
+</pre>
+
+<h3>Geometry</h3>
+<h4>Edges</h4>
+<p>Use edges to create the desired geometry. Adding edges is carried out with the command addEdge.</p>
+<pre class="code">
+addEdge(0, 3/2*l, 0, l/2, 0, "Neumann BC");
+addEdge(r1, l/2, r1, 0, 0, "Source electrode");
+addEdge(r1, 0, r2, 0, 0, "Neumann BC");
+addEdge(r2, 0, r2, l/2, 0, "none");
+addEdge(r2, l/2, r3, l/2, 0, "none");
+addEdge(r3, 0, r2, 0, 0, "Neumann BC");
+addEdge(r3, l/2, r3, 0, 0, "Ground electrode");
+addEdge(r4, 0, r4, l/2, 0, "Ground electrode");
+addEdge(r3, l/2, r4, l/2, 0, "Ground electrode");
+addEdge(r4, 0, 3/2*l, 0, 0, "Neumann BC");
+addEdge(3/2*l, 0, 0, 3/2*l, 90, "Neumann BC");
+addEdge(r1, l/2, r2, l/2, 0, "none");
+addEdge(r1, l/2, 0, l/2, 0, "Source electrode");
+</pre>
+
+<h4>Labels</h4>
+<p>Use labels to define block labels. Adding bloct labels is carried out with the command addLabel.</p>
+<pre class="code">
+addLabel(0.019, 0.021, 0, "Dielectric n.1");
+addLabel(0.0379, 0.051, 0, "Dielectric n.2");
+addLabel(0.0284191, 0.123601, 0, "Air");
+</pre>
+
+<img src="./electrostatic_axisymmetric_capacitor/editing_script.png"><br>
+<span>Fig 1.: Editing script</span>
+
+<a id="processing"></a><h2>Processing</h2>
+<p>In this example, we will investigate dependence the capacity on the distance of electrodes. For this calculation we will use "do - while" cycle. Type the following code.</p>
+<pre class="code">
+zoomBestFit();
+selectNone();
+print("C = f(r) (F):");
+i = 0;
+do
+{
+  if (i > 0)
+  {
+    selectEdge(6, 7, 8);
+    moveSelection(dr, 0);
+  }
+  solve();
+  integral = volumeIntegral();
+
+  print((2*2*integral.Energy)/(U^2));
+  i++;
+} while (i<5);
+</pre>
+<p>To run the script select "Run" in the menu "Tools", or or by pressing &lt;Ctrl&gt;+R.</p>
+
+<a id="postprocessing"></a><h2>Postprocessing</h2>
+<p>After finishing of the script you will get dependence the capacity on the distance of electrodes.</p>
+
+<img src="./electrostatic_axisymmetric_capacitor/calculation_of_capacity.png"><br>
+<span>Fig 2.: Calculation of the capacity</span>
+
+<a id="related"></a><h2>Related</h2>
+<ul>
+  <li><a href="../scripting/scripting.html">Scripting</a></li>
+</ul>
+</body>
+</html>
