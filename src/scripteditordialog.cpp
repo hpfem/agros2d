@@ -75,6 +75,13 @@ QString runEcma(const QString &script)
     m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
     m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
     m_engine->globalObject().setProperty("surfaceIntegral", m_engine->newFunction(scriptSurfaceIntegral));
+    m_engine->globalObject().setProperty("showGrid", m_engine->newFunction(scriptShowGrid));
+    m_engine->globalObject().setProperty("showGeometry", m_engine->newFunction(scriptShowGeometry));
+    m_engine->globalObject().setProperty("showInitialMesh", m_engine->newFunction(scriptShowInitialMesh));
+    m_engine->globalObject().setProperty("showSolutionMesh", m_engine->newFunction(scriptShowSolutionMesh));
+    m_engine->globalObject().setProperty("showContours", m_engine->newFunction(scriptShowContours));
+    m_engine->globalObject().setProperty("showVectors", m_engine->newFunction(scriptShowVectors));
+    m_engine->globalObject().setProperty("showPostprocessor", m_engine->newFunction(scriptShowPostprocessor));
 
     // check syntax
     QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(script);

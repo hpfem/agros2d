@@ -631,3 +631,66 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
         return engine->undefinedValue();
     }
 }
+
+// showGrid(bool)
+QScriptValue scriptShowGrid(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->sceneViewSettings().showGrid = context->argument(0).toBool();
+
+    return engine->undefinedValue();
+}
+
+// showGeometry(bool)
+QScriptValue scriptShowGeometry(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->sceneViewSettings().showGeometry = context->argument(0).toBool();
+
+    return engine->undefinedValue();
+}
+
+// showInitialMesh(bool)
+QScriptValue scriptShowInitialMesh(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->sceneViewSettings().showInitialMesh = context->argument(0).toBool();
+
+    return engine->undefinedValue();
+}
+
+// showSolutionMesh(bool)
+QScriptValue scriptShowSolutionMesh(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->sceneViewSettings().showSolutionMesh = context->argument(0).toBool();
+
+    return engine->undefinedValue();
+}
+
+// showContours(bool)
+QScriptValue scriptShowContours(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->sceneViewSettings().showContours = context->argument(0).toBool();
+
+    return engine->undefinedValue();
+}
+
+// showVectors(bool)
+QScriptValue scriptShowVectors(QScriptContext *context, QScriptEngine *engine)
+{
+    m_sceneView->sceneViewSettings().showVectors = context->argument(0).toBool();
+
+    return engine->undefinedValue();
+}
+
+// showPostprocessor(type = { 'none', 'scalar', 'scalar3d', 'order' })
+QScriptValue scriptShowPostprocessor(QScriptContext *context, QScriptEngine *engine)
+{
+    if (context->argument(0).toString() == "none")
+        m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_NONE;
+    if (context->argument(0).toString() == "scalar")
+        m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
+    if (context->argument(0).toString() == "scalar3d")
+        m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D;
+    if (context->argument(0).toString() == "order")
+        m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
+
+    return engine->undefinedValue();
+}
