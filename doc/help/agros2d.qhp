@@ -6,6 +6,8 @@
     <toc>
       <section title="Introduction" ref="./index.html"/>
       <section title="Getting Started" ref="./getting_started/getting_started.html">
+        <section title="Editing Geometry" ref="./getting_started/editing_geometry.html"/>
+        <section title="Basic Control" ref="./getting_started/basic_program_control.html"/>
       </section>
       <section title="Scripting" ref="./scripting/scripting.html"/>
       <section title="Program Features" ref="./program_features/program_features.html"/>
@@ -25,6 +27,8 @@
       <file>./style.css</file>
       <file>./index.html</file>
       <file>./getting_started/getting_started.html</file>
+      <file>./getting_started/editing_geometry.html</file>
+      <file>./getting_started/basic_program_control.html</file>
       <file>./scripting/scripting.html</file>
       <file>./program_features/program_features.html</file>
       <file>./examples/examples.html</file>
