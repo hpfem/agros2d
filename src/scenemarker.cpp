@@ -33,6 +33,13 @@ QString SceneEdgeElectrostaticMarker::script()
             arg(value.text);
 }
 
+QStringList SceneEdgeElectrostaticMarker::data()
+{
+    QStringList out;
+    out << name << physicFieldBCString(type) << value.text;
+    return QStringList(out);
+}
+
 int SceneEdgeElectrostaticMarker::showDialog(QWidget *parent)
 {
     DSceneEdgeElectrostaticMarker *dialog = new DSceneEdgeElectrostaticMarker(this, parent);
@@ -54,6 +61,13 @@ QString SceneEdgeMagnetostaticMarker::script()
             arg(value.text);
 }
 
+QStringList SceneEdgeMagnetostaticMarker::data()
+{
+    QStringList out;
+    out << name << physicFieldBCString(type) << value.text;
+    return QStringList(out);
+}
+
 int SceneEdgeMagnetostaticMarker::showDialog(QWidget *parent)
 {
     DSceneEdgeMagnetostaticMarker *dialog = new DSceneEdgeMagnetostaticMarker(this, parent);
@@ -73,6 +87,13 @@ QString SceneEdgeHarmonicMagneticMarker::script()
             arg(name).
             arg(physicFieldBCStringKey(type)).
             arg(value.text);
+}
+
+QStringList SceneEdgeHarmonicMagneticMarker::data()
+{
+    QStringList out;
+    out << name << physicFieldBCString(type) << value.text;
+    return QStringList(out);
 }
 
 int SceneEdgeHarmonicMagneticMarker::showDialog(QWidget *parent)
@@ -115,6 +136,21 @@ QString SceneEdgeHeatMarker::script()
     }
 }
 
+QStringList SceneEdgeHeatMarker::data()
+{
+    QStringList out;
+    if (type == PHYSICFIELDBC_HEAT_TEMPERATURE)
+    {
+        out << name << physicFieldBCString(type) << temperature.text;
+    }
+    if (type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
+    {
+        out << name << physicFieldBCString(type) << heatFlux.text << h.text << externalTemperature.text;
+    }
+
+    return QStringList(out);
+}
+
 int SceneEdgeHeatMarker::showDialog(QWidget *parent)
 {
     DSceneEdgeHeatMarker *dialog = new DSceneEdgeHeatMarker(this, parent);
@@ -134,6 +170,13 @@ QString SceneEdgeCurrentMarker::script()
             arg(name).
             arg(physicFieldBCStringKey(type)).
             arg(value.text);
+}
+
+QStringList SceneEdgeCurrentMarker::data()
+{
+    QStringList out;
+    out << name << physicFieldBCString(type) << value.text;
+    return QStringList(out);
 }
 
 int SceneEdgeCurrentMarker::showDialog(QWidget *parent)
@@ -161,6 +204,13 @@ QString SceneEdgeElasticityMarker::script()
             arg(physicFieldBCStringKey(typeY)).
             arg(forceX).
             arg(forceY);
+}
+
+QStringList SceneEdgeElasticityMarker::data()
+{
+    QStringList out;
+    out << name << physicFieldBCString(typeX) << physicFieldBCString(typeY) << QString::number(forceX) << QString::number(forceY);
+    return QStringList(out);
 }
 
 int SceneEdgeElasticityMarker::showDialog(QWidget *parent)
@@ -204,6 +254,13 @@ QString SceneLabelElectrostaticMarker::script()
             arg(permittivity.text);
 }
 
+QStringList SceneLabelElectrostaticMarker::data()
+{
+    QStringList out;
+    out << name << charge_density.text << permittivity.text;
+    return QStringList(out);
+}
+
 int SceneLabelElectrostaticMarker::showDialog(QWidget *parent)
 {
     DSceneLabelElectrostaticMarker *dialog = new DSceneLabelElectrostaticMarker(parent, this);
@@ -225,6 +282,13 @@ QString SceneLabelMagnetostaticMarker::script()
             arg(name).
             arg(current_density.text).
             arg(permeability.text);
+}
+
+QStringList SceneLabelMagnetostaticMarker::data()
+{
+    QStringList out;
+    out << name << current_density.text << permeability.text;
+    return QStringList(out);
 }
 
 int SceneLabelMagnetostaticMarker::showDialog(QWidget *parent)
@@ -254,6 +318,13 @@ QString SceneLabelHarmonicMagneticMarker::script()
             arg(conductivity.text);
 }
 
+QStringList SceneLabelHarmonicMagneticMarker::data()
+{
+    QStringList out;
+    out << name << current_density_real.text << current_density_imag.text << permeability.text << conductivity.text;
+    return QStringList(out);
+}
+
 int SceneLabelHarmonicMagneticMarker::showDialog(QWidget *parent)
 {
     DSceneLabelHarmonicMagneticMarker *dialog = new DSceneLabelHarmonicMagneticMarker(parent, this);
@@ -272,6 +343,13 @@ QString SceneLabelCurrentMarker::script()
     return QString("addMaterial(\"%1\", %3);").
             arg(name).
             arg(conductivity.text);
+}
+
+QStringList SceneLabelCurrentMarker::data()
+{
+    QStringList out;
+    out << name << conductivity.text;
+    return QStringList(out);
 }
 
 int SceneLabelCurrentMarker::showDialog(QWidget *parent)
@@ -297,6 +375,13 @@ QString SceneLabelHeatMarker::script()
             arg(thermal_conductivity.text);
 }
 
+QStringList SceneLabelHeatMarker::data()
+{
+    QStringList out;
+    out << name << volume_heat.text << thermal_conductivity.text;
+    return QStringList(out);
+}
+
 int SceneLabelHeatMarker::showDialog(QWidget *parent)
 {
     DSceneLabelHeatMarker *dialog = new DSceneLabelHeatMarker(parent, this);
@@ -318,6 +403,13 @@ QString SceneLabelElasticityMarker::script()
             arg(name).
             arg(young_modulus).
             arg(poisson_ratio);
+}
+
+QStringList SceneLabelElasticityMarker::data()
+{
+    QStringList out;
+    out << name << QString::number(young_modulus) << QString::number(poisson_ratio);
+    return QStringList(out);
 }
 
 int SceneLabelElasticityMarker::showDialog(QWidget *parent)
@@ -1329,3 +1421,71 @@ bool DSceneLabelElasticityMarker::save()
 
     return true;
 }
+
+//
+
+QString htmlLabelLabelsFactory(PhysicField physicField)
+{
+    QString out;
+    switch (physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        out = "<tr><td>&nbsp;</td><td>Charge density (C/m3)</td><td>Permittivity (-)</td></tr>";
+        break;
+    case PHYSICFIELD_MAGNETOSTATIC:
+        out = "<tr><td>&nbsp;</td><td>Current density (A/m2)</td><td>Permeability (-)</td></tr>";
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        out = "<tr><th>&nbsp;</th><th>Current density - real (A/m2)</th><th>Current density - imag (A/m2)</th><th>Permeability (-)</th><th>Conductivity (S/m2)</th></tr>";
+        break;
+    case PHYSICFIELD_CURRENT:
+        out = "<tr><td>&nbsp;</td><td>Conductivity (S/m)</td></tr>";
+        break;
+    case PHYSICFIELD_HEAT_TRANSFER:
+        out = "<tr><td>&nbsp;</td><td>Volume heat (W/m3)</td><td>Thermal conductivity (W/m.K)</td></tr>";
+        break;
+    case PHYSICFIELD_ELASTICITY:
+        out = "<tr><td>&nbsp;</td><td>Young modulus (Pa)</td><td>Poisson ratio (-)</td></tr>";
+        break;
+    default:
+        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. htmlLabelLabelsFactory(PhysicField physicField)" << endl;
+        throw;
+        break;
+    }
+
+    return QString(out);
+}
+
+QString htmlEdgeLabelsFactory(PhysicField physicField)
+{
+    QString out;
+    switch (physicField)
+    {
+    case PHYSICFIELD_ELECTROSTATIC:
+        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
+        break;
+    case PHYSICFIELD_MAGNETOSTATIC:
+        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
+        break;
+    case PHYSICFIELD_CURRENT:
+        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
+        break;
+    case PHYSICFIELD_HEAT_TRANSFER:
+        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
+        break;
+    case PHYSICFIELD_ELASTICITY:
+        out = "<tr><td>&nbsp;</td><td>Type X</td><td>Value X</td><td>Type Y</td><td>Value Y</td></tr>";
+        break;
+    default:
+        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. htmlEdgeLabelsFactory(PhysicField physicField)" << endl;
+        throw;
+        break;
+    }
+
+    return QString(out);
+}
+
+

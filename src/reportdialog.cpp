@@ -116,5 +116,57 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // script
     destination.replace("[Script]", createEcmaFromModel(), Qt::CaseSensitive);
 
-    return destination;
+    // physical properties
+    destination.replace("[Materials]", htmlMaterials(), Qt::CaseSensitive);
+    destination.replace("[Boundaries]", htmlBoundaries(), Qt::CaseSensitive);
+
+    return QString(destination);
+}
+
+QString ReportDialog::htmlMaterials()
+{
+    QString out;
+
+    out  = "\n";
+    out += "<table>";
+    out += htmlLabelLabelsFactory(Util::scene()->problemInfo().physicField);
+    for (int i = 1; i < Util::scene()->labelMarkers.count(); i++)
+    {
+        out += "<tr>";
+        SceneLabelMarker *marker = Util::scene()->labelMarkers[i];
+        QStringList data = marker->data();
+        for (int j = 0; j < data.length(); j++)
+        {
+            out += "<td>" + data[j] + "</td>";
+        }
+        out += "</tr>";
+    }    
+    out += "</table>";
+    out += "\n";
+
+    return QString(out);
+}
+
+QString ReportDialog::htmlBoundaries()
+{
+    QString out;
+
+    out  = "\n";
+    out += "<table>";
+    out += htmlEdgeLabelsFactory(Util::scene()->problemInfo().physicField);
+    for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
+    {
+        out += "<tr>";
+        SceneEdgeMarker *marker = Util::scene()->edgeMarkers[i];
+        QStringList data = marker->data();
+        for (int j = 0; j < data.length(); j++)
+        {
+            out += "<td>" + data[j] + "</td>";
+        }
+        out += "</tr>";
+    }
+    out += "</table>";
+    out += "\n";
+
+    return QString(out);
 }

@@ -186,6 +186,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     {
         if (((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) ||
             ((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart)) &&
+            (fabs(edgeCheck->angle-edge->angle - edge->angle) < EPS_ZERO) &&
             (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
         {
             delete edge;
@@ -1298,7 +1299,7 @@ void Scene::readFromFile(const QString &fileName)
 }
 
 void Scene::writeToFile(const QString &fileName) {
-    if (problemInfo().fileName != QDir::temp().absolutePath() + "/agros2d/temp.a2d")
+    if (!problemInfo().fileName.contains("temp.a2d"))
     {
         QSettings settings;
         QFileInfo fileInfo(fileName);

@@ -58,6 +58,10 @@ unix {
     pixmap.path = $${PREFIX}/share/pixmaps
     pixmap.files = images/agros2d.xpm
     
+    # install desktop
+    desktop.path = $${PREFIX}/share/applications
+    desktop.files = agros2d.desktop
+
     # install binary
     target.path = $${PREFIX}/bin
     target-remote.path = $${PREFIX}/bin
@@ -70,7 +74,8 @@ unix {
         help \
         lang \
         script \
-        pixmap
+        pixmap \
+        desktop
 }
 SUBDIRS += src
 SOURCES += src/util.cpp \

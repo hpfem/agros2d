@@ -1,10 +1,29 @@
 // geometry functions
-function rect(x0, y0, l, h, marker)
+function addCircle(x0, y0, radius, marker)
 {
-  addEdge(x0, y0, x0+l, y0, 0, marker);
-  addEdge(x0+l, y0, x0+l, y0+h, 0, marker);
-  addEdge(x0+l, y0+h, x0, y0+h, 0, marker);
-  addEdge(x0, y0+h, x0, y0, 0, marker);
+  if (marker == null)
+  {
+    marker = 'none';
+  }
+
+  addEdge(x0-radius, y0, x0+radius, y0, 180, marker);
+  addEdge(x0+radius, y0, x0-radius, y0, 180, marker);
+
+  return;
+}
+
+function addRect(x0, y0, width, height, marker)
+{
+  if (marker == null)
+  {
+    marker = 'none';
+  }
+
+  addEdge(x0, y0, x0+width, y0, 0, marker);
+  addEdge(x0+width, y0, x0+width, y0+height, 0, marker);
+  addEdge(x0+width, y0+height, x0, y0+height, 0, marker);
+  addEdge(x0, y0+height, x0, y0, 0, marker);
+
   return;
 }
 

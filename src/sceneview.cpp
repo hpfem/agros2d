@@ -2406,6 +2406,8 @@ void SceneView::saveImageToFile(const QString &fileName)
 
     makeCurrent();
 
+
+
     // copy image
     QImage *image = new QImage(grabFrameBuffer());
     image->save(fileName, "PNG");

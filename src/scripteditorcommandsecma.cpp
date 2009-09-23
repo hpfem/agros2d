@@ -680,8 +680,8 @@ QScriptValue scriptShowVectors(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
-// showPostprocessor(type = { 'none', 'scalar', 'scalar3d', 'order' })
-QScriptValue scriptShowPostprocessor(QScriptContext *context, QScriptEngine *engine)
+// showScalar(type = { 'none', 'scalar', 'scalar3d', 'order' })
+QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).toString() == "none")
         m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_NONE;

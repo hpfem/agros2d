@@ -96,7 +96,7 @@ double SceneEdge::distance(const Point &point)
 
         Point t = (point - c) / distance;
         double l = ((point - c) - t * R).magnitude();
-        double z = (t.angle() - (nodeStart->point - c).angle())/180*M_PI;
+        double z = fabs(t.angle() - (nodeStart->point - c).angle())/180*M_PI;
         if ((z > 0) && (z < angle)) return l;
 
         double a = (point - nodeStart->point).magnitude();

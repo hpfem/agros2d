@@ -22,6 +22,8 @@ private:
 
     void generateIndex();
     QString replaceTemplates(const QString &source);
+    QString htmlMaterials();
+    QString htmlBoundaries();
 
 private slots:
     void doAccept();

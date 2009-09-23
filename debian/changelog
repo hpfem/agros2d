@@ -1,3 +1,9 @@
+agros2d (0.9-6ubuntu1) jaunty; urgency=low
+
+  * bugfixes, new functions
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 29 Aug 2009 19:15:55 +0200
+
 agros2d (0.9-5ubuntu1) jaunty; urgency=low
 
   * many bugfixes, remote control

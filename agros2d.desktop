@@ -1,13 +1,7 @@
-
 [Desktop Entry]
 Type=Application
 Name=Agros 2D
-Comment=hp-FEM based application
-TryExec=agros2d
+Comment=hp-FEM multiphysics solver based on Hermes2D library
 Exec=agros2d
 Icon=agros2d
-Categories=Science;
-X-KDE-StartupNotify=true
-Terminal=false
-InitialPreference=9
-Name[en_US]=Agros 2D
+Categories=Education;Science;Math;
