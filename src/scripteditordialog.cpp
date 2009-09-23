@@ -917,22 +917,24 @@ SearchDialog::SearchDialog(QWidget *parent): QDialog(parent)
     setModal(true);
 
     // Find and replace
-    QGroupBox *findGroup = new QGroupBox(this);
-    findGroup->setTitle(tr("Find and replace"));
+    QGroupBox *findReplaceGroup = new QGroupBox(this);
+    findReplaceGroup->setTitle(tr("Find and replace"));
 
-    txtFind = new QLineEdit(findGroup);
-    txtReplace = new QLineEdit(findGroup);
+    txtFind = new QLineEdit();
+    txtReplace = new QLineEdit();
 
-    QVBoxLayout *findLayout = new QVBoxLayout();
-    findGroup->setLayout(findLayout);
-    findLayout->addWidget(txtFind);
-    findLayout->addWidget(txtReplace);
+    QGridLayout *findReplaceLayout = new QGridLayout();
+    findReplaceGroup->setLayout(findReplaceLayout);
+    findReplaceLayout->addWidget(new QLabel(tr("Search for:")), 0, 0);
+    findReplaceLayout->addWidget(txtFind, 0, 1);
+    findReplaceLayout->addWidget(new QLabel(tr("Replace with:")), 1, 0);
+    findReplaceLayout->addWidget(txtReplace, 1, 1);
 
     // Options
     QGroupBox *optionsGroup = new QGroupBox(this);
     optionsGroup->setTitle(tr("Options"));
 
-    chkSearchRegExp = new QCheckBox(findGroup);
+    chkSearchRegExp = new QCheckBox();
     chkSearchRegExp->setText(tr("Regular expression"));
 
     chkCaseSensitive = new QCheckBox(optionsGroup);
@@ -965,7 +967,7 @@ SearchDialog::SearchDialog(QWidget *parent): QDialog(parent)
     QVBoxLayout *layout = new QVBoxLayout();
     setLayout(layout);
 
-    layout->addWidget(findGroup);
+    layout->addWidget(findReplaceGroup);
     layout->addWidget(optionsGroup);
     layout->addLayout(buttonsLayout);
 
