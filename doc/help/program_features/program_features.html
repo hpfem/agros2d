@@ -1,66 +1,41 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <link rel="stylesheet" type="text/css" href="../style.css" media="screen" title="Default">
-  <title>Program Features</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" type="text/css" href="../style.css" media="screen" title="Default">
+	<title>Program Features</title>
 </head>
 <body>
 <h1>Program Features</h1>
 
-<h1>Remote control</h1>
+<div id="content">
+	<h2>Content</h2>
+	<ul>
+		<li><a href="#startup_script">Startup Script</a></li>
+		<li><a href="#user_functions">User Functions</a></li>
+		<li><a href="#remote_control">Remote Control</a></li>
+		<li><a href="#report">Report</a></li>
+	</ul>
+</div>
 
-<p>You can use 'agros2d-remote' command for remote controling of the application</p>
+<a id="startup_script"></a><h2>Startup Script</h2>
 
+<a id="user_functions"></a><h2>User Functions</h2>
+
+<a id="remote_control"></a><h2>Remote Control</h2>
+<p>Agros2D support remote control. You can use <i>agros2d-remote</i> command for remote controling of Agros2D. For example:</p>
 <pre class="code">
-agros2d-remote "print(version());"
-agros2d-remote "result = pointResult(0.6, 0.6);"
-agros2d-remote "print(result.T);"
+agros2d-remote "openDocument("data/electrostatic_planar_capacitor.a2d");"
+agros2d-remote "solve();"
+agros2d-remote "result = pointResult(0.12, 0.32);"
+agros2d-remote "print(result.V);"
 </pre>
-
-or you can run script file by using '-script' switch
+<p>If you can run script file you must using <i>-script</i> switch. For example:</p>
 <pre class="code">
-agros2d-remote -script name.qs
+agros2d-remote -script "data/script/electrostatic_axisymmetric_capacitor.qs"
 </pre>
+<p>You can use commands described in the section <a href="../scripting/scripting.html">Scripting</a>.</p>
 
-<h1>Shortcut Keys</h1>
-<table>
-  <tbody>
-    <tr><td><b>Shortcut Key</b></td><td><b>Command</b></td></tr>
-    <tr><td>Ctrl+N</td><td>Create a new file</td></tr>
-    <tr><td>Ctrl+O</td><td>Open an existing file</td></tr>
-    <tr><td>Ctrl+S</td><td>Save the file to disk</td></tr>
-    <tr><td>Ctrl+Shift+S</td><td>Save the file under a new name</td></tr>
-    <tr><td>Ctrl+W</td><td>Close the file</td></tr>
-    <tr><td>Ctrl+Q</td><td>Exit the application</td></tr>
-    <!--
-    <tr><td>Ctrl+Z</td><td>Undo operation</td></tr>
-    <tr><td>Ctrl+Shift+Z</td><td>Redo operation</td></tr>
-    <tr><td>Ctrl+X</td><td>Cut the current selection's contents to the clipboard</td></tr>
-    <tr><td>Ctrl+C</td><td>Copy the current selection's contents to the clipboard</td></tr>
-    <tr><td>Ctrl+V</td><td>Paste the clipboard's contents into the current selection</td></tr>
-    -->
-    <tr><td>Ctrl++</td><td>Zoom in</td></tr>
-    <tr><td>Ctrl+-</td><td>Zoom out</td></tr>
-    <tr><td>F11</td><td>Fullscreen mode</td></tr>
-
-    <tr><td>F4</td><td>Open script editor</td></tr>
-
-    <tr><td>F5</td><td>Operate on nodes</td></tr>
-    <tr><td>F6</td><td>Operate on edges</td></tr>
-    <tr><td>F7</td><td>Operate on labels</td></tr>
-    <tr><td>F8</td><td>Postprocessor</td></tr>
-
-    <tr><td>Alt+N</td><td>New node</td></tr>
-    <tr><td>Alt+E</td><td>New edge</td></tr>
-    <tr><td>Alt+L</td><td>New label</td></tr>
-    <tr><td>Alt+B</td><td>New boundary condition</td></tr>
-    <tr><td>Alt+M</td><td>New material</td></tr>
-
-    <tr><td>Alt+S</td><td>Solve problem</td></tr>
-
-    <tr><td>F1</td><td>Help</td></tr>
-  </tbody>
-</table>
+<a id="report"></a><h2>Report</h2>
 </body>
 </html>

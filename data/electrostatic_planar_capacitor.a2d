@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="0.05" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="4" problemtype="planar" type="electrostatic" id="0" name="Planar electrostatic capacitor" >
+        <problem adaptivitytolerance="0.05" frequency="0" numberofrefinements="1" adaptivitytype="hp-adaptivity" adaptivitysteps="5" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Electrostatic planar capacitor" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="potential" value="10" id="1" name="Source electrode" />
@@ -33,4 +33,5 @@
             <label x="0.129936" y="0.239288" marker="1" id="0" area="0" />
         </labels>
     </geometry>
+    <functions/>
 </document>

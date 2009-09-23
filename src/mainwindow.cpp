@@ -748,7 +748,7 @@ void MainWindow::doHelp()
 
 void MainWindow::doHelpShortCut()
 {
-    Util::helpDialog()->showPage("program_features/program_features.html");
+    Util::helpDialog()->showPage("getting_started/basic_control.html");
     Util::helpDialog()->show();
 }
 
