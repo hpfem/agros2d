@@ -54,8 +54,6 @@ private slots:
     void doOptions();
     void doReport();
 
-    void doUndo();
-    void doRedo();
     void doCut();
     void doCopy();
     void doPaste();

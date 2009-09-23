@@ -671,7 +671,12 @@ void MainWindow::doScriptEditorRunCommand(const QString &command)
     QString commandLine;
     if (command.isEmpty())
     {
-        commandLine = QInputDialog::getText(this, tr("Command"), tr("Enter command:"), QLineEdit::Normal);
+        CommandDialog commandDialog;
+        if (commandDialog.exec() == QDialog::Accepted)
+        {
+            commandLine = commandDialog.command();
+        }
+        // commandLine = QInputDialog::getText(this, tr("Command"), tr("Enter command:"), QLineEdit::Normal);
     }
     else
     {
@@ -688,14 +693,6 @@ void MainWindow::doScriptStartup()
     scriptStartup->showDialog();
 
     delete scriptStartup;
-}
-
-void MainWindow::doUndo()
-{
-}
-
-void MainWindow::doRedo()
-{
 }
 
 void MainWindow::doCut()

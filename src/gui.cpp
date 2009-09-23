@@ -250,3 +250,78 @@ void Chart::setData(double *xval, double *yval, int count)
 
     replot();
 }
+
+// ***********************************************************************************************************
+
+CommandDialog::CommandDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowTitle(tr("Command"));
+    setWindowIcon(icon("system-run"));   
+
+    cmbCommand = new QComboBox(this);
+    cmbCommand->setEditable(true);
+    cmbCommand->setMinimumWidth(350);
+
+    // completer
+    QSettings settings;
+    QStringList list;
+    list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
+    /*
+    QStringListModel *model = new QStringListModel();
+    model->setStringList(list);
+
+    completer = new QCompleter(model, this);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    cmbCommand->setCompleter(completer);
+    */
+    cmbCommand->addItem("", "");
+    cmbCommand->addItems(list);
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QHBoxLayout *layoutCommand = new QHBoxLayout();
+    layoutCommand->addWidget(new QLabel(tr("Enter command:")));
+    layoutCommand->addWidget(cmbCommand);
+    layoutCommand->addStretch();
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutCommand);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+
+    setMaximumSize(sizeHint());
+}
+
+CommandDialog::~CommandDialog()
+{
+    delete cmbCommand;
+    // delete completer;
+}
+
+void CommandDialog::doAccept()
+{
+    if (!command().isEmpty())
+    {
+        QStringList list;
+        for (int i = 0; i < cmbCommand->count(); i++)
+        {
+            list.append(cmbCommand->itemText(i));
+        }
+
+        // remove last item (over 30), empty strings and duplicates
+        list.removeAll("");
+        if (list.count() > 30)
+            list.removeAt(list.count()-1);
+        list.removeDuplicates();
+
+        QSettings settings;
+        settings.setValue("CommandDialog/RecentCommands", list);
+    }
+
+    accept();
+}

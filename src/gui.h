@@ -69,4 +69,22 @@ private:
     QwtPlotCurve *m_curve;
 };
 
+class CommandDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    CommandDialog(QWidget *parent = 0);
+    ~CommandDialog();
+
+    inline QString command() { return cmbCommand->currentText(); }
+
+private:
+    QComboBox *cmbCommand;
+    QCompleter *completer;
+
+public slots:
+   void doAccept();
+};
+
+
 #endif // GUI_H
