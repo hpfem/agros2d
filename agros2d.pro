@@ -52,7 +52,7 @@ unix {
     
     # install script
     script.path = $${PREFIX}/share/agros2d
-    script.files = *.js
+    script.files = *.qs
     
     # install pixmap
     pixmap.path = $${PREFIX}/share/pixmaps
