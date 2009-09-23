@@ -13,6 +13,7 @@ static SceneView *m_sceneView;
 class Scene;
 class SceneView;
 class ScriptEditor;
+class SearchDialog;
 
 QString createEcmaFromModel();
 
@@ -80,6 +81,10 @@ public slots:
     void doFileSaveAs();
     void doFileClose();
 
+    void doFind();
+    void doFindNext(bool fromBegining = false);
+    void doReplace();
+
     void doDataChanged();
     void doHelp();
 
@@ -88,6 +93,7 @@ public slots:
 
 protected:
     ScriptEditor *txtEditor;
+    SearchDialog *searchDialog;
 
     QMenu *mnuFile;
     QMenu *mnuEdit;
@@ -110,6 +116,10 @@ protected:
     QAction *actCut;
     QAction *actCopy;
     QAction *actPaste;
+
+    QAction *actFind;
+    QAction *actFindNext;
+    QAction *actReplace;
 
     QAction *actRunEcma;
     QAction *actCreateFromModel;
@@ -184,6 +194,31 @@ protected:
 
 private:
     ScriptEditor *codeEditor;
+};
+
+// ************************************************************************************************************
+
+class SearchDialog: public QDialog
+{
+    Q_OBJECT
+public:
+    // Constructor
+    SearchDialog(QWidget *parent=0);
+    ~SearchDialog();
+
+    int showDialogFind();
+    int showDialogReplace();
+
+    inline QString searchString()  { return txtFind->text(); }
+    inline QString replaceString() { return txtReplace->text(); }
+
+    inline bool searchStringIsRegExp() { return chkSearchRegExp->checkState(); }
+    inline bool caseSensitive() { return chkCaseSensitive->checkState(); }
+
+private:
+    QLineEdit *txtFind, *txtReplace;
+    QCheckBox *chkSearchRegExp, *chkCaseSensitive;
+    QPushButton *btnCancel, *btnReplace, *btnFind;
 };
 
 #endif // SCRIPTEDITORDIALOG_H

@@ -323,6 +323,8 @@ ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : 
 
     setWindowIcon(icon("script"));    
 
+    searchDialog = new SearchDialog(this);
+
     createActions();
     createControls();
 
@@ -406,6 +408,18 @@ void ScriptEditorDialog::createActions()
     actPaste = new QAction(icon("edit-paste"), tr("&Paste"), this);
     actPaste->setShortcut(QKeySequence::Paste);
 
+    actFind = new QAction(icon("edit-find"), tr("&Find"), this);
+    actFind->setShortcut(QKeySequence::Find);
+    connect(actFind, SIGNAL(triggered()), this, SLOT(doFind()));
+
+    actFindNext = new QAction(icon("edit-find"), tr("&Find next"), this);
+    actFindNext->setShortcut(QKeySequence::FindNext);
+    connect(actFindNext, SIGNAL(triggered()), this, SLOT(doFindNext()));
+
+    actReplace = new QAction(icon("edit-replace"), tr("&Replace"), this);
+    actReplace->setShortcut(QKeySequence::Replace);
+    connect(actReplace, SIGNAL(triggered()), this, SLOT(doReplace()));
+
     actRunEcma = new QAction(icon("system-run"), tr("&Run"), this);
     actRunEcma->setShortcut(QKeySequence(tr("Ctrl+R")));
     
@@ -444,6 +458,10 @@ void ScriptEditorDialog::createControls()
     mnuEdit->addAction(actCut);
     mnuEdit->addAction(actCopy);
     mnuEdit->addAction(actPaste);
+    mnuEdit->addSeparator();
+    mnuEdit->addAction(actFind);
+    mnuEdit->addAction(actFindNext);
+    mnuEdit->addAction(actReplace);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunEcma);
@@ -461,12 +479,12 @@ void ScriptEditorDialog::createControls()
 
     tlbEdit = addToolBar(tr("Edit"));
     tlbEdit->setObjectName("Edit");
+    tlbEdit->addAction(actUndo);
+    tlbEdit->addAction(actRedo);
+    tlbEdit->addSeparator();
     tlbEdit->addAction(actCut);
     tlbEdit->addAction(actCopy);
     tlbEdit->addAction(actPaste);
-    tlbEdit->addSeparator();
-    tlbEdit->addAction(actUndo);
-    tlbEdit->addAction(actRedo);
 
     tlbTools = addToolBar(tr("Tools"));
     tlbTools->setObjectName("Tools");
@@ -594,6 +612,70 @@ void ScriptEditorDialog::doFileClose()
         doCloseTab(tabWidget->currentIndex());
     else
         hide();
+}
+
+void ScriptEditorDialog::doFind()
+{
+    if (searchDialog->showDialogFind() == QDialog::Accepted)
+    {
+        doFindNext(true);
+    }
+    searchDialog->hide();
+}
+
+void ScriptEditorDialog::doFindNext(bool fromBegining)
+{
+    if (!searchDialog->searchString().isEmpty())
+    {
+        QString search = searchDialog->searchString();
+
+        QTextDocument::FindFlags flags;
+        if (searchDialog->caseSensitive())
+            flags |= QTextDocument::FindCaseSensitively;
+
+        // Search
+        QTextCursor cursor = txtEditor->textCursor();
+        if (searchDialog->searchStringIsRegExp())
+        {
+            QRegExp searchReg(search);
+            if (fromBegining)
+                cursor = txtEditor->document()->find(searchReg, flags);
+            else
+                cursor = txtEditor->document()->find(searchReg, cursor, flags);
+        }
+        else
+        {
+            if (fromBegining)
+                cursor = txtEditor->document()->find(search, flags);
+            else
+                cursor = txtEditor->document()->find(search, cursor, flags);
+        }
+
+        if (cursor.position() >= 0)
+            txtEditor->setTextCursor(cursor);
+        txtEditor->setFocus();
+    }
+}
+
+void ScriptEditorDialog::doReplace()
+{
+    if (searchDialog->showDialogReplace() == QDialog::Accepted)
+    {
+        if (!searchDialog->searchString().isEmpty())
+        {
+            QString search = searchDialog->searchString();
+            QString replace = searchDialog->replaceString();
+
+            QTextCursor cursor = txtEditor->textCursor();
+
+            QString text = txtEditor->document()->toPlainText();
+            text.replace(search, replace, (searchDialog->caseSensitive() ? Qt::CaseSensitive : Qt::CaseInsensitive));
+            txtEditor->document()->setPlainText(text);
+
+            txtEditor->setTextCursor(cursor);
+        }
+    }
+    searchDialog->hide();
 }
 
 void ScriptEditorDialog::doDataChanged()
@@ -823,4 +905,105 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
         bottom = top + (int) blockBoundingRect(block).height();
         ++blockNumber;
     }
+}
+
+// ***********************************************************************************************
+
+SearchDialog::SearchDialog(QWidget *parent): QDialog(parent)
+{
+    // Title
+    setWindowTitle(tr("Search and replace"));
+    setWindowIcon(icon("edit-find"));
+    setModal(true);
+
+    // Find and replace
+    QGroupBox *findGroup = new QGroupBox(this);
+    findGroup->setTitle(tr("Find and replace"));
+
+    txtFind = new QLineEdit(findGroup);
+    txtReplace = new QLineEdit(findGroup);
+
+    QVBoxLayout *findLayout = new QVBoxLayout();
+    findGroup->setLayout(findLayout);
+    findLayout->addWidget(txtFind);
+    findLayout->addWidget(txtReplace);
+
+    // Options
+    QGroupBox *optionsGroup = new QGroupBox(this);
+    optionsGroup->setTitle(tr("Options"));
+
+    chkSearchRegExp = new QCheckBox(findGroup);
+    chkSearchRegExp->setText(tr("Regular expression"));
+
+    chkCaseSensitive = new QCheckBox(optionsGroup);
+    chkCaseSensitive->setText(tr("Case sensitive"));
+
+    QVBoxLayout *optionsLayout = new QVBoxLayout();
+    optionsGroup->setLayout(optionsLayout);
+    optionsLayout->addWidget(chkSearchRegExp);
+    optionsLayout->addWidget(chkCaseSensitive);
+
+    // Buttons
+    btnFind = new QPushButton(this);
+    btnFind->setText(tr("Find"));
+    connect(btnFind, SIGNAL(clicked()), this, SLOT(accept()));
+
+    btnReplace = new QPushButton(this);
+    btnReplace->setText(tr("Replace"));
+    connect(btnReplace, SIGNAL(clicked()), this, SLOT(accept()));
+
+    btnCancel = new QPushButton(this);
+    btnCancel->setText(tr("Cancel"));
+    connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+    QHBoxLayout *buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addWidget(btnFind);
+    buttonsLayout->addWidget(btnReplace);
+    buttonsLayout->addWidget(btnCancel);
+
+    // Layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    setLayout(layout);
+
+    layout->addWidget(findGroup);
+    layout->addWidget(optionsGroup);
+    layout->addLayout(buttonsLayout);
+
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
+}
+
+SearchDialog::~SearchDialog()
+{
+    delete txtFind;
+    delete txtReplace;
+
+    delete chkSearchRegExp;
+    delete chkCaseSensitive;
+
+    delete btnCancel;
+    delete btnReplace;
+    delete btnFind;
+}
+
+int SearchDialog::showDialogFind()
+{
+    txtReplace->setEnabled(false);
+    btnFind->setEnabled(true);
+    btnReplace->setEnabled(false);
+    btnFind->setDefault(true);
+    chkSearchRegExp->setEnabled(true);
+
+    return exec();
+}
+
+int SearchDialog::showDialogReplace()
+{
+    txtReplace->setEnabled(true);
+    btnFind->setEnabled(false);
+    btnReplace->setEnabled(true);
+    btnReplace->setDefault(true);
+    chkSearchRegExp->setEnabled(false);
+
+    return exec();
 }
