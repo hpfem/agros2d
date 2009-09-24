@@ -46,6 +46,11 @@ unix {
     help.files = doc/help/agros2d.qch \
         doc/help/agros2d.qhc
     
+    # install report
+    help.path = $${PREFIX}/share/agros2d/doc/report/template
+    help.files = doc/report/template/template.html \
+        doc/report/template/default.css
+
     # install translations
     lang.path = $${PREFIX}/share/agros2d/lang
     lang.files = lang/*.qm
@@ -75,6 +80,7 @@ unix {
         lang \
         script \
         pixmap \
+        report \
         desktop
 }
 SUBDIRS += src

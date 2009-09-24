@@ -911,7 +911,7 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
 SearchDialog::SearchDialog(QWidget *parent): QDialog(parent)
 {
-    // Title
+ // Title
     setWindowTitle(tr("Search and replace"));
     setWindowIcon(icon("edit-find"));
     setModal(true);
@@ -946,21 +946,17 @@ SearchDialog::SearchDialog(QWidget *parent): QDialog(parent)
     optionsLayout->addWidget(chkCaseSensitive);
 
     // Buttons
-    btnFind = new QPushButton(this);
-    btnFind->setText(tr("Find"));
-    connect(btnFind, SIGNAL(clicked()), this, SLOT(accept()));
-
-    btnReplace = new QPushButton(this);
-    btnReplace->setText(tr("Replace"));
-    connect(btnReplace, SIGNAL(clicked()), this, SLOT(accept()));
+    btnConfirm = new QPushButton(this);
+    btnConfirm->setDefault(true);
+    connect(btnConfirm, SIGNAL(clicked()), this, SLOT(accept()));
 
     btnCancel = new QPushButton(this);
     btnCancel->setText(tr("Cancel"));
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout();
-    buttonsLayout->addWidget(btnFind);
-    buttonsLayout->addWidget(btnReplace);
+    buttonsLayout->addStretch();
+    buttonsLayout->addWidget(btnConfirm);
     buttonsLayout->addWidget(btnCancel);
 
     // Layout
@@ -984,16 +980,13 @@ SearchDialog::~SearchDialog()
     delete chkCaseSensitive;
 
     delete btnCancel;
-    delete btnReplace;
-    delete btnFind;
+    delete btnConfirm;
 }
 
 int SearchDialog::showDialogFind()
 {
     txtReplace->setEnabled(false);
-    btnFind->setEnabled(true);
-    btnReplace->setEnabled(false);
-    btnFind->setDefault(true);
+    btnConfirm->setText(tr("Find"));
     chkSearchRegExp->setEnabled(true);
 
     return exec();
@@ -1002,9 +995,7 @@ int SearchDialog::showDialogFind()
 int SearchDialog::showDialogReplace()
 {
     txtReplace->setEnabled(true);
-    btnFind->setEnabled(false);
-    btnReplace->setEnabled(true);
-    btnReplace->setDefault(true);
+    btnConfirm->setText(tr("Replace"));
     chkSearchRegExp->setEnabled(false);
 
     return exec();

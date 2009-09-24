@@ -218,7 +218,7 @@ public:
 private:
     QLineEdit *txtFind, *txtReplace;
     QCheckBox *chkSearchRegExp, *chkCaseSensitive;
-    QPushButton *btnCancel, *btnReplace, *btnFind;
+    QPushButton *btnCancel, *btnConfirm;
 };
 
 #endif // SCRIPTEDITORDIALOG_H
