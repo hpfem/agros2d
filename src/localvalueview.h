@@ -14,7 +14,7 @@ class LocalPointValueHeat;
 class LocalPointValueCurrent;
 class LocalPointValueElasticity;
 
-LocalPointValue *localPointValueFactory(Point &point);
+LocalPointValue *localPointValueFactory(Point point);
 QStringList localPointValueHeaderFactory(PhysicField physicField);
 
 class LocalPointValueView : public QDockWidget
@@ -32,6 +32,8 @@ private:
     QTreeWidget *trvWidget;
     QAction *actPoint;
     QMenu *mnuInfo;
+
+    Point point;
 
     void createActions();
     void createMenu();
@@ -159,6 +161,22 @@ public:
     LocalPointValueElasticity(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
+};
+
+// *************************************************************************************************************************************
+
+class LocalPointValueDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    LocalPointValueDialog(Point point, QWidget *parent = 0);
+    ~LocalPointValueDialog();
+
+    Point point();
+
+private:
+    SLineEdit *txtPointX;
+    SLineEdit *txtPointY;
 };
 
 #endif // LOCALVALUE_H

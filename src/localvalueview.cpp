@@ -66,13 +66,12 @@ void LocalPointValueView::createMenu()
 
 void LocalPointValueView::doPoint()
 {
-    Point point;
-    SceneNode *node = new SceneNode(point);
-    if (node->showDialog(this) == QDialog::Accepted)
+    
+    LocalPointValueDialog localPointValueDialog(point);
+    if (localPointValueDialog.exec() == QDialog::Accepted)
     {
-        doShowPoint(localPointValueFactory(node->point));
+        doShowPoint(localPointValueFactory(localPointValueDialog.point()));
     }
-    delete node;
 }
 
 void LocalPointValueView::doContextMenu(const QPoint &pos)
@@ -82,6 +81,9 @@ void LocalPointValueView::doContextMenu(const QPoint &pos)
 
 void LocalPointValueView::doShowPoint(LocalPointValue *localPointValue)
 {
+    // store point
+    point = localPointValue->point;
+
     trvWidget->clear();
 
     // point
@@ -89,8 +91,8 @@ void LocalPointValueView::doShowPoint(LocalPointValue *localPointValue)
     pointNode->setText(0, tr("Point"));
     pointNode->setExpanded(true);
 
-    addValue(pointNode, Util::scene()->problemInfo().labelX() + ":", tr("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
-    addValue(pointNode, Util::scene()->problemInfo().labelY() + ":", tr("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
+    addValue(pointNode, Util::scene()->problemInfo().labelX() + ":", QString("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
+    addValue(pointNode, Util::scene()->problemInfo().labelY() + ":", QString("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
 
     trvWidget->insertTopLevelItem(0, pointNode);
 
@@ -119,34 +121,34 @@ void LocalPointValueView::showElectrostatic(LocalPointValueElectrostatic *localP
     electrostaticNode->setExpanded(true);
 
     // Permittivity
-    addValue(electrostaticNode, tr("Permittivity:"), tr("%1").arg(localPointValueElectrostatic->permittivity, 0, 'f', 2), tr(""));
+    addValue(electrostaticNode, tr("Permittivity:"), QString("%1").arg(localPointValueElectrostatic->permittivity, 0, 'f', 2), tr(""));
 
     // Charge Density
-    addValue(electrostaticNode, tr("Charge density:"), tr("%1").arg(localPointValueElectrostatic->charge_density, 0, 'e', 3), "C/m3");
+    addValue(electrostaticNode, tr("Charge density:"), QString("%1").arg(localPointValueElectrostatic->charge_density, 0, 'e', 3), "C/m3");
 
     // Energy density
-    addValue(electrostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueElectrostatic->we, 0, 'e', 3), "J/m3");
+    addValue(electrostaticNode, tr("Energy density:"), QString("%1").arg(localPointValueElectrostatic->we, 0, 'e', 3), "J/m3");
 
     // Potential
-    addValue(electrostaticNode, tr("Potential:"), tr("%1").arg(localPointValueElectrostatic->potential, 0, 'e', 3), "V");
+    addValue(electrostaticNode, tr("Potential:"), QString("%1").arg(localPointValueElectrostatic->potential, 0, 'e', 3), "V");
 
     // Electric Field
     QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(electrostaticNode);
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.x, 0, 'e', 3), "V/m");
-    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->E.y, 0, 'e', 3), "V/m");
-    addValue(itemElectricField, "E:", tr("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.x, 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.y, 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E:", QString("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'e', 3), "V/m");
 
     // Electric Displacement
     QTreeWidgetItem *itemElectricDisplacement = new QTreeWidgetItem(electrostaticNode);
     itemElectricDisplacement->setText(0, tr("Electric displacement"));
     itemElectricDisplacement->setExpanded(true);
 
-    addValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
-    addValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
-    addValue(itemElectricDisplacement, "D:", tr("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
+    addValue(itemElectricDisplacement, "D:", QString("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
 }
 
 void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localPointValueMagnetostatic)
@@ -157,34 +159,34 @@ void LocalPointValueView::showMagnetostatic(LocalPointValueMagnetostatic *localP
     magnetostaticNode->setExpanded(true);
 
     // Permeability
-    addValue(magnetostaticNode, tr("Permeability:"), tr("%1").arg(localPointValueMagnetostatic->permeability, 0, 'f', 2), "");
+    addValue(magnetostaticNode, tr("Permeability:"), QString("%1").arg(localPointValueMagnetostatic->permeability, 0, 'f', 2), "");
 
     // Current Density
-    addValue(magnetostaticNode, tr("Current density:"), tr("%1").arg(localPointValueMagnetostatic->current_density, 0, 'e', 3), "A/m2");
+    addValue(magnetostaticNode, tr("Current density:"), QString("%1").arg(localPointValueMagnetostatic->current_density, 0, 'e', 3), "A/m2");
 
     // Energy density
-    addValue(magnetostaticNode, tr("Energy density:"), tr("%1").arg(localPointValueMagnetostatic->wm, 0, 'e', 3), "J/m3");
+    addValue(magnetostaticNode, tr("Energy density:"), QString("%1").arg(localPointValueMagnetostatic->wm, 0, 'e', 3), "J/m3");
 
     // Potential
-    addValue(magnetostaticNode, tr("Vector potential:"), tr("%1").arg(localPointValueMagnetostatic->potential, 0, 'e', 3), "Wb/m");
+    addValue(magnetostaticNode, tr("Vector potential:"), QString("%1").arg(localPointValueMagnetostatic->potential, 0, 'e', 3), "Wb/m");
 
     // Flux Density
     QTreeWidgetItem *itemFluxDensity = new QTreeWidgetItem(magnetostaticNode);
     itemFluxDensity->setText(0, tr("Flux density"));
     itemFluxDensity->setExpanded(true);
 
-    addValue(itemFluxDensity, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.x, 0, 'e', 3), "T");
-    addValue(itemFluxDensity, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->B.y, 0, 'e', 3), "T");
-    addValue(itemFluxDensity, "B:", tr("%1").arg(localPointValueMagnetostatic->B.magnitude(), 0, 'e', 3), "T");
+    addValue(itemFluxDensity, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->B.x, 0, 'e', 3), "T");
+    addValue(itemFluxDensity, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->B.y, 0, 'e', 3), "T");
+    addValue(itemFluxDensity, "B:", QString("%1").arg(localPointValueMagnetostatic->B.magnitude(), 0, 'e', 3), "T");
 
     // Magnetic Field
     QTreeWidgetItem *itemMagneticField = new QTreeWidgetItem(magnetostaticNode);
     itemMagneticField->setText(0, tr("Magnetic field"));
     itemMagneticField->setExpanded(true);
 
-    addValue(itemMagneticField, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
-    addValue(itemMagneticField, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
-    addValue(itemMagneticField, "H", tr("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
+    addValue(itemMagneticField, "H", QString("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), "A/m");
 }
 
 void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *localPointValueHarmonicMagnetic)
@@ -195,114 +197,114 @@ void LocalPointValueView::showHarmonicMagnetic(LocalPointValueHarmonicMagnetic *
     harmonicMagneticNode->setExpanded(true);
 
     // Permittivity
-    addValue(harmonicMagneticNode, tr("Permeability:"), tr("%1").arg(localPointValueHarmonicMagnetic->permeability, 0, 'f', 2), "");
+    addValue(harmonicMagneticNode, tr("Permeability:"), QString("%1").arg(localPointValueHarmonicMagnetic->permeability, 0, 'f', 2), "");
 
     // Current Density
     QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(harmonicMagneticNode);
     itemCurrentDensity->setText(0, tr("External current density"));
     itemCurrentDensity->setExpanded(true);
 
-    addValue(itemCurrentDensity, tr("real:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_real, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensity, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_imag, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensity, tr("magnitude:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_real) + sqr(localPointValueHarmonicMagnetic->current_density_imag)), 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, tr("real:"), QString("%1").arg(localPointValueHarmonicMagnetic->current_density_real, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, tr("imag:"), QString("%1").arg(localPointValueHarmonicMagnetic->current_density_imag, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_real) + sqr(localPointValueHarmonicMagnetic->current_density_imag)), 0, 'e', 3), "A/m2");
 
     // Average power losses
-    addValue(harmonicMagneticNode, tr("Average power losses dens.:"), tr("%1").arg(localPointValueHarmonicMagnetic->pj, 0, 'e', 3), "W/m3");
+    addValue(harmonicMagneticNode, tr("Average power losses dens.:"), QString("%1").arg(localPointValueHarmonicMagnetic->pj, 0, 'e', 3), "W/m3");
 
     // Energy density
-    addValue(harmonicMagneticNode, tr("Energy density:"), tr("%1").arg(localPointValueHarmonicMagnetic->wm, 0, 'e', 3), "J/m3");
+    addValue(harmonicMagneticNode, tr("Energy density:"), QString("%1").arg(localPointValueHarmonicMagnetic->wm, 0, 'e', 3), "J/m3");
 
     // Potential
     QTreeWidgetItem *itemPotential = new QTreeWidgetItem(harmonicMagneticNode);
     itemPotential->setText(0, tr("Vector potential"));
     itemPotential->setExpanded(true);
 
-    addValue(itemPotential, tr("real:"), tr("%1").arg(localPointValueHarmonicMagnetic->potential_real, 0, 'e', 3), "Wb/m");
-    addValue(itemPotential, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->potential_imag, 0, 'e', 3), "Wb/m");
-    addValue(itemPotential, tr("magnitude:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->potential_real) + sqr(localPointValueHarmonicMagnetic->potential_imag)), 0, 'e', 3), "Wb/m");
+    addValue(itemPotential, tr("real:"), QString("%1").arg(localPointValueHarmonicMagnetic->potential_real, 0, 'e', 3), "Wb/m");
+    addValue(itemPotential, tr("imag:"), QString("%1").arg(localPointValueHarmonicMagnetic->potential_imag, 0, 'e', 3), "Wb/m");
+    addValue(itemPotential, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->potential_real) + sqr(localPointValueHarmonicMagnetic->potential_imag)), 0, 'e', 3), "Wb/m");
 
     // Flux Density
-    addValue(harmonicMagneticNode, "Flux density:", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->B_real.x) + sqr(localPointValueHarmonicMagnetic->B_imag.x) + sqr(localPointValueHarmonicMagnetic->B_real.y) + sqr(localPointValueHarmonicMagnetic->B_imag.y)), 0, 'e', 3), "T");
+    addValue(harmonicMagneticNode, "Flux density:", QString("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->B_real.x) + sqr(localPointValueHarmonicMagnetic->B_imag.x) + sqr(localPointValueHarmonicMagnetic->B_real.y) + sqr(localPointValueHarmonicMagnetic->B_imag.y)), 0, 'e', 3), "T");
 
     // Flux Density - real
     QTreeWidgetItem *itemFluxDensityReal = new QTreeWidgetItem(harmonicMagneticNode);
     itemFluxDensityReal->setText(0, tr("Flux density - real"));
     itemFluxDensityReal->setExpanded(false);
 
-    addValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_real.x, 0, 'e', 3), "T");
-    addValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_real.y, 0, 'e', 3), "T");
-    addValue(itemFluxDensityReal, "B:", tr("%1").arg(localPointValueHarmonicMagnetic->B_real.magnitude(), 0, 'e', 3), "T");
+    addValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_real.x, 0, 'e', 3), "T");
+    addValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_real.y, 0, 'e', 3), "T");
+    addValue(itemFluxDensityReal, "B:", QString("%1").arg(localPointValueHarmonicMagnetic->B_real.magnitude(), 0, 'e', 3), "T");
 
     // Flux Density - imag
     QTreeWidgetItem *itemFluxDensityImag = new QTreeWidgetItem(harmonicMagneticNode);
     itemFluxDensityImag->setText(0, tr("Flux density - imag"));
     itemFluxDensityImag->setExpanded(false);
 
-    addValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.x, 0, 'e', 3), "T");
-    addValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.y, 0, 'e', 3), "T");
-    addValue(itemFluxDensityImag, "B:", tr("%1").arg(localPointValueHarmonicMagnetic->B_imag.magnitude(), 0, 'e', 3), "T");
+    addValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_imag.x, 0, 'e', 3), "T");
+    addValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_imag.y, 0, 'e', 3), "T");
+    addValue(itemFluxDensityImag, "B:", QString("%1").arg(localPointValueHarmonicMagnetic->B_imag.magnitude(), 0, 'e', 3), "T");
 
     // Magnetic Field
-    addValue(harmonicMagneticNode, "Magnetic field:", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->H_real.x) + sqr(localPointValueHarmonicMagnetic->H_imag.x) + sqr(localPointValueHarmonicMagnetic->H_real.y) + sqr(localPointValueHarmonicMagnetic->H_imag.y)), 0, 'e', 3), "A/m");
+    addValue(harmonicMagneticNode, "Magnetic field:", QString("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->H_real.x) + sqr(localPointValueHarmonicMagnetic->H_imag.x) + sqr(localPointValueHarmonicMagnetic->H_real.y) + sqr(localPointValueHarmonicMagnetic->H_imag.y)), 0, 'e', 3), "A/m");
 
     // Magnetic Field - real
     QTreeWidgetItem *itemMagneticFieldReal = new QTreeWidgetItem(harmonicMagneticNode);
     itemMagneticFieldReal->setText(0, tr("Magnetic field - real"));
     itemMagneticFieldReal->setExpanded(false);
 
-    addValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_real.x, 0, 'e', 3), "A/m");
-    addValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_real.y, 0, 'e', 3), "A/m");
-    addValue(itemMagneticFieldReal, "H", tr("%1").arg(localPointValueHarmonicMagnetic->H_real.magnitude(), 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_real.x, 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_real.y, 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldReal, "H", QString("%1").arg(localPointValueHarmonicMagnetic->H_real.magnitude(), 0, 'e', 3), "A/m");
 
     // Magnetic Field - imag
     QTreeWidgetItem *itemMagneticFieldImag = new QTreeWidgetItem(harmonicMagneticNode);
     itemMagneticFieldImag->setText(0, tr("Magnetic field - imag"));
     itemMagneticFieldImag->setExpanded(false);
 
-    addValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.x, 0, 'e', 3), "A/m");
-    addValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.y, 0, 'e', 3), "A/m");
-    addValue(itemMagneticFieldImag, "H", tr("%1").arg(localPointValueHarmonicMagnetic->H_imag.magnitude(), 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_imag.x, 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_imag.y, 0, 'e', 3), "A/m");
+    addValue(itemMagneticFieldImag, "H", QString("%1").arg(localPointValueHarmonicMagnetic->H_imag.magnitude(), 0, 'e', 3), "A/m");
 
     // Total current density
-    addValue(harmonicMagneticNode, tr("Total current density:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_total_real) + sqr(localPointValueHarmonicMagnetic->current_density_total_imag)), 0, 'e', 3), "A/m2");
+    addValue(harmonicMagneticNode, tr("Total current density:"), QString("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_total_real) + sqr(localPointValueHarmonicMagnetic->current_density_total_imag)), 0, 'e', 3), "A/m2");
 
     QTreeWidgetItem *itemCurrentDensityTotal = new QTreeWidgetItem(harmonicMagneticNode);
     itemCurrentDensityTotal->setText(0, tr("Total current density"));
     itemCurrentDensityTotal->setExpanded(false);
 
-    addValue(itemCurrentDensityTotal, tr("real:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_total_real, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensityTotal, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_total_imag, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensityTotal, tr("real:"), QString("%1").arg(localPointValueHarmonicMagnetic->current_density_total_real, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensityTotal, tr("imag:"), QString("%1").arg(localPointValueHarmonicMagnetic->current_density_total_imag, 0, 'e', 3), "A/m2");
 
     // Induced current density
-    addValue(harmonicMagneticNode, tr("Induced current density:"), tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_induced_real) + sqr(localPointValueHarmonicMagnetic->current_density_induced_imag)), 0, 'e', 3), "A/m2");
+    addValue(harmonicMagneticNode, tr("Induced current density:"), QString("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->current_density_induced_real) + sqr(localPointValueHarmonicMagnetic->current_density_induced_imag)), 0, 'e', 3), "A/m2");
 
     QTreeWidgetItem *itemCurrentDensityInduced = new QTreeWidgetItem(harmonicMagneticNode);
     itemCurrentDensityInduced->setText(0, tr("Induced current density"));
     itemCurrentDensityInduced->setExpanded(false);
 
-    addValue(itemCurrentDensityInduced, tr("real:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_induced_real, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensityInduced, tr("imag:"), tr("%1").arg(localPointValueHarmonicMagnetic->current_density_induced_imag, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensityInduced, tr("real:"), QString("%1").arg(localPointValueHarmonicMagnetic->current_density_induced_real, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensityInduced, tr("imag:"), QString("%1").arg(localPointValueHarmonicMagnetic->current_density_induced_imag, 0, 'e', 3), "A/m2");
 
     // Magnetic Field
-    addValue(harmonicMagneticNode, "Lorentz force:", tr("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->FL_real.x) + sqr(localPointValueHarmonicMagnetic->FL_imag.x) + sqr(localPointValueHarmonicMagnetic->FL_real.y) + sqr(localPointValueHarmonicMagnetic->FL_imag.y)), 0, 'e', 3), "A/m");
+    addValue(harmonicMagneticNode, "Lorentz force:", QString("%1").arg(sqrt(sqr(localPointValueHarmonicMagnetic->FL_real.x) + sqr(localPointValueHarmonicMagnetic->FL_imag.x) + sqr(localPointValueHarmonicMagnetic->FL_real.y) + sqr(localPointValueHarmonicMagnetic->FL_imag.y)), 0, 'e', 3), "A/m");
 
     // Lorentz force - real
     QTreeWidgetItem *itemLorentzForceReal = new QTreeWidgetItem(harmonicMagneticNode);
     itemLorentzForceReal->setText(0, tr("Lorentz force - real"));
     itemLorentzForceReal->setExpanded(false);
 
-    addValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.x, 0, 'e', 3), "N/m3");
-    addValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.y, 0, 'e', 3), "N/m3");
-    addValue(itemLorentzForceReal, "FL", tr("%1").arg(localPointValueHarmonicMagnetic->FL_real.magnitude(), 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_real.x, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_real.y, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceReal, "FL", QString("%1").arg(localPointValueHarmonicMagnetic->FL_real.magnitude(), 0, 'e', 3), "N/m3");
 
     // Lorentz force - imag
     QTreeWidgetItem *itemLorentzForceImag = new QTreeWidgetItem(harmonicMagneticNode);
     itemLorentzForceImag->setText(0, tr("Lorentz force - imag"));
     itemLorentzForceImag->setExpanded(false);
 
-    addValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.x, 0, 'e', 3), "N/m3");
-    addValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.y, 0, 'e', 3), "N/m3");
-    addValue(itemLorentzForceImag, "FL", tr("%1").arg(localPointValueHarmonicMagnetic->FL_imag.magnitude(), 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_imag.x, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_imag.y, 0, 'e', 3), "N/m3");
+    addValue(itemLorentzForceImag, "FL", QString("%1").arg(localPointValueHarmonicMagnetic->FL_imag.magnitude(), 0, 'e', 3), "N/m3");
 }
 
 void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
@@ -313,31 +315,31 @@ void LocalPointValueView::showHeat(LocalPointValueHeat *localPointValueHeat)
     heatNode->setExpanded(true);
 
     // Thermal Conductivity
-    addValue(heatNode, tr("Thermal conductivity:"), tr("%1").arg(localPointValueHeat->thermal_conductivity, 0, 'f', 2), "W/m.K");
+    addValue(heatNode, tr("Thermal conductivity:"), QString("%1").arg(localPointValueHeat->thermal_conductivity, 0, 'f', 2), "W/m.K");
 
     // Volume Heat
-    addValue(heatNode, tr("Volume heat:"), tr("%1").arg(localPointValueHeat->volume_heat, 0, 'e', 3), "W/m3");
+    addValue(heatNode, tr("Volume heat:"), QString("%1").arg(localPointValueHeat->volume_heat, 0, 'e', 3), "W/m3");
 
     // Temperature
-    addValue(heatNode, tr("Temperature:"), tr("%1").arg(localPointValueHeat->temperature, 0, 'f', 2), "deg.");
+    addValue(heatNode, tr("Temperature:"), QString("%1").arg(localPointValueHeat->temperature, 0, 'f', 2), "deg.");
 
     // Heat Flux
     QTreeWidgetItem *itemHeatFlux = new QTreeWidgetItem(heatNode);
     itemHeatFlux->setText(0, tr("Heat flux"));
     itemHeatFlux->setExpanded(true);
 
-    addValue(itemHeatFlux, "F" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
-    addValue(itemHeatFlux, "F" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
-    addValue(itemHeatFlux, "F:", tr("%1").arg(localPointValueHeat->F.magnitude(), 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
+    addValue(itemHeatFlux, "F:", QString("%1").arg(localPointValueHeat->F.magnitude(), 0, 'e', 3), "W/m2");
 
     // Temperature Gradient
     QTreeWidgetItem *itemTemperatureGradient = new QTreeWidgetItem(heatNode);
     itemTemperatureGradient->setText(0, tr("Temperature gradient"));
     itemTemperatureGradient->setExpanded(true);
 
-    addValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
-    addValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
-    addValue(itemTemperatureGradient, "G:", tr("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
+    addValue(itemTemperatureGradient, "G:", QString("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "K/m");
 }
 
 void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCurrent)
@@ -348,31 +350,31 @@ void LocalPointValueView::showCurrent(LocalPointValueCurrent *localPointValueCur
     currentNode->setExpanded(true);
 
     // Conductivity
-    addValue(currentNode, tr("Conductivity:"), tr("%1").arg(localPointValueCurrent->conductivity, 0, 'e', 3), "S/m");
+    addValue(currentNode, tr("Conductivity:"), QString("%1").arg(localPointValueCurrent->conductivity, 0, 'e', 3), "S/m");
 
     // Energy density
-    addValue(currentNode, tr("Power losses dens.:"), tr("%1").arg(localPointValueCurrent->losses, 0, 'e', 3), tr("W/m3"));
+    addValue(currentNode, tr("Power losses dens.:"), QString("%1").arg(localPointValueCurrent->losses, 0, 'e', 3), tr("W/m3"));
 
     // Potential
-    addValue(currentNode, tr("Potential:"), tr("%1").arg(localPointValueCurrent->potential, 0, 'f', 2), "V");
+    addValue(currentNode, tr("Potential:"), QString("%1").arg(localPointValueCurrent->potential, 0, 'f', 2), "V");
 
     // Electric Field
     QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(currentNode);
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.x, 0, 'e', 3), "V/m");
-    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->E.y, 0, 'e', 3), "V/m");
-    addValue(itemElectricField, "E:", tr("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueCurrent->E.x, 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueCurrent->E.y, 0, 'e', 3), "V/m");
+    addValue(itemElectricField, "E:", QString("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'e', 3), "V/m");
 
     // Current Density
     QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(currentNode);
     itemCurrentDensity->setText(0, tr("Current density"));
     itemCurrentDensity->setExpanded(true);
 
-    addValue(itemCurrentDensity, "J" + Util::scene()->problemInfo().labelX().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensity, "J" + Util::scene()->problemInfo().labelY().toLower() + ":", tr("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
-    addValue(itemCurrentDensity, "J:", tr("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
+    addValue(itemCurrentDensity, "J:", QString("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), "A/m2");
 }
 
 void LocalPointValueView::showElasticity(LocalPointValueElasticity *localPointValueElasticity)
@@ -383,13 +385,13 @@ void LocalPointValueView::showElasticity(LocalPointValueElasticity *localPointVa
     heatNode->setExpanded(true);
 
     // Young modulus
-    addValue(heatNode, tr("Young modulus:"), tr("%1").arg(localPointValueElasticity->young_modulus, 0, 'e', 3), "Pa");
+    addValue(heatNode, tr("Young modulus:"), QString("%1").arg(localPointValueElasticity->young_modulus, 0, 'e', 3), "Pa");
 
     // Poisson ratio
-    addValue(heatNode, tr("Poisson ratio:"), tr("%1").arg(localPointValueElasticity->poisson_ratio, 0, 'f', 3), "");
+    addValue(heatNode, tr("Poisson ratio:"), QString("%1").arg(localPointValueElasticity->poisson_ratio, 0, 'f', 3), "");
 
     // Von Mises stress
-    addValue(heatNode, tr("Von Mises stress:"), tr("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
+    addValue(heatNode, tr("Von Mises stress:"), QString("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
 }
 
 void LocalPointValueView::addValue(QTreeWidgetItem *parent, QString name, QString text, QString unit)
@@ -1189,7 +1191,7 @@ QStringList LocalPointValueElasticity::variables()
 }
 // ***********************************************************************************************************************
 
-LocalPointValue *localPointValueFactory(Point &point)
+LocalPointValue *localPointValueFactory(Point point)
 {
     switch (Util::scene()->problemInfo().physicField)
     {
@@ -1253,4 +1255,48 @@ QStringList localPointValueHeaderFactory(PhysicField physicField)
     }
 
     return QStringList(headers);
+}
+
+
+// *************************************************************************************************************************************
+LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)
+{
+    setWindowIcon(icon("scene-node"));
+    setWindowTitle(tr("Local point value"));
+
+    setModal(true);
+
+    txtPointX = new SLineEdit(QString::number(point.x), false);
+    txtPointY = new SLineEdit(QString::number(point.y), false);
+
+    QFormLayout *layoutPoint = new QFormLayout();
+    layoutPoint->addRow(Util::scene()->problemInfo().labelX() + " (m):", txtPointX);
+    layoutPoint->addRow(Util::scene()->problemInfo().labelY() + " (m):", txtPointY);
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutPoint);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+
+    resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
+}
+
+LocalPointValueDialog::~LocalPointValueDialog()
+{
+    delete txtPointX;
+    delete txtPointY;
+}
+
+Point LocalPointValueDialog::point()
+{
+    return Point(txtPointX->value(), txtPointY->value());
 }

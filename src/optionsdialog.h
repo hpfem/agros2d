@@ -19,6 +19,7 @@ public:
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void doPaletteFilter(int state);
+    void doClearCommandHistory();
 
     void doAccept();
     void doReject();
@@ -73,6 +74,9 @@ private:
     // delete files
     QCheckBox *chkDeleteTriangleMeshFiles;
     QCheckBox *chkDeleteHermes2DMeshFile;
+
+    // clear command history
+    QPushButton *cmdClearCommandHistory;
 
     void load();
     void save();

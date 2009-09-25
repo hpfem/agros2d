@@ -38,7 +38,7 @@ point = pointResult(0.11879,0.346203);
 testPotential = (Math.abs(point.V) - 0.928377) < 1e-2;
 if (!testPotential) print(point.V);
 
-// charge
+// current
 integral = surfaceIntegral(0);
 testI = (Math.abs(integral.I) - 3629.425713) < 10.0;
 if (!testI) print(integral.I);

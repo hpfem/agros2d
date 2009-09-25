@@ -86,5 +86,4 @@ public slots:
    void doAccept();
 };
 
-
 #endif // GUI_H

@@ -249,10 +249,23 @@ QWidget *OptionsDialog::createMainWidget()
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
 
+    // other layout
+    cmdClearCommandHistory = new QPushButton();
+    cmdClearCommandHistory->setText(tr("Clear command history"));
+    connect(cmdClearCommandHistory, SIGNAL(clicked()), this, SLOT(doClearCommandHistory()));
+
+    QVBoxLayout *layoutOther = new QVBoxLayout();
+    layoutOther->addWidget(cmdClearCommandHistory);
+    layoutOther->addStretch();
+
+    QGroupBox *grpOther = new QGroupBox(tr("Other"));
+    grpOther->setLayout(layoutOther);
+
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeneral);
     layout->addWidget(grpSolver);
+    layout->addWidget(grpOther);
     layout->addStretch();
 
     mainWidget->setLayout(layout);
@@ -441,6 +454,14 @@ void OptionsDialog::doPaletteFilter(int state)
     txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
 }
 
+void OptionsDialog::doClearCommandHistory()
+{
+    QSettings settings;
+    settings.setValue("CommandDialog/RecentCommands", QStringList());
+
+    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Information"), tr("Command history was cleared succesfully."));
+}
+
 // *******************************************************************************************************
 
 ColorButton::ColorButton(QWidget *parent) : QPushButton(parent)
@@ -479,3 +500,4 @@ void ColorButton::doClicked()
         setColor(color);
     }
 }
+
