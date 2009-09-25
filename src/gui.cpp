@@ -310,13 +310,13 @@ void CommandDialog::doAccept()
         QStringList list;
         for (int i = 0; i < cmbCommand->count(); i++)
         {
-            list.append(cmbCommand->itemText(i));
+            list.insert(0, cmbCommand->itemText(i));
         }
 
         // remove last item (over 30), empty strings and duplicates
         list.removeAll("");
-        if (list.count() > 30)
-            list.removeAt(list.count()-1);
+        while (list.count() > 30)
+            list.removeAt(0);
         list.removeDuplicates();
 
         QSettings settings;

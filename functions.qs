@@ -16,7 +16,7 @@ function addCircle(x0, y0, radius, marker)
 {
 	if (marker == null)
 	{
-	marker = 'none';
+		marker = 'none';
 	}
 
 	addEdge(x0, y0-radius, x0, y0+radius, 180, marker);
@@ -29,7 +29,7 @@ function addRect(x0, y0, width, height, marker)
 {
 	if (marker == null)
 	{
-	marker = 'none';
+		marker = 'none';
 	}
 
 	addEdge(x0, y0, x0+width, y0, 0, marker);

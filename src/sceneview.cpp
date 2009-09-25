@@ -15,8 +15,7 @@ void SceneViewSettings::defaultValues()
     showGeometry = true;
     showInitialMesh = false;
 
-    // postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
-    postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
+    postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
 
     showContours = false;
     showVectors = false;
@@ -1952,16 +1951,6 @@ void SceneView::doDefaults()
 
 void SceneView::doSolved()
 {
-    m_sceneViewSettings.showGeometry = true;
-    m_sceneViewSettings.showGrid = true;
-    m_sceneViewSettings.showInitialMesh = false;
-
-    m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
-
-    m_sceneViewSettings.showContours = false;
-    m_sceneViewSettings.showVectors = false;
-    m_sceneViewSettings.showSolutionMesh = false;
-
     doInvalidated();
     actSceneModePostprocessor->trigger();
 }

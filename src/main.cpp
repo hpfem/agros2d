@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
     if (settings.value("General/GUIStyle").value<QString>().isEmpty())
     {
         QString style = "";
-
         QStringList styles = QStyleFactory::keys();
 
 #ifdef Q_WS_X11

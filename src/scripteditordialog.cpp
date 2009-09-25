@@ -416,7 +416,7 @@ void ScriptEditorDialog::createActions()
     actFindNext->setShortcut(QKeySequence::FindNext);
     connect(actFindNext, SIGNAL(triggered()), this, SLOT(doFindNext()));
 
-    actReplace = new QAction(icon("edit-replace"), tr("&Replace"), this);
+    actReplace = new QAction(icon("edit-find-replace"), tr("&Replace"), this);
     actReplace->setShortcut(QKeySequence::Replace);
     connect(actReplace, SIGNAL(triggered()), this, SLOT(doReplace()));
 
@@ -911,7 +911,7 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
 SearchDialog::SearchDialog(QWidget *parent): QDialog(parent)
 {
- // Title
+    // Title
     setWindowTitle(tr("Search and replace"));
     setWindowIcon(icon("edit-find"));
     setModal(true);
