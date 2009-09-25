@@ -287,9 +287,9 @@ void DSceneEdge::fillComboBox()
     cmbNodeEnd->clear();
     for (int i = 0; i<Util::scene()->nodes.count(); i++)
     {
-        cmbNodeStart->addItem(QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'f', 3).arg(Util::scene()->nodes[i]->point.y, 0, 'f', 3),
+        cmbNodeStart->addItem(QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2),
                               Util::scene()->nodes[i]->variant());
-        cmbNodeEnd->addItem(QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'f', 3).arg(Util::scene()->nodes[i]->point.y, 0, 'f', 3),
+        cmbNodeEnd->addItem(QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2),
                             Util::scene()->nodes[i]->variant());
     }
 
