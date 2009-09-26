@@ -100,6 +100,8 @@ void SolverDialog::runMesh()
     Util::scene()->sceneSolution()->mesh().free();
     QFile::remove(tempProblemFileName() + ".mesh");
 
+    btnCancel->setEnabled(true);
+
     // create triangle files
     if (writeToTriangle())
     {

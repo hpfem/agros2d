@@ -82,8 +82,7 @@ private:
     QToolBar *tlbTools;
 
     QAction *actDocumentNew;
-    QAction *actDocumentOpen;
-    QActionGroup *actDocumentOpenRecentGroup;
+    QAction *actDocumentOpen;   
     QAction *actDocumentSave;
     QAction *actDocumentSaveAs;
     QAction *actDocumentClose;
@@ -91,6 +90,7 @@ private:
     QAction *actDocumentExportDXF;
     QAction *actDocumentSaveImage;
     QAction *actExit;
+    QActionGroup *actDocumentOpenRecentGroup;
 
     QAction *actUndo;
     QAction *actRedo;

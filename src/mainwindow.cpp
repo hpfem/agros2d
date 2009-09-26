@@ -229,6 +229,7 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addAction(actDocumentSave);
     mnuFile->addAction(actDocumentSaveAs);
+    mnuFile->addSeparator();
     mnuFile->addAction(actDocumentClose);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentImportDXF);

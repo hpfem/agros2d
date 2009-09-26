@@ -318,6 +318,7 @@ ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : 
 {
     QSettings settings;
     restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
+    recentFiles = settings.value("ScriptEditorDialog/RecentFiles").value<QStringList>();
 
     m_sceneView = sceneView;
 
@@ -338,6 +339,7 @@ ScriptEditorDialog::~ScriptEditorDialog()
     QSettings settings;
     settings.setValue("ScriptEditorDialog/Geometry", saveGeometry());   
     settings.setValue("ScriptEditorDialog/State", saveState());
+    settings.setValue("ScriptEditorDialog/RecentFiles", recentFiles);
 }
 
 void ScriptEditorDialog::showDialog()
@@ -386,6 +388,9 @@ void ScriptEditorDialog::createActions()
     actFileSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actFileSaveAs->setShortcuts(QKeySequence::SaveAs);
     connect(actFileSaveAs, SIGNAL(triggered()), this, SLOT(doFileSaveAs()));
+
+    actFileOpenRecentGroup = new QActionGroup(this);
+    connect(actFileOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doFileOpenRecent(QAction *)));
 
     actFileClose = new QAction(icon(""), tr("Close"), this);
     actFileClose->setShortcuts(QKeySequence::Close);
@@ -441,6 +446,8 @@ void ScriptEditorDialog::createActions()
 
 void ScriptEditorDialog::createControls()
 {
+    mnuRecentFiles = new QMenu(tr("Recent files"), this);
+
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actFileNew);
     mnuFile->addAction(actFileOpen);
@@ -448,6 +455,8 @@ void ScriptEditorDialog::createControls()
     mnuFile->addAction(actFileSaveAs);
     mnuFile->addSeparator();
     mnuFile->addAction(actFileClose);
+    mnuFile->addSeparator();
+    mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addSeparator();
     mnuFile->addAction(actExit);
 
@@ -518,6 +527,9 @@ void ScriptEditorDialog::createControls()
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
 
+    // recent files
+    setRecentFiles();
+
     setCentralWidget(widget);
 
     connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(doDataChanged()));
@@ -565,11 +577,23 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
         if (fileName.open(QFile::ReadOnly | QFile::Text))
             txtEditor->setPlainText(fileName.readAll());
 
+        setRecentFiles();
+
         QFileInfo fileInfo(scriptEditorWidget->file);
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
 
         doCurrentPageChanged(tabWidget->currentIndex());
     }    
+}
+
+void ScriptEditorDialog::doFileOpenRecent(QAction *action)
+{
+    QString fileName = action->text();
+    if (QFile::exists(fileName))
+    {
+        doFileOpen(fileName);
+        setRecentFiles();
+    }
 }
 
 void ScriptEditorDialog::doFileSave()
@@ -594,6 +618,8 @@ void ScriptEditorDialog::doFileSave()
             fileName.close();
         }
 
+        setRecentFiles();
+
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
     }
 }
@@ -603,7 +629,7 @@ void ScriptEditorDialog::doFileSaveAs()
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
 
     scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Agros2D script files (*.qs)"));
-    doFileSave();
+    doFileSave();    
 }
 
 void ScriptEditorDialog::doFileClose()
@@ -739,6 +765,33 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     setWindowTitle(tr("Script editor - %1").arg(fileName));
 
     txtEditor->setFocus();
+}
+
+void ScriptEditorDialog::setRecentFiles()
+{
+    if (!tabWidget) return;
+
+    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+
+    // recent files
+    if (!scriptEditorWidget->file.isEmpty())
+    {
+        QFileInfo fileInfo(scriptEditorWidget->file);
+        if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
+            recentFiles.insert(0, fileInfo.absoluteFilePath());
+        else
+            recentFiles.move(recentFiles.indexOf(fileInfo.absoluteFilePath()), 0);
+
+        while (recentFiles.count() > 15) recentFiles.removeLast();
+    }
+
+    mnuRecentFiles->clear();
+    for (int i = 0; i<recentFiles.count(); i++)
+    {
+        QAction *actMenuRecentItem = new QAction(recentFiles[i], this);
+        actFileOpenRecentGroup->addAction(actMenuRecentItem);
+        mnuRecentFiles->addAction(actMenuRecentItem);
+    }
 }
 
 // ******************************************************************************************************

@@ -80,6 +80,7 @@ public slots:
     void doFileSave();
     void doFileSaveAs();
     void doFileClose();
+    void doFileOpenRecent(QAction *action);
 
     void doFind();
     void doFindNext(bool fromBegining = false);
@@ -91,11 +92,14 @@ public slots:
     void doCloseTab(int index);
     void doCurrentPageChanged(int index);
 
-protected:
+private:
+    QStringList recentFiles;
+
     ScriptEditor *txtEditor;
     SearchDialog *searchDialog;
 
     QMenu *mnuFile;
+    QMenu *mnuRecentFiles;
     QMenu *mnuEdit;
     QMenu *mnuTools;
     QMenu *mnuHelp;
@@ -110,6 +114,7 @@ protected:
     QAction *actFileSaveAs;
     QAction *actFileClose;
     QAction *actExit;
+    QActionGroup *actFileOpenRecentGroup;
 
     QAction *actUndo;
     QAction *actRedo;
@@ -130,6 +135,8 @@ protected:
 
     void createActions();
     void createControls();
+
+    void setRecentFiles();
 };
 
 class ScriptStartupDialog : public QDialog
