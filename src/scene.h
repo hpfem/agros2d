@@ -141,7 +141,7 @@ public:
 
     SceneEdge *addEdge(SceneEdge *edge);
     void removeEdge(SceneEdge *edge);
-    SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd);
+    SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd, double angle);
 
     SceneLabel *addLabel(SceneLabel *label);
     void removeLabel(SceneLabel *label);

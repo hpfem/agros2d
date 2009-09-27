@@ -184,10 +184,10 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     // check if edge doesn't exists
     foreach (SceneEdge *edgeCheck, edges)
     {
-        if (((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) ||
-            ((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart)) &&
-            (fabs(edgeCheck->angle-edge->angle - edge->angle) < EPS_ZERO) &&
-            (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
+        if ((((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) ||
+             ((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart))) &&
+             (fabs(edgeCheck->angle-edge->angle - edge->angle) < EPS_ZERO) &&
+             (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
         {
             delete edge;
             return edgeCheck;
@@ -206,12 +206,12 @@ void Scene::removeEdge(SceneEdge *edge)
     emit invalidated();
 }
 
-SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd)
+SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle)
 {
     foreach (SceneEdge *edgeCheck, edges)
     {
-        if (((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd)) ||
-            ((edgeCheck->nodeStart->point == pointEnd) && (edgeCheck->nodeEnd->point == pointStart)))
+        if ((((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd)) ||
+             ((edgeCheck->nodeStart->point == pointEnd) && (edgeCheck->nodeEnd->point == pointStart))) && (edgeCheck->angle == angle))
             return edgeCheck;
     }
 
@@ -706,7 +706,7 @@ void Scene::doInvalidated()
 void Scene::doNewNode(const Point &point)
 {
     SceneNode *node = new SceneNode(point);
-    if (node->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
+    if (node->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         SceneNode *nodeAdded = addNode(node);
         if (nodeAdded == node) m_undoStack->push(new SceneNodeCommandAdd(node->point));
@@ -718,7 +718,7 @@ void Scene::doNewNode(const Point &point)
 void Scene::doNewEdge()
 {
     SceneEdge *edge = new SceneEdge(nodes[0], nodes[1], edgeMarkers[0], 0);
-    if (edge->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
+    if (edge->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         addEdge(edge);
     }
@@ -729,7 +729,7 @@ void Scene::doNewEdge()
 void Scene::doNewLabel()
 {
     SceneLabel *label = new SceneLabel(Point(), labelMarkers[0], 0);
-    if (label->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
+    if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         addLabel(label);
     }

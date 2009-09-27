@@ -33,9 +33,9 @@ double SceneNode::distance(const Point &point)
     return (this->point - point).magnitude();
 }
 
-int SceneNode::showDialog(QWidget *parent)
+int SceneNode::showDialog(QWidget *parent, bool isNew)
 {
-    DSceneNode *dialog = new DSceneNode(this, parent);
+    DSceneNode *dialog = new DSceneNode(this, parent, isNew);
     return dialog->exec();
 }
 
@@ -108,9 +108,9 @@ double SceneEdge::distance(const Point &point)
     }
 }
 
-int SceneEdge::showDialog(QWidget *parent)
+int SceneEdge::showDialog(QWidget *parent, bool isNew)
 {
-    DSceneEdge *dialog = new DSceneEdge(this, parent);
+    DSceneEdge *dialog = new DSceneEdge(this, parent, isNew);
     return dialog->exec();
 }
 
@@ -132,16 +132,17 @@ double SceneLabel::distance(const Point &point)
     return (this->point - point).magnitude();
 }
 
-int SceneLabel::showDialog(QWidget *parent)
+int SceneLabel::showDialog(QWidget *parent, bool isNew)
 {
-    DSceneLabel *dialog = new DSceneLabel(this, parent);
+    DSceneLabel *dialog = new DSceneLabel(this, parent, isNew);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-DSceneBasic::DSceneBasic(QWidget *parent) : QDialog(parent)
+DSceneBasic::DSceneBasic(QWidget *parent, bool isNew) : QDialog(parent)
 {
+    this->isNew = isNew;
     layout = new QVBoxLayout();
 }
 
@@ -177,7 +178,7 @@ void DSceneBasic::doReject()
 
 // *************************************************************************************************************************************
 
-DSceneNode::DSceneNode(SceneNode *node, QWidget *parent) : DSceneBasic(parent)
+DSceneNode::DSceneNode(SceneNode *node, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
 {
     m_object = node;
 
@@ -201,8 +202,8 @@ DSceneNode::~DSceneNode()
 
 QLayout* DSceneNode::createContent()
 {
-    txtPointX = new SLineEdit("0", false);
-    txtPointY = new SLineEdit("0", false);
+    txtPointX = new SLineEdit("0");
+    txtPointY = new SLineEdit("0");
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo().labelX() + " (m):", txtPointX);
@@ -227,18 +228,29 @@ bool DSceneNode::save()
 
     Point point(txtPointX->value(), txtPointY->value());
 
-    if (sceneNode->point != point)
+    // check if node doesn't exists
+    if (Util::scene()->getNode(point) && ((sceneNode->point != point) || isNew))
     {
-        Util::scene()->undoStack()->push(new SceneNodeCommandEdit(sceneNode->point, point));
-        sceneNode->point = point;
+        QMessageBox::warning(this, "Node", "Node already exists.");
+        return false;
     }
+
+    if (!isNew)
+    {
+        if (sceneNode->point != point)
+        {
+            Util::scene()->undoStack()->push(new SceneNodeCommandEdit(sceneNode->point, point));
+        }
+    }
+
+    sceneNode->point = point;
 
     return true;
 }
 
 // *************************************************************************************************************************************
 
-DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent) : DSceneBasic(parent)
+DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
 {
     m_object = edge;
 
@@ -318,19 +330,30 @@ bool DSceneEdge::save() {
     SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
     SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
 
-    if (nodeStart == nodeEnd)
+    // check if edge doesn't exists
+    SceneEdge *edgeCheck = Util::scene()->getEdge(nodeStart->point, nodeEnd->point, txtAngle->value());
+    if ((edgeCheck) && ((sceneEdge != edgeCheck) || isNew))
     {
-        QMessageBox::warning(this, "Nodes", "Start and end node are same.");
+        QMessageBox::warning(this, "Edge", "Edge already exists.");
         return false;
     }
 
-    if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd))
+    if (nodeStart == nodeEnd)
     {
-        Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point));
+        QMessageBox::warning(this, "Edge", "Start and end node are same.");
+        return false;
+    }
 
-        sceneEdge->nodeStart = nodeStart;
-        sceneEdge->nodeEnd = nodeEnd;
-    }   
+    if (!isNew)
+    {
+        if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd) || (sceneEdge->angle != txtAngle->value()))
+        {
+            Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point, sceneEdge->angle, txtAngle->value()));
+        }
+    }
+
+    sceneEdge->nodeStart = nodeStart;
+    sceneEdge->nodeEnd = nodeEnd;
     sceneEdge->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
     sceneEdge->angle = txtAngle->value();
 
@@ -339,7 +362,8 @@ bool DSceneEdge::save() {
 
 // *************************************************************************************************************************************
 
-DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent) : DSceneBasic(parent) {
+DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
+{
     m_object = label;
 
     setWindowIcon(icon("scene-label"));
@@ -361,10 +385,8 @@ DSceneLabel::~DSceneLabel()
 }
 
 QLayout* DSceneLabel::createContent() {
-    txtPointX = new SLineEdit("0", false);
-    txtPointX->setValidator(new QDoubleValidator(txtPointX));
-    txtPointY = new SLineEdit("0", false);
-    txtPointY->setValidator(new QDoubleValidator(txtPointY));
+    txtPointX = new SLineEdit("0");
+    txtPointY = new SLineEdit("0");
     cmbMarker = new QComboBox();
     txtArea = new SLineEdit("0");
     txtArea->setValidator(new QDoubleValidator(txtArea));
@@ -408,11 +430,22 @@ bool DSceneLabel::save()
 
     Point point(txtPointX->value(), txtPointY->value());
 
-    if (sceneLabel->point != point)
+    // check if label doesn't exists
+    if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || isNew))
     {
-        Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
-        sceneLabel->point = point;
+        QMessageBox::warning(this, "Label", "Label already exists.");
+        return false;
     }
+
+    if (!isNew)
+    {
+        if (sceneLabel->point != point)
+        {
+            Util::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point, point));
+        }
+    }
+
+    sceneLabel->point = point;
     sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
     sceneLabel->area = txtArea->value();
 
@@ -565,7 +598,7 @@ SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &p
 
 void SceneEdgeCommandAdd::undo()
 {
-    Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd));
+    Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
 }
 
 void SceneEdgeCommandAdd::redo()
@@ -592,35 +625,39 @@ void SceneEdgeCommandRemove::undo()
 
 void SceneEdgeCommandRemove::redo()
 {
-    Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd));
+    Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
 }
 
-SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew, QUndoCommand *parent) : QUndoCommand(parent)
+SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew, double angle, double angleNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_pointStartNew = pointStartNew;
     m_pointEndNew = pointEndNew;
+    m_angle = angle;
+    m_angleNew = angleNew;
 }
 
 void SceneEdgeCommandEdit::undo()
 {
-    SceneEdge *edge = Util::scene()->getEdge(m_pointStartNew, m_pointEndNew);
+    SceneEdge *edge = Util::scene()->getEdge(m_pointStartNew, m_pointEndNew, m_angleNew);
     if (edge)
     {
         edge->nodeStart = Util::scene()->getNode(m_pointStart);
         edge->nodeEnd = Util::scene()->getNode(m_pointEnd);
+        edge->angle = m_angle;
         Util::scene()->refresh();
     }
 }
 
 void SceneEdgeCommandEdit::redo()
 {
-    SceneEdge *edge = Util::scene()->getEdge(m_pointStart, m_pointEnd);
+    SceneEdge *edge = Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle);
     if (edge)
     {
         edge->nodeStart = Util::scene()->getNode(m_pointStartNew);
         edge->nodeEnd = Util::scene()->getNode(m_pointEndNew);
+        edge->angle = m_angleNew;
         Util::scene()->refresh();
     }
 }

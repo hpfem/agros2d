@@ -13,10 +13,10 @@ h1 {
 	
 }
 
-h2,h3,h4,h5,h6 {
+h2,h3,h4,h5 {
 	color: #2582A4;
-	padding-top: 3px;
-	padding-bottom: 2px;
+	padding-top: 2px;
+	padding-bottom: 1px;
 }
 
 p,ol,ul {
@@ -50,6 +50,11 @@ h4 {
 	font-size: 13px;
 }
 
+h5 {
+	font-size: 11px;
+    color: #8B4513;
+}
+
 p.footer {
 	margin: 0px;
 	text-align: center;
@@ -80,7 +85,6 @@ table {
 
 table TH {
 	background-color: #F5F5F5;
-	color: white;
 	font-weight: bold;
 	text-align: left;
 	padding: 2px 5px;

@@ -22,8 +22,12 @@ private:
 
     void generateIndex();
     QString replaceTemplates(const QString &source);
+
     QString htmlMaterials();
     QString htmlBoundaries();
+    QString htmlGeometryNodes();
+    QString htmlGeometryEdges();
+    QString htmlGeometryLabels();
 
 private slots:
     void doAccept();

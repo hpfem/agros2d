@@ -33,11 +33,19 @@ QString SceneEdgeElectrostaticMarker::script()
             arg(value.text);
 }
 
-QStringList SceneEdgeElectrostaticMarker::data()
+QMap<QString, QString> SceneEdgeElectrostaticMarker::data()
 {
-    QStringList out;
-    out << name << physicFieldBCString(type) << value.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    switch (type)
+    {
+    case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
+        out["Potential (V)"] = value.text;
+        break;
+    case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
+        out["Surface charge density (C/m3)"] = value.text;
+        break;
+    }
+    return QMap<QString, QString>(out);
 }
 
 int SceneEdgeElectrostaticMarker::showDialog(QWidget *parent)
@@ -61,11 +69,19 @@ QString SceneEdgeMagnetostaticMarker::script()
             arg(value.text);
 }
 
-QStringList SceneEdgeMagnetostaticMarker::data()
+QMap<QString, QString> SceneEdgeMagnetostaticMarker::data()
 {
-    QStringList out;
-    out << name << physicFieldBCString(type) << value.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    switch (type)
+    {
+    case PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL:
+        out["Vector potential (Wb/m)"] = value.text;
+        break;
+    case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
+        out["Surface current (A/m2)"] = value.text;
+        break;
+    }
+    return QMap<QString, QString>(out);
 }
 
 int SceneEdgeMagnetostaticMarker::showDialog(QWidget *parent)
@@ -89,11 +105,19 @@ QString SceneEdgeHarmonicMagneticMarker::script()
             arg(value.text);
 }
 
-QStringList SceneEdgeHarmonicMagneticMarker::data()
+QMap<QString, QString> SceneEdgeHarmonicMagneticMarker::data()
 {
-    QStringList out;
-    out << name << physicFieldBCString(type) << value.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    switch (type)
+    {
+    case PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+        out["Vector potential (Wb/m)"] = value.text;
+        break;
+    case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
+            out["Surface current (A/m2)"] = value.text;
+    break;
+    }
+    return QMap<QString, QString>(out);
 }
 
 int SceneEdgeHarmonicMagneticMarker::showDialog(QWidget *parent)
@@ -136,19 +160,21 @@ QString SceneEdgeHeatMarker::script()
     }
 }
 
-QStringList SceneEdgeHeatMarker::data()
+QMap<QString, QString> SceneEdgeHeatMarker::data()
 {
-    QStringList out;
-    if (type == PHYSICFIELDBC_HEAT_TEMPERATURE)
+    QMap<QString, QString> out;
+    switch (type)
     {
-        out << name << physicFieldBCString(type) << temperature.text;
+    case PHYSICFIELDBC_HEAT_TEMPERATURE:
+        out["Temperature (deg.)"] = temperature.text;
+        break;
+    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
+        out["Heat flux (W/m2)"] = heatFlux.text;
+        out["Heat transfer coef. (Q/m2.K)"] = h.text;
+        out["External temperature (deg.)"] = externalTemperature.text;
+        break;
     }
-    if (type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
-    {
-        out << name << physicFieldBCString(type) << heatFlux.text << h.text << externalTemperature.text;
-    }
-
-    return QStringList(out);
+    return QMap<QString, QString>(out);
 }
 
 int SceneEdgeHeatMarker::showDialog(QWidget *parent)
@@ -172,11 +198,19 @@ QString SceneEdgeCurrentMarker::script()
             arg(value.text);
 }
 
-QStringList SceneEdgeCurrentMarker::data()
+QMap<QString, QString> SceneEdgeCurrentMarker::data()
 {
-    QStringList out;
-    out << name << physicFieldBCString(type) << value.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    switch (type)
+    {
+    case PHYSICFIELDBC_CURRENT_POTENTIAL:
+        out["Potential (V)"] = value.text;
+        break;
+    case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
+        out["Inward current flow: (A/m2)"] = value.text;
+        break;
+    }
+    return QMap<QString, QString>(out);
 }
 
 int SceneEdgeCurrentMarker::showDialog(QWidget *parent)
@@ -206,11 +240,22 @@ QString SceneEdgeElasticityMarker::script()
             arg(forceY);
 }
 
-QStringList SceneEdgeElasticityMarker::data()
+QMap<QString, QString> SceneEdgeElasticityMarker::data()
 {
-    QStringList out;
-    out << name << physicFieldBCString(typeX) << physicFieldBCString(typeY) << QString::number(forceX) << QString::number(forceY);
-    return QStringList(out);
+    QMap<QString, QString> out;
+    switch (typeX)
+    {
+    case PHYSICFIELDBC_ELASTICITY_FIXED:
+        out["Force X: (N)"] = forceX;
+        break;
+    }
+    switch (typeY)
+    {
+    case PHYSICFIELDBC_ELASTICITY_FIXED:
+        out["Force Y: (N)"] = forceY;
+        break;
+    }
+    return QMap<QString, QString>(out);
 }
 
 int SceneEdgeElasticityMarker::showDialog(QWidget *parent)
@@ -254,11 +299,12 @@ QString SceneLabelElectrostaticMarker::script()
             arg(permittivity.text);
 }
 
-QStringList SceneLabelElectrostaticMarker::data()
+QMap<QString, QString> SceneLabelElectrostaticMarker::data()
 {
-    QStringList out;
-    out << name << charge_density.text << permittivity.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    out["Charge density (C/m3)"] = charge_density.text;
+    out["Permittivity (-)"] = permittivity.text;
+    return QMap<QString, QString>(out);
 }
 
 int SceneLabelElectrostaticMarker::showDialog(QWidget *parent)
@@ -284,11 +330,12 @@ QString SceneLabelMagnetostaticMarker::script()
             arg(permeability.text);
 }
 
-QStringList SceneLabelMagnetostaticMarker::data()
+QMap<QString, QString> SceneLabelMagnetostaticMarker::data()
 {
-    QStringList out;
-    out << name << current_density.text << permeability.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    out["Current density (A/m2)"] = current_density.text;
+    out["Permeability (-)"] = permeability.text;
+    return QMap<QString, QString>(out);
 }
 
 int SceneLabelMagnetostaticMarker::showDialog(QWidget *parent)
@@ -318,11 +365,14 @@ QString SceneLabelHarmonicMagneticMarker::script()
             arg(conductivity.text);
 }
 
-QStringList SceneLabelHarmonicMagneticMarker::data()
+QMap<QString, QString> SceneLabelHarmonicMagneticMarker::data()
 {
-    QStringList out;
-    out << name << current_density_real.text << current_density_imag.text << permeability.text << conductivity.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    out["Current density - real (A/m2)"] = current_density_real.text;
+    out["Current density - imag (A/m2)"] = current_density_imag.text;
+    out["Permeability (-)"] = permeability.text;
+    out["Conductivity (S/m)"] = conductivity.text;
+    return QMap<QString, QString>(out);
 }
 
 int SceneLabelHarmonicMagneticMarker::showDialog(QWidget *parent)
@@ -345,11 +395,11 @@ QString SceneLabelCurrentMarker::script()
             arg(conductivity.text);
 }
 
-QStringList SceneLabelCurrentMarker::data()
+QMap<QString, QString> SceneLabelCurrentMarker::data()
 {
-    QStringList out;
-    out << name << conductivity.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    out["Conductivity (S/m)"] = conductivity.number;
+    return QMap<QString, QString>(out);
 }
 
 int SceneLabelCurrentMarker::showDialog(QWidget *parent)
@@ -375,11 +425,12 @@ QString SceneLabelHeatMarker::script()
             arg(thermal_conductivity.text);
 }
 
-QStringList SceneLabelHeatMarker::data()
+QMap<QString, QString> SceneLabelHeatMarker::data()
 {
-    QStringList out;
-    out << name << volume_heat.text << thermal_conductivity.text;
-    return QStringList(out);
+    QMap<QString, QString> out;
+    out["Volume heat (W/m3)"] = volume_heat.text;
+    out["Thermal conductivity (W/m.K)"] = thermal_conductivity.text;
+    return QMap<QString, QString>(out);
 }
 
 int SceneLabelHeatMarker::showDialog(QWidget *parent)
@@ -405,11 +456,12 @@ QString SceneLabelElasticityMarker::script()
             arg(poisson_ratio);
 }
 
-QStringList SceneLabelElasticityMarker::data()
+QMap<QString, QString> SceneLabelElasticityMarker::data()
 {
-    QStringList out;
-    out << name << QString::number(young_modulus) << QString::number(poisson_ratio);
-    return QStringList(out);
+    QMap<QString, QString> out;
+    out["Young modulus (Pa)"] = QString::number(young_modulus);
+    out["Poisson ratio (-)"] = QString::number(poisson_ratio);
+    return QMap<QString, QString>(out);
 }
 
 int SceneLabelElasticityMarker::showDialog(QWidget *parent)
@@ -1421,71 +1473,3 @@ bool DSceneLabelElasticityMarker::save()
 
     return true;
 }
-
-//
-
-QString htmlLabelLabelsFactory(PhysicField physicField)
-{
-    QString out;
-    switch (physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        out = "<tr><td>&nbsp;</td><td>Charge density (C/m3)</td><td>Permittivity (-)</td></tr>";
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        out = "<tr><td>&nbsp;</td><td>Current density (A/m2)</td><td>Permeability (-)</td></tr>";
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        out = "<tr><th>&nbsp;</th><th>Current density - real (A/m2)</th><th>Current density - imag (A/m2)</th><th>Permeability (-)</th><th>Conductivity (S/m2)</th></tr>";
-        break;
-    case PHYSICFIELD_CURRENT:
-        out = "<tr><td>&nbsp;</td><td>Conductivity (S/m)</td></tr>";
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        out = "<tr><td>&nbsp;</td><td>Volume heat (W/m3)</td><td>Thermal conductivity (W/m.K)</td></tr>";
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        out = "<tr><td>&nbsp;</td><td>Young modulus (Pa)</td><td>Poisson ratio (-)</td></tr>";
-        break;
-    default:
-        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. htmlLabelLabelsFactory(PhysicField physicField)" << endl;
-        throw;
-        break;
-    }
-
-    return QString(out);
-}
-
-QString htmlEdgeLabelsFactory(PhysicField physicField)
-{
-    QString out;
-    switch (physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
-        break;
-    case PHYSICFIELD_CURRENT:
-        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        out = "<tr><td>&nbsp;</td><td>Type</td><td>Value</td></tr>";
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        out = "<tr><td>&nbsp;</td><td>Type X</td><td>Value X</td><td>Type Y</td><td>Value Y</td></tr>";
-        break;
-    default:
-        cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. htmlEdgeLabelsFactory(PhysicField physicField)" << endl;
-        throw;
-        break;
-    }
-
-    return QString(out);
-}
-
-

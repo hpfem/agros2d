@@ -31,7 +31,7 @@ public:
     SceneBasic();
     virtual ~SceneBasic();
 
-    virtual int showDialog(QWidget *parent) = 0;
+    virtual int showDialog(QWidget *parent, bool isNew = false) = 0;
 
     QVariant variant();
 };
@@ -48,7 +48,7 @@ public:
 
     double distance(const Point &point);
 
-    int showDialog(QWidget *parent);
+    int showDialog(QWidget *parent, bool isNew = false);
 };
 
 // *************************************************************************************************************************************
@@ -69,7 +69,7 @@ public:
     double distance(const Point &point);
     inline int direction() { return (((nodeStart->point.x-nodeEnd->point.x)*nodeStart->point.y - (nodeStart->point.y-nodeEnd->point.y)*nodeStart->point.x) > 0) ? 1 : -1; }
 
-    int showDialog(QWidget *parent);
+    int showDialog(QWidget *parent, bool isNew = false);
 };
 
 // *************************************************************************************************************************************
@@ -86,7 +86,7 @@ public:
 
     double distance(const Point &point);
 
-    int showDialog(QWidget *parent);
+    int showDialog(QWidget *parent, bool isNew = false);
 };
 
 // *************************************************************************************************************************************
@@ -96,7 +96,7 @@ class DSceneBasic: public QDialog
     Q_OBJECT
 
 public:
-    DSceneBasic(QWidget *parent);
+    DSceneBasic(QWidget *parent, bool isNew = false);
     ~DSceneBasic();
 
 private slots:
@@ -104,6 +104,7 @@ private slots:
     void doReject();
 
 protected:
+    bool isNew;
     SceneBasic *m_object;
 
     virtual QLayout *createContent() = 0;
@@ -112,7 +113,7 @@ protected:
     virtual bool load() = 0;
     virtual bool save() = 0;
 
-private:
+private:    
     QVBoxLayout *layout;
 };
 
@@ -123,7 +124,7 @@ class DSceneNode : public DSceneBasic
     Q_OBJECT
 
 public:
-    DSceneNode(SceneNode *node, QWidget *parent);
+    DSceneNode(SceneNode *node, QWidget *parent, bool isNew = false);
     ~DSceneNode();
 
 protected:
@@ -144,7 +145,7 @@ class DSceneEdge : public DSceneBasic
     Q_OBJECT
 
 public:
-    DSceneEdge(SceneEdge *edge, QWidget *parent);
+    DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew);
     ~DSceneEdge();
 
 protected:
@@ -169,7 +170,7 @@ class DSceneLabel : public DSceneBasic
     Q_OBJECT
 
 public:
-    DSceneLabel(SceneLabel *label, QWidget *parent);
+    DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew = false);
     ~DSceneLabel();
 
 protected:
@@ -298,7 +299,7 @@ private:
 class SceneEdgeCommandEdit : public QUndoCommand
 {
 public:
-    SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew, QUndoCommand *parent = 0);
+    SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew, double angle, double angleNew, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -307,6 +308,8 @@ private:
     Point m_pointEnd;
     Point m_pointStartNew;
     Point m_pointEndNew;
+    double m_angle;
+    double m_angleNew;
 };
 
 #endif // SCENEBASIC_H
