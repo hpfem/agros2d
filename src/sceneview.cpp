@@ -1611,7 +1611,7 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
     // zoom best fit
     if (!(event->modifiers() & Qt::ControlModifier))
     {
-        if (event->button() & Qt::MidButton)
+        if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
         {
             doZoomBestFit();
         }
@@ -1716,7 +1716,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     }
     
     // pan
-    if (event->buttons() & Qt::MidButton)
+    if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
     {
         setCursor(Qt::PointingHandCursor);
 
