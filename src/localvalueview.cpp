@@ -906,10 +906,10 @@ QStringList LocalPointValueHarmonicMagnetic::variables()
             QString("%1").arg(H_imag.y, 0, 'e', 5) <<
             QString("%1").arg(H_imag.magnitude(), 0, 'e', 5) <<
             QString("%1").arg(current_density_induced_real, 0, 'e', 5) <<
-            QString("%1").arg(current_density_induced_real, 0, 'e', 5) <<
+            QString("%1").arg(current_density_induced_imag, 0, 'e', 5) <<
             QString("%1").arg(sqrt(sqr(current_density_induced_real) + sqr(current_density_induced_imag)), 0, 'e', 5) <<
             QString("%1").arg(current_density_total_real, 0, 'e', 5) <<
-            QString("%1").arg(current_density_total_real, 0, 'e', 5) <<
+            QString("%1").arg(current_density_total_imag, 0, 'e', 5) <<
             QString("%1").arg(sqrt(sqr(current_density_total_real) + sqr(current_density_total_imag)), 0, 'e', 5) <<
             QString("%1").arg(pj, 0, 'e', 5) <<
             QString("%1").arg(wm, 0, 'e', 5) <<
@@ -1235,8 +1235,8 @@ QStringList localPointValueHeaderFactory(PhysicField physicField)
         headers << "X" << "Y" << "A_real" << "A_imag" << "A"
                 << "B" << "Bx_real" << "By_real" << "B_real" << "Bx_imag" << "By_imag" << "B_imag"
                 << "H" << "Hx_real" << "Hy_real" << "H_real" << "Hx_imag" << "Hy_imag" << "H_imag"
-                << "Ji_real" << "Ji_imag" << "Ji_real"
-                << "J_real" << "J_imag" << "J_real"
+                << "Ji_real" << "Ji_imag" << "Ji"
+                << "J_real" << "J_imag" << "J"
                 << "pj" << "wm" << "mur";
         break;
     case PHYSICFIELD_CURRENT:

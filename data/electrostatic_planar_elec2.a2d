@@ -1,60 +1,60 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="5" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Elec2 (QuickField)" >
+        <problem adaptivitytolerance="5" frequency="0" numberofrefinements="2" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="2" problemtype="planar" type="electrostatic" id="0" name="Elec2 (QuickField)" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge type="surface_charge_density" value="0" id="1" name="neumann" />
+                <edge type="surface_charge_density" value="0" id="1" name="Neumann" />
                 <edge type="potential" value="0" id="2" name="U =  0 V" />
-                <edge type="potential" value="1" id="3" name="U =  1 V" />
-                <edge type="potential" value="-1" id="4" name="U = -1 V" />
+                <edge type="potential" value="1000" id="3" name="U =  1000 V" />
             </edges>
             <labels>
-                <label charge_density="0" id="1" name="diel" permittivity="3" />
-                <label charge_density="0" id="2" name="vzduch" permittivity="1" />
+                <label charge_density="0" id="1" name="Diel" permittivity="3" />
+                <label charge_density="0" id="2" name="Air" permittivity="1" />
+                <label charge_density="4e-10" id="3" name="Source" permittivity="10" />
             </labels>
         </problem>
     </problems>
     <geometry>
         <nodes>
-            <node x="-20" y="0" id="0" />
-            <node x="20" y="24" id="1" />
-            <node x="-20" y="24" id="2" />
-            <node x="-20" y="1" id="3" />
-            <node x="20" y="1" id="4" />
-            <node x="1" y="1" id="5" />
-            <node x="4" y="2" id="6" />
-            <node x="4" y="1" id="7" />
-            <node x="1" y="2" id="8" />
-            <node x="-1" y="1" id="9" />
-            <node x="-1" y="2" id="10" />
-            <node x="-4" y="2" id="11" />
-            <node x="-4" y="1" id="12" />
-            <node x="20" y="0" id="13" />
+            <node x="20" y="24" id="0" />
+            <node x="20" y="1" id="1" />
+            <node x="1" y="1" id="2" />
+            <node x="4" y="2" id="3" />
+            <node x="4" y="1" id="4" />
+            <node x="1" y="2" id="5" />
+            <node x="20" y="0" id="6" />
+            <node x="0" y="0" id="7" />
+            <node x="0" y="1" id="8" />
+            <node x="0" y="24" id="9" />
+            <node x="7" y="13" id="10" />
+            <node x="14" y="13" id="11" />
+            <node x="14" y="18" id="12" />
+            <node x="7" y="18" id="13" />
         </nodes>
         <edges>
-            <edge end="11" marker="4" id="0" start="10" angle="0" />
-            <edge end="9" marker="4" id="1" start="12" angle="0" />
-            <edge end="12" marker="4" id="2" start="11" angle="0" />
-            <edge end="9" marker="4" id="3" start="10" angle="0" />
-            <edge end="5" marker="3" id="4" start="8" angle="0" />
-            <edge end="5" marker="3" id="5" start="7" angle="0" />
-            <edge end="6" marker="3" id="6" start="8" angle="0" />
-            <edge end="7" marker="3" id="7" start="6" angle="0" />
-            <edge end="1" marker="1" id="8" start="2" angle="0" />
-            <edge end="4" marker="1" id="9" start="1" angle="0" />
-            <edge end="13" marker="1" id="10" start="4" angle="0" />
-            <edge end="0" marker="2" id="11" start="13" angle="0" />
-            <edge end="2" marker="1" id="12" start="3" angle="0" />
-            <edge end="12" marker="0" id="13" start="3" angle="0" />
-            <edge end="4" marker="0" id="14" start="7" angle="0" />
-            <edge end="9" marker="0" id="15" start="5" angle="0" />
-            <edge end="0" marker="1" id="16" start="3" angle="0" />
+            <edge end="2" marker="3" id="0" start="5" angle="0" />
+            <edge end="2" marker="3" id="1" start="4" angle="0" />
+            <edge end="3" marker="3" id="2" start="5" angle="0" />
+            <edge end="4" marker="3" id="3" start="3" angle="0" />
+            <edge end="1" marker="1" id="4" start="0" angle="0" />
+            <edge end="6" marker="1" id="5" start="1" angle="0" />
+            <edge end="1" marker="0" id="6" start="4" angle="0" />
+            <edge end="8" marker="1" id="7" start="9" angle="0" />
+            <edge end="8" marker="1" id="8" start="7" angle="0" />
+            <edge end="6" marker="2" id="9" start="7" angle="0" />
+            <edge end="0" marker="1" id="10" start="9" angle="0" />
+            <edge end="2" marker="0" id="11" start="8" angle="0" />
+            <edge end="11" marker="0" id="12" start="10" angle="0" />
+            <edge end="12" marker="0" id="13" start="11" angle="0" />
+            <edge end="13" marker="0" id="14" start="12" angle="0" />
+            <edge end="10" marker="0" id="15" start="13" angle="0" />
         </edges>
         <labels>
-            <label x="-12.3597" y="0.505705" marker="1" id="0" area="0" />
-            <label x="-7.41351" y="7.8816" marker="2" id="1" area="0" />
-            <label x="-2.33716" y="1.46023" marker="0" id="2" area="0" />
-            <label x="2.78257" y="1.37346" marker="0" id="3" area="0" />
+            <label x="2.78257" y="1.37346" marker="0" id="0" area="0" />
+            <label x="10.3839" y="15.7187" marker="3" id="1" area="0" />
+            <label x="3.37832" y="15.8626" marker="2" id="2" area="0" />
+            <label x="12.3992" y="0.556005" marker="1" id="3" area="0" />
         </labels>
     </geometry>
+    <functions/>
 </document>
