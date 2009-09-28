@@ -517,7 +517,11 @@ void Scene::transformTranslate(const Point &point, bool copy)
             Point pointNew = node->point + point;
             if (!copy)
             {
-                node->point = pointNew;
+                if (!getNode(pointNew))
+                {
+                    m_undoStack->push(new SceneNodeCommandEdit(node->point, pointNew));
+                    node->point = pointNew;
+                }
             }
             else
             {
@@ -535,7 +539,11 @@ void Scene::transformTranslate(const Point &point, bool copy)
             Point pointNew = label->point + point;
             if (!copy)
             {
-                label->point = pointNew;
+                if (!getLabel(pointNew))
+                {
+                    m_undoStack->push(new SceneLabelCommandEdit(label->point, pointNew));
+                    label->point = pointNew;
+                }
             }
             else
             {
