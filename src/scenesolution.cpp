@@ -50,15 +50,6 @@ void SceneSolution::clear()
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
     }
-
-    // order
-    /*
-    if (m_ordView != NULL)
-    {
-        delete m_ordView;
-        m_ordView = NULL;
-    }
-    */
 }
 
 double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume)

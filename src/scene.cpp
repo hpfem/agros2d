@@ -650,19 +650,6 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 void Scene::createMeshAndSolve(SolverMode solverMode)
 {
     // check boundary conditions
-    /*
-    foreach (SceneEdge *edge, edges)
-    {
-        if (edge->marker->type == PHYSICFIELDBC_NONE)
-        {
-            selectNone();
-            edge->isSelected = true;
-            QMessageBox::warning(QApplication::activeWindow(),
-                                 tr("Missing marker"),
-                                 tr("Edge [%1; %2] - [%3; %4] has no marker.").arg(edge->nodeStart->point.x, 0, 'f', 3).arg(edge->nodeStart->point.y, 0, 'f', 3).arg(edge->nodeEnd->point.x, 0, 'f', 3).arg(edge->nodeEnd->point.y, 0, 'f', 3));
-        }
-    }
-    */
 
     // clear problem
     sceneSolution()->clear();
@@ -680,7 +667,6 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     QFileInfo fileInfoOrig(fileNameOrig);
     solverDialog->setFileNameOrig(fileInfoOrig.absoluteFilePath());
     solverDialog->setMode(solverMode);
-    solverDialog->show();
     solverDialog->solve();
 
     // restore orig name

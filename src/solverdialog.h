@@ -3,6 +3,8 @@
 
 #include "util.h"
 
+class SolverDialog;
+
 class Solution;
 class Linearizer;
 class Vectorizer;
@@ -31,51 +33,76 @@ struct SolutionArray
     }  
 };
 
-class SolverDialog : public QDialog
+class SolverThread : public QThread
 {
     Q_OBJECT
+public:
+    SolverThread(QObject *parent = 0);
+    ~SolverThread();
+
+    void run();    
+    void setFileNameOrig(const QString &fileNameOrig) { m_fileNameOrig = fileNameOrig; }
+    void setMode(SolverMode mode) { m_mode = mode; }
+
+    void showMessage(const QString &msg, bool isError);
+    bool isCanceled() { return m_isCanceled; }
+    void cancel();
+
+public slots:
+    void doMeshTriangleCreated(int exitCode);
+    void doStarted();
 
 signals:
-    void message(const QString &message, bool isError);
     void updateProgress(int percent);
     void meshed();
     void solved();
-
-public slots:
-    void doShowMessage(const QString &message, bool isError);
-
-public:
-    SolverDialog(QWidget *parent);
-    ~SolverDialog();
-
-    void setFileNameOrig(const QString &fileNameOrig) { m_fileNameOrig = fileNameOrig; }
-    void setMode(SolverMode mode) { m_mode = mode; }
-    void solve();
-    inline bool isCanceled() { return m_isCanceled; }
-
-private slots:
-    void doCancel();
+    void message(const QString &message, bool isError);
 
 private:
-    bool m_isCanceled;
-    SolverMode m_mode;
     QString m_fileNameOrig;
-
-    QLabel *lblMessage;
-    QProgressBar *progressBar;
-    QTextEdit *lstMessage;
-    QPushButton *btnCancel;
+    SolverMode m_mode;
+    bool m_isCanceled;
+    QMutex mutex;
+    QWaitCondition condition;
 
     void runMesh();
     void runSolver();
 
     bool writeToTriangle();
     bool triangleToHermes2D();
+};
 
-    void createControls();
+class SolverDialog : public QDialog
+{
+    Q_OBJECT
+
+public slots:
+    void doShowMessage(const QString &message, bool isError);
+    void doSolved();
+
+signals:
+    void solved();
+
+public:
+    SolverDialog(QWidget *parent);
+    ~SolverDialog();
+
+    void setFileNameOrig(const QString &fileNameOrig) { thread->setFileNameOrig(fileNameOrig); }
+    void setMode(SolverMode mode) { thread->setMode(mode); }
+    int solve();
 
 private slots:
-    void doMeshTriangleCreated(int exitCode);
+    void doCancel();
+
+private:
+    SolverThread *thread;
+
+    QLabel *lblMessage;
+    QProgressBar *progressBar;
+    QTextEdit *lstMessage;
+    QPushButton *btnCancel;
+
+    void createControls();
 };
 
 #endif //SCENEHERMES_H

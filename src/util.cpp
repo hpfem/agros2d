@@ -43,7 +43,7 @@ QIcon icon(const QString &name)
 
 #ifdef Q_WS_WIN
     if (QFile::exists(":/images/" + name + "-windows.png"))
-        return QIcon(QPixmap(:/images/" + name + "-windows.png));
+        return QIcon(QPixmap(":/images/" + name + "-windows.png"));
 #endif
 
 #ifdef Q_WS_X11

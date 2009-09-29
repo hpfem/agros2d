@@ -250,13 +250,16 @@ QWidget *OptionsDialog::createMainWidget()
     grpSolver->setLayout(layoutSolver);
 
     // other layout
-    cmdClearCommandHistory = new QPushButton();
+    cmdClearCommandHistory = new QPushButton(mainWidget);
     cmdClearCommandHistory->setText(tr("Clear command history"));
     connect(cmdClearCommandHistory, SIGNAL(clicked()), this, SLOT(doClearCommandHistory()));
 
+    QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
+    layoutClearCommandHistory->addWidget(cmdClearCommandHistory);
+    layoutClearCommandHistory->addStretch();
+
     QVBoxLayout *layoutOther = new QVBoxLayout();
-    layoutOther->addWidget(cmdClearCommandHistory);
-    layoutOther->addStretch();
+    layoutOther->addLayout(layoutClearCommandHistory);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));
     grpOther->setLayout(layoutOther);

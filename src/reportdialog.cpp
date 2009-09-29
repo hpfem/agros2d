@@ -56,7 +56,7 @@ void ReportDialog::showDialog()
 
     generateIndex();
 
-    view->load(QUrl("file://" + tempProblemDir() + "/report/index.html"));
+    view->load(QUrl::fromLocalFile(tempProblemDir() + "/report/index.html"));
     view->show();
 
     show();

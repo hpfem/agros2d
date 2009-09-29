@@ -1,106 +1,48 @@
 #include "solverdialog.h"
 #include "scene.h"
 
-SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
+SolverThread::SolverThread(QObject *parent) : QThread(parent)
 {
-    setWindowModality(Qt::ApplicationModal);
-    setMinimumSize(380, 260);
-    setMaximumSize(minimumSize());
-
-    setWindowIcon(icon("system-run"));
-    setWindowTitle(tr("Solve problem..."));
-
-    m_isCanceled = false;
-
-    connect(this, SIGNAL(message(QString, bool)), this, SLOT(doShowMessage(QString, bool)));
-
-    resize(minimumSize());
-
-    createControls();
+    connect(this, SIGNAL(started()), SLOT(doStarted()));
 }
 
-SolverDialog::~SolverDialog()
+SolverThread::~SolverThread()
 {
-    QFile::remove(tempProblemFileName() + ".mesh");
 
-    delete btnCancel;
-    delete progressBar;
-    delete lblMessage;
-    delete lstMessage;
 }
 
-void SolverDialog::solve()
+void SolverThread::doStarted()
 {
-    lblMessage->setText(tr("Solver: solve problem..."));
-    lstMessage->clear();
-    progressBar->setValue(0);
-
-    QApplication::processEvents();
-
     runMesh();
-
-    setFileNameOrig("");
 }
 
-void SolverDialog::doShowMessage(const QString &message, bool isError)
+void SolverThread::run()
 {
-    if (isError)
-        lstMessage->setTextColor(QColor(Qt::red));
-    else
-        lstMessage->setTextColor(QColor(Qt::black));
+    m_isCanceled = false;
+    exec();
+}
 
-    lstMessage->insertPlainText(message + "\n");
-    lstMessage->ensureCursorVisible();
-    lblMessage->setText(message);
+void SolverThread::cancel()
+{
+    QApplication::processEvents();
+    while (isRunning())
+    {
+        terminate();
+        wait(50);
+    }
+    m_isCanceled = true;
+}
 
-    // if (m_isCanceled)
+void SolverThread::showMessage(const QString &msg, bool isError)
+{
+    emit message(msg, isError);
     QApplication::processEvents();
 }
 
-void SolverDialog::createControls()
-{
-    lblMessage = new QLabel(this);
-
-    progressBar = new QProgressBar(this);
-    connect(this, SIGNAL(updateProgress(int)), progressBar, SLOT(setValue(int)));
-
-    lstMessage = new QTextEdit(this);
-    lstMessage->setReadOnly(true);
-
-    // cancel button
-    btnCancel = new QPushButton(tr("&Cancel"));
-    btnCancel->setDefault(true);
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
-    buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
-    connect(btnCancel, SIGNAL(clicked()), this, SLOT(doCancel()));
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(lblMessage);
-    layout->addWidget(progressBar);
-    layout->addWidget(lstMessage);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
-
-    setLayout(layout);
-}
-
-void SolverDialog::doCancel()
-{
-    if (btnCancel->isEnabled())
-    {
-        m_isCanceled = true;
-        btnCancel->setEnabled(false);
-        QApplication::processEvents();
-    }
-}
-
-void SolverDialog::runMesh()
+void SolverThread::runMesh()
 {
     Util::scene()->sceneSolution()->mesh().free();
     QFile::remove(tempProblemFileName() + ".mesh");
-
-    btnCancel->setEnabled(true);
 
     // create triangle files
     if (writeToTriangle())
@@ -151,7 +93,7 @@ void SolverDialog::runMesh()
     }
 }
 
-void SolverDialog::doMeshTriangleCreated(int exitCode)
+void SolverThread::doMeshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
@@ -168,7 +110,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             bool deleteHermes2D = settings.value("Solver/DeleteHermes2DMeshFile", true).value<bool>();
 
             if ((!deleteHermes2D) && (!m_fileNameOrig.isEmpty()))
-            {               
+            {
                 QFileInfo fileInfoOrig(m_fileNameOrig);
 
                 QFile::copy(tempProblemFileName() + ".mesh", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".mesh");
@@ -225,7 +167,11 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
         }
 
         if (m_mode == SOLVER_MESH_AND_SOLVE)
+        {
+            mutex.lock();
             runSolver();
+            mutex.unlock();
+        }
 
         emit solved();
     }
@@ -246,8 +192,8 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
     }
 }
 
-void SolverDialog::runSolver()
-{
+void SolverThread::runSolver()
+{   
     QString fileName(tempProblemFileName() + ".mesh");
 
     // benchmark
@@ -601,7 +547,7 @@ void SolverDialog::runSolver()
             }
             break;
         default:
-            cerr << "Physical field '" +  physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SolverDialog::runSolver()" << endl;
+            cerr << "Physical field '" +  physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SolverThread::runSolver()" << endl;
             throw;
             break;
         }
@@ -615,17 +561,17 @@ void SolverDialog::runSolver()
         }
         else
         {
-            emit message(tr("Solver: solution was solved."), false);
+            Util::scene()->sceneSolution()->clear();
+            emit message(tr("Solver: problem was not solved."), true);
             Util::scene()->sceneSolution()->setTimeElapsed(0);
         }
     }
 
     updateProgress(100);
-    hide();
 }
 
-bool SolverDialog::writeToTriangle()
-{    
+bool SolverThread::writeToTriangle()
+{
     // basic check
     if (Util::scene()->nodes.count() < 3)
     {
@@ -680,9 +626,6 @@ bool SolverDialog::writeToTriangle()
         emit message(tr("Triangle: invalid number of materials (%1 < 1).").arg(Util::scene()->labelMarkers.count()), true);
         return false;
     }
-
-
-
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -800,7 +743,7 @@ bool SolverDialog::writeToTriangle()
     return true;
 }
 
-bool SolverDialog::triangleToHermes2D()
+bool SolverThread::triangleToHermes2D()
 {
     int i, n, k, l, count, marker, node_1, node_2, node_3;
     double x, y;
@@ -808,9 +751,6 @@ bool SolverDialog::triangleToHermes2D()
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
-
-
-
 
     QFile fileMesh(tempProblemFileName() + ".mesh");
     if (!fileMesh.open(QIODevice::WriteOnly))
@@ -867,7 +807,7 @@ bool SolverDialog::triangleToHermes2D()
     {
         sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
         if (marker != 0)
-        {            
+        {
             if (Util::scene()->edges[marker-1]->marker->type != PHYSICFIELDBC_NONE)
             {
                 count++;
@@ -918,4 +858,123 @@ bool SolverDialog::triangleToHermes2D()
     setlocale(LC_NUMERIC, plocale);
 
     return true;
+}
+
+// *********************************************************************************************
+
+SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowModality(Qt::ApplicationModal);
+    setMinimumSize(380, 260);
+    setMaximumSize(minimumSize());
+    setModal(true);
+
+    setWindowIcon(icon("system-run"));
+    setWindowTitle(tr("Solve problem..."));
+
+    createControls();
+
+    thread = new SolverThread();
+
+    connect(thread, SIGNAL(updateProgress(int)), progressBar, SLOT(setValue(int)));
+    connect(thread, SIGNAL(message(QString, bool)), this, SLOT(doShowMessage(QString, bool)));
+    connect(thread, SIGNAL(solved()), this, SLOT(doSolved()));
+    connect(thread, SIGNAL(terminated()), this, SLOT(hide()));
+
+    resize(minimumSize());
+}
+
+SolverDialog::~SolverDialog()
+{
+    QFile::remove(tempProblemFileName() + ".mesh");
+
+    while (thread->isRunning())
+    {
+        thread->wait(50);
+        thread->terminate();
+    }
+    delete thread;
+
+    delete btnCancel;
+    delete progressBar;
+    delete lblMessage;
+    delete lstMessage;       
+}
+
+void SolverDialog::createControls()
+{
+    lblMessage = new QLabel(this);
+    progressBar = new QProgressBar(this);
+
+    lstMessage = new QTextEdit(this);
+    lstMessage->setReadOnly(true);
+
+    // cancel button
+    btnCancel = new QPushButton(tr("&Cancel"));
+    btnCancel->setDefault(true);
+    connect(btnCancel, SIGNAL(clicked()), this, SLOT(doCancel()));
+    connect(this, SIGNAL(finished(int)), this, SLOT(doCancel()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
+    buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(lblMessage);
+    layout->addWidget(progressBar);
+    layout->addWidget(lstMessage);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+}
+
+int SolverDialog::solve()
+{
+    lblMessage->setText(tr("Solver: solve problem..."));
+    lstMessage->clear();
+    progressBar->setValue(0);
+
+    btnCancel->setEnabled(true);
+
+    QApplication::processEvents();
+    thread->start(QThread::LowestPriority);
+
+    return exec();
+}
+
+void SolverDialog::doShowMessage(const QString &message, bool isError)
+{
+    if (isError)
+        lstMessage->setTextColor(QColor(Qt::red));
+    else
+        lstMessage->setTextColor(QColor(Qt::black));
+
+    lstMessage->insertPlainText(message + "\n");
+    lstMessage->ensureCursorVisible();
+    lblMessage->setText(message);
+
+    // update
+    foreach (QWidget *widget, QApplication::allWidgets())
+         widget->update();
+    QApplication::processEvents();
+}
+
+void SolverDialog::doSolved()
+{
+    setFileNameOrig("");
+
+    thread->cancel();
+    emit solved();
+}
+
+void SolverDialog::doCancel()
+{
+    if (!thread->isCanceled())
+    {
+        setFileNameOrig("");
+
+        btnCancel->setEnabled(false);
+        thread->cancel();
+        QApplication::processEvents();
+    }
 }
