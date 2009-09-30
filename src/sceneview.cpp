@@ -1834,10 +1834,12 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
 {
     mnuMarkerGroup->clear();
     mnuMarkerGroup->setEnabled(false);
-    
+    actSceneObjectProperties->setEnabled(false);
+
     // set boundary context menu
     if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
     {
+        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
         mnuMarkerGroup->setEnabled((Util::scene()->edgeMarkers.count() > 0));
         for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
         {
@@ -1851,6 +1853,7 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
     // set material context menu
     if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
     {
+        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
         mnuMarkerGroup->setEnabled((Util::scene()->labelMarkers.count() > 0));
         for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
         {
@@ -1861,8 +1864,6 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
         }
     }
 
-    // object properties
-    actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
 
     mnuInfo->exec(event->globalPos());
 }
