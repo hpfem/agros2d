@@ -8,7 +8,7 @@
 #include "scene.h"
 #include "scenebasic.h"
 #include "sceneview.h"
-#include "sceneinfo.h"
+#include "sceneinfoview.h"
 #include "helpdialog.h"
 #include "solverdialog.h"
 #include "localvalueview.h"
@@ -31,6 +31,8 @@ public:
     void runScript(const QString &fileName);
 
 private slots:
+    void doSetWindowTitle(const QString &name) { setWindowTitle("Agros2D - " + name); }
+
     void doDocumentNew();
     void doDocumentOpen(const QString &fileName = "");
     void doDocumentOpenRecent(QAction *action);

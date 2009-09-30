@@ -112,6 +112,7 @@ public slots:
 signals:
     void invalidated();
     void solved();
+    void fileNameChanged(const QString &fileName);
 
 public:
     QList<SceneNode *> nodes;

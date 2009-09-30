@@ -268,11 +268,14 @@ void SceneView::createActions()
     actPostprocessorModeGroup->addAction(actPostprocessorModeSurfaceIntegral);
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
     
-    // properties
+    // scene properties
     actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Scene properties"), this);
-    actSceneViewProperties->setStatusTip(tr("Properties"));
     connect(actSceneViewProperties, SIGNAL(triggered()), this, SLOT(doSceneViewProperties()));
-    
+
+    // object properties
+    actSceneObjectProperties = new QAction(icon("scene-properties"), tr("Object properties"), this);
+    connect(actSceneObjectProperties, SIGNAL(triggered()), this, SLOT(doSceneObjectProperties()));
+
     // select region
     actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("&Select region"), this);
     actSceneViewSelectRegion->setStatusTip(tr("Select region"));
@@ -309,6 +312,7 @@ void SceneView::createMenu()
     mnuInfo->addMenu(mnuModeGroup);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actFullScreen);
+    mnuInfo->addAction(actSceneObjectProperties);
     mnuInfo->addAction(actSceneViewProperties);
 }
 
@@ -1415,22 +1419,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
         break;        
     case Qt::Key_Space:
         {
-            if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
-            {
-                if (Util::scene()->selectedCount() > 0)
-                {
-                    EdgeMarkerDialog edgeMarkerDialog(this);
-                    edgeMarkerDialog.exec();
-                }
-            }
-            if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
-            {
-                if (Util::scene()->selectedCount() > 0)
-                {
-                    LabelMarkerDialog labelMarkerDialog(this);
-                    labelMarkerDialog.exec();
-                }
-            }
+            doSceneObjectProperties();
         }
         break;
     case Qt::Key_Escape:
@@ -1872,6 +1861,9 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
         }
     }
 
+    // object properties
+    actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
+
     mnuInfo->exec(event->globalPos());
 }
 
@@ -2035,6 +2027,42 @@ void SceneView::doSceneViewProperties()
         }
     }
     delete sceneViewDialog;
+}
+
+void SceneView::doSceneObjectProperties()
+{
+    if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
+    {
+        if (Util::scene()->selectedCount() > 1)
+        {
+            EdgeMarkerDialog edgeMarkerDialog(this);
+            edgeMarkerDialog.exec();
+        }
+        if (Util::scene()->selectedCount() == 1)
+        {
+            for (int i = 0; i < Util::scene()->edges.count(); i++)
+            {
+                if (Util::scene()->edges[i]->isSelected)
+                    Util::scene()->edges[i]->showDialog(this);
+            }
+        }
+    }
+    if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
+    {
+        if (Util::scene()->selectedCount() > 1)
+        {
+            LabelMarkerDialog labelMarkerDialog(this);
+            labelMarkerDialog.exec();
+        }
+        if (Util::scene()->selectedCount() == 1)
+        {
+            for (int i = 0; i < Util::scene()->labels.count(); i++)
+            {
+                if (Util::scene()->labels[i]->isSelected)
+                    Util::scene()->labels[i]->showDialog(this);
+            }
+        }
+    }
 }
 
 void SceneView::doFullScreen()

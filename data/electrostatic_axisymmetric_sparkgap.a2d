@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="0" adaptivitytype="hp-adaptivity" adaptivitysteps="30" polynomialorder="1" problemtype="axisymmetric" type="electrostatic" id="0" name="Sparkgap" >
+        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="0" adaptivitytype="hp-adaptivity" adaptivitysteps="5" polynomialorder="1" problemtype="axisymmetric" type="electrostatic" id="0" name="Sparkgap" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="potential" value="1000" id="1" name="U = 1000 V" />

@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(Util::scene(), SIGNAL(solved()), sceneView, SLOT(doSolved()));
 
+    connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
+
     connect(sceneView, SIGNAL(mousePressed(LocalPointValue *)), localPointValueView, SLOT(doShowPoint(LocalPointValue *)));
     connect(sceneView, SIGNAL(mousePressed(VolumeIntegralValue *)), volumeIntegralValueView, SLOT(doShowVolumeIntegral(VolumeIntegralValue *)));
     connect(sceneView, SIGNAL(mousePressed(SurfaceIntegralValue *)), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral(SurfaceIntegralValue *)));
@@ -403,8 +405,7 @@ void MainWindow::createScene()
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
     
-    setCentralWidget(widget);
-    setWindowTitle(tr("Agros2D"));
+    setCentralWidget(widget);    
 }
 
 void MainWindow::createViews()

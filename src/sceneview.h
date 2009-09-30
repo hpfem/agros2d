@@ -100,6 +100,7 @@ public slots:
     void doZoomOut();
     void doZoomRegion(const Point &start, const Point &end);
     void doSceneViewProperties();
+    void doSceneObjectProperties();
     void doSceneModeSet(QAction *);
     void doInvalidated();
     void doSolved();
@@ -133,6 +134,7 @@ public:
 
     QAction *actSceneViewSelectRegion;
     QAction *actSceneViewProperties;
+    QAction *actSceneObjectProperties;
     QAction *actFullScreen;
 
     SceneNode *findClosestNode(const Point &point);

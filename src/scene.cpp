@@ -377,6 +377,7 @@ void Scene::clear()
 
     blockSignals(false);
 
+    emit fileNameChanged(tr("unnamed"));
     emit invalidated();
 }
 
@@ -1012,6 +1013,7 @@ void Scene::readFromFile(const QString &fileName)
 
     clear();
     m_problemInfo.fileName = fileName;
+    emit fileNameChanged(fileInfo.absoluteFilePath());
 
     blockSignals(true);
 
