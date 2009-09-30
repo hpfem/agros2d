@@ -1,4 +1,5 @@
 #include "hermes_electrostatic.h"
+#include "hermes_forms.h"
 
 ElectrostaticEdge *electrostaticEdge;
 ElectrostaticLabel *electrostaticLabel;
@@ -25,27 +26,29 @@ scalar electrostatic_bc_values(int marker, double x, double y)
     return electrostaticEdge[marker].value;
 }
 
-scalar electrostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar electrostatic_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
+    int marker = e->marker;
 
     if (electrostaticPlanar)
-        return electrostaticLabel[marker].permittivity * int_grad_u_grad_v(fu, fv, ru, rv);
+        return electrostaticLabel[marker].permittivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
-        return electrostaticLabel[marker].permittivity * 2 * M_PI * int_x_grad_u_grad_v(fu, fv, ru, rv);
+        return electrostaticLabel[marker].permittivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
 }
 
-scalar electrostatic_linear_form(RealFunction* fv, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar electrostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
+    int marker = e->marker;
 
     if (electrostaticPlanar)
-        return electrostaticLabel[marker].charge_density / EPS0 * int_v(fv, rv);
+        return electrostaticLabel[marker].charge_density / EPS0 * int_v<Real, Scalar>(n, wt, v);
     else
-        return electrostaticLabel[marker].charge_density / EPS0 * 2 * M_PI * int_x_v(fv, rv);
+        return electrostaticLabel[marker].charge_density / EPS0 * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-SolutionArray *electrostatic_main(SolverDialog *solverDialog,
+SolutionArray *electrostatic_main(SolverThread *solverThread,
                                   const char *fileName,
                                   ElectrostaticEdge *edge,
                                   ElectrostaticLabel *label)
@@ -85,8 +88,8 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
 
     // initialize the weak formulation
     WeakForm wf(1);
-    wf.add_biform(0, 0, electrostatic_bilinear_form);
-    wf.add_liform(0, electrostatic_linear_form);
+    wf.add_biform(0, 0, callback(electrostatic_bilinear_form));
+    wf.add_liform(0, callback(electrostatic_linear_form));
 
     // initialize the linear solver
     UmfpackSolver umfpack;
@@ -119,8 +122,8 @@ SolutionArray *electrostatic_main(SolverDialog *solverDialog,
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverDialog->isCanceled()) return NULL;
+            solverThread->showMessage(QObject::tr("Solver: relative error is %1 %").arg(error, 0, 'f', 5), false);
+            if (solverThread->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3, 0, (int) adaptivityType);

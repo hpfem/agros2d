@@ -38,7 +38,7 @@ zoomBestFit();
 solve();
 
 // point value
-point = pointResult(0.026532,0.070937);
+point = pointResult(0.026532, 0.070937);
 testPotential = (Math.abs(point.V) - 26.078318) < 0.1;
 if (!testPotential) print(point.V);
 

@@ -8,7 +8,7 @@
 #include "solver_umfpack.h"
 
 struct SolutionArray;
-class SolverDialog;
+class SolverThread;
 
 struct CurrentEdge
 {
@@ -22,7 +22,7 @@ struct CurrentLabel
     double conductivity;
 };
 
-SolutionArray *current_main(SolverDialog *solverDialog,
+SolutionArray *current_main(SolverThread *solverThread,
                                   const char *fileName,
                                   CurrentEdge *edge,
                                   CurrentLabel *label);

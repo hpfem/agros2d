@@ -8,7 +8,7 @@
 #include "solver_umfpack.h"
 
 struct SolutionArray;
-class SolverDialog;
+class SolverThread;
 
 struct ElectrostaticEdge
 {
@@ -23,7 +23,7 @@ struct ElectrostaticLabel
     double permittivity;
 };
 
-SolutionArray *electrostatic_main(SolverDialog *solverDialog,
+SolutionArray *electrostatic_main(SolverThread *solverThread,
                                   const char *fileName,
                                   ElectrostaticEdge *edge,
                                   ElectrostaticLabel *label);

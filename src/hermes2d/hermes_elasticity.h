@@ -8,7 +8,7 @@
 #include "solver_umfpack.h"
 
 struct SolutionArray;
-class SolverDialog;
+class SolverThread;
 
 struct ElasticityEdge
 {

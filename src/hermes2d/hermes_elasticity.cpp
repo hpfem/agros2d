@@ -68,33 +68,38 @@ scalar elasticity_bc_values_y(int marker, double x, double y)
     }
 }
 
-scalar elasticity_bilinear_form_0_0(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar elasticity_bilinear_form_0_0(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
-    return int_a_dudx_dvdx_b_dudy_dvdy(elasticityLabel[marker].lambda()+2*elasticityLabel[marker].mu(), fu, elasticityLabel[marker].mu(), fv, ru, rv);
+    return (elasticityLabel[e->marker].lambda() + 2*elasticityLabel[e->marker].mu()) * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
+            elasticityLabel[e->marker].mu() * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
 }
 
-scalar elasticity_bilinear_form_0_1(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar elasticity_bilinear_form_0_1(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
-    return int_a_dudx_dvdy_b_dudy_dvdx(elasticityLabel[marker].lambda(), fv, elasticityLabel[marker].mu(), fu, rv, ru);
+    return elasticityLabel[e->marker].lambda() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
+           elasticityLabel[e->marker].mu() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
 }
 
-scalar elasticity_bilinear_form_1_0(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar elasticity_bilinear_form_1_0(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
-    return int_a_dudx_dvdy_b_dudy_dvdx(elasticityLabel[marker].lambda(), fu, elasticityLabel[marker].mu(), fv, ru, rv);
+    return  elasticityLabel[e->marker].mu() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
+            elasticityLabel[e->marker].lambda() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
 }
 
-scalar elasticity_bilinear_form_1_1(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar elasticity_bilinear_form_1_1(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
-    return int_a_dudx_dvdx_b_dudy_dvdy(elasticityLabel[marker].mu(), fu, elasticityLabel[marker].lambda()+2*elasticityLabel[marker].mu(), fv, ru, rv);
+    return   elasticityLabel[e->marker].mu() * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
+            (elasticityLabel[e->marker].lambda() + 2*elasticityLabel[e->marker].mu()) * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
 }
 
-scalar elasticity_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
+template<typename Real, typename Scalar>
+Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return elasticityEdge[ep->marker].forceY * surf_int_v(fv, rv, ep);
+    return elasticityEdge[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
 }
 
 SolutionArray *elasticity_main(const char *fileName,
@@ -144,11 +149,11 @@ SolutionArray *elasticity_main(const char *fileName,
 
     // initialize the weak formulation
     WeakForm wf(2);    
-    wf.add_biform(0, 0, elasticity_bilinear_form_0_0, UNSYM);
-    wf.add_biform(0, 1, elasticity_bilinear_form_0_1, UNSYM);
-    wf.add_biform(1, 0, elasticity_bilinear_form_1_0, UNSYM);
-    wf.add_biform(1, 1, elasticity_bilinear_form_1_1, UNSYM);
-    wf.add_liform_surf(1, elasticity_linear_form_surf);
+    wf.add_biform(0, 0, callback(elasticity_bilinear_form_0_0), UNSYM);
+    wf.add_biform(0, 1, callback(elasticity_bilinear_form_0_1), UNSYM);
+    wf.add_biform(1, 0, callback(elasticity_bilinear_form_1_0), UNSYM);
+    wf.add_biform(1, 1, callback(elasticity_bilinear_form_1_1), UNSYM);
+    wf.add_liform_surf(1, callback(elasticity_linear_form_surf));
 
     // initialize the linear system and solver
     UmfpackSolver umfpack;

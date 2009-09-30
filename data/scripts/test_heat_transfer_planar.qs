@@ -1,7 +1,7 @@
 print("Test: Heat transfer - planar");
 
 // model
-newDocument("unnamed", "planar", "heat transfer", 1, 1, 0, "hp-adaptivity", 10, 0.1);
+newDocument("unnamed", "planar", "heat transfer", 2, 3, 0, "disabled", 10, 0.1);
 
 // boundaries
 addBoundary("T inner", "temperature", -15);

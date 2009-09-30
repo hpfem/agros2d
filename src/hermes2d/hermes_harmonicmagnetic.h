@@ -8,7 +8,7 @@
 #include "solver_umfpack.h"
 
 struct SolutionArray;
-class SolverDialog;
+class SolverThread;
 
 struct HarmonicMagneticEdge
 {
@@ -24,7 +24,7 @@ struct HarmonicMagneticLabel
     double conductivity;
 };
 
-SolutionArray *harmonicmagnetic_main(SolverDialog *solverDialog,
+SolutionArray *harmonicmagnetic_main(SolverThread *solverThread,
                                      const char *fileName,
                                      HarmonicMagneticEdge *edge,
                                      HarmonicMagneticLabel *label);

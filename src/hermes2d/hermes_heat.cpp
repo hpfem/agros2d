@@ -1,4 +1,5 @@
 #include "hermes_heat.h"
+#include "hermes_forms.h"
 
 static HeatEdge *heatEdge;
 static HeatLabel *heatLabel;
@@ -37,70 +38,64 @@ scalar heat_bc_values(int marker, double x, double y)
     }
 }
 
-scalar heat_bilinear_form_surf(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv, EdgePos* ep)
+template<typename Real, typename Scalar>
+Scalar heat_bilinear_form_surf(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = ep->marker;
     double h = 0.0;
 
-    if (heatEdge[marker].type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
+    if (heatEdge[e->marker].type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
     {
-        h = heatEdge[marker].h;
+        h = heatEdge[e->marker].h;
     }
 
     if (heatPlanar)
-        return h * surf_int_u_v(fu, fv, ru, rv, ep);
+        return h * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return h * 2 * M_PI * surf_int_x_u_v(fu, fv, ru, rv, ep);
+        return h * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
 }
 
-scalar heat_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
+template<typename Real, typename Scalar>
+Scalar heat_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = ep->marker;
-
-    if (heatEdge[marker].type == PHYSICFIELDBC_NONE)
+    if (heatEdge[e->marker].type == PHYSICFIELDBC_NONE)
         return 0.0;
 
     double q = 0.0;
     double h = 0.0;
     double Text = 0.0;
 
-    if (heatEdge[marker].type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
+    if (heatEdge[e->marker].type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
     {
-        q = heatEdge[marker].heatFlux;
-        h = heatEdge[marker].h;
-        Text = heatEdge[marker].externalTemperature;
+        q = heatEdge[e->marker].heatFlux;
+        h = heatEdge[e->marker].h;
+        Text = heatEdge[e->marker].externalTemperature;
     }
 
     if (heatPlanar)
-        return (q + Text * h) * surf_int_v(fv, rv, ep);
+        return (q + Text * h) * int_v<Real, Scalar>(n, wt, v); // FIXME surf_int_v(fv, rv, ep);
     else
-        return (q + Text * h) * 2 * M_PI * surf_int_x_v(fv, rv, ep);
+        return (q + Text * h) * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-
-scalar heat_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar heat_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
-
     if (heatPlanar)
-        return heatLabel[marker].thermal_conductivity * int_grad_u_grad_v(fu, fv, ru, rv);
+        return heatLabel[e->marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
-        return heatLabel[marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v(fu, fv, ru, rv);
+        return heatLabel[e->marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
 }
 
-scalar heat_linear_form(RealFunction* fv, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
-
     if (heatPlanar)
-        // planar
-        return heatLabel[marker].volume_heat * int_v(fv, rv);
+        return heatLabel[e->marker].volume_heat * int_v<Real, Scalar>(n, wt, v);
     else
-        // axisymmetric
-        return heatLabel[marker].volume_heat * 2 * M_PI * int_x_v(fv, rv);
+        return heatLabel[e->marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-SolutionArray *heat_main(SolverDialog *solverDialog,
+SolutionArray *heat_main(SolverThread *solverThread,
                          const char *fileName,
                          HeatEdge *edge, HeatLabel *label)
 {
@@ -139,10 +134,10 @@ SolutionArray *heat_main(SolverDialog *solverDialog,
 
     // initialize the weak formulation
     WeakForm wf(1);
-    wf.add_biform(0, 0, heat_bilinear_form);
-    wf.add_liform(0, heat_linear_form);
-    wf.add_biform_surf(0, 0, heat_bilinear_form_surf);
-    wf.add_liform_surf(0, heat_linear_form_surf);
+    wf.add_biform(0, 0, callback(heat_bilinear_form));
+    wf.add_liform(0, callback(heat_linear_form));
+    wf.add_biform_surf(0, 0, callback(heat_bilinear_form_surf));
+    wf.add_liform_surf(0, callback(heat_linear_form_surf));
 
     // initialize the linear solver
     UmfpackSolver umfpack;
@@ -175,7 +170,8 @@ SolutionArray *heat_main(SolverDialog *solverDialog,
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: %1 %").arg(error, 0, 'f', 5), false);
+            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverThread->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3, 0, (int) adaptivityType);

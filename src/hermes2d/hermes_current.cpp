@@ -1,4 +1,5 @@
 #include "hermes_current.h"
+#include "hermes_forms.h"
 
 static CurrentEdge *currentEdge;
 static CurrentLabel *currentLabel;
@@ -25,45 +26,43 @@ scalar current_bc_values(int marker, double x, double y)
     return currentEdge[marker].value;
 }
 
-scalar current_linear_form_surf(RealFunction* fv, RefMap* rv, EdgePos* ep)
+template<typename Real, typename Scalar>
+Scalar current_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = ep->marker;
-
     double J = 0.0;
 
-    if (currentEdge[marker].type == PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)
-        J = currentEdge[marker].value;
+    if (currentEdge[e->marker].type == PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)
+        J = currentEdge[e->marker].value;
 
     if (currentPlanar)
-        return J * surf_int_v(fv, rv, ep);
+        return J * int_v<Real, Scalar>(n, wt, v); // FIXME surf_int_v(fv, rv, ep);
     else
-        return J * 2 * M_PI * surf_int_x_v(fv, rv, ep);
+        return J * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e); // FIXME surf_int_x_v(fv, rv, ep);
+
 }
 
-scalar current_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar current_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
-
     if (currentPlanar)
-        return currentLabel[marker].conductivity * int_grad_u_grad_v(fu, fv, ru, rv);
+        return currentLabel[e->marker].conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
-        return currentLabel[marker].conductivity * 2 * M_PI * int_x_grad_u_grad_v(fu, fv, ru, rv);
+        return currentLabel[e->marker].conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
 }
 
-scalar current_linear_form(RealFunction* fv, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar current_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     return 0.0;
     /*
-    int marker = rv->get_active_element()->marker;
-
-    if (currentIsPlanar)
-        return int_v(fv, rv);
+    if (electrostaticPlanar)
+        return electrostaticLabel[marker].charge_density / EPS0 * int_v<Real, Scalar>(n, wt, v);
     else
-        return 2 * M_PI * int_x_v(fv, rv);
+        return electrostaticLabel[marker].charge_density / EPS0 * 2 * M_PI * int_v<Real, Scalar>(n, wt, v); // FIXME int_x_v
     */
 }
 
-SolutionArray *current_main(SolverDialog *solverDialog,
+SolutionArray *current_main(SolverThread *solverThread,
                                   const char *fileName,
                                   CurrentEdge *edge,
                                   CurrentLabel *label)
@@ -103,10 +102,9 @@ SolutionArray *current_main(SolverDialog *solverDialog,
 
     // initialize the weak formulation
     WeakForm wf(1);
-    wf.add_biform(0, 0, current_bilinear_form);
-    wf.add_liform(0, current_linear_form);
-    // wf.add_biform_surf(0, 0, current_bilinear_form_surf);
-    wf.add_liform_surf(0, current_linear_form_surf);
+    wf.add_biform(0, 0, callback(current_bilinear_form));
+    wf.add_liform(0, callback(current_linear_form));
+    wf.add_liform_surf(0, callback(current_linear_form_surf));
 
     // initialize the linear solver
     UmfpackSolver umfpack;
@@ -139,7 +137,8 @@ SolutionArray *current_main(SolverDialog *solverDialog,
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: %1 %").arg(error, 0, 'f', 5), false);
+            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverThread->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3, 0, (int) adaptivityType);

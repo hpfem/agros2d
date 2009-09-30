@@ -8,7 +8,7 @@
 #include "solver_umfpack.h"
 
 struct SolutionArray;
-class SolverDialog;
+class SolverThread;
 
 struct MagnetostaticEdge
 {
@@ -22,7 +22,7 @@ struct MagnetostaticLabel
     double permeability;
 };
 
-SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
+SolutionArray *magnetostatic_main(SolverThread *solverThread,
                                   const char *fileName,
                                   MagnetostaticEdge *edge,
                                   MagnetostaticLabel *label);

@@ -1,61 +1,9 @@
 #include "hermes_magnetostatic.h"
+#include "hermes_forms.h"
 
 static MagnetostaticEdge *magnetostaticEdge;
 static MagnetostaticLabel *magnetostaticLabel;
 static bool magnetostaticPlanar;
-
-inline double int_u_dvdx_over_x(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
-{
-    Quad2D* quad = fu->get_quad_2d();
-
-    int o = fu->get_fn_order() + fv->get_fn_order() + ru->get_inv_ref_order() + 1;
-    limit_order(o);
-    fu->set_quad_order(o);
-    fv->set_quad_order(o);
-
-    double *dvdx, *dvdy;
-    fv->get_dx_dy_values(dvdx, dvdy);
-    double* uval = fu->get_fn_values();
-    double* x = ru->get_phys_x(o);
-
-    double result;
-    h1_integrate_dd_expression((x[i] > 0.0) ? t_dvdx * uval[i] / x[i] : 0.0);
-    return result;
-}
-
-inline double int_dvdx(RealFunction* fu, RefMap* ru)
-{
-    Quad2D* quad = fu->get_quad_2d();
-
-    int o = fu->get_fn_order() + ru->get_inv_ref_order();
-    limit_order(o);
-    fu->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
-
-    double *dvdx, *dvdy;
-    fu->get_dx_dy_values(dvdx, dvdy);
-    double* uval = fu->get_fn_values();
-
-    double result = 0.0;
-    h1_integrate_expression(dvdx[i]);
-    return result;
-}
-
-inline double int_dvdy(RealFunction* fu, RefMap* ru)
-{
-    Quad2D* quad = fu->get_quad_2d();
-
-    int o = fu->get_fn_order() + ru->get_inv_ref_order();
-    limit_order(o);
-    fu->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
-
-    double *dvdx, *dvdy;
-    fu->get_dx_dy_values(dvdx, dvdy);
-    double* uval = fu->get_fn_values();
-
-    double result = 0.0;
-    h1_integrate_expression(dvdy[i]);
-    return result;
-}
 
 int magnetostatic_bc_types(int marker)
 {
@@ -78,30 +26,29 @@ scalar magnetostatic_bc_values(int marker, double x, double y)
     return magnetostaticEdge[marker].value;
 }
 
-scalar magnetostatic_bilinear_form(RealFunction* fu, RealFunction* fv, RefMap* ru, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar magnetostatic_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
+    int marker = e->marker;
 
     if (magnetostaticPlanar)
-        return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * int_grad_u_grad_v(fu, fv, ru, rv);
+        return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
-    {
-        return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x(fu, fv, ru, rv) + int_grad_u_grad_v(fu, fv, ru, rv));
-    }   
+        return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v));
 }
 
-scalar magnetostatic_linear_form(RealFunction* fv, RefMap* rv)
+template<typename Real, typename Scalar>
+Scalar magnetostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = rv->get_active_element()->marker;
+    int marker = e->marker;
 
     if (magnetostaticPlanar)
-        return magnetostaticLabel[marker].current_density * int_v(fv, rv); // +
-                // ((marker == 0) ? (1.5 / (magnetostaticLabel[marker].permeability) * int_dvdy(fv, rv)) : 0.0);
+        return magnetostaticLabel[marker].current_density * int_v<Real, Scalar>(n, wt, v);
     else
-        return magnetostaticLabel[marker].current_density * int_v(fv, rv);
+        return magnetostaticLabel[marker].current_density * int_v<Real, Scalar>(n, wt, v);
 }
 
-SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
+SolutionArray *magnetostatic_main(SolverThread *solverThread,
                                   const char *fileName,
                                   MagnetostaticEdge *edge,
                                   MagnetostaticLabel *label)
@@ -141,8 +88,8 @@ SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
 
     // initialize the weak formulation
     WeakForm wf(1);
-    wf.add_biform(0, 0, magnetostatic_bilinear_form);
-    wf.add_liform(0, magnetostatic_linear_form);
+    wf.add_biform(0, 0, callback(magnetostatic_bilinear_form));
+    wf.add_liform(0, callback(magnetostatic_linear_form));
     
     // initialize the linear solver
     UmfpackSolver umfpack;
@@ -175,7 +122,8 @@ SolutionArray *magnetostatic_main(SolverDialog *solverDialog,
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->doShowMessage(QObject::tr("Relative error: %1 %").arg(error, 0, 'f', 5), false);
+            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverThread->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             hp.adapt(0.3, 0, (int) adaptivityType);

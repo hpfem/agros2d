@@ -50,7 +50,7 @@ unix {
     report.path = $${PREFIX}/share/agros2d/doc/report/template
     report.files = doc/report/template/template.html \
         doc/report/template/default.css
-
+    
     # install translations
     lang.path = $${PREFIX}/share/agros2d/lang
     lang.files = lang/*.qm
@@ -66,7 +66,7 @@ unix {
     # install desktop
     desktop.path = $${PREFIX}/share/applications
     desktop.files = agros2d.desktop
-
+    
     # install binary
     target.path = $${PREFIX}/bin
     target-remote.path = $${PREFIX}/bin
@@ -124,6 +124,7 @@ HEADERS += src/util.h \
     src/scripteditordialog.h \
     src/scripteditorhighlighter.h \
     src/solverdialog.h \
+    src/hermes2d/hermes_forms.h \
     src/hermes2d/hermes_electrostatic.h \
     src/hermes2d/hermes_heat.h \
     src/hermes2d/hermes_magnetostatic.h \

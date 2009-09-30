@@ -35,8 +35,8 @@ zoomBestFit();
 solve();
 
 // point value
-point = pointResult(-0.077173, 0.225087);
-testFluxDensity = (Math.abs(point.B) - 0.225087) < 1e-6;
+point = pointResult(0.012862, 0.202579);
+testFluxDensity = (Math.abs(point.B) - 0.015323) < 2e-4;
 if (!testFluxDensity) print(point.B);
 
 // energy

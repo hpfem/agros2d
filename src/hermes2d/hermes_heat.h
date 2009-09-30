@@ -8,7 +8,7 @@
 #include "solver_umfpack.h"
 
 struct SolutionArray;
-class SolverDialog;
+class SolverThread;
 
 struct HeatEdge
 {
@@ -25,7 +25,7 @@ struct HeatLabel
     double volume_heat;
 };
 
-SolutionArray *heat_main(SolverDialog *solverDialog,
+SolutionArray *heat_main(SolverThread *solverThread,
                          const char *fileName,
                          HeatEdge *edge,
                          HeatLabel *label);
