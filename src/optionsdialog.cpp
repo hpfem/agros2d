@@ -25,6 +25,9 @@ OptionsDialog::~OptionsDialog()
     // grid
     delete txtGridStep;
 
+    // rulers
+    delete chkRulers;
+
     // contours
     delete txtContoursCount;
 
@@ -94,6 +97,7 @@ void OptionsDialog::load()
 
     // grid
     txtGridStep->setText(QString::number(m_sceneViewSettings->gridStep));
+    chkRulers->setChecked(m_sceneViewSettings->showRulers);
 
     // contours
     txtContoursCount->setValue(m_sceneViewSettings->contoursCount);
@@ -148,6 +152,7 @@ void OptionsDialog::save()
 
     // grid
     m_sceneViewSettings->gridStep = txtGridStep->text().toDouble();
+    m_sceneViewSettings->showRulers = chkRulers->isChecked();
 
     // contours
     m_sceneViewSettings->contoursCount = txtContoursCount->value();
@@ -304,10 +309,12 @@ QWidget *OptionsDialog::createViewWidget()
     // layout grid
     txtGridStep = new QLineEdit("0.1");
     txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
+    chkRulers = new QCheckBox(tr("Show rulers"));
 
     QGridLayout *layoutGrid = new QGridLayout();
     layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
     layoutGrid->addWidget(txtGridStep, 0, 1);
+    layoutGrid->addWidget(chkRulers, 1, 0);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);

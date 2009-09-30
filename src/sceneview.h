@@ -27,6 +27,7 @@ class SceneViewSettings
 public:
     bool showGeometry;
     bool showGrid;
+    bool showRulers;
     bool showInitialMesh;
 
     SceneViewPostprocessorShow postprocessorShow;
@@ -209,6 +210,7 @@ private:
     void paletteUpdateTexAdjust();
 
     void paintGrid(); // paint grid
+    void paintRulers(); // paint rulers
     void paintGeometry(); // paint nodes, edges and labels
     void paintInitialMesh();
 

@@ -60,6 +60,9 @@ private:
     // grid
     QLineEdit *txtGridStep;
 
+    // rulers
+    QCheckBox *chkRulers;
+
     // contours
     QSpinBox *txtContoursCount;
 
