@@ -149,7 +149,7 @@ void SolverThread::doMeshTriangleCreated(int exitCode)
                     {
                         if (node->ref < 2 && node->marker == 0)
                         {
-                            emit message(tr("Hermes2D: boundary edge node does not have a boundary marker."), true);
+                            emit message(tr("Hermes2D: boundary edge does not have a boundary marker."), true);
                             Util::scene()->sceneSolution()->mesh().free();
                             return;
                         }

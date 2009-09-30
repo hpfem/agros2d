@@ -325,3 +325,145 @@ void CommandDialog::doAccept()
 
     accept();
 }
+
+// ***********************************************************************************************************
+
+EdgeMarkerDialog::EdgeMarkerDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowTitle(tr("Edge marker"));
+    setWindowIcon(icon("scene-edge"));
+    setModal(true);   
+
+    // fill combo
+    cmbMarker = new QComboBox(this);
+    for (int i = 0; i<Util::scene()->edgeMarkers.count(); i++)
+    {
+        cmbMarker->addItem(Util::scene()->edgeMarkers[i]->name, Util::scene()->edgeMarkers[i]->variant());
+    }
+
+    // select marker
+    cmbMarker->setCurrentIndex(-1);
+    SceneEdgeMarker *marker = NULL;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        if (Util::scene()->edges[i]->isSelected)
+        {
+            if (!marker)
+            {
+                marker = Util::scene()->edges[i]->marker;
+            }
+            if (marker != Util::scene()->edges[i]->marker)
+            {
+                marker = NULL;
+                break;
+            }
+        }
+    }
+    if (marker)
+        cmbMarker->setCurrentIndex(cmbMarker->findData(marker->variant()));
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QHBoxLayout *layoutMarker = new QHBoxLayout();
+    layoutMarker->addWidget(new QLabel(tr("Edge marker:")));
+    layoutMarker->addWidget(cmbMarker);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutMarker);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+
+    setMaximumSize(sizeHint());
+}
+
+EdgeMarkerDialog::~EdgeMarkerDialog()
+{
+    delete cmbMarker;
+}
+
+void EdgeMarkerDialog::doAccept()
+{
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        if (Util::scene()->edges[i]->isSelected)
+            Util::scene()->edges[i]->marker = marker();
+    }
+
+    accept();
+}
+
+// ******************************************************************************************************************
+
+LabelMarkerDialog::LabelMarkerDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowTitle(tr("Edge marker"));
+    setWindowIcon(icon("scene-label"));
+    setModal(true);
+
+    // fill combo
+    cmbMarker = new QComboBox(this);
+    for (int i = 0; i<Util::scene()->labelMarkers.count(); i++)
+    {
+        cmbMarker->addItem(Util::scene()->labelMarkers[i]->name, Util::scene()->labelMarkers[i]->variant());
+    }
+
+    // select marker
+    cmbMarker->setCurrentIndex(-1);
+    SceneLabelMarker *marker = NULL;
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        if (Util::scene()->labels[i]->isSelected)
+        {
+            if (!marker)
+            {
+                marker = Util::scene()->labels[i]->marker;
+            }
+            if (marker != Util::scene()->labels[i]->marker)
+            {
+                marker = NULL;
+                break;
+            }
+        }
+    }
+    if (marker)
+        cmbMarker->setCurrentIndex(cmbMarker->findData(marker->variant()));
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QHBoxLayout *layoutMarker = new QHBoxLayout();
+    layoutMarker->addWidget(new QLabel(tr("Label marker:")));
+    layoutMarker->addWidget(cmbMarker);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutMarker);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+
+    setMaximumSize(sizeHint());
+}
+
+LabelMarkerDialog::~LabelMarkerDialog()
+{
+    delete cmbMarker;
+}
+
+void LabelMarkerDialog::doAccept()
+{
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        if (Util::scene()->labels[i]->isSelected)
+            Util::scene()->labels[i]->marker = marker();
+    }
+
+    accept();
+}

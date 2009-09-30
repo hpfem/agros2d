@@ -1412,6 +1412,26 @@ void SceneView::keyPressEvent(QKeyEvent *event)
         {
             doFullScreen();
         }
+        break;        
+    case Qt::Key_Space:
+        {
+            if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
+            {
+                if (Util::scene()->selectedCount() > 0)
+                {
+                    EdgeMarkerDialog edgeMarkerDialog(this);
+                    edgeMarkerDialog.exec();
+                }
+            }
+            if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
+            {
+                if (Util::scene()->selectedCount() > 0)
+                {
+                    LabelMarkerDialog labelMarkerDialog(this);
+                    labelMarkerDialog.exec();
+                }
+            }
+        }
         break;
     case Qt::Key_Escape:
         {

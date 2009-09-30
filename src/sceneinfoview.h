@@ -1,5 +1,5 @@
-#ifndef VIEWPROBLEM_H
-#define VIEWPROBLEM_H
+#ifndef SCENEINFOVIEW_H
+#define SCENEINFOVIEW_H
 
 #include "scene.h"
 #include "sceneview.h"
@@ -57,4 +57,4 @@ private slots:
     void doItemSelected(QTreeWidgetItem *item, int role);
 };
 
-#endif // VIEWPROBLEM_H
+#endif // SCENEINFOVIEW_H

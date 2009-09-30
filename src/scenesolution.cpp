@@ -778,7 +778,6 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                 }
 
                 integral += result;
-                // cout << e->en[edge]->marker << " : " << e->en[edge]->id << " : " << result << endl;
             }
         }
     }

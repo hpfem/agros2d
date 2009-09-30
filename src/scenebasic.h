@@ -20,6 +20,9 @@ class SceneEdgeMarker;
 class SceneLabelMarker;
 
 Q_DECLARE_METATYPE(SceneBasic *);
+Q_DECLARE_METATYPE(SceneNode *);
+Q_DECLARE_METATYPE(SceneEdge *);
+Q_DECLARE_METATYPE(SceneLabel *);
 
 class SceneBasic 
 {

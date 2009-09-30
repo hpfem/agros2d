@@ -44,12 +44,10 @@ Scalar harmonicmagnetic_bilinear_form_real_real(int n, double *wt, Func<Real> *u
 template<typename Real, typename Scalar>
 Scalar harmonicmagnetic_bilinear_form_real_imag(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = e->marker;
-
     if (harmonicmagneticPlanar)
-        return - 2 * M_PI * frequency * harmonicmagneticLabel[marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+        return - 2 * M_PI * frequency * harmonicmagneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return - 2 * M_PI * frequency * harmonicmagneticLabel[marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+        return - 2 * M_PI * frequency * harmonicmagneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>

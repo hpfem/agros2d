@@ -1,4 +1,4 @@
-#include "sceneinfo.h"
+#include "sceneinfoview.h"
 
 SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
 {
@@ -330,13 +330,22 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
 
     if (item != NULL)
     {
+        Util::scene()->selectNone();
         Util::scene()->highlightNone();
 
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
         {
-            objectBasic->isHighlighted = true;
+            if (dynamic_cast<SceneNode *>(objectBasic))
+                m_sceneView->actSceneModeNode->trigger();
+            if (dynamic_cast<SceneEdge *>(objectBasic))
+                m_sceneView->actSceneModeEdge->trigger();
+            if (dynamic_cast<SceneLabel *>(objectBasic))
+                m_sceneView->actSceneModeLabel->trigger();
+
+            objectBasic->isSelected = true;
             m_sceneView->doRefresh();
+            m_sceneView->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -346,12 +355,14 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneEdgeMarker *objectEdgeMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneEdgeMarker *>())
         {
             // select all edges
+            m_sceneView->actSceneModeEdge->trigger();
             for (int i = 0; i<Util::scene()->edges.count(); i++)
             {
                 if (Util::scene()->edges[i]->marker == objectEdgeMarker)
-                    Util::scene()->edges[i]->isHighlighted = true;
-            }
+                    Util::scene()->edges[i]->isSelected = true;
+            }            
             m_sceneView->doRefresh();
+            m_sceneView->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -361,12 +372,14 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
         {
             // select all labels
+            m_sceneView->actSceneModeLabel->trigger();
             for (int i = 0; i<Util::scene()->labels.count(); i++)
             {
                 if (Util::scene()->labels[i]->marker == objectLabelMarker)
-                    Util::scene()->labels[i]->isHighlighted = true;
-            }
+                    Util::scene()->labels[i]->isSelected = true;
+            }            
             m_sceneView->doRefresh();
+            m_sceneView->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);

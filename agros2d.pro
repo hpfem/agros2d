@@ -102,7 +102,7 @@ SOURCES += src/util.cpp \
     src/scenemarker.cpp \
     src/scenebasic.cpp \
     src/scenefunction.cpp \
-    src/sceneinfo.cpp \
+    src/sceneinfoview.cpp \
     src/sceneview.cpp \
     src/chartdialog.cpp \
     src/problemdialog.cpp \
@@ -132,7 +132,7 @@ HEADERS += src/util.h \
     src/hermes2d/hermes_current.h \
     src/hermes2d/hermes_elasticity.h \
     src/scenebasic.h \
-    src/sceneinfo.h \
+    src/sceneinfoview.h \
     src/scenemarker.h \
     src/scenefunction.h \
     src/sceneview_data.h \

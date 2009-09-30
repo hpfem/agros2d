@@ -29,23 +29,19 @@ scalar magnetostatic_bc_values(int marker, double x, double y)
 template<typename Real, typename Scalar>
 Scalar magnetostatic_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = e->marker;
-
     if (magnetostaticPlanar)
-        return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
+        return 1.0 / (magnetostaticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
-        return 1.0 / (magnetostaticLabel[marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v));
+        return 1.0 / (magnetostaticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v));
 }
 
 template<typename Real, typename Scalar>
 Scalar magnetostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = e->marker;
-
     if (magnetostaticPlanar)
-        return magnetostaticLabel[marker].current_density * int_v<Real, Scalar>(n, wt, v);
+        return magnetostaticLabel[e->marker].current_density * int_v<Real, Scalar>(n, wt, v);
     else
-        return magnetostaticLabel[marker].current_density * int_v<Real, Scalar>(n, wt, v);
+        return magnetostaticLabel[e->marker].current_density * int_v<Real, Scalar>(n, wt, v);
 }
 
 SolutionArray *magnetostatic_main(SolverThread *solverThread,
