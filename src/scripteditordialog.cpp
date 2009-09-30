@@ -31,6 +31,7 @@ QString runEcma(const QString &script)
 
     m_engine->globalObject().setProperty("include", m_engine->newFunction(scriptInclude));
     m_engine->globalObject().setProperty("printToFile", m_engine->newFunction(scriptPrintToFile));
+    m_engine->globalObject().setProperty("saveImage", m_engine->newFunction(scriptSaveImage));
 
     // document
     m_engine->globalObject().setProperty("newDocument", m_engine->newFunction(scriptNewDocument));
