@@ -274,7 +274,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
                                                                    context->argument(4).toNumber()));
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
+        return context->throwError(QScriptContext::TypeError, "This physical field is not implemented.");
         throw;
         break;
     }
@@ -320,7 +320,7 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
                                                                      context->argument(3).toNumber()));
         break;
     default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)" << endl;
+        return context->throwError(QScriptContext::TypeError, "This physical field is not implemented.");
         throw;
         break;
     }
@@ -681,7 +681,7 @@ QScriptValue scriptShowVectors(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
-// showScalar(type = { 'none', 'scalar', 'scalar3d', 'order' }, 'variable', 'component', 'range min', 'range max')
+// showScalar(type = { 'none', 'scalar', 'scalar3d', 'order' }, 'variable', 'component', rangeMin, rangeMax)
 QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).toString() == "none")
@@ -693,126 +693,120 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
     if (context->argument(0).toString() == "order")
         m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
 
-    // electrostatic
-    if (Util::scene()->problemInfo().physicField == PHYSICFIELD_ELECTROSTATIC)
+    switch (Util::scene()->problemInfo().physicField)
     {
-        if (context->argument(1).toString() == "potential")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL;
-        if (context->argument(1).toString() == "electric field")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD;
-        if (context->argument(1).toString() == "displacement")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT;
-        if (context->argument(1).toString() == "energy desity")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY;
-        if (context->argument(1).toString() == "permitivity")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY;
-    }
-    // magnetostatic
-    if (Util::scene()->problemInfo().physicField == PHYSICFIELD_MAGNETOSTATIC)
-    {
-        if (context->argument(1).toString() == "vector potential")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL;
-        if (context->argument(1).toString() == "flux density")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
-        if (context->argument(1).toString() == "magnetic field")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD;
-        if (context->argument(1).toString() == "energy density")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY;
-        if (context->argument(1).toString() == "permeability")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY;
-    }
-
-    // harmonic magnetic
-    if (Util::scene()->problemInfo().physicField == PHYSICFIELD_HARMONIC_MAGNETIC)
-    {
-        if (context->argument(1).toString() == "vector potential")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-        if (context->argument(1).toString() == "vector potential real")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL;
-        if (context->argument(1).toString() == "vector potential imag")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG;
-        if (context->argument(1).toString() == "flux density")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY;
-        if (context->argument(1).toString() == "flux density real")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL;
-        if (context->argument(1).toString() == "flux density imag")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG;
-        if (context->argument(1).toString() == "magnetic field")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD;
-        if (context->argument(1).toString() == "magnetic field real")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL;
-        if (context->argument(1).toString() == "magnetic field imag")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG;
-        if (context->argument(1).toString() == "current density total")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL;
-        if (context->argument(1).toString() == "current density total real")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL;
-        if (context->argument(1).toString() == "current density total imag")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG;
-        if (context->argument(1).toString() == "current density iduced")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED;
-        if (context->argument(1).toString() == "current density iduced real")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL;
-        if (context->argument(1).toString() == "current density iduced imag")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG;
-        if (context->argument(1).toString() == "power losses")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES;
-        if (context->argument(1).toString() == "energy density")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY;
-        if (context->argument(1).toString() == "permeability")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY;
-    }
-
-    // current
-    if (Util::scene()->problemInfo().physicField == PHYSICFIELD_CURRENT)
-    {
-        if (context->argument(1).toString() == "potential")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
-        if (context->argument(1).toString() == "electric field")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD;
-        if (context->argument(1).toString() == "current density")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY;
-        if (context->argument(1).toString() == "losses")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_CURRENT_LOSSES;
-        if (context->argument(1).toString() == "conductivity")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY;
-    }
-
-    // head
-    if (Util::scene()->problemInfo().physicField == PHYSICFIELD_HEAT_TRANSFER)
-    {
-        if (context->argument(1).toString() == "temperature")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HEAT_TEMPERATURE;
-        if (context->argument(1).toString() == "temperature gradient")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT;
-        if (context->argument(1).toString() == "head flux")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HEAT_FLUX;
-        if (context->argument(1).toString() == "head concuctivity")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY;
+    case PHYSICFIELD_ELECTROSTATIC:
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY;
+        break;
+    case PHYSICFIELD_MAGNETOSTATIC:
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY;
+        break;
+    case PHYSICFIELD_HARMONIC_MAGNETIC:
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY;
+        break;
+    case PHYSICFIELD_CURRENT:
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_CURRENT_POTENTIAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_CURRENT_LOSSES))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_LOSSES;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY;
+        break;
+    case PHYSICFIELD_HEAT_TRANSFER:
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_TEMPERATURE;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HEAT_FLUX))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_FLUX;
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY;
+        break;
+    case PHYSICFIELD_ELASTICITY:
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;
+        break;
+    default:
+        return context->throwError(QScriptContext::TypeError, "This physical field is not implemented.");
+        throw;
+        break;
     }
 
-    // elasticity
-    if (Util::scene()->problemInfo().physicField == PHYSICFIELD_ELASTICITY)
-    {
-        if (context->argument(1).toString() == "von misses stress")
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = (PhysicFieldVariable) PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;
-    }
-
-    // component
-    if (context->argument(2).toString() == "scalar")
-        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) PHYSICFIELDVARIABLECOMP_SCALAR;
-    if (context->argument(2).toString() == "magnitude")
-        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) PHYSICFIELDVARIABLECOMP_MAGNITUDE;
+    if (context->argument(2).toString() == physicFieldVariableCompStringKey(PHYSICFIELDVARIABLECOMP_SCALAR))
+        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
+    if (context->argument(2).toString() == physicFieldVariableCompStringKey(PHYSICFIELDVARIABLECOMP_MAGNITUDE))
+        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_MAGNITUDE;
     if (context->argument(2).toString() == Util::scene()->problemInfo().labelX())
-        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) PHYSICFIELDVARIABLECOMP_X;
+        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_X;
     if (context->argument(2).toString() == Util::scene()->problemInfo().labelY())
-        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = (PhysicFieldVariableComp) PHYSICFIELDVARIABLECOMP_Y;
+        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_Y;
 
-    // range
-    m_sceneView->sceneViewSettings().scalarRangeAuto = true;
     if (context->argument(3).isNumber())
+    {
         m_sceneView->sceneViewSettings().scalarRangeAuto = false;
         m_sceneView->sceneViewSettings().scalarRangeMin = context->argument(3).toNumber();
+    }
+    else
+    {
+        m_sceneView->sceneViewSettings().scalarRangeAuto = true;
+    }
     if (context->argument(4).isNumber())
         m_sceneView->sceneViewSettings().scalarRangeMax = context->argument(4).toNumber();
 
