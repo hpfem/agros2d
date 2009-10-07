@@ -377,7 +377,6 @@ void SceneView::paintGL()
     glTranslated(-m_offset.x, -m_offset.y, -m_offset.z);
 
     if (m_sceneViewSettings.showGrid) paintGrid();
-    if (m_sceneViewSettings.showRulers) paintRulers();
     if (Util::scene()->sceneSolution()->isSolved())
     {
         if (m_sceneMode == SCENEMODE_POSTPROCESSOR)
@@ -413,6 +412,8 @@ void SceneView::paintGL()
         if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
     }
 
+    if (m_sceneViewSettings.showRulers) paintRulers();
+
     paintZoomRegion();
     paintChartLine();
     paintSceneModeLabel();
@@ -430,41 +431,61 @@ void SceneView::paintGrid()
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(width(), height()));
 
-    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
-    glLineWidth(1.0);
-    glEnable(GL_LINE_STIPPLE);
-    glLineStipple(1, 0x1C47);
-    glBegin(GL_LINES);
-
-    if ((((cornerMax.x-cornerMin.x)/sceneViewSettings().gridStep + (cornerMin.y-cornerMax.y)/sceneViewSettings().gridStep) < 200) &&
-        ((cornerMax.x-cornerMin.x)/sceneViewSettings().gridStep > 0) && ((cornerMin.y-cornerMax.y)/sceneViewSettings().gridStep > 0))
+    int step = (((int) ((cornerMax - cornerMin).x / sceneViewSettings().gridStep) + 1) / 5);
+    if (step > 0.0)
     {
-        // vertical lines
-        for (int i = 0; i<cornerMax.x/sceneViewSettings().gridStep; i++)
-        {
-            glVertex2d(i*sceneViewSettings().gridStep, cornerMin.y);
-            glVertex2d(i*sceneViewSettings().gridStep, cornerMax.y);
-        }
-        for (int i = 0; i>cornerMin.x/sceneViewSettings().gridStep; i--)
-        {
-            glVertex2d(i*sceneViewSettings().gridStep, cornerMin.y);
-            glVertex2d(i*sceneViewSettings().gridStep, cornerMax.y);
-        }
+        glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+        glLineWidth(1.0);
+        glEnable(GL_LINE_STIPPLE);
+        glLineStipple(1, 0x1C47);
+        glBegin(GL_LINES);
 
-        // horizontal lines
-        for (int i = 0; i<cornerMin.y/sceneViewSettings().gridStep; i++)
+        if ((((cornerMax.x-cornerMin.x)/sceneViewSettings().gridStep + (cornerMin.y-cornerMax.y)/sceneViewSettings().gridStep) < 200) &&
+            ((cornerMax.x-cornerMin.x)/sceneViewSettings().gridStep > 0) && ((cornerMin.y-cornerMax.y)/sceneViewSettings().gridStep > 0))
         {
-            glVertex2d(cornerMin.x, i*sceneViewSettings().gridStep);
-            glVertex2d(cornerMax.x, i*sceneViewSettings().gridStep);
+            // vertical lines
+            for (int i = 0; i<cornerMax.x/sceneViewSettings().gridStep; i++)
+            {
+                if ((step > 0) && i % step == 0)
+                    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+                else
+                    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+                glVertex2d(i*sceneViewSettings().gridStep, cornerMin.y);
+                glVertex2d(i*sceneViewSettings().gridStep, cornerMax.y);
+            }
+            for (int i = 0; i>cornerMin.x/sceneViewSettings().gridStep; i--)
+            {
+                if ((step > 0) && i % step == 0)
+                    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+                else
+                    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+                glVertex2d(i*sceneViewSettings().gridStep, cornerMin.y);
+                glVertex2d(i*sceneViewSettings().gridStep, cornerMax.y);
+            }
+
+            // horizontal lines
+            for (int i = 0; i<cornerMin.y/sceneViewSettings().gridStep; i++)
+            {
+                if ((step > 0) && i % step == 0)
+                    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+                else
+                    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+                glVertex2d(cornerMin.x, i*sceneViewSettings().gridStep);
+                glVertex2d(cornerMax.x, i*sceneViewSettings().gridStep);
+            }
+            for (int i = 0; i>cornerMax.y/sceneViewSettings().gridStep; i--)
+            {
+                if ((step > 0) && i % step == 0)
+                    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+                else
+                    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+                glVertex2d(cornerMin.x, i*sceneViewSettings().gridStep);
+                glVertex2d(cornerMax.x, i*sceneViewSettings().gridStep);
+            }
         }
-        for (int i = 0; i>cornerMax.y/sceneViewSettings().gridStep; i--)
-        {
-            glVertex2d(cornerMin.x, i*sceneViewSettings().gridStep);
-            glVertex2d(cornerMax.x, i*sceneViewSettings().gridStep);
-        }
+        glEnd();
+        glDisable(GL_LINE_STIPPLE);
     }
-    glEnd();
-    glDisable(GL_LINE_STIPPLE);
     
     // axes
     glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
@@ -484,41 +505,76 @@ void SceneView::paintRulers()
     Point cornerMax = position(Point(width(), height()));
 
     // rulers
-    double diff = (((int) ((cornerMax - cornerMin).x / sceneViewSettings().gridStep) + 1) / 5) * sceneViewSettings().gridStep;
+    double step = (((int) ((cornerMax - cornerMin).x / sceneViewSettings().gridStep) + 1) / 5) * sceneViewSettings().gridStep;
 
-    double w;
-    double h = 2.0/height()*fontMetrics().height()/m_scale/2.0;
-    QString text;
-    QFont font("Arial", 8, QFont::Normal);
-    glColor3f(0.3, 0.2, 0.0);
-    if ((((cornerMax.x-cornerMin.x)/diff + (cornerMin.y-cornerMax.y)/diff) < 200) &&
-        ((cornerMax.x-cornerMin.x)/diff > 0) && ((cornerMin.y-cornerMax.y)/diff > 0))
+    if (step > 0.0)
     {
-        // vertical ticks
-        for (int i = 0; i<cornerMax.x/diff; i++)
+        double w;
+        double h = 2.0/height()*fontMetrics().height()/m_scale/2.0;
+
+        QString text;
+        QFont font("Monospace", 8, QFont::Normal);
+
+        // drawBlend(Point(cornerMin.x, cornerMax.y), Point(cornerMax.x, cornerMax.y + 1.5*h));
+
+
+
+        if (((cornerMax.x-cornerMin.x)/step > 0) && ((cornerMin.y-cornerMax.y)/step > 0))
         {
-            text = QString::number(i*diff, 'g');
-            w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-            renderText(i*diff - w, cornerMax.y + h/4.0, 0, text, font);
-        }        
-        for (int i = 0; i>cornerMin.x/diff; i--)
-        {
-            text = QString::number(i*diff, 'g');
-            w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-            renderText(i*diff - w, cornerMax.y + h/4.0, 0, text, font);
-        }
-        // horizontal ticks
-        for (int i = 0; i<cornerMin.y/diff; i++)
-        {
-            text = QString::number(i*diff, 'g');
-            w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-            renderText(cornerMin.x + h/4.0, i*diff - h/2.0, 0, text, font);
-        }
-        for (int i = 0; i>cornerMax.y/diff; i--)
-        {
-            text = QString::number(i*diff, 'g');
-            w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-            renderText(cornerMin.x + h/4.0, i*diff - h/2.0, 0, text, font);
+            // blend
+            for (int i = 0; i<cornerMax.x/step; i++)
+            {
+                text = QString::number(i*step, 'g', 4);
+                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
+            }
+            for (int i = 0; i>cornerMin.x/step; i--)
+            {
+                text = QString::number(i*step, 'g', 4);
+                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
+            }
+            // horizontal ticks
+            for (int i = 0; i<cornerMin.y/step; i++)
+            {
+                text = QString::number(i*step, 'g', 4);
+                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                drawBlend(Point(cornerMin.x, i*step + h*1.1), Point(cornerMin.x + h/4.0 + 2*w*1.1, i*step - h*1.1));
+            }
+            for (int i = 0; i>cornerMax.y/step; i--)
+            {
+                text = QString::number(i*step, 'g', 4);
+                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
+            }
+
+            glColor3f(0.3, 0.2, 0.0);
+            // vertical ticks
+            for (int i = 0; i<cornerMax.x/step; i++)
+            {
+                text = QString::number(i*step, 'g', 4);
+                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                renderText(i*step - w, cornerMax.y + h/4.0, 0, text, font);
+            }
+            for (int i = 0; i>cornerMin.x/step; i--)
+            {
+                text = QString::number(i*step, 'g', 4);
+                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                renderText(i*step - w, cornerMax.y + h/4.0, 0, text, font);
+            }
+            // horizontal ticks
+            for (int i = 0; i<cornerMin.y/step; i++)
+            {
+                text = QString::number(i*step, 'g', 4);
+                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                renderText(cornerMin.x + h/4.0, i*step - h/2.0, 0, text, font);
+            }
+            for (int i = 0; i>cornerMax.y/step; i--)
+            {
+                text = QString::number(i*step, 'g', 4);
+                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                renderText(cornerMin.x + h/4.0, i*step - h/2.0, 0, text, font);
+            }
         }
     }
 }
@@ -744,16 +800,7 @@ void SceneView::paintOrder()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         // background
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(1.0, 1.0, 1.0, 0.75);
-        glBegin(GL_QUADS);
-        glVertex2d(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale);
-        glVertex2d(1.0 - border_scale/2.0, - scale_height - border_scale);
-        glVertex2d(1.0 - border_scale/2.0, scale_height + border_scale);
-        glVertex2d(1.0 - scale_width - labels_width - border_scale, scale_height + border_scale);
-        glEnd();
-        glDisable(GL_BLEND);
+        drawBlend(Point(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale), Point(1.0 - border_scale/2.0, scale_height + border_scale));
 
         // palette
         glColor3f(0.0, 0.0, 0.0);
@@ -832,16 +879,7 @@ void SceneView::paintColorBar(double min, double max)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     // background
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1.0, 1.0, 1.0, 0.75);
-    glBegin(GL_QUADS);
-    glVertex2d(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale);
-    glVertex2d(1.0 - border_scale/2.0, - scale_height - border_scale);
-    glVertex2d(1.0 - border_scale/2.0, scale_height + border_scale);
-    glVertex2d(1.0 - scale_width - labels_width - border_scale, scale_height + border_scale);
-    glEnd();
-    glDisable(GL_BLEND);
+    drawBlend(Point(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale), Point(1.0 - border_scale/2.0, scale_height + border_scale));
 
     // palette
     glColor3f(0.0, 0.0, 0.0);
@@ -1244,16 +1282,7 @@ void SceneView::paintSceneModeLabel()
     
     double w = 2.0*fontMetrics().width(text)/width();
     
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1.0, 1.0, 1.0, 0.75);
-    glBegin(GL_QUADS);
-    glVertex2d(0.0 - w/1.5, 0.94);
-    glVertex2d(0.0 + w/1.5, 0.94);
-    glVertex2d(0.0 + w/1.5, 1.0);
-    glVertex2d(0.0 - w/1.5, 1.0);
-    glEnd();
-    glDisable(GL_BLEND);
+    drawBlend(Point(0.0 - w/1.5, 0.94), Point(0.0 + w/1.5, 1.0));
     
     glColor3f(0.0, 0.0, 0.0);
     renderText((width()-fontMetrics().width(text))/2, 14, text);
@@ -1761,7 +1790,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     m_lastPos = event->pos();
     
     Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-    
+
     setToolTip("");
     
     // zoom or select region
@@ -2426,6 +2455,20 @@ void SceneView::drawArc(const Point &point, double r, double startAngle, double 
         glVertex2d(point.x + x, point.y + y);
     }
     glEnd();
+}
+
+void SceneView::drawBlend(Point start, Point end)
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(1.0, 1.0, 1.0, 0.75);
+    glBegin(GL_QUADS);
+    glVertex2d(start.x, start.y);
+    glVertex2d(end.x, start.y);
+    glVertex2d(end.x, end.y);
+    glVertex2d(start.x, end.y);
+    glEnd();
+    glDisable(GL_BLEND);
 }
 
 void SceneView::paintPostprocessorSelectedVolume()

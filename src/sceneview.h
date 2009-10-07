@@ -233,6 +233,8 @@ private:
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
 
     void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments);
+    void drawBlend(Point start, Point end);
+
     void setZoom(double power);
     void setRangeContour();
     void setRangeScalar();
