@@ -1,7 +1,7 @@
 print("Test: Current field - planar");
 
 // model
-newDocument("Feeder", "planar", "current field", 2, 5, 0, "disabled", 1, 1);
+newDocument("Feeder", "planar", "current field", 3, 3, 0, "disabled", 1, 1);
 
 // boundaries
 addBoundary("Neumann", "inward_current_flow", 0);
@@ -34,13 +34,13 @@ zoomBestFit();
 solve();
 
 // point value
-point = pointResult(0.11879,0.346203);
-testPotential = (Math.abs(point.V) - 0.928377) < 1e-2;
-if (!testPotential) print(point.V);
+point = pointResult(0.11879, 0.346203);
+testPotential = abs(abs(point.V) - 0.928377) < 1e-2;
+if (!testPotential) print("Scalar potential: ", abs(point.V), " == ", 0.928377);
 
 // current
 integral = surfaceIntegral(0);
-testI = (Math.abs(integral.I) - 3629.425713) < 10.0;
-if (!testI) print(integral.I);
+testI = abs(abs(integral.I) - 3629.425713) < 10.0;
+if (!testI) print("Current: ", abs(integral.I), " == ", 3629.425713);
 
 print(testPotential && testI);

@@ -32,17 +32,17 @@ solve();
 
 // point value
 point = pointResult(0.086266, 0.087725);
-testTemperature = (Math.abs(point.T) - 4.363565) < 1e-2;
-if (!testTemperature) print(point.T);
+testTemperature = abs(abs(point.T) - 4.363565) < 1e-2;
+if (!testTemperature) print("Temperature: ", abs(point.T), " == ", 4.363565);
 
 // average temperature
 integral = volumeIntegral(0);
-testTemperatureAvg = (Math.abs(integral.T_avg) - (0.023972/0.005)) < 1e-2;
-if (!testTemperatureAvg) print(integral.T_avg);
+testTemperatureAvg = (abs(integral.T_avg) - (0.023972/0.005)) < 1e-2;
+if (!testTemperatureAvg) print("Avg. temperature: ", abs(integral.T_avg), " == ", (0.023972/0.005));
 
 // heat flux
 integral = surfaceIntegral(0, 6, 7);
-testFlux = (Math.abs(integral.F) - 103.220778) < 1;
-if (!testFlux) print(integral.F);
+testFlux = abs(abs(integral.F) - 103.220778) < 1;
+if (!testFlux) print("Heat flux: ", abs(integral.F), " == ", 103.220778);
 
 print(testTemperature && testTemperatureAvg && testFlux);

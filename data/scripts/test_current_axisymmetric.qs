@@ -27,12 +27,12 @@ solve();
 
 // point value
 point = pointResult(0.213175,0.25045);
-testPotential = (Math.abs(point.V) - 7.285427) < 1e-2;
-if (!testPotential) print(point.V);
+testPotential = abs(abs(point.V) - 7.285427) < 1e-2;
+if (!testPotential) print("Scalar potential: ", abs(point.V), " == ", 7.285427);
 
 // current
 integral = surfaceIntegral(1);
-testI = (Math.abs(integral.I) - 2.124955e8) < 1e6;
-if (!testI) print(integral.I);
+testI = abs(abs(integral.I) - 2.124955e8) < 1e6;
+if (!testI) print("Current: ", abs(integral.I), " == ", 2.124955e8);
 
 print(testPotential && testI);

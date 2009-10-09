@@ -250,6 +250,8 @@ inline QString physicFieldVariableCompString(PhysicFieldVariableComp physicField
 
 enum PhysicField
 {
+    PHYSICFIELD_UNDEFINED,
+    PHYSICFIELD_GENERAL,
     PHYSICFIELD_ELECTROSTATIC,
     PHYSICFIELD_MAGNETOSTATIC,
     PHYSICFIELD_CURRENT,
@@ -262,6 +264,8 @@ inline QString physicFieldStringKey(PhysicField physicField)
 {
     switch (physicField)
     {
+    case PHYSICFIELD_GENERAL:
+        return "general";
     case PHYSICFIELD_ELECTROSTATIC:
         return "electrostatic";
     case PHYSICFIELD_MAGNETOSTATIC:
@@ -285,6 +289,8 @@ inline QString physicFieldString(PhysicField physicField)
 {
     switch (physicField)
     {
+    case PHYSICFIELD_GENERAL:
+        return QObject::tr("General");
     case PHYSICFIELD_ELECTROSTATIC:
         return QObject::tr("Electrostatic");
     case PHYSICFIELD_MAGNETOSTATIC:
@@ -306,6 +312,8 @@ inline QString physicFieldString(PhysicField physicField)
 
 inline PhysicField physicFieldFromStringKey(const QString &physicFieldString)
 {
+    if (physicFieldString == "general")
+        return PHYSICFIELD_GENERAL;
     if (physicFieldString == "electrostatic")
         return PHYSICFIELD_ELECTROSTATIC;
     if (physicFieldString == "magnetostatic")
@@ -318,12 +326,14 @@ inline PhysicField physicFieldFromStringKey(const QString &physicFieldString)
         return PHYSICFIELD_HEAT_TRANSFER;
     if (physicFieldString == "elasticity")
         return PHYSICFIELD_ELASTICITY;
-    std::cerr << "Physical field '" + physicFieldString.toStdString() + "' is not implemented. physicFieldFromString(const QString &physicFieldString)" << endl;
-    throw;
+    
+    std::cerr << "Physic field '" + physicFieldString.toStdString() + "' is not implemented. physicFieldFromStringKey(const QString &physicFieldString)" << endl;
+    return PHYSICFIELD_UNDEFINED;
 }
 
 enum PhysicFieldVariable
 {
+    PHYSICFIELDVARIABLE_UNDEFINED,
     PHYSICFIELDVARIABLE_NONE,
     PHYSICFIELDVARIABLE_ORDER,
     PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL,
@@ -720,6 +730,7 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
 
 enum PhysicFieldBC
 {
+    PHYSICFIELDBC_UNDEFINED,
     PHYSICFIELDBC_NONE,
     PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL,
     PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE,
@@ -831,6 +842,7 @@ inline QString physicFieldBCStringKey(PhysicFieldBC physicFieldBC)
 
 enum PhysicFieldIntegralVolume
 {
+    PHYSICFIELDINTEGRAL_VOLUME_UNDEFINED,
     PHYSICFIELDINTEGRAL_VOLUME_VOLUME,
     PHYSICFIELDINTEGRAL_VOLUME_CROSSSECTION,
     PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_X,
@@ -876,6 +888,7 @@ enum PhysicFieldIntegralVolume
 
 enum PhysicFieldIntegralSurface
 {
+    PHYSICFIELDINTEGRAL_SURFACE_UNDEFINED,
     PHYSICFIELDINTEGRAL_SURFACE_LENGTH,
     PHYSICFIELDINTEGRAL_SURFACE_SURFACE,
     PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY,
@@ -976,5 +989,24 @@ enum SceneViewPostprocessorShow
     SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID,
     SCENEVIEW_POSTPROCESSOR_SHOW_ORDER
 };
+
+inline QString sceneViewPostprocessorShowStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow)
+{
+    switch (sceneViewPostprocessorShow)
+    {
+    case SCENEVIEW_POSTPROCESSOR_SHOW_NONE:
+        return "none";
+    case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW:
+        return "scalar";
+    case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D:
+        return "scalar3d";
+    case SCENEVIEW_POSTPROCESSOR_SHOW_ORDER:
+        return "order";
+    default:
+        std::cerr << "Postprocessor show '" + QString::number(sceneViewPostprocessorShow).toStdString() + "' is not implemented. sceneViewPostprocessorShowStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow)" << endl;
+        //throw;
+        break;
+    }
+}
 
 #endif // UTIL_H

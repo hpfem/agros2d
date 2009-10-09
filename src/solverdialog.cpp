@@ -27,7 +27,7 @@ void SolverThread::cancel()
     QApplication::processEvents();
     while (isRunning())
     {
-        terminate();
+        quit();
         wait(50);
     }
     m_isCanceled = true;
@@ -890,8 +890,8 @@ SolverDialog::~SolverDialog()
 
     while (thread->isRunning())
     {
+        thread->quit();
         thread->wait(50);
-        thread->terminate();
     }
     delete thread;
 

@@ -3,13 +3,13 @@
 
 QScriptEngine *m_engine;
 
-QString runEcma(const QString &script)
+ScriptResult runEcma(const QString &script)
 {
     if (!m_engine)
         m_engine = scriptEngine();
 
     if (script.isEmpty())
-        return "";
+        return ScriptResult();
 
     // scene
     QScriptValue sceneValue = m_engine->newQObject(Util::scene());
@@ -68,7 +68,7 @@ QString runEcma(const QString &script)
     m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
     m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
 
-    // solver    
+    // solver
     m_engine->globalObject().setProperty("mesh", m_engine->newFunction(scriptMesh));
     m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
 
@@ -95,18 +95,22 @@ QString runEcma(const QString &script)
         m_engine->evaluate(Util::scene()->problemInfo().scriptStartup);
         // result
         QScriptValue result = m_engine->evaluate(script);
+        if (m_engine->hasUncaughtException()) {
+            int line = m_engine->uncaughtExceptionLineNumber();
+            return ScriptResult(QObject::tr("%1 (line %2.)").arg(result.toString()).arg(line),
+                                result.isError());
+        }
         Util::scene()->blockSignals(false);
         Util::scene()->refresh();
         Util::scene()->undoStack()->setActive(true);
 
-        return funPrint.data().toString().trimmed();
+        return ScriptResult(funPrint.data().toString().trimmed(), false);
     }
     else
     {
-        return QObject::tr("Error: %1 (line %2, column %3)").arg(syntaxResult.errorMessage()).arg(syntaxResult.errorLineNumber()).arg(syntaxResult.errorColumnNumber());
+        return ScriptResult(QObject::tr("%1 (line %2, column %3)").arg(syntaxResult.errorMessage()).arg(syntaxResult.errorLineNumber()).arg(syntaxResult.errorColumnNumber()),
+                            true);
     }
-
-    return "";
 }
 
 QString createEcmaFromModel()
@@ -197,7 +201,7 @@ void ScriptEngineRemote::connected()
 
     m_server_socket = m_server->nextPendingConnection();
     connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readCommand()));
-    connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));   
+    connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 }
 
 void ScriptEngineRemote::readCommand()
@@ -210,7 +214,7 @@ void ScriptEngineRemote::disconnected()
 {
     m_server_socket->deleteLater();
 
-    QString result = "";
+    ScriptResult result;
     if (!command.isEmpty())
     {
         result = runEcma(command);
@@ -223,7 +227,7 @@ void ScriptEngineRemote::disconnected()
     if (m_client_socket->waitForConnected(1000))
     {
         QTextStream out(m_client_socket);
-        out << result;
+        out << result.text;
         out.flush();
         m_client_socket->waitForBytesWritten();
     }
@@ -304,8 +308,8 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     else
         scriptContent = script;
 
-    QString output = runEcma(scriptContent);
-    txtOutput->setPlainText(output);
+    ScriptResult result = runEcma(scriptContent);
+    txtOutput->setPlainText(result.text);
 }
 
 void ScriptEditorWidget::doCreateEcmaFromModel()
@@ -323,7 +327,7 @@ ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : 
 
     m_sceneView = sceneView;
 
-    setWindowIcon(icon("script"));    
+    setWindowIcon(icon("script"));
 
     searchDialog = new SearchDialog(this);
 
@@ -338,7 +342,7 @@ ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : 
 ScriptEditorDialog::~ScriptEditorDialog()
 {
     QSettings settings;
-    settings.setValue("ScriptEditorDialog/Geometry", saveGeometry());   
+    settings.setValue("ScriptEditorDialog/Geometry", saveGeometry());
     settings.setValue("ScriptEditorDialog/State", saveState());
     settings.setValue("ScriptEditorDialog/RecentFiles", recentFiles);
 }
@@ -357,7 +361,11 @@ void ScriptEditorDialog::runScript(const QString &fileName)
         if (file.open(QFile::ReadOnly | QFile::Text))
         {
             // run script
-            runEcma(file.readAll());
+            ScriptResult result = runEcma(file.readAll());
+            if (result.isError)
+                QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
+            else if (!result.text.isEmpty())
+                QMessageBox::information(QApplication::activeWindow(), "Message", result.text);
         }
         file.close();
     }
@@ -368,7 +376,11 @@ void ScriptEditorDialog::runCommand(const QString &command)
     if (!command.isEmpty())
     {
         // run script
-        runEcma(command);
+        ScriptResult result = runEcma(command);
+        if (result.isError)
+            QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
+        else if (!result.text.isEmpty())
+            QMessageBox::information(QApplication::activeWindow(), "Message", result.text);
     }
 }
 
@@ -428,7 +440,7 @@ void ScriptEditorDialog::createActions()
 
     actRunEcma = new QAction(icon("system-run"), tr("&Run"), this);
     actRunEcma->setShortcut(QKeySequence(tr("Ctrl+R")));
-    
+
     // actRunPython = new QAction(icon("system-run"), tr("&Run Python script"), this);
     // actRunPython->setShortcut(QKeySequence(tr("Ctrl+T")));
 
@@ -584,7 +596,7 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
 
         doCurrentPageChanged(tabWidget->currentIndex());
-    }    
+    }
 }
 
 void ScriptEditorDialog::doFileOpenRecent(QAction *action)
@@ -630,7 +642,7 @@ void ScriptEditorDialog::doFileSaveAs()
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
 
     scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Agros2D script files (*.qs)"));
-    doFileSave();    
+    doFileSave();
 }
 
 void ScriptEditorDialog::doFileClose()

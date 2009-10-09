@@ -315,9 +315,9 @@ void CommandDialog::doAccept()
 
         // remove last item (over 30), empty strings and duplicates
         list.removeAll("");
+        list.removeDuplicates();
         while (list.count() > 30)
             list.removeAt(0);
-        list.removeDuplicates();
 
         QSettings settings;
         settings.setValue("CommandDialog/RecentCommands", list);

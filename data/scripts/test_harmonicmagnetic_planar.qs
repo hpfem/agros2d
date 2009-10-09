@@ -36,32 +36,32 @@ solve();
 
 // point value
 pointPotential = pointResult(0.00589,-0.005301);
-testPotentialReal = (Math.abs(pointPotential.A_real) - 1.632192e-5) < 1e-8;
-testPotentialImag = (Math.abs(pointPotential.A_imag) - 4.083868e-5) < 1e-8;
-if (!testPotentialReal) print(pointPotential.A_real);
-if (!testPotentialImag) print(pointPotential.A_imag);
+testPotentialReal = abs(abs(pointPotential.A_real) - 1.632192e-5) < 1e-7;
+testPotentialImag = abs(abs(pointPotential.A_imag) - 4.083868e-5) < 1e-7;
+if (!testPotentialReal) print("Magnetic potential - real: ", abs(pointPotential.A_real), " == ", 1.632192e-5);
+if (!testPotentialImag) print("Magnetic potential - imag: ", abs(pointPotential.A_imag), " == ", 4.083868e-5);
 
 pointTotalCurrentDensity = pointResult(0.013567, 0.017081);
-testTotalCurentDensityReal = (Math.abs(pointTotalCurrentDensity.J_real) - 2.408328e5) < 1e2;
-testTotalCurentDensityImag = (Math.abs(pointTotalCurrentDensity.J_imag) - 3.299946e5) < 1e2;
-if (!testTotalCurentDensityReal) print(pointTotalCurrentDensity.J_real);
-if (!testTotalCurentDensityImag) print(pointTotalCurrentDensity.J_imag);
+testTotalCurentDensityReal = abs(abs(pointTotalCurrentDensity.J_real) - 2.408328e5) < 1e2;
+testTotalCurentDensityImag = abs(abs(pointTotalCurrentDensity.J_imag) - 3.299946e5) < 1e2;
+if (!testTotalCurentDensityReal) print("Total current density - real: ", abs(pointTotalCurrentDensity.J_real), " == ", 2.408328e5);
+if (!testTotalCurentDensityImag) print("Total current density - imag: ", abs(pointTotalCurrentDensity.J_imag), " == ", 3.299946e5);
 
 pointFluxDensity = pointResult(0.009454, -0.004136);
-testFluxDensity = (Math.abs(pointFluxDensity.B) - 0.00142) < 1e-8;
-if (!testFluxDensity) print(pointFluxDensity.B);
+testFluxDensity = abs(abs(pointFluxDensity.B) - 0.00142) < 1e-4;
+if (!testFluxDensity) print("Flux density: ", abs(pointFluxDensity.B), " == ", 0.00142);
 
 // energy
 integral = volumeIntegral();
-testEnergy = (Math.abs(integral.Wm) - 0.001923) < 1e-5;
-if (!testEnergy) print(integral.Wm);
+testEnergy = abs(abs(integral.Wm) - 0.001923) < 1e-5;
+if (!testEnergy) print("Magnetic energy: ", abs(integral.Wm), " == ", 0.001923);
 
 // Lorentz force
 integral = volumeIntegral(1);
-testLorentzForceX = (Math.abs(integral.Fx_real/2.0) - 0.020612) < 1e-4;
-testLorentzForceY = (Math.abs(integral.Fy_real/2.0) - 0.011107) < 1e-4;
-if (!testLorentzForceX) print(integral.Fx_real/2.0);
-if (!testLorentzForceY) print(integral.Fy_real/2.0);
+testLorentzForceX = abs(abs(integral.Fx_real/2.0) - 0.020612) < 1e-4;
+testLorentzForceY = abs(abs(integral.Fy_real/2.0) - 0.011107) < 1e-4;
+if (!testLorentzForceX) print("Lorentz force - X: ", abs(integral.Fx_real/2.0), " == ", 0.020612);
+if (!testLorentzForceY) print("Lorentz force - Y: ", abs(integral.Fy_real/2.0), " == ", 0.011107);
 
-print(pointPotential && pointTotalCurrentDensity && pointFluxDensity && testEnergy 
-&& testLorentzForceX && testLorentzForceY);
+print(testPotentialReal && testPotentialImag && testTotalCurentDensityReal && testTotalCurentDensityImag && 
+testFluxDensity && testEnergy && testLorentzForceX && testLorentzForceY);

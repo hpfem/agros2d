@@ -195,11 +195,11 @@ void SceneView::createActions()
     actSceneZoomOut->setStatusTip(tr("Zoom out"));
     connect(actSceneZoomOut, SIGNAL(triggered()), this, SLOT(doZoomOut()));
     
-    actSceneZoomBestFit = new QAction(icon("zoom-best-fit"), tr("Zoom best fit"), this);
+    actSceneZoomBestFit = new QAction(icon("zoom-original"), tr("Zoom best fit"), this);
     actSceneZoomBestFit->setStatusTip(tr("Best fit"));
     connect(actSceneZoomBestFit, SIGNAL(triggered()), this, SLOT(doZoomBestFit()));
     
-    actSceneZoomRegion = new QAction(icon("zoom-region"), tr("Zoom region"), this);
+    actSceneZoomRegion = new QAction(icon("zoom-best-fit"), tr("Zoom region"), this);
     actSceneZoomRegion->setStatusTip(tr("Zoom region"));
     actSceneZoomRegion->setCheckable(true);
     
@@ -489,6 +489,7 @@ void SceneView::paintGrid()
     
     // axes
     glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+    glLineWidth(1.0);
     glBegin(GL_LINES);
     // y axis
     glVertex2d(0, cornerMin.y);

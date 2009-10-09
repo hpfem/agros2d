@@ -44,16 +44,16 @@ solve();
 // point value
 point = pointResult(13.257584, 11.117738);
 testPotential = (Math.abs(point.V) - 1111.544813) < 0.5;
-if (!testPotential) print(point.V);
+if (!testPotential) print("Scalar potential: ", abs(point.V), " == ", 1111.544813);
 
 // energy
 integral = volumeIntegral();
 testEnergy = (Math.abs(integral.We) - 6.79882e-5) < 1e-7;
-if (!testEnergy) print(integral.We);
+if (!testEnergy) print("Electric energy: ", abs(integral.We), " == ", 6.79882e-5);
 
 // charge
 integral = surfaceIntegral(0, 1, 2, 3);
 testQ = (Math.abs(integral.Q) - 1.048981e-7) < 5e-9;
-if (!testQ) print(integral.Q);
+if (!testQ) print("Electric charge: ", abs(integral.Q), " == ", 1.048981e-7);
 
 print(testPotential && testEnergy && testQ);

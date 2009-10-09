@@ -72,7 +72,7 @@ Scalar heat_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, Ex
     }
 
     if (heatPlanar)
-        return (q + Text * h) * int_v<Real, Scalar>(n, wt, v); // FIXME surf_int_v(fv, rv, ep);
+        return (q + Text * h) * int_v<Real, Scalar>(n, wt, v);
     else
         return (q + Text * h) * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }

@@ -46,6 +46,21 @@ function sqr(x)
 	return x*x;
 }
 
+function abs(x)
+{
+    return Math.abs(x);
+}
+
+function sin(x)
+{
+    return Math.sin(x);
+}
+
+function cos(x)
+{
+    return Math.cos(x);
+}
+
 // other functions
 function step(x, border, value)
 {

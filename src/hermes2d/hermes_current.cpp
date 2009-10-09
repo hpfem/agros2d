@@ -35,9 +35,9 @@ Scalar current_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e,
         J = currentEdge[e->marker].value;
 
     if (currentPlanar)
-        return J * int_v<Real, Scalar>(n, wt, v); // FIXME surf_int_v(fv, rv, ep);
+        return J * int_v<Real, Scalar>(n, wt, v);
     else
-        return J * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e); // FIXME surf_int_x_v(fv, rv, ep);
+        return J * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 
 }
 

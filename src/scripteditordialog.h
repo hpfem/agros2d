@@ -2,6 +2,7 @@
 #define SCRIPTEDITORDIALOG_H
 
 #include <QScriptEngine>
+#include <QScriptContext>
 
 #include "scene.h"
 #include "sceneview.h"
@@ -9,6 +10,24 @@
 #include "scripteditorhighlighter.h"
 
 static SceneView *m_sceneView;
+
+struct ScriptResult
+{
+    ScriptResult()
+    {
+        text = "";
+        isError = false;
+    }
+
+    ScriptResult(const QString &text, bool isError)
+    {
+        this->text = text;
+        this->isError = isError;
+    }
+
+    QString text;
+    bool isError;
+};
 
 class Scene;
 class SceneView;

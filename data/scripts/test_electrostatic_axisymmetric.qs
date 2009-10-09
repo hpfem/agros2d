@@ -39,17 +39,17 @@ solve();
 
 // point value
 point = pointResult(0.026532, 0.070937);
-testPotential = (Math.abs(point.V) - 26.078318) < 0.1;
-if (!testPotential) print(point.V);
+testPotential = abs(abs(point.V) - 26.078318) < 0.1;
+if (!testPotential) print("Scalar potential: ", abs(point.V), " == ", 26.078318);
 
 // energy
 integral = volumeIntegral();
-testEnergy = (Math.abs(integral.We) - 1.799349e-8) < 1e-11;
-if (!testEnergy) print(integral.We);
+testEnergy = abs(abs(integral.We) - 1.799349e-8) < 1e-11;
+if (!testEnergy) print("Electric energy: ", abs(integral.We), " == ", 1.799349e-8);
 
 // charge
 integral = surfaceIntegral(1, 12);
-testQ = (Math.abs(integral.Q) - 1.291778e-9) < 1e-14;
-if (!testQ) print(integral.Q);
+testQ = abs(abs(integral.Q) - 1.291778e-9) < 1e-11;
+if (!testQ) print("Electric charge: ", abs(integral.Q), " == ", 1.291778e-9);
 
 print(testPotential && testEnergy && testQ);

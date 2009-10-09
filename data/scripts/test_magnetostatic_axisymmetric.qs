@@ -48,12 +48,12 @@ solve();
 
 // point value
 point = pointResult(0.035324, 0.043477);
-testFluxDensity = (Math.abs(point.B) - 0.032477) < 1e-8;
-if (!testFluxDensity) print(point.B);
+testFluxDensity = abs(abs(point.B) - 0.032477) < 1e-4;
+if (!testFluxDensity) print("Flux density: ", abs(point.B), " == ", 0.032477);
 
 // energy
 integral = volumeIntegral();
-testEnergy = (Math.abs(integral.Wm) - 0.036347) < 1e-5;
-if (!testEnergy) print(integral.Wm);
+testEnergy = (abs(integral.Wm) - 0.036347) < 1e-5;
+if (!testEnergy) print("Magnetic energy: ", abs(integral.Wm), " == ", 0.036347);
 
 print(testFluxDensity && testEnergy);
