@@ -1,4 +1,5 @@
 #include "scenebasic.h"
+#include "scene.h"
 
 SceneBasic::SceneBasic()
 {

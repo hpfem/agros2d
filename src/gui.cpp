@@ -1,82 +1,38 @@
 #include "gui.h"
+#include "scene.h"
 
-void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)
+void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit)
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+    item->setText(0, name);
+    item->setText(1, text);
+    item->setTextAlignment(1, Qt::AlignRight);
+    item->setText(2, unit + " ");
+    item->setTextAlignment(2, Qt::AlignLeft);
+}
+
+void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
     // store variable
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
 
     // clear combo
     cmbFieldVariable->clear();
+    Util::scene()->problemInfo().hermes->fillComboBoxScalarVariable(cmbFieldVariable);
 
-    switch (physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        {
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL), PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD), PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT), PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY), PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY);
-        }
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        {
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL), PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY);
-        }
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        {
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY), PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY);
-        }
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        {
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_FLUX), PHYSICFIELDVARIABLE_HEAT_FLUX);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY), PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY);
-        }
-        break;
-    case PHYSICFIELD_CURRENT:
-        {
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_POTENTIAL), PHYSICFIELDVARIABLE_CURRENT_POTENTIAL);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD), PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY), PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_LOSSES), PHYSICFIELDVARIABLE_CURRENT_LOSSES);
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY), PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY);
-        }
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        {
-            cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS), PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS);
-        }
-        break;
-    default:
-        std::cerr << "Physical field '" + physicFieldStringKey(physicField).toStdString() + "' is not implemented. fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField)" << endl;
-        throw;
-        break;
-    }
+    cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
+    if (cmbFieldVariable->currentIndex() == -1)
+        cmbFieldVariable->setCurrentIndex(0);
+}
+
+void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
+{
+    // store variable
+    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+
+    // clear combo
+    cmbFieldVariable->clear();
+    Util::scene()->problemInfo().hermes->fillComboBoxVectorVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
@@ -321,148 +277,6 @@ void CommandDialog::doAccept()
 
         QSettings settings;
         settings.setValue("CommandDialog/RecentCommands", list);
-    }
-
-    accept();
-}
-
-// ***********************************************************************************************************
-
-EdgeMarkerDialog::EdgeMarkerDialog(QWidget *parent) : QDialog(parent)
-{
-    setWindowTitle(tr("Edge marker"));
-    setWindowIcon(icon("scene-edge"));
-    setModal(true);   
-
-    // fill combo
-    cmbMarker = new QComboBox(this);
-    for (int i = 0; i<Util::scene()->edgeMarkers.count(); i++)
-    {
-        cmbMarker->addItem(Util::scene()->edgeMarkers[i]->name, Util::scene()->edgeMarkers[i]->variant());
-    }
-
-    // select marker
-    cmbMarker->setCurrentIndex(-1);
-    SceneEdgeMarker *marker = NULL;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        if (Util::scene()->edges[i]->isSelected)
-        {
-            if (!marker)
-            {
-                marker = Util::scene()->edges[i]->marker;
-            }
-            if (marker != Util::scene()->edges[i]->marker)
-            {
-                marker = NULL;
-                break;
-            }
-        }
-    }
-    if (marker)
-        cmbMarker->setCurrentIndex(cmbMarker->findData(marker->variant()));
-
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
-    QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(new QLabel(tr("Edge marker:")));
-    layoutMarker->addWidget(cmbMarker);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutMarker);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
-
-    setLayout(layout);
-
-    setMaximumSize(sizeHint());
-}
-
-EdgeMarkerDialog::~EdgeMarkerDialog()
-{
-    delete cmbMarker;
-}
-
-void EdgeMarkerDialog::doAccept()
-{
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
-    {
-        if (Util::scene()->edges[i]->isSelected)
-            Util::scene()->edges[i]->marker = marker();
-    }
-
-    accept();
-}
-
-// ******************************************************************************************************************
-
-LabelMarkerDialog::LabelMarkerDialog(QWidget *parent) : QDialog(parent)
-{
-    setWindowTitle(tr("Edge marker"));
-    setWindowIcon(icon("scene-label"));
-    setModal(true);
-
-    // fill combo
-    cmbMarker = new QComboBox(this);
-    for (int i = 0; i<Util::scene()->labelMarkers.count(); i++)
-    {
-        cmbMarker->addItem(Util::scene()->labelMarkers[i]->name, Util::scene()->labelMarkers[i]->variant());
-    }
-
-    // select marker
-    cmbMarker->setCurrentIndex(-1);
-    SceneLabelMarker *marker = NULL;
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
-    {
-        if (Util::scene()->labels[i]->isSelected)
-        {
-            if (!marker)
-            {
-                marker = Util::scene()->labels[i]->marker;
-            }
-            if (marker != Util::scene()->labels[i]->marker)
-            {
-                marker = NULL;
-                break;
-            }
-        }
-    }
-    if (marker)
-        cmbMarker->setCurrentIndex(cmbMarker->findData(marker->variant()));
-
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
-    QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(new QLabel(tr("Label marker:")));
-    layoutMarker->addWidget(cmbMarker);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutMarker);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
-
-    setLayout(layout);
-
-    setMaximumSize(sizeHint());
-}
-
-LabelMarkerDialog::~LabelMarkerDialog()
-{
-    delete cmbMarker;
-}
-
-void LabelMarkerDialog::doAccept()
-{
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
-    {
-        if (Util::scene()->labels[i]->isSelected)
-            Util::scene()->labels[i]->marker = marker();
     }
 
     accept();

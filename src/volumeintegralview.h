@@ -2,17 +2,18 @@
 #define VOLUMEINTEGRALVIEW_H
 
 #include "util.h"
-#include "scene.h"
+#include "gui.h"
 
-class VolumeIntegralValue;
-class VolumeIntegralValueElectrostatic;
-class VolumeIntegralValueMagnetostatic;
-class VolumeIntegralValueHarmonicMagnetic;
-class VolumeIntegralValueHeat;
-class VolumeIntegralValueCurrent;
+class VolumeIntegralValue
+{
+public:
+    double volume;
+    double crossSection;
 
-VolumeIntegralValue *volumeIntegralValueFactory();
-QStringList volumeIntegralValueHeaderFactory(PhysicField physicField);
+    VolumeIntegralValue();
+
+    virtual QStringList variables() = 0;
+};
 
 class VolumeIntegralValueView : public QDockWidget
 {
@@ -27,104 +28,6 @@ public:
 
 private:
     QTreeWidget *trvWidget;
-
-    void addValue(QTreeWidgetItem *parent, QString name, QString text, QString unit);
-
-    void showElectrostatic(VolumeIntegralValueElectrostatic *volumeIntegralValueElectrostatic);
-    void showMagnetostatic(VolumeIntegralValueMagnetostatic *volumeIntegralValueMagnetostatic);
-    void showHarmonicMagnetic(VolumeIntegralValueHarmonicMagnetic *volumeIntegralValueHarmonicMagnetic);
-    void showHeat(VolumeIntegralValueHeat *volumeIntegralValueHeat);
-};
-
-class VolumeIntegralValue
-{
-public:
-    double volume;
-    double crossSection;
-
-    VolumeIntegralValue();
-
-    virtual QStringList variables() = 0;
-
-protected:
-};
-
-class VolumeIntegralValueElectrostatic : public VolumeIntegralValue
-{
-public:
-    double averageElectricFieldX;
-    double averageElectricFieldY;
-    double averageElectricField;
-    double averageDisplacementX;
-    double averageDisplacementY;
-    double averageDisplacement;
-    double energy;
-
-    VolumeIntegralValueElectrostatic();
-    QStringList variables();
-};
-
-class VolumeIntegralValueMagnetostatic : public VolumeIntegralValue
-{
-public:
-    double averageMagneticFieldX;
-    double averageMagneticFieldY;
-    double averageMagneticField;
-    double averageFluxDensityX;
-    double averageFluxDensityY;
-    double averageFluxDensity;
-    double energy;
-
-    VolumeIntegralValueMagnetostatic();
-    QStringList variables();
-};
-
-class VolumeIntegralValueHarmonicMagnetic : public VolumeIntegralValue
-{
-public:
-    double currentInducedReal;
-    double currentInducedImag;
-    double currentTotalReal;
-    double currentTotalImag;
-    double forceXReal;
-    double forceXImag;
-    double forceYReal;
-    double forceYImag;
-    double powerLosses;
-    double energy;
-
-    VolumeIntegralValueHarmonicMagnetic();
-    QStringList variables();
-};
-
-class VolumeIntegralValueHeat : public VolumeIntegralValue
-{
-public:
-    double averageTemperature;
-    double averageTemperatureGradientX;
-    double averageTemperatureGradientY;
-    double averageTemperatureGradient;
-    double averageHeatFluxX;
-    double averageHeatFluxY;
-    double averageHeatFlux;
-
-    VolumeIntegralValueHeat();
-    QStringList variables();
-};
-
-class VolumeIntegralValueCurrent : public VolumeIntegralValue
-{
-public:
-    double averageElectricFieldX;
-    double averageElectricFieldY;
-    double averageElectricField;
-    double averageCurrentDensityX;
-    double averageCurrentDensityY;
-    double averageCurrentDensity;
-    double losses;
-
-    VolumeIntegralValueCurrent();
-    QStringList variables();
 };
 
 #endif // VOLUMEINTEGRALVIEW_H

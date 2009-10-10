@@ -3,14 +3,12 @@
 
 #include "util.h"
 #include "gui.h"
-#include "scene.h"
 #include "scenemarker.h"
 
 class SLineEdit;
 
 struct Point;
 
-class Scene;
 class SceneBasic;
 class SceneNode;
 class SceneEdge;

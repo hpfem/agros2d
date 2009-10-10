@@ -148,7 +148,7 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 
     // physicfield
     if (physicFieldFromStringKey(context->argument(2).toString()) != PHYSICFIELD_UNDEFINED)
-        problemInfo.physicField = physicFieldFromStringKey(context->argument(2).toString());
+        problemInfo.hermes = hermesFieldFactory(physicFieldFromStringKey(context->argument(2).toString()));
     else
         return context->throwError(QObject::tr("Physic field '%1' is not implemented.").arg(context->argument(2).toString()));
 
@@ -165,7 +165,7 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
         return context->throwError(QObject::tr("Polynomial order '%1' is out of range.").arg(context->argument(4).toString()));
 
     // frequency
-    if (context->argument(5).toNumber() > 0 && problemInfo.physicField != PHYSICFIELD_HARMONIC_MAGNETIC)
+    if (context->argument(5).toNumber() > 0 && problemInfo.physicField() != PHYSICFIELD_HARMONIC_MAGNETIC)
         return context->throwError(QObject::tr("Frequency can be used only for harmonic magnetic problems."));
     else
         problemInfo.frequency = context->argument(5).toNumber();
@@ -352,7 +352,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
     }
 
     PhysicFieldBC type;
-    switch (Util::scene()->problemInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
         if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL))
@@ -436,7 +436,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
                                                                        context->argument(4).toNumber()));
         break;
     default:
-        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptAddBoundary()" << endl;
+        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField()).toStdString() + "' is not implemented. scriptAddBoundary()" << endl;
         throw;
         break;
     }
@@ -460,7 +460,7 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
     }
 
     PhysicFieldBC type;
-    switch (Util::scene()->problemInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
         Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(context->argument(0).toString(),
@@ -494,7 +494,7 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
                                                                      context->argument(3).toNumber()));
         break;
     default:
-        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptAddMaterial()" << endl;
+        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField()).toStdString() + "' is not implemented. scriptAddMaterial()" << endl;
         throw;
         break;
     }
@@ -722,9 +722,9 @@ QScriptValue scriptDeleteSelection(QScriptContext *context, QScriptEngine *engin
 QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
 {
     Point point(context->argument(0).toNumber(), context->argument(1).toNumber());
-    LocalPointValue *localPointValue = localPointValueFactory(point);
+    LocalPointValue *localPointValue = Util::scene()->problemInfo().hermes->localPointValue(point);
 
-    QStringList headers = localPointValueHeaderFactory(Util::scene()->problemInfo().physicField);
+    QStringList headers = Util::scene()->problemInfo().hermes->localPointValueHeader();
     QStringList variables = localPointValue->variables();
 
     QScriptValue value = engine->newObject();
@@ -755,9 +755,9 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
             for (int i = 0; i<context->argumentCount(); i++)
                 Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
 
-        VolumeIntegralValue *volumeIntegral = volumeIntegralValueFactory();
+        VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo().hermes->volumeIntegralValue();
 
-        QStringList headers = volumeIntegralValueHeaderFactory(Util::scene()->problemInfo().physicField);
+        QStringList headers = Util::scene()->problemInfo().hermes->volumeIntegralValueHeader();
         QStringList variables = volumeIntegral->variables();
 
         QScriptValue value = engine->newObject();
@@ -793,9 +793,9 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
             for (int i = 0; i<context->argumentCount(); i++)
                 Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
 
-        SurfaceIntegralValue *surfaceIntegral = surfaceIntegralValueFactory();
+        SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo().hermes->surfaceIntegralValue();
 
-        QStringList headers = surfaceIntegralValueHeaderFactory(Util::scene()->problemInfo().physicField);
+        QStringList headers = Util::scene()->problemInfo().hermes->surfaceIntegralValueHeader();
         QStringList variables = surfaceIntegral->variables();
 
         QScriptValue value = engine->newObject();
@@ -889,7 +889,7 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
     else
         return context->throwError(QObject::tr("View type '%1' is not implemented.").arg(context->argument(0).toString()));
 
-    switch (Util::scene()->problemInfo().physicField)
+    switch (Util::scene()->problemInfo().physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
         if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL))
@@ -992,7 +992,7 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
             return context->throwError(QObject::tr("Physic field variable '%1' is not implemented.").arg(context->argument(1).toString()));
         break;
     default:
-        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. scriptShowScalar()" << endl;
+        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField()).toStdString() + "' is not implemented. scriptShowScalar()" << endl;
         throw;
         break;
     }

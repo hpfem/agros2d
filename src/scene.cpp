@@ -186,8 +186,8 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     {
         if ((((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) ||
              ((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart))) &&
-             (fabs(edgeCheck->angle-edge->angle - edge->angle) < EPS_ZERO) &&
-             (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
+            (fabs(edgeCheck->angle-edge->angle - edge->angle) < EPS_ZERO) &&
+            (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
         {
             delete edge;
             return edgeCheck;
@@ -739,74 +739,20 @@ void Scene::doDeleteSelected()
 
 void Scene::doNewEdgeMarker()
 {
-    SceneEdgeMarker *marker;
-    switch (m_problemInfo.physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        marker = new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, Value("0"));
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        marker = new SceneEdgeMagnetostaticMarker("new boundary", PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, Value("0"));
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        marker = new SceneEdgeHarmonicMagneticMarker("new boundary", PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL, Value("0"));
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        marker = new SceneEdgeHeatMarker("new boundary", PHYSICFIELDBC_HEAT_TEMPERATURE, Value("0"));
-        break;
-    case PHYSICFIELD_CURRENT:
-        marker = new SceneEdgeCurrentMarker("new boundary", PHYSICFIELDBC_CURRENT_POTENTIAL, Value("0"));
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        marker = new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, 0, 0);
-        break;
-    default:
-        cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField).toStdString() + "' is not implemented. Scene::doNewEdgeMarker()" << endl;
-        throw;
-        break;
-    }
+    SceneEdgeMarker *marker = Util::scene()->problemInfo().hermes->newEdgeMarker();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
-    {
         addEdgeMarker(marker);
-    }
     else
         delete marker;
 }
 
 void Scene::doNewLabelMarker()
 {
-    SceneLabelMarker *marker;
-    switch (m_problemInfo.physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        marker = new SceneLabelElectrostaticMarker("new material",  Value("0"), Value("1"));
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        marker = new SceneLabelMagnetostaticMarker("new material", Value("0"), Value("1"));
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        marker = new SceneLabelHarmonicMagneticMarker("new material", Value("0"), Value("0"), Value("1"), Value("0"));
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        marker = new SceneLabelHeatMarker("new material", Value("0"), Value("385"));
-        break;
-    case PHYSICFIELD_CURRENT:
-        marker = new SceneLabelCurrentMarker("new material", Value("57e6"));
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        marker = new SceneLabelElasticityMarker("new material", 2e11, 0.33);
-        break;
-    default:
-        cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField).toStdString() + "' is not implemented. Scene::doNewLabelMarker()" << endl;
-        throw;
-        break;
-    }
+    SceneLabelMarker * marker = Util::scene()->problemInfo().hermes->newLabelMarker();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
-    {
         addLabelMarker(marker);
-    }
     else
         delete marker;
 }
@@ -1044,7 +990,7 @@ void Scene::readFromFile(const QString &fileName)
     if (eleProblem.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_PLANAR)) m_problemInfo.problemType = PROBLEMTYPE_PLANAR;
     if (eleProblem.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_AXISYMMETRIC)) m_problemInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
     // physic field
-    m_problemInfo.physicField = physicFieldFromStringKey(eleProblem.toElement().attribute("type"));
+    m_problemInfo.hermes = hermesFieldFactory(physicFieldFromStringKey(eleProblem.toElement().attribute("type")));
     // number of refinements
     m_problemInfo.numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
@@ -1083,7 +1029,7 @@ void Scene::readFromFile(const QString &fileName)
             PhysicFieldBC type;
             PhysicFieldBC typeX;
             PhysicFieldBC typeY;
-            switch (m_problemInfo.physicField)
+            switch (m_problemInfo.physicField())
             {
             case PHYSICFIELD_ELECTROSTATIC:
                 // electrostatic markers
@@ -1157,7 +1103,7 @@ void Scene::readFromFile(const QString &fileName)
                 }
                 break;
             default:
-                cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField()).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -1181,7 +1127,7 @@ void Scene::readFromFile(const QString &fileName)
         }
         else
         {
-            switch (m_problemInfo.physicField)
+            switch (m_problemInfo.physicField())
             {
             case PHYSICFIELD_ELECTROSTATIC:
                 // electrostatic markers
@@ -1220,7 +1166,7 @@ void Scene::readFromFile(const QString &fileName)
                                                               element.toElement().attribute("young_modulus").toDouble(),
                                                               element.toElement().attribute("poisson_ratio").toDouble()));
                 break;            default:
-                        cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
+                        cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField()).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
                 throw;
                 break;
             }
@@ -1328,7 +1274,7 @@ void Scene::writeToFile(const QString &fileName) {
     if (m_problemInfo.problemType == PROBLEMTYPE_PLANAR) eleProblem.toElement().setAttribute("problemtype", "planar");
     if (m_problemInfo.problemType == PROBLEMTYPE_AXISYMMETRIC) eleProblem.toElement().setAttribute("problemtype", "axisymmetric");
     // name
-    eleProblem.setAttribute("type", physicFieldStringKey(m_problemInfo.physicField));
+    eleProblem.setAttribute("type", physicFieldStringKey(m_problemInfo.physicField()));
     // number of refinements
     eleProblem.setAttribute("numberofrefinements", m_problemInfo.numberOfRefinements);
     // polynomial order

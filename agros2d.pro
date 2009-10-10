@@ -10,13 +10,18 @@ DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
 DEFINES += VERSION_SUB=6
 unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
-unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
-unix::DEFINES += VERSION_MONTH=$$system(date +%-m)
-unix::DEFINES += VERSION_DAY=$$system(date +%d)
+
+# unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
+# unix::DEFINES += VERSION_MONTH=$$system(date +%-m)
+# unix::DEFINES += VERSION_DAY=$$system(date +%d)
 win32:DEFINES += VERSION_GIT=138
-win32::DEFINES += VERSION_YEAR=2009
-win32::DEFINES += VERSION_MONTH=9
-win32::DEFINES += VERSION_DAY=11
+
+# win32::DEFINES += VERSION_YEAR=2009
+# win32::DEFINES += VERSION_MONTH=9
+# win32::DEFINES += VERSION_DAY=11
+DEFINES += VERSION_YEAR=2009
+DEFINES += VERSION_MONTH=10
+DEFINES += VERSION_DAY=9
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
@@ -86,18 +91,22 @@ unix {
 SUBDIRS += src
 SOURCES += src/util.cpp \
     src/scene.cpp \
-    src/main.cpp \
     src/gui.cpp \
-    src/scripteditordialog.cpp \
-    src/scripteditorcommandsecma.cpp \
-    src/scripteditorhighlighter.cpp \
-    src/solverdialog.cpp \
+    src/hermes2d/hermes_field.cpp \
     src/hermes2d/hermes_electrostatic.cpp \
     src/hermes2d/hermes_heat.cpp \
     src/hermes2d/hermes_magnetostatic.cpp \
     src/hermes2d/hermes_harmonicmagnetic.cpp \
     src/hermes2d/hermes_current.cpp \
     src/hermes2d/hermes_elasticity.cpp \
+    src/localvalueview.cpp \
+    src/surfaceintegralview.cpp \
+    src/volumeintegralview.cpp \
+    src/main.cpp \
+    src/scripteditordialog.cpp \
+    src/scripteditorcommandsecma.cpp \
+    src/scripteditorhighlighter.cpp \
+    src/solverdialog.cpp \
     src/mainwindow.cpp \
     src/scenemarker.cpp \
     src/scenebasic.cpp \
@@ -111,26 +120,26 @@ SOURCES += src/util.cpp \
     src/optionsdialog.cpp \
     src/helpdialog.cpp \
     src/scenesolution.cpp \
-    src/localvalueview.cpp \
-    src/volumeintegralview.cpp \
-    src/surfaceintegralview.cpp \
     src/dxflib/dl_writer_ascii.cpp \
     src/dxflib/dl_dxf.cpp \
     src/reportdialog.cpp
 HEADERS += src/util.h \
     src/scene.h \
-    src/mainwindow.h \
     src/gui.h \
-    src/scripteditordialog.h \
-    src/scripteditorhighlighter.h \
-    src/solverdialog.h \
-    src/hermes2d/hermes_forms.h \
+    src/hermes2d/hermes_field.h \
     src/hermes2d/hermes_electrostatic.h \
     src/hermes2d/hermes_heat.h \
     src/hermes2d/hermes_magnetostatic.h \
     src/hermes2d/hermes_harmonicmagnetic.h \
     src/hermes2d/hermes_current.h \
     src/hermes2d/hermes_elasticity.h \
+    src/localvalueview.h \
+    src/surfaceintegralview.h \
+    src/volumeintegralview.h \
+    src/mainwindow.h \
+    src/scripteditordialog.h \
+    src/scripteditorhighlighter.h \
+    src/solverdialog.h \
     src/scenebasic.h \
     src/sceneinfoview.h \
     src/scenemarker.h \
@@ -143,10 +152,7 @@ HEADERS += src/util.h \
     src/sceneviewdialog.h \
     src/optionsdialog.h \
     src/helpdialog.h \
-    src/scenesolution.h \
-    src/localvalueview.h \
-    src/volumeintegralview.h \
-    src/surfaceintegralview.h \
+    src/scenesolution.h \    
     src/reportdialog.h
 INCLUDEPATH += src \
     src/dxflib

@@ -862,7 +862,7 @@ PointValue SceneSolution::pointValue(const Point &point, Solution *sln)
     if (m_sln1 != NULL)
     {
         value = sln->get_pt_value(point.x, point.y, FN_VAL_0);
-        if (m_scene->problemInfo().physicField != PHYSICFIELD_ELASTICITY)
+        if (m_scene->problemInfo().physicField() != PHYSICFIELD_ELASTICITY)
         {
             dx =  sln->get_pt_value(point.x, point.y, FN_DX_0);
             dy =  sln->get_pt_value(point.x, point.y, FN_DY_0);
@@ -885,7 +885,7 @@ void SceneSolution::setSolutionArray(SolutionArray *solutionArray)
     m_sln1 = solutionArray->sln1;
     m_sln2 = solutionArray->sln2;
     
-    if (m_scene->problemInfo().physicField != PHYSICFIELD_ELASTICITY)
+    if (m_scene->problemInfo().physicField() != PHYSICFIELD_ELASTICITY)
         m_vec.process_solution(m_sln1, FN_DX_0, m_sln1, FN_DY_0, EPS_NORMAL);
 
     // order view
@@ -920,7 +920,7 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     m_linScalarView.process_solution(m_slnScalarView, FN_VAL_0);
 
     // deformed shape
-    if (m_scene->problemInfo().physicField == PHYSICFIELD_ELASTICITY)
+    if (m_scene->problemInfo().physicField() == PHYSICFIELD_ELASTICITY)
     {
         double3* linVert = m_linScalarView.get_vertices();
 

@@ -596,6 +596,10 @@ inline QString physicFieldVariableCompStringKey(PhysicFieldVariableComp physicFi
         return "scalar";
     case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
         return "magnitude";
+    case PHYSICFIELDVARIABLECOMP_X:
+        return "x";
+    case PHYSICFIELDVARIABLECOMP_Y:
+        return "y";
     default:
         std::cerr << "Physical field variable comp '" + QString::number(physicFieldVariableComp).toStdString() + "' is not implemented. physicFieldVariableCompStringKey(PhysicFieldVariableComp physicFieldVariableComp)" << endl;
         throw;
@@ -932,27 +936,6 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     }
 
     return false;
-}
-
-inline int numberOfSolution(PhysicField physicField)
-{
-    switch (physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-    case PHYSICFIELD_MAGNETOSTATIC:
-    case PHYSICFIELD_HEAT_TRANSFER:
-    case PHYSICFIELD_CURRENT:
-        return 1;
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-    case PHYSICFIELD_ELASTICITY:
-        return 2;
-        break;
-    default:
-        std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. numberOfSolution(PhysicField physicField)" << endl;
-        throw;
-        break;
-    }
 }
 
 enum SceneMode

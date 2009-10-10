@@ -1,4 +1,5 @@
 #include "scenemarker.h"
+#include "scene.h"
 
 SceneEdgeMarker::SceneEdgeMarker(const QString &name, PhysicFieldBC type)
 {
@@ -19,253 +20,6 @@ SceneEdgeMarkerNone::SceneEdgeMarkerNone() : SceneEdgeMarker("none", PHYSICFIELD
 
 // *************************************************************************************************************************************
 
-SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, Value value)
-        : SceneEdgeMarker(name, type)
-{
-    this->value = value;
-}
-
-QString SceneEdgeElectrostaticMarker::script()
-{
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
-            arg(name).
-            arg(physicFieldBCStringKey(type)).
-            arg(value.text);
-}
-
-QMap<QString, QString> SceneEdgeElectrostaticMarker::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
-        out["Potential (V)"] = value.text;
-        break;
-    case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
-        out["Surface charge density (C/m3)"] = value.text;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneEdgeElectrostaticMarker::showDialog(QWidget *parent)
-{
-    DSceneEdgeElectrostaticMarker *dialog = new DSceneEdgeElectrostaticMarker(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneEdgeMagnetostaticMarker::SceneEdgeMagnetostaticMarker(const QString &name, PhysicFieldBC type, Value value) : SceneEdgeMarker(name, type)
-{
-    this->value = value;
-}
-
-QString SceneEdgeMagnetostaticMarker::script()
-{
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
-            arg(name).
-            arg(physicFieldBCStringKey(type)).
-            arg(value.text);
-}
-
-QMap<QString, QString> SceneEdgeMagnetostaticMarker::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL:
-        out["Vector potential (Wb/m)"] = value.text;
-        break;
-    case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
-        out["Surface current (A/m2)"] = value.text;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneEdgeMagnetostaticMarker::showDialog(QWidget *parent)
-{
-    DSceneEdgeMagnetostaticMarker *dialog = new DSceneEdgeMagnetostaticMarker(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneEdgeHarmonicMagneticMarker::SceneEdgeHarmonicMagneticMarker(const QString &name, PhysicFieldBC type, Value value) : SceneEdgeMarker(name, type)
-{
-    this->value = value;
-}
-
-QString SceneEdgeHarmonicMagneticMarker::script()
-{
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
-            arg(name).
-            arg(physicFieldBCStringKey(type)).
-            arg(value.text);
-}
-
-QMap<QString, QString> SceneEdgeHarmonicMagneticMarker::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
-        out["Vector potential (Wb/m)"] = value.text;
-        break;
-    case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
-            out["Surface current (A/m2)"] = value.text;
-    break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneEdgeHarmonicMagneticMarker::showDialog(QWidget *parent)
-{
-    DSceneEdgeHarmonicMagneticMarker *dialog = new DSceneEdgeHarmonicMagneticMarker(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value temperature) : SceneEdgeMarker(name, type)
-{
-    this->temperature = temperature;
-}
-
-SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type, Value heatFlux, Value h, Value externalTemperature) : SceneEdgeMarker(name, type)
-{
-    this->heatFlux = heatFlux;
-    this->h = h;
-    this->externalTemperature = externalTemperature;
-}
-
-QString SceneEdgeHeatMarker::script()
-{
-    if (type == PHYSICFIELDBC_HEAT_TEMPERATURE)
-    {
-        return QString("addBoundary(\"%1\", \"%2\", %3);").
-                arg(name).
-                arg(physicFieldBCStringKey(type)).
-                arg(temperature.text);
-    }
-    if (type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
-    {
-        return QString("addBoundary(\"%1\", \"%2\", %3, %4, %5)").
-                arg(name).
-                arg(physicFieldBCStringKey(type)).
-                arg(heatFlux.text).
-                arg(h.text).
-                arg(externalTemperature.text);
-    }
-}
-
-QMap<QString, QString> SceneEdgeHeatMarker::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PHYSICFIELDBC_HEAT_TEMPERATURE:
-        out["Temperature (deg.)"] = temperature.text;
-        break;
-    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
-        out["Heat flux (W/m2)"] = heatFlux.text;
-        out["Heat transfer coef. (Q/m2.K)"] = h.text;
-        out["External temperature (deg.)"] = externalTemperature.text;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneEdgeHeatMarker::showDialog(QWidget *parent)
-{
-    DSceneEdgeHeatMarker *dialog = new DSceneEdgeHeatMarker(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, Value value) : SceneEdgeMarker(name, type)
-{
-    this->value = value;
-}
-
-QString SceneEdgeCurrentMarker::script()
-{
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
-            arg(name).
-            arg(physicFieldBCStringKey(type)).
-            arg(value.text);
-}
-
-QMap<QString, QString> SceneEdgeCurrentMarker::data()
-{
-    QMap<QString, QString> out;
-    switch (type)
-    {
-    case PHYSICFIELDBC_CURRENT_POTENTIAL:
-        out["Potential (V)"] = value.text;
-        break;
-    case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
-        out["Inward current flow: (A/m2)"] = value.text;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneEdgeCurrentMarker::showDialog(QWidget *parent)
-{
-    DSceneEdgeCurrentMarker *dialog = new DSceneEdgeCurrentMarker(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneEdgeElasticityMarker::SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY, double forceX, double forceY)
-        : SceneEdgeMarker(name, typeX)
-{
-    this->typeX = typeX;
-    this->typeY = typeY;
-    this->forceX = forceX;
-    this->forceY = forceY;
-}
-
-QString SceneEdgeElasticityMarker::script()
-{
-    return QString("addEdge(\"%1\", \"%2\", \"%3\", %4, %5);").
-            arg(name).
-            arg(physicFieldBCStringKey(typeX)).
-            arg(physicFieldBCStringKey(typeY)).
-            arg(forceX).
-            arg(forceY);
-}
-
-QMap<QString, QString> SceneEdgeElasticityMarker::data()
-{
-    QMap<QString, QString> out;
-    switch (typeX)
-    {
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
-        out["Force X: (N)"] = forceX;
-        break;
-    }
-    switch (typeY)
-    {
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
-        out["Force Y: (N)"] = forceY;
-        break;
-    }
-    return QMap<QString, QString>(out);
-}
-
-int SceneEdgeElasticityMarker::showDialog(QWidget *parent)
-{
-    DSceneEdgeElasticityMarker *dialog = new DSceneEdgeElasticityMarker(this, parent);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
 SceneLabelMarker::SceneLabelMarker(const QString &name)
 {
     this->name = name;
@@ -282,193 +36,6 @@ SceneLabelMarkerNone::SceneLabelMarkerNone() : SceneLabelMarker("none")
 {
 }
 
-// *************************************************************************************************************************************
-
-SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name, Value charge_density, Value permittivity)
-        : SceneLabelMarker(name)
-{
-    this->charge_density = charge_density;
-    this->permittivity = permittivity;
-}
-
-QString SceneLabelElectrostaticMarker::script()
-{
-    return QString("addMaterial(\"%1\", %2, %3);").
-            arg(name).
-            arg(charge_density.text).
-            arg(permittivity.text);
-}
-
-QMap<QString, QString> SceneLabelElectrostaticMarker::data()
-{
-    QMap<QString, QString> out;
-    out["Charge density (C/m3)"] = charge_density.text;
-    out["Permittivity (-)"] = permittivity.text;
-    return QMap<QString, QString>(out);
-}
-
-int SceneLabelElectrostaticMarker::showDialog(QWidget *parent)
-{
-    DSceneLabelElectrostaticMarker *dialog = new DSceneLabelElectrostaticMarker(parent, this);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability)
-        : SceneLabelMarker(name)
-{
-    this->permeability = permeability;
-    this->current_density = current_density;
-}
-
-QString SceneLabelMagnetostaticMarker::script()
-{
-    return QString("addMaterial(\"%1\", %2, %3);").
-            arg(name).
-            arg(current_density.text).
-            arg(permeability.text);
-}
-
-QMap<QString, QString> SceneLabelMagnetostaticMarker::data()
-{
-    QMap<QString, QString> out;
-    out["Current density (A/m2)"] = current_density.text;
-    out["Permeability (-)"] = permeability.text;
-    return QMap<QString, QString>(out);
-}
-
-int SceneLabelMagnetostaticMarker::showDialog(QWidget *parent)
-{
-    DSceneLabelMagnetostaticMarker *dialog = new DSceneLabelMagnetostaticMarker(parent, this);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneLabelHarmonicMagneticMarker::SceneLabelHarmonicMagneticMarker(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity)
-        : SceneLabelMarker(name)
-{
-    this->permeability = permeability;
-    this->conductivity = conductivity;
-    this->current_density_real = current_density_real;
-    this->current_density_imag = current_density_imag;
-}
-
-QString SceneLabelHarmonicMagneticMarker::script()
-{
-    return QString("addMaterial(\"%1\", %2, %3, %4, %5);").
-            arg(name).
-            arg(current_density_real.text).
-            arg(current_density_imag.text).
-            arg(permeability.text).
-            arg(conductivity.text);
-}
-
-QMap<QString, QString> SceneLabelHarmonicMagneticMarker::data()
-{
-    QMap<QString, QString> out;
-    out["Current density - real (A/m2)"] = current_density_real.text;
-    out["Current density - imag (A/m2)"] = current_density_imag.text;
-    out["Permeability (-)"] = permeability.text;
-    out["Conductivity (S/m)"] = conductivity.text;
-    return QMap<QString, QString>(out);
-}
-
-int SceneLabelHarmonicMagneticMarker::showDialog(QWidget *parent)
-{
-    DSceneLabelHarmonicMagneticMarker *dialog = new DSceneLabelHarmonicMagneticMarker(parent, this);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, Value conductivity) : SceneLabelMarker(name)
-{
-    this->conductivity = conductivity;
-}
-
-QString SceneLabelCurrentMarker::script()
-{
-    return QString("addMaterial(\"%1\", %3);").
-            arg(name).
-            arg(conductivity.text);
-}
-
-QMap<QString, QString> SceneLabelCurrentMarker::data()
-{
-    QMap<QString, QString> out;
-    out["Conductivity (S/m)"] = conductivity.number;
-    return QMap<QString, QString>(out);
-}
-
-int SceneLabelCurrentMarker::showDialog(QWidget *parent)
-{
-    DSceneLabelCurrentMarker *dialog = new DSceneLabelCurrentMarker(parent, this);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity)
-        : SceneLabelMarker(name)
-{
-    this->thermal_conductivity = thermal_conductivity;
-    this->volume_heat = volume_heat;
-}
-
-QString SceneLabelHeatMarker::script()
-{
-    return QString("addMaterial(\"%1\", %2, %3);").
-            arg(name).
-            arg(volume_heat.text).
-            arg(thermal_conductivity.text);
-}
-
-QMap<QString, QString> SceneLabelHeatMarker::data()
-{
-    QMap<QString, QString> out;
-    out["Volume heat (W/m3)"] = volume_heat.text;
-    out["Thermal conductivity (W/m.K)"] = thermal_conductivity.text;
-    return QMap<QString, QString>(out);
-}
-
-int SceneLabelHeatMarker::showDialog(QWidget *parent)
-{
-    DSceneLabelHeatMarker *dialog = new DSceneLabelHeatMarker(parent, this);
-    return dialog->exec();
-}
-
-// *************************************************************************************************************************************
-
-SceneLabelElasticityMarker::SceneLabelElasticityMarker(const QString &name, double young_modulus, double poisson_ratio)
-        : SceneLabelMarker(name)
-{
-    this->young_modulus = young_modulus;
-    this->poisson_ratio = poisson_ratio;
-}
-
-QString SceneLabelElasticityMarker::script()
-{
-    return QString("addMaterial(\"%1\", %2, %3);").
-            arg(name).
-            arg(young_modulus).
-            arg(poisson_ratio);
-}
-
-QMap<QString, QString> SceneLabelElasticityMarker::data()
-{
-    QMap<QString, QString> out;
-    out["Young modulus (Pa)"] = QString::number(young_modulus);
-    out["Poisson ratio (-)"] = QString::number(poisson_ratio);
-    return QMap<QString, QString>(out);
-}
-
-int SceneLabelElasticityMarker::showDialog(QWidget *parent)
-{
-    DSceneLabelElasticityMarker *dialog = new DSceneLabelElasticityMarker(parent, this);
-    return dialog->exec();
-}
 
 // *************************************************************************************************************************************
 
@@ -551,470 +118,6 @@ void DSceneEdgeMarker::doReject()
 
 // *************************************************************************************************************************************
 
-DSceneEdgeElectrostaticMarker::DSceneEdgeElectrostaticMarker(SceneEdgeElectrostaticMarker *edgeElectrostaticMarker, QWidget *parent) : DSceneEdgeMarker(parent)
-{
-    m_edgeMarker = edgeElectrostaticMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtValue);
-
-    load();
-    setSize();
-}
-
-DSceneEdgeElectrostaticMarker::~DSceneEdgeElectrostaticMarker()
-{
-    delete cmbType;
-    delete txtValue;
-}
-
-QLayout* DSceneEdgeElectrostaticMarker::createContent()
-{
-    cmbType = new QComboBox();
-    cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL), PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE), PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE);
-
-    txtValue = new SLineEditValue(this);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC type:"), cmbType);
-    layoutMarker->addRow(tr("Value:"), txtValue);
-
-    return layoutMarker;
-}
-
-void DSceneEdgeElectrostaticMarker::load()
-{
-    DSceneEdgeMarker::load();
-
-    SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_edgeMarker);
-
-    cmbType->setCurrentIndex(cmbType->findData(edgeElectrostaticMarker->type));
-    txtValue->setText(edgeElectrostaticMarker->value.text);
-}
-
-bool DSceneEdgeElectrostaticMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;
-
-    SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_edgeMarker);
-
-    edgeElectrostaticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-
-    if (txtValue->evaluate())
-        edgeElectrostaticMarker->value  = txtValue->value();
-    else
-        return false;
-
-    return true;
-}
-
-// *************************************************************************************************************************************
-
-DSceneEdgeMagnetostaticMarker::DSceneEdgeMagnetostaticMarker(SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker, QWidget *parent) : DSceneEdgeMarker(parent)
-{
-    m_edgeMarker = edgeMagnetostaticMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtValue);
-
-    load();
-    setSize();
-}
-
-DSceneEdgeMagnetostaticMarker::~DSceneEdgeMagnetostaticMarker()
-{
-    delete cmbType;
-    delete txtValue;
-}
-
-QLayout* DSceneEdgeMagnetostaticMarker::createContent()
-{
-    cmbType = new QComboBox();
-    cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL), PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT), PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT);
-
-    txtValue = new SLineEditValue(this);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC type:"), cmbType);
-    layoutMarker->addRow(tr("Value:"), txtValue);
-
-    return layoutMarker;
-}
-
-void DSceneEdgeMagnetostaticMarker::load()
-{
-    DSceneEdgeMarker::load();
-
-    SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(m_edgeMarker);
-
-    cmbType->setCurrentIndex(cmbType->findData(edgeMagnetostaticMarker->type));
-    txtValue->setText(edgeMagnetostaticMarker->value.text);
-}
-
-bool DSceneEdgeMagnetostaticMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
-
-    SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(m_edgeMarker);
-
-    edgeMagnetostaticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-
-    if (txtValue->evaluate())
-        edgeMagnetostaticMarker->value  = txtValue->value();
-    else
-        return false;
-
-    return true;
-}
-
-
-// *************************************************************************************************************************************
-
-DSceneEdgeHarmonicMagneticMarker::DSceneEdgeHarmonicMagneticMarker(SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker, QWidget *parent) : DSceneEdgeMarker(parent)
-{
-    m_edgeMarker = edgeHarmonicMagneticMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtValue);
-
-    load();
-    setSize();
-}
-
-DSceneEdgeHarmonicMagneticMarker::~DSceneEdgeHarmonicMagneticMarker()
-{
-    delete cmbType;
-    delete txtValue;
-}
-
-QLayout* DSceneEdgeHarmonicMagneticMarker::createContent()
-{
-    cmbType = new QComboBox();
-    cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT), PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT);
-
-    txtValue = new SLineEditValue(this);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC type:"), cmbType);
-    layoutMarker->addRow(tr("Value:"), txtValue);
-
-    return layoutMarker;
-}
-
-void DSceneEdgeHarmonicMagneticMarker::load()
-{
-    DSceneEdgeMarker::load();
-
-    SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(m_edgeMarker);
-
-    cmbType->setCurrentIndex(cmbType->findData(edgeHarmonicMagneticMarker->type));
-    txtValue->setText(edgeHarmonicMagneticMarker->value.text);
-}
-
-bool DSceneEdgeHarmonicMagneticMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
-
-    SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(m_edgeMarker);
-
-    edgeHarmonicMagneticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-
-    if (txtValue->evaluate())
-        edgeHarmonicMagneticMarker->value  = txtValue->value();
-    else
-        return false;
-
-    return true;
-}
-
-// *************************************************************************************************************************************
-
-DSceneEdgeHeatMarker::DSceneEdgeHeatMarker(SceneEdgeHeatMarker *edgeEdgeHeatMarker, QWidget *parent) : DSceneEdgeMarker(parent)
-{
-    m_edgeMarker = edgeEdgeHeatMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtTemperature);
-    setTabOrder(txtTemperature, txtHeatFlux);
-    setTabOrder(txtHeatFlux, txtHeatTransferCoefficient);
-    setTabOrder(txtHeatTransferCoefficient, txtExternalTemperature);
-
-    load();
-    setSize();
-}
-
-DSceneEdgeHeatMarker::~DSceneEdgeHeatMarker()
-{
-    delete cmbType;
-    delete txtTemperature;
-    delete txtHeatFlux;
-    delete txtHeatTransferCoefficient;
-    delete txtExternalTemperature;
-}
-
-QLayout* DSceneEdgeHeatMarker::createContent()
-{
-    cmbType = new QComboBox();
-    cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HEAT_TEMPERATURE), PHYSICFIELDBC_HEAT_TEMPERATURE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HEAT_HEAT_FLUX), PHYSICFIELDBC_HEAT_HEAT_FLUX);
-    connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
-
-    txtHeatFlux = new SLineEditValue(this);
-    txtTemperature = new SLineEditValue(this);
-    txtHeatTransferCoefficient = new SLineEditValue(this);
-    txtExternalTemperature = new SLineEditValue(this);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC Type:"), cmbType);
-    layoutMarker->addRow(tr("Temperature:"), txtTemperature);
-    layoutMarker->addRow(tr("Heat flux:"), txtHeatFlux);
-    layoutMarker->addRow(tr("Heat transfer coef.:"), txtHeatTransferCoefficient);
-    layoutMarker->addRow(tr("External temperature:"), txtExternalTemperature);
-
-    return layoutMarker;
-}
-
-void DSceneEdgeHeatMarker::load()
-{
-    DSceneEdgeMarker::load();
-
-    SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(m_edgeMarker);
-
-    cmbType->setCurrentIndex(cmbType->findData(edgeHeatMarker->type));
-    switch (edgeHeatMarker->type)
-    {
-    case PHYSICFIELDBC_HEAT_TEMPERATURE:
-        {
-            txtTemperature->setText(edgeHeatMarker->temperature.text);
-        }
-        break;
-    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
-        {
-            txtHeatFlux->setText(edgeHeatMarker->heatFlux.text);
-            txtHeatTransferCoefficient->setText(edgeHeatMarker->h.text);
-            txtExternalTemperature->setText(edgeHeatMarker->externalTemperature.text);
-        }
-        break;
-    }
-}
-
-bool DSceneEdgeHeatMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
-
-    SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(m_edgeMarker);
-
-    edgeHeatMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-    switch (edgeHeatMarker->type)
-    {
-    case PHYSICFIELDBC_HEAT_TEMPERATURE:
-        {
-            if (txtTemperature->evaluate())
-                edgeHeatMarker->temperature  = txtTemperature->value();
-            else
-                return false;
-        }
-        break;
-    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
-        {
-            if (txtHeatFlux->evaluate())
-                edgeHeatMarker->heatFlux  = txtHeatFlux->value();
-            else
-                return false;
-            if (txtHeatTransferCoefficient->evaluate())
-                edgeHeatMarker->h  = txtHeatTransferCoefficient->value();
-            else
-                return false;
-            if (txtExternalTemperature->evaluate())
-                edgeHeatMarker->externalTemperature  = txtExternalTemperature->value();
-            else
-                return false;
-        }
-        break;
-    }
-
-    return true;
-}
-
-void DSceneEdgeHeatMarker::doTypeChanged(int index)
-{
-    txtTemperature->setEnabled(false);
-    txtHeatFlux->setEnabled(false);
-    txtHeatTransferCoefficient->setEnabled(false);
-    txtExternalTemperature->setEnabled(false);
-
-    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
-    {
-    case PHYSICFIELDBC_HEAT_TEMPERATURE:
-        {
-            txtTemperature->setEnabled(true);
-        }
-        break;
-    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
-        {
-            txtHeatFlux->setEnabled(true);
-            txtHeatTransferCoefficient->setEnabled(true);
-            txtExternalTemperature->setEnabled(true);
-        }
-        break;
-    }
-}
-
-// *************************************************************************************************************************************
-
-DSceneEdgeCurrentMarker::DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent) : DSceneEdgeMarker(parent)
-{
-    m_edgeMarker = edgeCurrentMarker;
-
-    createDialog(); 
-
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtValue);
-
-    load();
-    setSize();
-}
-
-DSceneEdgeCurrentMarker::~DSceneEdgeCurrentMarker()
-{
-    delete cmbType;
-    delete txtValue;
-}
-
-QLayout* DSceneEdgeCurrentMarker::createContent()
-{
-    cmbType = new QComboBox();
-    cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_POTENTIAL), PHYSICFIELDBC_CURRENT_POTENTIAL);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW), PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW);
-
-    txtValue = new SLineEditValue(this);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC type:"), cmbType);
-    layoutMarker->addRow(tr("Value:"), txtValue);
-
-    return layoutMarker;
-}
-
-void DSceneEdgeCurrentMarker::load()
-{
-    DSceneEdgeMarker::load();
-
-    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
-
-    cmbType->setCurrentIndex(cmbType->findData(edgeCurrentMarker->type));
-    txtValue->setText(edgeCurrentMarker->value.text);
-}
-
-bool DSceneEdgeCurrentMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
-
-    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
-
-    edgeCurrentMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
-
-    Value value = Value(txtValue->text());
-    if (value.evaluate(Util::scene()->problemInfo().scriptStartup))
-        edgeCurrentMarker->value = value;
-    else
-        return false;
-
-    return true;
-}
-
-// *************************************************************************************************************************************
-
-DSceneEdgeElasticityMarker::DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker *edgeEdgeElasticityMarker, QWidget *parent) : DSceneEdgeMarker(parent)
-{
-    m_edgeMarker = edgeEdgeElasticityMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, cmbTypeX);
-    setTabOrder(cmbTypeX, txtForceX);
-
-    load();
-    setSize();
-}
-
-DSceneEdgeElasticityMarker::~DSceneEdgeElasticityMarker()
-{
-    delete cmbTypeX;
-    delete cmbTypeY;
-    delete txtForceX;
-    delete txtForceY;
-}
-
-QLayout* DSceneEdgeElasticityMarker::createContent()
-{
-    cmbTypeX = new QComboBox();
-    cmbTypeX->addItem("none", PHYSICFIELDBC_NONE);
-    cmbTypeX->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FREE), PHYSICFIELDBC_ELASTICITY_FREE);
-    cmbTypeX->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FIXED), PHYSICFIELDBC_ELASTICITY_FIXED);
-
-    cmbTypeY = new QComboBox();
-    cmbTypeY->addItem("none", PHYSICFIELDBC_NONE);
-    cmbTypeY->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FREE), PHYSICFIELDBC_ELASTICITY_FREE);
-    cmbTypeY->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FIXED), PHYSICFIELDBC_ELASTICITY_FIXED);
-
-    txtForceX = new SLineEdit("0", false);
-    txtForceY = new SLineEdit("0", false);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC Type X:"), cmbTypeX);
-    layoutMarker->addRow(tr("BC Type Y:"), cmbTypeY);
-    layoutMarker->addRow(tr("Force X:"), txtForceX);
-    layoutMarker->addRow(tr("Force Y:"), txtForceY);
-
-    return layoutMarker;
-}
-
-void DSceneEdgeElasticityMarker::load()
-{
-    DSceneEdgeMarker::load();
-
-    SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(m_edgeMarker);
-
-    cmbTypeX->setCurrentIndex(cmbTypeX->findData(edgeElasticityMarker->typeX));
-    cmbTypeY->setCurrentIndex(cmbTypeY->findData(edgeElasticityMarker->typeY));
-
-    txtForceX->setText(QString::number(edgeElasticityMarker->forceX));
-    txtForceY->setText(QString::number(edgeElasticityMarker->forceY));
-}
-
-bool DSceneEdgeElasticityMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
-
-    SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(m_edgeMarker);
-
-    edgeElasticityMarker->typeX = (PhysicFieldBC) cmbTypeX->itemData(cmbTypeX->currentIndex()).toInt();
-    edgeElasticityMarker->typeY = (PhysicFieldBC) cmbTypeY->itemData(cmbTypeY->currentIndex()).toInt();
-    edgeElasticityMarker->forceX = txtForceX->text().toDouble();
-    edgeElasticityMarker->forceY = txtForceY->text().toDouble();
-
-    return true;
-}
-
-// *************************************************************************************************************************************
-
 DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
 {
     layout = new QVBoxLayout();
@@ -1092,384 +195,144 @@ void DSceneLabelMarker::doReject()
     reject();
 }
 
-// *************************************************************************************************************************************
+// ***********************************************************************************************************
 
-DSceneLabelElectrostaticMarker::DSceneLabelElectrostaticMarker(QWidget *parent, SceneLabelElectrostaticMarker *labelElectrostaticMarker) : DSceneLabelMarker(parent)
+EdgeMarkerDialog::EdgeMarkerDialog(QWidget *parent) : QDialog(parent)
 {
-    m_labelMarker = labelElectrostaticMarker;
+    setWindowTitle(tr("Edge marker"));
+    setWindowIcon(icon("scene-edge"));
+    setModal(true);
 
-    createDialog();
+    // fill combo
+    cmbMarker = new QComboBox(this);
+    for (int i = 0; i<Util::scene()->edgeMarkers.count(); i++)
+    {
+        cmbMarker->addItem(Util::scene()->edgeMarkers[i]->name, Util::scene()->edgeMarkers[i]->variant());
+    }
 
-    // tab order
-    setTabOrder(txtName, txtPermittivity);
-    setTabOrder(txtPermittivity, txtChargeDensity);
+    // select marker
+    cmbMarker->setCurrentIndex(-1);
+    SceneEdgeMarker *marker = NULL;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        if (Util::scene()->edges[i]->isSelected)
+        {
+            if (!marker)
+            {
+                marker = Util::scene()->edges[i]->marker;
+            }
+            if (marker != Util::scene()->edges[i]->marker)
+            {
+                marker = NULL;
+                break;
+            }
+        }
+    }
+    if (marker)
+        cmbMarker->setCurrentIndex(cmbMarker->findData(marker->variant()));
 
-    load();
-    setSize();
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QHBoxLayout *layoutMarker = new QHBoxLayout();
+    layoutMarker->addWidget(new QLabel(tr("Edge marker:")));
+    layoutMarker->addWidget(cmbMarker);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutMarker);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+
+    setMaximumSize(sizeHint());
 }
 
-DSceneLabelElectrostaticMarker::~DSceneLabelElectrostaticMarker()
+EdgeMarkerDialog::~EdgeMarkerDialog()
 {
-    delete txtPermittivity;
-    delete txtChargeDensity;
+    delete cmbMarker;
 }
 
-QLayout* DSceneLabelElectrostaticMarker::createContent()
+void EdgeMarkerDialog::doAccept()
 {
-    txtPermittivity = new SLineEditValue(this);
-    txtChargeDensity = new SLineEditValue(this);
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        if (Util::scene()->edges[i]->isSelected)
+            Util::scene()->edges[i]->marker = marker();
+    }
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Permittivity (-):"), txtPermittivity);
-    layoutMarker->addRow(tr("Charge density (C/m3):"), txtChargeDensity);
-
-    return layoutMarker;
-}
-
-void DSceneLabelElectrostaticMarker::load()
-{
-    DSceneLabelMarker::load();
-
-    SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_labelMarker);
-
-    txtPermittivity->setText(labelElectrostaticMarker->permittivity.text);
-    txtChargeDensity->setText(labelElectrostaticMarker->charge_density.text);
-}
-
-bool DSceneLabelElectrostaticMarker::save() {
-    if (!DSceneLabelMarker::save()) return false;;
-
-    SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_labelMarker);
-
-    if (txtPermittivity->evaluate())
-        labelElectrostaticMarker->permittivity = txtPermittivity->value();
-    else
-        return false;
-
-    if (txtChargeDensity->evaluate())
-        labelElectrostaticMarker->charge_density = txtChargeDensity->value();
-    else
-        return false;
-
-    return true;
-}
-
-// *************************************************************************************************************************************
-
-DSceneLabelMagnetostaticMarker::DSceneLabelMagnetostaticMarker(QWidget *parent, SceneLabelMagnetostaticMarker *labelMagnetostaticMarker) : DSceneLabelMarker(parent)
-{
-    m_labelMarker = labelMagnetostaticMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, txtPermeability);
-    setTabOrder(txtPermeability, txtCurrentDensity);
-
-    load();
-    setSize();
-}
-
-DSceneLabelMagnetostaticMarker::~DSceneLabelMagnetostaticMarker()
-{
-    delete txtPermeability;
-    delete txtCurrentDensity;
-}
-
-QLayout* DSceneLabelMagnetostaticMarker::createContent()
-{
-    txtPermeability = new SLineEditValue(this);
-    txtCurrentDensity = new SLineEditValue(this);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Permeability (-):"), txtPermeability);
-    layoutMarker->addRow(tr("Current density (A/m2):"), txtCurrentDensity);
-
-    return layoutMarker;
-}
-
-void DSceneLabelMagnetostaticMarker::load()
-{
-    DSceneLabelMarker::load();
-
-    SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_labelMarker);
-
-    txtPermeability->setText(labelMagnetostaticMarker->permeability.text);
-    txtCurrentDensity->setText(labelMagnetostaticMarker->current_density.text);
-}
-
-bool DSceneLabelMagnetostaticMarker::save() {
-    if (!DSceneLabelMarker::save()) return false;;
-
-    SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_labelMarker);
-
-    if (txtPermeability->evaluate())
-        labelMagnetostaticMarker->permeability  = txtPermeability->value();
-    else
-        return false;
-
-    if (txtCurrentDensity->evaluate())
-        labelMagnetostaticMarker->current_density  = txtCurrentDensity->value();
-    else
-        return false;
-
-    return true;
+    accept();
 }
 
 // *************************************************************************************************************************************
 
-DSceneLabelHarmonicMagneticMarker::DSceneLabelHarmonicMagneticMarker(QWidget *parent, SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker) : DSceneLabelMarker(parent)
+LabelMarkerDialog::LabelMarkerDialog(QWidget *parent) : QDialog(parent)
 {
-    m_labelMarker = labelHarmonicMagneticMarker;
+    setWindowTitle(tr("Edge marker"));
+    setWindowIcon(icon("scene-label"));
+    setModal(true);
 
-    createDialog();
+    // fill combo
+    cmbMarker = new QComboBox(this);
+    for (int i = 0; i<Util::scene()->labelMarkers.count(); i++)
+    {
+        cmbMarker->addItem(Util::scene()->labelMarkers[i]->name, Util::scene()->labelMarkers[i]->variant());
+    }
 
-    // tab order
-    setTabOrder(txtName, txtPermeability);
-    setTabOrder(txtPermeability, txtConductivity);
-    setTabOrder(txtConductivity, txtCurrentDensityReal);
-    setTabOrder(txtCurrentDensityReal, txtCurrentDensityImag);
+    // select marker
+    cmbMarker->setCurrentIndex(-1);
+    SceneLabelMarker *marker = NULL;
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        if (Util::scene()->labels[i]->isSelected)
+        {
+            if (!marker)
+            {
+                marker = Util::scene()->labels[i]->marker;
+            }
+            if (marker != Util::scene()->labels[i]->marker)
+            {
+                marker = NULL;
+                break;
+            }
+        }
+    }
+    if (marker)
+        cmbMarker->setCurrentIndex(cmbMarker->findData(marker->variant()));
 
-    load();
-    setSize();
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QHBoxLayout *layoutMarker = new QHBoxLayout();
+    layoutMarker->addWidget(new QLabel(tr("Label marker:")));
+    layoutMarker->addWidget(cmbMarker);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutMarker);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+
+    setMaximumSize(sizeHint());
 }
 
-DSceneLabelHarmonicMagneticMarker::~DSceneLabelHarmonicMagneticMarker()
+LabelMarkerDialog::~LabelMarkerDialog()
 {
-    delete txtPermeability;
-    delete txtConductivity;
-    delete txtCurrentDensityReal;
-    delete txtCurrentDensityImag;
+    delete cmbMarker;
 }
 
-QLayout* DSceneLabelHarmonicMagneticMarker::createContent()
+void LabelMarkerDialog::doAccept()
 {
-    txtPermeability = new SLineEditValue(this);
-    txtConductivity = new SLineEditValue(this);
-    txtCurrentDensityReal = new SLineEditValue(this);
-    txtCurrentDensityImag = new SLineEditValue(this);
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        if (Util::scene()->labels[i]->isSelected)
+            Util::scene()->labels[i]->marker = marker();
+    }
 
-    QHBoxLayout *layoutCurrentDensity = new QHBoxLayout();
-    layoutCurrentDensity->addWidget(txtCurrentDensityReal);
-    layoutCurrentDensity->addWidget(new QLabel(" + j "));
-    layoutCurrentDensity->addWidget(txtCurrentDensityImag);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Permeability (-):"), txtPermeability);
-    layoutMarker->addRow(tr("Conductivity (-):"), txtConductivity);
-    layoutMarker->addRow(tr("Current density (A/m2):"), layoutCurrentDensity);
-
-    return layoutMarker;
-}
-
-void DSceneLabelHarmonicMagneticMarker::load()
-{
-    DSceneLabelMarker::load();
-
-    SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_labelMarker);
-
-    txtPermeability->setText(labelHarmonicMagneticMarker->permeability.text);
-    txtConductivity->setText(labelHarmonicMagneticMarker->conductivity.text);
-    txtCurrentDensityReal->setText(labelHarmonicMagneticMarker->current_density_real.text);
-    txtCurrentDensityImag->setText(labelHarmonicMagneticMarker->current_density_imag.text);
-}
-
-bool DSceneLabelHarmonicMagneticMarker::save() {
-    if (!DSceneLabelMarker::save()) return false;;
-
-    SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_labelMarker);
-
-    if (txtPermeability->evaluate())
-        labelHarmonicMagneticMarker->permeability  = txtPermeability->value();
-    else
-        return false;
-
-    if (txtConductivity->evaluate())
-        labelHarmonicMagneticMarker->conductivity  = txtConductivity->value();
-    else
-        return false;
-
-    if (txtCurrentDensityReal->evaluate())
-        labelHarmonicMagneticMarker->current_density_real  = txtCurrentDensityReal->value();
-    else
-        return false;
-
-    if (txtCurrentDensityImag->evaluate())
-        labelHarmonicMagneticMarker->current_density_imag  = txtCurrentDensityImag->value();
-    else
-        return false;
-
-    return true;
-}
-
-// *************************************************************************************************************************************
-
-DSceneLabelHeatMarker::DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMarker *labelHeatMarker) : DSceneLabelMarker(parent)
-{
-    m_labelMarker = labelHeatMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, txtThermalConductivity);
-    setTabOrder(txtThermalConductivity, txtVolumeHeat);
-
-    load();
-    setSize();
-}
-
-DSceneLabelHeatMarker::~DSceneLabelHeatMarker()
-{
-    delete txtThermalConductivity;
-    delete txtVolumeHeat;
-}
-
-QLayout* DSceneLabelHeatMarker::createContent()
-{
-    txtThermalConductivity = new SLineEditValue(this);
-    txtVolumeHeat = new SLineEditValue(this);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Thermal conductivity (W/m.K):"), txtThermalConductivity);
-    layoutMarker->addRow(tr("Volume heat (J/m3):"), txtVolumeHeat);
-
-    return layoutMarker;
-}
-
-void DSceneLabelHeatMarker::load()
-{
-    DSceneLabelMarker::load();
-
-    SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_labelMarker);
-
-    txtThermalConductivity->setText(labelHeatMarker->thermal_conductivity.text);
-    txtVolumeHeat->setText(labelHeatMarker->volume_heat.text);
-}
-
-bool DSceneLabelHeatMarker::save()
-{
-    if (!DSceneLabelMarker::save()) return false;;
-
-    SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_labelMarker);
-
-    if (txtThermalConductivity->evaluate())
-        labelHeatMarker->thermal_conductivity  = txtThermalConductivity->value();
-    else
-        return false;
-
-    if (txtVolumeHeat->evaluate())
-        labelHeatMarker->volume_heat  = txtVolumeHeat->value();
-    else
-        return false;
-
-    return true;
-}
-
-// *************************************************************************************************************************************
-
-DSceneLabelCurrentMarker::DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker) : DSceneLabelMarker(parent)
-{
-    m_labelMarker = labelCurrentMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, txtConductivity);
-
-    load();
-    setSize();
-}
-
-DSceneLabelCurrentMarker::~DSceneLabelCurrentMarker()
-{
-    delete txtConductivity;
-}
-
-QLayout* DSceneLabelCurrentMarker::createContent()
-{
-    txtConductivity = new SLineEditValue(this);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Conductivity (S/m):"), txtConductivity);
-
-    return layoutMarker;
-}
-
-void DSceneLabelCurrentMarker::load()
-{
-    DSceneLabelMarker::load();
-
-    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
-
-    txtConductivity->setText(labelCurrentMarker->conductivity.text);
-}
-
-bool DSceneLabelCurrentMarker::save()
-{
-    if (!DSceneLabelMarker::save()) return false;;
-
-    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
-
-    if (txtConductivity->evaluate())
-        labelCurrentMarker->conductivity  = txtConductivity->value();
-    else
-        return false;
-
-    return true;
-}
-
-// *************************************************************************************************************************************
-
-DSceneLabelElasticityMarker::DSceneLabelElasticityMarker(QWidget *parent, SceneLabelElasticityMarker *labelElasticityMarker) : DSceneLabelMarker(parent)
-{
-    m_labelMarker = labelElasticityMarker;
-
-    createDialog();
-
-    // tab order
-    setTabOrder(txtName, txtYoungModulus);
-    setTabOrder(txtYoungModulus, txtPoissonNumber);
-
-    load();
-    setSize();
-}
-
-DSceneLabelElasticityMarker::~DSceneLabelElasticityMarker()
-{
-    delete txtYoungModulus;
-    delete txtPoissonNumber;
-}
-
-QLayout* DSceneLabelElasticityMarker::createContent()
-{
-    txtYoungModulus = new SLineEdit("0", false);
-    txtPoissonNumber = new SLineEdit("0", false);
-
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Young modulus (Pa):"), txtYoungModulus);
-    layoutMarker->addRow(tr("Poisson number (-):"), txtPoissonNumber);
-
-    return layoutMarker;
-}
-
-void DSceneLabelElasticityMarker::load()
-{
-    DSceneLabelMarker::load();
-
-    SceneLabelElasticityMarker *labelElasticityMarker = dynamic_cast<SceneLabelElasticityMarker *>(m_labelMarker);
-
-    txtYoungModulus->setText(QString::number(labelElasticityMarker->young_modulus));
-    txtPoissonNumber->setText(QString::number(labelElasticityMarker->poisson_ratio));
-}
-
-bool DSceneLabelElasticityMarker::save()
-{
-    if (!DSceneLabelMarker::save()) return false;;
-
-    SceneLabelElasticityMarker *labelElasticityMarker = dynamic_cast<SceneLabelElasticityMarker *>(m_labelMarker);
-
-    labelElasticityMarker->young_modulus = txtYoungModulus->text().toDouble();
-    labelElasticityMarker->poisson_ratio = txtPoissonNumber->text().toDouble();
-
-    return true;
+    accept();
 }

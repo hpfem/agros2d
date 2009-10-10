@@ -1,9 +1,23 @@
 #include "hermes_electrostatic.h"
-#include "hermes_forms.h"
+#include "scene.h"
+
+struct ElectrostaticEdge
+{
+public:
+    PhysicFieldBC type;
+    double value;
+};
+
+struct ElectrostaticLabel
+{
+    double charge_density;
+    double permittivity;
+};
 
 ElectrostaticEdge *electrostaticEdge;
 ElectrostaticLabel *electrostaticLabel;
 bool electrostaticPlanar;
+
 
 int electrostatic_bc_types(int marker)
 {
@@ -48,13 +62,8 @@ Scalar electrostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e
         return electrostaticLabel[marker].charge_density / EPS0 * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-SolutionArray *electrostatic_main(SolverThread *solverThread,
-                                  const char *fileName,
-                                  ElectrostaticEdge *edge,
-                                  ElectrostaticLabel *label)
+SolutionArray *electrostatic_main(SolverThread *solverThread)
 {
-    electrostaticEdge = edge;
-    electrostaticLabel = label;
     electrostaticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
@@ -68,7 +77,7 @@ SolutionArray *electrostatic_main(SolverThread *solverThread,
 
     // load the mesh file
     Mesh mesh;
-    mesh.load(fileName);
+    mesh.load((tempProblemFileName() + ".mesh").toStdString().c_str());
     for (int i = 0; i < numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
@@ -141,4 +150,563 @@ SolutionArray *electrostatic_main(SolverThread *solverThread,
     solutionArray->adaptiveSteps = i-1;
 
     return solutionArray;
+}
+
+// **************************************************************************************************************************
+
+LocalPointValue *HermesElectrostatic::localPointValue(Point point)
+{
+    return new LocalPointValueElectrostatic(point);
+}
+
+QStringList HermesElectrostatic::localPointValueHeader()
+{
+    QStringList headers;
+    headers << "X" << "Y" << "V" << "Ex" << "Ey" << "E" << "Dx" << "Dy" << "D" << "we" << "epsr";
+    return QStringList(headers);
+}
+
+SurfaceIntegralValue *HermesElectrostatic::surfaceIntegralValue()
+{
+    return new SurfaceIntegralValueElectrostatic();
+}
+
+QStringList HermesElectrostatic::surfaceIntegralValueHeader()
+{
+    QStringList headers;
+    headers << "l" << "S" << "Q";
+    return QStringList(headers);
+}
+
+VolumeIntegralValue *HermesElectrostatic::volumeIntegralValue()
+{
+    return new VolumeIntegralValueElectrostatic();
+}
+
+QStringList HermesElectrostatic::volumeIntegralValueHeader()
+{
+    QStringList headers;
+    headers << "V" << "S" << "Ex_avg" << "Ey_avg" << "E_avg" << "Dx_avg" << "Dy_avg" << "D_avg" << "We";
+    return QStringList(headers);
+}
+
+SceneEdgeMarker *HermesElectrostatic::newEdgeMarker()
+{
+    return new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, Value("0"));
+}
+
+SceneLabelMarker *HermesElectrostatic::newLabelMarker()
+{
+    return new SceneLabelElectrostaticMarker("new material",  Value("0"), Value("1"));
+}
+
+void HermesElectrostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
+{
+    LocalPointValueElectrostatic *localPointValueElectrostatic = dynamic_cast<LocalPointValueElectrostatic *>(localPointValue);
+
+    // electrostatic
+    QTreeWidgetItem *electrostaticNode = new QTreeWidgetItem(trvWidget);
+    electrostaticNode->setText(0, tr("Electrostatic field"));
+    electrostaticNode->setExpanded(true);
+
+    // Permittivity
+    addTreeWidgetItemValue(electrostaticNode, tr("Permittivity:"), QString("%1").arg(localPointValueElectrostatic->permittivity, 0, 'f', 2), tr(""));
+
+    // Charge Density
+    addTreeWidgetItemValue(electrostaticNode, tr("Charge density:"), QString("%1").arg(localPointValueElectrostatic->charge_density, 0, 'e', 3), "C/m3");
+
+    // Energy density
+    addTreeWidgetItemValue(electrostaticNode, tr("Energy density:"), QString("%1").arg(localPointValueElectrostatic->we, 0, 'e', 3), "J/m3");
+
+    // Potential
+    addTreeWidgetItemValue(electrostaticNode, tr("Potential:"), QString("%1").arg(localPointValueElectrostatic->potential, 0, 'e', 3), "V");
+
+    // Electric Field
+    QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(electrostaticNode);
+    itemElectricField->setText(0, tr("Electric field"));
+    itemElectricField->setExpanded(true);
+
+    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.x, 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.y, 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, "E:", QString("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'e', 3), "V/m");
+
+    // Electric Displacement
+    QTreeWidgetItem *itemElectricDisplacement = new QTreeWidgetItem(electrostaticNode);
+    itemElectricDisplacement->setText(0, tr("Electric displacement"));
+    itemElectricDisplacement->setExpanded(true);
+
+    addTreeWidgetItemValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
+    addTreeWidgetItemValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
+    addTreeWidgetItemValue(itemElectricDisplacement, "D:", QString("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
+}
+
+void HermesElectrostatic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
+{
+    SurfaceIntegralValueElectrostatic *surfaceIntegralValueElectrostatic = dynamic_cast<SurfaceIntegralValueElectrostatic *>(surfaceIntegralValue);
+
+    // electrostatic
+    QTreeWidgetItem *electrostaticNode = new QTreeWidgetItem(trvWidget);
+    electrostaticNode->setText(0, tr("Electrostatic Field"));
+    electrostaticNode->setExpanded(true);
+
+    addTreeWidgetItemValue(electrostaticNode, tr("Charge:"), tr("%1").arg(surfaceIntegralValueElectrostatic->surfaceCharge, 0, 'e', 3), tr("C"));
+}
+
+void HermesElectrostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
+{
+    VolumeIntegralValueElectrostatic *volumeIntegralValueElectrostatic = dynamic_cast<VolumeIntegralValueElectrostatic *>(volumeIntegralValue);
+
+    // electrostatic
+    QTreeWidgetItem *electrostaticNode = new QTreeWidgetItem(trvWidget);
+    electrostaticNode->setText(0, tr("Electrostatic field"));
+    electrostaticNode->setExpanded(true);
+
+    addTreeWidgetItemValue(electrostaticNode, tr("Ex avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldX, 0, 'e', 3), tr("V/m"));
+    addTreeWidgetItemValue(electrostaticNode, tr("Ey avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldY, 0, 'e', 3), tr("V/m"));
+    addTreeWidgetItemValue(electrostaticNode, tr("E avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricField, 0, 'e', 3), tr("V/m"));
+    addTreeWidgetItemValue(electrostaticNode, tr("Dx avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementX, 0, 'e', 3), tr("C/m2"));
+    addTreeWidgetItemValue(electrostaticNode, tr("Dy avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementY, 0, 'e', 3), tr("C/m2"));
+    addTreeWidgetItemValue(electrostaticNode, tr("D avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacement, 0, 'e', 3), tr("C/m2"));
+    addTreeWidgetItemValue(electrostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueElectrostatic->energy, 0, 'e', 3), tr("J"));
+}
+
+SolutionArray *HermesElectrostatic::solve(SolverThread *solverThread)
+{
+    // edge markers
+    electrostaticEdge = new ElectrostaticEdge[Util::scene()->edges.count()+1];
+    electrostaticEdge[0].type = PHYSICFIELDBC_NONE;
+    electrostaticEdge[0].value = 0;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
+        {
+            electrostaticEdge[i+1].type = PHYSICFIELDBC_NONE;
+            electrostaticEdge[i+1].value = 0;
+        }
+        else
+        {
+            SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edges[i]->marker);
+
+            // evaluate script
+            if (!edgeElectrostaticMarker->value.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+
+            electrostaticEdge[i+1].type = edgeElectrostaticMarker->type;
+            electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.number;
+        }
+    }
+
+    // label markers
+    electrostaticLabel = new ElectrostaticLabel[Util::scene()->labels.count()];
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
+        {
+        }
+        else
+        {
+            SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[i]->marker);
+
+            // evaluate script
+            if (!labelElectrostaticMarker->charge_density.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelElectrostaticMarker->permittivity.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+
+            electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.number;
+            electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.number;
+        }
+    }
+
+    SolutionArray *solutionArray = electrostatic_main(solverThread);
+
+    delete [] electrostaticEdge;
+    delete [] electrostaticLabel;
+
+    return solutionArray;
+}
+
+// ****************************************************************************************************************
+
+LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point) : LocalPointValue(point)
+{
+    charge_density = 0;
+    permittivity = 0;
+
+    potential = 0;
+    E = Point();
+    D = Point();
+    we = 0;
+
+    if (Util::scene()->sceneSolution()->sln())
+    {
+        PointValue value = Util::scene()->sceneSolution()->pointValue(point, Util::scene()->sceneSolution()->sln1());
+
+        if (value.marker != NULL)
+        {
+            // potential
+            potential = value.value;
+
+            // electric field
+            E = value.derivative * (-1);
+
+            SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(value.marker);
+
+            charge_density = marker->charge_density.number;
+            permittivity = marker->permittivity.number;
+
+            // electric displacement
+            D = E * (marker->permittivity.number * EPS0);
+
+            // energy density
+            we = 0.5 * E.magnitude() * D.magnitude();
+        }
+    }
+}
+
+double LocalPointValueElectrostatic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+{
+    switch (physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
+        {
+            return potential;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return E.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return E.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return E.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return D.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return D.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return D.magnitude();
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
+        {
+            return we;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
+        {
+            return permittivity;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueElectrostatic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
+        throw;
+        break;
+    }
+}
+
+QStringList LocalPointValueElectrostatic::variables()
+{
+    QStringList row;
+    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
+            QString("%1").arg(point.y, 0, 'e', 5) <<
+            QString("%1").arg(potential, 0, 'e', 5) <<
+            QString("%1").arg(E.x, 0, 'e', 5) <<
+            QString("%1").arg(E.y, 0, 'e', 5) <<
+            QString("%1").arg(E.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(D.x, 0, 'e', 5) <<
+            QString("%1").arg(D.y, 0, 'e', 5) <<
+            QString("%1").arg(D.magnitude(), 0, 'e', 5) <<
+            QString("%1").arg(we, 0, 'e', 5) <<
+            QString("%1").arg(permittivity, 0, 'f', 3);
+
+    return QStringList(row);
+}
+
+// ****************************************************************************************************************
+
+SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic() : SurfaceIntegralValue()
+{
+    surfaceCharge = 0;
+
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        for (int i = 0; i<Util::scene()->edges.length(); i++)
+        {
+            if (Util::scene()->edges[i]->isSelected)
+            {
+                surfaceCharge += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY);
+            }
+        }
+    }
+}
+
+QStringList SurfaceIntegralValueElectrostatic::variables()
+{
+    QStringList row;
+    row <<  QString("%1").arg(length, 0, 'e', 5) <<
+            QString("%1").arg(surface, 0, 'e', 5) <<
+            QString("%1").arg(surfaceCharge, 0, 'e', 5);
+    return QStringList(row);
+}
+
+// ****************************************************************************************************************
+
+VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic() : VolumeIntegralValue()
+{
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        averageElectricFieldX = 0;
+        averageElectricFieldY = 0;
+        averageElectricField = 0;
+        averageDisplacementX = 0;
+        averageDisplacementY = 0;
+        averageDisplacement = 0;
+        energy = 0;
+        for (int i = 0; i<Util::scene()->labels.length(); i++)
+        {
+            if (Util::scene()->labels[i]->isSelected)
+            {
+                averageElectricFieldX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_X);
+                averageElectricFieldY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_Y);
+                averageElectricField += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD);
+                averageDisplacementX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_X);
+                averageDisplacementY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_Y);
+                averageDisplacement += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT);
+                energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ENERGY_DENSITY);
+            }
+        }
+
+        if (volume > 0)
+        {
+            averageElectricFieldX /= volume;
+            averageElectricFieldY /= volume;
+            averageElectricField /= volume;
+            averageDisplacementX /= volume;
+            averageDisplacementY /= volume;
+            averageDisplacement /= volume;
+        }
+    }
+}
+
+QStringList VolumeIntegralValueElectrostatic::variables()
+{
+    QStringList row;
+    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
+            QString("%1").arg(crossSection, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricFieldX, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricFieldY, 0, 'e', 5) <<
+            QString("%1").arg(averageElectricField, 0, 'e', 5) <<
+            QString("%1").arg(averageDisplacementX, 0, 'e', 5) <<
+            QString("%1").arg(averageDisplacementY, 0, 'e', 5) <<
+            QString("%1").arg(averageDisplacement, 0, 'e', 5) <<
+            QString("%1").arg(energy, 0, 'e', 5);
+    return QStringList(row);
+}
+
+// *************************************************************************************************************************************
+
+SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, Value value)
+        : SceneEdgeMarker(name, type)
+{
+    this->value = value;
+}
+
+QString SceneEdgeElectrostaticMarker::script()
+{
+    return QString("addBoundary(\"%1\", \"%2\", %3);").
+            arg(name).
+            arg(physicFieldBCStringKey(type)).
+            arg(value.text);
+}
+
+QMap<QString, QString> SceneEdgeElectrostaticMarker::data()
+{
+    QMap<QString, QString> out;
+    switch (type)
+    {
+    case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
+        out["Potential (V)"] = value.text;
+        break;
+    case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
+        out["Surface charge density (C/m3)"] = value.text;
+        break;
+    }
+    return QMap<QString, QString>(out);
+}
+
+int SceneEdgeElectrostaticMarker::showDialog(QWidget *parent)
+{
+    DSceneEdgeElectrostaticMarker *dialog = new DSceneEdgeElectrostaticMarker(this, parent);
+    return dialog->exec();
+}
+
+// *************************************************************************************************************************************
+
+SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name, Value charge_density, Value permittivity)
+        : SceneLabelMarker(name)
+{
+    this->charge_density = charge_density;
+    this->permittivity = permittivity;
+}
+
+QString SceneLabelElectrostaticMarker::script()
+{
+    return QString("addMaterial(\"%1\", %2, %3);").
+            arg(name).
+            arg(charge_density.text).
+            arg(permittivity.text);
+}
+
+QMap<QString, QString> SceneLabelElectrostaticMarker::data()
+{
+    QMap<QString, QString> out;
+    out["Charge density (C/m3)"] = charge_density.text;
+    out["Permittivity (-)"] = permittivity.text;
+    return QMap<QString, QString>(out);
+}
+
+int SceneLabelElectrostaticMarker::showDialog(QWidget *parent)
+{
+    DSceneLabelElectrostaticMarker *dialog = new DSceneLabelElectrostaticMarker(parent, this);
+    return dialog->exec();
+}
+
+// *************************************************************************************************************************************
+
+DSceneEdgeElectrostaticMarker::DSceneEdgeElectrostaticMarker(SceneEdgeElectrostaticMarker *edgeElectrostaticMarker, QWidget *parent) : DSceneEdgeMarker(parent)
+{
+    m_edgeMarker = edgeElectrostaticMarker;
+
+    createDialog();
+
+    // tab order
+    setTabOrder(txtName, cmbType);
+    setTabOrder(cmbType, txtValue);
+
+    load();
+    setSize();
+}
+
+DSceneEdgeElectrostaticMarker::~DSceneEdgeElectrostaticMarker()
+{
+    delete cmbType;
+    delete txtValue;
+}
+
+QLayout* DSceneEdgeElectrostaticMarker::createContent()
+{
+    cmbType = new QComboBox();
+    cmbType->addItem("none", PHYSICFIELDBC_NONE);
+    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL), PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL);
+    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE), PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE);
+
+    txtValue = new SLineEditValue(this);
+
+    QFormLayout *layoutMarker = new QFormLayout();
+    layoutMarker->addRow(tr("BC type:"), cmbType);
+    layoutMarker->addRow(tr("Value:"), txtValue);
+
+    return layoutMarker;
+}
+
+void DSceneEdgeElectrostaticMarker::load()
+{
+    DSceneEdgeMarker::load();
+
+    SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_edgeMarker);
+
+    cmbType->setCurrentIndex(cmbType->findData(edgeElectrostaticMarker->type));
+    txtValue->setText(edgeElectrostaticMarker->value.text);
+}
+
+bool DSceneEdgeElectrostaticMarker::save() {
+    if (!DSceneEdgeMarker::save()) return false;
+
+    SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_edgeMarker);
+
+    edgeElectrostaticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
+
+    if (txtValue->evaluate())
+        edgeElectrostaticMarker->value  = txtValue->value();
+    else
+        return false;
+
+    return true;
+}
+
+// *************************************************************************************************************************************
+
+DSceneLabelElectrostaticMarker::DSceneLabelElectrostaticMarker(QWidget *parent, SceneLabelElectrostaticMarker *labelElectrostaticMarker) : DSceneLabelMarker(parent)
+{
+    m_labelMarker = labelElectrostaticMarker;
+
+    createDialog();
+
+    // tab order
+    setTabOrder(txtName, txtPermittivity);
+    setTabOrder(txtPermittivity, txtChargeDensity);
+
+    load();
+    setSize();
+}
+
+DSceneLabelElectrostaticMarker::~DSceneLabelElectrostaticMarker()
+{
+    delete txtPermittivity;
+    delete txtChargeDensity;
+}
+
+QLayout* DSceneLabelElectrostaticMarker::createContent()
+{
+    txtPermittivity = new SLineEditValue(this);
+    txtChargeDensity = new SLineEditValue(this);
+
+    QFormLayout *layoutMarker = new QFormLayout();
+    layoutMarker->addRow(tr("Permittivity (-):"), txtPermittivity);
+    layoutMarker->addRow(tr("Charge density (C/m3):"), txtChargeDensity);
+
+    return layoutMarker;
+}
+
+void DSceneLabelElectrostaticMarker::load()
+{
+    DSceneLabelMarker::load();
+
+    SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_labelMarker);
+
+    txtPermittivity->setText(labelElectrostaticMarker->permittivity.text);
+    txtChargeDensity->setText(labelElectrostaticMarker->charge_density.text);
+}
+
+bool DSceneLabelElectrostaticMarker::save() {
+    if (!DSceneLabelMarker::save()) return false;;
+
+    SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_labelMarker);
+
+    if (txtPermittivity->evaluate())
+        labelElectrostaticMarker->permittivity = txtPermittivity->value();
+    else
+        return false;
+
+    if (txtChargeDensity->evaluate())
+        labelElectrostaticMarker->charge_density = txtChargeDensity->value();
+    else
+        return false;
+
+    return true;
 }

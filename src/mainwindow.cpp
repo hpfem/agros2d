@@ -614,7 +614,7 @@ void MainWindow::doSolve()
 
         // show local point values
         Point point = Point(0, 0);
-        localPointValueView->doShowPoint(localPointValueFactory(point));
+        localPointValueView->doShowPoint(Util::scene()->problemInfo().hermes->localPointValue(point));
     }
 
     doInvalidated();
@@ -740,7 +740,7 @@ void MainWindow::doInvalidated()
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
     lblProblemType->setText(tr("Problem Type: ") + problemTypeString(Util::scene()->problemInfo().problemType));
-    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->problemInfo().physicField));
+    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->problemInfo().physicField()));
 }
 
 void MainWindow::doHelp()

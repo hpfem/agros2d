@@ -122,7 +122,7 @@ QString createEcmaFromModel()
     str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, \"%7\", %8, %9);").
            arg(Util::scene()->problemInfo().name).
            arg(problemTypeStringKey(Util::scene()->problemInfo().problemType)).
-           arg(physicFieldStringKey(Util::scene()->problemInfo().physicField)).
+           arg(physicFieldStringKey(Util::scene()->problemInfo().physicField())).
            arg(Util::scene()->problemInfo().numberOfRefinements).
            arg(Util::scene()->problemInfo().polynomialOrder).
            arg(Util::scene()->problemInfo().frequency).

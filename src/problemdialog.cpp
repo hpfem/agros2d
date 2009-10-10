@@ -118,7 +118,7 @@ void ProblemDialog::fillComboBox()
 }
 
 void ProblemDialog::load() {
-    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_problemInfo->physicField));
+    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_problemInfo->physicField()));
     txtName->setText(m_problemInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
     dtmDate->setDate(m_problemInfo->date);
@@ -131,7 +131,7 @@ void ProblemDialog::load() {
 }
 
 void ProblemDialog::save() {
-    if (this->m_isNewProblem) m_problemInfo->physicField = (PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt();
+    if (this->m_isNewProblem) m_problemInfo->hermes = hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt());
     m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
     m_problemInfo->name = txtName->text();
     m_problemInfo->date = dtmDate->date();

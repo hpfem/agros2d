@@ -18,13 +18,10 @@
 #include <qwt_plot.h>
 
 #include "util.h"
-#include "scene.h"
-#include "scenemarker.h"
 
-class SceneEdgeMarker;
-class SceneLabelMarker;
-
-void fillComboBoxVariable(QComboBox *cmbFieldVariable, PhysicField physicField);
+void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
+void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
+void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 
 class SLineEdit : public QLineEdit
 {
@@ -90,36 +87,5 @@ public slots:
    void doAccept();
 };
 
-class EdgeMarkerDialog : public QDialog
-{
-    Q_OBJECT
-public:
-    EdgeMarkerDialog(QWidget *parent = 0);
-    ~EdgeMarkerDialog();
-
-    inline SceneEdgeMarker *marker() { return (cmbMarker->currentIndex() >= 0) ? cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>() : NULL; }
-
-private:
-    QComboBox *cmbMarker;
-
-public slots:
-    void doAccept();
-};
-
-class LabelMarkerDialog : public QDialog
-{
-    Q_OBJECT
-public:
-    LabelMarkerDialog(QWidget *parent = 0);
-    ~LabelMarkerDialog();
-
-    inline SceneLabelMarker *marker() { return (cmbMarker->currentIndex() >= 0) ? cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>() : NULL; }
-
-private:
-    QComboBox *cmbMarker;
-
-public slots:
-    void doAccept();
-};
 
 #endif // GUI_H

@@ -105,7 +105,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Problem.Date]", Util::scene()->problemInfo().date.toString("dd.MM.yyyy"), Qt::CaseSensitive);
     destination.replace("[Problem.FileName]", QFileInfo(Util::scene()->problemInfo().fileName).completeBaseName(), Qt::CaseSensitive);
     destination.replace("[Problem.ProblemType]", problemTypeString(Util::scene()->problemInfo().problemType), Qt::CaseSensitive);
-    destination.replace("[Problem.PhysicField]", physicFieldString(Util::scene()->problemInfo().physicField), Qt::CaseSensitive);
+    destination.replace("[Problem.PhysicField]", physicFieldString(Util::scene()->problemInfo().physicField()), Qt::CaseSensitive);
     destination.replace("[Problem.NumberOfRefinements]", QString::number(Util::scene()->problemInfo().numberOfRefinements), Qt::CaseSensitive);
     destination.replace("[Problem.PolynomialOrder]", QString::number(Util::scene()->problemInfo().polynomialOrder), Qt::CaseSensitive);
     destination.replace("[Problem.AdaptivityType]", adaptivityTypeString(Util::scene()->problemInfo().adaptivityType), Qt::CaseSensitive);

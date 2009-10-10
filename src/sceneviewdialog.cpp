@@ -167,7 +167,7 @@ void SceneViewDialog::createControls()
 
     // layout scalar field
     cmbScalarFieldVariable = new QComboBox();
-    fillComboBoxVariable(cmbScalarFieldVariable, Util::scene()->problemInfo().physicField);
+    fillComboBoxScalarVariable(cmbScalarFieldVariable);
     connect(cmbScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
 
     cmbScalarFieldVariableComp = new QComboBox();
@@ -199,46 +199,7 @@ void SceneViewDialog::createControls()
 
     // layout vector field
     cmbVectorFieldVariable = new QComboBox();
-    switch (Util::scene()->problemInfo().physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        {
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD), PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD);
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT), PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT);
-        }
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        {
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY);
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD);
-        }
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        {
-        }
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        {
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_FLUX), PHYSICFIELDVARIABLE_HEAT_FLUX);
-        }
-        break;
-    case PHYSICFIELD_CURRENT:
-        {
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD), PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD);
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY), PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY);
-        }
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        {
-            cmbVectorFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
-        }
-        break;
-    default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SceneViewDialog::createControls()" << endl;
-        throw;
-        break;
-    }    
+
 
     QGridLayout *layoutVectorField = new QGridLayout();
     layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);

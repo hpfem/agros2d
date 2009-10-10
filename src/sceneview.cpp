@@ -25,56 +25,10 @@ void SceneViewSettings::defaultValues()
     scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
     scalarRangeAuto = true;
 
-    switch (Util::scene()->problemInfo().physicField)
-    {
-    case PHYSICFIELD_ELECTROSTATIC:
-        {
-            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL;
-            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL;
-            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD;
-        }
-        break;
-    case PHYSICFIELD_MAGNETOSTATIC:
-        {
-            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL;
-            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
-            scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_MAGNITUDE;
-            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY;
-        }
-        break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        {
-            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY;
-        }
-        break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        {
-            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_TEMPERATURE;
-            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_TEMPERATURE;
-            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_FLUX;
-        }
-        break;
-    case PHYSICFIELD_CURRENT:
-        {
-            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
-            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_POTENTIAL;
-            vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY;
-        }
-        break;
-    case PHYSICFIELD_ELASTICITY:
-        {
-            contourPhysicFieldVariable = PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;
-            scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS;
-            // vectorPhysicFieldVariable = PHYSICFIELDVARIABLE_HEAT_FLUX;
-        }
-        break;
-    default:
-        cerr << "Physical field '" + physicFieldStringKey(Util::scene()->problemInfo().physicField).toStdString() + "' is not implemented. SceneViewSettings::defaultValues()" << endl;
-        throw;
-        break;
-    }
+    contourPhysicFieldVariable = Util::scene()->problemInfo().hermes->contourPhysicFieldVariable();
+    scalarPhysicFieldVariable = Util::scene()->problemInfo().hermes->scalarPhysicFieldVariable();
+    scalarPhysicFieldVariableComp = Util::scene()->problemInfo().hermes->scalarPhysicFieldVariableComp();
+    vectorPhysicFieldVariable = Util::scene()->problemInfo().hermes->vectorPhysicFieldVariable();    
 }
 
 void SceneViewSettings::load()
@@ -1502,8 +1456,8 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Escape:
         {
             Util::scene()->selectNone();
-            emit mousePressed(volumeIntegralValueFactory());
-            emit mousePressed(surfaceIntegralValueFactory());
+            emit mousePressed(Util::scene()->problemInfo().hermes->volumeIntegralValue());
+            emit mousePressed(Util::scene()->problemInfo().hermes->surfaceIntegralValue());
             doRefresh();
         }
         break;
@@ -1520,14 +1474,14 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
                 Util::scene()->selectAll(SCENEMODE_OPERATE_ON_LABELS);
-                emit mousePressed(volumeIntegralValueFactory());
+                emit mousePressed(Util::scene()->problemInfo().hermes->volumeIntegralValue());
             }
             
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
             {
                 Util::scene()->selectAll(SCENEMODE_OPERATE_ON_EDGES);
-                emit mousePressed(surfaceIntegralValueFactory());
+                emit mousePressed(Util::scene()->problemInfo().hermes->surfaceIntegralValue());
             }
         }
         else
@@ -1576,7 +1530,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
         {
             // local point value
             if (actPostprocessorModeLocalPointValue->isChecked())
-                emit mousePressed(localPointValueFactory(p));
+                emit mousePressed(Util::scene()->problemInfo().hermes->localPointValue(p));
             // select volume integral area
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
@@ -1589,7 +1543,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     Util::scene()->labels[labelIndex]->isSelected = !Util::scene()->labels[labelIndex]->isSelected;
                     updateGL();
                 }
-                emit mousePressed(volumeIntegralValueFactory());
+                emit mousePressed(Util::scene()->problemInfo().hermes->volumeIntegralValue());
             }
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
@@ -1600,7 +1554,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 edge->isSelected = !edge->isSelected;
                 updateGL();
                 
-                emit mousePressed(surfaceIntegralValueFactory());
+                emit mousePressed(Util::scene()->problemInfo().hermes->surfaceIntegralValue());
             }
         }
     }
@@ -2041,6 +1995,8 @@ void SceneView::doDefaults()
 
 void SceneView::doSolved()
 {
+    m_sceneViewSettings.showInitialMesh = false;
+
     doInvalidated();
     actSceneModePostprocessor->trigger();
 }
@@ -2204,13 +2160,13 @@ void SceneView::setRangeContour()
     if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours)
     {
         ViewScalarFilter *viewScalarFilter;
-        if (numberOfSolution(Util::scene()->problemInfo().physicField) == 1)
+        if (Util::scene()->problemInfo().hermes->numberOfSolution() == 1)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
                                                     Util::scene(),
                                                     m_sceneViewSettings.contourPhysicFieldVariable,
                                                     PHYSICFIELDVARIABLECOMP_SCALAR);
 
-        if (numberOfSolution(Util::scene()->problemInfo().physicField) == 2)
+        if (Util::scene()->problemInfo().hermes->numberOfSolution() == 2)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
                                                     Util::scene()->sceneSolution()->sln2(),
                                                     Util::scene(),
@@ -2229,13 +2185,13 @@ void SceneView::setRangeScalar()
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         ViewScalarFilter *viewScalarFilter;
-        if (numberOfSolution(Util::scene()->problemInfo().physicField) == 1)
+        if (Util::scene()->problemInfo().hermes->numberOfSolution() == 1)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
                                                     Util::scene(),
                                                     m_sceneViewSettings.scalarPhysicFieldVariable,
                                                     m_sceneViewSettings.scalarPhysicFieldVariableComp);
 
-        if (numberOfSolution(Util::scene()->problemInfo().physicField) == 2)
+        if (Util::scene()->problemInfo().hermes->numberOfSolution() == 2)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
                                                     Util::scene()->sceneSolution()->sln2(),
                                                     Util::scene(),

@@ -44,7 +44,7 @@ ChartDialog::~ChartDialog()
 
 void ChartDialog::showDialog()
 {
-    fillComboBoxVariable(cmbFieldVariable, Util::scene()->problemInfo().physicField);
+    fillComboBoxScalarVariable(cmbFieldVariable);
 
     // correct labels
     lblStartX->setText(Util::scene()->problemInfo().labelX() + ":");
@@ -233,7 +233,7 @@ void ChartDialog::doPlot()
     // table
     trvTable->clear();
     trvTable->setRowCount(count);
-    QStringList headers = localPointValueHeaderFactory(Util::scene()->problemInfo().physicField);
+    QStringList headers = Util::scene()->problemInfo().hermes->localPointValueHeader();
     trvTable->setColumnCount(headers.count());
     trvTable->setHorizontalHeaderLabels(headers);
     
@@ -254,7 +254,7 @@ void ChartDialog::doPlot()
     for (int i = 0; i<count; i++)
     {
         Point point(start.x + i*diff.x, start.y + i*diff.y);
-        LocalPointValue *localPointValue = localPointValueFactory(point);
+        LocalPointValue *localPointValue = Util::scene()->problemInfo().hermes->localPointValue(point);
         
         // x value
         if (radAxisLength->isChecked()) xval[i] = sqrt(sqr(i*diff.x) + sqr(i*diff.y));

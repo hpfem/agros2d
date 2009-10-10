@@ -12,17 +12,25 @@
 #include "scenefunction.h"
 #include "scenesolution.h"
 
+#include "localvalueview.h"
+#include "surfaceintegralview.h"
+#include "volumeintegralview.h"
+
 #include "helpdialog.h"
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
 #include "solverdialog.h"
 
+#include "hermes2d/hermes_field.h"
 #include "hermes2d/hermes_electrostatic.h"
 #include "hermes2d/hermes_magnetostatic.h"
 #include "hermes2d/hermes_harmonicmagnetic.h"
 #include "hermes2d/hermes_heat.h"
 #include "hermes2d/hermes_current.h"
 #include "hermes2d/hermes_elasticity.h"
+
+struct HermesObject;
+struct HermesElectrostatic;
 
 class ThreadSolver;
 
@@ -48,8 +56,8 @@ struct ProblemInfo
     QString name;
     QDate date;
     QString fileName;
+    PhysicField physicField() { return (hermes) ? hermes->physicField : PHYSICFIELD_UNDEFINED; }
     ProblemType problemType;
-    PhysicField physicField;
     int numberOfRefinements;
     int polynomialOrder;
     AdaptivityType adaptivityType;
@@ -58,18 +66,24 @@ struct ProblemInfo
     QString scriptStartup;
     int frequency;
 
+    HermesField *hermes;
+
     ProblemInfo()
     {
+        hermes = NULL;
         clear();
     }
 
     void clear()
     {
+        // hermes object
+        if (hermes) delete hermes;
+        hermes = new HermesElectrostatic();
+
         name = QObject::tr("unnamed");
         date = QDate::currentDate();
         fileName = "";
         scriptStartup = "";
-        physicField = PHYSICFIELD_ELECTROSTATIC;
         problemType = PROBLEMTYPE_PLANAR;
         numberOfRefinements = 1;
         polynomialOrder = 2;
@@ -77,6 +91,7 @@ struct ProblemInfo
         adaptivitySteps = 0;
         adaptivityTolerance = 1.0;
 
+        // only for harmonic magnetic
         frequency = 0.0;
     }
 
@@ -98,7 +113,7 @@ private:
 class Scene : public QObject {
     Q_OBJECT
 
-public slots:
+    public slots:
     void doNewNode(const Point &point = Point());
     void doNewEdge();
     void doNewLabel();

@@ -8,9 +8,6 @@
 
 #include "sceneviewdialog.h"
 #include "scenebasic.h"
-#include "localvalueview.h"
-#include "volumeintegralview.h"
-#include "surfaceintegralview.h"
 
 #include "sceneview_data.h"
 
@@ -19,8 +16,8 @@ class SceneEdge;
 class SceneLabel;
 
 class LocalPointValue;
-class VolumeIntegralValue;
 class SurfaceIntegralValue;
+class VolumeIntegralValue;
 
 class SceneViewSettings
 {
