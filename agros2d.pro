@@ -93,6 +93,7 @@ SOURCES += src/util.cpp \
     src/scene.cpp \
     src/gui.cpp \
     src/hermes2d/hermes_field.cpp \
+    src/hermes2d/hermes_general.cpp \
     src/hermes2d/hermes_electrostatic.cpp \
     src/hermes2d/hermes_heat.cpp \
     src/hermes2d/hermes_magnetostatic.cpp \
@@ -127,6 +128,7 @@ HEADERS += src/util.h \
     src/scene.h \
     src/gui.h \
     src/hermes2d/hermes_field.h \
+    src/hermes2d/hermes_general.h \
     src/hermes2d/hermes_electrostatic.h \
     src/hermes2d/hermes_heat.h \
     src/hermes2d/hermes_magnetostatic.h \

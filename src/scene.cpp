@@ -1031,6 +1031,15 @@ void Scene::readFromFile(const QString &fileName)
             PhysicFieldBC typeY;
             switch (m_problemInfo.physicField())
             {
+            case PHYSICFIELD_GENERAL:
+                // general markers
+                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
+                if (element.toElement().attribute("type") == "value") type = PHYSICFIELDBC_GENERAL_VALUE;
+                if (element.toElement().attribute("type") == "derivative") type = PHYSICFIELDBC_GENERAL_DERIVATIVE;
+                addEdgeMarker(new SceneEdgeGeneralMarker(name,
+                                                         type,
+                                                         Value(element.toElement().attribute("value"))));
+                break;
             case PHYSICFIELD_ELECTROSTATIC:
                 // electrostatic markers
                 if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
@@ -1129,6 +1138,12 @@ void Scene::readFromFile(const QString &fileName)
         {
             switch (m_problemInfo.physicField())
             {
+            case PHYSICFIELD_GENERAL:
+                // general markers
+                addLabelMarker(new SceneLabelGeneralMarker(name,
+                                                                 Value(element.toElement().attribute("rightside")),
+                                                                 Value(element.toElement().attribute("constant"))));
+                break;
             case PHYSICFIELD_ELECTROSTATIC:
                 // electrostatic markers
                 addLabelMarker(new SceneLabelElectrostaticMarker(name,
@@ -1358,6 +1373,12 @@ void Scene::writeToFile(const QString &fileName) {
 
         if (i > 0)
         {
+            // general
+            if (SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(edgeMarkers[i]))
+            {
+                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeGeneralMarker->type));
+                eleEdgeMarker.setAttribute("value", edgeGeneralMarker->value.text);
+            }
             // electrostatic
             if (SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(edgeMarkers[i]))
             {
@@ -1422,6 +1443,12 @@ void Scene::writeToFile(const QString &fileName) {
 
         if (i > 0)
         {
+            // general
+            if (SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarkers[i]))
+            {
+                eleLabelMarker.setAttribute("rightside", labelGeneralMarker->rightside.text);
+                eleLabelMarker.setAttribute("constant", labelGeneralMarker->constant.text);
+            }
             // electrostatic
             if (SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarkers[i]))
             {

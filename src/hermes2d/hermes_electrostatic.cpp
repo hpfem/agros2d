@@ -18,7 +18,6 @@ ElectrostaticEdge *electrostaticEdge;
 ElectrostaticLabel *electrostaticLabel;
 bool electrostaticPlanar;
 
-
 int electrostatic_bc_types(int marker)
 {
     switch (electrostaticEdge[marker].type)

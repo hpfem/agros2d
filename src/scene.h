@@ -22,6 +22,7 @@
 #include "solverdialog.h"
 
 #include "hermes2d/hermes_field.h"
+#include "hermes2d/hermes_general.h"
 #include "hermes2d/hermes_electrostatic.h"
 #include "hermes2d/hermes_magnetostatic.h"
 #include "hermes2d/hermes_harmonicmagnetic.h"
@@ -30,7 +31,7 @@
 #include "hermes2d/hermes_elasticity.h"
 
 struct HermesObject;
-struct HermesElectrostatic;
+struct HermesGeneral;
 
 class ThreadSolver;
 
@@ -78,7 +79,7 @@ struct ProblemInfo
     {
         // hermes object
         if (hermes) delete hermes;
-        hermes = new HermesElectrostatic();
+        hermes = new HermesGeneral();
 
         name = QObject::tr("unnamed");
         date = QDate::currentDate();

@@ -1,0 +1,33 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="general" id="0" name="unnamed" >
+            <scriptstartup></scriptstartup>
+            <edges>
+                <edge type="derivative" value="0" id="1" name="Neumann" />
+                <edge type="value" value="0" id="2" name="Dirichlet 1" />
+                <edge type="value" value="1" id="3" name="Dirichlet 2" />
+            </edges>
+            <labels>
+                <label constant="10" rightside="0" id="1" name="Material" />
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="-1" y="1" id="0" />
+            <node x="-1" y="-1" id="1" />
+            <node x="1" y="-1" id="2" />
+            <node x="1" y="1" id="3" />
+        </nodes>
+        <edges>
+            <edge end="1" marker="2" id="0" start="0" angle="0" />
+            <edge end="0" marker="1" id="1" start="3" angle="0" />
+            <edge end="2" marker="1" id="2" start="1" angle="0" />
+            <edge end="2" marker="3" id="3" start="3" angle="0" />
+        </edges>
+        <labels>
+            <label x="0.00187161" y="-0.0617631" marker="1" id="0" area="0" />
+        </labels>
+    </geometry>
+    <functions/>
+</document>

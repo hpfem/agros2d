@@ -1033,6 +1033,39 @@ void ViewScalarFilter::precalculate(int order, int mask)
     {
         switch (m_physicFieldVariable)
         {
+        case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
+            {
+                node->values[0][0][i] = valueu[i];
+            }
+            break;
+        case PHYSICFIELDVARIABLE_GENERAL_GRADIENT:
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = -dudx[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = -dudy[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudx[i]) + sqr(dudy[i]));
+                    }
+                    break;
+                }
+            }
+            break;
+        case PHYSICFIELDVARIABLE_GENERAL_CONSTANT:
+            {
+                SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
+                node->values[0][0][i] = marker->constant.number;
+            }
+            break;
         case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
             {
                 node->values[0][0][i] = valueu[i];

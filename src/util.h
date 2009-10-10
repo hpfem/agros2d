@@ -185,7 +185,7 @@ enum AdaptivityType
     ADAPTIVITYTYPE_H = 1,
     ADAPTIVITYTYPE_P = 2,
     ADAPTIVITYTYPE_HP = 0
-};
+                    };
 
 inline QString adaptivityTypeStringKey(AdaptivityType adaptivityType)
 {
@@ -202,7 +202,6 @@ inline QString adaptivityTypeStringKey(AdaptivityType adaptivityType)
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
         throw;
-        break;
     }
 }
 
@@ -221,7 +220,6 @@ inline QString adaptivityTypeString(AdaptivityType adaptivityType)
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
         throw;
-        break;
     }
 }
 
@@ -306,7 +304,6 @@ inline QString physicFieldString(PhysicField physicField)
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
         throw;
-        break;
     }
 }
 
@@ -336,6 +333,9 @@ enum PhysicFieldVariable
     PHYSICFIELDVARIABLE_UNDEFINED,
     PHYSICFIELDVARIABLE_NONE,
     PHYSICFIELDVARIABLE_ORDER,
+    PHYSICFIELDVARIABLE_GENERAL_VARIABLE,
+    PHYSICFIELDVARIABLE_GENERAL_GRADIENT,
+    PHYSICFIELDVARIABLE_GENERAL_CONSTANT,
     PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL,
     PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD,
     PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT,
@@ -380,124 +380,91 @@ inline QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable
 {
     switch (physicFieldVariable)
     {
+    case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
+        return QObject::tr("Variable");
+    case PHYSICFIELDVARIABLE_GENERAL_GRADIENT:
+        return QObject::tr("Gradient");
+    case PHYSICFIELDVARIABLE_GENERAL_CONSTANT:
+        return QObject::tr("Constant");
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
         return QObject::tr("Scalar potential");
-        break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
         return QObject::tr("Electric field");
-        break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT:
         return QObject::tr("Displacement");
-        break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
         return QObject::tr("Energy density");
-        break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
         return QObject::tr("Permittivity");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL:
         return QObject::tr("Vector potential");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY:
         return QObject::tr("Flux density");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD:
         return QObject::tr("Magnetic field");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY:
         return QObject::tr("Energy density");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY:
         return QObject::tr("Permeability");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
         return QObject::tr("Vector potential");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
         return QObject::tr("Vector potential - real");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG:
         return QObject::tr("Vector potential - imag");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY:
         return QObject::tr("Flux density");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
         return QObject::tr("Flux density - real");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG:
         return QObject::tr("Flux density - imag");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD:
         return QObject::tr("Magnetic field");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL:
         return QObject::tr("Magnetic field - real");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG:
         return QObject::tr("Magnetic field - imag");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL:
         return QObject::tr("Total current density");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
         return QObject::tr("Total current density - real");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
         return QObject::tr("Total current density - imag");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED:
         return QObject::tr("Induced current density");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
         return QObject::tr("Induced current density - real");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
         return QObject::tr("Induced current density - imag");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES:
         return QObject::tr("Average power losses");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY:
         return QObject::tr("Energy density");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY:
         return QObject::tr("Permeability");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
         return QObject::tr("Scalar potential");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD:
         return QObject::tr("Electic field");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY:
         return QObject::tr("Current density");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_LOSSES:
         return QObject::tr("Power losses");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY:
         return QObject::tr("Conductivity");
-        break;
     case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
         return QObject::tr("Temperature");
-        break;
     case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT:
         return QObject::tr("Temperature gradient");
-        break;
     case PHYSICFIELDVARIABLE_HEAT_FLUX:
         return QObject::tr("Heat flux");
-        break;
     case PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY:
         return QObject::tr("Conductivity");
-        break;
     case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
         return QObject::tr("Von Mises stress");
-        break;
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
-        break;
     }
 }
 
@@ -505,6 +472,12 @@ inline QString physicFieldVariableStringKey(PhysicFieldVariable physicFieldVaria
 {
     switch (physicFieldVariable)
     {
+    case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
+        return "variable";
+    case PHYSICFIELDVARIABLE_GENERAL_GRADIENT:
+        return "gradient";
+    case PHYSICFIELDVARIABLE_GENERAL_CONSTANT:
+        return "constant";
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
         return "potential";
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
@@ -584,7 +557,6 @@ inline QString physicFieldVariableStringKey(PhysicFieldVariable physicFieldVaria
     default:
         std::cerr << "Physical field variable '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableStringKey(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
-        break;
     }
 }
 
@@ -603,7 +575,6 @@ inline QString physicFieldVariableCompStringKey(PhysicFieldVariableComp physicFi
     default:
         std::cerr << "Physical field variable comp '" + QString::number(physicFieldVariableComp).toStdString() + "' is not implemented. physicFieldVariableCompStringKey(PhysicFieldVariableComp physicFieldVariableComp)" << endl;
         throw;
-        break;
     }
 }
 
@@ -611,124 +582,89 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
 {
     switch (physicFieldVariable)
     {
+    case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
+        return QObject::tr("");
+    case PHYSICFIELDVARIABLE_GENERAL_GRADIENT:
+        return QObject::tr("");
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
         return QObject::tr("V");
-        break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
         return QObject::tr("V/m");
-        break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT:
         return QObject::tr("C/m2");
-        break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
         return QObject::tr("J/m3");
-        break;
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
         return QObject::tr("-");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL:
         return QObject::tr("Wb/m");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY:
         return QObject::tr("T");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD:
         return QObject::tr("A/m");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY:
         return QObject::tr("J/m3");
-        break;
     case PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY:
         return QObject::tr("-");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
         return QObject::tr("Wb/m");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
         return QObject::tr("Wb/m");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG:
         return QObject::tr("Wb/m");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY:
         return QObject::tr("T");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
         return QObject::tr("T");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG:
         return QObject::tr("T");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD:
         return QObject::tr("A/m");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL:
         return QObject::tr("A/m");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG:
         return QObject::tr("A/m");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL:
         return QObject::tr("A/m2");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
         return QObject::tr("A/m2");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
         return QObject::tr("A/m2");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED:
         return QObject::tr("A/m2");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
         return QObject::tr("A/m2");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
         return QObject::tr("A/m2");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES:
         return QObject::tr("W/m3");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY:
         return QObject::tr("J/m3");
-        break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY:
         return QObject::tr("-");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
         return QObject::tr("V");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD:
         return QObject::tr("V/m");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY:
         return QObject::tr("A/m2");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_LOSSES:
         return QObject::tr("W/m3");
-        break;
     case PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY:
         return QObject::tr("S/m");
-        break;
     case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
         return QObject::tr("deg.");
-        break;
     case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT:
         return QObject::tr("K/m");
-        break;
     case PHYSICFIELDVARIABLE_HEAT_FLUX:
         return QObject::tr("W/m2");
-        break;
     case PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY:
         return QObject::tr("W/m.K");
-        break;
     case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
         return QObject::tr("Pa");
-        break;
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
-        break;
     }
 }
 
@@ -736,6 +672,8 @@ enum PhysicFieldBC
 {
     PHYSICFIELDBC_UNDEFINED,
     PHYSICFIELDBC_NONE,
+    PHYSICFIELDBC_GENERAL_VALUE,
+    PHYSICFIELDBC_GENERAL_DERIVATIVE,
     PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL,
     PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE,
     PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL,
@@ -754,46 +692,37 @@ inline QString physicFieldBCString(PhysicFieldBC physicFieldBC)
 {
     switch (physicFieldBC)
     {
+    case PHYSICFIELDBC_GENERAL_VALUE:
+        return QObject::tr("Value");
+    case PHYSICFIELDBC_GENERAL_DERIVATIVE:
+        return QObject::tr("Derivative");
     case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
         return QObject::tr("Fixed voltage");
-        break;
     case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
         return QObject::tr("Surface charge density");
-        break;
     case PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL:
         return QObject::tr("Vector potential");
-        break;
     case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
         return QObject::tr("Surface current density");
-        break;
     case PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
         return QObject::tr("Vector potential");
-        break;
     case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
         return QObject::tr("Surface current density");
-        break;
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
         return QObject::tr("Temperature");
-        break;
     case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         return QObject::tr("Heat flux");
-        break;
     case PHYSICFIELDBC_CURRENT_POTENTIAL:
         return QObject::tr("Potential");
-        break;
     case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
         return QObject::tr("Inward current flow");
-        break;
     case PHYSICFIELDBC_ELASTICITY_FIXED:
         return QObject::tr("Fixed");
-        break;
     case PHYSICFIELDBC_ELASTICITY_FREE:
         return QObject::tr("Free");
-        break;
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
-        break;
     }
 }
 
@@ -801,46 +730,37 @@ inline QString physicFieldBCStringKey(PhysicFieldBC physicFieldBC)
 {
     switch (physicFieldBC)
     {
+    case PHYSICFIELDBC_GENERAL_VALUE:
+        return "value";
+    case PHYSICFIELDBC_GENERAL_DERIVATIVE:
+        return "derivative";
     case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
         return "potential";
-        break;
     case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
         return "surface_charge_density";
-        break;
     case PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL:
         return "vector_potential";
-        break;
     case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
         return "surface_current_density";
-        break;
     case PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
         return "vector_potential";
-        break;
     case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
         return "surface_current_density";
-        break;
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
         return "temperature";
-        break;
     case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         return "heat_flux";
-        break;
     case PHYSICFIELDBC_CURRENT_POTENTIAL:
         return "potential";
-        break;
     case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
         return "inward_current_flow";
-        break;
     case PHYSICFIELDBC_ELASTICITY_FIXED:
         return "fixed";
-        break;
     case PHYSICFIELDBC_ELASTICITY_FREE:
         return "free";
-        break;
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCStringKey(PhysicFieldBC physicFieldBC)" << endl;
         throw;
-        break;
     }
 }
 
@@ -906,6 +826,8 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
 {
     switch (physicFieldVariable)
     {
+    case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
+    case PHYSICFIELDVARIABLE_GENERAL_CONSTANT:
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
     case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:

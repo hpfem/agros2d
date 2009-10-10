@@ -101,6 +101,7 @@ void ProblemDialog::fillComboBox()
     cmbProblemType->addItem(problemTypeString(PROBLEMTYPE_AXISYMMETRIC), PROBLEMTYPE_AXISYMMETRIC);
 
     cmbPhysicField->clear();
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_GENERAL), PHYSICFIELD_GENERAL);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELECTROSTATIC), PHYSICFIELD_ELECTROSTATIC);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETOSTATIC), PHYSICFIELD_MAGNETOSTATIC);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HARMONIC_MAGNETIC), PHYSICFIELD_HARMONIC_MAGNETIC);
