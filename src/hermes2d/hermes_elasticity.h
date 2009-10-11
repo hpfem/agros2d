@@ -3,9 +3,6 @@
 
 #include "util.h"
 #include "hermes_field.h"
-#include "hermes2d.h"
-#include "solverdialog.h"
-#include "solver_umfpack.h"
 
 struct HermesElasticity : public HermesField
 {
@@ -72,12 +69,12 @@ class SceneEdgeElasticityMarker : public SceneEdgeMarker
 public:
     PhysicFieldBC typeX;
     PhysicFieldBC typeY;
-    double forceX;
-    double forceY;
+    Value forceX;
+    Value forceY;
 
     QString script();
     QMap<QString, QString> data();
-    SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY, double forceX, double forceY);
+    SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY, Value forceX, Value forceY);
 
     int showDialog(QWidget *parent);
 };
@@ -85,14 +82,14 @@ public:
 class SceneLabelElasticityMarker : public SceneLabelMarker
 {
 public:
-    double young_modulus;
-    double poisson_ratio;
+    Value young_modulus;
+    Value poisson_ratio;
 
-    SceneLabelElasticityMarker(const QString &name, double young_modulus, double poisson_ratio);
+    SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio);
 
     // Lame constant
-    inline double lambda() { return (young_modulus * poisson_ratio) / ((1 + poisson_ratio) * (1 - 2*poisson_ratio)); }
-    inline double mu() { return young_modulus / (2*(1 + poisson_ratio)); }
+    inline double lambda() { return (young_modulus.number * poisson_ratio.number) / ((1 + poisson_ratio.number) * (1 - 2*poisson_ratio.number)); }
+    inline double mu() { return young_modulus.number / (2*(1 + poisson_ratio.number)); }
 
     QString script();
     QMap<QString, QString> data();
@@ -116,8 +113,8 @@ protected:
 private:
     QComboBox *cmbTypeX;
     QComboBox *cmbTypeY;
-    SLineEdit *txtForceX;
-    SLineEdit *txtForceY;
+    SLineEditValue *txtForceX;
+    SLineEditValue *txtForceY;
 };
 
 class DSceneLabelElasticityMarker : public DSceneLabelMarker
@@ -135,8 +132,8 @@ protected:
     bool save();
 
 private:
-    SLineEdit *txtYoungModulus;
-    SLineEdit *txtPoissonNumber;
+    SLineEditValue *txtYoungModulus;
+    SLineEditValue *txtPoissonNumber;
 };
 
 #endif // HERMES_ELASTICITY_H

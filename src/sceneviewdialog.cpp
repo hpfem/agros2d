@@ -199,7 +199,7 @@ void SceneViewDialog::createControls()
 
     // layout vector field
     cmbVectorFieldVariable = new QComboBox();
-
+    fillComboBoxVectorVariable(cmbVectorFieldVariable);
 
     QGridLayout *layoutVectorField = new QGridLayout();
     layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);

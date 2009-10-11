@@ -432,8 +432,8 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
             typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
         else
             Util::scene()->addEdgeMarker(new SceneEdgeElasticityMarker(context->argument(0).toString(), typeX, typeY,
-                                                                       context->argument(3).toNumber(),
-                                                                       context->argument(4).toNumber()));
+                                                                       Value(context->argument(3).toString()),
+                                                                       Value(context->argument(4).toString())));
         break;
     default:
         std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField()).toStdString() + "' is not implemented. scriptAddBoundary()" << endl;
@@ -470,7 +470,9 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
     case PHYSICFIELD_MAGNETOSTATIC:
         Util::scene()->addLabelMarker(new SceneLabelMagnetostaticMarker(context->argument(0).toString(),
                                                                         Value(context->argument(1).toString()),
-                                                                        Value(context->argument(2).toString())));
+                                                                        Value(context->argument(2).toString()),
+                                                                        Value(context->argument(3).toString()),
+                                                                        Value(context->argument(4).toString())));
         break;
     case PHYSICFIELD_HARMONIC_MAGNETIC:
         Util::scene()->addLabelMarker(new SceneLabelHarmonicMagneticMarker(context->argument(0).toString(),
@@ -490,8 +492,8 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
         break;
     case PHYSICFIELD_ELASTICITY:
         Util::scene()->addLabelMarker(new SceneLabelElasticityMarker(context->argument(0).toString(),
-                                                                     context->argument(2).toNumber(),
-                                                                     context->argument(3).toNumber()));
+                                                                     Value(context->argument(2).toString()),
+                                                                     Value(context->argument(3).toString())));
         break;
     default:
         std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField()).toStdString() + "' is not implemented. scriptAddMaterial()" << endl;

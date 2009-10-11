@@ -3,9 +3,6 @@
 
 #include "util.h"
 #include "hermes_field.h"
-#include "hermes2d.h"
-#include "solverdialog.h"
-#include "solver_umfpack.h"
 
 struct HermesMagnetostatic : public HermesField
 {
@@ -65,6 +62,8 @@ class LocalPointValueMagnetostatic : public LocalPointValue
 public:
     double current_density;
     double permeability;
+    double remanence;
+    double remanence_angle;
     double potential;
     Point H;
     Point B;
@@ -114,8 +113,10 @@ class SceneLabelMagnetostaticMarker : public SceneLabelMarker
 public:
     Value permeability;
     Value current_density;
+    Value remanence;
+    Value remanence_angle;
 
-    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability);
+    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability, Value remanence, Value remanence_angle);
 
     QString script();
     QMap<QString, QString> data();
@@ -157,6 +158,8 @@ protected:
 private:
     SLineEditValue *txtPermeability;
     SLineEditValue *txtCurrentDensity;
+    SLineEditValue *txtRemanence;
+    SLineEditValue *txtRemanenceAngle;
 };
 
 #endif // MAGNETOSTATIC_H

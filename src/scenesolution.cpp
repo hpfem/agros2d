@@ -1784,7 +1784,8 @@ void ViewScalarFilter::precalculate(int order, int mask)
         case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
             {
                 SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
-                // stress tensor                
+
+                // stress tensor
                 double tz = marker->lambda() * (dudx[i] + dvdy[i]);
                 double tx = tz + 2*marker->mu() * dudx[i];
                 double ty = tz + 2*marker->mu() * dvdy[i];

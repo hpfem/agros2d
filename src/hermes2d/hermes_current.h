@@ -3,9 +3,6 @@
 
 #include "util.h"
 #include "hermes_field.h"
-#include "hermes2d.h"
-#include "solverdialog.h"
-#include "solver_umfpack.h"
 
 struct HermesCurrent : public HermesField
 {

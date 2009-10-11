@@ -5,12 +5,14 @@
 
 #include "util.h"
 #include "hermes2d.h"
+#include "solver_umfpack.h"
 
 #include "localvalueview.h"
 #include "surfaceintegralview.h"
 #include "volumeintegralview.h"
 
 #include "scenemarker.h"
+#include "solverdialog.h"
 
 class LocalPointValue;
 class VolumeIntegralValue;
@@ -106,5 +108,22 @@ Scalar int_u_dvdx_over_x(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<R
     return result;
 }
 
+template<typename Real, typename Scalar>
+Scalar int_dvdx(int n, double *wt, Func<Real> *v)
+{
+  Scalar result = 0;
+  for (int i = 0; i < n; i++)
+    result += wt[i] * (v->dx[i]);
+  return result;
+}
+
+template<typename Real, typename Scalar>
+Scalar int_dvdy(int n, double *wt, Func<Real> *v)
+{
+  Scalar result = 0;
+  for (int i = 0; i < n; i++)
+    result += wt[i] * (v->dy[i]);
+  return result;
+}
 
 #endif // HERMES_FIELD_H
