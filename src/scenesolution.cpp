@@ -375,7 +375,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         else
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
-                                                    0.5 / marker->conductivity.number * (
+                                                    2 * M_PI * x[i] * 0.5 / marker->conductivity.number * (
                                                             sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i])
                                                           + sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]))
                                                     :
@@ -407,8 +407,8 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                         else
                         {
-                            h1_integrate_expression(- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))
-                                                    + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0))));
+                            h1_integrate_expression(- (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))
+                                                    + (2 * M_PI * x[i] * (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0))));
                         }
                     }
                     break;
@@ -422,8 +422,8 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                         else
                         {
-                            h1_integrate_expression(- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudy[i])
-                                                    + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdy[i]));
+                            h1_integrate_expression(- (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudy[i])
+                                                    + (2 * M_PI * x[i] * (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdy[i]));
                         }
                     }
                     break;
@@ -437,8 +437,8 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                         else
                         {
-                            h1_integrate_expression(((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))
-                                                  + ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0))));
+                            h1_integrate_expression((2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))
+                                                  + (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0))));
                         }
                     }
                     break;
@@ -452,8 +452,8 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                         else
                         {
-                            h1_integrate_expression(((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dudy[i])
-                                                  + ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dvdy[i]));
+                            h1_integrate_expression((2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dudy[i])
+                                                  + (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dvdy[i]));
                         }
                     }
                     break;

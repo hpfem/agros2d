@@ -27,13 +27,10 @@ int heat_bc_types(int marker)
     {
     case PHYSICFIELDBC_NONE:
         return BC_NONE;
-        break;
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
         return BC_ESSENTIAL;
-        break;
     case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         return BC_NATURAL;
-        break;
     }
 }
 
@@ -42,15 +39,9 @@ scalar heat_bc_values(int marker, double x, double y)
     switch (heatEdge[marker].type)
     {
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
-        {
-            return heatEdge[marker].temperature;
-        }
-        break;
+        return heatEdge[marker].temperature;
     case PHYSICFIELDBC_HEAT_HEAT_FLUX:
-        {
-            return heatEdge[marker].heatFlux;
-        }
-        break;
+        return heatEdge[marker].heatFlux;
     }
 }
 
@@ -60,9 +51,7 @@ Scalar heat_bilinear_form_surf(int n, double *wt, Func<Real> *u, Func<Real> *v, 
     double h = 0.0;
 
     if (heatEdge[e->marker].type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
-    {
         h = heatEdge[e->marker].h;
-    }
 
     if (heatPlanar)
         return h * int_u_v<Real, Scalar>(n, wt, u, v);
@@ -204,6 +193,65 @@ SolutionArray *heat_main(SolverThread *solverThread)
 }
 
 // *******************************************************************************************************
+
+void HermesHeat::readEdgeMarkerFromDomElement(QDomElement *element)
+{
+    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
+    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
+        type = PHYSICFIELDBC_NONE;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
+    {
+        type = PHYSICFIELDBC_HEAT_TEMPERATURE;
+
+        Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(element->attribute("name"),
+                                                             type,
+                                                             Value(element->attribute("temperature"))));
+    }
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
+    {
+        type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
+
+        Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(element->attribute("name"), type,
+                                                             Value(element->attribute("heat_flux")),
+                                                             Value(element->attribute("h")),
+                                                             Value(element->attribute("external_temperature"))));
+    }
+    else
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+}
+
+void HermesHeat::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+{
+    SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(marker);
+
+    element->setAttribute("type", physicFieldBCStringKey(edgeHeatMarker->type));
+
+    if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_TEMPERATURE)
+    {
+        element->setAttribute("temperature", edgeHeatMarker->temperature.text);
+    }
+    if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
+    {
+        element->setAttribute("heat_flux", edgeHeatMarker->heatFlux.text);
+        element->setAttribute("h", edgeHeatMarker->h.text);
+        element->setAttribute("external_temperature", edgeHeatMarker->externalTemperature.text);
+    }
+}
+
+void HermesHeat::readLabelMarkerFromDomElement(QDomElement *element)
+{
+    Util::scene()->addLabelMarker(new SceneLabelHeatMarker(element->attribute("name"),
+                                                           Value(element->attribute("volume_heat")),
+                                                           Value(element->attribute("thermal_conductivity"))));
+}
+
+void HermesHeat::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+{
+    SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(marker);
+
+    element->setAttribute("thermal_conductivity", labelHeatMarker->thermal_conductivity.text);
+    element->setAttribute("volume_heat", labelHeatMarker->volume_heat.text);
+}
 
 LocalPointValue *HermesHeat::localPointValue(Point point)
 {
@@ -649,7 +697,7 @@ int SceneEdgeHeatMarker::showDialog(QWidget *parent)
 // *************************************************************************************************************************************
 
 SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity)
-        : SceneLabelMarker(name)
+    : SceneLabelMarker(name)
 {
     this->thermal_conductivity = thermal_conductivity;
     this->volume_heat = volume_heat;

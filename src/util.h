@@ -730,6 +730,8 @@ inline QString physicFieldBCStringKey(PhysicFieldBC physicFieldBC)
 {
     switch (physicFieldBC)
     {
+    case PHYSICFIELDBC_NONE:
+        return "none";
     case PHYSICFIELDBC_GENERAL_VALUE:
         return "value";
     case PHYSICFIELDBC_GENERAL_DERIVATIVE:

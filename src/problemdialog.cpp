@@ -157,16 +157,8 @@ void ProblemDialog::doReject()
 
 void ProblemDialog::doPhysicFieldChanged(int index)
 {
-    txtFrequency->setEnabled(false);
+    txtFrequency->setEnabled(Util::scene()->problemInfo().hermes->hasFrequency());
 
-    switch ((PhysicField) cmbPhysicField->itemData(index).toInt())
-    {
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        {
-            txtFrequency->setEnabled(true);
-        }
-        break;
-    }
 }
 
 void ProblemDialog::doAdaptivityChanged(int index)

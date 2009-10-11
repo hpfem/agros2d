@@ -63,5 +63,10 @@ testLorentzForceY = abs(abs(integral.Fy_real/2.0) - 0.011107) < 1e-4;
 if (!testLorentzForceX) print("Lorentz force - X: ", abs(integral.Fx_real/2.0), " == ", 0.020612);
 if (!testLorentzForceY) print("Lorentz force - Y: ", abs(integral.Fy_real/2.0), " == ", 0.011107);
 
+// Joule losses
+integral = volumeIntegral(1);
+testJouleLosses = abs(abs(integral.Pj) - 26.78469) < 1e-1;
+if (!testJouleLosses) print("Joule losses: ", abs(integral.Pj), " == ", 26.78469);
+
 print(testPotentialReal && testPotentialImag && testTotalCurentDensityReal && testTotalCurentDensityImag && 
-testFluxDensity && testEnergy && testLorentzForceX && testLorentzForceY);
+testFluxDensity && testEnergy && testLorentzForceX && testLorentzForceY && testJouleLosses);

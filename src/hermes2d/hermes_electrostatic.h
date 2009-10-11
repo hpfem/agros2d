@@ -14,6 +14,12 @@ public:
     HermesElectrostatic() { physicField = PHYSICFIELD_ELECTROSTATIC; }
 
     inline int numberOfSolution() { return 1; }
+    bool hasFrequency() { return false; }
+
+    void readEdgeMarkerFromDomElement(QDomElement *element);
+    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
+    void readLabelMarkerFromDomElement(QDomElement *element);
+    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
 
     LocalPointValue *localPointValue(Point point);
     QStringList localPointValueHeader();

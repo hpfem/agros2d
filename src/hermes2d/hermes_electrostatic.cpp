@@ -42,23 +42,19 @@ scalar electrostatic_bc_values(int marker, double x, double y)
 template<typename Real, typename Scalar>
 Scalar electrostatic_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = e->marker;
-
     if (electrostaticPlanar)
-        return electrostaticLabel[marker].permittivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
+        return electrostaticLabel[e->marker].permittivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
-        return electrostaticLabel[marker].permittivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
+        return electrostaticLabel[e->marker].permittivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
 }
 
 template<typename Real, typename Scalar>
 Scalar electrostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = e->marker;
-
     if (electrostaticPlanar)
-        return electrostaticLabel[marker].charge_density / EPS0 * int_v<Real, Scalar>(n, wt, v);
+        return electrostaticLabel[e->marker].charge_density / EPS0 * int_v<Real, Scalar>(n, wt, v);
     else
-        return electrostaticLabel[marker].charge_density / EPS0 * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
+        return electrostaticLabel[e->marker].charge_density / EPS0 * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
 SolutionArray *electrostatic_main(SolverThread *solverThread)
@@ -152,6 +148,47 @@ SolutionArray *electrostatic_main(SolverThread *solverThread)
 }
 
 // **************************************************************************************************************************
+
+void HermesElectrostatic::readEdgeMarkerFromDomElement(QDomElement *element)
+{
+    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
+    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
+        type = PHYSICFIELDBC_NONE;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL))
+        type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE))
+        type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
+    else
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+
+    if (type != PHYSICFIELDBC_UNDEFINED)
+        Util::scene()->addEdgeMarker(new SceneEdgeElectrostaticMarker(element->attribute("name"),
+                                                 type,
+                                                 Value(element->attribute("value"))));
+}
+
+void HermesElectrostatic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+{
+    SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(marker);
+
+    element->setAttribute("type", physicFieldBCStringKey(edgeElectrostaticMarker->type));
+    element->setAttribute("value", edgeElectrostaticMarker->value.text);
+}
+
+void HermesElectrostatic::readLabelMarkerFromDomElement(QDomElement *element)
+{  
+    Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(element->attribute("name"),
+                                                     Value(element->attribute("charge_density")),
+                                                     Value(element->attribute("permittivity"))));
+}
+
+void HermesElectrostatic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+{
+    SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(marker);
+
+    element->setAttribute("charge_density", labelElectrostaticMarker->charge_density.text);
+    element->setAttribute("permittivity", labelElectrostaticMarker->permittivity.text);
+}
 
 LocalPointValue *HermesElectrostatic::localPointValue(Point point)
 {

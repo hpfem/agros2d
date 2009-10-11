@@ -1026,96 +1026,8 @@ void Scene::readFromFile(const QString &fileName)
         }
         else
         {
-            PhysicFieldBC type;
-            PhysicFieldBC typeX;
-            PhysicFieldBC typeY;
-            switch (m_problemInfo.physicField())
-            {
-            case PHYSICFIELD_GENERAL:
-                // general markers
-                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
-                if (element.toElement().attribute("type") == "value") type = PHYSICFIELDBC_GENERAL_VALUE;
-                if (element.toElement().attribute("type") == "derivative") type = PHYSICFIELDBC_GENERAL_DERIVATIVE;
-                addEdgeMarker(new SceneEdgeGeneralMarker(name,
-                                                         type,
-                                                         Value(element.toElement().attribute("value"))));
-                break;
-            case PHYSICFIELD_ELECTROSTATIC:
-                // electrostatic markers
-                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
-                if (element.toElement().attribute("type") == "potential") type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
-                if (element.toElement().attribute("type") == "surface_charge_density") type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
-                addEdgeMarker(new SceneEdgeElectrostaticMarker(name,
-                                                               type,
-                                                               Value(element.toElement().attribute("value"))));
-                break;
-            case PHYSICFIELD_MAGNETOSTATIC:
-                // magnetostatic markers
-                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
-                if (element.toElement().attribute("type") == "vector_potential") type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
-                if (element.toElement().attribute("type") == "surface_current_density") type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
-                addEdgeMarker(new SceneEdgeMagnetostaticMarker(name,
-                                                               type,
-                                                               Value(element.toElement().attribute("value"))));
-                break;
-            case PHYSICFIELD_HARMONIC_MAGNETIC:
-                // harmonic magnetic markers
-                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
-                if (element.toElement().attribute("type") == "vector_potential") type = PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-                if (element.toElement().attribute("type") == "surface_current_density") type = PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT;
-                addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(name,
-                                                                  type,
-                                                                  Value(element.toElement().attribute("value"))));
-                break;
-            case PHYSICFIELD_HEAT_TRANSFER:
-                // heat markers
-                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
-                if (element.toElement().attribute("type") == "temperature")
-                {
-                    type = PHYSICFIELDBC_HEAT_TEMPERATURE;
-                    addEdgeMarker(new SceneEdgeHeatMarker(name,
-                                                          type,
-                                                          Value(element.toElement().attribute("temperature"))));
-                }
-                if (element.toElement().attribute("type") == "heat_flux")
-                {
-                    type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
-                    addEdgeMarker(new SceneEdgeHeatMarker(name, type,
-                                                          Value(element.toElement().attribute("heat_flux")),
-                                                          Value(element.toElement().attribute("h")),
-                                                          Value(element.toElement().attribute("external_temperature"))));
-                }
-                break;
-            case PHYSICFIELD_CURRENT:
-                // current markers
-                if (element.toElement().attribute("type") == "none") type = PHYSICFIELDBC_NONE;
-                if (element.toElement().attribute("type") == "potential") type = PHYSICFIELDBC_CURRENT_POTENTIAL;
-                if (element.toElement().attribute("type") == "inward_current_flow") type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
-                addEdgeMarker(new SceneEdgeCurrentMarker(name,
-                                                         type,
-                                                         Value(element.toElement().attribute("value"))));
-                break;
-            case PHYSICFIELD_ELASTICITY:
-                {
-                    // elasticity markers
-                    if (element.toElement().attribute("typex") == "none") typeX = PHYSICFIELDBC_NONE;
-                    if (element.toElement().attribute("typey") == "none") typeY = PHYSICFIELDBC_NONE;
-
-                    if (element.toElement().attribute("typex") == "fixed") typeX = PHYSICFIELDBC_ELASTICITY_FIXED;
-                    if (element.toElement().attribute("typex") == "free") typeX = PHYSICFIELDBC_ELASTICITY_FREE;
-                    if (element.toElement().attribute("typey") == "fixed") typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
-                    if (element.toElement().attribute("typey") == "free") typeY = PHYSICFIELDBC_ELASTICITY_FREE;
-
-                    addEdgeMarker(new SceneEdgeElasticityMarker(name, typeX, typeY,
-                                                                element.toElement().attribute("forcex").toDouble(),
-                                                                element.toElement().attribute("forcey").toDouble()));
-                }
-                break;
-            default:
-                cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField()).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
-                throw;
-                break;
-            }
+            // read marker
+            m_problemInfo.hermes->readEdgeMarkerFromDomElement(&element.toElement());
         }
 
         n = n.nextSibling();
@@ -1136,55 +1048,8 @@ void Scene::readFromFile(const QString &fileName)
         }
         else
         {
-            switch (m_problemInfo.physicField())
-            {
-            case PHYSICFIELD_GENERAL:
-                // general markers
-                addLabelMarker(new SceneLabelGeneralMarker(name,
-                                                                 Value(element.toElement().attribute("rightside")),
-                                                                 Value(element.toElement().attribute("constant"))));
-                break;
-            case PHYSICFIELD_ELECTROSTATIC:
-                // electrostatic markers
-                addLabelMarker(new SceneLabelElectrostaticMarker(name,
-                                                                 Value(element.toElement().attribute("charge_density")),
-                                                                 Value(element.toElement().attribute("permittivity"))));
-                break;
-            case PHYSICFIELD_MAGNETOSTATIC:
-                // magnetostatic markers
-                addLabelMarker(new SceneLabelMagnetostaticMarker(name,
-                                                                 Value(element.toElement().attribute("current_density")),
-                                                                 Value(element.toElement().attribute("permeability"))));
-                break;
-            case PHYSICFIELD_HARMONIC_MAGNETIC:
-                // magnetostatic markers
-                addLabelMarker(new SceneLabelHarmonicMagneticMarker(name,
-                                                                    Value(element.toElement().attribute("current_density_real")),
-                                                                    Value(element.toElement().attribute("current_density_imag")),
-                                                                    Value(element.toElement().attribute("permeability")),
-                                                                    Value(element.toElement().attribute("conductivity"))));
-                break;
-            case PHYSICFIELD_HEAT_TRANSFER:
-                // heat markers
-                addLabelMarker(new SceneLabelHeatMarker(name,
-                                                        Value(element.toElement().attribute("volume_heat")),
-                                                        Value(element.toElement().attribute("thermal_conductivity"))));
-                break;
-            case PHYSICFIELD_CURRENT:
-                // current markers
-                addLabelMarker(new SceneLabelCurrentMarker(name,
-                                                           Value(element.toElement().attribute("conductivity"))));
-                break;
-            case PHYSICFIELD_ELASTICITY:
-                // heat markers
-                addLabelMarker(new SceneLabelElasticityMarker(name,
-                                                              element.toElement().attribute("young_modulus").toDouble(),
-                                                              element.toElement().attribute("poisson_ratio").toDouble()));
-                break;            default:
-                        cerr << "Physical field '" + physicFieldStringKey(m_problemInfo.physicField()).toStdString() + "' is not implemented. Scene::readFromFile(const QString &fileName)" << endl;
-                throw;
-                break;
-            }
+            // read marker
+            m_problemInfo.hermes->readLabelMarkerFromDomElement(&element.toElement());
         }
 
         n = n.nextSibling();
@@ -1369,63 +1234,13 @@ void Scene::writeToFile(const QString &fileName) {
 
         eleEdgeMarker.setAttribute("id", i);
         eleEdgeMarker.setAttribute("name", edgeMarkers[i]->name);
-        if (edgeMarkers[i]->type == PHYSICFIELDBC_NONE) eleEdgeMarker.setAttribute("type", "none");
+        if (edgeMarkers[i]->type == PHYSICFIELDBC_NONE)
+            eleEdgeMarker.setAttribute("type", "none");
 
         if (i > 0)
         {
-            // general
-            if (SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(edgeMarkers[i]))
-            {
-                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeGeneralMarker->type));
-                eleEdgeMarker.setAttribute("value", edgeGeneralMarker->value.text);
-            }
-            // electrostatic
-            if (SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(edgeMarkers[i]))
-            {
-                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeElectrostaticMarker->type));
-                eleEdgeMarker.setAttribute("value", edgeElectrostaticMarker->value.text);
-            }
-            // magnetostatic
-            if (SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(edgeMarkers[i]))
-            {
-                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeMagnetostaticMarker->type));
-                eleEdgeMarker.setAttribute("value", edgeMagnetostaticMarker->value.text);
-            }
-            // harmonic magnetic
-            if (SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(edgeMarkers[i]))
-            {
-                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeHarmonicMagneticMarker->type));
-                eleEdgeMarker.setAttribute("value", edgeHarmonicMagneticMarker->value.text);
-            }
-            // heat transfer
-            if (SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(edgeMarkers[i]))
-            {
-                eleEdgeMarker.toElement().setAttribute("type", physicFieldBCStringKey(edgeHeatMarker->type));
-                if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_TEMPERATURE)
-                {
-                    eleEdgeMarker.setAttribute("temperature", edgeHeatMarker->temperature.text);
-                }
-                if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
-                {
-                    eleEdgeMarker.setAttribute("heat_flux", edgeHeatMarker->heatFlux.text);
-                    eleEdgeMarker.setAttribute("h", edgeHeatMarker->h.text);
-                    eleEdgeMarker.setAttribute("external_temperature", edgeHeatMarker->externalTemperature.text);
-                }
-            }
-            // current
-            if (SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(edgeMarkers[i]))
-            {
-                eleEdgeMarker.setAttribute("type", physicFieldBCStringKey(edgeCurrentMarker->type));
-                eleEdgeMarker.setAttribute("value", edgeCurrentMarker->value.text);
-            }
-            // elasticity
-            if (SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(edgeMarkers[i]))
-            {
-                eleEdgeMarker.setAttribute("typex", physicFieldBCStringKey(edgeElasticityMarker->typeX));
-                eleEdgeMarker.setAttribute("typey", physicFieldBCStringKey(edgeElasticityMarker->typeY));
-                eleEdgeMarker.setAttribute("forcex", edgeElasticityMarker->forceX);
-                eleEdgeMarker.setAttribute("forcey", edgeElasticityMarker->forceY);
-            }
+            // write marker
+            m_problemInfo.hermes->writeEdgeMarkerToDomElement(&eleEdgeMarker, edgeMarkers[i]);
         }
 
         eleEdgeMarkers.appendChild(eleEdgeMarker);
@@ -1443,49 +1258,8 @@ void Scene::writeToFile(const QString &fileName) {
 
         if (i > 0)
         {
-            // general
-            if (SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarkers[i]))
-            {
-                eleLabelMarker.setAttribute("rightside", labelGeneralMarker->rightside.text);
-                eleLabelMarker.setAttribute("constant", labelGeneralMarker->constant.text);
-            }
-            // electrostatic
-            if (SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarkers[i]))
-            {
-                eleLabelMarker.setAttribute("charge_density", labelElectrostaticMarker->charge_density.text);
-                eleLabelMarker.setAttribute("permittivity", labelElectrostaticMarker->permittivity.text);
-            }
-            // magnetostatic
-            if (SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarkers[i]))
-            {
-                eleLabelMarker.setAttribute("current_density", labelMagnetostaticMarker->current_density.text);
-                eleLabelMarker.setAttribute("permeability", labelMagnetostaticMarker->permeability.text);
-            }
-            // harmonic magnetic
-            if (SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarkers[i]))
-            {
-                eleLabelMarker.setAttribute("current_density_real", labelHarmonicMagneticMarker->current_density_real.text);
-                eleLabelMarker.setAttribute("current_density_imag", labelHarmonicMagneticMarker->current_density_imag.text);
-                eleLabelMarker.setAttribute("permeability", labelHarmonicMagneticMarker->permeability.text);
-                eleLabelMarker.setAttribute("conductivity", labelHarmonicMagneticMarker->conductivity.text);
-            }
-            // heat
-            if (SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(labelMarkers[i]))
-            {
-                eleLabelMarker.setAttribute("thermal_conductivity", labelHeatMarker->thermal_conductivity.text);
-                eleLabelMarker.setAttribute("volume_heat", labelHeatMarker->volume_heat.text);
-            }
-            // current
-            if (SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarkers[i]))
-            {
-                eleLabelMarker.setAttribute("conductivity", labelCurrentMarker->conductivity.text);
-            }
-            // elasticity
-            if (SceneLabelElasticityMarker *labelHeatMarker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarkers[i]))
-            {
-                eleLabelMarker.setAttribute("young_modulus", labelHeatMarker->young_modulus);
-                eleLabelMarker.setAttribute("poisson_ratio", labelHeatMarker->poisson_ratio);
-            }
+            // write marker
+            m_problemInfo.hermes->writeLabelMarkerToDomElement(&eleLabelMarker, labelMarkers[i]);
         }
 
         eleLabelMarkers.appendChild(eleLabelMarker);

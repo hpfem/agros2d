@@ -148,6 +148,47 @@ SolutionArray *magnetostatic_main(SolverThread *solverThread)
 
 // *******************************************************************************************************
 
+void HermesMagnetostatic::readEdgeMarkerFromDomElement(QDomElement *element)
+{
+    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
+    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
+        type = PHYSICFIELDBC_NONE;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL))
+        type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT))
+        type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
+    else
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+
+    if (type != PHYSICFIELDBC_UNDEFINED)
+        Util::scene()->addEdgeMarker(new SceneEdgeMagnetostaticMarker(element->attribute("name"),
+                                                 type,
+                                                 Value(element->attribute("value"))));
+}
+
+void HermesMagnetostatic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+{
+    SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(marker);
+
+    element->setAttribute("type", physicFieldBCStringKey(edgeMagnetostaticMarker->type));
+    element->setAttribute("value", edgeMagnetostaticMarker->value.text);
+}
+
+void HermesMagnetostatic::readLabelMarkerFromDomElement(QDomElement *element)
+{
+    Util::scene()->addLabelMarker(new SceneLabelMagnetostaticMarker(element->attribute("name"),
+                                                     Value(element->attribute("current_density")),
+                                                     Value(element->attribute("permeability"))));
+}
+
+void HermesMagnetostatic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+{
+    SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(marker);
+
+    element->setAttribute("current_density", labelMagnetostaticMarker->current_density.text);
+    element->setAttribute("permeability", labelMagnetostaticMarker->permeability.text);
+}
+
 LocalPointValue *HermesMagnetostatic::localPointValue(Point point)
 {
     return new LocalPointValueMagnetostatic(point);

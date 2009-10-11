@@ -14,6 +14,12 @@ public:
     HermesHarmonicMagnetic() { physicField = PHYSICFIELD_HARMONIC_MAGNETIC; }
 
     inline int numberOfSolution() { return 2; }
+    bool hasFrequency() { return true; }
+
+    void readEdgeMarkerFromDomElement(QDomElement *element);
+    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
+    void readLabelMarkerFromDomElement(QDomElement *element);
+    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
 
     LocalPointValue *localPointValue(Point point);
     QStringList localPointValueHeader();

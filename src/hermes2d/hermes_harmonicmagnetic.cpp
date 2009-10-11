@@ -212,6 +212,51 @@ SolutionArray *harmonicMagnetic_main(SolverThread *solverThread)
 
 // *******************************************************************************************************
 
+void HermesHarmonicMagnetic::readEdgeMarkerFromDomElement(QDomElement *element)
+{
+    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
+    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
+        type = PHYSICFIELDBC_NONE;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL))
+        type = PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT))
+        type = PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT;
+    else
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+
+    if (type != PHYSICFIELDBC_UNDEFINED)
+        Util::scene()->addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(element->attribute("name"),
+                                                                      type,
+                                                                      Value(element->attribute("value"))));
+}
+
+void HermesHarmonicMagnetic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+{
+    SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(marker);
+
+    element->setAttribute("type", physicFieldBCStringKey(edgeHarmonicMagneticMarker->type));
+    element->setAttribute("value", edgeHarmonicMagneticMarker->value.text);
+}
+
+void HermesHarmonicMagnetic::readLabelMarkerFromDomElement(QDomElement *element)
+{
+    Util::scene()->addLabelMarker(new SceneLabelHarmonicMagneticMarker(element->attribute("name"),
+                                                                       Value(element->attribute("current_density_real")),
+                                                                       Value(element->attribute("current_density_imag")),
+                                                                       Value(element->attribute("permeability")),
+                                                                       Value(element->attribute("conductivity"))));
+}
+
+void HermesHarmonicMagnetic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+{
+    SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(marker);
+
+    element->setAttribute("current_density_real", labelHarmonicMagneticMarker->current_density_real.text);
+    element->setAttribute("current_density_imag", labelHarmonicMagneticMarker->current_density_imag.text);
+    element->setAttribute("permeability", labelHarmonicMagneticMarker->permeability.text);
+    element->setAttribute("conductivity", labelHarmonicMagneticMarker->conductivity.text);
+}
+
 LocalPointValue *HermesHarmonicMagnetic::localPointValue(Point point)
 {
     return new LocalPointValueHarmonicMagnetic(point);
@@ -566,7 +611,7 @@ LocalPointValueHarmonicMagnetic::LocalPointValueHarmonicMagnetic(Point &point) :
 
             // power losses
             pj = (marker->conductivity.number > 0.0) ?
-                            0.5 / marker->conductivity.number * (sqr(current_density_total_real) + sqr(current_density_total_imag)) : 0.0;
+                 0.5 / marker->conductivity.number * (sqr(current_density_total_real) + sqr(current_density_total_imag)) : 0.0;
 
             // energy density
             wm = 0.25 * (sqr(B_real.x) + sqr(B_real.y) + sqr(B_imag.x) + sqr(B_imag.y)) / (marker->permeability.number * MU0);
@@ -595,7 +640,7 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
         break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY:
         {
-           return sqrt(sqr(B_real.x) + sqr(B_imag.x) + sqr(B_real.y) + sqr(B_imag.y));
+            return sqrt(sqr(B_real.x) + sqr(B_imag.x) + sqr(B_real.y) + sqr(B_imag.y));
         }
         break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
@@ -632,7 +677,7 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
         break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD:
         {
-           return sqrt(sqr(H_real.x) + sqr(H_imag.x) + sqr(H_real.y) + sqr(H_imag.y));
+            return sqrt(sqr(H_real.x) + sqr(H_imag.x) + sqr(H_real.y) + sqr(H_imag.y));
         }
         break;
     case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL:
@@ -854,8 +899,8 @@ QMap<QString, QString> SceneEdgeHarmonicMagneticMarker::data()
         out["Vector potential (Wb/m)"] = value.text;
         break;
     case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
-            out["Surface current (A/m2)"] = value.text;
-    break;
+        out["Surface current (A/m2)"] = value.text;
+        break;
     }
     return QMap<QString, QString>(out);
 }
@@ -869,7 +914,7 @@ int SceneEdgeHarmonicMagneticMarker::showDialog(QWidget *parent)
 // *************************************************************************************************************************************
 
 SceneLabelHarmonicMagneticMarker::SceneLabelHarmonicMagneticMarker(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity)
-        : SceneLabelMarker(name)
+    : SceneLabelMarker(name)
 {
     this->permeability = permeability;
     this->conductivity = conductivity;

@@ -8,7 +8,7 @@
                 <edge type="value" value="1" id="3" name="Dirichlet 2" />
             </edges>
             <labels>
-                <label constant="10" rightside="0" id="1" name="Material" />
+                <label constant="10" rightside="50" id="1" name="Material" />
             </labels>
         </problem>
     </problems>

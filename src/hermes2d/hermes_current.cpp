@@ -28,19 +28,22 @@ int current_bc_types(int marker)
     {
     case PHYSICFIELDBC_NONE:
         return BC_NONE;
-        break;
     case PHYSICFIELDBC_CURRENT_POTENTIAL:
         return BC_ESSENTIAL;
-        break;
     case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
         return BC_NATURAL;
-        break;
     }
 }
 
 scalar current_bc_values(int marker, double x, double y)
 {
-    return currentEdge[marker].value;
+    switch (currentEdge[marker].type)
+    {
+    case PHYSICFIELDBC_CURRENT_POTENTIAL:
+        return currentEdge[marker].value;
+    case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
+        return currentEdge[marker].value;
+    }
 }
 
 template<typename Real, typename Scalar>
@@ -171,6 +174,45 @@ SolutionArray *current_main(SolverThread *solverThread)
 }
 
 // *******************************************************************************************************
+
+void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
+{
+    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
+    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
+        type = PHYSICFIELDBC_NONE;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_POTENTIAL))
+        type = PHYSICFIELDBC_CURRENT_POTENTIAL;
+    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW))
+        type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
+    else
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+
+    if (type != PHYSICFIELDBC_UNDEFINED)
+        Util::scene()->addEdgeMarker(new SceneEdgeCurrentMarker(element->attribute("name"),
+                                                                type,
+                                                                Value(element->attribute("value"))));
+}
+
+void HermesCurrent::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+{
+    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(marker);
+
+    element->setAttribute("type", physicFieldBCStringKey(edgeCurrentMarker->type));
+    element->setAttribute("value", edgeCurrentMarker->value.text);
+}
+
+void HermesCurrent::readLabelMarkerFromDomElement(QDomElement *element)
+{    
+    Util::scene()-> addLabelMarker(new SceneLabelCurrentMarker(element->attribute("name"),
+                                                               Value(element->attribute("conductivity"))));
+}
+
+void HermesCurrent::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+{
+    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(marker);
+
+    element->setAttribute("conductivity", labelCurrentMarker->conductivity.text);
+}
 
 LocalPointValue *HermesCurrent::localPointValue(Point point)
 {

@@ -14,6 +14,12 @@ public:
     HermesElasticity() { physicField = PHYSICFIELD_ELASTICITY; }
 
     inline int numberOfSolution() { return 2; }
+    bool hasFrequency() { return false; }
+
+    void readEdgeMarkerFromDomElement(QDomElement *element);
+    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
+    void readLabelMarkerFromDomElement(QDomElement *element);
+    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
 
     LocalPointValue *localPointValue(Point point);
     QStringList localPointValueHeader();
