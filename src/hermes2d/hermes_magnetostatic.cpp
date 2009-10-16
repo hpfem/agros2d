@@ -264,7 +264,7 @@ void HermesMagnetostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue
 
     // Remanence
     addTreeWidgetItemValue(magnetostaticNode, tr("Rem. flux dens.:"), QString("%1").arg(localPointValueMagnetostatic->remanence, 0, 'e', 3), "T");
-    addTreeWidgetItemValue(magnetostaticNode, tr("Rem. flux dens. angle:"), QString("%1").arg(localPointValueMagnetostatic->remanence_angle, 0, 'f', 2), "deg.");
+    addTreeWidgetItemValue(magnetostaticNode, tr("Direction of rem.:"), QString("%1").arg(localPointValueMagnetostatic->remanence_angle, 0, 'f', 2), "deg.");
 
     // Energy density
     addTreeWidgetItemValue(magnetostaticNode, tr("Energy density:"), QString("%1").arg(localPointValueMagnetostatic->wm, 0, 'e', 3), "J/m3");
@@ -770,7 +770,7 @@ QLayout* DSceneLabelMagnetostaticMarker::createContent()
     layoutMarker->addRow(tr("Current density (A/m2):"), txtCurrentDensity);
     // layoutMarker->addRow(tr("Remanence (T):"), layoutRemanence);
     layoutMarker->addRow(tr("Rem. flux dens. (T):"), txtRemanence);
-    layoutMarker->addRow(tr("Rem. flux dens. angle (deg.):"), txtRemanenceAngle);
+    layoutMarker->addRow(tr("Direction of rem. (deg.):"), txtRemanenceAngle);
 
     return layoutMarker;
 }

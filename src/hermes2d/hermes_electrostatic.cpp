@@ -126,7 +126,7 @@ SolutionArray *electrostatic_main(SolverThread *solverThread)
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverThread->showMessage(QObject::tr("Solver: relative error is %1 %").arg(error, 0, 'f', 5), false);
+            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
             if (solverThread->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;

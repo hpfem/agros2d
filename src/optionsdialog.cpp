@@ -469,7 +469,7 @@ void OptionsDialog::doClearCommandHistory()
     QSettings settings;
     settings.setValue("CommandDialog/RecentCommands", QStringList());
 
-    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Information"), tr("Command history was cleared succesfully."));
+    QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared succesfully."));
 }
 
 // *******************************************************************************************************

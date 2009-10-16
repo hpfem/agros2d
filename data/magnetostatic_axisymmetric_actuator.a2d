@@ -6,9 +6,9 @@
                 <edge type="vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
-                <label current_density="0" id="1" name="Air" permeability="1" />
-                <label current_density="0" id="2" name="Fe" permeability="300" />
-                <label current_density="1000000" id="3" name="Cu" permeability="1" />
+                <label current_density="0" remanence="0" remanence_angle="0" id="1" name="Air" permeability="1" />
+                <label current_density="0" remanence="0" remanence_angle="0" id="2" name="Fe" permeability="300" />
+                <label current_density="1000000" remanence="0" remanence_angle="0" id="3" name="Cu" permeability="1" />
             </labels>
         </problem>
     </problems>
@@ -68,4 +68,5 @@
             <label x="0.0141705" y="0.12445" marker="1" id="3" area="0" />
         </labels>
     </geometry>
+    <functions/>
 </document>
