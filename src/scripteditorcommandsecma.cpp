@@ -10,6 +10,7 @@
 QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
 {
     QString result;
+
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
 
@@ -18,10 +19,6 @@ QScriptValue scriptPrint(QScriptContext *context, QScriptEngine *engine)
             result.append(" ");
         result.append(context->argument(i).toString());
     }
-
-    // QScriptValue calleeData = context->callee().data();
-    // QPlainTextEdit *edit = qobject_cast<QPlainTextEdit*>(calleeData.toQObject());
-    // edit->appendPlainText(result);
     context->callee().setData(context->callee().data().toString() + result + "\n");
 
     return engine->undefinedValue();
@@ -38,6 +35,7 @@ QScriptValue scriptMessage(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     QMessageBox::information(QApplication::activeWindow(), QObject::tr("Message"), context->argument(0).toString());
 
     return engine->undefinedValue();
@@ -48,6 +46,7 @@ QScriptValue scriptInput(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), context->argument(0).toString());
 
     return text;
@@ -71,9 +70,7 @@ QScriptValue scriptInclude(QScriptContext *context, QScriptEngine *engine)
     {
         QFile file(context->argument(0).toString());
         if (!file.open(QIODevice::ReadOnly))
-        {
             return context->throwError(QObject::tr("Could not open file '%1'.").arg(context->argument(0).toString()));
-        }
 
         QTextStream inFile(&file);
         engine->currentContext()->setActivationObject(engine->currentContext()->parentContext()->activationObject());
@@ -88,10 +85,10 @@ QScriptValue scriptInclude(QScriptContext *context, QScriptEngine *engine)
     }
 }
 
-// printToFile(filename, string, mode)
+// printToFile(filename, string, mode = {"append"})
 QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
 {
-    for (int i = 0; i < context->argumentCount(); i++) {
+    for (int i = 0; i <= 1; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
     }
@@ -104,9 +101,7 @@ QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
         ok = file.open(QIODevice::WriteOnly);
 
     if (!ok)
-    {
         return context->throwError(QObject::tr("Could not open file '%1'.").arg(context->argument(0).toString()));
-    }
 
     QTextStream outFile(&file);
     outFile << context->argument(1).toString() << endl;
@@ -121,12 +116,11 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
     ProblemInfo problemInfo;
     Util::scene()->clear();
 
-    for (int i = 0; i < context->argumentCount(); i++) {
+    for (int i = 0; i <= 8; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
     }
-
-    for (int i = 3; i < context->argumentCount(); i++) {
+    for (int i = 3; i <= 8; i++) {
         if (!context->argument(i).isNumber())
             return context->throwError(QObject::tr("Parameter %1 must be number. Now is used '%2' as this parametr.").arg(i+1).arg(context->argument(i).toString()));
         if (i == 5) i = 6;
@@ -206,6 +200,7 @@ QScriptValue scriptOpenDocument(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     Util::scene()->readFromFile(context->argument(0).toString());
 
     return engine->undefinedValue();
@@ -216,6 +211,7 @@ QScriptValue scriptSaveDocument(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     Util::scene()->writeToFile(context->argument(0).toString());
 
     return engine->undefinedValue();
@@ -224,14 +220,9 @@ QScriptValue scriptSaveDocument(QScriptContext *context, QScriptEngine *engine)
 // addNode(x, y)
 QScriptValue scriptAddNode(QScriptContext *context, QScriptEngine *engine)
 {
-    for (int i = 0; i < context->argumentCount(); i++) {
+    for (int i = 0; i <= 1; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
-    }
-
-    for (int i = 0; i < context->argumentCount(); i++) {
-        if (!context->argument(i).isNumber())
-            return context->throwError(QObject::tr("Parameter %1 must be number. Now is used '%2' as this parametr.").arg(i+1).arg(context->argument(i).toString()));
     }
 
     Util::scene()->addNode(new SceneNode(Point(context->argument(0).toNumber(), context->argument(1).toNumber())));
@@ -242,14 +233,9 @@ QScriptValue scriptAddNode(QScriptContext *context, QScriptEngine *engine)
 // addLabel(x, y, area, marker)
 QScriptValue scriptAddLabel(QScriptContext *context, QScriptEngine *engine)
 {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i <= 2; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
-    }
-
-    for (int i = 0; i <= 2; i++) {
-        if (!context->argument(i).isNumber())
-            return context->throwError(QObject::tr("Parameter %1 must be number. Now is used '%2' as this parametr.").arg(i+1).arg(context->argument(i).toString()));
     }
 
     // area
@@ -278,7 +264,9 @@ QScriptValue scriptAddLabel(QScriptContext *context, QScriptEngine *engine)
             return context->throwError(QObject::tr("Marker '%1' is not defined.").arg(context->argument(3).toString()));
     }
     else
+    {
         marker = Util::scene()->labelMarkers[0];
+    }
 
     Util::scene()->addLabel(new SceneLabel(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), marker, area));
 
@@ -288,14 +276,9 @@ QScriptValue scriptAddLabel(QScriptContext *context, QScriptEngine *engine)
 // addEdge(x1, y1, x2, y2, angle, marker)
 QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
 {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i <= 4; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
-    }
-
-    for (int i = 0; i <= 4; i++) {
-        if (!context->argument(i).isNumber())
-            return context->throwError(QObject::tr("Parameter %1 must be number. Now is used '%2' as this parametr.").arg(i+1).arg(context->argument(i).toString()));
     }
 
     // start node
@@ -329,7 +312,9 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
             return context->throwError(QObject::tr("Marker '%1' is not defined.").arg(context->argument(3).toString()));
     }
     else
+    {
         marker = Util::scene()->edgeMarkers[0];
+    }
 
     Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, marker, angle));
 
@@ -339,7 +324,7 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
 // addBoundary(name, type, value, ...)
 QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
 {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i <= 2; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
     }
@@ -447,7 +432,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
 // addMaterial(name, type, value, ...)
 QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
 {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i <= 2; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
     }
@@ -547,9 +532,14 @@ QScriptValue scriptZoomOut(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
-// zoomRegion()
+// zoomRegion(x1, y1, x2, y2)
 QScriptValue scriptZoomRegion(QScriptContext *context, QScriptEngine *engine)
 {
+    for (int i = 0; i <= 3; i++) {
+        if (context->argument(i).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
+    }
+
     m_sceneView->doZoomRegion(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), Point(context->argument(2).toNumber(), context->argument(3).toNumber()));
 
     return engine->undefinedValue();
@@ -597,18 +587,25 @@ QScriptValue scriptSelectAll(QScriptContext *context, QScriptEngine *engine)
             Util::scene()->selectAll(SCENEMODE_OPERATE_ON_EDGES);
     }
     */
+
     return engine->undefinedValue();
 }
 
-// selectNode()
+// selectNode(index, ...)
 QScriptValue scriptSelectNode(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
 
-    m_sceneView->actSceneModeNode->trigger();
-    for (int i = 0; i<context->argumentCount(); i++)
-        Util::scene()->nodes[context->argument(i).toNumber()]->isSelected = true;
+    if (context->argument(0).isUndefined())
+        return context->throwError(QObject::tr("Few parameters."));
 
+    m_sceneView->actSceneModeNode->trigger();
+    for (int i = 0; i<context->argumentCount(); i++) {
+        if (Util::scene()->nodes.count() < context->argument(i).toNumber())
+            return context->throwError(QObject::tr("Node with index '%1' does not exists.").arg(context->argument(0).toString()));
+
+        Util::scene()->nodes[context->argument(i).toNumber()]->isSelected = true;
+    }
     m_sceneView->doInvalidated();
 
     return engine->undefinedValue();
@@ -618,6 +615,11 @@ QScriptValue scriptSelectNode(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptSelectNodePoint(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
+
+    for (int i = 0; i <= 1; i++) {
+        if (context->argument(i).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
+    }
 
     SceneNode *node = m_sceneView->findClosestNode(Point(context->argument(0).toNumber(), context->argument(1).toNumber()));
     if (node)
@@ -629,15 +631,21 @@ QScriptValue scriptSelectNodePoint(QScriptContext *context, QScriptEngine *engin
     return engine->undefinedValue();
 }
 
-// selectEdge()
+// selectEdge(index, ...)
 QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
 
-    m_sceneView->actSceneModeEdge->trigger();
-    for (int i = 0; i<context->argumentCount(); i++)
-        Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
+    if (context->argument(0).isUndefined())
+        return context->throwError(QObject::tr("Few parameters."));
 
+    m_sceneView->actSceneModeEdge->trigger();
+    for (int i = 0; i<context->argumentCount(); i++) {
+        if (Util::scene()->edges.count() < context->argument(i).toNumber())
+            return context->throwError(QObject::tr("Edge with index '%1' does not exists.").arg(context->argument(0).toString()));
+
+        Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
+    }
     m_sceneView->doInvalidated();
 
     return engine->undefinedValue();
@@ -647,6 +655,11 @@ QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
 QScriptValue scriptSelectEdgePoint(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
+
+    for (int i = 0; i <= 1; i++) {
+        if (context->argument(i).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
+    }
 
     SceneEdge *edge = m_sceneView->findClosestEdge(Point(context->argument(0).toNumber(), context->argument(1).toNumber()));
     if (edge)
@@ -658,15 +671,21 @@ QScriptValue scriptSelectEdgePoint(QScriptContext *context, QScriptEngine *engin
     return engine->undefinedValue();
 }
 
-// selectLabel()
+// selectLabel(index, ...)
 QScriptValue scriptSelectLabel(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->selectNone();
 
-    m_sceneView->actSceneModeLabel->trigger();
-    for (int i = 0; i<context->argumentCount(); i++)
-        Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
+    if (context->argument(0).isUndefined())
+        return context->throwError(QObject::tr("Few parameters."));
 
+    m_sceneView->actSceneModeLabel->trigger();
+    for (int i = 0; i<context->argumentCount(); i++) {
+        if (Util::scene()->labels.count() < context->argument(i).toNumber())
+            return context->throwError(QObject::tr("Label with index '%1' does not exists.").arg(context->argument(0).toString()));
+
+        Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
+    }
     m_sceneView->doInvalidated();
 
     return engine->undefinedValue();
@@ -677,6 +696,11 @@ QScriptValue scriptSelectLabelPoint(QScriptContext *context, QScriptEngine *engi
 {
     Util::scene()->selectNone();
 
+    for (int i = 0; i <= 1; i++) {
+        if (context->argument(i).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
+    }
+
     SceneLabel *label = m_sceneView->findClosestLabel(Point(context->argument(0).toNumber(), context->argument(1).toNumber()));
     if (label)
     {
@@ -685,34 +709,52 @@ QScriptValue scriptSelectLabelPoint(QScriptContext *context, QScriptEngine *engi
     }
 }
 
-// moveSelection(dx, dy, copy = false)
+// moveSelection(dx, dy, copy = {true, false})
 QScriptValue scriptMoveSelection(QScriptContext *context, QScriptEngine *engine)
 {
-    bool copy = (context->argumentCount() == 2) ? false : context->argument(2).toBoolean();
+    for (int i = 0; i <= 1; i++) {
+        if (context->argument(i).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
+    }
+
+    bool copy = true;
+    if (context->argument(2).isUndefined()) copy = false;
     Util::scene()->transformTranslate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), copy);
 
     return engine->undefinedValue();
 }
 
-// rotateSelection(x, y, angle, copy = false)
+// rotateSelection(x, y, angle, copy = {true, false})
 QScriptValue scriptRotateSelection(QScriptContext *context, QScriptEngine *engine)
 {
-    bool copy = (context->argumentCount() == 3) ? false : context->argument(2).toBoolean();
+    for (int i = 0; i <= 2; i++) {
+        if (context->argument(i).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
+    }
+
+    bool copy = true;
+    if (context->argument(2).isUndefined()) copy = false;
     Util::scene()->transformRotate(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
 
     return engine->undefinedValue();
 }
 
-// scaleSelection(x, y, scale, copy = false)
+// scaleSelection(x, y, scale, copy = {true, false})
 QScriptValue scriptScaleSelection(QScriptContext *context, QScriptEngine *engine)
 {
-    bool copy = (context->argumentCount() == 2) ? false : context->argument(2).toBoolean();
+    for (int i = 0; i <= 2; i++) {
+        if (context->argument(i).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
+    }
+
+    bool copy = true;
+    if (context->argument(2).isUndefined()) copy = false;
     Util::scene()->transformScale(Point(context->argument(0).toNumber(), context->argument(1).toNumber()), context->argument(2).toNumber(), copy);
 
     return engine->undefinedValue();
 }
 
-// deleteSelection(dx, dy, copy = false)
+// deleteSelection()
 QScriptValue scriptDeleteSelection(QScriptContext *context, QScriptEngine *engine)
 {
     Util::scene()->deleteSelected();
@@ -723,6 +765,11 @@ QScriptValue scriptDeleteSelection(QScriptContext *context, QScriptEngine *engin
 // result = pointResult(x, y)
 QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
 {
+    for (int i = 0; i <= 1; i++) {
+        if (context->argument(i).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
+    }
+
     Point point(context->argument(0).toNumber(), context->argument(1).toNumber());
     LocalPointValue *localPointValue = Util::scene()->problemInfo().hermes->localPointValue(point);
 
@@ -738,7 +785,7 @@ QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
     return value;
 }
 
-// result = scriptVolumeIntegral(index ...)
+// result = scriptVolumeIntegral(index, ...)
 QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine)
 {
     if (Util::scene()->sceneSolution()->isSolved())
@@ -751,11 +798,19 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
 
         // select all or indices
         if (context->argumentCount() == 0)
+        {
             foreach (SceneLabel *label, Util::scene()->labels)
                 label->isSelected = true;
+        }
         else
-            for (int i = 0; i<context->argumentCount(); i++)
+        {
+            for (int i = 0; i<context->argumentCount(); i++) {
+                if (Util::scene()->labels.count() < context->argument(i).toNumber())
+                    return context->throwError(QObject::tr("Label with index '%1' does not exists.").arg(context->argument(0).toString()));
+
                 Util::scene()->labels[context->argument(i).toNumber()]->isSelected = true;
+            }
+        }
 
         VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo().hermes->volumeIntegralValue();
 
@@ -776,7 +831,7 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
     }
 }
 
-// result = surfaceIntegral(index ...)
+// result = surfaceIntegral(index, ...)
 QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engine)
 {
     if (Util::scene()->sceneSolution()->isSolved())
@@ -792,8 +847,12 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
             foreach (SceneEdge *edge, Util::scene()->edges)
                 edge->isSelected = true;
         else
-            for (int i = 0; i<context->argumentCount(); i++)
+            for (int i = 0; i<context->argumentCount(); i++) {
+                if (Util::scene()->edges.count() < context->argument(i).toNumber())
+                    return context->throwError(QObject::tr("Edge with index '%1' does not exists.").arg(context->argument(0).toString()));
+
                 Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
+            }
 
         SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo().hermes->surfaceIntegralValue();
 
@@ -814,67 +873,73 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
     }
 }
 
-// showGrid(bool)
+// showGrid(show = {true, false})
 QScriptValue scriptShowGrid(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     m_sceneView->sceneViewSettings().showGrid = context->argument(0).toBool();
 
     return engine->undefinedValue();
 }
 
-// showGeometry(bool)
+// showGeometry(show = {true, false})
 QScriptValue scriptShowGeometry(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     m_sceneView->sceneViewSettings().showGeometry = context->argument(0).toBool();
 
     return engine->undefinedValue();
 }
 
-// showInitialMesh(bool)
+// showInitialMesh(show = {true, false})
 QScriptValue scriptShowInitialMesh(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     m_sceneView->sceneViewSettings().showInitialMesh = context->argument(0).toBool();
 
     return engine->undefinedValue();
 }
 
-// showSolutionMesh(bool)
+// showSolutionMesh(show = {true, false})
 QScriptValue scriptShowSolutionMesh(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     m_sceneView->sceneViewSettings().showSolutionMesh = context->argument(0).toBool();
 
     return engine->undefinedValue();
 }
 
-// showContours(bool)
+// showContours(show = {true, false})
 QScriptValue scriptShowContours(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     m_sceneView->sceneViewSettings().showContours = context->argument(0).toBool();
 
     return engine->undefinedValue();
 }
 
-// showVectors(bool)
+// showVectors(show = {true, false})
 QScriptValue scriptShowVectors(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     m_sceneView->sceneViewSettings().showVectors = context->argument(0).toBool();
 
     return engine->undefinedValue();
 }
 
-// showScalar(type = { 'none', 'scalar', 'scalar3d', 'order' }, 'variable', 'component', rangemin, rangemax)
+// showScalar(type = { "none", "scalar", "scalar3d", "order" }, variable, component, rangemin, rangemax)
 QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
@@ -1030,6 +1095,7 @@ QScriptValue scriptSaveImage(QScriptContext *context, QScriptEngine *engine)
 {
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
+
     m_sceneView->saveImageToFile(context->argument(0).toString());
 
     return engine->undefinedValue();
