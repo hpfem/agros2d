@@ -20,7 +20,8 @@ class LocalPointValueView : public QDockWidget
     Q_OBJECT
 
 public slots:
-    void doShowPoint(LocalPointValue *localPointValue);
+    void doShowPoint();
+    void doShowPoint(const Point &point);
 
 public:
     LocalPointValueView(QWidget *parent = 0);

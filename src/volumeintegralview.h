@@ -20,7 +20,7 @@ class VolumeIntegralValueView : public QDockWidget
     Q_OBJECT
 
 public slots:
-    void doShowVolumeIntegral(VolumeIntegralValue *volumeIntegralValue);
+    void doShowVolumeIntegral();
 
 public:
     VolumeIntegralValueView(QWidget *parent = 0);

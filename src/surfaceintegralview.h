@@ -20,7 +20,7 @@ class SurfaceIntegralValueView : public QDockWidget
     Q_OBJECT
 
 public slots:
-    void doShowSurfaceIntegral(SurfaceIntegralValue *surfaceIntegralValue);
+    void doShowSurfaceIntegral();
 
 public:
     SurfaceIntegralValueView(QWidget *parent = 0);

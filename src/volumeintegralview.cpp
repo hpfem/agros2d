@@ -46,8 +46,10 @@ VolumeIntegralValueView::~VolumeIntegralValueView()
     settings.setValue("VolumeIntegralValueView/TreeViewColumn2", trvWidget->columnWidth(2));
 }
 
-void VolumeIntegralValueView::doShowVolumeIntegral(VolumeIntegralValue *volumeIntegralValue)
+void VolumeIntegralValueView::doShowVolumeIntegral()
 {
+    VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo().hermes->volumeIntegralValue();
+
     trvWidget->clear();
 
     // point

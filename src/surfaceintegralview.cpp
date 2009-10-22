@@ -46,8 +46,9 @@ SurfaceIntegralValueView::~SurfaceIntegralValueView()
     settings.setValue("SurfaceIntegralValueView/TreeViewColumn2", trvWidget->columnWidth(2));
 }
 
-void SurfaceIntegralValueView::doShowSurfaceIntegral(SurfaceIntegralValue *surfaceIntegralValue)
+void SurfaceIntegralValueView::doShowSurfaceIntegral()
 {
+    SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo().hermes->surfaceIntegralValue();
     trvWidget->clear();
 
     // point

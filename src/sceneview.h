@@ -146,9 +146,8 @@ public:
 
 signals:
     void mouseMoved(const QPointF &position);
-    void mousePressed(LocalPointValue *localPointValue);
-    void mousePressed(VolumeIntegralValue *volumeIntegralValue);
-    void mousePressed(SurfaceIntegralValue *surfaceIntegralValue);
+    void mousePressed();
+    void mousePressed(const Point &point);
     
 protected:
     void initializeGL();

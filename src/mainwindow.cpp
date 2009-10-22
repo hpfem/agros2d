@@ -21,9 +21,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
 
-    connect(sceneView, SIGNAL(mousePressed(LocalPointValue *)), localPointValueView, SLOT(doShowPoint(LocalPointValue *)));
-    connect(sceneView, SIGNAL(mousePressed(VolumeIntegralValue *)), volumeIntegralValueView, SLOT(doShowVolumeIntegral(VolumeIntegralValue *)));
-    connect(sceneView, SIGNAL(mousePressed(SurfaceIntegralValue *)), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral(SurfaceIntegralValue *)));
+    connect(sceneView, SIGNAL(mousePressed()), localPointValueView, SLOT(doShowPoint()));
+    connect(sceneView, SIGNAL(mousePressed(const Point &)), localPointValueView, SLOT(doShowPoint(const Point &)));
+    connect(sceneView, SIGNAL(mousePressed()), volumeIntegralValueView, SLOT(doShowVolumeIntegral()));
+    connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
 
     Util::scene()->clear();
     sceneView->doDefaults();
@@ -623,7 +624,7 @@ void MainWindow::doSolve()
 
         // show local point values
         Point point = Point(0, 0);
-        localPointValueView->doShowPoint(Util::scene()->problemInfo().hermes->localPointValue(point));
+        localPointValueView->doShowPoint(point);
     }
 
     doInvalidated();
@@ -716,7 +717,7 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    // Util::scene()->readFromFile("data/pokus.a2d");
+    Util::scene()->readFromFile("data/pokus.a2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     // Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");

@@ -1456,8 +1456,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Escape:
         {
             Util::scene()->selectNone();
-            emit mousePressed(Util::scene()->problemInfo().hermes->volumeIntegralValue());
-            emit mousePressed(Util::scene()->problemInfo().hermes->surfaceIntegralValue());
+            emit mousePressed();
             doRefresh();
         }
         break;
@@ -1474,14 +1473,14 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
                 Util::scene()->selectAll(SCENEMODE_OPERATE_ON_LABELS);
-                emit mousePressed(Util::scene()->problemInfo().hermes->volumeIntegralValue());
+                emit mousePressed();
             }
             
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
             {
                 Util::scene()->selectAll(SCENEMODE_OPERATE_ON_EDGES);
-                emit mousePressed(Util::scene()->problemInfo().hermes->surfaceIntegralValue());
+                emit mousePressed();
             }
         }
         else
@@ -1530,7 +1529,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
         {
             // local point value
             if (actPostprocessorModeLocalPointValue->isChecked())
-                emit mousePressed(Util::scene()->problemInfo().hermes->localPointValue(p));
+                emit mousePressed(p);
             // select volume integral area
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
@@ -1543,7 +1542,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     Util::scene()->labels[labelIndex]->isSelected = !Util::scene()->labels[labelIndex]->isSelected;
                     updateGL();
                 }
-                emit mousePressed(Util::scene()->problemInfo().hermes->volumeIntegralValue());
+                emit mousePressed();
             }
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
@@ -1554,7 +1553,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 edge->isSelected = !edge->isSelected;
                 updateGL();
                 
-                emit mousePressed(Util::scene()->problemInfo().hermes->surfaceIntegralValue());
+                emit mousePressed();
             }
         }
     }
@@ -1932,9 +1931,7 @@ void SceneView::doInvalidated()
     
     actSceneModePostprocessor->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
-
-    emit mousePressed(Util::scene()->problemInfo().hermes->volumeIntegralValue());
-    emit mousePressed(Util::scene()->problemInfo().hermes->surfaceIntegralValue());
+    emit mousePressed();
 
     updateGL();
 }

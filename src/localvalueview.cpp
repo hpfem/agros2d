@@ -17,7 +17,7 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
 
     createActions();
     createMenu();
-        
+
     trvWidget = new QTreeWidget();
     trvWidget->setHeaderHidden(false);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -78,7 +78,7 @@ void LocalPointValueView::doPoint()
     LocalPointValueDialog localPointValueDialog(point);
     if (localPointValueDialog.exec() == QDialog::Accepted)
     {
-        doShowPoint(Util::scene()->problemInfo().hermes->localPointValue(localPointValueDialog.point()));
+        doShowPoint(localPointValueDialog.point());
     }
 }
 
@@ -87,11 +87,15 @@ void LocalPointValueView::doContextMenu(const QPoint &pos)
     mnuInfo->exec(QCursor::pos());
 }
 
-void LocalPointValueView::doShowPoint(LocalPointValue *localPointValue)
+void LocalPointValueView::doShowPoint(const Point &point)
 {
     // store point
-    point = localPointValue->point;
+    this->point = point;
+    doShowPoint();
+}
 
+void LocalPointValueView::doShowPoint()
+{
     trvWidget->clear();
 
     // point
@@ -99,13 +103,13 @@ void LocalPointValueView::doShowPoint(LocalPointValue *localPointValue)
     pointNode->setText(0, tr("Point"));
     pointNode->setExpanded(true);
 
-    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo().labelX() + ":", QString("%1").arg(localPointValue->point.x, 0, 'f', 5), tr("m"));
-    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo().labelY() + ":", QString("%1").arg(localPointValue->point.y, 0, 'f', 5), tr("m"));
+    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo().labelX() + ":", QString("%1").arg(point.x, 0, 'f', 5), tr("m"));
+    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo().labelY() + ":", QString("%1").arg(point.y, 0, 'f', 5), tr("m"));
 
     trvWidget->insertTopLevelItem(0, pointNode);
 
     if (Util::scene()->sceneSolution()->sln())
-        Util::scene()->problemInfo().hermes->showLocalValue(trvWidget, localPointValue);
+        Util::scene()->problemInfo().hermes->showLocalValue(trvWidget, Util::scene()->problemInfo().hermes->localPointValue(point));
 }
 
 LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)
