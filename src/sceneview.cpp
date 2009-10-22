@@ -1830,7 +1830,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             {
                 Util::scene()->highlightNone();
                 label->isHighlighted = true;
-                setToolTip(QString("<h4>Label</h4>Point: [%1; %2]<br/>Material: %3<br/>Triangle Area: %4 m<sup>2</sup>").arg(label->point.x, 0, 'f', 3).arg(label->point.y, 0, 'f', 3)
+                setToolTip(QString("<h4>Label</h4>Point: [%1; %2]<br/>Material: %3<br/>Triangle Area: %4 m<sup>2</sup>").arg(label->point.x, 0, 'f', 3).arg(label->point.y, 0, 'g', 3)
                            .arg(label->marker->name).arg(label->area, 0, 'f', 5));
                 updateGL();
             }
@@ -1931,7 +1931,11 @@ void SceneView::doInvalidated()
     }
     
     actSceneModePostprocessor->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    
+
+
+    emit mousePressed(Util::scene()->problemInfo().hermes->volumeIntegralValue());
+    emit mousePressed(Util::scene()->problemInfo().hermes->surfaceIntegralValue());
+
     updateGL();
 }
 
@@ -2490,8 +2494,6 @@ void SceneView::saveImageToFile(const QString &fileName)
     int h = height();
 
     makeCurrent();
-
-
 
     // copy image
     QImage *image = new QImage(grabFrameBuffer());

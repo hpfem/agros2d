@@ -43,6 +43,9 @@ SceneViewDialog::~SceneViewDialog()
 
     // vector field
     delete cmbVectorFieldVariable;
+
+    // transient
+    delete cmbTimeStep;
 }
 
 int SceneViewDialog::showDialog()
@@ -78,6 +81,9 @@ void SceneViewDialog::load()
 
     // vector field
     cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(m_sceneView->sceneViewSettings().vectorPhysicFieldVariable));
+
+    // transient view
+    cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 }
 
 void SceneViewDialog::save()
@@ -106,6 +112,9 @@ void SceneViewDialog::save()
 
     // vector field
     m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = (PhysicFieldVariable) cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toInt();
+
+    // time step
+    Util::scene()->sceneSolution()->setSolutionArray(cmbTimeStep->currentIndex());
 }
 
 void SceneViewDialog::createControls()
@@ -123,7 +132,6 @@ void SceneViewDialog::createControls()
 
     QGroupBox *grpShow = new QGroupBox(tr("Show"));
     grpShow->setLayout(layoutShow);
-
 
     // postprocessor mode
     radPostprocessorNone = new QRadioButton(tr("None"), this);
@@ -197,18 +205,29 @@ void SceneViewDialog::createControls()
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
 
-    // layout vector field
+    // vector field
     cmbVectorFieldVariable = new QComboBox();
     fillComboBoxVectorVariable(cmbVectorFieldVariable);
 
-    QGridLayout *layoutVectorField = new QGridLayout();
-    layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutVectorField->addWidget(cmbVectorFieldVariable, 0, 1);
-    layoutVectorField->addWidget(new QLabel(""), 0, 2);
-    layoutVectorField->addWidget(new QLabel(""), 0, 3);
+    QHBoxLayout *layoutVectorField = new QHBoxLayout();
+    layoutVectorField->addWidget(new QLabel(tr("Variable:")));
+    layoutVectorField->addWidget(cmbVectorFieldVariable);
+    layoutVectorField->addStretch();;
 
     QGroupBox *grpVectorField = new QGroupBox(tr("Vector field"));
     grpVectorField->setLayout(layoutVectorField);
+
+    // transient
+    cmbTimeStep = new QComboBox(this);
+    fillComboBoxTimeStep(cmbTimeStep);
+
+    QHBoxLayout *layoutTransient = new QHBoxLayout();
+    layoutTransient->addWidget(new QLabel(tr("Time step:")));
+    layoutTransient->addWidget(cmbTimeStep);
+    layoutTransient->addStretch();
+
+    QGroupBox *grpTransient = new QGroupBox(tr("Transient analysis"));
+    grpTransient->setLayout(layoutTransient);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -220,13 +239,11 @@ void SceneViewDialog::createControls()
     layoutShowPostprocessor->addWidget(grpPostprocessor);
     layoutShowPostprocessor->addStretch();
 
-    // QWidget *widShowPostprocessor = new QWidget();
-    // widShowPostprocessor->setLayout(layoutShowPostprocessor);
-
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutShowPostprocessor);
     layout->addWidget(grpScalarField);
     layout->addWidget(grpVectorField);
+    layout->addWidget(grpTransient);
     layout->addStretch();
     layout->addWidget(buttonBox);
 
@@ -246,6 +263,7 @@ void SceneViewDialog::createControls()
     chkScalarFieldRangeAuto->setEnabled(Util::scene()->sceneSolution()->isSolved());
     txtScalarFieldRangeMin->setEnabled(Util::scene()->sceneSolution()->isSolved());
     txtScalarFieldRangeMax->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
     setLayout(layout);
 }

@@ -27,6 +27,13 @@ ProblemDialog::~ProblemDialog()
     delete txtAdaptivitySteps;
     delete txtAdaptivityTolerance;
     delete cmbAdaptivityType;
+    delete txtDescription;
+    // harmonic magnetic
+    delete txtFrequency;
+    // transient
+    delete txtTransientTimeStep;
+    delete txtTransientTimeTotal;
+    delete txtTransientInitialCondition;
 }
 
 int ProblemDialog::showDialog()
@@ -53,19 +60,32 @@ void ProblemDialog::createControls()
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEdit("1", true, this);
+    // txtDescription = new QTextEdit(this);
+    // txtDescription->setLineWidth(2);
+    // harmonic magnetic
     txtFrequency = new SLineEdit("0", true, this);
+    // transient
+    cmbTypeOfAnalysis = new QComboBox();
+    txtTransientTimeStep = new SLineEdit("0", true, false, this);
+    txtTransientTimeTotal = new SLineEdit("0", true, false, this);
+    txtTransientInitialCondition = new SLineEdit("0", true, false, this);
+
+    connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
+    connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
+    connect(cmbTypeOfAnalysis, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeOfAnalysisChanged(int)));
+    fillComboBox();
 
     QGridLayout *layoutProblem = new QGridLayout();
-    layoutProblem->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layoutProblem->addWidget(txtName, 0, 1);
-    layoutProblem->addWidget(new QLabel(tr("Date:")), 1, 0);
-    layoutProblem->addWidget(dtmDate, 1, 1);
-    layoutProblem->addWidget(new QLabel(tr("Problem type:")), 2, 0);
-    layoutProblem->addWidget(cmbProblemType, 2, 1);
+    // top
+    layoutProblem->addWidget(new QLabel(tr("Name:")), 1, 0);
+    layoutProblem->addWidget(txtName, 1, 1, 1, 3);
+    // left
+    layoutProblem->addWidget(new QLabel(tr("Date:")), 2, 0);
+    layoutProblem->addWidget(dtmDate, 2, 1);
     layoutProblem->addWidget(new QLabel(tr("Physic field:")), 3, 0);
     layoutProblem->addWidget(cmbPhysicField, 3, 1);
-    layoutProblem->addWidget(new QLabel(tr("Frequency:")), 4, 0);
-    layoutProblem->addWidget(txtFrequency, 4, 1);
+    layoutProblem->addWidget(new QLabel(tr("Problem type:")), 4, 0);
+    layoutProblem->addWidget(cmbProblemType, 4, 1);
     layoutProblem->addWidget(new QLabel(tr("Number of refinements:")), 5, 0);
     layoutProblem->addWidget(txtNumberOfRefinements, 5, 1);
     layoutProblem->addWidget(new QLabel(tr("Polynomial order:")), 6, 0);
@@ -76,10 +96,17 @@ void ProblemDialog::createControls()
     layoutProblem->addWidget(txtAdaptivitySteps, 8, 1);
     layoutProblem->addWidget(new QLabel(tr("Adaptivity tolerance:")), 9, 0);
     layoutProblem->addWidget(txtAdaptivityTolerance, 9, 1);
-
-    connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
-    connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
-    fillComboBox();
+    // right
+    layoutProblem->addWidget(new QLabel(tr("Frequency:")), 2, 2);
+    layoutProblem->addWidget(txtFrequency, 2, 3);
+    layoutProblem->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
+    layoutProblem->addWidget(cmbTypeOfAnalysis, 3, 3);
+    layoutProblem->addWidget(new QLabel(tr("Time step:")), 4, 2);
+    layoutProblem->addWidget(txtTransientTimeStep, 4, 3);
+    layoutProblem->addWidget(new QLabel(tr("Total time:")), 5, 2);
+    layoutProblem->addWidget(txtTransientTimeTotal, 5, 3);
+    layoutProblem->addWidget(new QLabel(tr("Initial condition:")), 6, 2);
+    layoutProblem->addWidget(txtTransientInitialCondition, 6, 3);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -108,6 +135,7 @@ void ProblemDialog::fillComboBox()
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_CURRENT), PHYSICFIELD_CURRENT);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT), PHYSICFIELD_HEAT);
     // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
+    cmbPhysicField->setEnabled(m_isNewProblem);
 
     cmbAdaptivityType->clear();
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_NONE), ADAPTIVITYTYPE_NONE);
@@ -115,7 +143,10 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_P), ADAPTIVITYTYPE_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_HP), ADAPTIVITYTYPE_HP);
 
-    cmbPhysicField->setEnabled(m_isNewProblem);
+    cmbTypeOfAnalysis->clear();
+    cmbTypeOfAnalysis->addItem(tr("Steady state"), false);
+    cmbTypeOfAnalysis->addItem(tr("Transient"), true);
+    cmbTypeOfAnalysis->setCurrentIndex(0);
 }
 
 void ProblemDialog::load() {
@@ -128,7 +159,13 @@ void ProblemDialog::load() {
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_problemInfo->adaptivityType));
     txtAdaptivitySteps->setValue(m_problemInfo->adaptivitySteps);
     txtAdaptivityTolerance->setValue(m_problemInfo->adaptivityTolerance);
+    // harmonic magnetic
     txtFrequency->setValue(m_problemInfo->frequency);
+    // transient
+    cmbTypeOfAnalysis->setCurrentIndex(cmbTypeOfAnalysis->findData(m_problemInfo->isTransient));
+    txtTransientTimeStep->setValue(m_problemInfo->timeStep);
+    txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
+    txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
 }
 
 void ProblemDialog::save() {
@@ -141,7 +178,13 @@ void ProblemDialog::save() {
     m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
     m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
+    // harmonic magnetic
     m_problemInfo->frequency = txtFrequency->value();
+    // transient
+    m_problemInfo->isTransient = cmbTypeOfAnalysis->itemData(cmbTypeOfAnalysis->currentIndex()).toBool();
+    m_problemInfo->timeStep = txtTransientTimeStep->value();
+    m_problemInfo->timeTotal = txtTransientTimeTotal->value();
+    m_problemInfo->initialCondition = txtTransientInitialCondition->value();
 }
 
 void ProblemDialog::doAccept()
@@ -157,8 +200,18 @@ void ProblemDialog::doReject()
 
 void ProblemDialog::doPhysicFieldChanged(int index)
 {
-    txtFrequency->setEnabled(Util::scene()->problemInfo().hermes->hasFrequency());
+    HermesField *hermesField = hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt());
 
+    txtFrequency->setEnabled(hermesField->hasFrequency());
+    cmbTypeOfAnalysis->setEnabled(hermesField->hasTransient());
+    cmbTypeOfAnalysis->setCurrentIndex(0);
+    txtTransientTimeStep->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
+    txtTransientTimeTotal->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
+    txtTransientInitialCondition->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
+
+    delete hermesField;
+
+    doTypeOfAnalysisChanged(cmbTypeOfAnalysis->currentIndex());
 }
 
 void ProblemDialog::doAdaptivityChanged(int index)
@@ -166,3 +219,12 @@ void ProblemDialog::doAdaptivityChanged(int index)
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != ADAPTIVITYTYPE_NONE);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != ADAPTIVITYTYPE_NONE);
 }
+
+void ProblemDialog::doTypeOfAnalysisChanged(int index)
+{
+
+    txtTransientTimeStep->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
+    txtTransientTimeTotal->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
+    txtTransientInitialCondition->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
+}
+

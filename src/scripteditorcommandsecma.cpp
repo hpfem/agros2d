@@ -462,11 +462,13 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
                                                                            Value(context->argument(4).toString())));
         break;
     case PHYSICFIELD_HEAT:
-        if (context->argument(2).isUndefined())
+        if (context->argument(4).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
         Util::scene()->addLabelMarker(new SceneLabelHeatMarker(context->argument(0).toString(),
                                                                Value(context->argument(1).toString()),
-                                                               Value(context->argument(2).toString())));
+                                                               Value(context->argument(2).toString()),
+                                                               Value(context->argument(3).toString()),
+                                                               Value(context->argument(4).toString())));
         break;
     case PHYSICFIELD_CURRENT:
         if (context->argument(1).isUndefined())

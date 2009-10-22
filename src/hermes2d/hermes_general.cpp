@@ -61,7 +61,7 @@ Scalar general_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
         return generalLabel[marker].rightside * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-SolutionArray *general_main(SolverThread *solverThread)
+QList<SolutionArray *> *general_main(SolverThread *solverThread)
 {
     generalPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
@@ -148,7 +148,10 @@ SolutionArray *general_main(SolverThread *solverThread)
     solutionArray->adaptiveError = error;
     solutionArray->adaptiveSteps = i-1;
 
-    return solutionArray;
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+    solutionArrayList->append(solutionArray);
+    
+    return solutionArrayList;
 }
 
 // **************************************************************************************************************************
@@ -283,7 +286,7 @@ void HermesGeneral::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegr
     VolumeIntegralValueGeneral *volumeIntegralValueGeneral = dynamic_cast<VolumeIntegralValueGeneral *>(volumeIntegralValue);
 }
 
-SolutionArray *HermesGeneral::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesGeneral::solve(SolverThread *solverThread)
 {
     // edge markers
     generalEdge = new GeneralEdge[Util::scene()->edges.count()+1];
@@ -328,12 +331,12 @@ SolutionArray *HermesGeneral::solve(SolverThread *solverThread)
         }
     }
 
-    SolutionArray *solutionArray = general_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = general_main(solverThread);
 
     delete [] generalEdge;
     delete [] generalLabel;
 
-    return solutionArray;
+    return solutionArrayList;
 }
 
 // ****************************************************************************************************************

@@ -62,6 +62,8 @@ private slots:
     void doAbout();
     void doInvalidated();
 
+    void doTimeStepChanged(int index);
+
 private:
     QStringList recentFiles;
 
@@ -79,6 +81,7 @@ private:
     QToolBar *tlbView;
     QToolBar *tlbProblem;
     QToolBar *tlbTools;
+    QToolBar *tlbTransient;
 
     QAction *actDocumentNew;
     QAction *actDocumentOpen;   
@@ -117,6 +120,9 @@ private:
     QLabel *lblPhysicField;
     QLabel *lblMessage;
     QLabel *lblPosition;
+    QLabel *lblTimeStep;
+
+    QComboBox *cmbTimeStep;
 
     SceneView *sceneView;
     SceneInfoView *sceneInfoView;

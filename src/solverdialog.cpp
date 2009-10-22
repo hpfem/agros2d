@@ -204,12 +204,12 @@ void SolverThread::runSolver()
     emit message(tr("Solver: solver was started: ") + physicFieldString(Util::scene()->problemInfo().physicField()) + " (" + problemTypeString(Util::scene()->problemInfo().problemType) + ")", false);
     updateProgress(60);
 
-    SolutionArray *solutionArray = Util::scene()->problemInfo().hermes->solve(this);
-    if (!solutionArray) return;
+    QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo().hermes->solve(this);
+    if (!solutionArrayList) return;
 
-    if (solutionArray)
+    if (solutionArrayList)
     {
-        Util::scene()->sceneSolution()->setSolutionArray(solutionArray);
+        Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
 
         emit message(tr("Solver: problem was solved."), false);
         Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());

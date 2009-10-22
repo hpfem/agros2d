@@ -652,8 +652,6 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 
 void Scene::createMeshAndSolve(SolverMode solverMode)
 {
-    // check boundary conditions
-
     // clear problem
     sceneSolution()->clear();
 
@@ -1000,8 +998,13 @@ void Scene::readFromFile(const QString &fileName)
     m_problemInfo.adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
     m_problemInfo.adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo.adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
-    // time harmonic
+    // harmonic magnetic
     m_problemInfo.frequency = eleProblem.toElement().attribute("frequency").toDouble();
+    // transient
+    m_problemInfo.isTransient = eleProblem.toElement().attribute("transient", "0").toInt();
+    m_problemInfo.timeStep = eleProblem.toElement().attribute("timestep", "0").toDouble();
+    m_problemInfo.timeTotal = eleProblem.toElement().attribute("timetotal", "0").toDouble();
+    m_problemInfo.initialCondition = eleProblem.toElement().attribute("initialcondition", "0").toDouble();
 
     // startup script
     QDomNode eleSriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
@@ -1160,8 +1163,13 @@ void Scene::writeToFile(const QString &fileName) {
     eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo.adaptivityType));
     eleProblem.setAttribute("adaptivitysteps", m_problemInfo.adaptivitySteps);
     eleProblem.setAttribute("adaptivitytolerance", m_problemInfo.adaptivityTolerance);
-    // time harmonic
+    // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo.frequency);
+    // transient
+    eleProblem.setAttribute("transient", m_problemInfo.isTransient);
+    eleProblem.setAttribute("timestep", m_problemInfo.timeStep);
+    eleProblem.setAttribute("timetotal", m_problemInfo.timeTotal);
+    eleProblem.setAttribute("initialcondition", m_problemInfo.initialCondition);
 
     // startup script
     QDomElement eleSriptStartup = doc.createElement("scriptstartup");

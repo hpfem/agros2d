@@ -21,6 +21,7 @@
 
 void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
 void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
+void fillComboBoxTimeStep(QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 
 class SLineEdit : public QLineEdit

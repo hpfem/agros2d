@@ -345,7 +345,7 @@ void HermesElasticity::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInt
 
 }
 
-SolutionArray *HermesElasticity::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesElasticity::solve(SolverThread *solverThread)
 {
     // edge markers
     elasticityEdge = new ElasticityEdge[Util::scene()->edges.count()+1];
@@ -400,7 +400,10 @@ SolutionArray *HermesElasticity::solve(SolverThread *solverThread)
     delete [] elasticityEdge;
     delete [] elasticityLabel;
 
-    return solutionArray;
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+    solutionArrayList->append(solutionArray);
+
+    return solutionArrayList;
 }
 
 // ****************************************************************************************************************

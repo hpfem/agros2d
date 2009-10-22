@@ -82,7 +82,7 @@ Scalar current_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
     */
 }
 
-SolutionArray *current_main(SolverThread *solverThread)
+QList<SolutionArray *> *current_main(SolverThread *solverThread)
 {
     currentPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
@@ -170,7 +170,10 @@ SolutionArray *current_main(SolverThread *solverThread)
     solutionArray->adaptiveError = error;
     solutionArray->adaptiveSteps = i-1;
 
-    return solutionArray;
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+    solutionArrayList->append(solutionArray);
+
+    return solutionArrayList;
 }
 
 // *******************************************************************************************************
@@ -319,7 +322,7 @@ void HermesCurrent::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegr
 
 }
 
-SolutionArray *HermesCurrent::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesCurrent::solve(SolverThread *solverThread)
 {
     // edge markers
     currentEdge = new CurrentEdge[Util::scene()->edges.count()+1];
@@ -362,12 +365,12 @@ SolutionArray *HermesCurrent::solve(SolverThread *solverThread)
         }
     }
 
-    SolutionArray *solutionArray = current_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = current_main(solverThread);
 
     delete [] currentEdge;
     delete [] currentLabel;
 
-    return solutionArray;
+    return solutionArrayList;
 }
 
 // ****************************************************************************************************************

@@ -12,6 +12,7 @@ public:
 
     inline int numberOfSolution() { return 1; }
     bool hasFrequency() { return false; }
+    bool hasTransient() { return false; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
     void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
@@ -31,7 +32,7 @@ public:
     // SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]);
     SceneLabelMarker *newLabelMarker();
 
-    SolutionArray *solve(SolverThread *solverThread);
+    QList<SolutionArray *> *solve(SolverThread *solverThread);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; }

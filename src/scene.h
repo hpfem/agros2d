@@ -65,7 +65,13 @@ struct ProblemInfo
     int adaptivitySteps;
     double adaptivityTolerance;
     QString scriptStartup;
+    // harmonic magnetic
     int frequency;
+    // transient
+    bool isTransient;
+    double timeStep;
+    double timeTotal;
+    double initialCondition;
 
     HermesField *hermes;
 
@@ -92,8 +98,14 @@ struct ProblemInfo
         adaptivitySteps = 0;
         adaptivityTolerance = 1.0;
 
-        // only for harmonic magnetic
+        // harmonic magnetic
         frequency = 0.0;
+
+        // transient
+        isTransient = false;
+        timeStep = 1.0;
+        timeTotal = 0.0;
+        initialCondition = 0.0;
     }
 
     inline QString labelX() { return ((problemType == PROBLEMTYPE_PLANAR) ? "X" : "R");  }

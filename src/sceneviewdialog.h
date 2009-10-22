@@ -49,6 +49,9 @@ private:
     // vector field
     QComboBox *cmbVectorFieldVariable;
 
+    // transient
+    QComboBox *cmbTimeStep;
+
     void load();
     void save();
 

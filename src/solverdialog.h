@@ -13,6 +13,7 @@ class Mesh;
 
 struct SolutionArray
 {
+    double time;
     double adaptiveError;
     int adaptiveSteps;
 
@@ -28,9 +29,18 @@ struct SolutionArray
         order1 = NULL;
         order2 = NULL;
 
-        adaptiveError = 100.0;
+        time = 0.0;
         adaptiveSteps = 0;
+        adaptiveError = 100.0;
     }  
+
+    ~SolutionArray()
+    {
+        if (sln1) delete sln1;
+        if (sln2) delete sln2;
+        if (order1) delete order1;
+        if (order2) delete order2;
+    }
 };
 
 class SolverThread : public QThread
@@ -76,7 +86,7 @@ class SolverDialog : public QDialog
 {
     Q_OBJECT
 
-public slots:
+    public slots:
     void doShowMessage(const QString &message, bool isError);
     void doSolved();
 

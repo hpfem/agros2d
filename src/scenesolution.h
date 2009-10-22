@@ -36,12 +36,16 @@ public:
     void clear();
 
     inline Mesh &mesh() { return m_mesh; }
-    inline Solution *sln() { return m_sln1; }
-    inline Solution *sln1() { return m_sln1; }
-    inline Solution *sln2() { return m_sln2; }
-    void setSolutionArray(SolutionArray *solutionArray);
+    Solution *sln();
+    Solution *sln1();
+    Solution *sln2();
+    void setSolutionArrayList(QList<SolutionArray *> *solutionArrayList);
+    inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; };
+    void setSolutionArray(int timeStep);
+    inline int timeStep() { return m_timeStep; }
+    inline int timeStepCount() { return (m_solutionArrayList) ? m_solutionArrayList->count() : 0; }
 
-    inline bool isSolved() { return (m_sln1); }
+    bool isSolved() { return (m_timeStep != -1); }
     bool isMeshed() { return (m_mesh.get_num_elements() > 0); }
 
     // contour
@@ -61,15 +65,15 @@ public:
     inline Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     // order view
-    inline Orderizer &ordView() { return m_ordView; }
+    Orderizer &ordView();
 
     PointValue pointValue(const Point &point, Solution *sln);
     double volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume);
     double surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface);
 
     inline int timeElapsed() { return m_timeElapsed; }
-    inline double adaptiveError() { return m_adaptiveError; }
-    inline int adaptiveSteps() { return m_adaptiveSteps; }
+    double adaptiveError();
+    int adaptiveSteps();
     inline int setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
     int findTriangleInMesh(Mesh &mesh, const Point &point);
@@ -78,11 +82,10 @@ public:
 private:
     Scene *m_scene;
     int m_timeElapsed;
-    double m_adaptiveError;
-    int m_adaptiveSteps;
 
-    Solution *m_sln1; // general solution 1
-    Solution *m_sln2; // general solution 2
+    // general solution array
+    QList<SolutionArray *> *m_solutionArrayList;
+    int m_timeStep;
 
     // contour
     ViewScalarFilter *m_slnContourView; // scalar view solution
@@ -96,9 +99,6 @@ private:
     ViewScalarFilter *m_slnVectorXView; // vector view solution - x
     ViewScalarFilter *m_slnVectorYView; // vector view solution - y
     Vectorizer m_vecVectorView; // vectorizer for vector view
-
-    // order view
-    Orderizer m_ordView;
 
     Mesh m_mesh; // linearizer only for mesh (on empty solution)
 

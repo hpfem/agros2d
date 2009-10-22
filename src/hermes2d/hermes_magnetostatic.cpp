@@ -64,7 +64,7 @@ Scalar magnetostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e
                    + cos(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdy<Real, Scalar>(n, wt, v));
 }
 
-SolutionArray *magnetostatic_main(SolverThread *solverThread)
+QList<SolutionArray *> *magnetostatic_main(SolverThread *solverThread)
 {
     magnetostaticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
@@ -151,7 +151,10 @@ SolutionArray *magnetostatic_main(SolverThread *solverThread)
     solutionArray->adaptiveError = error;
     solutionArray->adaptiveSteps = i-1;
 
-    return solutionArray;
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+    solutionArrayList->append(solutionArray);
+
+    return solutionArrayList;
 }
 
 // *******************************************************************************************************
@@ -326,7 +329,7 @@ void HermesMagnetostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, Volume
     addTreeWidgetItemValue(magnetostaticNode, tr("Fy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceY, 0, 'e', 3), tr("N"));
 }
 
-SolutionArray *HermesMagnetostatic::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesMagnetostatic::solve(SolverThread *solverThread)
 {
     // edge markers
     magnetostaticEdge = new MagnetostaticEdge[Util::scene()->edges.count()+1];
@@ -375,12 +378,12 @@ SolutionArray *HermesMagnetostatic::solve(SolverThread *solverThread)
         }
     }
 
-    SolutionArray *solutionArray = magnetostatic_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = magnetostatic_main(solverThread);
 
     delete [] magnetostaticEdge;
     delete [] magnetostaticLabel;
 
-    return solutionArray;
+    return solutionArrayList;
 }
 
 // ****************************************************************************************************************

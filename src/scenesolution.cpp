@@ -2,8 +2,7 @@
 
 SceneSolution::SceneSolution(Scene *scene)
 {
-    m_sln1 = NULL;
-    m_sln2 = NULL;
+    m_solutionArrayList = NULL;
     m_slnContourView = NULL;
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
@@ -14,42 +13,83 @@ SceneSolution::SceneSolution(Scene *scene)
 
 void SceneSolution::clear()
 {
-    if (m_sln1 != NULL)
+    m_timeStep = -1;
+
+    // solution array
+    if (!m_solutionArrayList)
     {
-        delete m_sln1;
-        m_sln1 = NULL;
-    }
-    if (m_sln2 != NULL)
-    {
-        delete m_sln2;
-        m_sln2 = NULL;
+        delete m_solutionArrayList;
+        m_solutionArrayList = NULL;
     }
 
     // countour
-    if (m_slnContourView != NULL)
+    if (!m_slnContourView)
     {
         delete m_slnContourView;
         m_slnContourView = NULL;
     }
     
     // scalar
-    if (m_slnScalarView != NULL)
+    if (!m_slnScalarView)
     {
         delete m_slnScalarView;
         m_slnScalarView = NULL;
     }
     
     // vector
-    if (m_slnVectorXView != NULL)
+    if (!m_slnVectorXView)
     {
         delete m_slnVectorXView;
         m_slnVectorXView = NULL;
     }
-    if (m_slnVectorYView != NULL)
+    if (!m_slnVectorYView)
     {
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
     }
+
+    if (!m_solutionArrayList)
+    {
+        delete m_solutionArrayList;
+        m_solutionArrayList = NULL;
+    }
+}
+
+Solution *SceneSolution::sln()
+{
+    return sln1();
+}
+
+Solution *SceneSolution::sln1()
+{
+    if (m_timeStep != -1)
+        if (m_solutionArrayList->value(m_timeStep)->sln1)
+            return m_solutionArrayList->value(m_timeStep)->sln1;
+    return NULL;
+}
+
+Solution *SceneSolution::sln2()
+{
+    if (m_timeStep != -1)
+        if (m_solutionArrayList->value(m_timeStep)->sln2 != NULL)
+            return m_solutionArrayList->value(m_timeStep)->sln2;
+    return NULL;
+}
+
+Orderizer &SceneSolution::ordView()
+{
+    if (m_timeStep != -1)
+        return *m_solutionArrayList->value(m_timeStep)->order1;
+}
+
+double SceneSolution::adaptiveError()
+{
+    return (m_timeStep != -1) ? m_solutionArrayList->value(m_timeStep)->adaptiveError : 100.0;
+}
+
+int SceneSolution::adaptiveSteps()
+{
+    return (m_timeStep != -1) ? m_solutionArrayList->value(m_timeStep)->adaptiveSteps : 0.0;
 }
 
 double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume)
@@ -60,12 +100,12 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
     Mesh *mesh;
     Element* e;
 
-    if (m_sln1 != NULL)
+    if (sln1())
     {
         quad = &g_quad_2d_std;
-        m_sln1->set_quad_2d(quad);
+        sln1()->set_quad_2d(quad);
 
-        mesh = m_sln1->get_mesh();
+        mesh = sln1()->get_mesh();
 
         for_all_active_elements(e, mesh)
         {
@@ -73,17 +113,17 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
             {
                 update_limit_table(e->get_mode());
 
-                m_sln1->set_active_element(e);
-                if (m_sln2 != NULL)
-                    m_sln2->set_active_element(e);
+                sln1()->set_active_element(e);
+                if (sln2())
+                    sln2()->set_active_element(e);
 
-                RefMap *ru = m_sln1->get_refmap();
+                RefMap *ru = sln1()->get_refmap();
 
                 int o;
-                if (m_sln2 == NULL)
-                    o = m_sln1->get_fn_order() + ru->get_inv_ref_order();
+                if (!sln2())
+                    o = sln1()->get_fn_order() + ru->get_inv_ref_order();
                 else
-                    o = m_sln1->get_fn_order() + m_sln2->get_fn_order() + ru->get_inv_ref_order();
+                    o = sln1()->get_fn_order() + sln2()->get_fn_order() + ru->get_inv_ref_order();
 
                 limit_order(o);
 
@@ -92,22 +132,22 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 double *x;
 
                 // solution 1
-                m_sln1->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
+                sln1()->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
                 // value
-                valueu = m_sln1->get_fn_values();
+                valueu = sln1()->get_fn_values();
                 // derivative
-                m_sln1->get_dx_dy_values(dudx, dudy);
+                sln1()->get_dx_dy_values(dudx, dudy);
                 // x - coordinate
                 x = ru->get_phys_x(o);
 
                 // solution 2
-                if (m_sln2 != NULL)
+                if (sln2())
                 {
-                    m_sln2->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
+                    sln2()->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
                     // value
-                    valuev = m_sln2->get_fn_values();
+                    valuev = sln2()->get_fn_values();
                     // derivative
-                    m_sln2->get_dx_dy_values(dvdx, dvdy);
+                    sln2()->get_dx_dy_values(dvdx, dvdy);
                 }
 
                 update_limit_table(e->get_mode());
@@ -672,10 +712,10 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
 {  
     double integral = 0.0;
     Quad2D* quad = &g_quad_2d_std;
-    m_sln1->set_quad_2d(quad);
+    sln1()->set_quad_2d(quad);
 
     Element* e;
-    Mesh* mesh = m_sln1->get_mesh();
+    Mesh* mesh = sln1()->get_mesh();
 
     /*
     // mark unpaired edges
@@ -718,20 +758,20 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
 
                 update_limit_table(e->get_mode());
 
-                m_sln1->set_active_element(e);
-                RefMap* ru = m_sln1->get_refmap();
+                sln1()->set_active_element(e);
+                RefMap* ru = sln1()->get_refmap();
 
                 Quad2D* quad2d = ru->get_quad_2d();
                 int eo = quad2d->get_edge_points(edge);
-                m_sln1->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
+                sln1()->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
                 double3* pt = quad2d->get_points(eo);
                 double3* tan = ru->get_tangent(edge);
 
                 // value
-                scalar* valueu = m_sln1->get_fn_values();
+                scalar* valueu = sln1()->get_fn_values();
                 // derivative
                 scalar *dudx, *dudy;
-                m_sln1->get_dx_dy_values(dudx, dudy);
+                sln1()->get_dx_dy_values(dudx, dudy);
                 // x - coordinate
                 double* x = ru->get_phys_x(eo);
 
@@ -885,7 +925,7 @@ PointValue SceneSolution::pointValue(const Point &point, Solution *sln)
     SceneLabelMarker *labelMarker = NULL;
     
     int index = -1;
-    if (m_sln1 != NULL)
+    if (sln1() != NULL)
     {
         value = sln->get_pt_value(point.x, point.y, FN_VAL_0);
         if (m_scene->problemInfo().physicField() != PHYSICFIELD_ELASTICITY)
@@ -906,25 +946,24 @@ PointValue SceneSolution::pointValue(const Point &point, Solution *sln)
     return PointValue(value, Point(dx, dy), labelMarker);
 }
 
-void SceneSolution::setSolutionArray(SolutionArray *solutionArray)
+void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayList)
 {
-    m_sln1 = solutionArray->sln1;
-    m_sln2 = solutionArray->sln2;
-    
+    m_solutionArrayList = solutionArrayList;
+    setSolutionArray(0);
+}
+
+void SceneSolution::setSolutionArray(int timeStep)
+{
+    if (!m_solutionArrayList) return;
+    m_timeStep = timeStep;
+
     if (m_scene->problemInfo().physicField() != PHYSICFIELD_ELASTICITY)
-        m_vec.process_solution(m_sln1, FN_DX_0, m_sln1, FN_DY_0, EPS_NORMAL);
-
-    // order view
-    m_ordView = *solutionArray->order1;
-    // m_slnOrderView = *solutionArray->order2;
-
-    m_adaptiveError = solutionArray->adaptiveError;
-    m_adaptiveSteps = solutionArray->adaptiveSteps;
+        m_vec.process_solution(sln1(), FN_DX_0, sln1(), FN_DY_0, EPS_NORMAL);
 }
 
 void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
 {
-    if (m_slnContourView != NULL)
+    if (!m_slnContourView)
     {
         delete m_slnContourView;
         m_slnContourView = NULL;
@@ -936,7 +975,7 @@ void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
 
 void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
 {
-    if (m_slnScalarView != NULL)
+    if (!m_slnScalarView)
     {
         delete m_slnScalarView;
         m_slnScalarView = NULL;

@@ -14,12 +14,17 @@ struct HeatLabel
 {
     double thermal_conductivity;
     double volume_heat;
+    double density;
+    double specific_heat;
 };
 
 
 HeatEdge *heatEdge;
 HeatLabel *heatLabel;
 bool heatPlanar;
+bool heatTransient;
+double timeStep;
+double timeTotal;
 
 int heat_bc_types(int marker)
 {
@@ -86,23 +91,30 @@ template<typename Real, typename Scalar>
 Scalar heat_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (heatPlanar)
-        return heatLabel[e->marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
+        return heatLabel[e->marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
+        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
     else
-        return heatLabel[e->marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
+        return heatLabel[e->marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
+                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
 Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (heatPlanar)
-        return heatLabel[e->marker].volume_heat * int_v<Real, Scalar>(n, wt, v);
+        return heatLabel[e->marker].volume_heat * int_v<Real, Scalar>(n, wt, v)
+        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
     else
-        return heatLabel[e->marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
+        return heatLabel[e->marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
+                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
-SolutionArray *heat_main(SolverThread *solverThread)
+QList<SolutionArray *> *heat_main(SolverThread *solverThread)
 {
     heatPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
+    heatTransient = Util::scene()->problemInfo().isTransient;
+    timeStep = Util::scene()->problemInfo().timeStep;
+    timeTotal = Util::scene()->problemInfo().timeTotal;
     int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
@@ -133,63 +145,85 @@ SolutionArray *heat_main(SolverThread *solverThread)
     space.set_uniform_order(polynomialOrder);
     space.assign_dofs();
 
+    // solution
+    Solution *sln = new Solution();
+    if (heatTransient) sln->set_const(&mesh, 20);
+    Solution rsln;
+
     // initialize the weak formulation
     WeakForm wf(1);
     wf.add_biform(0, 0, callback(heat_bilinear_form));
-    wf.add_liform(0, callback(heat_linear_form));
+    if (heatTransient)
+        wf.add_liform(0, callback(heat_linear_form), ANY, 1, sln);
+    else
+        wf.add_liform(0, callback(heat_linear_form));
     wf.add_biform_surf(0, 0, callback(heat_bilinear_form_surf));
     wf.add_liform_surf(0, callback(heat_linear_form_surf));
 
     // initialize the linear solver
     UmfpackSolver umfpack;
-    Solution *sln = new Solution();
-    Solution rsln;
 
     // assemble the stiffness matrix and solve the system
-    double error;
     int i;
-    int steps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
-    for (i = 0; i<(steps); i++)
+    double error;
+
+    // adaptivity
+    int adaptivitysteps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
+
+    // timesteps
+    int timesteps = (heatTransient) ? floor(timeTotal/timeStep) : 1;
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
+    for (int n = 0; n<timesteps; n++)
     {
+        for (i = 0; i<adaptivitysteps; i++)
+        {
+            space.assign_dofs();
+
+            // initialize the linear system
+            LinSystem sys(&wf, &umfpack);
+            sys.set_spaces(1, &space);
+            sys.set_pss(1, &pss);
+            sys.assemble();
+            sys.solve(1, sln);
+
+            RefSystem rs(&sys);
+            rs.assemble(i > 0);
+            rs.solve(1, &rsln);
+
+            // calculate errors and adapt the solution
+            if (adaptivityType != ADAPTIVITYTYPE_NONE)
+            {
+                H1OrthoHP hp(1, &space);
+                error = hp.calc_error(sln, &rsln) * 100;
+
+                // emit signal
+                solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+                if (solverThread->isCanceled()) return NULL;
+
+                if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+                hp.adapt(0.3, 0, (int) adaptivityType);
+            }
+        }
+
+        // output
         space.assign_dofs();
 
-        // initialize the linear system
-        LinSystem sys(&wf, &umfpack);
-        sys.set_spaces(1, &space);
-        sys.set_pss(1, &pss);
-        sys.assemble();
-        sys.solve(1, sln);
+        SolutionArray *solutionArray = new SolutionArray();
+        solutionArray->order1 = new Orderizer();
+        solutionArray->order1->process_solution(&space);
+        solutionArray->sln1 = new Solution();
+        solutionArray->sln1->copy(sln);
+        solutionArray->adaptiveError = error;
+        solutionArray->adaptiveSteps = i-1;
+        if (heatTransient > 0) solutionArray->time = (n+1)*timeStep;
 
-        RefSystem rs(&sys);
-        rs.assemble();
-        rs.solve(1, &rsln);
+        solutionArrayList->append(solutionArray);
 
-        // calculate errors and adapt the solution
-        if (adaptivityType != ADAPTIVITYTYPE_NONE)
-        {
-            H1OrthoHP hp(1, &space);
-            error = hp.calc_error(sln, &rsln) * 100;
-
-            // emit signal
-            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverThread->isCanceled()) return NULL;
-
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(0.3, 0, (int) adaptivityType);
-        }
+        if (heatTransient > 0) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1, 0, 'g', 3).arg(timesteps, 0, 'g', 3), false);
     }
 
-    // output
-    space.assign_dofs();
-
-    SolutionArray *solutionArray = new SolutionArray();
-    solutionArray->order1 = new Orderizer();
-    solutionArray->order1->process_solution(&space);
-    solutionArray->sln1 = sln;
-    solutionArray->adaptiveError = error;
-    solutionArray->adaptiveSteps = i-1;
-
-    return solutionArray;
+    return solutionArrayList;
 }
 
 // *******************************************************************************************************
@@ -241,7 +275,9 @@ void HermesHeat::readLabelMarkerFromDomElement(QDomElement *element)
 {
     Util::scene()->addLabelMarker(new SceneLabelHeatMarker(element->attribute("name"),
                                                            Value(element->attribute("volume_heat")),
-                                                           Value(element->attribute("thermal_conductivity"))));
+                                                           Value(element->attribute("thermal_conductivity")),
+                                                           Value(element->attribute("density", "0")),
+                                                           Value(element->attribute("specific_heat", "0"))));
 }
 
 void HermesHeat::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
@@ -250,6 +286,8 @@ void HermesHeat::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMa
 
     element->setAttribute("thermal_conductivity", labelHeatMarker->thermal_conductivity.text);
     element->setAttribute("volume_heat", labelHeatMarker->volume_heat.text);
+    element->setAttribute("density", labelHeatMarker->density.text);
+    element->setAttribute("specific_heat", labelHeatMarker->specific_heat.text);
 }
 
 LocalPointValue *HermesHeat::localPointValue(Point point)
@@ -300,7 +338,7 @@ SceneEdgeMarker *HermesHeat::newEdgeMarker(const QString &name, PhysicFieldBC ph
 */
 SceneLabelMarker *HermesHeat::newLabelMarker()
 {
-    return new SceneLabelHeatMarker("new material", Value("0"), Value("385"));
+    return new SceneLabelHeatMarker("new material", Value("0"), Value("385"), Value("0"), Value("0"));
 }
 
 void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -372,7 +410,7 @@ void HermesHeat::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralV
     addTreeWidgetItemValue(heatNode, tr("F avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageHeatFlux, 0, 'e', 3), tr("W/m2"));
 }
 
-SolutionArray *HermesHeat::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
 {
     // edge markers
     heatEdge = new HeatEdge[Util::scene()->edges.count()+1];
@@ -431,18 +469,22 @@ SolutionArray *HermesHeat::solve(SolverThread *solverThread)
             // evaluate script
             if (!labelHeatMarker->thermal_conductivity.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
             if (!labelHeatMarker->volume_heat.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelHeatMarker->density.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelHeatMarker->specific_heat.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
 
             heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;
             heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
+            heatLabel[i].density = labelHeatMarker->density.number;
+            heatLabel[i].specific_heat = labelHeatMarker->specific_heat.number;
         }
     }
 
-    SolutionArray *solutionArray = heat_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = heat_main(solverThread);
 
     delete [] heatEdge;
     delete [] heatLabel;
 
-    return solutionArray;
+    return solutionArrayList;
 }
 
 // ****************************************************************************************************************
@@ -700,19 +742,23 @@ int SceneEdgeHeatMarker::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity)
+SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat)
     : SceneLabelMarker(name)
 {
     this->thermal_conductivity = thermal_conductivity;
     this->volume_heat = volume_heat;
+    this->density = density;
+    this->specific_heat = specific_heat;
 }
 
 QString SceneLabelHeatMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3);").
+    return QString("addMaterial(\"%1\", %2, %3, %4, %5);").
             arg(name).
             arg(volume_heat.text).
-            arg(thermal_conductivity.text);
+            arg(thermal_conductivity.text).
+            arg(density.text).
+            arg(specific_heat.text);
 }
 
 QMap<QString, QString> SceneLabelHeatMarker::data()
@@ -720,6 +766,8 @@ QMap<QString, QString> SceneLabelHeatMarker::data()
     QMap<QString, QString> out;
     out["Volume heat (W/m3)"] = volume_heat.text;
     out["Thermal conductivity (W/m.K)"] = thermal_conductivity.text;
+    out["Density (kg/m3)"] = density.text;
+    out["Specific heat (J/kg.K)"] = specific_heat.text;
     return QMap<QString, QString>(out);
 }
 
@@ -876,6 +924,8 @@ DSceneLabelHeatMarker::DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMark
     // tab order
     setTabOrder(txtName, txtThermalConductivity);
     setTabOrder(txtThermalConductivity, txtVolumeHeat);
+    setTabOrder(txtVolumeHeat, txtDensity);
+    setTabOrder(txtDensity, txtSpecificHeat);
 
     load();
     setSize();
@@ -885,16 +935,22 @@ DSceneLabelHeatMarker::~DSceneLabelHeatMarker()
 {
     delete txtThermalConductivity;
     delete txtVolumeHeat;
+    delete txtDensity;
+    delete txtSpecificHeat;
 }
 
 QLayout* DSceneLabelHeatMarker::createContent()
 {
     txtThermalConductivity = new SLineEditValue(this);
     txtVolumeHeat = new SLineEditValue(this);
+    txtDensity = new SLineEditValue(this);
+    txtSpecificHeat = new SLineEditValue(this);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Thermal conductivity (W/m.K):"), txtThermalConductivity);
     layoutMarker->addRow(tr("Volume heat (J/m3):"), txtVolumeHeat);
+    layoutMarker->addRow(tr("Density (kg/m3):"), txtDensity);
+    layoutMarker->addRow(tr("Specific heat (J/kg.K):"), txtSpecificHeat);
 
     return layoutMarker;
 }
@@ -907,6 +963,8 @@ void DSceneLabelHeatMarker::load()
 
     txtThermalConductivity->setText(labelHeatMarker->thermal_conductivity.text);
     txtVolumeHeat->setText(labelHeatMarker->volume_heat.text);
+    txtDensity->setText(labelHeatMarker->density.text);
+    txtSpecificHeat->setText(labelHeatMarker->specific_heat.text);
 }
 
 bool DSceneLabelHeatMarker::save()
@@ -922,6 +980,16 @@ bool DSceneLabelHeatMarker::save()
 
     if (txtVolumeHeat->evaluate())
         labelHeatMarker->volume_heat  = txtVolumeHeat->value();
+    else
+        return false;
+
+    if (txtDensity->evaluate())
+        labelHeatMarker->density  = txtDensity->value();
+    else
+        return false;
+
+    if (txtSpecificHeat->evaluate())
+        labelHeatMarker->specific_heat  = txtSpecificHeat->value();
     else
         return false;
 

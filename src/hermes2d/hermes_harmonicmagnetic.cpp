@@ -100,7 +100,7 @@ Scalar harmonicMagnetic_linear_form_imag(int n, double *wt, Func<Real> *v, Geom<
         return harmonicMagneticLabel[e->marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
 }
 
-SolutionArray *harmonicMagnetic_main(SolverThread *solverThread)
+QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
 {
     frequency = Util::scene()->problemInfo().frequency;
     harmonicMagneticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
@@ -207,7 +207,10 @@ SolutionArray *harmonicMagnetic_main(SolverThread *solverThread)
     solutionArray->adaptiveError = error;
     solutionArray->adaptiveSteps = i-1;
 
-    return solutionArray;
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+    solutionArrayList->append(solutionArray);
+
+    return solutionArrayList;
 }
 
 // *******************************************************************************************************
@@ -477,7 +480,7 @@ void HermesHarmonicMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, Vol
     addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo().labelY(), tr("%1").arg(-volumeIntegralValueHarmonicMagnetic->forceYReal/2.0, 0, 'e', 3), "N");
 }
 
-SolutionArray *HermesHarmonicMagnetic::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesHarmonicMagnetic::solve(SolverThread *solverThread)
 {
     // edge markers
     harmonicMagneticEdge = new HarmonicMagneticEdge[Util::scene()->edges.count()+1];
@@ -526,12 +529,12 @@ SolutionArray *HermesHarmonicMagnetic::solve(SolverThread *solverThread)
         }
     }
 
-    SolutionArray *solutionArray = harmonicMagnetic_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = harmonicMagnetic_main(solverThread);
 
     delete [] harmonicMagneticEdge;
     delete [] harmonicMagneticLabel;
 
-    return solutionArray;
+    return solutionArrayList;
 }
 
 // ****************************************************************************************************************

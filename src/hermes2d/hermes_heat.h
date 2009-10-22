@@ -12,6 +12,7 @@ public:
 
     inline int numberOfSolution() { return 1; }
     bool hasFrequency() { return false; }
+    bool hasTransient() { return true; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
     void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
@@ -31,7 +32,7 @@ public:
     // SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]);
     SceneLabelMarker *newLabelMarker();
 
-    SolutionArray *solve(SolverThread *solverThread);
+    QList<SolutionArray *> *solve(SolverThread *solverThread);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_HEAT_TEMPERATURE; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_HEAT_TEMPERATURE; }
@@ -118,8 +119,10 @@ class SceneLabelHeatMarker : public SceneLabelMarker
 public:
     Value thermal_conductivity;
     Value volume_heat;
+    Value density;
+    Value specific_heat;
 
-    SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity);
+    SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
 
     QString script();
     QMap<QString, QString> data();
@@ -168,6 +171,8 @@ protected:
 private:
     SLineEditValue *txtThermalConductivity;
     SLineEditValue *txtVolumeHeat;
+    SLineEditValue *txtDensity;
+    SLineEditValue *txtSpecificHeat;
 };
 
 #endif // HEAT_H

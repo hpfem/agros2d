@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="heat" id="0" name="Detail" >
+        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" transient="0" timetotal="0" type="heat" timestep="0" id="0" name="Detail" initialcondition="0" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge h="25" external_temperature="-15" type="heat_heat_flux" id="1" name="Exterier" heat_flux="0" />
@@ -8,18 +8,18 @@
                 <edge h="0" external_temperature="0" type="heat_heat_flux" id="3" name="Neumann" heat_flux="0" />
             </edges>
             <labels>
-                <label thermal_conductivity="0.418" volume_heat="0" id="1" name="Zdici prvky SENDWIX tl. 240 kontakt" />
-                <label thermal_conductivity="0.042" volume_heat="0" id="2" name="Izolace Rockwool Fasrock L" />
-                <label thermal_conductivity="0.036" volume_heat="0" id="3" name="Flexibilni pena" />
-                <label thermal_conductivity="1.01" volume_heat="0" id="4" name="Naslapna vrstva podlahy" />
-                <label thermal_conductivity="0.037" volume_heat="0" id="5" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm" />
-                <label thermal_conductivity="1.58" volume_heat="0" id="6" name="Stropní konstrukce Rector tl. 200 mm" />
-                <label thermal_conductivity="0.671" volume_heat="0" id="7" name="Vapenopiskovy preklad Sendwix 2DF" />
-                <label thermal_conductivity="0.57" volume_heat="0" id="8" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm" />
-                <label thermal_conductivity="0.57" volume_heat="0" id="9" name="Tenkovrstva silikonova omitka Cermix 2 mm" />
-                <label thermal_conductivity="0.47" volume_heat="0" id="10" name="Jednovrstva omitka Cemix 073 tl. 8 mm" />
-                <label thermal_conductivity="0.14" volume_heat="0" id="11" name="Sklo" />
-                <label thermal_conductivity="1.23" volume_heat="0" id="12" name="Betonovy zaklad" />
+                <label thermal_conductivity="0.418" specific_heat="0" volume_heat="0" id="1" density="0" name="Zdici prvky SENDWIX tl. 240 kontakt" />
+                <label thermal_conductivity="0.042" specific_heat="0" volume_heat="0" id="2" density="0" name="Izolace Rockwool Fasrock L" />
+                <label thermal_conductivity="0.036" specific_heat="0" volume_heat="0" id="3" density="0" name="Flexibilni pena" />
+                <label thermal_conductivity="1.01" specific_heat="0" volume_heat="0" id="4" density="0" name="Naslapna vrstva podlahy" />
+                <label thermal_conductivity="0.037" specific_heat="0" volume_heat="0" id="5" density="0" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm" />
+                <label thermal_conductivity="1.58" specific_heat="0" volume_heat="0" id="6" density="0" name="Stropní konstrukce Rector tl. 200 mm" />
+                <label thermal_conductivity="0.671" specific_heat="0" volume_heat="0" id="7" density="0" name="Vapenopiskovy preklad Sendwix 2DF" />
+                <label thermal_conductivity="0.57" specific_heat="0" volume_heat="0" id="8" density="0" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm" />
+                <label thermal_conductivity="0.57" specific_heat="0" volume_heat="0" id="9" density="0" name="Tenkovrstva silikonova omitka Cermix 2 mm" />
+                <label thermal_conductivity="0.47" specific_heat="0" volume_heat="0" id="10" density="0" name="Jednovrstva omitka Cemix 073 tl. 8 mm" />
+                <label thermal_conductivity="0.14" specific_heat="0" volume_heat="0" id="11" density="0" name="Sklo" />
+                <label thermal_conductivity="1.23" specific_heat="0" volume_heat="0" id="12" density="0" name="Betonovy zaklad" />
             </labels>
         </problem>
     </problems>
@@ -150,4 +150,5 @@
             <label x="0.862434" y="1.22563" marker="10" id="14" area="0" />
         </labels>
     </geometry>
+    <functions/>
 </document>

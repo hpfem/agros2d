@@ -34,6 +34,7 @@ public:
 
     virtual int numberOfSolution() = 0;
     virtual bool hasFrequency() = 0;
+    virtual bool hasTransient() = 0;
 
     virtual void readEdgeMarkerFromDomElement(QDomElement *element) = 0;
     virtual void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker) = 0;
@@ -53,7 +54,7 @@ public:
     // virtual SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]) = 0;
     virtual SceneLabelMarker *newLabelMarker() = 0;
 
-    virtual SolutionArray *solve(SolverThread *solverThread) = 0;
+    virtual QList<SolutionArray *> *solve(SolverThread *solverThread) = 0;
 
     virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
     virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;

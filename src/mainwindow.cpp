@@ -367,6 +367,14 @@ void MainWindow::createToolBars()
     tlbTools->addAction(actScriptEditor);
     tlbTools->addSeparator();
     tlbTools->addAction(sceneView->actSceneViewProperties);
+
+    tlbTransient = addToolBar(tr("Transient"));
+    tlbTransient->setObjectName("Transient");
+    tlbTransient->addWidget(new QLabel(tr("Time step:") + " "));
+    cmbTimeStep = new QComboBox(this);
+    cmbTimeStep->setMinimumWidth(80);
+    connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
+    tlbTransient->addWidget(cmbTimeStep);
 }
 
 void MainWindow::createStatusBar()
@@ -380,11 +388,12 @@ void MainWindow::createStatusBar()
     // lblProblemType->setStyleSheet("QLabel {border: 1px solid gray;}");
     lblPhysicField = new QLabel(statusBar());
     // lblPhysicField->setStyleSheet("QLabel {border: 1px solid gray;}");
+    lblTimeStep = new QLabel(statusBar());
 
     statusBar()->showMessage(tr("Ready"));
-    // statusBar()->addPermanentWidget(lblMessage);
     statusBar()->addPermanentWidget(lblProblemType);
     statusBar()->addPermanentWidget(lblPhysicField);
+    statusBar()->addPermanentWidget(lblTimeStep);
     statusBar()->addPermanentWidget(lblPosition);
 
     connect(sceneView, SIGNAL(mouseMoved(const QPointF &)), this, SLOT(doSceneMouseMoved(const QPointF &)));
@@ -707,7 +716,7 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    Util::scene()->readFromFile("data/pokus.a2d");
+    // Util::scene()->readFromFile("data/pokus.a2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     // Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
@@ -735,12 +744,26 @@ void MainWindow::doPaste()
     // sceneView->doZoomBestFit();
 }
 
+void MainWindow::doTimeStepChanged(int index)
+{
+    if (cmbTimeStep->currentIndex() != -1)
+    {
+        Util::scene()->sceneSolution()->setSolutionArray(cmbTimeStep->currentIndex());
+        sceneView->doInvalidated();
+        doInvalidated();
+    }
+}
+
 void MainWindow::doInvalidated()
 {
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    fillComboBoxTimeStep(cmbTimeStep);
 
     lblProblemType->setText(tr("Problem Type: ") + problemTypeString(Util::scene()->problemInfo().problemType));
     lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->problemInfo().physicField()));
+    lblTimeStep->setVisible(cmbTimeStep->count() > 1);
+    lblTimeStep->setText(tr("Time step: ") + cmbTimeStep->currentText());
 }
 
 void MainWindow::doHelp()

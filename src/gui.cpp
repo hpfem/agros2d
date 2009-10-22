@@ -39,11 +39,30 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
         cmbFieldVariable->setCurrentIndex(0);
 }
 
+void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
+{
+    cmbFieldVariable->blockSignals(true);
+
+    // store variable
+    int timeStep = cmbFieldVariable->currentIndex();
+    if (timeStep == -1) timeStep = 0;
+
+    // clear combo
+    cmbFieldVariable->clear();
+    for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
+    {
+        cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList()->value(i)->time, 'e', 2), i);
+    }
+
+    cmbFieldVariable->setCurrentIndex(timeStep);
+    cmbFieldVariable->blockSignals(false);
+}
+
 // ***********************************************************************************************************
 
 SLineEdit::SLineEdit(QWidget *parent) : QLineEdit(parent)
 {   
-    SLineEdit::SLineEdit("", true, true, parent);
+    SLineEdit::SLineEdit("0", true, true, parent);
 
     m_engine = scriptEngine();
 }
