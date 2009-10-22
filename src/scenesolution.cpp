@@ -308,7 +308,33 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
+                case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_X:
+                    {
+                        SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[e->marker]->marker);
+                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(((sqr(dudx[i]) - sqr(dudy[i]))*dudx[i] + (dudx[i]*dudy[i])*dudy[i]) / sqr(marker->permeability.number * MU0));
+                        }
+                        else
+                        {
+                            h1_integrate_expression(2 * M_PI * x[i] * 0.5 * sqr(sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0));
+                        }
+                    }
+                    break;
+                case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_Y:
+                    {
+                        SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[e->marker]->marker);
+                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression((sqr(dudx[i]) - sqr(dudy[i]))*dudy[i] - 2*(dudx[i]*dudy[i])*dudx[i]);
+                        }
+                        else
+                        {
+                            h1_integrate_expression(2 * M_PI * x[i] * 0.5 * sqr(sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0));
+                        }
+                    }
+                    break;
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -321,7 +347,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -334,7 +360,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -347,7 +373,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -360,7 +386,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_POWER_LOSSES:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_POWER_LOSSES:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -383,7 +409,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_ENERGY_DENSITY:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_ENERGY_DENSITY:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -397,7 +423,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_X_REAL:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -412,7 +438,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_REAL:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_Y_REAL:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -427,7 +453,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_IMAG:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_X_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -442,7 +468,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         }
                     }
                     break;
-                case PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_IMAG:
+                case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_Y_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
                         if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1309,7 +1335,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 node->values[0][0][i] = marker->permeability.number;
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL:
             {
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
                 {
@@ -1321,7 +1347,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL:
             {
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
                 {
@@ -1333,7 +1359,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG:
             {
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
                 {
@@ -1345,7 +1371,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY:
             {
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
                 {
@@ -1357,7 +1383,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_REAL:
             {
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
                 {
@@ -1403,7 +1429,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_IMAG:
             {
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
                 {
@@ -1449,7 +1475,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD:
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1496,7 +1522,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_REAL:
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1543,7 +1569,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_IMAG:
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1590,7 +1616,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1607,7 +1633,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1620,7 +1646,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1633,7 +1659,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1650,7 +1676,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1663,7 +1689,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1676,7 +1702,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_POWER_LOSSES:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1699,7 +1725,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_ENERGY_DENSITY:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
@@ -1712,7 +1738,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 }
             }
             break;
-        case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY:
+        case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_PERMEABILITY:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
                 node->values[0][0][i] = marker->permeability.number;

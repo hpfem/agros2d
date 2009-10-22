@@ -44,6 +44,8 @@ Util::Util()
 {
     m_scene = new Scene();
     m_helpDialog = new HelpDialog(QApplication::activeWindow());
+
+    initLists();
 }
 
 Util::~Util()
@@ -987,8 +989,7 @@ void Scene::readFromFile(const QString &fileName)
     // name
     m_problemInfo.name = eleProblem.toElement().attribute("name");
     // problem type                                                                                                                                                                                                                             `
-    if (eleProblem.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_PLANAR)) m_problemInfo.problemType = PROBLEMTYPE_PLANAR;
-    if (eleProblem.toElement().attribute("problemtype") == problemTypeStringKey(PROBLEMTYPE_AXISYMMETRIC)) m_problemInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
+    m_problemInfo.problemType = problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
     // physic field
     m_problemInfo.hermes = hermesFieldFactory(physicFieldFromStringKey(eleProblem.toElement().attribute("type")));
     // number of refinements
@@ -996,10 +997,7 @@ void Scene::readFromFile(const QString &fileName)
     // polynomial order
     m_problemInfo.polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
     // adaptivity
-    if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_NONE)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_NONE;
-    if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_H)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_H;
-    if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_P)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_P;
-    if (eleProblem.toElement().attribute("adaptivitytype") == adaptivityTypeStringKey(ADAPTIVITYTYPE_HP)) m_problemInfo.adaptivityType = ADAPTIVITYTYPE_HP;
+    m_problemInfo.adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
     m_problemInfo.adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo.adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
     // time harmonic
@@ -1150,17 +1148,16 @@ void Scene::writeToFile(const QString &fileName) {
     eleProblem.setAttribute("id", 0);
     // name
     eleProblem.setAttribute("name", m_problemInfo.name);
-    // problem type                                                                                                                                                                                                                             `
-    if (m_problemInfo.problemType == PROBLEMTYPE_PLANAR) eleProblem.toElement().setAttribute("problemtype", "planar");
-    if (m_problemInfo.problemType == PROBLEMTYPE_AXISYMMETRIC) eleProblem.toElement().setAttribute("problemtype", "axisymmetric");
+    // problem type                                                                          
+    eleProblem.toElement().setAttribute("problemtype", problemTypeToStringKey(m_problemInfo.problemType));
     // name
-    eleProblem.setAttribute("type", physicFieldStringKey(m_problemInfo.physicField()));
+    eleProblem.setAttribute("type", physicFieldToStringKey(m_problemInfo.physicField()));
     // number of refinements
     eleProblem.setAttribute("numberofrefinements", m_problemInfo.numberOfRefinements);
     // polynomial order
     eleProblem.setAttribute("polynomialorder", m_problemInfo.polynomialOrder);
     // adaptivity
-    eleProblem.setAttribute("adaptivitytype", adaptivityTypeStringKey(m_problemInfo.adaptivityType));
+    eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo.adaptivityType));
     eleProblem.setAttribute("adaptivitysteps", m_problemInfo.adaptivitySteps);
     eleProblem.setAttribute("adaptivitytolerance", m_problemInfo.adaptivityTolerance);
     // time harmonic

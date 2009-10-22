@@ -1,10 +1,10 @@
 print("Test: Harmonic magnetic - axisymmetric");
 
 // model
-newDocument("Heating", "axisymmetric", "harmonic magnetic", 1, 3, 100, "disabled", 1, 1);
+newDocument("Heating", "axisymmetric", "harmonicmagnetic", 1, 3, 100, "disabled", 1, 1);
 
 // boundaries
-addBoundary("A = 0", "vector_potential", 0);
+addBoundary("A = 0", "harmonicmagnetic_vector_potential", 0);
 
 // materials
 addMaterial("Coil", 1e6, 0, 1, 0);

@@ -155,27 +155,27 @@ SolutionArray *general_main(SolverThread *solverThread)
 
 void HermesGeneral::readEdgeMarkerFromDomElement(QDomElement *element)
 {
-    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
-    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
-        type = PHYSICFIELDBC_NONE;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_GENERAL_VALUE))
-        type = PHYSICFIELDBC_GENERAL_VALUE;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_GENERAL_DERIVATIVE))
-        type = PHYSICFIELDBC_GENERAL_DERIVATIVE;
-    else
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-
-    if (type != PHYSICFIELDBC_UNDEFINED)
+    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
+    switch (type)
+    {
+    case PHYSICFIELDBC_NONE:
+    case PHYSICFIELDBC_GENERAL_VALUE:
+    case PHYSICFIELDBC_GENERAL_DERIVATIVE:
         Util::scene()->addEdgeMarker(new SceneEdgeGeneralMarker(element->attribute("name"),
                                                  type,
                                                  Value(element->attribute("value"))));
+        break;
+    default:
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+        break;
+    }
 }
 
 void HermesGeneral::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
 {
     SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(marker);
 
-    element->setAttribute("type", physicFieldBCStringKey(edgeGeneralMarker->type));
+    element->setAttribute("type", physicFieldBCToStringKey(edgeGeneralMarker->type));
     element->setAttribute("value", edgeGeneralMarker->value.text);
 }
 
@@ -234,7 +234,12 @@ SceneEdgeMarker *HermesGeneral::newEdgeMarker()
 {
     return new SceneEdgeGeneralMarker("new boundary", PHYSICFIELDBC_GENERAL_VALUE, Value("0"));
 }
-
+/*
+SceneEdgeMarker *HermesGeneral::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+{
+    return new SceneEdgeGeneralMarker(name, physicFieldBC[0], *value[0]);
+}
+*/
 SceneLabelMarker *HermesGeneral::newLabelMarker()
 {
     return new SceneLabelGeneralMarker("new material",  Value("0"), Value("1"));
@@ -452,7 +457,7 @@ QString SceneEdgeGeneralMarker::script()
 {
     return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
-            arg(physicFieldBCStringKey(type)).
+            arg(physicFieldBCToStringKey(type)).
             arg(value.text);
 }
 
@@ -551,8 +556,6 @@ void DSceneEdgeGeneralMarker::load()
     DSceneEdgeMarker::load();
 
     SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(m_edgeMarker);
-
-    cout << (edgeGeneralMarker->type) << endl;
 
     cmbType->setCurrentIndex(cmbType->findData(edgeGeneralMarker->type));
     txtValue->setText(edgeGeneralMarker->value.text);

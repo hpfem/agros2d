@@ -50,6 +50,7 @@ public:
     virtual QStringList volumeIntegralValueHeader() = 0;
 
     virtual SceneEdgeMarker *newEdgeMarker() = 0;
+    // virtual SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]) = 0;
     virtual SceneLabelMarker *newLabelMarker() = 0;
 
     virtual SolutionArray *solve(SolverThread *solverThread) = 0;

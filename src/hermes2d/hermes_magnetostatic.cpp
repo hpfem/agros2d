@@ -158,27 +158,27 @@ SolutionArray *magnetostatic_main(SolverThread *solverThread)
 
 void HermesMagnetostatic::readEdgeMarkerFromDomElement(QDomElement *element)
 {
-    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
-    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
-        type = PHYSICFIELDBC_NONE;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL))
-        type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT))
-        type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
-    else
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-
-    if (type != PHYSICFIELDBC_UNDEFINED)
+    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
+    switch (type)
+    {
+    case PHYSICFIELDBC_NONE:
+    case PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL:
+    case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
         Util::scene()->addEdgeMarker(new SceneEdgeMagnetostaticMarker(element->attribute("name"),
                                                                       type,
                                                                       Value(element->attribute("value"))));
+        break;
+    default:
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+        break;
+    }
 }
 
 void HermesMagnetostatic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
 {
     SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(marker);
 
-    element->setAttribute("type", physicFieldBCStringKey(edgeMagnetostaticMarker->type));
+    element->setAttribute("type", physicFieldBCToStringKey(edgeMagnetostaticMarker->type));
     element->setAttribute("value", edgeMagnetostaticMarker->value.text);
 }
 
@@ -241,7 +241,12 @@ SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker()
 {
     return new SceneEdgeMagnetostaticMarker("new boundary", PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, Value("0"));
 }
-
+/*
+SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+{
+    return new SceneEdgeMagnetostaticMarker(name, physicFieldBC[0], *value[0]);
+}
+*/
 SceneLabelMarker *HermesMagnetostatic::newLabelMarker()
 {
     return new SceneLabelMagnetostaticMarker("new material", Value("0"), Value("1"), Value("0"), Value("0"));
@@ -317,6 +322,8 @@ void HermesMagnetostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, Volume
     addTreeWidgetItemValue(magnetostaticNode, tr("By avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensityY, 0, 'e', 3), tr("T"));
     addTreeWidgetItemValue(magnetostaticNode, tr("B avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensity, 0, 'e', 3), tr("T"));
     addTreeWidgetItemValue(magnetostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->energy, 0, 'e', 3), tr("J"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("Fx:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceX, 0, 'e', 3), tr("N"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("Fy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceY, 0, 'e', 3), tr("N"));
 }
 
 SolutionArray *HermesMagnetostatic::solve(SolverThread *solverThread)
@@ -548,6 +555,9 @@ VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic() : VolumeInt
         averageFluxDensityY = 0;
         averageFluxDensity = 0;
         energy = 0;
+        forceX = 0;
+        forceY = 0;
+
         for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
             if (Util::scene()->labels[i]->isSelected)
@@ -559,6 +569,8 @@ VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic() : VolumeInt
                 averageFluxDensityY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY_Y);
                 averageFluxDensity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY);
                 energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_ENERGY_DENSITY);
+                forceX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_X);
+                forceY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_Y);
             }
         }
 
@@ -600,7 +612,7 @@ QString SceneEdgeMagnetostaticMarker::script()
 {
     return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
-            arg(physicFieldBCStringKey(type)).
+            arg(physicFieldBCToStringKey(type)).
             arg(value.text);
 }
 

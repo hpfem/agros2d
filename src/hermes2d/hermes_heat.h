@@ -8,7 +8,7 @@ struct HermesHeat : public HermesField
 {
     Q_OBJECT
 public:
-    HermesHeat() { physicField = PHYSICFIELD_HEAT_TRANSFER; }
+    HermesHeat() { physicField = PHYSICFIELD_HEAT; }
 
     inline int numberOfSolution() { return 1; }
     bool hasFrequency() { return false; }
@@ -28,6 +28,7 @@ public:
     QStringList volumeIntegralValueHeader();
 
     SceneEdgeMarker *newEdgeMarker();
+    // SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]);
     SceneLabelMarker *newLabelMarker();
 
     SolutionArray *solve(SolverThread *solverThread);

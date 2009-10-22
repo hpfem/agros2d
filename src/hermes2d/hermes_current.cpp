@@ -177,27 +177,27 @@ SolutionArray *current_main(SolverThread *solverThread)
 
 void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
 {
-    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
-    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
-        type = PHYSICFIELDBC_NONE;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_POTENTIAL))
-        type = PHYSICFIELDBC_CURRENT_POTENTIAL;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW))
-        type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
-    else
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-
-    if (type != PHYSICFIELDBC_UNDEFINED)
+    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
+    switch (type)
+    {
+        case PHYSICFIELDBC_NONE:
+        case PHYSICFIELDBC_CURRENT_POTENTIAL:
+        case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
         Util::scene()->addEdgeMarker(new SceneEdgeCurrentMarker(element->attribute("name"),
                                                                 type,
                                                                 Value(element->attribute("value"))));
+        break;
+    default:
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+        break;
+    }
 }
 
 void HermesCurrent::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
 {
     SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(marker);
 
-    element->setAttribute("type", physicFieldBCStringKey(edgeCurrentMarker->type));
+    element->setAttribute("type", physicFieldBCToStringKey(edgeCurrentMarker->type));
     element->setAttribute("value", edgeCurrentMarker->value.text);
 }
 
@@ -254,7 +254,12 @@ SceneEdgeMarker *HermesCurrent::newEdgeMarker()
 {
     return new SceneEdgeCurrentMarker("new boundary", PHYSICFIELDBC_CURRENT_POTENTIAL, Value("0"));
 }
-
+/*
+SceneEdgeMarker *HermesCurrent::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+{
+    return new SceneEdgeCurrentMarker(name, physicFieldBC[0], *value[0]);
+}
+*/
 SceneLabelMarker *HermesCurrent::newLabelMarker()
 {
     return new SceneLabelCurrentMarker("new material", Value("57e6"));
@@ -571,7 +576,7 @@ QString SceneEdgeCurrentMarker::script()
 {
     return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
-            arg(physicFieldBCStringKey(type)).
+            arg(physicFieldBCToStringKey(type)).
             arg(value.text);
 }
 

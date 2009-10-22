@@ -1,10 +1,10 @@
 print("Test: Harmonic magnetic - planar");
 
 // model
-newDocument("Test", "planar", "harmonic magnetic", 1, 2, 50, "disabled", 0, 1);
+newDocument("Test", "planar", "harmonicmagnetic", 1, 2, 50, "disabled", 0, 1);
 
 // boundaries
-addBoundary("A = 0", "vector_potential", 0);
+addBoundary("A = 0", "harmonicmagnetic_vector_potential", 0);
 
 // materials
 addMaterial("Air", 0, 0, 1, 0);
@@ -65,8 +65,8 @@ if (!testLorentzForceY) print("Lorentz force - Y: ", abs(integral.Fy_real/2.0), 
 
 // Joule losses
 integral = volumeIntegral(1);
-testJouleLosses = abs(abs(integral.Pj) - 26.78469) < 1e-1;
-if (!testJouleLosses) print("Joule losses: ", abs(integral.Pj), " == ", 26.78469);
+testJouleLosses = abs(abs(integral.Pj) - 0.25327) < 1e-4;
+if (!testJouleLosses) print("Joule losses: ", abs(integral.Pj), " == ", 0.25327);
 
 print(testPotentialReal && testPotentialImag && testTotalCurentDensityReal && testTotalCurentDensityImag && 
 testFluxDensity && testEnergy && testLorentzForceX && testLorentzForceY && testJouleLosses);

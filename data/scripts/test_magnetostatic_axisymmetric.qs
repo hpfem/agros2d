@@ -4,12 +4,12 @@ print("Test: Magnetostatic - axisymmetric");
 newDocument("unnamed", "axisymmetric", "magnetostatic", 0, 3, 0, "disabled", 1, 2);
 
 // boundaries
-addBoundary("A = 0", "vector_potential", 0);
+addBoundary("A = 0", "magnetostatic_vector_potential", 0);
 
 // materials
-addMaterial("Air", 0, 1);
-addMaterial("Fe", 0, 300);
-addMaterial("Cu", 1000000, 1);
+addMaterial("Air", 0, 1, 0, 0);
+addMaterial("Fe", 0, 300, 0, 0);
+addMaterial("Cu", 1000000, 1, 0, 0);
 
 // edges
 addEdge(0.01, 0.01, 0.01, 0, 0, "none");

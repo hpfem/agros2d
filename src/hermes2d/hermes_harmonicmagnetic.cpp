@@ -27,10 +27,10 @@ int harmonicMagnetic_bc_types(int marker)
     case PHYSICFIELDBC_NONE:
         return BC_NONE;
         break;
-    case PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+    case PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL:
         return BC_ESSENTIAL;
         break;
-    case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
+    case PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT:
         return BC_NATURAL;
         break;
     }
@@ -214,27 +214,27 @@ SolutionArray *harmonicMagnetic_main(SolverThread *solverThread)
 
 void HermesHarmonicMagnetic::readEdgeMarkerFromDomElement(QDomElement *element)
 {
-    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
-    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
-        type = PHYSICFIELDBC_NONE;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL))
-        type = PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT))
-        type = PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT;
-    else
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-
-    if (type != PHYSICFIELDBC_UNDEFINED)
+    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
+    switch (type)
+    {
+    case PHYSICFIELDBC_NONE:
+    case PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL:
+    case PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT:
         Util::scene()->addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(element->attribute("name"),
                                                                       type,
                                                                       Value(element->attribute("value"))));
+        break;
+    default:
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+        break;
+    }
 }
 
 void HermesHarmonicMagnetic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
 {
     SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(marker);
 
-    element->setAttribute("type", physicFieldBCStringKey(edgeHarmonicMagneticMarker->type));
+    element->setAttribute("type", physicFieldBCToStringKey(edgeHarmonicMagneticMarker->type));
     element->setAttribute("value", edgeHarmonicMagneticMarker->value.text);
 }
 
@@ -300,12 +300,17 @@ QStringList HermesHarmonicMagnetic::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker()
 {
-    return new SceneEdgeHarmonicMagneticMarker("new boundary", PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL, Value("0"));
+    return new SceneEdgeHarmonicMagneticMarker("new boundary", PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL, Value("0"));
 }
-
+/*
+SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+{
+    return new SceneEdgeHarmonicMagneticMarker(name, physicFieldBC[0], *value[0]);
+}
+*/
 SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker()
 {
-    return new SceneLabelHarmonicMagneticMarker("new material", Value("0"), Value("0"), Value("1"), Value("0"));
+    return new SceneLabelElectrostaticMarker("new material", Value("0"), Value("1"));
 }
 
 void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -623,27 +628,27 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
 {
     switch (physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL:
         {
             return sqrt(sqr(potential_real) + sqr(potential_imag));
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL:
         {
             return potential_real;
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG:
         {
             return potential_imag;
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY:
         {
             return sqrt(sqr(B_real.x) + sqr(B_imag.x) + sqr(B_real.y) + sqr(B_imag.y));
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_REAL:
         {
             switch (physicFieldVariableComp)
             {
@@ -659,7 +664,7 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_IMAG:
         {
             switch (physicFieldVariableComp)
             {
@@ -675,12 +680,12 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD:
         {
             return sqrt(sqr(H_real.x) + sqr(H_imag.x) + sqr(H_real.y) + sqr(H_imag.y));
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_REAL:
         {
             switch (physicFieldVariableComp)
             {
@@ -696,7 +701,7 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_IMAG:
         {
             switch (physicFieldVariableComp)
             {
@@ -712,47 +717,47 @@ double LocalPointValueHarmonicMagnetic::variableValue(PhysicFieldVariable physic
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL:
         {
             return sqrt(sqr(current_density_total_real) + sqr(current_density_total_imag));
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
         {
             return current_density_total_real;
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
         {
             return current_density_total_imag;
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED:
         {
             return sqrt(sqr(current_density_induced_real) + sqr(current_density_induced_imag));
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
         {
             return current_density_induced_real;
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
         {
             return current_density_induced_imag;
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_POWER_LOSSES:
         {
             return pj;
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_ENERGY_DENSITY:
         {
             return wm;
         }
         break;
-    case PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY:
+    case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_PERMEABILITY:
         {
             return permeability;
         }
@@ -838,16 +843,16 @@ VolumeIntegralValueHarmonicMagnetic::VolumeIntegralValueHarmonicMagnetic() : Vol
         {
             if (Util::scene()->labels[i]->isSelected)
             {
-                currentInducedReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL);
-                currentInducedImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG);
-                currentTotalReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL);
-                currentTotalImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG);
-                powerLosses += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_POWER_LOSSES);
-                energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_ENERGY_DENSITY);
-                forceXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_REAL);
-                forceXImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_X_IMAG);
-                forceYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_REAL);
-                forceYImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONIC_MAGNETIC_LORENTZ_FORCE_Y_IMAG);
+                currentInducedReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL);
+                currentInducedImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG);
+                currentTotalReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL);
+                currentTotalImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG);
+                powerLosses += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_POWER_LOSSES);
+                energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_ENERGY_DENSITY);
+                forceXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_X_REAL);
+                forceXImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_X_IMAG);
+                forceYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_Y_REAL);
+                forceYImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_Y_IMAG);
             }
         }
 
@@ -886,7 +891,7 @@ QString SceneEdgeHarmonicMagneticMarker::script()
 {
     return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
-            arg(physicFieldBCStringKey(type)).
+            arg(physicFieldBCToStringKey(type)).
             arg(value.text);
 }
 
@@ -895,10 +900,10 @@ QMap<QString, QString> SceneEdgeHarmonicMagneticMarker::data()
     QMap<QString, QString> out;
     switch (type)
     {
-    case PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL:
+    case PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL:
         out["Vector potential (Wb/m)"] = value.text;
         break;
-    case PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT:
+    case PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT:
         out["Surface current (A/m2)"] = value.text;
         break;
     }
@@ -974,8 +979,8 @@ QLayout* DSceneEdgeHarmonicMagneticMarker::createContent()
 {
     cmbType = new QComboBox();
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT), PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT);
+    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL);
+    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT), PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT);
 
     txtValue = new SLineEditValue(this);
 

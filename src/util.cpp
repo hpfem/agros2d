@@ -1,6 +1,127 @@
 #include "util.h"
 #include "scene.h"
 
+static QHash<PhysicField, QString> physicFieldList;
+static QHash<PhysicFieldVariable, QString> physicFieldVariableList;
+static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
+static QHash<PhysicFieldBC, QString> physicFieldBCList;
+static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
+static QHash<AdaptivityType, QString> adaptivityTypeList;
+
+QString physicFieldToStringKey(PhysicField physicField) { return physicFieldList[physicField]; }
+PhysicField physicFieldFromStringKey(const QString &physicField) { return physicFieldList.key(physicField); }
+
+QString physicFieldVariableToStringKey(PhysicFieldVariable physicFieldVariable) { return physicFieldVariableList[physicFieldVariable]; }
+PhysicFieldVariable physicFieldVariableFromStringKey(const QString &physicFieldVariable) { return physicFieldVariableList.key(physicFieldVariable); }
+
+QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp) { return physicFieldVariableCompList[physicFieldVariableComp]; }
+PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp) { return physicFieldVariableCompList.key(physicFieldVariableComp); }
+
+QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC) { return physicFieldBCList[physicFieldBC]; }
+PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC) { return physicFieldBCList.key(physicFieldBC); }
+
+QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList[sceneViewPostprocessorShow]; }
+SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList.key(sceneViewPostprocessorShow); }
+
+QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
+AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+void initLists()
+{
+    // PHYSICFIELD
+    physicFieldList.insert(PHYSICFIELD_UNDEFINED, "");
+    physicFieldList.insert(PHYSICFIELD_GENERAL, "general");
+    physicFieldList.insert(PHYSICFIELD_ELECTROSTATIC, "electrostatic");
+    physicFieldList.insert(PHYSICFIELD_MAGNETOSTATIC, "magnetostatic");
+    physicFieldList.insert(PHYSICFIELD_CURRENT, "current");
+    physicFieldList.insert(PHYSICFIELD_HEAT, "heat");
+    physicFieldList.insert(PHYSICFIELD_ELASTICITY, "elasticity");
+    physicFieldList.insert(PHYSICFIELD_HARMONICMAGNETIC, "harmonicmagnetic");
+
+    // PHYSICFIELDVARIABLE
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_UNDEFINED, "");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_GENERAL_VARIABLE, "general_variable");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_GENERAL_GRADIENT, "general_gradient");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_GENERAL_CONSTANT, "general_constant");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL, "electrostatic_potential");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD, "electrostatic_electric_field");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT, "electrostatic_displacement");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY, "electrostatic_energy_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY, "electrostatic_permittivity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL, "magnetostatic_vector_potential");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY, "magnetostatic_flux_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD, "magnetostatic_magnetic_field");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY, "magnetostatic_energy_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY, "magnetostatic_permeability");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL, "harmonicmagnetic_vector_potential");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL, "harmonicmagnetic_vector_potential_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG, "harmonicmagnetic_vector_potential_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY, "harmonicmagnetic_flux_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_REAL, "harmonicmagnetic_flux_density_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_IMAG, "harmonicmagnetic_flux_density_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD, "harmonicmagnetic_magnetic_field");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_REAL, "harmonicmagnetic_magnetic_field_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_IMAG, "harmonicmagnetic_magnetic_field_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL, "harmonicmagnetic_total_current_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL, "harmonicmagnetic_total_current_density_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG, "harmonicmagnetic_total_current_density_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED, "harmonicmagnetic_induced_current_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL, "harmonicmagnetic_induced_current_density_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG, "harmonicmagnetic_induced_current_density_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_POWER_LOSSES, "harmonicmagnetic_power_losses");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_ENERGY_DENSITY, "harmonicmagnetic_energy_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_PERMEABILITY, "harmonicmagnetic_permeability");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_POTENTIAL, "current_potential");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD, "current_electic_field");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY, "current_current_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_LOSSES, "current_power_losses");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY, "current_conductivity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE, "heat_temperature");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT, "heat_temperature_gradient");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HEAT_FLUX, "heat_heat_flux");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY, "heat_conductivity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS, "elasticity_von_mises_stress");
+
+    // PHYSICFIELDVARIABLECOMP
+    physicFieldVariableCompList.insert(PHYSICFIELDVARIABLECOMP_UNDEFINED, "");
+    physicFieldVariableCompList.insert(PHYSICFIELDVARIABLECOMP_SCALAR, "scalar");
+    physicFieldVariableCompList.insert(PHYSICFIELDVARIABLECOMP_MAGNITUDE, "magnitude");
+    physicFieldVariableCompList.insert(PHYSICFIELDVARIABLECOMP_X, "x");
+    physicFieldVariableCompList.insert(PHYSICFIELDVARIABLECOMP_Y, "y");
+
+    // PHYSICFIELDBC
+    physicFieldBCList.insert(PHYSICFIELDBC_UNDEFINED, "");
+    physicFieldBCList.insert(PHYSICFIELDBC_NONE, "none");
+    physicFieldBCList.insert(PHYSICFIELDBC_GENERAL_VALUE, "general_value");
+    physicFieldBCList.insert(PHYSICFIELDBC_GENERAL_DERIVATIVE, "general_derivative");
+    physicFieldBCList.insert(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, "electrostatic_potential");
+    physicFieldBCList.insert(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE, "electrostatic_surface_charge_density");
+    physicFieldBCList.insert(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, "magnetostatic_vector_potential");
+    physicFieldBCList.insert(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT, "magnetostatic_surface_current_density");
+    physicFieldBCList.insert(PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL, "harmonicmagnetic_vector_potential");
+    physicFieldBCList.insert(PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT, "harmonicmagnetic_surface_current_density");
+    physicFieldBCList.insert(PHYSICFIELDBC_HEAT_TEMPERATURE, "heat_temperature");
+    physicFieldBCList.insert(PHYSICFIELDBC_HEAT_HEAT_FLUX, "heat_heat_flux");
+    physicFieldBCList.insert(PHYSICFIELDBC_CURRENT_POTENTIAL, "current_potential");
+    physicFieldBCList.insert(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW, "current_inward_current_flow");
+    physicFieldBCList.insert(PHYSICFIELDBC_ELASTICITY_FIXED, "elasticity_fixed");
+    physicFieldBCList.insert(PHYSICFIELDBC_ELASTICITY_FREE, "elasticity_free");
+
+    // SCENEVIEW_POSTPROCESSOR_SHOW
+    sceneViewPostprocessorShowList.insert(SCENEVIEW_POSTPROCESSOR_SHOW_UNDEFINED, "");
+    sceneViewPostprocessorShowList.insert(SCENEVIEW_POSTPROCESSOR_SHOW_NONE, "none");
+    sceneViewPostprocessorShowList.insert(SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW, "scalar");
+    sceneViewPostprocessorShowList.insert(SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D, "scalar3d");
+    sceneViewPostprocessorShowList.insert(SCENEVIEW_POSTPROCESSOR_SHOW_ORDER, "order");
+
+    // ADAPTIVITYTYPE
+    adaptivityTypeList.insert(ADAPTIVITYTYPE_UNDEFINED, "");
+    adaptivityTypeList.insert(ADAPTIVITYTYPE_NONE, "disabled");
+    adaptivityTypeList.insert(ADAPTIVITYTYPE_H, "h-adaptivity");
+    adaptivityTypeList.insert(ADAPTIVITYTYPE_P, "p-adaptivity");
+    adaptivityTypeList.insert(ADAPTIVITYTYPE_HP, "hp-adaptivity");
+}
+
 void setGUIStyle(const QString &styleName)
 {
     QStyle *style = QStyleFactory::create(styleName);

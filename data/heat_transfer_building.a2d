@@ -1,10 +1,10 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="3" problemtype="planar" type="heat transfer" id="0" name="Barak" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="3" problemtype="planar" type="heat" id="0" name="Barak" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge h="4" external_temperature="21" type="heat_flux" id="1" name="Interior" heat_flux="0" />
-                <edge h="25" external_temperature="-15" type="heat_flux" id="2" name="Exterior" heat_flux="0" />
+                <edge h="4" external_temperature="21" type="heat_heat_flux" id="1" name="Interior" heat_flux="0" />
+                <edge h="25" external_temperature="-15" type="heat_heat_flux" id="2" name="Exterior" heat_flux="0" />
             </edges>
             <labels>
                 <label thermal_conductivity="0.6" volume_heat="0" id="1" name="Brick" />

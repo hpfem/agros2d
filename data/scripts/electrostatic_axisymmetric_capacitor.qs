@@ -1,5 +1,5 @@
 // model
-newDocument("Electrostatic axisymmetric capacitor", "axisymmetric", "electrostatic", 1, 2, 0, "hp-adaptivity", 10, 1);
+newDocument("Electrostatic axisymmetric capacitor", "axisymmetric", "electrostatic", 1, 2, 0, "disabled", 0, 0);
 
 // variables
 r1 = 0.01;
@@ -13,9 +13,9 @@ U = 10;
 dr = 0.01;
 
 // boundaries
-addBoundary("Source electrode", "potential", U);
-addBoundary("Ground electrode", "potential", 0);
-addBoundary("Neumann BC", "surface_charge_density", 0);
+addBoundary("Source electrode", "electrostatic_potential", U);
+addBoundary("Ground electrode", "electrostatic_potential", 0);
+addBoundary("Neumann BC", "electrostatic_surface_charge_density", 0);
 
 // materials
 addMaterial("Air", 0, 1);

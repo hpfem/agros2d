@@ -4,7 +4,7 @@ print("Test: Magnetostatic - planar");
 newDocument("Unnamed", "planar", "magnetostatic", 1, 4, 0, "disabled", 1, 2);
 
 // boundaries
-addBoundary("A = 0", "vector_potential", 0);
+addBoundary("A = 0", "magnetostatic_vector_potential", 0);
 
 // materials
 addMaterial("Cu", 1000000, 1, 0, 0);

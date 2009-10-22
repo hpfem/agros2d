@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonic magnetic" id="0" name="3 phase cable" >
+        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonicmagnetic" id="0" name="3 phase cable" >
             <scriptstartup>J0 = 1e6;
 J01r = J0;
 J01i = 0.0;
@@ -11,7 +11,7 @@ J03i = J0*Math.sin(-240.0/180.0*Math.PI);
 
 gamma = 57e6;</scriptstartup>
             <edges>
-                <edge type="vector_potential" value="0" id="1" name="A = 0" />
+                <edge type="harmonicmagnetic_vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
                 <label current_density_real="0" conductivity="0" id="1" name="Air" current_density_imag="0" permeability="1" />

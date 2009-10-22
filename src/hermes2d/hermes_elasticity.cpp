@@ -209,25 +209,29 @@ SolutionArray *elasticity_main(SolverThread *solverThread)
 
 void HermesElasticity::readEdgeMarkerFromDomElement(QDomElement *element)
 {
-    PhysicFieldBC typeX = PHYSICFIELDBC_UNDEFINED;
-    if (element->attribute("typex") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
-        typeX = PHYSICFIELDBC_NONE;
-    else if (element->attribute("typex") == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED))
-        typeX = PHYSICFIELDBC_ELASTICITY_FIXED;
-    else if (element->attribute("typex") == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FREE))
-        typeX = PHYSICFIELDBC_ELASTICITY_FREE;
-    else
+    PhysicFieldBC typeX = physicFieldBCFromStringKey(element->attribute("typex"));
+    switch (typeX)
+    {
+    case PHYSICFIELDBC_NONE:
+    case PHYSICFIELDBC_ELASTICITY_FIXED:
+    case PHYSICFIELDBC_ELASTICITY_FREE:
+        break;
+    default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("typex")).toStdString() << endl;
+        break;
+    }
 
-    PhysicFieldBC typeY = PHYSICFIELDBC_UNDEFINED;
-    if (element->attribute("typey") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
-        typeY = PHYSICFIELDBC_NONE;
-    else if (element->attribute("typey") == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED))
-        typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
-    else if (element->attribute("typey") == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FREE))
-        typeY = PHYSICFIELDBC_ELASTICITY_FREE;
-    else
+    PhysicFieldBC typeY = physicFieldBCFromStringKey(element->attribute("typey"));
+    switch (typeY)
+    {
+    case PHYSICFIELDBC_NONE:
+    case PHYSICFIELDBC_ELASTICITY_FIXED:
+    case PHYSICFIELDBC_ELASTICITY_FREE:
+        break;
+    default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("typey")).toStdString() << endl;
+        break;
+    }
 
     if ((typeX != PHYSICFIELDBC_UNDEFINED) && (typeY != PHYSICFIELDBC_UNDEFINED))
         Util::scene()->addEdgeMarker(new SceneEdgeElasticityMarker(element->attribute("name"),
@@ -240,8 +244,8 @@ void HermesElasticity::writeEdgeMarkerToDomElement(QDomElement *element, SceneEd
 {
     SceneEdgeElasticityMarker *edgeElasticityMarker = dynamic_cast<SceneEdgeElasticityMarker *>(marker);
 
-    element->setAttribute("typex", physicFieldBCStringKey(edgeElasticityMarker->typeX));
-    element->setAttribute("typey", physicFieldBCStringKey(edgeElasticityMarker->typeY));
+    element->setAttribute("typex", physicFieldBCToStringKey(edgeElasticityMarker->typeX));
+    element->setAttribute("typey", physicFieldBCToStringKey(edgeElasticityMarker->typeY));
     element->setAttribute("forcex", edgeElasticityMarker->forceX.text);
     element->setAttribute("forcey", edgeElasticityMarker->forceY.text);
 }
@@ -301,7 +305,12 @@ SceneEdgeMarker *HermesElasticity::newEdgeMarker()
 {
     return new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, Value("0"), Value("0"));
 }
-
+/*
+SceneEdgeMarker *HermesElasticity::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+{
+    return new SceneEdgeElasticityMarker(name, physicFieldBC[0], physicFieldBC[1], *value[0], *value[1]);
+}
+*/
 SceneLabelMarker *HermesElasticity::newLabelMarker()
 {
     return new SceneLabelElasticityMarker("new material", Value("2e11"), Value("0.33"));
@@ -463,8 +472,8 @@ QString SceneEdgeElasticityMarker::script()
 {
     return QString("addEdge(\"%1\", \"%2\", \"%3\", %4, %5);").
             arg(name).
-            arg(physicFieldBCStringKey(typeX)).
-            arg(physicFieldBCStringKey(typeY)).
+            arg(physicFieldBCToStringKey(typeX)).
+            arg(physicFieldBCToStringKey(typeY)).
             arg(forceX.text).
             arg(forceY.text);
 }

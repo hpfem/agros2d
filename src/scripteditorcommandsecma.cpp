@@ -133,16 +133,14 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
         problemInfo.name = QObject::tr("unnamed");
 
     // type
-    if (context->argument(1).toString() == problemTypeStringKey(PROBLEMTYPE_PLANAR))
-        problemInfo.problemType = PROBLEMTYPE_PLANAR;
-    else if (context->argument(1).toString() == problemTypeStringKey(PROBLEMTYPE_AXISYMMETRIC))
-        problemInfo.problemType = PROBLEMTYPE_AXISYMMETRIC;
-    else
+    problemInfo.problemType = problemTypeFromStringKey(context->argument(1).toString());
+    if (problemInfo.problemType == PROBLEMTYPE_UNDEFINED)
         return context->throwError(QObject::tr("Problem type '%1' is not implemented.").arg(context->argument(1).toString()));
 
     // physicfield
-    if (physicFieldFromStringKey(context->argument(2).toString()) != PHYSICFIELD_UNDEFINED)
-        problemInfo.hermes = hermesFieldFactory(physicFieldFromStringKey(context->argument(2).toString()));
+    PhysicField physicField = physicFieldFromStringKey(context->argument(2).toString());
+    if (physicField != PHYSICFIELD_UNDEFINED)
+        problemInfo.hermes = hermesFieldFactory(physicField);
     else
         return context->throwError(QObject::tr("Physic field '%1' is not implemented.").arg(context->argument(2).toString()));
 
@@ -159,21 +157,14 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
         return context->throwError(QObject::tr("Polynomial order '%1' is out of range.").arg(context->argument(4).toString()));
 
     // frequency
-    if (context->argument(5).toNumber() > 0 && problemInfo.physicField() != PHYSICFIELD_HARMONIC_MAGNETIC)
+    if (context->argument(5).toNumber() > 0 && problemInfo.physicField() != PHYSICFIELD_HARMONICMAGNETIC)
         return context->throwError(QObject::tr("Frequency can be used only for harmonic magnetic problems."));
     else
         problemInfo.frequency = context->argument(5).toNumber();
 
     // adaptivitytype, adaptivitysteps, adaptivitytolerance
-    if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_NONE))
-        problemInfo.adaptivityType = ADAPTIVITYTYPE_NONE;
-    else if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_H))
-        problemInfo.adaptivityType = ADAPTIVITYTYPE_H;
-    else if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_P))
-        problemInfo.adaptivityType = ADAPTIVITYTYPE_P;
-    else if (context->argument(6).toString() == adaptivityTypeStringKey(ADAPTIVITYTYPE_HP))
-        problemInfo.adaptivityType = ADAPTIVITYTYPE_HP;
-    else
+    problemInfo.adaptivityType = adaptivityTypeFromStringKey(context->argument(6).toString());
+    if (problemInfo.adaptivityType == ADAPTIVITYTYPE_UNDEFINED)
         return context->throwError(QObject::tr("Adaptivity type '%1' is not suported.").arg(context->argument(6).toString()));
 
     // adaptivitysteps
@@ -340,9 +331,9 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
     switch (Util::scene()->problemInfo().physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
-        if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL))
+        if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL))
             type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
-        else if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE))
+        else if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE))
             type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
         else
             return context->throwError(QObject::tr("Boundary type '%1' is not defined.").arg(context->argument(1).toString()));
@@ -351,9 +342,9 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
                                                                       Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
-        if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL))
+        if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL))
             type = PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL;
-        else if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT))
+        else if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT))
             type = PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT;
         else
             return context->throwError(QObject::tr("Boundary type '%1' is not defined.").arg(context->argument(1).toString()));
@@ -361,26 +352,26 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
                                                                       type,
                                                                       Value(context->argument(2).toString())));
         break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL))
-            type = PHYSICFIELDBC_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-        else if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT))
-            type = PHYSICFIELDBC_HARMONIC_MAGNETIC_SURFACE_CURRENT;
+    case PHYSICFIELD_HARMONICMAGNETIC:
+        if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL))
+            type = PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL;
+        else if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT))
+            type = PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT;
         else
             return context->throwError(QObject::tr("Boundary type '%1' is not defined.").arg(context->argument(1).toString()));
         Util::scene()->addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(context->argument(0).toString(),
                                                                          type,
                                                                          Value(context->argument(2).toString())));
         break;
-    case PHYSICFIELD_HEAT_TRANSFER:
-        if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
+    case PHYSICFIELD_HEAT:
+        if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
         {
             type = PHYSICFIELDBC_HEAT_TEMPERATURE;
             Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(),
                                                                  type,
                                                                  Value(context->argument(2).toString())));
         }
-        else if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
+        else if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
         {
             type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
             Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(context->argument(0).toString(), type,
@@ -392,9 +383,9 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
             return context->throwError(QObject::tr("Boundary type '%1' is not defined.").arg(context->argument(1).toString()));
         break;
     case PHYSICFIELD_CURRENT:
-        if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_POTENTIAL))
+        if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_CURRENT_POTENTIAL))
             type = PHYSICFIELDBC_CURRENT_POTENTIAL;
-        else if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW))
+        else if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW))
             type = PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW;
         else
             return context->throwError(QObject::tr("Boundary type '%1' is not defined.").arg(context->argument(1).toString()));
@@ -404,16 +395,16 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
         break;
     case PHYSICFIELD_ELASTICITY:
         PhysicFieldBC typeX, typeY;
-        if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FREE))
+        if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_ELASTICITY_FREE))
             typeX = PHYSICFIELDBC_ELASTICITY_FREE;
-        else if (context->argument(1).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED))
+        else if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_ELASTICITY_FIXED))
             typeX = PHYSICFIELDBC_ELASTICITY_FIXED;
         else
             return context->throwError(QObject::tr("Boundary type '%1' is not defined.").arg(context->argument(1).toString()));
 
-        if (context->argument(2).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FREE))
+        if (context->argument(2).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_ELASTICITY_FREE))
             typeY = PHYSICFIELDBC_ELASTICITY_FREE;
-        else if (context->argument(2).toString() == physicFieldBCStringKey(PHYSICFIELDBC_ELASTICITY_FIXED))
+        else if (context->argument(2).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_ELASTICITY_FIXED))
             typeY = PHYSICFIELDBC_ELASTICITY_FIXED;
         else
             Util::scene()->addEdgeMarker(new SceneEdgeElasticityMarker(context->argument(0).toString(), typeX, typeY,
@@ -432,10 +423,8 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
 // addMaterial(name, type, value, ...)
 QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
 {
-    for (int i = 0; i <= 2; i++) {
-        if (context->argument(i).isUndefined())
-            return context->throwError(QObject::tr("Few parameters."));
-    }
+    if (context->argument(0).isUndefined())
+        return context->throwError(QObject::tr("Few parameters."));
 
     // test for names
     foreach (SceneLabelMarker *labelMarker, Util::scene()->labelMarkers)
@@ -448,34 +437,46 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
     switch (Util::scene()->problemInfo().physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
+        if (context->argument(2).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
         Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(context->argument(0).toString(),
                                                                         Value(context->argument(1).toString()),
                                                                         Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_MAGNETOSTATIC:
+        if (context->argument(4).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
         Util::scene()->addLabelMarker(new SceneLabelMagnetostaticMarker(context->argument(0).toString(),
                                                                         Value(context->argument(1).toString()),
                                                                         Value(context->argument(2).toString()),
                                                                         Value(context->argument(3).toString()),
                                                                         Value(context->argument(4).toString())));
         break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
+    case PHYSICFIELD_HARMONICMAGNETIC:
+        if (context->argument(4).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
         Util::scene()->addLabelMarker(new SceneLabelHarmonicMagneticMarker(context->argument(0).toString(),
                                                                            Value(context->argument(1).toString()),
                                                                            Value(context->argument(2).toString()),
                                                                            Value(context->argument(3).toString()),
                                                                            Value(context->argument(4).toString())));
         break;
-    case PHYSICFIELD_HEAT_TRANSFER:
+    case PHYSICFIELD_HEAT:
+        if (context->argument(2).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
         Util::scene()->addLabelMarker(new SceneLabelHeatMarker(context->argument(0).toString(),
                                                                Value(context->argument(1).toString()),
                                                                Value(context->argument(2).toString())));
         break;
     case PHYSICFIELD_CURRENT:
+        if (context->argument(1).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
         Util::scene()->addLabelMarker(new SceneLabelCurrentMarker(context->argument(0).toString(),
                                                                   Value(context->argument(1).toString())));
         break;
     case PHYSICFIELD_ELASTICITY:
+        if (context->argument(4).isUndefined())
+            return context->throwError(QObject::tr("Few parameters."));
         Util::scene()->addLabelMarker(new SceneLabelElasticityMarker(context->argument(0).toString(),
                                                                      Value(context->argument(2).toString()),
                                                                      Value(context->argument(3).toString())));
@@ -848,11 +849,11 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
                 edge->isSelected = true;
         else
             for (int i = 0; i<context->argumentCount(); i++) {
-                if (Util::scene()->edges.count() < context->argument(i).toNumber())
-                    return context->throwError(QObject::tr("Edge with index '%1' does not exists.").arg(context->argument(0).toString()));
+            if (Util::scene()->edges.count() < context->argument(i).toNumber())
+                return context->throwError(QObject::tr("Edge with index '%1' does not exists.").arg(context->argument(0).toString()));
 
-                Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
-            }
+            Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
+        }
 
         SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo().hermes->surfaceIntegralValue();
 
@@ -945,17 +946,14 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
     if (context->argument(0).isUndefined())
         return context->throwError(QObject::tr("Few parameters."));
 
-    if (context->argument(0).toString() == sceneViewPostprocessorShowStringKey(SCENEVIEW_POSTPROCESSOR_SHOW_NONE))
-        m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_NONE;
-    else if (context->argument(0).toString() == sceneViewPostprocessorShowStringKey(SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW))
-        m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
-    else if (context->argument(0).toString() == sceneViewPostprocessorShowStringKey(SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D))
-        m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D;
-    else if (context->argument(0).toString() == sceneViewPostprocessorShowStringKey(SCENEVIEW_POSTPROCESSOR_SHOW_ORDER))
-        m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
+    SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(context->argument(0).toString());
+    if (postprocessorShow != SCENEVIEW_POSTPROCESSOR_SHOW_UNDEFINED)
+        m_sceneView->sceneViewSettings().postprocessorShow = postprocessorShow;
     else
         return context->throwError(QObject::tr("View type '%1' is not implemented.").arg(context->argument(0).toString()));
 
+    m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(context->argument(1).toString());
+    /*
     switch (Util::scene()->problemInfo().physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
@@ -986,43 +984,43 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
         else
             return context->throwError(QObject::tr("Physic field variable '%1' is not implemented.").arg(context->argument(1).toString()));
         break;
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
-        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_REAL;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_VECTOR_POTENTIAL_IMAG;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_REAL;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_FLUX_DENSITY_IMAG;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_REAL;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_MAGNETICFIELD_IMAG;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_CURRENT_DENSITY_INDUCED_IMAG;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_POWER_LOSSES;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_ENERGY_DENSITY;
-        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY))
-            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONIC_MAGNETIC_PERMEABILITY;
+    case PHYSICFIELD_HARMONICMAGNETIC:
+        if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_REAL;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_IMAG;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_REAL;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_IMAG;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_POWER_LOSSES))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_POWER_LOSSES;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_ENERGY_DENSITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_ENERGY_DENSITY;
+        else if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_PERMEABILITY))
+            m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = PHYSICFIELDVARIABLE_HARMONICMAGNETIC_PERMEABILITY;
         else
             return context->throwError(QObject::tr("Physic field variable '%1' is not implemented.").arg(context->argument(1).toString()));
         break;
@@ -1063,8 +1061,13 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
         throw;
         break;
     }
+    */
 
-    if (context->argument(2).toString() == physicFieldVariableCompStringKey(PHYSICFIELDVARIABLECOMP_SCALAR))
+    m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(context->argument(2).toString());
+    if (m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED)
+        return context->throwError(QObject::tr("Physic field variable component '%1' is not implemented.").arg(context->argument(2).toString()));
+    /*
+    if ( == physicFieldVariableCompStringKey(PHYSICFIELDVARIABLECOMP_SCALAR))
         m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
     else if (context->argument(2).toString() == physicFieldVariableCompStringKey(PHYSICFIELDVARIABLECOMP_MAGNITUDE))
         m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_MAGNITUDE;
@@ -1073,7 +1076,7 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
     else if (context->argument(2).toString() == Util::scene()->problemInfo().labelY())
         m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_Y;
     else
-        return context->throwError(QObject::tr("Physic field variable component '%1' is not implemented.").arg(context->argument(2).toString()));
+    */
 
     if (context->argument(3).isNumber())
     {

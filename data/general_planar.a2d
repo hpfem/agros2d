@@ -3,9 +3,9 @@
         <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="general" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge type="derivative" value="0" id="1" name="Neumann" />
-                <edge type="value" value="0" id="2" name="Dirichlet 1" />
-                <edge type="value" value="1" id="3" name="Dirichlet 2" />
+                <edge type="general_derivative" value="0" id="1" name="Neumann" />
+                <edge type="general_value" value="0" id="2" name="Dirichlet 1" />
+                <edge type="general_value" value="1" id="3" name="Dirichlet 2" />
             </edges>
             <labels>
                 <label constant="10" rightside="50" id="1" name="Material" />

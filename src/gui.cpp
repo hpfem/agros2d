@@ -263,11 +263,10 @@ void CommandDialog::doAccept()
 {
     if (!command().isEmpty())
     {
+        QSettings settings;
         QStringList list;
-        for (int i = 0; i < cmbCommand->count(); i++)
-        {
-            list.insert(0, cmbCommand->itemText(i));
-        }
+        list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
+        list.insert(0, command());
 
         // remove last item (over 30), empty strings and duplicates
         list.removeAll("");
@@ -275,7 +274,6 @@ void CommandDialog::doAccept()
         while (list.count() > 30)
             list.removeAt(0);
 
-        QSettings settings;
         settings.setValue("CommandDialog/RecentCommands", list);
     }
 

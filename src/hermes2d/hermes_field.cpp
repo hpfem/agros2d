@@ -18,9 +18,9 @@ HermesField *hermesFieldFactory(PhysicField physicField)
         return new HermesElectrostatic();
     case PHYSICFIELD_MAGNETOSTATIC:
         return new HermesMagnetostatic();
-    case PHYSICFIELD_HARMONIC_MAGNETIC:
+    case PHYSICFIELD_HARMONICMAGNETIC:
         return new HermesHarmonicMagnetic();
-    case PHYSICFIELD_HEAT_TRANSFER:
+    case PHYSICFIELD_HEAT:
         return new HermesHeat();
     case PHYSICFIELD_CURRENT:
         return new HermesCurrent();

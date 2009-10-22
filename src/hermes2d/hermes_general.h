@@ -31,6 +31,7 @@ public:
     QStringList volumeIntegralValueHeader();
 
     SceneEdgeMarker *newEdgeMarker();
+    // SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]);
     SceneLabelMarker *newLabelMarker();
 
     SolutionArray *solve(SolverThread *solverThread);

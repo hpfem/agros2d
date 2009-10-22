@@ -1,12 +1,12 @@
 print("Test: Current field - axisymmetric");
 
 // model
-newDocument("Tube", "axisymmetric", "current field", 1, 2, 0, "disabled", 0, 1);
+newDocument("Tube", "axisymmetric", "current", 1, 2, 0, "disabled", 0, 1);
 
 // boundaries
-addBoundary("Neumann", "inward_current_flow", 0);
-addBoundary("Ground", "potential", 0);
-addBoundary("Voltage", "potential", 10);
+addBoundary("Neumann", "current_inward_current_flow", 0);
+addBoundary("Ground", "current_potential", 0);
+addBoundary("Voltage", "current_potential", 10);
 
 // materials
 addMaterial("Copper", 57e6);

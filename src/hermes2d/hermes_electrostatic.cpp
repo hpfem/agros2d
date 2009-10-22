@@ -151,35 +151,35 @@ SolutionArray *electrostatic_main(SolverThread *solverThread)
 
 void HermesElectrostatic::readEdgeMarkerFromDomElement(QDomElement *element)
 {
-    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
-    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
-        type = PHYSICFIELDBC_NONE;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL))
-        type = PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE))
-        type = PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE;
-    else
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
-
-    if (type != PHYSICFIELDBC_UNDEFINED)
+    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
+    switch (type)
+    {
+    case PHYSICFIELDBC_NONE:
+    case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
+    case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
         Util::scene()->addEdgeMarker(new SceneEdgeElectrostaticMarker(element->attribute("name"),
-                                                 type,
-                                                 Value(element->attribute("value"))));
+                                                                      type,
+                                                                      Value(element->attribute("value"))));
+        break;
+    default:
+        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+        break;
+    }
 }
 
 void HermesElectrostatic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
 {
     SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(marker);
 
-    element->setAttribute("type", physicFieldBCStringKey(edgeElectrostaticMarker->type));
+    element->setAttribute("type", physicFieldBCToStringKey(edgeElectrostaticMarker->type));
     element->setAttribute("value", edgeElectrostaticMarker->value.text);
 }
 
 void HermesElectrostatic::readLabelMarkerFromDomElement(QDomElement *element)
 {  
     Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(element->attribute("name"),
-                                                     Value(element->attribute("charge_density")),
-                                                     Value(element->attribute("permittivity"))));
+                                                                    Value(element->attribute("charge_density")),
+                                                                    Value(element->attribute("permittivity"))));
 }
 
 void HermesElectrostatic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
@@ -230,7 +230,12 @@ SceneEdgeMarker *HermesElectrostatic::newEdgeMarker()
 {
     return new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, Value("0"));
 }
-
+/*
+SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+{
+    return new SceneEdgeElectrostaticMarker(name, physicFieldBC[0], *value[0]);
+}
+*/
 SceneLabelMarker *HermesElectrostatic::newLabelMarker()
 {
     return new SceneLabelElectrostaticMarker("new material",  Value("0"), Value("1"));
@@ -557,7 +562,7 @@ QStringList VolumeIntegralValueElectrostatic::variables()
 // *************************************************************************************************************************************
 
 SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, Value value)
-        : SceneEdgeMarker(name, type)
+    : SceneEdgeMarker(name, type)
 {
     this->value = value;
 }
@@ -566,7 +571,7 @@ QString SceneEdgeElectrostaticMarker::script()
 {
     return QString("addBoundary(\"%1\", \"%2\", %3);").
             arg(name).
-            arg(physicFieldBCStringKey(type)).
+            arg(physicFieldBCToStringKey(type)).
             arg(value.text);
 }
 
@@ -594,7 +599,7 @@ int SceneEdgeElectrostaticMarker::showDialog(QWidget *parent)
 // *************************************************************************************************************************************
 
 SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name, Value charge_density, Value permittivity)
-        : SceneLabelMarker(name)
+    : SceneLabelMarker(name)
 {
     this->charge_density = charge_density;
     this->permittivity = permittivity;

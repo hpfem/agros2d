@@ -3,7 +3,7 @@
         <problem adaptivitytolerance="2" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="3" problemtype="axisymmetric" type="magnetostatic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge type="vector_potential" value="0" id="1" name="A = 0" />
+                <edge type="magnetostatic_vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
                 <label current_density="0" remanence="0" remanence_angle="0" id="1" name="Air" permeability="1" />

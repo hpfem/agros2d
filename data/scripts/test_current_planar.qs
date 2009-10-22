@@ -1,12 +1,12 @@
 print("Test: Current field - planar");
 
 // model
-newDocument("Feeder", "planar", "current field", 2, 5, 0, "disabled", 1, 1);
+newDocument("Feeder", "planar", "current", 2, 5, 0, "disabled", 1, 1);
 
 // boundaries
-addBoundary("Neumann", "inward_current_flow", 0);
-addBoundary("Zero", "potential", 0);
-addBoundary("Voltage", "potential", 1);
+addBoundary("Neumann", "current_inward_current_flow", 0);
+addBoundary("Zero", "current_potential", 0);
+addBoundary("Voltage", "current_potential", 1);
 
 // materials
 addMaterial("mat 1", 1e7);

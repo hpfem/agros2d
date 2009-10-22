@@ -196,35 +196,34 @@ SolutionArray *heat_main(SolverThread *solverThread)
 
 void HermesHeat::readEdgeMarkerFromDomElement(QDomElement *element)
 {
-    PhysicFieldBC type = PHYSICFIELDBC_UNDEFINED;
-    if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_NONE))
-        type = PHYSICFIELDBC_NONE;
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
+    PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
+    switch (type)
     {
-        type = PHYSICFIELDBC_HEAT_TEMPERATURE;
-
+    case PHYSICFIELDBC_NONE:
+        // TODO
+        break;
+    case PHYSICFIELDBC_HEAT_TEMPERATURE:
         Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(element->attribute("name"),
                                                              type,
                                                              Value(element->attribute("temperature"))));
-    }
-    else if (element->attribute("type") == physicFieldBCStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
-    {
-        type = PHYSICFIELDBC_HEAT_HEAT_FLUX;
-
+        break;
+    case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(element->attribute("name"), type,
                                                              Value(element->attribute("heat_flux")),
                                                              Value(element->attribute("h")),
                                                              Value(element->attribute("external_temperature"))));
-    }
-    else
+        break;
+    default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+        break;
+    }
 }
 
 void HermesHeat::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
 {
     SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(marker);
 
-    element->setAttribute("type", physicFieldBCStringKey(edgeHeatMarker->type));
+    element->setAttribute("type", physicFieldBCToStringKey(edgeHeatMarker->type));
 
     if (edgeHeatMarker->type == PHYSICFIELDBC_HEAT_TEMPERATURE)
     {
@@ -293,7 +292,12 @@ SceneEdgeMarker *HermesHeat::newEdgeMarker()
 {
     return new SceneEdgeHeatMarker("new boundary", PHYSICFIELDBC_HEAT_TEMPERATURE, Value("0"));
 }
-
+/*
+SceneEdgeMarker *HermesHeat::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+{
+    return new SceneEdgeHeatMarker(name, physicFieldBC[0], *value[0]);
+}
+*/
 SceneLabelMarker *HermesHeat::newLabelMarker()
 {
     return new SceneLabelHeatMarker("new material", Value("0"), Value("385"));
@@ -657,14 +661,14 @@ QString SceneEdgeHeatMarker::script()
     {
         return QString("addBoundary(\"%1\", \"%2\", %3);").
                 arg(name).
-                arg(physicFieldBCStringKey(type)).
+                arg(physicFieldBCToStringKey(type)).
                 arg(temperature.text);
     }
     if (type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
     {
         return QString("addBoundary(\"%1\", \"%2\", %3, %4, %5)").
                 arg(name).
-                arg(physicFieldBCStringKey(type)).
+                arg(physicFieldBCToStringKey(type)).
                 arg(heatFlux.text).
                 arg(h.text).
                 arg(externalTemperature.text);

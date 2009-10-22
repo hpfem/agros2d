@@ -1,11 +1,11 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="4" problemtype="planar" type="current field" id="0" name="Feeder" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="4" problemtype="planar" type="current" id="0" name="Feeder" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge type="inward_current_flow" value="0" id="1" name="Neumann" />
-                <edge type="inward_current_flow" value="1000000" id="2" name="In" />
-                <edge type="potential" value="0" id="3" name="Zero" />
+                <edge type="current_inward_current_flow" value="0" id="1" name="Neumann" />
+                <edge type="current_inward_current_flow" value="1000000" id="2" name="In" />
+                <edge type="current_potential" value="0" id="3" name="Zero" />
             </edges>
             <labels>
                 <label conductivity="100" id="1" name="Salt" />

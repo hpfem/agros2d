@@ -4,9 +4,9 @@ print("Test: Electrostatic - axisymmetric");
 newDocument("Electrostatic", "axisymmetric", "electrostatic", 0, 3, 0, "disabled", 1, 0);
 
 // boundaries
-addBoundary("Source electrode", "potential", 10);
-addBoundary("Ground electrode", "potential", 0);
-addBoundary("Neumann BC", "surface_charge_density", 0);
+addBoundary("Source electrode", "electrostatic_potential", 10);
+addBoundary("Ground electrode", "electrostatic_potential", 0);
+addBoundary("Neumann BC", "electrostatic_surface_charge_density", 0);
 
 // materials
 addMaterial("Air", 0, 1);

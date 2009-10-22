@@ -4,9 +4,9 @@ print("Test: Electrostatic - planar");
 newDocument("Elec2 (QuickField)", "planar", "electrostatic", 2, 3, 0, "disabled", 1, 5);
 
 // boundaries
-addBoundary("Neumann", "surface_charge_density", 0);
-addBoundary("U =  0 V", "potential", 0);
-addBoundary("U =  1000 V", "potential", 1000);
+addBoundary("Neumann", "electrostatic_surface_charge_density", 0);
+addBoundary("U =  0 V", "electrostatic_potential", 0);
+addBoundary("U =  1000 V", "electrostatic_potential", 1000);
 
 // materials
 addMaterial("Diel", 0, 3);

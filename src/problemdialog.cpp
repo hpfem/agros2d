@@ -104,9 +104,9 @@ void ProblemDialog::fillComboBox()
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_GENERAL), PHYSICFIELD_GENERAL);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELECTROSTATIC), PHYSICFIELD_ELECTROSTATIC);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETOSTATIC), PHYSICFIELD_MAGNETOSTATIC);
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HARMONIC_MAGNETIC), PHYSICFIELD_HARMONIC_MAGNETIC);
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HARMONICMAGNETIC), PHYSICFIELD_HARMONICMAGNETIC);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_CURRENT), PHYSICFIELD_CURRENT);
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT_TRANSFER), PHYSICFIELD_HEAT_TRANSFER);
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT), PHYSICFIELD_HEAT);
     // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
 
     cmbAdaptivityType->clear();

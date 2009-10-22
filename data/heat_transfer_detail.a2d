@@ -1,11 +1,11 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="heat transfer" id="0" name="Detail" >
+        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="heat" id="0" name="Detail" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge h="25" external_temperature="-15" type="heat_flux" id="1" name="Exterier" heat_flux="0" />
-                <edge h="4" external_temperature="21" type="heat_flux" id="2" name="Interier" heat_flux="0" />
-                <edge h="0" external_temperature="0" type="heat_flux" id="3" name="Neumann" heat_flux="0" />
+                <edge h="25" external_temperature="-15" type="heat_heat_flux" id="1" name="Exterier" heat_flux="0" />
+                <edge h="4" external_temperature="21" type="heat_heat_flux" id="2" name="Interier" heat_flux="0" />
+                <edge h="0" external_temperature="0" type="heat_heat_flux" id="3" name="Neumann" heat_flux="0" />
             </edges>
             <labels>
                 <label thermal_conductivity="0.418" volume_heat="0" id="1" name="Zdici prvky SENDWIX tl. 240 kontakt" />

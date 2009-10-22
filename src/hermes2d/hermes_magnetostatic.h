@@ -28,6 +28,7 @@ public:
     QStringList volumeIntegralValueHeader();
 
     SceneEdgeMarker *newEdgeMarker();
+    // SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]);
     SceneLabelMarker *newLabelMarker();
 
     SolutionArray *solve(SolverThread *solverThread);
@@ -91,6 +92,8 @@ public:
     double averageFluxDensityY;
     double averageFluxDensity;
     double energy;
+    double forceX;
+    double forceY;
 
     VolumeIntegralValueMagnetostatic();
     QStringList variables();

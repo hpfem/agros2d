@@ -1,9 +1,9 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="50" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonic magnetic" id="0" name="unnamed" >
+        <problem adaptivitytolerance="1" frequency="50" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonicmagnetic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge type="vector_potential" value="0" id="1" name="A = 0" />
+                <edge type="harmonicmagnetic_vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
                 <label current_density_real="0" conductivity="0" id="1" name="Air" current_density_imag="0" permeability="1" />

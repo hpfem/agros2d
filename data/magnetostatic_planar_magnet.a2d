@@ -3,7 +3,7 @@
         <problem adaptivitytolerance="2" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="3" problemtype="planar" type="magnetostatic" id="0" name="unnamed" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge type="vector_potential" value="0" id="1" name="A = 0" />
+                <edge type="magnetostatic_vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
                 <label current_density="0" remanence="1.28" remanence_angle="90" id="1" name="Magnet - up" permeability="1.11" />

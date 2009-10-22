@@ -1,9 +1,9 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="100" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="3" problemtype="axisymmetric" type="harmonic magnetic" id="0" name="Heating" >
+        <problem adaptivitytolerance="1" frequency="100" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="3" problemtype="axisymmetric" type="harmonicmagnetic" id="0" name="Heating" >
             <scriptstartup></scriptstartup>
             <edges>
-                <edge type="vector_potential" value="0" id="1" name="A = 0" />
+                <edge type="harmonicmagnetic_vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
                 <label current_density_real="1e6" conductivity="0" id="1" name="Coil" current_density_imag="0" permeability="1" />
