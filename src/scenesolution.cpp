@@ -101,6 +101,8 @@ int SceneSolution::adaptiveSteps()
 
 double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume)
 {
+    if (!isSolved()) return 0.0;
+
     double integral = 0.0;
 
     Quad2D* quad;
@@ -717,6 +719,8 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
 
 double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface)
 {  
+    if (!isSolved()) return 0.0;
+
     double integral = 0.0;
     Quad2D* quad = &g_quad_2d_std;
     sln1()->set_quad_2d(quad);

@@ -1,7 +1,7 @@
 print("Test: Magnetostatic - axisymmetric");
 
 // model
-newDocument("unnamed", "axisymmetric", "magnetostatic", 0, 3, 0, "disabled", 1, 2);
+newDocument("unnamed", "axisymmetric", "magnetostatic", 0, 3);
 
 // boundaries
 addBoundary("A = 0", "magnetostatic_vector_potential", 0);

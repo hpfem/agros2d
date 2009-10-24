@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" transient="0" timetotal="0" type="heat" timestep="0" id="0" name="Actuator" initialcondition="0" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" timetotal="0" type="heat" timestep="0" id="0" name="Actuator" initialcondition="0" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge h="0" external_temperature="0" type="heat_heat_flux" id="1" name="Flux" heat_flux="0" />

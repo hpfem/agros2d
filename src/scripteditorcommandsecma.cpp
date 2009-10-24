@@ -110,20 +110,15 @@ QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
     return true;
 }
 
-// newDocument(name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance)
+// newDocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition)
 QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 {
     ProblemInfo problemInfo;
     Util::scene()->clear();
 
-    for (int i = 0; i <= 8; i++) {
+    for (int i = 0; i <= 4; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
-    }
-    for (int i = 3; i <= 8; i++) {
-        if (!context->argument(i).isNumber())
-            return context->throwError(QObject::tr("Parameter %1 must be number. Now is used '%2' as this parametr.").arg(i+1).arg(context->argument(i).toString()));
-        if (i == 5) i = 6;
     }
 
     // name
@@ -156,28 +151,108 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
     else
         return context->throwError(QObject::tr("Polynomial order '%1' is out of range.").arg(context->argument(4).toString()));
 
-    // frequency
-    if (context->argument(5).toNumber() > 0 && problemInfo.physicField() != PHYSICFIELD_HARMONICMAGNETIC)
-        return context->throwError(QObject::tr("Frequency can be used only for harmonic magnetic problems."));
-    else
-        problemInfo.frequency = context->argument(5).toNumber();
-
     // adaptivitytype, adaptivitysteps, adaptivitytolerance
-    problemInfo.adaptivityType = adaptivityTypeFromStringKey(context->argument(6).toString());
-    if (problemInfo.adaptivityType == ADAPTIVITYTYPE_UNDEFINED)
-        return context->throwError(QObject::tr("Adaptivity type '%1' is not suported.").arg(context->argument(6).toString()));
+    if (context->argument(5).isUndefined())
+    {
+        problemInfo.adaptivityType == ADAPTIVITYTYPE_NONE;
+    }
+    else
+    {
+        problemInfo.adaptivityType = adaptivityTypeFromStringKey(context->argument(5).toString());
+        if (problemInfo.adaptivityType == ADAPTIVITYTYPE_UNDEFINED)
+            return context->throwError(QObject::tr("Adaptivity type '%1' is not suported.").arg(context->argument(5).toString()));
+    }
 
     // adaptivitysteps
-    if (context->argument(7).isNumber() && context->argument(7).toNumber() >= 0)
-        problemInfo.adaptivitySteps = context->argument(7).toNumber();
+    if (context->argument(6).isUndefined())
+    {
+        problemInfo.adaptivitySteps == 5;
+    }
     else
-        return context->throwError(QObject::tr("Adaptivity step '%1' is out of range.").arg(context->argument(7).toString()));
+    {
+        if (context->argument(6).isNumber() && context->argument(6).toNumber() >= 0)
+            problemInfo.adaptivitySteps = context->argument(6).toNumber();
+        else
+            return context->throwError(QObject::tr("Adaptivity step '%1' is out of range.").arg(context->argument(6).toString()));
+    }
 
     // adaptivitytolerance
-    if (context->argument(8).isNumber() && context->argument(8).toNumber() >= 0)
-        problemInfo.adaptivityTolerance = context->argument(8).toNumber();
+    if (context->argument(7).isUndefined())
+    {
+        problemInfo.adaptivityTolerance == 0.0;
+    }
     else
-        return context->throwError(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(context->argument(8).toString()));
+    {
+        if (context->argument(7).isNumber() && context->argument(7).toNumber() >= 0)
+            problemInfo.adaptivityTolerance = context->argument(7).toNumber();
+        else
+            return context->throwError(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(context->argument(8).toString()));
+    }
+
+    // frequency
+    if (context->argument(8).isUndefined())
+    {
+        problemInfo.frequency == 0.0;
+    }
+    else
+    {
+        if (context->argument(8).toNumber() > 0 && problemInfo.physicField() != PHYSICFIELD_HARMONICMAGNETIC)
+            return context->throwError(QObject::tr("Frequency can be used only for harmonic magnetic problems."));
+        else
+            problemInfo.frequency = context->argument(8).toNumber();
+    }
+
+    // analysis type
+    if (context->argument(9).isUndefined())
+    {
+        problemInfo.analysisType == ANALYSISTYPE_STEADYSTATE;
+    }
+    else
+    {
+        problemInfo.analysisType = analysisTypeFromStringKey(context->argument(9).toString());
+        if (problemInfo.analysisType == ANALYSISTYPE_UNDEFINED)
+            return context->throwError(QObject::tr("Analysis type '%1' is not suported.").arg(context->argument(9).toString()));
+    }
+
+    // transient timestep
+    if (context->argument(10).isUndefined())
+    {
+        problemInfo.timeStep == 1.0;
+    }
+    else
+    {
+        if (context->argument(10).isNumber() && context->argument(10).toNumber() > 0)
+            problemInfo.timeStep = context->argument(10).toNumber();
+        else
+            if (problemInfo.analysisType == ANALYSISTYPE_TRANSIENT)
+                return context->throwError(QObject::tr("Time step must be positive."));
+    }
+
+    // transient timetotal
+    if (context->argument(11).isUndefined())
+    {
+        problemInfo.timeTotal == 1.0;
+    }
+    else
+    {
+        if (context->argument(11).isNumber() && context->argument(11).toNumber() > 0)
+            problemInfo.timeTotal = context->argument(11).toNumber();
+        else
+            if (problemInfo.analysisType == ANALYSISTYPE_TRANSIENT)
+                return context->throwError(QObject::tr("Total time must be positive."));
+    }
+
+    // transient initial condition
+    if (context->argument(12).isUndefined())
+    {
+        problemInfo.initialCondition == 0.0;
+    }
+    else
+    {
+        if (context->argument(12).isNumber() && context->argument(12).toNumber() > 0)
+            if (problemInfo.analysisType == ANALYSISTYPE_TRANSIENT)
+                problemInfo.initialCondition = context->argument(12).toNumber();
+    }
 
     Util::scene()->problemInfo() = problemInfo;
     m_sceneView->doDefaults();
@@ -645,7 +720,7 @@ QScriptValue scriptSelectEdge(QScriptContext *context, QScriptEngine *engine)
     m_sceneView->actSceneModeEdge->trigger();
     for (int i = 0; i<context->argumentCount(); i++) {
         if (Util::scene()->edges.count() < context->argument(i).toNumber())
-            return context->throwError(QObject::tr("Edge with index '%1' does not exists.").arg(context->argument(0).toString()));
+            return context->throwError(QObject::tr("Edge with index '%1' does not exists.").arg(context->argument(i).toString()));
 
         Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
     }

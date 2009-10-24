@@ -1,7 +1,7 @@
 print("Test: Current field - planar");
 
 // model
-newDocument("Feeder", "planar", "current", 2, 5, 0, "disabled", 1, 1);
+newDocument("Feeder", "planar", "current", 2, 5);
 
 // boundaries
 addBoundary("Neumann", "current_inward_current_flow", 0);

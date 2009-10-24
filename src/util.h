@@ -170,6 +170,13 @@ enum ProblemType
     PROBLEMTYPE_AXISYMMETRIC
 };
 
+enum AnalysisType
+{
+    ANALYSISTYPE_UNDEFINED,
+    ANALYSISTYPE_STEADYSTATE,
+    ANALYSISTYPE_TRANSIENT
+};
+
 enum AdaptivityType
 {
     ADAPTIVITYTYPE_UNDEFINED = 1000,
@@ -612,6 +619,20 @@ inline QString physicFieldString(PhysicField physicField)
     }
 }
 
+inline QString analysisTypeString(AnalysisType analysisType)
+{
+    switch (analysisType)
+    {
+    case ANALYSISTYPE_STEADYSTATE:
+        return QObject::tr("Steady state");
+    case ANALYSISTYPE_TRANSIENT:
+        return QObject::tr("Transient");
+    default:
+        std::cerr << "Analysis type '" + QString::number(analysisType).toStdString() + "' is not implemented. analysisTypeString(AnalysisType analysisType)" << endl;
+        throw;
+    }
+}
+
 inline QString physicFieldBCString(PhysicFieldBC physicFieldBC)
 {
     switch (physicFieldBC)
@@ -695,6 +716,9 @@ PhysicField physicFieldFromStringKey(const QString &physicField);
 
 inline QString problemTypeToStringKey(ProblemType problemType) { return ((problemType == PROBLEMTYPE_PLANAR) ? "planar" : "axisymmetric"); }
 inline ProblemType problemTypeFromStringKey(const QString &problemType) { if (problemType == "planar") return PROBLEMTYPE_PLANAR; else if (problemType == "axisymmetric") return PROBLEMTYPE_AXISYMMETRIC; else return PROBLEMTYPE_UNDEFINED; }
+
+inline QString analysisTypeToStringKey(AnalysisType analysisType) { return ((analysisType == ANALYSISTYPE_STEADYSTATE) ? "steadystate" : "transient"); }
+inline AnalysisType analysisTypeFromStringKey(const QString &analysisType) { if (analysisType == "steadystate") return ANALYSISTYPE_STEADYSTATE; else if (analysisType == "transient") return ANALYSISTYPE_TRANSIENT; else return ANALYSISTYPE_UNDEFINED; }
 
 QString physicFieldVariableToStringKey(PhysicFieldVariable physicFieldVariable);
 PhysicFieldVariable physicFieldVariableFromStringKey(const QString &physicFieldVariable);

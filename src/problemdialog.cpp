@@ -66,7 +66,7 @@ void ProblemDialog::createControls()
     // harmonic magnetic
     txtFrequency = new SLineEdit("0", true, this);
     // transient
-    cmbTypeOfAnalysis = new QComboBox();
+    cmbAnalysisType = new QComboBox();
     txtTransientTimeStep = new SLineEdit("0", true, false, this);
     txtTransientTimeTotal = new SLineEdit("0", true, false, this);
     txtTransientInitialCondition = new SLineEdit("0", true, false, this);
@@ -77,7 +77,7 @@ void ProblemDialog::createControls()
 
     connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
-    connect(cmbTypeOfAnalysis, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeOfAnalysisChanged(int)));
+    connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
     fillComboBox();
 
     QGridLayout *layoutProblem = new QGridLayout();
@@ -105,7 +105,7 @@ void ProblemDialog::createControls()
     layoutProblem->addWidget(new QLabel(tr("Frequency:")), 2, 2);
     layoutProblem->addWidget(txtFrequency, 2, 3);
     layoutProblem->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
-    layoutProblem->addWidget(cmbTypeOfAnalysis, 3, 3);
+    layoutProblem->addWidget(cmbAnalysisType, 3, 3);
     layoutProblem->addWidget(new QLabel(tr("Time step:")), 4, 2);
     layoutProblem->addWidget(txtTransientTimeStep, 4, 3);
     layoutProblem->addWidget(new QLabel(tr("Total time:")), 5, 2);
@@ -150,10 +150,10 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_P), ADAPTIVITYTYPE_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_HP), ADAPTIVITYTYPE_HP);
 
-    cmbTypeOfAnalysis->clear();
-    cmbTypeOfAnalysis->addItem(tr("Steady state"), false);
-    cmbTypeOfAnalysis->addItem(tr("Transient"), true);
-    cmbTypeOfAnalysis->setCurrentIndex(0);
+    cmbAnalysisType->clear();
+    cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_STEADYSTATE), ANALYSISTYPE_STEADYSTATE);
+    cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_TRANSIENT), ANALYSISTYPE_TRANSIENT);
+    cmbAnalysisType->setCurrentIndex(0);
 }
 
 void ProblemDialog::load()
@@ -170,11 +170,12 @@ void ProblemDialog::load()
     // harmonic magnetic
     txtFrequency->setValue(m_problemInfo->frequency);
     // transient
-    cmbTypeOfAnalysis->setCurrentIndex(cmbTypeOfAnalysis->findData(m_problemInfo->isTransient));
+    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(m_problemInfo->analysisType));
     txtTransientTimeStep->setValue(m_problemInfo->timeStep);
     txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
 
+    doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
     doTransientChanged();
 }
 
@@ -192,7 +193,7 @@ bool ProblemDialog::save()
         }
     }
 
-    if (m_problemInfo->hermes->hasTransient() && cmbTypeOfAnalysis->itemData(cmbTypeOfAnalysis->currentIndex()).toBool())
+    if (m_problemInfo->hermes->hasTransient() && cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toBool())
     {
         if (txtTransientTimeStep->value() <= 0.0)
         {
@@ -222,7 +223,7 @@ bool ProblemDialog::save()
     // harmonic magnetic
     m_problemInfo->frequency = txtFrequency->value();
     // transient
-    m_problemInfo->isTransient = cmbTypeOfAnalysis->itemData(cmbTypeOfAnalysis->currentIndex()).toBool();
+    m_problemInfo->analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
     m_problemInfo->timeStep = txtTransientTimeStep->value();
     m_problemInfo->timeTotal = txtTransientTimeTotal->value();
     m_problemInfo->initialCondition = txtTransientInitialCondition->value();
@@ -245,15 +246,15 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     HermesField *hermesField = hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt());
 
     txtFrequency->setEnabled(hermesField->hasFrequency());
-    cmbTypeOfAnalysis->setEnabled(hermesField->hasTransient());
-    cmbTypeOfAnalysis->setCurrentIndex(0);
+    cmbAnalysisType->setEnabled(hermesField->hasTransient());
+    cmbAnalysisType->setCurrentIndex(0);
     txtTransientTimeStep->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
     txtTransientTimeTotal->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
     txtTransientInitialCondition->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
 
     delete hermesField;
 
-    doTypeOfAnalysisChanged(cmbTypeOfAnalysis->currentIndex());
+    doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 }
 
 void ProblemDialog::doAdaptivityChanged(int index)
@@ -262,11 +263,11 @@ void ProblemDialog::doAdaptivityChanged(int index)
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != ADAPTIVITYTYPE_NONE);
 }
 
-void ProblemDialog::doTypeOfAnalysisChanged(int index)
+void ProblemDialog::doAnalysisTypeChanged(int index)
 {
-    txtTransientTimeStep->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
-    txtTransientTimeTotal->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
-    txtTransientInitialCondition->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
+    txtTransientTimeStep->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
+    txtTransientTimeTotal->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
+    txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
 }
 
 void ProblemDialog::doTransientChanged()

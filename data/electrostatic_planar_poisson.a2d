@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="4" problemtype="planar" type="electrostatic" id="0" name="unnamed" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="0" polynomialorder="4" problemtype="planar" timetotal="0" type="electrostatic" timestep="0" id="0" name="unnamed" initialcondition="0" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="electrostatic_potential" value="0" id="1" name="Ground" />
@@ -33,4 +33,5 @@
             <label x="0.230012" y="0.429491" marker="1" id="0" area="0.05" />
         </labels>
     </geometry>
+    <functions/>
 </document>

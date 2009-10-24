@@ -1,7 +1,7 @@
 print("Test: Heat transfer - planar");
 
 // model
-newDocument("unnamed", "planar", "heat", 2, 3, 0, "disabled", 10, 0.1);
+newDocument("unnamed", "planar", "heat", 2, 3);
 
 // boundaries
 addBoundary("T inner", "heat_temperature", -15);
@@ -9,8 +9,8 @@ addBoundary("T outer", "heat_heat_flux", 0, 20, 20)
 addBoundary("Neumann", "heat_heat_flux", 0, 0, 0)
 
 // materials
-addMaterial("Material 1", 0, 2);
-addMaterial("Material 2", 7e4, 10);
+addMaterial("Material 1", 0, 2, 0, 0);
+addMaterial("Material 2", 7e4, 10, 0, 0);
 
 // edges
 addEdge(0.1, 0.15, 0, 0.15, 0, "T outer");

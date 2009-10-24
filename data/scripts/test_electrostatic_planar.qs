@@ -1,7 +1,7 @@
 print("Test: Electrostatic - planar");
 
 // model
-newDocument("Elec2 (QuickField)", "planar", "electrostatic", 2, 3, 0, "disabled", 1, 5);
+newDocument("Elec2 (QuickField)", "planar", "electrostatic", 2, 3);
 
 // boundaries
 addBoundary("Neumann", "electrostatic_surface_charge_density", 0);

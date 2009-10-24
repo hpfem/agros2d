@@ -119,16 +119,21 @@ QString createEcmaFromModel()
 
     // model
     str += "// model\n";
-    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, %6, \"%7\", %8, %9);").
+    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13);").
            arg(Util::scene()->problemInfo().name).
            arg(problemTypeToStringKey(Util::scene()->problemInfo().problemType)).
            arg(physicFieldToStringKey(Util::scene()->problemInfo().physicField())).
            arg(Util::scene()->problemInfo().numberOfRefinements).
            arg(Util::scene()->problemInfo().polynomialOrder).
-           arg(Util::scene()->problemInfo().frequency).
            arg(adaptivityTypeToStringKey(Util::scene()->problemInfo().adaptivityType)).
            arg(Util::scene()->problemInfo().adaptivitySteps).
-           arg(Util::scene()->problemInfo().adaptivityTolerance) + "\n";
+           arg(Util::scene()->problemInfo().adaptivityTolerance).
+           arg(Util::scene()->problemInfo().frequency).
+           arg(analysisTypeToStringKey(Util::scene()->problemInfo().analysisType)).
+           arg(Util::scene()->problemInfo().timeStep).
+           arg(Util::scene()->problemInfo().timeTotal).
+           arg(Util::scene()->problemInfo().initialCondition)
+           + "\n";
     str += "\n";
 
     // boundaries

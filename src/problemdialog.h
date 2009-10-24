@@ -18,7 +18,7 @@ public:
 private slots:
     void doPhysicFieldChanged(int index);
     void doAdaptivityChanged(int index);
-    void doTypeOfAnalysisChanged(int index);
+    void doAnalysisTypeChanged(int index);
     void doTransientChanged();
     void doAccept();
     void doReject();
@@ -40,7 +40,7 @@ private:
     // harmonic magnetic
     SLineEdit *txtFrequency;
     // transient
-    QComboBox *cmbTypeOfAnalysis;
+    QComboBox *cmbAnalysisType;
     SLineEdit *txtTransientTimeStep;
     SLineEdit *txtTransientTimeTotal;
     SLineEdit *txtTransientInitialCondition;

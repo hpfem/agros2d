@@ -1,7 +1,7 @@
 print("Test: Electrostatic - axisymmetric");
 
 // model
-newDocument("Electrostatic", "axisymmetric", "electrostatic", 0, 3, 0, "disabled", 1, 0);
+newDocument("Electrostatic", "axisymmetric", "electrostatic", 0, 3);
 
 // boundaries
 addBoundary("Source electrode", "electrostatic_potential", 10);

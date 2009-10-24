@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="0.02" frequency="5000" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="3" problemtype="planar" type="harmonicmagnetic" id="0" name="unnamed" >
+        <problem adaptivitytolerance="0.02" frequency="5000" numberofrefinements="0" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="0" polynomialorder="3" problemtype="planar" timetotal="0" type="harmonicmagnetic" timestep="0" id="0" name="unnamed" initialcondition="0" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge type="harmonicmagnetic_vector_potential" value="0" id="1" name="A = 0" />
@@ -27,4 +27,5 @@
             <label x="0.000625412" y="0.000498375" marker="1" id="0" area="2e-07" />
         </labels>
     </geometry>
+    <functions/>
 </document>

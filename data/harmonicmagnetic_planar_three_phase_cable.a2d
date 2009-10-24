@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" adaptivitysteps="0" polynomialorder="2" problemtype="planar" type="harmonicmagnetic" id="0" name="3 phase cable" >
+        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="0" polynomialorder="2" problemtype="planar" timetotal="0" type="harmonicmagnetic" timestep="0" id="0" name="3 phase cable" initialcondition="0" >
             <scriptstartup>J0 = 1e6;
 J01r = J0;
 J01i = 0.0;
@@ -83,4 +83,5 @@ gamma = 57e6;</scriptstartup>
             <label x="0.00758341" y="0.0059684" marker="1" id="5" area="0" />
         </labels>
     </geometry>
+    <functions/>
 </document>

@@ -1,5 +1,5 @@
 // model
-newDocument("Electrostatic axisymmetric capacitor", "axisymmetric", "electrostatic", 1, 2, 0, "disabled", 0, 0);
+newDocument("Electrostatic axisymmetric capacitor", "axisymmetric", "electrostatic", 1, 2);
 
 // variables
 r1 = 0.01;

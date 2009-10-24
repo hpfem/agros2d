@@ -1,7 +1,7 @@
 print("Test: Heat transfer - axisymmetric");
 
 // model
-newDocument("Heat transfer axisymmetric", "axisymmetric", "heat", 1, 3, 0, "disabled", 10, 1);
+newDocument("Heat transfer axisymmetric", "axisymmetric", "heat", 1, 3);
 
 // boundaries
 addBoundary("Neumann", "heat_heat_flux", 0, 0, 0)
@@ -10,7 +10,7 @@ addBoundary("Temperature", "heat_temperature", 0);
 addBoundary("Convection", "heat_heat_flux", 0, 20, 20)
 
 // materials
-addMaterial("Material", 6000000, 52);
+addMaterial("Material", 6000000, 52, 0, 0);
 
 // edges
 addEdge(0.02, 0, 0.1, 0, 0, "Temperature");

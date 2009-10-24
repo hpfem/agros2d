@@ -1,7 +1,7 @@
 print("Test: Harmonic magnetic - planar");
 
 // model
-newDocument("Test", "planar", "harmonicmagnetic", 1, 2, 50, "disabled", 0, 1);
+newDocument("Test", "planar", "harmonicmagnetic", 1, 2, "disabled", 0, 0, 50);
 
 // boundaries
 addBoundary("A = 0", "harmonicmagnetic_vector_potential", 0);

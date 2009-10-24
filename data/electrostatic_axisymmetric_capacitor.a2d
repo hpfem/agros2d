@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" transient="0" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic" initialcondition="0" >
+        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="1" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic" initialcondition="0" >
             <scriptstartup>U = 10;</scriptstartup>
             <edges>
                 <edge type="electrostatic_potential" value="10" id="1" name="Source electrode" />

@@ -68,7 +68,7 @@ struct ProblemInfo
     // harmonic magnetic
     int frequency;
     // transient
-    bool isTransient;
+    AnalysisType analysisType;
     double timeStep;
     double timeTotal;
     double initialCondition;
@@ -102,9 +102,9 @@ struct ProblemInfo
         frequency = 0.0;
         
         // transient
-        isTransient = false;
+        analysisType = ANALYSISTYPE_STEADYSTATE;
         timeStep = 1.0;
-        timeTotal = 0.0;
+        timeTotal = 1.0;
         initialCondition = 0.0;
     }
     

@@ -1,7 +1,7 @@
 print("Test: Magnetostatic - planar");
 
 // model
-newDocument("Unnamed", "planar", "magnetostatic", 1, 4, 0, "disabled", 1, 2);
+newDocument("Unnamed", "planar", "magnetostatic", 1, 4);
 
 // boundaries
 addBoundary("A = 0", "magnetostatic_vector_potential", 0);

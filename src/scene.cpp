@@ -1001,7 +1001,7 @@ void Scene::readFromFile(const QString &fileName)
     // harmonic magnetic
     m_problemInfo.frequency = eleProblem.toElement().attribute("frequency").toDouble();
     // transient
-    m_problemInfo.isTransient = eleProblem.toElement().attribute("transient", "0").toInt();
+    m_problemInfo.analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(ANALYSISTYPE_STEADYSTATE)));
     m_problemInfo.timeStep = eleProblem.toElement().attribute("timestep", "0").toDouble();
     m_problemInfo.timeTotal = eleProblem.toElement().attribute("timetotal", "0").toDouble();
     m_problemInfo.initialCondition = eleProblem.toElement().attribute("initialcondition", "0").toDouble();
@@ -1166,7 +1166,7 @@ void Scene::writeToFile(const QString &fileName) {
     // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo.frequency);
     // transient
-    eleProblem.setAttribute("transient", m_problemInfo.isTransient);
+    eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo.analysisType));
     eleProblem.setAttribute("timestep", m_problemInfo.timeStep);
     eleProblem.setAttribute("timetotal", m_problemInfo.timeTotal);
     eleProblem.setAttribute("initialcondition", m_problemInfo.initialCondition);

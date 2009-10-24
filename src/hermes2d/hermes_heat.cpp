@@ -112,7 +112,7 @@ Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData
 QList<SolutionArray *> *heat_main(SolverThread *solverThread)
 {
     heatPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
-    heatTransient = Util::scene()->problemInfo().isTransient;
+    heatTransient = (Util::scene()->problemInfo().analysisType == ANALYSISTYPE_TRANSIENT);
     timeStep = Util::scene()->problemInfo().timeStep;
     timeTotal = Util::scene()->problemInfo().timeTotal;
     int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;

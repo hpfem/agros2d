@@ -1,7 +1,7 @@
 print("Test: Current field - axisymmetric");
 
 // model
-newDocument("Tube", "axisymmetric", "current", 1, 2, 0, "disabled", 0, 1);
+newDocument("Tube", "axisymmetric", "current", 1, 2);
 
 // boundaries
 addBoundary("Neumann", "current_inward_current_flow", 0);
