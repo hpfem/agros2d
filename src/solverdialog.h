@@ -55,6 +55,7 @@ public:
     void setMode(SolverMode mode) { m_mode = mode; }
 
     void showMessage(const QString &msg, bool isError);
+    void showProgress(int percent) { emit updateProgress(percent); }
     bool isCanceled() { return m_isCanceled; }
     void cancel();
 

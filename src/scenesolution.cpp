@@ -16,39 +16,44 @@ void SceneSolution::clear()
     m_timeStep = -1;
 
     // solution array
-    if (!m_solutionArrayList)
+    if (m_solutionArrayList)
     {
+        for (int i = 0; i < m_solutionArrayList->count(); i++)
+        {
+            delete m_solutionArrayList->value(i);
+        }
+
         delete m_solutionArrayList;
         m_solutionArrayList = NULL;
     }
 
     // countour
-    if (!m_slnContourView)
+    if (m_slnContourView)
     {
         delete m_slnContourView;
         m_slnContourView = NULL;
     }
     
     // scalar
-    if (!m_slnScalarView)
+    if (m_slnScalarView)
     {
         delete m_slnScalarView;
         m_slnScalarView = NULL;
     }
     
     // vector
-    if (!m_slnVectorXView)
+    if (m_slnVectorXView)
     {
         delete m_slnVectorXView;
         m_slnVectorXView = NULL;
     }
-    if (!m_slnVectorYView)
+    if (m_slnVectorYView)
     {
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
     }
 
-    if (!m_solutionArrayList)
+    if (m_solutionArrayList)
     {
         delete m_solutionArrayList;
         m_solutionArrayList = NULL;
@@ -62,34 +67,36 @@ Solution *SceneSolution::sln()
 
 Solution *SceneSolution::sln1()
 {
-    if (m_timeStep != -1)
+    if (isSolved())
+    {
         if (m_solutionArrayList->value(m_timeStep)->sln1)
             return m_solutionArrayList->value(m_timeStep)->sln1;
+    }
     return NULL;
 }
 
 Solution *SceneSolution::sln2()
 {
-    if (m_timeStep != -1)
-        if (m_solutionArrayList->value(m_timeStep)->sln2 != NULL)
+    if (isSolved())
+        if (m_solutionArrayList->value(m_timeStep)->sln2)
             return m_solutionArrayList->value(m_timeStep)->sln2;
     return NULL;
 }
 
 Orderizer &SceneSolution::ordView()
 {
-    if (m_timeStep != -1)
+    if (isSolved())
         return *m_solutionArrayList->value(m_timeStep)->order1;
 }
 
 double SceneSolution::adaptiveError()
 {
-    return (m_timeStep != -1) ? m_solutionArrayList->value(m_timeStep)->adaptiveError : 100.0;
+    return (isSolved()) ? m_solutionArrayList->value(m_timeStep)->adaptiveError : 100.0;
 }
 
 int SceneSolution::adaptiveSteps()
 {
-    return (m_timeStep != -1) ? m_solutionArrayList->value(m_timeStep)->adaptiveSteps : 0.0;
+    return (isSolved()) ? m_solutionArrayList->value(m_timeStep)->adaptiveSteps : 0.0;
 }
 
 double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume)
@@ -954,16 +961,18 @@ void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayLi
 
 void SceneSolution::setSolutionArray(int timeStep)
 {
-    if (!m_solutionArrayList) return;
     m_timeStep = timeStep;
+    if (!isSolved()) return;
 
     if (m_scene->problemInfo().physicField() != PHYSICFIELD_ELASTICITY)
         m_vec.process_solution(sln1(), FN_DX_0, sln1(), FN_DY_0, EPS_NORMAL);
+
+    Util::scene()->refresh();
 }
 
 void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
 {
-    if (!m_slnContourView)
+    if (m_slnContourView)
     {
         delete m_slnContourView;
         m_slnContourView = NULL;
@@ -975,7 +984,7 @@ void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
 
 void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
 {
-    if (!m_slnScalarView)
+    if (m_slnScalarView)
     {
         delete m_slnScalarView;
         m_slnScalarView = NULL;
@@ -1024,12 +1033,12 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
 
 void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScalarFilter *slnVectorYView)
 {
-    if (slnVectorXView != NULL)
+    if (slnVectorXView)
     {
         delete m_slnVectorXView;
         m_slnVectorXView = NULL;
     }
-    if (m_slnVectorYView != NULL)
+    if (m_slnVectorYView)
     {
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;

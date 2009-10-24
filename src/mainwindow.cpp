@@ -514,7 +514,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     else
     {
         if (!fileNameDocument.isEmpty())
-            QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameDocument));
+            QMessageBox::critical(this, tr("File open"), tr("File '%1' doesn't exists.").arg(fileNameDocument));
     }
 }
 
@@ -674,7 +674,7 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
     else
     {
         if (!fileNameScript.isEmpty())
-            QMessageBox::critical(this, "File open", tr("File '%1' doesn't exists.").arg(fileNameScript));
+            QMessageBox::critical(this, tr("File open"), tr("File '%1' doesn't exists.").arg(fileNameScript));
     }    
 }
 
@@ -750,8 +750,6 @@ void MainWindow::doTimeStepChanged(int index)
     if (cmbTimeStep->currentIndex() != -1)
     {
         Util::scene()->sceneSolution()->setSolutionArray(cmbTimeStep->currentIndex());
-        sceneView->doInvalidated();
-        doInvalidated();
     }
 }
 

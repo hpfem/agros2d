@@ -221,6 +221,8 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
         solutionArrayList->append(solutionArray);
 
         if (heatTransient > 0) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1, 0, 'g', 3).arg(timesteps, 0, 'g', 3), false);
+        if (solverThread->isCanceled()) return NULL;
+        solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
     }
 
     return solutionArrayList;

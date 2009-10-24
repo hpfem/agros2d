@@ -19,6 +19,7 @@ private slots:
     void doPhysicFieldChanged(int index);
     void doAdaptivityChanged(int index);
     void doTypeOfAnalysisChanged(int index);
+    void doTransientChanged();
     void doAccept();
     void doReject();
 
@@ -43,12 +44,13 @@ private:
     SLineEdit *txtTransientTimeStep;
     SLineEdit *txtTransientTimeTotal;
     SLineEdit *txtTransientInitialCondition;
+    QLabel *lblTransientSteps;
 
     void createControls();
     void fillComboBox();
 
     void load();
-    void save();
+    bool save();
 };
 
 #endif // PROBLEMDIALOG_H

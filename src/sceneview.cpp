@@ -1907,7 +1907,7 @@ void SceneView::closeEvent(QCloseEvent *event)
 
 void SceneView::doInvalidated()
 {
-    if (m_normals == NULL)
+    if (m_normals)
     {
         delete m_normals;
         m_normals = NULL;

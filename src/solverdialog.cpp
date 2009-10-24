@@ -205,7 +205,6 @@ void SolverThread::runSolver()
     updateProgress(60);
 
     QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo().hermes->solve(this);
-    if (!solutionArrayList) return;
 
     if (solutionArrayList)
     {
@@ -533,7 +532,7 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
     connect(thread, SIGNAL(updateProgress(int)), progressBar, SLOT(setValue(int)));
     connect(thread, SIGNAL(message(QString, bool)), this, SLOT(doShowMessage(QString, bool)));
     connect(thread, SIGNAL(solved()), this, SLOT(doSolved()));
-    connect(thread, SIGNAL(terminated()), this, SLOT(hide()));
+    // connect(thread, SIGNAL(terminated()), this, SLOT(hide()));
 
     resize(minimumSize());
 }
@@ -636,5 +635,4 @@ void SolverDialog::doCancel()
             thread->wait(100);
         }
     }
-    hide();
 }

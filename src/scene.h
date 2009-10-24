@@ -72,21 +72,21 @@ struct ProblemInfo
     double timeStep;
     double timeTotal;
     double initialCondition;
-
+    
     HermesField *hermes;
-
+    
     ProblemInfo()
     {
         hermes = NULL;
         clear();
     }
-
+    
     void clear()
     {
         // hermes object
         if (hermes) delete hermes;
         hermes = new HermesGeneral();
-
+        
         name = QObject::tr("unnamed");
         date = QDate::currentDate();
         fileName = "";
@@ -97,17 +97,17 @@ struct ProblemInfo
         adaptivityType = ADAPTIVITYTYPE_NONE;
         adaptivitySteps = 0;
         adaptivityTolerance = 1.0;
-
+        
         // harmonic magnetic
         frequency = 0.0;
-
+        
         // transient
         isTransient = false;
         timeStep = 1.0;
         timeTotal = 0.0;
         initialCondition = 0.0;
     }
-
+    
     inline QString labelX() { return ((problemType == PROBLEMTYPE_PLANAR) ? "X" : "R");  }
     inline QString labelY() { return ((problemType == PROBLEMTYPE_PLANAR) ? "Y" : "Z");  }
 };
@@ -116,16 +116,17 @@ class DxfFilter : public DL_CreationAdapter
 {
 public:
     DxfFilter(Scene *scene);
-
+    
     void addArc(const DL_ArcData& a);
     void addLine(const DL_LineData& d);
 private:
     Scene *m_scene;
 };
 
-class Scene : public QObject {
+class Scene : public QObject
+{
     Q_OBJECT
-
+    
     public slots:
     void doNewNode(const Point &point = Point());
     void doNewEdge();
@@ -136,21 +137,21 @@ class Scene : public QObject {
     void doNewFunction();
     void doTransform();
     void doProblemProperties();
-
+    
 signals:
     void invalidated();
     void solved();
     void fileNameChanged(const QString &fileName);
-
+    
 public:
     QList<SceneNode *> nodes;
     QList<SceneEdge *> edges;
     QList<SceneLabel *> labels;
     QList<SceneFunction *> functions;
-
+    
     QList<SceneEdgeMarker *> edgeMarkers;
     QList<SceneLabelMarker *> labelMarkers;
-
+    
     QAction *actNewNode;
     QAction *actNewEdge;
     QAction *actNewLabel;
@@ -160,76 +161,76 @@ public:
     QAction *actNewFunction;
     QAction *actProblemProperties;
     QAction *actTransform;
-
+    
     Scene();
     ~Scene();
-
+    
     SceneNode *addNode(SceneNode *node);
     void removeNode(SceneNode *node);
     SceneNode *getNode(const Point &point);
-
+    
     SceneEdge *addEdge(SceneEdge *edge);
     void removeEdge(SceneEdge *edge);
     SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd, double angle);
-
+    
     SceneLabel *addLabel(SceneLabel *label);
     void removeLabel(SceneLabel *label);
     SceneLabel *getLabel(const Point &point);
-
+    
     void addEdgeMarker(SceneEdgeMarker *edgeMarker);
     void removeEdgeMarker(SceneEdgeMarker *edgeMarker);
     void setEdgeMarker(SceneEdgeMarker *edgeMarker); // set edge marker to selected edges
     SceneEdgeMarker *getEdgeMarker(const QString &name);
-
+    
     void addLabelMarker(SceneLabelMarker *labelMarker);
     void removeLabelMarker(SceneLabelMarker *labelMarker);
     void setLabelMarker(SceneLabelMarker *labelMarker); // set label marker to selected labels
     SceneLabelMarker *getLabelMarker(const QString &name);
-
+    
     SceneFunction *addFunction(SceneFunction *function);
     void removeFunction(SceneFunction *function);
-
+    
     void clear();
-
+    
     RectPoint boundingBox();
-
+    
     void selectNone();
     void selectAll(SceneMode sceneMode);
     int selectedCount();
     void highlightNone();
     void deleteSelected();
-
+    
     void transformTranslate(const Point &point, bool copy);
     void transformRotate(const Point &point, double angle, bool copy);
     void transformScale(const Point &point, double scaleFactor, bool copy);
-
+    
     inline ProblemInfo &problemInfo() { return m_problemInfo; }
-
+    
     inline void refresh() { emit invalidated(); }
     void createMeshAndSolve(SolverMode solverMode);
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
-
+    
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
     void readFromFile(const QString &fileName);
     void writeToFile(const QString &fileName);
-
+    
     inline QUndoStack *undoStack() { return m_undoStack; }
-
+    
 protected:
-
+    
 private:    
     QUndoStack *m_undoStack;
     ProblemInfo m_problemInfo;
-
+    
     // scene solution
     SceneSolution *m_sceneSolution;
-
+    
     // solver dialog
     SolverDialog *solverDialog;
-
+    
     void createActions();
-
+    
 private slots:    
     void doInvalidated();
     void doSolved();
@@ -243,16 +244,16 @@ public:
     static Util* singleton();
     static inline Scene *scene() { return Util::singleton()->m_scene; }
     static inline HelpDialog *helpDialog() { return Util::singleton()->m_helpDialog; }
-
+    
 protected:
     Util();
     Util(const Util &);
     Util & operator = (const Util &);
     ~Util();
-
+    
 private:
     static Util* m_singleton;
-
+    
     Scene *m_scene;
     HelpDialog *m_helpDialog;
 };

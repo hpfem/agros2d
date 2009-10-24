@@ -34,6 +34,7 @@ ProblemDialog::~ProblemDialog()
     delete txtTransientTimeStep;
     delete txtTransientTimeTotal;
     delete txtTransientInitialCondition;
+    delete lblTransientSteps;
 }
 
 int ProblemDialog::showDialog()
@@ -69,6 +70,10 @@ void ProblemDialog::createControls()
     txtTransientTimeStep = new SLineEdit("0", true, false, this);
     txtTransientTimeTotal = new SLineEdit("0", true, false, this);
     txtTransientInitialCondition = new SLineEdit("0", true, false, this);
+    lblTransientSteps = new QLabel("0");
+
+    connect(txtTransientTimeStep, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
+    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
 
     connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
@@ -107,6 +112,8 @@ void ProblemDialog::createControls()
     layoutProblem->addWidget(txtTransientTimeTotal, 5, 3);
     layoutProblem->addWidget(new QLabel(tr("Initial condition:")), 6, 2);
     layoutProblem->addWidget(txtTransientInitialCondition, 6, 3);
+    layoutProblem->addWidget(new QLabel(tr("Steps:")), 7, 2);
+    layoutProblem->addWidget(lblTransientSteps, 7, 3);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -149,7 +156,8 @@ void ProblemDialog::fillComboBox()
     cmbTypeOfAnalysis->setCurrentIndex(0);
 }
 
-void ProblemDialog::load() {
+void ProblemDialog::load()
+{
     cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_problemInfo->physicField()));
     txtName->setText(m_problemInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
@@ -166,10 +174,43 @@ void ProblemDialog::load() {
     txtTransientTimeStep->setValue(m_problemInfo->timeStep);
     txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
+
+    doTransientChanged();
 }
 
-void ProblemDialog::save() {
+bool ProblemDialog::save()
+{
     if (this->m_isNewProblem) m_problemInfo->hermes = hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt());
+
+    // check values
+    if (m_problemInfo->hermes->hasFrequency())
+    {
+        if (txtFrequency->value() < 0)
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Frequency cannot be negative."));
+            return false;
+        }
+    }
+
+    if (m_problemInfo->hermes->hasTransient() && cmbTypeOfAnalysis->itemData(cmbTypeOfAnalysis->currentIndex()).toBool())
+    {
+        if (txtTransientTimeStep->value() <= 0.0)
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Time step must be positive."));
+            return false;
+        }
+        if (txtTransientTimeTotal->value()<= 0.0)
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Total time must be positive."));
+            return false;
+        }
+        if (txtTransientTimeStep->value() > txtTransientTimeTotal->value())
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Time step is greater then total time."));
+            return false;
+        }
+    }
+
     m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
     m_problemInfo->name = txtName->text();
     m_problemInfo->date = dtmDate->date();
@@ -185,12 +226,13 @@ void ProblemDialog::save() {
     m_problemInfo->timeStep = txtTransientTimeStep->value();
     m_problemInfo->timeTotal = txtTransientTimeTotal->value();
     m_problemInfo->initialCondition = txtTransientInitialCondition->value();
+
+    return true;
 }
 
 void ProblemDialog::doAccept()
 {
-    save();
-    accept();
+    if (save()) accept();
 }
 
 void ProblemDialog::doReject()
@@ -222,9 +264,12 @@ void ProblemDialog::doAdaptivityChanged(int index)
 
 void ProblemDialog::doTypeOfAnalysisChanged(int index)
 {
-
     txtTransientTimeStep->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
     txtTransientTimeTotal->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
     txtTransientInitialCondition->setEnabled(cmbTypeOfAnalysis->itemData(index).toBool());
 }
 
+void ProblemDialog::doTransientChanged()
+{
+    lblTransientSteps->setText(QString("%1").arg(floor(txtTransientTimeTotal->value()/txtTransientTimeStep->value())));
+}
