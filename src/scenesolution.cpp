@@ -974,6 +974,16 @@ void SceneSolution::setSolutionArray(int timeStep)
     Util::scene()->refresh();
 }
 
+double SceneSolution::time()
+{
+    if (isSolved())
+    {
+        if (m_solutionArrayList->value(m_timeStep)->sln1)
+            return m_solutionArrayList->value(m_timeStep)->time;
+    }
+    return 0.0;
+}
+
 void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
 {
     if (m_slnContourView)

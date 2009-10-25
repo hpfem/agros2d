@@ -21,6 +21,7 @@ ChartDialog::~ChartDialog()
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
 
+    // geometry
     delete lblStartX;
     delete lblStartY;
     delete lblEndX;
@@ -35,26 +36,60 @@ ChartDialog::~ChartDialog()
     delete radAxisX;
     delete radAxisY;
     
+    // time
+    delete lblPointX;
+    delete lblPointY;
+    delete txtPointX;
+    delete txtPointY;
+
+    delete txtAxisPoints;
+
     delete cmbFieldVariable;
     delete cmbFieldVariableComp;
 
     delete picker;
     delete chart;    
+
+    delete widGeometry;
+    delete widTime;
+
+    delete cmbTimeStep;
+
+    // delete tabData;
+    // delete tabType;
 }
 
 void ChartDialog::showDialog()
 {
     fillComboBoxScalarVariable(cmbFieldVariable);
+    fillComboBoxTimeStep(cmbTimeStep);
 
     // correct labels
     lblStartX->setText(Util::scene()->problemInfo().labelX() + ":");
     lblStartY->setText(Util::scene()->problemInfo().labelY() + ":");
     lblEndX->setText(Util::scene()->problemInfo().labelX() + ":");
     lblEndY->setText(Util::scene()->problemInfo().labelY() + ":");
+    lblPointX->setText(Util::scene()->problemInfo().labelX() + ":");
+    lblPointY->setText(Util::scene()->problemInfo().labelY() + ":");
     radAxisX->setText(Util::scene()->problemInfo().labelX());
     radAxisY->setText(Util::scene()->problemInfo().labelY());
 
+    if (Util::scene()->problemInfo().analysisType == ANALYSISTYPE_TRANSIENT)
+    {
+        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
+    }
+    else
+    {
+        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), false);
+        tabAnalysisType->setCurrentWidget(widGeometry);
+    }
+
     show();
+    doChartLine();
+}
+
+void ChartDialog::hideEvent(QHideEvent *event)
+{
     doChartLine();
 }
 
@@ -64,10 +99,6 @@ void ChartDialog::createControls()
     
     // controls
     QWidget *controls = new QWidget(this);
-    QVBoxLayout *controlsLayout = new QVBoxLayout();
-    controls->setLayout(controlsLayout);
-    controls->setMinimumWidth(200);
-    controls->setMaximumWidth(200);
     
     QPushButton *btnPlot = new QPushButton(controls);
     btnPlot->setText(tr("Plot"));
@@ -81,14 +112,22 @@ void ChartDialog::createControls()
     btnExportData->setText(tr("Export"));
     connect(btnExportData, SIGNAL(clicked()), SLOT(doExportData()));
 
-    // QPushButton *btnPrint = new QPushButton(controls);
-    // btnPrint->setText(tr("Print"));
-    // connect(btnPrint, SIGNAL(clicked()), SLOT(doPrint()));
-    
-    lblStartX = new QLabel("X");
-    lblStartY = new QLabel("Y");
-    lblEndX = new QLabel("X");
-    lblEndY = new QLabel("Y");
+    // geometry
+    // timestep
+    cmbTimeStep = new QComboBox(this);
+    connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
+
+    QVBoxLayout *layoutTimeStep = new QVBoxLayout();
+    layoutTimeStep->addWidget(cmbTimeStep);
+
+    QGroupBox *grpTimeStep = new QGroupBox(tr("Time step"), this);
+    grpTimeStep->setLayout(layoutTimeStep);
+
+    // geometry
+    lblStartX = new QLabel("X:");
+    lblStartY = new QLabel("Y:");
+    lblEndX = new QLabel("X:");
+    lblEndY = new QLabel("Y:");
 
     txtStartX = new SLineEdit("0", false);
     txtStartY = new SLineEdit("0", false);
@@ -145,13 +184,28 @@ void ChartDialog::createControls()
     txtAxisPoints->setMinimum(2);
     txtAxisPoints->setMaximum(500);
     txtAxisPoints->setValue(200);
-    
+
     QVBoxLayout *layoutAxisPoints = new QVBoxLayout();
     layoutAxisPoints->addWidget(txtAxisPoints);
-    
+
     QGroupBox *grpAxisPoints = new QGroupBox(tr("Points:"), this);
     grpAxisPoints->setLayout(layoutAxisPoints);
-    
+
+    // time
+    lblPointX = new QLabel("X:");
+    lblPointY = new QLabel("Y:");
+    txtPointX = new SLineEdit("0", false);
+    txtPointY = new SLineEdit("0", false);
+
+    QGridLayout *layoutTime = new QGridLayout();
+    layoutTime->addWidget(lblPointX, 0, 0);
+    layoutTime->addWidget(txtPointX, 0, 1);
+    layoutTime->addWidget(lblPointY, 1, 0);
+    layoutTime->addWidget(txtPointY, 1, 1);
+
+    QGroupBox *grpTime = new QGroupBox(tr("Point"), this);
+    grpTime->setLayout(layoutTime);
+
     // plot   
     // variable
     cmbFieldVariable = new QComboBox(this);    
@@ -179,23 +233,48 @@ void ChartDialog::createControls()
     QWidget *widButton = new QWidget(this);
     widButton->setLayout(layoutButton);
     
-    controlsLayout->addWidget(grpStart);
-    controlsLayout->addWidget(grpEnd);
-    controlsLayout->addWidget(grpAxis);
-    controlsLayout->addWidget(grpAxisPoints);
+    // controls geometry
+    widGeometry = new QWidget(this);
+    QVBoxLayout *controlsGeometryLayout = new QVBoxLayout();
+    widGeometry->setLayout(controlsGeometryLayout);
+    controlsGeometryLayout->addWidget(grpStart);
+    controlsGeometryLayout->addWidget(grpEnd);
+    controlsGeometryLayout->addWidget(grpAxis);
+    controlsGeometryLayout->addWidget(grpAxisPoints);
+    controlsGeometryLayout->addWidget(grpTimeStep);
+    controlsGeometryLayout->addStretch();
+
+    // controls time
+    widTime = new QWidget(this);
+    QVBoxLayout *controlsTimeLayout = new QVBoxLayout();
+    widTime->setLayout(controlsTimeLayout);
+    controlsTimeLayout->addWidget(grpTime);
+    controlsTimeLayout->addStretch();
+
+    tabAnalysisType = new QTabWidget(this);
+    tabAnalysisType->addTab(widGeometry, icon(""), tr("Geometry"));
+    tabAnalysisType->addTab(widTime, icon(""), tr("Time"));
+
+    // controls
+    QVBoxLayout *controlsLayout = new QVBoxLayout();
+    controls->setLayout(controlsLayout);
+    controls->setMinimumWidth(200);
+    controls->setMaximumWidth(200);
+
+    controlsLayout->addWidget(tabAnalysisType);
     controlsLayout->addWidget(grpVariable);
     controlsLayout->addStretch();
     controlsLayout->addWidget(widButton);
     
-    // tab widget
-    tabWidget = new QTabWidget(this);
-    tabWidget->addTab(chart, icon(""), tr("Chart"));
-    tabWidget->addTab(trvTable, icon(""), tr("Table"));
+    // tab data widget
+    tabOutput = new QTabWidget(this);
+    tabOutput->addTab(chart, icon(""), tr("Chart"));
+    tabOutput->addTab(trvTable, icon(""), tr("Table"));
     
     // main layout
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(controls);
-    layout->addWidget(tabWidget);
+    layout->addWidget(tabOutput);
     
     // chart picker
     picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
@@ -212,7 +291,7 @@ void ChartDialog::createControls()
     setLayout(layout);
 }
 
-void ChartDialog::doPlot()
+void ChartDialog::plotGeometry()
 {
     doChartLine();
 
@@ -280,6 +359,82 @@ void ChartDialog::doPlot()
     delete[] yval;
 }
 
+void ChartDialog::plotTime()
+{
+    doChartLine();
+
+    // store timestep
+    int timeStep = Util::scene()->sceneSolution()->timeStep();
+
+    int count = Util::scene()->sceneSolution()->timeStepCount();
+    double *xval = new double[count];
+    double *yval = new double[count];
+
+    // variable
+    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
+
+    // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
+    QwtText text("");
+    text.setFont(QFont("Helvetica", 10, QFont::Normal));
+    text.setText(physicFieldVariableString(physicFieldVariable) + " (" + physicFieldVariableUnits(physicFieldVariable) + ")");
+    chart->setAxisTitle(QwtPlot::yLeft, text);
+
+    // table
+    trvTable->clear();
+    trvTable->setRowCount(count);
+    QStringList headers = Util::scene()->problemInfo().hermes->localPointValueHeader();
+    trvTable->setColumnCount(headers.count());
+    trvTable->setHorizontalHeaderLabels(headers);
+
+    // chart
+    text.setText(tr("Time (s)"));
+    chart->setAxisTitle(QwtPlot::xBottom, text);
+
+    // calculate values
+    QStringList row;    
+    for (int i = 0; i<Util::scene()->sceneSolution()->timeStepCount(); i++)
+    {
+        // change time level
+        Util::scene()->sceneSolution()->setSolutionArray(i);
+
+        Point point(txtPointX->value(), txtPointY->value());
+        LocalPointValue *localPointValue = Util::scene()->problemInfo().hermes->localPointValue(point);
+
+        // x value
+        xval[i] = Util::scene()->sceneSolution()->time();
+
+        // y value
+        yval[i] = localPointValue->variableValue(physicFieldVariable, physicFieldVariableComp);
+
+        // table
+        row.clear();
+        row << localPointValue->variables();
+
+        for (int j = 0; j<row.count(); j++)
+            trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
+
+        delete localPointValue;
+    }
+
+    chart->setData(xval, yval, count);
+
+    delete[] xval;
+    delete[] yval;
+
+    // restore previous timestep
+    Util::scene()->sceneSolution()->setSolutionArray(timeStep);
+}
+
+void ChartDialog::doPlot()
+{
+    if (tabAnalysisType->currentWidget() == widGeometry)
+        plotGeometry();
+
+    if (tabAnalysisType->currentWidget() == widTime)
+        plotTime();
+}
+
 void ChartDialog::doFieldVariable(int index)
 {
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(index).toInt();
@@ -298,35 +453,6 @@ void ChartDialog::doFieldVariable(int index)
     
     if (cmbFieldVariableComp->currentIndex() == -1)
         cmbFieldVariableComp->setCurrentIndex(0);
-}
-
-void ChartDialog::doPrint()
-{
-    QPrinter printer(QPrinter::HighResolution);
-    
-    QString docName = chart->title().text();
-    if ( !docName.isEmpty() )
-    {
-        docName.replace (QRegExp (QString::fromLatin1 ("\n")), tr (" -- "));
-        printer.setDocName (docName);
-    }
-    
-    printer.setCreator("Chart");
-    printer.setOrientation(QPrinter::Landscape);
-    
-    QPrintDialog dialog(&printer);
-    if ( dialog.exec() )
-    {
-        QwtPlotPrintFilter filter;
-        if ( printer.colorMode() == QPrinter::GrayScale )
-        {
-            int options = QwtPlotPrintFilter::PrintAll;
-            options &= ~QwtPlotPrintFilter::PrintBackground;
-            options |= QwtPlotPrintFilter::PrintFrameWithScales;
-            filter.setOptions(options);
-        }
-        chart->print(printer, filter);
-    }
 }
 
 void ChartDialog::doSaveImage()
@@ -402,12 +528,24 @@ void ChartDialog::doMoved(const QPoint &pos)
 void ChartDialog::doChartLine()
 {
     if (isVisible())
-        emit setChartLine(Point(txtStartX->value(), txtStartY->value()), Point(txtEndX->value(), txtEndY->value()));
+    {
+        if (tabAnalysisType->currentWidget() == widGeometry)
+            emit setChartLine(Point(txtStartX->value(), txtStartY->value()), Point(txtEndX->value(), txtEndY->value()));
+   
+        if (tabAnalysisType->currentWidget() == widTime)
+            emit setChartLine(Point(txtPointX->value(), txtPointY->value()), Point(txtPointX->value(), txtPointY->value()));
+    }
     else
+    {
         emit setChartLine(Point(), Point());
+    }
 }
 
-void ChartDialog::hideEvent(QHideEvent *event)
+void ChartDialog::doTimeStepChanged(int index)
 {
-    doChartLine();
+    if (cmbTimeStep->currentIndex() != -1)
+    {
+        Util::scene()->sceneSolution()->setSolutionArray(cmbTimeStep->currentIndex());
+        doPlot();
+    }
 }

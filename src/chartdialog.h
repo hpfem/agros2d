@@ -28,9 +28,13 @@ protected:
     void hideEvent(QHideEvent *event);
 
 private:
-    QTabWidget* tabWidget;
+    QTabWidget* tabOutput;
+    QTabWidget* tabAnalysisType;
 
     QwtPlotPicker *picker;
+
+    // geometry
+    QComboBox *cmbTimeStep;
 
     QLabel *lblStartX;
     QLabel *lblStartY;
@@ -45,23 +49,36 @@ private:
     QRadioButton *radAxisLength;
     QRadioButton *radAxisX;
     QRadioButton *radAxisY;
+
     QSpinBox *txtAxisPoints;
+
+    // time
+    QLabel *lblPointX;
+    QLabel *lblPointY;
+    SLineEdit *txtPointX;
+    SLineEdit *txtPointY;
 
     QComboBox *cmbFieldVariable;
     QComboBox *cmbFieldVariableComp;
+
+    QWidget *widGeometry;
+    QWidget *widTime;
 
     Chart *chart;
     QTableWidget *trvTable;
 
     void createControls();
 
+    void plotGeometry();
+    void plotTime();
+
 private slots:
     void doFieldVariable(int index);
-    void doPrint();
     void doSaveImage();
     void doExportData();
     void doMoved(const QPoint &);
     void doChartLine();
+    void doTimeStepChanged(int index);
 };
 
 #endif // CHARTDIALOG_H

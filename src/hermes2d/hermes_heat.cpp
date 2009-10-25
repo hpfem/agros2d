@@ -146,8 +146,27 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
     space.assign_dofs();
 
     // solution
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
     Solution *sln = new Solution();
-    if (heatTransient) sln->set_const(&mesh, 20);
+    if (heatTransient)
+    {
+        sln->set_const(&mesh, 20);
+
+        // zero time
+        /*
+        SolutionArray *solutionArray = new SolutionArray();
+        solutionArray->order1 = new Orderizer();
+        solutionArray->order1->process_solution(&space);
+        solutionArray->sln1 = new Solution();
+        solutionArray->sln1->copy(sln);
+        solutionArray->adaptiveError = 0.0;
+        solutionArray->adaptiveSteps = 0;
+        solutionArray->time = 0.0;
+
+        solutionArrayList->append(solutionArray);
+        */
+    }
     Solution rsln;
 
     // initialize the weak formulation
@@ -172,8 +191,6 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
 
     // timesteps
     int timesteps = (heatTransient) ? floor(timeTotal/timeStep) : 1;
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-
     for (int n = 0; n<timesteps; n++)
     {
         for (i = 0; i<adaptivitysteps; i++)
@@ -300,7 +317,7 @@ LocalPointValue *HermesHeat::localPointValue(Point point)
 QStringList HermesHeat::localPointValueHeader()
 {
     QStringList headers;
-    headers << "X" << "Y" << "T" << "Gx" << "Gy" << "G" << "Fx" << "Fy" << "F" << "lambda";
+    headers << "X" << "Y" << "t" << "T" << "Gx" << "Gy" << "G" << "Fx" << "Fy" << "F" << "lambda";
     return QStringList(headers);
 }
 
@@ -580,6 +597,7 @@ QStringList LocalPointValueHeat::variables()
     QStringList row;
     row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
             QString("%1").arg(point.y, 0, 'e', 5) <<
+            QString("%1").arg(Util::scene()->sceneSolution()->time(), 0, 'e', 5) <<
             QString("%1").arg(temperature, 0, 'e', 5) <<
             QString("%1").arg(G.x, 0, 'e', 5) <<
             QString("%1").arg(G.y, 0, 'e', 5) <<

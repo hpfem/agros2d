@@ -44,6 +44,7 @@ public:
     void setSolutionArray(int timeStep);
     inline int timeStep() { return m_timeStep; }
     inline int timeStepCount() { return (m_solutionArrayList) ? m_solutionArrayList->count() : 0; }
+    double time();
 
     bool isSolved() { return (m_timeStep != -1); }
     bool isMeshed() { return (m_mesh.get_num_elements() > 0); }
