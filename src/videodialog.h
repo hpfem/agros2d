@@ -16,11 +16,12 @@ public:
 
 private:
     SceneView *m_sceneView;
-    QString commandMencoder;
+    QString commandFFmpeg;
     QString outputFile;
 
-    QPushButton *btnEncodeMencoder;
+    QPushButton *btnEncodeFFmpeg;
     QPushButton *btnSaveVideo;
+    QPushButton *btnOpenVideo;
     QLineEdit *txtCommand;
     QComboBox *cmbCodec;
     QComboBox *cmbFormat;
@@ -30,10 +31,11 @@ private:
     QVBoxLayout *createPlayer();
 
 private slots:
-    void doCommandMencoder();
+    void doCommandFFmpeg();
     void doCreateImages();
-    void doEncodeMencoder();
+    void doEncodeFFmpeg();
     void doSaveVideo();
+    void doOpenVideo();
     void doVideoCreated(int result);
     void doClose();
 };

@@ -18,7 +18,7 @@ VideoDialog::VideoDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent
 
 VideoDialog::~VideoDialog()
 {
-    delete btnEncodeMencoder;
+    delete btnEncodeFFmpeg;
     delete btnSaveVideo;
     delete cmbCodec;
     delete cmbFormat;
@@ -39,29 +39,28 @@ void VideoDialog::createControls()
 
     cmbCodec = new QComboBox();
     cmbCodec->addItem("Motion JPEG (mjpeg)", "mjpeg");
-    // cmbCodec->addItem("H.263 (h263)", "h263");
-    cmbCodec->addItem("H.263+ (h263p)", "h263p");
-    cmbCodec->addItem("MPEG-4 (DivX 4/5) (mpeg4)", "mpeg4");
-    cmbCodec->addItem("DivX 3 (msmpeg4)", "msmpeg4");
-    cmbCodec->addItem("MS MPEG4v2 (msmpeg4v2)", "msmpeg4v2");
-    cmbCodec->addItem("Windows Media Video, version 1 (AKA WMV7) (wmv1)", "wmv1");
-    cmbCodec->addItem("Windows Media Video, version 2 (AKA WMV8) (wmv2)", "wmv2");
-    cmbCodec->addItem("MPEG-1 video (mpeg1video)", "mpeg1video");
-    cmbCodec->addItem("MPEG-2 video (mpeg2video)", "mpeg2video");
+    cmbCodec->addItem("MPEG-4 part 2 (mpeg4)", "mpeg4");
+    cmbCodec->addItem("MPEG-4 part 2 Microsoft variant version 2 (msmpeg4v2)", "msmpeg4v2");
+    cmbCodec->addItem("Windows Media Video 7 (wmv1)", "wmv1");
+    cmbCodec->addItem("Windows Media Video 8 (wmv2)", "wmv2");
+    cmbCodec->addItem("H.263 (h263)", "h263");
+    // cmbCodec->addItem("Graphics Interchange Format (gif)", "gif");
+    // cmbCodec->addItem("Portable Network Graphic (png)", "png");
+
     cmbCodec->setCurrentIndex(cmbCodec->findData(codec));
-    connect(cmbCodec, SIGNAL(currentIndexChanged(int)), this, SLOT(doCommandMencoder()));
+    connect(cmbCodec, SIGNAL(currentIndexChanged(int)), this, SLOT(doCommandFFmpeg()));
 
     cmbFormat = new QComboBox();
     cmbFormat->addItem("Microsoft Audio/Video Interleaved (avi)", "avi");
-    cmbFormat->addItem("MPEG-1/2 system stream format (mpeg)", "mpeg");
-    // cmbFormat->addItem("FFmpeg libavformat muxers (lavf)", "lavf");
+    cmbFormat->addItem("MPEG system stream format (mpeg)", "mpeg");
+    // cmbFormat->addItem("FLV format (flv)", "flv");
     cmbFormat->setCurrentIndex(cmbFormat->findData(format));
-    connect(cmbFormat, SIGNAL(currentIndexChanged(int)), this, SLOT(doCommandMencoder()));
+    connect(cmbFormat, SIGNAL(currentIndexChanged(int)), this, SLOT(doCommandFFmpeg()));
 
     txtFPS = new QSpinBox();
     txtFPS->setMinimum(1);
     txtFPS->setValue(fps);
-    connect(txtFPS, SIGNAL(valueChanged(int)), this, SLOT(doCommandMencoder()));
+    connect(txtFPS, SIGNAL(valueChanged(int)), this, SLOT(doCommandFFmpeg()));
 
     QFormLayout *layoutControls = new QFormLayout();
     layoutControls->addRow(tr("Codec:"), cmbCodec);
@@ -72,21 +71,26 @@ void VideoDialog::createControls()
     QPushButton *btnCreateImages = new QPushButton(tr("Create images"));
     connect(btnCreateImages, SIGNAL(clicked()), this, SLOT(doCreateImages()));
 
-    btnEncodeMencoder = new QPushButton(tr("Encode video"));
-    btnEncodeMencoder->setEnabled(false);
-    connect(btnEncodeMencoder, SIGNAL(clicked()), this, SLOT(doEncodeMencoder()));
+    btnEncodeFFmpeg = new QPushButton(tr("Encode"));
+    btnEncodeFFmpeg->setEnabled(false);
+    connect(btnEncodeFFmpeg, SIGNAL(clicked()), this, SLOT(doEncodeFFmpeg()));
 
-    btnSaveVideo = new QPushButton(tr("Save video..."));
+    btnSaveVideo = new QPushButton(tr("Save ..."));
     btnSaveVideo->setEnabled(false);
     connect(btnSaveVideo, SIGNAL(clicked()), this, SLOT(doSaveVideo()));
+
+    btnOpenVideo = new QPushButton(tr("Open"));
+    btnOpenVideo->setEnabled(false);
+    connect(btnOpenVideo, SIGNAL(clicked()), this, SLOT(doOpenVideo()));
 
     QPushButton *btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addWidget(btnCreateImages);
-    layoutButton->addWidget(btnEncodeMencoder);
+    layoutButton->addWidget(btnEncodeFFmpeg);
     layoutButton->addWidget(btnSaveVideo);
+    layoutButton->addWidget(btnOpenVideo);
     layoutButton->addWidget(btnClose);
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -98,7 +102,7 @@ void VideoDialog::createControls()
 
     setLayout(layout);
 
-    doCommandMencoder();
+    doCommandFFmpeg();
 }
 
 void VideoDialog::doCreateImages()
@@ -111,32 +115,32 @@ void VideoDialog::doCreateImages()
         m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000" + QString::number(i)).right(5)));
     }
 
-    btnEncodeMencoder->setEnabled(true);
+    btnEncodeFFmpeg->setEnabled(true);
 }
 
-void VideoDialog::doEncodeMencoder()
+void VideoDialog::doEncodeFFmpeg()
 {
     // exec mencoder
-    QProcess *processMencoder = new QProcess();
-    processMencoder->setStandardOutputFile(tempProblemDir() + "/video/output.txt");
-    processMencoder->setStandardErrorFile(tempProblemDir() + "/video/error.txt");
-    connect(processMencoder, SIGNAL(finished(int)), this, SLOT(doVideoCreated(int)));
+    QProcess *processFFmpeg = new QProcess();
+    processFFmpeg->setStandardOutputFile(tempProblemDir() + "/video/output.txt");
+    processFFmpeg->setStandardErrorFile(tempProblemDir() + "/video/error.txt");
+    connect(processFFmpeg, SIGNAL(finished(int)), this, SLOT(doVideoCreated(int)));
 
-    cout << commandMencoder.toStdString() << endl;
-    processMencoder->start(commandMencoder);
+    cout << commandFFmpeg.toStdString() << endl;
+    processFFmpeg->start(commandFFmpeg);
 
-    if (!processMencoder->waitForStarted())
+    if (!processFFmpeg->waitForStarted())
     {
-        processMencoder->kill();
+        processFFmpeg->kill();
         return;
     }
 
-    while (!processMencoder->waitForFinished()) {}
+    while (!processFFmpeg->waitForFinished()) {}
 }
 
 void VideoDialog::doSaveVideo()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save video to file"), "", tr("AVI files (*.avi)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save video to file"), "", QString("%1 (*.%2)").arg(cmbFormat->currentText()).arg(cmbFormat->itemData(cmbFormat->currentIndex()).toString()));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
@@ -146,16 +150,19 @@ void VideoDialog::doSaveVideo()
     }
 }
 
-void VideoDialog::doCommandMencoder()
+void VideoDialog::doOpenVideo()
+{
+    QDesktopServices::openUrl(outputFile);
+}
+
+void VideoDialog::doCommandFFmpeg()
 {
     outputFile = tempProblemDir() + "/video/output." + cmbFormat->itemData(cmbFormat->currentIndex()).toString();
-
-    commandMencoder = QString("mencoder \"mf://%1\" -of %4 -mf fps=%5:type=png -ovc lavc -lavcopts vcodec=%3 -o %2").
-                      arg(tempProblemDir() + "/video/*.png").
-                      arg(outputFile).
-                      arg(cmbCodec->itemData(cmbCodec->currentIndex()).toString()).
-                      arg(cmbFormat->itemData(cmbFormat->currentIndex()).toString()).
-                      arg(txtFPS->value());
+    commandFFmpeg = QString("ffmpeg -r %4 -y -i \"%1video_%05d.png\" -vcodec %3 \"%2\"").
+                    arg(tempProblemDir() + "/video/").
+                    arg(outputFile).
+                    arg(cmbCodec->itemData(cmbCodec->currentIndex()).toString()).
+                    arg(txtFPS->value());
 }
 
 void VideoDialog::doVideoCreated(int result)
@@ -163,6 +170,7 @@ void VideoDialog::doVideoCreated(int result)
     if (result == 0)
     {
         btnSaveVideo->setEnabled(true);
+        btnOpenVideo->setEnabled(true);
     }
 
     // remove files
