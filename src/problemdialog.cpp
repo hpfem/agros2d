@@ -228,6 +228,8 @@ bool ProblemDialog::save()
     m_problemInfo->timeTotal = txtTransientTimeTotal->value();
     m_problemInfo->initialCondition = txtTransientInitialCondition->value();
 
+    Util::scene()->sceneSolution()->clear();
+
     return true;
 }
 

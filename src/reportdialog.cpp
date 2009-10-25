@@ -111,7 +111,12 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Problem.AdaptivityType]", adaptivityTypeString(Util::scene()->problemInfo().adaptivityType), Qt::CaseSensitive);
     destination.replace("[Problem.AdaptivitySteps]", QString::number(Util::scene()->problemInfo().adaptivitySteps), Qt::CaseSensitive);
     destination.replace("[Problem.AdaptivityTolerance]", QString::number(Util::scene()->problemInfo().adaptivityTolerance), Qt::CaseSensitive);
+
     destination.replace("[Problem.Frequency]", QString::number(Util::scene()->problemInfo().frequency), Qt::CaseSensitive);
+    destination.replace("[Problem.AnalysisType]", analysisTypeString(Util::scene()->problemInfo().analysisType), Qt::CaseSensitive);
+    destination.replace("[Problem.TimeStep]", QString::number(Util::scene()->problemInfo().timeStep), Qt::CaseSensitive);
+    destination.replace("[Problem.TimeTotal]", QString::number(Util::scene()->problemInfo().timeTotal), Qt::CaseSensitive);
+    destination.replace("[Problem.InititalCondition]", QString::number(Util::scene()->problemInfo().initialCondition), Qt::CaseSensitive);
 
     // script
     destination.replace("[Script]", createEcmaFromModel(), Qt::CaseSensitive);
