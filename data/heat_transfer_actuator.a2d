@@ -1,16 +1,16 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" timetotal="0" type="heat" timestep="0" id="0" name="Actuator" initialcondition="0" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="transient" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" timetotal="10000" type="heat" timestep="1000" id="0" name="Actuator" initialcondition="0" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge h="0" external_temperature="0" type="heat_heat_flux" id="1" name="Flux" heat_flux="0" />
                 <edge h="10" external_temperature="20" type="heat_heat_flux" id="2" name="Convection" heat_flux="0" />
             </edges>
             <labels>
-                <label thermal_conductivity="0.02" specific_heat="0" volume_heat="0" id="1" density="0" name="Air" />
-                <label thermal_conductivity="200" specific_heat="0" volume_heat="26000" id="2" density="0" name="Cu" />
-                <label thermal_conductivity="60" specific_heat="0" volume_heat="0" id="3" density="0" name="Fe" />
-                <label thermal_conductivity="100" specific_heat="0" volume_heat="0" id="4" density="0" name="Mosaz" />
+                <label thermal_conductivity="0.02" specific_heat="1000" volume_heat="0" id="1" density="1.2" name="Air" />
+                <label thermal_conductivity="200" specific_heat="385" volume_heat="26000" id="2" density="8700" name="Cu" />
+                <label thermal_conductivity="60" specific_heat="460" volume_heat="0" id="3" density="7800" name="Fe" />
+                <label thermal_conductivity="100" specific_heat="378" volume_heat="0" id="4" density="8400" name="Mosaz" />
             </labels>
         </problem>
     </problems>

@@ -95,7 +95,7 @@ Scalar heat_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<
         + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
     else
         return heatLabel[e->marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
-                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
+                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
@@ -237,7 +237,7 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
 
         solutionArrayList->append(solutionArray);
 
-        if (heatTransient > 0) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1, 0, 'g', 3).arg(timesteps, 0, 'g', 3), false);
+        if (heatTransient > 0) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
         if (solverThread->isCanceled()) return NULL;
         solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
     }

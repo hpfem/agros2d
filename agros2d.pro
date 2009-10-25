@@ -8,13 +8,13 @@ SUBDIRS = src-remote
 DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
-DEFINES += VERSION_SUB=6
+DEFINES += VERSION_SUB=8
 unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 
 # unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
 # unix::DEFINES += VERSION_MONTH=$$system(date +%-m)
 # unix::DEFINES += VERSION_DAY=$$system(date +%d)
-win32:DEFINES += VERSION_GIT=138
+win32:DEFINES += VERSION_GIT=195
 
 # win32::DEFINES += VERSION_YEAR=2009
 # win32::DEFINES += VERSION_MONTH=9
@@ -123,7 +123,8 @@ SOURCES += src/util.cpp \
     src/scenesolution.cpp \
     src/dxflib/dl_writer_ascii.cpp \
     src/dxflib/dl_dxf.cpp \
-    src/reportdialog.cpp
+    src/reportdialog.cpp \
+    src/videodialog.cpp
 HEADERS += src/util.h \
     src/scene.h \
     src/gui.h \
@@ -154,8 +155,9 @@ HEADERS += src/util.h \
     src/sceneviewdialog.h \
     src/optionsdialog.h \
     src/helpdialog.h \
-    src/scenesolution.h \    
-    src/reportdialog.h
+    src/scenesolution.h \
+    src/reportdialog.h \
+    src/videodialog.h
 INCLUDEPATH += src \
     src/dxflib
 unix:INCLUDEPATH += /usr/include

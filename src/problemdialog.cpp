@@ -212,6 +212,8 @@ bool ProblemDialog::save()
         }
     }
 
+    Util::scene()->sceneSolution()->clear();
+
     m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
     m_problemInfo->name = txtName->text();
     m_problemInfo->date = dtmDate->date();
@@ -228,7 +230,6 @@ bool ProblemDialog::save()
     m_problemInfo->timeTotal = txtTransientTimeTotal->value();
     m_problemInfo->initialCondition = txtTransientInitialCondition->value();
 
-    Util::scene()->sceneSolution()->clear();
 
     return true;
 }

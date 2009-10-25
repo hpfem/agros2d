@@ -124,6 +124,10 @@ void MainWindow::createActions()
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
 
+    actCreateVideo = new QAction(tr("Create video..."), this);
+    actCreateVideo->setStatusTip(tr("Create video"));
+    connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
+
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
     actExit->setStatusTip(tr("Exit the application"));
@@ -304,6 +308,8 @@ void MainWindow::createMenus()
     mnuTools->addAction(actScriptEditorRunCommand);
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actCreateVideo);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
@@ -599,6 +605,12 @@ void MainWindow::doDocumentSaveImage()
     }
 }
 
+void MainWindow::doCreateVideo()
+{
+    VideoDialog videoDialog(sceneView, this);
+    videoDialog.showDialog();
+}
+
 void MainWindow::doCreateMesh()
 {
     // create mesh
@@ -756,6 +768,7 @@ void MainWindow::doTimeStepChanged(int index)
 void MainWindow::doInvalidated()
 {
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo().analysisType == ANALYSISTYPE_TRANSIENT));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
     fillComboBoxTimeStep(cmbTimeStep);
 

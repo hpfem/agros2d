@@ -15,6 +15,7 @@
 #include "optionsdialog.h"
 #include "scripteditordialog.h"
 #include "reportdialog.h"
+#include "videodialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -52,6 +53,7 @@ private slots:
     void doScriptStartup();
     void doOptions();
     void doReport();
+    void doCreateVideo();
 
     void doCut();
     void doCopy();
@@ -110,6 +112,7 @@ private:
     QAction *actScriptEditorRunCommand;
     QAction *actScriptStartup;
     QAction *actReport;
+    QAction *actCreateVideo;
 
     QAction *actHelp;
     QAction *actHelpShortCut;
