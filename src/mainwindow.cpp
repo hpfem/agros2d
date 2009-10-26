@@ -469,8 +469,8 @@ void MainWindow::setRecentFiles()
 void MainWindow::doDocumentNew()
 {
     ProblemInfo problemInfo;
-    ProblemDialog *problemDialog = new ProblemDialog(problemInfo, true, this);
-    if (problemDialog->showDialog() == QDialog::Accepted)
+    ProblemDialog problemDialog(problemInfo, true, this);
+    if (problemDialog.showDialog() == QDialog::Accepted)
     {
         Util::scene()->clear();
         sceneView->doDefaults();
@@ -480,7 +480,6 @@ void MainWindow::doDocumentNew()
         sceneView->actSceneModeNode->trigger();
         sceneView->doZoomBestFit();
     }
-    delete problemDialog;
 }
 
 void MainWindow::doDocumentOpen(const QString &fileName)

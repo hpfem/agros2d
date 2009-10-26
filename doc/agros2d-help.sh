@@ -2,11 +2,12 @@
 
 case "$1" in
 	help )
-		# sphinx-build -b qthelp ./source ./help
-		# qhelpgenerator ./doc/help/agros2d.qhp -o ./doc/help/agros2d.qch
+		sphinx-build -b qthelp ./source ./help
+		qcollectiongenerator ./help/Agros2D.qhcp -o ./help/Agros2D.qhc
 		;;
 	latex )
-		# sphinx-build -b latex ./source ./latex
+		sphinx-build -b latex ./source ./latex
+		make ./latex/Makefile
 		;;
 	web )
 		sphinx-build -b html ./source ./web

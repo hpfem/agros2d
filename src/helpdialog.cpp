@@ -32,9 +32,9 @@ HelpDialog::~HelpDialog()
 
 void HelpDialog::createControls()
 {
-    helpEngine = new QHelpEngine(datadir() + "/doc/help/agros2d.qhc", this);
+    helpEngine = new QHelpEngine(datadir() + "/doc/help/Agros2D.qhc", this);
     helpEngine->setupData();
-    helpEngine->setCustomValue("HomePage", "qthelp://agros2d/help/index.html");
+    helpEngine->setCustomValue("HomePage", "qthelp://agros2d.org.agros2d.0_1/doc/index.html");
 
     splitter = new QSplitter(Qt::Horizontal);
     centralWidget = new CentralWidget(helpEngine, this);
@@ -79,7 +79,7 @@ void HelpDialog::createControls()
 
 void HelpDialog::showPage(const QString &str)
 {
-    centralWidget->setSource(QUrl("qthelp://agros2d/help/" + str));
+    centralWidget->setSource(QUrl("qthelp://agros2d.org.agros2d.0_1/doc/" + str));
 }
 
 // ***********************************************************************************************************
@@ -105,7 +105,7 @@ private:
 
 HelpNetworkReply::HelpNetworkReply(const QNetworkRequest &request,
                                    const QByteArray &fileData, const QString &mimeType)
-: data(fileData), origLen(fileData.length())
+                                       : data(fileData), origLen(fileData.length())
 {
     setRequest(request);
     setOpenMode(QIODevice::ReadOnly);
@@ -148,7 +148,7 @@ private:
 
 HelpNetworkAccessManager::HelpNetworkAccessManager(QHelpEngine *engine,
                                                    QObject *parent)
-: QNetworkAccessManager(parent), helpEngine(engine)
+                                                       : QNetworkAccessManager(parent), helpEngine(engine)
 {
 }
 
@@ -196,11 +196,11 @@ private:
 };
 
 HelpPage::HelpPage(CentralWidget *central, QHelpEngine *engine, QObject *parent)
-        : QWebPage(parent)
-        , centralWidget(central)
-        , helpEngine(engine)
-        , m_pressedButtons(Qt::NoButton)
-        , m_keyboardModifiers(Qt::NoModifier)
+    : QWebPage(parent)
+    , centralWidget(central)
+    , helpEngine(engine)
+    , m_pressedButtons(Qt::NoButton)
+    , m_keyboardModifiers(Qt::NoModifier)
 {
 }
 
@@ -263,10 +263,10 @@ bool HelpPage::acceptNavigationRequest(QWebFrame *,
 }
 
 HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *parent)
-        : QWebView(parent)
-        , helpEngine(engine)
-        , parentWidget(parent)
-        , multiTabsAllowed(true)
+    : QWebView(parent)
+    , helpEngine(engine)
+    , parentWidget(parent)
+    , multiTabsAllowed(true)
 {
     setPage(new HelpPage(parent, helpEngine, this));
     settings()->setAttribute(QWebSettings::PluginsEnabled, false);
@@ -399,11 +399,11 @@ HelpViewer* helpViewerFromTabPosition(const QTabWidget *widget,
 CentralWidget *staticCentralWidget = 0;
 
 CentralWidget::CentralWidget(QHelpEngine *engine, QWidget *parent)
-        : QWidget(parent)
-        , findBar(0)
-        , tabWidget(0)
-        , helpEngine(engine)
-        , printer(0)
+    : QWidget(parent)
+    , findBar(0)
+    , tabWidget(0)
+    , helpEngine(engine)
+    , printer(0)
 {
     lastTabPage = 0;
     globalActionList.clear();

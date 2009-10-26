@@ -35,7 +35,9 @@ ChartDialog::~ChartDialog()
     delete radAxisLength;
     delete radAxisX;
     delete radAxisY;
-    
+
+    delete cmbTimeStep;
+
     // time
     delete lblPointX;
     delete lblPointY;
@@ -53,10 +55,8 @@ ChartDialog::~ChartDialog()
     delete widGeometry;
     delete widTime;
 
-    delete cmbTimeStep;
-
-    // delete tabData;
-    // delete tabType;
+    delete tabAnalysisType;
+    delete tabOutput;
 }
 
 void ChartDialog::showDialog()

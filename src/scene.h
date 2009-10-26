@@ -63,7 +63,7 @@ struct ProblemInfo
     int polynomialOrder;
     AdaptivityType adaptivityType;
     int adaptivitySteps;
-    double adaptivityTolerance;
+    double adaptivityTolerance; // percent
     QString scriptStartup;
     // harmonic magnetic
     int frequency;

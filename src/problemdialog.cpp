@@ -99,16 +99,16 @@ void ProblemDialog::createControls()
     layoutProblem->addWidget(cmbAdaptivityType, 7, 1);
     layoutProblem->addWidget(new QLabel(tr("Adaptivity steps:")), 8, 0);
     layoutProblem->addWidget(txtAdaptivitySteps, 8, 1);
-    layoutProblem->addWidget(new QLabel(tr("Adaptivity tolerance:")), 9, 0);
+    layoutProblem->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
     layoutProblem->addWidget(txtAdaptivityTolerance, 9, 1);
     // right
-    layoutProblem->addWidget(new QLabel(tr("Frequency:")), 2, 2);
+    layoutProblem->addWidget(new QLabel(tr("Frequency (Hz):")), 2, 2);
     layoutProblem->addWidget(txtFrequency, 2, 3);
     layoutProblem->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
     layoutProblem->addWidget(cmbAnalysisType, 3, 3);
-    layoutProblem->addWidget(new QLabel(tr("Time step:")), 4, 2);
+    layoutProblem->addWidget(new QLabel(tr("Time step (s):")), 4, 2);
     layoutProblem->addWidget(txtTransientTimeStep, 4, 3);
-    layoutProblem->addWidget(new QLabel(tr("Total time:")), 5, 2);
+    layoutProblem->addWidget(new QLabel(tr("Total time (s):")), 5, 2);
     layoutProblem->addWidget(txtTransientTimeTotal, 5, 3);
     layoutProblem->addWidget(new QLabel(tr("Initial condition:")), 6, 2);
     layoutProblem->addWidget(txtTransientInitialCondition, 6, 3);

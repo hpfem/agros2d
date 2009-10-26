@@ -22,25 +22,8 @@ struct SolutionArray
     Orderizer *order1;
     Orderizer *order2;
 
-    SolutionArray()
-    {
-        sln1 = NULL;
-        sln2 = NULL;
-        order1 = NULL;
-        order2 = NULL;
-
-        time = 0.0;
-        adaptiveSteps = 0;
-        adaptiveError = 100.0;
-    }  
-
-    ~SolutionArray()
-    {
-        if (sln1) delete sln1;
-        if (sln2) delete sln2;
-        if (order1) delete order1;
-        if (order2) delete order2;
-    }
+    SolutionArray();
+    ~SolutionArray();
 };
 
 class SolverThread : public QThread
