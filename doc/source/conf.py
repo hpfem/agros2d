@@ -23,7 +23,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = []
+extensions = ['sphinx.ext.pngmath']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -186,7 +186,36 @@ latex_documents = [
 #latex_use_parts = False
 
 # Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
+latex_preamble = r"""
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\DeclareMathAlphabet{\mathsfb}{T1}{lcmss}{b}{sl}
+
+\newcommand{\me}{\mathrm{e}} 
+\newcommand{\mi}{\mathrm{i}} 
+\newcommand{\mj}{\mathrm{j}} 
+\newcommand{\dif}{\,\mathrm{d}} 
+\newcommand{\mat}[1]{\mathrm{\mathbf{{#1}}}} 
+\renewcommand{\vec}[1]{\mbox{\boldmath$#1$}}
+\newcommand{\faz}[1]{{\underline{#1}}} % fazor
+\newcommand{\vecfaz}[1]{\mbox{\underline{\boldmath$#1$}}} 
+\newcommand*{\unit}[1]{\ensuremath{\mathrm{\,#1}}} 
+\newcommand{\degree}{$^{\circ}\mathrm{C}$\,} 
+
+\renewcommand{\Re}{\mathrm{Re}}
+\renewcommand{\Im}{\mathrm{Im}}
+\newcommand{\grad}{\mathrm{grad}\ }
+\newcommand{\curl}{\mathrm{curl}\ }
+\newcommand{\rot}{\mathrm{rot}\ }
+\renewcommand{\div}{\mathrm{div}\ }
+\newcommand{\const}{\mathrm{const}}
+\newcommand{\konst}{\mathrm{konst}}
+"""
+
+pngmath_latex_preamble = latex_preamble
+latex_elements = {"preamble": latex_preamble}
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []

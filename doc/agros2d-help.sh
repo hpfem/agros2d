@@ -10,7 +10,7 @@ case "$1" in
 		make ./latex/Makefile
 		;;
 	web )
-		sphinx-build -b html ./source ./web
+		sphinx-build -D html_theme_options.nosidebar=False -b html ./source ./web
 		;;
   all )
 		# sphinx-build -b qthelp ./source ./help

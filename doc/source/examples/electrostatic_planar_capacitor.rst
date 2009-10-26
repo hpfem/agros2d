@@ -101,8 +101,13 @@ Fig. 3.: Calculation of energy
 
 Capacity of the capacitor can be calculated according to formula
 
-We = 4 * 1/2 * CU^2,
+.. math::
+
+     W_e = 4 \cdot \frac{1}{2} CU^2,
 
 which can be adjusted to shape
 
-C = 4 * 2 * We/U^2.
+.. math::
+
+     C = \frac{4 \cdot 2 \cdot W_e}{U^2}.
+
