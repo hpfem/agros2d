@@ -19,6 +19,7 @@ Help Content
    ./scripting/scripting.rst
    ./program_features/program_features.rst
    ./examples/examples.rst
+   ./theory/theory.rst
    ./glossary.rst
 
 Links

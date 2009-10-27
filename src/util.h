@@ -552,9 +552,12 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
         return true;
         break;
+    default:
+        return false;
+        break;
     }
 
-    return false;
+
 }
 
 enum SceneMode
@@ -683,6 +686,8 @@ inline QString physicFieldVariableCompString(PhysicFieldVariableComp physicField
         return QObject::tr("X");
     case PHYSICFIELDVARIABLECOMP_Y:
         return QObject::tr("Y");
+    default:
+        return QObject::tr("Undefined");
     }
 }
 

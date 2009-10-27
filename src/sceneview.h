@@ -185,7 +185,6 @@ private:
     double m_texScale, m_texShift;
 
     QMenu *mnuInfo;
-    QMenu *mnuMarkerGroup;
 
     QActionGroup *actMaterialGroup;
     QActionGroup *actBoundaryGroup;

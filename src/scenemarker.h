@@ -35,7 +35,7 @@ public:
 
     QString script() { return ""; }
     QMap<QString, QString> data() { return QMap<QString, QString>(); }
-    virtual int showDialog(QWidget *parent) {}
+    int showDialog(QWidget *parent) { return 0; }
 };
 
 class EdgeMarkerDialog : public QDialog
@@ -77,7 +77,7 @@ public:
 
     QString script() { return ""; }
     QMap<QString, QString> data() { return QMap<QString, QString>(); }
-    virtual int showDialog(QWidget *parent) {}
+    int showDialog(QWidget *parent) { return 0; }
 };
 
 class LabelMarkerDialog : public QDialog

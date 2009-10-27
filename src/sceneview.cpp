@@ -225,7 +225,7 @@ void SceneView::createActions()
     actPostprocessorModeGroup->addAction(actPostprocessorModeLocalPointValue);
     actPostprocessorModeGroup->addAction(actPostprocessorModeSurfaceIntegral);
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
-    
+
     // scene properties
     actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Scene properties"), this);
     connect(actSceneViewProperties, SIGNAL(triggered()), this, SLOT(doSceneViewProperties()));
@@ -248,7 +248,6 @@ void SceneView::createActions()
 void SceneView::createMenu()
 {
     mnuInfo = new QMenu(this);
-    mnuMarkerGroup = new QMenu(tr("Set marker"), this);
 
     QMenu *mnuModeGroup = new QMenu(tr("Set mode"), this);
     mnuModeGroup->addAction(actSceneModeNode);
@@ -266,10 +265,10 @@ void SceneView::createMenu()
     mnuInfo->addAction(actSceneViewSelectRegion);
     mnuInfo->addAction(Util::scene()->actTransform);
     mnuInfo->addSeparator();
-    mnuInfo->addMenu(mnuMarkerGroup);
     mnuInfo->addMenu(mnuModeGroup);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actFullScreen);
+    mnuInfo->addAction(Util::scene()->actProblemProperties);
     mnuInfo->addAction(actSceneObjectProperties);
     mnuInfo->addAction(actSceneViewProperties);
 }
@@ -1862,37 +1861,15 @@ void SceneView::wheelEvent(QWheelEvent *event)
 
 void SceneView::contextMenuEvent(QContextMenuEvent *event)
 {
-    mnuMarkerGroup->clear();
-    mnuMarkerGroup->setEnabled(false);
     actSceneObjectProperties->setEnabled(false);
 
     // set boundary context menu
     if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
-    {
         actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
-        mnuMarkerGroup->setEnabled((Util::scene()->edgeMarkers.count() > 0));
-        for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
-        {
-            QAction *actMenuEdgeMarkerItem = new QAction(Util::scene()->edgeMarkers[i]->name, this);
-            actMenuEdgeMarkerItem->setData(Util::scene()->edgeMarkers[i]->variant());
-            actBoundaryGroup->addAction(actMenuEdgeMarkerItem);
-            mnuMarkerGroup->addAction(actMenuEdgeMarkerItem);
-        }
-    }
     
     // set material context menu
     if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
-    {
         actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
-        mnuMarkerGroup->setEnabled((Util::scene()->labelMarkers.count() > 0));
-        for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
-        {
-            QAction *actMenuLabelMarkerItem = new QAction(Util::scene()->labelMarkers[i]->name, this);
-            actMenuLabelMarkerItem->setData(Util::scene()->labelMarkers[i]->variant());
-            actMaterialGroup->addAction(actMenuLabelMarkerItem);
-            mnuMarkerGroup->addAction(actMenuLabelMarkerItem);
-        }
-    }
 
 
     mnuInfo->exec(event->globalPos());

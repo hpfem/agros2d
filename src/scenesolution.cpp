@@ -2,6 +2,8 @@
 
 SceneSolution::SceneSolution(Scene *scene)
 {
+    m_timeStep = -1;
+
     m_solutionArrayList = NULL;
     m_slnContourView = NULL;
     m_slnScalarView = NULL;
@@ -13,6 +15,8 @@ SceneSolution::SceneSolution(Scene *scene)
 
 void SceneSolution::clear()
 {
+    cout << "void SceneSolution::clear()" << endl;
+
     m_timeStep = -1;
 
     // solution array
@@ -51,12 +55,6 @@ void SceneSolution::clear()
     {
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
-    }
-
-    if (m_solutionArrayList)
-    {
-        delete m_solutionArrayList;
-        m_solutionArrayList = NULL;
     }
 }
 

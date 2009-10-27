@@ -308,7 +308,6 @@ void MainWindow::createMenus()
     mnuTools->addAction(actScriptEditorRunCommand);
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
-    mnuTools->addSeparator();
     mnuTools->addAction(actCreateVideo);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();

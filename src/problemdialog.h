@@ -36,7 +36,6 @@ private:
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     SLineEdit *txtAdaptivityTolerance;
-    QTextEdit *txtDescription;
     // harmonic magnetic
     SLineEdit *txtFrequency;
     // transient

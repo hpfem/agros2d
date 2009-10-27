@@ -27,7 +27,6 @@ ProblemDialog::~ProblemDialog()
     delete txtAdaptivitySteps;
     delete txtAdaptivityTolerance;
     delete cmbAdaptivityType;
-    delete txtDescription;
     // harmonic magnetic
     delete txtFrequency;
     // transient
@@ -61,8 +60,6 @@ void ProblemDialog::createControls()
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEdit("1", true, this);
-    // txtDescription = new QTextEdit(this);
-    // txtDescription->setLineWidth(2);
     // harmonic magnetic
     txtFrequency = new SLineEdit("0", true, this);
     // transient

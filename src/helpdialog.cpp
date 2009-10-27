@@ -4,6 +4,8 @@
 #include <QtHelp/QHelpContentWidget>
 #include <QtHelp/QHelpIndexWidget>
 
+const QString path = "agros2d.org.agros2d.0_1/doc/";
+
 HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("help-browser"));
@@ -34,7 +36,7 @@ void HelpDialog::createControls()
 {
     helpEngine = new QHelpEngine(datadir() + "/doc/help/Agros2D.qhc", this);
     helpEngine->setupData();
-    helpEngine->setCustomValue("HomePage", "qthelp://agros2d.org.agros2d.0_1/doc/index.html");
+    helpEngine->setCustomValue("HomePage", "qthelp://" + path + "index.html");
 
     splitter = new QSplitter(Qt::Horizontal);
     centralWidget = new CentralWidget(helpEngine, this);
@@ -69,17 +71,17 @@ void HelpDialog::createControls()
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(splitter);
 
-    showPage("index.html");
-
     connect(helpEngine->contentWidget(), SIGNAL(linkActivated(const QUrl &)), centralWidget, SLOT(setSource(const QUrl &)));
     connect(helpEngine->indexWidget(), SIGNAL(linkActivated(const QUrl &, const QString &)), centralWidget, SLOT(setSource(const QUrl &)));
     connect(helpEngine->indexWidget(), SIGNAL(linksActivated(const QMap<QString, QUrl> &, const QString &)), topicChooser, SLOT(doLinksActivated(QMap<QString, QUrl>, QString)));
     connect(topicChooser, SIGNAL(linkActivated(const QUrl &)), centralWidget, SLOT(setSource(const QUrl &)));
+
+    showPage("index.html");
 }
 
 void HelpDialog::showPage(const QString &str)
 {
-    centralWidget->setSource(QUrl("qthelp://agros2d.org.agros2d.0_1/doc/" + str));
+    centralWidget->setSource(QUrl("qthelp://" + path + str));
 }
 
 // ***********************************************************************************************************

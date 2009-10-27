@@ -39,6 +39,7 @@ void VideoDialog::createControls()
 
     cmbCodec = new QComboBox();
     cmbCodec->addItem("Motion JPEG (mjpeg)", "mjpeg");
+    cmbCodec->addItem("Flash Video (flv)", "flv");
     cmbCodec->addItem("MPEG-4 part 2 (mpeg4)", "mpeg4");
     cmbCodec->addItem("MPEG-4 part 2 Microsoft variant version 2 (msmpeg4v2)", "msmpeg4v2");
     cmbCodec->addItem("Windows Media Video 7 (wmv1)", "wmv1");

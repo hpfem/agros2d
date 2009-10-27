@@ -87,6 +87,7 @@ public:
 
 private slots:
     void doCancel();
+    void doClose();
 
 private:
     SolverThread *thread;
@@ -95,6 +96,7 @@ private:
     QProgressBar *progressBar;
     QTextEdit *lstMessage;
     QPushButton *btnCancel;
+    QPushButton *btnClose;
 
     void createControls();
 };

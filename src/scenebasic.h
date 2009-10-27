@@ -30,7 +30,6 @@ public:
     bool isHighlighted;
 
     SceneBasic();
-    virtual ~SceneBasic();
 
     virtual int showDialog(QWidget *parent, bool isNew = false) = 0;
 
@@ -45,7 +44,6 @@ public:
     Point point;
 
     SceneNode(const Point &point);
-    ~SceneNode();
 
     double distance(const Point &point);
 
@@ -63,7 +61,6 @@ public:
     double angle;
 
     SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *marker, double angle);
-    ~SceneEdge();
 
     Point center();
     double radius();
@@ -83,7 +80,6 @@ public:
     double area;
 
     SceneLabel(const Point &point, SceneLabelMarker *marker, double area);
-    ~SceneLabel();
 
     double distance(const Point &point);
 

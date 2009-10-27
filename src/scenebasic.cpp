@@ -7,10 +7,6 @@ SceneBasic::SceneBasic()
     isHighlighted = false;
 }
 
-SceneBasic::~SceneBasic()
-{
-}
-
 QVariant SceneBasic::variant()
 {
     QVariant v;
@@ -24,11 +20,6 @@ SceneNode::SceneNode(const Point &point) : SceneBasic()
 {
     this->point = point;
 }
-
-SceneNode::~SceneNode()
-{
-}
-
 double SceneNode::distance(const Point &point)
 {
     return (this->point - point).magnitude();
@@ -48,10 +39,6 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *
     this->nodeEnd = nodeEnd;
     this->marker = marker;
     this->angle = angle;
-}
-
-SceneEdge::~SceneEdge()
-{
 }
 
 Point SceneEdge::center()
@@ -122,10 +109,6 @@ SceneLabel::SceneLabel(const Point &point, SceneLabelMarker *marker, double area
     this->point = point;
     this->marker = marker;
     this->area = area;
-}
-
-SceneLabel::~SceneLabel()
-{
 }
 
 double SceneLabel::distance(const Point &point)

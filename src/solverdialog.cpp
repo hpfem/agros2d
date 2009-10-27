@@ -231,7 +231,6 @@ void SolverThread::runSolver()
     if (solutionArrayList)
     {
         Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
-
         emit message(tr("Solver: problem was solved."), false);
         Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
     }
@@ -553,8 +552,7 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 
     connect(thread, SIGNAL(updateProgress(int)), progressBar, SLOT(setValue(int)));
     connect(thread, SIGNAL(message(QString, bool)), this, SLOT(doShowMessage(QString, bool)));
-    connect(thread, SIGNAL(solved()), this, SLOT(doSolved()));
-    // connect(thread, SIGNAL(terminated()), this, SLOT(hide()));
+    connect(thread, SIGNAL(solved()), this, SLOT(doSolved()));    
 
     resize(minimumSize());
 }
@@ -571,6 +569,7 @@ SolverDialog::~SolverDialog()
     delete thread;
 
     delete btnCancel;
+    delete btnClose;
     delete progressBar;
     delete lblMessage;
     delete lstMessage;       
@@ -589,6 +588,10 @@ void SolverDialog::createControls()
     btnCancel->setDefault(true);
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(doCancel()));
     connect(this, SIGNAL(finished(int)), this, SLOT(doCancel()));
+
+    btnClose = new QPushButton(tr("&Close"));
+    btnClose->setDefault(true);
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
     buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
@@ -657,4 +660,10 @@ void SolverDialog::doCancel()
             thread->wait(100);
         }
     }
+}
+
+void SolverDialog::doClose()
+{
+    doCancel();
+    hide();
 }

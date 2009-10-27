@@ -166,6 +166,8 @@ void Scene::removeNode(SceneNode *node)
     }
 
     nodes.removeOne(node);
+    // delete node;
+
     emit invalidated();
 }
 
@@ -205,6 +207,8 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
 void Scene::removeEdge(SceneEdge *edge)
 {
     edges.removeOne(edge);
+    // delete edge;
+
     emit invalidated();
 }
 
@@ -241,6 +245,8 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
 void Scene::removeLabel(SceneLabel *label)
 {
     labels.removeOne(label);
+    // delete label;
+
     emit invalidated();
 }
 
@@ -269,6 +275,8 @@ void Scene::removeEdgeMarker(SceneEdgeMarker *edgeMarker)
             edge->marker = edgeMarkers[0];
     }
     this->edgeMarkers.removeOne(edgeMarker);
+    // delete edgeMarker;
+
     emit invalidated();
 }
 
@@ -307,6 +315,8 @@ void Scene::removeLabelMarker(SceneLabelMarker *labelMarker)
             label->marker = labelMarkers[0];
     }
     this->labelMarkers.removeOne(labelMarker);
+    // delete labelMarker;
+
     emit invalidated();
 }
 
@@ -348,6 +358,8 @@ SceneFunction *Scene::addFunction(SceneFunction *function)
 void Scene::removeFunction(SceneFunction *function)
 {
     functions.removeOne(function);
+    delete function;
+
     emit invalidated();
 }
 
