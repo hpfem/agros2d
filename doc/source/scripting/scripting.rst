@@ -218,15 +218,15 @@ Materials and Boundaries Commands
    Add boundary marker.
 
    - Electrostatic field
-      addBoundary(name, type = {"potential", "surface_charge_density"}, value)
+      addBoundary(name, type = {"electrostatic_potential", "electrostatic_surface_charge_density"}, value)
    - Electric current field
-      addBoundary(name, type = {"potential", "inward_current_flow"}, value)
+      addBoundary(name, type = {"current_potential", "current_inward_current_flow"}, value)
    - Magnetostatic field
-      addBoundary(name, type = {"vector_potential", "surface_current_density"}, value)
+      addBoundary(name, type = {"magnetostatic_vector_potential", "magnetostatic_surface_current_density"}, value)
    - Harmonic magnetic field
-      addBoundary(name, type = {"vector_potential", "surface_current_density"}, value)
+      addBoundary(name, type = {"harmonicmagnetic_vector_potential", "harmonicmagnetic_surface_current_density"}, value)
    - Heat transfer
-      addBoundary(name, type = "temperature", temperature)
+      addBoundary(name, type = "heat_temperature", temperature)
       addBoundary(name, type = "heat_flux", heat_flux, h, external_temperature)
 
 .. index:: addMaterial()
@@ -415,4 +415,4 @@ Tips
 
 You can run single commands and user functions. Select "Run command..." in the menu "Tools", or by pressing Alt+C and enter command, or user function.
 
-.. _QtScript: http://doc.trolltech.com/4.3/qtscript.html
+.. _QtScript: http://doc.trolltech.com/latest/qtscript.html

@@ -3,19 +3,21 @@
 Program Features
 ================
 
-Startup Script
---------------
+Import and Export Geometry
+--------------------------
+
+You can use the import and export geometry with file in AutoCAD DXF format. This features is available from the menu "File". This functionality is based on dxflib_.
 
 User Functions
 --------------
 You can write a functions that you can use in your scripts. If you write this functions to the file *functions.qs* in Agros2D root directory, then you will be able to use the other commands. You can also use :ref:`predefined-functions`.
 
+.. index:: agros2d-remote
+
 Remote Control
 --------------
 
-.. index:: agros2d-remote
-
-Agros2D support remote control. You can use *agros2d-remote* command for remote controling of Agros2D.
+Agros2D support remote controling. You can use *agros2d-remote* command for remote controling of Agros2D.
 
 An example: ::
 
@@ -34,3 +36,7 @@ You can use commands described in the section :ref:`scripting`.
 
 Report
 ------
+
+You can use the automatic generation of reports about solution problems in Agros2D. This features is available from the menu "Tools". Report is generated to HTML file.
+
+.. _dxflib: http://www.ribbonsoft.com/dxflib.html

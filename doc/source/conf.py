@@ -18,6 +18,7 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.append(os.path.abspath('_exts'))
 
+
 # -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
@@ -37,8 +38,8 @@ source_encoding = 'utf-8'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Agros2D'
-copyright = u'2009, Pavel Karban, František Mach'
+project = 'Agros2D'
+copyright = u'Pavel Karban, František Mach'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -57,14 +58,14 @@ language = 'en'
 # non-false value, then it is used:
 #today = ''
 # Else, today_fmt is used as the format for a strftime call.
-#today_fmt = '%B %d, %Y'
+today_fmt = '%b %d, %Y'
 
 # List of documents that shouldn't be included in the build.
 #unused_docs = []
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['./getting_started', './scripting', './program_features', './examples']
+exclude_trees = ['./getting_started', './scripting', './program_features', './examples', './theory']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -78,7 +79,7 @@ exclude_trees = ['./getting_started', './scripting', './program_features', './ex
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-show_authors = False
+#show_authors = True
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -91,22 +92,51 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'sphinxdoc'
+html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {'nosidebar': True}
+html_theme_options = {
+'bodyfont': 'verdana, helvetica, arial, sans-serif',
+'bgcolor': '#FFFFFF',
+'textcolor': '#000000',
+'linkcolor': '#3D5C7A',
+'rightsidebar': False,
+'sidebarbgcolor': '#F8F8F8',
+'sidebartextcolor': '#000000',
+'sidebarlinkcolor': '#3D5C7A',
+'headfont': '"trebuchet ms", verdana, helvetica, arial, sans-serif',
+'headbgcolor': '#FFFFFF',
+'headtextcolor': '#7590AE',
+'headlinkcolor': '#3D5C7A',
+'codebgcolor': '#F5F5F5',
+'codetextcolor': '#000000',
+
+# Style for help
+'relbarbgcolor': '#FFFFFF',
+'relbartextcolor': '#000000',
+'relbarlinkcolor': '#3D5C7A',
+'footerbgcolor': '#FFFFFF',
+'footertextcolor': '#000000',
+
+# Style for web
+#'relbarbgcolor': '#824513',
+#'relbartextcolor': '#000000',
+#'relbarlinkcolor': '#FFFFFF',
+#'footerbgcolor': '#824513',
+#'footertextcolor': '#FFFFFF',
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = None
+html_title = 'Agros2D Documentation'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = 'Introduction'
+html_short_title = 'Help Content'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -115,7 +145,7 @@ html_logo = './_static/agros2d.png'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = './_static/agros2d.ico'
+html_favicon = './_static/agros2d.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -138,7 +168,7 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_use_modindex = True
+html_use_modindex = False
 
 # If false, no index is generated.
 html_use_index = True
@@ -155,7 +185,7 @@ html_show_sourcelink = False
 #html_use_opensearch = ''
 
 # If nonempty, this is the file name suffix for HTML files (e.g. ".xhtml").
-#html_file_suffix = ''
+html_file_suffix = '.html'
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Agros2Ddoc'
@@ -164,10 +194,10 @@ htmlhelp_basename = 'Agros2Ddoc'
 # -- Options for LaTeX output --------------------------------------------------
 
 # The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+latex_paper_size = 'letter'
 
 # The font size ('10pt', '11pt' or '12pt').
-#latex_font_size = '10pt'
+latex_font_size = '10pt'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
@@ -178,11 +208,11 @@ latex_documents = [
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-#latex_logo = None
+latex_logo = './_static/agros2d.png'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
-#latex_use_parts = False
+#latex_use_parts = True
 
 # Additional stuff for the LaTeX preamble.
 latex_preamble = r"""
@@ -220,4 +250,4 @@ latex_elements = {"preamble": latex_preamble}
 #latex_appendices = []
 
 # If false, no module index is generated.
-#latex_use_modindex = True
+#latex_use_modindex = False

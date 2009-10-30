@@ -10,7 +10,7 @@ When editing geometry is necessary to switch between the basic modes.
 * Operate on edges
 * Operate on labels
 
-To switch between different modes you can use the corresponding items in the menu "Problem" or keys F5 (Operate on nodes), F6 (Operate on edges) and F7 (Operate on labels).
+To switch between different modes you can use the corresponding items in the menu "Problem" or key F5 (Operate on nodes), F6 (Operate on edges) and F7 (Operate on labels).
 
 Adding and Editing Elements of Geometry
 ---------------------------------------
@@ -58,4 +58,6 @@ You can press double click on the requested elements (nodes, edges, labels) for 
 Tips
 ----
 
-Some operations can also be found in the context menu, which can lead to press right button on the work area, or on list "Problem".
+Some operations can also be found in the context menu, which can lead to press right button on the workspace, or on list "Problem".
+
+You can use the full screen display mode to make the most of workspace views. To switch use key F11, or item in the context menu in workspace.

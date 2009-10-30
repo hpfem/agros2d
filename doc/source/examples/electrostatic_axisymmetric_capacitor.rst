@@ -16,7 +16,7 @@ For more information visit http://en.wikipedia.org/wiki/Capacitor.
 Preprocessing
 -------------
 
-Select "Script editor" in the "Tools" menu and create new solution by command newDocument in form.
+Select "Script editor" in the "Tools" menu, or press key F4 and create new solution by command newDocument in form.
 
 .. literalinclude:: ./electrostatic_axisymmetric_capacitor.qs
    :lines: 2
@@ -47,21 +47,17 @@ Geometry
 
 * Edges
 
-   Use edges to create the desired geometry. Adding edges is carried out with the command addEdge.
+  Use edges to create the desired geometry. Adding edges is carried out with the command addEdge.
 
-.. literalinclude:: ./electrostatic_axisymmetric_capacitor.qs
-   :lines: 26-38
+  .. literalinclude:: ./electrostatic_axisymmetric_capacitor.qs
+     :lines: 26-38
 
 * Labels
 
   Use labels to define block labels. Adding bloct labels is carried out with the command addLabel.
 
-.. literalinclude:: ./electrostatic_axisymmetric_capacitor.qs
-   :lines: 41-43
-
-.. image:: ./editing_script.png
-
-Fig 1.: Editing script
+  .. literalinclude:: ./electrostatic_axisymmetric_capacitor.qs
+     :lines: 41-43
 
 Processing
 ----------

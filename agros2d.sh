@@ -2,7 +2,10 @@
 
 case "$1" in
 	help )
-		qcollectiongenerator ./doc/help/Agros2D.qhcp -o ./doc/help/Agros2D.qhc
+		if sphinx-build -b qthelp ./doc/source ./doc/help
+		then
+			qcollectiongenerator ./doc/help/Agros2D.qhcp -o ./doc/help/Agros2D.qhc
+		fi
 		;;
 	lang )
 		lrelease ./lang/*.ts
@@ -15,7 +18,10 @@ case "$1" in
 		dpkg-buildpackage -sgpg -rfakeroot
 		;;
 	all )
-		qcollectiongenerator ./doc/help/Agros2D.qhcp -o ./doc/help/Agros2D.qhc
+		if sphinx-build -b qthelp ./doc/source ./doc/help
+		then
+			qcollectiongenerator ./doc/help/Agros2D.qhcp -o ./doc/help/Agros2D.qhc
+		fi
 		lrelease ./lang/*.ts ./lang/*.qm
 		if qmake ./agros2d.pro ; then make ; fi
 		rm ../agros2d_*
