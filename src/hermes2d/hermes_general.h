@@ -145,4 +145,5 @@ private:
     SLineEditValue *txtConstant;
     SLineEditValue *txtRightSide;
 };
+
 #endif // GENERAL_H

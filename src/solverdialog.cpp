@@ -50,7 +50,7 @@ void SolverThread::cancel()
     while (isRunning())
     {
         quit();
-        wait(50);
+        wait(30);
     }
     m_isCanceled = true;
 }
@@ -184,7 +184,7 @@ void SolverThread::doMeshTriangleCreated(int exitCode)
             // error
             updateProgress(100);
 
-            QFile::remove(Util::scene()->problemInfo().fileName + ".mesh");
+            QFile::remove(Util::scene()->problemInfo()->fileName + ".mesh");
             return;
         }
 
@@ -202,7 +202,7 @@ void SolverThread::doMeshTriangleCreated(int exitCode)
         // error
         updateProgress(100);
 
-        QFile file(Util::scene()->problemInfo().fileName + ".triangle.out");
+        QFile file(Util::scene()->problemInfo()->fileName + ".triangle.out");
 
         QTextStream standardOutput(&file);
         QString errorMessage = standardOutput.readAll();
@@ -223,10 +223,10 @@ void SolverThread::runSolver()
     QTime time;
     time.start();
 
-    emit message(tr("Solver: solver was started: ") + physicFieldString(Util::scene()->problemInfo().physicField()) + " (" + problemTypeString(Util::scene()->problemInfo().problemType) + ")", false);
+    emit message(tr("Solver: solver was started: ") + physicFieldString(Util::scene()->problemInfo()->physicField()) + " (" + problemTypeString(Util::scene()->problemInfo()->problemType) + ")", false);
     updateProgress(60);
 
-    QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo().hermes->solve(this);
+    QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo()->hermes()->solve(this);
 
     if (solutionArrayList)
     {
@@ -564,7 +564,7 @@ SolverDialog::~SolverDialog()
     while (thread->isRunning())
     {
         thread->quit();
-        thread->wait(50);
+        thread->wait(30);
     }
     delete thread;
 

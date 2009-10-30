@@ -101,22 +101,22 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Date]", QDateTime(QDateTime::currentDateTime()).toString("dd.MM.yyyy hh:mm"), Qt::CaseSensitive);
 
     // problem info
-    destination.replace("[Problem.Name]", Util::scene()->problemInfo().name, Qt::CaseSensitive);
-    destination.replace("[Problem.Date]", Util::scene()->problemInfo().date.toString("dd.MM.yyyy"), Qt::CaseSensitive);
-    destination.replace("[Problem.FileName]", QFileInfo(Util::scene()->problemInfo().fileName).completeBaseName(), Qt::CaseSensitive);
-    destination.replace("[Problem.ProblemType]", problemTypeString(Util::scene()->problemInfo().problemType), Qt::CaseSensitive);
-    destination.replace("[Problem.PhysicField]", physicFieldString(Util::scene()->problemInfo().physicField()), Qt::CaseSensitive);
-    destination.replace("[Problem.NumberOfRefinements]", QString::number(Util::scene()->problemInfo().numberOfRefinements), Qt::CaseSensitive);
-    destination.replace("[Problem.PolynomialOrder]", QString::number(Util::scene()->problemInfo().polynomialOrder), Qt::CaseSensitive);
-    destination.replace("[Problem.AdaptivityType]", adaptivityTypeString(Util::scene()->problemInfo().adaptivityType), Qt::CaseSensitive);
-    destination.replace("[Problem.AdaptivitySteps]", QString::number(Util::scene()->problemInfo().adaptivitySteps), Qt::CaseSensitive);
-    destination.replace("[Problem.AdaptivityTolerance]", QString::number(Util::scene()->problemInfo().adaptivityTolerance), Qt::CaseSensitive);
+    destination.replace("[Problem.Name]", Util::scene()->problemInfo()->name, Qt::CaseSensitive);
+    destination.replace("[Problem.Date]", Util::scene()->problemInfo()->date.toString("dd.MM.yyyy"), Qt::CaseSensitive);
+    destination.replace("[Problem.FileName]", QFileInfo(Util::scene()->problemInfo()->fileName).completeBaseName(), Qt::CaseSensitive);
+    destination.replace("[Problem.ProblemType]", problemTypeString(Util::scene()->problemInfo()->problemType), Qt::CaseSensitive);
+    destination.replace("[Problem.PhysicField]", physicFieldString(Util::scene()->problemInfo()->physicField()), Qt::CaseSensitive);
+    destination.replace("[Problem.NumberOfRefinements]", QString::number(Util::scene()->problemInfo()->numberOfRefinements), Qt::CaseSensitive);
+    destination.replace("[Problem.PolynomialOrder]", QString::number(Util::scene()->problemInfo()->polynomialOrder), Qt::CaseSensitive);
+    destination.replace("[Problem.AdaptivityType]", adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType), Qt::CaseSensitive);
+    destination.replace("[Problem.AdaptivitySteps]", QString::number(Util::scene()->problemInfo()->adaptivitySteps), Qt::CaseSensitive);
+    destination.replace("[Problem.AdaptivityTolerance]", QString::number(Util::scene()->problemInfo()->adaptivityTolerance), Qt::CaseSensitive);
 
-    destination.replace("[Problem.Frequency]", QString::number(Util::scene()->problemInfo().frequency), Qt::CaseSensitive);
-    destination.replace("[Problem.AnalysisType]", analysisTypeString(Util::scene()->problemInfo().analysisType), Qt::CaseSensitive);
-    destination.replace("[Problem.TimeStep]", QString::number(Util::scene()->problemInfo().timeStep), Qt::CaseSensitive);
-    destination.replace("[Problem.TimeTotal]", QString::number(Util::scene()->problemInfo().timeTotal), Qt::CaseSensitive);
-    destination.replace("[Problem.InititalCondition]", QString::number(Util::scene()->problemInfo().initialCondition), Qt::CaseSensitive);
+    destination.replace("[Problem.Frequency]", QString::number(Util::scene()->problemInfo()->frequency), Qt::CaseSensitive);
+    destination.replace("[Problem.AnalysisType]", analysisTypeString(Util::scene()->problemInfo()->analysisType), Qt::CaseSensitive);
+    destination.replace("[Problem.TimeStep]", QString::number(Util::scene()->problemInfo()->timeStep), Qt::CaseSensitive);
+    destination.replace("[Problem.TimeTotal]", QString::number(Util::scene()->problemInfo()->timeTotal), Qt::CaseSensitive);
+    destination.replace("[Problem.InititalCondition]", QString::number(Util::scene()->problemInfo()->initialCondition), Qt::CaseSensitive);
 
     // script
     destination.replace("[Script]", createEcmaFromModel(), Qt::CaseSensitive);
@@ -192,8 +192,8 @@ QString ReportDialog::htmlGeometryNodes()
     out  = "\n";
     out += "<table>";
     out += "<tr>";
-    out += "<th>" + Util::scene()->problemInfo().labelX() + " (m)</th>";
-    out += "<th>" + Util::scene()->problemInfo().labelY() + " (m)</th>";
+    out += "<th>" + Util::scene()->problemInfo()->labelX() + " (m)</th>";
+    out += "<th>" + Util::scene()->problemInfo()->labelY() + " (m)</th>";
     out += "</tr>";
     for (int i = 0; i < Util::scene()->nodes.count(); i++)
     {
@@ -242,8 +242,8 @@ QString ReportDialog::htmlGeometryLabels()
     out  = "\n";
     out += "<table>";
     out += "<tr>";
-    out += "<th>" + Util::scene()->problemInfo().labelX() + " (m)</th>";
-    out += "<th>" + Util::scene()->problemInfo().labelY() + " (m)</th>";
+    out += "<th>" + Util::scene()->problemInfo()->labelX() + " (m)</th>";
+    out += "<th>" + Util::scene()->problemInfo()->labelY() + " (m)</th>";
     out += "<th>Array (m)</th>";
     out += "<th>Marker</th>";    out += "</tr>";
     for (int i = 0; i < Util::scene()->labels.count(); i++)

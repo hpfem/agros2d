@@ -63,12 +63,12 @@ Scalar general_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
 
 QList<SolutionArray *> *general_main(SolverThread *solverThread)
 {
-    generalPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
-    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
+    generalPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -271,8 +271,8 @@ void HermesGeneral::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loca
     itemGradient->setText(0, tr("Gradient"));
     itemGradient->setExpanded(true);
 
-    addTreeWidgetItemValue(itemGradient, "G" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueGeneral->gradient.x, 0, 'e', 3), "");
-    addTreeWidgetItemValue(itemGradient, "G" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueGeneral->gradient.y, 0, 'e', 3), "");
+    addTreeWidgetItemValue(itemGradient, "G" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueGeneral->gradient.x, 0, 'e', 3), "");
+    addTreeWidgetItemValue(itemGradient, "G" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueGeneral->gradient.y, 0, 'e', 3), "");
     addTreeWidgetItemValue(itemGradient, "G:", QString("%1").arg(localPointValueGeneral->gradient.magnitude(), 0, 'e', 3), "");
 }
 
@@ -304,7 +304,7 @@ QList<SolutionArray *> *HermesGeneral::solve(SolverThread *solverThread)
             SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeGeneralMarker->value.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!edgeGeneralMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             generalEdge[i+1].type = edgeGeneralMarker->type;
             generalEdge[i+1].value = edgeGeneralMarker->value.number;
@@ -323,8 +323,8 @@ QList<SolutionArray *> *HermesGeneral::solve(SolverThread *solverThread)
             SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelGeneralMarker->rightside.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelGeneralMarker->constant.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelGeneralMarker->rightside.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelGeneralMarker->constant.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             generalLabel[i].rightside = labelGeneralMarker->rightside.number;
             generalLabel[i].constant = labelGeneralMarker->constant.number;

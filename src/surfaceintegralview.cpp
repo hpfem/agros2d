@@ -48,7 +48,7 @@ SurfaceIntegralValueView::~SurfaceIntegralValueView()
 
 void SurfaceIntegralValueView::doShowSurfaceIntegral()
 {
-    SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo().hermes->surfaceIntegralValue();
+    SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
     trvWidget->clear();
 
     // point
@@ -62,5 +62,7 @@ void SurfaceIntegralValueView::doShowSurfaceIntegral()
     trvWidget->insertTopLevelItem(0, pointGeometry);
 
     if (Util::scene()->sceneSolution()->isSolved())
-        Util::scene()->problemInfo().hermes->showSurfaceIntegralValue(trvWidget, surfaceIntegralValue);
+        Util::scene()->problemInfo()->hermes()->showSurfaceIntegralValue(trvWidget, surfaceIntegralValue);
+
+    delete surfaceIntegralValue;
 }

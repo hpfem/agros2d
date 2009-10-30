@@ -25,10 +25,10 @@ void SceneViewSettings::defaultValues()
     scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
     scalarRangeAuto = true;
 
-    contourPhysicFieldVariable = Util::scene()->problemInfo().hermes->contourPhysicFieldVariable();
-    scalarPhysicFieldVariable = Util::scene()->problemInfo().hermes->scalarPhysicFieldVariable();
-    scalarPhysicFieldVariableComp = Util::scene()->problemInfo().hermes->scalarPhysicFieldVariableComp();
-    vectorPhysicFieldVariable = Util::scene()->problemInfo().hermes->vectorPhysicFieldVariable();    
+    contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
+    scalarPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable();
+    scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
+    vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
 }
 
 void SceneViewSettings::load()
@@ -268,6 +268,7 @@ void SceneView::createMenu()
     mnuInfo->addMenu(mnuModeGroup);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actFullScreen);
+    mnuInfo->addSeparator();
     mnuInfo->addAction(Util::scene()->actProblemProperties);
     mnuInfo->addAction(actSceneObjectProperties);
     mnuInfo->addAction(actSceneViewProperties);
@@ -2138,13 +2139,13 @@ void SceneView::setRangeContour()
     if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours)
     {
         ViewScalarFilter *viewScalarFilter;
-        if (Util::scene()->problemInfo().hermes->numberOfSolution() == 1)
+        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 1)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
                                                     Util::scene(),
                                                     m_sceneViewSettings.contourPhysicFieldVariable,
                                                     PHYSICFIELDVARIABLECOMP_SCALAR);
 
-        if (Util::scene()->problemInfo().hermes->numberOfSolution() == 2)
+        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 2)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
                                                     Util::scene()->sceneSolution()->sln2(),
                                                     Util::scene(),
@@ -2163,13 +2164,13 @@ void SceneView::setRangeScalar()
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         ViewScalarFilter *viewScalarFilter;
-        if (Util::scene()->problemInfo().hermes->numberOfSolution() == 1)
+        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 1)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
                                                     Util::scene(),
                                                     m_sceneViewSettings.scalarPhysicFieldVariable,
                                                     m_sceneViewSettings.scalarPhysicFieldVariableComp);
 
-        if (Util::scene()->problemInfo().hermes->numberOfSolution() == 2)
+        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 2)
             viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
                                                     Util::scene()->sceneSolution()->sln2(),
                                                     Util::scene(),

@@ -72,11 +72,14 @@ Util *Util::singleton()
 
 // ************************************************************************************************************************
 
-Scene::Scene() {
+Scene::Scene()
+{
     createActions();
 
+    m_problemInfo = new ProblemInfo();
     m_undoStack = new QUndoStack(this);
     m_sceneSolution = new SceneSolution(this);
+
     solverDialog = new SolverDialog(QApplication::activeWindow());
     connect(solverDialog, SIGNAL(solved()), this, SLOT(doSolved()));
 
@@ -85,9 +88,13 @@ Scene::Scene() {
     clear();
 }
 
-Scene::~Scene() {
-    // delete solverDialog;
-    // delete m_sceneSolution;
+Scene::~Scene()
+{
+    clear();
+
+    delete solverDialog;
+    delete m_sceneSolution;
+    delete m_undoStack;
 }
 
 void Scene::createActions()
@@ -370,18 +377,24 @@ void Scene::clear()
     m_undoStack->clear();
 
     m_sceneSolution->clear();
-    m_problemInfo.clear();
+    m_problemInfo->clear();
 
     // geometry
+    for (int i = 0; i < nodes.count(); i++) delete nodes[i];
     nodes.clear();
+    for (int i = 0; i < edges.count(); i++) delete edges[i];
     edges.clear();
+    for (int i = 0; i < labels.count(); i++) delete labels[i];
     labels.clear();
 
     // markers
+    for (int i = 0; i < edgeMarkers.count(); i++) delete edgeMarkers[i];
     edgeMarkers.clear();
+    for (int i = 0; i < labelMarkers.count(); i++) delete labelMarkers[i];
     labelMarkers.clear();
 
     // functions
+    for (int i = 0; i < functions.count(); i++) delete functions[i];
     functions.clear();
 
     // none edge
@@ -668,13 +681,13 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     sceneSolution()->clear();
 
     // store orig name
-    QString fileNameOrig = m_problemInfo.fileName;
+    QString fileNameOrig = m_problemInfo->fileName;
 
     // save as temp name
-    m_problemInfo.fileName = tempProblemFileName() + ".a2d";
+    m_problemInfo->fileName = tempProblemFileName() + ".a2d";
 
     // save problem
-    writeToFile(m_problemInfo.fileName);
+    writeToFile(m_problemInfo->fileName);
 
     // solve
     QFileInfo fileInfoOrig(fileNameOrig);
@@ -683,7 +696,7 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     solverDialog->solve();
 
     // restore orig name
-    m_problemInfo.fileName = fileNameOrig;
+    m_problemInfo->fileName = fileNameOrig;
 }
 
 void Scene::doSolved()
@@ -697,10 +710,10 @@ void Scene::doSolved()
     emit invalidated();
 
     // delete temp file
-    if (m_problemInfo.fileName == tempProblemFileName() + ".a2d")
+    if (m_problemInfo->fileName == tempProblemFileName() + ".a2d")
     {
-        QFile::remove(m_problemInfo.fileName);
-        m_problemInfo.fileName = "";
+        QFile::remove(m_problemInfo->fileName);
+        m_problemInfo->fileName = "";
     }
 }
 
@@ -751,7 +764,7 @@ void Scene::doDeleteSelected()
 
 void Scene::doNewEdgeMarker()
 {
-    SceneEdgeMarker *marker = Util::scene()->problemInfo().hermes->newEdgeMarker();
+    SceneEdgeMarker *marker = Util::scene()->problemInfo()->hermes()->newEdgeMarker();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addEdgeMarker(marker);
@@ -761,7 +774,7 @@ void Scene::doNewEdgeMarker()
 
 void Scene::doNewLabelMarker()
 {
-    SceneLabelMarker * marker = Util::scene()->problemInfo().hermes->newLabelMarker();
+    SceneLabelMarker *marker = Util::scene()->problemInfo()->hermes()->newLabelMarker();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
         addLabelMarker(marker);
@@ -782,19 +795,17 @@ void Scene::doNewFunction()
 
 void Scene::doTransform()
 {
-    SceneTransformDialog *sceneTransformDialog = new SceneTransformDialog(QApplication::activeWindow());
-    sceneTransformDialog->exec();
-    delete sceneTransformDialog;
+    SceneTransformDialog sceneTransformDialog(QApplication::activeWindow());
+    sceneTransformDialog.exec();
 }
 
 void Scene::doProblemProperties()
 {
-    ProblemDialog *problemDialog = new ProblemDialog(m_problemInfo, false, QApplication::activeWindow());
-    if (problemDialog->showDialog() == QDialog::Accepted)
+    ProblemDialog problemDialog(m_problemInfo, false, QApplication::activeWindow());
+    if (problemDialog.showDialog() == QDialog::Accepted)
     {
         emit invalidated();
     }
-    delete problemDialog;
 }
 
 
@@ -970,7 +981,7 @@ void Scene::readFromFile(const QString &fileName)
     setlocale (LC_NUMERIC, "C");
 
     clear();
-    m_problemInfo.fileName = fileName;
+    m_problemInfo->fileName = fileName;
     emit fileNameChanged(fileInfo.absoluteFilePath());
 
     blockSignals(true);
@@ -997,30 +1008,30 @@ void Scene::readFromFile(const QString &fileName)
     // first problem
     QDomNode eleProblem = eleProblems.toElement().elementsByTagName("problem").at(0);
     // name
-    m_problemInfo.name = eleProblem.toElement().attribute("name");
+    m_problemInfo->name = eleProblem.toElement().attribute("name");
     // problem type                                                                                                                                                                                                                             `
-    m_problemInfo.problemType = problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
+    m_problemInfo->problemType = problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
     // physic field
-    m_problemInfo.hermes = hermesFieldFactory(physicFieldFromStringKey(eleProblem.toElement().attribute("type")));
+    m_problemInfo->setHermes(hermesFieldFactory(physicFieldFromStringKey(eleProblem.toElement().attribute("type"))));
     // number of refinements
-    m_problemInfo.numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
+    m_problemInfo->numberOfRefinements = eleProblem.toElement().attribute("numberofrefinements").toInt();
     // polynomial order
-    m_problemInfo.polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
+    m_problemInfo->polynomialOrder = eleProblem.toElement().attribute("polynomialorder").toInt();
     // adaptivity
-    m_problemInfo.adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
-    m_problemInfo.adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
-    m_problemInfo.adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
+    m_problemInfo->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
+    m_problemInfo->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
+    m_problemInfo->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
     // harmonic magnetic
-    m_problemInfo.frequency = eleProblem.toElement().attribute("frequency").toDouble();
+    m_problemInfo->frequency = eleProblem.toElement().attribute("frequency").toDouble();
     // transient
-    m_problemInfo.analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(ANALYSISTYPE_STEADYSTATE)));
-    m_problemInfo.timeStep = eleProblem.toElement().attribute("timestep", "0").toDouble();
-    m_problemInfo.timeTotal = eleProblem.toElement().attribute("timetotal", "0").toDouble();
-    m_problemInfo.initialCondition = eleProblem.toElement().attribute("initialcondition", "0").toDouble();
+    m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(ANALYSISTYPE_STEADYSTATE)));
+    m_problemInfo->timeStep = eleProblem.toElement().attribute("timestep", "0").toDouble();
+    m_problemInfo->timeTotal = eleProblem.toElement().attribute("timetotal", "0").toDouble();
+    m_problemInfo->initialCondition = eleProblem.toElement().attribute("initialcondition", "0").toDouble();
 
     // startup script
     QDomNode eleSriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
-    m_problemInfo.scriptStartup = eleSriptStartup.toElement().text();
+    m_problemInfo->scriptStartup = eleSriptStartup.toElement().text();
 
     // markers ***************************************************************************************************************
 
@@ -1040,7 +1051,7 @@ void Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            m_problemInfo.hermes->readEdgeMarkerFromDomElement(&element.toElement());
+            m_problemInfo->hermes()->readEdgeMarkerFromDomElement(&element.toElement());
         }
 
         n = n.nextSibling();
@@ -1062,7 +1073,7 @@ void Scene::readFromFile(const QString &fileName)
         else
         {
             // read marker
-            m_problemInfo.hermes->readLabelMarkerFromDomElement(&element.toElement());
+            m_problemInfo->hermes()->readLabelMarkerFromDomElement(&element.toElement());
         }
 
         n = n.nextSibling();
@@ -1134,7 +1145,7 @@ void Scene::readFromFile(const QString &fileName)
 }
 
 void Scene::writeToFile(const QString &fileName) {
-    if (!problemInfo().fileName.contains("temp.a2d"))
+    if (!problemInfo()->fileName.contains("temp.a2d"))
     {
         QSettings settings;
         QFileInfo fileInfo(fileName);
@@ -1145,7 +1156,7 @@ void Scene::writeToFile(const QString &fileName) {
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    m_problemInfo.fileName = fileName;
+    m_problemInfo->fileName = fileName;
 
     QDomDocument doc;
 
@@ -1162,30 +1173,30 @@ void Scene::writeToFile(const QString &fileName) {
     // id
     eleProblem.setAttribute("id", 0);
     // name
-    eleProblem.setAttribute("name", m_problemInfo.name);
+    eleProblem.setAttribute("name", m_problemInfo->name);
     // problem type                                                                          
-    eleProblem.toElement().setAttribute("problemtype", problemTypeToStringKey(m_problemInfo.problemType));
+    eleProblem.toElement().setAttribute("problemtype", problemTypeToStringKey(m_problemInfo->problemType));
     // name
-    eleProblem.setAttribute("type", physicFieldToStringKey(m_problemInfo.physicField()));
+    eleProblem.setAttribute("type", physicFieldToStringKey(m_problemInfo->physicField()));
     // number of refinements
-    eleProblem.setAttribute("numberofrefinements", m_problemInfo.numberOfRefinements);
+    eleProblem.setAttribute("numberofrefinements", m_problemInfo->numberOfRefinements);
     // polynomial order
-    eleProblem.setAttribute("polynomialorder", m_problemInfo.polynomialOrder);
+    eleProblem.setAttribute("polynomialorder", m_problemInfo->polynomialOrder);
     // adaptivity
-    eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo.adaptivityType));
-    eleProblem.setAttribute("adaptivitysteps", m_problemInfo.adaptivitySteps);
-    eleProblem.setAttribute("adaptivitytolerance", m_problemInfo.adaptivityTolerance);
+    eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo->adaptivityType));
+    eleProblem.setAttribute("adaptivitysteps", m_problemInfo->adaptivitySteps);
+    eleProblem.setAttribute("adaptivitytolerance", m_problemInfo->adaptivityTolerance);
     // harmonic magnetic
-    eleProblem.setAttribute("frequency", m_problemInfo.frequency);
+    eleProblem.setAttribute("frequency", m_problemInfo->frequency);
     // transient
-    eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo.analysisType));
-    eleProblem.setAttribute("timestep", m_problemInfo.timeStep);
-    eleProblem.setAttribute("timetotal", m_problemInfo.timeTotal);
-    eleProblem.setAttribute("initialcondition", m_problemInfo.initialCondition);
+    eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo->analysisType));
+    eleProblem.setAttribute("timestep", m_problemInfo->timeStep);
+    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal);
+    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition);
 
     // startup script
     QDomElement eleSriptStartup = doc.createElement("scriptstartup");
-    eleSriptStartup.appendChild(doc.createTextNode(m_problemInfo.scriptStartup));
+    eleSriptStartup.appendChild(doc.createTextNode(m_problemInfo->scriptStartup));
     eleProblem.appendChild(eleSriptStartup);
 
     // geometry
@@ -1257,7 +1268,7 @@ void Scene::writeToFile(const QString &fileName) {
         if (i > 0)
         {
             // write marker
-            m_problemInfo.hermes->writeEdgeMarkerToDomElement(&eleEdgeMarker, edgeMarkers[i]);
+            m_problemInfo->hermes()->writeEdgeMarkerToDomElement(&eleEdgeMarker, edgeMarkers[i]);
         }
 
         eleEdgeMarkers.appendChild(eleEdgeMarker);
@@ -1276,7 +1287,7 @@ void Scene::writeToFile(const QString &fileName) {
         if (i > 0)
         {
             // write marker
-            m_problemInfo.hermes->writeLabelMarkerToDomElement(&eleLabelMarker, labelMarkers[i]);
+            m_problemInfo->hermes()->writeLabelMarkerToDomElement(&eleLabelMarker, labelMarkers[i]);
         }
 
         eleLabelMarkers.appendChild(eleLabelMarker);

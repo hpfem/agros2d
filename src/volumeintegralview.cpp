@@ -48,7 +48,7 @@ VolumeIntegralValueView::~VolumeIntegralValueView()
 
 void VolumeIntegralValueView::doShowVolumeIntegral()
 {
-    VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo().hermes->volumeIntegralValue();
+    VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
 
     trvWidget->clear();
 
@@ -63,5 +63,7 @@ void VolumeIntegralValueView::doShowVolumeIntegral()
     trvWidget->insertTopLevelItem(0, pointGeometry);
 
     if (Util::scene()->sceneSolution()->isSolved())
-        Util::scene()->problemInfo().hermes->showVolumeIntegralValue(trvWidget, volumeIntegralValue);
+        Util::scene()->problemInfo()->hermes()->showVolumeIntegralValue(trvWidget, volumeIntegralValue);
+
+    delete volumeIntegralValue;
 }

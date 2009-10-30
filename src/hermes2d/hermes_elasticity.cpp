@@ -129,11 +129,11 @@ Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> 
 
 SolutionArray *elasticity_main(SolverThread *solverThread)
 {
-    elasticityPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
-    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
-    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
+    elasticityPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -368,8 +368,8 @@ QList<SolutionArray *> *HermesElasticity::solve(SolverThread *solverThread)
             elasticityEdge[i+1].typeX = edgeElasticityMarker->typeX;
             elasticityEdge[i+1].typeY = edgeElasticityMarker->typeY;
 
-            if (!edgeElasticityMarker->forceX.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!edgeElasticityMarker->forceY.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!edgeElasticityMarker->forceX.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!edgeElasticityMarker->forceY.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             elasticityEdge[i+1].forceX = edgeElasticityMarker->forceX.number;
             elasticityEdge[i+1].forceY = edgeElasticityMarker->forceY.number;
@@ -387,8 +387,8 @@ QList<SolutionArray *> *HermesElasticity::solve(SolverThread *solverThread)
         {
             SceneLabelElasticityMarker *labelElasticityMarker = dynamic_cast<SceneLabelElasticityMarker *>(Util::scene()->labels[i]->marker);
 
-            if (!labelElasticityMarker->young_modulus.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelElasticityMarker->poisson_ratio.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelElasticityMarker->young_modulus.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelElasticityMarker->poisson_ratio.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             elasticityLabel[i].young_modulus = labelElasticityMarker->young_modulus.number;
             elasticityLabel[i].poisson_ratio = labelElasticityMarker->poisson_ratio.number;

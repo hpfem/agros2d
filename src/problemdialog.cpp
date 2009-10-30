@@ -1,9 +1,9 @@
 #include "problemdialog.h"
 
-ProblemDialog::ProblemDialog(ProblemInfo &problemInfo, bool isNewProblem, QWidget *parent) : QDialog(parent)
+ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent) : QDialog(parent)
 {
     m_isNewProblem = isNewProblem;
-    m_problemInfo = &problemInfo;
+    m_problemInfo = problemInfo;
 
     setWindowTitle(tr("Problem properties"));
 
@@ -178,10 +178,10 @@ void ProblemDialog::load()
 
 bool ProblemDialog::save()
 {
-    if (this->m_isNewProblem) m_problemInfo->hermes = hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt());
+    if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
     // check values
-    if (m_problemInfo->hermes->hasFrequency())
+    if (m_problemInfo->hermes()->hasFrequency())
     {
         if (txtFrequency->value() < 0)
         {
@@ -190,7 +190,7 @@ bool ProblemDialog::save()
         }
     }
 
-    if (m_problemInfo->hermes->hasTransient() && cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toBool())
+    if (m_problemInfo->hermes()->hasTransient() && cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toBool())
     {
         if (txtTransientTimeStep->value() <= 0.0)
         {
@@ -227,7 +227,6 @@ bool ProblemDialog::save()
     m_problemInfo->timeTotal = txtTransientTimeTotal->value();
     m_problemInfo->initialCondition = txtTransientInitialCondition->value();
 
-
     return true;
 }
 
@@ -248,9 +247,9 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     txtFrequency->setEnabled(hermesField->hasFrequency());
     cmbAnalysisType->setEnabled(hermesField->hasTransient());
     cmbAnalysisType->setCurrentIndex(0);
-    txtTransientTimeStep->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
-    txtTransientTimeTotal->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
-    txtTransientInitialCondition->setEnabled(Util::scene()->problemInfo().hermes->hasTransient());
+    txtTransientTimeStep->setEnabled(Util::scene()->problemInfo()->hermes()->hasTransient());
+    txtTransientTimeTotal->setEnabled(Util::scene()->problemInfo()->hermes()->hasTransient());
+    txtTransientInitialCondition->setEnabled(Util::scene()->problemInfo()->hermes()->hasTransient());
 
     delete hermesField;
 

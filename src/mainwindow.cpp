@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneView, SIGNAL(mousePressed()), volumeIntegralValueView, SLOT(doShowVolumeIntegral()));
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
 
-    Util::scene()->clear();
     sceneView->doDefaults();
 
     helpDialog = new HelpDialog(this);
@@ -61,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // run server
     ScriptEngineRemote *scriptEngineRemote = new ScriptEngineRemote();
+
+    doInvalidated();
 }
 
 MainWindow::~MainWindow()
@@ -445,9 +446,9 @@ void MainWindow::createViews()
 void MainWindow::setRecentFiles()
 {
     // recent files
-    if (Util::scene()->problemInfo().fileName != "")
+    if (Util::scene()->problemInfo()->fileName != "")
     {
-        QFileInfo fileInfo(Util::scene()->problemInfo().fileName);
+        QFileInfo fileInfo(Util::scene()->problemInfo()->fileName);
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -467,17 +468,21 @@ void MainWindow::setRecentFiles()
 
 void MainWindow::doDocumentNew()
 {
-    ProblemInfo problemInfo;
+    ProblemInfo *problemInfo = new ProblemInfo();
     ProblemDialog problemDialog(problemInfo, true, this);
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
         Util::scene()->clear();
         sceneView->doDefaults();
-        Util::scene()->problemInfo() = problemInfo;
+        Util::scene()->setProblemInfo(problemInfo);
         Util::scene()->refresh();
 
         sceneView->actSceneModeNode->trigger();
         sceneView->doZoomBestFit();
+    }
+    else
+    {
+        delete problemInfo;
     }
 }
 
@@ -537,8 +542,8 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
-    if (QFile::exists(Util::scene()->problemInfo().fileName))
-        Util::scene()->writeToFile(Util::scene()->problemInfo().fileName);
+    if (QFile::exists(Util::scene()->problemInfo()->fileName))
+        Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
     else
         doDocumentSaveAs();
 }
@@ -560,11 +565,8 @@ void MainWindow::doDocumentSaveAs()
 
 void MainWindow::doDocumentClose()
 {
-    ProblemInfo problemInfo;
-    ProblemDialog *problemDialog = new ProblemDialog(problemInfo, true, this);
     Util::scene()->clear();
     sceneView->doDefaults();
-    Util::scene()->problemInfo() = problemInfo;
     Util::scene()->refresh();
 
     sceneView->actSceneModeNode->trigger();
@@ -766,12 +768,12 @@ void MainWindow::doTimeStepChanged(int index)
 void MainWindow::doInvalidated()
 {
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo().analysisType == ANALYSISTYPE_TRANSIENT));
+    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
     fillComboBoxTimeStep(cmbTimeStep);
 
-    lblProblemType->setText(tr("Problem Type: ") + problemTypeString(Util::scene()->problemInfo().problemType));
-    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->problemInfo().physicField()));
+    lblProblemType->setText(tr("Problem Type: ") + problemTypeString(Util::scene()->problemInfo()->problemType));
+    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->problemInfo()->physicField()));
     lblTimeStep->setVisible(cmbTimeStep->count() > 1);
     lblTimeStep->setText(tr("Time step: ") + cmbTimeStep->currentText());
 }

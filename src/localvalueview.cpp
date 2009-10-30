@@ -103,13 +103,13 @@ void LocalPointValueView::doShowPoint()
     pointNode->setText(0, tr("Point"));
     pointNode->setExpanded(true);
 
-    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo().labelX() + ":", QString("%1").arg(point.x, 0, 'f', 5), tr("m"));
-    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo().labelY() + ":", QString("%1").arg(point.y, 0, 'f', 5), tr("m"));
+    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo()->labelX() + ":", QString("%1").arg(point.x, 0, 'f', 5), tr("m"));
+    addTreeWidgetItemValue(pointNode, Util::scene()->problemInfo()->labelY() + ":", QString("%1").arg(point.y, 0, 'f', 5), tr("m"));
 
     trvWidget->insertTopLevelItem(0, pointNode);
 
-    if (Util::scene()->sceneSolution()->sln())
-        Util::scene()->problemInfo().hermes->showLocalValue(trvWidget, Util::scene()->problemInfo().hermes->localPointValue(point));
+    if (Util::scene()->sceneSolution()->isSolved())
+        Util::scene()->problemInfo()->hermes()->showLocalValue(trvWidget, Util::scene()->problemInfo()->hermes()->localPointValue(point));
 }
 
 LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)
@@ -123,8 +123,8 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
     txtPointY = new SLineEdit(QString::number(point.y), false);
 
     QFormLayout *layoutPoint = new QFormLayout();
-    layoutPoint->addRow(Util::scene()->problemInfo().labelX() + " (m):", txtPointX);
-    layoutPoint->addRow(Util::scene()->problemInfo().labelY() + " (m):", txtPointY);
+    layoutPoint->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
+    layoutPoint->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);

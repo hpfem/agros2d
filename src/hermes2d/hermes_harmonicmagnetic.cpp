@@ -102,13 +102,13 @@ Scalar harmonicMagnetic_linear_form_imag(int n, double *wt, Func<Real> *v, Geom<
 
 QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
 {
-    frequency = Util::scene()->problemInfo().frequency;
-    harmonicMagneticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
-    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
+    frequency = Util::scene()->problemInfo()->frequency;
+    harmonicMagneticPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -360,8 +360,8 @@ void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointVa
     itemFluxDensityReal->setText(0, tr("Flux density - real"));
     itemFluxDensityReal->setExpanded(false);
 
-    addTreeWidgetItemValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_real.x, 0, 'e', 3), "T");
-    addTreeWidgetItemValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_real.y, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_real.x, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensityReal, "B" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_real.y, 0, 'e', 3), "T");
     addTreeWidgetItemValue(itemFluxDensityReal, "B:", QString("%1").arg(localPointValueHarmonicMagnetic->B_real.magnitude(), 0, 'e', 3), "T");
 
     // Flux Density - imag
@@ -369,8 +369,8 @@ void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointVa
     itemFluxDensityImag->setText(0, tr("Flux density - imag"));
     itemFluxDensityImag->setExpanded(false);
 
-    addTreeWidgetItemValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_imag.x, 0, 'e', 3), "T");
-    addTreeWidgetItemValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_imag.y, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_imag.x, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensityImag, "B" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->B_imag.y, 0, 'e', 3), "T");
     addTreeWidgetItemValue(itemFluxDensityImag, "B:", QString("%1").arg(localPointValueHarmonicMagnetic->B_imag.magnitude(), 0, 'e', 3), "T");
 
     // Magnetic Field
@@ -381,8 +381,8 @@ void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointVa
     itemMagneticFieldReal->setText(0, tr("Magnetic field - real"));
     itemMagneticFieldReal->setExpanded(false);
 
-    addTreeWidgetItemValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_real.x, 0, 'e', 3), "A/m");
-    addTreeWidgetItemValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_real.y, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_real.x, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticFieldReal, "H" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_real.y, 0, 'e', 3), "A/m");
     addTreeWidgetItemValue(itemMagneticFieldReal, "H", QString("%1").arg(localPointValueHarmonicMagnetic->H_real.magnitude(), 0, 'e', 3), "A/m");
 
     // Magnetic Field - imag
@@ -390,8 +390,8 @@ void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointVa
     itemMagneticFieldImag->setText(0, tr("Magnetic field - imag"));
     itemMagneticFieldImag->setExpanded(false);
 
-    addTreeWidgetItemValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_imag.x, 0, 'e', 3), "A/m");
-    addTreeWidgetItemValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_imag.y, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_imag.x, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticFieldImag, "H" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->H_imag.y, 0, 'e', 3), "A/m");
     addTreeWidgetItemValue(itemMagneticFieldImag, "H", QString("%1").arg(localPointValueHarmonicMagnetic->H_imag.magnitude(), 0, 'e', 3), "A/m");
 
     // Total current density
@@ -422,8 +422,8 @@ void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointVa
     itemLorentzForceReal->setText(0, tr("Lorentz force - real"));
     itemLorentzForceReal->setExpanded(false);
 
-    addTreeWidgetItemValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_real.x, 0, 'e', 3), "N/m3");
-    addTreeWidgetItemValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_real.y, 0, 'e', 3), "N/m3");
+    addTreeWidgetItemValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_real.x, 0, 'e', 3), "N/m3");
+    addTreeWidgetItemValue(itemLorentzForceReal, "FL" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_real.y, 0, 'e', 3), "N/m3");
     addTreeWidgetItemValue(itemLorentzForceReal, "FL", QString("%1").arg(localPointValueHarmonicMagnetic->FL_real.magnitude(), 0, 'e', 3), "N/m3");
 
     // Lorentz force - imag
@@ -431,8 +431,8 @@ void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointVa
     itemLorentzForceImag->setText(0, tr("Lorentz force - imag"));
     itemLorentzForceImag->setExpanded(false);
 
-    addTreeWidgetItemValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_imag.x, 0, 'e', 3), "N/m3");
-    addTreeWidgetItemValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_imag.y, 0, 'e', 3), "N/m3");
+    addTreeWidgetItemValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_imag.x, 0, 'e', 3), "N/m3");
+    addTreeWidgetItemValue(itemLorentzForceImag, "FL" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHarmonicMagnetic->FL_imag.y, 0, 'e', 3), "N/m3");
     addTreeWidgetItemValue(itemLorentzForceImag, "FL", QString("%1").arg(localPointValueHarmonicMagnetic->FL_imag.magnitude(), 0, 'e', 3), "N/m3");
 }
 
@@ -476,8 +476,8 @@ void HermesHarmonicMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, Vol
     itemForce->setText(0, tr("Lorentz force avg."));
     itemForce->setExpanded(true);
 
-    addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo().labelX(), tr("%1").arg(-volumeIntegralValueHarmonicMagnetic->forceXReal/2.0, 0, 'e', 3), "N");
-    addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo().labelY(), tr("%1").arg(-volumeIntegralValueHarmonicMagnetic->forceYReal/2.0, 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), tr("%1").arg(-volumeIntegralValueHarmonicMagnetic->forceXReal/2.0, 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), tr("%1").arg(-volumeIntegralValueHarmonicMagnetic->forceYReal/2.0, 0, 'e', 3), "N");
 }
 
 QList<SolutionArray *> *HermesHarmonicMagnetic::solve(SolverThread *solverThread)
@@ -498,7 +498,7 @@ QList<SolutionArray *> *HermesHarmonicMagnetic::solve(SolverThread *solverThread
             SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeHarmonicMagneticMarker->value.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!edgeHarmonicMagneticMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             harmonicMagneticEdge[i+1].type = edgeHarmonicMagneticMarker->type;
             harmonicMagneticEdge[i+1].value = edgeHarmonicMagneticMarker->value.number;
@@ -517,10 +517,10 @@ QList<SolutionArray *> *HermesHarmonicMagnetic::solve(SolverThread *solverThread
             SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelHarmonicMagneticMarker->current_density_real.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelHarmonicMagneticMarker->current_density_imag.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelHarmonicMagneticMarker->permeability.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelHarmonicMagneticMarker->conductivity.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelHarmonicMagneticMarker->current_density_real.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelHarmonicMagneticMarker->current_density_imag.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelHarmonicMagneticMarker->permeability.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelHarmonicMagneticMarker->conductivity.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             harmonicMagneticLabel[i].current_density_real = labelHarmonicMagneticMarker->current_density_real.number;
             harmonicMagneticLabel[i].current_density_imag = labelHarmonicMagneticMarker->current_density_imag.number;
@@ -567,7 +567,7 @@ LocalPointValueHarmonicMagnetic::LocalPointValueHarmonicMagnetic(Point &point) :
             Point derReal;
             derReal = valueReal.derivative;
 
-            if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
             {
                 B_real.x =  derReal.y;
                 B_real.y = -derReal.x;
@@ -581,7 +581,7 @@ LocalPointValueHarmonicMagnetic::LocalPointValueHarmonicMagnetic(Point &point) :
             Point derImag;
             derImag = valueImag.derivative;
 
-            if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
             {
                 B_imag.x =  derImag.y;
                 B_imag.y = -derImag.x;
@@ -600,8 +600,8 @@ LocalPointValueHarmonicMagnetic::LocalPointValueHarmonicMagnetic(Point &point) :
             current_density_imag = marker->current_density_imag.number;
 
             // induced current density
-            current_density_induced_real =   2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * potential_imag;
-            current_density_induced_imag = - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * potential_real;
+            current_density_induced_real =   2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * potential_imag;
+            current_density_induced_imag = - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * potential_real;
 
             // total current density
             current_density_total_real = current_density_real + current_density_induced_real;

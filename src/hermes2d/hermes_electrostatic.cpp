@@ -59,12 +59,12 @@ Scalar electrostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e
 
 QList<SolutionArray *> *electrostatic_main(SolverThread *solverThread)
 {
-    electrostaticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
-    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
+    electrostaticPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -270,8 +270,8 @@ void HermesElectrostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.x, 0, 'e', 3), "V/m");
-    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.y, 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.x, 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->E.y, 0, 'e', 3), "V/m");
     addTreeWidgetItemValue(itemElectricField, "E:", QString("%1").arg(localPointValueElectrostatic->E.magnitude(), 0, 'e', 3), "V/m");
 
     // Electric Displacement
@@ -279,8 +279,8 @@ void HermesElectrostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue
     itemElectricDisplacement->setText(0, tr("Electric displacement"));
     itemElectricDisplacement->setExpanded(true);
 
-    addTreeWidgetItemValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
-    addTreeWidgetItemValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
+    addTreeWidgetItemValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.x, 0, 'e', 3), "C/m2");
+    addTreeWidgetItemValue(itemElectricDisplacement, "D" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElectrostatic->D.y, 0, 'e', 3), "C/m2");
     addTreeWidgetItemValue(itemElectricDisplacement, "D:", QString("%1").arg(localPointValueElectrostatic->D.magnitude(), 0, 'e', 3), "C/m2");
 }
 
@@ -332,7 +332,7 @@ QList<SolutionArray *> *HermesElectrostatic::solve(SolverThread *solverThread)
             SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeElectrostaticMarker->value.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!edgeElectrostaticMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             electrostaticEdge[i+1].type = edgeElectrostaticMarker->type;
             electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.number;
@@ -351,8 +351,8 @@ QList<SolutionArray *> *HermesElectrostatic::solve(SolverThread *solverThread)
             SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelElectrostaticMarker->charge_density.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelElectrostaticMarker->permittivity.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelElectrostaticMarker->charge_density.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelElectrostaticMarker->permittivity.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.number;
             electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.number;

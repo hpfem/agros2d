@@ -65,16 +65,16 @@ void ChartDialog::showDialog()
     fillComboBoxTimeStep(cmbTimeStep);
 
     // correct labels
-    lblStartX->setText(Util::scene()->problemInfo().labelX() + ":");
-    lblStartY->setText(Util::scene()->problemInfo().labelY() + ":");
-    lblEndX->setText(Util::scene()->problemInfo().labelX() + ":");
-    lblEndY->setText(Util::scene()->problemInfo().labelY() + ":");
-    lblPointX->setText(Util::scene()->problemInfo().labelX() + ":");
-    lblPointY->setText(Util::scene()->problemInfo().labelY() + ":");
-    radAxisX->setText(Util::scene()->problemInfo().labelX());
-    radAxisY->setText(Util::scene()->problemInfo().labelY());
+    lblStartX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lblStartY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    lblEndX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lblEndY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    lblPointX->setText(Util::scene()->problemInfo()->labelX() + ":");
+    lblPointY->setText(Util::scene()->problemInfo()->labelY() + ":");
+    radAxisX->setText(Util::scene()->problemInfo()->labelX());
+    radAxisY->setText(Util::scene()->problemInfo()->labelY());
 
-    if (Util::scene()->problemInfo().analysisType == ANALYSISTYPE_TRANSIENT)
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
     {
         tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
     }
@@ -112,18 +112,7 @@ void ChartDialog::createControls()
     btnExportData->setText(tr("Export"));
     connect(btnExportData, SIGNAL(clicked()), SLOT(doExportData()));
 
-    // geometry
-    // timestep
-    cmbTimeStep = new QComboBox(this);
-    connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
-
-    QVBoxLayout *layoutTimeStep = new QVBoxLayout();
-    layoutTimeStep->addWidget(cmbTimeStep);
-
-    QGroupBox *grpTimeStep = new QGroupBox(tr("Time step"), this);
-    grpTimeStep->setLayout(layoutTimeStep);
-
-    // geometry
+    // geometry   
     lblStartX = new QLabel("X:");
     lblStartY = new QLabel("Y:");
     lblEndX = new QLabel("X:");
@@ -179,17 +168,22 @@ void ChartDialog::createControls()
     QGroupBox *grpAxis = new QGroupBox(tr("Horizontal axis"), this);
     grpAxis->setLayout(layoutAxis);
     
-    // axis points
+    // axis points and time step
     txtAxisPoints = new QSpinBox(this);
     txtAxisPoints->setMinimum(2);
     txtAxisPoints->setMaximum(500);
     txtAxisPoints->setValue(200);
 
-    QVBoxLayout *layoutAxisPoints = new QVBoxLayout();
-    layoutAxisPoints->addWidget(txtAxisPoints);
+    // timestep
+    cmbTimeStep = new QComboBox(this);
+    connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
 
-    QGroupBox *grpAxisPoints = new QGroupBox(tr("Points:"), this);
-    grpAxisPoints->setLayout(layoutAxisPoints);
+    QFormLayout *layoutAxisPointsAndTimeStep = new QFormLayout();
+    layoutAxisPointsAndTimeStep->addRow(tr("Points:"), txtAxisPoints);
+    layoutAxisPointsAndTimeStep->addRow(tr("Time step:"), cmbTimeStep);
+
+    QGroupBox *grpAxisPointsAndTimeStep = new QGroupBox(tr("Points and time step"), this);
+    grpAxisPointsAndTimeStep->setLayout(layoutAxisPointsAndTimeStep);
 
     // time
     lblPointX = new QLabel("X:");
@@ -214,11 +208,11 @@ void ChartDialog::createControls()
     cmbFieldVariableComp = new QComboBox(this);
     doFieldVariable(cmbFieldVariable->currentIndex());
     
-    QVBoxLayout *layoutVariable = new QVBoxLayout(this);
-    layoutVariable->addWidget(cmbFieldVariable);
-    layoutVariable->addWidget(cmbFieldVariableComp);
+    QFormLayout *layoutVariable = new QFormLayout(this);
+    layoutVariable->addRow(tr("Variable:"), cmbFieldVariable);
+    layoutVariable->addRow(tr("Component:"), cmbFieldVariableComp);
     
-    QGroupBox *grpVariable = new QGroupBox(tr("Variable"), this);
+    QWidget *grpVariable = new QWidget(this);
     grpVariable->setLayout(layoutVariable);
     
     // table
@@ -240,8 +234,7 @@ void ChartDialog::createControls()
     controlsGeometryLayout->addWidget(grpStart);
     controlsGeometryLayout->addWidget(grpEnd);
     controlsGeometryLayout->addWidget(grpAxis);
-    controlsGeometryLayout->addWidget(grpAxisPoints);
-    controlsGeometryLayout->addWidget(grpTimeStep);
+    controlsGeometryLayout->addWidget(grpAxisPointsAndTimeStep);
     controlsGeometryLayout->addStretch();
 
     // controls time
@@ -258,8 +251,8 @@ void ChartDialog::createControls()
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();
     controls->setLayout(controlsLayout);
-    controls->setMinimumWidth(200);
-    controls->setMaximumWidth(200);
+    controls->setMinimumWidth(260);
+    controls->setMaximumWidth(260);
 
     controlsLayout->addWidget(tabAnalysisType);
     controlsLayout->addWidget(grpVariable);
@@ -312,14 +305,14 @@ void ChartDialog::plotGeometry()
     // table
     trvTable->clear();
     trvTable->setRowCount(count);
-    QStringList headers = Util::scene()->problemInfo().hermes->localPointValueHeader();
+    QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
     trvTable->setColumnCount(headers.count());
     trvTable->setHorizontalHeaderLabels(headers);
     
     // chart
     if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
-    if (radAxisX->isChecked()) text.setText(Util::scene()->problemInfo().labelX() + " (m):");
-    if (radAxisY->isChecked()) text.setText(Util::scene()->problemInfo().labelY() + " (m):");
+    if (radAxisX->isChecked()) text.setText(Util::scene()->problemInfo()->labelX() + " (m):");
+    if (radAxisY->isChecked()) text.setText(Util::scene()->problemInfo()->labelY() + " (m):");
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
@@ -333,7 +326,7 @@ void ChartDialog::plotGeometry()
     for (int i = 0; i<count; i++)
     {
         Point point(start.x + i*diff.x, start.y + i*diff.y);
-        LocalPointValue *localPointValue = Util::scene()->problemInfo().hermes->localPointValue(point);
+        LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
         
         // x value
         if (radAxisLength->isChecked()) xval[i] = sqrt(sqr(i*diff.x) + sqr(i*diff.y));
@@ -383,7 +376,7 @@ void ChartDialog::plotTime()
     // table
     trvTable->clear();
     trvTable->setRowCount(count);
-    QStringList headers = Util::scene()->problemInfo().hermes->localPointValueHeader();
+    QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
     trvTable->setColumnCount(headers.count());
     trvTable->setHorizontalHeaderLabels(headers);
 
@@ -399,7 +392,7 @@ void ChartDialog::plotTime()
         Util::scene()->sceneSolution()->setSolutionArray(i);
 
         Point point(txtPointX->value(), txtPointY->value());
-        LocalPointValue *localPointValue = Util::scene()->problemInfo().hermes->localPointValue(point);
+        LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
 
         // x value
         xval[i] = Util::scene()->sceneSolution()->time();
@@ -447,8 +440,8 @@ void ChartDialog::doFieldVariable(int index)
     else
     {
         cmbFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbFieldVariableComp->addItem(Util::scene()->problemInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
-        cmbFieldVariableComp->addItem(Util::scene()->problemInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
+        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PHYSICFIELDVARIABLECOMP_X);
+        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PHYSICFIELDVARIABLECOMP_Y);
     }
     
     if (cmbFieldVariableComp->currentIndex() == -1)

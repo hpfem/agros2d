@@ -15,8 +15,6 @@ SceneSolution::SceneSolution(Scene *scene)
 
 void SceneSolution::clear()
 {
-    cout << "void SceneSolution::clear()" << endl;
-
     m_timeStep = -1;
 
     // solution array
@@ -169,7 +167,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_VOLUME:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(1);
                         }
@@ -181,7 +179,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_X:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(dudx[i]);
                         }
@@ -193,7 +191,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_Y:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(dudy[i]);
                         }
@@ -205,7 +203,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(sqrt(sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -218,7 +216,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_X:
                     {
                         SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(EPS0 * marker->permittivity.number * dudx[i]);
                         }
@@ -231,7 +229,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_Y:
                     {
                         SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(EPS0 * marker->permittivity.number * dudy[i]);
                         }
@@ -244,7 +242,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT:
                     {
                         SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(EPS0 * marker->permittivity.number * sqrt(sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -257,7 +255,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ENERGY_DENSITY:
                     {
                         SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(0.5 * EPS0 * marker->permittivity.number * (sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -270,7 +268,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD_X:
                     {
                         SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(-dudy[i] / (marker->permeability.number * MU0));
                         }
@@ -283,7 +281,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD_Y:
                     {
                         SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(dudx[i] / (marker->permeability.number * MU0));
                         }
@@ -296,7 +294,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_MAGNETICFIELD:
                     {
                         SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(sqrt(sqr(dudx[i]) + sqr(dudy[i])) / (marker->permeability.number * MU0));
                         }
@@ -308,7 +306,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY_X:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(-dudy[i]);
                         }
@@ -320,7 +318,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY_Y:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(dudx[i]);
                         }
@@ -332,7 +330,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FLUX_DENSITY:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(sqrt(sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -345,7 +343,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_ENERGY_DENSITY:
                     {
                         SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(0.5 * (sqr(dudx[i]) + sqr(dudy[i])) / (marker->permeability.number * MU0));
                         }
@@ -358,7 +356,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_X:
                     {
                         SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(((sqr(dudx[i]) - sqr(dudy[i]))*dudx[i] + (dudx[i]*dudy[i])*dudy[i]) / sqr(marker->permeability.number * MU0));
                         }
@@ -371,7 +369,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_Y:
                     {
                         SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression((sqr(dudx[i]) - sqr(dudy[i]))*dudy[i] - 2*(dudx[i]*dudy[i])*dudx[i]);
                         }
@@ -384,64 +382,64 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]);
+                            h1_integrate_expression(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]);
                         }
                         else
                         {
-                            h1_integrate_expression(2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]);
+                            h1_integrate_expression(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]);
                         }
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(- 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]);
+                            h1_integrate_expression(- 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]);
                         }
                         else
                         {
-                            h1_integrate_expression(- 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]);
+                            h1_integrate_expression(- 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]);
                         }
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]);
+                            h1_integrate_expression(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]);
                         }
                         else
                         {
-                            h1_integrate_expression(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]);
+                            h1_integrate_expression(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]);
                         }
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]);
+                            h1_integrate_expression(marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]);
                         }
                         else
                         {
-                            h1_integrate_expression(marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]);
+                            h1_integrate_expression(marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]);
                         }
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_POWER_LOSSES:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
                                                     0.5 / marker->conductivity.number * (
-                                                              sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i])
-                                                            + sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]))
+                                                              sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i])
+                                                            + sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]))
                                                     :
                                                     0.0);
                         }
@@ -449,8 +447,8 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         {
                             h1_integrate_expression((marker->conductivity.number > 0.0) ?
                                                     2 * M_PI * x[i] * 0.5 / marker->conductivity.number * (
-                                                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i])
-                                                          + sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]))
+                                                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i])
+                                                          + sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]))
                                                     :
                                                     0.0);
                         }
@@ -459,7 +457,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_ENERGY_DENSITY:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(0.25 * (sqr(dudx[i]) + sqr(dudy[i]) + sqr(dvdx[i]) + sqr(dvdy[i])) / (marker->permeability.number * MU0));
                         }
@@ -473,66 +471,66 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_X_REAL:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudx[i])
-                                                    + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdx[i]));
+                            h1_integrate_expression(- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) * dudx[i])
+                                                    + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]) * dvdx[i]));
                         }
                         else
                         {
-                            h1_integrate_expression(- (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))
-                                                    + (2 * M_PI * x[i] * (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0))));
+                            h1_integrate_expression(- (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))
+                                                    + (2 * M_PI * x[i] * (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0))));
                         }
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_Y_REAL:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudy[i])
-                                                    + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdy[i]));
+                            h1_integrate_expression(- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) * dudy[i])
+                                                    + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]) * dvdy[i]));
                         }
                         else
                         {
-                            h1_integrate_expression(- (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dudy[i])
-                                                    + (2 * M_PI * x[i] * (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dvdy[i]));
+                            h1_integrate_expression(- (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) * dudy[i])
+                                                    + (2 * M_PI * x[i] * (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]) * dvdy[i]));
                         }
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_X_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(((marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dudx[i])
-                                                  + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dvdx[i]));
+                            h1_integrate_expression(((marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]) * dudx[i])
+                                                  + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) * dvdx[i]));
                         }
                         else
                         {
-                            h1_integrate_expression((2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))
-                                                  + (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0))));
+                            h1_integrate_expression((2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]) * (dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))
+                                                  + (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) * (dvdx[i] + ((x[i] > 0) ? valuev[i] / x[i] : 0.0))));
                         }
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HARMONICMAGNETIC_LORENTZ_FORCE_Y_IMAG:
                     {
                         SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
-                            h1_integrate_expression(((marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dudy[i])
-                                                  + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dvdy[i]));
+                            h1_integrate_expression(((marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]) * dudy[i])
+                                                  + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) * dvdy[i]));
                         }
                         else
                         {
-                            h1_integrate_expression((2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]) * dudy[i])
-                                                  + (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) * dvdy[i]));
+                            h1_integrate_expression((2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]) * dudy[i])
+                                                  + (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) * dvdy[i]));
                         }
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(valueu[i]);
                         }
@@ -544,7 +542,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_X:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(dudx[i]);
                         }
@@ -556,7 +554,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_Y:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(dudy[i]);
                         }
@@ -568,7 +566,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(sqrt(sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -581,7 +579,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX_X:
                     {
                         SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(marker->thermal_conductivity.number * dudx[i]);
                         }
@@ -594,7 +592,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX_Y:
                     {
                         SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(marker->thermal_conductivity.number * dudy[i]);
                         }
@@ -607,7 +605,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX:
                     {
                         SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(marker->thermal_conductivity.number * sqrt(sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -619,7 +617,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_X:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(dudx[i]);
                         }
@@ -631,7 +629,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_Y:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(dudy[i]);
                         }
@@ -643,7 +641,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD:
                     {
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(sqrt(sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -656,7 +654,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_X:
                     {
                         SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(marker->conductivity.number * dudx[i]);
                         }
@@ -669,7 +667,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_Y:
                     {
                         SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(marker->conductivity.number * dudy[i]);
                         }
@@ -682,7 +680,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY:
                     {
                         SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(marker->conductivity.number * sqrt(sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -695,7 +693,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 case PHYSICFIELDINTEGRAL_VOLUME_CURRENT_LOSSES:
                     {
                         SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
-                        if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                        if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
                             h1_integrate_expression(marker->conductivity.number * (sqr(dudx[i]) + sqr(dudy[i])));
                         }
@@ -796,7 +794,7 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_SURFACE:
                         {
-                            if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                            if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                                 result += pt[i][2] * tan[i][2];
                             else
                                 result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2];
@@ -805,7 +803,7 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                     case PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY:
                         {
                             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_scene->labels[e->marker]->marker);
-                            if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                            if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                                 result += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                             else
                                 result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
@@ -813,7 +811,7 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE:
                         {
-                            if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                            if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                                 result += pt[i][2] * tan[i][2] * valueu[i];
                             else
                                 result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * valueu[i];
@@ -821,7 +819,7 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                         break;
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE:
                         {
-                            if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                            if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                                 result += pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
                             else
                                 result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
@@ -830,7 +828,7 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                     case PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX:
                         {
                             SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(m_scene->labels[e->marker]->marker);
-                            if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                            if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                                 result += pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                             else
                                 result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
@@ -839,7 +837,7 @@ double SceneSolution::surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface 
                     case PHYSICFIELDINTEGRAL_SURFACE_CURRENT_CURRENT_DENSITY:
                         {
                             SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(m_scene->labels[e->marker]->marker);
-                            if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                            if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                                 result += pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
                             else
                                 result += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (- tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
@@ -937,7 +935,7 @@ PointValue SceneSolution::pointValue(const Point &point, Solution *sln)
     if (sln1() != NULL)
     {
         value = sln->get_pt_value(point.x, point.y, FN_VAL_0);
-        if (m_scene->problemInfo().physicField() != PHYSICFIELD_ELASTICITY)
+        if (m_scene->problemInfo()->physicField() != PHYSICFIELD_ELASTICITY)
         {
             dx =  sln->get_pt_value(point.x, point.y, FN_DX_0);
             dy =  sln->get_pt_value(point.x, point.y, FN_DY_0);
@@ -966,7 +964,7 @@ void SceneSolution::setSolutionArray(int timeStep)
     m_timeStep = timeStep;
     if (!isSolved()) return;
 
-    if (m_scene->problemInfo().physicField() != PHYSICFIELD_ELASTICITY)
+    if (m_scene->problemInfo()->physicField() != PHYSICFIELD_ELASTICITY)
         m_vec.process_solution(sln1(), FN_DX_0, sln1(), FN_DY_0, EPS_NORMAL);
 
     Util::scene()->refresh();
@@ -1006,7 +1004,7 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     m_linScalarView.process_solution(m_slnScalarView, FN_VAL_0);
 
     // deformed shape
-    if (m_scene->problemInfo().physicField() == PHYSICFIELD_ELASTICITY)
+    if (m_scene->problemInfo()->physicField() == PHYSICFIELD_ELASTICITY)
     {
         double3* linVert = m_linScalarView.get_vertices();
 
@@ -1045,7 +1043,7 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
 
 void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScalarFilter *slnVectorYView)
 {
-    if (slnVectorXView)
+    if (m_slnVectorXView)
     {
         delete m_slnVectorXView;
         m_slnVectorXView = NULL;
@@ -1273,7 +1271,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
             break;
         case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL:
             {
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = valueu[i];
                 }
@@ -1285,7 +1283,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
             break;
         case PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY:
             {
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     switch (m_physicFieldVariableComp)
                     {
@@ -1332,7 +1330,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         case PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD:
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     switch (m_physicFieldVariableComp)
                     {
@@ -1379,7 +1377,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         case PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY:
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = 0.5 * (sqr(dudx[i]) + sqr(dudy[i])) / (marker->permeability.number * MU0);
                 }
@@ -1397,7 +1395,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL:
             {
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = sqrt(sqr(valueu[i]) + sqr(valuev[i]));
                 }
@@ -1409,7 +1407,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL:
             {
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = valueu[i];
                 }
@@ -1421,7 +1419,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG:
             {
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = valuev[i];
                 }
@@ -1433,7 +1431,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY:
             {
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = sqrt(sqr(dudx[i]) + sqr(dvdx[i]) + sqr(dudy[i]) + sqr(dvdy[i]));
                 }
@@ -1445,7 +1443,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_REAL:
             {
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     switch (m_physicFieldVariableComp)
                     {
@@ -1491,7 +1489,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_IMAG:
             {
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     switch (m_physicFieldVariableComp)
                     {
@@ -1538,7 +1536,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD:
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     switch (m_physicFieldVariableComp)
                     {
@@ -1585,7 +1583,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_REAL:
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     switch (m_physicFieldVariableComp)
                     {
@@ -1632,7 +1630,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_IMAG:
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     switch (m_physicFieldVariableComp)
                     {
@@ -1679,98 +1677,98 @@ void ViewScalarFilter::precalculate(int order, int mask)
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = sqrt(
-                            sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) +
-                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]));
+                            sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) +
+                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]));
                 }
                 else
                 {
                     node->values[0][0][i] = sqrt(
-                            sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) +
-                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]));
+                            sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) +
+                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]));
                 }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
-                    node->values[0][0][i] = marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i];
+                    node->values[0][0][i] = marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i];
                 }
                 else
                 {
-                    node->values[0][0][i] = marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i];
+                    node->values[0][0][i] = marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i];
                 }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
-                    node->values[0][0][i] = marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i];
+                    node->values[0][0][i] = marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i];
                 }
                 else
                 {
-                    node->values[0][0][i] = marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i];
+                    node->values[0][0][i] = marker->current_density_imag.number - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i];
                 }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = sqrt(
-                            sqr(2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) +
-                            sqr(2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]));
+                            sqr(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) +
+                            sqr(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]));
                 }
                 else
                 {
                     node->values[0][0][i] = sqrt(
-                            sqr(2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) +
-                            sqr(2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]));
+                            sqr(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) +
+                            sqr(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]));
                 }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
-                    node->values[0][0][i] = 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i];
+                    node->values[0][0][i] = 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i];
                 }
                 else
                 {
-                    node->values[0][0][i] = 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i];
+                    node->values[0][0][i] = 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i];
                 }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
-                    node->values[0][0][i] = - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i];
+                    node->values[0][0][i] = - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i];
                 }
                 else
                 {
-                    node->values[0][0][i] = - 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i];
+                    node->values[0][0][i] = - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i];
                 }
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_POWER_LOSSES:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = (marker->conductivity.number > 0.0) ?
                                             0.5 / marker->conductivity.number * (
-                                                    sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) +
-                                                    sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]))
+                                                    sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) +
+                                                    sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]))
                                             :
                                             0.0;
                 }
@@ -1778,8 +1776,8 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 {
                     node->values[0][0][i] = (marker->conductivity.number > 0.0) ?
                                             0.5 / marker->conductivity.number * (
-                                                    sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valuev[i]) +
-                                                    sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo().frequency * marker->conductivity.number * valueu[i]))
+                                                    sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valuev[i]) +
+                                                    sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * valueu[i]))
                                             :
                                             0.0;
                 }
@@ -1788,7 +1786,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_ENERGY_DENSITY:
             {
                 SceneLabelHarmonicMagneticMarker *marker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(labelMarker);
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                 {
                     node->values[0][0][i] = 0.25 * (sqr(dudx[i]) + sqr(dvdx[i]) + sqr(dudy[i]) + sqr(dvdy[i])) / (marker->permeability.number * MU0);
                 }
@@ -1875,7 +1873,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
                 double tz = marker->lambda() * (dudx[i] + dvdy[i]);
                 double tx = tz + 2*marker->mu() * dudx[i];
                 double ty = tz + 2*marker->mu() * dvdy[i];
-                if (m_scene->problemInfo().problemType == PROBLEMTYPE_AXISYMMETRIC)
+                if (m_scene->problemInfo()->problemType == PROBLEMTYPE_AXISYMMETRIC)
                     tz += 2*marker->mu() * valueu[i] / x[i];
                 double txy = marker->mu() * (dudy[i] + dvdx[i]);
 

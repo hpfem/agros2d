@@ -113,65 +113,64 @@ QScriptValue scriptPrintToFile(QScriptContext *context, QScriptEngine *engine)
 // newDocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition)
 QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
 {
-    ProblemInfo problemInfo;
-    Util::scene()->clear();
-
     for (int i = 0; i <= 4; i++) {
         if (context->argument(i).isUndefined())
             return context->throwError(QObject::tr("Few parameters."));
     }
 
+    Util::scene()->clear();
+
     // name
     if (context->argument(0).toString() != "")
-        problemInfo.name = context->argument(0).toString();
+        Util::scene()->problemInfo()->name = context->argument(0).toString();
     else
-        problemInfo.name = QObject::tr("unnamed");
+        Util::scene()->problemInfo()->name = QObject::tr("unnamed");
 
     // type
-    problemInfo.problemType = problemTypeFromStringKey(context->argument(1).toString());
-    if (problemInfo.problemType == PROBLEMTYPE_UNDEFINED)
+    Util::scene()->problemInfo()->problemType = problemTypeFromStringKey(context->argument(1).toString());
+    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_UNDEFINED)
         return context->throwError(QObject::tr("Problem type '%1' is not implemented.").arg(context->argument(1).toString()));
 
     // physicfield
     PhysicField physicField = physicFieldFromStringKey(context->argument(2).toString());
     if (physicField != PHYSICFIELD_UNDEFINED)
-        problemInfo.hermes = hermesFieldFactory(physicField);
+        Util::scene()->problemInfo()->setHermes(hermesFieldFactory(physicField));
     else
         return context->throwError(QObject::tr("Physic field '%1' is not implemented.").arg(context->argument(2).toString()));
 
     // numberofrefinements
     if (context->argument(3).toNumber() >= 0)
-        problemInfo.numberOfRefinements = context->argument(3).toNumber();
+        Util::scene()->problemInfo()->numberOfRefinements = context->argument(3).toNumber();
     else
         return context->throwError(QObject::tr("Number of refinements '%1' is out of range.").arg(context->argument(3).toString()));
 
     // polynomialorder
     if (context->argument(4).toNumber() >= 1 && context->argument(4).toNumber() <= 10)
-        problemInfo.polynomialOrder = context->argument(4).toNumber();
+        Util::scene()->problemInfo()->polynomialOrder = context->argument(4).toNumber();
     else
         return context->throwError(QObject::tr("Polynomial order '%1' is out of range.").arg(context->argument(4).toString()));
 
     // adaptivitytype, adaptivitysteps, adaptivitytolerance
     if (context->argument(5).isUndefined())
     {
-        problemInfo.adaptivityType == ADAPTIVITYTYPE_NONE;
+        Util::scene()->problemInfo()->adaptivityType == ADAPTIVITYTYPE_NONE;
     }
     else
     {
-        problemInfo.adaptivityType = adaptivityTypeFromStringKey(context->argument(5).toString());
-        if (problemInfo.adaptivityType == ADAPTIVITYTYPE_UNDEFINED)
+        Util::scene()->problemInfo()->adaptivityType = adaptivityTypeFromStringKey(context->argument(5).toString());
+        if (Util::scene()->problemInfo()->adaptivityType == ADAPTIVITYTYPE_UNDEFINED)
             return context->throwError(QObject::tr("Adaptivity type '%1' is not suported.").arg(context->argument(5).toString()));
     }
 
     // adaptivitysteps
     if (context->argument(6).isUndefined())
     {
-        problemInfo.adaptivitySteps == 5;
+        Util::scene()->problemInfo()->adaptivitySteps == 5;
     }
     else
     {
         if (context->argument(6).isNumber() && context->argument(6).toNumber() >= 0)
-            problemInfo.adaptivitySteps = context->argument(6).toNumber();
+            Util::scene()->problemInfo()->adaptivitySteps = context->argument(6).toNumber();
         else
             return context->throwError(QObject::tr("Adaptivity step '%1' is out of range.").arg(context->argument(6).toString()));
     }
@@ -179,12 +178,12 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
     // adaptivitytolerance
     if (context->argument(7).isUndefined())
     {
-        problemInfo.adaptivityTolerance == 0.0;
+        Util::scene()->problemInfo()->adaptivityTolerance == 0.0;
     }
     else
     {
         if (context->argument(7).isNumber() && context->argument(7).toNumber() >= 0)
-            problemInfo.adaptivityTolerance = context->argument(7).toNumber();
+            Util::scene()->problemInfo()->adaptivityTolerance = context->argument(7).toNumber();
         else
             return context->throwError(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(context->argument(8).toString()));
     }
@@ -192,69 +191,68 @@ QScriptValue scriptNewDocument(QScriptContext *context, QScriptEngine *engine)
     // frequency
     if (context->argument(8).isUndefined())
     {
-        problemInfo.frequency == 0.0;
+        Util::scene()->problemInfo()->frequency == 0.0;
     }
     else
     {
-        if (context->argument(8).toNumber() > 0 && problemInfo.physicField() != PHYSICFIELD_HARMONICMAGNETIC)
+        if (context->argument(8).toNumber() > 0 && Util::scene()->problemInfo()->physicField() != PHYSICFIELD_HARMONICMAGNETIC)
             return context->throwError(QObject::tr("Frequency can be used only for harmonic magnetic problems."));
         else
-            problemInfo.frequency = context->argument(8).toNumber();
+            Util::scene()->problemInfo()->frequency = context->argument(8).toNumber();
     }
 
     // analysis type
     if (context->argument(9).isUndefined())
     {
-        problemInfo.analysisType == ANALYSISTYPE_STEADYSTATE;
+        Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE;
     }
     else
     {
-        problemInfo.analysisType = analysisTypeFromStringKey(context->argument(9).toString());
-        if (problemInfo.analysisType == ANALYSISTYPE_UNDEFINED)
+        Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(context->argument(9).toString());
+        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_UNDEFINED)
             return context->throwError(QObject::tr("Analysis type '%1' is not suported.").arg(context->argument(9).toString()));
     }
 
     // transient timestep
     if (context->argument(10).isUndefined())
     {
-        problemInfo.timeStep == 1.0;
+        Util::scene()->problemInfo()->timeStep == 1.0;
     }
     else
     {
         if (context->argument(10).isNumber() && context->argument(10).toNumber() > 0)
-            problemInfo.timeStep = context->argument(10).toNumber();
+            Util::scene()->problemInfo()->timeStep = context->argument(10).toNumber();
         else
-            if (problemInfo.analysisType == ANALYSISTYPE_TRANSIENT)
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
                 return context->throwError(QObject::tr("Time step must be positive."));
     }
 
     // transient timetotal
     if (context->argument(11).isUndefined())
     {
-        problemInfo.timeTotal == 1.0;
+        Util::scene()->problemInfo()->timeTotal == 1.0;
     }
     else
     {
         if (context->argument(11).isNumber() && context->argument(11).toNumber() > 0)
-            problemInfo.timeTotal = context->argument(11).toNumber();
+            Util::scene()->problemInfo()->timeTotal = context->argument(11).toNumber();
         else
-            if (problemInfo.analysisType == ANALYSISTYPE_TRANSIENT)
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
                 return context->throwError(QObject::tr("Total time must be positive."));
     }
 
     // transient initial condition
     if (context->argument(12).isUndefined())
     {
-        problemInfo.initialCondition == 0.0;
+        Util::scene()->problemInfo()->initialCondition == 0.0;
     }
     else
     {
         if (context->argument(12).isNumber() && context->argument(12).toNumber() > 0)
-            if (problemInfo.analysisType == ANALYSISTYPE_TRANSIENT)
-                problemInfo.initialCondition = context->argument(12).toNumber();
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+                Util::scene()->problemInfo()->initialCondition = context->argument(12).toNumber();
     }
 
-    Util::scene()->problemInfo() = problemInfo;
     m_sceneView->doDefaults();
     Util::scene()->refresh();
 
@@ -403,7 +401,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
     }
 
     PhysicFieldBC type;
-    switch (Util::scene()->problemInfo().physicField())
+    switch (Util::scene()->problemInfo()->physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
         if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL))
@@ -487,7 +485,7 @@ QScriptValue scriptAddBoundary(QScriptContext *context, QScriptEngine *engine)
                                                                        Value(context->argument(4).toString())));
         break;
     default:
-        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField()).toStdString() + "' is not implemented. scriptAddBoundary()" << endl;
+        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo()->physicField()).toStdString() + "' is not implemented. scriptAddBoundary()" << endl;
         throw;
         break;
     }
@@ -509,7 +507,7 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
     }
 
     PhysicFieldBC type;
-    switch (Util::scene()->problemInfo().physicField())
+    switch (Util::scene()->problemInfo()->physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
         if (context->argument(2).isUndefined())
@@ -559,7 +557,7 @@ QScriptValue scriptAddMaterial(QScriptContext *context, QScriptEngine *engine)
                                                                      Value(context->argument(3).toString())));
         break;
     default:
-        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField()).toStdString() + "' is not implemented. scriptAddMaterial()" << endl;
+        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo()->physicField()).toStdString() + "' is not implemented. scriptAddMaterial()" << endl;
         throw;
         break;
     }
@@ -849,9 +847,9 @@ QScriptValue scriptPointResult(QScriptContext *context, QScriptEngine *engine)
     }
 
     Point point(context->argument(0).toNumber(), context->argument(1).toNumber());
-    LocalPointValue *localPointValue = Util::scene()->problemInfo().hermes->localPointValue(point);
+    LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
 
-    QStringList headers = Util::scene()->problemInfo().hermes->localPointValueHeader();
+    QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
     QStringList variables = localPointValue->variables();
 
     QScriptValue value = engine->newObject();
@@ -890,9 +888,9 @@ QScriptValue scriptVolumeIntegral(QScriptContext *context, QScriptEngine *engine
             }
         }
 
-        VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo().hermes->volumeIntegralValue();
+        VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
 
-        QStringList headers = Util::scene()->problemInfo().hermes->volumeIntegralValueHeader();
+        QStringList headers = Util::scene()->problemInfo()->hermes()->volumeIntegralValueHeader();
         QStringList variables = volumeIntegral->variables();
 
         QScriptValue value = engine->newObject();
@@ -932,9 +930,9 @@ QScriptValue scriptSurfaceIntegral(QScriptContext *context, QScriptEngine *engin
             Util::scene()->edges[context->argument(i).toNumber()]->isSelected = true;
         }
 
-        SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo().hermes->surfaceIntegralValue();
+        SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
 
-        QStringList headers = Util::scene()->problemInfo().hermes->surfaceIntegralValueHeader();
+        QStringList headers = Util::scene()->problemInfo()->hermes()->surfaceIntegralValueHeader();
         QStringList variables = surfaceIntegral->variables();
 
         QScriptValue value = engine->newObject();
@@ -1031,7 +1029,7 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
 
     m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(context->argument(1).toString());
     /*
-    switch (Util::scene()->problemInfo().physicField())
+    switch (Util::scene()->problemInfo()->physicField())
     {
     case PHYSICFIELD_ELECTROSTATIC:
         if (context->argument(1).toString() == physicFieldVariableStringKey(PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL))
@@ -1134,7 +1132,7 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
             return context->throwError(QObject::tr("Physic field variable '%1' is not implemented.").arg(context->argument(1).toString()));
         break;
     default:
-        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo().physicField()).toStdString() + "' is not implemented. scriptShowScalar()" << endl;
+        std::cerr << "Physical field '" + QString::number(Util::scene()->problemInfo()->physicField()).toStdString() + "' is not implemented. scriptShowScalar()" << endl;
         throw;
         break;
     }
@@ -1148,9 +1146,9 @@ QScriptValue scriptShowScalar(QScriptContext *context, QScriptEngine *engine)
         m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_SCALAR;
     else if (context->argument(2).toString() == physicFieldVariableCompStringKey(PHYSICFIELDVARIABLECOMP_MAGNITUDE))
         m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_MAGNITUDE;
-    else if (context->argument(2).toString() == Util::scene()->problemInfo().labelX())
+    else if (context->argument(2).toString() == Util::scene()->problemInfo()->labelX())
         m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_X;
-    else if (context->argument(2).toString() == Util::scene()->problemInfo().labelY())
+    else if (context->argument(2).toString() == Util::scene()->problemInfo()->labelY())
         m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = PHYSICFIELDVARIABLECOMP_Y;
     else
     */

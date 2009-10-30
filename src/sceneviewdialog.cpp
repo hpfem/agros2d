@@ -280,8 +280,8 @@ void SceneViewDialog::doScalarFieldVariable(int index)
     else
     {
         cmbScalarFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo().labelX(), PHYSICFIELDVARIABLECOMP_X);
-        cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo().labelY(), PHYSICFIELDVARIABLECOMP_Y);
+        cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PHYSICFIELDVARIABLECOMP_X);
+        cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PHYSICFIELDVARIABLECOMP_Y);
     }
 
     if (cmbScalarFieldVariableComp->currentIndex() == -1)

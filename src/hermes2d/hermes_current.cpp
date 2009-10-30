@@ -84,12 +84,12 @@ Scalar current_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
 
 QList<SolutionArray *> *current_main(SolverThread *solverThread)
 {
-    currentPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
-    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
+    currentPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -291,8 +291,8 @@ void HermesCurrent::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loca
     itemElectricField->setText(0, tr("Electric field"));
     itemElectricField->setExpanded(true);
 
-    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueCurrent->E.x, 0, 'e', 3), "V/m");
-    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueCurrent->E.y, 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueCurrent->E.x, 0, 'e', 3), "V/m");
+    addTreeWidgetItemValue(itemElectricField, "E" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueCurrent->E.y, 0, 'e', 3), "V/m");
     addTreeWidgetItemValue(itemElectricField, "E:", QString("%1").arg(localPointValueCurrent->E.magnitude(), 0, 'e', 3), "V/m");
 
     // Current Density
@@ -300,8 +300,8 @@ void HermesCurrent::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loca
     itemCurrentDensity->setText(0, tr("Current density"));
     itemCurrentDensity->setExpanded(true);
 
-    addTreeWidgetItemValue(itemCurrentDensity, "J" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
-    addTreeWidgetItemValue(itemCurrentDensity, "J" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
+    addTreeWidgetItemValue(itemCurrentDensity, "J" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueCurrent->J.x, 0, 'e', 3), "A/m2");
+    addTreeWidgetItemValue(itemCurrentDensity, "J" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueCurrent->J.y, 0, 'e', 3), "A/m2");
     addTreeWidgetItemValue(itemCurrentDensity, "J:", QString("%1").arg(localPointValueCurrent->J.magnitude(), 0, 'e', 3), "A/m2");
 }
 
@@ -340,7 +340,7 @@ QList<SolutionArray *> *HermesCurrent::solve(SolverThread *solverThread)
             SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeCurrentMarker->value.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!edgeCurrentMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             currentEdge[i+1].type = edgeCurrentMarker->type;
             currentEdge[i+1].value = edgeCurrentMarker->value.number;
@@ -359,7 +359,7 @@ QList<SolutionArray *> *HermesCurrent::solve(SolverThread *solverThread)
             SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelCurrentMarker->conductivity.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelCurrentMarker->conductivity.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             currentLabel[i].conductivity = labelCurrentMarker->conductivity.number;
         }
@@ -687,7 +687,7 @@ bool DSceneEdgeCurrentMarker::save() {
     edgeCurrentMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
     Value value = Value(txtValue->text());
-    if (value.evaluate(Util::scene()->problemInfo().scriptStartup))
+    if (value.evaluate(Util::scene()->problemInfo()->scriptStartup))
         edgeCurrentMarker->value = value;
     else
         return false;

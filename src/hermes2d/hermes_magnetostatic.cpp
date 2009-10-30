@@ -66,12 +66,12 @@ Scalar magnetostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e
 
 QList<SolutionArray *> *magnetostatic_main(SolverThread *solverThread)
 {
-    magnetostaticPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
-    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
+    magnetostaticPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -285,8 +285,8 @@ void HermesMagnetostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue
     itemFluxDensity->setText(0, tr("Flux density"));
     itemFluxDensity->setExpanded(true);
 
-    addTreeWidgetItemValue(itemFluxDensity, "B" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->B.x, 0, 'e', 3), "T");
-    addTreeWidgetItemValue(itemFluxDensity, "B" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->B.y, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensity, "B" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->B.x, 0, 'e', 3), "T");
+    addTreeWidgetItemValue(itemFluxDensity, "B" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->B.y, 0, 'e', 3), "T");
     addTreeWidgetItemValue(itemFluxDensity, "B:", QString("%1").arg(localPointValueMagnetostatic->B.magnitude(), 0, 'e', 3), "T");
 
     // Magnetic Field
@@ -294,8 +294,8 @@ void HermesMagnetostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue
     itemMagneticField->setText(0, tr("Magnetic field"));
     itemMagneticField->setExpanded(true);
 
-    addTreeWidgetItemValue(itemMagneticField, "H" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
-    addTreeWidgetItemValue(itemMagneticField, "H" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticField, "H" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
+    addTreeWidgetItemValue(itemMagneticField, "H" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
     addTreeWidgetItemValue(itemMagneticField, "H", QString("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), "A/m");
 }
 
@@ -347,7 +347,7 @@ QList<SolutionArray *> *HermesMagnetostatic::solve(SolverThread *solverThread)
             SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeMagnetostaticMarker->value.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!edgeMagnetostaticMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             magnetostaticEdge[i+1].type = edgeMagnetostaticMarker->type;
             magnetostaticEdge[i+1].value = edgeMagnetostaticMarker->value.number;
@@ -366,10 +366,10 @@ QList<SolutionArray *> *HermesMagnetostatic::solve(SolverThread *solverThread)
             SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelMagnetostaticMarker->current_density.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelMagnetostaticMarker->permeability.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelMagnetostaticMarker->remanence.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelMagnetostaticMarker->remanence_angle.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelMagnetostaticMarker->current_density.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelMagnetostaticMarker->permeability.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelMagnetostaticMarker->remanence.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelMagnetostaticMarker->remanence_angle.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             magnetostaticLabel[i].current_density = labelMagnetostaticMarker->current_density.number;
             magnetostaticLabel[i].permeability = labelMagnetostaticMarker->permeability.number;
@@ -412,7 +412,7 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point) : Local
             Point der;
             der = value.derivative;
 
-            if (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR)
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
             {
                 B.x =  der.y;
                 B.y = -der.x;

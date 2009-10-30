@@ -18,7 +18,7 @@ void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    Util::scene()->problemInfo().hermes->fillComboBoxScalarVariable(cmbFieldVariable);
+    Util::scene()->problemInfo()->hermes()->fillComboBoxScalarVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
@@ -32,7 +32,7 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    Util::scene()->problemInfo().hermes->fillComboBoxVectorVariable(cmbFieldVariable);
+    Util::scene()->problemInfo()->hermes()->fillComboBoxVectorVariable(cmbFieldVariable);
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
@@ -116,7 +116,7 @@ Value SLineEditValue::value()
 bool SLineEditValue::evaluate()
 {
     Value val = value();
-    if (val.evaluate(Util::scene()->problemInfo().scriptStartup))
+    if (val.evaluate(Util::scene()->problemInfo()->scriptStartup))
     {
         m_number = val.number;
         return true;

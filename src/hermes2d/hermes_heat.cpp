@@ -111,15 +111,15 @@ Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData
 
 QList<SolutionArray *> *heat_main(SolverThread *solverThread)
 {
-    heatPlanar = (Util::scene()->problemInfo().problemType == PROBLEMTYPE_PLANAR);
-    heatTransient = (Util::scene()->problemInfo().analysisType == ANALYSISTYPE_TRANSIENT);
-    timeStep = Util::scene()->problemInfo().timeStep;
-    timeTotal = Util::scene()->problemInfo().timeTotal;
-    int numberOfRefinements = Util::scene()->problemInfo().numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo().polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo().adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo().adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo().adaptivityTolerance;
+    heatPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    heatTransient = (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
+    timeStep = Util::scene()->problemInfo()->timeStep;
+    timeTotal = Util::scene()->problemInfo()->timeTotal;
+    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
+    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -383,8 +383,8 @@ void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPo
     itemHeatFlux->setText(0, tr("Heat flux"));
     itemHeatFlux->setExpanded(true);
 
-    addTreeWidgetItemValue(itemHeatFlux, "F" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
-    addTreeWidgetItemValue(itemHeatFlux, "F" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
+    addTreeWidgetItemValue(itemHeatFlux, "F" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
+    addTreeWidgetItemValue(itemHeatFlux, "F" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
     addTreeWidgetItemValue(itemHeatFlux, "F:", QString("%1").arg(localPointValueHeat->F.magnitude(), 0, 'e', 3), "W/m2");
 
     // Temperature Gradient
@@ -392,8 +392,8 @@ void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPo
     itemTemperatureGradient->setText(0, tr("Temperature gradient"));
     itemTemperatureGradient->setExpanded(true);
 
-    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo().labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
-    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo().labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
+    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
+    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
     addTreeWidgetItemValue(itemTemperatureGradient, "G:", QString("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "K/m");
 }
 
@@ -453,7 +453,7 @@ QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
             case PHYSICFIELDBC_HEAT_TEMPERATURE:
                 {
                     // evaluate script
-                    if (!edgeHeatMarker->temperature.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+                    if (!edgeHeatMarker->temperature.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
                     heatEdge[i+1].temperature = edgeHeatMarker->temperature.number;
                 }
@@ -461,9 +461,9 @@ QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
             case PHYSICFIELDBC_HEAT_HEAT_FLUX:
                 {
                     // evaluate script
-                    if (!edgeHeatMarker->heatFlux.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-                    if (!edgeHeatMarker->h.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-                    if (!edgeHeatMarker->externalTemperature.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+                    if (!edgeHeatMarker->heatFlux.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+                    if (!edgeHeatMarker->h.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+                    if (!edgeHeatMarker->externalTemperature.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
                     heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.number;
                     heatEdge[i+1].h = edgeHeatMarker->h.number;
@@ -486,10 +486,10 @@ QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
             SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelHeatMarker->thermal_conductivity.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelHeatMarker->volume_heat.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelHeatMarker->density.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
-            if (!labelHeatMarker->specific_heat.evaluate(Util::scene()->problemInfo().scriptStartup)) return NULL;
+            if (!labelHeatMarker->thermal_conductivity.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelHeatMarker->volume_heat.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelHeatMarker->density.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelHeatMarker->specific_heat.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
 
             heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;
             heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;

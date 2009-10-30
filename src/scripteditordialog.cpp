@@ -86,25 +86,33 @@ ScriptResult runEcma(const QString &script)
 
     // check syntax
     QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(script);
+    ScriptResult scriptResult;
 
     if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
     {
         Util::scene()->undoStack()->setActive(false);
         Util::scene()->blockSignals(true);
         // startup script
-        m_engine->evaluate(Util::scene()->problemInfo().scriptStartup);
+        m_engine->evaluate(Util::scene()->problemInfo()->scriptStartup);
         // result
         QScriptValue result = m_engine->evaluate(script);
         if (m_engine->hasUncaughtException()) {
             int line = m_engine->uncaughtExceptionLineNumber();
-            return ScriptResult(QObject::tr("%1 (line %2.)").arg(result.toString()).arg(line),
-                                result.isError());
+
+            scriptResult.text = QObject::tr("%1 (line %2.)").arg(result.toString()).arg(line);
+            scriptResult.isError = result.isError();
         }
         Util::scene()->blockSignals(false);
         Util::scene()->refresh();
         Util::scene()->undoStack()->setActive(true);
 
-        return ScriptResult(funPrint.data().toString().trimmed(), false);
+        if (scriptResult.text.isEmpty())
+        {
+            scriptResult.text = funPrint.data().toString().trimmed();
+            scriptResult.isError = false;
+        }
+
+        return scriptResult;
     }
     else
     {
@@ -120,19 +128,19 @@ QString createEcmaFromModel()
     // model
     str += "// model\n";
     str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13);").
-           arg(Util::scene()->problemInfo().name).
-           arg(problemTypeToStringKey(Util::scene()->problemInfo().problemType)).
-           arg(physicFieldToStringKey(Util::scene()->problemInfo().physicField())).
-           arg(Util::scene()->problemInfo().numberOfRefinements).
-           arg(Util::scene()->problemInfo().polynomialOrder).
-           arg(adaptivityTypeToStringKey(Util::scene()->problemInfo().adaptivityType)).
-           arg(Util::scene()->problemInfo().adaptivitySteps).
-           arg(Util::scene()->problemInfo().adaptivityTolerance).
-           arg(Util::scene()->problemInfo().frequency).
-           arg(analysisTypeToStringKey(Util::scene()->problemInfo().analysisType)).
-           arg(Util::scene()->problemInfo().timeStep).
-           arg(Util::scene()->problemInfo().timeTotal).
-           arg(Util::scene()->problemInfo().initialCondition)
+           arg(Util::scene()->problemInfo()->name).
+           arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
+           arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField())).
+           arg(Util::scene()->problemInfo()->numberOfRefinements).
+           arg(Util::scene()->problemInfo()->polynomialOrder).
+           arg(adaptivityTypeToStringKey(Util::scene()->problemInfo()->adaptivityType)).
+           arg(Util::scene()->problemInfo()->adaptivitySteps).
+           arg(Util::scene()->problemInfo()->adaptivityTolerance).
+           arg(Util::scene()->problemInfo()->frequency).
+           arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
+           arg(Util::scene()->problemInfo()->timeStep).
+           arg(Util::scene()->problemInfo()->timeTotal).
+           arg(Util::scene()->problemInfo()->initialCondition)
            + "\n";
     str += "\n";
 
@@ -814,9 +822,9 @@ void ScriptEditorDialog::setRecentFiles()
 
 // ******************************************************************************************************
 
-ScriptStartupDialog::ScriptStartupDialog(ProblemInfo &problemInfo, QWidget *parent) : QDialog(parent)
+ScriptStartupDialog::ScriptStartupDialog(ProblemInfo *problemInfo, QWidget *parent) : QDialog(parent)
 {
-    m_problemInfo = &problemInfo;
+    m_problemInfo = problemInfo;
 
     setWindowIcon(icon("script-startup"));
     setWindowFlags(Qt::Window);
@@ -839,7 +847,7 @@ int ScriptStartupDialog::showDialog()
 void ScriptStartupDialog::createControls()
 {
     txtEditor = new ScriptEditor(this);
-    txtEditor->setPlainText(Util::scene()->problemInfo().scriptStartup);
+    txtEditor->setPlainText(Util::scene()->problemInfo()->scriptStartup);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -856,7 +864,7 @@ void ScriptStartupDialog::doAccept()
 {
     if (m_engine->canEvaluate(txtEditor->toPlainText()))
     {
-        Util::scene()->problemInfo().scriptStartup = txtEditor->toPlainText();
+        Util::scene()->problemInfo()->scriptStartup = txtEditor->toPlainText();
         accept();
     }
     else

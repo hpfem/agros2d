@@ -52,12 +52,13 @@ class ProblemDialog;
 class SceneTransformDialog;
 class HelpDialog;
 
-struct ProblemInfo
-{
+class ProblemInfo
+{    
+public:
     QString name;
     QDate date;
     QString fileName;
-    PhysicField physicField() { return (hermes) ? hermes->physicField : PHYSICFIELD_UNDEFINED; }
+    PhysicField physicField() { return (m_hermes) ? m_hermes->physicField : PHYSICFIELD_UNDEFINED; }
     ProblemType problemType;
     int numberOfRefinements;
     int polynomialOrder;
@@ -65,27 +66,32 @@ struct ProblemInfo
     int adaptivitySteps;
     double adaptivityTolerance; // percent
     QString scriptStartup;
+
     // harmonic magnetic
     int frequency;
+
     // transient
     AnalysisType analysisType;
     double timeStep;
     double timeTotal;
     double initialCondition;
-    
-    HermesField *hermes;
-    
+          
     ProblemInfo()
     {
-        hermes = NULL;
+        m_hermes = NULL;
         clear();
+    }
+
+    ~ProblemInfo()
+    {
+        if (m_hermes) delete m_hermes;
     }
     
     void clear()
     {
         // hermes object
-        if (hermes) delete hermes;
-        hermes = new HermesGeneral();
+        if (m_hermes) delete m_hermes;
+        m_hermes = new HermesGeneral();
         
         name = QObject::tr("unnamed");
         date = QDate::currentDate();
@@ -108,8 +114,14 @@ struct ProblemInfo
         initialCondition = 0.0;
     }
     
+    inline void setHermes(HermesField *hermes) { if (m_hermes) delete m_hermes; m_hermes = hermes; }
+    inline HermesField *hermes() { return m_hermes; }
+
     inline QString labelX() { return ((problemType == PROBLEMTYPE_PLANAR) ? "X" : "R");  }
     inline QString labelY() { return ((problemType == PROBLEMTYPE_PLANAR) ? "Y" : "Z");  }
+
+private:
+    HermesField *m_hermes;
 };
 
 class DxfFilter : public DL_CreationAdapter
@@ -204,7 +216,8 @@ public:
     void transformRotate(const Point &point, double angle, bool copy);
     void transformScale(const Point &point, double scaleFactor, bool copy);
     
-    inline ProblemInfo &problemInfo() { return m_problemInfo; }
+    inline ProblemInfo *problemInfo() { return m_problemInfo; }
+    inline void setProblemInfo(ProblemInfo *problemInfo) { m_problemInfo = problemInfo; }
     
     inline void refresh() { emit invalidated(); }
     void createMeshAndSolve(SolverMode solverMode);
@@ -221,7 +234,7 @@ protected:
     
 private:    
     QUndoStack *m_undoStack;
-    ProblemInfo m_problemInfo;
+    ProblemInfo *m_problemInfo;
     
     // scene solution
     SceneSolution *m_sceneSolution;
@@ -252,7 +265,7 @@ protected:
     ~Util();
     
 private:
-    static Util* m_singleton;
+    static Util *m_singleton;
     
     Scene *m_scene;
     HelpDialog *m_helpDialog;

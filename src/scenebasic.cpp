@@ -190,8 +190,8 @@ QLayout* DSceneNode::createContent()
     txtPointY = new SLineEdit("0");
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(Util::scene()->problemInfo().labelX() + " (m):", txtPointX);
-    layout->addRow(Util::scene()->problemInfo().labelY() + " (m):", txtPointY);
+    layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
+    layout->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
 
     return layout;
 }
@@ -376,8 +376,8 @@ QLayout* DSceneLabel::createContent() {
     txtArea->setValidator(new QDoubleValidator(txtArea));
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(Util::scene()->problemInfo().labelX() + " (m):", txtPointX);
-    layout->addRow(Util::scene()->problemInfo().labelY() + " (m):", txtPointY);
+    layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
+    layout->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
     layout->addRow(tr("Material:"), cmbMarker);
     layout->addRow(tr("Triangle area (m):"), txtArea);
 
