@@ -231,17 +231,30 @@ QStringList HermesElectrostatic::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesElectrostatic::newEdgeMarker()
 {
-    return new SceneEdgeElectrostaticMarker("new boundary", PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, Value("0"));
+    return new SceneEdgeElectrostaticMarker("new boundary",
+                                            PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL,
+                                            Value("0"));
 }
-/*
-SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+
+SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(const QString &name, QScriptContext *context)
 {
-    return new SceneEdgeElectrostaticMarker(name, physicFieldBC[0], *value[0]);
+    return new SceneEdgeElectrostaticMarker(name,
+                                            physicFieldBCFromStringKey(context->argument(1).toString()),
+                                            Value(context->argument(2).toString()));
 }
-*/
+
 SceneLabelMarker *HermesElectrostatic::newLabelMarker()
 {
-    return new SceneLabelElectrostaticMarker("new material",  Value("0"), Value("1"));
+    return new SceneLabelElectrostaticMarker("new material",
+                                             Value("0"),
+                                             Value("1"));
+}
+
+SceneLabelMarker *HermesElectrostatic::newLabelMarker(const QString &name, QScriptContext *context)
+{
+    return new SceneLabelElectrostaticMarker(name,
+                                             Value(context->argument(1).toString()),
+                                             Value(context->argument(2).toString()));
 }
 
 void HermesElectrostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

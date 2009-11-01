@@ -28,9 +28,31 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL ||
+                                                                          physicFieldBC == PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_REAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_IMAG ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_REAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_IMAG ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_POWER_LOSSES ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_ENERGY_DENSITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HARMONICMAGNETIC_PERMEABILITY); }
+
     SceneEdgeMarker *newEdgeMarker();
-    // SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]);
+    SceneEdgeMarker *newEdgeMarker(const QString &name, QScriptContext *context);
     SceneLabelMarker *newLabelMarker();
+    SceneLabelMarker *newLabelMarker(const QString &name, QScriptContext *context);
 
     QList<SolutionArray *> *solve(SolverThread *solverThread);
 

@@ -50,9 +50,13 @@ public:
     virtual VolumeIntegralValue *volumeIntegralValue() = 0;
     virtual QStringList volumeIntegralValueHeader() = 0;
 
+    virtual bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) = 0;
+    virtual bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) = 0;
+
     virtual SceneEdgeMarker *newEdgeMarker() = 0;
-    // virtual SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]) = 0;
+    virtual SceneEdgeMarker *newEdgeMarker(const QString &name, QScriptContext *context) = 0;
     virtual SceneLabelMarker *newLabelMarker() = 0;
+    virtual SceneLabelMarker *newLabelMarker(const QString &name, QScriptContext *context) = 0;
 
     virtual QList<SolutionArray *> *solve(SolverThread *solverThread) = 0;
 

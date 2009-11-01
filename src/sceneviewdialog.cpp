@@ -114,7 +114,7 @@ void SceneViewDialog::save()
     m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = (PhysicFieldVariable) cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toInt();
 
     // time step
-    Util::scene()->sceneSolution()->setSolutionArray(cmbTimeStep->currentIndex());
+    Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());
 }
 
 void SceneViewDialog::createControls()

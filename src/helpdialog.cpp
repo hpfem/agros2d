@@ -4,11 +4,11 @@
 #include <QtHelp/QHelpContentWidget>
 #include <QtHelp/QHelpIndexWidget>
 
-const QString path = "agros2d.org.agros2d.0_1/doc/";
+const QString path = "agros2d.org.agros2d.1_0/doc/";
 
 HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 {
-    setWindowIcon(icon("help-browser"));
+    setWindowIcon(icon("help-contents"));
     setWindowTitle(tr("Help dialog"));
     setWindowFlags(Qt::Window);
 

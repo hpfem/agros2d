@@ -92,7 +92,7 @@ Document Commands
 
 .. index:: newDocument()
 
-* **newDocument(** *name, type, physicfield, numberofrefinements, polynomialorder, frequency, adaptivitytype, adaptivitysteps, adaptivitytolerance* **)**
+* **newDocument(** *name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition* **)**
    Create new document.
 
    - type = {"planar", "axisymmetric"}
@@ -100,18 +100,23 @@ Document Commands
    - polynomialorder = 1 to 10
    - physicfield = {"electrostatic", "magnetostatic", "current field", "heat transfer", "harmonic magnetic"}
    - adaptivitytype = {"disabled", "h-adaptivity", "p-adaptivity", "hp-adaptivity"}
-   - frequency >= 0 (only for harmonic magnetic field)
    - adaptivitysteps > 0
    - adaptivitytolerance > 0
+   - frequency >= 0 (only for harmonic magnetic field)
+   - analysistype = {"steadystate", "transient"}
+   - timestep > 0
+   - totaltime > 0 
+   - initialcondition
 
 An example: ::
 
- newDocument("Electrostatic axisymmetric capacitor", "axisymmetric", "electrostatic", 1, 2, 0, "hp-adaptivity", 10, 1);
+ newDocument("Electrostatic axisymmetric capacitor", "axisymmetric", "electrostatic", 1, 2, "hp-adaptivity", 10, 1);
+ newDocument("Transient", "planar", "heat", 0, 1, "disabled", 5, 1, 0, "transient", 700, 3000, 20);
 
 .. index:: openDocument()
 
 * **openDocument(** *filename* )**
-   Open document
+   Open document.
 
 .. index:: saveDocument()
 
@@ -135,12 +140,12 @@ Geometry Commands
 
 .. index:: addEdge()
 
-* **addEdge(** *x1, y1, x2, y2, angle, marker* **)**
+* **addEdge(** *x1, y1, x2, y2, angle = 0, marker = "none"* **)**
    Add new edge with from coordinates [x1, y1] to [x2, y2], angle and marker.
 
 .. index:: addLabel()
 
-* **addLabel(** *x, y, area, marker* )**
+* **addLabel(** *x, y, area = 0, marker = "none"* )**
    Add new label with coordinates [x, y], area of triangle and marker.
 
 .. index:: selectNone()
@@ -217,6 +222,8 @@ Materials and Boundaries Commands
 * **addBoundary(** *name, type, value, ...* **)**
    Add boundary marker.
 
+   - General field
+      addMaterial(name, type = {"general_variable", "general_gradient"}, value)
    - Electrostatic field
       addBoundary(name, type = {"electrostatic_potential", "electrostatic_surface_charge_density"}, value)
    - Electric current field
@@ -229,21 +236,33 @@ Materials and Boundaries Commands
       addBoundary(name, type = "heat_temperature", temperature)
       addBoundary(name, type = "heat_flux", heat_flux, h, external_temperature)
 
+.. index:: modifyBoundary()
+
+* **modifyBoundary(** *name, type, value, ...* **)**
+   Modify boundary marker with marker name. 
+
 .. index:: addMaterial()
 
 * **addMaterial(** *name, type, value, ...* **)**
    Add label marker.
 
+   - General field
+      addMaterial(name, rightside, constant)
    - Electrostatic field
       addMaterial(name, charge_density, permittivity)
    - Electric current field
       addMaterial(name, conductivity)
    - Magnetostatic field
-      addMaterial(name, current_density, double permeability)
+      addMaterial(name, current_density, permeability, density, specificheat)
    - Harmonic magnetic field
-      addMaterial(name, current_density_real, current_density_imag, double permeability, conductivity)
+      addMaterial(name, current_density_real, current_density_imag, permeability, conductivity)
    - Heat transfer
       addMaterial(name, volume_heat, thermal_conductivity)
+
+.. index:: modifyMaterial()
+
+* **modifyMaterial(** *name, type, value, ...* **)**
+   Modify label marker with marker name. 
 
 Postprocessor Commands
 ----------------------
@@ -253,6 +272,8 @@ Postprocessor Commands
 * **result = pointResult(** *x, y* **)**
    Local variables at point [x, y].
 
+   - General field
+       Properties: X, Y, V, Gx, Gy, G, constant.
    - Electrostatic field
       Properties: X, Y, V, Ex, Ey, E, Dx, Dy, wj, epsr.
    - Magnetostatic field
@@ -274,6 +295,8 @@ An example: ::
 * **integral = volumeIntegral(** *index, ...* **)**
    Volume integral in areas with given index.
 
+   - General field
+       Properties: V, S.
    - Electrostatic field
       Properties: V, S, Ex_avg, Ey_avg, E_avg, Dx_avg, Dy_avg, D_avg, We.
    - Magnetostatic field
@@ -295,6 +318,8 @@ An example: ::
 * **integral = surfaceIntegral(** *index, ...* **)**
    Surface integral in edges with given index.
 
+   - General field
+       Properties: l, S.
    - Electrostatic field
       Properties: l, S, Q.
    - Electric current field
@@ -359,6 +384,11 @@ An example: ::
    Set view to type and show variable with component and in range (rangemin, rangemax).
 
     - type = {"none", "scalar", "scalar3d", "order"}
+
+.. index:: showVectors()
+
+* **setTimeStep(** *timeStep* **)**
+   Set time level of transient problem.
 
 .. _`predefined-functions`:
 

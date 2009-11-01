@@ -235,17 +235,30 @@ QStringList HermesGeneral::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesGeneral::newEdgeMarker()
 {
-    return new SceneEdgeGeneralMarker("new boundary", PHYSICFIELDBC_GENERAL_VALUE, Value("0"));
+    return new SceneEdgeGeneralMarker("new boundary",
+                                      PHYSICFIELDBC_GENERAL_VALUE,
+                                      Value("0"));
 }
-/*
-SceneEdgeMarker *HermesGeneral::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+
+SceneEdgeMarker *HermesGeneral::newEdgeMarker(const QString &name, QScriptContext *context)
 {
-    return new SceneEdgeGeneralMarker(name, physicFieldBC[0], *value[0]);
+    return new SceneEdgeGeneralMarker(name,
+                                      physicFieldBCFromStringKey(context->argument(1).toString()),
+                                      Value(context->argument(2).toString()));
 }
-*/
+
 SceneLabelMarker *HermesGeneral::newLabelMarker()
 {
-    return new SceneLabelGeneralMarker("new material",  Value("0"), Value("1"));
+    return new SceneLabelGeneralMarker("new material",
+                                       Value("0"),
+                                       Value("1"));
+}
+
+SceneLabelMarker *HermesGeneral::newLabelMarker(const QString &name, QScriptContext *context)
+{
+    return new SceneLabelGeneralMarker(name,
+                                       Value(context->argument(1).toString()),
+                                       Value(context->argument(2).toString()));
 }
 
 void HermesGeneral::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

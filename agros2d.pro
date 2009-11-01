@@ -14,14 +14,14 @@ unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
 # unix::DEFINES += VERSION_MONTH=$$system(date +%-m)
 # unix::DEFINES += VERSION_DAY=$$system(date +%d)
-win32:DEFINES += VERSION_GIT=195
+win32:DEFINES += VERSION_GIT=202
 
 # win32::DEFINES += VERSION_YEAR=2009
 # win32::DEFINES += VERSION_MONTH=9
 # win32::DEFINES += VERSION_DAY=11
 DEFINES += VERSION_YEAR=2009
-DEFINES += VERSION_MONTH=10
-DEFINES += VERSION_DAY=9
+DEFINES += VERSION_MONTH=11
+DEFINES += VERSION_DAY=1
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
@@ -48,8 +48,8 @@ unix {
     
     # install help
     help.path = $${PREFIX}/share/agros2d/doc/help
-    help.files = doc/help/agros2d.qch \
-        doc/help/agros2d.qhc
+    help.files = doc/help/Agros2D.qch \
+        doc/help/Agros2D.qhc
     
     # install report
     report.path = $${PREFIX}/share/agros2d/doc/report/template

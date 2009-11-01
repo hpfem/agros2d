@@ -224,8 +224,8 @@ void HermesHarmonicMagnetic::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL:
     case PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT:
         Util::scene()->addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(element->attribute("name"),
-                                                                      type,
-                                                                      Value(element->attribute("value"))));
+                                                                         type,
+                                                                         Value(element->attribute("value"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -303,17 +303,34 @@ QStringList HermesHarmonicMagnetic::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker()
 {
-    return new SceneEdgeHarmonicMagneticMarker("new boundary", PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL, Value("0"));
+    return new SceneEdgeHarmonicMagneticMarker("new boundary",
+                                               PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL,
+                                               Value("0"));
 }
-/*
-SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+
+SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker(const QString &name, QScriptContext *context)
 {
-    return new SceneEdgeHarmonicMagneticMarker(name, physicFieldBC[0], *value[0]);
+    return new SceneEdgeHarmonicMagneticMarker(name,
+                                               physicFieldBCFromStringKey(context->argument(1).toString()),
+                                               Value(context->argument(2).toString()));
 }
-*/
+
 SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker()
 {
-    return new SceneLabelElectrostaticMarker("new material", Value("0"), Value("1"));
+    return new SceneLabelHarmonicMagneticMarker("new material",
+                                                Value("0"),
+                                                Value("0"),
+                                                Value("1"),
+                                                Value("0"));
+}
+
+SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker(const QString &name, QScriptContext *context)
+{
+    return new SceneLabelHarmonicMagneticMarker(name,
+                                                Value(context->argument(1).toString()),
+                                                Value(context->argument(2).toString()),
+                                                Value(context->argument(3).toString()),
+                                                Value(context->argument(4).toString()));
 }
 
 void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

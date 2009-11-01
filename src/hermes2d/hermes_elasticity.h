@@ -28,9 +28,14 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_ELASTICITY_FIXED ||
+                                                                          physicFieldBC == PHYSICFIELDBC_ELASTICITY_FREE); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS); }
+
     SceneEdgeMarker *newEdgeMarker();
-    // SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]);
+    SceneEdgeMarker *newEdgeMarker(const QString &name, QScriptContext *context);
     SceneLabelMarker *newLabelMarker();
+    SceneLabelMarker *newLabelMarker(const QString &name, QScriptContext *context);
 
     QList<SolutionArray *> *solve(SolverThread *solverThread);
 

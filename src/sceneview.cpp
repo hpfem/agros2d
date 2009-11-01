@@ -50,9 +50,9 @@ void SceneViewSettings::load()
     colorSelected = settings.value("SceneViewSettings/ColorSelected", QColor::fromRgb(150, 0, 0)).value<QColor>();
 
     // geometry
-    geometryNodeSize = settings.value("Geometry/NodeSize", 7.0).value<double>();
+    geometryNodeSize = settings.value("Geometry/NodeSize", 6.0).value<double>();
     geometryEdgeWidth = settings.value("Geometry/EdgeWidth", 2.0).value<double>();
-    geometryLabelSize = settings.value("Geometry/LabelSize", 7.0).value<double>();
+    geometryLabelSize = settings.value("Geometry/LabelSize", 6.0).value<double>();
 
     // grid
     gridStep = settings.value("SceneViewSettings/GridStep", 0.05).value<double>();
@@ -269,8 +269,8 @@ void SceneView::createMenu()
     mnuInfo->addSeparator();
     mnuInfo->addAction(actFullScreen);
     mnuInfo->addSeparator();
-    mnuInfo->addAction(Util::scene()->actProblemProperties);
     mnuInfo->addAction(actSceneObjectProperties);
+    mnuInfo->addAction(Util::scene()->actProblemProperties);
     mnuInfo->addAction(actSceneViewProperties);
 }
 
@@ -1989,13 +1989,13 @@ void SceneView::doRefresh()
 void SceneView::doMaterialGroup(QAction *action)
 {
     if (SceneLabelMarker *labelMarker = action->data().value<SceneLabelMarker *>())
-        Util::scene()->setLabelMarker(labelMarker);
+        Util::scene()->setLabelLabelMarker(labelMarker);
 }
 
 void SceneView::doBoundaryGroup(QAction *action)
 {
     if (SceneEdgeMarker *edgeMarker = action->data().value<SceneEdgeMarker *>())
-        Util::scene()->setEdgeMarker(edgeMarker);
+        Util::scene()->setEdgeEdgeMarker(edgeMarker);
 }
 
 void SceneView::doShowGroup(QAction *action)

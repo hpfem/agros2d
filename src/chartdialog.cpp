@@ -11,8 +11,6 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
-    resize(900, 600);
-
     setMinimumSize(sizeHint());
 }
 
@@ -85,6 +83,8 @@ void ChartDialog::showDialog()
     }
 
     show();
+    activateWindow();
+    raise();
     doChartLine();
 }
 
@@ -160,7 +160,7 @@ void ChartDialog::createControls()
     axisGroup->addButton(radAxisY);
     
     // axis
-    QVBoxLayout *layoutAxis = new QVBoxLayout(this);
+    QHBoxLayout *layoutAxis = new QHBoxLayout(this);
     layoutAxis->addWidget(radAxisLength);
     layoutAxis->addWidget(radAxisX);
     layoutAxis->addWidget(radAxisY);
@@ -219,7 +219,7 @@ void ChartDialog::createControls()
     trvTable = new QTableWidget(this);
     
     // button bar
-    QVBoxLayout *layoutButton = new QVBoxLayout();
+    QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addWidget(btnPlot);
     layoutButton->addWidget(btnSaveImage);
     layoutButton->addWidget(btnExportData);
@@ -389,7 +389,7 @@ void ChartDialog::plotTime()
     for (int i = 0; i<Util::scene()->sceneSolution()->timeStepCount(); i++)
     {
         // change time level
-        Util::scene()->sceneSolution()->setSolutionArray(i);
+        Util::scene()->sceneSolution()->setTimeStep(i);
 
         Point point(txtPointX->value(), txtPointY->value());
         LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
@@ -416,7 +416,7 @@ void ChartDialog::plotTime()
     delete[] yval;
 
     // restore previous timestep
-    Util::scene()->sceneSolution()->setSolutionArray(timeStep);
+    Util::scene()->sceneSolution()->setTimeStep(timeStep);
 }
 
 void ChartDialog::doPlot()
@@ -538,7 +538,7 @@ void ChartDialog::doTimeStepChanged(int index)
 {
     if (cmbTimeStep->currentIndex() != -1)
     {
-        Util::scene()->sceneSolution()->setSolutionArray(cmbTimeStep->currentIndex());
+        Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());
         doPlot();
     }
 }

@@ -60,6 +60,8 @@ void ReportDialog::showDialog()
     view->show();
 
     show();
+    activateWindow();
+    raise();
 }
 
 void ReportDialog::generateIndex()

@@ -956,10 +956,10 @@ PointValue SceneSolution::pointValue(const Point &point, Solution *sln)
 void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayList)
 {
     m_solutionArrayList = solutionArrayList;
-    setSolutionArray(0);
+    setTimeStep(0);
 }
 
-void SceneSolution::setSolutionArray(int timeStep)
+void SceneSolution::setTimeStep(int timeStep)
 {
     m_timeStep = timeStep;
     if (!isSolved()) return;

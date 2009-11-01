@@ -28,9 +28,18 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_HEAT_TEMPERATURE ||
+                                                                          physicFieldBC == PHYSICFIELDBC_HEAT_HEAT_FLUX); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_POTENTIAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_LOSSES ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY); }
+
     SceneEdgeMarker *newEdgeMarker();
-    // SceneEdgeMarker *newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[]);
+    SceneEdgeMarker *newEdgeMarker(const QString &name, QScriptContext *context);
     SceneLabelMarker *newLabelMarker();
+    SceneLabelMarker *newLabelMarker(const QString &name, QScriptContext *context);
 
     QList<SolutionArray *> *solve(SolverThread *solverThread);
 

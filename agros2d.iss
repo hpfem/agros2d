@@ -1,8 +1,8 @@
 [Setup]
 
 AppName=Agros2D
-AppVerName=Agros2D 0.9.5.132 (2009-08-29)
-OutputBaseFilename=Agros2D_0.9.5
+AppVerName=Agros2D 0.9.8.195 (2009-10-25)
+OutputBaseFilename=Agros2D_0.9.8
 DefaultGroupName=Agros2D
 LicenseFile=COPYING
 
@@ -26,14 +26,17 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 Source: release\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: src-remote\release\Agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
+Source: install\win32\ffmpeg.exe; DestDir: {app}; DestName: ffmpeg.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
-Source: functions.js; DestDir: {app}; DestName: functions.js
+Source: functions.qs; DestDir: {app}; DestName: functions.qs
 Source: data\*.a2d; DestDir: {app}/data
 Source: data\scripts\*.qs; DestDir: {app}/data/scripts
 Source: lang\*.qm; DestDir: {app}/lang
 Source: doc\help\agros2d.qhc; DestDir: {app}/doc/help
 Source: doc\help\agros2d.qch; DestDir: {app}/doc/help
+Source: doc\report\template\default.css; DestDir: {app}/doc/report/template
+Source: doc\report\template\template.html; DestDir: {app}/doc/report/template
 Source: install\win32\*.dll; DestDir: {app}
 Source: install\win32\sqldrivers\*.dll; DestDir: {app}/sqldrivers
 

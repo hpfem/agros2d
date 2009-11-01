@@ -242,17 +242,34 @@ QStringList HermesMagnetostatic::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker()
 {
-    return new SceneEdgeMagnetostaticMarker("new boundary", PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, Value("0"));
+    return new SceneEdgeMagnetostaticMarker("new boundary",
+                                            PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL,
+                                            Value("0"));
 }
-/*
-SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+
+SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker(const QString &name, QScriptContext *context)
 {
-    return new SceneEdgeMagnetostaticMarker(name, physicFieldBC[0], *value[0]);
+    return new SceneEdgeMagnetostaticMarker(name,
+                                            physicFieldBCFromStringKey(context->argument(1).toString()),
+                                            Value(context->argument(2).toString()));
 }
-*/
+
 SceneLabelMarker *HermesMagnetostatic::newLabelMarker()
 {
-    return new SceneLabelMagnetostaticMarker("new material", Value("0"), Value("1"), Value("0"), Value("0"));
+    return new SceneLabelMagnetostaticMarker("new material",
+                                             Value("0"),
+                                             Value("1"),
+                                             Value("0"),
+                                             Value("0"));
+}
+
+SceneLabelMarker *HermesMagnetostatic::newLabelMarker(const QString &name, QScriptContext *context)
+{
+    return new SceneLabelMagnetostaticMarker(name,
+                                             Value(context->argument(1).toString()),
+                                             Value(context->argument(2).toString()),
+                                             Value(context->argument(3).toString()),
+                                             Value(context->argument(4).toString()));
 }
 
 void HermesMagnetostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

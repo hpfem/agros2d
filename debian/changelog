@@ -1,3 +1,9 @@
+agros2d (0.9-8ubuntu1) karmic; urgency=low
+
+  * bugfixes, transient heat transfer, new documentation system (sphinx based)
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 01 Nov 2009 19:15:55 +0200
+
 agros2d (0.9-7ubuntu1) jaunty; urgency=low
 
   * bugfixes, minor improvements

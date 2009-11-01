@@ -594,6 +594,7 @@ void SolverDialog::createControls()
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
+    buttonBox->addButton(btnClose, QDialogButtonBox::RejectRole);
     buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -622,6 +623,8 @@ int SolverDialog::solve()
 
 void SolverDialog::doShowMessage(const QString &message, bool isError)
 {
+    btnCancel->setEnabled(!isError);
+
     if (isError)
         lstMessage->setTextColor(QColor(Qt::red));
     else

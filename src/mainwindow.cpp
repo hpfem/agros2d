@@ -162,7 +162,7 @@ void MainWindow::createActions()
     actPaste->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
     connect(actPaste, SIGNAL(triggered()), this, SLOT(doPaste()));
 
-    actHelp = new QAction(icon("help-browser"), tr("&Help"), this);
+    actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setStatusTip(tr("Show help"));
     actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
@@ -175,7 +175,7 @@ void MainWindow::createActions()
     actAbout->setStatusTip(tr("Show the application's About box"));
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
 
-    actAboutQt = new QAction(tr("About &Qt"), this);
+    actAboutQt = new QAction(icon("help-about"), tr("About &Qt"), this);
     actAboutQt->setStatusTip(tr("Show the Qt library's About box"));
     connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     
@@ -516,8 +516,8 @@ void MainWindow::doDocumentOpen(const QString &fileName)
         else
         {
             // a2d script
-            scriptEditorDialog->showDialog();
             scriptEditorDialog->doFileOpen(fileNameDocument);
+            scriptEditorDialog->showDialog();
         }
     }
     else
@@ -761,7 +761,7 @@ void MainWindow::doTimeStepChanged(int index)
 {
     if (cmbTimeStep->currentIndex() != -1)
     {
-        Util::scene()->sceneSolution()->setSolutionArray(cmbTimeStep->currentIndex());
+        Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());
     }
 }
 
@@ -779,7 +779,8 @@ void MainWindow::doInvalidated()
 }
 
 void MainWindow::doHelp()
-{
+{    
+    Util::helpDialog()->showPage("index.html");
     Util::helpDialog()->show();
 }
 

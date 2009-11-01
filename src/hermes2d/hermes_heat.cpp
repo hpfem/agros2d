@@ -182,45 +182,58 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
     // initialize the linear solver
     UmfpackSolver umfpack;
 
+    // initialize the linear system
+    LinSystem sys(&wf, &umfpack);
+    sys.set_spaces(1, &space);
+    sys.set_pss(1, &pss);
+
     // assemble the stiffness matrix and solve the system
     int i;
     double error;
 
     // adaptivity
     int adaptivitysteps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
+    for (i = 0; i<adaptivitysteps; i++)
+    {
+        space.assign_dofs();
+
+        sys.assemble();
+        sys.solve(1, sln);
+
+        RefSystem rs(&sys);
+        rs.assemble();
+        rs.solve(1, &rsln);
+
+        // calculate errors and adapt the solution
+        if (adaptivityType != ADAPTIVITYTYPE_NONE)
+        {
+            H1OrthoHP hp(1, &space);
+            error = hp.calc_error(sln, &rsln) * 100;
+
+            // emit signal
+            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverThread->isCanceled()) return NULL;
+
+            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            hp.adapt(0.3, 0, (int) adaptivityType);
+        }
+    }
+
 
     // timesteps
     int timesteps = (heatTransient) ? floor(timeTotal/timeStep) : 1;
     for (int n = 0; n<timesteps; n++)
     {
-        for (i = 0; i<adaptivitysteps; i++)
+        if (timesteps > 1)
         {
             space.assign_dofs();
 
-            // initialize the linear system
-            LinSystem sys(&wf, &umfpack);
-            sys.set_spaces(1, &space);
-            sys.set_pss(1, &pss);
-            sys.assemble(i > 0);
+            sys.assemble();
             sys.solve(1, sln);
 
             RefSystem rs(&sys);
-            rs.assemble(i > 0);
+            rs.assemble();
             rs.solve(1, &rsln);
-
-            // calculate errors and adapt the solution
-            if (adaptivityType != ADAPTIVITYTYPE_NONE)
-            {
-                H1OrthoHP hp(1, &space);
-                error = hp.calc_error(sln, &rsln) * 100;
-
-                // emit signal
-                solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-                if (solverThread->isCanceled()) return NULL;
-
-                if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-                hp.adapt(0.3, 0, (int) adaptivityType);
-            }
         }
 
         // output
@@ -347,17 +360,45 @@ QStringList HermesHeat::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesHeat::newEdgeMarker()
 {
-    return new SceneEdgeHeatMarker("new boundary", PHYSICFIELDBC_HEAT_TEMPERATURE, Value("0"));
+    return new SceneEdgeHeatMarker("new boundary",
+                                   PHYSICFIELDBC_HEAT_TEMPERATURE,
+                                   Value("0"));
 }
-/*
-SceneEdgeMarker *HermesHeat::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+
+SceneEdgeMarker *HermesHeat::newEdgeMarker(const QString &name, QScriptContext *context)
 {
-    return new SceneEdgeHeatMarker(name, physicFieldBC[0], *value[0]);
+    if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
+    {
+        return new SceneEdgeHeatMarker(name,
+                                       physicFieldBCFromStringKey(context->argument(1).toString()),
+                                       Value(context->argument(2).toString()));
+    }
+    if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
+    {
+        return new SceneEdgeHeatMarker(name,
+                                       physicFieldBCFromStringKey(context->argument(1).toString()),
+                                       Value(context->argument(2).toString()),
+                                       Value(context->argument(3).toString()),
+                                       Value(context->argument(4).toString()));
+    }
 }
-*/
+
 SceneLabelMarker *HermesHeat::newLabelMarker()
 {
-    return new SceneLabelHeatMarker("new material", Value("0"), Value("385"), Value("0"), Value("0"));
+    return new SceneLabelHeatMarker("new material",
+                                    Value("0"),
+                                    Value("385"),
+                                    Value("0"),
+                                    Value("0"));
+}
+
+SceneLabelMarker *HermesHeat::newLabelMarker(const QString &name, QScriptContext *context)
+{
+    return new SceneLabelHeatMarker(name,
+                                    Value(context->argument(1).toString()),
+                                    Value(context->argument(2).toString()),
+                                    Value(context->argument(3).toString()),
+                                    Value(context->argument(4).toString()));
 }
 
 void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -840,10 +881,10 @@ QLayout* DSceneEdgeHeatMarker::createContent()
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("BC Type:"), cmbType);
-    layoutMarker->addRow(tr("Temperature:"), txtTemperature);
-    layoutMarker->addRow(tr("Heat flux:"), txtHeatFlux);
-    layoutMarker->addRow(tr("Heat transfer coef.:"), txtHeatTransferCoefficient);
-    layoutMarker->addRow(tr("External temperature:"), txtExternalTemperature);
+    layoutMarker->addRow(tr("Temperature (deg.):"), txtTemperature);
+    layoutMarker->addRow(tr("Heat flux (W/m2):"), txtHeatFlux);
+    layoutMarker->addRow(tr("Heat transfer coef. (Q/m2.K):"), txtHeatTransferCoefficient);
+    layoutMarker->addRow(tr("External temperature (deg.):"), txtExternalTemperature);
 
     return layoutMarker;
 }

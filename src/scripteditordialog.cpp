@@ -3,7 +3,7 @@
 
 QScriptEngine *m_engine;
 
-ScriptResult runEcma(const QString &script)
+ScriptResult runEcma(const QString &script, const QString &fileName = "")
 {
     if (!m_engine)
         m_engine = scriptEngine();
@@ -66,7 +66,9 @@ ScriptResult runEcma(const QString &script)
 
     // materials and boundaries
     m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
+    m_engine->globalObject().setProperty("modifyBoundary", m_engine->newFunction(scriptModifyBoundary));
     m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
+    m_engine->globalObject().setProperty("modifyMaterial", m_engine->newFunction(scriptModifyMaterial));
 
     // solver
     m_engine->globalObject().setProperty("mesh", m_engine->newFunction(scriptMesh));
@@ -83,6 +85,7 @@ ScriptResult runEcma(const QString &script)
     m_engine->globalObject().setProperty("showContours", m_engine->newFunction(scriptShowContours));
     m_engine->globalObject().setProperty("showVectors", m_engine->newFunction(scriptShowVectors));
     m_engine->globalObject().setProperty("showScalar", m_engine->newFunction(scriptShowScalar));
+    m_engine->globalObject().setProperty("setTimeStep", m_engine->newFunction(scriptSetTimeStep));
 
     // check syntax
     QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(script);
@@ -95,8 +98,11 @@ ScriptResult runEcma(const QString &script)
         // startup script
         m_engine->evaluate(Util::scene()->problemInfo()->scriptStartup);
         // result
-        QScriptValue result = m_engine->evaluate(script);
-        if (m_engine->hasUncaughtException()) {
+        setActualScriptFileName(fileName);
+        QScriptValue result = m_engine->evaluate(script, fileName);
+        setActualScriptFileName("");
+        if (m_engine->hasUncaughtException())
+        {
             int line = m_engine->uncaughtExceptionLineNumber();
 
             scriptResult.text = QObject::tr("%1 (line %2.)").arg(result.toString()).arg(line);
@@ -321,7 +327,7 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     else
         scriptContent = script;
 
-    ScriptResult result = runEcma(scriptContent);
+    ScriptResult result = runEcma(scriptContent, file);
     txtOutput->setPlainText(result.text);
 }
 
@@ -363,6 +369,8 @@ ScriptEditorDialog::~ScriptEditorDialog()
 void ScriptEditorDialog::showDialog()
 {
     show();
+    activateWindow();
+    raise();
     txtEditor->setFocus();
 }
 
@@ -374,7 +382,7 @@ void ScriptEditorDialog::runScript(const QString &fileName)
         if (file.open(QFile::ReadOnly | QFile::Text))
         {
             // run script
-            ScriptResult result = runEcma(file.readAll());
+            ScriptResult result = runEcma(file.readAll(), fileName);
             if (result.isError)
                 QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
             else if (!result.text.isEmpty())
@@ -465,7 +473,7 @@ void ScriptEditorDialog::createActions()
     actExit->setStatusTip(tr("Exit script editor"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    actHelp = new QAction(icon("help-browser"), tr("&Help"), this);
+    actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 }

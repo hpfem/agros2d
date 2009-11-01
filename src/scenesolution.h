@@ -41,7 +41,7 @@ public:
     Solution *sln2();
     void setSolutionArrayList(QList<SolutionArray *> *solutionArrayList);
     inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; };
-    void setSolutionArray(int timeStep);
+    void setTimeStep(int timeStep);
     inline int timeStep() { return m_timeStep; }
     inline int timeStepCount() { return (m_solutionArrayList) ? m_solutionArrayList->count() : 0; }
     double time();

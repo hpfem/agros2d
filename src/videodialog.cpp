@@ -108,15 +108,21 @@ void VideoDialog::createControls()
 
 void VideoDialog::doCreateImages()
 {
+    // store timestep
+    int timeStep = Util::scene()->sceneSolution()->timeStep();
+
     // create directory
     QDir(tempProblemDir()).mkdir("video");
     for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
     {
-        Util::scene()->sceneSolution()->setSolutionArray(i);
+        Util::scene()->sceneSolution()->setTimeStep(i);
         m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000" + QString::number(i)).right(5)));
     }
 
-    btnEncodeFFmpeg->setEnabled(true);
+    // restore previous timestep
+    Util::scene()->sceneSolution()->setTimeStep(timeStep);
+
+    btnEncodeFFmpeg->setEnabled(true);    
 }
 
 void VideoDialog::doEncodeFFmpeg()

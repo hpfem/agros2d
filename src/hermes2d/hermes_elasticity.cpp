@@ -303,17 +303,34 @@ QStringList HermesElasticity::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesElasticity::newEdgeMarker()
 {
-    return new SceneEdgeElasticityMarker("new boundary", PHYSICFIELDBC_ELASTICITY_FREE, PHYSICFIELDBC_ELASTICITY_FREE, Value("0"), Value("0"));
+    return new SceneEdgeElasticityMarker("new boundary",
+                                         PHYSICFIELDBC_ELASTICITY_FREE,
+                                         PHYSICFIELDBC_ELASTICITY_FREE,
+                                         Value("0"),
+                                         Value("0"));
 }
-/*
-SceneEdgeMarker *HermesElasticity::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+
+SceneEdgeMarker *HermesElasticity::newEdgeMarker(const QString &name, QScriptContext *context)
 {
-    return new SceneEdgeElasticityMarker(name, physicFieldBC[0], physicFieldBC[1], *value[0], *value[1]);
+    return new SceneEdgeElasticityMarker(name,
+                                         physicFieldBCFromStringKey(context->argument(1).toString()),
+                                         physicFieldBCFromStringKey(context->argument(2).toString()),
+                                         Value(context->argument(3).toString()),
+                                         Value(context->argument(4).toString()));
 }
-*/
+
 SceneLabelMarker *HermesElasticity::newLabelMarker()
 {
-    return new SceneLabelElasticityMarker("new material", Value("2e11"), Value("0.33"));
+    return new SceneLabelElasticityMarker("new material",
+                                          Value("2e11"),
+                                          Value("0.33"));
+}
+
+SceneLabelMarker *HermesElasticity::newLabelMarker(const QString &name, QScriptContext *context)
+{
+    return new SceneLabelElasticityMarker(name,
+                                          Value(context->argument(1).toString()),
+                                          Value(context->argument(2).toString()));
 }
 
 void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

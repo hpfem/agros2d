@@ -255,17 +255,28 @@ QStringList HermesCurrent::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesCurrent::newEdgeMarker()
 {
-    return new SceneEdgeCurrentMarker("new boundary", PHYSICFIELDBC_CURRENT_POTENTIAL, Value("0"));
+    return new SceneEdgeCurrentMarker("new boundary",
+                                      PHYSICFIELDBC_CURRENT_POTENTIAL,
+                                      Value("0"));
 }
-/*
-SceneEdgeMarker *HermesCurrent::newEdgeMarker(const QString &name, PhysicFieldBC physicFieldBC[], Value *value[])
+
+SceneEdgeMarker *HermesCurrent::newEdgeMarker(const QString &name, QScriptContext *context)
 {
-    return new SceneEdgeCurrentMarker(name, physicFieldBC[0], *value[0]);
+    return new SceneEdgeCurrentMarker(name,
+                                      physicFieldBCFromStringKey(context->argument(1).toString()),
+                                      Value(context->argument(2).toString()));
 }
-*/
+
 SceneLabelMarker *HermesCurrent::newLabelMarker()
 {
-    return new SceneLabelCurrentMarker("new material", Value("57e6"));
+    return new SceneLabelCurrentMarker("new material",
+                                       Value("57e6"));
+}
+
+SceneLabelMarker *HermesCurrent::newLabelMarker(const QString &name, QScriptContext *context)
+{
+    return new SceneLabelCurrentMarker(name,
+                                       Value(context->argument(1).toString()));
 }
 
 void HermesCurrent::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

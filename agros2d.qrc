@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/" >
         <file>images/application-exit.png</file>
-        <file>images/about.png</file>
         <file>images/document-new.png</file>
         <file>images/document-new-windows.png</file>
         <file>images/document-open.png</file>
@@ -9,6 +8,8 @@
         <file>images/document-save.png</file>
         <file>images/document-save-windows.png</file>
         <file>images/document-save-as.png</file>
+        <file>images/document-properties.png</file>
+        <file>images/document-open-recent.png</file>
         <file>images/edit-copy.png</file>
         <file>images/edit-copy-windows.png</file>
         <file>images/edit-cut.png</file>
@@ -50,7 +51,8 @@
         <file>images/script.png</file>
         <file>images/script-startup.png</file>
         <file>images/script-create.png</file>
-        <file>images/help-browser.png</file>
+        <file>images/help-contents.png</file>
+        <file>images/help-about.png</file>
         <file>images/tabadd.png</file>
         <file>images/tabclose.png</file>
         <file>images/tabback.png</file>

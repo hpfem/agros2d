@@ -138,7 +138,7 @@ void Scene::createActions()
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
-    actProblemProperties = new QAction(icon("scene-properties"), tr("&Problem properties"), this);
+    actProblemProperties = new QAction(icon("document-properties"), tr("&Problem properties"), this);
     actProblemProperties->setStatusTip(tr("Problem properties"));
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
 }
@@ -231,6 +231,16 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
     return NULL;
 }
 
+void Scene::setEdgeEdgeMarker(SceneEdgeMarker *edgeMarker)
+{
+    for (int i = 0; i<edges.count(); i++)
+    {
+        if (edges[i]->isSelected)
+            edges[i]->marker = edgeMarker;
+    }
+    selectNone();
+}
+
 SceneLabel *Scene::addLabel(SceneLabel *label)
 {
     // check if label doesn't exists
@@ -267,6 +277,16 @@ SceneLabel *Scene::getLabel(const Point &point)
     return NULL;
 }
 
+void Scene::setLabelLabelMarker(SceneLabelMarker *labelMarker)
+{
+    for (int i = 0; i<labels.count(); i++)
+    {
+        if (labels[i]->isSelected)
+            labels[i]->marker = labelMarker;
+    }
+    selectNone();
+}
+
 void Scene::addEdgeMarker(SceneEdgeMarker *edgeMarker)
 {
     edgeMarkers.append(edgeMarker);
@@ -287,16 +307,6 @@ void Scene::removeEdgeMarker(SceneEdgeMarker *edgeMarker)
     emit invalidated();
 }
 
-void Scene::setEdgeMarker(SceneEdgeMarker *edgeMarker)
-{
-    for (int i = 0; i<edges.count(); i++)
-    {
-        if (edges[i]->isSelected)
-            edges[i]->marker = edgeMarker;
-    }
-    selectNone();
-}
-
 SceneEdgeMarker *Scene::getEdgeMarker(const QString &name)
 {
     for (int i = 1; i<edgeMarkers.count(); i++)
@@ -307,10 +317,72 @@ SceneEdgeMarker *Scene::getEdgeMarker(const QString &name)
     return NULL;
 }
 
+bool Scene::setEdgeMarker(const QString &name, SceneEdgeMarker *edgeMarker)
+{
+    for (int i = 1; i<edgeMarkers.count(); i++)
+    {
+        if (edgeMarkers[i]->name == name)
+        {
+            SceneEdgeMarker *markerTemp = edgeMarkers[i];
+
+            // set new marker
+            foreach (SceneEdge *edge, edges)
+            {
+                if (edge->marker == edgeMarkers[i])
+                    edge->marker = edgeMarker;
+            }
+
+            // replace and delete old marker
+            edgeMarkers.replace(i, edgeMarker);
+            delete markerTemp;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Scene::addLabelMarker(SceneLabelMarker *labelMarker)
 {
     this->labelMarkers.append(labelMarker);
     emit invalidated();
+}
+
+bool Scene::setLabelMarker(const QString &name, SceneLabelMarker *labelMarker)
+{
+    for (int i = 1; i<labelMarkers.count(); i++)
+    {
+        if (labelMarkers[i]->name == name)
+        {
+            SceneLabelMarker *markerTemp = labelMarkers[i];
+
+            // set new marker
+            foreach (SceneLabel *label, labels)
+            {
+                if (label->marker == labelMarkers[i])
+                    label->marker = labelMarker;
+            }
+
+            // replace and delete old marker
+            labelMarkers.replace(i, labelMarker);
+            delete markerTemp;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+SceneLabelMarker *Scene::getLabelMarker(const QString &name)
+{
+    for (int i = 1; i<labelMarkers.count(); i++)
+    {
+        if (labelMarkers[i]->name == name)
+            return labelMarkers[i];
+    }
+    return NULL;
 }
 
 void Scene::removeLabelMarker(SceneLabelMarker *labelMarker)
@@ -325,26 +397,6 @@ void Scene::removeLabelMarker(SceneLabelMarker *labelMarker)
     // delete labelMarker;
 
     emit invalidated();
-}
-
-void Scene::setLabelMarker(SceneLabelMarker *labelMarker)
-{
-    for (int i = 0; i<labels.count(); i++)
-    {
-        if (labels[i]->isSelected)
-            labels[i]->marker = labelMarker;
-    }
-    selectNone();
-}
-
-SceneLabelMarker *Scene::getLabelMarker(const QString &name)
-{
-    for (int i = 1; i<labelMarkers.count(); i++)
-    {
-        if (labelMarkers[i]->name == name)
-            return labelMarkers[i];
-    }
-    return NULL;
 }
 
 SceneFunction *Scene::addFunction(SceneFunction *function)

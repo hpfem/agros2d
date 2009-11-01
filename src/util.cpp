@@ -163,7 +163,7 @@ QIcon icon(const QString &name)
     QString fileName;
 
 #ifdef Q_WS_WIN
-    if (QFile::exists(":/images/" + name + "-windows.png")) return QIcon(QPixmap(":/images/" + name + "-windows.png"));
+    if (QFile::exists(":/images/" + name + "-windows.png")) return QIcon(":/images/" + name + "-windows.png");
 #endif
 
 #ifdef Q_WS_X11
@@ -180,21 +180,21 @@ QIcon icon(const QString &name)
     {
         // oxygen
         fileName = "/usr/share/icons/oxygen/22x22/actions/" + name;
-        if (QFile::exists(fileName + ".svg")) return QIcon(QPixmap(fileName + ".svg"));
-        if (QFile::exists(fileName + ".png")) return QIcon(QPixmap(fileName + ".png"));
+        if (QFile::exists(fileName + ".svg")) return QIcon(fileName + ".svg");
+        if (QFile::exists(fileName + ".png")) return QIcon(fileName + ".png");
     }
     // gtk+
     if (style == "")
     {
-        // humanity
-        fileName = "/usr/share/icons/Humanity/actions/24/" + name;
-        if (QFile::exists(fileName + ".svg")) return QIcon(QPixmap(fileName + ".svg"));
-        if (QFile::exists(fileName + ".png")) return QIcon(QPixmap(fileName + ".png"));
+        // humanity (disabled - corrupted svg reader - Qt 4.6 has new method QIcon::fromTheme)
+        // fileName = "/usr/share/icons/Humanity/actions/24/" + name;
+        // if (QFile::exists(fileName + ".svg")) return QIcon(fileName + ".svg");
+        // if (QFile::exists(fileName + ".png")) return QIcon(fileName + ".png");
     }
 #endif
 
-    if (QFile::exists(":images/" + name + ".svg")) return QIcon(QPixmap(":images/" + name + ".svg"));
-    if (QFile::exists(":images/" + name + ".png")) return QIcon(QPixmap(":images/" + name + ".png"));
+    if (QFile::exists(":images/" + name + ".svg")) return QIcon(":images/" + name + ".svg");
+    if (QFile::exists(":images/" + name + ".png")) return QIcon(":images/" + name + ".png");
 
     return QIcon();
 }
