@@ -147,7 +147,7 @@ public:
 signals:
     void mouseMoved(const QPointF &position);
     void mousePressed();
-    void mousePressed(const Point &point);
+    void mousePressed(const Point &point);    
     
 protected:
     void initializeGL();

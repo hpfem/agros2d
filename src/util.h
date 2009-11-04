@@ -55,6 +55,9 @@ QTime milliSecondsToTime(int ms);
 // remove directory content
 bool removeDirectory(const QDir &dir);
 
+// sleep function
+void msleep(unsigned long msecs);
+
 struct Value
 {
     QString text;
@@ -184,7 +187,7 @@ enum AdaptivityType
     ADAPTIVITYTYPE_H = 1,
     ADAPTIVITYTYPE_P = 2,
     ADAPTIVITYTYPE_HP = 0
-};
+                    };
 
 enum PhysicFieldVariableComp
 {

@@ -325,3 +325,12 @@ bool removeDirectory(const QDir &dir)
 
     return error;
 }
+
+void msleep(unsigned long msecs)
+{
+    QWaitCondition w;
+    QMutex sleepMutex;
+    sleepMutex.lock();
+    w.wait(&sleepMutex, msecs);
+    sleepMutex.unlock();
+}

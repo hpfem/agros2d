@@ -62,6 +62,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // run server
     ScriptEngineRemote *scriptEngineRemote = new ScriptEngineRemote();
 
+    // accept drops
+    setAcceptDrops(true);
+
     doInvalidated();
 }
 
@@ -467,6 +470,30 @@ void MainWindow::setRecentFiles()
     }
 }
 
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->acceptProposedAction();
+}
+
+void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    event->accept();
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    if (event->mimeData()->hasUrls())
+    {
+        QString fileName = QUrl(event->mimeData()->urls().at(0)).toLocalFile().trimmed();
+        if (QFile::exists(fileName))
+        {
+            doDocumentOpen(fileName);
+
+            event->acceptProposedAction();
+        }
+    }
+}
+
 void MainWindow::doDocumentNew()
 {
     ProblemInfo *problemInfo = new ProblemInfo();
@@ -514,9 +541,9 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             sceneView->doDefaults();
             sceneView->doZoomBestFit();
         }
-        else
+        if (fileInfo.suffix() == "qs")
         {
-            // a2d script
+            // qs script
             scriptEditorDialog->doFileOpen(fileNameDocument);
             scriptEditorDialog->showDialog();
         }
@@ -729,8 +756,8 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    Util::scene()->readFromFile("data/pokus.a2d");
-    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    // Util::scene()->readFromFile("data/pokus.a2d");
+    Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     // Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
     // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");

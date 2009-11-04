@@ -196,7 +196,7 @@ void VideoDialog::doAnimate()
     for (int i = txtAnimateFrom->value(); i <= txtAnimateTo->value(); i++ )
     {
         doSetTimeStep(i);
-        usleep(txtAnimateDelay->value() * 1e6);
+        msleep(txtAnimateDelay->value() * 1e3);
     }
 }
 
