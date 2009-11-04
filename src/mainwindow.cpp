@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new ScriptEditorDialog(sceneView, this);
     reportDialog = new ReportDialog(this);
+    videoDialog = new VideoDialog(sceneView, this);
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
@@ -607,8 +608,7 @@ void MainWindow::doDocumentSaveImage()
 
 void MainWindow::doCreateVideo()
 {
-    VideoDialog videoDialog(sceneView, this);
-    videoDialog.showDialog();
+    videoDialog->showDialog();
 }
 
 void MainWindow::doCreateMesh()

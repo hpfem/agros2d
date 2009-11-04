@@ -39,7 +39,6 @@ private:
     SLineEdit *txtAnimateDelay;
     QLabel *lblAnimateTime;
 
-
     void createControls();
     QWidget *createControlsViewport();
     QWidget *createControlsFile();

@@ -137,6 +137,7 @@ private:
     ChartDialog *chartDialog;
     ScriptEditorDialog *scriptEditorDialog;
     ReportDialog *reportDialog;
+    VideoDialog *videoDialog;
 
     void setRecentFiles();
 

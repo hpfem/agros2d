@@ -35,7 +35,16 @@ VideoDialog::~VideoDialog()
 }
 
 void VideoDialog::showDialog()
-{
+{   
+    doCommandFFmpeg();
+
+    txtAnimateFrom->setMaximum(Util::scene()->sceneSolution()->timeStepCount());
+    txtAnimateTo->setMaximum(Util::scene()->sceneSolution()->timeStepCount());
+    txtAnimateTo->setValue(Util::scene()->sceneSolution()->timeStepCount());
+
+    doValueFromChanged(txtAnimateFrom->value());
+    doValueToChanged(txtAnimateTo->value());
+
     exec();
 }
 
@@ -58,8 +67,6 @@ void VideoDialog::createControls()
     layout->addLayout(layoutButton);
 
     setLayout(layout);
-
-    doCommandFFmpeg();
 }
 
 QWidget *VideoDialog::createControlsFile()
@@ -141,21 +148,15 @@ QWidget *VideoDialog::createControlsViewport()
 
     txtAnimateFrom = new QSpinBox();
     txtAnimateFrom->setMinimum(1);
-    txtAnimateFrom->setMaximum(Util::scene()->sceneSolution()->timeStepCount());
     connect(txtAnimateFrom, SIGNAL(valueChanged(int)), this, SLOT(doValueFromChanged(int)));
 
     txtAnimateTo = new QSpinBox();
     txtAnimateTo->setMinimum(1);
-    txtAnimateTo->setMaximum(Util::scene()->sceneSolution()->timeStepCount());
-    txtAnimateTo->setValue(Util::scene()->sceneSolution()->timeStepCount());
     connect(txtAnimateTo, SIGNAL(valueChanged(int)), this, SLOT(doValueToChanged(int)));
 
     sldAnimate = new QSlider(Qt::Horizontal);
     sldAnimate->setTickPosition(QSlider::TicksBelow);
     connect(sldAnimate, SIGNAL(valueChanged(int)), this, SLOT(doSetTimeStep(int)));
-
-    doValueFromChanged(txtAnimateFrom->value());
-    doValueToChanged(txtAnimateTo->value());
     
     txtAnimateDelay = new SLineEdit("0.2", true, false);
 
