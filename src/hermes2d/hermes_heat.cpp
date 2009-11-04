@@ -883,7 +883,7 @@ QLayout* DSceneEdgeHeatMarker::createContent()
     layoutMarker->addRow(tr("BC Type:"), cmbType);
     layoutMarker->addRow(tr("Temperature (deg.):"), txtTemperature);
     layoutMarker->addRow(tr("Heat flux (W/m2):"), txtHeatFlux);
-    layoutMarker->addRow(tr("Heat transfer coef. (Q/m2.K):"), txtHeatTransferCoefficient);
+    layoutMarker->addRow(tr("Heat transfer coef. (W/m2.K):"), txtHeatTransferCoefficient);
     layoutMarker->addRow(tr("External temperature (deg.):"), txtExternalTemperature);
 
     return layoutMarker;

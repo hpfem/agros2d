@@ -345,17 +345,8 @@ QScriptValue scriptAddLabel(QScriptContext *context, QScriptEngine *engine)
     if (context->argumentCount() == 4)
     {
         // find marker by name
-        bool ok = false;
-        foreach (SceneLabelMarker *labelMarker, Util::scene()->labelMarkers)
-        {
-            if (context->argument(3).toString() == labelMarker->name)
-            {
-                marker = labelMarker;
-                ok = true;
-                break;
-            }
-        }
-        if (ok == false)
+         marker = Util::scene()->getLabelMarker(context->argument(3).toString());
+         if (!marker)
             return context->throwError(QObject::tr("Marker '%1' is not defined.").arg(context->argument(3).toString()));
     }
     else
@@ -401,18 +392,9 @@ QScriptValue scriptAddEdge(QScriptContext *context, QScriptEngine *engine)
     if (context->argumentCount() == 6)
     {
         // find marker by name
-        bool ok = false;
-        foreach (SceneEdgeMarker *edgeMarker, Util::scene()->edgeMarkers)
-        {
-            if (edgeMarker->name == context->argument(5).toString())
-            {
-                marker = edgeMarker;
-                ok = true;
-                break;
-            }
-        }
-        if (ok == false)
-            return context->throwError(QObject::tr("Marker '%1' is not defined.").arg(context->argument(3).toString()));
+        marker = Util::scene()->getEdgeMarker(context->argument(5).toString());
+        if (!marker)
+            return context->throwError(QObject::tr("Marker '%1' is not defined.").arg(context->argument(5).toString()));
     }
     else
     {

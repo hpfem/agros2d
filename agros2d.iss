@@ -1,7 +1,7 @@
 [Setup]
 
 AppName=Agros2D
-AppVerName=Agros2D 0.9.8.195 (2009-10-25)
+AppVerName=Agros2D 0.9.8.202 (2009-11-01)
 OutputBaseFilename=Agros2D_0.9.8
 DefaultGroupName=Agros2D
 LicenseFile=COPYING
@@ -24,6 +24,7 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 
 [Files]
 Source: release\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
+Source: images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: src-remote\release\Agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
 Source: install\win32\ffmpeg.exe; DestDir: {app}; DestName: ffmpeg.exe
@@ -33,8 +34,8 @@ Source: functions.qs; DestDir: {app}; DestName: functions.qs
 Source: data\*.a2d; DestDir: {app}/data
 Source: data\scripts\*.qs; DestDir: {app}/data/scripts
 Source: lang\*.qm; DestDir: {app}/lang
-Source: doc\help\agros2d.qhc; DestDir: {app}/doc/help
-Source: doc\help\agros2d.qch; DestDir: {app}/doc/help
+Source: doc\help\Agros2D.qhc; DestDir: {app}/doc/help
+Source: doc\help\Agros2D.qch; DestDir: {app}/doc/help
 Source: doc\report\template\default.css; DestDir: {app}/doc/report/template
 Source: doc\report\template\template.html; DestDir: {app}/doc/report/template
 Source: install\win32\*.dll; DestDir: {app}
@@ -54,7 +55,11 @@ Name: desktopicon; Description: Create icon on desktop
 ;
 
 [Registry]
-;
+; a2d
+Root: HKCR; SubKey: .a2d; ValueType: string; ValueData: Agros2D.Data; Flags: uninsdeletekey
+Root: HKCR; SubKey: Agros2D.Data; ValueType: string; ValueData: Agros2D data file; Flags: uninsdeletekey
+Root: HKCR; SubKey: Agros2D.Data\Shell\Open\Command; ValueType: string; ValueData: """{app}\Agros2D.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCR; Subkey: Agros2D.Data\DefaultIcon; ValueType: string; ValueData: {app}\Agros2D.ico; Flags: uninsdeletevalue
 
 [INI]
 Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http://www.hpfem.org/agros2d

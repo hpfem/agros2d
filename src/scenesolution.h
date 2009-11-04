@@ -31,7 +31,7 @@ struct PointValue
 class SceneSolution
 {
 public:
-    SceneSolution(Scene *scene);
+    SceneSolution();
 
     void clear();
 
@@ -81,7 +81,6 @@ public:
     int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point);
 
 private:
-    Scene *m_scene;
     int m_timeElapsed;
 
     // general solution array
@@ -109,8 +108,8 @@ private:
 class ViewScalarFilter : public Filter
 {
 public:
-    ViewScalarFilter(MeshFunction* sln, Scene *scene, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    ViewScalarFilter(MeshFunction* sln1, MeshFunction* sln2, Scene *scene, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter(MeshFunction* sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter(MeshFunction* sln1, MeshFunction* sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 
     double get_pt_value(double x, double y, int item = FN_VAL_0);
 
@@ -119,7 +118,6 @@ protected:
     double get_value(double value, double dudx, double dudy, double x, double y, SceneLabelMarker *marker);
 
 private:
-    Scene *m_scene;
     PhysicFieldVariable m_physicFieldVariable;
     PhysicFieldVariableComp m_physicFieldVariableComp;
 };

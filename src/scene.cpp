@@ -78,7 +78,7 @@ Scene::Scene()
 
     m_problemInfo = new ProblemInfo();
     m_undoStack = new QUndoStack(this);
-    m_sceneSolution = new SceneSolution(this);
+    m_sceneSolution = new SceneSolution();
 
     solverDialog = new SolverDialog(QApplication::activeWindow());
     connect(solverDialog, SIGNAL(solved()), this, SLOT(doSolved()));
@@ -262,7 +262,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
 void Scene::removeLabel(SceneLabel *label)
 {
     labels.removeOne(label);
-    // delete label;
+    delete label;
 
     emit invalidated();
 }
@@ -309,7 +309,7 @@ void Scene::removeEdgeMarker(SceneEdgeMarker *edgeMarker)
 
 SceneEdgeMarker *Scene::getEdgeMarker(const QString &name)
 {
-    for (int i = 1; i<edgeMarkers.count(); i++)
+    for (int i = 0; i<edgeMarkers.count(); i++)
     {
         if (edgeMarkers[i]->name == name)
             return edgeMarkers[i];
@@ -377,7 +377,7 @@ bool Scene::setLabelMarker(const QString &name, SceneLabelMarker *labelMarker)
 
 SceneLabelMarker *Scene::getLabelMarker(const QString &name)
 {
-    for (int i = 1; i<labelMarkers.count(); i++)
+    for (int i = 0; i<labelMarkers.count(); i++)
     {
         if (labelMarkers[i]->name == name)
             return labelMarkers[i];

@@ -342,8 +342,8 @@ void HermesMagnetostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, Volume
     addTreeWidgetItemValue(magnetostaticNode, tr("By avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensityY, 0, 'e', 3), tr("T"));
     addTreeWidgetItemValue(magnetostaticNode, tr("B avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensity, 0, 'e', 3), tr("T"));
     addTreeWidgetItemValue(magnetostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->energy, 0, 'e', 3), tr("J"));
-    addTreeWidgetItemValue(magnetostaticNode, tr("Fx:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceX, 0, 'e', 3), tr("N"));
-    addTreeWidgetItemValue(magnetostaticNode, tr("Fy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceY, 0, 'e', 3), tr("N"));
+    // addTreeWidgetItemValue(magnetostaticNode, tr("Fx:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceX, 0, 'e', 3), tr("N"));
+    // addTreeWidgetItemValue(magnetostaticNode, tr("Fy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceY, 0, 'e', 3), tr("N"));
 }
 
 QList<SolutionArray *> *HermesMagnetostatic::solve(SolverThread *solverThread)

@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="transient" adaptivitysteps="10" polynomialorder="2" problemtype="axisymmetric" timetotal="10000" type="heat" timestep="1000" id="0" name="Actuator" initialcondition="0" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="hp-adaptivity" analysistype="transient" adaptivitysteps="4" polynomialorder="1" problemtype="axisymmetric" timetotal="10000" type="heat" timestep="500" id="0" name="Actuator" initialcondition="20" >
             <scriptstartup></scriptstartup>
             <edges>
                 <edge h="0" external_temperature="0" type="heat_heat_flux" id="1" name="Flux" heat_flux="0" />
@@ -10,7 +10,7 @@
                 <label thermal_conductivity="0.02" specific_heat="1000" volume_heat="0" id="1" density="1.2" name="Air" />
                 <label thermal_conductivity="200" specific_heat="385" volume_heat="26000" id="2" density="8700" name="Cu" />
                 <label thermal_conductivity="60" specific_heat="460" volume_heat="0" id="3" density="7800" name="Fe" />
-                <label thermal_conductivity="100" specific_heat="378" volume_heat="0" id="4" density="8400" name="Mosaz" />
+                <label thermal_conductivity="100" specific_heat="378" volume_heat="0" id="4" density="8400" name="Brass" />
             </labels>
         </problem>
     </problems>
@@ -38,8 +38,8 @@
             <node x="0.02500000000000001" y="0.04099999999999998" id="19" />
             <node x="0.025" y="0.1705" id="20" />
             <node x="0.008000000000000011" y="0.03" id="21" />
-            <node x="0.008500000000000006" y="0.03949999999999998" id="22" />
-            <node x="0.00850000000000002" y="0.03" id="23" />
+            <node x="0.008999999999999999" y="0.0395" id="22" />
+            <node x="0.008999999999999999" y="0.03" id="23" />
         </nodes>
         <edges>
             <edge end="1" marker="2" id="0" start="0" angle="0" />

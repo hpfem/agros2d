@@ -201,14 +201,21 @@ QIcon icon(const QString &name)
 
 QString datadir()
 {
+    // actual data dir
     QDir dirData;
     dirData.setPath(QDir::current().absolutePath() + "/data");
     if (dirData.exists())
         return QDir::current().absolutePath();
 
+    // linux
     dirData.setPath(QApplication::applicationDirPath() + "/../share/agros2d/data");
     if (dirData.exists())
         return QApplication::applicationDirPath() + "/../share/agros2d";
+
+    // windows
+    dirData.setPath(QApplication::applicationDirPath() + "/data");
+    if (dirData.exists())
+        return QApplication::applicationDirPath() + "/data";
 
     cerr << "Datadir not found." << endl;
     exit(1);
