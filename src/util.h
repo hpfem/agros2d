@@ -22,6 +22,9 @@ const int NDOF_STOP = 40000;
 
 using namespace std;
 
+// enable log file
+void enableLogFile(bool enable);
+
 // set gui style
 void setGUIStyle(const QString &styleName);
 
@@ -57,6 +60,9 @@ bool removeDirectory(const QDir &dir);
 
 // sleep function
 void msleep(unsigned long msecs);
+
+// log to file
+void log(const QString &message);
 
 struct Value
 {

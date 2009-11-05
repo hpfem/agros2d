@@ -66,7 +66,7 @@ if (!testInducedCurrentImag) print("Induced current - imag: ", abs(integral.Ii_i
 
 // Lorentz force
 integral = volumeIntegral(2);
-testLorentzForceY = abs(abs(integral.Fy_real/2.0) - 0.33924) < 1e-4;
+testLorentzForceY = abs(abs(integral.Fy_real/2.0) - 0.33924) < 1e-3;
 if (!testLorentzForceY) print("Lorentz force - Y: ", abs(integral.Fy_real/2.0), " == ", 0.33924);
 
 // Joule losses

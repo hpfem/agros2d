@@ -44,7 +44,7 @@ if (!testPotential) print("Scalar potential: ", abs(point.V), " == ", 26.078318)
 
 // energy
 integral = volumeIntegral();
-testEnergy = abs(abs(integral.We) - 1.799349e-8) < 1e-11;
+testEnergy = abs(abs(integral.We) - 1.799349e-8) < 1e-10;
 if (!testEnergy) print("Electric energy: ", abs(integral.We), " == ", 1.799349e-8);
 
 // charge

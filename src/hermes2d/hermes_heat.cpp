@@ -224,20 +224,28 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
     int timesteps = (heatTransient) ? floor(timeTotal/timeStep) : 1;
     for (int n = 0; n<timesteps; n++)
     {
+        log("\n");
         if (timesteps > 1)
         {
             space.assign_dofs();
+            log("space.assign_dofs();");
 
             sys.assemble();
+            log("sys.assemble();");
             sys.solve(1, sln);
+            log("sys.solve(1, sln);");
 
             RefSystem rs(&sys);
+            log("RefSystem rs(&sys);");
             rs.assemble();
+            log("rs.assemble();");
             rs.solve(1, &rsln);
+            log("rs.solve(1, &rsln);");
         }
 
         // output
         space.assign_dofs();
+        log("space.assign_dofs();");
 
         SolutionArray *solutionArray = new SolutionArray();
         solutionArray->order1 = new Orderizer();
@@ -249,10 +257,14 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
         if (heatTransient > 0) solutionArray->time = (n+1)*timeStep;
 
         solutionArrayList->append(solutionArray);
+        log("solutionArrayList->append(solutionArray);");
 
         if (heatTransient > 0) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
+        log("if (heatTransient > 0) solverThread->showMessage...");
         if (solverThread->isCanceled()) return NULL;
+        log("if (solverThread->isCanceled()) return NULL;");
         solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
+        log("solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));");
     }
 
     return solutionArrayList;

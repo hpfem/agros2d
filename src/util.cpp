@@ -1,6 +1,8 @@
 #include "util.h"
 #include "scene.h"
 
+static bool logFile;
+
 static QHash<PhysicField, QString> physicFieldList;
 static QHash<PhysicFieldVariable, QString> physicFieldVariableList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
@@ -120,6 +122,11 @@ void initLists()
     adaptivityTypeList.insert(ADAPTIVITYTYPE_H, "h-adaptivity");
     adaptivityTypeList.insert(ADAPTIVITYTYPE_P, "p-adaptivity");
     adaptivityTypeList.insert(ADAPTIVITYTYPE_HP, "hp-adaptivity");
+}
+
+void enableLogFile(bool enable)
+{
+    logFile = enable;
 }
 
 void setGUIStyle(const QString &styleName)
@@ -333,4 +340,20 @@ void msleep(unsigned long msecs)
     sleepMutex.lock();
     w.wait(&sleepMutex, msecs);
     sleepMutex.unlock();
+}
+
+void log(const QString &message)
+{
+    if (logFile)
+    {
+        QFile file(QApplication::applicationDirPath() + "/log.txt");
+
+        if (file.open(QIODevice::Append))
+        {
+            QTextStream outFile(&file);
+            outFile << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << ": " << message << endl;
+
+            file.close();
+        }
+    }
 }

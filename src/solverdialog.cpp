@@ -50,7 +50,7 @@ void SolverThread::cancel()
     while (isRunning())
     {
         quit();
-        wait(30);
+        msleep(30);
     }
     m_isCanceled = true;
 }
@@ -564,7 +564,6 @@ SolverDialog::~SolverDialog()
     while (thread->isRunning())
     {
         thread->quit();
-        thread->wait(30);
     }
     delete thread;
 
@@ -657,11 +656,8 @@ void SolverDialog::doCancel()
         btnCancel->setEnabled(false);
         thread->cancel();
 
-        while (thread->isRunning())
-        {
-            QApplication::processEvents();
-            thread->wait(100);
-        }
+        QApplication::processEvents();
+        while (thread->isRunning()) {}
     }
 }
 

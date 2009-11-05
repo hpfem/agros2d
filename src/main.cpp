@@ -29,6 +29,8 @@ int main(int argc, char *argv[])
 
     QSettings settings;
 
+    enableLogFile(settings.value("General/EnableLogFile", false).value<bool>());
+
     // first run
     if (settings.value("General/GUIStyle").value<QString>().isEmpty())
     {

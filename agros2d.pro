@@ -5,7 +5,7 @@ QT += opengl \
     webkit \
     network
 SUBDIRS = src-remote
-DEFINES += BETA
+# DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
 DEFINES += VERSION_SUB=8
