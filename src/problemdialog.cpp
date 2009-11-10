@@ -208,16 +208,16 @@ void ProblemDialog::load()
 
 bool ProblemDialog::save()
 {
-    ScriptResult scriptResult = runPythonExpression(txtEditor->toPlainText());
-    if (!scriptResult.isError)
+    if (!txtEditor->toPlainText().isEmpty())
     {
-        Util::scene()->problemInfo()->scriptStartup = txtEditor->toPlainText();
+        ScriptResult scriptResult = runPythonExpression(txtEditor->toPlainText());
+        if (scriptResult.isError)
+        {
+            QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
+            return false;
+        }
     }
-    else
-    {
-        QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
-        return false;
-    }
+    Util::scene()->problemInfo()->scriptStartup = txtEditor->toPlainText();
 
     if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 

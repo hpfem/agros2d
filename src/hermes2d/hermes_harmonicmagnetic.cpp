@@ -161,8 +161,8 @@ QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    int steps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
-    for (i = 0; i<(steps); i++)
+    int adaptivitysteps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
+    for (i = 0; i<(adaptivitysteps); i++)
     {
         int ndof = spacereal.assign_dofs(0);
         spaceimag.assign_dofs(ndof);
@@ -189,14 +189,11 @@ QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
             if (solverThread->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(0.3, 0, (int) adaptivityType);
+            if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
         }
     }
 
     // output
-    ndof = spacereal.assign_dofs(0);
-    spaceimag.assign_dofs(ndof);
-
     SolutionArray *solutionArray = new SolutionArray();
     solutionArray->order1 = new Orderizer();
     solutionArray->order1->process_solution(&spacereal);

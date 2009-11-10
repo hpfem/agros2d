@@ -103,8 +103,8 @@ QList<SolutionArray *> *electrostatic_main(SolverThread *solverThread)
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    int steps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps + 1;
-    for (i = 0; i<steps; i++)
+    int adaptivitysteps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps + 1;
+    for (i = 0; i<adaptivitysteps; i++)
     {
         space.assign_dofs();
 
@@ -130,13 +130,11 @@ QList<SolutionArray *> *electrostatic_main(SolverThread *solverThread)
             if (solverThread->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(0.3, 0, (int) adaptivityType);
+            if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
         }
     }
 
     // output
-    space.assign_dofs();
-
     SolutionArray *solutionArray = new SolutionArray();
     solutionArray->order1 = new Orderizer();
     solutionArray->order1->process_solution(&space);

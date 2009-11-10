@@ -143,7 +143,6 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
     space.set_bc_types(heat_bc_types);
     space.set_bc_values(heat_bc_values);
     space.set_uniform_order(polynomialOrder);
-    space.assign_dofs();
 
     // solution
     QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
@@ -215,10 +214,9 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
             if (solverThread->isCanceled()) return NULL;
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            hp.adapt(0.3, 0, (int) adaptivityType);
+            if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
         }
     }
-
 
     // timesteps
     int timesteps = (heatTransient) ? floor(timeTotal/timeStep) : 1;
@@ -227,26 +225,18 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
         log("\n");
         if (timesteps > 1)
         {
-            space.assign_dofs();
-            log("space.assign_dofs();");
-
-            sys.assemble();
+            sys.assemble(true);
             log("sys.assemble();");
             sys.solve(1, sln);
             log("sys.solve(1, sln);");
-
-            RefSystem rs(&sys);
-            log("RefSystem rs(&sys);");
-            rs.assemble();
-            log("rs.assemble();");
-            rs.solve(1, &rsln);
-            log("rs.solve(1, &rsln);");
+        }
+        else
+        {
+            space.assign_dofs();
+            sys.assemble();
         }
 
         // output
-        space.assign_dofs();
-        log("space.assign_dofs();");
-
         SolutionArray *solutionArray = new SolutionArray();
         solutionArray->order1 = new Orderizer();
         solutionArray->order1->process_solution(&space);
