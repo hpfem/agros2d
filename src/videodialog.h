@@ -22,7 +22,7 @@ private:
     QString commandFFmpeg;
     QString outputFile;
 
-    QTabWidget* tabType;
+    QTabWidget *tabType;
 
     // file
     QPushButton *btnEncodeFFmpeg;
@@ -36,7 +36,7 @@ private:
     QSpinBox *txtAnimateFrom;
     QSpinBox *txtAnimateTo;
     QSlider *sldAnimate;
-    SLineEdit *txtAnimateDelay;
+    SLineEditDouble *txtAnimateDelay;
     QLabel *lblAnimateTime;
 
     void createControls();

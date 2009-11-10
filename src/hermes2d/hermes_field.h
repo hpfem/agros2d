@@ -3,6 +3,8 @@
 
 #include <QDomDocument>
 
+#include <Python.h>
+
 #include "util.h"
 #include "hermes2d.h"
 #include "solver_umfpack.h"
@@ -54,9 +56,9 @@ public:
     virtual bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) = 0;
 
     virtual SceneEdgeMarker *newEdgeMarker() = 0;
-    virtual SceneEdgeMarker *newEdgeMarker(const QString &name, QScriptContext *context) = 0;
+    virtual SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args) = 0;
     virtual SceneLabelMarker *newLabelMarker() = 0;
-    virtual SceneLabelMarker *newLabelMarker(const QString &name, QScriptContext *context) = 0;
+    virtual SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args) = 0;
 
     virtual QList<SolutionArray *> *solve(SolverThread *solverThread) = 0;
 

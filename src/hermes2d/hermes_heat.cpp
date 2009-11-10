@@ -377,22 +377,29 @@ SceneEdgeMarker *HermesHeat::newEdgeMarker()
                                    Value("0"));
 }
 
-SceneEdgeMarker *HermesHeat::newEdgeMarker(const QString &name, QScriptContext *context)
+SceneEdgeMarker *HermesHeat::newEdgeMarker(PyObject *self, PyObject *args)
 {
-    if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_HEAT_TEMPERATURE))
+    double temperature, heatflux, h, externaltemperature;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &temperature))
     {
         return new SceneEdgeHeatMarker(name,
-                                       physicFieldBCFromStringKey(context->argument(1).toString()),
-                                       Value(context->argument(2).toString()));
+                                       physicFieldBCFromStringKey(type),
+                                       Value(QString::number(temperature)));
     }
-    if (context->argument(1).toString() == physicFieldBCToStringKey(PHYSICFIELDBC_HEAT_HEAT_FLUX))
+    if (PyArg_ParseTuple(args, "ssddd", &name, &type, &heatflux, &h, &externaltemperature))
     {
+        // check name
+        if (Util::scene()->getEdgeMarker(name)) return NULL;
+
         return new SceneEdgeHeatMarker(name,
-                                       physicFieldBCFromStringKey(context->argument(1).toString()),
-                                       Value(context->argument(2).toString()),
-                                       Value(context->argument(3).toString()),
-                                       Value(context->argument(4).toString()));
+                                       physicFieldBCFromStringKey(type),
+                                       Value(QString::number(heatflux)),
+                                       Value(QString::number(h)),
+                                       Value(QString::number(externaltemperature)));
     }
+
+    return Util::scene()->edgeMarkers[0];
 }
 
 SceneLabelMarker *HermesHeat::newLabelMarker()
@@ -404,13 +411,23 @@ SceneLabelMarker *HermesHeat::newLabelMarker()
                                     Value("0"));
 }
 
-SceneLabelMarker *HermesHeat::newLabelMarker(const QString &name, QScriptContext *context)
+SceneLabelMarker *HermesHeat::newLabelMarker(PyObject *self, PyObject *args)
 {
-    return new SceneLabelHeatMarker(name,
-                                    Value(context->argument(1).toString()),
-                                    Value(context->argument(2).toString()),
-                                    Value(context->argument(3).toString()),
-                                    Value(context->argument(4).toString()));
+    double heat_volume, thermal_conductivity, density, specific_heat;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdddd", &name, &heat_volume, &thermal_conductivity, &density, &specific_heat))
+    {
+        // check name
+        if (Util::scene()->getLabelMarker(name)) return NULL;
+
+        return new SceneLabelHeatMarker(name,
+                                        Value(QString::number(heat_volume)),
+                                        Value(QString::number(thermal_conductivity)),
+                                        Value(QString::number(density)),
+                                        Value(QString::number(specific_heat)));
+    }
+
+    return Util::scene()->labelMarkers[0];
 }
 
 void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -506,7 +523,7 @@ QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
             case PHYSICFIELDBC_HEAT_TEMPERATURE:
                 {
                     // evaluate script
-                    if (!edgeHeatMarker->temperature.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+                    if (!edgeHeatMarker->temperature.evaluate()) return NULL;
 
                     heatEdge[i+1].temperature = edgeHeatMarker->temperature.number;
                 }
@@ -514,9 +531,9 @@ QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
             case PHYSICFIELDBC_HEAT_HEAT_FLUX:
                 {
                     // evaluate script
-                    if (!edgeHeatMarker->heatFlux.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-                    if (!edgeHeatMarker->h.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-                    if (!edgeHeatMarker->externalTemperature.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+                    if (!edgeHeatMarker->heatFlux.evaluate()) return NULL;
+                    if (!edgeHeatMarker->h.evaluate()) return NULL;
+                    if (!edgeHeatMarker->externalTemperature.evaluate()) return NULL;
 
                     heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.number;
                     heatEdge[i+1].h = edgeHeatMarker->h.number;
@@ -539,10 +556,10 @@ QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
             SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelHeatMarker->thermal_conductivity.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelHeatMarker->volume_heat.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelHeatMarker->density.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelHeatMarker->specific_heat.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelHeatMarker->thermal_conductivity.evaluate()) return NULL;
+            if (!labelHeatMarker->volume_heat.evaluate()) return NULL;
+            if (!labelHeatMarker->density.evaluate()) return NULL;
+            if (!labelHeatMarker->specific_heat.evaluate()) return NULL;
 
             heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;
             heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
@@ -774,14 +791,14 @@ QString SceneEdgeHeatMarker::script()
 {
     if (type == PHYSICFIELDBC_HEAT_TEMPERATURE)
     {
-        return QString("addBoundary(\"%1\", \"%2\", %3);").
+        return QString("addboundary(\"%1\", \"%2\", %3)").
                 arg(name).
                 arg(physicFieldBCToStringKey(type)).
                 arg(temperature.text);
     }
     if (type == PHYSICFIELDBC_HEAT_HEAT_FLUX)
     {
-        return QString("addBoundary(\"%1\", \"%2\", %3, %4, %5)").
+        return QString("addboundary(\"%1\", \"%2\", %3, %4, %5)").
                 arg(name).
                 arg(physicFieldBCToStringKey(type)).
                 arg(heatFlux.text).
@@ -826,7 +843,7 @@ SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, Value volume_hea
 
 QString SceneLabelHeatMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3, %4, %5);").
+    return QString("addmaterial(\"%1\", %2, %3, %4, %5)").
             arg(name).
             arg(volume_heat.text).
             arg(thermal_conductivity.text).
@@ -912,14 +929,14 @@ void DSceneEdgeHeatMarker::load()
     {
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
         {
-            txtTemperature->setText(edgeHeatMarker->temperature.text);
+            txtTemperature->setValue(edgeHeatMarker->temperature);
         }
         break;
     case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         {
-            txtHeatFlux->setText(edgeHeatMarker->heatFlux.text);
-            txtHeatTransferCoefficient->setText(edgeHeatMarker->h.text);
-            txtExternalTemperature->setText(edgeHeatMarker->externalTemperature.text);
+            txtHeatFlux->setValue(edgeHeatMarker->heatFlux);
+            txtHeatTransferCoefficient->setValue(edgeHeatMarker->h);
+            txtExternalTemperature->setValue(edgeHeatMarker->externalTemperature);
         }
         break;
     }
@@ -1034,10 +1051,10 @@ void DSceneLabelHeatMarker::load()
 
     SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_labelMarker);
 
-    txtThermalConductivity->setText(labelHeatMarker->thermal_conductivity.text);
-    txtVolumeHeat->setText(labelHeatMarker->volume_heat.text);
-    txtDensity->setText(labelHeatMarker->density.text);
-    txtSpecificHeat->setText(labelHeatMarker->specific_heat.text);
+    txtThermalConductivity->setValue(labelHeatMarker->thermal_conductivity);
+    txtVolumeHeat->setValue(labelHeatMarker->volume_heat);
+    txtDensity->setValue(labelHeatMarker->density);
+    txtSpecificHeat->setValue(labelHeatMarker->specific_heat);
 }
 
 bool DSceneLabelHeatMarker::save()

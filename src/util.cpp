@@ -1,5 +1,6 @@
 #include "util.h"
 #include "scene.h"
+#include "scripteditordialog.h"
 
 static bool logFile;
 
@@ -124,6 +125,21 @@ void initLists()
     adaptivityTypeList.insert(ADAPTIVITYTYPE_HP, "hp-adaptivity");
 }
 
+bool Value::evaluate()
+{
+    ScriptResult scriptResult = runPythonExpression(text);
+    if (!scriptResult.isError)
+    {
+        number = scriptResult.value;
+    }
+    else
+    {
+        QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
+    }
+
+    return !scriptResult.isError;
+};
+
 void enableLogFile(bool enable)
 {
     logFile = enable;
@@ -228,37 +244,6 @@ QString datadir()
     exit(1);
 }
 
-QString externalFunctions()
-{
-    static QString m_externalFunctions;
-
-    if (m_externalFunctions.isEmpty())
-    {
-        QFile file(datadir() + "/functions.qs");
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            m_externalFunctions = "";
-        }
-        else
-        {
-            QTextStream inFile(&file);
-            m_externalFunctions = inFile.readAll();
-
-            file.close();
-        }
-    }
-
-    return m_externalFunctions;
-}
-
-QScriptEngine *scriptEngine()
-{
-    QScriptEngine *engine = new QScriptEngine();
-    engine->evaluate(externalFunctions());
-
-    return engine;
-}
-
 QString tempProblemDir()
 {
     QDir(QDir::temp().absolutePath()).mkpath("agros2d/" + QString::number(QApplication::applicationPid()));
@@ -356,4 +341,20 @@ void log(const QString &message)
             file.close();
         }
     }
+}
+
+QString readFileContent(const QString &fileName)
+{
+    QString content;
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly))
+    {
+        QTextStream stream(&file);
+        content = stream.readAll();
+
+        file.close();
+
+        return content;
+    }
+    return NULL;
 }

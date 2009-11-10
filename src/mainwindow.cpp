@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
     connect(Util::scene(), SIGNAL(solved()), sceneView, SLOT(doSolved()));
-
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
 
     connect(sceneView, SIGNAL(mousePressed()), localPointValueView, SLOT(doShowPoint()));
@@ -37,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
+
+    Util::scene()->clear();
 
     sceneView->actSceneModeNode->trigger();
     sceneView->doZoomBestFit();
@@ -207,12 +208,12 @@ void MainWindow::createActions()
     actDocumentOpenRecentGroup = new QActionGroup(this);
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
 
-    actScriptEditor = new QAction(icon("script"), tr("&Script editor"), this);
+    actScriptEditor = new QAction(icon("script-python"), tr("&Script editor"), this);
     actScriptEditor->setStatusTip(tr("Script editor"));
     actScriptEditor->setShortcut(Qt::Key_F4);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
-    actScriptEditorRunScript = new QAction(icon("script"), tr("&Run script..."), this);
+    actScriptEditorRunScript = new QAction(icon("script-python"), tr("&Run script..."), this);
     actScriptEditorRunScript->setStatusTip(tr("Run script..."));
     connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
 
@@ -220,10 +221,6 @@ void MainWindow::createActions()
     actScriptEditorRunCommand->setShortcut(QKeySequence(tr("Alt+C")));
     actScriptEditorRunCommand->setStatusTip(tr("Run command..."));
     connect(actScriptEditorRunCommand, SIGNAL(triggered()), this, SLOT(doScriptEditorRunCommand()));
-
-    actScriptStartup = new QAction(icon("script-startup"), tr("S&tartup script"), this);
-    actScriptStartup->setStatusTip(tr("Startup script"));
-    connect(actScriptStartup, SIGNAL(triggered()), this, SLOT(doScriptStartup()));
 
     actReport = new QAction(icon(""), tr("Report..."), this);
     actReport->setStatusTip(tr("Problem html report"));
@@ -307,7 +304,6 @@ void MainWindow::createMenus()
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actChart);
     mnuTools->addSeparator();
-    mnuTools->addAction(actScriptStartup);
     mnuTools->addAction(actScriptEditor);
     mnuTools->addAction(actScriptEditorRunScript);
     mnuTools->addAction(actScriptEditorRunCommand);
@@ -373,10 +369,9 @@ void MainWindow::createToolBars()
     tlbTools->setObjectName("Tools");
     tlbTools->hide();
     tlbTools->addAction(actChart);
-    tlbTools->addSeparator();
-    tlbTools->addAction(actScriptStartup);
     tlbTools->addAction(actScriptEditor);
     tlbTools->addSeparator();
+    tlbTools->addAction(Util::scene()->actProblemProperties);
     tlbTools->addAction(sceneView->actSceneViewProperties);
 
     tlbTransient = addToolBar(tr("Transient"));
@@ -522,7 +517,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
         QSettings settings;
         QString dir = settings.value("General/LastDataDir", "data").toString();
 
-        fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.a2d *.qs);;Agros2D data files (*.a2d);;Agros2D script files (*.qs)"));
+        fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)"));
     }
     else
     {
@@ -541,7 +536,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             sceneView->doDefaults();
             sceneView->doZoomBestFit();
         }
-        if (fileInfo.suffix() == "qs")
+        if (fileInfo.suffix() == "py")
         {
             // qs script
             scriptEditorDialog->doFileOpen(fileNameDocument);
@@ -699,7 +694,7 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
     if (fileName.isEmpty())
     {
         // open dialog
-        fileNameScript = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Agros2D script files (*.qs)"));
+        fileNameScript = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Python script (*.py)"));
     }
     else
     {
@@ -736,14 +731,6 @@ void MainWindow::doScriptEditorRunCommand(const QString &command)
 
     if (!commandLine.isEmpty())
         scriptEditorDialog->runCommand(commandLine);
-}
-
-void MainWindow::doScriptStartup()
-{
-    ScriptStartupDialog *scriptStartup = new ScriptStartupDialog(Util::scene()->problemInfo(), this);
-    scriptStartup->showDialog();
-
-    delete scriptStartup;
 }
 
 void MainWindow::doCut()
@@ -819,7 +806,7 @@ void MainWindow::doHelpShortCut()
 
 void MainWindow::doAbout()
 {
-    QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics application based on <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library.<br/><br/>Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>Bugzilla: <a href=\"http://hpfem.org/bugs/buglist.cgi?bug_status=__open__&product=agros2d\">http://hpfem.org/bugs/.../agros2d</a><br/><br/><b>Authors:</b><p><table><tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a> (main developer)</td></tr><tr><td>&nbsp;</td><td>František Mach <a href=\"mailto:mach.frantisek@gmail.com\">mach.frantisek@gmail.com</a> (developer, documentation)</td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr><tr><td>Triangle:</td><td>Jonathan Richard Shewchuk (<a href=\"http://www.cs.cmu.edu/~quake/triangle.html\">Triangle</a>)</td></tr><tr><td>FFmpeg:</td><td>FFmpeg group (<a href=\"http://ffmpeg.org/\">FFmpeg</a>)</td></tr></table></p><br/><b>License:</b><p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Agros2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
+    QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics application based on <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library.<br/><br/>Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>Bugzilla: <a href=\"http://hpfem.org/bugs/buglist.cgi?bug_status=__open__&product=agros2d\">http://hpfem.org/bugs/.../agros2d</a><br/><br/><b>Authors:</b><p><table><tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a> (main developer)</td></tr><tr><td>&nbsp;</td><td>Frantisek Mach <a href=\"mailto:mach.frantisek@gmail.com\">mach.frantisek@gmail.com</a> (developer, documentation)</td></tr><tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr><tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr><tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr><tr><td>Python:</td><td>Python Programming Language (<a href=\"http://www.python.org\">Python</a>)</td></tr><tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr><tr><td>Triangle:</td><td>Jonathan Richard Shewchuk (<a href=\"http://www.cs.cmu.edu/~quake/triangle.html\">Triangle</a>)</td></tr><tr><td>FFmpeg:</td><td>FFmpeg group (<a href=\"http://ffmpeg.org/\">FFmpeg</a>)</td></tr></table></p><br/><b>License:</b><p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Agros2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").arg(QApplication::applicationVersion()));
 
     QMessageBox::about(this, tr("About Agros2D"), str);
 }

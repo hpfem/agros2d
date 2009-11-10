@@ -35,8 +35,8 @@ SceneTransformDialog::~SceneTransformDialog()
 void SceneTransformDialog::createControls()
 {
     // translate
-    txtTranslateX = new SLineEdit("0", false);
-    txtTranslateY = new SLineEdit("0", false);
+    txtTranslateX = new SLineEditDouble();
+    txtTranslateY = new SLineEditDouble();
 
     QGridLayout *layoutTranslate = new QGridLayout();
     layoutTranslate->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
@@ -49,9 +49,9 @@ void SceneTransformDialog::createControls()
     widTranslate->setLayout(layoutTranslate);
 
     // rotate
-    txtRotateBasePointX = new SLineEdit("0", false);
-    txtRotateBasePointY = new SLineEdit("0", false);
-    txtRotateAngle = new SLineEdit("0", false);
+    txtRotateBasePointX = new SLineEditDouble();
+    txtRotateBasePointY = new SLineEditDouble();
+    txtRotateAngle = new SLineEditDouble();
 
     QGridLayout *layoutRotate = new QGridLayout();
     layoutRotate->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
@@ -65,9 +65,9 @@ void SceneTransformDialog::createControls()
     widRotate->setLayout(layoutRotate);
 
     // scale
-    txtScaleBasePointX = new SLineEdit("0", false);
-    txtScaleBasePointY = new SLineEdit("0", false);
-    txtScaleFactor = new SLineEdit("1");
+    txtScaleBasePointX = new SLineEditDouble();
+    txtScaleBasePointY = new SLineEditDouble();
+    txtScaleFactor = new SLineEditDouble();
 
     QGridLayout *layoutScale = new QGridLayout();
     layoutScale->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);

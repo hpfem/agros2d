@@ -1,9 +1,6 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <QScriptEngine>
-#include <QScriptValue>
-
 #include <qwt_scale_map.h>
 #include <qwt_symbol.h>
 #include <qwt_plot_grid.h>
@@ -24,22 +21,29 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 
-class SLineEdit : public QLineEdit
+class SLineEditScript : public QLineEdit
 {
     Q_OBJECT
 public:
-    SLineEdit(QWidget *parent = 0);
-    SLineEdit(const QString &contents, bool hasValidator = true, bool hasScriptEngine = true, QWidget *parent = 0);
-    ~SLineEdit();
-
-    double value();
-    void setValue(double value);
-
-private:
-    QScriptEngine *m_engine;
+    SLineEditScript(QWidget *parent = 0) : QLineEdit(parent)
+    {
+    }
 };
 
-class SLineEditValue : public QLineEdit
+class SLineEditDouble : public QLineEdit
+{
+    Q_OBJECT
+public:
+    SLineEditDouble(double val = 0, QWidget *parent = 0) : QLineEdit(parent)
+    {
+        setValue(val);
+    }
+
+    inline double value() { return text().toDouble(); }
+    inline void setValue(double value) { setText(QString::number(value)); }
+};
+
+class SLineEditValue : public QWidget
 {
     Q_OBJECT
 public:
@@ -47,11 +51,16 @@ public:
 
     Value value();
     double number();
-    bool evaluate();
     void setValue(Value value);
+
+public slots:
+    bool evaluate();
 
 private:
     double m_number;
+
+    QLineEdit *txtLineEdit;
+    QLabel *lblValue;
 };
 
 class Chart : public QwtPlot

@@ -302,17 +302,27 @@ QStringList HermesHarmonicMagnetic::volumeIntegralValueHeader()
 }
 
 SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker()
-{
+{    
     return new SceneEdgeHarmonicMagneticMarker("new boundary",
                                                PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL,
                                                Value("0"));
 }
 
-SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker(const QString &name, QScriptContext *context)
+SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker(PyObject *self, PyObject *args)
 {
-    return new SceneEdgeHarmonicMagneticMarker(name,
-                                               physicFieldBCFromStringKey(context->argument(1).toString()),
-                                               Value(context->argument(2).toString()));
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        // check name
+        if (Util::scene()->getEdgeMarker(name)) return NULL;
+
+        return new SceneEdgeHarmonicMagneticMarker(name,
+                                                   physicFieldBCFromStringKey(type),
+                                                   Value(QString::number(value)));
+    }
+
+    return Util::scene()->edgeMarkers[0];
 }
 
 SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker()
@@ -324,13 +334,23 @@ SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker()
                                                 Value("0"));
 }
 
-SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker(const QString &name, QScriptContext *context)
+SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker(PyObject *self, PyObject *args)
 {
-    return new SceneLabelHarmonicMagneticMarker(name,
-                                                Value(context->argument(1).toString()),
-                                                Value(context->argument(2).toString()),
-                                                Value(context->argument(3).toString()),
-                                                Value(context->argument(4).toString()));
+    double current_density_real, current_density_imag, permeability, conductivity;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdddd", &name, &current_density_real, &current_density_imag, &permeability, &conductivity))
+    {
+        // check name
+        if (Util::scene()->getLabelMarker(name)) return NULL;
+
+        return new SceneLabelHarmonicMagneticMarker(name,
+                                                 Value(QString::number(current_density_real)),
+                                                 Value(QString::number(current_density_imag)),
+                                                 Value(QString::number(permeability)),
+                                                 Value(QString::number(conductivity)));
+    }
+
+    return Util::scene()->labelMarkers[0];
 }
 
 void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -515,7 +535,7 @@ QList<SolutionArray *> *HermesHarmonicMagnetic::solve(SolverThread *solverThread
             SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeHarmonicMagneticMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!edgeHarmonicMagneticMarker->value.evaluate()) return NULL;
 
             harmonicMagneticEdge[i+1].type = edgeHarmonicMagneticMarker->type;
             harmonicMagneticEdge[i+1].value = edgeHarmonicMagneticMarker->value.number;
@@ -534,10 +554,10 @@ QList<SolutionArray *> *HermesHarmonicMagnetic::solve(SolverThread *solverThread
             SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelHarmonicMagneticMarker->current_density_real.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelHarmonicMagneticMarker->current_density_imag.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelHarmonicMagneticMarker->permeability.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelHarmonicMagneticMarker->conductivity.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelHarmonicMagneticMarker->current_density_real.evaluate()) return NULL;
+            if (!labelHarmonicMagneticMarker->current_density_imag.evaluate()) return NULL;
+            if (!labelHarmonicMagneticMarker->permeability.evaluate()) return NULL;
+            if (!labelHarmonicMagneticMarker->conductivity.evaluate()) return NULL;
 
             harmonicMagneticLabel[i].current_density_real = labelHarmonicMagneticMarker->current_density_real.number;
             harmonicMagneticLabel[i].current_density_imag = labelHarmonicMagneticMarker->current_density_imag.number;
@@ -909,7 +929,7 @@ SceneEdgeHarmonicMagneticMarker::SceneEdgeHarmonicMagneticMarker(const QString &
 
 QString SceneEdgeHarmonicMagneticMarker::script()
 {
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
+    return QString("addboundary(\"%1\", \"%2\", %3)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
             arg(value.text);
@@ -949,7 +969,7 @@ SceneLabelHarmonicMagneticMarker::SceneLabelHarmonicMagneticMarker(const QString
 
 QString SceneLabelHarmonicMagneticMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3, %4, %5);").
+    return QString("addmaterial(\"%1\", %2, %3, %4, %5)").
             arg(name).
             arg(current_density_real.text).
             arg(current_density_imag.text).
@@ -1018,7 +1038,7 @@ void DSceneEdgeHarmonicMagneticMarker::load()
     SceneEdgeHarmonicMagneticMarker *edgeHarmonicMagneticMarker = dynamic_cast<SceneEdgeHarmonicMagneticMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeHarmonicMagneticMarker->type));
-    txtValue->setText(edgeHarmonicMagneticMarker->value.text);
+    txtValue->setValue(edgeHarmonicMagneticMarker->value);
 }
 
 bool DSceneEdgeHarmonicMagneticMarker::save() {
@@ -1088,10 +1108,10 @@ void DSceneLabelHarmonicMagneticMarker::load()
 
     SceneLabelHarmonicMagneticMarker *labelHarmonicMagneticMarker = dynamic_cast<SceneLabelHarmonicMagneticMarker *>(m_labelMarker);
 
-    txtPermeability->setText(labelHarmonicMagneticMarker->permeability.text);
-    txtConductivity->setText(labelHarmonicMagneticMarker->conductivity.text);
-    txtCurrentDensityReal->setText(labelHarmonicMagneticMarker->current_density_real.text);
-    txtCurrentDensityImag->setText(labelHarmonicMagneticMarker->current_density_imag.text);
+    txtPermeability->setValue(labelHarmonicMagneticMarker->permeability);
+    txtConductivity->setValue(labelHarmonicMagneticMarker->conductivity);
+    txtCurrentDensityReal->setValue(labelHarmonicMagneticMarker->current_density_real);
+    txtCurrentDensityImag->setValue(labelHarmonicMagneticMarker->current_density_imag);
 }
 
 bool DSceneLabelHarmonicMagneticMarker::save() {

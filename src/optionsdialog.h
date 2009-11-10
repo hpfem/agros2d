@@ -39,9 +39,9 @@ private:
 
     // geometry
     QSpinBox *txtGeometryAngleSegmentsCount;
-    SLineEdit *txtGeometryNodeSize;
-    SLineEdit *txtGeometryEdgeWidth;
-    SLineEdit *txtGeometryLabelSize;
+    SLineEditDouble *txtGeometryNodeSize;
+    SLineEditDouble *txtGeometryEdgeWidth;
+    SLineEditDouble *txtGeometryLabelSize;
 
     // colors
     ColorButton *colorBackground;

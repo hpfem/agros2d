@@ -54,9 +54,9 @@ Scalar magnetostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e
 {
     if (magnetostaticPlanar)
         return magnetostaticLabel[e->marker].current_density * int_v<Real, Scalar>(n, wt, v)
-                + magnetostaticLabel[e->marker].remanence / (magnetostaticLabel[e->marker].permeability * MU0)
-                * (- sin(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdx<Real, Scalar>(n, wt, v) +
-                   + cos(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdy<Real, Scalar>(n, wt, v));
+        + magnetostaticLabel[e->marker].remanence / (magnetostaticLabel[e->marker].permeability * MU0)
+        * (- sin(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdx<Real, Scalar>(n, wt, v) +
+           + cos(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdy<Real, Scalar>(n, wt, v));
     else
         return magnetostaticLabel[e->marker].current_density * int_v<Real, Scalar>(n, wt, v)
                 + magnetostaticLabel[e->marker].remanence / (magnetostaticLabel[e->marker].permeability * MU0)
@@ -247,11 +247,21 @@ SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker()
                                             Value("0"));
 }
 
-SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker(const QString &name, QScriptContext *context)
-{
-    return new SceneEdgeMagnetostaticMarker(name,
-                                            physicFieldBCFromStringKey(context->argument(1).toString()),
-                                            Value(context->argument(2).toString()));
+SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker(PyObject *self, PyObject *args)
+{    
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        // check name
+        if (Util::scene()->getEdgeMarker(name)) return NULL;
+
+        return new SceneEdgeMagnetostaticMarker(name,
+                                                physicFieldBCFromStringKey(type),
+                                                Value(QString::number(value)));
+    }
+
+    return Util::scene()->edgeMarkers[0];
 }
 
 SceneLabelMarker *HermesMagnetostatic::newLabelMarker()
@@ -263,13 +273,23 @@ SceneLabelMarker *HermesMagnetostatic::newLabelMarker()
                                              Value("0"));
 }
 
-SceneLabelMarker *HermesMagnetostatic::newLabelMarker(const QString &name, QScriptContext *context)
+SceneLabelMarker *HermesMagnetostatic::newLabelMarker(PyObject *self, PyObject *args)
 {
-    return new SceneLabelMagnetostaticMarker(name,
-                                             Value(context->argument(1).toString()),
-                                             Value(context->argument(2).toString()),
-                                             Value(context->argument(3).toString()),
-                                             Value(context->argument(4).toString()));
+    double current_density, permeability, remanence, remanence_angle;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdddd", &name, &current_density, &permeability, &remanence, &remanence_angle))
+    {
+        // check name
+        if (Util::scene()->getLabelMarker(name)) return NULL;
+
+        return new SceneLabelMagnetostaticMarker(name,
+                                                 Value(QString::number(current_density)),
+                                                 Value(QString::number(permeability)),
+                                                 Value(QString::number(remanence)),
+                                                 Value(QString::number(remanence_angle)));
+    }
+
+    return Util::scene()->labelMarkers[0];
 }
 
 void HermesMagnetostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -364,7 +384,7 @@ QList<SolutionArray *> *HermesMagnetostatic::solve(SolverThread *solverThread)
             SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeMagnetostaticMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!edgeMagnetostaticMarker->value.evaluate()) return NULL;
 
             magnetostaticEdge[i+1].type = edgeMagnetostaticMarker->type;
             magnetostaticEdge[i+1].value = edgeMagnetostaticMarker->value.number;
@@ -383,10 +403,10 @@ QList<SolutionArray *> *HermesMagnetostatic::solve(SolverThread *solverThread)
             SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelMagnetostaticMarker->current_density.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelMagnetostaticMarker->permeability.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelMagnetostaticMarker->remanence.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelMagnetostaticMarker->remanence_angle.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelMagnetostaticMarker->current_density.evaluate()) return NULL;
+            if (!labelMagnetostaticMarker->permeability.evaluate()) return NULL;
+            if (!labelMagnetostaticMarker->remanence.evaluate()) return NULL;
+            if (!labelMagnetostaticMarker->remanence_angle.evaluate()) return NULL;
 
             magnetostaticLabel[i].current_density = labelMagnetostaticMarker->current_density.number;
             magnetostaticLabel[i].permeability = labelMagnetostaticMarker->permeability.number;
@@ -630,7 +650,7 @@ SceneEdgeMagnetostaticMarker::SceneEdgeMagnetostaticMarker(const QString &name, 
 
 QString SceneEdgeMagnetostaticMarker::script()
 {
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
+    return QString("addboundary(\"%1\", \"%2\", %3)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
             arg(value.text);
@@ -670,7 +690,7 @@ SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name
 
 QString SceneLabelMagnetostaticMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3, %4, %5);").
+    return QString("addmaterial(\"%1\", %2, %3, %4, %5)").
             arg(name).
             arg(current_density.text).
             arg(permeability.text).
@@ -739,7 +759,7 @@ void DSceneEdgeMagnetostaticMarker::load()
     SceneEdgeMagnetostaticMarker *edgeMagnetostaticMarker = dynamic_cast<SceneEdgeMagnetostaticMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeMagnetostaticMarker->type));
-    txtValue->setText(edgeMagnetostaticMarker->value.text);
+    txtValue->setValue(edgeMagnetostaticMarker->value);
 }
 
 bool DSceneEdgeMagnetostaticMarker::save() {
@@ -813,10 +833,10 @@ void DSceneLabelMagnetostaticMarker::load()
 
     SceneLabelMagnetostaticMarker *labelMagnetostaticMarker = dynamic_cast<SceneLabelMagnetostaticMarker *>(m_labelMarker);
 
-    txtPermeability->setText(labelMagnetostaticMarker->permeability.text);
-    txtCurrentDensity->setText(labelMagnetostaticMarker->current_density.text);
-    txtRemanence->setText(labelMagnetostaticMarker->remanence.text);
-    txtRemanenceAngle->setText(labelMagnetostaticMarker->remanence_angle.text);
+    txtPermeability->setValue(labelMagnetostaticMarker->permeability);
+    txtCurrentDensity->setValue(labelMagnetostaticMarker->current_density);
+    txtRemanence->setValue(labelMagnetostaticMarker->remanence);
+    txtRemanenceAngle->setValue(labelMagnetostaticMarker->remanence_angle);
 }
 
 bool DSceneLabelMagnetostaticMarker::save() {

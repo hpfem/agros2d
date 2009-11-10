@@ -3,19 +3,17 @@
 SceneFunction::SceneFunction(const QString &name, const QString &function)
 {
     this->name = name;
-    this->function = function;
-   
-    m_engine = scriptEngine();
+    this->function = function;      
 }
 
 SceneFunction::~SceneFunction()
 {
-    delete m_engine;
+
 }
 
 QString SceneFunction::script()
 {
-    return QString("addFunction(\"%1\", \"%2\");").
+    return QString("addfunction(\"%1\", \"%2\")").
             arg(name).
             arg(function);
 }
@@ -29,7 +27,9 @@ QVariant SceneFunction::variant()
 
 double SceneFunction::evaluate(double number) throw (const QString &)
 {
+    // TODO
     // evaluate
+    /*
     QString text = QString("var x = %1; \n %2").arg(number).arg(function);
     QScriptValue scriptValue = m_engine->evaluate(text);
     if (scriptValue.isNumber())
@@ -40,6 +40,7 @@ double SceneFunction::evaluate(double number) throw (const QString &)
     {
         throw QString(QObject::tr("Expression '%1' cannot be evaluated.").arg(text));
     }
+    */
 }
 
 int SceneFunction::showDialog(QWidget *parent)
@@ -86,14 +87,14 @@ void DSceneFunction::createControls()
 
     // name
     txtName = new QLineEdit("");
-    txtFunction = new SLineEdit("1", false, this);
+    txtFunction = new SLineEditScript();
 
     // interval
-    txtStart = new SLineEdit("0", true);
+    txtStart = new SLineEditDouble();
     txtStart->setMaximumWidth(100);
     connect(txtStart, SIGNAL(editingFinished()), this, SLOT(doPlot()));
 
-    txtEnd = new SLineEdit("10", true);
+    txtEnd = new SLineEditDouble(10);
     txtEnd->setMaximumWidth(100);
     connect(txtEnd, SIGNAL(editingFinished()), this, SLOT(doPlot()));
 

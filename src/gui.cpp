@@ -60,65 +60,42 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
 // ***********************************************************************************************************
 
-SLineEdit::SLineEdit(QWidget *parent) : QLineEdit(parent)
-{   
-    SLineEdit::SLineEdit("0", true, true, parent);
+SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
+{
+    // create controls
+    txtLineEdit = new QLineEdit(this);
+    txtLineEdit->setToolTip(tr("This textedit allows using variables."));
+    txtLineEdit->setText("0");
+    connect(txtLineEdit, SIGNAL(editingFinished()), this, SLOT(evaluate()));
 
-    m_engine = scriptEngine();
+    lblValue = new QLabel(this);    
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(txtLineEdit, 1);
+    layout->addWidget(lblValue, 0, Qt::AlignRight);
+
+    setLayout(layout);    
 }
 
-SLineEdit::SLineEdit(const QString &contents, bool hasValidator, bool hasScriptEngine, QWidget *parent) : QLineEdit(contents, parent)
+void SLineEditValue::setValue(Value value)
 {
-    if (hasValidator)
-        this->setValidator(new QDoubleValidator(this));
-
-    m_engine = scriptEngine();
-}
-
-SLineEdit::~SLineEdit()
-{
-    if (m_engine)
-        delete m_engine;
-}
-
-double SLineEdit::value()
-{
-    if (m_engine)
-    {
-        QScriptValue scriptValue = m_engine->evaluate(text());
-        if (scriptValue.isNumber())
-            return scriptValue.toNumber();
-    }
-    else
-    {
-        return text().toDouble();
-    }
-}
-
-void SLineEdit::setValue(double value)
-{
-    setText(QString::number(value));
-}
-
-// ***********************************************************************************************************
-
-SLineEditValue::SLineEditValue(QWidget *parent) : QLineEdit(parent)
-{
-    setToolTip(tr("This textedit allows using variables."));
-    setText("0");
+   txtLineEdit->setText(value.text);
+   evaluate();
 }
 
 Value SLineEditValue::value()
 {
-    return Value(text());
+    return Value(txtLineEdit->text());
 }
 
 bool SLineEditValue::evaluate()
 {
     Value val = value();
-    if (val.evaluate(Util::scene()->problemInfo()->scriptStartup))
+    if (val.evaluate())
     {
         m_number = val.number;
+        lblValue->setText(QString("%1").arg(m_number, 0, 'g', 2));
         return true;
     }
     else

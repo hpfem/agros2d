@@ -183,9 +183,9 @@ void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
     {
-        case PHYSICFIELDBC_NONE:
-        case PHYSICFIELDBC_CURRENT_POTENTIAL:
-        case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
+    case PHYSICFIELDBC_NONE:
+    case PHYSICFIELDBC_CURRENT_POTENTIAL:
+    case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
         Util::scene()->addEdgeMarker(new SceneEdgeCurrentMarker(element->attribute("name"),
                                                                 type,
                                                                 Value(element->attribute("value"))));
@@ -260,11 +260,21 @@ SceneEdgeMarker *HermesCurrent::newEdgeMarker()
                                       Value("0"));
 }
 
-SceneEdgeMarker *HermesCurrent::newEdgeMarker(const QString &name, QScriptContext *context)
+SceneEdgeMarker *HermesCurrent::newEdgeMarker(PyObject *self, PyObject *args)
 {
-    return new SceneEdgeCurrentMarker(name,
-                                      physicFieldBCFromStringKey(context->argument(1).toString()),
-                                      Value(context->argument(2).toString()));
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        // check name
+        if (Util::scene()->getEdgeMarker(name)) return NULL;
+
+        return new SceneEdgeCurrentMarker(name,
+                                          physicFieldBCFromStringKey(type),
+                                          Value(QString::number(value)));
+    }
+
+    return Util::scene()->edgeMarkers[0];
 }
 
 SceneLabelMarker *HermesCurrent::newLabelMarker()
@@ -273,10 +283,20 @@ SceneLabelMarker *HermesCurrent::newLabelMarker()
                                        Value("57e6"));
 }
 
-SceneLabelMarker *HermesCurrent::newLabelMarker(const QString &name, QScriptContext *context)
+SceneLabelMarker *HermesCurrent::newLabelMarker(PyObject *self, PyObject *args)
 {
-    return new SceneLabelCurrentMarker(name,
-                                       Value(context->argument(1).toString()));
+    double conductivity;
+    char *name;
+    if (PyArg_ParseTuple(args, "sd", &name, &conductivity))
+    {
+        // check name
+        if (Util::scene()->getLabelMarker(name)) return NULL;
+
+        return new SceneLabelCurrentMarker(name,
+                                           Value(QString::number(conductivity)));
+    }
+
+    return Util::scene()->labelMarkers[0];
 }
 
 void HermesCurrent::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -351,7 +371,7 @@ QList<SolutionArray *> *HermesCurrent::solve(SolverThread *solverThread)
             SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeCurrentMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!edgeCurrentMarker->value.evaluate()) return NULL;
 
             currentEdge[i+1].type = edgeCurrentMarker->type;
             currentEdge[i+1].value = edgeCurrentMarker->value.number;
@@ -370,7 +390,7 @@ QList<SolutionArray *> *HermesCurrent::solve(SolverThread *solverThread)
             SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelCurrentMarker->conductivity.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelCurrentMarker->conductivity.evaluate()) return NULL;
 
             currentLabel[i].conductivity = labelCurrentMarker->conductivity.number;
         }
@@ -588,7 +608,7 @@ SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldB
 
 QString SceneEdgeCurrentMarker::script()
 {
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
+    return QString("addboundary(\"%1\", \"%2\", %3)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
             arg(value.text);
@@ -624,7 +644,7 @@ SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, Value cond
 
 QString SceneLabelCurrentMarker::script()
 {
-    return QString("addMaterial(\"%1\", %3);").
+    return QString("addmaterial(\"%1\", %3)").
             arg(name).
             arg(conductivity.text);
 }
@@ -687,7 +707,7 @@ void DSceneEdgeCurrentMarker::load()
     SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeCurrentMarker->type));
-    txtValue->setText(edgeCurrentMarker->value.text);
+    txtValue->setValue(edgeCurrentMarker->value);
 }
 
 bool DSceneEdgeCurrentMarker::save() {
@@ -697,9 +717,8 @@ bool DSceneEdgeCurrentMarker::save() {
 
     edgeCurrentMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
-    Value value = Value(txtValue->text());
-    if (value.evaluate(Util::scene()->problemInfo()->scriptStartup))
-        edgeCurrentMarker->value = value;
+    if (txtValue->evaluate())
+        edgeCurrentMarker->value = txtValue->value();
     else
         return false;
 
@@ -742,7 +761,7 @@ void DSceneLabelCurrentMarker::load()
 
     SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
 
-    txtConductivity->setText(labelCurrentMarker->conductivity.text);
+    txtConductivity->setValue(labelCurrentMarker->conductivity);
 }
 
 bool DSceneLabelCurrentMarker::save()

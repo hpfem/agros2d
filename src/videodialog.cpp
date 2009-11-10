@@ -158,7 +158,7 @@ QWidget *VideoDialog::createControlsViewport()
     sldAnimate->setTickPosition(QSlider::TicksBelow);
     connect(sldAnimate, SIGNAL(valueChanged(int)), this, SLOT(doSetTimeStep(int)));
     
-    txtAnimateDelay = new SLineEdit("0.2", true, false);
+    txtAnimateDelay = new SLineEditDouble(0.2);
 
     QGridLayout *layoutControlsViewport = new QGridLayout();
     layoutControlsViewport->addWidget(new QLabel(tr("From:")), 0, 0);

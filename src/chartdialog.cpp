@@ -118,10 +118,10 @@ void ChartDialog::createControls()
     lblEndX = new QLabel("X:");
     lblEndY = new QLabel("Y:");
 
-    txtStartX = new SLineEdit("0", false);
-    txtStartY = new SLineEdit("0", false);
-    txtEndX = new SLineEdit("0.0035", false);
-    txtEndY = new SLineEdit("0", false);
+    txtStartX = new SLineEditDouble();
+    txtStartY = new SLineEditDouble();
+    txtEndX = new SLineEditDouble(0.0035);
+    txtEndY = new SLineEditDouble();
 
     connect(txtStartX, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
     connect(txtStartY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
@@ -188,8 +188,8 @@ void ChartDialog::createControls()
     // time
     lblPointX = new QLabel("X:");
     lblPointY = new QLabel("Y:");
-    txtPointX = new SLineEdit("0", false);
-    txtPointY = new SLineEdit("0", false);
+    txtPointX = new SLineEditDouble();
+    txtPointY = new SLineEditDouble();
 
     QGridLayout *layoutTime = new QGridLayout();
     layoutTime->addWidget(lblPointX, 0, 0);

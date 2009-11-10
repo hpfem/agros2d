@@ -289,9 +289,9 @@ QWidget *OptionsDialog::createViewWidget()
     txtGeometryAngleSegmentsCount = new QSpinBox(this);
     txtGeometryAngleSegmentsCount->setMinimum(1);
     txtGeometryAngleSegmentsCount->setMaximum(100);
-    txtGeometryNodeSize = new SLineEdit("0", true, false, this);
-    txtGeometryEdgeWidth = new SLineEdit("0", true, false, this);
-    txtGeometryLabelSize = new SLineEdit("0", true, false, this);
+    txtGeometryNodeSize = new SLineEditDouble();
+    txtGeometryEdgeWidth = new SLineEditDouble();
+    txtGeometryLabelSize = new SLineEditDouble();
 
     QGridLayout *layoutGeometry = new QGridLayout();
     layoutGeometry->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);

@@ -3,8 +3,10 @@
 
 #include "gui.h"
 #include "scene.h"
+#include "scripteditordialog.h"
 
 struct ProblemInfo;
+class ScriptEditor;
 
 class ProblemDialog: public QDialog
 {
@@ -35,17 +37,25 @@ private:
     QSpinBox *txtPolynomialOrder;
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
-    SLineEdit *txtAdaptivityTolerance;
+    SLineEditDouble *txtAdaptivityTolerance;
     // harmonic magnetic
-    SLineEdit *txtFrequency;
+    SLineEditDouble *txtFrequency;
     // transient
     QComboBox *cmbAnalysisType;
-    SLineEdit *txtTransientTimeStep;
-    SLineEdit *txtTransientTimeTotal;
-    SLineEdit *txtTransientInitialCondition;
+    SLineEditDouble *txtTransientTimeStep;
+    SLineEditDouble *txtTransientTimeTotal;
+    SLineEditDouble *txtTransientInitialCondition;
     QLabel *lblTransientSteps;
 
+    // startup script
+    ScriptEditor *txtEditor;
+
+    QTabWidget *tabType;
+
     void createControls();
+    QWidget *createControlsGeneral();
+    QWidget *createControlsStartup();
+
     void fillComboBox();
 
     void load();

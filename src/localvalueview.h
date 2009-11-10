@@ -52,8 +52,8 @@ public:
     Point point();
 
 private:
-    SLineEdit *txtPointX;
-    SLineEdit *txtPointY;
+    SLineEditDouble *txtPointX;
+    SLineEditDouble *txtPointY;
 };
 
 #endif // LOCALVALUE_H

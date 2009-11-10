@@ -15,7 +15,9 @@ ReportDialog::ReportDialog(QWidget *parent) : QDialog(parent)
 
 ReportDialog::~ReportDialog()
 {
-
+    delete btnClose;
+    delete btnOpenInExternalBrowser;
+    delete btnPrint;
 }
 
 void ReportDialog::createControls()
@@ -23,28 +25,46 @@ void ReportDialog::createControls()
     view = new QWebView(this);
 
     // dialog buttons
-    QPushButton *btnOpen = new QPushButton(tr("Open in external viewer"));
-    connect(btnOpen, SIGNAL(clicked()), this, SLOT(doOpen()));
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
-    buttonBox->addButton(btnOpen, QDialogButtonBox::ApplyRole);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    btnOpenInExternalBrowser = new QPushButton(tr("Open in external viewer"));
+    connect(btnOpenInExternalBrowser, SIGNAL(clicked()), this, SLOT(doOpenInExternalBrowser()));
+
+    btnClose = new QPushButton(tr("Close"));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
+
+    btnPrint = new QPushButton(tr("Print"));
+    connect(btnPrint, SIGNAL(clicked()), this, SLOT(doPrint()));
+
+    QHBoxLayout *layoutButtonFile = new QHBoxLayout();
+    layoutButtonFile->addStretch();
+    layoutButtonFile->addWidget(btnPrint);
+    layoutButtonFile->addWidget(btnOpenInExternalBrowser);
+    layoutButtonFile->addWidget(btnClose);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
-    // layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addStretch();
+    layout->addLayout(layoutButtonFile);
 
     setLayout(layout);
 }
 
-void ReportDialog::doAccept()
+void ReportDialog::doClose()
 {
-    accept();
+    hide();
 }
 
-void ReportDialog::doOpen()
+void ReportDialog::doOpenInExternalBrowser()
 {
     QDesktopServices::openUrl(tempProblemDir() + "/report/index.html");
+}
+
+void ReportDialog::doPrint()
+{
+    QPrintDialog printDialog(this);
+    if (printDialog.exec() == QDialog::Accepted)
+    {
+        view->print(printDialog.printer());
+    }
 }
 
 void ReportDialog::showDialog()
@@ -72,14 +92,7 @@ void ReportDialog::generateIndex()
     QString content;
 
     // load template.html
-    QFile fileTemplate(fileNameTemplate);
-    if (fileTemplate.open(QIODevice::ReadOnly))
-    {
-        QTextStream stream(&fileTemplate);
-        content = stream.readAll();
-
-        fileTemplate.close();
-    }
+    content = readFileContent(fileNameTemplate);
     QFile::remove(fileNameTemplate);
 
     // save index.html
@@ -121,7 +134,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Problem.InititalCondition]", QString::number(Util::scene()->problemInfo()->initialCondition), Qt::CaseSensitive);
 
     // script
-    destination.replace("[Script]", createEcmaFromModel(), Qt::CaseSensitive);
+    destination.replace("[Script]", createPythonFromModel(), Qt::CaseSensitive);
 
     // physical properties
     destination.replace("[Materials]", htmlMaterials(), Qt::CaseSensitive);

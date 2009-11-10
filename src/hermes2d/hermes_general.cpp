@@ -165,8 +165,8 @@ void HermesGeneral::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_GENERAL_VALUE:
     case PHYSICFIELDBC_GENERAL_DERIVATIVE:
         Util::scene()->addEdgeMarker(new SceneEdgeGeneralMarker(element->attribute("name"),
-                                                 type,
-                                                 Value(element->attribute("value"))));
+                                                                type,
+                                                                Value(element->attribute("value"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -185,8 +185,8 @@ void HermesGeneral::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeM
 void HermesGeneral::readLabelMarkerFromDomElement(QDomElement *element)
 {
     Util::scene()->addLabelMarker(new SceneLabelGeneralMarker(element->attribute("name"),
-                                                     Value(element->attribute("rightside")),
-                                                     Value(element->attribute("constant"))));
+                                                              Value(element->attribute("rightside")),
+                                                              Value(element->attribute("constant"))));
 }
 
 void HermesGeneral::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
@@ -240,11 +240,21 @@ SceneEdgeMarker *HermesGeneral::newEdgeMarker()
                                       Value("0"));
 }
 
-SceneEdgeMarker *HermesGeneral::newEdgeMarker(const QString &name, QScriptContext *context)
+SceneEdgeMarker *HermesGeneral::newEdgeMarker(PyObject *self, PyObject *args)
 {
-    return new SceneEdgeGeneralMarker(name,
-                                      physicFieldBCFromStringKey(context->argument(1).toString()),
-                                      Value(context->argument(2).toString()));
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        // check name
+        if (Util::scene()->getEdgeMarker(name)) return NULL;
+
+        return new SceneEdgeGeneralMarker(name,
+                                          physicFieldBCFromStringKey(type),
+                                          Value(QString::number(value)));
+    }
+
+    return Util::scene()->edgeMarkers[0];
 }
 
 SceneLabelMarker *HermesGeneral::newLabelMarker()
@@ -254,11 +264,21 @@ SceneLabelMarker *HermesGeneral::newLabelMarker()
                                        Value("1"));
 }
 
-SceneLabelMarker *HermesGeneral::newLabelMarker(const QString &name, QScriptContext *context)
+SceneLabelMarker *HermesGeneral::newLabelMarker(PyObject *self, PyObject *args)
 {
-    return new SceneLabelGeneralMarker(name,
-                                       Value(context->argument(1).toString()),
-                                       Value(context->argument(2).toString()));
+    double rightside, constant;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &rightside, &constant))
+    {
+        // check name
+        if (Util::scene()->getLabelMarker(name)) return NULL;
+
+        return new SceneLabelGeneralMarker(name,
+                                           Value(QString::number(rightside)),
+                                           Value(QString::number(constant)));
+    }
+
+    return Util::scene()->labelMarkers[0];
 }
 
 void HermesGeneral::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -317,7 +337,7 @@ QList<SolutionArray *> *HermesGeneral::solve(SolverThread *solverThread)
             SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeGeneralMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!edgeGeneralMarker->value.evaluate()) return NULL;
 
             generalEdge[i+1].type = edgeGeneralMarker->type;
             generalEdge[i+1].value = edgeGeneralMarker->value.number;
@@ -336,8 +356,8 @@ QList<SolutionArray *> *HermesGeneral::solve(SolverThread *solverThread)
             SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelGeneralMarker->rightside.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelGeneralMarker->constant.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelGeneralMarker->rightside.evaluate()) return NULL;
+            if (!labelGeneralMarker->constant.evaluate()) return NULL;
 
             generalLabel[i].rightside = labelGeneralMarker->rightside.number;
             generalLabel[i].constant = labelGeneralMarker->constant.number;
@@ -464,14 +484,14 @@ QStringList VolumeIntegralValueGeneral::variables()
 // *************************************************************************************************************************************
 
 SceneEdgeGeneralMarker::SceneEdgeGeneralMarker(const QString &name, PhysicFieldBC type, Value value)
-        : SceneEdgeMarker(name, type)
+    : SceneEdgeMarker(name, type)
 {
     this->value = value;
 }
 
 QString SceneEdgeGeneralMarker::script()
 {
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
+    return QString("addboundary(\"%1\", \"%2\", %3)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
             arg(value.text);
@@ -501,7 +521,7 @@ int SceneEdgeGeneralMarker::showDialog(QWidget *parent)
 // *************************************************************************************************************************************
 
 SceneLabelGeneralMarker::SceneLabelGeneralMarker(const QString &name, Value rightside, Value constant)
-        : SceneLabelMarker(name)
+    : SceneLabelMarker(name)
 {
     this->rightside = rightside;
     this->constant = constant;
@@ -509,7 +529,7 @@ SceneLabelGeneralMarker::SceneLabelGeneralMarker(const QString &name, Value righ
 
 QString SceneLabelGeneralMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3);").
+    return QString("addmaterial(\"%1\", %2, %3)").
             arg(name).
             arg(rightside.text).
             arg(constant.text);
@@ -574,7 +594,7 @@ void DSceneEdgeGeneralMarker::load()
     SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeGeneralMarker->type));
-    txtValue->setText(edgeGeneralMarker->value.text);
+    txtValue->setValue(edgeGeneralMarker->value);
 }
 
 bool DSceneEdgeGeneralMarker::save() {
@@ -632,8 +652,8 @@ void DSceneLabelGeneralMarker::load()
 
     SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(m_labelMarker);
 
-    txtConstant->setText(labelGeneralMarker->constant.text);
-    txtRightSide->setText(labelGeneralMarker->rightside.text);
+    txtConstant->setValue(labelGeneralMarker->constant);
+    txtRightSide->setValue(labelGeneralMarker->rightside);
 }
 
 bool DSceneLabelGeneralMarker::save() {

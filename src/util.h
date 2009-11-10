@@ -5,7 +5,6 @@
 #include <QtGui>
 #include <QtNetwork>
 
-#include <QScriptEngine>
 #include <QtHelp/QHelpEngine>
 
 #include <typeinfo>
@@ -43,9 +42,6 @@ QString datadir();
 // get external js functions
 QString externalFunctions();
 
-// get script engine
-QScriptEngine *scriptEngine();
-
 // get temp dir
 QString tempProblemDir();
 
@@ -64,6 +60,9 @@ void msleep(unsigned long msecs);
 // log to file
 void log(const QString &message);
 
+// read file content
+QString readFileContent(const QString &fileName);
+
 struct Value
 {
     QString text;
@@ -72,28 +71,7 @@ struct Value
     Value() { text = ""; }
     Value(const QString &value) { text = value; }
 
-    bool evaluate(const QString &script = "")
-    {
-        bool result = false;
-        QScriptEngine *engine = scriptEngine();
-
-        // evaluate startup script
-        if (!script.isEmpty())
-            engine->evaluate(script);
-
-        QScriptValue scriptValue = engine->evaluate(text);
-        if (scriptValue.isNumber())
-        {
-            number = scriptValue.toNumber();
-            result = true;
-        }
-        delete engine;
-
-        if (!result)
-            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), QObject::tr("Expression '%1' cannot be evaluated.").arg(text));
-
-        return result;
-    };
+    bool evaluate();
 };
 
 struct Point

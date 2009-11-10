@@ -20,6 +20,10 @@ private:
 
     void createControls();
 
+    QPushButton *btnClose;
+    QPushButton *btnOpenInExternalBrowser;
+    QPushButton *btnPrint;
+
     void generateIndex();
     QString replaceTemplates(const QString &source);
 
@@ -30,8 +34,9 @@ private:
     QString htmlGeometryLabels();
 
 private slots:
-    void doAccept();
-    void doOpen();
+    void doClose();
+    void doOpenInExternalBrowser();
+    void doPrint();
 };
 
 #endif // REPORTDIALOG_H

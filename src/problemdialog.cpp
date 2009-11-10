@@ -43,8 +43,28 @@ int ProblemDialog::showDialog()
 
 void ProblemDialog::createControls()
 {
+    // tab
+    QTabWidget *tabType = new QTabWidget();
+    tabType->addTab(createControlsGeneral(), icon(""), tr("General"));
+    tabType->addTab(createControlsStartup(), icon(""), tr("Startup script"));
+
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(tabType);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+}
+
+QWidget *ProblemDialog::createControlsGeneral()
+{
     cmbProblemType = new QComboBox();
-    cmbPhysicField = new QComboBox();    
+    cmbPhysicField = new QComboBox();
     txtName = new QLineEdit("");
     dtmDate = new QDateTimeEdit();
     dtmDate->setDisplayFormat("dd.MM.yyyy");
@@ -59,14 +79,14 @@ void ProblemDialog::createControls()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
-    txtAdaptivityTolerance = new SLineEdit("1", true, this);
+    txtAdaptivityTolerance = new SLineEditDouble(1);
     // harmonic magnetic
-    txtFrequency = new SLineEdit("0", true, this);
+    txtFrequency = new SLineEditDouble();
     // transient
     cmbAnalysisType = new QComboBox();
-    txtTransientTimeStep = new SLineEdit("0", true, false, this);
-    txtTransientTimeTotal = new SLineEdit("0", true, false, this);
-    txtTransientInitialCondition = new SLineEdit("0", true, false, this);
+    txtTransientTimeStep = new SLineEditDouble();
+    txtTransientTimeTotal = new SLineEditDouble();
+    txtTransientInitialCondition = new SLineEditDouble();
     lblTransientSteps = new QLabel("0");
 
     connect(txtTransientTimeStep, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
@@ -112,17 +132,23 @@ void ProblemDialog::createControls()
     layoutProblem->addWidget(new QLabel(tr("Steps:")), 7, 2);
     layoutProblem->addWidget(lblTransientSteps, 7, 3);
 
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+    QWidget *widMain = new QWidget();
+    widMain->setLayout(layoutProblem);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutProblem);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
+    return widMain;
+}
 
-    setLayout(layout);
+QWidget *ProblemDialog::createControlsStartup()
+{
+    txtEditor = new ScriptEditor(this);
+
+    QVBoxLayout *layoutStartup = new QVBoxLayout();
+    layoutStartup->addWidget(txtEditor);
+
+    QWidget *widStartup = new QWidget();
+    widStartup->setLayout(layoutStartup);
+
+    return widStartup;
 }
 
 void ProblemDialog::fillComboBox()
@@ -155,6 +181,7 @@ void ProblemDialog::fillComboBox()
 
 void ProblemDialog::load()
 {
+    // main
     cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_problemInfo->physicField()));
     txtName->setText(m_problemInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
@@ -172,12 +199,26 @@ void ProblemDialog::load()
     txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
 
+    // startup
+    txtEditor->setPlainText(m_problemInfo->scriptStartup);
+
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
     doTransientChanged();
 }
 
 bool ProblemDialog::save()
 {
+    ScriptResult scriptResult = runPythonExpression(txtEditor->toPlainText());
+    if (!scriptResult.isError)
+    {
+        Util::scene()->problemInfo()->scriptStartup = txtEditor->toPlainText();
+    }
+    else
+    {
+        QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
+        return false;
+    }
+
     if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
     // check values

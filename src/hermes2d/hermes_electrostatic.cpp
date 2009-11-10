@@ -142,7 +142,7 @@ QList<SolutionArray *> *electrostatic_main(SolverThread *solverThread)
     solutionArray->order1->process_solution(&space);
     solutionArray->sln1 = sln;
     solutionArray->adaptiveError = error;
-    solutionArray->adaptiveSteps = i-1;
+    solutionArray->adaptiveSteps = i-1;   
 
     QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
     solutionArrayList->append(solutionArray);
@@ -236,11 +236,21 @@ SceneEdgeMarker *HermesElectrostatic::newEdgeMarker()
                                             Value("0"));
 }
 
-SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(const QString &name, QScriptContext *context)
+SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(PyObject *self, PyObject *args)
 {
-    return new SceneEdgeElectrostaticMarker(name,
-                                            physicFieldBCFromStringKey(context->argument(1).toString()),
-                                            Value(context->argument(2).toString()));
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        // check name
+        if (Util::scene()->getEdgeMarker(name)) return NULL;
+
+        return new SceneEdgeElectrostaticMarker(name,
+                                                physicFieldBCFromStringKey(type),
+                                                Value(QString::number(value)));
+    }
+
+    return Util::scene()->edgeMarkers[0];
 }
 
 SceneLabelMarker *HermesElectrostatic::newLabelMarker()
@@ -250,11 +260,21 @@ SceneLabelMarker *HermesElectrostatic::newLabelMarker()
                                              Value("1"));
 }
 
-SceneLabelMarker *HermesElectrostatic::newLabelMarker(const QString &name, QScriptContext *context)
+SceneLabelMarker *HermesElectrostatic::newLabelMarker(PyObject *self, PyObject *args)
 {
-    return new SceneLabelElectrostaticMarker(name,
-                                             Value(context->argument(1).toString()),
-                                             Value(context->argument(2).toString()));
+    double charge_density, permittivity;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &charge_density, &permittivity))
+    {
+        // check name
+        if (Util::scene()->getLabelMarker(name)) return NULL;
+
+        return new SceneLabelElectrostaticMarker(name,
+                                                 Value(QString::number(charge_density)),
+                                                 Value(QString::number(permittivity)));
+    }
+
+    return Util::scene()->labelMarkers[0];
 }
 
 void HermesElectrostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
@@ -345,7 +365,7 @@ QList<SolutionArray *> *HermesElectrostatic::solve(SolverThread *solverThread)
             SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeElectrostaticMarker->value.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!edgeElectrostaticMarker->value.evaluate()) return NULL;
 
             electrostaticEdge[i+1].type = edgeElectrostaticMarker->type;
             electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.number;
@@ -364,8 +384,8 @@ QList<SolutionArray *> *HermesElectrostatic::solve(SolverThread *solverThread)
             SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelElectrostaticMarker->charge_density.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
-            if (!labelElectrostaticMarker->permittivity.evaluate(Util::scene()->problemInfo()->scriptStartup)) return NULL;
+            if (!labelElectrostaticMarker->charge_density.evaluate()) return NULL;
+            if (!labelElectrostaticMarker->permittivity.evaluate()) return NULL;
 
             electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.number;
             electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.number;
@@ -585,7 +605,7 @@ SceneEdgeElectrostaticMarker::SceneEdgeElectrostaticMarker(const QString &name, 
 
 QString SceneEdgeElectrostaticMarker::script()
 {
-    return QString("addBoundary(\"%1\", \"%2\", %3);").
+    return QString("addboundary(\"%1\", \"%2\", %3)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
             arg(value.text);
@@ -623,7 +643,7 @@ SceneLabelElectrostaticMarker::SceneLabelElectrostaticMarker(const QString &name
 
 QString SceneLabelElectrostaticMarker::script()
 {
-    return QString("addMaterial(\"%1\", %2, %3);").
+    return QString("addmaterial(\"%1\", %2, %3)").
             arg(name).
             arg(charge_density.text).
             arg(permittivity.text);
@@ -688,7 +708,7 @@ void DSceneEdgeElectrostaticMarker::load()
     SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeElectrostaticMarker->type));
-    txtValue->setText(edgeElectrostaticMarker->value.text);
+    txtValue->setValue(edgeElectrostaticMarker->value);
 }
 
 bool DSceneEdgeElectrostaticMarker::save() {
@@ -746,8 +766,8 @@ void DSceneLabelElectrostaticMarker::load()
 
     SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(m_labelMarker);
 
-    txtPermittivity->setText(labelElectrostaticMarker->permittivity.text);
-    txtChargeDensity->setText(labelElectrostaticMarker->charge_density.text);
+    txtPermittivity->setValue(labelElectrostaticMarker->permittivity);
+    txtChargeDensity->setValue(labelElectrostaticMarker->charge_density);
 }
 
 bool DSceneLabelElectrostaticMarker::save() {

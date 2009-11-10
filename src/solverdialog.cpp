@@ -202,22 +202,15 @@ void SolverThread::doMeshTriangleCreated(int exitCode)
         // error
         updateProgress(100);
 
-        QFile file(Util::scene()->problemInfo()->fileName + ".triangle.out");
-
-        QTextStream standardOutput(&file);
-        QString errorMessage = standardOutput.readAll();
+        QString errorMessage = readFileContent(Util::scene()->problemInfo()->fileName + ".triangle.out");
         emit message(tr("Triangle: ") + errorMessage, true);
-
-        if (!file.open(QIODevice::ReadOnly))
-            return;
-        file.close();
     }
 }
 
 void SolverThread::runSolver()
 {   
-    QString fileName(tempProblemFileName() + ".mesh");
-    if (!QFile::exists(fileName)) return;
+    if (!QFile::exists(tempProblemFileName() + ".mesh"))
+        return;
 
     // benchmark
     QTime time;

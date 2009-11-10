@@ -1,31 +1,29 @@
 #ifndef SCRIPTEDITORDIALOG_H
 #define SCRIPTEDITORDIALOG_H
 
-#include <QScriptEngine>
-#include <QScriptContext>
-
 #include "scene.h"
 #include "sceneview.h"
 #include "scenemarker.h"
 #include "scripteditorhighlighter.h"
-
-static SceneView *m_sceneView;
 
 struct ScriptResult
 {
     ScriptResult()
     {
         text = "";
+        value = 0.0;
         isError = false;
     }
 
-    ScriptResult(const QString &text, bool isError)
+    ScriptResult(const QString &text, double value = 0, bool isError = false)
     {
         this->text = text;
+        this->value = value;
         this->isError = isError;
     }
 
     QString text;
+    double value;
     bool isError;
 };
 
@@ -34,7 +32,9 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 
-QString createEcmaFromModel();
+QString createPythonFromModel();
+ScriptResult runPython(const QString &script, const QString &fileName = "");
+ScriptResult runPythonExpression(const QString &expression);
 
 class ScriptEngineRemote : QObject
 {
@@ -64,8 +64,8 @@ class ScriptEditorWidget : public QWidget
     Q_OBJECT
 
 public slots:
-    void doRunEcma(const QString &script = "");
-    void doCreateEcmaFromModel();
+    void doRunPython(const QString &script = "");
+    void doCreatePythonFromModel();
 
 public:
     QString file;
@@ -145,7 +145,7 @@ private:
     QAction *actFindNext;
     QAction *actReplace;
 
-    QAction *actRunEcma;
+    QAction *actRunPython;
     QAction *actCreateFromModel;
 
     QAction *actHelp;
@@ -156,27 +156,6 @@ private:
     void createControls();
 
     void setRecentFiles();
-};
-
-class ScriptStartupDialog : public QDialog
-{
-    Q_OBJECT
-public:
-    ScriptStartupDialog(ProblemInfo *problemInfo, QWidget *parent = 0);
-    ~ScriptStartupDialog();
-
-    int showDialog();
-
-private slots:
-    void doAccept();
-    void doReject();
-
-private:
-    ProblemInfo *m_problemInfo;
-
-    ScriptEditor *txtEditor;
-
-    void createControls();
 };
 
 class ScriptEditor : public QPlainTextEdit

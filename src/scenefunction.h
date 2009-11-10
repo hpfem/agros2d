@@ -29,9 +29,6 @@ public:
 
     QString script();
     QVariant variant();
-
-private:
-    QScriptEngine *m_engine;
 };
 
 // ************************************************************************************************************************
@@ -50,9 +47,9 @@ private:
     Chart *chart;
 
     QLineEdit *txtName;
-    SLineEdit *txtFunction;
-    SLineEdit *txtStart;
-    SLineEdit *txtEnd;
+    SLineEditScript *txtFunction;
+    SLineEditDouble *txtStart;
+    SLineEditDouble *txtEnd;
 
     void createControls();
     void load();

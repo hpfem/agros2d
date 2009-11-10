@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     {
         if ((args[1] == "--help") || (args[1] == "/help"))
         {
-            cout << "agros2d [fileName (*.a2d; *.qs) | -run fileName (*.qs) | --help]" << endl;
+            cout << "agros2d [fileName (*.a2d; *.py) | -run fileName (*.py) | --help]" << endl;
             a.exit(0);
             return 0;
         }

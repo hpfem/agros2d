@@ -5,7 +5,7 @@
 #include "gui.h"
 #include "scenemarker.h"
 
-class SLineEdit;
+class SLineEditDouble;
 
 struct Point;
 
@@ -131,8 +131,8 @@ protected:
     bool save();
 
 private:
-    SLineEdit *txtPointX;
-    SLineEdit *txtPointY;
+    SLineEditDouble *txtPointX;
+    SLineEditDouble *txtPointY;
 };
 
 // *************************************************************************************************************************************
@@ -155,7 +155,7 @@ private:
     QComboBox *cmbNodeStart;
     QComboBox *cmbNodeEnd;
     QComboBox *cmbMarker;
-    SLineEdit *txtAngle;
+    SLineEditDouble *txtAngle;
 
     void fillComboBox();
 };
@@ -177,10 +177,10 @@ protected:
     bool save();
 
 private:
-    SLineEdit *txtPointX;
-    SLineEdit *txtPointY;
+    SLineEditDouble *txtPointX;
+    SLineEditDouble *txtPointY;
     QComboBox *cmbMarker;
-    SLineEdit *txtArea;
+    SLineEditDouble *txtArea;
 
     void fillComboBox();
 };

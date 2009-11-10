@@ -1,11 +1,10 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
 QT += opengl \
     xml \
-    script \
     webkit \
     network
 SUBDIRS = src-remote
-# DEFINES += BETA
+DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
 DEFINES += VERSION_SUB=8
@@ -44,7 +43,7 @@ unix {
     
     # install script
     script.path = $${PREFIX}/share/agros2d/data/script
-    script.files = data/script/*.qs
+    script.files = data/script/*.py
     
     # install help
     help.path = $${PREFIX}/share/agros2d/doc/help
@@ -62,7 +61,7 @@ unix {
     
     # install script
     script.path = $${PREFIX}/share/agros2d
-    script.files = *.qs
+    script.files = *.py
     
     # install pixmap
     pixmap.path = $${PREFIX}/share/pixmaps
@@ -105,7 +104,7 @@ SOURCES += src/util.cpp \
     src/volumeintegralview.cpp \
     src/main.cpp \
     src/scripteditordialog.cpp \
-    src/scripteditorcommandsecma.cpp \
+    src/scripteditorcommandpython.cpp \
     src/scripteditorhighlighter.cpp \
     src/solverdialog.cpp \
     src/mainwindow.cpp \
@@ -163,6 +162,7 @@ INCLUDEPATH += src \
 unix:INCLUDEPATH += /usr/include
 unix:INCLUDEPATH += /usr/include/suitesparse
 unix:INCLUDEPATH += /usr/include/qwt-qt4
+unix:INCLUDEPATH += /usr/include/python2.6
 unix:INCLUDEPATH += /usr/include/hermes2d
 win32:INCLUDEPATH += c:/qt/mingw/include
 win32:INCLUDEPATH += c:/qt/mingw/include/hermes2d
@@ -171,7 +171,8 @@ LIBS += -lhermes2d-real \
     -lamd \
     -lblas \
     -lJudy \
-    -lpthread
+    -lpthread \
+    -lpython2.6
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt
 OTHER_FILES += 

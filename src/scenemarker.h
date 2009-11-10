@@ -4,7 +4,7 @@
 #include "util.h"
 #include "gui.h"
 
-class SLineEdit;
+class SLineEditDouble;
 class SLineEditValue;
 
 class SceneEdgeMarker;

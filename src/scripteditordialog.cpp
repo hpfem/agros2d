@@ -1,139 +1,23 @@
 #include "scripteditordialog.h"
-#include "scripteditorcommandsecma.cpp"
+#include "scripteditorcommandpython.cpp"
 
-QScriptEngine *m_engine;
-
-ScriptResult runEcma(const QString &script, const QString &fileName = "")
+ScriptResult runPython(const QString &script, const QString &fileName)
 {
-    if (!m_engine)
-        m_engine = scriptEngine();
-
-    if (script.isEmpty())
-        return ScriptResult();
-
-    // scene
-    QScriptValue sceneValue = m_engine->newQObject(Util::scene());
-    m_engine->globalObject().setProperty("scene", sceneValue);
-
-    // scene view
-    QScriptValue sceneViewValue = m_engine->newQObject(m_sceneView);
-    m_engine->globalObject().setProperty("sceneView", sceneViewValue);
-
-    // general functions
-    // print
-    QScriptValue funPrint = m_engine->newFunction(scriptPrint);
-    m_engine->globalObject().setProperty("print", funPrint);
-
-    m_engine->globalObject().setProperty("version", m_engine->newFunction(scriptVersion));
-    m_engine->globalObject().setProperty("message", m_engine->newFunction(scriptMessage));
-    m_engine->globalObject().setProperty("input", m_engine->newFunction(scriptInput));
-    m_engine->globalObject().setProperty("quit", m_engine->newFunction(scriptQuit));
-
-    m_engine->globalObject().setProperty("include", m_engine->newFunction(scriptInclude));
-    m_engine->globalObject().setProperty("printToFile", m_engine->newFunction(scriptPrintToFile));
-    m_engine->globalObject().setProperty("saveImage", m_engine->newFunction(scriptSaveImage));
-
-    // document
-    m_engine->globalObject().setProperty("newDocument", m_engine->newFunction(scriptNewDocument));
-    m_engine->globalObject().setProperty("openDocument", m_engine->newFunction(scriptOpenDocument));
-    m_engine->globalObject().setProperty("saveDocument", m_engine->newFunction(scriptSaveDocument));
-
-    m_engine->globalObject().setProperty("mode", m_engine->newFunction(scriptMode));
-
-    // geometry
-    m_engine->globalObject().setProperty("addNode", m_engine->newFunction(scriptAddNode));
-    m_engine->globalObject().setProperty("addEdge", m_engine->newFunction(scriptAddEdge));
-    m_engine->globalObject().setProperty("addLabel", m_engine->newFunction(scriptAddLabel));
-
-    m_engine->globalObject().setProperty("selectNone", m_engine->newFunction(scriptSelectNone));
-    m_engine->globalObject().setProperty("selectAll", m_engine->newFunction(scriptSelectAll));
-    m_engine->globalObject().setProperty("selectNode", m_engine->newFunction(scriptSelectNode));
-    m_engine->globalObject().setProperty("selectEdge", m_engine->newFunction(scriptSelectEdge));
-    m_engine->globalObject().setProperty("selectLabel", m_engine->newFunction(scriptSelectLabel));
-    m_engine->globalObject().setProperty("selectNodePoint", m_engine->newFunction(scriptSelectNodePoint));
-    m_engine->globalObject().setProperty("selectEdgePoint", m_engine->newFunction(scriptSelectEdgePoint));
-    m_engine->globalObject().setProperty("selectLabelPoint", m_engine->newFunction(scriptSelectLabelPoint));
-
-    m_engine->globalObject().setProperty("moveSelection", m_engine->newFunction(scriptMoveSelection));
-    m_engine->globalObject().setProperty("rotateSelection", m_engine->newFunction(scriptRotateSelection));
-    m_engine->globalObject().setProperty("scaleSelection", m_engine->newFunction(scriptScaleSelection));
-    m_engine->globalObject().setProperty("deleteSelection", m_engine->newFunction(scriptDeleteSelection));
-
-    m_engine->globalObject().setProperty("zoomBestFit", m_engine->newFunction(scriptZoomBestFit));
-    m_engine->globalObject().setProperty("zoomIn", m_engine->newFunction(scriptZoomIn));
-    m_engine->globalObject().setProperty("zoomOut", m_engine->newFunction(scriptZoomOut));
-    m_engine->globalObject().setProperty("zoomRegion", m_engine->newFunction(scriptZoomRegion));
-
-    // materials and boundaries
-    m_engine->globalObject().setProperty("addBoundary", m_engine->newFunction(scriptAddBoundary));
-    m_engine->globalObject().setProperty("modifyBoundary", m_engine->newFunction(scriptModifyBoundary));
-    m_engine->globalObject().setProperty("addMaterial", m_engine->newFunction(scriptAddMaterial));
-    m_engine->globalObject().setProperty("modifyMaterial", m_engine->newFunction(scriptModifyMaterial));
-
-    // solver
-    m_engine->globalObject().setProperty("mesh", m_engine->newFunction(scriptMesh));
-    m_engine->globalObject().setProperty("solve", m_engine->newFunction(scriptSolve));
-
-    // postprocessor
-    m_engine->globalObject().setProperty("pointResult", m_engine->newFunction(scriptPointResult));
-    m_engine->globalObject().setProperty("volumeIntegral", m_engine->newFunction(scriptVolumeIntegral));
-    m_engine->globalObject().setProperty("surfaceIntegral", m_engine->newFunction(scriptSurfaceIntegral));
-    m_engine->globalObject().setProperty("showGrid", m_engine->newFunction(scriptShowGrid));
-    m_engine->globalObject().setProperty("showGeometry", m_engine->newFunction(scriptShowGeometry));
-    m_engine->globalObject().setProperty("showInitialMesh", m_engine->newFunction(scriptShowInitialMesh));
-    m_engine->globalObject().setProperty("showSolutionMesh", m_engine->newFunction(scriptShowSolutionMesh));
-    m_engine->globalObject().setProperty("showContours", m_engine->newFunction(scriptShowContours));
-    m_engine->globalObject().setProperty("showVectors", m_engine->newFunction(scriptShowVectors));
-    m_engine->globalObject().setProperty("showScalar", m_engine->newFunction(scriptShowScalar));
-    m_engine->globalObject().setProperty("setTimeStep", m_engine->newFunction(scriptSetTimeStep));
-
-    // check syntax
-    QScriptSyntaxCheckResult syntaxResult = m_engine->checkSyntax(script);
-    ScriptResult scriptResult;
-
-    if (syntaxResult.state() == QScriptSyntaxCheckResult::Valid)
-    {
-        Util::scene()->undoStack()->setActive(false);
-        Util::scene()->blockSignals(true);
-        // startup script
-        m_engine->evaluate(Util::scene()->problemInfo()->scriptStartup);
-        // result
-        setActualScriptFileName(fileName);
-        QScriptValue result = m_engine->evaluate(script, fileName);
-        setActualScriptFileName("");
-        if (m_engine->hasUncaughtException())
-        {
-            int line = m_engine->uncaughtExceptionLineNumber();
-
-            scriptResult.text = QObject::tr("%1 (line %2.)").arg(result.toString()).arg(line);
-            scriptResult.isError = result.isError();
-        }
-        Util::scene()->blockSignals(false);
-        Util::scene()->refresh();
-        Util::scene()->undoStack()->setActive(true);
-
-        if (scriptResult.text.isEmpty())
-        {
-            scriptResult.text = funPrint.data().toString().trimmed();
-            scriptResult.isError = false;
-        }
-
-        return scriptResult;
-    }
-    else
-    {
-        return ScriptResult(QObject::tr("%1 (line %2, column %3)").arg(syntaxResult.errorMessage()).arg(syntaxResult.errorLineNumber()).arg(syntaxResult.errorColumnNumber()),
-                            true);
-    }
+    return pythonEngine->runPython(script, false, fileName);
 }
 
-QString createEcmaFromModel()
+ScriptResult runPythonExpression(const QString &expression)
+{
+    return pythonEngine->runPython(expression, true);
+}
+
+QString createPythonFromModel()
 {
     QString str;
 
     // model
-    str += "// model\n";
-    str += QString("newDocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13);").
+    str += "# model\n";
+    str += QString("newdocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13)").
            arg(Util::scene()->problemInfo()->name).
            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
            arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField())).
@@ -151,7 +35,7 @@ QString createEcmaFromModel()
     str += "\n";
 
     // boundaries
-    str += "// boundaries\n";
+    str += "# boundaries\n";
     for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
     {
         str += Util::scene()->edgeMarkers[i]->script() + "\n";
@@ -159,7 +43,7 @@ QString createEcmaFromModel()
     str += "\n";
 
     // materials
-    str += "// materials\n";
+    str += "# materials\n";
     for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
     {
         str += Util::scene()->labelMarkers[i]->script() + "\n";
@@ -167,10 +51,10 @@ QString createEcmaFromModel()
     str += "\n";
 
     // edges
-    str += "// edges\n";
+    str += "# edges\n";
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        str += QString("addEdge(%1, %2, %3, %4, %5, \"%6\");").
+        str += QString("addedge(%1, %2, %3, %4, %5, \"%6\")").
                arg(Util::scene()->edges[i]->nodeStart->point.x).
                arg(Util::scene()->edges[i]->nodeStart->point.y).
                arg(Util::scene()->edges[i]->nodeEnd->point.x).
@@ -181,10 +65,10 @@ QString createEcmaFromModel()
     str += "\n";
 
     // labels
-    str += "// labels\n";
+    str += "# labels\n";
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
-        str += QString("addLabel(%1, %2, %3, \"%4\");").
+        str += QString("addlabel(%1, %2, %3, \"%4\")").
                arg(Util::scene()->labels[i]->point.x).
                arg(Util::scene()->labels[i]->point.y).
                arg(Util::scene()->labels[i]->area).
@@ -236,7 +120,7 @@ void ScriptEngineRemote::disconnected()
     ScriptResult result;
     if (!command.isEmpty())
     {
-        result = runEcma(command);
+        result = runPython(command);
     }
 
     m_client_socket = new QLocalSocket();
@@ -282,7 +166,7 @@ ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
     txtOutput = new QPlainTextEdit(this);
     splitter = new QSplitter(this);
 
-    createControls();
+    createControls();    
 
     QSettings settings;
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
@@ -319,7 +203,7 @@ void ScriptEditorWidget::createControls()
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
 }
 
-void ScriptEditorWidget::doRunEcma(const QString &script)
+void ScriptEditorWidget::doRunPython(const QString &script)
 {
     QString scriptContent;
     if (script.isEmpty())
@@ -327,13 +211,13 @@ void ScriptEditorWidget::doRunEcma(const QString &script)
     else
         scriptContent = script;
 
-    ScriptResult result = runEcma(scriptContent, file);
+    ScriptResult result = runPython(scriptContent, file);
     txtOutput->setPlainText(result.text);
 }
 
-void ScriptEditorWidget::doCreateEcmaFromModel()
+void ScriptEditorWidget::doCreatePythonFromModel()
 {
-    txtEditor->setPlainText(createEcmaFromModel());
+    txtEditor->setPlainText(createPythonFromModel());
 }
 
 // ***********************************************************************************************************
@@ -353,6 +237,8 @@ ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : 
     createActions();
     createControls();
 
+    pythonEngine = new PythonEngine();
+
     restoreState(settings.value("ScriptEditorDialog/State", saveState()).toByteArray());
 
     setMinimumSize(600, 400);
@@ -364,6 +250,8 @@ ScriptEditorDialog::~ScriptEditorDialog()
     settings.setValue("ScriptEditorDialog/Geometry", saveGeometry());
     settings.setValue("ScriptEditorDialog/State", saveState());
     settings.setValue("ScriptEditorDialog/RecentFiles", recentFiles);
+
+    delete pythonEngine;
 }
 
 void ScriptEditorDialog::showDialog()
@@ -382,7 +270,7 @@ void ScriptEditorDialog::runScript(const QString &fileName)
         if (file.open(QFile::ReadOnly | QFile::Text))
         {
             // run script
-            ScriptResult result = runEcma(file.readAll(), fileName);
+            ScriptResult result = runPython(file.readAll(), fileName);
             if (result.isError)
                 QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
             else if (!result.text.isEmpty())
@@ -397,7 +285,7 @@ void ScriptEditorDialog::runCommand(const QString &command)
     if (!command.isEmpty())
     {
         // run script
-        ScriptResult result = runEcma(command);
+        ScriptResult result = runPython(command);
         if (result.isError)
             QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
         else if (!result.text.isEmpty())
@@ -459,11 +347,8 @@ void ScriptEditorDialog::createActions()
     actReplace->setShortcut(QKeySequence::Replace);
     connect(actReplace, SIGNAL(triggered()), this, SLOT(doReplace()));
 
-    actRunEcma = new QAction(icon("system-run"), tr("&Run"), this);
-    actRunEcma->setShortcut(QKeySequence(tr("Ctrl+R")));
-
-    // actRunPython = new QAction(icon("system-run"), tr("&Run Python script"), this);
-    // actRunPython->setShortcut(QKeySequence(tr("Ctrl+T")));
+    actRunPython = new QAction(icon("script-python"), tr("&Run Python script"), this);
+    actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
     actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
     actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
@@ -507,7 +392,7 @@ void ScriptEditorDialog::createControls()
     mnuEdit->addAction(actReplace);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
-    mnuTools->addAction(actRunEcma);
+    mnuTools->addAction(actRunPython);
     mnuTools->addSeparator();
     mnuTools->addAction(actCreateFromModel);
 
@@ -531,8 +416,7 @@ void ScriptEditorDialog::createControls()
 
     tlbTools = addToolBar(tr("Tools"));
     tlbTools->setObjectName("Tools");
-    tlbTools->addAction(actRunEcma);
-    // tlbTools->addAction(actRunPython);
+    tlbTools->addAction(actRunPython);
     tlbTools->addSeparator();
     tlbTools->addAction(actCreateFromModel);
 
@@ -583,7 +467,7 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
     // open dialog
     QString fileName = file;
     if (fileName.isEmpty())
-        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Agros2D script files (*.qs)"));
+        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Python files (*.py)"));
 
     // read text
     if (!fileName.isEmpty()) {
@@ -607,9 +491,7 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
         }
 
         scriptEditorWidget->file = fileName;
-        QFile fileName(scriptEditorWidget->file);
-        if (fileName.open(QFile::ReadOnly | QFile::Text))
-            txtEditor->setPlainText(fileName.readAll());
+        txtEditor->setPlainText(readFileContent(scriptEditorWidget->file));
 
         setRecentFiles();
 
@@ -634,15 +516,15 @@ void ScriptEditorDialog::doFileSave()
 {
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
 
-    // open dialog
+    // save dialog
     if (scriptEditorWidget->file.isEmpty())
-        scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Agros2D script files (*.qs)"));
+        scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
 
     // write text
     if (!scriptEditorWidget->file.isEmpty())
     {
         QFileInfo fileInfo(scriptEditorWidget->file);
-        if (fileInfo.suffix() != "qs") scriptEditorWidget->file += ".qs";
+        if (fileInfo.suffix() != "py") scriptEditorWidget->file += ".py";
 
         QFile fileName(dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget())->file);
         if (fileName.open(QFile::WriteOnly | QFile::Text))
@@ -662,7 +544,7 @@ void ScriptEditorDialog::doFileSaveAs()
 {
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
 
-    scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Agros2D script files (*.qs)"));
+    scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
     doFileSave();
 }
 
@@ -759,10 +641,10 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
     txtEditor = scriptEditorWidget->txtEditor;
 
-    actRunEcma->disconnect();
-    connect(actRunEcma, SIGNAL(triggered()), scriptEditorWidget, SLOT(doRunEcma()));
+    actRunPython->disconnect();
+    connect(actRunPython, SIGNAL(triggered()), scriptEditorWidget, SLOT(doRunPython()));
     actCreateFromModel->disconnect();
-    connect(actCreateFromModel, SIGNAL(triggered()), scriptEditorWidget, SLOT(doCreateEcmaFromModel()));
+    connect(actCreateFromModel, SIGNAL(triggered()), scriptEditorWidget, SLOT(doCreatePythonFromModel()));
 
     actCut->disconnect();
     connect(actCut, SIGNAL(triggered()), txtEditor, SLOT(cut()));
@@ -826,64 +708,6 @@ void ScriptEditorDialog::setRecentFiles()
         actFileOpenRecentGroup->addAction(actMenuRecentItem);
         mnuRecentFiles->addAction(actMenuRecentItem);
     }
-}
-
-// ******************************************************************************************************
-
-ScriptStartupDialog::ScriptStartupDialog(ProblemInfo *problemInfo, QWidget *parent) : QDialog(parent)
-{
-    m_problemInfo = problemInfo;
-
-    setWindowIcon(icon("script-startup"));
-    setWindowFlags(Qt::Window);
-    setWindowTitle(tr("Startup script"));
-    setMinimumSize(400, 300);
-
-    createControls();
-}
-
-ScriptStartupDialog::~ScriptStartupDialog()
-{
-    delete txtEditor;
-}
-
-int ScriptStartupDialog::showDialog()
-{
-    return exec();
-}
-
-void ScriptStartupDialog::createControls()
-{
-    txtEditor = new ScriptEditor(this);
-    txtEditor->setPlainText(Util::scene()->problemInfo()->scriptStartup);
-
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(txtEditor);
-    layout->addWidget(buttonBox);
-    setLayout(layout);
-}
-
-void ScriptStartupDialog::doAccept()
-{
-    if (m_engine->canEvaluate(txtEditor->toPlainText()))
-    {
-        Util::scene()->problemInfo()->scriptStartup = txtEditor->toPlainText();
-        accept();
-    }
-    else
-    {
-        QMessageBox::warning(this, tr("Error"), tr("Script cannot be evaluated."));
-    }
-}
-
-void ScriptStartupDialog::doReject()
-{
-    reject();
 }
 
 // ******************************************************************************************************
@@ -1072,6 +896,7 @@ SearchDialog::~SearchDialog()
 
 int SearchDialog::showDialogFind()
 {
+    txtFind->setFocus();
     txtReplace->setEnabled(false);
     btnConfirm->setText(tr("Find"));
     chkSearchRegExp->setEnabled(true);
@@ -1081,6 +906,7 @@ int SearchDialog::showDialogFind()
 
 int SearchDialog::showDialogReplace()
 {
+    txtFind->setFocus();
     txtReplace->setEnabled(true);
     btnConfirm->setText(tr("Replace"));
     chkSearchRegExp->setEnabled(false);

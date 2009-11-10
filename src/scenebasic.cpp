@@ -186,8 +186,8 @@ DSceneNode::~DSceneNode()
 
 QLayout* DSceneNode::createContent()
 {
-    txtPointX = new SLineEdit("0");
-    txtPointY = new SLineEdit("0");
+    txtPointX = new SLineEditDouble();
+    txtPointY = new SLineEditDouble();
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
@@ -263,7 +263,7 @@ QLayout* DSceneEdge::createContent()
     cmbNodeStart = new QComboBox();
     cmbNodeEnd = new QComboBox();
     cmbMarker = new QComboBox();
-    txtAngle = new SLineEdit("0");
+    txtAngle = new SLineEditDouble();
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(tr("Start point:"), cmbNodeStart);
@@ -369,11 +369,10 @@ DSceneLabel::~DSceneLabel()
 }
 
 QLayout* DSceneLabel::createContent() {
-    txtPointX = new SLineEdit("0");
-    txtPointY = new SLineEdit("0");
+    txtPointX = new SLineEditDouble();
+    txtPointY = new SLineEditDouble();
     cmbMarker = new QComboBox();
-    txtArea = new SLineEdit("0");
-    txtArea->setValidator(new QDoubleValidator(txtArea));
+    txtArea = new SLineEditDouble();
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);

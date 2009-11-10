@@ -34,44 +34,40 @@
 #include <QtCore/QSet>
 #include <QtGui/QSyntaxHighlighter>
 
+#include <QSyntaxHighlighter>
+
+#include <QHash>
+#include <QTextCharFormat>
+
+class QTextDocument;
+
 class QScriptSyntaxHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
+
 public:
     QScriptSyntaxHighlighter(QTextDocument *parent = 0);
-    virtual void highlightBlock(const QString &text);
-
-    enum { NumberFormat, StringFormat, TypeFormat,
-           KeywordFormat, PreProcessorFormat, LabelFormat, CommentFormat,
-           NumFormats };
-
-    bool isDuiEnabled() const;
-    void setDuiEnabled(bool enabled);
-
-    // MS VC 6 compatible, still.
-    void setFormats(const QVector<QTextCharFormat> &s);
-    static const QVector<QTextCharFormat> &defaultFormats();
-
-    QTextCharFormat labelTextCharFormat() const
-    { return m_formats[LabelFormat]; }
-
-    const QSet<QString> &keywords() const
-    { return qscriptKeywords; }
 
 protected:
-    // The functions are notified whenever parentheses are encountered.
-    // Custom behaviour can be added, for example storing info for indenting.
-    virtual int onBlockStart(); // returns the blocks initial state
-    virtual void onOpeningParenthesis(QChar parenthesis, int pos);
-    virtual void onClosingParenthesis(QChar parenthesis, int pos);
-    // sets the enriched user state, or simply calls setCurrentBlockState(state);
-    virtual void onBlockEnd(int state, int firstNonSpace);
+    void highlightBlock(const QString &text);
 
-    void highlightKeyword(int currentPos, const QString &buffer);
+private:
+    struct HighlightingRule
+    {
+        QRegExp pattern;
+        QTextCharFormat format;
+    };
+    QVector<HighlightingRule> highlightingRules;
 
-    bool m_duiEnabled;
-    QTextCharFormat m_formats[NumFormats];
-    QSet<QString> qscriptKeywords;
+    QRegExp commentStartExpression;
+    QRegExp commentEndExpression;
+
+    QTextCharFormat keywordFormat;
+    QTextCharFormat classFormat;
+    QTextCharFormat singleLineCommentFormat;
+    QTextCharFormat multiLineCommentFormat;
+    QTextCharFormat quotationFormat;
+    QTextCharFormat functionFormat;
 };
 
 #endif // QSCRIPTSYNTAXHIGHLIGHTER_H

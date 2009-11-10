@@ -38,9 +38,9 @@ public:
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_GENERAL_CONSTANT); }
 
     SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(const QString &name, QScriptContext *context);
+    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
     SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(const QString &name, QScriptContext *context);
+    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> *solve(SolverThread *solverThread);
 

@@ -119,8 +119,8 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
 
     setModal(true);
 
-    txtPointX = new SLineEdit(QString::number(point.x), false);
-    txtPointY = new SLineEdit(QString::number(point.y), false);
+    txtPointX = new SLineEditDouble(point.x);
+    txtPointY = new SLineEditDouble(point.y);
 
     QFormLayout *layoutPoint = new QFormLayout();
     layoutPoint->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);

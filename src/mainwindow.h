@@ -1,9 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QScriptEngine>
-#include <QtScriptTools/QScriptEngineDebugger>
-
 #include "util.h"
 #include "scene.h"
 #include "scenebasic.h"
@@ -29,7 +26,7 @@ public:
     void runScript(const QString &fileName);
 
 private slots:
-    void doSetWindowTitle(const QString &name) { setWindowTitle("Agros2D - " + name); }
+    inline void doSetWindowTitle(const QString &name) { setWindowTitle("Agros2D - " + name); }
 
     void doDocumentNew();
     void doDocumentOpen(const QString &fileName = "");
@@ -50,7 +47,6 @@ private slots:
     void doScriptEditor();
     void doScriptEditorRunScript(const QString &fileName = "");
     void doScriptEditorRunCommand(const QString &command = "");
-    void doScriptStartup();
     void doOptions();
     void doReport();
     void doCreateVideo();
@@ -115,7 +111,6 @@ private:
     QAction *actScriptEditor;
     QAction *actScriptEditorRunScript;
     QAction *actScriptEditorRunCommand;
-    QAction *actScriptStartup;
     QAction *actReport;
     QAction *actCreateVideo;
 
