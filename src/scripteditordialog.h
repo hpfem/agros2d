@@ -6,6 +6,8 @@
 #include "scenemarker.h"
 #include "scripteditorhighlighter.h"
 
+class SceneView;
+
 struct ScriptResult
 {
     ScriptResult()
@@ -32,6 +34,7 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 
+void createScripEngine(SceneView *sceneView);
 QString createPythonFromModel();
 ScriptResult runPython(const QString &script, const QString &fileName = "");
 ScriptResult runPythonExpression(const QString &expression);
@@ -86,7 +89,7 @@ class ScriptEditorDialog : public QMainWindow
 {
     Q_OBJECT
 public:
-    ScriptEditorDialog(SceneView *sceneView, QWidget *parent = 0);
+    ScriptEditorDialog(QWidget *parent = 0);
     ~ScriptEditorDialog();
 
     void runScript(const QString &fileName);

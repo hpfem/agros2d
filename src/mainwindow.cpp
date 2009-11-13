@@ -29,13 +29,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     helpDialog = new HelpDialog(this);
     chartDialog = new ChartDialog(this);
-    scriptEditorDialog = new ScriptEditorDialog(sceneView, this);
+    scriptEditorDialog = new ScriptEditorDialog(this);
     reportDialog = new ReportDialog(this);
     videoDialog = new VideoDialog(sceneView, this);
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
+
+    createScripEngine(sceneView);
 
     Util::scene()->clear();
 

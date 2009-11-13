@@ -1,5 +1,13 @@
 #include "scripteditordialog.h"
-#include "scripteditorcommandpython.cpp"
+#include "scripteditorcommandpython.h"
+
+PythonEngine *pythonEngine = NULL;
+
+void createScripEngine(SceneView *sceneView)
+{
+    pythonEngine = new PythonEngine();
+    pythonEngine->setSceneView(sceneView);
+}
 
 ScriptResult runPython(const QString &script, const QString &fileName)
 {
@@ -222,13 +230,11 @@ void ScriptEditorWidget::doCreatePythonFromModel()
 
 // ***********************************************************************************************************
 
-ScriptEditorDialog::ScriptEditorDialog(SceneView *sceneView, QWidget *parent) : QMainWindow(parent)
+ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
 {
     QSettings settings;
     restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("ScriptEditorDialog/RecentFiles").value<QStringList>();
-
-    m_sceneView = sceneView;
 
     setWindowIcon(icon("script"));
 

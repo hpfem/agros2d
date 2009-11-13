@@ -1,32 +1,39 @@
+#include "scripteditorcommandpython.h"
+
 #include <Python.h>
 
 #include "util.h"
 #include "scene.h"
-#include "sceneview.h"
+
 #include "scenemarker.h"
 
 #include "scripteditordialog.h"
 
-static SceneView *m_sceneView;
+SceneView *sceneView = NULL;
+
+double nadruhou(double x)
+{
+    return (x*x);
+}
 
 // FIX *****************************************************************************************************************************************************************************
 // Terible, is it possible to write this code better???
 #define python_int_array() \
 const int count = 60; \
-int index[count]; \
-for (int i = 0; i < count; i++) \
-    index[i] = INT_MIN; \
-if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
-                     &index[ 0], &index[ 1], &index[ 2], &index[ 3], &index[ 4], &index[ 5], &index[ 6], &index[ 7], &index[ 8], &index[ 9], \
-                     &index[10], &index[11], &index[12], &index[13], &index[14], &index[15], &index[16], &index[17], &index[18], &index[19], \
-                     &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
-                     &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
-                     &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
-                     &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59])) \
-// FIX *****************************************************************************************************************************************************************************
+                  int index[count]; \
+                  for (int i = 0; i < count; i++) \
+                  index[i] = INT_MIN; \
+                             if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
+                                                  &index[ 0], &index[ 1], &index[ 2], &index[ 3], &index[ 4], &index[ 5], &index[ 6], &index[ 7], &index[ 8], &index[ 9], \
+                                                  &index[10], &index[11], &index[12], &index[13], &index[14], &index[15], &index[16], &index[17], &index[18], &index[19], \
+                                                  &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
+                                                  &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
+                                                  &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
+                                                  &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59])) \
+                             // FIX *****************************************************************************************************************************************************************************
 
-// version()
-static PyObject *pythonVersion(PyObject *self, PyObject *args)
+                             // version()
+                             static PyObject *pythonVersion(PyObject *self, PyObject *args)
 {    
     return Py_BuildValue("s", QApplication::applicationVersion().toStdString().c_str());
 }
@@ -201,7 +208,7 @@ static PyObject *pythonNewDocument(PyObject *self, PyObject *args)
         Util::scene()->problemInfo()->initialCondition = initialcondition;
 
         // invalidate
-        m_sceneView->doDefaults();
+        sceneView->doDefaults();
         Util::scene()->refresh();
 
         Py_RETURN_NONE;
@@ -368,21 +375,21 @@ static PyObject *pythonSelectNone(PyObject *self, PyObject *args)
 // selectall()
 static PyObject *pythonSelectAll(PyObject *self, PyObject *args)
 {
-    if (m_sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
+    if (sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
     {
         // select volume integral area
-        if (m_sceneView->actPostprocessorModeVolumeIntegral->isChecked())
+        if (sceneView->actPostprocessorModeVolumeIntegral->isChecked())
             Util::scene()->selectAll(SCENEMODE_OPERATE_ON_LABELS);
 
         // select surface integral area
-        if (m_sceneView->actPostprocessorModeSurfaceIntegral->isChecked())
+        if (sceneView->actPostprocessorModeSurfaceIntegral->isChecked())
             Util::scene()->selectAll(SCENEMODE_OPERATE_ON_EDGES);
     }
     else
     {
-        Util::scene()->selectAll(m_sceneView->sceneMode());
+        Util::scene()->selectAll(sceneView->sceneMode());
     }
-    m_sceneView->doInvalidated();
+    sceneView->doInvalidated();
     Py_RETURN_NONE;
 }
 
@@ -391,7 +398,7 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
 {
     python_int_array()
     {
-        m_sceneView->actSceneModeEdge->trigger();
+        sceneView->actSceneModeEdge->trigger();
         Util::scene()->selectNone();
 
         for (int i = 0; i < count; i++)
@@ -408,7 +415,7 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
                 return NULL;
             }
         }
-        m_sceneView->doInvalidated();
+        sceneView->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -420,11 +427,11 @@ static PyObject *pythonSelectNodePoint(PyObject *self, PyObject *args)
     double x, y;
     if (PyArg_ParseTuple(args, "dd", &x, &y))
     {
-        SceneNode *node = m_sceneView->findClosestNode(Point(x, y));
+        SceneNode *node = sceneView->findClosestNode(Point(x, y));
         if (node)
         {
             node->isSelected = true;
-            m_sceneView->doInvalidated();
+            sceneView->doInvalidated();
             Py_RETURN_NONE;
         }
     }
@@ -436,7 +443,7 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
 {
     python_int_array()
     {
-        m_sceneView->actSceneModeEdge->trigger();
+        sceneView->actSceneModeEdge->trigger();
         Util::scene()->selectNone();
 
         for (int i = 0; i < count; i++)
@@ -453,7 +460,7 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
                 return NULL;
             }
         }
-        m_sceneView->doInvalidated();
+        sceneView->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -465,11 +472,11 @@ static PyObject *pythonSelectEdgePoint(PyObject *self, PyObject *args)
     double x, y;
     if (PyArg_ParseTuple(args, "dd", &x, &y))
     {
-        SceneEdge *edge = m_sceneView->findClosestEdge(Point(x, y));
+        SceneEdge *edge = sceneView->findClosestEdge(Point(x, y));
         if (edge)
         {
             edge->isSelected = true;
-            m_sceneView->doInvalidated();
+            sceneView->doInvalidated();
             Py_RETURN_NONE;
         }
 
@@ -482,7 +489,7 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
 {
     python_int_array()
     {
-        m_sceneView->actSceneModeLabel->trigger();
+        sceneView->actSceneModeLabel->trigger();
         Util::scene()->selectNone();
         for (int i = 0; i < count; i++)
         {
@@ -498,7 +505,7 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
                 return NULL;
             }
         }
-        m_sceneView->doInvalidated();
+        sceneView->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -510,11 +517,11 @@ static PyObject *pythonSelectLabelPoint(PyObject *self, PyObject *args)
     double x, y;
     if (PyArg_ParseTuple(args, "dd", &x, &y))
     {
-        SceneLabel *label = m_sceneView->findClosestLabel(Point(x, y));
+        SceneLabel *label = sceneView->findClosestLabel(Point(x, y));
         if (label)
         {
             label->isSelected = true;
-            m_sceneView->doInvalidated();
+            sceneView->doInvalidated();
             Py_RETURN_NONE;
         }
     }
@@ -529,7 +536,7 @@ static PyObject *pythonRotateSelection(PyObject *self, PyObject *args)
     if (PyArg_ParseTuple(args, "ddd|b", &x, &y, &angle, &copy))
     {
         Util::scene()->transformRotate(Point(x, y), angle, copy);
-        m_sceneView->doInvalidated();
+        sceneView->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -543,7 +550,7 @@ static PyObject *pythonScaleSelection(PyObject *self, PyObject *args)
     if (PyArg_ParseTuple(args, "ddd|b", &x, &y, &scale, &copy))
     {
         Util::scene()->transformScale(Point(x, y), scale, copy);
-        m_sceneView->doInvalidated();
+        sceneView->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -557,7 +564,7 @@ static PyObject *pythonMoveSelection(PyObject *self, PyObject *args)
     if (PyArg_ParseTuple(args, "dd|b", &dx, &dy, &copy))
     {
         Util::scene()->transformTranslate(Point(dx, dy), copy);
-        m_sceneView->doInvalidated();
+        sceneView->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -583,28 +590,28 @@ static PyObject *pythonSolve(PyObject *self, PyObject *args)
 {
     Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
     Util::scene()->refresh();
-    m_sceneView->actSceneModePostprocessor->trigger();
+    sceneView->actSceneModePostprocessor->trigger();
     Py_RETURN_NONE;
 }
 
 // zoombestfit()
 static PyObject *pythonZoomBestFit(PyObject *self, PyObject *args)
 {
-    m_sceneView->doZoomBestFit();
+    sceneView->doZoomBestFit();
     Py_RETURN_NONE;
 }
 
 // zoomin()
 static PyObject *pythonZoomIn(PyObject *self, PyObject *args)
 {
-    m_sceneView->doZoomIn();
+    sceneView->doZoomIn();
     Py_RETURN_NONE;
 }
 
 // zoomout()
 static PyObject *pythonZoomOut(PyObject *self, PyObject *args)
 {
-    m_sceneView->doZoomOut();
+    sceneView->doZoomOut();
     Py_RETURN_NONE;
 }
 
@@ -614,7 +621,7 @@ static PyObject *pythonZoomRegion(PyObject *self, PyObject *args)
     double x1, y1, x2, y2;
     if (PyArg_ParseTuple(args, "dddd", &x1, &y1, &x2, &y2))
     {
-        m_sceneView->doZoomRegion(Point(x1, y1), Point(x2, y2));
+        sceneView->doZoomRegion(Point(x1, y1), Point(x2, y2));
         Py_RETURN_NONE;
     }
 
@@ -628,21 +635,21 @@ static PyObject *pythonMode(PyObject *self, PyObject *args)
     if (PyArg_ParseTuple(args, "s", &str))
     {
         if (QString(str) == "node")
-            m_sceneView->actSceneModeNode->trigger();
+            sceneView->actSceneModeNode->trigger();
         else if (QString(str) == "edge")
-            m_sceneView->actSceneModeEdge->trigger();
+            sceneView->actSceneModeEdge->trigger();
         else if (QString(str) == "label")
-            m_sceneView->actSceneModeLabel->trigger();
+            sceneView->actSceneModeLabel->trigger();
         else if (QString(str) == "postprocessor")
             if (Util::scene()->sceneSolution()->isSolved())
-                m_sceneView->actSceneModePostprocessor->trigger();
+                sceneView->actSceneModePostprocessor->trigger();
         else
         {
             PyErr_SetString(PyExc_RuntimeError, QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString().c_str());
             return NULL;
         }
 
-        m_sceneView->doInvalidated();
+        sceneView->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -653,7 +660,7 @@ static PyObject *pythonPostprocessorMode(PyObject *self, PyObject *args)
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        m_sceneView->actSceneModePostprocessor->trigger();
+        sceneView->actSceneModePostprocessor->trigger();
     }
     else
     {
@@ -665,17 +672,17 @@ static PyObject *pythonPostprocessorMode(PyObject *self, PyObject *args)
     if (PyArg_ParseTuple(args, "s", &str))
     {
         if (QString(str) == "point")
-            m_sceneView->actPostprocessorModeLocalPointValue->trigger();
+            sceneView->actPostprocessorModeLocalPointValue->trigger();
         else if (QString(str) == "surface")
-            m_sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+            sceneView->actPostprocessorModeSurfaceIntegral->trigger();
         else if (QString(str) == "volume")
-            m_sceneView->actPostprocessorModeVolumeIntegral->trigger();
+            sceneView->actPostprocessorModeVolumeIntegral->trigger();
         else
         {
             PyErr_SetString(PyExc_RuntimeError, QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString().c_str());
             return NULL;
         }
-        m_sceneView->doInvalidated();
+        sceneView->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -686,7 +693,7 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        m_sceneView->actSceneModePostprocessor->trigger();
+        sceneView->actSceneModePostprocessor->trigger();
     }
     else
     {
@@ -720,7 +727,7 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        m_sceneView->actSceneModePostprocessor->trigger();
+        sceneView->actSceneModePostprocessor->trigger();
     }
     else
     {
@@ -729,14 +736,14 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
     }
 
     // set mode
-    m_sceneView->actSceneModePostprocessor->trigger();
-    m_sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+    sceneView->actSceneModePostprocessor->trigger();
+    sceneView->actPostprocessorModeSurfaceIntegral->trigger();
 
     python_int_array()
     {
         for (int i = 0; i < count; i++)
         {
-            m_sceneView->actSceneModeEdge->trigger();
+            sceneView->actSceneModeEdge->trigger();
             if (index[i] == INT_MIN)
                 continue;
             if ((index[i] >= 0) && index[i] < Util::scene()->edges.count())
@@ -771,7 +778,7 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        m_sceneView->actSceneModePostprocessor->trigger();
+        sceneView->actSceneModePostprocessor->trigger();
     }
     else
     {
@@ -780,12 +787,12 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
     }
 
     // set mode
-    m_sceneView->actSceneModePostprocessor->trigger();
-    m_sceneView->actPostprocessorModeVolumeIntegral->trigger();
+    sceneView->actSceneModePostprocessor->trigger();
+    sceneView->actPostprocessorModeVolumeIntegral->trigger();
 
     python_int_array()
     {
-        m_sceneView->actSceneModeLabel->trigger();
+        sceneView->actSceneModeLabel->trigger();
         for (int i = 0; i < count; i++)
         {
             if (index[i] == INT_MIN)
@@ -823,9 +830,9 @@ static PyObject *pythonShowGrid(PyObject *self, PyObject *args)
     bool show;
     if (PyArg_ParseTuple(args, "b", &show))
     {
-        m_sceneView->sceneViewSettings().showGrid = show;
+        sceneView->sceneViewSettings().showGrid = show;
     }
-    m_sceneView->doInvalidated();
+    sceneView->doInvalidated();
 
     Py_RETURN_NONE;
 }
@@ -836,9 +843,9 @@ static PyObject *pythonShowGeometry(PyObject *self, PyObject *args)
     bool show;
     if (PyArg_ParseTuple(args, "b", &show))
     {
-        m_sceneView->sceneViewSettings().showGeometry = show;
+        sceneView->sceneViewSettings().showGeometry = show;
     }
-    m_sceneView->doInvalidated();
+    sceneView->doInvalidated();
 
     Py_RETURN_NONE;
 }
@@ -849,9 +856,9 @@ static PyObject *pythonShowInitialMesh(PyObject *self, PyObject *args)
     bool show;
     if (PyArg_ParseTuple(args, "b", &show))
     {
-        m_sceneView->sceneViewSettings().showInitialMesh = show;
+        sceneView->sceneViewSettings().showInitialMesh = show;
     }
-    m_sceneView->doInvalidated();
+    sceneView->doInvalidated();
 
     Py_RETURN_NONE;
 }
@@ -862,9 +869,9 @@ static PyObject *pythonShowSolutionMesh(PyObject *self, PyObject *args)
     bool show;
     if (PyArg_ParseTuple(args, "b", &show))
     {
-        m_sceneView->sceneViewSettings().showSolutionMesh = show;
+        sceneView->sceneViewSettings().showSolutionMesh = show;
     }
-    m_sceneView->doInvalidated();
+    sceneView->doInvalidated();
 
     Py_RETURN_NONE;
 }
@@ -875,9 +882,9 @@ static PyObject *pythonShowContours(PyObject *self, PyObject *args)
     bool show;
     if (PyArg_ParseTuple(args, "b", &show))
     {
-        m_sceneView->sceneViewSettings().showContours = show;
+        sceneView->sceneViewSettings().showContours = show;
     }
-    m_sceneView->doInvalidated();
+    sceneView->doInvalidated();
 
     Py_RETURN_NONE;
 }
@@ -888,9 +895,9 @@ static PyObject *pythonShowVectors(PyObject *self, PyObject *args)
     bool show;
     if (PyArg_ParseTuple(args, "b", &show))
     {
-        m_sceneView->sceneViewSettings().showVectors = show;
+        sceneView->sceneViewSettings().showVectors = show;
     }
-    m_sceneView->doInvalidated();
+    sceneView->doInvalidated();
 
     Py_RETURN_NONE;
 }
@@ -906,7 +913,7 @@ static PyObject *pythonShowScalar(PyObject *self, PyObject *args)
         SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(QString(type));
         if (postprocessorShow != SCENEVIEW_POSTPROCESSOR_SHOW_UNDEFINED)
         {
-            m_sceneView->sceneViewSettings().postprocessorShow = postprocessorShow;
+            sceneView->sceneViewSettings().postprocessorShow = postprocessorShow;
         }
         else
         {
@@ -915,27 +922,27 @@ static PyObject *pythonShowScalar(PyObject *self, PyObject *args)
         }
 
         // variable
-        m_sceneView->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
-        if (m_sceneView->sceneViewSettings().scalarPhysicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED)
+        sceneView->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
+        if (sceneView->sceneViewSettings().scalarPhysicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED)
         {
             PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field variable '%1' is not defined.").arg(QString(variable)).toStdString().c_str());
             return NULL;
         }
-        if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable))
+        if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView->sceneViewSettings().scalarPhysicFieldVariable))
         {
             PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString().c_str());
             return NULL;
         }
 
         // variable component
-        m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(QString(component));
-        if (m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED)
+        sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+        if (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED)
         {
             PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString().c_str());
             return NULL;
         }
-        if ((isPhysicFieldVariableScalar(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable)) &&
-            (m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp != PHYSICFIELDVARIABLECOMP_SCALAR))
+        if ((isPhysicFieldVariableScalar(sceneView->sceneViewSettings().scalarPhysicFieldVariable)) &&
+            (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp != PHYSICFIELDVARIABLECOMP_SCALAR))
         {
             PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field variable is scalar variable.").toStdString().c_str());
             return NULL;
@@ -944,17 +951,17 @@ static PyObject *pythonShowScalar(PyObject *self, PyObject *args)
         // range
         if (rangemin != INT_MIN)
         {
-            m_sceneView->sceneViewSettings().scalarRangeAuto = false;
-            m_sceneView->sceneViewSettings().scalarRangeMin = rangemin;
+            sceneView->sceneViewSettings().scalarRangeAuto = false;
+            sceneView->sceneViewSettings().scalarRangeMin = rangemin;
         }
         else
         {
-            m_sceneView->sceneViewSettings().scalarRangeAuto = true;
+            sceneView->sceneViewSettings().scalarRangeAuto = true;
         }
         if (rangemax != INT_MIN)
-            m_sceneView->sceneViewSettings().scalarRangeMax = rangemax;
+            sceneView->sceneViewSettings().scalarRangeMax = rangemax;
     }
-    m_sceneView->doInvalidated();
+    sceneView->doInvalidated();
 
     Py_RETURN_NONE;
 }
@@ -967,7 +974,7 @@ static PyObject *pythonSetTimeStep(PyObject *self, PyObject *args)
     {
         if (Util::scene()->sceneSolution()->isSolved())
         {
-            m_sceneView->actSceneModePostprocessor->trigger();
+            sceneView->actSceneModePostprocessor->trigger();
         }
         else
         {
@@ -1005,7 +1012,7 @@ static PyObject *pythonSaveImage(PyObject *self, PyObject *args)
     char *filename;
     if (PyArg_ParseTuple(args, "s", &filename))
     {
-        m_sceneView->saveImageToFile(QString(filename));
+        sceneView->saveImageToFile(QString(filename));
 
         Py_RETURN_NONE;
     }
@@ -1059,137 +1066,136 @@ static PyMethodDef pythonMethods[] =
     {"showgeometry", pythonShowGeometry, METH_VARARGS, "showgeometry(show = {true, false})"},
     {"showinitialmesh", pythonShowInitialMesh, METH_VARARGS, "showinitialmesh(show = {true, false})"},
     {"showsolutionmesh", pythonShowSolutionMesh, METH_VARARGS, "showsolutionmesh(show = {true, false})"},
-    {"showcontours", pythonShowContours, METH_VARARGS, "showcontours(show = {true, false})"},
-    {"showvectors", pythonShowVectors, METH_VARARGS, "showvectors(show = {true, false})"},
-    {"showscalar", pythonShowScalar, METH_VARARGS, "showscalar(type = { \"none\", \"scalar\", \"scalar3d\", \"order\" }, variable, component, rangemin, rangemax)"},
-    {"settimestep", pythonSetTimeStep, METH_VARARGS, "settimestep(level)"},
-    {"timestepcount", pythonTimeStepCount, METH_VARARGS, "timestepcount()"},
-    {"saveimage", pythonSaveImage, METH_VARARGS, "saveimage(filename)"},
-    {NULL, NULL, 0, NULL}
+{"showcontours", pythonShowContours, METH_VARARGS, "showcontours(show = {true, false})"},
+{"showvectors", pythonShowVectors, METH_VARARGS, "showvectors(show = {true, false})"},
+{"showscalar", pythonShowScalar, METH_VARARGS, "showscalar(type = { \"none\", \"scalar\", \"scalar3d\", \"order\" }, variable, component, rangemin, rangemax)"},
+{"settimestep", pythonSetTimeStep, METH_VARARGS, "settimestep(level)"},
+{"timestepcount", pythonTimeStepCount, METH_VARARGS, "timestepcount()"},
+{"saveimage", pythonSaveImage, METH_VARARGS, "saveimage(filename)"},
+{NULL, NULL, 0, NULL}
 };
 
-class PythonEngine
+PythonEngine::PythonEngine()
 {
-public:
-    PythonEngine()
+    // init python
+    Py_Initialize();
+
+    // read functions
+    m_functions = readFileContent(QApplication::applicationDirPath() + "/functions.py");
+
+    m_dict = PyDict_New();
+    PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
+
+    // agros module
+    Py_InitModule("agros2d", pythonMethods);
+
+    // stdout
+    PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
+
+    // functions.py
+    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+}
+
+PythonEngine::~PythonEngine()
+{
+    // finalize and garbage python
+    Py_DECREF(m_dict);
+
+    if (Py_IsInitialized())
+        Py_Finalize();
+}
+
+void PythonEngine::setSceneView(SceneView *sceneView)
+{
+    m_sceneView = sceneView;
+}
+
+ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, const QString &fileName)
+{
+    sceneView = m_sceneView;
+
+    ScriptResult scriptResult;
+
+    // startup script
+    PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+
+    // add path
+    // if (!fileName.isEmpty())
+    //    exp.append("sys.path.append(\"" + QFileInfo(fileName).absolutePath() + "\")");
+
+    QString exp;
+    if (isExpression)
+        exp.append("result = " +  script + "\n");
+    else
+        exp.append(script + "\n");
+
+    // remove path
+    // if (!fileName.isEmpty())
+    //    exp.append("sys.path.remove(\"" + QFileInfo(fileName).absolutePath() + "\")");
+
+    PyObject *output = PyRun_String(exp.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+
+    if (output)
     {
-        // init python
-        Py_Initialize();
-
-        // read functions
-        m_functions = readFileContent(QApplication::applicationDirPath() + "/functions.py");
-
-        m_dict = PyDict_New();
-        PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
-
-        // agros module
-        Py_InitModule("agros2d", pythonMethods);
-
-        // stdout
-        PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
-
-        // functions.py
-        PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-    }
-
-    ~PythonEngine()
-    {
-        // finalize and garbage python
-        Py_DECREF(m_dict);
-
-        if (Py_IsInitialized())
-            Py_Finalize();
-    }
-
-    ScriptResult runPython(const QString &script, bool isExpression = false, const QString &fileName = "")
-    {
-        ScriptResult scriptResult;
-
-        // startup script
-        PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-
-        // add path
-        // if (!fileName.isEmpty())
-        //    exp.append("sys.path.append(\"" + QFileInfo(fileName).absolutePath() + "\")");
-
-        QString exp;
+        // parse result
         if (isExpression)
-            exp.append("result = " +  script + "\n");
-        else
-            exp.append(script + "\n");
-
-        // remove path
-        // if (!fileName.isEmpty())
-        //    exp.append("sys.path.remove(\"" + QFileInfo(fileName).absolutePath() + "\")");
-
-        PyObject *output = PyRun_String(exp.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-
-        if (output)
         {
-            // parse result
-            if (isExpression)
+            PyObject *result = PyDict_GetItemString(m_dict, "result");
+            if (result)
             {
-                PyObject *result = PyDict_GetItemString(m_dict, "result");
-                if (result)
-                {
-                    Py_INCREF(result);
-                    double value = 0;
-                    PyArg_Parse(result, "d", &value);
-                    scriptResult.value = value;
-                    Py_DECREF(result);
-                }
+                Py_INCREF(result);
+                double value = 0;
+                PyArg_Parse(result, "d", &value);
+                scriptResult.value = value;
+                Py_DECREF(result);
             }
-
-            // read stdout
-            scriptResult.text = readFileContent(tempProblemDir() + "/stdout.txt");
-            QFile::remove(tempProblemDir() + "/stdout.txt");
-
-            // error
-            scriptResult.isError = false;
         }
-        else
-        {
-            scriptResult.value = 0.0;
-            scriptResult.isError = true;
 
-            PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
-            PyErr_Fetch(&type, &value, &traceback);
+        // read stdout
+        scriptResult.text = readFileContent(tempProblemDir() + "/stdout.txt");
+        QFile::remove(tempProblemDir() + "/stdout.txt");
 
-            scriptResult.text = "Python error: ";
-            if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
-            {
-                Py_INCREF(type);
-                scriptResult.text.append(PyString_AsString(str));
-                if (type) Py_DECREF(type);
-            }
-            else
-            {
-                scriptResult.text.append("<unknown exception type> ");
-            }
-
-            if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
-            {
-                Py_INCREF(value);
-                scriptResult.text.append(": ");
-                scriptResult.text.append(PyString_AsString(value));
-                if (value) Py_DECREF(value);
-            }
-            else
-            {
-                scriptResult.text.append("<unknown exception date> ");
-            }
-
-            if (str) Py_DECREF(str);
-        }
-        Py_DECREF(Py_None);
-
-        return scriptResult;
+        // error
+        scriptResult.isError = false;
     }
+    else
+    {
+        scriptResult.value = 0.0;
+        scriptResult.isError = true;
 
-private:
-    PyObject *m_dict;
-    QString m_functions;
-};
+        PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
+        PyErr_Fetch(&type, &value, &traceback);
 
-static PythonEngine *pythonEngine;
+        scriptResult.text = "Python error: ";
+        if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
+        {
+            Py_INCREF(type);
+            scriptResult.text.append(PyString_AsString(str));
+            if (type) Py_DECREF(type);
+        }
+        else
+        {
+            scriptResult.text.append("<unknown exception type> ");
+        }
+
+        if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
+        {
+            Py_INCREF(value);
+            scriptResult.text.append(": ");
+            scriptResult.text.append(PyString_AsString(value));
+            if (value) Py_DECREF(value);
+        }
+        else
+        {
+            scriptResult.text.append("<unknown exception date> ");
+        }
+
+        if (str) Py_DECREF(str);
+    }
+    Py_DECREF(Py_None);
+
+    return scriptResult;
+}
+
+
 

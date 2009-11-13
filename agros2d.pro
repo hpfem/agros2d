@@ -140,6 +140,7 @@ HEADERS += src/util.h \
     src/volumeintegralview.h \
     src/mainwindow.h \
     src/scripteditordialog.h \
+    src/scripteditorcommandpython.h \
     src/scripteditorhighlighter.h \
     src/solverdialog.h \
     src/scenebasic.h \
