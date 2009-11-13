@@ -1,12 +1,11 @@
 #include "scripteditorcommandpython.h"
 
 #include <Python.h>
+#include "python/agros2d.c"
 
 #include "util.h"
 #include "scene.h"
-
 #include "scenemarker.h"
-
 #include "scripteditordialog.h"
 
 SceneView *sceneView = NULL;
@@ -37,6 +36,21 @@ const int count = 60; \
 {    
     return Py_BuildValue("s", QApplication::applicationVersion().toStdString().c_str());
 }
+
+// new
+
+void pythonMessage(char *str)
+{
+    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Message"), QString(str));
+}
+
+// addnode(x, y)
+void pythonAddNode(double x, double y)
+{
+    Util::scene()->addNode(new SceneNode(Point(x, y)));
+}
+
+// old
 
 // message(string)
 static PyObject *pythonMessage(PyObject *self, PyObject *args)
@@ -1066,12 +1080,12 @@ static PyMethodDef pythonMethods[] =
     {"showgeometry", pythonShowGeometry, METH_VARARGS, "showgeometry(show = {true, false})"},
     {"showinitialmesh", pythonShowInitialMesh, METH_VARARGS, "showinitialmesh(show = {true, false})"},
     {"showsolutionmesh", pythonShowSolutionMesh, METH_VARARGS, "showsolutionmesh(show = {true, false})"},
-{"showcontours", pythonShowContours, METH_VARARGS, "showcontours(show = {true, false})"},
-{"showvectors", pythonShowVectors, METH_VARARGS, "showvectors(show = {true, false})"},
-{"showscalar", pythonShowScalar, METH_VARARGS, "showscalar(type = { \"none\", \"scalar\", \"scalar3d\", \"order\" }, variable, component, rangemin, rangemax)"},
-{"settimestep", pythonSetTimeStep, METH_VARARGS, "settimestep(level)"},
-{"timestepcount", pythonTimeStepCount, METH_VARARGS, "timestepcount()"},
-{"saveimage", pythonSaveImage, METH_VARARGS, "saveimage(filename)"},
+    {"showcontours", pythonShowContours, METH_VARARGS, "showcontours(show = {true, false})"},
+    {"showvectors", pythonShowVectors, METH_VARARGS, "showvectors(show = {true, false})"},
+    {"showscalar", pythonShowScalar, METH_VARARGS, "showscalar(type = { \"none\", \"scalar\", \"scalar3d\", \"order\" }, variable, component, rangemin, rangemax)"},
+    {"settimestep", pythonSetTimeStep, METH_VARARGS, "settimestep(level)"},
+    {"timestepcount", pythonTimeStepCount, METH_VARARGS, "timestepcount()"},
+    {"saveimage", pythonSaveImage, METH_VARARGS, "saveimage(filename)"},
 {NULL, NULL, 0, NULL}
 };
 
@@ -1087,7 +1101,8 @@ PythonEngine::PythonEngine()
     PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
 
     // agros module
-    Py_InitModule("agros2d", pythonMethods);
+    Py_InitModule("agros2old", pythonMethods);
+    Py_InitModule("agros2d", __pyx_methods);
 
     // stdout
     PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
