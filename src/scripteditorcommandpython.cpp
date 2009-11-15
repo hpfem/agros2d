@@ -10,11 +10,6 @@
 
 SceneView *sceneView = NULL;
 
-double nadruhou(double x)
-{
-    return (x*x);
-}
-
 // FIX *****************************************************************************************************************************************************************************
 // Terible, is it possible to write this code better???
 #define python_int_array() \
@@ -34,14 +29,162 @@ const int count = 60; \
                              // version()
                              static PyObject *pythonVersion(PyObject *self, PyObject *args)
 {    
-    return Py_BuildValue("s", QApplication::applicationVersion().toStdString().c_str());
+    return Py_BuildValue("s", QApplication::applicationVersion().toStdString());
 }
 
-// new
-
+// message(string)
 void pythonMessage(char *str)
 {
     QMessageBox::information(QApplication::activeWindow(), QObject::tr("Message"), QString(str));
+}
+
+// variable = input(string)
+char *pythonInput(char *str)
+{
+    QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString(str));
+    return const_cast<char*>(text.toStdString().c_str());
+}
+
+// version()
+char *pythonVersion()
+{
+    return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
+}
+
+// meshfilename()
+char *pythonMeshFileName()
+{
+    if (Util::scene()->sceneSolution()->isMeshed())
+    {
+        return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
+    }
+    else
+        throw out_of_range(QObject::tr("Problem is not meshed.").toStdString());
+}
+
+// solutionfilename()
+char *pythonSolutionFileName()
+{
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        char *fileName = const_cast<char*>(QString(tempProblemFileName() + ".sln").toStdString().c_str());
+        Util::scene()->sceneSolution()->sln()->save(fileName);
+        return fileName;
+    }
+    else
+        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
+}
+
+Solution *pythonSolutionObject()
+{
+    if (Util::scene()->sceneSolution()->isSolved())
+        return Util::scene()->sceneSolution()->sln();
+    else
+        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
+}
+
+// quit()
+void pythonQuit()
+{
+    QApplication::exit(0);
+}
+
+// newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition)
+void pythonNewDocument(char *name, char *type, char *physicfield,
+                       int numberofrefinements, int polynomialorder, char *adaptivitytype,
+                       double adaptivitysteps, double adaptivitytolerance,
+                       double frequency,
+                       char *analysistype, double timestep, double totaltime, double initialcondition)
+{   
+    Util::scene()->clear();
+
+    Util::scene()->problemInfo()->name = QString(name);
+
+    // type
+    Util::scene()->problemInfo()->problemType = problemTypeFromStringKey(QString(type));
+    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_UNDEFINED)
+        throw out_of_range(QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString());
+
+    // physicfield
+    PhysicField physicField = physicFieldFromStringKey(QString(physicfield));
+    if (physicField != PHYSICFIELD_UNDEFINED)
+        Util::scene()->problemInfo()->setHermes(hermesFieldFactory(physicField));
+    else
+        throw out_of_range(QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString());
+
+    // numberofrefinements
+    if (numberofrefinements >= 0)
+        Util::scene()->problemInfo()->numberOfRefinements = numberofrefinements;
+    else
+        throw out_of_range(QObject::tr("Number of refinements '%1' is out of range.").arg(numberofrefinements).toStdString());
+
+    // polynomialorder
+    if (polynomialorder >= 1 && polynomialorder <= 10)
+        Util::scene()->problemInfo()->polynomialOrder = polynomialorder;
+    else
+        throw out_of_range(QObject::tr("Polynomial order '%1' is out of range.").arg(polynomialorder).toStdString());
+
+    // adaptivitytype
+    Util::scene()->problemInfo()->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
+    if (Util::scene()->problemInfo()->adaptivityType == ADAPTIVITYTYPE_UNDEFINED)
+        throw out_of_range(QObject::tr("Adaptivity type '%1' is not suported.").arg(QString(adaptivitytype)).toStdString());
+
+    // adaptivitysteps
+    if (adaptivitysteps >= 0)
+        Util::scene()->problemInfo()->adaptivitySteps = adaptivitysteps;
+    else
+        throw out_of_range(QObject::tr("Adaptivity step '%1' is out of range.").arg(adaptivitysteps).toStdString());
+
+    // adaptivitytolerance
+    if (adaptivitytolerance >= 0)
+        Util::scene()->problemInfo()->adaptivityTolerance = adaptivitytolerance;
+    else
+        throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
+
+    // frequency
+    if (Util::scene()->problemInfo()->physicField() == PHYSICFIELD_HARMONICMAGNETIC)
+    {
+        if (frequency >= 0)
+            Util::scene()->problemInfo()->frequency = frequency;
+        else
+            throw out_of_range(QObject::tr("Frequency can be used only for harmonic magnetic problems.").toStdString());
+    }
+
+    // analysis type
+    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_UNDEFINED)
+        throw out_of_range(QObject::tr("Analysis type '%1' is not suported").arg(QString(adaptivitytype)).toStdString());
+
+    // transient timestep
+    if (timestep > 0)
+        Util::scene()->problemInfo()->timeStep = timestep;
+    else if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+        throw out_of_range(QObject::tr("Time step must be positive.").toStdString());
+
+    // transient timetotal
+    if (totaltime > 0)
+        Util::scene()->problemInfo()->timeTotal = totaltime;
+    else if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+        throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
+
+    // transient initial condition
+    Util::scene()->problemInfo()->initialCondition = initialcondition;
+
+    // invalidate
+    sceneView->doDefaults();
+    Util::scene()->refresh();
+}
+
+// opendocument(filename)
+void pythonOpenDocument(char *str)
+{
+    Util::scene()->readFromFile(QString(str));
+}
+
+// savedocument(filename)
+void pythonSaveDocument(char *str)
+{
+    Util::scene()->writeToFile(QString(str));
 }
 
 // addnode(x, y)
@@ -50,266 +193,31 @@ void pythonAddNode(double x, double y)
     Util::scene()->addNode(new SceneNode(Point(x, y)));
 }
 
-// old
-
-// message(string)
-static PyObject *pythonMessage(PyObject *self, PyObject *args)
-{
-    char *str;
-    if (PyArg_ParseTuple(args, "s", &str))
-    {
-        QMessageBox::information(QApplication::activeWindow(), QObject::tr("Message"), QString(str));
-    }
-
-    Py_RETURN_NONE;
-}
-
-// variable = input(string)
-static PyObject *pythonInput(PyObject *self, PyObject *args)
-{
-    char *str;
-    if (PyArg_ParseTuple(args, "s", &str))
-    {
-        QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString(str));
-        return Py_BuildValue("s", text.toStdString().c_str());
-    }
-
-    Py_RETURN_NONE;
-}
-
-// quit()
-static PyObject *pythonQuit(PyObject *self, PyObject *args)
-{
-    QApplication::exit(0);
-
-    Py_RETURN_NONE;
-}
-
-// newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition)
-static PyObject *pythonNewDocument(PyObject *self, PyObject *args)
-{
-    int numberofrefinements = 0, polynomialorder = 1, adaptivitysteps = 0;
-    double adaptivitytolerance = 0.0, frequency = 0.0, timestep = 0.0, totaltime = 0.0, initialcondition = 0.0;
-    char *name, *type, *physicfield;
-    char *adaptivitytype = "disabled"; // const_cast<char*>(adaptivityTypeToStringKey(ADAPTIVITYTYPE_NONE).toStdString().c_str());
-    char *analysistype = "steadystate"; // const_cast<char*>(analysisTypeToStringKey(ANALYSISTYPE_STEADYSTATE).toStdString().c_str());
-    if (PyArg_ParseTuple(args, "sss|iisiddsddd", &name, &type, &physicfield,
-                         &numberofrefinements, &polynomialorder,
-                         &adaptivitytype, &adaptivitysteps, &adaptivitytolerance,
-                         &frequency, &analysistype, &timestep, &totaltime, &initialcondition))
-    {
-        Util::scene()->clear();
-
-        Util::scene()->problemInfo()->name = QString(name);
-
-        // type
-        Util::scene()->problemInfo()->problemType = problemTypeFromStringKey(QString(type));
-        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_UNDEFINED)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString().c_str());
-            return NULL;
-        }
-
-        // physicfield
-        PhysicField physicField = physicFieldFromStringKey(QString(physicfield));
-        if (physicField != PHYSICFIELD_UNDEFINED)
-        {
-            Util::scene()->problemInfo()->setHermes(hermesFieldFactory(physicField));
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString().c_str());
-            return NULL;
-        }
-
-        // numberofrefinements
-        if (numberofrefinements >= 0)
-        {
-            Util::scene()->problemInfo()->numberOfRefinements = numberofrefinements;
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Number of refinements '%1' is out of range.").arg(numberofrefinements).toStdString().c_str());
-            return NULL;
-        }
-
-        // polynomialorder
-        if (polynomialorder >= 1 && polynomialorder <= 10)
-        {
-            Util::scene()->problemInfo()->polynomialOrder = polynomialorder;
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Polynomial order '%1' is out of range.").arg(polynomialorder).toStdString().c_str());
-            return NULL;
-        }
-
-        // adaptivitytype
-        Util::scene()->problemInfo()->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
-        if (Util::scene()->problemInfo()->adaptivityType == ADAPTIVITYTYPE_UNDEFINED)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Adaptivity type '%1' is not suported.").arg(QString(adaptivitytype)).toStdString().c_str());
-            return NULL;
-        }
-
-        // adaptivitysteps
-        if (adaptivitysteps >= 0)
-        {
-            Util::scene()->problemInfo()->adaptivitySteps = adaptivitysteps;
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Adaptivity step '%1' is out of range.").arg(adaptivitysteps).toStdString().c_str());
-            return NULL;
-        }
-
-        // adaptivitytolerance
-        if (adaptivitytolerance >= 0)
-        {
-            Util::scene()->problemInfo()->adaptivityTolerance = adaptivitytolerance;
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString().c_str());
-            return NULL;
-        }
-
-        // frequency
-        if (Util::scene()->problemInfo()->physicField() == PHYSICFIELD_HARMONICMAGNETIC)
-        {
-            if (frequency >= 0)
-            {
-                Util::scene()->problemInfo()->frequency = frequency;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Frequency can be used only for harmonic magnetic problems.").toStdString().c_str());
-                return NULL;
-            }
-        }
-
-        // analysis type
-        Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
-        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_UNDEFINED)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Analysis type '%1' is not suported").arg(QString(adaptivitytype)).toStdString().c_str());
-            return NULL;
-        }
-
-        // transient timestep
-        if (timestep > 0)
-        {
-            Util::scene()->problemInfo()->timeStep = timestep;
-        }
-        else if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Time step must be positive.").toStdString().c_str());
-            return NULL;
-        }
-
-        // transient timetotal
-        if (totaltime > 0)
-        {
-            Util::scene()->problemInfo()->timeTotal = totaltime;
-        }
-        else if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Total time must be positive.").toStdString().c_str());
-            return NULL;
-        }
-
-        // transient initial condition
-        Util::scene()->problemInfo()->initialCondition = initialcondition;
-
-        // invalidate
-        sceneView->doDefaults();
-        Util::scene()->refresh();
-
-        Py_RETURN_NONE;
-    }
-
-    return NULL;
-}
-
-// opendocument(filename)
-static PyObject *pythonOpenDocument(PyObject *self, PyObject *args)
-{
-    char *str;
-    if (PyArg_ParseTuple(args, "s", &str))
-    {
-        Util::scene()->readFromFile(QString(str));
-        Py_RETURN_NONE;
-    }
-    return NULL;
-}
-
-// savedocument(filename)
-static PyObject *pythonSaveDocument(PyObject *self, PyObject *args)
-{
-    char *str;
-    if (PyArg_ParseTuple(args, "s", &str))
-    {
-        Util::scene()->writeToFile(QString(str));
-        Py_RETURN_NONE;
-    }
-    return NULL;
-}
-
-// addnode(x, y)
-static PyObject *pythonAddNode(PyObject *self, PyObject *args)
-{
-    double x, y;
-    if (PyArg_ParseTuple(args, "dd", &x, &y))
-    {
-        Util::scene()->addNode(new SceneNode(Point(x, y)));
-        Py_RETURN_NONE;
-    }
-    return NULL;
-}
-
 // addedge(x1, y1, x2, y2, angle = 0, marker = "none")
-static PyObject *pythonAddEdge(PyObject *self, PyObject *args)
+void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker)
 {
-    double x1, y1, x2, y2, angle = 0.0;
-    char *marker = "none";
-    if (PyArg_ParseTuple(args, "dddd|ds", &x1, &y1, &x2, &y2, &angle, &marker))
-    {
-        SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(QString(marker));
-        if (!edgeMarker)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString().c_str());
-            return NULL;
-        }
+    SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(QString(marker));
+    if (!edgeMarker)
+        throw out_of_range(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
 
-        // start node
-        SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
-        // end node
-        SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
+    // start node
+    SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
+    // end node
+    SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
 
-        Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, edgeMarker, angle));
-        Py_RETURN_NONE;
-    }
-    return NULL;
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, edgeMarker, angle));
 }
+
 // addlabel(x, y, area = 0, marker = "none")
-static PyObject *pythonAddLabel(PyObject *self, PyObject *args)
+void pythonAddLabel(double x, double y, double area, char *marker)
 {
-    double x, y, area = 0.0;
-    char *marker = "none";
-    if (PyArg_ParseTuple(args, "dd|ds", &x, &y, &area, &marker))
-    {
-        SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(QString(marker));
-        if (!labelMarker)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString().c_str());
-            return NULL;
-        }
+    SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(QString(marker));
+    if (!labelMarker)
+        throw out_of_range(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
 
-        Util::scene()->addLabel(new SceneLabel(Point(x, y), labelMarker, area));
-        Py_RETURN_NONE;
-    }
-    return NULL;
+    Util::scene()->addLabel(new SceneLabel(Point(x, y), labelMarker, area));
 }
+
 
 // addboundary(name, type, value, ...)
 static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
@@ -380,14 +288,13 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 }
 
 // selectnone()
-static PyObject *pythonSelectNone(PyObject *self, PyObject *args)
+void pythonSelectNone()
 {
     Util::scene()->selectNone();
-    Py_RETURN_NONE;
 }
 
 // selectall()
-static PyObject *pythonSelectAll(PyObject *self, PyObject *args)
+void pythonSelectAll()
 {
     if (sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
     {
@@ -404,7 +311,6 @@ static PyObject *pythonSelectAll(PyObject *self, PyObject *args)
         Util::scene()->selectAll(sceneView->sceneMode());
     }
     sceneView->doInvalidated();
-    Py_RETURN_NONE;
 }
 
 // selectnode(index, ...)
@@ -436,20 +342,14 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
 }
 
 // selectnodepoint(x, y)
-static PyObject *pythonSelectNodePoint(PyObject *self, PyObject *args)
+void pythonSelectNodePoint(double x, double y)
 {
-    double x, y;
-    if (PyArg_ParseTuple(args, "dd", &x, &y))
+    SceneNode *node = sceneView->findClosestNode(Point(x, y));
+    if (node)
     {
-        SceneNode *node = sceneView->findClosestNode(Point(x, y));
-        if (node)
-        {
-            node->isSelected = true;
-            sceneView->doInvalidated();
-            Py_RETURN_NONE;
-        }
+        node->isSelected = true;
+        sceneView->doInvalidated();
     }
-    return NULL;
 }
 
 // selectedge(index, ...)
@@ -481,21 +381,14 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
 }
 
 // selectedgepoint(x, y)
-static PyObject *pythonSelectEdgePoint(PyObject *self, PyObject *args)
-{
-    double x, y;
-    if (PyArg_ParseTuple(args, "dd", &x, &y))
+void pythonSelectEdgePoint(double x, double y)
+{    
+    SceneEdge *edge = sceneView->findClosestEdge(Point(x, y));
+    if (edge)
     {
-        SceneEdge *edge = sceneView->findClosestEdge(Point(x, y));
-        if (edge)
-        {
-            edge->isSelected = true;
-            sceneView->doInvalidated();
-            Py_RETURN_NONE;
-        }
-
+        edge->isSelected = true;
+        sceneView->doInvalidated();
     }
-    return NULL;
 }
 
 // selectlabel(index, ...)
@@ -526,180 +419,118 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
 }
 
 // selectlabelpoint(x, y)
-static PyObject *pythonSelectLabelPoint(PyObject *self, PyObject *args)
+void pythonSelectLabelPoint(double x, double y)
 {
-    double x, y;
-    if (PyArg_ParseTuple(args, "dd", &x, &y))
+    SceneLabel *label = sceneView->findClosestLabel(Point(x, y));
+    if (label)
     {
-        SceneLabel *label = sceneView->findClosestLabel(Point(x, y));
-        if (label)
-        {
-            label->isSelected = true;
-            sceneView->doInvalidated();
-            Py_RETURN_NONE;
-        }
+        label->isSelected = true;
+        sceneView->doInvalidated();
     }
-    return NULL;
 }
 
 // rotateselection(x, y, angle, copy = {true, false})
-static PyObject *pythonRotateSelection(PyObject *self, PyObject *args)
+void pythonRotateSelection(double x, double y, double angle, bool copy)
 {
-    double x, y, angle;
-    bool copy = false;
-    if (PyArg_ParseTuple(args, "ddd|b", &x, &y, &angle, &copy))
-    {
-        Util::scene()->transformRotate(Point(x, y), angle, copy);
-        sceneView->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    return NULL;
+    Util::scene()->transformRotate(Point(x, y), angle, copy);
+    sceneView->doInvalidated();
 }
 
 // scaleselection(x, y, scale, copy = {true, false})
-static PyObject *pythonScaleSelection(PyObject *self, PyObject *args)
+void pythonScaleSelection(double x, double y, double scale, bool copy)
 {
-    double x, y, scale;
-    bool copy = false;
-    if (PyArg_ParseTuple(args, "ddd|b", &x, &y, &scale, &copy))
-    {
-        Util::scene()->transformScale(Point(x, y), scale, copy);
-        sceneView->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    return NULL;
+    Util::scene()->transformScale(Point(x, y), scale, copy);
+    sceneView->doInvalidated();
 }
 
 // moveselection(dx, dy, copy = {true, false})
-static PyObject *pythonMoveSelection(PyObject *self, PyObject *args)
+void pythonMoveSelection(double dx, double dy, bool copy)
 {
-    double dx, dy;
-    bool copy = false;
-    if (PyArg_ParseTuple(args, "dd|b", &dx, &dy, &copy))
-    {
-        Util::scene()->transformTranslate(Point(dx, dy), copy);
-        sceneView->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    return NULL;
+    Util::scene()->transformTranslate(Point(dx, dy), copy);
+    sceneView->doInvalidated();
 }
 
 // deleteselection()
-static PyObject *pythonDeleteSelection(PyObject *self, PyObject *args)
+void pythonDeleteSelection()
 {
     Util::scene()->deleteSelected();
-    Py_RETURN_NONE;
 }
 
 // mesh()
-static PyObject *pythonMesh(PyObject *self, PyObject *args)
+void pythonMesh()
 {
     Util::scene()->createMeshAndSolve(SOLVER_MESH);
     Util::scene()->refresh();
-    Py_RETURN_NONE;
 }
 
 // solve()
-static PyObject *pythonSolve(PyObject *self, PyObject *args)
+void pythonSolve()
 {
     Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
     Util::scene()->refresh();
     sceneView->actSceneModePostprocessor->trigger();
-    Py_RETURN_NONE;
 }
 
 // zoombestfit()
-static PyObject *pythonZoomBestFit(PyObject *self, PyObject *args)
+void pythonZoomBestFit()
 {
     sceneView->doZoomBestFit();
-    Py_RETURN_NONE;
 }
 
 // zoomin()
-static PyObject *pythonZoomIn(PyObject *self, PyObject *args)
+void pythonZoomIn()
 {
     sceneView->doZoomIn();
-    Py_RETURN_NONE;
 }
 
 // zoomout()
-static PyObject *pythonZoomOut(PyObject *self, PyObject *args)
+void pythonZoomOut()
 {
     sceneView->doZoomOut();
-    Py_RETURN_NONE;
 }
 
 // zoomregion(x1, y1, x2, y2)
-static PyObject *pythonZoomRegion(PyObject *self, PyObject *args)
+void pythonZoomRegion(double x1, double y1, double x2, double y2)
 {
-    double x1, y1, x2, y2;
-    if (PyArg_ParseTuple(args, "dddd", &x1, &y1, &x2, &y2))
-    {
-        sceneView->doZoomRegion(Point(x1, y1), Point(x2, y2));
-        Py_RETURN_NONE;
-    }
-
-    return NULL;
+    sceneView->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 // mode(mode = {"node", "edge", "label", "postprocessor"})
-static PyObject *pythonMode(PyObject *self, PyObject *args)
+void pythonMode(char *str)
 {
-    char *str;
-    if (PyArg_ParseTuple(args, "s", &str))
-    {
-        if (QString(str) == "node")
-            sceneView->actSceneModeNode->trigger();
-        else if (QString(str) == "edge")
-            sceneView->actSceneModeEdge->trigger();
-        else if (QString(str) == "label")
-            sceneView->actSceneModeLabel->trigger();
-        else if (QString(str) == "postprocessor")
-            if (Util::scene()->sceneSolution()->isSolved())
-                sceneView->actSceneModePostprocessor->trigger();
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString().c_str());
-            return NULL;
-        }
+    if (QString(str) == "node")
+        sceneView->actSceneModeNode->trigger();
+    else if (QString(str) == "edge")
+        sceneView->actSceneModeEdge->trigger();
+    else if (QString(str) == "label")
+        sceneView->actSceneModeLabel->trigger();
+    else if (QString(str) == "postprocessor")
+        if (Util::scene()->sceneSolution()->isSolved())
+            sceneView->actSceneModePostprocessor->trigger();
+    else
+        throw out_of_range(QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString());
 
-        sceneView->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    return NULL;
+    sceneView->doInvalidated();
 }
 
 // postprocessormode(mode = {"point", "surface", "volume"})
-static PyObject *pythonPostprocessorMode(PyObject *self, PyObject *args)
+void pythonPostprocessorMode(char *str)
 {
     if (Util::scene()->sceneSolution()->isSolved())
-    {
         sceneView->actSceneModePostprocessor->trigger();
-    }
     else
-    {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem is not solved.").toStdString().c_str());
-        return NULL;
-    }
+        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
 
-    char *str;
-    if (PyArg_ParseTuple(args, "s", &str))
-    {
-        if (QString(str) == "point")
-            sceneView->actPostprocessorModeLocalPointValue->trigger();
-        else if (QString(str) == "surface")
-            sceneView->actPostprocessorModeSurfaceIntegral->trigger();
-        else if (QString(str) == "volume")
-            sceneView->actPostprocessorModeVolumeIntegral->trigger();
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString().c_str());
-            return NULL;
-        }
-        sceneView->doInvalidated();
-        Py_RETURN_NONE;
-    }
-    return NULL;
+    if (QString(str) == "point")
+        sceneView->actPostprocessorModeLocalPointValue->trigger();
+    else if (QString(str) == "surface")
+        sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+    else if (QString(str) == "volume")
+        sceneView->actPostprocessorModeVolumeIntegral->trigger();
+    else
+        throw out_of_range(QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString());
+
+    sceneView->doInvalidated();
 }
 
 // result = pointresult(x, y)
@@ -838,256 +669,134 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
     return NULL;
 }
 
-// showgrid(show = {true, false})
-static PyObject *pythonShowGrid(PyObject *self, PyObject *args)
+// showscalar(type = { "none", "scalar", "scalar3d", "order" }, variable, component, rangemin, rangemax)
+void pythonShowScalar(char *type, char *variable, char *component, int rangemin, int rangemax)
 {
-    bool show;
-    if (PyArg_ParseTuple(args, "b", &show))
-    {
-        sceneView->sceneViewSettings().showGrid = show;
-    }
-    sceneView->doInvalidated();
+    // type
+    SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(QString(type));
+    if (postprocessorShow != SCENEVIEW_POSTPROCESSOR_SHOW_UNDEFINED)
+        sceneView->sceneViewSettings().postprocessorShow = postprocessorShow;
+    else
+        throw out_of_range(QObject::tr("View type '%1' is not implemented.").arg(QString(type)).toStdString());
 
-    Py_RETURN_NONE;
+    // variable
+    sceneView->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
+    if (sceneView->sceneViewSettings().scalarPhysicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED)
+        throw out_of_range(QObject::tr("Physic field variable '%1' is not defined.").arg(QString(variable)).toStdString());
+    if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView->sceneViewSettings().scalarPhysicFieldVariable))
+        throw out_of_range(QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString());
+
+    // variable component
+    sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+    if (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED)
+        throw out_of_range(QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString());
+    if ((isPhysicFieldVariableScalar(sceneView->sceneViewSettings().scalarPhysicFieldVariable)) &&
+        (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp != PHYSICFIELDVARIABLECOMP_SCALAR))
+        throw out_of_range(QObject::tr("Physic field variable is scalar variable.").toStdString());
+
+    // range
+    if (rangemin != INT_MIN)
+    {
+        sceneView->sceneViewSettings().scalarRangeAuto = false;
+        sceneView->sceneViewSettings().scalarRangeMin = rangemin;
+    }
+    else
+    {
+        sceneView->sceneViewSettings().scalarRangeAuto = true;
+    }
+    if (rangemax != INT_MIN)
+        sceneView->sceneViewSettings().scalarRangeMax = rangemax;
+
+    sceneView->doInvalidated();
+}
+
+// showgrid(show = {true, false})
+void pythonShowGrid(bool show)
+{
+    sceneView->sceneViewSettings().showGrid = show;
+    sceneView->doInvalidated();
 }
 
 // showgeometry(show = {true, false})
-static PyObject *pythonShowGeometry(PyObject *self, PyObject *args)
+void pythonShowGeometry(bool show)
 {
-    bool show;
-    if (PyArg_ParseTuple(args, "b", &show))
-    {
-        sceneView->sceneViewSettings().showGeometry = show;
-    }
+    sceneView->sceneViewSettings().showGeometry = show;
     sceneView->doInvalidated();
-
-    Py_RETURN_NONE;
 }
 
 // showinitialmesh(show = {true, false})
-static PyObject *pythonShowInitialMesh(PyObject *self, PyObject *args)
+void pythonShowInitialMesh(bool show)
 {
-    bool show;
-    if (PyArg_ParseTuple(args, "b", &show))
-    {
-        sceneView->sceneViewSettings().showInitialMesh = show;
-    }
+    sceneView->sceneViewSettings().showInitialMesh = show;
     sceneView->doInvalidated();
-
-    Py_RETURN_NONE;
 }
 
 // showsolutionmesh(show = {true, false})
-static PyObject *pythonShowSolutionMesh(PyObject *self, PyObject *args)
+void pythonShowSolutionMesh(bool show)
 {
-    bool show;
-    if (PyArg_ParseTuple(args, "b", &show))
-    {
-        sceneView->sceneViewSettings().showSolutionMesh = show;
-    }
+    sceneView->sceneViewSettings().showSolutionMesh = show;
     sceneView->doInvalidated();
-
-    Py_RETURN_NONE;
 }
 
 // showcontours(show = {true, false})
-static PyObject *pythonShowContours(PyObject *self, PyObject *args)
+void pythonShowContours(bool show)
 {
-    bool show;
-    if (PyArg_ParseTuple(args, "b", &show))
-    {
-        sceneView->sceneViewSettings().showContours = show;
-    }
+    sceneView->sceneViewSettings().showContours = show;
     sceneView->doInvalidated();
-
-    Py_RETURN_NONE;
 }
 
 // showvectors(show = {true, false})
-static PyObject *pythonShowVectors(PyObject *self, PyObject *args)
+void pythonShowVectors(bool show)
 {
-    bool show;
-    if (PyArg_ParseTuple(args, "b", &show))
-    {
-        sceneView->sceneViewSettings().showVectors = show;
-    }
+    sceneView->sceneViewSettings().showVectors = show;
     sceneView->doInvalidated();
-
-    Py_RETURN_NONE;
-}
-
-// showscalar(type = { "none", "scalar", "scalar3d", "order" }, variable, component, rangemin, rangemax)
-static PyObject *pythonShowScalar(PyObject *self, PyObject *args)
-{
-    char *type, *variable, *component;
-    int rangemin = INT_MIN, rangemax = INT_MIN;
-    if (PyArg_ParseTuple(args, "sss|dd", &type, &variable, &component, &rangemin, &rangemax))
-    {
-        // type
-        SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(QString(type));
-        if (postprocessorShow != SCENEVIEW_POSTPROCESSOR_SHOW_UNDEFINED)
-        {
-            sceneView->sceneViewSettings().postprocessorShow = postprocessorShow;
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("View type '%1' is not implemented.").arg(QString(type)).toStdString().c_str());
-            return NULL;
-        }
-
-        // variable
-        sceneView->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
-        if (sceneView->sceneViewSettings().scalarPhysicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field variable '%1' is not defined.").arg(QString(variable)).toStdString().c_str());
-            return NULL;
-        }
-        if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView->sceneViewSettings().scalarPhysicFieldVariable))
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString().c_str());
-            return NULL;
-        }
-
-        // variable component
-        sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(QString(component));
-        if (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString().c_str());
-            return NULL;
-        }
-        if ((isPhysicFieldVariableScalar(sceneView->sceneViewSettings().scalarPhysicFieldVariable)) &&
-            (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp != PHYSICFIELDVARIABLECOMP_SCALAR))
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Physic field variable is scalar variable.").toStdString().c_str());
-            return NULL;
-        }
-
-        // range
-        if (rangemin != INT_MIN)
-        {
-            sceneView->sceneViewSettings().scalarRangeAuto = false;
-            sceneView->sceneViewSettings().scalarRangeMin = rangemin;
-        }
-        else
-        {
-            sceneView->sceneViewSettings().scalarRangeAuto = true;
-        }
-        if (rangemax != INT_MIN)
-            sceneView->sceneViewSettings().scalarRangeMax = rangemax;
-    }
-    sceneView->doInvalidated();
-
-    Py_RETURN_NONE;
 }
 
 // settimestep(level)
-static PyObject *pythonSetTimeStep(PyObject *self, PyObject *args)
+void pythonSetTimeStep(int timestep)
 {
-    int timestep;
-    if (PyArg_ParseTuple(args, "i", &timestep))
-    {
-        if (Util::scene()->sceneSolution()->isSolved())
-        {
-            sceneView->actSceneModePostprocessor->trigger();
-        }
-        else
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem is not solved.").toStdString().c_str());
-            return NULL;
-        }
+    if (Util::scene()->sceneSolution()->isSolved())
+        sceneView->actSceneModePostprocessor->trigger();
+    else
+        throw out_of_range(QObject::tr("Problem is not solved.").toStdString());
 
-        if (Util::scene()->problemInfo()->analysisType != ANALYSISTYPE_STEADYSTATE)
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Solved problem is not transient.").toStdString().c_str());
-            return NULL;
-        }
+    if (Util::scene()->problemInfo()->analysisType != ANALYSISTYPE_STEADYSTATE)
+        throw out_of_range(QObject::tr("Solved problem is not transient.").toStdString());
 
-        if ((timestep >= 0) && (timestep < Util::scene()->sceneSolution()->timeStepCount()))
-        {
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Time step must be between 0 and %1..").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString().c_str());
-            return NULL;
-        }
+    if ((timestep >= 0) && (timestep < Util::scene()->sceneSolution()->timeStepCount()))
+        throw out_of_range(QObject::tr("Time step must be between 0 and %1..").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString());
 
-        Util::scene()->sceneSolution()->setTimeStep(timestep);
-    }
-
-    Py_RETURN_NONE;
+    Util::scene()->sceneSolution()->setTimeStep(timestep);
 }
 
 // timestepcount()
-static PyObject *pythonTimeStepCount(PyObject *self, PyObject *args)
+int pythonTimeStepCount()
 {
-    return Py_BuildValue("i", Util::scene()->sceneSolution()->timeStepCount());
+    return Util::scene()->sceneSolution()->timeStepCount();
 }
 
 // saveimage(filename)
-static PyObject *pythonSaveImage(PyObject *self, PyObject *args)
+void pythonSaveImage(char *str)
 {
-    char *filename;
-    if (PyArg_ParseTuple(args, "s", &filename))
-    {
-        sceneView->saveImageToFile(QString(filename));
-
-        Py_RETURN_NONE;
-    }
-
-    return NULL;
+    sceneView->saveImageToFile(QString(str));
 }
-
-
-// ******************************************************************************************************************************************************
 
 static PyMethodDef pythonMethods[] =
 {
-    {"version", pythonVersion, METH_VARARGS, "version()"},
-    {"message", pythonMessage, METH_VARARGS, "message(str)"},
-    {"input", pythonInput, METH_VARARGS, "out = input(str)"},
-    {"quit", pythonQuit, METH_VARARGS, "quit()"},
-    {"newdocument", pythonNewDocument, METH_VARARGS, "newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition)"},
-    {"opendocument", pythonOpenDocument, METH_VARARGS, "opendocument(filename)"},
-    {"savedocument", pythonSaveDocument, METH_VARARGS, "savedocument(filename)"},
-    {"addnode", pythonAddNode, METH_VARARGS, "addnode(x, y)"},
-    {"addedge", pythonAddEdge, METH_VARARGS, "addedge(x1, y1, x2, y2, angle = 0, marker = \"none\")"},
-    {"addlabel", pythonAddLabel, METH_VARARGS, "addlabel(x, y, area = 0, marker = \"none\")"},
     {"addboundary", pythonAddBoundary, METH_VARARGS, "addboundary(name, type, value, ...)"},
     {"modifyboundary", pythonModifyBoundary, METH_VARARGS, "modifyBoundary(name, type, value, ...)"},
-    {"addmaterial", pythonAddMaterial, METH_VARARGS, "addmaterial(name, type, value, ...)"},    
+    {"addmaterial", pythonAddMaterial, METH_VARARGS, "addmaterial(name, type, value, ...)"},
     {"modifymaterial", pythonModifyMaterial, METH_VARARGS, "modifymaterial(name, type, value, ...)"},
-    {"selectnone", pythonSelectNone, METH_VARARGS, "selectnone()"},
-    {"selectall", pythonSelectAll, METH_VARARGS, "selectall()"},
     {"selectnode", pythonSelectNode, METH_VARARGS, "selectnode(index, ...)"},
-    {"selectnodepoint", pythonSelectNodePoint, METH_VARARGS, "selectnodepoint(x, y)"},
     {"selectedge", pythonSelectEdge, METH_VARARGS, "selectedge(index, ...)"},
-    {"selectedgepoint", pythonSelectEdgePoint, METH_VARARGS, "selectedgepoint(x, y)"},
     {"selectlabel", pythonSelectLabel, METH_VARARGS, "selectlabel(index, ...)"},
-    {"selectlabelpoint", pythonSelectLabelPoint, METH_VARARGS, "selectlabelpoint(x, y)"},
-    {"moveselection", pythonMoveSelection, METH_VARARGS, "moveselection(dx, dy, copy = {true, false})"},
-    {"rotateselection", pythonRotateSelection, METH_VARARGS, "rotateselection(x, y, angle, copy = {true, false})"},
-    {"scaleselection", pythonScaleSelection, METH_VARARGS, "scaleselection(x, y, scale, copy = {true, false})"},
-    {"deleteselection", pythonDeleteSelection, METH_VARARGS, "deleteselection()"},
-    {"mesh", pythonMesh, METH_VARARGS, "mesh()"},
-    {"solve", pythonSolve, METH_VARARGS, "solve()"},
-    {"zoombestfit", pythonZoomBestFit, METH_VARARGS, "zoombestfit()"},
-    {"zoomin", pythonZoomOut, METH_VARARGS, "zoomin()"},
-    {"zoomout", pythonZoomIn, METH_VARARGS, "zoomout()"},
-    {"zoomregion", pythonZoomRegion, METH_VARARGS, "zoomregion(x1, y1, x2, y2)"},
     {"pointresult", pythonPointResult, METH_VARARGS, "pointresult(x, y)"},
     {"volumeintegral", pythonVolumeIntegral, METH_VARARGS, "volumeintegral(index, ...)"},
     {"surfaceintegral", pythonSurfaceIntegral, METH_VARARGS, "surfaceintegral(index, ...)"},
-    {"mode", pythonMode, METH_VARARGS, "mode(mode = {\"node\", \"edge\", \"label\", \"postprocessor\"})"},
-    {"postprocessormode", pythonPostprocessorMode, METH_VARARGS, "postprocessormode(mode = {\"point\", \"surface\", \"volume\"})"},
-    {"showgrid", pythonShowGrid, METH_VARARGS, "showgrid(show = {true, false})"},
-    {"showgeometry", pythonShowGeometry, METH_VARARGS, "showgeometry(show = {true, false})"},
-    {"showinitialmesh", pythonShowInitialMesh, METH_VARARGS, "showinitialmesh(show = {true, false})"},
-    {"showsolutionmesh", pythonShowSolutionMesh, METH_VARARGS, "showsolutionmesh(show = {true, false})"},
-    {"showcontours", pythonShowContours, METH_VARARGS, "showcontours(show = {true, false})"},
-    {"showvectors", pythonShowVectors, METH_VARARGS, "showvectors(show = {true, false})"},
-    {"showscalar", pythonShowScalar, METH_VARARGS, "showscalar(type = { \"none\", \"scalar\", \"scalar3d\", \"order\" }, variable, component, rangemin, rangemax)"},
-    {"settimestep", pythonSetTimeStep, METH_VARARGS, "settimestep(level)"},
-    {"timestepcount", pythonTimeStepCount, METH_VARARGS, "timestepcount()"},
-    {"saveimage", pythonSaveImage, METH_VARARGS, "saveimage(filename)"},
-{NULL, NULL, 0, NULL}
+    {NULL, NULL, 0, NULL}
 };
+
+// ******************************************************************************************************************************************************
 
 PythonEngine::PythonEngine()
 {
@@ -1100,9 +809,10 @@ PythonEngine::PythonEngine()
     m_dict = PyDict_New();
     PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
 
-    // agros module
-    Py_InitModule("agros2old", pythonMethods);
-    Py_InitModule("agros2d", __pyx_methods);
+    // init agros cython extensions
+    initagros2d();
+    // agros2d file
+    Py_InitModule("agros2file", pythonMethods);
 
     // stdout
     PyRun_String(QString("agrosstdout = \"" + tempProblemDir() + "/stdout.txt" + "\"").toStdString().c_str(), Py_file_input, m_dict, m_dict);
@@ -1181,7 +891,7 @@ ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, c
         PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
         PyErr_Fetch(&type, &value, &traceback);
 
-        scriptResult.text = "Python error: ";
+        scriptResult.text = "";
         if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
         {
             Py_INCREF(type);
@@ -1211,6 +921,3 @@ ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, c
 
     return scriptResult;
 }
-
-
-
