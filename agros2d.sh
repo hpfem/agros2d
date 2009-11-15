@@ -1,14 +1,30 @@
 #!/bin/sh
 
+sourcePath="./doc/source"
+helpPath="./doc/help"
+webPath="./doc/web"
+latexPath="./doc/latex"
+srcPath="./src"
+langPath="./lang"
+
 case "$1" in
 	help )
-		if sphinx-build -b qthelp ./doc/source ./doc/help
+		if sphinx-build -b qthelp $sourcePath $helpPath
 		then
-			qcollectiongenerator ./doc/help/Agros2D.qhcp -o ./doc/help/Agros2D.qhc
+			qcollectiongenerator $helpPath/Agros2D.qhcp -o $helpPath/Agros2D.qhc
 		fi
 		;;
+	help.build-web )
+		sphinx-build -b html $sourcePath $webPath
+		;;
+	help.build-latex )
+		sphinx-build -b latex $sourcePath $latexPath
+		;;
 	lang )
-		lrelease ./lang/*.ts
+		lrelease $langPath/*.ts
+		;;
+	lang.update )
+		lupdate $srcPath/*.cpp $srcPath/*.h -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts
 		;;
 	comp )
 		if qmake ./agros2d.pro ; then make ; fi
@@ -18,16 +34,14 @@ case "$1" in
 		dpkg-buildpackage -sgpg -rfakeroot
 		;;
 	all )
-		if sphinx-build -b qthelp ./doc/source ./doc/help
+		if sphinx-build -b qthelp $sourcePath $helpPath
 		then
-			qcollectiongenerator ./doc/help/Agros2D.qhcp -o ./doc/help/Agros2D.qhc
+			qcollectiongenerator $helpPath/Agros2D.qhcp -o $helpPath/Agros2D.qhc
 		fi
-		lrelease ./lang/*.ts ./lang/*.qm
+		lrelease $langPath/*.ts
 		if qmake ./agros2d.pro ; then make ; fi
-		rm ../agros2d_*
-		dpkg-buildpackage -sgpg -rfakeroot
 		;;
 	* )
-		echo "Usage: agros2d.sh  [help - generate help files] [lang - generate language files] [comp - compile] [pack - build package] [all - all operations]"
+		echo "Usage: agros2d.sh  [help - build and generate help] [help.build-web - build online help] [help.build-latex - build latex dosumentation] [lang - release language files] [lang.update - update language files] [comp - compile] [pack - build package] [all - build and generate help, release language files, compile]"
 		;;
 esac
