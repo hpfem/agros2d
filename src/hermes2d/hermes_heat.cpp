@@ -369,27 +369,26 @@ SceneEdgeMarker *HermesHeat::newEdgeMarker()
 
 SceneEdgeMarker *HermesHeat::newEdgeMarker(PyObject *self, PyObject *args)
 {
-    double temperature, heatflux, h, externaltemperature;
+    double value, h, externaltemperature;
     char *name, *type;
-    if (PyArg_ParseTuple(args, "ssd", &name, &type, &temperature))
-    {
-        return new SceneEdgeHeatMarker(name,
-                                       physicFieldBCFromStringKey(type),
-                                       Value(QString::number(temperature)));
-    }
-    if (PyArg_ParseTuple(args, "ssddd", &name, &type, &heatflux, &h, &externaltemperature))
+    if (PyArg_ParseTuple(args, "ssd|dd", &name, &type, &value, &h, &externaltemperature))
     {
         // check name
         if (Util::scene()->getEdgeMarker(name)) return NULL;
 
-        return new SceneEdgeHeatMarker(name,
-                                       physicFieldBCFromStringKey(type),
-                                       Value(QString::number(heatflux)),
-                                       Value(QString::number(h)),
-                                       Value(QString::number(externaltemperature)));
+        if (physicFieldBCFromStringKey(type) == PHYSICFIELDBC_HEAT_TEMPERATURE)
+            return new SceneEdgeHeatMarker(name,
+                                           physicFieldBCFromStringKey(type),
+                                           Value(QString::number(value)));
+        if (physicFieldBCFromStringKey(type) == PHYSICFIELDBC_HEAT_HEAT_FLUX)
+            return new SceneEdgeHeatMarker(name,
+                                           physicFieldBCFromStringKey(type),
+                                           Value(QString::number(value)),
+                                           Value(QString::number(h)),
+                                           Value(QString::number(externaltemperature)));
     }
 
-    return Util::scene()->edgeMarkers[0];
+    return NULL;
 }
 
 SceneLabelMarker *HermesHeat::newLabelMarker()
@@ -417,7 +416,7 @@ SceneLabelMarker *HermesHeat::newLabelMarker(PyObject *self, PyObject *args)
                                         Value(QString::number(specific_heat)));
     }
 
-    return Util::scene()->labelMarkers[0];
+    return NULL;
 }
 
 void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

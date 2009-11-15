@@ -4,23 +4,23 @@ QT += opengl \
     webkit \
     network
 SUBDIRS = src-remote
-DEFINES += BETA
+# DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
-DEFINES += VERSION_SUB=8
+DEFINES += VERSION_SUB=9
 unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 
 # unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
 # unix::DEFINES += VERSION_MONTH=$$system(date +%-m)
 # unix::DEFINES += VERSION_DAY=$$system(date +%d)
-win32:DEFINES += VERSION_GIT=202
+win32:DEFINES += VERSION_GIT=213
 
 # win32::DEFINES += VERSION_YEAR=2009
 # win32::DEFINES += VERSION_MONTH=9
 # win32::DEFINES += VERSION_DAY=11
 DEFINES += VERSION_YEAR=2009
 DEFINES += VERSION_MONTH=11
-DEFINES += VERSION_DAY=1
+DEFINES += VERSION_DAY=15
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
@@ -167,13 +167,15 @@ unix:INCLUDEPATH += /usr/include/python2.6
 unix:INCLUDEPATH += /usr/include/hermes2d
 win32:INCLUDEPATH += c:/qt/mingw/include
 win32:INCLUDEPATH += c:/qt/mingw/include/hermes2d
+win32:INCLUDEPATH += c:/Python26/include
 LIBS += -lhermes2d-real \
     -lumfpack \
     -lamd \
     -lblas \
     -lJudy \
-    -lpthread \
-    -lpython2.6
+    -lpthread 
+unix:LIBS += -lpython2.6
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt
+win32:LIBS += -lpython26
 OTHER_FILES += 

@@ -351,7 +351,7 @@ SceneLabelMarker *HermesElasticity::newLabelMarker(PyObject *self, PyObject *arg
                                               Value(QString::number(poisson_ration)));
     }
 
-    return Util::scene()->labelMarkers[0];
+    return NULL;
 }
 
 void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

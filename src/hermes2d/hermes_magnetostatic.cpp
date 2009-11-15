@@ -259,7 +259,7 @@ SceneEdgeMarker *HermesMagnetostatic::newEdgeMarker(PyObject *self, PyObject *ar
                                                 Value(QString::number(value)));
     }
 
-    return Util::scene()->edgeMarkers[0];
+    return NULL;
 }
 
 SceneLabelMarker *HermesMagnetostatic::newLabelMarker()
@@ -287,7 +287,7 @@ SceneLabelMarker *HermesMagnetostatic::newLabelMarker(PyObject *self, PyObject *
                                                  Value(QString::number(remanence_angle)));
     }
 
-    return Util::scene()->labelMarkers[0];
+    return NULL;
 }
 
 void HermesMagnetostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

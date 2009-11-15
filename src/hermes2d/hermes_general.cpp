@@ -252,7 +252,7 @@ SceneEdgeMarker *HermesGeneral::newEdgeMarker(PyObject *self, PyObject *args)
                                           Value(QString::number(value)));
     }
 
-    return Util::scene()->edgeMarkers[0];
+    return NULL;
 }
 
 SceneLabelMarker *HermesGeneral::newLabelMarker()
@@ -276,7 +276,7 @@ SceneLabelMarker *HermesGeneral::newLabelMarker(PyObject *self, PyObject *args)
                                            Value(QString::number(constant)));
     }
 
-    return Util::scene()->labelMarkers[0];
+    return NULL;
 }
 
 void HermesGeneral::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

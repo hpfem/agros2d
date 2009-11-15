@@ -230,7 +230,8 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
     }
     else
     {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker already exists.").toStdString().c_str());
+        if (!PyErr_Occurred)
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker already exists.").toStdString().c_str());
         return NULL;
     }
 }
@@ -247,7 +248,8 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
     }
     else
     {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(markerNew->name).toStdString().c_str());
+        if (!PyErr_Occurred)
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(markerNew->name).toStdString().c_str());
         delete markerNew;
         return NULL;
     }
@@ -264,7 +266,8 @@ static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
     }
     else
     {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker already exists.").toStdString().c_str());
+        if (!PyErr_Occurred)
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker already exists.").toStdString().c_str());
         return NULL;
     }
 }
@@ -281,7 +284,8 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
     }
     else
     {
-        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(markerNew->name).toStdString().c_str());
+        if (!PyErr_Occurred)
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(markerNew->name).toStdString().c_str());
         delete markerNew;
         return NULL;
     }
@@ -838,25 +842,16 @@ void PythonEngine::setSceneView(SceneView *sceneView)
 ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, const QString &fileName)
 {
     sceneView = m_sceneView;
-
     ScriptResult scriptResult;
 
     // startup script
     PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-
-    // add path
-    // if (!fileName.isEmpty())
-    //    exp.append("sys.path.append(\"" + QFileInfo(fileName).absolutePath() + "\")");
 
     QString exp;
     if (isExpression)
         exp.append("result = " +  script + "\n");
     else
         exp.append(script + "\n");
-
-    // remove path
-    // if (!fileName.isEmpty())
-    //    exp.append("sys.path.remove(\"" + QFileInfo(fileName).absolutePath() + "\")");
 
     PyObject *output = PyRun_String(exp.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
@@ -897,6 +892,7 @@ ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, c
             Py_INCREF(type);
             scriptResult.text.append(PyString_AsString(str));
             if (type) Py_DECREF(type);
+            if (str) Py_DECREF(str);
         }
         else
         {
@@ -909,13 +905,14 @@ ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, c
             scriptResult.text.append(": ");
             scriptResult.text.append(PyString_AsString(value));
             if (value) Py_DECREF(value);
+            if (str) Py_DECREF(str);
         }
         else
         {
             scriptResult.text.append("<unknown exception date> ");
         }
 
-        if (str) Py_DECREF(str);
+
     }
     Py_DECREF(Py_None);
 

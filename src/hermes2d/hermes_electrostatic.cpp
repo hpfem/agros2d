@@ -248,7 +248,7 @@ SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(PyObject *self, PyObject *ar
                                                 Value(QString::number(value)));
     }
 
-    return Util::scene()->edgeMarkers[0];
+    return NULL;
 }
 
 SceneLabelMarker *HermesElectrostatic::newLabelMarker()
@@ -272,7 +272,7 @@ SceneLabelMarker *HermesElectrostatic::newLabelMarker(PyObject *self, PyObject *
                                                  Value(QString::number(permittivity)));
     }
 
-    return Util::scene()->labelMarkers[0];
+    return NULL;
 }
 
 void HermesElectrostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

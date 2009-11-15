@@ -319,7 +319,7 @@ SceneEdgeMarker *HermesHarmonicMagnetic::newEdgeMarker(PyObject *self, PyObject 
                                                    Value(QString::number(value)));
     }
 
-    return Util::scene()->edgeMarkers[0];
+    return NULL;
 }
 
 SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker()
@@ -347,7 +347,7 @@ SceneLabelMarker *HermesHarmonicMagnetic::newLabelMarker(PyObject *self, PyObjec
                                                  Value(QString::number(conductivity)));
     }
 
-    return Util::scene()->labelMarkers[0];
+    return NULL;
 }
 
 void HermesHarmonicMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)

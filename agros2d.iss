@@ -1,7 +1,7 @@
 [Setup]
 
 AppName=Agros2D
-AppVerName=Agros2D 0.9.9.210 (2009-11-01)
+AppVerName=Agros2D 0.9.9.212 (2009-11-15)
 OutputBaseFilename=Agros2D_0.9.9
 DefaultGroupName=Agros2D
 LicenseFile=COPYING
@@ -23,16 +23,16 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 [Languages]
 
 [Files]
-Source: release\agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
+Source: release\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: src-remote\release\Agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
 Source: install\win32\ffmpeg.exe; DestDir: {app}; DestName: ffmpeg.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
-Source: functions.qs; DestDir: {app}; DestName: functions.qs
+Source: functions.py; DestDir: {app}; DestName: functions.py
 Source: data\*.a2d; DestDir: {app}/data
-Source: data\scripts\*.qs; DestDir: {app}/data/scripts
+Source: data\scripts\*.py; DestDir: {app}/data/scripts
 Source: lang\*.qm; DestDir: {app}/lang
 Source: doc\help\Agros2D.qhc; DestDir: {app}/doc/help
 Source: doc\help\Agros2D.qch; DestDir: {app}/doc/help
