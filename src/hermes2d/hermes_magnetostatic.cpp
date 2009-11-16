@@ -143,9 +143,9 @@ QList<SolutionArray *> *magnetostatic_main(SolverThread *solverThread)
 
     // output
     SolutionArray *solutionArray = new SolutionArray();
-    solutionArray->order1 = new Orderizer();
-    solutionArray->order1->process_solution(&space);
-    solutionArray->sln1 = sln;
+    solutionArray->order = new Orderizer();
+    solutionArray->order->process_solution(&space);
+    solutionArray->sln = sln;
     solutionArray->adaptiveError = error;
     solutionArray->adaptiveSteps = i-1;
 

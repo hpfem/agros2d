@@ -154,9 +154,9 @@ QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
 
     // initialize the linear solver
     UmfpackSolver umfpack;
-    Solution *sln1 = new Solution();
-    Solution *sln2 = new Solution();
-    Solution rsln1, rsln2;
+    Solution *slnreal = new Solution();
+    Solution *slnimag = new Solution();
+    Solution rslnreal, rslnimag;
 
     // assemble the stiffness matrix and solve the system
     double error;
@@ -172,17 +172,17 @@ QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
         sys.set_spaces(2, &spacereal, &spaceimag);
         sys.set_pss(2, &pssreal, &pssimag);
         sys.assemble();
-        sys.solve(2, sln1, sln2);
+        sys.solve(2, slnreal, slnimag);
 
         RefSystem rs(&sys);
         rs.assemble();
-        rs.solve(2, &rsln1, &rsln2);
+        rs.solve(2, &rslnreal, &rslnimag);
 
         // calculate errors and adapt the solution
         if (adaptivityType != ADAPTIVITYTYPE_NONE)
         {
             H1OrthoHP hp(2, &spacereal, &spaceimag);
-            error = hp.calc_error_2(sln1, sln2, &rsln1, &rsln2) * 100;
+            error = hp.calc_error_2(slnreal, slnimag, &rslnreal, &rslnimag) * 100;
 
             // emit signal
             solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
@@ -194,17 +194,27 @@ QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
     }
 
     // output
-    SolutionArray *solutionArray = new SolutionArray();
-    solutionArray->order1 = new Orderizer();
-    solutionArray->order1->process_solution(&spacereal);
-    solutionArray->order2 = new Orderizer();
-    solutionArray->order2->process_solution(&spaceimag);
-    solutionArray->sln1 = sln1;
-    solutionArray->sln2 = sln2;
+    SolutionArray *solutionArray;
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
+    // real part
+    solutionArray = new SolutionArray();
+    solutionArray->order = new Orderizer();
+    solutionArray->order->process_solution(&spacereal);
+    solutionArray->sln = slnreal;
     solutionArray->adaptiveError = error;
     solutionArray->adaptiveSteps = i-1;
 
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+    solutionArrayList->append(solutionArray);
+
+    // iamg part
+    solutionArray = new SolutionArray();
+    solutionArray->order = new Orderizer();
+    solutionArray->order->process_solution(&spaceimag);
+    solutionArray->sln = slnimag;
+    solutionArray->adaptiveError = error;
+    solutionArray->adaptiveSteps = i-1;
+
     solutionArrayList->append(solutionArray);
 
     return solutionArrayList;

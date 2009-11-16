@@ -127,7 +127,7 @@ Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> 
     return elasticityEdge[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
 }
 
-SolutionArray *elasticity_main(SolverThread *solverThread)
+QList<SolutionArray *> *elasticity_main(SolverThread *solverThread)
 {
     elasticityPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
@@ -183,26 +183,41 @@ SolutionArray *elasticity_main(SolverThread *solverThread)
     sys.set_pss(2, &xpss, &ypss);
 
     // assemble the stiffness matrix and solve the system
-    Solution *sln1 = new Solution();
-    Solution *sln2 = new Solution();
+    Solution *slnx = new Solution();
+    Solution *slny = new Solution();
     sys.assemble();
-    sys.solve(2, sln1, sln2);
+    sys.solve(2, slnx, slny);
 
     // output
     xdisp.assign_dofs();
     ydisp.assign_dofs();
 
-    SolutionArray *solutionArray = new SolutionArray();
-    solutionArray->order1 = new Orderizer();
-    solutionArray->order1->process_solution(&xdisp);
-    solutionArray->order2 = new Orderizer();
-    solutionArray->order2->process_solution(&ydisp);
-    solutionArray->sln1 = sln1;
-    solutionArray->sln2 = sln2;
+
+    // output
+    SolutionArray *solutionArray;
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
+    // x part
+    solutionArray = new SolutionArray();
+    solutionArray->order = new Orderizer();
+    solutionArray->order->process_solution(&xdisp);
+    solutionArray->sln = slnx;
     // solutionArray->adaptiveError = error;
     // solutionArray->adaptiveSteps = i-1;
 
-    return solutionArray;
+    solutionArrayList->append(solutionArray);
+
+    // y part
+    solutionArray = new SolutionArray();
+    solutionArray->order = new Orderizer();
+    solutionArray->order->process_solution(&ydisp);
+    solutionArray->sln = slny;
+    // solutionArray->adaptiveError = error;
+    // solutionArray->adaptiveSteps = i-1;
+
+    solutionArrayList->append(solutionArray);
+
+    return solutionArrayList;
 }
 
 // *******************************************************************************************************
@@ -433,13 +448,10 @@ QList<SolutionArray *> *HermesElasticity::solve(SolverThread *solverThread)
         }
     }
 
-    SolutionArray *solutionArray = elasticity_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = elasticity_main(solverThread);
 
     delete [] elasticityEdge;
     delete [] elasticityLabel;
-
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-    solutionArrayList->append(solutionArray);
 
     return solutionArrayList;
 }

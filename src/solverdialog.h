@@ -17,13 +17,14 @@ struct SolutionArray
     double adaptiveError;
     int adaptiveSteps;
 
-    Solution *sln1;
-    Solution *sln2;
-    Orderizer *order1;
-    Orderizer *order2;
+    Solution *sln;
+    Orderizer *order;
 
     SolutionArray();
     ~SolutionArray();
+
+    void load(const QString &fileName);
+    void save(const QString &fileName);
 };
 
 class SolverThread : public QThread

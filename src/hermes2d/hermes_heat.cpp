@@ -238,10 +238,10 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
 
         // output
         SolutionArray *solutionArray = new SolutionArray();
-        solutionArray->order1 = new Orderizer();
-        solutionArray->order1->process_solution(&space);
-        solutionArray->sln1 = new Solution();
-        solutionArray->sln1->copy(sln);
+        solutionArray->order = new Orderizer();
+        solutionArray->order->process_solution(&space);
+        solutionArray->sln = new Solution();
+        solutionArray->sln->copy(sln);
         solutionArray->adaptiveError = error;
         solutionArray->adaptiveSteps = i-1;
         if (heatTransient > 0) solutionArray->time = (n+1)*timeStep;

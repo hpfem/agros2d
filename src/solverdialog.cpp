@@ -3,10 +3,8 @@
 
 SolutionArray::SolutionArray()
 {
-    sln1 = NULL;
-    sln2 = NULL;
-    order1 = NULL;
-    order2 = NULL;
+    sln = NULL;
+    order = NULL;
 
     time = 0.0;
     adaptiveSteps = 0;
@@ -15,10 +13,18 @@ SolutionArray::SolutionArray()
 
 SolutionArray::~SolutionArray()
 {
-    if (sln1) delete sln1;
-    if (sln2) delete sln2;
-    if (order1) delete order1;
-    if (order2) delete order2;
+    if (sln) delete sln;
+    if (order) delete order;
+}
+
+void SolutionArray::load(const QString &fileName)
+{
+
+}
+
+void SolutionArray::save(const QString &fileName)
+{
+
 }
 
 // **********************************************************************************************************

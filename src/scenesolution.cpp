@@ -63,8 +63,8 @@ Solution *SceneSolution::sln1()
 {
     if (isSolved())
     {
-        if (m_solutionArrayList->value(m_timeStep)->sln1)
-            return m_solutionArrayList->value(m_timeStep)->sln1;
+        if (m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->sln)
+            return m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->sln;
     }
     return NULL;
 }
@@ -72,25 +72,25 @@ Solution *SceneSolution::sln1()
 Solution *SceneSolution::sln2()
 {
     if (isSolved())
-        if (m_solutionArrayList->value(m_timeStep)->sln2)
-            return m_solutionArrayList->value(m_timeStep)->sln2;
+        if (m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1)->sln)
+            return m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1)->sln;
     return NULL;
 }
 
 Orderizer &SceneSolution::ordView()
 {
     if (isSolved())
-        return *m_solutionArrayList->value(m_timeStep)->order1;
+        return *m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->order;
 }
 
 double SceneSolution::adaptiveError()
 {
-    return (isSolved()) ? m_solutionArrayList->value(m_timeStep)->adaptiveError : 100.0;
+    return (isSolved()) ? m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveError : 100.0;
 }
 
 int SceneSolution::adaptiveSteps()
 {
-    return (isSolved()) ? m_solutionArrayList->value(m_timeStep)->adaptiveSteps : 0.0;
+    return (isSolved()) ? m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveSteps : 0.0;
 }
 
 double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume)
@@ -962,8 +962,8 @@ double SceneSolution::time()
 {
     if (isSolved())
     {
-        if (m_solutionArrayList->value(m_timeStep)->sln1)
-            return m_solutionArrayList->value(m_timeStep)->time;
+        if (m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->sln)
+            return m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->time;
     }
     return 0.0;
 }
