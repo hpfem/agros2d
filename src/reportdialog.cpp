@@ -136,6 +136,9 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // script
     destination.replace("[Script]", createPythonFromModel(), Qt::CaseSensitive);
 
+    // script
+    destination.replace("[Description]", Util::scene()->problemInfo()->description, Qt::CaseSensitive);
+
     // physical properties
     destination.replace("[Materials]", htmlMaterials(), Qt::CaseSensitive);
     destination.replace("[Boundaries]", htmlBoundaries(), Qt::CaseSensitive);
