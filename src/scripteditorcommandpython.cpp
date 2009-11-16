@@ -808,7 +808,7 @@ PythonEngine::PythonEngine()
     Py_Initialize();
 
     // read functions
-    m_functions = readFileContent(QApplication::applicationDirPath() + "/functions.py");
+    m_functions = readFileContent(datadir() + "/functions.py");
 
     m_dict = PyDict_New();
     PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());

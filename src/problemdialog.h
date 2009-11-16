@@ -48,13 +48,17 @@ private:
     QLabel *lblTransientSteps;
 
     // startup script
-    ScriptEditor *txtEditor;
+    ScriptEditor *txtStartupScript;
+
+    // description
+    QTextEdit *txtDescription;
 
     QTabWidget *tabType;
 
     void createControls();
     QWidget *createControlsGeneral();
-    QWidget *createControlsStartup();
+    QWidget *createControlsStartupScript();
+    QWidget *createControlsDescription();
 
     void fillComboBox();
 

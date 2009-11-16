@@ -66,6 +66,7 @@ public:
     int adaptivitySteps;
     double adaptivityTolerance; // percent
     QString scriptStartup;
+    QString description;
 
     // harmonic magnetic
     int frequency;
@@ -97,6 +98,7 @@ public:
         date = QDate::currentDate();
         fileName = "";
         scriptStartup = "";
+        description = "";
         problemType = PROBLEMTYPE_PLANAR;
         numberOfRefinements = 1;
         polynomialOrder = 2;

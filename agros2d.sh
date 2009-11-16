@@ -42,6 +42,6 @@ case "$1" in
 		if qmake ./agros2d.pro ; then make ; fi
 		;;
 	* )
-		echo "Usage: agros2d.sh  [help - build and generate help] [help.build-web - build online help] [help.build-latex - build latex dosumentation] [lang - release language files] [lang.update - update language files] [comp - compile] [pack - build package] [all - build and generate help, release language files, compile]"
+		echo "Usage: agros2d.sh\n  [help - build and generate help]\n  [help.build-web - build online help]\n  [help.build-latex - build latex documentation]\n  [lang - release language files]\n  [lang.update - update language files]\n  [comp - compile]\n  [pack - build package]\n  [all - build and generate help, release language files, compile]"
 		;;
 esac

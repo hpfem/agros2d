@@ -1,7 +1,8 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" adaptivitysteps="1" polynomialorder="4" problemtype="planar" type="current" id="0" name="Feeder" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="1" polynomialorder="4" problemtype="planar" timetotal="0" type="current" timestep="0" id="0" name="Feeder" initialcondition="0" >
             <scriptstartup></scriptstartup>
+            <description></description>
             <edges>
                 <edge type="current_inward_current_flow" value="0" id="1" name="Neumann" />
                 <edge type="current_inward_current_flow" value="1000000" id="2" name="In" />
@@ -29,4 +30,5 @@
             <label x="0.243292" y="0.326297" marker="1" id="0" area="0" />
         </labels>
     </geometry>
+    <functions/>
 </document>

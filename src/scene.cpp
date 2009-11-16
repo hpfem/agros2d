@@ -1082,8 +1082,13 @@ void Scene::readFromFile(const QString &fileName)
     m_problemInfo->initialCondition = eleProblem.toElement().attribute("initialcondition", "0").toDouble();
 
     // startup script
-    QDomNode eleSriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
-    m_problemInfo->scriptStartup = eleSriptStartup.toElement().text();
+    QDomNode eleScriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
+    m_problemInfo->scriptStartup = eleScriptStartup.toElement().text();
+
+    // description
+    QDomNode eleDescription = eleProblem.toElement().elementsByTagName("description").at(0);
+    m_problemInfo->description = eleDescription.toElement().text();
+
 
     // markers ***************************************************************************************************************
 
@@ -1247,9 +1252,14 @@ void Scene::writeToFile(const QString &fileName) {
     eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition);
 
     // startup script
-    QDomElement eleSriptStartup = doc.createElement("scriptstartup");
-    eleSriptStartup.appendChild(doc.createTextNode(m_problemInfo->scriptStartup));
-    eleProblem.appendChild(eleSriptStartup);
+    QDomElement eleScriptStartup = doc.createElement("scriptstartup");
+    eleScriptStartup.appendChild(doc.createTextNode(m_problemInfo->scriptStartup));
+    eleProblem.appendChild(eleScriptStartup);
+
+    // description
+    QDomElement eleDescription = doc.createElement("description");
+    eleDescription.appendChild(doc.createTextNode(m_problemInfo->description));
+    eleProblem.appendChild(eleDescription);
 
     // geometry
     QDomNode eleGeometry = doc.createElement("geometry");

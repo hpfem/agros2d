@@ -34,6 +34,9 @@ ProblemDialog::~ProblemDialog()
     delete txtTransientTimeTotal;
     delete txtTransientInitialCondition;
     delete lblTransientSteps;
+
+    delete txtStartupScript;
+    delete txtDescription;
 }
 
 int ProblemDialog::showDialog()
@@ -46,7 +49,8 @@ void ProblemDialog::createControls()
     // tab
     QTabWidget *tabType = new QTabWidget();
     tabType->addTab(createControlsGeneral(), icon(""), tr("General"));
-    tabType->addTab(createControlsStartup(), icon(""), tr("Startup script"));
+    tabType->addTab(createControlsStartupScript(), icon(""), tr("Startup script"));
+    tabType->addTab(createControlsDescription(), icon(""), tr("Description"));
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -138,17 +142,31 @@ QWidget *ProblemDialog::createControlsGeneral()
     return widMain;
 }
 
-QWidget *ProblemDialog::createControlsStartup()
+QWidget *ProblemDialog::createControlsStartupScript()
 {
-    txtEditor = new ScriptEditor(this);
+    txtStartupScript = new ScriptEditor(this);
 
     QVBoxLayout *layoutStartup = new QVBoxLayout();
-    layoutStartup->addWidget(txtEditor);
+    layoutStartup->addWidget(txtStartupScript);
 
     QWidget *widStartup = new QWidget();
     widStartup->setLayout(layoutStartup);
 
     return widStartup;
+}
+
+QWidget *ProblemDialog::createControlsDescription()
+{
+    txtDescription = new QTextEdit(this);
+    txtDescription->setAcceptRichText(false);
+
+    QVBoxLayout *layoutDescription = new QVBoxLayout();
+    layoutDescription->addWidget(txtDescription);
+
+    QWidget *widDescription = new QWidget();
+    widDescription->setLayout(layoutDescription);
+
+    return widDescription;
 }
 
 void ProblemDialog::fillComboBox()
@@ -200,7 +218,10 @@ void ProblemDialog::load()
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
 
     // startup
-    txtEditor->setPlainText(m_problemInfo->scriptStartup);
+    txtStartupScript->setPlainText(m_problemInfo->scriptStartup);
+
+    // description
+    txtDescription->setPlainText(m_problemInfo->description);
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
     doTransientChanged();
@@ -208,16 +229,16 @@ void ProblemDialog::load()
 
 bool ProblemDialog::save()
 {
-    if (!txtEditor->toPlainText().isEmpty())
+    if (!txtStartupScript->toPlainText().isEmpty())
     {
-        ScriptResult scriptResult = runPythonExpression(txtEditor->toPlainText());
+        ScriptResult scriptResult = runPythonExpression(txtStartupScript->toPlainText());
         if (scriptResult.isError)
         {
             QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
             return false;
         }
     }
-    Util::scene()->problemInfo()->scriptStartup = txtEditor->toPlainText();
+    Util::scene()->problemInfo()->scriptStartup = txtStartupScript->toPlainText();
 
     if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
@@ -267,6 +288,9 @@ bool ProblemDialog::save()
     m_problemInfo->timeStep = txtTransientTimeStep->value();
     m_problemInfo->timeTotal = txtTransientTimeTotal->value();
     m_problemInfo->initialCondition = txtTransientInitialCondition->value();
+
+    // description
+    m_problemInfo->description = txtDescription->toPlainText();
 
     return true;
 }
