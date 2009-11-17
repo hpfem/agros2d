@@ -29,7 +29,7 @@ void SolutionArray::load(QDomElement *element)
     writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
     order = new Orderizer();
-    // solutionArray->order->process_solution(&space);
+    // order->process_solution(&space);
     sln = new Solution();
     sln->load(QString(fileName).toStdString().c_str());
     adaptiveError = element->attribute("adaptiveerror").toDouble();

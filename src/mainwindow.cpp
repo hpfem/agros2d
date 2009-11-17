@@ -110,6 +110,10 @@ void MainWindow::createActions()
     actDocumentSave->setStatusTip(tr("Save the file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
     
+    actDocumentSaveWithSolution = new QAction(icon(""), tr("&Save with solution"), this);
+    actDocumentSaveWithSolution->setStatusTip(tr("Save the file to disk with solution"));
+    connect(actDocumentSaveWithSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveWithSolution()));
+
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
     actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
@@ -239,6 +243,7 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addAction(actDocumentSave);
+    mnuFile->addAction(actDocumentSaveWithSolution);
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentClose);
@@ -574,6 +579,19 @@ void MainWindow::doDocumentSave()
         doDocumentSaveAs();
 }
 
+void MainWindow::doDocumentSaveWithSolution()
+{
+    QSettings settings;
+
+    // save state
+    bool state = settings.value("Solver/SaveProblemWithSolution", false).value<bool>();
+    settings.setValue("Solver/SaveProblemWithSolution", true);
+
+    doDocumentSave();
+
+    settings.setValue("Solver/SaveProblemWithSolution", state);
+}
+
 void MainWindow::doDocumentSaveAs()
 {
     QSettings settings;
@@ -784,6 +802,7 @@ void MainWindow::doTimeStepChanged(int index)
 
 void MainWindow::doInvalidated()
 {    
+    actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());

@@ -712,21 +712,21 @@ void SceneView::paintOrder()
     if (Util::scene()->sceneSolution()->isSolved())
     {
         Util::scene()->sceneSolution()->ordView().lock_data();
-        
+
         double3* vert = Util::scene()->sceneSolution()->ordView().get_vertices();
         int3* tris = Util::scene()->sceneSolution()->ordView().get_triangles();
-        
+
         // draw mesh
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         int min = 11;
-        int max = 1;        
+        int max = 1;
         for (int i = 0; i < Util::scene()->sceneSolution()->ordView().get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
         }
         int num_boxes = max - min + 1;
-        
+
         // triangles
         const float* color;
         glBegin(GL_TRIANGLES);
@@ -734,7 +734,7 @@ void SceneView::paintOrder()
         {
             int color = vert[tris[i][0]][2];
             glColor3d(palette_order[color][0], palette_order[color][1], palette_order[color][2]);
-            
+
             glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
             glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
             glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
@@ -1017,20 +1017,20 @@ void SceneView::paintScalarField3D()
         if (m_sceneViewSettings.scalarView3DLighting)
             glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
         glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        // glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
-        glVertex3d(point[0].x, point[0].y, - delta - value[0]);
+        glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
+        // glVertex3d(point[0].x, point[0].y, - delta - value[0]);
 
         if (m_sceneViewSettings.scalarView3DLighting)
             glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
         glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        // glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
-        glVertex3d(point[1].x, point[1].y, - delta - value[1]);
+        glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
+        // glVertex3d(point[1].x, point[1].y, - delta - value[1]);
 
         if (m_sceneViewSettings.scalarView3DLighting)
             glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
         glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        // glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
-        glVertex3d(point[2].x, point[2].y, - delta - value[2]);
+        glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
+        // glVertex3d(point[2].x, point[2].y, - delta - value[2]);
     }
     glEnd();
     glDisable(GL_POLYGON_OFFSET_FILL);

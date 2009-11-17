@@ -32,6 +32,7 @@ private slots:
     void doDocumentOpen(const QString &fileName = "");
     void doDocumentOpenRecent(QAction *action);
     void doDocumentSave();
+    void doDocumentSaveWithSolution();
     void doDocumentSaveAs();
     void doDocumentClose();
     void doDocumentImportDXF();
@@ -89,6 +90,7 @@ private:
     QAction *actDocumentNew;
     QAction *actDocumentOpen;   
     QAction *actDocumentSave;
+    QAction *actDocumentSaveWithSolution;
     QAction *actDocumentSaveAs;
     QAction *actDocumentClose;
     QAction *actDocumentImportDXF;
