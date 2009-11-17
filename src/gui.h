@@ -56,6 +56,9 @@ public:
 public slots:
     bool evaluate();
 
+protected:
+    void focusInEvent(QFocusEvent *event);
+
 private:
     double m_number;
 

@@ -7,6 +7,24 @@ SceneEdgeMarker::SceneEdgeMarker(const QString &name, PhysicFieldBC type)
     this->type = type;
 }
 
+QString SceneEdgeMarker::html()
+{
+    QString out;
+    out += "<h4>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</h4>";
+    out += "<table>";
+    QMap<QString, QString> data = this->data();
+    for (int j = 0; j < data.keys().length(); j++)
+    {
+        out += "<tr>";
+        out += "<td>" + data.keys()[j] + ":</td>";
+        out += "<td>" + data.values()[j] + "</td>";
+        out += "</tr>";
+    }
+    out += "</table>";
+
+    return out;
+}
+
 QVariant SceneEdgeMarker::variant()
 {
     QVariant v;
@@ -23,6 +41,24 @@ SceneEdgeMarkerNone::SceneEdgeMarkerNone() : SceneEdgeMarker("none", PHYSICFIELD
 SceneLabelMarker::SceneLabelMarker(const QString &name)
 {
     this->name = name;
+}
+
+QString SceneLabelMarker::html()
+{
+    QString out;
+    out += "<h4>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</h4>";
+    out += "<table>";
+    QMap<QString, QString> data = this->data();
+    for (int j = 0; j < data.keys().length(); j++)
+    {
+        out += "<tr>";
+        out += "<td>" + data.keys()[j] + ":</td>";
+        out += "<td>" + data.values()[j] + "</td>";
+        out += "</tr>";
+    }
+    out += "</table>";
+
+    return out;
 }
 
 QVariant SceneLabelMarker::variant()

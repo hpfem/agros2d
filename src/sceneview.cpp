@@ -1804,7 +1804,9 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             {
                 Util::scene()->highlightNone();
                 node->isHighlighted = true;
-                setToolTip(QString("<h4>Node</h4>Point: [%1; %2]").arg(node->point.x, 0, 'f', 3).arg(node->point.y, 0, 'f', 3));
+                setToolTip(tr("<h3>Node</h3>Point: [%1; %2]").
+                           arg(node->point.x, 0, 'g', 3).
+                           arg(node->point.y, 0, 'g', 3));
                 updateGL();
             }
         }
@@ -1816,10 +1818,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             {
                 Util::scene()->highlightNone();
                 edge->isHighlighted = true;
-                setToolTip(QString("<h4>Edge</h4>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg.").arg(edge->nodeStart->point.x, 0, 'f', 3).arg(edge->nodeStart->point.y, 0, 'f', 3)
-                           .arg(edge->nodeEnd->point.x, 0, 'f', 3).arg(edge->nodeEnd->point.y, 0, 'f', 3)
-                           .arg(edge->marker->name).arg(edge->angle, 0, 'f', 0));
-
+                setToolTip(tr("<h3>Edge</h3>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg. %7").
+                           arg(edge->nodeStart->point.x, 0, 'g', 3).
+                           arg(edge->nodeStart->point.y, 0, 'g', 3).
+                           arg(edge->nodeEnd->point.x, 0, 'g', 3).
+                           arg(edge->nodeEnd->point.y, 0, 'g', 3).
+                           arg(edge->marker->name).arg(edge->angle, 0, 'f', 0).
+                           arg(edge->marker->html()));
                 updateGL();
             }
         }
@@ -1831,8 +1836,12 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             {
                 Util::scene()->highlightNone();
                 label->isHighlighted = true;
-                setToolTip(QString("<h4>Label</h4>Point: [%1; %2]<br/>Material: %3<br/>Triangle Area: %4 m<sup>2</sup>").arg(label->point.x, 0, 'f', 3).arg(label->point.y, 0, 'g', 3)
-                           .arg(label->marker->name).arg(label->area, 0, 'f', 5));
+                setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle Area: %4 m<sup>2</sup> %5").
+                           arg(label->point.x, 0, 'g', 3).
+                           arg(label->point.y, 0, 'g', 3).
+                           arg(label->marker->name).
+                           arg(label->area, 0, 'g', 3).
+                           arg(label->marker->html()));
                 updateGL();
             }
         }

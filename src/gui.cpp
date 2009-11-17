@@ -105,6 +105,11 @@ bool SLineEditValue::evaluate()
     }
 }
 
+void SLineEditValue::focusInEvent(QFocusEvent *event)
+{
+    txtLineEdit->setFocus(event->reason());
+}
+
 double SLineEditValue::number()
 {
     if (evaluate())

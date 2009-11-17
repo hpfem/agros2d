@@ -77,22 +77,21 @@ double SceneEdge::distance(const Point &point)
     {
         Point c = center();
         double R = radius();
-        double distance = (point-c).magnitude();
+        double distance = (point - c).magnitude();
 
         // point and radius are similar        
-        if (distance < EPS_ZERO) return radius();
+        if (distance < EPS_ZERO) return R;
 
         Point t = (point - c) / distance;
         double l = ((point - c) - t * R).magnitude();
-        double z = fabs(t.angle() - (nodeStart->point - c).angle())/180*M_PI;
+        double z = (t.angle() - (nodeStart->point - c).angle())/M_PI*180.0;
+        if (z < 0) z = z + 360.0; // interval (0, 360)
         if ((z > 0) && (z < angle)) return l;
 
         double a = (point - nodeStart->point).magnitude();
         double b = (point - nodeEnd->point).magnitude();
-        if (a<b)
-            return a;
-        else
-            return b;
+
+        return qMin(a, b);
     }
 }
 

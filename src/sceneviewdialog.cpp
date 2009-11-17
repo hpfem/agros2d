@@ -229,6 +229,10 @@ void SceneViewDialog::createControls()
     QGroupBox *grpTransient = new QGroupBox(tr("Transient analysis"));
     grpTransient->setLayout(layoutTransient);
 
+    QHBoxLayout *layoutVectorFieldTransient = new QHBoxLayout();
+    layoutVectorFieldTransient->addWidget(grpVectorField);
+    layoutVectorFieldTransient->addWidget(grpTransient);
+
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
@@ -242,8 +246,7 @@ void SceneViewDialog::createControls()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutShowPostprocessor);
     layout->addWidget(grpScalarField);
-    layout->addWidget(grpVectorField);
-    layout->addWidget(grpTransient);
+    layout->addLayout(layoutVectorFieldTransient);
     layout->addStretch();
     layout->addWidget(buttonBox);
 

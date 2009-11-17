@@ -24,6 +24,7 @@ public:
     virtual int showDialog(QWidget *parent) = 0;
 
     virtual QString script() = 0;
+    QString html();
     virtual QMap<QString, QString> data() = 0;
     QVariant variant();
 };
@@ -66,6 +67,7 @@ public:
     virtual int showDialog(QWidget *parent) = 0;
 
     virtual QString script() = 0;
+    QString html();
     virtual QMap<QString, QString> data() = 0;
     QVariant variant();
 };
