@@ -351,10 +351,45 @@ QString readFileContent(const QString &fileName)
     {
         QTextStream stream(&file);
         content = stream.readAll();
-
         file.close();
-
         return content;
     }
     return NULL;
+}
+
+void writeStringContent(const QString &fileName, QString *content)
+{
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly))
+    {
+        QTextStream stream(&file);
+        stream << *content;
+
+        file.waitForBytesWritten(0);
+        file.close();
+    }
+}
+
+QByteArray readFileContentByteArray(const QString &fileName)
+{
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly))
+    {
+        QByteArray content = file.readAll();
+        file.close();
+        return content;
+    }
+    return NULL;
+}
+
+void writeStringContentByteArray(const QString &fileName, QByteArray content)
+{
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly))
+    {
+        file.write(content);
+
+        file.waitForBytesWritten(0);
+        file.close();
+    }
 }

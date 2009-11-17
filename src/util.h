@@ -61,7 +61,12 @@ void msleep(unsigned long msecs);
 void log(const QString &message);
 
 // read file content
+QByteArray readFileContentByteArray(const QString &fileName);
 QString readFileContent(const QString &fileName);
+
+// write content into the file
+void writeStringContent(const QString &fileName, QString *content);
+void writeStringContentByteArray(const QString &fileName, QByteArray content);
 
 struct Value
 {

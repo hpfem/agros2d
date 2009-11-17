@@ -1,6 +1,8 @@
 #ifndef SCENEHERMES_H
 #define SCENEHERMES_H
 
+#include <QDomDocument>
+
 #include "util.h"
 
 class SolverDialog;
@@ -23,8 +25,8 @@ struct SolutionArray
     SolutionArray();
     ~SolutionArray();
 
-    void load(const QString &fileName);
-    void save(const QString &fileName);
+    void load(QDomElement *element);
+    void save(QDomDocument *doc, QDomElement *element);
 };
 
 class SolverThread : public QThread

@@ -660,6 +660,8 @@ void SceneView::paintGeometry()
 
 void SceneView::paintInitialMesh()
 {
+    if (!Util::scene()->sceneSolution()->isMeshed()) return;
+
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(m_sceneViewSettings.colorInitialMesh.redF(), m_sceneViewSettings.colorInitialMesh.greenF(), m_sceneViewSettings.colorInitialMesh.blueF());
@@ -667,9 +669,9 @@ void SceneView::paintInitialMesh()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Util::scene()->sceneSolution()->mesh().get_num_elements(); i++)
+    for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
     {
-        Element *element = Util::scene()->sceneSolution()->mesh().get_element(i);
+        Element *element = Util::scene()->sceneSolution()->mesh()->get_element(i);
         if (element->is_triangle())
         {
             glVertex2d(element->vn[0]->x, element->vn[0]->y);
@@ -1537,8 +1539,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 if (index > 0)
                 {
                     //  find label marker
-                    int labelIndex = Util::scene()->sceneSolution()->mesh().get_element_fast(index)->marker;
-                    
+                    int labelIndex = Util::scene()->sceneSolution()->mesh()->get_element_fast(index)->marker;
+
                     Util::scene()->labels[labelIndex]->isSelected = !Util::scene()->labels[labelIndex]->isSelected;
                     updateGL();
                 }
@@ -2403,6 +2405,8 @@ void SceneView::drawBlend(Point start, Point end)
 
 void SceneView::paintPostprocessorSelectedVolume()
 {
+    if (!Util::scene()->sceneSolution()->isMeshed()) return;
+
     // draw mesh
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -2411,9 +2415,9 @@ void SceneView::paintPostprocessorSelectedVolume()
     
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Util::scene()->sceneSolution()->mesh().get_num_elements(); i++)
+    for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
     {
-        Element *element = Util::scene()->sceneSolution()->mesh().get_element(i);
+        Element *element = Util::scene()->sceneSolution()->mesh()->get_element(i);
         if (Util::scene()->labels[element->marker]->isSelected)
         {
             if (element->is_triangle())

@@ -150,6 +150,7 @@ class Scene : public QObject
     void doNewLabelMarker();
     void doNewFunction();
     void doTransform();
+    void doClearSolution();
     void doProblemProperties();
     
 signals:
@@ -174,6 +175,7 @@ public:
     QAction *actNewLabelMarker;
     QAction *actNewFunction;
     QAction *actProblemProperties;
+    QAction *actClearSolution;
     QAction *actTransform;
     
     Scene();

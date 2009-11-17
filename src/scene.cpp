@@ -138,6 +138,10 @@ void Scene::createActions()
     actTransform->setStatusTip(tr("Transform"));
     connect(actTransform, SIGNAL(triggered()), this, SLOT(doTransform()));
 
+    actClearSolution = new QAction(icon(""), tr("Clear solution"), this);
+    actClearSolution->setStatusTip(tr("Clear solution"));
+    connect(actClearSolution, SIGNAL(triggered()), this, SLOT(doClearSolution()));
+
     actProblemProperties = new QAction(icon("document-properties"), tr("&Problem properties"), this);
     actProblemProperties->setStatusTip(tr("Problem properties"));
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
@@ -742,8 +746,7 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     writeToFile(m_problemInfo->fileName);
 
     // solve
-    QFileInfo fileInfoOrig(fileNameOrig);
-    solverDialog->setFileNameOrig(fileInfoOrig.absoluteFilePath());
+    solverDialog->setFileNameOrig(QFileInfo(fileNameOrig).absoluteFilePath());
     solverDialog->setMode(solverMode);
     solverDialog->solve();
 
@@ -773,6 +776,7 @@ void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes.count() >= 2) && (edgeMarkers.count() >= 1));
     actNewLabel->setEnabled(labelMarkers.count() >= 1);
+    actClearSolution->setEnabled(m_sceneSolution->isSolved());
 }
 
 void Scene::doNewNode(const Point &point)
@@ -851,6 +855,12 @@ void Scene::doTransform()
     sceneTransformDialog.exec();
 }
 
+void Scene::doClearSolution()
+{
+    m_sceneSolution->clear();
+    emit invalidated();
+}
+
 void Scene::doProblemProperties()
 {
     ProblemDialog problemDialog(m_problemInfo, false, QApplication::activeWindow());
@@ -859,8 +869,6 @@ void Scene::doProblemProperties()
         emit invalidated();
     }
 }
-
-
 
 void Scene::writeToDxf(const QString &fileName)
 {
@@ -1198,13 +1206,29 @@ void Scene::readFromFile(const QString &fileName)
 
     blockSignals(false);
 
+    // mesh
+     if (eleDoc.elementsByTagName("mesh").count() > 0)
+     {
+        QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
+        Util::scene()->sceneSolution()->loadMesh(&eleMesh.toElement());
+     }
+
+    // solutions
+    if (eleDoc.elementsByTagName("solutions").count() > 0)
+    {
+        QDomNode eleSolutions = eleDoc.elementsByTagName("solutions").at(0);
+        Util::scene()->sceneSolution()->loadSolution(&eleSolutions.toElement());
+        doSolved();
+    }
+
     emit invalidated();
 }
 
 void Scene::writeToFile(const QString &fileName) {
+    QSettings settings;
+
     if (!problemInfo()->fileName.contains("temp.a2d"))
     {
-        QSettings settings;
         QFileInfo fileInfo(fileName);
         settings.setValue("General/LastDataDir", fileInfo.absoluteFilePath());
     }
@@ -1366,6 +1390,19 @@ void Scene::writeToFile(const QString &fileName) {
         eleFunction.setAttribute("function", functions[i]->function);
 
         eleFunctions.appendChild(eleFunction);
+    }
+
+    if (settings.value("Solver/SaveProblemWithSolution", false).value<bool>())
+    {
+        // mesh
+        QDomNode eleMesh = doc.createElement("mesh");
+        Util::scene()->sceneSolution()->saveMesh(&doc, &eleMesh.toElement());
+        eleDoc.appendChild(eleMesh);
+
+        // solutions
+        QDomNode eleSolutions = doc.createElement("solutions");
+        Util::scene()->sceneSolution()->saveSolution(&doc, &eleSolutions.toElement());
+        eleDoc.appendChild(eleSolutions);
     }
 
     // save to file

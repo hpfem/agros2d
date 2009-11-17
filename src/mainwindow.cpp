@@ -215,11 +215,11 @@ void MainWindow::createActions()
     actScriptEditor->setShortcut(Qt::Key_F4);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
-    actScriptEditorRunScript = new QAction(icon("script-python"), tr("&Run script..."), this);
+    actScriptEditorRunScript = new QAction(icon("script"), tr("&Run script..."), this);
     actScriptEditorRunScript->setStatusTip(tr("Run script..."));
     connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
 
-    actScriptEditorRunCommand = new QAction(icon("script"), tr("&Run command..."), this);
+    actScriptEditorRunCommand = new QAction(icon("system-run"), tr("&Run command..."), this);
     actScriptEditorRunCommand->setShortcut(QKeySequence(tr("Alt+C")));
     actScriptEditorRunCommand->setStatusTip(tr("Run command..."));
     connect(actScriptEditorRunCommand, SIGNAL(triggered()), this, SLOT(doScriptEditorRunCommand()));
@@ -300,6 +300,7 @@ void MainWindow::createMenus()
     mnuProblem->addSeparator();
     mnuProblem->addAction(actCreateMesh);
     mnuProblem->addAction(actSolve);
+    mnuProblem->addAction(Util::scene()->actClearSolution);
     mnuProblem->addSeparator();
     mnuProblem->addAction(Util::scene()->actProblemProperties);
 
@@ -782,7 +783,7 @@ void MainWindow::doTimeStepChanged(int index)
 }
 
 void MainWindow::doInvalidated()
-{
+{    
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());

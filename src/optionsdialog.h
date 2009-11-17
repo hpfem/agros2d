@@ -81,6 +81,9 @@ private:
     // clear command history
     QPushButton *cmdClearCommandHistory;
 
+    // save with solution
+    QCheckBox *chkSaveWithSolution;
+
     void load();
     void save();
 

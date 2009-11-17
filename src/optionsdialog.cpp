@@ -43,6 +43,12 @@ OptionsDialog::~OptionsDialog()
     delete chkDeleteTriangleMeshFiles;
     delete chkDeleteHermes2DMeshFile;
 
+    // clear command history
+    delete cmdClearCommandHistory;
+
+    // save with solution
+    delete chkSaveWithSolution;
+
     delete lstView;
     delete panMain;
     delete panView;
@@ -80,6 +86,9 @@ void OptionsDialog::load()
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>());
     chkDeleteHermes2DMeshFile->setChecked(settings.value("Solver/DeleteHermes2DMeshFile", true).value<bool>());
+
+    // save problem with solution
+    chkSaveWithSolution->setChecked(settings.value("Solver/SaveProblemWithSolution", false).value<bool>());
 
     // colors
     colorBackground->setColor(m_sceneViewSettings->colorBackground);
@@ -135,6 +144,9 @@ void OptionsDialog::save()
     // delete files
     settings.setValue("Solver/DeleteTriangleMeshFiles", chkDeleteTriangleMeshFiles->isChecked());
     settings.setValue("Solver/DeleteHermes2DMeshFile", chkDeleteHermes2DMeshFile->isChecked());
+
+    // save problem with solution
+    settings.setValue("Solver/SaveProblemWithSolution", chkSaveWithSolution->isChecked());
 
     // color
     m_sceneViewSettings->colorBackground = colorBackground->color();
@@ -246,10 +258,12 @@ QWidget *OptionsDialog::createMainWidget()
     // solver layout
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
+    chkSaveWithSolution = new QCheckBox("Save problem with solution");
 
     QVBoxLayout *layoutSolver = new QVBoxLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
     layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
+    layoutSolver->addWidget(chkSaveWithSolution);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
@@ -259,8 +273,9 @@ QWidget *OptionsDialog::createMainWidget()
     cmdClearCommandHistory->setText(tr("Clear command history"));
     connect(cmdClearCommandHistory, SIGNAL(clicked()), this, SLOT(doClearCommandHistory()));
 
+
     QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
-    layoutClearCommandHistory->addWidget(cmdClearCommandHistory);
+    layoutClearCommandHistory->addWidget(cmdClearCommandHistory);    
     layoutClearCommandHistory->addStretch();
 
     QVBoxLayout *layoutOther = new QVBoxLayout();

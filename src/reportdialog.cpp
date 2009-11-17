@@ -5,7 +5,7 @@
 
 ReportDialog::ReportDialog(QWidget *parent) : QDialog(parent)
 {
-    setWindowIcon(icon("script-startup"));
+    setWindowIcon(icon("browser"));
     setWindowTitle(tr("Report"));
     setWindowFlags(Qt::Window);
     setMinimumSize(400, 400);

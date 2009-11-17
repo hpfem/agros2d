@@ -34,8 +34,13 @@ public:
     SceneSolution();
 
     void clear();
+    void loadMesh(QDomElement *element);
+    void saveMesh(QDomDocument *doc, QDomElement *element);
+    void loadSolution(QDomElement *element);
+    void saveSolution(QDomDocument *doc, QDomElement *element);
 
-    inline Mesh &mesh() { return m_mesh; }
+    inline Mesh *mesh() { return m_mesh; }
+    inline void setMesh(Mesh *mesh) { if (m_mesh) { delete m_mesh; } m_mesh = mesh; }
     Solution *sln();
     Solution *sln1();
     Solution *sln2();
@@ -47,7 +52,7 @@ public:
     double time();
 
     bool isSolved() { return (m_timeStep != -1); }
-    bool isMeshed() { return (m_mesh.get_num_elements() > 0); }
+    bool isMeshed() { return (m_mesh); }
 
     // contour
     inline ViewScalarFilter *slnContourView() { return m_slnContourView; }
@@ -77,7 +82,7 @@ public:
     int adaptiveSteps();
     inline int setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
-    int findTriangleInMesh(Mesh &mesh, const Point &point);
+    int findTriangleInMesh(Mesh *mesh, const Point &point);
     int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point);
 
 private:
@@ -100,7 +105,7 @@ private:
     ViewScalarFilter *m_slnVectorYView; // vector view solution - y
     Vectorizer m_vecVectorView; // vectorizer for vector view
 
-    Mesh m_mesh; // linearizer only for mesh (on empty solution)
+    Mesh *m_mesh; // linearizer only for mesh (on empty solution)
 
     Vectorizer m_vec;
 };

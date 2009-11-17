@@ -17,14 +17,44 @@ SolutionArray::~SolutionArray()
     if (order) delete order;
 }
 
-void SolutionArray::load(const QString &fileName)
+void SolutionArray::load(QDomElement *element)
 {
+    QString fileName = tempProblemFileName() + ".gz";
 
+    QDomText text = element->childNodes().at(0).toText();
+
+    // write content (saved solution)
+    QByteArray content;
+    content.append(text.nodeValue());    
+    writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
+
+    order = new Orderizer();
+    // solutionArray->order->process_solution(&space);
+    sln = new Solution();
+    sln->load(QString(fileName).toStdString().c_str());
+    adaptiveError = element->attribute("adaptiveerror").toDouble();
+    adaptiveSteps = element->toElement().attribute("adaptivesteps").toInt();
+    time = element->attribute("time").toDouble();
+
+    // delete solution
+    QFile::remove(fileName);
 }
 
-void SolutionArray::save(const QString &fileName)
+void SolutionArray::save(QDomDocument *doc, QDomElement *element)
 {
+    QString fileName = tempProblemFileName() + ".gz";
+    sln->save(tempProblemFileName().toStdString().c_str());
 
+    // read content (saved solution)
+    QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
+    element->appendChild(text);
+
+    element->setAttribute("time", time);
+    element->setAttribute("adaptivesteps", adaptiveSteps);
+    element->setAttribute("adaptiveerror", adaptiveError);
+
+    // delete solution
+    QFile::remove(fileName);
 }
 
 // **********************************************************************************************************
@@ -69,7 +99,6 @@ void SolverThread::showMessage(const QString &msg, bool isError)
 
 void SolverThread::runMesh()
 {
-    Util::scene()->sceneSolution()->mesh().free();
     QFile::remove(tempProblemFileName() + ".mesh");
 
     // create triangle files
@@ -163,27 +192,29 @@ void SolverThread::doMeshTriangleCreated(int exitCode)
             char *plocale = setlocale (LC_NUMERIC, "");
             setlocale (LC_NUMERIC, "C");
 
-            Util::scene()->sceneSolution()->mesh().load((tempProblemFileName() + ".mesh").toStdString().c_str());
+            Mesh *mesh = new Mesh();
+            mesh->load((tempProblemFileName() + ".mesh").toStdString().c_str());
 
             // set system locale
             setlocale(LC_NUMERIC, plocale);
 
             // check that all boundary edges have a marker assigned
-            for (int i = 0; i < Util::scene()->sceneSolution()->mesh().get_max_node_id(); i++)
+            for (int i = 0; i < mesh->get_max_node_id(); i++)
             {
-                if (Node *node = Util::scene()->sceneSolution()->mesh().get_node(i))
+                if (Node *node = mesh->get_node(i))
                 {
                     if (node->used)
                     {
                         if (node->ref < 2 && node->marker == 0)
                         {
                             emit message(tr("Hermes2D: boundary edge does not have a boundary marker."), true);
-                            Util::scene()->sceneSolution()->mesh().free();
+                            delete mesh;
                             return;
                         }
                     }
                 }
             }
+            Util::scene()->sceneSolution()->setMesh(mesh);
         }
         else
         {

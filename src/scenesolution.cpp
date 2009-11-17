@@ -4,6 +4,7 @@ SceneSolution::SceneSolution()
 {
     m_timeStep = -1;
 
+    m_mesh = NULL;
     m_solutionArrayList = NULL;
     m_slnContourView = NULL;
     m_slnScalarView = NULL;
@@ -25,6 +26,13 @@ void SceneSolution::clear()
 
         delete m_solutionArrayList;
         m_solutionArrayList = NULL;
+    }
+
+    // mesh
+    if (m_mesh)
+    {
+        delete m_mesh;
+        m_mesh = NULL;
     }
 
     // countour
@@ -51,6 +59,83 @@ void SceneSolution::clear()
     {
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
+    }
+}
+
+void SceneSolution::loadMesh(QDomElement *element)
+{
+    QDomText text = element->childNodes().at(0).toText();
+
+    // write content (saved mesh)
+    QString fileName = tempProblemFileName() + ".mesh";
+    QByteArray content;
+    content.append(text.nodeValue());
+    writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
+
+    // save locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    Mesh *mesh = new Mesh();
+    mesh->load(fileName.toStdString().c_str());
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+
+    setMesh(mesh);
+}
+
+void SceneSolution::saveMesh(QDomDocument *doc, QDomElement *element)
+{
+    if (isMeshed())
+    {
+        QString fileName = tempProblemFileName() + ".mesh";
+
+        // save locale
+        char *plocale = setlocale (LC_NUMERIC, "");
+        setlocale (LC_NUMERIC, "C");
+
+        m_mesh->save(fileName.toStdString().c_str());
+
+        // set system locale
+        setlocale(LC_NUMERIC, plocale);
+
+        // read content
+        QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
+        element->appendChild(text);
+    }
+}
+
+void SceneSolution::loadSolution(QDomElement *element)
+{
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
+    QDomNode n = element->firstChild();
+    while(!n.isNull())
+    {
+        SolutionArray *solutionArray = new SolutionArray();
+        solutionArray->load(&n.toElement());
+
+        // add to the array
+        solutionArrayList->append(solutionArray);
+
+        n = n.nextSibling();
+    }
+
+    if (solutionArrayList->count() > 0)
+        setSolutionArrayList(solutionArrayList);
+}
+
+void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
+{
+    if (isSolved())
+    {
+        for (int i = 0; i < timeStepCount(); i++)
+        {
+            QDomNode eleSolution = doc->createElement("solution");
+            m_solutionArrayList->value(i)->save(doc, &eleSolution.toElement());
+            element->appendChild(eleSolution);
+        }
     }
 }
 
@@ -880,13 +965,13 @@ int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &
     return -1;
 }
 
-int SceneSolution::findTriangleInMesh(Mesh &mesh, const Point &point)
+int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
 {
-    for (int i = 0; i < mesh.get_num_elements(); i++)
+    for (int i = 0; i < mesh->get_num_elements(); i++)
     {
         bool inTriangle = true;
         
-        Element *element = mesh.get_element_fast(i);
+        Element *element = mesh->get_element_fast(i);
         
         int k;
         double z;
@@ -934,7 +1019,7 @@ PointValue SceneSolution::pointValue(const Point &point, Solution *sln)
     index = findTriangleInMesh(m_mesh, point);    
     if (index > 0)
     {
-        Element *element = m_mesh.get_element_fast(index);
+        Element *element = m_mesh->get_element_fast(index);
         labelMarker = Util::scene()->labels[element->marker]->marker;
     }
 

@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/" >
         <file>images/application-exit.png</file>
+        <file>images/browser.png</file>
         <file>images/document-new.png</file>
         <file>images/document-new-windows.png</file>
         <file>images/document-open.png</file>
@@ -43,13 +44,13 @@
         <file>images/scene-mesh.png</file>
         <file>images/scene-function.png</file>
         <file>images/system-run.png</file>
+        <file>images/view-results.png</file>
         <file>images/zoom-best-fit.png</file>
         <file>images/zoom-in.png</file>
         <file>images/zoom-out.png</file>
         <file>images/zoom-original.png</file>
         <file>images/agros2d.png</file>
         <file>images/script.png</file>
-        <file>images/script-startup.png</file>
         <file>images/script-create.png</file>
         <file>images/script-python.png</file>
         <file>images/help-contents.png</file>
