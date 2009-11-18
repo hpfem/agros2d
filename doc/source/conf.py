@@ -38,8 +38,8 @@ source_encoding = 'utf-8'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Agros2D'
-copyright = u'Pavel Karban, František Mach'
+project = u'Agros2D'
+copyright = u'2009, hp-FEM group at UWB'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -124,8 +124,8 @@ html_theme_options = {
 #'relbarbgcolor': '#824513',
 #'relbartextcolor': '#000000',
 #'relbarlinkcolor': '#FFFFFF',
-#'footerbgcolor': '#824513',
-#'footertextcolor': '#FFFFFF',
+#'footerbgcolor': '#FFFFFF',
+#'footertextcolor': '#000000',
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -203,7 +203,7 @@ latex_font_size = '10pt'
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'Agros2D.tex', u'Agros2D Documentation',
-   u'Pavel Karban, František Mach', 'manual'),
+   u'hp-FEM group at UWB', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
