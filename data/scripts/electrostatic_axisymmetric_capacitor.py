@@ -48,6 +48,7 @@ selectnone()
 # calculation of capacity
 r = []
 C = []
+print "C = f(r) (F):"
 for i in range(5):
 	if i > 0:
 		selectedge(6, 7, 8)
@@ -59,7 +60,7 @@ for i in range(5):
 	r.append(r1 + (i*dr))
 	C.append(2*2*integral["We"]/(U^2))
 
-print "C = f(r) (F):"
+
 print r
 print C
 

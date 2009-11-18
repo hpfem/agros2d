@@ -8,12 +8,13 @@
 #include "scenemarker.h"
 #include "scripteditordialog.h"
 
-SceneView *sceneView = NULL;
+static SceneView *sceneView = NULL;
+static PythonEngine *pythonEngine = NULL;
 
 // FIX *****************************************************************************************************************************************************************************
 // Terible, is it possible to write this code better???
 #define python_int_array() \
-const int count = 60; \
+const int count = 100; \
                   int index[count]; \
                   for (int i = 0; i < count; i++) \
                   index[i] = INT_MIN; \
@@ -23,7 +24,12 @@ const int count = 60; \
                                                   &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
                                                   &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
                                                   &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
-                                                  &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59])) \
+                                                  &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59], \
+                                                  &index[60], &index[61], &index[62], &index[63], &index[64], &index[65], &index[66], &index[67], &index[68], &index[69], \
+                                                  &index[70], &index[71], &index[72], &index[73], &index[74], &index[75], &index[76], &index[77], &index[78], &index[79], \
+                                                  &index[80], &index[81], &index[82], &index[83], &index[84], &index[85], &index[86], &index[87], &index[88], &index[89], \
+                                                  &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
+                                                  )) \
 // FIX *****************************************************************************************************************************************************************************
 
 // version()
@@ -785,6 +791,21 @@ void pythonSaveImage(char *str)
     sceneView->saveImageToFile(QString(str));
 }
 
+// print stdout
+PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
+{
+    char *str = NULL;
+    if (PyArg_ParseTuple(pArgs, "s", &str))
+    {
+        if (QString(str) != "\n")
+        {
+            emit pythonEngine->showMessage(str);
+        }
+        Py_RETURN_NONE;
+    }
+    return NULL;
+}
+
 static PyMethodDef pythonMethods[] =
 {
     {"addboundary", pythonAddBoundary, METH_VARARGS, "addboundary(name, type, value, ...)"},
@@ -797,6 +818,7 @@ static PyMethodDef pythonMethods[] =
     {"pointresult", pythonPointResult, METH_VARARGS, "pointresult(x, y)"},
     {"volumeintegral", pythonVolumeIntegral, METH_VARARGS, "volumeintegral(index, ...)"},
     {"surfaceintegral", pythonSurfaceIntegral, METH_VARARGS, "surfaceintegral(index, ...)"},
+    {"capturestdout", pythonCaptureStdout, METH_VARARGS, "stdout"},
     {NULL, NULL, 0, NULL}
 };
 
@@ -804,6 +826,11 @@ static PyMethodDef pythonMethods[] =
 
 PythonEngine::PythonEngine()
 {
+    clearStdout();
+
+    // connect stdout
+    connect(this, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
+
     // init python
     Py_Initialize();
 
@@ -839,8 +866,21 @@ void PythonEngine::setSceneView(SceneView *sceneView)
     m_sceneView = sceneView;
 }
 
+void PythonEngine::showMessage(const QString &message)
+{
+    emit printStdout(message);
+}
+
+void PythonEngine::doPrintStdout(const QString &message)
+{
+    m_stdout.append(message);
+}
+
 ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, const QString &fileName)
 {
+    // set current python engine
+    pythonEngine = this;
+
     sceneView = m_sceneView;
     ScriptResult scriptResult;
 
@@ -871,10 +911,6 @@ ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, c
             }
         }
 
-        // read stdout
-        scriptResult.text = readFileContent(tempProblemDir() + "/stdout.txt");
-        QFile::remove(tempProblemDir() + "/stdout.txt");
-
         // error
         scriptResult.isError = false;
     }
@@ -886,35 +922,40 @@ ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, c
         PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
         PyErr_Fetch(&type, &value, &traceback);
 
-        scriptResult.text = "";
+        if (traceback)
+        {
+            PyTracebackObject *object = (PyTracebackObject *) traceback;
+            showMessage(QString("Line %1: ").arg(object->tb_lineno));
+            Py_DECREF(traceback);
+        }
+
         if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
         {
             Py_INCREF(type);
-            scriptResult.text.append(PyString_AsString(str));
+            showMessage(PyString_AsString(str));
             if (type) Py_DECREF(type);
             if (str) Py_DECREF(str);
         }
         else
         {
-            scriptResult.text.append("<unknown exception type> ");
+            showMessage("<unknown exception type> ");
         }
 
         if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
         {
             Py_INCREF(value);
-            scriptResult.text.append(": ");
-            scriptResult.text.append(PyString_AsString(value));
+            showMessage(PyString_AsString(value));
             if (value) Py_DECREF(value);
             if (str) Py_DECREF(str);
         }
         else
         {
-            scriptResult.text.append("<unknown exception date> ");
+            showMessage("<unknown exception date> ");
         }
-
-
     }
     Py_DECREF(Py_None);
+
+    scriptResult.text = m_stdout;
 
     return scriptResult;
 }

@@ -1,7 +1,7 @@
 #include "scripteditordialog.h"
 #include "scripteditorcommandpython.h"
 
-PythonEngine *pythonEngine = NULL;
+static PythonEngine *pythonEngine = NULL;
 
 void createScripEngine(SceneView *sceneView)
 {
@@ -128,7 +128,9 @@ void ScriptEngineRemote::disconnected()
     ScriptResult result;
     if (!command.isEmpty())
     {
+        pythonEngine->clearStdout();
         result = runPython(command);
+        result.text = pythonEngine->stdout();
     }
 
     m_client_socket = new QLocalSocket();
@@ -211,21 +213,26 @@ void ScriptEditorWidget::createControls()
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
 }
 
-void ScriptEditorWidget::doRunPython(const QString &script)
+void ScriptEditorWidget::doRunPython()
 {
-    QString scriptContent;
-    if (script.isEmpty())
-        scriptContent = txtEditor->toPlainText();
-    else
-        scriptContent = script;
+    disconnect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
+    connect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
 
-    ScriptResult result = runPython(scriptContent, file);
-    txtOutput->setPlainText(result.text);
+    txtOutput->clear();
+    pythonEngine->clearStdout();
+    runPython(txtEditor->toPlainText(), file);
 }
 
 void ScriptEditorWidget::doCreatePythonFromModel()
 {
     txtEditor->setPlainText(createPythonFromModel());
+}
+
+void ScriptEditorWidget::doPrintStdout(const QString &message)
+{
+    txtOutput->appendPlainText(message);
+    txtOutput->ensureCursorVisible();
+    QApplication::processEvents();
 }
 
 // ***********************************************************************************************************
@@ -276,7 +283,10 @@ void ScriptEditorDialog::runScript(const QString &fileName)
         if (file.open(QFile::ReadOnly | QFile::Text))
         {
             // run script
+            pythonEngine->clearStdout();
             ScriptResult result = runPython(file.readAll(), fileName);
+            result.text = pythonEngine->stdout();
+
             if (result.isError)
                 QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
             else if (!result.text.isEmpty())
@@ -291,7 +301,10 @@ void ScriptEditorDialog::runCommand(const QString &command)
     if (!command.isEmpty())
     {
         // run script
+        pythonEngine->clearStdout();
         ScriptResult result = runPython(command);
+        result.text = pythonEngine->stdout();
+
         if (result.isError)
             QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
         else if (!result.text.isEmpty())
@@ -353,7 +366,7 @@ void ScriptEditorDialog::createActions()
     actReplace->setShortcut(QKeySequence::Replace);
     connect(actReplace, SIGNAL(triggered()), this, SLOT(doReplace()));
 
-    actRunPython = new QAction(icon("script-python"), tr("&Run Python script"), this);
+    actRunPython = new QAction(icon("system-run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
     actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);

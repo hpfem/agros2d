@@ -67,8 +67,9 @@ class ScriptEditorWidget : public QWidget
     Q_OBJECT
 
 public slots:
-    void doRunPython(const QString &script = "");
+    void doRunPython();
     void doCreatePythonFromModel();
+    void doPrintStdout(const QString &message);
 
 public:
     QString file;

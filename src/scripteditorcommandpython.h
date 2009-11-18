@@ -4,17 +4,30 @@
 #include "util.h"
 #include "sceneview.h"
 
-class PythonEngine
+class PythonEngine : public QObject
 {
+    Q_OBJECT
+
+signals:
+    void printStdout(const QString &);
+
 public:
     PythonEngine();
     ~PythonEngine();
 
     void setSceneView(SceneView *sceneView);
+    inline void showMessage(const QString &message);
+    inline void clearStdout() { m_stdout = ""; }
+    inline QString stdout() { return m_stdout; };
 
     ScriptResult runPython(const QString &script, bool isExpression = false, const QString &fileName = "");
 
+private slots:
+    void doPrintStdout(const QString &message);
+
 private:
+    QString m_stdout;
+
     PyObject *m_dict;
     QString m_functions;
     SceneView *m_sceneView;
