@@ -19,7 +19,7 @@ SolutionArray::~SolutionArray()
 
 void SolutionArray::load(QDomElement *element)
 {
-    QString fileName = tempProblemFileName() + ".gz";
+    QString fileName = tempProblemFileName() + ".sln";
 
     QDomText text = element->childNodes().at(0).toText();
 
@@ -42,8 +42,8 @@ void SolutionArray::load(QDomElement *element)
 
 void SolutionArray::save(QDomDocument *doc, QDomElement *element)
 {
-    QString fileName = tempProblemFileName() + ".gz";
-    sln->save(tempProblemFileName().toStdString().c_str());
+    QString fileName = tempProblemFileName() + ".sln";
+    sln->save(fileName.toStdString().c_str(), false);
 
     // read content (saved solution)
     QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
