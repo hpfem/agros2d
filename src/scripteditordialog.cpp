@@ -215,12 +215,13 @@ void ScriptEditorWidget::createControls()
 
 void ScriptEditorWidget::doRunPython()
 {
-    disconnect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
     connect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
 
     txtOutput->clear();
     pythonEngine->clearStdout();
     runPython(txtEditor->toPlainText(), file);
+
+    disconnect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
 }
 
 void ScriptEditorWidget::doCreatePythonFromModel()
