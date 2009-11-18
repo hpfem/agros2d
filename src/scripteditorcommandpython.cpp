@@ -24,10 +24,10 @@ const int count = 60; \
                                                   &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
                                                   &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
                                                   &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59])) \
-                             // FIX *****************************************************************************************************************************************************************************
+// FIX *****************************************************************************************************************************************************************************
 
-                             // version()
-                             static PyObject *pythonVersion(PyObject *self, PyObject *args)
+// version()
+static PyObject *pythonVersion(PyObject *self, PyObject *args)
 {    
     return Py_BuildValue("s", QApplication::applicationVersion().toStdString());
 }

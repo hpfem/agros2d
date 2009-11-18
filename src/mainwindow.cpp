@@ -532,7 +532,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
         fileNameDocument = fileName;
     }
 
-    if (QFile::exists(fileNameDocument))
+    try
     {
         QFileInfo fileInfo(fileNameDocument);
         if (fileInfo.suffix() == "a2d")
@@ -550,11 +550,11 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             scriptEditorDialog->doFileOpen(fileNameDocument);
             scriptEditorDialog->showDialog();
         }
+        QMessageBox::critical(this, tr("File open"), tr("Unknown suffix."));
     }
-    else
+    catch (char *str)
     {
-        if (!fileNameDocument.isEmpty())
-            QMessageBox::critical(this, tr("File open"), tr("File '%1' doesn't exists.").arg(fileNameDocument));
+        QMessageBox::critical(this, tr("File open"), QString(str));
     }
 }
 

@@ -20,7 +20,7 @@ cdef extern from "../scripteditorcommandpython.h":
                            double adaptivitysteps, double adaptivitytolerance,
                            double frequency,
                            char *analysistype, double timestep, double totaltime, double initialcondition) except +
-    void pythonOpenDocument(char *str)
+    void pythonOpenDocument(char *str) except +
     void pythonSaveDocument(char *str)
     
     void pythonAddNode(double x, double y) except +
@@ -51,7 +51,7 @@ cdef extern from "../scripteditorcommandpython.h":
     void pythonPostprocessorMode(char *str) except +
 
     void pythonShowScalar(char *type, char *variable, char *component, int rangemin, int rangemax) except +
-    void pythonShowGrid(bool show)
+    void pythonShowGrid(int show)
     void pythonShowGeometry(bool show)
     void pythonShowInitialMesh(bool show)
     void pythonShowSolutionMesh(bool show)
@@ -172,7 +172,7 @@ def showscalar(char *type, char *variable, char *component, int rangemin = c_INT
     pythonShowScalar(type, variable, component, rangemin, rangemax)
 
 def showgrid(bool show):
-    pythonShowGrid(show)
+    pythonShowGrid(int(show))
 
 def showgeometry(bool show):
     pythonShowGeometry(show)

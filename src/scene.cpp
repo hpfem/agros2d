@@ -1049,7 +1049,7 @@ void Scene::readFromFile(const QString &fileName)
     QDomDocument doc;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
-        return;
+        throw invalid_argument(tr("File '%1' not found.").arg(fileName).toStdString());
 
     if (!doc.setContent(&file)) {
         file.close();
