@@ -532,7 +532,9 @@ void MainWindow::doDocumentOpen(const QString &fileName)
         fileNameDocument = fileName;
     }
 
-    try
+    if (fileNameDocument.isEmpty()) return;
+
+    if (QFile::exists(fileNameDocument))
     {
         QFileInfo fileInfo(fileNameDocument);
         if (fileInfo.suffix() == "a2d")
@@ -543,18 +545,20 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
             sceneView->doDefaults();
             sceneView->doZoomBestFit();
+            return;
         }
         if (fileInfo.suffix() == "py")
         {
-            // qs script
+            // python script
             scriptEditorDialog->doFileOpen(fileNameDocument);
             scriptEditorDialog->showDialog();
+            return;
         }
         QMessageBox::critical(this, tr("File open"), tr("Unknown suffix."));
     }
-    catch (char *str)
+    else
     {
-        QMessageBox::critical(this, tr("File open"), QString(str));
+        QMessageBox::critical(this, tr("File open"), tr("File '%1' not found.").arg(fileNameDocument));
     }
 }
 

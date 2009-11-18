@@ -1036,6 +1036,11 @@ void Scene::readFromFile(const QString &fileName)
     QFileInfo fileInfo(fileName);
     settings.setValue("General/LastDataDir", fileInfo.absolutePath());
 
+    QDomDocument doc;
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly))
+        throw invalid_argument(tr("File '%1' not found.").arg(fileName).toStdString());
+
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
@@ -1045,11 +1050,6 @@ void Scene::readFromFile(const QString &fileName)
     emit fileNameChanged(fileInfo.absoluteFilePath());
 
     blockSignals(true);
-
-    QDomDocument doc;
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly))
-        throw invalid_argument(tr("File '%1' not found.").arg(fileName).toStdString());
 
     if (!doc.setContent(&file)) {
         file.close();

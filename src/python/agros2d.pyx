@@ -34,9 +34,9 @@ cdef extern from "../scripteditorcommandpython.h":
     void pythonSelectEdgePoint(double x, double y)
     void pythonSelectLabelPoint(double x, double y)
 
-    void pythonRotateSelection(double x, double y, double angle, bool copy)
-    void pythonScaleSelection(double x, double y, double scale, bool copy)
-    void pythonMoveSelection(double dx, double dy, bool copy)
+    void pythonRotateSelection(double x, double y, double angle, int copy)
+    void pythonScaleSelection(double x, double y, double scale, int copy)
+    void pythonMoveSelection(double dx, double dy, int copy)
     void pythonDeleteSelection()
 
     void pythonMesh()
@@ -52,11 +52,11 @@ cdef extern from "../scripteditorcommandpython.h":
 
     void pythonShowScalar(char *type, char *variable, char *component, int rangemin, int rangemax) except +
     void pythonShowGrid(int show)
-    void pythonShowGeometry(bool show)
-    void pythonShowInitialMesh(bool show)
-    void pythonShowSolutionMesh(bool show)
-    void pythonShowContours(bool show)
-    void pythonShowVectors(bool show)
+    void pythonShowGeometry(int show)
+    void pythonShowInitialMesh(int show)
+    void pythonShowSolutionMesh(int show)
+    void pythonShowContours(int show)
+    void pythonShowVectors(int show)
 
     void pythonSetTimeStep(int timestep) except +
     int pythonTimeStepCount()
@@ -129,13 +129,13 @@ def selectlabelpoint(double x, double y):
     pythonSelectLabelPoint(x, y)
 
 def rotateselection(double x, double y, double angle, bool copy = False):
-    pythonRotateSelection(x, y, angle, copy)
+    pythonRotateSelection(x, y, angle, int(copy))
 
 def scaleselection(double x, double y, double scale, bool copy = False):
-    pythonScaleSelection(x, y, scale, copy)
+    pythonScaleSelection(x, y, scale, int(copy))
 
 def moveselection(double dx, double dy, bool copy = False):
-    pythonMoveSelection(dx, dy, copy)
+    pythonMoveSelection(dx, dy, int(copy))
 
 def deleteselection():
     pythonDeleteSelection()
@@ -175,19 +175,19 @@ def showgrid(bool show):
     pythonShowGrid(int(show))
 
 def showgeometry(bool show):
-    pythonShowGeometry(show)
+    pythonShowGeometry(int(show))
 
 def showinitialmesh(bool show):
-    pythonShowInitialMesh(show)
+    pythonShowInitialMesh(int(show))
 
 def showsolutionmesh(bool show):
-    pythonShowSolutionMesh(show)
+    pythonShowSolutionMesh(int(show))
 
 def showcontours(bool show):
-    pythonShowContours(show)
+    pythonShowContours(int(show))
 
 def showvectors(bool show):
-    pythonShowVectors(show)
+    pythonShowVectors(int(show))
 
 def timesetstepcount(int timestep):
     pythonSetTimeStep(timestep)

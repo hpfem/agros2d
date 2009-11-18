@@ -157,7 +157,8 @@ Solution *SceneSolution::sln1()
 Solution *SceneSolution::sln2()
 {
     if (isSolved())
-        if (m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1)->sln)
+        if ((Util::scene()->problemInfo()->hermes()->numberOfSolution() == 2) &&
+            m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1)->sln)
             return m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1)->sln;
     return NULL;
 }

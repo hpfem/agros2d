@@ -122,7 +122,7 @@ void initLists()
     adaptivityTypeList.insert(ADAPTIVITYTYPE_NONE, "disabled");
     adaptivityTypeList.insert(ADAPTIVITYTYPE_H, "h-adaptivity");
     adaptivityTypeList.insert(ADAPTIVITYTYPE_P, "p-adaptivity");
-    adaptivityTypeList.insert(ADAPTIVITYTYPE_HP, "hp-adaptivity");
+    adaptivityTypeList.insert(ADAPTIVITYTYPE_HP, "hp-adaptivity");    
 }
 
 bool Value::evaluate()
@@ -150,7 +150,8 @@ void setGUIStyle(const QString &styleName)
     QStyle *style = QStyleFactory::create(styleName);
 
     QApplication::setStyle(style);
-    if (QApplication::desktopSettingsAware()) {
+    if (QApplication::desktopSettingsAware())
+    {
         QApplication::setPalette(QApplication::palette());
     }
 }
@@ -392,4 +393,17 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content)
         file.waitForBytesWritten(0);
         file.close();
     }
+}
+
+void exception_global()
+{
+    try
+    {
+        throw;
+    }
+    catch (exception& e)
+    {
+        cerr << "Exiting due to error: " << e.what() << endl;
+    }
+    return;
 }
