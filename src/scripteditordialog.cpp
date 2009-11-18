@@ -130,7 +130,7 @@ void ScriptEngineRemote::disconnected()
     {
         pythonEngine->clearStdout();
         result = runPython(command);
-        result.text = pythonEngine->stdout();
+        result.text = pythonEngine->stdOut();
     }
 
     m_client_socket = new QLocalSocket();
@@ -286,7 +286,7 @@ void ScriptEditorDialog::runScript(const QString &fileName)
             // run script
             pythonEngine->clearStdout();
             ScriptResult result = runPython(file.readAll(), fileName);
-            result.text = pythonEngine->stdout();
+            result.text = pythonEngine->stdOut();
 
             if (result.isError)
                 QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
@@ -304,7 +304,7 @@ void ScriptEditorDialog::runCommand(const QString &command)
         // run script
         pythonEngine->clearStdout();
         ScriptResult result = runPython(command);
-        result.text = pythonEngine->stdout();
+        result.text = pythonEngine->stdOut();
 
         if (result.isError)
             QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);

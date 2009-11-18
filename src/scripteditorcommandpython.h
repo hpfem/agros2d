@@ -17,8 +17,8 @@ public:
 
     void setSceneView(SceneView *sceneView);
     inline void showMessage(const QString &message);
-    inline void clearStdout() { m_stdout = ""; }
-    inline QString stdout() { return m_stdout; };
+    inline void clearStdout() { m_stdOut = ""; }
+    inline QString stdOut() { return m_stdOut; }
 
     ScriptResult runPython(const QString &script, bool isExpression = false, const QString &fileName = "");
 
@@ -26,7 +26,7 @@ private slots:
     void doPrintStdout(const QString &message);
 
 private:
-    QString m_stdout;
+    QString m_stdOut;
 
     PyObject *m_dict;
     QString m_functions;

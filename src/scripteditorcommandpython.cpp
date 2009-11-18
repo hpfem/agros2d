@@ -18,7 +18,7 @@ const int count = 100; \
                   int index[count]; \
                   for (int i = 0; i < count; i++) \
                   index[i] = INT_MIN; \
-                             if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
+                             if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
                                                   &index[ 0], &index[ 1], &index[ 2], &index[ 3], &index[ 4], &index[ 5], &index[ 6], &index[ 7], &index[ 8], &index[ 9], \
                                                   &index[10], &index[11], &index[12], &index[13], &index[14], &index[15], &index[16], &index[17], &index[18], &index[19], \
                                                   &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
@@ -873,7 +873,7 @@ void PythonEngine::showMessage(const QString &message)
 
 void PythonEngine::doPrintStdout(const QString &message)
 {
-    m_stdout.append(message);
+    m_stdOut.append(message);
 }
 
 ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, const QString &fileName)
@@ -955,7 +955,7 @@ ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, c
     }
     Py_DECREF(Py_None);
 
-    scriptResult.text = m_stdout;
+    scriptResult.text = m_stdOut;
 
     return scriptResult;
 }
