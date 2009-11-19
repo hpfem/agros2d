@@ -4,60 +4,67 @@ Editing Geometry
 Modes of Geometry Editing
 -------------------------
 
-When editing geometry is necessary to switch between the basic modes.
+When editing geometry it is necessary to switch between the three basic modes.
 
-* Operate on nodes
-* Operate on edges
-* Operate on labels
+* Operations on nodes
+* Operations on edges
+* Operations on labels
 
 To switch between different modes you can use the corresponding items in the menu "Problem" or key F5 (Operate on nodes), F6 (Operate on edges) and F7 (Operate on labels).
 
-Adding and Editing Elements of Geometry
+Adding Components of Geometry
 ---------------------------------------
 
 Adding nodes
 ^^^^^^^^^^^^
 
-Nodes are basic elements for creating the geometry of the solved problem. You have several methods for adding their.
+Nodes are basic elements for creating the geometry of the solved problem. You have three options for adding them.
 
-* Using coordinates enter
+* Enter the coordinates directly
 
   Select "Add node..." in the menu "Problem" (submenu "Add"), or by pressing Alt+N and entering the nodes coordinates.
 
-* Using mouse
+* Use the mouse
 
-  Move mouse to requested place and press left button together with Ctrl key.
+  Move mouse to requested place and press Ctrl+left click together.
 
-* Using the two previous methods
+* Use both previous methods together
 
-  Move mouse to requested place and press Ctrl+Shift+N. Coordinates of the selected place is placed in a dialog for entering the nodes coordinates.
+  Move mouse to the requested place and press Ctrl+Shift+N. Coordinates of the selected place are automatically placed in the dialog box for entering the nodes coordinates.
 
 Adding edges
 ^^^^^^^^^^^^
 
-To add an edge you must have in the geometry of at least two nodes. You can add their to two methods.
+To add an edge you must have at least two nodes in the geometry. You can add the edge using one of following methods:
 
-* Using the coordinates of existing nodes
+* Use the coordinates of existing nodes
 
   Select "Add edge..." in the menu "Problem" (submenu "Add"), or by pressing Alt+E and selecting start and end nodes coordinates.
 
-* Using mouse
+* Use the mouse
 
-  Move mouse to requested start node and press left button together with Ctrl key, then move the mouse to requested end node and also press left button together with Ctrl key.
+  Move mouse to the requested start node and press the left-click together with Ctrl key, then move the mouse to the requested end node and press Ctrl+left click again.
 
 Adding labels
 ^^^^^^^^^^^^^
 
-Labels are used to define areas. To add their you can use the same methods as for adding nodes.
+Labels are used to define individual areas. To add a label you can use the same methods as for adding nodes, i.e.
 
-Editing parametres of existing elements
+* Enter the coordinates directly,
+
+* Use both previous methods together,
+
+* Use both previous methods together.
+
+Editing Parameters of Existing Components
 ---------------------------------------
 
-You can press double click on the requested elements (nodes, edges, labels) for editing his parametres. For example, you can create an arc from the straight edge.
+You can double left click on the requested element (node, edge, and label) for editing its parameters. For example, you can create an arc from a straight edge.
 
 Tips
 ----
 
-Some operations can also be found in the context menu, which can lead to press right button on the workspace, or on list "Problem".
+Some operations can also be found in the context menu accessible by right clicking on the workspace or on the panel "Problem.
 
-You can use the full screen display mode to make the most of workspace views. To switch use key F11, or item in the context menu in workspace.
+You can use the full screen display mode to make the most of the workspace view. To switch between modes use the F11 key or select "correct option" from the workspace context menu.
+

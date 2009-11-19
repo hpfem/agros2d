@@ -4,4 +4,5 @@ Solving Problem
 Basic Procedure for Solving
 ---------------------------
 
-To solve the formulated problem select "Solve problem" in the menu "Problem" or press Alt+S. During the solution will be shown a special window, where is used for notification information and errors reporting of the solution. If the solution will be correct, general info on the course shown in panel "Problem".
+To solve the formulated problem select "Solve problem" in the menu "Problem" or press Alt+S. During the solving of the problem, a special window is shown which is used for notifications about the solving process and error reporting. If the solution is correct, general information about the solving process is shown on the "Problem" panel.
+

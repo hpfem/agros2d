@@ -1,10 +1,10 @@
 Processing Results
 ==================
 
-Settings of Results Views
+Viewing of Results
 -------------------------
 
-Settings of the results views are stored in dialog "Scene View". To display this dialog select "Scene properties" in menu "View", or in context menu in workspace.
+You can display your results using various pre-defined ways. Select "Scene properties" in menu "View" to open dialog "Scene View" or double click in Workspace and select this possibility in the context menu.
 
 .. image:: ./scene_view_dialog.png
 
@@ -16,9 +16,10 @@ Calculation of Field Quantity
 Local values
 ^^^^^^^^^^^^
 
-For the calculation of all the available field quantity in point you must define its coordinates. For define this point select "Local point value" in "Local Values" panel.
+For calculation of all available field quantities in point you must first define its coordinates. You can do it by selecting the "Local point value" on the "Local Values" panel.
 
-Surface and volume integrals
+Surface and Volume Integrals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For the calculation of all the available field quantity on surface and volumes you must define elements of geometry where be included in the calculation. For define this elements select "Surface integrals" or "Volume integrals" in menu "Problem" panel.
+For calculation of all available field quantities on surface and volume, you have to start by specifying the elements of your geometry which will be included in the calculation. Select "Surface integrals" or "Volume integrals" on "Problem" panel and mark selected parts of the geometry.
+

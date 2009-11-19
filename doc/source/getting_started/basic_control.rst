@@ -1,25 +1,25 @@
 Basic Control
 =============
 
-Description of Program Windows
+Description of Agros2D
 ------------------------------
 
-Main window
+Main Window
 ^^^^^^^^^^^
 
-Main window consists of several parts.
+Main Window consists of several parts.
 
-* Menubar and toolbar
+* Menu Bar and Toolbar
 
-  Menubar is the main control element. Here you can find all commands. In Toolbar is placed most frequently used commands.
+  Menu Bar is the main control element; you can find all commands there. In Toolbar the most frequently used commands are placed.
 
 * Workspace
 
-  Workspace is used to work on the model (geometry editing, view the results, etc.). Here you can use the context menu to perform certain commands.
+  Workspace is used for actual work with the model (geometry editing, viewing of the results, etc.). You can use the context menu, which is accessible by double left click in the Workspace area, to select commands from list.
 
-* Problem panel
+* Problem Panel
 
-  Problem panel display information about problem. Here you can use the context menu to perform certain commands. It consists of a tree.
+  Problem panel displays information about the problem. Here you can use the context menu to perform certain commands. It consists of a tree.
 
   - Problem
 
@@ -35,41 +35,41 @@ Main window consists of several parts.
 
   - Geometry
 
-    Here is contained informations about elements of geometry that are added to the workspace.
+    Information about elements of geometry that are added to the workspace is contained here.
 
-* Local Values panel
+* Local Values Panel
 
-  This panel display calculated field quantity of local points.
+  This panel displays calculated field quantity of local points.
 
-* Volume Integral panel
+* Volume Integral Panel
 
-  This panel display calculated field quantity of volume integrals.
+  This panel displays calculated field quantity of volume integrals.
 
-* Surface Integral panel
+* Surface Integral Panel
 
-  This panel display calculated field quantity of surface integrals.
+  This panel displays calculated field quantity of surface integrals.
 
-* Statusbar
+* Status Bar
 
-  Statusbar is used to display important information. Here are displayed information about the type of problem, solution physical field and cursor position in workspace.
+  Status bar is used to display information about the type of problem, solution of the physical field and cursor position in workspace.
 
 .. image:: ./main_window.png
 
-Fig. 1.: Main window
+Fig. 1.: Main Window
 
-Script editor window
+Script Editor Window
 ^^^^^^^^^^^^^^^^^^^^
 
-The main part of the Script editor window is editing area, which used to work with scripts. In the bottom of the window is located area for printing script warnings and messages. Script editor window also contain the menubar and toolbar.
+The main part of the Script Editor Window is editing area, which works with scripts. In the bottom of the window there is an area for printing script warnings and messages. Script Editor Window also contains the Menu Bar and Toolbar.
 
 .. image:: ./script_editor_window.png
 
-Fig. 2.: Script editor window
+Fig. 2.: Script Editor Window
 
-Chart window
+Chart Window
 ^^^^^^^^^^^^
 
-The main part of the Chart window is the area to display the chart or data. you can switch among chart and data views through tabs at the top of this area. To enter the necessary data for the chart and work with him is used controls on the right side of the window.
+The main part of the Chart Window is the area to display the chart or data. You can switch among chart and data views through tabs at the top of the area. To enter the necessary data for the chart and to work with it controls on the right side of the window are used.
 
 .. image:: ./chart_window.png
 
@@ -78,7 +78,7 @@ Fig. 3.: Chart window
 Shortcut Keys
 -------------
 
-Basic shortcuts
+Basic Shortcuts
 ^^^^^^^^^^^^^^^
 
 * **F4**
@@ -103,15 +103,15 @@ Basic shortcuts
 
 * **Alt+N**
 
-  Add node use coordinates.
+  Add node using coordinates.
 
 * **Alt+E**
 
-  Add edge use coordinates.
+  Add edge using coordinates.
 
 * **Alt+L**
 
-  Add label use coordinates.
+  Add label using coordinates.
 
 * **Alt+B**
 
@@ -125,10 +125,10 @@ Basic shortcuts
 
   Solve problem.
 
-Advanced shortcuts
+Advanced Shortcuts
 ^^^^^^^^^^^^^^^^^^
 
-* **Ctrl+Left mouse button**
+* **Ctrl+left click**
 
   Add elements of geometry use selected (with mouse) coordinates.
 
@@ -140,13 +140,14 @@ Advanced shortcuts
 
   Open dialog for set markers (only with selected edges or labels).
 
-* **Shift+Left mouse button**
+* **Shift+left click**
 
-  Move with workspace (also is possible to use Middle mouse button).
+  Move with Workspace (also is possible to use middle mouse button).
 
 Tips
 ----
 
-The main window and the Script Editor window you can customize to their needs and habits. For these adjustments, use context menu on the menubar and toolbar (also labels of each panels) and choose which parts you want to view.
+Both the Main Window and the Script Editor Window can be customized. For adjustments, use context menu of the Menu Bar or Toolbar (also label of each panel) and choose which parts you want to view.
 
-You can used rulers in wokrspace. You must turn this rulers in program properties.
+You can use rulers in Workspace after switching them on in program properties.
+

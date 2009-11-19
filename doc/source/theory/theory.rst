@@ -1,18 +1,18 @@
 Physical Field Theory
 =====================
 
-It this chapter we will describe physical field equations used in Agros2D.
+In this chapter we will describe physical field equations used in Agros2D.
 
 Electrostatic
 -------------
 
-Electrostatic field can be desribed by Poisson partial differential equation
+Electrostatic field can be described by Poisson partial differential equation
 
 .. math::
 
    \div \varepsilon\, \grad \varphi = \rho,
 
-where $\varepsilon$ is permittivity of the material, $\varphi$ is electrical scalar potential and $\rho$ is Subdomain charge density. Electric field can be written as 
+where $\varepsilon$ is permittivity of the material, $\varphi$ is electrical scalar potential and $\rho$ is subdomain charge density. Electric field can be written as 
 
 .. math::
 
@@ -64,7 +64,7 @@ Energy:
 Current Field
 -------------
 
-Current field can be desribed by Laplace partial differential equation
+Current field can be described by Laplace partial differential equation
 
 .. math::
 
@@ -158,7 +158,7 @@ Energy:
 Harmonic Magnetic Field
 -----------------------
 
-Harmonic magnetic field can be desribed by partial differential equation
+Harmonic magnetic field can be described by partial differential equation
 
 .. math::
 
@@ -229,7 +229,7 @@ Average energy:
 Heat Transfer
 -------------
 
-Heat transfer can be desribed by partial differential equation
+Heat transfer can be described by partial differential equation
 
 .. math::
 
@@ -289,3 +289,4 @@ Average temperature gradient:
 .. math::
 
    G_\mathrm{avg} = \frac{1}{V} \int_V \sqrt{G_x^2 + G_y^2} \dif V\,\,\,\mathrm{(Km)}
+

@@ -6,7 +6,7 @@ This example demonstrates the basics of working with Agros2D. The resulting mode
 Introduction
 ------------
 
-Capacitor is a passive electrical component. It consists of electrodes that are separated between dieletric and have a different electrical potential. It is used to store electric charge. The basic type of the capacitor is a plate capacitor.
+Capacitor is a passive electrical component, which consists of electrodes that are separated by a dielectric and have different electrical potential. It is used to store electric charge. The basic type of the capacitor is a plate capacitor.
 
 For more information visit http://en.wikipedia.org/wiki/Capacitor.
 
@@ -27,26 +27,26 @@ Select "New" in the menu "File" and enter problem properties.
 
 .. image:: ./editing_problem.png
 
-Fig. 1.: Editing problem
+Fig. 1.: Editing of a problem
 
 Geometry
 ^^^^^^^^
 
 * Nodes
 
-  Select "Operate on nodes" in the menu "Problem" and place 6 points with coordinates [0.1, 0.0], [0.2, 0.0], [0.0, 0.2], [0.0, 0.3], [0.1, 0.2] and [0.2, 0.3]. You can move mouse to requested place and press left button together with Ctrl key, or by pressing Alt+N and entering the nodes coordinates.
+  Select "Operate on nodes" in the menu "Problem" and place 6 points with coordinates [0.1, 0.0], [0.2, 0.0], [0.0, 0.2], [0.0, 0.3], [0.1, 0.2] and [0.2, 0.3]. You can move mouse to requested place and press left button together with Ctrl key, or by pressing Alt+N and entering the node coordinates.
 
 * Edges
 
-  Select "Operate on edges" in the menu "Problem" and draw 6 edges according to definition area. Press Ctrl key and select in sequence start and end node of the line, or by pressing Alt+E and these point select from offer.
+  Select "Operate on edges" in the menu "Problem" and draw 6 edges according to the definition area. Press Ctrl key and select start and end node of the line, or press Alt+E and select these points from a list.
 
 * Labels
 
-  Select "Operate on labels" in menu "Problem" and place block label into inner area. To place label you can use left mouse button together with Ctrl key or pressing Alt+L and entering the label point coordinates.
+  Select "Operate on labels" in menu "Problem" and place block label into an inner area. To place label you can use left mouse button together with Ctrl key or pressing Alt+L and entering the label point coordinates.
 
 .. image:: ./editing_geometry.png
 
-Fig. 2.: Editing geometry
+Fig. 2.: Editing of a geometry
 
 Boundary conditions
 ^^^^^^^^^^^^^^^^^^^
@@ -68,7 +68,7 @@ Select "New boundary condition" from the menu "Problem", or press Alt+B and grad
 Materials
 ^^^^^^^^^
 
-Select "New material" from the menu "Problem", or press Alt+M and define dieletric material embedded between the electrodes.
+Select "New material" from the menu "Problem", or press Alt+M and define dielectric material embedded between the electrodes.
 
 * Name: Dieletric
 * Permitivity: 10
@@ -93,7 +93,7 @@ Postprocessing
 Calculation of capacity
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Select "Volume integrals" in menu "File" and mark area "Dieletric". In panel "Volume integral" find value of "Energy" in group "Electostatic field".
+Select "Volume integrals" in menu "File" and mark area "Dielectric". In panel "Volume integral" find value of "Energy" in group "Electrostatic field".
 
 .. image:: ./calculation_of_energy.png
 
@@ -105,7 +105,7 @@ Capacity of the capacitor can be calculated according to formula
 
     W_e = 4 \cdot \frac{1}{2} CU^2,
 
-which can be adjusted to shape
+which can be adjusted to
 
 .. math::
 
@@ -118,4 +118,5 @@ Select "Chart" in menu "Tools". This opens a window for plotting charts. As a st
 
 .. image:: ./chart_plotting.png
 
-Fig. 4.: Char plotting
+Fig. 4.: Chart plotting
+
