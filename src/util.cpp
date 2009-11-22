@@ -192,6 +192,10 @@ QIcon icon(const QString &name)
 #endif
 
 #ifdef Q_WS_X11
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
+    return QIcon::fromTheme(name, QIcon(":images/" + name + ".png"));
+#endif
+
     QDir dir;
 
     QString style = "";

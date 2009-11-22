@@ -10,8 +10,10 @@ void createScripEngine(SceneView *sceneView)
 }
 
 ScriptResult runPythonScript(const QString &script, const QString &fileName)
-{
-    return pythonEngine->runPythonScript(script, fileName);
+{   
+    ScriptResult scriptResult = pythonEngine->runPythonScript(script, fileName);
+
+    return scriptResult;
 }
 
 ExpressionResult runPythonExpression(const QString &expression)

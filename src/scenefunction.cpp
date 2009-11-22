@@ -87,7 +87,7 @@ void DSceneFunction::createControls()
 
     // name
     txtName = new QLineEdit("");
-    txtFunction = new SLineEditScript();
+    txtFunction = new QLineEdit();
 
     // interval
     txtStart = new SLineEditDouble();

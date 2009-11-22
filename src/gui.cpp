@@ -76,6 +76,7 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
     layout->addWidget(lblValue, 0, Qt::AlignRight);
 
     setLayout(layout);
+
     evaluate();
 }
 

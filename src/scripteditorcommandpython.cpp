@@ -826,7 +826,7 @@ static PyMethodDef pythonMethods[] =
 
 PythonEngine::PythonEngine()
 {
-    clearStdout();
+    m_stdOut = "";
 
     // connect stdout
     connect(this, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
@@ -890,7 +890,7 @@ void PythonEngine::runPythonHeader()
 
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
 {
-    clearStdout();
+    m_stdOut = "";
 
     runPythonHeader();
 

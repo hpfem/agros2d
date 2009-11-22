@@ -47,7 +47,7 @@ private:
     Chart *chart;
 
     QLineEdit *txtName;
-    SLineEditScript *txtFunction;
+    QLineEdit *txtFunction;
     SLineEditDouble *txtStart;
     SLineEditDouble *txtEnd;
 

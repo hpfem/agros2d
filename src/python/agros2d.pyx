@@ -68,6 +68,9 @@ cdef extern from "../scripteditorcommandpython.h":
 
 # system
 
+def version():
+    return pythonVersion()
+
 def message(char *str):
     pythonMessage(str)
 
