@@ -895,7 +895,6 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     runPythonHeader();
 
     PyObject *output = PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-    Py_DECREF(Py_None);
 
     ScriptResult scriptResult;
     if (output)
@@ -908,6 +907,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
         scriptResult.isError = true;
         scriptResult.text = parseError();
     }
+    Py_DECREF(Py_None);
 
     return scriptResult;
 }
@@ -960,24 +960,28 @@ QString PythonEngine::parseError()
     if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
     {
         Py_INCREF(type);
+        msg.append("\n");
         msg.append(PyString_AsString(str));
         if (type) Py_DECREF(type);
         if (str) Py_DECREF(str);
     }
     else
     {
+        msg.append("\n");
         msg.append("<unknown exception type> ");
     }
 
     if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
     {
         Py_INCREF(value);
+        msg.append("\n");
         msg.append(PyString_AsString(value));
         if (value) Py_DECREF(value);
         if (str) Py_DECREF(str);
     }
     else
     {
+        msg.append("\n");
         msg.append("<unknown exception date> ");
     }
 

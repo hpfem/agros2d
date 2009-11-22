@@ -11,9 +11,7 @@ void createScripEngine(SceneView *sceneView)
 
 ScriptResult runPythonScript(const QString &script, const QString &fileName)
 {   
-    ScriptResult scriptResult = pythonEngine->runPythonScript(script, fileName);
-
-    return scriptResult;
+    return pythonEngine->runPythonScript(script, fileName);
 }
 
 ExpressionResult runPythonExpression(const QString &expression)
@@ -218,7 +216,10 @@ void ScriptEditorWidget::doRunPython()
     connect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
 
     txtOutput->clear();
-    runPythonScript(txtEditor->toPlainText(), file);
+    ScriptResult result = runPythonScript(txtEditor->toPlainText(), file);
+
+    if (result.isError)
+        txtOutput->setPlainText(result.text);
 
     disconnect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
 }
