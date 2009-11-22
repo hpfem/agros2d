@@ -13,20 +13,35 @@ struct ScriptResult
     ScriptResult()
     {
         text = "";
-        value = 0.0;
         isError = false;
     }
 
-    ScriptResult(const QString &text, double value = 0, bool isError = false)
+    ScriptResult(const QString &text, bool isError = false)
     {
         this->text = text;
-        this->value = value;
         this->isError = isError;
     }
 
     QString text;
-    double value;
     bool isError;
+};
+
+struct ExpressionResult
+{
+    ExpressionResult()
+    {
+        this->error = "";
+        this->value = 0.0;
+    }
+
+    ExpressionResult(double value, const QString &error)
+    {
+        this->error = error;
+        this->value = value;
+    }
+
+    QString error;
+    double value;
 };
 
 class Scene;
@@ -36,8 +51,8 @@ class SearchDialog;
 
 void createScripEngine(SceneView *sceneView);
 QString createPythonFromModel();
-ScriptResult runPython(const QString &script, const QString &fileName = "");
-ScriptResult runPythonExpression(const QString &expression);
+ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
+ExpressionResult runPythonExpression(const QString &expression);
 
 class ScriptEngineRemote : QObject
 {

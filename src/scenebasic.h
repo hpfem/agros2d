@@ -131,8 +131,8 @@ protected:
     bool save();
 
 private:
-    SLineEditDouble *txtPointX;
-    SLineEditDouble *txtPointY;
+    SLineEditValue *txtPointX;
+    SLineEditValue *txtPointY;
 };
 
 // *************************************************************************************************************************************
@@ -155,7 +155,7 @@ private:
     QComboBox *cmbNodeStart;
     QComboBox *cmbNodeEnd;
     QComboBox *cmbMarker;
-    SLineEditDouble *txtAngle;
+    SLineEditValue *txtAngle;
 
     void fillComboBox();
 };
@@ -177,10 +177,10 @@ protected:
     bool save();
 
 private:
-    SLineEditDouble *txtPointX;
-    SLineEditDouble *txtPointY;
+    SLineEditValue *txtPointX;
+    SLineEditValue *txtPointY;
     QComboBox *cmbMarker;
-    SLineEditDouble *txtArea;
+    SLineEditValue *txtArea;
 
     void fillComboBox();
 };

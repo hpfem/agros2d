@@ -768,7 +768,7 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    // Util::scene()->readFromFile("data/pokus.a2d");
+    Util::scene()->readFromFile("data/pokus.a2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     // Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
@@ -779,7 +779,7 @@ void MainWindow::doPaste()
     // Util::scene()->readFromFile("data/magnetostatic_planar.a2d");
     // Util::scene()->readFromFile("data/magnetostatic_axisymmetric_actuator.a2d");
     // Util::scene()->readFromFile("data/magnetostatic_planar_magnet.a2d");
-    Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.a2d");
+    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.a2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.a2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.a2d");
     // Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.a2d");

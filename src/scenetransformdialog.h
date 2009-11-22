@@ -28,14 +28,14 @@ private:
     QWidget *widRotate;
     QWidget *widScale;
 
-    SLineEditDouble *txtTranslateX;
-    SLineEditDouble *txtTranslateY;
-    SLineEditDouble *txtRotateBasePointX;
-    SLineEditDouble *txtRotateBasePointY;
-    SLineEditDouble *txtRotateAngle;
-    SLineEditDouble *txtScaleBasePointX;
-    SLineEditDouble *txtScaleBasePointY;
-    SLineEditDouble *txtScaleFactor;
+    SLineEditValue *txtTranslateX;
+    SLineEditValue *txtTranslateY;
+    SLineEditValue *txtRotateBasePointX;
+    SLineEditValue *txtRotateBasePointY;
+    SLineEditValue *txtRotateAngle;
+    SLineEditValue *txtScaleBasePointX;
+    SLineEditValue *txtScaleBasePointY;
+    SLineEditValue *txtScaleFactor;
 
     QCheckBox *chkCopy;
 };

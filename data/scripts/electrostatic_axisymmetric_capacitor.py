@@ -60,7 +60,6 @@ for i in range(5):
 	r.append(r1 + (i*dr))
 	C.append(2*2*integral["We"]/(U^2))
 
-
 print r
 print C
 

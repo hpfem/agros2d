@@ -231,7 +231,7 @@ bool ProblemDialog::save()
 {
     if (!txtStartupScript->toPlainText().isEmpty())
     {
-        ScriptResult scriptResult = runPythonExpression(txtStartupScript->toPlainText());
+        ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
         if (scriptResult.isError)
         {
             QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);

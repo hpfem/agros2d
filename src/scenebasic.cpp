@@ -185,8 +185,8 @@ DSceneNode::~DSceneNode()
 
 QLayout* DSceneNode::createContent()
 {
-    txtPointX = new SLineEditDouble();
-    txtPointY = new SLineEditDouble();
+    txtPointX = new SLineEditValue();
+    txtPointY = new SLineEditValue();
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
@@ -199,17 +199,20 @@ bool DSceneNode::load()
 {
     SceneNode *sceneNode = dynamic_cast<SceneNode *>(m_object);
 
-    txtPointX->setText(QString::number(sceneNode->point.x));
-    txtPointY->setText(QString::number(sceneNode->point.y));
+    txtPointX->setNumber(sceneNode->point.x);
+    txtPointY->setNumber(sceneNode->point.y);
 
     return true;
 }
 
 bool DSceneNode::save()
 {
+    if (!txtPointX->evaluate(false)) return false;
+    if (!txtPointY->evaluate(false)) return false;
+
     SceneNode *sceneNode = dynamic_cast<SceneNode *>(m_object);
 
-    Point point(txtPointX->value(), txtPointY->value());
+    Point point(txtPointX->number(), txtPointY->number());
 
     // check if node doesn't exists
     if (Util::scene()->getNode(point) && ((sceneNode->point != point) || isNew))
@@ -262,7 +265,7 @@ QLayout* DSceneEdge::createContent()
     cmbNodeStart = new QComboBox();
     cmbNodeEnd = new QComboBox();
     cmbMarker = new QComboBox();
-    txtAngle = new SLineEditDouble();
+    txtAngle = new SLineEditValue();
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(tr("Start point:"), cmbNodeStart);
@@ -296,25 +299,29 @@ void DSceneEdge::fillComboBox()
     }
 }
 
-bool DSceneEdge::load() {
+bool DSceneEdge::load()
+{
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
     cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
     cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
     cmbMarker->setCurrentIndex(cmbMarker->findData(sceneEdge->marker->variant()));
-    txtAngle->setText(QString::number(sceneEdge->angle));
+    txtAngle->setNumber(sceneEdge->angle);
 
     return true;
 }
 
-bool DSceneEdge::save() {
+bool DSceneEdge::save()
+{
+    if (!txtAngle->evaluate(false)) return false;
+
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
     SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
     SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
 
     // check if edge doesn't exists
-    SceneEdge *edgeCheck = Util::scene()->getEdge(nodeStart->point, nodeEnd->point, txtAngle->value());
+    SceneEdge *edgeCheck = Util::scene()->getEdge(nodeStart->point, nodeEnd->point, txtAngle->number());
     if ((edgeCheck) && ((sceneEdge != edgeCheck) || isNew))
     {
         QMessageBox::warning(this, "Edge", "Edge already exists.");
@@ -329,16 +336,16 @@ bool DSceneEdge::save() {
 
     if (!isNew)
     {
-        if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd) || (sceneEdge->angle != txtAngle->value()))
+        if ((sceneEdge->nodeStart != nodeStart) || (sceneEdge->nodeEnd != nodeEnd) || (sceneEdge->angle != txtAngle->number()))
         {
-            Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point, sceneEdge->angle, txtAngle->value()));
+            Util::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart->point, sceneEdge->nodeEnd->point, nodeStart->point, nodeEnd->point, sceneEdge->angle, txtAngle->number()));
         }
     }
 
     sceneEdge->nodeStart = nodeStart;
     sceneEdge->nodeEnd = nodeEnd;
     sceneEdge->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
-    sceneEdge->angle = txtAngle->value();
+    sceneEdge->angle = txtAngle->number();
 
     return true;
 }
@@ -367,11 +374,12 @@ DSceneLabel::~DSceneLabel()
     delete txtPointY;
 }
 
-QLayout* DSceneLabel::createContent() {
-    txtPointX = new SLineEditDouble();
-    txtPointY = new SLineEditDouble();
+QLayout* DSceneLabel::createContent()
+{
+    txtPointX = new SLineEditValue();
+    txtPointY = new SLineEditValue();
     cmbMarker = new QComboBox();
-    txtArea = new SLineEditDouble();
+    txtArea = new SLineEditValue();
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
@@ -398,19 +406,23 @@ bool DSceneLabel::load()
 {
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
-    txtPointX->setText(QString::number(sceneLabel->point.x));
-    txtPointY->setText(QString::number(sceneLabel->point.y));
+    txtPointX->setNumber(sceneLabel->point.x);
+    txtPointY->setNumber(sceneLabel->point.y);
     cmbMarker->setCurrentIndex(cmbMarker->findData(sceneLabel->marker->variant()));
-    txtArea->setText(QString::number(sceneLabel->area));
+    txtArea->setNumber(sceneLabel->area);
 
     return true;
 }
 
 bool DSceneLabel::save()
 {
+    if (!txtPointX->evaluate(false)) return false;
+    if (!txtPointY->evaluate(false)) return false;
+    if (!txtArea->evaluate(false)) return false;
+
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
-    Point point(txtPointX->value(), txtPointY->value());
+    Point point(txtPointX->number(), txtPointY->number());
 
     // check if label doesn't exists
     if (Util::scene()->getLabel(point) && ((sceneLabel->point != point) || isNew))
@@ -429,7 +441,7 @@ bool DSceneLabel::save()
 
     sceneLabel->point = point;
     sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
-    sceneLabel->area = txtArea->value();
+    sceneLabel->area = txtArea->number();
 
     return true;
 }

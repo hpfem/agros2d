@@ -21,6 +21,10 @@ public:
     inline QString stdOut() { return m_stdOut; }
 
     ScriptResult runPython(const QString &script, bool isExpression = false, const QString &fileName = "");
+    void runPythonHeader();
+    ScriptResult runPythonScript(const QString &script, const QString &fileName);
+    ExpressionResult runPythonExpression(const QString &expression);
+    QString parseError();
 
 private slots:
     void doPrintStdout(const QString &message);

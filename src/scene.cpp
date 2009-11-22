@@ -227,8 +227,7 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
 {
     foreach (SceneEdge *edgeCheck, edges)
     {
-        if ((((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd)) ||
-             ((edgeCheck->nodeStart->point == pointEnd) && (edgeCheck->nodeEnd->point == pointStart))) && (edgeCheck->angle == angle))
+        if (((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd)) && (edgeCheck->angle == angle))
             return edgeCheck;
     }
 

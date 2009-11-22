@@ -125,19 +125,20 @@ void initLists()
     adaptivityTypeList.insert(ADAPTIVITYTYPE_HP, "hp-adaptivity");    
 }
 
-bool Value::evaluate()
+bool Value::evaluate(bool quiet)
 {
-    ScriptResult scriptResult = runPythonExpression(text);
-    if (!scriptResult.isError)
+    ExpressionResult expressionResult = runPythonExpression(text);
+    if (expressionResult.error.isEmpty())
     {
-        number = scriptResult.value;
+        number = expressionResult.value;
     }
     else
     {
-        QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
+        if (!quiet)
+            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
     }
 
-    return !scriptResult.isError;
+    return expressionResult.error.isEmpty();
 };
 
 void enableLogFile(bool enable)

@@ -35,8 +35,8 @@ SceneTransformDialog::~SceneTransformDialog()
 void SceneTransformDialog::createControls()
 {
     // translate
-    txtTranslateX = new SLineEditDouble();
-    txtTranslateY = new SLineEditDouble();
+    txtTranslateX = new SLineEditValue();
+    txtTranslateY = new SLineEditValue();
 
     QGridLayout *layoutTranslate = new QGridLayout();
     layoutTranslate->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
@@ -49,9 +49,9 @@ void SceneTransformDialog::createControls()
     widTranslate->setLayout(layoutTranslate);
 
     // rotate
-    txtRotateBasePointX = new SLineEditDouble();
-    txtRotateBasePointY = new SLineEditDouble();
-    txtRotateAngle = new SLineEditDouble();
+    txtRotateBasePointX = new SLineEditValue();
+    txtRotateBasePointY = new SLineEditValue();
+    txtRotateAngle = new SLineEditValue();
 
     QGridLayout *layoutRotate = new QGridLayout();
     layoutRotate->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
@@ -65,9 +65,9 @@ void SceneTransformDialog::createControls()
     widRotate->setLayout(layoutRotate);
 
     // scale
-    txtScaleBasePointX = new SLineEditDouble();
-    txtScaleBasePointY = new SLineEditDouble();
-    txtScaleFactor = new SLineEditDouble();
+    txtScaleBasePointX = new SLineEditValue();
+    txtScaleBasePointY = new SLineEditValue();
+    txtScaleFactor = new SLineEditValue();
 
     QGridLayout *layoutScale = new QGridLayout();
     layoutScale->addWidget(new QLabel(Util::scene()->problemInfo()->labelX() + ":"), 0, 0);
@@ -106,13 +106,27 @@ void SceneTransformDialog::createControls()
 void SceneTransformDialog::doAccept()
 {
     if (tabWidget->currentWidget() == widTranslate)
-        Util::scene()->transformTranslate(Point(txtTranslateX->value(), txtTranslateY->value()), chkCopy->isChecked());
+    {
+        if (!txtTranslateX->evaluate(false)) return;
+        if (!txtTranslateY->evaluate(false)) return;
+        Util::scene()->transformTranslate(Point(txtTranslateX->number(), txtTranslateY->number()), chkCopy->isChecked());
+    }
 
     if (tabWidget->currentWidget() == widRotate)
-        Util::scene()->transformRotate(Point(txtRotateBasePointX->value(), txtRotateBasePointY->value()), txtRotateAngle->value(), chkCopy->isChecked());
+    {
+        if (!txtRotateBasePointX->evaluate(false)) return;
+        if (!txtRotateBasePointY->evaluate(false)) return;
+        if (!txtRotateAngle->evaluate(false)) return;
+        Util::scene()->transformRotate(Point(txtRotateBasePointX->number(), txtRotateBasePointY->number()), txtRotateAngle->number(), chkCopy->isChecked());
+    }
 
     if (tabWidget->currentWidget() == widScale)
-        Util::scene()->transformScale(Point(txtScaleBasePointX->value(), txtScaleBasePointY->value()), txtScaleFactor->value(), chkCopy->isChecked());
+    {
+        if (!txtScaleBasePointX->evaluate(false)) return;
+        if (!txtScaleBasePointY->evaluate(false)) return;
+        if (!txtScaleFactor->evaluate(false)) return;
+        Util::scene()->transformScale(Point(txtScaleBasePointX->number(), txtScaleBasePointY->number()), txtScaleFactor->number(), chkCopy->isChecked());
+    }
 
     accept();
 }

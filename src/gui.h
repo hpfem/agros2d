@@ -49,12 +49,14 @@ class SLineEditValue : public QWidget
 public:
     SLineEditValue(QWidget *parent = 0);
 
-    Value value();
     double number();
+    void setNumber(double number);
+
+    Value value();
     void setValue(Value value);
 
 public slots:
-    bool evaluate();
+    bool evaluate(bool quiet = true);
 
 protected:
     void focusInEvent(QFocusEvent *event);

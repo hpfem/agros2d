@@ -876,86 +876,112 @@ void PythonEngine::doPrintStdout(const QString &message)
     m_stdOut.append(message);
 }
 
-ScriptResult PythonEngine::runPython(const QString &script, bool isExpression, const QString &fileName)
+void PythonEngine::runPythonHeader()
 {
     // set current python engine
     pythonEngine = this;
 
+    // set sceneview
     sceneView = m_sceneView;
-    ScriptResult scriptResult;
 
     // startup script
-    PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);     
+}
 
-    QString exp;
-    if (isExpression)
-        exp.append("result = " +  script + "\n");
+ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
+{
+    clearStdout();
+
+    runPythonHeader();
+
+    PyObject *output = PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    Py_DECREF(Py_None);
+
+    ScriptResult scriptResult;
+    if (output)
+    {
+        scriptResult.isError = false;
+        scriptResult.text = m_stdOut;
+    }
     else
-        exp.append(script + "\n");
+    {
+        scriptResult.isError = true;
+        scriptResult.text = parseError();
+    }
+
+    return scriptResult;
+}
+
+ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
+{
+    runPythonHeader();
+
+    QString exp = "result = " + expression;
 
     PyObject *output = PyRun_String(exp.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
+    ExpressionResult expressionResult;
     if (output)
     {
         // parse result
-        if (isExpression)
+        PyObject *result = PyDict_GetItemString(m_dict, "result");
+        if (result)
         {
-            PyObject *result = PyDict_GetItemString(m_dict, "result");
-            if (result)
-            {
-                Py_INCREF(result);
-                double value = 0;
-                PyArg_Parse(result, "d", &value);
-                scriptResult.value = value;
-                Py_DECREF(result);
-            }
+            Py_INCREF(result);
+            PyArg_Parse(result, "d", &expressionResult.value);
+            if (fabs(expressionResult.value) < EPS_ZERO)
+                expressionResult.value = 0.0;
+            Py_DECREF(result);
         }
-
-        // error
-        scriptResult.isError = false;
     }
     else
     {
-        scriptResult.value = 0.0;
-        scriptResult.isError = true;
-
-        PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
-        PyErr_Fetch(&type, &value, &traceback);
-
-        if (traceback)
-        {
-            PyTracebackObject *object = (PyTracebackObject *) traceback;
-            showMessage(QString("Line %1: ").arg(object->tb_lineno));
-            Py_DECREF(traceback);
-        }
-
-        if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
-        {
-            Py_INCREF(type);
-            showMessage(PyString_AsString(str));
-            if (type) Py_DECREF(type);
-            if (str) Py_DECREF(str);
-        }
-        else
-        {
-            showMessage("<unknown exception type> ");
-        }
-
-        if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
-        {
-            Py_INCREF(value);
-            showMessage(PyString_AsString(value));
-            if (value) Py_DECREF(value);
-            if (str) Py_DECREF(str);
-        }
-        else
-        {
-            showMessage("<unknown exception date> ");
-        }
+        expressionResult.error = parseError();
     }
     Py_DECREF(Py_None);
 
-    scriptResult.text = m_stdOut;
+    return expressionResult;
+}
 
-    return scriptResult;
+QString PythonEngine::parseError()
+{   
+    QString msg;
+
+    PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
+    PyErr_Fetch(&type, &value, &traceback);
+
+    if (traceback)
+    {
+        PyTracebackObject *object = (PyTracebackObject *) traceback;
+        msg.append(QString("Line %1: ").arg(object->tb_lineno));
+        Py_DECREF(traceback);
+    }
+
+    if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
+    {
+        Py_INCREF(type);
+        msg.append(PyString_AsString(str));
+        if (type) Py_DECREF(type);
+        if (str) Py_DECREF(str);
+    }
+    else
+    {
+        msg.append("<unknown exception type> ");
+    }
+
+    if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
+    {
+        Py_INCREF(value);
+        msg.append(PyString_AsString(value));
+        if (value) Py_DECREF(value);
+        if (str) Py_DECREF(str);
+    }
+    else
+    {
+        msg.append("<unknown exception date> ");
+    }
+
+    PyErr_Clear();
+
+    return msg;
 }

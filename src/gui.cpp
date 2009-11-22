@@ -66,16 +66,29 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
     txtLineEdit = new QLineEdit(this);
     txtLineEdit->setToolTip(tr("This textedit allows using variables."));
     txtLineEdit->setText("0");
-    connect(txtLineEdit, SIGNAL(editingFinished()), this, SLOT(evaluate()));
+    connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
 
-    lblValue = new QLabel(this);    
+    lblValue = new QLabel(this);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->addWidget(txtLineEdit, 1);
     layout->addWidget(lblValue, 0, Qt::AlignRight);
 
-    setLayout(layout);    
+    setLayout(layout);
+    evaluate();
+}
+
+void SLineEditValue::setNumber(double value)
+{
+    txtLineEdit->setText(QString::number(value));
+    evaluate();
+}
+
+double SLineEditValue::number()
+{
+    if (evaluate())
+        return m_number;
 }
 
 void SLineEditValue::setValue(Value value)
@@ -89,17 +102,23 @@ Value SLineEditValue::value()
     return Value(txtLineEdit->text());
 }
 
-bool SLineEditValue::evaluate()
+bool SLineEditValue::evaluate(bool quiet)
 {
     Value val = value();
-    if (val.evaluate())
+    QPalette palette = lblValue->palette();
+    if (val.evaluate(quiet))
     {
         m_number = val.number;
-        lblValue->setText(QString("%1").arg(m_number, 0, 'g', 2));
+        lblValue->setText(QString("%1").arg(m_number, 0, 'g', 3));
+        palette.setColor(QPalette::WindowText, QApplication::palette().color(QPalette::WindowText));
+        lblValue->setPalette(palette);
         return true;
     }
     else
     {
+        lblValue->setText(tr("error"));
+        palette.setColor(QPalette::WindowText, QColor(Qt::red));
+        lblValue->setPalette(palette);
         setFocus();
         return false;
     }
@@ -108,12 +127,6 @@ bool SLineEditValue::evaluate()
 void SLineEditValue::focusInEvent(QFocusEvent *event)
 {
     txtLineEdit->setFocus(event->reason());
-}
-
-double SLineEditValue::number()
-{
-    if (evaluate())
-        return m_number;
 }
 
 // ****************************************************************************************************************

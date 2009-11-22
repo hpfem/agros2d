@@ -9,14 +9,14 @@ void createScripEngine(SceneView *sceneView)
     pythonEngine->setSceneView(sceneView);
 }
 
-ScriptResult runPython(const QString &script, const QString &fileName)
+ScriptResult runPythonScript(const QString &script, const QString &fileName)
 {
-    return pythonEngine->runPython(script, false, fileName);
+    return pythonEngine->runPythonScript(script, fileName);
 }
 
-ScriptResult runPythonExpression(const QString &expression)
+ExpressionResult runPythonExpression(const QString &expression)
 {
-    return pythonEngine->runPython(expression, true);
+    return pythonEngine->runPythonExpression(expression);
 }
 
 QString createPythonFromModel()
@@ -128,9 +128,7 @@ void ScriptEngineRemote::disconnected()
     ScriptResult result;
     if (!command.isEmpty())
     {
-        pythonEngine->clearStdout();
-        result = runPython(command);
-        result.text = pythonEngine->stdOut();
+        result = runPythonScript(command);
     }
 
     m_client_socket = new QLocalSocket();
@@ -218,8 +216,7 @@ void ScriptEditorWidget::doRunPython()
     connect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
 
     txtOutput->clear();
-    pythonEngine->clearStdout();
-    runPython(txtEditor->toPlainText(), file);
+    runPythonScript(txtEditor->toPlainText(), file);
 
     disconnect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
 }
@@ -284,9 +281,7 @@ void ScriptEditorDialog::runScript(const QString &fileName)
         if (file.open(QFile::ReadOnly | QFile::Text))
         {
             // run script
-            pythonEngine->clearStdout();
-            ScriptResult result = runPython(file.readAll(), fileName);
-            result.text = pythonEngine->stdOut();
+            ScriptResult result = runPythonScript(file.readAll(), fileName);
 
             if (result.isError)
                 QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
@@ -302,9 +297,7 @@ void ScriptEditorDialog::runCommand(const QString &command)
     if (!command.isEmpty())
     {
         // run script
-        pythonEngine->clearStdout();
-        ScriptResult result = runPython(command);
-        result.text = pythonEngine->stdOut();
+        ScriptResult result = runPythonScript(command);
 
         if (result.isError)
             QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
