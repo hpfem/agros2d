@@ -46,6 +46,9 @@ OptionsDialog::~OptionsDialog()
     // clear command history
     delete cmdClearCommandHistory;
 
+    // show result in line edit value widget
+    delete chkLineEditValueShowResult;
+
     // save with solution
     delete chkSaveWithSolution;
 
@@ -76,6 +79,9 @@ void OptionsDialog::load()
             break;
         }
     }
+
+    // show result in line edit value widget
+    chkLineEditValueShowResult->setChecked(settings.value("General/LineEditValueShowResult", false).value<bool>());
 
     // geometry
     txtGeometryAngleSegmentsCount->setValue(settings.value("Geometry/AngleSegmentsCount", 5).value<int>());
@@ -134,6 +140,9 @@ void OptionsDialog::save()
                                  tr("Language change"),
                                  tr("Interface language has been changed. You must restart the application."));
     settings.setValue("General/Language", cmbLanguage->currentText());
+
+    // show result in line edit value widget
+    settings.setValue("General/LineEditValueShowResult", chkLineEditValueShowResult->isChecked());
 
     // geometry
     settings.setValue("Geometry/AngleSegmentsCount", txtGeometryAngleSegmentsCount->value());
@@ -273,12 +282,14 @@ QWidget *OptionsDialog::createMainWidget()
     cmdClearCommandHistory->setText(tr("Clear command history"));
     connect(cmdClearCommandHistory, SIGNAL(clicked()), this, SLOT(doClearCommandHistory()));
 
+    chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
 
     QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
     layoutClearCommandHistory->addWidget(cmdClearCommandHistory);    
     layoutClearCommandHistory->addStretch();
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
+    layoutOther->addWidget(chkLineEditValueShowResult);
     layoutOther->addLayout(layoutClearCommandHistory);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));

@@ -81,6 +81,9 @@ private:
     // clear command history
     QPushButton *cmdClearCommandHistory;
 
+    // show result in line edit value widget
+    QCheckBox *chkLineEditValueShowResult;
+
     // save with solution
     QCheckBox *chkSaveWithSolution;
 

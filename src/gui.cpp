@@ -77,6 +77,9 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 
     setLayout(layout);
 
+    QSettings settings;
+    m_showResult = settings.value("General/LineEditValueShowResult", false).value<bool>();
+
     evaluate();
 }
 
@@ -113,6 +116,7 @@ bool SLineEditValue::evaluate(bool quiet)
         lblValue->setText(QString("%1").arg(m_number, 0, 'g', 3));
         palette.setColor(QPalette::WindowText, QApplication::palette().color(QPalette::WindowText));
         lblValue->setPalette(palette);
+        lblValue->setVisible(m_showResult);
         return true;
     }
     else
@@ -120,6 +124,7 @@ bool SLineEditValue::evaluate(bool quiet)
         lblValue->setText(tr("error"));
         palette.setColor(QPalette::WindowText, QColor(Qt::red));
         lblValue->setPalette(palette);
+        lblValue->setVisible(true);
         setFocus();
         return false;
     }

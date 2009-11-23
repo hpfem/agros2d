@@ -54,6 +54,7 @@ protected:
 
 private:
     double m_number;
+    bool m_showResult;
 
     QLineEdit *txtLineEdit;
     QLabel *lblValue;

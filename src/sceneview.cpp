@@ -50,9 +50,9 @@ void SceneViewSettings::load()
     colorSelected = settings.value("SceneViewSettings/ColorSelected", QColor::fromRgb(150, 0, 0)).value<QColor>();
 
     // geometry
-    geometryNodeSize = settings.value("Geometry/NodeSize", 6.0).value<double>();
-    geometryEdgeWidth = settings.value("Geometry/EdgeWidth", 2.0).value<double>();
-    geometryLabelSize = settings.value("Geometry/LabelSize", 6.0).value<double>();
+    geometryNodeSize = settings.value("SceneViewSettings/NodeSize", 6.0).value<double>();
+    geometryEdgeWidth = settings.value("SceneViewSettings/EdgeWidth", 2.0).value<double>();
+    geometryLabelSize = settings.value("SceneViewSettings/LabelSize", 6.0).value<double>();
 
     // grid
     gridStep = settings.value("SceneViewSettings/GridStep", 0.05).value<double>();
@@ -90,9 +90,9 @@ void SceneViewSettings::save()
     settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSelected);
 
     // geometry
-    settings.setValue("Geometry/NodeSize", geometryNodeSize);
-    settings.setValue("Geometry/EdgeWidth", geometryEdgeWidth);
-    settings.setValue("Geometry/LabelSize", geometryLabelSize);
+    settings.setValue("SceneViewSettings/NodeSize", geometryNodeSize);
+    settings.setValue("SceneViewSettings/EdgeWidth", geometryEdgeWidth);
+    settings.setValue("SceneViewSettings/LabelSize", geometryLabelSize);
 
     // grid
     settings.setValue("SceneViewSettings/GridStep", gridStep);
