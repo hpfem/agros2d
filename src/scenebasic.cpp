@@ -257,6 +257,7 @@ DSceneEdge::~DSceneEdge()
     delete cmbNodeStart;
     delete cmbNodeEnd;
     delete cmbMarker;
+    delete btnMarker;
     delete txtAngle;
 }
 
@@ -265,12 +266,20 @@ QLayout* DSceneEdge::createContent()
     cmbNodeStart = new QComboBox();
     cmbNodeEnd = new QComboBox();
     cmbMarker = new QComboBox();
+    connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
+    btnMarker = new QPushButton("...");
+    btnMarker->setMaximumWidth(25);
+    connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtAngle = new SLineEditValue();
+
+    QHBoxLayout *layoutMarker = new QHBoxLayout();
+    layoutMarker->addWidget(cmbMarker);
+    layoutMarker->addWidget(btnMarker);
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(tr("Start point:"), cmbNodeStart);
     layout->addRow(tr("End point:"), cmbNodeEnd);
-    layout->addRow(tr("Boundary condition:"), cmbMarker);
+    layout->addRow(tr("Boundary condition:"), layoutMarker);
     layout->addRow(tr("Angle (deg.):"), txtAngle);
 
     fillComboBox();
@@ -350,6 +359,21 @@ bool DSceneEdge::save()
     return true;
 }
 
+void DSceneEdge::doMarkerChanged(int index)
+{
+    btnMarker->setEnabled(cmbMarker->currentIndex() > 0);
+}
+
+void DSceneEdge::doMarkerClicked()
+{
+    SceneEdgeMarker *marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
+    if (marker->showDialog(this) == QDialog::Accepted)
+    {
+        cmbMarker->setItemText(cmbMarker->currentIndex(), marker->name);
+        Util::scene()->refresh();
+    }
+}
+
 // *************************************************************************************************************************************
 
 DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
@@ -372,6 +396,9 @@ DSceneLabel::~DSceneLabel()
 {
     delete txtPointX;
     delete txtPointY;
+    delete cmbMarker;
+    delete btnMarker;
+    delete txtArea;
 }
 
 QLayout* DSceneLabel::createContent()
@@ -379,12 +406,20 @@ QLayout* DSceneLabel::createContent()
     txtPointX = new SLineEditValue();
     txtPointY = new SLineEditValue();
     cmbMarker = new QComboBox();
+    connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
+    btnMarker = new QPushButton("...");
+    btnMarker->setMaximumWidth(25);
+    connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtArea = new SLineEditValue();
+
+    QHBoxLayout *layoutMarker = new QHBoxLayout();
+    layoutMarker->addWidget(cmbMarker);
+    layoutMarker->addWidget(btnMarker);
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
     layout->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
-    layout->addRow(tr("Material:"), cmbMarker);
+    layout->addRow(tr("Material:"), layoutMarker);
     layout->addRow(tr("Triangle area (m):"), txtArea);
 
     fillComboBox();
@@ -444,6 +479,21 @@ bool DSceneLabel::save()
     sceneLabel->area = txtArea->number();
 
     return true;
+}
+
+void DSceneLabel::doMarkerChanged(int index)
+{
+    btnMarker->setEnabled(cmbMarker->currentIndex() > 0);
+}
+
+void DSceneLabel::doMarkerClicked()
+{
+    SceneLabelMarker *marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
+    if (marker->showDialog(this) == QDialog::Accepted)
+    {
+        cmbMarker->setItemText(cmbMarker->currentIndex(), marker->name);
+        Util::scene()->refresh();
+    }
 }
 
 // undo framework *******************************************************************************************************************

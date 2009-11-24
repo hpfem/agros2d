@@ -155,9 +155,14 @@ private:
     QComboBox *cmbNodeStart;
     QComboBox *cmbNodeEnd;
     QComboBox *cmbMarker;
+    QPushButton *btnMarker;
     SLineEditValue *txtAngle;
 
     void fillComboBox();
+
+private slots:
+    void doMarkerChanged(int index);
+    void doMarkerClicked();
 };
 
 // *************************************************************************************************************************************
@@ -180,9 +185,14 @@ private:
     SLineEditValue *txtPointX;
     SLineEditValue *txtPointY;
     QComboBox *cmbMarker;
+    QPushButton *btnMarker;
     SLineEditValue *txtArea;
 
     void fillComboBox();
+
+private slots:
+    void doMarkerChanged(int index);
+    void doMarkerClicked();
 };
 
 // undo framework *******************************************************************************************************************
