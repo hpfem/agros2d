@@ -12,7 +12,7 @@ public:
 
     inline int numberOfSolution() { return 1; }
     bool hasFrequency() { return false; }
-    bool hasTransient() { return false; }
+    bool hasTransient() { return true; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
     void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
@@ -72,6 +72,7 @@ class LocalPointValueMagnetostatic : public LocalPointValue
 public:
     double current_density;
     double permeability;
+    double conductivity;
     double remanence;
     double remanence_angle;
     double potential;
@@ -127,8 +128,9 @@ public:
     Value current_density;
     Value remanence;
     Value remanence_angle;
+    Value conductivity;
 
-    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability, Value remanence, Value remanence_angle);
+    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability, Value remanence, Value remanence_angle, Value conductivity);
 
     QString script();
     QMap<QString, QString> data();
@@ -172,6 +174,7 @@ private:
     SLineEditValue *txtCurrentDensity;
     SLineEditValue *txtRemanence;
     SLineEditValue *txtRemanenceAngle;
+    SLineEditValue *txtConductivity;
 };
 
 #endif // MAGNETOSTATIC_H

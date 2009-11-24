@@ -23,8 +23,8 @@ HeatEdge *heatEdge;
 HeatLabel *heatLabel;
 bool heatPlanar;
 bool heatTransient;
-double timeStep;
-double timeTotal;
+double heatTimeStep;
+double heatTimeTotal;
 
 int heat_bc_types(int marker)
 {
@@ -92,10 +92,10 @@ Scalar heat_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<
 {
     if (heatPlanar)
         return heatLabel[e->marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
+        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / heatTimeStep : 0.0);
     else
         return heatLabel[e->marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
-                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep : 0.0);
+                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / heatTimeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
@@ -103,18 +103,18 @@ Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData
 {
     if (heatPlanar)
         return heatLabel[e->marker].volume_heat * int_v<Real, Scalar>(n, wt, v)
-        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
+        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / heatTimeStep : 0.0);
     else
         return heatLabel[e->marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
-                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
+                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / heatTimeStep : 0.0);
 }
 
 QList<SolutionArray *> *heat_main(SolverThread *solverThread)
 {
     heatPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
     heatTransient = (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
-    timeStep = Util::scene()->problemInfo()->timeStep;
-    timeTotal = Util::scene()->problemInfo()->timeTotal;
+    heatTimeStep = Util::scene()->problemInfo()->timeStep;
+    heatTimeTotal = Util::scene()->problemInfo()->timeTotal;
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -219,7 +219,7 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
     }
 
     // timesteps
-    int timesteps = (heatTransient) ? floor(timeTotal/timeStep) : 1;
+    int timesteps = (heatTransient) ? floor(heatTimeTotal/heatTimeStep) : 1;
     for (int n = 0; n<timesteps; n++)
     {
         log("\n");
@@ -244,7 +244,7 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
         solutionArray->sln->copy(sln);
         solutionArray->adaptiveError = error;
         solutionArray->adaptiveSteps = i-1;
-        if (heatTransient > 0) solutionArray->time = (n+1)*timeStep;
+        if (heatTransient > 0) solutionArray->time = (n+1)*heatTimeStep;
 
         solutionArrayList->append(solutionArray);
         log("solutionArrayList->append(solutionArray);");
@@ -1023,7 +1023,9 @@ QLayout* DSceneLabelHeatMarker::createContent()
     txtThermalConductivity = new SLineEditValue(this);
     txtVolumeHeat = new SLineEditValue(this);
     txtDensity = new SLineEditValue(this);
+    txtDensity->setEnabled(Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
     txtSpecificHeat = new SLineEditValue(this);
+    txtSpecificHeat->setEnabled(Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
 
     QFormLayout *layoutMarker = new QFormLayout();
     layoutMarker->addRow(tr("Thermal conductivity (W/m.K):"), txtThermalConductivity);
