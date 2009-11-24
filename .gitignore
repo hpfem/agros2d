@@ -1,8 +1,8 @@
 *.o
 moc_*
 qrc_*
-Makefile
-carbon2d
+qtc-*
+Makefile*
 *~
 include/*
 lib/*

@@ -776,7 +776,7 @@ void pythonSetTimeStep(int timestep)
         throw invalid_argument(QObject::tr("Solved problem is not transient.").toStdString());
 
     if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
-        throw out_of_range(QObject::tr("Time step must be between 0 and %1..").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString());
+        throw out_of_range(QObject::tr("Time step must be between 0 and %1.").arg(Util::scene()->sceneSolution()->timeStepCount()).toStdString());
 
     Util::scene()->sceneSolution()->setTimeStep(timestep);
 }
@@ -791,7 +791,7 @@ int pythonTimeStepCount()
 void pythonSaveImage(char *str, int w, int h)
 {
     if (!sceneView->saveImageToFile(QString(str), w, h))
-        throw invalid_argument(QObject::tr("Image not save to file '%1'.").arg(QString(str)).toStdString());
+        throw invalid_argument(QObject::tr("Image cannot be saved to the file '%1'.").arg(QString(str)).toStdString());
 }
 
 // print stdout

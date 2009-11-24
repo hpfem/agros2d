@@ -157,13 +157,15 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Geometry.Labels]", htmlGeometryLabels(), Qt::CaseSensitive);
 
     // solver
-    destination.replace("[Solver.Nodes]", QString::number(Util::scene()->sceneSolution()->mesh()->get_num_nodes()), Qt::CaseSensitive);
-    destination.replace("[Solver.Elements]", QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()), Qt::CaseSensitive);
-    destination.replace("[Solver.DOFs]", QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()), Qt::CaseSensitive);
-    QTime time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
-    destination.replace("[Solver.TimeElapsed]", time.toString("mm:ss.zzz") + " s", Qt::CaseSensitive);
-    destination.replace("[Solver.AdaptiveError]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) : "", Qt::CaseSensitive);
-    destination.replace("[Solver.AdaptiveSteps]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.Nodes]", (Util::scene()->sceneSolution()->isMeshed()) ? QString::number(Util::scene()->sceneSolution()->mesh()->get_num_nodes()) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.Elements]", (Util::scene()->sceneSolution()->isMeshed()) ? QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.DOFs]", (Util::scene()->sceneSolution()->isSolved()) ? QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) : "", Qt::CaseSensitive);
+    QTime time;
+    if (Util::scene()->sceneSolution()->isSolved())
+        time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
+    destination.replace("[Solver.TimeElapsed]", (Util::scene()->sceneSolution()->isSolved()) ? time.toString("mm:ss.zzz") + " s" : "", Qt::CaseSensitive);
+    destination.replace("[Solver.AdaptiveError]", (Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.AdaptiveSteps]", (Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) : "", Qt::CaseSensitive);
 
     // figures    
     destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", "Geometry"), Qt::CaseSensitive);

@@ -182,6 +182,10 @@ void MainWindow::createActions()
     actHelpShortCut->setStatusTip(tr("Shortcuts"));
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
 
+    actOnlineHelp = new QAction(icon(""), tr("Online help"), this);
+    actOnlineHelp->setStatusTip(tr("Online help"));
+    connect(actOnlineHelp, SIGNAL(triggered()), this, SLOT(doOnlineHelp()));
+
     actAbout = new QAction(icon("about"), tr("About &Agros2D"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
@@ -326,6 +330,7 @@ void MainWindow::createMenus()
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
     mnuHelp->addAction(actHelpShortCut);
+    mnuHelp->addAction(actOnlineHelp);
     mnuHelp->addSeparator();
     mnuHelp->addAction(actAbout);
     mnuHelp->addAction(actAboutQt);
@@ -574,7 +579,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     }
     catch (generalException fileNotOpen)
     {
-        QMessageBox::critical(this, tr("File open"), tr("File '%1' not open.").arg(fileNameDocument));
+        QMessageBox::critical(this, tr("File open"), tr("File '%1' cannot be opened.").arg(fileNameDocument));
     }
     catch (generalException unknownSuffix)
     {
@@ -582,7 +587,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     }
     catch (generalException fileNotFound)
     {
-        QMessageBox::critical(this, tr("File open"), tr("File '%1' not found.").arg(fileNameDocument));
+        QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
     }
 }
 
@@ -869,6 +874,11 @@ void MainWindow::doHelpShortCut()
 {
     Util::helpDialog()->showPage("getting_started/basic_control.html");
     Util::helpDialog()->show();
+}
+
+void MainWindow::doOnlineHelp()
+{
+    QDesktopServices::openUrl(QUrl("http://hpfem.org/agros2d/help"));
 }
 
 void MainWindow::doAbout()

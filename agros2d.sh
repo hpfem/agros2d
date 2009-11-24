@@ -24,6 +24,9 @@ case "$1" in
 		lrelease $langPath/*.ts
 		;;
 	lang.update )
+		lupdate $srcPath/*.cpp $srcPath/*.h -ts $langPath/cs_CZ.ts $langPath/en_US.ts
+		;;
+	lang.update-noobsolete )
 		lupdate $srcPath/*.cpp $srcPath/*.h -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts
 		;;
 	comp )
@@ -42,6 +45,6 @@ case "$1" in
 		if qmake ./agros2d.pro ; then make ; fi
 		;;
 	* )
-		echo "Usage: agros2d.sh\n  [help - build and generate help]\n  [help.build-web - build online help]\n  [help.build-latex - build latex documentation]\n  [lang - release language files]\n  [lang.update - update language files]\n  [comp - compile]\n  [pack - build package]\n  [all - build and generate help, release language files, compile]"
+		echo "Usage: agros2d.sh\n  [help - build and generate help]\n  [help.build-web - build online help]\n  [help.build-latex - build latex documentation]\n  [lang - release language files]\n  [lang.update - update language files]\n  [lang.update-noobsolete - update language files without obsolete translations]\n  [comp - compile]\n  [pack - build package]\n  [all - build and generate help, release language files, compile]"
 		;;
 esac
