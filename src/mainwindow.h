@@ -152,4 +152,6 @@ private:
     void createViews();
 };
 
+class generalException {};
+
 #endif // MAINWINDOW_H

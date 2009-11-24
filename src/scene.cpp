@@ -1029,7 +1029,7 @@ void Scene::readFromDxf(const QString &fileName)
     setlocale(LC_NUMERIC, plocale);
 }
 
-void Scene::readFromFile(const QString &fileName)
+bool Scene::readFromFile(const QString &fileName)
 {
     QSettings settings;
     QFileInfo fileInfo(fileName);
@@ -1038,7 +1038,7 @@ void Scene::readFromFile(const QString &fileName)
     QDomDocument doc;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
-        throw invalid_argument(tr("File '%1' not found.").arg(fileName).toStdString());
+        return false;
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -1052,7 +1052,7 @@ void Scene::readFromFile(const QString &fileName)
 
     if (!doc.setContent(&file)) {
         file.close();
-        return;
+        return false;
     }
     file.close();
 
@@ -1223,7 +1223,7 @@ void Scene::readFromFile(const QString &fileName)
     emit invalidated();
 }
 
-void Scene::writeToFile(const QString &fileName) {
+bool Scene::writeToFile(const QString &fileName) {
     QSettings settings;
 
     if (!problemInfo()->fileName.contains("temp.a2d"))
@@ -1407,7 +1407,7 @@ void Scene::writeToFile(const QString &fileName) {
     // save to file
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return;
+        return false;
 
     QTextStream out(&file);
     doc.save(out, 4);

@@ -137,7 +137,7 @@ public:
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
     inline SceneMode sceneMode() { return m_sceneMode; }
 
-    void saveImageToFile(const QString &fileName, int w = 0, int h = 0);
+    bool saveImageToFile(const QString &fileName, int w = 0, int h = 0);
     void saveImagesForReport(const QString &path, int w = 0, int h = 0);
 
 signals:

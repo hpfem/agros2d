@@ -21,7 +21,7 @@ cdef extern from "../scripteditorcommandpython.h":
                            double frequency,
                            char *analysistype, double timestep, double totaltime, double initialcondition) except +
     void pythonOpenDocument(char *str) except +
-    void pythonSaveDocument(char *str)
+    void pythonSaveDocument(char *str) except +
     
     void pythonAddNode(double x, double y) except +
     void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker) except +
@@ -60,7 +60,7 @@ cdef extern from "../scripteditorcommandpython.h":
 
     void pythonSetTimeStep(int timestep) except +
     int pythonTimeStepCount()
-    void pythonSaveImage(char *str, int w, int h)
+    void pythonSaveImage(char *str, int w, int h) except +
 
 # classes
 

@@ -231,8 +231,8 @@ public:
     
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
-    void readFromFile(const QString &fileName);
-    void writeToFile(const QString &fileName);
+    bool readFromFile(const QString &fileName);
+    bool writeToFile(const QString &fileName);
     
     inline QUndoStack *undoStack() { return m_undoStack; }
     

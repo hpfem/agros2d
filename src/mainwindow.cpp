@@ -534,29 +534,53 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
     if (fileNameDocument.isEmpty()) return;
 
-    if (QFile::exists(fileNameDocument))
+    try
     {
+        if (QFile::exists(fileNameDocument))
+        {
         QFileInfo fileInfo(fileNameDocument);
-        if (fileInfo.suffix() == "a2d")
-        {
-            // a2d data file
-            Util::scene()->readFromFile(fileNameDocument);
-            setRecentFiles();
+            if (fileInfo.suffix() == "a2d")
+            {
+                // a2d data file
+                if (Util::scene()->readFromFile(fileNameDocument))
+                {
+                    setRecentFiles();
 
-            sceneView->doDefaults();
-            sceneView->doZoomBestFit();
-            return;
+                    sceneView->doDefaults();
+                    sceneView->doZoomBestFit();
+                    return;
+                }
+                else
+                {
+                    generalException fileNotOpen;
+                    throw fileNotOpen;
+                }
+            }
+            if (fileInfo.suffix() == "py")
+            {
+                // python script
+                scriptEditorDialog->doFileOpen(fileNameDocument);
+                scriptEditorDialog->showDialog();
+                return;
+            }
+            generalException unknownSuffix;
+            throw unknownSuffix;
         }
-        if (fileInfo.suffix() == "py")
+        else
         {
-            // python script
-            scriptEditorDialog->doFileOpen(fileNameDocument);
-            scriptEditorDialog->showDialog();
-            return;
+            generalException fileNotFound;
+            throw fileNotFound;
         }
+    }
+    catch (generalException fileNotOpen)
+    {
+        QMessageBox::critical(this, tr("File open"), tr("File '%1' not open.").arg(fileNameDocument));
+    }
+    catch (generalException unknownSuffix)
+    {
         QMessageBox::critical(this, tr("File open"), tr("Unknown suffix."));
     }
-    else
+    catch (generalException fileNotFound)
     {
         QMessageBox::critical(this, tr("File open"), tr("File '%1' not found.").arg(fileNameDocument));
     }
@@ -567,18 +591,30 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
     QString fileName = action->text();
     if (QFile::exists(fileName))
     {
-        Util::scene()->readFromFile(fileName);
-        setRecentFiles();
+        if (Util::scene()->readFromFile(fileName))
+        {
+            setRecentFiles();
 
-        sceneView->doDefaults();
-        sceneView->doZoomBestFit();
+            sceneView->doDefaults();
+            sceneView->doZoomBestFit();
+            return;
+        }
+        else
+        {
+            QMessageBox::critical(this, tr("File open"), tr("File '%1' not open.").arg(QString(fileName)));
+        }
     }
 }
 
 void MainWindow::doDocumentSave()
 {
     if (QFile::exists(Util::scene()->problemInfo()->fileName))
-        Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
+    {
+        if (Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName))
+            return;
+        else
+            QMessageBox::critical(this, tr("File save"), tr("File not save."));
+    }
     else
         doDocumentSaveAs();
 }
@@ -606,7 +642,11 @@ void MainWindow::doDocumentSaveAs()
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix() != "a2d") fileName += ".a2d";
-        Util::scene()->writeToFile(fileName);
+        if (Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName))
+            return;
+        else
+            QMessageBox::critical(this, tr("File save"), tr("File not save."));
+
         setRecentFiles();
     }
 }
@@ -649,7 +689,8 @@ void MainWindow::doDocumentSaveImage()
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix().toLower() != "png") fileName += ".png";
-        sceneView->saveImageToFile(fileName);
+        if (sceneView->saveImageToFile(fileName) == false)
+            QMessageBox::critical(this, tr("Export image to file"), tr("Image was not saved to file '%1'.").arg(fileName));
     }
 }
 
