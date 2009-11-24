@@ -60,7 +60,7 @@ cdef extern from "../scripteditorcommandpython.h":
 
     void pythonSetTimeStep(int timestep) except +
     int pythonTimeStepCount()
-    void pythonSaveImage(char *str)
+    void pythonSaveImage(char *str, int w, int h)
 
 # classes
 
@@ -198,6 +198,6 @@ def timesetstepcount(int timestep):
 def timestepcount():
     return pythonTimeStepCount()
 
-def saveimage(char *str):
-    pythonSaveImage(str)
+def saveimage(char *str, int w = 0, int h = 0):
+    pythonSaveImage(str, w, h)
 

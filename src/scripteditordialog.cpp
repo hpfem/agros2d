@@ -3,7 +3,7 @@
 
 static PythonEngine *pythonEngine = NULL;
 
-void createScripEngine(SceneView *sceneView)
+void createScriptEngine(SceneView *sceneView)
 {
     pythonEngine = new PythonEngine();
     pythonEngine->setSceneView(sceneView);

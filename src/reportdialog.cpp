@@ -3,8 +3,10 @@
 #include "scene.h"
 #include "scripteditordialog.h"
 
-ReportDialog::ReportDialog(QWidget *parent) : QDialog(parent)
+ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
+    m_sceneView = sceneView;
+
     setWindowIcon(icon("browser"));
     setWindowTitle(tr("Report"));
     setWindowFlags(Qt::Window);
@@ -74,6 +76,7 @@ void ReportDialog::showDialog()
     QFile::copy(QString("%1/doc/report/template/template.html").arg(datadir()), tempProblemDir() + "/report/template.html");
     QFile::copy(QString("%1/doc/report/template/default.css").arg(datadir()), tempProblemDir() + "/report/default.css");
 
+    generateFigures();
     generateIndex();
 
     view->load(QUrl::fromLocalFile(tempProblemDir() + "/report/index.html"));
@@ -82,6 +85,11 @@ void ReportDialog::showDialog()
     show();
     activateWindow();
     raise();
+}
+
+void ReportDialog::generateFigures()
+{
+    m_sceneView->saveImagesForReport(tempProblemDir() + "/report", 600, 400);
 }
 
 void ReportDialog::generateIndex()
@@ -124,19 +132,19 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Problem.NumberOfRefinements]", QString::number(Util::scene()->problemInfo()->numberOfRefinements), Qt::CaseSensitive);
     destination.replace("[Problem.PolynomialOrder]", QString::number(Util::scene()->problemInfo()->polynomialOrder), Qt::CaseSensitive);
     destination.replace("[Problem.AdaptivityType]", adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType), Qt::CaseSensitive);
-    destination.replace("[Problem.AdaptivitySteps]", QString::number(Util::scene()->problemInfo()->adaptivitySteps), Qt::CaseSensitive);
-    destination.replace("[Problem.AdaptivityTolerance]", QString::number(Util::scene()->problemInfo()->adaptivityTolerance), Qt::CaseSensitive);
+    destination.replace("[Problem.AdaptivitySteps]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->problemInfo()->adaptivitySteps) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.AdaptivityTolerance]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->problemInfo()->adaptivityTolerance) : "", Qt::CaseSensitive);
 
-    destination.replace("[Problem.Frequency]", QString::number(Util::scene()->problemInfo()->frequency), Qt::CaseSensitive);
+    destination.replace("[Problem.Frequency]", (Util::scene()->problemInfo()->hermes()->hasFrequency()) ? QString::number(Util::scene()->problemInfo()->frequency) : "", Qt::CaseSensitive);
     destination.replace("[Problem.AnalysisType]", analysisTypeString(Util::scene()->problemInfo()->analysisType), Qt::CaseSensitive);
-    destination.replace("[Problem.TimeStep]", QString::number(Util::scene()->problemInfo()->timeStep), Qt::CaseSensitive);
-    destination.replace("[Problem.TimeTotal]", QString::number(Util::scene()->problemInfo()->timeTotal), Qt::CaseSensitive);
-    destination.replace("[Problem.InititalCondition]", QString::number(Util::scene()->problemInfo()->initialCondition), Qt::CaseSensitive);
+    destination.replace("[Problem.TimeStep]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeStep) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.TimeTotal]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeTotal) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.InititalCondition]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->initialCondition) : "", Qt::CaseSensitive);
 
     // script
     destination.replace("[Script]", createPythonFromModel(), Qt::CaseSensitive);
 
-    // script
+    // description
     destination.replace("[Description]", Util::scene()->problemInfo()->description, Qt::CaseSensitive);
 
     // physical properties
@@ -148,7 +156,22 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Geometry.Edges]", htmlGeometryEdges(), Qt::CaseSensitive);
     destination.replace("[Geometry.Labels]", htmlGeometryLabels(), Qt::CaseSensitive);
 
-    return QString(destination);
+    // solver
+    destination.replace("[Solver.Nodes]", QString::number(Util::scene()->sceneSolution()->mesh()->get_num_nodes()), Qt::CaseSensitive);
+    destination.replace("[Solver.Elements]", QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()), Qt::CaseSensitive);
+    destination.replace("[Solver.DOFs]", QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()), Qt::CaseSensitive);
+    QTime time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
+    destination.replace("[Solver.TimeElapsed]", time.toString("mm:ss.zzz") + " s", Qt::CaseSensitive);
+    destination.replace("[Solver.AdaptiveError]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.AdaptiveSteps]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) : "", Qt::CaseSensitive);
+
+    // figures    
+    destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", "Geometry"), Qt::CaseSensitive);
+    destination.replace("[Figure.Mesh]", htmlFigure("mesh.png", "Mesh"), Qt::CaseSensitive);
+    destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", "ScalarView: " + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable())), Qt::CaseSensitive);
+    destination.replace("[Figure.Order]", htmlFigure("order.png", "Polynomial order"), Qt::CaseSensitive);
+
+    return destination;
 }
 
 QString ReportDialog::htmlMaterials()
@@ -174,7 +197,7 @@ QString ReportDialog::htmlMaterials()
         out += "\n";
     }    
 
-    return QString(out);
+    return out;
 }
 
 QString ReportDialog::htmlBoundaries()
@@ -200,7 +223,7 @@ QString ReportDialog::htmlBoundaries()
         out += "\n";
     }
 
-    return QString(out);
+    return out;
 }
 
 QString ReportDialog::htmlGeometryNodes()
@@ -223,7 +246,7 @@ QString ReportDialog::htmlGeometryNodes()
     out += "</table>";
     out += "\n";
 
-    return QString(out);
+    return out;
 }
 
 QString ReportDialog::htmlGeometryEdges()
@@ -233,16 +256,18 @@ QString ReportDialog::htmlGeometryEdges()
     out  = "\n";
     out += "<table>";
     out += "<tr>";
-    out += "<th>Start node</th>";
-    out += "<th>End node</th>";
+    out += "<th colspan=\"2\">Start node</th>";
+    out += "<th colspan=\"2\">End node</th>";
     out += "<th>Angle (deg.)</th>";
     out += "<th>Marker</th>";
     out += "</tr>";
     for (int i = 0; i < Util::scene()->edges.count(); i++)
     {
         out += "<tr>";
-        out += "<td>[" + QString::number(Util::scene()->edges[i]->nodeStart->point.x, 'e', 3) + "; " + QString::number(Util::scene()->edges[i]->nodeStart->point.y, 'e', 3) + "]</td>";
-        out += "<td>[" + QString::number(Util::scene()->edges[i]->nodeEnd->point.x, 'e', 3) + "; " + QString::number(Util::scene()->edges[i]->nodeEnd->point.y, 'e', 3) + "]</td>";
+        out += "<td>" + QString::number(Util::scene()->edges[i]->nodeStart->point.x, 'e', 3) + "</td>";
+        out += "<td>" + QString::number(Util::scene()->edges[i]->nodeStart->point.y, 'e', 3) + "</td>";
+        out += "<td>" + QString::number(Util::scene()->edges[i]->nodeEnd->point.x, 'e', 3) + "</td>";
+        out += "<td>" + QString::number(Util::scene()->edges[i]->nodeEnd->point.y, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->edges[i]->angle, 'f', 2) + "</td>";
         out += "<td>" + Util::scene()->edges[i]->marker->name + "</td>";
         out += "</tr>";
@@ -250,7 +275,7 @@ QString ReportDialog::htmlGeometryEdges()
     out += "</table>";
     out += "\n";
 
-    return QString(out);
+    return out;
 }
 
 QString ReportDialog::htmlGeometryLabels()
@@ -276,5 +301,21 @@ QString ReportDialog::htmlGeometryLabels()
     out += "</table>";
     out += "\n";
 
-    return QString(out);
+    return out;
+}
+
+QString ReportDialog::htmlFigure(const QString &fileName, const QString &caption)
+{
+    QString out;
+
+    if (QFile::exists(tempProblemDir() + "/report/" + fileName))
+    {
+        out += "\n";
+        out += QString("<div id=\"figure\"><img src=\"%1\" tag=\"Geometry\" /><div>Figure: %2</div></div>").
+                arg(fileName).
+                arg(caption);
+        out += "\n";
+    }
+
+    return out;
 }

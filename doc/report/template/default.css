@@ -1,26 +1,14 @@
 /* Elements */
 body {
-    font-family: Verdana, Helvetica, Arial, sans-serif;
-    font-size: 80%;
-    color: #000000;
-    line-height: 1.5em;
-    background-color: #FFFFFF;
-    margin: 0;
-    padding: 1em;
-}
-
-h1 {
-	
-}
-
-h2,h3,h4,h5 {
-	color: #2582A4;
-	padding-top: 2px;
-	padding-bottom: 1px;
+    font-family: verdana, helvetica, arial, sans-serif;
+    font-size: 100%;
+    background-color: #F8F8F8;
+    color: #000;
+    margin: 10px;
 }
 
 p,ol,ul {
-	text-align: justify;
+	text-align: left;
 }
 
 strong {
@@ -38,26 +26,48 @@ a:hover {
 	color: #2582A4;
 }
 
-h2 {
-	font-size: 20px;
+h1, h2, h3, h4, h5 {
+    font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+    font-weight: normal;
+    padding-top: 3px;
+    padding-bottom: 2px;
+    margin-top: 5px;
+    margin-bottom: 3px;
 }
 
 h3 {
-	font-size: 15px;
+   border-bottom: 1px solid #ccc;
 }
 
-h4 {
-	font-size: 13px;
+h1 { 
+    font-size: 200%; 
 }
 
-h5 {
-	font-size: 11px;
-    color: #8B4513;
+h2 { 
+    font-size: 160%; 
+}
+
+h3 { 
+    font-size: 140%; 
+    padding-top: 3px;
+    padding-bottom: 4px;
+}
+
+h4 { 
+    font-size: 120%; 
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+h5 { 
+    font-size: 110%; 
+    padding-top: 1px;
+    padding-bottom: 1px;
 }
 
 p.footer {
 	margin: 0px;
-	text-align: center;
+	text-align: left;
 }
 
 /* images */
@@ -72,9 +82,12 @@ img.logo {
 }
 
 pre {
-  border: 0.1em solid #CCCCCC;
-  background-color: #F5F5F5;
-  padding: 0.5em 0.5em;
+    padding: 5px;
+    background-color: #F5F5F5;
+    color: #000000;
+    border: 1px solid #ac9;
+    border-left: none;
+    border-right: none;
 }
 
 /* table */
@@ -95,4 +108,15 @@ table TD {
 	background-color: #F5F5F5;
 	padding: 2px 5px;
 	border: 1px solid #DDDDEE;
+}
+
+#figure {
+}
+
+#figure img {
+}
+
+#figure div {
+    padding-top: 3px;
+    padding-bottom: 8px;
 }

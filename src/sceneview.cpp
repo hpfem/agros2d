@@ -279,6 +279,20 @@ void SceneView::initializeGL()
     glShadeModel(GL_SMOOTH);
 }
 
+void SceneView::resizeGL(int w, int h)
+{
+    setupViewport(w, h);
+
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        paletteFilter();
+        paletteUpdateTexAdjust();
+        paletteCreate();
+
+        updateGL();
+    }
+}
+
 void SceneView::setupViewport(int w, int h)
 {
     glViewport(0, 0, w, h);
@@ -291,8 +305,8 @@ void SceneView::setupViewport(int w, int h)
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
-        double aspect = ((double) w/(double) h);
-        gluPerspective(0.0, aspect, 1.0, 1000.0);
+
+        gluPerspective(0.0, m_aspect, 1.0, 1000.0);
     }
     else
         glOrtho(5.0, w-10.0, h-10.0, 5.0, -10.0, -10.0);
@@ -304,7 +318,7 @@ void SceneView::setupViewport(int w, int h)
 void SceneView::paintGL()
 {
     glClearColor(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF(), 0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
@@ -317,8 +331,7 @@ void SceneView::paintGL()
         glDisable(GL_DEPTH_TEST);
     }     
 
-    setupViewport(width(), height());
-
+    glLoadIdentity();
     glScaled(m_scale/m_aspect, m_scale, m_scale);
 
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
@@ -373,19 +386,14 @@ void SceneView::paintGL()
     paintSceneModeLabel();
 }
 
-void SceneView::resizeGL(int w, int h)
-{
-    setupViewport(w, h);
-}
-
 // paint *****************************************************************************************************************************
 
 void SceneView::paintGrid()
 {
     Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(width(), height()));
+    Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
-    int step = (((int) ((cornerMax - cornerMin).x / sceneViewSettings().gridStep) + 1) / 5);
+    int step = (((int) ((cornerMax - cornerMin).x / m_sceneViewSettings.gridStep) + 1) / 5);
     if (step > 0.0)
     {
         glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
@@ -394,47 +402,47 @@ void SceneView::paintGrid()
         glLineStipple(1, 0x1C47);
         glBegin(GL_LINES);
 
-        if ((((cornerMax.x-cornerMin.x)/sceneViewSettings().gridStep + (cornerMin.y-cornerMax.y)/sceneViewSettings().gridStep) < 200) &&
-            ((cornerMax.x-cornerMin.x)/sceneViewSettings().gridStep > 0) && ((cornerMin.y-cornerMax.y)/sceneViewSettings().gridStep > 0))
+        if ((((cornerMax.x-cornerMin.x)/m_sceneViewSettings.gridStep + (cornerMin.y-cornerMax.y)/m_sceneViewSettings.gridStep) < 200) &&
+            ((cornerMax.x-cornerMin.x)/m_sceneViewSettings.gridStep > 0) && ((cornerMin.y-cornerMax.y)/m_sceneViewSettings.gridStep > 0))
         {
             // vertical lines
-            for (int i = 0; i<cornerMax.x/sceneViewSettings().gridStep; i++)
+            for (int i = 0; i<cornerMax.x/m_sceneViewSettings.gridStep; i++)
             {
                 if ((step > 0) && i % step == 0)
                     glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
                 else
                     glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
-                glVertex2d(i*sceneViewSettings().gridStep, cornerMin.y);
-                glVertex2d(i*sceneViewSettings().gridStep, cornerMax.y);
+                glVertex2d(i*m_sceneViewSettings.gridStep, cornerMin.y);
+                glVertex2d(i*m_sceneViewSettings.gridStep, cornerMax.y);
             }
-            for (int i = 0; i>cornerMin.x/sceneViewSettings().gridStep; i--)
+            for (int i = 0; i>cornerMin.x/m_sceneViewSettings.gridStep; i--)
             {
                 if ((step > 0) && i % step == 0)
                     glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
                 else
                     glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
-                glVertex2d(i*sceneViewSettings().gridStep, cornerMin.y);
-                glVertex2d(i*sceneViewSettings().gridStep, cornerMax.y);
+                glVertex2d(i*m_sceneViewSettings.gridStep, cornerMin.y);
+                glVertex2d(i*m_sceneViewSettings.gridStep, cornerMax.y);
             }
 
             // horizontal lines
-            for (int i = 0; i<cornerMin.y/sceneViewSettings().gridStep; i++)
+            for (int i = 0; i<cornerMin.y/m_sceneViewSettings.gridStep; i++)
             {
                 if ((step > 0) && i % step == 0)
                     glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
                 else
                     glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
-                glVertex2d(cornerMin.x, i*sceneViewSettings().gridStep);
-                glVertex2d(cornerMax.x, i*sceneViewSettings().gridStep);
+                glVertex2d(cornerMin.x, i*m_sceneViewSettings.gridStep);
+                glVertex2d(cornerMax.x, i*m_sceneViewSettings.gridStep);
             }
-            for (int i = 0; i>cornerMax.y/sceneViewSettings().gridStep; i--)
+            for (int i = 0; i>cornerMax.y/m_sceneViewSettings.gridStep; i--)
             {
                 if ((step > 0) && i % step == 0)
                     glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
                 else
                     glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
-                glVertex2d(cornerMin.x, i*sceneViewSettings().gridStep);
-                glVertex2d(cornerMax.x, i*sceneViewSettings().gridStep);
+                glVertex2d(cornerMin.x, i*m_sceneViewSettings.gridStep);
+                glVertex2d(cornerMax.x, i*m_sceneViewSettings.gridStep);
             }
         }
         glEnd();
@@ -455,24 +463,22 @@ void SceneView::paintGrid()
 }
 
 void SceneView::paintRulers()
-{
+{       
     Point cornerMin = position(Point(0, 0));
-    Point cornerMax = position(Point(width(), height()));
+    Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
     // rulers
-    double step = (((int) ((cornerMax - cornerMin).x / sceneViewSettings().gridStep) + 1) / 5) * sceneViewSettings().gridStep;
+    double step = (((int) ((cornerMax - cornerMin).x / m_sceneViewSettings.gridStep) + 1) / 5) * m_sceneViewSettings.gridStep;
 
     if (step > 0.0)
     {
         double w;
-        double h = 2.0/height()*fontMetrics().height()/m_scale/2.0;
+        double h = 2.0/contextHeight()*fontMetrics().height()/m_scale/2.0;
 
         QString text;
         QFont font("Monospace", 8, QFont::Normal);
 
         // drawBlend(Point(cornerMin.x, cornerMax.y), Point(cornerMax.x, cornerMax.y + 1.5*h));
-
-
 
         if (((cornerMax.x-cornerMin.x)/step > 0) && ((cornerMin.y-cornerMax.y)/step > 0))
         {
@@ -480,26 +486,26 @@ void SceneView::paintRulers()
             for (int i = 0; i<cornerMax.x/step; i++)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
                 drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
             }
             for (int i = 0; i>cornerMin.x/step; i--)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
                 drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
             }
             // horizontal ticks
             for (int i = 0; i<cornerMin.y/step; i++)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
                 drawBlend(Point(cornerMin.x, i*step + h*1.1), Point(cornerMin.x + h/4.0 + 2*w*1.1, i*step - h*1.1));
             }
             for (int i = 0; i>cornerMax.y/step; i--)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
                 drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
             }
 
@@ -508,26 +514,26 @@ void SceneView::paintRulers()
             for (int i = 0; i<cornerMax.x/step; i++)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
                 renderText(i*step - w, cornerMax.y + h/4.0, 0, text, font);
             }
             for (int i = 0; i>cornerMin.x/step; i--)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
                 renderText(i*step - w, cornerMax.y + h/4.0, 0, text, font);
             }
             // horizontal ticks
             for (int i = 0; i<cornerMin.y/step; i++)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
                 renderText(cornerMin.x + h/4.0, i*step - h/2.0, 0, text, font);
             }
             for (int i = 0; i>cornerMax.y/step; i--)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/width()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
+                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
                 renderText(cornerMin.x + h/4.0, i*step - h/2.0, 0, text, font);
             }
         }
@@ -636,8 +642,8 @@ void SceneView::paintGeometry()
                 glColor3f(0.1, 0.1, 0.1);
                 
                 Point point;
-                point.x = 2.0/width()*m_aspect*fontMetrics().width(label->marker->name)/m_scale/2.0;
-                point.y = 2.0/height()*fontMetrics().height()/m_scale;
+                point.x = 2.0/contextWidth()*m_aspect*fontMetrics().width(label->marker->name)/m_scale/2.0;
+                point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale;
                 
                 renderText(label->point.x-point.x, label->point.y-point.y, 0, label->marker->name);
             }
@@ -745,7 +751,7 @@ void SceneView::paintOrder()
         glPushMatrix();
         glLoadIdentity();
 
-        double k = 700.0/(double) height()/m_aspect;
+        double k = 700.0/(double) contextHeight()/m_aspect;
 
         double labels_width = 0.08*k;
         double scale_width = 0.04*k;
@@ -800,7 +806,7 @@ void SceneView::paintOrder()
         glEnd();
 
         // labels
-        double h = 2.0*fontMetrics().height()/height();
+        double h = 2.0*fontMetrics().height()/contextHeight();
 
         for (int i = 0; i < num_boxes; i++)
         {
@@ -823,7 +829,7 @@ void SceneView::paintColorBar(double min, double max)
     glPushMatrix();
     glLoadIdentity();
     
-    double k = 700.0/(double) height()/m_aspect;
+    double k = 700.0/(double) contextHeight()/m_aspect;
     
     double labels_width = 0.18*k;
     double scale_width = 0.04*k;
@@ -877,7 +883,7 @@ void SceneView::paintColorBar(double min, double max)
     glEnd();
     
     // labels
-    double h = 2.0*fontMetrics().height()/height();
+    double h = 2.0*fontMetrics().height()/contextHeight();
     
     for (int i = 0; i < scale_numticks+2; i++)
     {
@@ -1237,12 +1243,12 @@ void SceneView::paintSceneModeLabel()
         break;
     }
     
-    double w = 2.0*fontMetrics().width(text)/width();
+    double w = 2.0*fontMetrics().width(text)/contextWidth();
     
     drawBlend(Point(0.0 - w/1.5, 0.94), Point(0.0 + w/1.5, 1.0));
     
     glColor3f(0.0, 0.0, 0.0);
-    renderText((width()-fontMetrics().width(text))/2, 14, text);
+    renderText((contextWidth()-fontMetrics().width(text))/2, 14, text);
     
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
@@ -1402,7 +1408,7 @@ void SceneView::paletteUpdateTexAdjust()
 void SceneView::keyPressEvent(QKeyEvent *event)
 {
     RectPoint rect = Util::scene()->boundingBox();
-    Point view = position(Point(width(), height()));
+    Point view = position(Point(contextWidth(), contextHeight()));
     
     switch (event->key())
     {
@@ -1764,14 +1770,14 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
         if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
             (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         {
-            m_offset.x += 2.0/width() *(- dx * cos(m_rotation.y/180.0*M_PI) + dy * sin(m_rotation.y/180.0*M_PI))/m_scale*m_aspect;
-            m_offset.y += 2.0/height()*(  dy * cos(m_rotation.y/180.0*M_PI) + dx * sin(m_rotation.y/180.0*M_PI))/m_scale;
-            m_offset.z -= 2.0/height()*(  dy * sin(m_rotation.x/180.0*M_PI))/m_scale;
+            m_offset.x += 2.0/contextWidth() *(- dx * cos(m_rotation.y/180.0*M_PI) + dy * sin(m_rotation.y/180.0*M_PI))/m_scale*m_aspect;
+            m_offset.y += 2.0/contextHeight()*(  dy * cos(m_rotation.y/180.0*M_PI) + dx * sin(m_rotation.y/180.0*M_PI))/m_scale;
+            m_offset.z -= 2.0/contextHeight()*(  dy * sin(m_rotation.x/180.0*M_PI))/m_scale;
         }
         else
         {
-            m_offset.x -= 2.0/width() * dx / m_scale*m_aspect;
-            m_offset.y += 2.0/height() * dy / m_scale;
+            m_offset.x -= 2.0/contextWidth() * dx / m_scale*m_aspect;
+            m_offset.y += 2.0/contextHeight() * dy / m_scale;
             m_offset.z = 0.0;
         }
 
@@ -1951,7 +1957,7 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
     double sceneWidth = end.x-start.x;
     double sceneHeight = end.y-start.y;
     
-    double maxScene = (((double) width() / (double) height()) < (sceneWidth / sceneHeight)) ? sceneWidth/m_aspect : sceneHeight;
+    double maxScene = (((double) contextWidth() / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/m_aspect : sceneHeight;
     
     m_scale = 1.95/maxScene;
     setZoom(0);
@@ -2470,15 +2476,106 @@ void SceneView::paintPostprocessorSelectedSurface()
     }
 }
 
-void SceneView::saveImageToFile(const QString &fileName)
+void SceneView::saveImageToFile(const QString &fileName, int w, int h)
 {
-    int w = width();
-    int h = height();
+    QPixmap pixmap = renderPixmap(w, h);
+    pixmap.save(fileName, "PNG");
 
-    makeCurrent();
+    resizeGL(width(), height());
+}
 
-    // copy image
-    QImage *image = new QImage(grabFrameBuffer());
-    image->save(fileName, "PNG");
-    delete image;
+void SceneView::saveImagesForReport(const QString &path, int w, int h)
+{
+    // store sceneview settings
+    SceneViewSettings sceneViewSettingsCopy = m_sceneViewSettings;
+    SceneMode sceneModeCopy = m_sceneMode;
+    double scaleCopy = m_scale;
+    double aspectCopy = m_aspect;
+    Point3 offsetCopy = m_offset;
+    Point rotationCopy = m_rotation;
+
+    // remove old files
+    QFile::remove(path + "/geometry.png");
+    QFile::remove(path + "/mesh.png");
+    QFile::remove(path + "/scalarview.png");
+    QFile::remove(path + "/order.png");
+
+    doZoomBestFit();
+
+    m_sceneViewSettings.showContours = false;
+    m_sceneViewSettings.showGeometry = true;
+    m_sceneViewSettings.showGrid = true;
+    m_sceneViewSettings.showInitialMesh = false;
+    m_sceneViewSettings.showRulers = true;
+    m_sceneViewSettings.showSolutionMesh = false;
+    m_sceneViewSettings.showVectors = false;
+
+    // geometry
+    actSceneModeLabel->trigger();
+    saveImageToFile(path + "/geometry.png", w, h);
+    m_sceneViewSettings.showRulers = false;
+
+    // mesh
+    if (Util::scene()->sceneSolution()->isMeshed())
+    {
+        // show only initial mesh
+        actSceneModeLabel->trigger();
+
+        m_sceneViewSettings.showInitialMesh = true;
+        saveImageToFile(path + "/mesh.png", w, h);
+        m_sceneViewSettings.showInitialMesh = false;        
+    }
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        // when solved show both meshes
+        actSceneModePostprocessor->trigger();
+        
+        m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_NONE;
+        updateGL();
+        
+        m_sceneViewSettings.showInitialMesh = true;
+        m_sceneViewSettings.showSolutionMesh = true;
+        saveImageToFile(path + "/mesh.png", w, h);
+        m_sceneViewSettings.showInitialMesh = false;
+        m_sceneViewSettings.showSolutionMesh = false;
+    }
+
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        actSceneModePostprocessor->trigger();
+
+        // last step
+        if (Util::scene()->problemInfo()->hermes()->hasTransient())
+            Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStepCount() - 1);
+
+        m_sceneViewSettings.scalarRangeAuto = true;
+        m_sceneViewSettings.scalarPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable();
+        m_sceneViewSettings.scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
+        m_sceneViewSettings.vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
+
+        doInvalidated();
+
+        // scalar field
+        m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
+        updateGL();
+        saveImageToFile(path + "/scalarview.png", w, h);
+
+        // order        
+        m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
+        updateGL();
+        saveImageToFile(path + "/order.png", w, h);
+    }
+
+    // restore sceneview settings
+    m_sceneViewSettings = sceneViewSettingsCopy;
+    m_sceneMode = sceneModeCopy;
+    m_scale = scaleCopy;
+    m_aspect = aspectCopy;
+    m_offset = offsetCopy;
+    m_rotation = rotationCopy;
+
+    if (m_sceneMode == SCENEMODE_OPERATE_ON_NODES) actSceneModeNode->trigger();
+    if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS) actSceneModeEdge->isChecked();
+    if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS) actSceneModeLabel->isChecked();
+    if (m_sceneMode == SCENEMODE_POSTPROCESSOR) actSceneModePostprocessor->isChecked();
 }

@@ -115,11 +115,6 @@ public:
     QAction *actSceneZoomBestFit;
     QAction *actSceneZoomRegion;
 
-    QAction *actSceneShowMesh;
-    QAction *actSceneShowContours;
-    QAction *actSceneShowScalarField;
-    QAction *actSceneShowVectors;
-
     QActionGroup *actSceneModeGroup;
     QAction *actSceneModeNode;
     QAction *actSceneModeEdge;
@@ -142,7 +137,8 @@ public:
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
     inline SceneMode sceneMode() { return m_sceneMode; }
 
-    void saveImageToFile(const QString &fileName);
+    void saveImageToFile(const QString &fileName, int w = 0, int h = 0);
+    void saveImagesForReport(const QString &path, int w = 0, int h = 0);
 
 signals:
     void mouseMoved(const QPointF &position);
@@ -163,6 +159,9 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
     void closeEvent(QCloseEvent *event);
+
+    inline int contextWidth() { return context()->device()->width(); }
+    inline int contextHeight() { return context()->device()->height(); }
 
 private:
     QMainWindow *m_mainWindow;
@@ -235,7 +234,7 @@ private:
     void setRangeScalar();
     void setRangeVector();
     void selectRegion(const Point &start, const Point &end);
-    inline Point &position(const Point &point) { Point p((2.0/width()*point.x-1)/m_scale*m_aspect+m_offset.x, -(2.0/height()*point.y-1)/m_scale+m_offset.y); return p; }
+    inline Point &position(const Point &point) { Point p((2.0/contextWidth()*point.x-1)/m_scale*m_aspect+m_offset.x, -(2.0/contextHeight()*point.y-1)/m_scale+m_offset.y); return p; }
 
 private slots:
     void doMaterialGroup(QAction *action);

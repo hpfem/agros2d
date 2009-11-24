@@ -2,6 +2,7 @@
 #define REPORTDIALOG_H
 
 #include "util.h"
+#include "sceneview.h"
 
 #include <QWebView>
 
@@ -10,12 +11,13 @@ class ReportDialog : public QDialog
     Q_OBJECT
 
 public:
-    ReportDialog(QWidget *parent = 0);
+    ReportDialog(SceneView *sceneView, QWidget *parent = 0);
     ~ReportDialog();
 
     void showDialog();
 
 private:
+    SceneView *m_sceneView;
     QWebView *view;
 
     void createControls();
@@ -24,6 +26,7 @@ private:
     QPushButton *btnOpenInExternalBrowser;
     QPushButton *btnPrint;
 
+    void generateFigures();
     void generateIndex();
     QString replaceTemplates(const QString &source);
 
@@ -32,6 +35,8 @@ private:
     QString htmlGeometryNodes();
     QString htmlGeometryEdges();
     QString htmlGeometryLabels();
+
+    QString htmlFigure(const QString &fileName, const QString &caption);
 
 private slots:
     void doClose();

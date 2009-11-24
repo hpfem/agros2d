@@ -90,6 +90,6 @@ void pythonShowVectors(bool show);
 void pythonSetTimeStep(int timestep);
 int pythonTimeStepCount();
 
-void pythonSaveImage(char *str);
+void pythonSaveImage(char *str, int w, int h);
 
 #endif // SCRIPTEDITORCOMMANDPYTHON_H

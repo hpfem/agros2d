@@ -6,8 +6,7 @@
   <link href="default.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
-  <h2>Name: [Problem.Name]</h2>    
-  <h4>Date: [Date]</h4>
+  <h1>[Problem.Name]</h1>    
     
   <h3>Problem information</h3>   
   <table>
@@ -56,10 +55,6 @@
       <td>[Problem.AdaptivityTolerance]</td>
     </tr>
     <tr>
-      <td>Adaptivity:</td>
-      <td>[Problem.AdaptivityType]</td>
-    </tr>
-    <tr>
       <td>Frequency:</td>
       <td>[Problem.Frequency]</td>
     </tr>
@@ -87,6 +82,8 @@
   [Boundaries]
 
   <h3>Geometry</h3>
+  [Figure.Geometry]
+
   <h4>Nodes</h4>
   [Geometry.Nodes]
   <h4>Edges</h4>
@@ -94,11 +91,43 @@
   <h4>Labels</h4>
   [Geometry.Labels]
 
-  <h3>Scalar view</h3>
+  <h3>Mesh and solution</h3>
+
+  <h4>Solver information</h4>
+  <table>
+    <tr>
+      <td>Nodes:</td>
+      <td>[Solver.Nodes]</td>
+    </tr>
+    <tr>
+      <td>Elements:</td>
+      <td>[Solver.Elements]</td>
+    </tr>
+    <tr>
+      <td>DOFs:</td>
+      <td>[Solver.DOFs]</td>
+    </tr>
+    <tr>
+      <td>Elapsed time:</td>
+      <td>[Solver.TimeElapsed]</td>
+    </tr>
+    <tr>
+      <td>Adaptive error:</td>
+      <td>[Solver.AdaptiveError]</td>
+    </tr>
+    <tr>
+      <td>Adaptive steps:</td>
+      <td>[Solver.AdaptiveSteps]</td>
+    </tr>
+  </table>
+
+  [Figure.Mesh]
+  [Figure.ScalarView]
+  [Figure.Order]
 
   <h3>Script</h3>
   <pre>[Script]</pre>
 
-  <p clas="footer">Computed by Agros2D (<a href="http://hpfem.org/agros2d">http://hpfem.org/agros2d</a>)</p>
+  <p class="footer">Computed by Agros2D (<a href="http://hpfem.org/agros2d">http://hpfem.org/agros2d</a>)</p>
 </body>
 </html>

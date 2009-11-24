@@ -49,7 +49,7 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 
-void createScripEngine(SceneView *sceneView);
+void createScriptEngine(SceneView *sceneView);
 QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
 ExpressionResult runPythonExpression(const QString &expression);

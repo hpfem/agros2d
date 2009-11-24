@@ -229,6 +229,8 @@ void VideoDialog::doCreateImages()
     {
         Util::scene()->sceneSolution()->setTimeStep(i);
         m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000" + QString::number(i)).right(5)));
+        // QPixmap pixmap = m_sceneView->renderPixmap(0, 0, true);
+        // pixmap.save(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000" + QString::number(i)).right(5)), "PNG");
     }
 
     btnEncodeFFmpeg->setEnabled(true);    

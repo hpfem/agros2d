@@ -786,9 +786,9 @@ int pythonTimeStepCount()
 }
 
 // saveimage(filename)
-void pythonSaveImage(char *str)
+void pythonSaveImage(char *str, int w, int h)
 {
-    sceneView->saveImageToFile(QString(str));
+    sceneView->saveImageToFile(QString(str), w, h);
 }
 
 // print stdout
