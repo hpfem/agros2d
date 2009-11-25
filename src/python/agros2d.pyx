@@ -131,13 +131,13 @@ def selectedgepoint(double x, double y):
 def selectlabelpoint(double x, double y):
     pythonSelectLabelPoint(x, y)
 
-def rotateselection(double x, double y, double angle, bool copy = False):
+def rotateselection(double x, double y, double angle, bool copy):
     pythonRotateSelection(x, y, angle, int(copy))
 
-def scaleselection(double x, double y, double scale, bool copy = False):
+def scaleselection(double x, double y, double scale, bool copy):
     pythonScaleSelection(x, y, scale, int(copy))
 
-def moveselection(double dx, double dy, bool copy = False):
+def moveselection(double dx, double dy, bool copy):
     pythonMoveSelection(dx, dy, int(copy))
 
 def deleteselection():

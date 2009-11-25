@@ -741,8 +741,10 @@ void Scene::createMeshAndSolve(SolverMode solverMode)
     // save as temp name
     m_problemInfo->fileName = tempProblemFileName() + ".a2d";
 
-    // save problem
-    writeToFile(m_problemInfo->fileName);
+    // save problem    
+    ErrorResult result = writeToFile(m_problemInfo->fileName);
+    if (result.isError())
+        result.showDialog();
 
     // solve
     solverDialog->setFileNameOrig(QFileInfo(fileNameOrig).absoluteFilePath());
@@ -1421,4 +1423,6 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
+
+    return ErrorResult();
 }

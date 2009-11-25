@@ -630,7 +630,7 @@ void MainWindow::doDocumentSaveAs()
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix() != "a2d") fileName += ".a2d";
 
-        ErrorResult result =  Util::scene()->writeToFile(fileName);
+        ErrorResult result = Util::scene()->writeToFile(fileName);
         if (result.isError())
             result.showDialog();
 
@@ -798,25 +798,27 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    Util::scene()->readFromFile("data/pokus.a2d");
-    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
-    // Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
-    // Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
-    // Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");
-    // Util::scene()->readFromFile("data/heat_transfer_planar.a2d");
-    // Util::scene()->readFromFile("data/heat_transfer_detail.a2d");
-    // Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
-    // Util::scene()->readFromFile("data/magnetostatic_planar.a2d");
-    // Util::scene()->readFromFile("data/magnetostatic_axisymmetric_actuator.a2d");
-    // Util::scene()->readFromFile("data/magnetostatic_planar_magnet.a2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.a2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.a2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.a2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.a2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.a2d");
-    // Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_heating.a2d");
-    // Util::scene()->readFromFile("data/current_feeder.a2d");
-    // Util::scene()->readFromFile("data/elasticity_planar.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/pokus.a2d");
+    ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_planar.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_detail.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetostatic_planar.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetostatic_axisymmetric_actuator.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetostatic_planar_magnet.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_heating.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/current_feeder.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/elasticity_planar.a2d");
+    if (result.isError())
+        result.showDialog();
 
     sceneView->doDefaults();
     doInvalidated();

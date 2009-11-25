@@ -2485,6 +2485,8 @@ ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
     }
     else
         return ErrorResult(ERRORRESULT_CRITICAL, tr("Image cannot be saved to the file '%1'.").arg(fileName));
+
+    return ErrorResult();
 }
 
 void SceneView::saveImagesForReport(const QString &path, int w, int h)
@@ -2515,7 +2517,9 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
 
     // geometry
     actSceneModeLabel->trigger();
-    saveImageToFile(path + "/geometry.png", w, h);
+    ErrorResult resultGeometry = saveImageToFile(path + "/geometry.png", w, h);
+    if (resultGeometry.isError())
+        resultGeometry.showDialog();
     m_sceneViewSettings.showRulers = false;
 
     // mesh
@@ -2525,7 +2529,9 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
         actSceneModeLabel->trigger();
 
         m_sceneViewSettings.showInitialMesh = true;
-        saveImageToFile(path + "/mesh.png", w, h);
+        ErrorResult resultMesh1 = saveImageToFile(path + "/mesh.png", w, h);
+        if (resultMesh1.isError())
+            resultMesh1.showDialog();
         m_sceneViewSettings.showInitialMesh = false;        
     }
     if (Util::scene()->sceneSolution()->isSolved())
@@ -2538,7 +2544,9 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
         
         m_sceneViewSettings.showInitialMesh = true;
         m_sceneViewSettings.showSolutionMesh = true;
-        saveImageToFile(path + "/mesh.png", w, h);
+        ErrorResult resultMesh2 = saveImageToFile(path + "/mesh.png", w, h);
+        if (resultMesh2.isError())
+            resultMesh2.showDialog();
         m_sceneViewSettings.showInitialMesh = false;
         m_sceneViewSettings.showSolutionMesh = false;
     }
@@ -2561,12 +2569,16 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
         // scalar field
         m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW;
         updateGL();
-        saveImageToFile(path + "/scalarview.png", w, h);
+        ErrorResult resultScalarView = saveImageToFile(path + "/scalarview.png", w, h);
+        if (resultScalarView.isError())
+            resultScalarView.showDialog();
 
         // order        
         m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
         updateGL();
-        saveImageToFile(path + "/order.png", w, h);
+        ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
+        if (resultOrder.isError())
+            resultOrder.showDialog();
     }
 
     // restore sceneview settings
