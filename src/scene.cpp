@@ -1224,7 +1224,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     return ErrorResult();
 }
 
-bool Scene::writeToFile(const QString &fileName) {
+ErrorResult Scene::writeToFile(const QString &fileName) {
     QSettings settings;
 
     if (!problemInfo()->fileName.contains("temp.a2d"))
@@ -1408,7 +1408,7 @@ bool Scene::writeToFile(const QString &fileName) {
     // save to file
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return false;
+        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be saved.").arg(fileName));
 
     QTextStream out(&file);
     doc.save(out, 4);

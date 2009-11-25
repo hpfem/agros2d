@@ -188,8 +188,9 @@ void pythonOpenDocument(char *str)
 // savedocument(filename)
 void pythonSaveDocument(char *str)
 {
-    if (!Util::scene()->writeToFile(QString(str)))
-        throw invalid_argument(QObject::tr("File '%1' not save.").arg(QString(str)).toStdString());
+    ErrorResult result = Util::scene()->writeToFile(QString(str));
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
 }
 
 // addnode(x, y)
@@ -791,8 +792,9 @@ int pythonTimeStepCount()
 // saveimage(filename)
 void pythonSaveImage(char *str, int w, int h)
 {
-    if (!sceneView->saveImageToFile(QString(str), w, h))
-        throw invalid_argument(QObject::tr("Image cannot be saved to the file '%1'.").arg(QString(str)).toStdString());
+    ErrorResult result = sceneView->saveImageToFile(QString(str), w, h);
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
 }
 
 // print stdout

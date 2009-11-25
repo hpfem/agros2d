@@ -2476,16 +2476,15 @@ void SceneView::paintPostprocessorSelectedSurface()
     }
 }
 
-bool SceneView::saveImageToFile(const QString &fileName, int w, int h)
+ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
 {
     QPixmap pixmap = renderPixmap(w, h);
     if (pixmap.save(fileName, "PNG"))
     {
         resizeGL(width(), height());
-        return true;
     }
     else
-        return false;
+        return ErrorResult(ERRORRESULT_CRITICAL, tr("Image cannot be saved to the file '%1'.").arg(fileName));
 }
 
 void SceneView::saveImagesForReport(const QString &path, int w, int h)

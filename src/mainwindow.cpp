@@ -600,10 +600,9 @@ void MainWindow::doDocumentSave()
 {
     if (QFile::exists(Util::scene()->problemInfo()->fileName))
     {
-        if (Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName))
-            return;
-        else
-            QMessageBox::critical(this, tr("File save"), tr("File not save."));
+        ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
+        if (result.isError())
+            QMessageBox::critical(this, tr("File save"), tr("File cannot be saved."));
     }
     else
         doDocumentSaveAs();
@@ -632,10 +631,10 @@ void MainWindow::doDocumentSaveAs()
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix() != "a2d") fileName += ".a2d";
-        if (Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName))
-            return;
-        else
-            QMessageBox::critical(this, tr("File save"), tr("File not save."));
+
+        ErrorResult result =  Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
+        if (result.isError())
+            QMessageBox::critical(this, tr("File save"), tr("File cannot be saved."));
 
         setRecentFiles();
     }
@@ -679,8 +678,10 @@ void MainWindow::doDocumentSaveImage()
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix().toLower() != "png") fileName += ".png";
-        if (sceneView->saveImageToFile(fileName) == false)
-            QMessageBox::critical(this, tr("Export image to file"), tr("Image was not saved to file '%1'.").arg(fileName));
+
+        ErrorResult result = sceneView->saveImageToFile(fileName);
+        if (result.isError())
+            QMessageBox::critical(this, tr("Export image to file"), tr("Image cannot be saved to the file '%1'.").arg(fileName));
     }
 }
 
