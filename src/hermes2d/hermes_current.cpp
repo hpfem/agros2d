@@ -186,7 +186,7 @@ void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
         Util::scene()->addEdgeMarker(new SceneEdgeCurrentMarker(element->attribute("name"),
                                                                 type,
-                                                                Value(element->attribute("value"))));
+                                                                Value(element->attribute("value", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -205,7 +205,7 @@ void HermesCurrent::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeM
 void HermesCurrent::readLabelMarkerFromDomElement(QDomElement *element)
 {    
     Util::scene()-> addLabelMarker(new SceneLabelCurrentMarker(element->attribute("name"),
-                                                               Value(element->attribute("conductivity"))));
+                                                               Value(element->attribute("conductivity", "0"))));
 }
 
 void HermesCurrent::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)

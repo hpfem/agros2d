@@ -160,7 +160,7 @@ void HermesElectrostatic::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
         Util::scene()->addEdgeMarker(new SceneEdgeElectrostaticMarker(element->attribute("name"),
                                                                       type,
-                                                                      Value(element->attribute("value"))));
+                                                                      Value(element->attribute("value", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -179,8 +179,8 @@ void HermesElectrostatic::writeEdgeMarkerToDomElement(QDomElement *element, Scen
 void HermesElectrostatic::readLabelMarkerFromDomElement(QDomElement *element)
 {  
     Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(element->attribute("name"),
-                                                                    Value(element->attribute("charge_density")),
-                                                                    Value(element->attribute("permittivity"))));
+                                                                    Value(element->attribute("charge_density", "0")),
+                                                                    Value(element->attribute("permittivity", "1"))));
 }
 
 void HermesElectrostatic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)

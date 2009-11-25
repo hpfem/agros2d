@@ -251,8 +251,8 @@ void HermesElasticity::readEdgeMarkerFromDomElement(QDomElement *element)
     if ((typeX != PHYSICFIELDBC_UNDEFINED) && (typeY != PHYSICFIELDBC_UNDEFINED))
         Util::scene()->addEdgeMarker(new SceneEdgeElasticityMarker(element->attribute("name"),
                                                                    typeX, typeY,
-                                                                   Value(element->attribute("forcex")),
-                                                                   Value(element->attribute("forcey"))));
+                                                                   Value(element->attribute("forcex", "0")),
+                                                                   Value(element->attribute("forcey", "0"))));
 }
 
 void HermesElasticity::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)

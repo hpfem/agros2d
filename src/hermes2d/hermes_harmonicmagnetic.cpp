@@ -232,7 +232,7 @@ void HermesHarmonicMagnetic::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT:
         Util::scene()->addEdgeMarker(new SceneEdgeHarmonicMagneticMarker(element->attribute("name"),
                                                                          type,
-                                                                         Value(element->attribute("value"))));
+                                                                         Value(element->attribute("value", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -251,10 +251,10 @@ void HermesHarmonicMagnetic::writeEdgeMarkerToDomElement(QDomElement *element, S
 void HermesHarmonicMagnetic::readLabelMarkerFromDomElement(QDomElement *element)
 {
     Util::scene()->addLabelMarker(new SceneLabelHarmonicMagneticMarker(element->attribute("name"),
-                                                                       Value(element->attribute("current_density_real")),
-                                                                       Value(element->attribute("current_density_imag")),
-                                                                       Value(element->attribute("permeability")),
-                                                                       Value(element->attribute("conductivity"))));
+                                                                       Value(element->attribute("current_density_real", "0")),
+                                                                       Value(element->attribute("current_density_imag", "0")),
+                                                                       Value(element->attribute("permeability", "1")),
+                                                                       Value(element->attribute("conductivity", "0"))));
 }
 
 void HermesHarmonicMagnetic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)

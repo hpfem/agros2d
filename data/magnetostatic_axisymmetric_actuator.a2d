@@ -1,14 +1,15 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="2" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="axisymmetric" timetotal="0" type="magnetostatic" timestep="0" id="0" name="unnamed" initialcondition="0" >
+        <problem adaptivitytolerance="2" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="axisymmetric" timetotal="1" type="magnetostatic" timestep="1" id="0" name="unnamed" initialcondition="0" >
             <scriptstartup></scriptstartup>
+            <description></description>
             <edges>
                 <edge type="magnetostatic_vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
-                <label current_density="0" remanence="0" remanence_angle="0" id="1" name="Air" permeability="1" />
-                <label current_density="0" remanence="0" remanence_angle="0" id="2" name="Fe" permeability="300" />
-                <label current_density="1000000" remanence="0" remanence_angle="0" id="3" name="Cu" permeability="1" />
+                <label current_density="0" remanence="0" conductivity="0" remanence_angle="0" id="1" name="Air" permeability="1" />
+                <label current_density="0" remanence="0" conductivity="0" remanence_angle="0" id="2" name="Fe" permeability="300" />
+                <label current_density="1000000" remanence="0" conductivity="0" remanence_angle="0" id="3" name="Cu" permeability="1" />
             </labels>
         </problem>
     </problems>

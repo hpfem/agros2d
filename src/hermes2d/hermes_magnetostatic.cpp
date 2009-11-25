@@ -228,7 +228,7 @@ void HermesMagnetostatic::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT:
         Util::scene()->addEdgeMarker(new SceneEdgeMagnetostaticMarker(element->attribute("name"),
                                                                       type,
-                                                                      Value(element->attribute("value"))));
+                                                                      Value(element->attribute("value", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -247,11 +247,11 @@ void HermesMagnetostatic::writeEdgeMarkerToDomElement(QDomElement *element, Scen
 void HermesMagnetostatic::readLabelMarkerFromDomElement(QDomElement *element)
 {
     Util::scene()->addLabelMarker(new SceneLabelMagnetostaticMarker(element->attribute("name"),
-                                                                    Value(element->attribute("current_density")),
-                                                                    Value(element->attribute("permeability")),
-                                                                    Value(element->attribute("remanence")),
-                                                                    Value(element->attribute("remanence_angle")),
-                                                                    Value(element->attribute("conductivity"))));
+                                                                    Value(element->attribute("current_density", "0")),
+                                                                    Value(element->attribute("permeability", "1")),
+                                                                    Value(element->attribute("remanence", "0")),
+                                                                    Value(element->attribute("remanence_angle", "0")),
+                                                                    Value(element->attribute("conductivity", "0"))));
 }
 
 void HermesMagnetostatic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)

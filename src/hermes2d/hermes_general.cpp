@@ -164,7 +164,7 @@ void HermesGeneral::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_GENERAL_DERIVATIVE:
         Util::scene()->addEdgeMarker(new SceneEdgeGeneralMarker(element->attribute("name"),
                                                                 type,
-                                                                Value(element->attribute("value"))));
+                                                                Value(element->attribute("value", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -183,8 +183,8 @@ void HermesGeneral::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeM
 void HermesGeneral::readLabelMarkerFromDomElement(QDomElement *element)
 {
     Util::scene()->addLabelMarker(new SceneLabelGeneralMarker(element->attribute("name"),
-                                                              Value(element->attribute("rightside")),
-                                                              Value(element->attribute("constant"))));
+                                                              Value(element->attribute("rightside", "0")),
+                                                              Value(element->attribute("constant", "0"))));
 }
 
 void HermesGeneral::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)

@@ -1081,11 +1081,11 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
     // harmonic magnetic
-    m_problemInfo->frequency = eleProblem.toElement().attribute("frequency").toDouble();
+    m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
     // transient
     m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(ANALYSISTYPE_STEADYSTATE)));
-    m_problemInfo->timeStep = eleProblem.toElement().attribute("timestep", "0").toDouble();
-    m_problemInfo->timeTotal = eleProblem.toElement().attribute("timetotal", "0").toDouble();
+    m_problemInfo->timeStep = eleProblem.toElement().attribute("timestep", "1").toDouble();
+    m_problemInfo->timeTotal = eleProblem.toElement().attribute("timetotal", "1").toDouble();
     m_problemInfo->initialCondition = eleProblem.toElement().attribute("initialcondition", "0").toDouble();
 
     // startup script
@@ -1095,7 +1095,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // description
     QDomNode eleDescription = eleProblem.toElement().elementsByTagName("description").at(0);
     m_problemInfo->description = eleDescription.toElement().text();
-
 
     // markers ***************************************************************************************************************
 

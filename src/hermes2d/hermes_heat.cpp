@@ -273,13 +273,13 @@ void HermesHeat::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_HEAT_TEMPERATURE:
         Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(element->attribute("name"),
                                                              type,
-                                                             Value(element->attribute("temperature"))));
+                                                             Value(element->attribute("temperature", "0"))));
         break;
     case PHYSICFIELDBC_HEAT_HEAT_FLUX:
         Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(element->attribute("name"), type,
-                                                             Value(element->attribute("heat_flux")),
-                                                             Value(element->attribute("h")),
-                                                             Value(element->attribute("external_temperature"))));
+                                                             Value(element->attribute("heat_flux", "0")),
+                                                             Value(element->attribute("h", "0")),
+                                                             Value(element->attribute("external_temperature", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -308,8 +308,8 @@ void HermesHeat::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMark
 void HermesHeat::readLabelMarkerFromDomElement(QDomElement *element)
 {
     Util::scene()->addLabelMarker(new SceneLabelHeatMarker(element->attribute("name"),
-                                                           Value(element->attribute("volume_heat")),
-                                                           Value(element->attribute("thermal_conductivity")),
+                                                           Value(element->attribute("volume_heat", "0")),
+                                                           Value(element->attribute("thermal_conductivity", "0")),
                                                            Value(element->attribute("density", "0")),
                                                            Value(element->attribute("specific_heat", "0"))));
 }
