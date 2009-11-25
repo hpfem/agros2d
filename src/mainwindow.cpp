@@ -539,55 +539,39 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
     if (fileNameDocument.isEmpty()) return;
 
-    try
+    if (QFile::exists(fileNameDocument))
     {
-        if (QFile::exists(fileNameDocument))
+    QFileInfo fileInfo(fileNameDocument);
+        if (fileInfo.suffix() == "a2d")
         {
-        QFileInfo fileInfo(fileNameDocument);
-            if (fileInfo.suffix() == "a2d")
+            // a2d data file
+            ErrorResult result = Util::scene()->readFromFile(fileNameDocument);
+            if (!result.isError())
             {
-                // a2d data file
-                if (Util::scene()->readFromFile(fileNameDocument))
-                {
-                    setRecentFiles();
+                setRecentFiles();
 
-                    sceneView->doDefaults();
-                    sceneView->doZoomBestFit();
-                    return;
-                }
-                else
-                {
-                    generalException fileNotOpen;
-                    throw fileNotOpen;
-                }
-            }
-            if (fileInfo.suffix() == "py")
-            {
-                // python script
-                scriptEditorDialog->doFileOpen(fileNameDocument);
-                scriptEditorDialog->showDialog();
+                sceneView->doDefaults();
+                sceneView->doZoomBestFit();
                 return;
             }
-            generalException unknownSuffix;
-            throw unknownSuffix;
+            else
+            {
+                result.showDialog();
+                return;
+            }
         }
-        else
+        if (fileInfo.suffix() == "py")
         {
-            generalException fileNotFound;
-            throw fileNotFound;
+            // python script
+            scriptEditorDialog->doFileOpen(fileNameDocument);
+            scriptEditorDialog->showDialog();
+            return;
         }
-    }
-    catch (generalException fileNotOpen)
-    {
-        QMessageBox::critical(this, tr("File open"), tr("File '%1' cannot be opened.").arg(fileNameDocument));
-    }
-    catch (generalException unknownSuffix)
-    {
         QMessageBox::critical(this, tr("File open"), tr("Unknown suffix."));
     }
-    catch (generalException fileNotFound)
+    else
     {
-        QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
+         QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
     }
 }
 
@@ -596,7 +580,8 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
     QString fileName = action->text();
     if (QFile::exists(fileName))
     {
-        if (Util::scene()->readFromFile(fileName))
+        ErrorResult result = Util::scene()->readFromFile(fileName);
+        if (!result.isError())
         {
             setRecentFiles();
 
@@ -606,7 +591,7 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
         }
         else
         {
-            QMessageBox::critical(this, tr("File open"), tr("File '%1' not open.").arg(QString(fileName)));
+            result.showDialog();
         }
     }
 }

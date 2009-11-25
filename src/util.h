@@ -154,6 +154,57 @@ struct RectPoint
     inline double height() { return fabs(end.y - start.y); }
 };
 
+enum ErrorResultType
+{
+    ERRORRESULT_NONE,
+    ERRORRESULT_INFORMATION,
+    ERRORRESULT_WARNING,
+    ERRORRESULT_CRITICAL
+};
+
+class ErrorResult
+{
+public:
+    inline ErrorResultType type() { return m_type; }
+    inline QString message() { return m_message; }
+
+    inline ErrorResult()
+    {
+        m_type = ERRORRESULT_NONE;
+        m_message = "";
+    }
+
+    inline ErrorResult(ErrorResultType type, QString message)
+    {
+        m_type = type;
+        m_message = message;
+    }
+
+    inline bool isError() { return (m_type != ERRORRESULT_NONE); }
+
+    void showDialog()
+    {
+        switch (m_type)
+        {
+        case ERRORRESULT_NONE:
+            return;
+        case ERRORRESULT_INFORMATION:
+            QMessageBox::information(QApplication::activeWindow(), QObject::tr("Information"), m_message);
+            break;
+        case ERRORRESULT_WARNING:
+            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Warning"), m_message);
+            break;
+        case ERRORRESULT_CRITICAL:
+            QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Critical"), m_message);
+            break;
+        }
+    }
+
+private:
+     ErrorResultType m_type;
+     QString m_message;
+};
+
 enum SolverMode
 {
     SOLVER_MESH,

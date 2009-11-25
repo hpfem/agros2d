@@ -180,8 +180,9 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 // opendocument(filename)
 void pythonOpenDocument(char *str)
 {
-    if (!Util::scene()->readFromFile(QString(str)))
-        throw invalid_argument(QObject::tr("File '%1' not open.").arg(QString(str)).toStdString());
+    ErrorResult result = Util::scene()->readFromFile(QString(str));
+    if (result.isError())
+        throw invalid_argument(result.message().toStdString());
 }
 
 // savedocument(filename)

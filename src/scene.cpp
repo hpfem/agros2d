@@ -1029,7 +1029,7 @@ void Scene::readFromDxf(const QString &fileName)
     setlocale(LC_NUMERIC, plocale);
 }
 
-bool Scene::readFromFile(const QString &fileName)
+ErrorResult Scene::readFromFile(const QString &fileName)
 {
     QSettings settings;
     QFileInfo fileInfo(fileName);
@@ -1038,7 +1038,7 @@ bool Scene::readFromFile(const QString &fileName)
     QDomDocument doc;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
-        return false;
+        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be opened.").arg(fileName));
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -1052,7 +1052,7 @@ bool Scene::readFromFile(const QString &fileName)
 
     if (!doc.setContent(&file)) {
         file.close();
-        return false;
+        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' is not valid Agros2D file.").arg(fileName));
     }
     file.close();
 
@@ -1221,6 +1221,8 @@ bool Scene::readFromFile(const QString &fileName)
     }
 
     emit invalidated();
+
+    return ErrorResult();
 }
 
 bool Scene::writeToFile(const QString &fileName) {
