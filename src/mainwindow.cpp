@@ -590,9 +590,7 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
             return;
         }
         else
-        {
             result.showDialog();
-        }
     }
 }
 
@@ -602,7 +600,7 @@ void MainWindow::doDocumentSave()
     {
         ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
         if (result.isError())
-            QMessageBox::critical(this, tr("File save"), tr("File cannot be saved."));
+            result.showDialog();
     }
     else
         doDocumentSaveAs();
@@ -632,9 +630,9 @@ void MainWindow::doDocumentSaveAs()
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix() != "a2d") fileName += ".a2d";
 
-        ErrorResult result =  Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
+        ErrorResult result =  Util::scene()->writeToFile(fileName);
         if (result.isError())
-            QMessageBox::critical(this, tr("File save"), tr("File cannot be saved."));
+            result.showDialog();
 
         setRecentFiles();
     }
@@ -681,7 +679,7 @@ void MainWindow::doDocumentSaveImage()
 
         ErrorResult result = sceneView->saveImageToFile(fileName);
         if (result.isError())
-            QMessageBox::critical(this, tr("Export image to file"), tr("Image cannot be saved to the file '%1'.").arg(fileName));
+            result.showDialog();
     }
 }
 

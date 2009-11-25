@@ -1416,6 +1416,7 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
     file.waitForBytesWritten(0);
     file.close();
 
+    emit fileNameChanged(fileName);
     emit invalidated();
 
     // set system locale
