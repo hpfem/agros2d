@@ -24,10 +24,13 @@ private:
 
     QTabWidget *tabType;
 
+    QTimer *timer;
+
     // file
     QPushButton *btnEncodeFFmpeg;
     QPushButton *btnSaveVideo;
     QPushButton *btnOpenVideo;
+    QPushButton *btnAnimate;
     QComboBox *cmbCodec;
     QComboBox *cmbFormat;
     QSpinBox *txtFPS;
@@ -45,6 +48,7 @@ private:
 
 private slots:
     void doAnimate();
+    void doAnimateNextStep();
     void doSetTimeStep(int index);
     void doValueFromChanged(int index);
     void doValueToChanged(int index);

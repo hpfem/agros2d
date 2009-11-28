@@ -265,7 +265,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
 void Scene::removeLabel(SceneLabel *label)
 {
     labels.removeOne(label);
-    delete label;
+    // delete label;
 
     emit invalidated();
 }

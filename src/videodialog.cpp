@@ -13,6 +13,10 @@ VideoDialog::VideoDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent
     // store timestep
     m_timeStep = Util::scene()->sceneSolution()->timeStep();
 
+    // timer
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(doAnimateNextStep()));
+
     createControls();
 
     resize(sizeHint());
@@ -30,8 +34,11 @@ VideoDialog::~VideoDialog()
     delete cmbFormat;
     delete txtFPS;
     
+    delete btnAnimate;
     delete txtAnimateFrom;
     delete txtAnimateTo;
+
+    delete timer;
 }
 
 void VideoDialog::showDialog()
@@ -172,7 +179,7 @@ QWidget *VideoDialog::createControlsViewport()
     layoutControlsViewport->addWidget(new QLabel(tr("Time step:")), 2, 0);
 
     // dialog buttons
-    QPushButton *btnAnimate = new QPushButton(tr("Animate"));
+    btnAnimate = new QPushButton(tr("Animate"));
     connect(btnAnimate, SIGNAL(clicked()), this, SLOT(doAnimate()));
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();    
@@ -193,10 +200,29 @@ QWidget *VideoDialog::createControlsViewport()
 
 void VideoDialog::doAnimate()
 {
-    for (int i = txtAnimateFrom->value(); i <= txtAnimateTo->value(); i++ )
+    if (timer->isActive())
     {
-        doSetTimeStep(i);
-        msleep(txtAnimateDelay->value() * 1e3);
+        timer->stop();
+        btnAnimate->setText(tr("Animate"));
+    }
+    else
+    {
+        btnAnimate->setText(tr("Stop"));
+        doSetTimeStep(txtAnimateFrom->value());
+        timer->start(txtAnimateDelay->value() * 1e3);
+    }
+}
+
+void VideoDialog::doAnimateNextStep()
+{
+    if (Util::scene()->sceneSolution()->timeStep() + 1 < txtAnimateTo->value())
+    {
+        doSetTimeStep(Util::scene()->sceneSolution()->timeStep() + 2);
+    }
+    else
+    {
+        // stop timer
+        doAnimate();
     }
 }
 
