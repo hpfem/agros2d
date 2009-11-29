@@ -134,4 +134,23 @@ Scalar int_dvdy(int n, double *wt, Func<Real> *v)
   return result;
 }
 
+
+template<typename Real, typename Scalar>
+Scalar int_velocity(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, double vx, double vy, double omega)
+{
+    Scalar result = 0;
+    for (int i = 0; i < n; i++)
+        result += wt[i] * u->val[i] * ((vx - e->y[i] * omega) * v->dx[i] + (vy + e->x[i] * omega) * v->dy[i]);
+    return result;
+}
+
+template<typename Real, typename Scalar>
+Scalar int_magnet(int n, double *wt, Func<Real> *v, double angle)
+{
+    Scalar result = 0;
+    for (int i = 0; i < n; i++)
+        result += wt[i] * (- sin(angle / 180.0 * M_PI) * v->dx[i] + cos(angle / 180.0 * M_PI) * v->dy[i]);
+    return result;
+}
+
 #endif // HERMES_FIELD_H

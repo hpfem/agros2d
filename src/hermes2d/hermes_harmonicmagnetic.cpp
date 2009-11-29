@@ -158,6 +158,11 @@ QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
     Solution *slnimag = new Solution();
     Solution rslnreal, rslnimag;
 
+    // initialize the linear system
+    LinSystem sys(&wf, &umfpack);
+    sys.set_spaces(2, &spacereal, &spaceimag);
+    sys.set_pss(2, &pssreal, &pssimag);
+
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
@@ -167,20 +172,16 @@ QList<SolutionArray *> *harmonicMagnetic_main(SolverThread *solverThread)
         int ndof = spacereal.assign_dofs(0);
         spaceimag.assign_dofs(ndof);
 
-        // initialize the linear system
-        LinSystem sys(&wf, &umfpack);
-        sys.set_spaces(2, &spacereal, &spaceimag);
-        sys.set_pss(2, &pssreal, &pssimag);
         sys.assemble();
         sys.solve(2, slnreal, slnimag);
-
-        RefSystem rs(&sys);
-        rs.assemble();
-        rs.solve(2, &rslnreal, &rslnimag);
 
         // calculate errors and adapt the solution
         if (adaptivityType != ADAPTIVITYTYPE_NONE)
         {
+            RefSystem rs(&sys);
+            rs.assemble();
+            rs.solve(2, &rslnreal, &rslnimag);
+
             H1OrthoHP hp(2, &spacereal, &spaceimag);
             error = hp.calc_error_2(slnreal, slnimag, &rslnreal, &rslnimag) * 100;
 

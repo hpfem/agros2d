@@ -14,6 +14,9 @@ struct MagnetostaticLabel
     double remanence;
     double remanence_angle;
     double conductivity;
+    double velocity_x;
+    double velocity_y;
+    double velocity_angular;
 };
 
 MagnetostaticEdge *magnetostaticEdge;
@@ -48,28 +51,26 @@ template<typename Real, typename Scalar>
 Scalar magnetostatic_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (magnetostaticPlanar)
-        return 1.0 / (magnetostaticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-        + ((magnetostaticTransient) ? magnetostaticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / magnetostaticTimeStep : 0.0);
+        return 1.0 / (magnetostaticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
+                magnetostaticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magnetostaticLabel[e->marker].velocity_x, magnetostaticLabel[e->marker].velocity_y, magnetostaticLabel[e->marker].velocity_angular) +
+                ((magnetostaticTransient) ? magnetostaticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / magnetostaticTimeStep : 0.0);
     else
-        return 1.0 / (magnetostaticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v))
-                + ((magnetostaticTransient) ? magnetostaticLabel[e->marker].conductivity * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / magnetostaticTimeStep : 0.0);
+        return 1.0 / (magnetostaticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
+                magnetostaticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magnetostaticLabel[e->marker].velocity_x, magnetostaticLabel[e->marker].velocity_y, magnetostaticLabel[e->marker].velocity_angular) +
+                ((magnetostaticTransient) ? magnetostaticLabel[e->marker].conductivity * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / magnetostaticTimeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
 Scalar magnetostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (magnetostaticPlanar)
-        return magnetostaticLabel[e->marker].current_density * int_v<Real, Scalar>(n, wt, v)
-        + magnetostaticLabel[e->marker].remanence / (magnetostaticLabel[e->marker].permeability * MU0)
-        * (- sin(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdx<Real, Scalar>(n, wt, v) +
-           + cos(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdy<Real, Scalar>(n, wt, v))
-        + ((magnetostaticTransient) ? magnetostaticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / magnetostaticTimeStep : 0.0);
+        return magnetostaticLabel[e->marker].current_density * int_v<Real, Scalar>(n, wt, v) +
+                magnetostaticLabel[e->marker].remanence / (magnetostaticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magnetostaticLabel[e->marker].remanence_angle) +
+                ((magnetostaticTransient) ? magnetostaticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / magnetostaticTimeStep : 0.0);
     else
-        return magnetostaticLabel[e->marker].current_density * int_v<Real, Scalar>(n, wt, v)
-                + magnetostaticLabel[e->marker].remanence / (magnetostaticLabel[e->marker].permeability * MU0)
-                * (- sin(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdx<Real, Scalar>(n, wt, v) +
-                   + cos(magnetostaticLabel[e->marker].remanence_angle / 180.0 * M_PI) * int_dvdy<Real, Scalar>(n, wt, v))
-                + ((magnetostaticTransient) ? magnetostaticLabel[e->marker].conductivity * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / magnetostaticTimeStep : 0.0);
+        return magnetostaticLabel[e->marker].current_density * int_v<Real, Scalar>(n, wt, v) +
+                magnetostaticLabel[e->marker].remanence / (magnetostaticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magnetostaticLabel[e->marker].remanence_angle) +
+                ((magnetostaticTransient) ? magnetostaticLabel[e->marker].conductivity * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / magnetostaticTimeStep : 0.0);
 }
 
 QList<SolutionArray *> *magnetostatic_main(SolverThread *solverThread)
@@ -83,6 +84,8 @@ QList<SolutionArray *> *magnetostatic_main(SolverThread *solverThread)
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
     int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
     double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+
+    QTime time;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -158,16 +161,24 @@ QList<SolutionArray *> *magnetostatic_main(SolverThread *solverThread)
     {
         space.assign_dofs();
 
+        time.start();
         sys.assemble();
+        log(QString("sys.assemble(): %1").arg(time.elapsed()));
+        time.start();
         sys.solve(1, sln);
-
-        RefSystem rs(&sys);
-        rs.assemble();
-        rs.solve(1, &rsln);
+        log(QString("sys.solve(): %1").arg(time.elapsed()));
 
         // calculate errors and adapt the solution
         if (adaptivityType != ADAPTIVITYTYPE_NONE)
         {
+            RefSystem rs(&sys);
+            time.start();
+            rs.assemble();
+            log(QString("rs.assemble(): %1").arg(time.elapsed()));
+            time.start();
+            rs.solve(1, &rsln);
+            log(QString("rs.solve(): %1").arg(time.elapsed()));
+
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 
@@ -251,7 +262,10 @@ void HermesMagnetostatic::readLabelMarkerFromDomElement(QDomElement *element)
                                                                     Value(element->attribute("permeability", "1")),
                                                                     Value(element->attribute("remanence", "0")),
                                                                     Value(element->attribute("remanence_angle", "0")),
-                                                                    Value(element->attribute("conductivity", "0"))));
+                                                                    Value(element->attribute("conductivity", "0")),
+                                                                    Value(element->attribute("velocity_x", "0")),
+                                                                    Value(element->attribute("velocity_y", "0")),
+                                                                    Value(element->attribute("velocity_angular", "0"))));
 }
 
 void HermesMagnetostatic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
@@ -263,6 +277,9 @@ void HermesMagnetostatic::writeLabelMarkerToDomElement(QDomElement *element, Sce
     element->setAttribute("remanence", labelMagnetostaticMarker->remanence.text);
     element->setAttribute("remanence_angle", labelMagnetostaticMarker->remanence_angle.text);
     element->setAttribute("conductivity", labelMagnetostaticMarker->conductivity.text);
+    element->setAttribute("velocity_x", labelMagnetostaticMarker->velocity_x.text);
+    element->setAttribute("velocity_y", labelMagnetostaticMarker->velocity_y.text);
+    element->setAttribute("velocity_angular", labelMagnetostaticMarker->velocity_angular.text);
 }
 
 LocalPointValue *HermesMagnetostatic::localPointValue(Point point)
@@ -273,7 +290,7 @@ LocalPointValue *HermesMagnetostatic::localPointValue(Point point)
 QStringList HermesMagnetostatic::localPointValueHeader()
 {
     QStringList headers;
-    headers << "X" << "Y" << "A" << "Bx" << "By" << "B" << "Hx" << "Hy" << "H" << "wm" << "mur" << "Br" << "Brangle";
+    headers << "X" << "Y" << "A" << "Bx" << "By" << "B" << "Hx" << "Hy" << "H" << "wm" << "mur" << "Br" << "Brangle" << "vx" << "vy" << "Jext" << "Jvel" << "Jtot" << "pj";
     return QStringList(headers);
 }
 
@@ -297,7 +314,7 @@ VolumeIntegralValue *HermesMagnetostatic::volumeIntegralValue()
 QStringList HermesMagnetostatic::volumeIntegralValueHeader()
 {
     QStringList headers;
-    headers << "V" << "S" << "Bx_avg" << "By_avg" << "B_avg" << "Hx_avg" << "Hy_avg" << "H_avg" << "Wm";
+    headers << "V" << "S" << "Bx_avg" << "By_avg" << "B_avg" << "Hx_avg" << "Hy_avg" << "H_avg" << "Wm" << "Fx" << "Fy" << "Iext" << "Ivel" << "Itot" << "Pj" << "M";
     return QStringList(headers);
 }
 
@@ -332,14 +349,17 @@ SceneLabelMarker *HermesMagnetostatic::newLabelMarker()
                                              Value("1"),
                                              Value("0"),
                                              Value("0"),
+                                             Value("0"),
+                                             Value("0"),
+                                             Value("0"),
                                              Value("0"));
 }
 
 SceneLabelMarker *HermesMagnetostatic::newLabelMarker(PyObject *self, PyObject *args)
 {
-    double current_density, permeability, remanence, remanence_angle, conductivity;
+    double current_density, permeability, remanence, remanence_angle, conductivity, velocity_x, velocity_y, velocity_angular;
     char *name;
-    if (PyArg_ParseTuple(args, "sddddd", &name, &current_density, &permeability, &remanence, &remanence_angle, &conductivity))
+    if (PyArg_ParseTuple(args, "sdddddddd", &name, &current_density, &permeability, &remanence, &remanence_angle, &conductivity, &velocity_x, &velocity_y, &velocity_angular))
     {
         // check name
         if (Util::scene()->getLabelMarker(name)) return NULL;
@@ -349,7 +369,10 @@ SceneLabelMarker *HermesMagnetostatic::newLabelMarker(PyObject *self, PyObject *
                                                  Value(QString::number(permeability)),
                                                  Value(QString::number(remanence)),
                                                  Value(QString::number(remanence_angle)),
-                                                 Value(QString::number(conductivity)));
+                                                 Value(QString::number(conductivity)),
+                                                 Value(QString::number(velocity_x)),
+                                                 Value(QString::number(velocity_y)),
+                                                 Value(QString::number(velocity_angular)));
     }
 
     return NULL;
@@ -371,11 +394,19 @@ void HermesMagnetostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue
     addTreeWidgetItemValue(magnetostaticNode, tr("Conductivity:"), QString("%1").arg(localPointValueMagnetostatic->conductivity, 0, 'g', 3), "");
 
     // Current Density
-    addTreeWidgetItemValue(magnetostaticNode, tr("Current density:"), QString("%1").arg(localPointValueMagnetostatic->current_density, 0, 'e', 3), "A/m2");
+    addTreeWidgetItemValue(magnetostaticNode, tr("Ext. current dens.:"), QString("%1").arg(localPointValueMagnetostatic->current_density, 0, 'e', 3), "A/m2");
 
     // Remanence
     addTreeWidgetItemValue(magnetostaticNode, tr("Rem. flux dens.:"), QString("%1").arg(localPointValueMagnetostatic->remanence, 0, 'e', 3), "T");
     addTreeWidgetItemValue(magnetostaticNode, tr("Direction of rem.:"), QString("%1").arg(localPointValueMagnetostatic->remanence_angle, 0, 'f', 2), "deg.");
+
+    // Velocity
+    QTreeWidgetItem *itemVelocity = new QTreeWidgetItem(magnetostaticNode);
+    itemVelocity->setText(0, tr("Velocity"));
+    itemVelocity->setExpanded(true);
+
+    addTreeWidgetItemValue(itemVelocity, tr("Velocity ") + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->velocity.x, 0, 'e', 3), "m/s");
+    addTreeWidgetItemValue(itemVelocity, tr("Velocity ") + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->velocity.y, 0, 'e', 3), "m/s");
 
     // Energy density
     addTreeWidgetItemValue(magnetostaticNode, tr("Energy density:"), QString("%1").arg(localPointValueMagnetostatic->wm, 0, 'e', 3), "J/m3");
@@ -400,6 +431,17 @@ void HermesMagnetostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue
     addTreeWidgetItemValue(itemMagneticField, "H" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->H.x, 0, 'e', 3), "A/m");
     addTreeWidgetItemValue(itemMagneticField, "H" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueMagnetostatic->H.y, 0, 'e', 3), "A/m");
     addTreeWidgetItemValue(itemMagneticField, "H", QString("%1").arg(localPointValueMagnetostatic->H.magnitude(), 0, 'e', 3), "A/m");
+
+    // Induced current density
+    QTreeWidgetItem *itemInducedCurrentDensity = new QTreeWidgetItem(magnetostaticNode);
+    itemInducedCurrentDensity->setText(0, tr("Induced current density"));
+    itemInducedCurrentDensity->setExpanded(true);
+
+    addTreeWidgetItemValue(itemInducedCurrentDensity, tr("Vel. current dens.:"), QString("%1").arg(localPointValueMagnetostatic->current_density_velocity, 0, 'e', 3), "m/s");
+    addTreeWidgetItemValue(itemInducedCurrentDensity, tr("Total current dens.:"), QString("%1").arg(localPointValueMagnetostatic->current_density + localPointValueMagnetostatic->current_density_velocity, 0, 'e', 3), "m/s");
+
+    // losses
+    addTreeWidgetItemValue(magnetostaticNode, tr("Power losses:"), QString("%1").arg(localPointValueMagnetostatic->pj, 0, 'e', 3), "W/m3");
 }
 
 void HermesMagnetostatic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -428,8 +470,13 @@ void HermesMagnetostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, Volume
     addTreeWidgetItemValue(magnetostaticNode, tr("By avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensityY, 0, 'e', 3), tr("T"));
     addTreeWidgetItemValue(magnetostaticNode, tr("B avg.:"), tr("%1").arg(volumeIntegralValueMagnetostatic->averageFluxDensity, 0, 'e', 3), tr("T"));
     addTreeWidgetItemValue(magnetostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->energy, 0, 'e', 3), tr("J"));
-    // addTreeWidgetItemValue(magnetostaticNode, tr("Fx:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceX, 0, 'e', 3), tr("N"));
-    // addTreeWidgetItemValue(magnetostaticNode, tr("Fy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceY, 0, 'e', 3), tr("N"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("Fx:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceX, 0, 'e', 3), tr("N"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("Fy:"), tr("%1").arg(volumeIntegralValueMagnetostatic->forceY, 0, 'e', 3), tr("N"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("External current:"), tr("%1").arg(volumeIntegralValueMagnetostatic->currentExternal, 0, 'e', 3), tr("A"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("Velocity current:"), tr("%1").arg(volumeIntegralValueMagnetostatic->currentVelocity, 0, 'e', 3), tr("A"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("Total current:"), tr("%1").arg(volumeIntegralValueMagnetostatic->currentTotal, 0, 'e', 3), tr("A"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("Losses:"), tr("%1").arg(volumeIntegralValueMagnetostatic->losses, 0, 'e', 3), tr("A/m2"));
+    addTreeWidgetItemValue(magnetostaticNode, tr("Torque:"), tr("%1").arg(volumeIntegralValueMagnetostatic->torque, 0, 'e', 3), tr("Nm"));
 }
 
 QList<SolutionArray *> *HermesMagnetostatic::solve(SolverThread *solverThread)
@@ -474,12 +521,18 @@ QList<SolutionArray *> *HermesMagnetostatic::solve(SolverThread *solverThread)
             if (!labelMagnetostaticMarker->remanence.evaluate()) return NULL;
             if (!labelMagnetostaticMarker->remanence_angle.evaluate()) return NULL;
             if (!labelMagnetostaticMarker->conductivity.evaluate()) return NULL;
+            if (!labelMagnetostaticMarker->velocity_x.evaluate()) return NULL;
+            if (!labelMagnetostaticMarker->velocity_y.evaluate()) return NULL;
+            if (!labelMagnetostaticMarker->velocity_angular.evaluate()) return NULL;
 
             magnetostaticLabel[i].current_density = labelMagnetostaticMarker->current_density.number;
             magnetostaticLabel[i].permeability = labelMagnetostaticMarker->permeability.number;
             magnetostaticLabel[i].remanence = labelMagnetostaticMarker->remanence.number;
             magnetostaticLabel[i].remanence_angle = labelMagnetostaticMarker->remanence_angle.number;
             magnetostaticLabel[i].conductivity = labelMagnetostaticMarker->conductivity.number;
+            magnetostaticLabel[i].velocity_x = labelMagnetostaticMarker->velocity_x.number;
+            magnetostaticLabel[i].velocity_y = labelMagnetostaticMarker->velocity_y.number;
+            magnetostaticLabel[i].velocity_angular = labelMagnetostaticMarker->velocity_angular.number;
         }
     }
 
@@ -500,6 +553,10 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point) : Local
     remanence = 0;
     remanence_angle = 0;
     conductivity = 0;
+
+    velocity = Point();
+    current_density_velocity = 0;
+    pj = 0;
 
     potential = 0;
     H = Point();
@@ -536,6 +593,14 @@ LocalPointValueMagnetostatic::LocalPointValueMagnetostatic(Point &point) : Local
             remanence = marker->remanence.number;
             remanence_angle = marker->remanence_angle.number;
             conductivity = marker->conductivity.number;
+
+            velocity = Point(marker->velocity_x.number - marker->velocity_angular.number * point.y, marker->velocity_y.number + marker->velocity_angular.number * point.x);
+
+            // current density
+            current_density_velocity = - conductivity * (velocity.x * der.x + velocity.y * der.y);
+
+            // pj
+            pj = (conductivity > 0 ) ? sqr(current_density + current_density_velocity) / conductivity : 0.0;
 
             // electric displacement
             H = B / (marker->permeability.number * MU0);
@@ -612,6 +677,42 @@ double LocalPointValueMagnetostatic::variableValue(PhysicFieldVariable physicFie
             return conductivity;
         }
         break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY:
+        {
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return velocity.x * point.y;
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return velocity.y * point.x;
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return sqrt(sqr(velocity.x * point.y) + sqr(velocity.y * point.x));
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY:
+        {
+            return current_density;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY:
+        {
+            return current_density_velocity;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_TOTAL:
+        {
+            return current_density + current_density_velocity;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETOSTATIC_POWER_LOSSES:
+        {
+            return (conductivity > 0) ? sqr(current_density + current_density_velocity) / conductivity : 0.0;
+        }
+        break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueMagnetostatic::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
         throw;
@@ -635,7 +736,12 @@ QStringList LocalPointValueMagnetostatic::variables()
             QString("%1").arg(permeability, 0, 'f', 3) <<
             QString("%1").arg(remanence, 0, 'e', 5) <<
             QString("%1").arg(remanence_angle, 0, 'e', 5) <<
-            QString("%1").arg(conductivity, 0, 'e', 5);
+            QString("%1").arg(velocity.x, 0, 'e', 5) <<
+            QString("%1").arg(velocity.y, 0, 'e', 5) <<
+            QString("%1").arg(current_density, 0, 'e', 5) <<
+            QString("%1").arg(current_density_velocity, 0, 'e', 5) <<
+            QString("%1").arg(current_density + current_density_velocity, 0, 'e', 5) <<
+            QString("%1").arg(pj, 0, 'e', 5);
 
     return QStringList(row);
 }
@@ -673,6 +779,11 @@ VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic() : VolumeInt
         energy = 0;
         forceX = 0;
         forceY = 0;
+        currentExternal = 0;
+        currentVelocity = 0;
+        currentTotal = 0;
+        losses = 0;
+        torque = 0;
 
         for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
@@ -687,9 +798,14 @@ VolumeIntegralValueMagnetostatic::VolumeIntegralValueMagnetostatic() : VolumeInt
                 energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_ENERGY_DENSITY);
                 forceX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_X);
                 forceY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_Y);
+                currentExternal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_CURRENT_DENSITY);
+                currentVelocity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY);
+                losses += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_POWER_LOSSES);
+                torque += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_TORQUE);
             }
         }
 
+        currentTotal = currentExternal + currentVelocity;
         if (volume > 0)
         {
             averageMagneticFieldX /= volume;
@@ -713,7 +829,14 @@ QStringList VolumeIntegralValueMagnetostatic::variables()
             QString("%1").arg(averageFluxDensityX, 0, 'e', 5) <<
             QString("%1").arg(averageFluxDensityY, 0, 'e', 5) <<
             QString("%1").arg(averageFluxDensity, 0, 'e', 5) <<
-            QString("%1").arg(energy, 0, 'e', 5);
+            QString("%1").arg(energy, 0, 'e', 5) <<
+            QString("%1").arg(forceX, 0, 'e', 5) <<
+            QString("%1").arg(forceY, 0, 'e', 5) <<
+            QString("%1").arg(currentExternal, 0, 'e', 5) <<
+            QString("%1").arg(currentVelocity, 0, 'e', 5) <<
+            QString("%1").arg(currentTotal, 0, 'e', 5) <<
+            QString("%1").arg(losses, 0, 'e', 5) <<
+            QString("%1").arg(torque, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -755,7 +878,8 @@ int SceneEdgeMagnetostaticMarker::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability, Value remanence, Value remanence_angle, Value conductivity)
+SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability, Value remanence, Value remanence_angle,
+                                                            Value conductivity, Value velocity_x, Value velocity_y, Value velocity_angular)
     : SceneLabelMarker(name)
 {
     this->permeability = permeability;
@@ -763,17 +887,23 @@ SceneLabelMagnetostaticMarker::SceneLabelMagnetostaticMarker(const QString &name
     this->remanence = remanence;
     this->remanence_angle = remanence_angle;
     this->conductivity = conductivity;
+    this->velocity_x = velocity_x;
+    this->velocity_y = velocity_y;
+    this->velocity_angular = velocity_angular;
 }
 
 QString SceneLabelMagnetostaticMarker::script()
 {
-    return QString("addmaterial(\"%1\", %2, %3, %4, %5, %6)").
+    return QString("addmaterial(\"%1\", %2, %3, %4, %5, %6, %7, %8, %9)").
             arg(name).
             arg(current_density.text).
             arg(permeability.text).
             arg(remanence.text).
             arg(remanence_angle.text).
-            arg(conductivity.text);
+            arg(conductivity.text).
+            arg(velocity_x.text).
+            arg(velocity_y.text).
+            arg(velocity_angular.text);
 }
 
 QMap<QString, QString> SceneLabelMagnetostaticMarker::data()
@@ -784,6 +914,9 @@ QMap<QString, QString> SceneLabelMagnetostaticMarker::data()
     out["Remanence (T)"] = remanence.text;
     out["Remanence angle (-)"] = remanence_angle.text;
     out["Conductivity (S/m)"] = conductivity.text;
+    out["Velocity x (m/s)"] = conductivity.text;
+    out["Velocity y (m/s)"] = conductivity.text;
+    out["Angular velocity (m/s)"] = velocity_angular.text;
     return QMap<QString, QString>(out);
 }
 
@@ -867,9 +1000,12 @@ DSceneLabelMagnetostaticMarker::DSceneLabelMagnetostaticMarker(QWidget *parent, 
     // tab order
     setTabOrder(txtName, txtPermeability);
     setTabOrder(txtPermeability, txtCurrentDensity);
-    setTabOrder(txtCurrentDensity, txtRemanence);
+    setTabOrder(txtCurrentDensity, txtConductivity);
+    setTabOrder(txtConductivity, txtRemanence);
     setTabOrder(txtRemanence, txtRemanenceAngle);
-    setTabOrder(txtRemanenceAngle, txtConductivity);
+    setTabOrder(txtRemanenceAngle, txtVelocityX);
+    setTabOrder(txtVelocityX, txtVelocityY);
+    setTabOrder(txtVelocityY, txtVelocityAngular);
 
     load();
     setSize();
@@ -882,6 +1018,9 @@ DSceneLabelMagnetostaticMarker::~DSceneLabelMagnetostaticMarker()
     delete txtRemanence;
     delete txtRemanenceAngle;
     delete txtConductivity;
+    delete txtVelocityX;
+    delete txtVelocityY;
+    delete txtVelocityAngular;
 }
 
 QLayout* DSceneLabelMagnetostaticMarker::createContent()
@@ -891,22 +1030,38 @@ QLayout* DSceneLabelMagnetostaticMarker::createContent()
     txtRemanence = new SLineEditValue(this);
     txtRemanenceAngle = new SLineEditValue(this);
     txtConductivity = new SLineEditValue(this);
-    txtConductivity->setEnabled(Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
+    txtVelocityX = new SLineEditValue(this);
+    txtVelocityX->setEnabled(Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    txtVelocityY = new SLineEditValue(this);
+    txtVelocityAngular = new SLineEditValue(this);
+    txtVelocityAngular->setEnabled(Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
 
-    /*
-    QHBoxLayout *layoutRemanence = new QHBoxLayout();
-    layoutRemanence->addWidget(txtRemanence);
-    layoutRemanence->addWidget(new QLabel(tr("Angle (deg.):")));
-    layoutRemanence->addWidget(txtRemanenceAngle);
-    */
+    // remanence
+    QFormLayout *layoutRemanence = new QFormLayout();
+    layoutRemanence->addRow(tr("Rem. flux dens. (T):"), txtRemanence);
+    layoutRemanence->addRow(tr("Direction of rem. (deg.):"), txtRemanenceAngle);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Permeability (-):"), txtPermeability);
-    layoutMarker->addRow(tr("Current density (A/m2):"), txtCurrentDensity);
-    // layoutMarker->addRow(tr("Remanence (T):"), layoutRemanence);
-    layoutMarker->addRow(tr("Rem. flux dens. (T):"), txtRemanence);
-    layoutMarker->addRow(tr("Direction of rem. (deg.):"), txtRemanenceAngle);
-    layoutMarker->addRow(tr("Conductivity (S/m):"), txtConductivity);
+    QGroupBox *grpRemanence = new QGroupBox(tr("Permanent magnet"), this);
+    grpRemanence->setLayout(layoutRemanence);
+
+    // velocity
+    QFormLayout *layoutVelocity = new QFormLayout();
+    layoutVelocity->addRow(tr("Velocity %1 (m/s):").arg(Util::scene()->problemInfo()->labelX().toLower()), txtVelocityX);
+    layoutVelocity->addRow(tr("Velocity %1 (m/s):").arg(Util::scene()->problemInfo()->labelY().toLower()), txtVelocityY);
+    layoutVelocity->addRow(tr("Velocity angular (rad/s):"), txtVelocityAngular);
+
+    QGroupBox *grpVelocity = new QGroupBox(tr("Velocity"), this);
+    grpVelocity->setLayout(layoutVelocity);
+
+    QFormLayout *layoutMarkerVariables = new QFormLayout();
+    layoutMarkerVariables->addRow(tr("Permeability (-):"), txtPermeability);
+    layoutMarkerVariables->addRow(tr("Current density (A/m2):"), txtCurrentDensity);
+    layoutMarkerVariables->addRow(tr("Conductivity (S/m):"), txtConductivity);
+
+    QVBoxLayout *layoutMarker = new QVBoxLayout();
+    layoutMarker->addLayout(layoutMarkerVariables);
+    layoutMarker->addWidget(grpRemanence);
+    layoutMarker->addWidget(grpVelocity);
 
     return layoutMarker;
 }
@@ -922,6 +1077,9 @@ void DSceneLabelMagnetostaticMarker::load()
     txtRemanence->setValue(labelMagnetostaticMarker->remanence);
     txtRemanenceAngle->setValue(labelMagnetostaticMarker->remanence_angle);
     txtConductivity->setValue(labelMagnetostaticMarker->conductivity);
+    txtVelocityX->setValue(labelMagnetostaticMarker->velocity_x);
+    txtVelocityY->setValue(labelMagnetostaticMarker->velocity_y);
+    txtVelocityAngular->setValue(labelMagnetostaticMarker->velocity_angular);
 }
 
 bool DSceneLabelMagnetostaticMarker::save() {
@@ -951,6 +1109,21 @@ bool DSceneLabelMagnetostaticMarker::save() {
 
     if (txtConductivity->evaluate())
         labelMagnetostaticMarker->conductivity = txtConductivity->value();
+    else
+        return false;
+
+    if (txtVelocityX->evaluate())
+        labelMagnetostaticMarker->velocity_x = txtVelocityX->value();
+    else
+        return false;
+
+    if (txtVelocityY->evaluate())
+        labelMagnetostaticMarker->velocity_y = txtVelocityY->value();
+    else
+        return false;
+
+    if (txtConductivity->evaluate())
+        labelMagnetostaticMarker->velocity_angular = txtVelocityAngular->value();
     else
         return false;
 

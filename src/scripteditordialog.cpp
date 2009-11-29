@@ -42,6 +42,10 @@ QString createPythonFromModel()
            + "\n";
     str += "\n";
 
+    str += "# startup script\n";
+    str += Util::scene()->problemInfo()->scriptStartup;
+    str += "\n\n";
+
     // boundaries
     str += "# boundaries\n";
     for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)

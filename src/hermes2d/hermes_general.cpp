@@ -99,10 +99,16 @@ QList<SolutionArray *> *general_main(SolverThread *solverThread)
     wf.add_biform(0, 0, callback(general_bilinear_form));
     wf.add_liform(0, callback(general_linear_form));
 
-    // initialize the linear solver
-    UmfpackSolver umfpack;
     Solution *sln = new Solution();
     Solution rsln;
+
+    // initialize the linear solver
+    UmfpackSolver umfpack;
+
+    // initialize the linear system
+    LinSystem sys(&wf, &umfpack);
+    sys.set_spaces(1, &space);
+    sys.set_pss(1, &pss);
 
     // assemble the stiffness matrix and solve the system
     double error;
@@ -112,20 +118,16 @@ QList<SolutionArray *> *general_main(SolverThread *solverThread)
     {
         space.assign_dofs();
 
-        // initialize the linear system
-        LinSystem sys(&wf, &umfpack);
-        sys.set_spaces(1, &space);
-        sys.set_pss(1, &pss);
         sys.assemble();
         sys.solve(1, sln);
 
-        RefSystem rs(&sys);
-        rs.assemble();
-        rs.solve(1, &rsln);
-
         // calculate errors and adapt the solution
         if (adaptivityType != ADAPTIVITYTYPE_NONE)
-        {
+        {            
+            RefSystem rs(&sys);
+            rs.assemble();
+            rs.solve(1, &rsln);
+
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 

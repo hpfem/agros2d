@@ -1193,9 +1193,12 @@ void SceneView::paintVectors()
                 // dy = (dy - m_sceneViewSettings.vectorRangeMin) * irange * gs;
                 double dm = sqrt(sqr(dx) + sqr(dy));
                 
-                glVertex2d(x + dm/5.0 * cos(angle - M_PI_2), y + dm/5.0 * sin(angle - M_PI_2));
-                glVertex2d(x + dm/5.0 * cos(angle + M_PI_2), y + dm/5.0 * sin(angle + M_PI_2));
-                glVertex2d(x + dm * cos(angle), y + dm * sin(angle));
+                if (value > EPS_ZERO)
+                {
+                    glVertex2d(x + dm/5.0 * cos(angle - M_PI_2), y + dm/5.0 * sin(angle - M_PI_2));
+                    glVertex2d(x + dm/5.0 * cos(angle + M_PI_2), y + dm/5.0 * sin(angle + M_PI_2));
+                    glVertex2d(x + dm * cos(angle), y + dm * sin(angle));
+                }
             }
         }
     }

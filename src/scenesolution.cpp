@@ -219,7 +219,7 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 scalar *dudx, *dudy, *dvdx, *dvdy;
                 scalar *dudxx, *dudyy;
                 scalar *valueu, *valuev;
-                double *x;
+                double *x, *y;
 
                 // solution 1
                 sln1()->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
@@ -227,8 +227,9 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                 valueu = sln1()->get_fn_values();
                 // derivative
                 sln1()->get_dx_dy_values(dudx, dudy);
-                // x - coordinate
+                // coordinates
                 x = ru->get_phys_x(o);
+                y = ru->get_phys_y(o);
 
                 // solution 2
                 if (sln2())
@@ -443,16 +444,41 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                         SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[e->marker]->marker);
                         if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
+                            h1_integrate_expression(dudx[i] *
+                                                    (marker->current_density.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i])));
+                        }
+                        else
+                        {
+
+                        }
+                        /*
+                        SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+                        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                        {
                             h1_integrate_expression(((sqr(dudx[i]) - sqr(dudy[i]))*dudx[i] + (dudx[i]*dudy[i])*dudy[i]) / sqr(marker->permeability.number * MU0));
                         }
                         else
                         {
                             h1_integrate_expression(2 * M_PI * x[i] * 0.5 * sqr(sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0));
                         }
+                        */
                     }
                     break;
                 case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_FORCE_Y:
                     {
+                        SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+                        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(- dudy[i] *
+                                                    (marker->current_density.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i])));
+                        }
+                        else
+                        {
+
+                        }
+                        /*
                         SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[e->marker]->marker);
                         if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
                         {
@@ -475,11 +501,78 @@ double SceneSolution::volumeIntegral(int labelIndex, PhysicFieldIntegralVolume p
                                 for (int i = 0; i < np; i++)
                                     result += pt[i][2] * jac[i] * (1);
                             }
-                            */
+
                         }
                         else
                         {
                             h1_integrate_expression(2 * M_PI * x[i] * 0.5 * sqr(sqrt(sqr(dudy[i]) + sqr(dudx[i] + ((x[i] > 0) ? valueu[i] / x[i] : 0.0)))) / (marker->permeability.number * MU0));
+                        }
+                        */
+                    }
+                    break;
+                case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_CURRENT_DENSITY:
+                    {
+                        SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+                        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(marker->current_density.number);
+                        }
+                        else
+                        {
+                            h1_integrate_expression(marker->current_density.number);
+                        }
+                    }
+                    break;
+                case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY:
+                    {
+                        SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+                        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i]));
+                        }
+                        else
+                        {
+                            h1_integrate_expression(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i]));
+                        }
+                    }
+                    break;
+                case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_POWER_LOSSES:
+                    {
+                        SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+                        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression((marker->conductivity.number > 0) ? sqr(marker->current_density.number + marker->conductivity.number *
+                                                                                            ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                                             (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i])) / marker->conductivity.number : 0.0);
+                        }
+                        else
+                        {
+                            h1_integrate_expression((marker->conductivity.number > 0) ? sqr(marker->current_density.number + marker->conductivity.number *
+                                                                                            ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                                             (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i])) / marker->conductivity.number : 0.0);
+                        }
+                    }
+                    break;
+                case PHYSICFIELDINTEGRAL_VOLUME_MAGNETOSTATIC_TORQUE:
+                    {
+                        SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+                        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                        {
+                            h1_integrate_expression(y[i] *
+                                                    dudx[i] *
+                                                    (marker->current_density.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                                                                    (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i])) +
+                                                    x[i] *
+                                                    - dudy[i] *
+                                                    (marker->current_density.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                                                                    (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i]))
+                                                    );
+                        }
+                        else
+                        {
+                            h1_integrate_expression(0.0);
                         }
                     }
                     break;
@@ -1030,7 +1123,7 @@ PointValue SceneSolution::pointValue(const Point &point, Solution *sln)
 void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayList)
 {
     m_solutionArrayList = solutionArrayList;
-    setTimeStep(timeStepCount() - 1);
+    setTimeStep(timeStepCount() / Util::scene()->problemInfo()->hermes()->numberOfSolution() - 1);
 }
 
 void SceneSolution::setTimeStep(int timeStep)
@@ -1179,6 +1272,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
     update_refmap();
     
     double *x = refmap->get_phys_x(order);
+    double *y = refmap->get_phys_y(order);
     Element* e = refmap->get_active_element();
     
     SceneLabelMarker *labelMarker = Util::scene()->labels[e->marker]->marker;
@@ -1461,6 +1555,103 @@ void ViewScalarFilter::precalculate(int order, int mask)
             {
                 SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
                 node->values[0][0][i] = marker->permeability.number;
+            }
+            break;
+        case PHYSICFIELDVARIABLE_MAGNETOSTATIC_CONDUCTIVITY:
+            {
+                SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
+                node->values[0][0][i] = marker->conductivity.number;
+            }
+            break;
+        case PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY:
+            {
+                SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
+                if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                {
+                    switch (m_physicFieldVariableComp)
+                    {
+                    case PHYSICFIELDVARIABLECOMP_X:
+                        {
+                            node->values[0][0][i] = marker->velocity_x.number - marker->velocity_angular.number * y[i];
+                        }
+                        break;
+                    case PHYSICFIELDVARIABLECOMP_Y:
+                        {
+                            node->values[0][0][i] = marker->velocity_y.number + marker->velocity_angular.number * x[i];
+                        }
+                        break;
+                    case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                        {
+                            node->values[0][0][i] = sqrt(sqr(marker->velocity_x.number - marker->velocity_angular.number * y[i]) +
+                                                         sqr(marker->velocity_y.number + marker->velocity_angular.number * x[i]));
+                        }
+                        break;
+                    }
+                }
+                else
+                {
+                    switch (m_physicFieldVariableComp)
+                    {
+                    case PHYSICFIELDVARIABLECOMP_X:
+                        {
+                            node->values[0][0][i] = 0;
+                        }
+                        break;
+                    case PHYSICFIELDVARIABLECOMP_Y:
+                        {
+                            node->values[0][0][i] = marker->velocity_y.number;
+                        }
+                        break;
+                    case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                        {
+                            node->values[0][0][i] = fabs(marker->velocity_y.number);
+                        }
+                        break;
+                    }
+                }
+            }
+            break;
+        case PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE:
+            {
+                SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
+                node->values[0][0][i] = marker->remanence.number;
+            }
+            break;
+        case PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE_ANGLE:
+            {
+                SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
+                node->values[0][0][i] = marker->remanence_angle.number;
+            }
+            break;
+        case PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY:
+            {
+                SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
+                node->values[0][0][i] = marker->current_density.number;
+            }
+            break;
+        case PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY:
+            {
+                SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
+                node->values[0][0][i] = - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i]);
+            }
+            break;
+        case PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_TOTAL:
+            {
+                SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
+                node->values[0][0][i] = marker->current_density.number -
+                                        marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                       (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i]);
+            }
+            break;
+        case PHYSICFIELDVARIABLE_MAGNETOSTATIC_POWER_LOSSES:
+            {
+                SceneLabelMagnetostaticMarker *marker = dynamic_cast<SceneLabelMagnetostaticMarker *>(labelMarker);
+                node->values[0][0][i] = (marker->conductivity.number > 0) ?
+                                        sqr(marker->current_density.number -
+                                            marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx[i] +
+                                                                           (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy[i])) /
+                                            marker->conductivity.number : 0.0;
             }
             break;
         case PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL:

@@ -55,7 +55,15 @@ void initLists()
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY, "magnetostatic_flux_density");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD, "magnetostatic_magnetic_field");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY, "magnetostatic_energy_density");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY, "magnetostatic_permeability");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY, "magnetostatic_permeability");    
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE, "magnetostatic_remanence");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE_ANGLE, "magnetostatic_remanence_angle");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY, "magnetostatic_velocity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CONDUCTIVITY, "magnetostatic_conductivity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY, "magnetostatic_current_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY, "magnetostatic_current_density_velocity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_TOTAL, "magnetostatic_current_density_total");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_POWER_LOSSES, "magnetostatic_power_losses");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL, "harmonicmagnetic_vector_potential");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL, "harmonicmagnetic_vector_potential_real");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG, "harmonicmagnetic_vector_potential_imag");

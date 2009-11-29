@@ -28,12 +28,18 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_HEAT_TEMPERATURE ||
-                                                                          physicFieldBC == PHYSICFIELDBC_HEAT_HEAT_FLUX); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_TEMPERATURE ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_FLUX ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL ||
+                                                                          physicFieldBC == PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_CONDUCTIVITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE_ANGLE ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -54,12 +60,21 @@ public:
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE), PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE_ANGLE), PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE_ANGLE);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_TOTAL), PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_TOTAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_POWER_LOSSES), PHYSICFIELDVARIABLE_MAGNETOSTATIC_POWER_LOSSES);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CONDUCTIVITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_CONDUCTIVITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY);
     }
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY);
     }
 
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
@@ -75,10 +90,13 @@ public:
     double conductivity;
     double remanence;
     double remanence_angle;
+    Point velocity;
+    double current_density_velocity;
     double potential;
     Point H;
     Point B;
     double wm;
+    double pj;
 
     LocalPointValueMagnetostatic(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
@@ -104,6 +122,11 @@ public:
     double energy;
     double forceX;
     double forceY;
+    double currentExternal;
+    double currentVelocity;
+    double currentTotal;
+    double losses;
+    double torque;
 
     VolumeIntegralValueMagnetostatic();
     QStringList variables();
@@ -129,8 +152,12 @@ public:
     Value remanence;
     Value remanence_angle;
     Value conductivity;
+    Value velocity_x;
+    Value velocity_y;
+    Value velocity_angular;
 
-    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability, Value remanence, Value remanence_angle, Value conductivity);
+    SceneLabelMagnetostaticMarker(const QString &name, Value current_density, Value permeability, Value remanence, Value remanence_angle,
+                                  Value conductivity, Value velocity_x, Value velocity_y, Value velocity_angular);
 
     QString script();
     QMap<QString, QString> data();
@@ -175,6 +202,10 @@ private:
     SLineEditValue *txtRemanence;
     SLineEditValue *txtRemanenceAngle;
     SLineEditValue *txtConductivity;
+    SLineEditValue *txtVelocityX;
+    SLineEditValue *txtVelocityY;
+    SLineEditValue *txtVelocityAngular;
+
 };
 
 #endif // MAGNETOSTATIC_H

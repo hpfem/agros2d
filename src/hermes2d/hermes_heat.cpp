@@ -199,13 +199,13 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
         sys.assemble();
         sys.solve(1, sln);
 
-        RefSystem rs(&sys);
-        rs.assemble();
-        rs.solve(1, &rsln);
-
         // calculate errors and adapt the solution
         if (adaptivityType != ADAPTIVITYTYPE_NONE)
         {
+            RefSystem rs(&sys);
+            rs.assemble();
+            rs.solve(1, &rsln);
+
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 

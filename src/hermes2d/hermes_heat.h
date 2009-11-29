@@ -28,13 +28,12 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL ||
-                                                                          physicFieldBC == PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_HEAT_TEMPERATURE ||
+                                                                          physicFieldBC == PHYSICFIELDBC_HEAT_HEAT_FLUX); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_TEMPERATURE ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_FLUX ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
