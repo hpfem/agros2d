@@ -222,13 +222,10 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
     int timesteps = (heatTransient) ? floor(heatTimeTotal/heatTimeStep) : 1;
     for (int n = 0; n<timesteps; n++)
     {
-        log("\n");
         if (timesteps > 1)
         {
             sys.assemble(true);
-            log("sys.assemble();");
             sys.solve(1, sln);
-            log("sys.solve(1, sln);");
         }
         else
         {
@@ -247,14 +244,10 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
         if (heatTransient > 0) solutionArray->time = (n+1)*heatTimeStep;
 
         solutionArrayList->append(solutionArray);
-        log("solutionArrayList->append(solutionArray);");
 
         if (heatTransient > 0) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
-        log("if (heatTransient > 0) solverThread->showMessage...");
         if (solverThread->isCanceled()) return NULL;
-        log("if (solverThread->isCanceled()) return NULL;");
         solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
-        log("solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));");
     }
 
     return solutionArrayList;

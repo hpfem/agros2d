@@ -161,23 +161,15 @@ QList<SolutionArray *> *magnetostatic_main(SolverThread *solverThread)
     {
         space.assign_dofs();
 
-        time.start();
         sys.assemble();
-        log(QString("sys.assemble(): %1").arg(time.elapsed()));
-        time.start();
         sys.solve(1, sln);
-        log(QString("sys.solve(): %1").arg(time.elapsed()));
 
         // calculate errors and adapt the solution
         if (adaptivityType != ADAPTIVITYTYPE_NONE)
         {
             RefSystem rs(&sys);
-            time.start();
             rs.assemble();
-            log(QString("rs.assemble(): %1").arg(time.elapsed()));
-            time.start();
             rs.solve(1, &rsln);
-            log(QString("rs.solve(): %1").arg(time.elapsed()));
 
             H1OrthoHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
@@ -195,7 +187,6 @@ QList<SolutionArray *> *magnetostatic_main(SolverThread *solverThread)
     int timesteps = (magnetostaticTransient) ? floor(magnetostaticTimeTotal/magnetostaticTimeStep) : 1;
     for (int n = 0; n<timesteps; n++)
     {
-        log("\n");
         if (timesteps > 1)
         {
             sys.assemble(true);
