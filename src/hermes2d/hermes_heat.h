@@ -11,7 +11,7 @@ public:
     HermesHeat() { physicField = PHYSICFIELD_HEAT; }
 
     inline int numberOfSolution() { return 1; }
-    bool hasFrequency() { return false; }
+    bool hasHarmonic() { return false; }
     bool hasTransient() { return true; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);

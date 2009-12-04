@@ -11,7 +11,7 @@ public:
     HermesElasticity() { physicField = PHYSICFIELD_ELASTICITY; }
 
     inline int numberOfSolution() { return 2; }
-    bool hasFrequency() { return false; }
+    bool hasHarmonic() { return false; }
     bool hasTransient() { return false; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);

@@ -206,6 +206,7 @@ void ChartDialog::createControls()
     connect(cmbFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariable(int)));
     // component
     cmbFieldVariableComp = new QComboBox(this);
+    connect(cmbFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariableComp(int)));
     doFieldVariable(cmbFieldVariable->currentIndex());
     
     QFormLayout *layoutVariable = new QFormLayout(this);
@@ -288,13 +289,15 @@ void ChartDialog::plotGeometry()
 {
     doChartLine();
 
+    // variable
+    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    if (physicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED) return;
+    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
+    if (physicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED) return;
+
     int count = txtAxisPoints->value();
     double *xval = new double[count];
     double *yval = new double[count];
-    
-    // variable
-    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
-    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
     
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
     QwtText text("");
@@ -356,16 +359,18 @@ void ChartDialog::plotTime()
 {
     doChartLine();
 
+    // variable
+    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
+    if (physicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED) return;
+    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
+    if (physicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED) return;
+
     // store timestep
     int timeStep = Util::scene()->sceneSolution()->timeStep();
 
     int count = Util::scene()->sceneSolution()->timeStepCount();
     double *xval = new double[count];
     double *yval = new double[count];
-
-    // variable
-    PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
-    PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
 
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
     QwtText text("");
@@ -421,6 +426,8 @@ void ChartDialog::plotTime()
 
 void ChartDialog::doPlot()
 {
+    if (!Util::scene()->sceneSolution()->isSolved()) return;
+
     if (tabAnalysisType->currentWidget() == widGeometry)
         plotGeometry();
 
@@ -446,6 +453,13 @@ void ChartDialog::doFieldVariable(int index)
     
     if (cmbFieldVariableComp->currentIndex() == -1)
         cmbFieldVariableComp->setCurrentIndex(0);
+
+    if (isVisible()) doPlot();
+}
+
+void ChartDialog::doFieldVariableComp(int index)
+{
+    if (isVisible()) doPlot();
 }
 
 void ChartDialog::doSaveImage()

@@ -2,6 +2,7 @@
     <problems>
         <problem adaptivitytolerance="5" frequency="0" numberofrefinements="1" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="10" polynomialorder="2" problemtype="planar" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic planar capacitor" initialcondition="0" >
             <scriptstartup></scriptstartup>
+            <description></description>
             <edges>
                 <edge type="electrostatic_potential" value="10" id="1" name="Source electrode" />
                 <edge type="electrostatic_potential" value="0" id="2" name="Ground electrode" />

@@ -95,8 +95,7 @@ SOURCES += src/util.cpp \
     src/hermes2d/hermes_general.cpp \
     src/hermes2d/hermes_electrostatic.cpp \
     src/hermes2d/hermes_heat.cpp \
-    src/hermes2d/hermes_magnetostatic.cpp \
-    src/hermes2d/hermes_harmonicmagnetic.cpp \
+    src/hermes2d/hermes_magnetic.cpp \
     src/hermes2d/hermes_current.cpp \
     src/hermes2d/hermes_elasticity.cpp \
     src/localvalueview.cpp \
@@ -131,8 +130,7 @@ HEADERS += src/util.h \
     src/hermes2d/hermes_general.h \
     src/hermes2d/hermes_electrostatic.h \
     src/hermes2d/hermes_heat.h \
-    src/hermes2d/hermes_magnetostatic.h \
-    src/hermes2d/hermes_harmonicmagnetic.h \
+    src/hermes2d/hermes_magnetic.h \
     src/hermes2d/hermes_current.h \
     src/hermes2d/hermes_elasticity.h \
     src/localvalueview.h \
@@ -173,7 +171,7 @@ LIBS += -lhermes2d-real \
     -lamd \
     -lblas \
     -lJudy \
-    -lpthread 
+    -lpthread
 unix:LIBS += -lpython2.6
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt

@@ -11,7 +11,7 @@ public:
     HermesElectrostatic() { physicField = PHYSICFIELD_ELECTROSTATIC; }
 
     inline int numberOfSolution() { return 1; }
-    bool hasFrequency() { return false; }
+    bool hasHarmonic() { return false; }
     bool hasTransient() { return false; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);

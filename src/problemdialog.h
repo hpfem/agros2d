@@ -38,8 +38,10 @@ private:
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     SLineEditDouble *txtAdaptivityTolerance;
-    // harmonic magnetic
+
+    // harmonic
     SLineEditDouble *txtFrequency;
+
     // transient
     QComboBox *cmbAnalysisType;
     SLineEditDouble *txtTransientTimeStep;

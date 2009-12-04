@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     }
 
     // run server
-    ScriptEngineRemote *scriptEngineRemote = new ScriptEngineRemote();
+    new ScriptEngineRemote();
 
     // accept drops
     setAcceptDrops(true);
@@ -400,19 +400,24 @@ void MainWindow::createStatusBar()
 {
     lblMessage = new QLabel(statusBar());
     // lblMessage->setStyleSheet("QLabel {border-left: 1px solid gray;}");
+
     lblPosition = new QLabel(statusBar());
-    // lblPosition->setStyleSheet("QLabel {border: 1px solid gray;}");
     lblPosition->setMinimumWidth(170);
+    // lblPosition->setStyleSheet("QLabel {border: 1px solid gray;}");
+
     lblProblemType = new QLabel(statusBar());
     // lblProblemType->setStyleSheet("QLabel {border: 1px solid gray;}");
+
     lblPhysicField = new QLabel(statusBar());
     // lblPhysicField->setStyleSheet("QLabel {border: 1px solid gray;}");
-    lblTimeStep = new QLabel(statusBar());
+
+    lblAnalysisType = new QLabel(statusBar());
+    // lblAnalysisType->setStyleSheet("QLabel {border: 1px solid gray;}");
 
     statusBar()->showMessage(tr("Ready"));
     statusBar()->addPermanentWidget(lblProblemType);
     statusBar()->addPermanentWidget(lblPhysicField);
-    statusBar()->addPermanentWidget(lblTimeStep);
+    statusBar()->addPermanentWidget(lblAnalysisType);
     statusBar()->addPermanentWidget(lblPosition);
 
     connect(sceneView, SIGNAL(mouseMoved(const QPointF &)), this, SLOT(doSceneMouseMoved(const QPointF &)));
@@ -798,7 +803,7 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    //ErrorResult result = Util::scene()->readFromFile("data/pokus.a2d");
+    ErrorResult result = Util::scene()->readFromFile("data/pokus.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
@@ -806,16 +811,16 @@ void MainWindow::doPaste()
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_planar.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_detail.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetostatic_planar.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetostatic_axisymmetric_actuator.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetostatic_planar_magnet.a2d");
-    ErrorResult result = Util::scene()->readFromFile("data/magnetostatic_planar_rotating_heating.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_planar_circle_conductor.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_planar_profile_conductor.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_planar_proximity_effect.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_planar_three_phase_cable.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_furnace.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/harmonicmagnetic_axisymmetric_heating.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_axisymmetric_actuator.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar_magnet.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar_rotating_heating.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_circle_conductor.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_profile_conductor.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_proximity_effect.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_three_phase_cable.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_axisymmetric_furnace.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_axisymmetric_heating.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/current_feeder.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/elasticity_planar.a2d");
     if (result.isError())
@@ -845,10 +850,10 @@ void MainWindow::doInvalidated()
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
     fillComboBoxTimeStep(cmbTimeStep);
 
-    lblProblemType->setText(tr("Problem Type: ") + problemTypeString(Util::scene()->problemInfo()->problemType));
-    lblPhysicField->setText(tr("Physic Field: ") + physicFieldString(Util::scene()->problemInfo()->physicField()));
-    lblTimeStep->setVisible(cmbTimeStep->count() > 1);
-    lblTimeStep->setText(tr("Time step: ") + cmbTimeStep->currentText());
+    lblProblemType->setText(tr("Problem Type: %1").arg(problemTypeString(Util::scene()->problemInfo()->problemType)));
+    lblPhysicField->setText(tr("Physic Field: %1").arg(physicFieldString(Util::scene()->problemInfo()->physicField())));
+    lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
+
 }
 
 void MainWindow::doHelp()

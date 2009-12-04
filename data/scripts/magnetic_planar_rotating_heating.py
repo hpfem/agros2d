@@ -1,5 +1,5 @@
 # model
-newdocument("Rotating induction heating", "planar", "magnetostatic", 1, 2, "disabled", 3, 0, 0, "steadystate", 1, 1, 0)
+newdocument("Rotating induction heating", "planar", "magnetic", 1, 2, "disabled", 3, 0, 0, "steadystate", 1, 1, 0)
 
 # coil
 Jext = 3e7
@@ -15,10 +15,10 @@ omega = 2*pi*f
 addboundary("A = 0", "magnetostatic_vector_potential", 00)
 
 # materials
-addmaterial("Al", 0, 1, 0, 0, sigma, 0, 0, omega)
-addmaterial("Air", 0, 1, 0, 0, 0, 0, 0, 0)
-addmaterial("Cu+", Jext, 1, 0, 0, 0, 0, 0, 0)
-addmaterial("Cu-", -Jext, 1, 0, 0, 0, 0, 0, 0)
+addmaterial("Al", 0, 0, 1, sigma, 0, 0, 0, 0, omega)
+addmaterial("Air", 0, 0, 1, 0, 0, 0, 0, 0, 0)
+addmaterial("Cu+", Jext, 0, 1, 0, 0, 0, 0, 0, 0)
+addmaterial("Cu-", -Jext, 0, 1, 0, 0, 0, 0, 0, 0)
 
 # edges
 addedge(0.03, -0.0519615, 0.03, 0.0519615, 120, "none")
@@ -57,7 +57,7 @@ def graph(angle):
 		R = (i-1)*step
 		point = pointresult(R*cos(angle/180.0*pi), R*sin(angle/180.0*pi))
 		r.append(R)
-		Jvel.append(point["Jvel"])
+		Jvel.append(point["Jiv_real"])
 	return r, Jvel
 
 
@@ -69,11 +69,10 @@ r90, Jvel90 = graph(90)
 # plot chart
 import pylab
 
-pylab.clf()
 # pylab.plot(r00, Jvel00, "k-", r30, Jvel30, "k+-", r60, Jvel60, "k--", r90, Jvel90, "ko-")
 pylab.plot(r00, Jvel00, r30, Jvel30, r60, Jvel60, r90, Jvel90)
 pylab.grid(1)
-pylab.xlabel("r (m)")
-pylab.ylabel("J (A/m2)")
+pylab.xlabel("$r\,\mathrm{(m)}$")
+pylab.ylabel("$J\,\mathrm{(A/m^2)}$")
 pylab.legend(("00 deg.", "30 deg.", "60 deg.", "90 deg."), "upper left")
 pylab.show()

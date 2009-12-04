@@ -135,7 +135,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Problem.AdaptivitySteps]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->problemInfo()->adaptivitySteps) : "", Qt::CaseSensitive);
     destination.replace("[Problem.AdaptivityTolerance]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->problemInfo()->adaptivityTolerance) : "", Qt::CaseSensitive);
 
-    destination.replace("[Problem.Frequency]", (Util::scene()->problemInfo()->hermes()->hasFrequency()) ? QString::number(Util::scene()->problemInfo()->frequency) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.Frequency]", (Util::scene()->problemInfo()->hermes()->hasHarmonic()) ? QString::number(Util::scene()->problemInfo()->frequency) : "", Qt::CaseSensitive);
     destination.replace("[Problem.AnalysisType]", analysisTypeString(Util::scene()->problemInfo()->analysisType), Qt::CaseSensitive);
     destination.replace("[Problem.TimeStep]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeStep) : "", Qt::CaseSensitive);
     destination.replace("[Problem.TimeTotal]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeTotal) : "", Qt::CaseSensitive);

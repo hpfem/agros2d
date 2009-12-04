@@ -71,9 +71,9 @@ void SceneViewDialog::load()
     chkShowSolutionMesh->setChecked(m_sceneView->sceneViewSettings().showSolutionMesh);
 
     // scalar field
+    cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp));
     cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable));
     doScalarFieldVariable(cmbScalarFieldVariable->currentIndex());
-    cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(m_sceneView->sceneViewSettings().scalarPhysicFieldVariableComp));
     chkScalarFieldRangeAuto->setChecked(m_sceneView->sceneViewSettings().scalarRangeAuto);
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
     txtScalarFieldRangeMin->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMin));
@@ -273,6 +273,7 @@ void SceneViewDialog::createControls()
 
 void SceneViewDialog::doScalarFieldVariable(int index)
 {
+    PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbScalarFieldVariable->itemData(index).toInt();
 
     cmbScalarFieldVariableComp->clear();
@@ -287,6 +288,8 @@ void SceneViewDialog::doScalarFieldVariable(int index)
         cmbScalarFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PHYSICFIELDVARIABLECOMP_Y);
     }
 
+    if (cmbScalarFieldVariableComp->currentIndex() == -1)
+        cmbScalarFieldVariableComp->setCurrentIndex(cmbScalarFieldVariableComp->findData(scalarFieldVariableComp));
     if (cmbScalarFieldVariableComp->currentIndex() == -1)
         cmbScalarFieldVariableComp->setCurrentIndex(0);
 }

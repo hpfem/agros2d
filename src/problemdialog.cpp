@@ -27,8 +27,10 @@ ProblemDialog::~ProblemDialog()
     delete txtAdaptivitySteps;
     delete txtAdaptivityTolerance;
     delete cmbAdaptivityType;
-    // harmonic magnetic
+
+    // harmonic
     delete txtFrequency;
+
     // transient
     delete txtTransientTimeStep;
     delete txtTransientTimeTotal;
@@ -84,8 +86,10 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEditDouble(1);
-    // harmonic magnetic
+
+    // harmonic
     txtFrequency = new SLineEditDouble();
+
     // transient
     cmbAnalysisType = new QComboBox();
     txtTransientTimeStep = new SLineEditDouble();
@@ -178,8 +182,7 @@ void ProblemDialog::fillComboBox()
     cmbPhysicField->clear();
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_GENERAL), PHYSICFIELD_GENERAL);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELECTROSTATIC), PHYSICFIELD_ELECTROSTATIC);
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETOSTATIC), PHYSICFIELD_MAGNETOSTATIC);
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HARMONICMAGNETIC), PHYSICFIELD_HARMONICMAGNETIC);
+    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETIC), PHYSICFIELD_MAGNETIC);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_CURRENT), PHYSICFIELD_CURRENT);
     cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT), PHYSICFIELD_HEAT);
     // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
@@ -190,11 +193,6 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_H), ADAPTIVITYTYPE_H);
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_P), ADAPTIVITYTYPE_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_HP), ADAPTIVITYTYPE_HP);
-
-    cmbAnalysisType->clear();
-    cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_STEADYSTATE), ANALYSISTYPE_STEADYSTATE);
-    cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_TRANSIENT), ANALYSISTYPE_TRANSIENT);
-    cmbAnalysisType->setCurrentIndex(0);
 }
 
 void ProblemDialog::load()
@@ -243,7 +241,7 @@ bool ProblemDialog::save()
     if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
     // check values
-    if (m_problemInfo->hermes()->hasFrequency())
+    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == ANALYSISTYPE_HARMONIC)
     {
         if (txtFrequency->value() < 0)
         {
@@ -252,7 +250,7 @@ bool ProblemDialog::save()
         }
     }
 
-    if (m_problemInfo->hermes()->hasTransient() && cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toBool())
+    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == ANALYSISTYPE_TRANSIENT)
     {
         if (txtTransientTimeStep->value() <= 0.0)
         {
@@ -309,12 +307,15 @@ void ProblemDialog::doPhysicFieldChanged(int index)
 {
     HermesField *hermesField = hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt());
 
-    txtFrequency->setEnabled(hermesField->hasFrequency());
-    cmbAnalysisType->setEnabled(hermesField->hasTransient());
-    cmbAnalysisType->setCurrentIndex(0);
-    txtTransientTimeStep->setEnabled(Util::scene()->problemInfo()->hermes()->hasTransient());
-    txtTransientTimeTotal->setEnabled(Util::scene()->problemInfo()->hermes()->hasTransient());
-    txtTransientInitialCondition->setEnabled(Util::scene()->problemInfo()->hermes()->hasTransient());
+    // analysis type
+    AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
+    cmbAnalysisType->clear();
+    cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_STEADYSTATE), ANALYSISTYPE_STEADYSTATE);
+    if (hermesField->hasTransient()) cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_TRANSIENT), ANALYSISTYPE_TRANSIENT);
+    if (hermesField->hasHarmonic()) cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_HARMONIC), ANALYSISTYPE_HARMONIC);
+    cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
+    if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
+    doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 
     delete hermesField;
 
@@ -332,6 +333,8 @@ void ProblemDialog::doAnalysisTypeChanged(int index)
     txtTransientTimeStep->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
     txtTransientTimeTotal->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
     txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
+
+    txtFrequency->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_HARMONIC);
 }
 
 void ProblemDialog::doTransientChanged()

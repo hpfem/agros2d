@@ -1,15 +1,16 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="0" polynomialorder="1" problemtype="axisymmetric" timetotal="0" type="harmonicmagnetic" timestep="0" id="0" name="Levitation" initialcondition="0" >
+        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" analysistype="harmonic" adaptivitysteps="1" polynomialorder="1" problemtype="axisymmetric" timetotal="0" type="magnetic" timestep="0" id="0" name="Levitation" initialcondition="0" >
             <scriptstartup></scriptstartup>
+            <description></description>
             <edges>
-                <edge type="harmonicmagnetic_vector_potential" value="0" id="1" name="A = 0" />
+                <edge type="magnetic_vector_potential" value="0" id="1" name="A = 0" />
             </edges>
             <labels>
-                <label current_density_real="0" conductivity="0" id="1" name="air" current_density_imag="0" permeability="1" />
-                <label current_density_real="0" conductivity="33000000" id="2" name="aluminium" current_density_imag="0" permeability="1" />
-                <label current_density_real="10000000" conductivity="0" id="3" name="coil+" current_density_imag="0" permeability="1" />
-                <label current_density_real="-10000000" conductivity="0" id="4" name="coil-" current_density_imag="0" permeability="1" />
+                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="air" current_density_imag="0" permeability="1" velocity_angular="0" />
+                <label current_density_real="0" remanence="0" conductivity="33000000" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="aluminium" current_density_imag="0" permeability="1" velocity_angular="0" />
+                <label current_density_real="10000000" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="coil+" current_density_imag="0" permeability="1" velocity_angular="0" />
+                <label current_density_real="-10000000" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="4" name="coil-" current_density_imag="0" permeability="1" velocity_angular="0" />
             </labels>
         </problem>
     </problems>

@@ -24,8 +24,7 @@
 #include "hermes2d/hermes_field.h"
 #include "hermes2d/hermes_general.h"
 #include "hermes2d/hermes_electrostatic.h"
-#include "hermes2d/hermes_magnetostatic.h"
-#include "hermes2d/hermes_harmonicmagnetic.h"
+#include "hermes2d/hermes_magnetic.h"
 #include "hermes2d/hermes_heat.h"
 #include "hermes2d/hermes_current.h"
 #include "hermes2d/hermes_elasticity.h"
@@ -68,7 +67,7 @@ public:
     QString scriptStartup;
     QString description;
 
-    // harmonic magnetic
+    // harmonic
     int frequency;
 
     // transient
@@ -90,6 +89,9 @@ public:
     
     void clear()
     {
+        problemType = PROBLEMTYPE_PLANAR;
+        analysisType = ANALYSISTYPE_STEADYSTATE;
+
         // hermes object
         if (m_hermes) delete m_hermes;
         m_hermes = new HermesGeneral();
@@ -99,18 +101,16 @@ public:
         fileName = "";
         scriptStartup = "";
         description = "";
-        problemType = PROBLEMTYPE_PLANAR;
         numberOfRefinements = 1;
         polynomialOrder = 2;
         adaptivityType = ADAPTIVITYTYPE_NONE;
         adaptivitySteps = 0;
         adaptivityTolerance = 1.0;
         
-        // harmonic magnetic
+        // harmonic
         frequency = 0.0;
         
         // transient
-        analysisType = ANALYSISTYPE_STEADYSTATE;
         timeStep = 1.0;
         timeTotal = 1.0;
         initialCondition = 0.0;

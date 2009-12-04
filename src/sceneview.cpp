@@ -228,6 +228,7 @@ void SceneView::createActions()
 
     // scene properties
     actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Scene properties"), this);
+    actSceneViewProperties->setShortcut(Qt::Key_F12);
     connect(actSceneViewProperties, SIGNAL(triggered()), this, SLOT(doSceneViewProperties()));
 
     // object properties

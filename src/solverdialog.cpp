@@ -253,7 +253,10 @@ void SolverThread::runSolver()
     QTime time;
     time.start();
 
-    emit message(tr("Solver: solver was started: ") + physicFieldString(Util::scene()->problemInfo()->physicField()) + " (" + problemTypeString(Util::scene()->problemInfo()->problemType) + ")", false);
+    emit message(tr("Solver: solver was started: %1 (%2, %3) ").
+                 arg(physicFieldString(Util::scene()->problemInfo()->physicField())).
+                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
+                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false);
     updateProgress(60);
 
     QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo()->hermes()->solve(this);
@@ -569,7 +572,7 @@ bool SolverThread::triangleToHermes2D()
 SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowModality(Qt::ApplicationModal);
-    setMinimumSize(380, 260);
+    setMinimumSize(420, 260);
     setMaximumSize(minimumSize());
     setModal(true);
 

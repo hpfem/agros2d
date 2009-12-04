@@ -74,6 +74,7 @@ private:
 
 private slots:
     void doFieldVariable(int index);
+    void doFieldVariableComp(int index);
     void doSaveImage();
     void doExportData();
     void doMoved(const QPoint &);

@@ -652,7 +652,7 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
         double distanceNode = (node->point - point).magnitude();
         double angleNode = (node->point - point).angle()/M_PI*180;
 
-        Point pointNew = point + Point(distanceNode * cos((angleNode - angle)/180.0*M_PI), distanceNode * sin((angleNode - angle)/180.0*M_PI));
+        Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
         if (!copy)
         {
             node->point = pointNew;
@@ -671,7 +671,7 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
         double distanceNode = (label->point - point).magnitude();
         double angleNode = (label->point - point).angle()/M_PI*180;
 
-        Point pointNew = point + Point(distanceNode * cos((angleNode - angle)/180.0*M_PI), distanceNode * sin((angleNode - angle)/180.0*M_PI));
+        Point pointNew = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
         if (!copy)
         {
             label->point = pointNew;
@@ -1072,6 +1072,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->name = eleProblem.toElement().attribute("name");
     // problem type                                                                                                                                                                                                                             `
     m_problemInfo->problemType = problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
+    // analysis type
+    m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(ANALYSISTYPE_STEADYSTATE)));
     // physic field
     m_problemInfo->setHermes(hermesFieldFactory(physicFieldFromStringKey(eleProblem.toElement().attribute("type"))));
     // number of refinements
@@ -1082,10 +1084,11 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
     m_problemInfo->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
-    // harmonic magnetic
+
+    // harmonic
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
+
     // transient
-    m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(ANALYSISTYPE_STEADYSTATE)));
     m_problemInfo->timeStep = eleProblem.toElement().attribute("timestep", "1").toDouble();
     m_problemInfo->timeTotal = eleProblem.toElement().attribute("timetotal", "1").toDouble();
     m_problemInfo->initialCondition = eleProblem.toElement().attribute("initialcondition", "0").toDouble();
@@ -1259,7 +1262,9 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
     eleProblem.setAttribute("name", m_problemInfo->name);
     // problem type                                                                          
     eleProblem.toElement().setAttribute("problemtype", problemTypeToStringKey(m_problemInfo->problemType));
-    // name
+    // analysis type
+    eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo->analysisType));
+    // type
     eleProblem.setAttribute("type", physicFieldToStringKey(m_problemInfo->physicField()));
     // number of refinements
     eleProblem.setAttribute("numberofrefinements", m_problemInfo->numberOfRefinements);
@@ -1272,7 +1277,6 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
     // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
     // transient
-    eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo->analysisType));
     eleProblem.setAttribute("timestep", m_problemInfo->timeStep);
     eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal);
     eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition);
@@ -1419,7 +1423,7 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
     file.close();
 
     if (!problemInfo()->fileName.contains("temp.a2d"))
-        emit fileNameChanged(fileName);
+        emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
 
     emit invalidated();
 

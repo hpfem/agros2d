@@ -144,7 +144,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
         throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
 
     // frequency
-    if (Util::scene()->problemInfo()->physicField() == PHYSICFIELD_HARMONICMAGNETIC)
+    if (Util::scene()->problemInfo()->physicField() == PHYSICFIELD_MAGNETIC)
     {
         if (frequency >= 0)
             Util::scene()->problemInfo()->frequency = frequency;

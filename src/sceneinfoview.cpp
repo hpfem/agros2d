@@ -74,6 +74,8 @@ void SceneInfoView::createTreeView()
     // general
     problemInfoGeneralNode = new QTreeWidgetItem(problemNode);
     problemInfoGeneralNode->setText(0, tr("General"));
+    problemInfoGeneralNode->setExpanded(true);
+
     // solver
     problemInfoSolverNode = new QTreeWidgetItem(problemNode);
     problemInfoSolverNode->setText(0, tr("Solver"));
@@ -141,16 +143,15 @@ void SceneInfoView::doInvalidated()
     // problem name
     QTreeWidgetItem *itemProblemName = new QTreeWidgetItem(problemInfoGeneralNode);
     itemProblemName->setText(0, tr("Name: ") + Util::scene()->problemInfo()->name);
-    // problem filename
-    QTreeWidgetItem *itemProblemFileName = new QTreeWidgetItem(problemInfoGeneralNode);
-    QFileInfo fileInfo(Util::scene()->problemInfo()->fileName);
-    itemProblemFileName->setText(0, tr("Filename: ") + fileInfo.fileName());
     // problem type
     QTreeWidgetItem *itemProblemType = new QTreeWidgetItem(problemInfoGeneralNode);
     itemProblemType->setText(0, tr("Type: ") + problemTypeString(Util::scene()->problemInfo()->problemType));
     // physic field
     QTreeWidgetItem *itemPhysicField = new QTreeWidgetItem(problemInfoGeneralNode);
     itemPhysicField->setText(0, tr("Field: ") + physicFieldString(Util::scene()->problemInfo()->physicField()));
+    // analysis
+    QTreeWidgetItem *itemAnalysisType = new QTreeWidgetItem(problemInfoGeneralNode);
+    itemAnalysisType->setText(0, tr("Analysis: ") + analysisTypeString(Util::scene()->problemInfo()->analysisType));
 
     // solver
     if (Util::scene()->sceneSolution()->isMeshed())
@@ -161,8 +162,11 @@ void SceneInfoView::doInvalidated()
         itemSolverEdges->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()));
         if (Util::scene()->sceneSolution()->isSolved())
         {
-            QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
-            itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
+            if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
+            {
+                QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
+                itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
+            }
             
             QTime time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
             QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);

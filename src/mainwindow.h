@@ -127,7 +127,7 @@ private:
     QLabel *lblPhysicField;
     QLabel *lblMessage;
     QLabel *lblPosition;
-    QLabel *lblTimeStep;
+    QLabel *lblAnalysisType;
 
     QComboBox *cmbTimeStep;
 

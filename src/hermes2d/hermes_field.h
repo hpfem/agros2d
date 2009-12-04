@@ -35,7 +35,7 @@ public:
     HermesField() { physicField = PHYSICFIELD_UNDEFINED; }
 
     virtual int numberOfSolution() = 0;
-    virtual bool hasFrequency() = 0;
+    virtual bool hasHarmonic() = 0;
     virtual bool hasTransient() = 0;
 
     virtual void readEdgeMarkerFromDomElement(QDomElement *element) = 0;

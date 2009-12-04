@@ -10,6 +10,10 @@ static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<PhysicFieldBC, QString> physicFieldBCList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
+static QHash<AnalysisType, QString> analysisTypeList;
+
+QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
+AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
 
 QString physicFieldToStringKey(PhysicField physicField) { return physicFieldList[physicField]; }
 PhysicField physicFieldFromStringKey(const QString &physicField) { return physicFieldList.key(physicField); }
@@ -31,66 +35,75 @@ AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { retu
 
 void initLists()
 {
+    analysisTypeList.insert(ANALYSISTYPE_UNDEFINED, "");
+    analysisTypeList.insert(ANALYSISTYPE_STEADYSTATE, "steadystate");
+    analysisTypeList.insert(ANALYSISTYPE_TRANSIENT, "transient");
+    analysisTypeList.insert(ANALYSISTYPE_HARMONIC, "harmonic");
+
     // PHYSICFIELD
     physicFieldList.insert(PHYSICFIELD_UNDEFINED, "");
     physicFieldList.insert(PHYSICFIELD_GENERAL, "general");
     physicFieldList.insert(PHYSICFIELD_ELECTROSTATIC, "electrostatic");
-    physicFieldList.insert(PHYSICFIELD_MAGNETOSTATIC, "magnetostatic");
     physicFieldList.insert(PHYSICFIELD_CURRENT, "current");
     physicFieldList.insert(PHYSICFIELD_HEAT, "heat");
     physicFieldList.insert(PHYSICFIELD_ELASTICITY, "elasticity");
-    physicFieldList.insert(PHYSICFIELD_HARMONICMAGNETIC, "harmonicmagnetic");
+    physicFieldList.insert(PHYSICFIELD_MAGNETIC, "magnetic");
 
     // PHYSICFIELDVARIABLE
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_UNDEFINED, "");
+
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_GENERAL_VARIABLE, "general_variable");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_GENERAL_GRADIENT, "general_gradient");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_GENERAL_CONSTANT, "general_constant");
+
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL, "electrostatic_potential");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD, "electrostatic_electric_field");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT, "electrostatic_displacement");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY, "electrostatic_energy_density");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY, "electrostatic_permittivity");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VECTOR_POTENTIAL, "magnetostatic_vector_potential");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_FLUX_DENSITY, "magnetostatic_flux_density");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_MAGNETICFIELD, "magnetostatic_magnetic_field");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_ENERGY_DENSITY, "magnetostatic_energy_density");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_PERMEABILITY, "magnetostatic_permeability");    
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE, "magnetostatic_remanence");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_REMANENCE_ANGLE, "magnetostatic_remanence_angle");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_VELOCITY, "magnetostatic_velocity");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CONDUCTIVITY, "magnetostatic_conductivity");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY, "magnetostatic_current_density");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_VELOCITY, "magnetostatic_current_density_velocity");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_CURRENT_DENSITY_TOTAL, "magnetostatic_current_density_total");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETOSTATIC_POWER_LOSSES, "magnetostatic_power_losses");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL, "harmonicmagnetic_vector_potential");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_REAL, "harmonicmagnetic_vector_potential_real");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_VECTOR_POTENTIAL_IMAG, "harmonicmagnetic_vector_potential_imag");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY, "harmonicmagnetic_flux_density");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_REAL, "harmonicmagnetic_flux_density_real");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_FLUX_DENSITY_IMAG, "harmonicmagnetic_flux_density_imag");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD, "harmonicmagnetic_magnetic_field");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_REAL, "harmonicmagnetic_magnetic_field_real");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_MAGNETICFIELD_IMAG, "harmonicmagnetic_magnetic_field_imag");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL, "harmonicmagnetic_total_current_density");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_REAL, "harmonicmagnetic_total_current_density_real");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_TOTAL_IMAG, "harmonicmagnetic_total_current_density_imag");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED, "harmonicmagnetic_induced_current_density");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_REAL, "harmonicmagnetic_induced_current_density_real");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_CURRENT_DENSITY_INDUCED_IMAG, "harmonicmagnetic_induced_current_density_imag");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_POWER_LOSSES, "harmonicmagnetic_power_losses");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_ENERGY_DENSITY, "harmonicmagnetic_energy_density");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HARMONICMAGNETIC_PERMEABILITY, "harmonicmagnetic_permeability");
+
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_REAL, "magnetic_vector_potential_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_IMAG, "magnetic_vector_potential_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL, "magnetic_vector_potential");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL, "magnetic_flux_density_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_IMAG, "magnetic_flux_density_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY, "magnetic_flux_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL, "magnetic_magnetic_field_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_IMAG, "magnetic_magnetic_field_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD, "magnetic_magnetic_field");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_REAL, "magnetic_current_density_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_IMAG, "magnetic_current_density_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY, "magnetic_current_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_REAL, "magnetic_current_density_induced_transform_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_IMAG, "magnetic_current_density_induced_transform_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM, "magnetic_current_density_induced_transform");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL, "magnetic_current_density_induced_velocity_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_IMAG, "magnetic_current_density_induced_velocity_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY, "magnetic_current_density_induced_velocity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL, "magnetic_current_density_total_real");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG, "magnetic_current_density_total_imag");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL, "magnetic_current_density_total");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM, "magnetic_power_losses_transform");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY, "magnetic_power_losses_velocity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL, "magnetic_total_power_losses");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY, "magnetic_energy_density");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY, "magnetic_permeability");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY, "magnetic_conductivity");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE, "magnetic_remanence");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE, "magnetic_remanence_angle");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY, "magnetic_velocity");
+
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_POTENTIAL, "current_potential");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD, "current_electic_field");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY, "current_current_density");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_LOSSES, "current_power_losses");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY, "current_conductivity");
+
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE, "heat_temperature");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT, "heat_temperature_gradient");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HEAT_FLUX, "heat_heat_flux");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY, "heat_conductivity");
+
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS, "elasticity_von_mises_stress");
 
     // PHYSICFIELDVARIABLECOMP
@@ -107,10 +120,8 @@ void initLists()
     physicFieldBCList.insert(PHYSICFIELDBC_GENERAL_DERIVATIVE, "general_derivative");
     physicFieldBCList.insert(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL, "electrostatic_potential");
     physicFieldBCList.insert(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE, "electrostatic_surface_charge_density");
-    physicFieldBCList.insert(PHYSICFIELDBC_MAGNETOSTATIC_VECTOR_POTENTIAL, "magnetostatic_vector_potential");
-    physicFieldBCList.insert(PHYSICFIELDBC_MAGNETOSTATIC_SURFACE_CURRENT, "magnetostatic_surface_current_density");
-    physicFieldBCList.insert(PHYSICFIELDBC_HARMONICMAGNETIC_VECTOR_POTENTIAL, "harmonicmagnetic_vector_potential");
-    physicFieldBCList.insert(PHYSICFIELDBC_HARMONICMAGNETIC_SURFACE_CURRENT, "harmonicmagnetic_surface_current_density");
+    physicFieldBCList.insert(PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL, "magnetic_vector_potential");
+    physicFieldBCList.insert(PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT, "magnetic_surface_current_density");
     physicFieldBCList.insert(PHYSICFIELDBC_HEAT_TEMPERATURE, "heat_temperature");
     physicFieldBCList.insert(PHYSICFIELDBC_HEAT_HEAT_FLUX, "heat_heat_flux");
     physicFieldBCList.insert(PHYSICFIELDBC_CURRENT_POTENTIAL, "current_potential");

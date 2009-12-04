@@ -42,51 +42,67 @@ QString createPythonFromModel()
            + "\n";
     str += "\n";
 
-    str += "# startup script\n";
-    str += Util::scene()->problemInfo()->scriptStartup;
-    str += "\n\n";
+    // startup script
+    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
+    {
+        str += "# startup script\n";
+        str += Util::scene()->problemInfo()->scriptStartup;
+        str += "\n\n";
+    }
 
     // boundaries
-    str += "# boundaries\n";
-    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+    if (Util::scene()->edgeMarkers.count() > 1)
     {
-        str += Util::scene()->edgeMarkers[i]->script() + "\n";
+        str += "# boundaries\n";
+        for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+        {
+            str += Util::scene()->edgeMarkers[i]->script() + "\n";
+        }
+        str += "\n";
     }
-    str += "\n";
 
     // materials
-    str += "# materials\n";
-    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+    if (Util::scene()->labelMarkers.count() > 1)
     {
-        str += Util::scene()->labelMarkers[i]->script() + "\n";
+        str += "# materials\n";
+        for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+        {
+            str += Util::scene()->labelMarkers[i]->script() + "\n";
+        }
+        str += "\n";
     }
-    str += "\n";
 
     // edges
-    str += "# edges\n";
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    if (Util::scene()->edges.count() > 1)
     {
-        str += QString("addedge(%1, %2, %3, %4, %5, \"%6\")").
-               arg(Util::scene()->edges[i]->nodeStart->point.x).
-               arg(Util::scene()->edges[i]->nodeStart->point.y).
-               arg(Util::scene()->edges[i]->nodeEnd->point.x).
-               arg(Util::scene()->edges[i]->nodeEnd->point.y).
-               arg(Util::scene()->edges[i]->angle).
-               arg(Util::scene()->edges[i]->marker->name) + "\n";
+        str += "# edges\n";
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            str += QString("addedge(%1, %2, %3, %4, %5, \"%6\")").
+                   arg(Util::scene()->edges[i]->nodeStart->point.x).
+                   arg(Util::scene()->edges[i]->nodeStart->point.y).
+                   arg(Util::scene()->edges[i]->nodeEnd->point.x).
+                   arg(Util::scene()->edges[i]->nodeEnd->point.y).
+                   arg(Util::scene()->edges[i]->angle).
+                   arg(Util::scene()->edges[i]->marker->name) + "\n";
+        }
+        str += "\n";
     }
-    str += "\n";
 
     // labels
-    str += "# labels\n";
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    if (Util::scene()->labels.count() > 1)
     {
-        str += QString("addlabel(%1, %2, %3, \"%4\")").
-               arg(Util::scene()->labels[i]->point.x).
-               arg(Util::scene()->labels[i]->point.y).
-               arg(Util::scene()->labels[i]->area).
-               arg(Util::scene()->labels[i]->marker->name) + "\n";
-    }
+        str += "# labels\n";
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            str += QString("addlabel(%1, %2, %3, \"%4\")").
+                   arg(Util::scene()->labels[i]->point.x).
+                   arg(Util::scene()->labels[i]->point.y).
+                   arg(Util::scene()->labels[i]->area).
+                   arg(Util::scene()->labels[i]->marker->name) + "\n";
+        }
 
+    }
     return str;
 }
 
@@ -178,7 +194,7 @@ ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
     txtOutput = new QPlainTextEdit(this);
     splitter = new QSplitter(this);
 
-    createControls();    
+    createControls();
 
     QSettings settings;
     splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
@@ -316,7 +332,7 @@ void ScriptEditorDialog::runCommand(const QString &command)
 void ScriptEditorDialog::createActions()
 {
     actFileNew = new QAction(icon("document-new"), tr("&New"), this);
-    actFileNew->setShortcuts(QKeySequence::New);
+    actFileNew->setShortcuts(QKeySequence::AddTab);
     connect(actFileNew, SIGNAL(triggered()), this, SLOT(doFileNew()));
 
     actFileOpen = new QAction(icon("document-open"), tr("&Open..."), this);
