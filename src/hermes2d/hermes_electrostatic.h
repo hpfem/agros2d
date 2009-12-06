@@ -41,7 +41,7 @@ public:
     SceneLabelMarker *newLabelMarker();
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(SolverThread *solverThread);
+    QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; }

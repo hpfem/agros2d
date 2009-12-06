@@ -127,7 +127,7 @@ Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> 
     return elasticityEdge[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
 }
 
-QList<SolutionArray *> *elasticity_main(SolverThread *solverThread)
+QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
 {
     elasticityPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
@@ -398,7 +398,7 @@ void HermesElasticity::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInt
 
 }
 
-QList<SolutionArray *> *HermesElasticity::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesElasticity::solve(SolverDialog *solverDialog)
 {
     // edge markers
     elasticityEdge = new ElasticityEdge[Util::scene()->edges.count()+1];
@@ -448,7 +448,7 @@ QList<SolutionArray *> *HermesElasticity::solve(SolverThread *solverThread)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = elasticity_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = elasticity_main(solverDialog);
 
     delete [] elasticityEdge;
     delete [] elasticityLabel;

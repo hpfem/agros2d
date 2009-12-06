@@ -37,7 +37,7 @@ public:
     SceneLabelMarker *newLabelMarker();
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(SolverThread *solverThread);
+    QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS; }

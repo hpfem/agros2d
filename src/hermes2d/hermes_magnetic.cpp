@@ -121,7 +121,7 @@ Scalar magnetic_linear_form_imag(int n, double *wt, Func<Real> *v, Geom<Real> *e
         return magneticLabel[e->marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
 }
 
-QList<SolutionArray *> *magnetic_main(SolverThread *solverThread)
+QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
 {
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
@@ -219,8 +219,8 @@ QList<SolutionArray *> *magnetic_main(SolverThread *solverThread)
                 error = hp.calc_error_2(slnreal, slnimag, &rslnreal, &rslnimag) * 100;
 
                 // emit signal
-                solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-                if (solverThread->isCanceled()) return solutionArrayList;
+                solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+                if (solverDialog->isCanceled()) return solutionArrayList;
 
                 if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
                 if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
@@ -327,8 +327,8 @@ QList<SolutionArray *> *magnetic_main(SolverThread *solverThread)
                 error = hp.calc_error(sln, &rsln) * 100;
 
                 // emit signal
-                solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-                if (solverThread->isCanceled())
+                solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+                if (solverDialog->isCanceled())
                 {
                     solutionArrayList->clear();
                     return solutionArrayList;
@@ -366,13 +366,13 @@ QList<SolutionArray *> *magnetic_main(SolverThread *solverThread)
 
             solutionArrayList->append(solutionArray);
 
-            if (magneticAnalysisType == ANALYSISTYPE_TRANSIENT) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
-            if (solverThread->isCanceled())
+            if (magneticAnalysisType == ANALYSISTYPE_TRANSIENT) solverDialog->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
+            if (solverDialog->isCanceled())
             {
                 solutionArrayList->clear();
                 return solutionArrayList;
             }
-            solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
+            solverDialog->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
         }
 
         return solutionArrayList;
@@ -927,7 +927,7 @@ void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
     }
 }
 
-QList<SolutionArray *> *HermesMagnetic::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesMagnetic::solve(SolverDialog *solverDialog)
 {
     // edge markers
     magneticEdge = new MagneticEdge[Util::scene()->edges.count()+1];
@@ -985,7 +985,7 @@ QList<SolutionArray *> *HermesMagnetic::solve(SolverThread *solverThread)
             magneticLabel[i].velocity_angular = labelMagneticMarker->velocity_angular.number;        }
     }
 
-    QList<SolutionArray *> *solutionArrayList = magnetic_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = magnetic_main(solverDialog);
 
     delete [] magneticEdge;
     delete [] magneticLabel;

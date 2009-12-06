@@ -63,7 +63,7 @@ public:
     SceneLabelMarker *newLabelMarker();
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(SolverThread *solverThread);
+    QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
     PhysicFieldVariable contourPhysicFieldVariable();
     PhysicFieldVariable scalarPhysicFieldVariable();

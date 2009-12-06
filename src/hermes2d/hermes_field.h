@@ -25,7 +25,7 @@ class SceneLabelMarker;
 class SceneViewSettings;
 
 class SolutionArray;
-class SolverThread;
+class SolverDialog;
 
 struct HermesField : public QObject
 {
@@ -60,7 +60,7 @@ public:
     virtual SceneLabelMarker *newLabelMarker() = 0;
     virtual SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args) = 0;
 
-    virtual QList<SolutionArray *> *solve(SolverThread *solverThread) = 0;
+    virtual QList<SolutionArray *> *solve(SolverDialog *solverDialog) = 0;
 
     virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
     virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;

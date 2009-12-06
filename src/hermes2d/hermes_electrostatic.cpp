@@ -57,7 +57,7 @@ Scalar electrostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e
         return electrostaticLabel[e->marker].charge_density / EPS0 * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-QList<SolutionArray *> *electrostatic_main(SolverThread *solverThread)
+QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
 {
     electrostaticPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
@@ -132,8 +132,8 @@ QList<SolutionArray *> *electrostatic_main(SolverThread *solverThread)
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverThread->isCanceled())
+            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverDialog->isCanceled())
             {
                 solutionArrayList->clear();
                 return solutionArrayList;
@@ -354,7 +354,7 @@ void HermesElectrostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, Volume
     addTreeWidgetItemValue(electrostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueElectrostatic->energy, 0, 'e', 3), tr("J"));
 }
 
-QList<SolutionArray *> *HermesElectrostatic::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesElectrostatic::solve(SolverDialog *solverDialog)
 {
     // edge markers
     electrostaticEdge = new ElectrostaticEdge[Util::scene()->edges.count()+1];
@@ -399,7 +399,7 @@ QList<SolutionArray *> *HermesElectrostatic::solve(SolverThread *solverThread)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = electrostatic_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = electrostatic_main(solverDialog);
 
     delete [] electrostaticEdge;
     delete [] electrostaticLabel;

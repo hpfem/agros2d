@@ -109,7 +109,7 @@ Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData
                 + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / heatTimeStep : 0.0);
 }
 
-QList<SolutionArray *> *heat_main(SolverThread *solverThread)
+QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
 {
     heatPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
     heatTransient = (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
@@ -210,8 +210,8 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverThread->isCanceled())
+            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverDialog->isCanceled())
             {
                 solutionArrayList->clear();
                 return solutionArrayList;
@@ -249,13 +249,13 @@ QList<SolutionArray *> *heat_main(SolverThread *solverThread)
 
         solutionArrayList->append(solutionArray);
 
-        if (heatTransient) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
-        if (solverThread->isCanceled())
+        if (heatTransient) solverDialog->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
+        if (solverDialog->isCanceled())
         {
             solutionArrayList->clear();
             return solutionArrayList;
         }
-        solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
+        solverDialog->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
     }
 
     return solutionArrayList;
@@ -489,7 +489,7 @@ void HermesHeat::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralV
     // addTreeWidgetItemValue(heatNode, tr("F avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageHeatFlux, 0, 'e', 3), tr("W"));
 }
 
-QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)
 {
     // edge markers
     heatEdge = new HeatEdge[Util::scene()->edges.count()+1];
@@ -558,7 +558,7 @@ QList<SolutionArray *> *HermesHeat::solve(SolverThread *solverThread)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = heat_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = heat_main(solverDialog);
 
     delete [] heatEdge;
     delete [] heatLabel;

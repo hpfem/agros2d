@@ -32,8 +32,6 @@
 struct HermesObject;
 struct HermesGeneral;
 
-class ThreadSolver;
-
 class SceneNode;
 class SceneEdge;
 class SceneLabel;

@@ -82,7 +82,7 @@ Scalar current_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
     */
 }
 
-QList<SolutionArray *> *current_main(SolverThread *solverThread)
+QList<SolutionArray *> *current_main(SolverDialog *solverDialog)
 {
     currentPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
@@ -156,8 +156,8 @@ QList<SolutionArray *> *current_main(SolverThread *solverThread)
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverThread->isCanceled())
+            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverDialog->isCanceled())
             {
                 solutionArrayList->clear();
                 return solutionArrayList;
@@ -358,7 +358,7 @@ void HermesCurrent::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegr
 
 }
 
-QList<SolutionArray *> *HermesCurrent::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesCurrent::solve(SolverDialog *solverDialog)
 {
     // edge markers
     currentEdge = new CurrentEdge[Util::scene()->edges.count()+1];
@@ -401,7 +401,7 @@ QList<SolutionArray *> *HermesCurrent::solve(SolverThread *solverThread)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = current_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = current_main(solverDialog);
 
     delete [] currentEdge;
     delete [] currentLabel;

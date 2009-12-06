@@ -61,7 +61,7 @@ Scalar general_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
         return generalLabel[marker].rightside * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-QList<SolutionArray *> *general_main(SolverThread *solverThread)
+QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
 {
     generalPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
@@ -134,8 +134,8 @@ QList<SolutionArray *> *general_main(SolverThread *solverThread)
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverThread->showMessage(QObject::tr("Solver: relative error is %1 %").arg(error, 0, 'f', 5), false);
-            if (solverThread->isCanceled())
+            solverDialog->showMessage(QObject::tr("Solver: relative error is %1 %").arg(error, 0, 'f', 5), false);
+            if (solverDialog->isCanceled())
             {
                 solutionArrayList->clear();
                 return solutionArrayList;
@@ -324,7 +324,7 @@ void HermesGeneral::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegr
     VolumeIntegralValueGeneral *volumeIntegralValueGeneral = dynamic_cast<VolumeIntegralValueGeneral *>(volumeIntegralValue);
 }
 
-QList<SolutionArray *> *HermesGeneral::solve(SolverThread *solverThread)
+QList<SolutionArray *> *HermesGeneral::solve(SolverDialog *solverDialog)
 {
     // edge markers
     generalEdge = new GeneralEdge[Util::scene()->edges.count()+1];
@@ -369,7 +369,7 @@ QList<SolutionArray *> *HermesGeneral::solve(SolverThread *solverThread)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = general_main(solverThread);
+    QList<SolutionArray *> *solutionArrayList = general_main(solverDialog);
 
     delete [] generalEdge;
     delete [] generalLabel;
