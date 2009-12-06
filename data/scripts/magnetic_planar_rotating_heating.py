@@ -12,7 +12,7 @@ f = p*n/60
 omega = 2*pi*f
 
 # boundaries
-addboundary("A = 0", "magnetostatic_vector_potential", 00)
+addboundary("A = 0", "magnetic_vector_potential", 00)
 
 # materials
 addmaterial("Al", 0, 0, 1, sigma, 0, 0, 0, 0, omega)
