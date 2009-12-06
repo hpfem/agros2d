@@ -26,6 +26,9 @@ private:
     QSplitter *splitter;
     CentralWidget *centralWidget;
     TopicChooser *topicChooser;
+
+private slots:
+    void doExpandTOC();
 };
 
 // ***********************************************************************************************************
@@ -35,7 +38,7 @@ class HelpViewer : public QWebView
     Q_OBJECT
 
 public:
-    HelpViewer(QHelpEngine *helpEngine, CentralWidget *parent);
+    HelpViewer(QHelpEngine *helpEngine, CentralWidget *central, QWidget *parent);
     void setSource(const QUrl &url);
 
     inline QUrl source() const
@@ -61,6 +64,8 @@ public:
     { return pageAction(QWebPage::Forward)->isEnabled(); }
     inline bool isBackwardAvailable() const
     { return pageAction(QWebPage::Back)->isEnabled(); }
+    inline bool hasLoadFinished() const
+    { return loadFinished; }
 
 public Q_SLOTS:
     void home();
@@ -80,12 +85,14 @@ protected:
 
 private Q_SLOTS:
     void actionChanged();
+    void setLoadFinished(bool ok);
 
 private:
     QHelpEngine *helpEngine;
     CentralWidget* parentWidget;
     QUrl homeUrl;
     bool multiTabsAllowed;
+    bool loadFinished;
 };
 
 // ***********************************************************************************************************
@@ -194,7 +201,7 @@ protected:
 
 private slots:
     void doAccept();
-    void doReject();
+    void doReject();    
 
 private:
     QListWidget *lstView;

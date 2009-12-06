@@ -4,7 +4,7 @@
 #include <QtHelp/QHelpContentWidget>
 #include <QtHelp/QHelpIndexWidget>
 
-const QString path = "agros2d.org.agros2d.1_0/doc/";
+const QString path = "Agros2D.org.Agros2D.1/doc/";
 
 HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 {
@@ -76,12 +76,20 @@ void HelpDialog::createControls()
     connect(helpEngine->indexWidget(), SIGNAL(linksActivated(const QMap<QString, QUrl> &, const QString &)), topicChooser, SLOT(doLinksActivated(QMap<QString, QUrl>, QString)));
     connect(topicChooser, SIGNAL(linkActivated(const QUrl &)), centralWidget, SLOT(setSource(const QUrl &)));
 
+    QHelpContentModel *contentModel = qobject_cast<QHelpContentModel*>(helpEngine->contentWidget()->model());
+    connect(contentModel, SIGNAL(contentsCreated()), this, SLOT(doExpandTOC()));
+
     showPage("index.html");
 }
 
 void HelpDialog::showPage(const QString &str)
 {
     centralWidget->setSource(QUrl("qthelp://" + path + str));
+}
+
+void HelpDialog::doExpandTOC()
+{
+    helpEngine->contentWidget()->expandToDepth(1);
 }
 
 // ***********************************************************************************************************
@@ -264,13 +272,14 @@ bool HelpPage::acceptNavigationRequest(QWebFrame *,
     return false;
 }
 
-HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *parent)
+HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *central, QWidget *parent)
     : QWebView(parent)
     , helpEngine(engine)
-    , parentWidget(parent)
+    , parentWidget(central)
     , multiTabsAllowed(true)
+    , loadFinished(false)
 {
-    setPage(new HelpPage(parent, helpEngine, this));
+    setPage(new HelpPage(central, helpEngine, this));
     settings()->setAttribute(QWebSettings::PluginsEnabled, false);
     settings()->setAttribute(QWebSettings::JavaEnabled, false);
 
@@ -292,11 +301,14 @@ HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *parent)
     connect(pageAction(QWebPage::Forward), SIGNAL(changed()), this, SLOT(actionChanged()));
     connect(page(), SIGNAL(linkHovered(QString, QString, QString)), this, SIGNAL(highlighted(QString)));
     connect(this, SIGNAL(urlChanged(QUrl)), this, SIGNAL(sourceChanged(QUrl)));
+    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(setLoadFinished(bool)));
     setAcceptDrops(false);
 }
 
 void HelpViewer::setSource(const QUrl &url)
 {
+    // cout << url.toString().toStdString() << endl;
+    loadFinished = false;
     if (!homeUrl.isValid())
         homeUrl = url;
     load(url);
@@ -384,6 +396,12 @@ void HelpViewer::mousePressEvent(QMouseEvent *event)
         currentPage->m_keyboardModifiers = event->modifiers();
     }
     QWebView::mousePressEvent(event);
+}
+
+void HelpViewer::setLoadFinished(bool ok)
+{
+    loadFinished = ok;
+    emit sourceChanged(url());
 }
 
 // ***********************************************************************************************************
@@ -565,7 +583,7 @@ void CentralWidget::setSource(const QUrl &url)
             qobject_cast<HelpViewer*>(tabWidget->widget(lastTabPage));
 
     if (!viewer && !lastViewer) {
-        viewer = new HelpViewer(helpEngine, this);
+        viewer = new HelpViewer(helpEngine, this, this);
         viewer->installEventFilter(this);
         lastTabPage = tabWidget->addTab(viewer, QString());
         tabWidget->setCurrentIndex(lastTabPage);
@@ -773,17 +791,11 @@ void CentralWidget::setGlobalActions(const QList<QAction*> &actions)
 
 void CentralWidget::setSourceInNewTab(const QUrl &url, int zoom)
 {
-    HelpViewer* viewer = new HelpViewer(helpEngine, this);
+    HelpViewer* viewer = new HelpViewer(helpEngine, this, this);
     viewer->installEventFilter(this);
     viewer->setZoom(zoom);
     viewer->setSource(url);
     viewer->setFocus(Qt::OtherFocusReason);
-
-#if defined(QT_NO_WEBKIT)
-    QFont font = viewer->font();
-    font.setPointSize(font.pointSize() + int(zoom));
-    viewer->setFont(font);
-#endif
 
     tabWidget->setCurrentIndex(tabWidget->addTab(viewer,
                                                  quoteTabTitle(viewer->documentTitle())));
@@ -793,12 +805,9 @@ void CentralWidget::setSourceInNewTab(const QUrl &url, int zoom)
 
 HelpViewer *CentralWidget::newEmptyTab()
 {
-    HelpViewer* viewer = new HelpViewer(helpEngine, this);
+    HelpViewer* viewer = new HelpViewer(helpEngine, this, this);
     viewer->installEventFilter(this);
     viewer->setFocus(Qt::OtherFocusReason);
-#if defined(QT_NO_WEBKIT)
-    viewer->setDocumentTitle(tr("unknown"));
-#endif
     tabWidget->setCurrentIndex(tabWidget->addTab(viewer, tr("unknown")));
 
     connectSignals();
@@ -809,18 +818,12 @@ void CentralWidget::connectSignals()
 {
     const HelpViewer* viewer = currentHelpViewer();
     if (viewer) {
-        connect(viewer, SIGNAL(copyAvailable(bool)), this,
-                SIGNAL(copyAvailable(bool)));
-        connect(viewer, SIGNAL(forwardAvailable(bool)), this,
-                SIGNAL(forwardAvailable(bool)));
-        connect(viewer, SIGNAL(backwardAvailable(bool)), this,
-                SIGNAL(backwardAvailable(bool)));
-        connect(viewer, SIGNAL(sourceChanged(QUrl)), this,
-                SIGNAL(sourceChanged(QUrl)));
-        connect(viewer, SIGNAL(highlighted(QString)), this,
-                SIGNAL(highlighted(QString)));
-        connect(viewer, SIGNAL(sourceChanged(QUrl)), this,
-                SLOT(setTabTitle(QUrl)));
+        connect(viewer, SIGNAL(copyAvailable(bool)), this, SIGNAL(copyAvailable(bool)));
+        connect(viewer, SIGNAL(forwardAvailable(bool)), this, SIGNAL(forwardAvailable(bool)));
+        connect(viewer, SIGNAL(backwardAvailable(bool)), this, SIGNAL(backwardAvailable(bool)));
+        connect(viewer, SIGNAL(sourceChanged(QUrl)), this, SIGNAL(sourceChanged(QUrl)));
+        connect(viewer, SIGNAL(highlighted(QString)), this, SIGNAL(highlighted(QString)));
+        connect(viewer, SIGNAL(sourceChanged(QUrl)), this, SLOT(setTabTitle(QUrl)));
     }
 }
 
@@ -849,25 +852,14 @@ void CentralWidget::activateTab(bool onlyHelpViewer)
 
 void CentralWidget::setTabTitle(const QUrl& url)
 {
-    int tab = lastTabPage;
-    HelpViewer* viewer = currentHelpViewer();
-
-#if !defined(QT_NO_WEBKIT)
-    if (!viewer || viewer->source() != url) {
-        QTabBar *tabBar = qFindChild<QTabBar*>(tabWidget);
-        for (tab = 0; tab < tabBar->count(); ++tab) {
-            viewer = qobject_cast<HelpViewer*>(tabWidget->widget(tab));
-            if (viewer && viewer->source() == url)
-                break;
+    Q_UNUSED(url)
+    QTabBar *tabBar = qFindChild<QTabBar*>(tabWidget);
+    for (int i = 0; i < tabBar->count(); ++i) {
+        HelpViewer* view = qobject_cast<HelpViewer*>(tabWidget->widget(i));
+        if (view) {
+            tabWidget->setTabText(i,
+                quoteTabTitle(view->documentTitle().trimmed()));
         }
-    }
-#else
-    Q_UNUSED(url);
-#endif
-
-    if (viewer) {
-        tabWidget->setTabText(tab,
-                              quoteTabTitle(viewer->documentTitle().trimmed()));
     }
 }
 
@@ -994,7 +986,7 @@ bool CentralWidget::find(const QString &txt, QTextDocument::FindFlags findFlags,
 {
     HelpViewer* viewer = currentHelpViewer();
 
-    Q_UNUSED(incremental);
+    Q_UNUSED(incremental)
     if (viewer) {
         QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
         if (findFlags & QTextDocument::FindBackward)

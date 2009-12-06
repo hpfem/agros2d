@@ -61,7 +61,7 @@ void SolutionArray::save(QDomDocument *doc, QDomElement *element)
 
 SolverThread::SolverThread(QObject *parent) : QThread(parent)
 {
-    connect(this, SIGNAL(started()), SLOT(doStarted()));
+    connect(this, SIGNAL(started()), this, SLOT(doStarted()));
 }
 
 SolverThread::~SolverThread()
@@ -84,10 +84,7 @@ void SolverThread::cancel()
 {
     QApplication::processEvents();
     while (isRunning())
-    {
         quit();
-        msleep(30);
-    }
     m_isCanceled = true;
 }
 
@@ -261,7 +258,9 @@ void SolverThread::runSolver()
 
     QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo()->hermes()->solve(this);
 
-    if (solutionArrayList)
+    cout <<  solutionArrayList->count() << endl;
+
+    if (!solutionArrayList->isEmpty())
     {
         Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
         emit message(tr("Solver: problem was solved."), false);

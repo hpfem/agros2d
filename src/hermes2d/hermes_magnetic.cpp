@@ -192,6 +192,10 @@ QList<SolutionArray *> *magnetic_main(SolverThread *solverThread)
         sys.set_spaces(2, &spacereal, &spaceimag);
         sys.set_pss(2, &pssreal, &pssimag);
 
+        // output
+        SolutionArray *solutionArray;
+        QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
         // assemble the stiffness matrix and solve the system
         double error;
         int i;
@@ -216,16 +220,12 @@ QList<SolutionArray *> *magnetic_main(SolverThread *solverThread)
 
                 // emit signal
                 solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-                if (solverThread->isCanceled()) return NULL;
+                if (solverThread->isCanceled()) return solutionArrayList;
 
                 if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
                 if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
             }
         }
-
-        // output
-        SolutionArray *solutionArray;
-        QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
 
         // real part
         solutionArray = new SolutionArray();
@@ -328,7 +328,11 @@ QList<SolutionArray *> *magnetic_main(SolverThread *solverThread)
 
                 // emit signal
                 solverThread->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-                if (solverThread->isCanceled()) return NULL;
+                if (solverThread->isCanceled())
+                {
+                    solutionArrayList->clear();
+                    return solutionArrayList;
+                }
 
                 if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
                 if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
@@ -363,7 +367,11 @@ QList<SolutionArray *> *magnetic_main(SolverThread *solverThread)
             solutionArrayList->append(solutionArray);
 
             if (magneticAnalysisType == ANALYSISTYPE_TRANSIENT) solverThread->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
-            if (solverThread->isCanceled()) return NULL;
+            if (solverThread->isCanceled())
+            {
+                solutionArrayList->clear();
+                return solutionArrayList;
+            }
             solverThread->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
         }
 

@@ -110,6 +110,8 @@ QList<SolutionArray *> *general_main(SolverThread *solverThread)
     sys.set_spaces(1, &space);
     sys.set_pss(1, &pss);
 
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
@@ -133,7 +135,11 @@ QList<SolutionArray *> *general_main(SolverThread *solverThread)
 
             // emit signal
             solverThread->showMessage(QObject::tr("Solver: relative error is %1 %").arg(error, 0, 'f', 5), false);
-            if (solverThread->isCanceled()) return NULL;
+            if (solverThread->isCanceled())
+            {
+                solutionArrayList->clear();
+                return solutionArrayList;
+            }
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
             if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
@@ -147,10 +153,9 @@ QList<SolutionArray *> *general_main(SolverThread *solverThread)
     solutionArray->sln = sln;
     solutionArray->adaptiveError = error;
     solutionArray->adaptiveSteps = i-1;
-
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-    solutionArrayList->append(solutionArray);
     
+    solutionArrayList->append(solutionArray);
+
     return solutionArrayList;
 }
 
