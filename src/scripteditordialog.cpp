@@ -677,9 +677,14 @@ void ScriptEditorDialog::doFileSaveAs()
 void ScriptEditorDialog::doFileClose()
 {
     if (tabWidget->count() > 1)
+    {
         doCloseTab(tabWidget->currentIndex());
+    }
     else
-        hide();
+    {
+         doFileNew();
+         doCloseTab(0);
+    }
 }
 
 void ScriptEditorDialog::doFind()
