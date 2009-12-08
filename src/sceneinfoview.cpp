@@ -65,6 +65,7 @@ void SceneInfoView::createTreeView()
     trvWidget->setMouseTracking(true);
     trvWidget->setColumnCount(1);
     trvWidget->setColumnWidth(0, 150);
+    trvWidget->setIndentation(12);
 
     // problem
     problemNode = new QTreeWidgetItem(trvWidget);

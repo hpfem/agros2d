@@ -16,6 +16,7 @@ t = arange(0, 5*L/R, L/R/10)
 y = odeint(func, y0, t)
 
 # chart
+pylab.close()
 pylab.plot(t, y)
 pylab.grid(1)
 pylab.xlabel("$t\,\mathrm{(s)}$")

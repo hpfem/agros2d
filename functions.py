@@ -22,6 +22,12 @@ def addrect(x0, y0, width, height, marker):
 	addedge(x0, y0+height, x0, y0, 0, marker)
 	return
 
+def agroslistvariables():
+	import types
+	agrosType = [types.IntType, types.StringType, types.TupleType, types.FloatType, types.BooleanType, types.ListType, types.LongType, types.UnicodeType]
+
+	return filter(lambda x: type(x) in [types.IntType, types.DictType], globals().values())
+
 # redirect script output
 class StdoutCatcher:
 	def write(self, str):

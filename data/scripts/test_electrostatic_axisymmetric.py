@@ -32,11 +32,8 @@ addlabel(0.0379, 0.051, 5e-05, "Dielectric n.2")
 addlabel(0.0284191, 0.123601, 0.0001, "Air")
 
 # solve
-print "1"
 zoombestfit()
-print "2"
 solve()
-print "3"
 
 # point value
 point = pointresult(0.026532, 0.070937)

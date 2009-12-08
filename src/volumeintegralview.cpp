@@ -30,6 +30,7 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
     trvWidget->setColumnWidth(0, settings.value("VolumeIntegralValueView/TreeViewColumn0", 150).value<int>());
     trvWidget->setColumnWidth(1, settings.value("VolumeIntegralValueView/TreeViewColumn1", 80).value<int>());
     trvWidget->setColumnWidth(2, settings.value("VolumeIntegralValueView/TreeViewColumn2", 20).value<int>());
+    trvWidget->setIndentation(12);
 
     QStringList labels;
     labels << tr("Label") << tr("Value") << tr("Unit");

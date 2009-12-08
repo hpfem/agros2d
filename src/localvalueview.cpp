@@ -26,6 +26,7 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     trvWidget->setColumnWidth(0, settings.value("LocalPointValueView/TreeViewColumn0", 180).value<int>());
     trvWidget->setColumnWidth(1, settings.value("LocalPointValueView/TreeViewColumn1", 80).value<int>());
     trvWidget->setColumnWidth(2, settings.value("LocalPointValueView/TreeViewColumn2", 20).value<int>());
+    trvWidget->setIndentation(12);
 
     QStringList labels;
     labels << tr("Label") << tr("Value") << tr("Unit");

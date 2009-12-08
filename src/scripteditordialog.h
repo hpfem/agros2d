@@ -7,6 +7,7 @@
 #include "scripteditorhighlighter.h"
 
 class SceneView;
+class FileBrowser;
 
 struct ScriptResult
 {
@@ -81,7 +82,7 @@ class ScriptEditorWidget : public QWidget
 {
     Q_OBJECT
 
-public slots:
+    public slots:
     void doRunPython();
     void doCreatePythonFromModel();
     void doPrintStdout(const QString &message);
@@ -128,10 +129,11 @@ public slots:
     void doHelp();
 
     void doCloseTab(int index);
-    void doCurrentPageChanged(int index);
 
 private:
     QStringList recentFiles;
+
+    FileBrowser *filBrowser;
 
     ScriptEditor *txtEditor;
     SearchDialog *searchDialog;
@@ -141,10 +143,6 @@ private:
     QMenu *mnuEdit;
     QMenu *mnuTools;
     QMenu *mnuHelp;
-
-    QToolBar *tlbFile;
-    QToolBar *tlbEdit;
-    QToolBar *tlbTools;
 
     QAction *actFileNew;
     QAction *actFileOpen;
@@ -173,8 +171,16 @@ private:
 
     void createActions();
     void createControls();
+    void createViews();
+    void createStatusBar();
 
     void setRecentFiles();
+
+private slots:
+    void doRunPython();
+    void doFileItemDoubleClick(const QString &path);
+    void doCurrentPageChanged(int index);
+    void doPathChangeDir();
 };
 
 class ScriptEditor : public QPlainTextEdit

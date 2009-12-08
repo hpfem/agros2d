@@ -269,9 +269,15 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
     searchDialog = new SearchDialog(this);
 
     createActions();
+    createViews();
     createControls();
+    createStatusBar();
+
+    filBrowser->refresh();
 
     pythonEngine = new PythonEngine();
+
+    connect(actRunPython, SIGNAL(triggered()), this, SLOT(doRunPython()));
 
     restoreState(settings.value("ScriptEditorDialog/State", saveState()).toByteArray());
 
@@ -435,13 +441,13 @@ void ScriptEditorDialog::createControls()
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
 
-    tlbFile = addToolBar(tr("File"));
+    QToolBar *tlbFile = addToolBar(tr("File"));
     tlbFile->setObjectName("File");
     tlbFile->addAction(actFileNew);
     tlbFile->addAction(actFileOpen);
     tlbFile->addAction(actFileSave);
 
-    tlbEdit = addToolBar(tr("Edit"));
+    QToolBar *tlbEdit = addToolBar(tr("Edit"));
     tlbEdit->setObjectName("Edit");
     tlbEdit->addAction(actUndo);
     tlbEdit->addAction(actRedo);
@@ -450,11 +456,27 @@ void ScriptEditorDialog::createControls()
     tlbEdit->addAction(actCopy);
     tlbEdit->addAction(actPaste);
 
-    tlbTools = addToolBar(tr("Tools"));
+    QToolBar *tlbTools = addToolBar(tr("Tools"));
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actRunPython);
     tlbTools->addSeparator();
     tlbTools->addAction(actCreateFromModel);
+
+    // path
+    QLineEdit *txtPath = new QLineEdit(this);
+    txtPath->setReadOnly(true);
+
+    QPushButton *btnPath = new QPushButton("...");
+    btnPath->setMaximumWidth(25);
+
+    connect(btnPath, SIGNAL(clicked()), this, SLOT(doPathChangeDir()));
+    connect(filBrowser, SIGNAL(directoryChanged(QString)), txtPath, SLOT(setText(QString)));
+
+    QToolBar *tlbPath = addToolBar(tr("Path"));
+    tlbPath->setObjectName("Path");
+    tlbPath->addWidget(new QLabel(tr("Path: "), this));
+    tlbPath->addWidget(txtPath);
+    tlbPath->addWidget(btnPath);
 
     // contents
     tabWidget = new QTabWidget;
@@ -487,6 +509,74 @@ void ScriptEditorDialog::createControls()
     setCentralWidget(widget);
 
     connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(doDataChanged()));
+}
+
+void ScriptEditorDialog::createViews()
+{
+    QSettings settings;
+
+    filBrowser = new FileBrowser(this);
+    filBrowser->setNameFilter("*.py");
+    filBrowser->setDir(settings.value("ScriptEditorDialog/WorkDir", datadir()).value<QString>());
+
+    connect(filBrowser, SIGNAL(fileItemDoubleClick(QString)), this, SLOT(doFileItemDoubleClick(QString)));
+
+    // main widget
+    QVBoxLayout *layout = new QVBoxLayout();
+    // layout->addWidget(trvFile);
+    layout->addWidget(filBrowser);
+    layout->setContentsMargins(0, 0, 0, 7);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    QDockWidget *dock = new QDockWidget(tr("File browser"), this);
+    dock->setObjectName("ScriptEditorFileBrowser");
+    dock->setWidget(widget);
+    dock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
+}
+
+void ScriptEditorDialog::createStatusBar()
+{
+    QLabel *lblDir = new QLabel(statusBar());
+
+    statusBar()->showMessage(tr("Ready"));
+    statusBar()->addPermanentWidget(lblDir);
+}
+
+void ScriptEditorDialog::doRunPython()
+{
+    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+
+    if (!scriptEditorWidget->file.isEmpty())
+        filBrowser->setDir(QFileInfo(scriptEditorWidget->file).absolutePath());
+
+    scriptEditorWidget->doRunPython();
+}
+
+void ScriptEditorDialog::doFileItemDoubleClick(const QString &path)
+{
+    QFileInfo fileInfo(path);
+
+    QSettings settings;
+    if (QDir(path).exists())
+        settings.setValue("ScriptEditorDialog/WorkDir", path);
+    else
+    {
+        settings.setValue("ScriptEditorDialog/WorkDir", fileInfo.absolutePath());
+
+        if (fileInfo.suffix() == "py")
+            doFileOpen(fileInfo.absoluteFilePath());
+    }
+}
+
+void ScriptEditorDialog::doPathChangeDir()
+{
+    QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
+    QString directory = QFileDialog::getExistingDirectory(this, tr("Select directory"), filBrowser->basePath(), options);
+    if (!directory.isEmpty())
+        filBrowser->setDir(directory);
 }
 
 void ScriptEditorDialog::doFileNew()
@@ -677,8 +767,6 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
     txtEditor = scriptEditorWidget->txtEditor;
 
-    actRunPython->disconnect();
-    connect(actRunPython, SIGNAL(triggered()), scriptEditorWidget, SLOT(doRunPython()));
     actCreateFromModel->disconnect();
     connect(actCreateFromModel, SIGNAL(triggered()), scriptEditorWidget, SLOT(doCreatePythonFromModel()));
 
@@ -713,8 +801,9 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     {
         QFileInfo fileInfo(scriptEditorWidget->file);
         fileName = fileInfo.completeBaseName();
+        // filBrowser->setDir(fileInfo.absolutePath());
     }
-    setWindowTitle(tr("Script editor - %1").arg(fileName));
+    setWindowTitle(tr("Script editor - %1").arg(fileName));    
 
     txtEditor->setFocus();
 }

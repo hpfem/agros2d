@@ -60,5 +60,8 @@
         <file>images/tabforward.png</file>
         <file>images/tabhome.png</file>
         <file>images/problem.png</file>
+        <file>images/file-folder.png</file>
+        <file>images/file-text.png</file>
+        <file>images/file-python.png</file>
     </qresource>
 </RCC>

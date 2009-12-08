@@ -299,3 +299,189 @@ void CommandDialog::doAccept()
 
     accept();
 }
+
+
+// ****************************************************************************************************
+
+FileBrowser::FileBrowser(QWidget *parent) : QListWidget(parent)
+{
+    setNameFilter("");
+    setDir(QDir::currentPath());
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    actCreateDirectory = new QAction(icon("file-folder"), tr("&Create directory"), this);
+    connect(actCreateDirectory, SIGNAL(triggered()), this, SLOT(createDir()));
+
+    actCreateFile = new QAction(icon("file-text"), tr("&Create file"), this);
+    connect(actCreateFile, SIGNAL(triggered()), this, SLOT(createFile()));
+
+    actDelete = new QAction(icon(""), tr("&Delete"), this);
+    connect(actDelete, SIGNAL(triggered()), this, SLOT(deleteObject()));
+
+    mnuContext = new QMenu(this);
+    mnuContext->addAction(actCreateDirectory);
+    mnuContext->addAction(actCreateFile);
+    mnuContext->addAction(actDelete);
+
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
+    connect(this, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(doFileItemActivated(QListWidgetItem *)));
+    connect(this, SIGNAL(itemPressed(QListWidgetItem *)), this, SLOT(doFileItemActivated(QListWidgetItem *)));
+    connect(this, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(doFileItemDoubleClick(QListWidgetItem *)));
+}
+
+void FileBrowser::setNameFilter(const QString &nameFilter)
+{
+    m_nameFilter = nameFilter;
+}
+
+QString FileBrowser::basePath()
+{
+    return QString(m_basePath);
+}
+
+void FileBrowser::setDir(const QString &path)
+{
+    clear();
+
+    QDir dir(path, m_nameFilter, QDir::DirsFirst);
+    dir.setFilter(QDir::AllEntries | QDir::AllDirs);
+
+    QStringList entries = dir.entryList();
+    foreach(QString item, entries)
+    {
+        if (dir.isRoot() && (item == "..")) continue;
+        if (item != ".")
+        {
+            QFileInfo fileInfo(path + "/" + item);
+            if (QDir(path + "/" + item).exists())
+            {
+                addItem(new QListWidgetItem(icon("file-folder"), item));
+            }
+            else
+            {
+                if (fileInfo.suffix() == "py")
+                    addItem(new QListWidgetItem(icon("file-python"), item));
+                else
+                    addItem(new QListWidgetItem(icon("file-text"), item));
+            }
+        }
+    }
+
+    m_basePath = dir.canonicalPath();
+    emit directoryChanged(m_basePath);
+}
+
+void FileBrowser::refresh()
+{
+    setDir(m_basePath);
+}
+
+void FileBrowser::doFileItemActivated(QListWidgetItem *item)
+{
+    // emit fileItemActivated(m_basePath + "/" + item->text());
+}
+
+void FileBrowser::doFileItemDoubleClick(QListWidgetItem *item)
+{
+    QString path = m_basePath + "/" + item->text();
+    QDir dir(path);
+    if (dir.exists())
+    {
+        setDir(dir.canonicalPath());
+        emit fileItemDoubleClick(dir.canonicalPath());
+    }
+    else
+    {
+        emit fileItemDoubleClick(path);
+    }
+}
+
+void FileBrowser::doContextMenu(const QPoint &point)
+{
+    actDelete->setEnabled(false);
+
+    QListWidgetItem *item = itemAt(point);
+    if (item)
+    {
+        if (item->text() != "..")
+            actDelete->setEnabled(item);
+    }
+    mnuContext->exec(QCursor::pos());
+}
+
+void FileBrowser::createDir(const QString &dirName)
+{
+    QString str;
+    if (dirName.isEmpty())
+       str = QInputDialog::getText(QApplication::activeWindow(), tr("Create directory"), tr("Enter directory name"));
+    else
+       str = dirName;
+
+    if (str.isEmpty()) return;
+
+    QDir(m_basePath).mkdir(str);
+    setDir(m_basePath + "/" + str);
+}
+
+void FileBrowser::createFile(const QString &fileName)
+{
+    QString str;
+    if (fileName.isEmpty())
+       str = QInputDialog::getText(QApplication::activeWindow(), tr("Create file"), tr("Enter file name"));
+    else
+       str = fileName;
+
+    if (str.isEmpty()) return;
+
+    QFile file(m_basePath + "/" + str);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        QMessageBox::critical(this, tr("Create file"), file.errorString());
+    else
+    {
+        QTextStream out(&file);
+        out << "";
+        file.close();
+
+        refresh();
+    }
+}
+
+void FileBrowser::deleteObject(const QString &name)
+{
+    QString str;
+    if (name.isEmpty())
+        str = m_basePath + "/" + currentItem()->text();
+    else
+        str = name;
+
+    cout << str.toStdString() << endl;
+
+    QDir dir(str);
+    if (dir.exists())
+    {
+        deleteDir(str);
+    }
+    else
+    {
+        deleteFile(str);
+    }
+}
+
+void FileBrowser::deleteDir(const QString &dirName)
+{
+    QDir dir(dirName);
+    if (dir.exists())
+    {
+        dir.rmdir(dirName);
+        refresh();
+    }
+}
+
+void FileBrowser::deleteFile(const QString &fileName)
+{
+    if (QFile::exists(fileName))
+    {
+        QFile::remove(fileName);
+        refresh();
+    }
+}

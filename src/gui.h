@@ -34,6 +34,8 @@ public:
     inline void setValue(double value) { setText(QString::number(value)); }
 };
 
+// ****************************************************************************************************
+
 class SLineEditValue : public QWidget
 {
     Q_OBJECT
@@ -60,6 +62,8 @@ private:
     QLabel *lblValue;
 };
 
+// ****************************************************************************************************
+
 class Chart : public QwtPlot
 {
     Q_OBJECT
@@ -76,6 +80,8 @@ public slots:
 private:
     QwtPlotCurve *m_curve;
 };
+
+// ****************************************************************************************************
 
 class CommandDialog : public QDialog
 {
@@ -94,5 +100,45 @@ public slots:
    void doAccept();
 };
 
+// ****************************************************************************************************
+
+class FileBrowser : public QListWidget
+{
+    Q_OBJECT
+
+public:
+    FileBrowser(QWidget *parent = 0);
+    void setDir(const QString &path);
+    void setNameFilter(const QString &nameFilter);
+    QString basePath();
+    void refresh();
+
+public slots:
+    void createDir(const QString &dirName = "");
+    void createFile(const QString &fileName = "");
+    void deleteDir(const QString &dirName = "");
+    void deleteFile(const QString &fileName = "");
+    void deleteObject(const QString &name = "");
+
+signals:
+    void fileItemActivated(const QString &path);
+    void fileItemDoubleClick(const QString &path);
+    void directoryChanged(const QString &path);
+
+private slots:
+    void doFileItemActivated(QListWidgetItem *item);
+    void doFileItemDoubleClick(QListWidgetItem *item);
+    void doContextMenu(const QPoint &point);
+
+private:
+    QString m_nameFilter;
+    QString m_basePath;
+
+    QAction *actCreateDirectory;
+    QAction *actCreateFile;
+    QAction *actDelete;
+
+    QMenu *mnuContext;
+};
 
 #endif // GUI_H
