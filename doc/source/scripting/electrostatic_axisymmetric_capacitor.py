@@ -48,10 +48,11 @@ selectnone()
 # calculation of capacity
 r = []
 C = []
+print "C = f(r) (F):"
 for i in range(5):
 	if i > 0:
 		selectedge(6, 7, 8)
-		moveselection(dr, 0)
+		moveselection(dr, 0, False)
 
 	solve()
 	integral = volumeintegral(0, 1, 2)
@@ -59,6 +60,13 @@ for i in range(5):
 	r.append(r1 + (i*dr))
 	C.append(2*2*integral["We"]/(U^2))
 
-print "C = f(r) (F):"
 print r
 print C
+
+# plot chart (only if you have pylab in your computer)
+#import pylab
+#pylab.plot(r, C)
+#pylab.grid(1)
+#pylab.xlabel("r (m)")
+#pylab.ylabel("C (F)")
+#pylab.show()

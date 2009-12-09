@@ -51,6 +51,8 @@ public:
     bool scalarRangeAuto;
     double scalarRangeMin;
     double scalarRangeMax;
+    bool scalarRangeLog;
+    double scalarRangeBase;
 
     // vector view
     PhysicFieldVariable vectorPhysicFieldVariable;

@@ -9,6 +9,8 @@ void SceneViewSettings::defaultValues()
 {
     scalarRangeMin = 0;
     scalarRangeMax = 1;
+    scalarRangeLog = false;
+    scalarRangeBase = 10.0;
 
     // visible objects
     showGeometry = true;
@@ -116,14 +118,14 @@ void SceneViewSettings::save()
 SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     m_mainWindow = (QMainWindow *) parent;
-    
+
     m_normals = NULL;
 
     createActions();
     createMenu();
-    
+
     doDefaults();
-    
+
     setMinimumSize(400, 400);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
@@ -143,83 +145,83 @@ void SceneView::createActions()
     actSceneZoomIn->setShortcut(QKeySequence::ZoomIn);
     actSceneZoomIn->setStatusTip(tr("Zoom in"));
     connect(actSceneZoomIn, SIGNAL(triggered()), this, SLOT(doZoomIn()));
-    
+
     actSceneZoomOut = new QAction(icon("zoom-out"), tr("Zoom out"), this);
     actSceneZoomOut->setShortcut(QKeySequence::ZoomOut);
     actSceneZoomOut->setStatusTip(tr("Zoom out"));
     connect(actSceneZoomOut, SIGNAL(triggered()), this, SLOT(doZoomOut()));
-    
+
     actSceneZoomBestFit = new QAction(icon("zoom-original"), tr("Zoom best fit"), this);
     actSceneZoomBestFit->setStatusTip(tr("Best fit"));
     connect(actSceneZoomBestFit, SIGNAL(triggered()), this, SLOT(doZoomBestFit()));
-    
+
     actSceneZoomRegion = new QAction(icon("zoom-best-fit"), tr("Zoom region"), this);
     actSceneZoomRegion->setStatusTip(tr("Zoom region"));
     actSceneZoomRegion->setCheckable(true);
-    
+
     // scene - operate on items
     actSceneModeNode = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
     actSceneModeNode->setShortcut(Qt::Key_F5);
     actSceneModeNode->setStatusTip(tr("Operate on nodes"));
     actSceneModeNode->setCheckable(true);
-    
+
     actSceneModeEdge = new QAction(icon("scene-edge"), tr("Operate on &edges"), this);
     actSceneModeEdge->setShortcut(Qt::Key_F6);
     actSceneModeEdge->setStatusTip(tr("Operate on edges"));
     actSceneModeEdge->setCheckable(true);
-    
+
     actSceneModeLabel = new QAction(icon("scene-label"), tr("Operate on &labels"), this);
     actSceneModeLabel->setShortcut(Qt::Key_F7);
     actSceneModeLabel->setStatusTip(tr("Operate on labels"));
     actSceneModeLabel->setCheckable(true);
-    
+
     actSceneModePostprocessor = new QAction(icon("scene-postprocessor"), tr("&Postprocessor"), this);
     actSceneModePostprocessor->setShortcut(Qt::Key_F8);
     actSceneModePostprocessor->setStatusTip(tr("Postprocessor"));
     actSceneModePostprocessor->setCheckable(true);
-    
+
     actSceneModeGroup = new QActionGroup(this);
     actSceneModeGroup->addAction(actSceneModeNode);
     actSceneModeGroup->addAction(actSceneModeEdge);
     actSceneModeGroup->addAction(actSceneModeLabel);
     actSceneModeGroup->addAction(actSceneModePostprocessor);
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doSceneModeSet(QAction *)));
-    
+
     // material
     actMaterialGroup = new QActionGroup(this);
     connect(actMaterialGroup, SIGNAL(triggered(QAction *)), this, SLOT(doMaterialGroup(QAction *)));
-    
+
     // boundary
     actBoundaryGroup = new QActionGroup(this);
     connect(actBoundaryGroup, SIGNAL(triggered(QAction *)), this, SLOT(doBoundaryGroup(QAction *)));
-    
+
     // show
     actShowSolutionMesh = new QAction(tr("Solution mesh"), this);
     actShowSolutionMesh->setCheckable(true);
-    
+
     actShowContours = new QAction(tr("Contours"), this);
     actShowContours->setCheckable(true);
 
     actShowVectors = new QAction(tr("Vectors"), this);
     actShowVectors->setCheckable(true);
-    
+
     actShowGroup = new QActionGroup(this);
     actShowGroup->setExclusive(false);
     connect(actShowGroup, SIGNAL(triggered(QAction *)), this, SLOT(doShowGroup(QAction *)));
     actShowGroup->addAction(actShowSolutionMesh);
     actShowGroup->addAction(actShowContours);
     actShowGroup->addAction(actShowVectors);
-    
+
     // postprocessor group
     actPostprocessorModeLocalPointValue = new QAction(icon("mode-localpointvalue"), tr("Local Values"), this);
     actPostprocessorModeLocalPointValue->setCheckable(true);
-    
+
     actPostprocessorModeSurfaceIntegral = new QAction(icon("mode-surfaceintegral"), tr("Surface Integrals"), this);
     actPostprocessorModeSurfaceIntegral->setCheckable(true);
-    
+
     actPostprocessorModeVolumeIntegral = new QAction(icon("mode-volumeintegral"), tr("Volume Integrals"), this);
     actPostprocessorModeVolumeIntegral->setCheckable(true);
-    
+
     actPostprocessorModeGroup = new QActionGroup(this);
     connect(actPostprocessorModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doPostprocessorModeGroup(QAction*)));
     actPostprocessorModeGroup->addAction(actPostprocessorModeLocalPointValue);
@@ -330,7 +332,7 @@ void SceneView::paintGL()
     else
     {
         glDisable(GL_DEPTH_TEST);
-    }     
+    }
 
     glLoadIdentity();
     glScaled(m_scale/m_aspect, m_scale, m_scale);
@@ -373,7 +375,7 @@ void SceneView::paintGL()
 
     if (m_sceneViewSettings.showInitialMesh) paintInitialMesh();
     if (m_sceneViewSettings.showGeometry) paintGeometry();
-    
+
     if (m_sceneMode == SCENEMODE_POSTPROCESSOR)
     {
         if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
@@ -449,7 +451,7 @@ void SceneView::paintGrid()
         glEnd();
         glDisable(GL_LINE_STIPPLE);
     }
-    
+
     // axes
     glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
     glLineWidth(1.0);
@@ -464,7 +466,7 @@ void SceneView::paintGrid()
 }
 
 void SceneView::paintRulers()
-{       
+{
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
@@ -542,7 +544,7 @@ void SceneView::paintRulers()
 }
 
 void SceneView::paintGeometry()
-{  
+{
     // edges
     foreach (SceneEdge *edge, Util::scene()->edges)
     {
@@ -558,7 +560,7 @@ void SceneView::paintGeometry()
             glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
             glLineWidth(m_sceneViewSettings.geometryEdgeWidth + 2.0);
         }
-        
+
         if (edge->angle == 0)
         {
             glBegin(GL_LINES);
@@ -571,12 +573,12 @@ void SceneView::paintGeometry()
             Point center = edge->center();
             double radius = edge->radius();
             double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
-            
+
             drawArc(center, radius, startAngle, edge->angle, edge->angle/2);
         }
         glLineWidth(1.0);
     }
-    
+
     // nodes
     if (!(m_sceneMode == SCENEMODE_POSTPROCESSOR))
     {
@@ -587,25 +589,25 @@ void SceneView::paintGeometry()
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
-            
+
             glColor3f(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF());
             glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
-            
+
             if ((node->isSelected) || (node->isHighlighted))
             {
                 if (node->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
                 if (node->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
-                
+
                 glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
                 glBegin(GL_POINTS);
                 glVertex2d(node->point.x, node->point.y);
                 glEnd();
             }
         }
-        
+
         glLineWidth(1.0);
     }
     // labels
@@ -618,37 +620,37 @@ void SceneView::paintGeometry()
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
             glEnd();
-            
+
             glColor3f(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF());
             glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
             glEnd();
-            
+
             if ((label->isSelected) || (label->isHighlighted))
             {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 if (label->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
                 if (label->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
-                
+
                 glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
                 glBegin(GL_POINTS);
                 glVertex2d(label->point.x, label->point.y);
                 glEnd();
             }
             glLineWidth(1.0);
-            
+
             if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
             {
                 glColor3f(0.1, 0.1, 0.1);
-                
+
                 Point point;
                 point.x = 2.0/contextWidth()*m_aspect*fontMetrics().width(label->marker->name)/m_scale/2.0;
                 point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale;
-                
+
                 renderText(label->point.x-point.x, label->point.y-point.y, 0, label->marker->name);
             }
-            
+
             // area size
             if ((m_sceneMode == SCENEMODE_OPERATE_ON_LABELS) || (m_sceneViewSettings.showInitialMesh))
             {
@@ -829,19 +831,19 @@ void SceneView::paintColorBar(double min, double max)
 {
     glPushMatrix();
     glLoadIdentity();
-    
+
     double k = 700.0/(double) contextHeight()/m_aspect;
-    
+
     double labels_width = 0.18*k;
     double scale_width = 0.04*k;
     double scale_height = 0.93;
     double scale_numticks = 9;
     double border = 0.007*k;
     double border_scale = 0.05*k;
-    
+
     glDisable(GL_DEPTH_TEST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    
+
     // background
     drawBlend(Point(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale), Point(1.0 - border_scale/2.0, scale_height + border_scale));
 
@@ -853,7 +855,7 @@ void SceneView::paintColorBar(double min, double max)
     glVertex2d(1.0 - labels_width + border, scale_height + border);
     glVertex2d(1.0 - scale_width - labels_width - border, scale_height + border);
     glEnd();
-    
+
     glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -866,7 +868,7 @@ void SceneView::paintColorBar(double min, double max)
     glVertex2d(1.0 - labels_width, - scale_height);
     glEnd();
     glDisable(GL_TEXTURE_1D);
-    
+
     // ticks
     glColor3f(0.0, 0.0, 0.0);
 
@@ -875,26 +877,31 @@ void SceneView::paintColorBar(double min, double max)
     for (int i = 0; i < scale_numticks; i++)
     {
         double y_tick = scale_height - (double) (i+1) * 2*scale_height / (scale_numticks+1);
-        
+
         glVertex2d(1.0 - scale_width - labels_width - border, y_tick);
         glVertex2d(1.0 - scale_width - labels_width + border, y_tick);
         glVertex2d(1.0 - labels_width - border, y_tick);
         glVertex2d(1.0 - labels_width + border, y_tick);
     }
     glEnd();
-    
+
     // labels
     double h = 2.0*fontMetrics().height()/contextHeight();
-    
+
     for (int i = 0; i < scale_numticks+2; i++)
     {
-        double value = min + (double) i * (max - min) / (scale_numticks+1);
-        if (fabs(value) < 1e-8) value = 0.0;
+        double value = 0.0;
+        if (!m_sceneViewSettings.scalarRangeLog)
+            value = min + (double) i / (scale_numticks+1) * (max - min);
+        else
+            value = min + (double) pow(m_sceneViewSettings.scalarRangeBase, (i / (scale_numticks+1)))/m_sceneViewSettings.scalarRangeBase * (max - min);
+
+        if (fabs(value) < EPS_ZERO) value = 0.0;
         double y_tick = - scale_height + (double) i * 2*scale_height / (scale_numticks+1);
-        
+
         renderText(1.0 - labels_width + 0.022*(1.0/m_aspect), y_tick-h/4.0, 0, QString::number(value, '+e', 1));
     }
-    
+
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         glEnable(GL_DEPTH_TEST);
@@ -945,13 +952,22 @@ void SceneView::paintScalarField()
                 continue;
         }
 
-        glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        if (m_sceneViewSettings.scalarRangeLog)
+            glTexCoord2d(log10(1.0 + (m_sceneViewSettings.scalarRangeBase-1.0)*(value[0] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(m_sceneViewSettings.scalarRangeBase) * m_texScale + m_texShift, 0.0);
+        else
+            glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex2d(point[0].x, point[0].y);
 
-        glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        if (m_sceneViewSettings.scalarRangeLog)
+            glTexCoord2d(log10(1.0 + (m_sceneViewSettings.scalarRangeBase-1.0)*(value[1] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(m_sceneViewSettings.scalarRangeBase) * m_texScale + m_texShift, 0.0);
+        else
+            glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex2d(point[1].x, point[1].y);
 
-        glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+        if (m_sceneViewSettings.scalarRangeLog)
+            glTexCoord2d(log10(1.0 + (m_sceneViewSettings.scalarRangeBase-1.0)*(value[2] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(m_sceneViewSettings.scalarRangeBase) * m_texScale + m_texShift, 0.0);
+        else
+            glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex2d(point[2].x, point[2].y);
     }
     glEnd();
@@ -1058,28 +1074,28 @@ void SceneView::paintScalarField3DSolid()
 void SceneView::paintContours()
 {
     Util::scene()->sceneSolution()->linContourView().lock_data();
-    
+
     double3* tvert = Util::scene()->sceneSolution()->linContourView().get_vertices();
     int3* tris = Util::scene()->sceneSolution()->linContourView().get_triangles();
-    
+
     // transform variable
     double rangeMin =  1e100;
     double rangeMax = -1e100;
-    
+
     double3* vert = new double3[Util::scene()->sceneSolution()->linContourView().get_num_vertices()];
     for (int i = 0; i < Util::scene()->sceneSolution()->linContourView().get_num_vertices(); i++)
     {
         vert[i][0] = tvert[i][0];
         vert[i][1] = tvert[i][1];
         vert[i][2] = tvert[i][2];
-        
+
         if (vert[i][2] > rangeMax) rangeMax = tvert[i][2];
         if (vert[i][2] < rangeMin) rangeMin = tvert[i][2];
     }
-    
+
     // value range
     double step = (rangeMax-rangeMin)/m_sceneViewSettings.contoursCount;
-    
+
     // draw contours
     glColor3f(m_sceneViewSettings.colorContours.redF(), m_sceneViewSettings.colorContours.greenF(), m_sceneViewSettings.colorContours.blueF());
     glBegin(GL_LINES);
@@ -1093,9 +1109,9 @@ void SceneView::paintContours()
         }
     }
     glEnd();
-    
+
     delete vert;
-    
+
     Util::scene()->sceneSolution()->linContourView().unlock_data();
 }
 
@@ -1110,35 +1126,35 @@ void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
         if (vert[idx[1]][2] > vert[idx[2]][2]) { std::swap(idx[1], idx[2]); perm++; }
     }
     if (fabs(vert[idx[0]][2] - vert[idx[2]][2]) < 1e-3 * fabs(step)) return;
-    
+
     // get the first (lowest) contour value
     double val = vert[idx[0]][2];
-    
+
     double y = ceil(val / step);
     if (y < val / step) y + 1.0;
     val = y * step;
-    
+
     int l1 = 0, l2 = 1;
     int r1 = 0, r2 = 2;
     while (val < vert[idx[r2]][2])
     {
         double ld = vert[idx[l2]][2] - vert[idx[l1]][2];
         double rd = vert[idx[r2]][2] - vert[idx[r1]][2];
-        
+
         // draw a slice of the triangle
         while (val < vert[idx[l2]][2])
         {
             double lt = (val - vert[idx[l1]][2]) / ld;
             double rt = (val - vert[idx[r1]][2]) / rd;
-            
+
             double x1 = (1.0 - lt) * vert[idx[l1]][0] + lt * vert[idx[l2]][0];
             double y1 = (1.0 - lt) * vert[idx[l1]][1] + lt * vert[idx[l2]][1];
             double x2 = (1.0 - rt) * vert[idx[r1]][0] + rt * vert[idx[r2]][0];
             double y2 = (1.0 - rt) * vert[idx[r1]][1] + rt * vert[idx[r2]][1];
-            
+
             if (perm & 1) { glVertex2d(x1, y1); glVertex2d(x2, y2); }
             else { glVertex2d(x2, y2); glVertex2d(x1, y1); }
-            
+
             val += step;
         }
         l1 = 1;
@@ -1149,21 +1165,21 @@ void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
 void SceneView::paintVectors()
 {
     Util::scene()->sceneSolution()->vecVectorView().lock_data();
-    
+
     RectPoint rect = Util::scene()->boundingBox();
-    
+
     double gs = (rect.width() + rect.height()) / 45.0;
-    
+
     int nx = ceil(rect.width() / gs);
     int ny = ceil(rect.height() / gs);
-    
+
     double irange = 1.0 / (m_sceneViewSettings.vectorRangeMax - m_sceneViewSettings.vectorRangeMin);
     // special case: constant solution
     if (fabs(m_sceneViewSettings.vectorRangeMin - m_sceneViewSettings.vectorRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.vectorRangeMin -= 0.5; }
-    
+
     double4* vecVert = Util::scene()->sceneSolution()->vecVectorView().get_vertices();
     int3* vecTris = Util::scene()->sceneSolution()->vecVectorView().get_triangles();
-    
+
     glColor3f(m_sceneViewSettings.colorVectors.redF(), m_sceneViewSettings.colorVectors.greenF(), m_sceneViewSettings.colorVectors.blueF());
     // glEnable(GL_TEXTURE_1D);
     // glBindTexture(GL_TEXTURE_1D, 1);
@@ -1176,24 +1192,24 @@ void SceneView::paintVectors()
         {
             double x = rect.start.x + i*gs;
             double y = rect.start.y + j*gs;
-            
+
             int index = Util::scene()->sceneSolution()->findTriangleInVectorizer(Util::scene()->sceneSolution()->vecVectorView(), Point(x, y));
             if (index > 0)
             {
                 double dx = (vecVert[vecTris[index][0]][2] + vecVert[vecTris[index][1]][2] + vecVert[vecTris[index][2]][2]) / 3.0;
                 double dy = (vecVert[vecTris[index][0]][3] + vecVert[vecTris[index][1]][3] + vecVert[vecTris[index][2]][3]) / 3.0;
-                
+
                 double value = sqrt(sqr(dx) + sqr(dy));
                 double angle = atan2(dy, dx);
-                
+
                 // glTexCoord2d((value - m_sceneViewSettings.vectorRangeMin) * irange * m_texScale + m_texShift, 0.0);
-                
+
                 dx = gs/1.6 * cos(angle);
                 dy = gs/1.6 * sin(angle);
                 // dx = (dx - m_sceneViewSettings.vectorRangeMin) * irange * gs;
                 // dy = (dy - m_sceneViewSettings.vectorRangeMin) * irange * gs;
                 double dm = sqrt(sqr(dx) + sqr(dy));
-                
+
                 if (value > EPS_ZERO)
                 {
                     glVertex2d(x + dm/5.0 * cos(angle - M_PI_2), y + dm/5.0 * sin(angle - M_PI_2));
@@ -1204,19 +1220,19 @@ void SceneView::paintVectors()
         }
     }
     glEnd();
-    
+
     Util::scene()->sceneSolution()->vecVectorView().unlock_data();
-    
+
     // paintColorBar(m_sceneViewSettings.vectorRangeMin, m_sceneViewSettings.vectorRangeMax);
 }
 
 void SceneView::paintSceneModeLabel()
 {
     QString text = "";
-    
+
     glPushMatrix();
     glLoadIdentity();
-    
+
     glDisable(GL_DEPTH_TEST);
 
     switch (m_sceneMode)
@@ -1246,14 +1262,14 @@ void SceneView::paintSceneModeLabel()
         }
         break;
     }
-    
+
     double w = 2.0*fontMetrics().width(text)/contextWidth();
-    
+
     drawBlend(Point(0.0 - w/1.5, 0.94), Point(0.0 + w/1.5, 1.0));
-    
+
     glColor3f(0.0, 0.0, 0.0);
     renderText((contextWidth()-fontMetrics().width(text))/2, 14, text);
-    
+
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         glEnable(GL_DEPTH_TEST);
@@ -1285,7 +1301,7 @@ void SceneView::paintZoomRegion()
 }
 
 void SceneView::paintChartLine()
-{    
+{
     glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
     glLineWidth(3.0);
 
@@ -1374,7 +1390,7 @@ void SceneView::paletteCreate()
     }
     for (i = m_sceneViewSettings.paletteSteps; i < 256; i++)
         memcpy(palette[i], palette[m_sceneViewSettings.paletteSteps-1], 3);
-    
+
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
 #ifndef GL_CLAMP_TO_EDGE // fixme: this is needed on Windows
@@ -1413,7 +1429,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
 {
     RectPoint rect = Util::scene()->boundingBox();
     Point view = position(Point(contextWidth(), contextHeight()));
-    
+
     switch (event->key())
     {
     case Qt::Key_Up:
@@ -1459,7 +1475,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
         {
             doFullScreen();
         }
-        break;        
+        break;
     case Qt::Key_Space:
         {
             doSceneObjectProperties();
@@ -1475,7 +1491,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     default:
         QGLWidget::keyPressEvent(event);
     }
-    
+
     // select all
     if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))
     {
@@ -1487,7 +1503,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
                 Util::scene()->selectAll(SCENEMODE_OPERATE_ON_LABELS);
                 emit mousePressed();
             }
-            
+
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
             {
@@ -1499,10 +1515,10 @@ void SceneView::keyPressEvent(QKeyEvent *event)
         {
             Util::scene()->selectAll(m_sceneMode);
         }
-        
+
         doRefresh();
     }
-    
+
     // add node with coordinates under mouse pointer
     if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_N))
     {
@@ -1515,7 +1531,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
 {
     m_lastPos = event->pos();
     Point p = position(Point(event->pos().x(), event->pos().y()));
-    
+
     if (event->button() & Qt::LeftButton)
     {
         // zoom region
@@ -1526,7 +1542,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             actSceneZoomRegion->setData(true);
             return;
         }
-        
+
         // select region
         if (actSceneViewSelectRegion->isChecked())
         {
@@ -1535,7 +1551,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             actSceneViewSelectRegion->setData(true);
             return;
         }
-        
+
         if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
             !(m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         {
@@ -1561,15 +1577,15 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             {
                 //  find edge marker
                 SceneEdge *edge = findClosestEdge(p);
-                
+
                 edge->isSelected = !edge->isSelected;
                 updateGL();
-                
+
                 emit mousePressed();
             }
         }
     }
-    
+
     // add node edge or label by mouse click
     if (event->modifiers() & Qt::ControlModifier)
     {
@@ -1600,11 +1616,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                         SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
                         if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point, edge->nodeEnd->point, edge->marker->name, edge->angle));
                     }
-                    
+
                     m_nodeLast->isSelected = false;
                     m_nodeLast = NULL;
                 }
-                
+
                 updateGL();
             }
         }
@@ -1617,7 +1633,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             updateGL();
         }
     }
-    
+
     if ((event->modifiers() == 0) && (event->button() & Qt::LeftButton))
     {
         // select scene objects
@@ -1631,7 +1647,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 updateGL();
             }
         }
-        
+
         if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
         {
             // select the closest label
@@ -1658,7 +1674,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
 void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
 {
     Point p = position(Point(event->pos().x(), event->pos().y()));
-    
+
     // zoom best fit
     if (!(event->modifiers() & Qt::ControlModifier))
     {
@@ -1666,7 +1682,7 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
         {
             doZoomBestFit();
         }
-        
+
         if (event->button() & Qt::LeftButton)
         {
             // select scene objects
@@ -1722,50 +1738,50 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
 void SceneView::mouseReleaseEvent(QMouseEvent *event)
 {
     setCursor(Qt::ArrowCursor);
-    
+
     // zoom or select region
     actSceneZoomRegion->setChecked(false);
     actSceneViewSelectRegion->setChecked(false);
-    
+
     if (!m_regionPos.isNull())
     {
         Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
         Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
-        
+
         if (actSceneZoomRegion->data().value<bool>())
             doZoomRegion(Point(qMin(posStart.x, posEnd.x), qMin(posStart.y, posEnd.y)), Point(qMax(posStart.x, posEnd.x), qMax(posStart.y, posEnd.y)));
         if (actSceneViewSelectRegion->data().value<bool>())
             selectRegion(Point(qMin(posStart.x, posEnd.x), qMin(posStart.y, posEnd.y)), Point(qMax(posStart.x, posEnd.x), qMax(posStart.y, posEnd.y)));
-        
+
         actSceneZoomRegion->setData(false);
         actSceneViewSelectRegion->setData(false);
-        
+
         m_regionPos.setX(NULL);
         m_regionPos.setY(NULL);
-        
+
         updateGL();
     }
-    
+
 }
 
 void SceneView::mouseMoveEvent(QMouseEvent *event)
 {
     int dx = event->x() - m_lastPos.x();
     int dy = event->y() - m_lastPos.y();
-    
+
     m_lastPos = event->pos();
-    
+
     Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
 
     setToolTip("");
-    
+
     // zoom or select region
     if (event->buttons() & Qt::LeftButton)
     {
         if (!m_regionPos.isNull())
             updateGL();
     }
-    
+
     // pan
     if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
     {
@@ -1787,7 +1803,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
         updateGL();
     }
-    
+
     // rotate
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
@@ -1802,7 +1818,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             updateGL();
         }
     }
-    
+
     if (event->modifiers() == 0)
     {
         // highlight scene objects
@@ -1856,7 +1872,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             }
         }
     }
-    
+
     if (event->modifiers() & Qt::ControlModifier)
     {
         // add edge directly by mouse click - highlight
@@ -1872,7 +1888,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             }
         }
     }
-    
+
     emit mouseMoved(QPointF(p.x, p.y));
 }
 
@@ -1888,7 +1904,7 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
     // set boundary context menu
     if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
         actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
-    
+
     // set material context menu
     if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
         actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
@@ -1927,7 +1943,7 @@ void SceneView::doInvalidated()
         if (m_sceneMode == SCENEMODE_POSTPROCESSOR)
             actSceneModeNode->trigger();
     }
-    
+
     actSceneModePostprocessor->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
     emit mousePressed();
@@ -1954,15 +1970,15 @@ void SceneView::doZoomOut()
 void SceneView::doZoomRegion(const Point &start, const Point &end)
 {
     if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO) return;
-    
+
     m_offset.x = (start.x+end.x)/2.0;
     m_offset.y = (start.y+end.y)/2.0;
-    
+
     double sceneWidth = end.x-start.x;
     double sceneHeight = end.y-start.y;
-    
+
     double maxScene = (((double) contextWidth() / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/m_aspect : sceneHeight;
-    
+
     m_scale = 1.95/maxScene;
     setZoom(0);
 }
@@ -1977,19 +1993,19 @@ void SceneView::doSetChartLine(const Point &start, const Point &end)
 }
 
 void SceneView::doDefaults()
-{   
+{
     m_scale = 1.0;
     m_offset.x = 0.0;
     m_offset.y = 0.0;
-    
+
     m_chartLine.start = Point();
     m_chartLine.end = Point();
 
     m_sceneViewSettings.defaultValues();
-    
+
     doInvalidated();
     doZoomBestFit();
-    
+
     actPostprocessorModeLocalPointValue->trigger();
 }
 
@@ -2122,23 +2138,23 @@ void SceneView::doFullScreen()
 void SceneView::doSceneModeSet(QAction *)
 {
     actSceneModePostprocessor->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    
+
     if (actSceneModeNode->isChecked()) m_sceneMode = SCENEMODE_OPERATE_ON_NODES;
     if (actSceneModeEdge->isChecked()) m_sceneMode = SCENEMODE_OPERATE_ON_EDGES;
     if (actSceneModeLabel->isChecked()) m_sceneMode = SCENEMODE_OPERATE_ON_LABELS;
     if (actSceneModePostprocessor->isChecked()) m_sceneMode = SCENEMODE_POSTPROCESSOR;
-    
+
     Util::scene()->highlightNone();
     Util::scene()->selectNone();
-    
+
     Util::scene()->actTransform->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
     Util::scene()->actDeleteSelected->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
     actSceneViewSelectRegion->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
-    
+
     actPostprocessorModeLocalPointValue->setEnabled((m_sceneMode == SCENEMODE_POSTPROCESSOR));
     actPostprocessorModeSurfaceIntegral->setEnabled((m_sceneMode == SCENEMODE_POSTPROCESSOR));
     actPostprocessorModeVolumeIntegral->setEnabled((m_sceneMode == SCENEMODE_POSTPROCESSOR));
-    
+
     switch (m_sceneMode)
     {
     case SCENEMODE_OPERATE_ON_NODES:
@@ -2151,7 +2167,7 @@ void SceneView::doSceneModeSet(QAction *)
     case SCENEMODE_POSTPROCESSOR:
         break;
     }
-    
+
     doInvalidated();
 }
 
@@ -2179,7 +2195,7 @@ void SceneView::setRangeScalar()
 {
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW ||
-         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || 
+         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D ||
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
         ViewScalarFilter *viewScalarFilter;
@@ -2209,7 +2225,7 @@ void SceneView::setRangeScalar()
             // lighting
             float light_specular[] = {1.0, 1.0, 1.0, 1.0};
             float light_ambient[]  = {0.3, 0.3, 0.3, 1.0};
-            float light_diffuse[]  = {1.0, 1.0, 1.0, 1.0};   
+            float light_diffuse[]  = {1.0, 1.0, 1.0, 1.0};
             float light_position[] = { -5.0*max, 8.0*max, 5.0*max, 0.0 };
 
             glEnable(GL_LIGHT0);
@@ -2293,7 +2309,7 @@ void SceneView::setRangeVector()
                                                                    m_sceneViewSettings.vectorPhysicFieldVariable,
                                                                    PHYSICFIELDVARIABLECOMP_Y);
         Util::scene()->sceneSolution()->setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
-        
+
         if (m_sceneViewSettings.vectorRangeAuto)
         {
             m_sceneViewSettings.vectorRangeMin = Util::scene()->sceneSolution()->vecVectorView().get_min_value();
@@ -2305,9 +2321,9 @@ void SceneView::setRangeVector()
 void SceneView::setZoom(double power)
 {
     m_scale = m_scale * pow(1.2, power);
-    
+
     updateGL();
-    
+
     Point p(pos().x(), pos().y());
     emit mouseMoved(QPointF(position(p).x, position(p).y));
 }
@@ -2315,7 +2331,7 @@ void SceneView::setZoom(double power)
 void SceneView::selectRegion(const Point &start, const Point &end)
 {
     Util::scene()->selectNone();
-    
+
     switch (m_sceneMode)
     {
     case SCENEMODE_OPERATE_ON_NODES:
@@ -2340,7 +2356,7 @@ void SceneView::selectRegion(const Point &start, const Point &end)
 SceneNode *SceneView::findClosestNode(const Point &point)
 {
     SceneNode *nodeClosest = NULL;
-    
+
     double distance = 1e100;
     foreach (SceneNode *node, Util::scene()->nodes)
     {
@@ -2351,14 +2367,14 @@ SceneNode *SceneView::findClosestNode(const Point &point)
             nodeClosest = node;
         }
     }
-    
+
     return nodeClosest;
 }
 
 SceneEdge *SceneView::findClosestEdge(const Point &point)
 {
     SceneEdge *edgeClosest = NULL;
-    
+
     double distance = 1e100;
     foreach (SceneEdge *edge, Util::scene()->edges)
     {
@@ -2369,14 +2385,14 @@ SceneEdge *SceneView::findClosestEdge(const Point &point)
             edgeClosest = edge;
         }
     }
-    
+
     return edgeClosest;
 }
 
 SceneLabel *SceneView::findClosestLabel(const Point &point)
 {
     SceneLabel *labelClosest = NULL;
-    
+
     double distance = 1e100;
     foreach (SceneLabel *label, Util::scene()->labels)
     {
@@ -2387,22 +2403,22 @@ SceneLabel *SceneView::findClosestLabel(const Point &point)
             labelClosest = label;
         }
     }
-    
+
     return labelClosest;
 }
 
 void SceneView::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments)
 {
     double theta = arcAngle / double(segments - 1);
-    
+
     glBegin(GL_LINE_STRIP);
     for (int i = 0; i < segments; i++)
     {
         double arc = (startAngle + i*theta)/180.0*M_PI;
-        
+
         double x = r * cos(arc);
         double y = r * sin(arc);
-        
+
         glVertex2d(point.x + x, point.y + y);
     }
     glEnd();
@@ -2431,7 +2447,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor4d(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF(), 0.5);
-    
+
     // triangles
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
@@ -2457,7 +2473,7 @@ void SceneView::paintPostprocessorSelectedSurface()
     foreach (SceneEdge *edge, Util::scene()->edges) {
         glColor3d(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
         glLineWidth(3.0);
-        
+
         if (edge->isSelected)
         {
             if (edge->angle == 0)
@@ -2472,7 +2488,7 @@ void SceneView::paintPostprocessorSelectedSurface()
                 Point center = edge->center();
                 double radius = edge->radius();
                 double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180 - 180;
-                
+
                 drawArc(center, radius, startAngle, edge->angle, edge->angle/5);
             }
         }
@@ -2536,16 +2552,16 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
         ErrorResult resultMesh1 = saveImageToFile(path + "/mesh.png", w, h);
         if (resultMesh1.isError())
             resultMesh1.showDialog();
-        m_sceneViewSettings.showInitialMesh = false;        
+        m_sceneViewSettings.showInitialMesh = false;
     }
     if (Util::scene()->sceneSolution()->isSolved())
     {
         // when solved show both meshes
         actSceneModePostprocessor->trigger();
-        
+
         m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_NONE;
         updateGL();
-        
+
         m_sceneViewSettings.showInitialMesh = true;
         m_sceneViewSettings.showSolutionMesh = true;
         ErrorResult resultMesh2 = saveImageToFile(path + "/mesh.png", w, h);
@@ -2577,7 +2593,7 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
         if (resultScalarView.isError())
             resultScalarView.showDialog();
 
-        // order        
+        // order
         m_sceneViewSettings.postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_ORDER;
         updateGL();
         ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);

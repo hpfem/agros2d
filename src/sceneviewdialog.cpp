@@ -40,6 +40,8 @@ SceneViewDialog::~SceneViewDialog()
     delete chkScalarFieldRangeAuto;
     delete txtScalarFieldRangeMin;
     delete txtScalarFieldRangeMax;
+    delete chkScalarFieldRangeLog;
+    delete txtScalarFieldRangeBase;
 
     // vector field
     delete cmbVectorFieldVariable;
@@ -78,6 +80,9 @@ void SceneViewDialog::load()
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
     txtScalarFieldRangeMin->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMin));
     txtScalarFieldRangeMax->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMax));
+    chkScalarFieldRangeLog->setChecked(m_sceneView->sceneViewSettings().scalarRangeLog);
+    doScalarFieldLog(chkScalarFieldRangeLog->checkState());
+    txtScalarFieldRangeBase->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeBase));
 
     // vector field
     cmbVectorFieldVariable->setCurrentIndex(cmbVectorFieldVariable->findData(m_sceneView->sceneViewSettings().vectorPhysicFieldVariable));
@@ -109,6 +114,8 @@ void SceneViewDialog::save()
     m_sceneView->sceneViewSettings().scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
     m_sceneView->sceneViewSettings().scalarRangeMin = txtScalarFieldRangeMin->text().toDouble();
     m_sceneView->sceneViewSettings().scalarRangeMax = txtScalarFieldRangeMax->text().toDouble();
+    m_sceneView->sceneViewSettings().scalarRangeLog = chkScalarFieldRangeLog->isChecked();
+    m_sceneView->sceneViewSettings().scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
 
     // vector field
     m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = (PhysicFieldVariable) cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toInt();
@@ -188,6 +195,11 @@ void SceneViewDialog::createControls()
     txtScalarFieldRangeMax = new QLineEdit("0.1");
     txtScalarFieldRangeMax->setValidator(new QDoubleValidator(txtScalarFieldRangeMax));
 
+    // log scale
+    chkScalarFieldRangeLog = new QCheckBox("");
+    txtScalarFieldRangeBase = new QLineEdit("10");
+    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
+
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutScalarField->addWidget(cmbScalarFieldVariable, 0, 1);
@@ -201,6 +213,11 @@ void SceneViewDialog::createControls()
     layoutScalarField->addWidget(txtScalarFieldRangeMin, 3, 1);
     layoutScalarField->addWidget(new QLabel(tr("Maximum:")), 4, 0);
     layoutScalarField->addWidget(txtScalarFieldRangeMax, 4, 1);
+
+    layoutScalarField->addWidget(new QLabel(tr("Log. scale:")), 5, 0);
+    layoutScalarField->addWidget(chkScalarFieldRangeLog, 5, 1);
+    layoutScalarField->addWidget(new QLabel(tr("Base:")), 6, 0);
+    layoutScalarField->addWidget(txtScalarFieldRangeBase, 6, 1);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
@@ -266,6 +283,7 @@ void SceneViewDialog::createControls()
     chkScalarFieldRangeAuto->setEnabled(Util::scene()->sceneSolution()->isSolved());
     txtScalarFieldRangeMin->setEnabled(Util::scene()->sceneSolution()->isSolved());
     txtScalarFieldRangeMax->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    chkScalarFieldRangeLog->setEnabled(Util::scene()->sceneSolution()->isSolved());
     cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
     setLayout(layout);
@@ -298,6 +316,11 @@ void SceneViewDialog::doScalarFieldRangeAuto(int state)
 {
     txtScalarFieldRangeMin->setEnabled(!chkScalarFieldRangeAuto->isChecked());
     txtScalarFieldRangeMax->setEnabled(!chkScalarFieldRangeAuto->isChecked());       
+}
+
+void SceneViewDialog::doScalarFieldLog(int state)
+{
+    txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }
 
 void SceneViewDialog::doAccept()

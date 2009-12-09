@@ -65,6 +65,16 @@ General Commands
 * **mesh()**
    Mesh geometry.
 
+.. index:: solutionfilename()
+
+* **solutionfilename()**
+   Print name of file for saving solution.
+
+.. index:: meshfilename()
+
+* **meshfilename()**
+   Print name of file for saving mesh.
+
 .. index:: saveimage()
 
 * **saveimage(** *filename* **)**
@@ -84,21 +94,21 @@ Document Commands
    Create new document.
 
    - type = {"planar", "axisymmetric"}
-   - physicfield = {"electrostatic", "magnetostatic", "current field", "heat transfer", "harmonic magnetic"}
+   - physicfield = {"general", "electrostatic", "magnetic", "current field", "heat transfer"}
    - numberofrefinements >= 0
    - polynomialorder = 1 to 10
    - adaptivitytype = {"disabled", "h-adaptivity", "p-adaptivity", "hp-adaptivity"}
    - adaptivitysteps >= 0
    - adaptivitytolerance >= 0
    - frequency >= 0 (only for harmonic magnetic field)
-   - analysistype = {"steadystate", "transient"}
+   - analysistype = {"steadystate", "transient", "harmonic"}
    - timestep > 0
    - totaltime > 0
 
-An example: ::
+An example:
 
- newdocument("Electrostatic axisymmetric capacitor", "axisymmetric", "electrostatic", 1, 2, "hp-adaptivity", 10, 1)
- newdocument("Transient", "planar", "heat", 0, 1, "disabled", 5, 1, 0, "transient", 700, 3000, 20)
+.. literalinclude:: ./examples.rst
+   :lines: 1-2
 
 .. index:: opendocument()
 
@@ -206,12 +216,10 @@ Materials and Boundaries Commands
       addboundary(name, type = {"general_value", "general_derivative"}, value)
    - Electrostatic field
       addboundary(name, type = {"electrostatic_potential", "electrostatic_surface_charge_density"}, value)
+   - Magnetic field
+      addboundary(name, type = {"magnetic_vector_potential", "magnetic_surface_current_density"}, value)
    - Electric current field
       addboundary(name, type = {"current_potential", "current_inward_current_flow"}, value)
-   - Magnetostatic field
-      addboundary(name, type = {"magnetostatic_vector_potential", "magnetostatic_surface_current_density"}, value)
-   - Harmonic magnetic field
-      addboundary(name, type = {"harmonicmagnetic_vector_potential", "harmonicmagnetic_surface_current_density"}, value)
    - Heat transfer
       addboundary(name, type = {"heat_temperature"}, temperature)
       addboundary(name, type = {"heat_flux"}, heat_flux, h, external_temperature)
@@ -230,12 +238,10 @@ Materials and Boundaries Commands
       addmaterial(name, rightside, constant)
    - Electrostatic field
       addmaterial(name, charge_density, permittivity)
+   - Magnetic field
+      addmaterial(name, current_density, permeability, density, specificheat)
    - Electric current field
       addmaterial(name, conductivity)
-   - Magnetostatic field
-      addmaterial(name, current_density, permeability, density, specificheat)
-   - Harmonic magnetic field
-      addmaterial(name, current_density_real, current_density_imag, permeability, conductivity)
    - Heat transfer
       addmaterial(name, volume_heat, thermal_conductivity)
 
@@ -256,19 +262,19 @@ Postprocessor Commands
        Properties: X, Y, V, Gx, Gy, G, constant.
    - Electrostatic field
       Properties: X, Y, V, Ex, Ey, E, Dx, Dy, wj, epsr.
-   - Magnetostatic field
+   - Magnetic field (stadystate analysis)
       Properties: X, Y, A, Bx, By, B, Hx, Hy, H, wm, mur.
+   - Magnetic field (harmonic analysis)
+      Properties: X, Y, A_real, A_imag, A, B, Bx_real, By_real, B_real, Bx_imag, By_imag, B_imag, H, Hx_real, Hy_real, H_real, Hx_imag, Hy_imag, H_imag, Ji_real, Ji_imag, Ji_real, J_real, J_imag, J_real, pj, wm, mur.
    - Electric current field
       Properties: X, Y, V, Jx, Jy, J, Ex, Ey, E, pj, gamma.
-   - Harmonic magnetic field
-      Properties: X, Y, A_real, A_imag, A, B, Bx_real, By_real, B_real, Bx_imag, By_imag, B_imag, H, Hx_real, Hy_real, H_real, Hx_imag, Hy_imag, H_imag, Ji_real, Ji_imag, Ji_real, J_real, J_imag, J_real, pj, wm, mur
    - Heat transfer
       Properties: X, Y, T, Gx, Gy, G, Fx, Fy, F, lambda.
 
-An example: ::
+An example:
 
- result = pointresult(0.1, 0.1)
- print "Potential = ", result.V
+.. literalinclude:: ./examples.rst
+   :lines: 4-5
 
 .. index:: volumeintegral()
 
@@ -276,22 +282,22 @@ An example: ::
    Volume integral in areas with given index.
 
    - General field
-       Properties: V, S.
+      Properties: V, S.
    - Electrostatic field
       Properties: V, S, Ex_avg, Ey_avg, E_avg, Dx_avg, Dy_avg, D_avg, We.
-   - Magnetostatic field
+   - Magnetic field (stadystate analysis)
       Properties: V, S, Bx_avg, By_avg, B_avg, Hx_avg, Hy_avg, H_avg, Wm.
+   - Magnetic field (harmonic analysis)
+      Properties: V, S, Ii_real, Ii_imag, It_real, It_imag, Pj, Fx_real, Fx_imag, Fy_real, Fy_imag, Wm.
    - Electric current field
       Properties: V, S, Jx_avg, Jy_avg, J_avg, Ex_avg, Ey_avg, E_avg, Pj.
-   - Harmonic magnetic field
-      Properties: V, S, Ii_real, Ii_imag, It_real, It_imag, Pj, Fx_real, Fx_imag, Fy_real, Fy_imag, Wm.
    - Heat transfer
       Properties: V, S, T, Gx_avg, Gy_avg, G_avg, Fx_avg, Fy_avg, F_avg.
 
-An example: ::
+An example:
 
- integral = volumeintegral(0.1, 0.1)
- print "Volume = ", integral.V
+.. literalinclude:: ./examples.rst
+   :lines: 7-8
 
 .. index:: surfaceintegral()
 
@@ -302,19 +308,17 @@ An example: ::
        Properties: l, S.
    - Electrostatic field
       Properties: l, S, Q.
+   - Magnetic field
+      Properties: l, S.
    - Electric current field
       Properties: l, S, I.
-   - Magnetostatic field
-      Properties: l, S.
-   - Harmonic magnetic field
-      Properties: l, S.
    - Heat transfer
       Properties: l, S, T_avg, T_diff, F.
 
-An example: ::
+An example:
 
- integral = surfaceintegral(0.1, 0.1);
- print "Charge = ", integral.Q
+.. literalinclude:: ./examples.rst
+   :lines: 10-11
 
 .. index:: showgrid()
 
@@ -404,6 +408,8 @@ Tips
 ----
 
 You can run single commands and user functions. Select "Run command..." in the menu "Tools", or by pressing Alt+C and enter command, or user function.
+
+You can use the full possibilities of Python while writing your scripts. For example, you can draw graphs, or perform other calculations.
 
 You can be found all keywords of the command parameters in :ref:`keyword-list`.
 

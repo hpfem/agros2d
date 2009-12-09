@@ -13,7 +13,7 @@ When editing geometry it is necessary to switch between the three basic modes.
 To switch between different modes you can use the corresponding items in the menu "Problem" or key F5 (Operate on nodes), F6 (Operate on edges) and F7 (Operate on labels).
 
 Adding Components of Geometry
----------------------------------------
+-----------------------------
 
 Adding nodes
 ^^^^^^^^^^^^
@@ -57,7 +57,7 @@ Labels are used to define individual areas. To add a label you can use the same 
 * Use both previous methods together.
 
 Editing Parameters of Existing Components
----------------------------------------
+-----------------------------------------
 
 You can double left click on the requested element (node, edge, and label) for editing its parameters. For example, you can create an arc from a straight edge.
 
@@ -67,4 +67,3 @@ Tips
 Some operations can also be found in the context menu accessible by right clicking on the workspace or on the panel "Problem.
 
 You can use the full screen display mode to make the most of the workspace view. To switch between modes use the F11 key or select "correct option" from the workspace context menu.
-

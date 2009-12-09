@@ -10,15 +10,13 @@ Physic Fields
 
 * electrostatic
 
+* magnetic
+
 * current
-
-* magnetostatic
-
-* harmonicmagnetic
 
 * heat
 
-.. * elasticity
+.. *elasticity
 
 Adaptivity Types
 ----------------
@@ -30,6 +28,15 @@ Adaptivity Types
 * p-adaptivity
 
 * hp-adaptivity
+
+Analysis Types
+--------------
+
+* steadystate
+
+* transient
+
+* harmonic
 
 Physic Field Variables
 ----------------------
@@ -50,6 +57,66 @@ Physic Field Variables
 
 * electrostatic_permittivity
 
+* magnetic_vector_potential_real
+
+* magnetic_vector_potential_imag
+
+* magnetic_vector_potential
+
+* magnetic_flux_density_real
+
+* magnetic_flux_density_imag
+
+* magnetic_flux_density
+
+* magnetic_magnetic_field_real
+
+* magnetic_magnetic_field_imag
+
+* magnetic_magnetic_field
+
+* magnetic_current_density_imag
+
+* magnetic_current_density_imag
+
+* magnetic_current_density
+
+* magnetic_current_density_induced_transform_real
+
+* magnetic_current_density_induced_transform_imag
+
+* magnetic_current_density_induced_transform
+
+* magnetic_current_density_induced_velocity_real
+
+* magnetic_current_density_induced_velocity_imag
+
+* magnetic_current_density_induced_velocity
+
+* magnetic_current_density_total_real
+
+* magnetic_current_density_total_imag
+
+* magnetic_current_density_total
+
+* magnetic_power_losses_transform
+
+* magnetic_power_losses_velocity
+
+* magnetic_total_power_losses
+
+* magnetic_energy_density
+
+* magnetic_permeability
+
+* magnetic_conductivity
+
+* magnetic_remanence
+
+* magnetic_remanence_angle
+
+* magnetic_velocity
+
 * current_potential
 
 * current_electic_field
@@ -59,52 +126,6 @@ Physic Field Variables
 * current_power_losses
 
 * current_conductivity
-
-* magnetostatic_vector_potential
-
-* magnetostatic_flux_density
-
-* magnetostatic_magnetic_field
-
-* magnetostatic_energy_density
-
-* magnetostatic_permeability
-
-* harmonicmagnetic_vector_potential
-
-* harmonicmagnetic_vector_potential_real
-
-* harmonicmagnetic_vector_potential_imag
-
-* harmonicmagnetic_flux_density
-
-* harmonicmagnetic_flux_density_real
-
-* harmonicmagnetic_flux_density_imag
-
-* harmonicmagnetic_magnetic_field
-
-* harmonicmagnetic_magnetic_field_real
-
-* harmonicmagnetic_magnetic_field_imag
-
-* harmonicmagnetic_total_current_density
-
-* harmonicmagnetic_total_current_density_real
-
-* harmonicmagnetic_total_current_density_imag
-
-* harmonicmagnetic_induced_current_density
-
-* harmonicmagnetic_induced_current_density_real
-
-* harmonicmagnetic_induced_current_density_imag
-
-* harmonicmagnetic_power_losses
-
-* harmonicmagnetic_energy_density
-
-* harmonicmagnetic_permeability
 
 * heat_temperature
 
@@ -140,17 +161,13 @@ Boundary Conditions
 
 * electrostatic_surface_charge_density
 
+* magnetic_vector_potential
+
+* magnetic_surface_current_density
+
 * current_potential
 
 * current_inward_current_flow
-
-* magnetostatic_vector_potential
-
-* magnetostatic_surface_current_density
-
-* harmonicmagnetic_vector_potential
-
-* harmonicmagnetic_surface_current_density
 
 * heat_temperature
 

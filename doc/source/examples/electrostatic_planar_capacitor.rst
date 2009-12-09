@@ -119,4 +119,3 @@ Select "Chart" in menu "Tools". This opens a window for plotting charts. As a st
 .. image:: ./chart_plotting.png
 
 Fig. 4.: Chart plotting
-

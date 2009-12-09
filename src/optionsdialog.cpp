@@ -121,7 +121,7 @@ void OptionsDialog::load()
     cmbPalette->setCurrentIndex(cmbPalette->findData(m_sceneViewSettings->paletteType));
     chkPaletteFilter->setChecked(m_sceneViewSettings->paletteFilter);
     doPaletteFilter(chkPaletteFilter->checkState());
-    txtPaletteSteps->setValue(m_sceneViewSettings->paletteSteps);
+    txtPaletteSteps->setValue(m_sceneViewSettings->paletteSteps);    
 
     // 3d
     chkView3DLighting->setChecked(m_sceneViewSettings->scalarView3DLighting);

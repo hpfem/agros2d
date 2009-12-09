@@ -2,7 +2,7 @@ Processing Results
 ==================
 
 Viewing of Results
--------------------------
+------------------
 
 You can display your results using various pre-defined ways. Select "Scene properties" in menu "View" to open dialog "Scene View" or double click in Workspace and select this possibility in the context menu.
 
@@ -22,4 +22,3 @@ Surface and Volume Integrals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For calculation of all available field quantities on surface and volume, you have to start by specifying the elements of your geometry which will be included in the calculation. Select "Surface integrals" or "Volume integrals" on "Problem" panel and mark selected parts of the geometry.
-

@@ -44,7 +44,7 @@ public:
     QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; }
+    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; } // PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL
     inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PHYSICFIELDVARIABLECOMP_SCALAR; }
     inline PhysicFieldVariable vectorPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD; }
 

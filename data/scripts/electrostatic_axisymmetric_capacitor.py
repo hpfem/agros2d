@@ -52,7 +52,7 @@ print "C = f(r) (F):"
 for i in range(5):
 	if i > 0:
 		selectedge(6, 7, 8)
-		moveselection(dr, 0)
+		moveselection(dr, 0, False)
 
 	solve()
 	integral = volumeintegral(0, 1, 2)

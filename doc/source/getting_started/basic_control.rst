@@ -2,7 +2,7 @@ Basic Control
 =============
 
 Description of Agros2D
-------------------------------
+----------------------
 
 Main Window
 ^^^^^^^^^^^
@@ -150,4 +150,3 @@ Tips
 Both the Main Window and the Script Editor Window can be customized. For adjustments, use context menu of the Menu Bar or Toolbar (also label of each panel) and choose which parts you want to view.
 
 You can use rulers in Workspace after switching them on in program properties.
-

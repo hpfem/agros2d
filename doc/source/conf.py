@@ -136,7 +136,7 @@ html_theme_options = {
 html_title = 'Agros2D Documentation'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = 'Help Content'
+html_short_title = 'Content'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -178,6 +178,12 @@ html_use_index = True
 
 # If true, links to the reST sources are added to the pages.
 html_show_sourcelink = False
+
+# If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
+#html_show_sphinx = True
+
+# If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
+#html_show_copyright = True
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
