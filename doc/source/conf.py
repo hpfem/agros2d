@@ -114,18 +114,18 @@ html_theme_options = {
 'codetextcolor': '#000000',
 
 # Style for help
-'relbarbgcolor': '#FFFFFF',
-'relbartextcolor': '#000000',
-'relbarlinkcolor': '#3D5C7A',
-'footerbgcolor': '#FFFFFF',
-'footertextcolor': '#000000',
-
-# Style for web
-#'relbarbgcolor': '#824513',
+#'relbarbgcolor': '#FFFFFF',
 #'relbartextcolor': '#000000',
-#'relbarlinkcolor': '#FFFFFF',
+#'relbarlinkcolor': '#3D5C7A',
 #'footerbgcolor': '#FFFFFF',
 #'footertextcolor': '#000000',
+
+# Style for web
+'relbarbgcolor': '#824513',
+'relbartextcolor': '#000000',
+'relbarlinkcolor': '#FFFFFF',
+'footerbgcolor': '#FFFFFF',
+'footertextcolor': '#000000',
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

@@ -311,8 +311,8 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
     cmbAnalysisType->clear();
     cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_STEADYSTATE), ANALYSISTYPE_STEADYSTATE);
-    if (hermesField->hasTransient()) cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_TRANSIENT), ANALYSISTYPE_TRANSIENT);
     if (hermesField->hasHarmonic()) cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_HARMONIC), ANALYSISTYPE_HARMONIC);
+    if (hermesField->hasTransient()) cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_TRANSIENT), ANALYSISTYPE_TRANSIENT);
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
     if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());

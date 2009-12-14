@@ -860,7 +860,10 @@ void SceneView::paintColorBar(double min, double max)
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     glBegin(GL_QUADS);
-    glTexCoord1d(m_texScale + m_texShift);
+    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) > EPS_ZERO)
+        glTexCoord1d(m_texScale + m_texShift);
+    else
+        glTexCoord1d(m_texShift);
     glVertex2d(1.0 - labels_width, scale_height);
     glVertex2d(1.0 - scale_width - labels_width, scale_height);
     glTexCoord1d(m_texShift);
@@ -914,7 +917,8 @@ void SceneView::paintScalarField()
     // range
     double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
     // special case: constant solution
-    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.scalarRangeMin -= 0.5; }
+    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < EPS_ZERO)
+        irange = 1.0;
 
     Util::scene()->sceneSolution()->linScalarView().lock_data();
 

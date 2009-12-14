@@ -24,6 +24,11 @@ and electric displacement is
 
    \vec{D} = \varepsilon \vec{E}.
 
+Maxwell stress tensor:
+
+.. math::
+   \vec{S}_\mathrm{M} = \vec{E} \otimes \vec{D} - \frac{1}{2} \vec{E} \vec{D} \cdot \delta 
+
 Boundary conditions
 ^^^^^^^^^^^^^^^^^^^
 
@@ -38,28 +43,25 @@ Boundary conditions
 Boundary integrals
 ^^^^^^^^^^^^^^^^^^
 
-Charge: $Q = \int_S D_\mathrm{n} \dif S = \int_S \varepsilon \frac{\partial \varphi}{\partial n} \dif S\,\,\,\mathrm{(C)}$
+Charge: 
+
+.. math::
+
+   Q = \int_S D_\mathrm{n} \dif S = \int_S \varepsilon \frac{\partial \varphi}{\partial n} \dif S\,\,\,\mathrm{(C)}
 
 Subdomain integrals
 ^^^^^^^^^^^^^^^^^^^
-
-Average electric field:
-
-.. math::
-
-   E_\mathrm{avg} = \frac{1}{V} \int_V \sqrt{E_x^2 + E_y^2} \dif V\,\,\,\mathrm{(V/m)}
-
-Average displacement:
-
-.. math::
-
-   D_\mathrm{avg} = \frac{1}{V} \int_V \sqrt{D_x^2 + D_y^2} \dif V\,\,\,\mathrm{(C/m^2)}
 
 Energy:
 
 .. math::
 
-   W_\mathrm{e} = \int_V \frac{1}{2} E D \dif V\,\,\,\mathrm{(J)}
+   W_\mathrm{e} = \int_V \frac{1}{2} \vec{E} \vec{D} \dif V\,\,\,\mathrm{(J)}
+
+Maxwell force:
+
+.. math::
+   \vec{F}_\mathrm{M} = \int_S \vec{S}_\mathrm{M} \dif S = \int_V \div \vec{S}_\mathrm{M} \dif V\,\,\,\mathrm{(N)}
 
 Current Field
 -------------
@@ -102,26 +104,49 @@ Current:
 
    I = \int_S J_\mathrm{n} \dif S = \int_S \sigma \frac{\partial \varphi}{\partial n} \dif S\,\,\,\mathrm{(A)}
 
-Magnetostatic Field
--------------------
+General Magnetic Field
+----------------------
 
-Magnetostatic field can be desribed by Poisson partial differential equation
-
-.. math::
-
-   \curl \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) = \vec{J}_\mathrm{ext},
-
-where $\mu$ is permeability of the material, $\vec{A} = ( A_z\,\mathrm{or}\,A_{\varphi} )$ is component of the magnetic vector potential, $\vec{B}_\mathrm{r}$ is remanent flux density and finally $J_\mathrm{ext} = ( \vec{J}_z\,\mathrm{or}\,J_{\varphi} )$ is component of source current density. Magnetic flux density is given by form
+General magnetic field can be desribed by partial differential equation
 
 .. math::
 
-   \vec{B} = \curl \vec{A}
+   \curl \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) + \sigma \vec{v} \times \curl \vec{A} + \sigma \frac{\partial \vec{A}}{\partial t} = \vec{J}_\mathrm{ext},
 
-and magnetic field is
+where $\mu$ is permeability of the material, $\vec{A} = ( A_z\,\mathrm{or}\,A_{\varphi} )$ is component of the magnetic vector potential, $\vec{B}_\mathrm{r}$ is remanent flux density, $\vec{v}$ is velocity, $\sigma$ is electric conductivity and finally $J_\mathrm{ext} = ( \vec{J}_z\,\mathrm{or}\,J_{\varphi} )$ is component of source current density. Magnetic flux density is given by form
 
 .. math::
 
-   \vec{H} = \frac{\vec{B}}{\mu}.
+   \vec{B} = \curl \vec{A},
+
+magnetic field is
+
+.. math::
+
+   \vec{H} = \frac{\vec{B}}{\mu},
+
+eddy current density is
+
+.. math::
+  
+   J_\mathrm{trans} = \sigma \frac{\partial \vec{A}}{\partial t},
+
+velocity current density is 
+
+.. math::
+  
+   J_\mathrm{vel} = \sigma \vec{v} \times \vec{B} = \sigma \vec{v} \times \curl \vec{A},
+
+and total current density is
+
+.. math::
+
+   J_\mathrm{tot} = J_\mathrm{ext} + J_\mathrm{trans} + J_\mathrm{vel}.
+
+Maxwell stress tensor:
+
+.. math::
+   \vec{S}_\mathrm{M} = \vec{H} \otimes \vec{B} - \frac{1}{2} \vec{H} \vec{B} \cdot \delta
 
 Boundary conditions
 ^^^^^^^^^^^^^^^^^^^
@@ -137,23 +162,58 @@ Boundary conditions
 Subdomain integrals
 ^^^^^^^^^^^^^^^^^^^
 
-Average magnetic field:
+External current:
 
 .. math::
 
-   H_\mathrm{avg} = \frac{1}{V} \int_V \sqrt{H_x^2 + H_y^2} \dif V\,\,\,\mathrm{(V/m)}
+   I_\mathrm{ext} = \int_V J_\mathrm{ext} \dif V\,\,\,\mathrm{(A)}
 
-Average flux density:
+Eddy current:
+
+.. math::
+  
+   I_\mathrm{trans} = \int_V J_\mathrm{trans} \dif V\,\,\,\mathrm{(A)}
+
+Velocity current:
 
 .. math::
 
-   B_\mathrm{avg} = \frac{1}{V} \int_V \sqrt{B_x^2 + B_y^2} \dif V\,\,\,\mathrm{(C/m^2)}
+   I_\mathrm{vel} = \int_V J_\mathrm{vel} \dif V\,\,\,\mathrm{(A)}
+
+Total current:
+
+.. math::
+
+   I_\mathrm{tot} = I_\mathrm{ext} + I_\mathrm{trans} + I_\mathrm{vel}
+
+Power losses:
+
+.. math::
+
+   P_\mathrm{j} = \int_V \frac{J_\mathrm{tot}^2}{\sigma} \dif V\,\,\,\mathrm{(W)}
 
 Energy:
 
 .. math::
 
    W_\mathrm{m} = \int_V \frac{1}{2} \vec{H} \vec{B} \dif V\,\,\,\mathrm{(J)}
+
+Lorentz force:
+
+.. math::
+
+   \vec{F} = \int_V J_\mathrm{tot} \times \vec{B} \dif V = \int_V J_\mathrm{tot} \times \curl \vec{A} \dif V\,\,\,\mathrm{(N)}
+
+Maxwell force:
+
+.. math::
+   \vec{F}_\mathrm{M} = \int_S \vec{S}_\mathrm{M} \dif S = \int_V \div \vec{S}_\mathrm{M} \dif V\,\,\,\mathrm{(N)}
+
+Torque (planar arrangement only):
+
+.. math::
+
+   T_\mathrm{z} = \int_V \vec{r} \times \vec{F} \dif V\,\,\,\mathrm{(Nm)}
 
 Harmonic Magnetic Field
 -----------------------
@@ -162,25 +222,37 @@ Harmonic magnetic field can be described by partial differential equation
 
 .. math::
 
-   \curl \frac{1}{\mu}\, \curl \vecfaz{A} + \mj \omega \sigma \vecfaz{A} = \vecfaz{J}_\mathrm{ext},
+   \curl \frac{1}{\mu}\, \left( \curl \vecfaz{A} - \vec{B}_\mathrm{r} \right) + \sigma \vec{v} \times \curl \vecfaz{A} + \mj \omega \sigma \vecfaz{A} = \vecfaz{J}_\mathrm{ext},
 
-where $\mu$ is permeability of the material, $\faz{A} = ( \faz{A}_z\,\mathrm{or}\,\faz{A}_{\varphi} )$ is component of the magnetic vector potential, $\omega = 2 \pi f$ is frequency, $\sigma$ is electric conductivity and finally $\faz{J}_\mathrm{ext} = ( \faz{J}_z\,\mathrm{or}\,\faz{J}_{\varphi} )$ is component of source current density. Magnetic flux density is given by form
-
-.. math::
-
-   \vecfaz{B} = \curl \vecfaz{A}
-
-and magnetic field is
+where $\mu$ is permeability of the material, $\faz{A} = ( \faz{A}_z\,\mathrm{or}\,\faz{A}_{\varphi} )$ is component of the magnetic vector potential, $\omega = 2 \pi f$ is frequency, $\sigma$ is electric conductivity, $\vec{v}$ is velocity and finally $\faz{J}_\mathrm{ext} = ( \faz{J}_z\,\mathrm{or}\,\faz{J}_{\varphi} )$ is component of source current density. Magnetic flux density is given by form
 
 .. math::
 
-   \vecfaz{H} = \frac{\vecfaz{B}}{\mu}.
+   \vecfaz{B} = \curl \vecfaz{A},
 
-Eddy current density is
+magnetic field is
 
 .. math::
 
-   \vecfaz{J}_\mathrm{eddy} = \mj \omega \sigma \vecfaz{A}.
+   \vecfaz{H} = \frac{\vecfaz{B}}{\mu},
+
+eddy current density is
+
+.. math::
+
+   \vecfaz{J}_\mathrm{trans} = \mj \omega \sigma \vecfaz{A},
+
+velocity current density is 
+
+.. math::
+  
+   \vecfaz{J}_\mathrm{vel} = \sigma \vec{v} \times \vecfaz{B} = \sigma \vec{v} \times \curl \vecfaz{A},
+
+and total current density is
+
+.. math::
+
+   \vecfaz{J}_\mathrm{tot} = \vecfaz{J}_\mathrm{ext} + \vecfaz{J}_\mathrm{trans} + \vecfaz{J}_\mathrm{vel}.
 
 Boundary conditions
 ^^^^^^^^^^^^^^^^^^^
@@ -196,29 +268,41 @@ Boundary conditions
 Subdomain integrals
 ^^^^^^^^^^^^^^^^^^^
 
+External current:
+
+.. math::
+
+   \faz{I}_\mathrm{ext} = \int_S \vecfaz{J}_\mathrm{ext} \dif S\,\,\,\mathrm{(A)}
+
 Eddy current:
 
 .. math::
 
-   \faz{I}_\mathrm{eddy} = \int_S \vecfaz{J}_\mathrm{eddy} \dif S\,\,\,\mathrm{(A)}
+   \faz{I}_\mathrm{trans} = \int_S \vecfaz{J}_\mathrm{trans} \dif S\,\,\,\mathrm{(A)}
+
+Velocity current:
+
+.. math::
+
+   \faz{I}_\mathrm{vel} = \int_S \vecfaz{J}_\mathrm{vel} \dif S\,\,\,\mathrm{(A)}
 
 Total current: 
 
 .. math::
 
-   \faz{I}_\mathrm{total} = \int_S \vecfaz{J}_\mathrm{eddy} + \vecfaz{J}_\mathrm{ext} \dif S\,\,\,\mathrm{(A/m)}
+   \faz{I}_\mathrm{tot} = \faz{I}_\mathrm{ext} + \faz{I}_\mathrm{trans} + \faz{I}_\mathrm{vel}
 
 Power losses:
 
 .. math::
 
-   P = \int_V \frac{\left( \vecfaz{J}_\mathrm{total} \cdot \vecfaz{J}_\mathrm{total}^* \right)}{\sigma} \dif V\,\,\,\mathrm{(W)}
+   P = \int_V \frac{\left( \vecfaz{J}_\mathrm{tot} \cdot \vecfaz{J}_\mathrm{tot}^* \right)}{\sigma} \dif V\,\,\,\mathrm{(W)}
 
 Lorentz force:
 
 .. math::
 
-   F_\mathrm{L} = \int_V \vecfaz{J} \times \vecfaz{B} \dif V\,\,\,\mathrm{(N)}
+   F_\mathrm{L} = \int_V \vecfaz{J}_\mathrm{tot} \times \vecfaz{B} \dif V\,\,\,\mathrm{(N)}
 
 Average energy:
 
@@ -265,9 +349,17 @@ Boundary conditions
 Boundary integrals
 ^^^^^^^^^^^^^^^^^^
 
-Average temperature: $T_\mathrm{avg} = \frac{1}{S} \int_S T \dif S\,\,\,\mathrm{(deg.)}$
+Average temperature: 
 
-Heat flux: $F = \int_S \lambda \frac{\partial T}{\partial n} \dif S\,\,\,\mathrm{(W)}$
+.. math::
+
+   T_\mathrm{avg} = \frac{1}{S} \int_S T \dif S\,\,\,\mathrm{(deg.)}
+
+Heat flux:
+
+.. math::
+
+   F = \int_S \lambda \frac{\partial T}{\partial n} \dif S\,\,\,\mathrm{(W)}
 
 Subdomain integrals
 ^^^^^^^^^^^^^^^^^^^
@@ -277,16 +369,4 @@ Average temperature:
 .. math::
 
    T_\mathrm{avg} = \frac{1}{V} \int_V T \dif V\,\,\,\mathrm{(deg.)}
-
-Average heat flux:
-
-.. math::
-
-   F_\mathrm{avg} = \frac{1}{V} \int_V \sqrt{F_x^2 + F_y^2} \dif V\,\,\,\mathrm{(W)}
-
-Average temperature gradient:
-
-.. math::
-
-   G_\mathrm{avg} = \frac{1}{V} \int_V \sqrt{G_x^2 + G_y^2} \dif V\,\,\,\mathrm{(Km)}
 
