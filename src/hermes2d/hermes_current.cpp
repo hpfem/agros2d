@@ -369,7 +369,7 @@ void HermesCurrent::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceInte
     currentNode->setText(0, tr("Current Field"));
     currentNode->setExpanded(true);
 
-    addTreeWidgetItemValue(currentNode, tr("Current:"), tr("%1").arg(surfaceIntegralValueCurrent->currentDensity, 0, 'e', 3), tr("A"));
+    addTreeWidgetItemValue(currentNode, tr("Current:"), QString("%1").arg(surfaceIntegralValueCurrent->currentDensity, 0, 'e', 3), tr("A"));
 }
 
 void HermesCurrent::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)

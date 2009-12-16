@@ -105,6 +105,7 @@ void initLists()
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM, "magnetic_power_losses_transform");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY, "magnetic_power_losses_velocity");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL, "magnetic_total_power_losses");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE, "magnetic_lorentz_force");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY, "magnetic_energy_density");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY, "magnetic_permeability");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY, "magnetic_conductivity");

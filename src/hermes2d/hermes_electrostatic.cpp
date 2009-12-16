@@ -352,7 +352,7 @@ void HermesElectrostatic::showSurfaceIntegralValue(QTreeWidget *trvWidget, Surfa
     electrostaticNode->setText(0, tr("Electrostatic Field"));
     electrostaticNode->setExpanded(true);
 
-    addTreeWidgetItemValue(electrostaticNode, tr("Charge:"), tr("%1").arg(surfaceIntegralValueElectrostatic->surfaceCharge, 0, 'e', 3), tr("C"));
+    addTreeWidgetItemValue(electrostaticNode, tr("Charge:"), QString("%1").arg(surfaceIntegralValueElectrostatic->surfaceCharge, 0, 'e', 3), tr("C"));
 }
 
 void HermesElectrostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
@@ -364,13 +364,13 @@ void HermesElectrostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, Volume
     electrostaticNode->setText(0, tr("Electrostatic field"));
     electrostaticNode->setExpanded(true);
 
-    // addTreeWidgetItemValue(electrostaticNode, tr("Ex avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldX, 0, 'e', 3), tr("V/m"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("Ey avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldY, 0, 'e', 3), tr("V/m"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("E avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageElectricField, 0, 'e', 3), tr("V/m"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("Dx avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementX, 0, 'e', 3), tr("C/m2"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("Dy avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementY, 0, 'e', 3), tr("C/m2"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("D avg.:"), tr("%1").arg(volumeIntegralValueElectrostatic->averageDisplacement, 0, 'e', 3), tr("C/m2"));
-    addTreeWidgetItemValue(electrostaticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueElectrostatic->energy, 0, 'e', 3), tr("J"));
+    // addTreeWidgetItemValue(electrostaticNode, tr("Ex avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldX, 0, 'e', 3), tr("V/m"));
+    // addTreeWidgetItemValue(electrostaticNode, tr("Ey avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldY, 0, 'e', 3), tr("V/m"));
+    // addTreeWidgetItemValue(electrostaticNode, tr("E avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageElectricField, 0, 'e', 3), tr("V/m"));
+    // addTreeWidgetItemValue(electrostaticNode, tr("Dx avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementX, 0, 'e', 3), tr("C/m2"));
+    // addTreeWidgetItemValue(electrostaticNode, tr("Dy avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementY, 0, 'e', 3), tr("C/m2"));
+    // addTreeWidgetItemValue(electrostaticNode, tr("D avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageDisplacement, 0, 'e', 3), tr("C/m2"));
+    addTreeWidgetItemValue(electrostaticNode, tr("Energy:"), QString("%1").arg(volumeIntegralValueElectrostatic->energy, 0, 'e', 3), tr("J"));
 }
 
 QList<SolutionArray *> *HermesElectrostatic::solve(SolverDialog *solverDialog)

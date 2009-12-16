@@ -64,7 +64,7 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
     // store variable
     int timeStep = cmbFieldVariable->currentIndex();
-    if (timeStep == -1) timeStep = 0;
+    if (timeStep == -1) timeStep = Util::scene()->sceneSolution()->timeStepCount() - 1;
 
     // clear combo
     cmbFieldVariable->clear();

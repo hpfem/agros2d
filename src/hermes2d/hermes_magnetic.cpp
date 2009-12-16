@@ -85,8 +85,8 @@ Scalar magnetic_bilinear_form_real_real(int n, double *wt, Func<Real> *u, Func<R
 
     else
         return 1.0 / (magneticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
-               magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
-               ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / magneticTimeStep : 0.0);
+                magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
+                ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / magneticTimeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
@@ -151,10 +151,11 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
     magneticPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
 
     magneticAnalysisType = Util::scene()->problemInfo()->analysisType;
-    magneticFrequency = (magneticAnalysisType == ANALYSISTYPE_HARMONIC) ? Util::scene()->problemInfo()->frequency : 0.0;
     magneticTimeStep = Util::scene()->problemInfo()->timeStep;
     magneticTimeTotal = Util::scene()->problemInfo()->timeTotal;
     magneticInitialCondition = Util::scene()->problemInfo()->initialCondition;
+
+    magneticFrequency = (magneticAnalysisType == ANALYSISTYPE_HARMONIC) ? Util::scene()->problemInfo()->frequency : 0.0;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -291,18 +292,15 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
             sln->set_const(&mesh, magneticInitialCondition);
 
             // zero time
-            /*
             SolutionArray *solutionArray = new SolutionArray();
-            solutionArray->order1 = new Orderizer();
-            solutionArray->order1->process_solution(&space);
-            solutionArray->sln1 = new Solution();
-            solutionArray->sln1->copy(sln);
+            solutionArray->order = new Orderizer();
+            solutionArray->sln = new Solution();
+            solutionArray->sln->copy(sln);
             solutionArray->adaptiveError = 0.0;
-            solutionArray->adaptiveSteps = 0;
+            solutionArray->adaptiveSteps = 0.0;
             solutionArray->time = 0.0;
 
             solutionArrayList->append(solutionArray);
-            */
         }
         Solution rsln;
 
@@ -593,26 +591,6 @@ SceneLabelMarker *HermesMagnetic::newLabelMarker(PyObject *self, PyObject *args)
 
 void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
-    // steady state
-    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL);
-        // cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY);
-        // cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY), PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY), PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE);
-    }
-
     // harmonic
     if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
     {
@@ -640,6 +618,29 @@ void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE), PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY), PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY), PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE);
+    }
+
+    // steady state and transient
+    if (magneticAnalysisType == ANALYSISTYPE_STEADYSTATE || magneticAnalysisType == ANALYSISTYPE_TRANSIENT)
+    {
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_REAL);
+        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL);
+        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE), PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY), PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY), PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY);
@@ -651,21 +652,21 @@ void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 
 void HermesMagnetic::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 {
-    // steady state
-    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
-    }
-
     // harmonic
     if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_IMAG), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_IMAG);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_IMAG), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_IMAG);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE), PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
+    }
+
+    // steady state and transient
+    if (magneticAnalysisType == ANALYSISTYPE_STEADYSTATE || magneticAnalysisType == ANALYSISTYPE_TRANSIENT)
+    {
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE), PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
     }
 }
@@ -880,69 +881,74 @@ void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
         itemCurrentInducedExternal->setText(0, tr("External current"));
         itemCurrentInducedExternal->setExpanded(true);
 
-        addTreeWidgetItemValue(itemCurrentInducedExternal, tr("real:"), tr("%1").arg(volumeIntegralValueMagnetic->currentReal, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemCurrentInducedExternal, tr("imag:"), tr("%1").arg(volumeIntegralValueMagnetic->currentImag, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemCurrentInducedExternal, tr("magnitude:"), tr("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentReal) + sqr(volumeIntegralValueMagnetic->currentImag)), 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedExternal, tr("real:"), QString("%1").arg(volumeIntegralValueMagnetic->currentReal, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedExternal, tr("imag:"), QString("%1").arg(volumeIntegralValueMagnetic->currentImag, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedExternal, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentReal) + sqr(volumeIntegralValueMagnetic->currentImag)), 0, 'e', 3), "A");
 
         // transform induced current
         QTreeWidgetItem *itemCurrentInducedTransform = new QTreeWidgetItem(magneticNode);
         itemCurrentInducedTransform->setText(0, tr("Transform induced current"));
         itemCurrentInducedTransform->setExpanded(true);
 
-        addTreeWidgetItemValue(itemCurrentInducedTransform, tr("real:"), tr("%1").arg(volumeIntegralValueMagnetic->currentInducedTransformReal, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemCurrentInducedTransform, tr("imag:"), tr("%1").arg(volumeIntegralValueMagnetic->currentInducedTransformImag, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemCurrentInducedTransform, tr("magnitude:"), tr("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentInducedTransformReal) + sqr(volumeIntegralValueMagnetic->currentInducedTransformImag)), 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedTransform, tr("real:"), QString("%1").arg(volumeIntegralValueMagnetic->currentInducedTransformReal, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedTransform, tr("imag:"), QString("%1").arg(volumeIntegralValueMagnetic->currentInducedTransformImag, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedTransform, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentInducedTransformReal) + sqr(volumeIntegralValueMagnetic->currentInducedTransformImag)), 0, 'e', 3), "A");
 
         // velocity induced current
         QTreeWidgetItem *itemCurrentInducedVelocity = new QTreeWidgetItem(magneticNode);
         itemCurrentInducedVelocity->setText(0, tr("Velocity induced current"));
         itemCurrentInducedVelocity->setExpanded(true);
 
-        addTreeWidgetItemValue(itemCurrentInducedVelocity, tr("real:"), tr("%1").arg(volumeIntegralValueMagnetic->currentInducedVelocityReal, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemCurrentInducedVelocity, tr("imag:"), tr("%1").arg(volumeIntegralValueMagnetic->currentInducedVelocityImag, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemCurrentInducedVelocity, tr("magnitude:"), tr("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentInducedVelocityReal) + sqr(volumeIntegralValueMagnetic->currentInducedVelocityImag)), 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedVelocity, tr("real:"), QString("%1").arg(volumeIntegralValueMagnetic->currentInducedVelocityReal, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedVelocity, tr("imag:"), QString("%1").arg(volumeIntegralValueMagnetic->currentInducedVelocityImag, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentInducedVelocity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentInducedVelocityReal) + sqr(volumeIntegralValueMagnetic->currentInducedVelocityImag)), 0, 'e', 3), "A");
 
         // total current
         QTreeWidgetItem *itemCurrentTotal = new QTreeWidgetItem(magneticNode);
         itemCurrentTotal->setText(0, tr("Total current"));
         itemCurrentTotal->setExpanded(true);
 
-        addTreeWidgetItemValue(itemCurrentTotal, tr("real:"), tr("%1").arg(volumeIntegralValueMagnetic->currentTotalReal, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemCurrentTotal, tr("imag:"), tr("%1").arg(volumeIntegralValueMagnetic->currentTotalImag, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemCurrentTotal, tr("magnitude:"), tr("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentTotalReal) + sqr(volumeIntegralValueMagnetic->currentTotalImag)), 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentTotal, tr("real:"), QString("%1").arg(volumeIntegralValueMagnetic->currentTotalReal, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentTotal, tr("imag:"), QString("%1").arg(volumeIntegralValueMagnetic->currentTotalImag, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemCurrentTotal, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentTotalReal) + sqr(volumeIntegralValueMagnetic->currentTotalImag)), 0, 'e', 3), "A");
 
         // Power losses
         QTreeWidgetItem *itemPowerLosses = new QTreeWidgetItem(magneticNode);
         itemPowerLosses->setText(0, tr("Power losses"));
         itemPowerLosses->setExpanded(true);
 
-        addTreeWidgetItemValue(itemPowerLosses, tr("transform avg.:"), tr("%1").arg(volumeIntegralValueMagnetic->powerLossesTransform, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemPowerLosses, tr("velocity:"), tr("%1").arg(volumeIntegralValueMagnetic->powerLossesVelocity, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemPowerLosses, tr("total:"), tr("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->powerLosses)), 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemPowerLosses, tr("transform avg.:"), QString("%1").arg(volumeIntegralValueMagnetic->powerLossesTransform, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemPowerLosses, tr("velocity:"), QString("%1").arg(volumeIntegralValueMagnetic->powerLossesVelocity, 0, 'e', 3), "A");
+        addTreeWidgetItemValue(itemPowerLosses, tr("total:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->powerLosses)), 0, 'e', 3), "A");
 
-        addTreeWidgetItemValue(magneticNode, tr("Energy avg.:"), tr("%1").arg(volumeIntegralValueMagnetic->energy, 0, 'e', 3), tr("J"));
+        addTreeWidgetItemValue(magneticNode, tr("Energy avg.:"), QString("%1").arg(volumeIntegralValueMagnetic->energy, 0, 'e', 3), tr("J"));
 
         // force
         QTreeWidgetItem *itemForce = new QTreeWidgetItem(magneticNode);
         itemForce->setText(0, tr("Lorentz force avg."));
         itemForce->setExpanded(true);
 
-        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), tr("%1").arg(-volumeIntegralValueMagnetic->forceXReal/2.0, 0, 'e', 3), "N");
-        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), tr("%1").arg(-volumeIntegralValueMagnetic->forceYReal/2.0, 0, 'e', 3), "N");
+        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), QString("%1").arg(-volumeIntegralValueMagnetic->forceLorentzXReal/2.0, 0, 'e', 3), "N");
+        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), QString("%1").arg(-volumeIntegralValueMagnetic->forceLorentzYReal/2.0, 0, 'e', 3), "N");
 
-        addTreeWidgetItemValue(magneticNode, tr("Torque - real:"), tr("%1").arg(volumeIntegralValueMagnetic->torqueReal, 0, 'e', 3), tr("Nm"));
-        addTreeWidgetItemValue(magneticNode, tr("Torque - imag:"), tr("%1").arg(volumeIntegralValueMagnetic->torqueImag, 0, 'e', 3), tr("Nm"));
+        addTreeWidgetItemValue(magneticNode, tr("Torque:"), QString("%1").arg(volumeIntegralValueMagnetic->torqueReal, 0, 'e', 3), tr("Nm"));
     }
     else
     {
-        addTreeWidgetItemValue(magneticNode, tr("External current:"), tr("%1").arg(volumeIntegralValueMagnetic->currentReal, 0, 'e', 3), tr("A"));
-        addTreeWidgetItemValue(magneticNode, tr("Velocity current:"), tr("%1").arg(volumeIntegralValueMagnetic->currentInducedVelocityReal, 0, 'e', 3), tr("A"));
-        addTreeWidgetItemValue(magneticNode, tr("Total current:"), tr("%1").arg(volumeIntegralValueMagnetic->currentTotalReal, 0, 'e', 3), tr("A"));
-        addTreeWidgetItemValue(magneticNode, tr("Losses:"), tr("%1").arg(volumeIntegralValueMagnetic->powerLossesVelocity, 0, 'e', 3), tr("W"));
-        addTreeWidgetItemValue(magneticNode, tr("Energy:"), tr("%1").arg(volumeIntegralValueMagnetic->energy, 0, 'e', 3), tr("J"));
-        addTreeWidgetItemValue(magneticNode, tr("Fx:"), tr("%1").arg(volumeIntegralValueMagnetic->forceXReal, 0, 'e', 3), tr("N"));
-        addTreeWidgetItemValue(magneticNode, tr("Fy:"), tr("%1").arg(volumeIntegralValueMagnetic->forceYReal, 0, 'e', 3), tr("N"));
-        addTreeWidgetItemValue(magneticNode, tr("Torque:"), tr("%1").arg(volumeIntegralValueMagnetic->torqueReal, 0, 'e', 3), tr("Nm"));
+        addTreeWidgetItemValue(magneticNode, tr("External current:"), QString("%1").arg(volumeIntegralValueMagnetic->currentReal, 0, 'e', 3), tr("A"));
+        addTreeWidgetItemValue(magneticNode, tr("Velocity current:"), QString("%1").arg(volumeIntegralValueMagnetic->currentInducedVelocityReal, 0, 'e', 3), tr("A"));
+        addTreeWidgetItemValue(magneticNode, tr("Total current:"), QString("%1").arg(volumeIntegralValueMagnetic->currentTotalReal, 0, 'e', 3), tr("A"));
+        addTreeWidgetItemValue(magneticNode, tr("Losses:"), QString("%1").arg(volumeIntegralValueMagnetic->powerLossesVelocity, 0, 'e', 3), tr("W"));
+        addTreeWidgetItemValue(magneticNode, tr("Energy:"), QString("%1").arg(volumeIntegralValueMagnetic->energy, 0, 'e', 3), tr("J"));
+
+        QTreeWidgetItem *itemForce = new QTreeWidgetItem(magneticNode);
+        itemForce->setText(0, tr("Force"));
+        itemForce->setExpanded(true);
+
+        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), QString("%1").arg(volumeIntegralValueMagnetic->forceLorentzXReal + volumeIntegralValueMagnetic->forceMaxwellX, 0, 'e', 3), tr("N"));
+        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), QString("%1").arg(volumeIntegralValueMagnetic->forceLorentzYReal + volumeIntegralValueMagnetic->forceMaxwellY, 0, 'e', 3), tr("N"));
+
+        addTreeWidgetItemValue(magneticNode, tr("Torque:"), QString("%1").arg(volumeIntegralValueMagnetic->torqueReal, 0, 'e', 3), tr("Nm"));
     }
 }
 
@@ -1136,9 +1142,9 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue
 
             // power losses
             pj_transform = (marker->conductivity.number > 0.0) ?
-                      0.5 / marker->conductivity.number * (sqr(current_density_induced_transform_real) + sqr(current_density_induced_transform_imag)) : 0.0;
+                           0.5 / marker->conductivity.number * (sqr(current_density_induced_transform_real) + sqr(current_density_induced_transform_imag)) : 0.0;
             pj_velocity = (marker->conductivity.number > 0.0) ?
-                      0.5 / marker->conductivity.number * (sqr(current_density_induced_velocity_real) + sqr(current_density_induced_velocity_imag)) : 0.0;
+                          0.5 / marker->conductivity.number * (sqr(current_density_induced_velocity_real) + sqr(current_density_induced_velocity_imag)) : 0.0;
 
             pj_total = pj_transform + pj_velocity;
 
@@ -1448,10 +1454,12 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
         powerLossesTransform = 0;
         powerLossesVelocity = 0;
         energy = 0;
-        forceXReal = 0;
-        forceXImag = 0;
-        forceYReal = 0;
-        forceYImag = 0;
+        forceMaxwellX = 0;
+        forceMaxwellY = 0;
+        forceLorentzXReal = 0;
+        forceLorentzXImag = 0;
+        forceLorentzYReal = 0;
+        forceLorentzYImag = 0;
         torqueReal = 0;
         torqueImag = 0;
 
@@ -1459,19 +1467,6 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
         {
             if (Util::scene()->labels[i]->isSelected)
             {
-                if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
-                {
-                    currentReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_CURRENT_DENSITY_REAL);
-                    // currentInducedTransformReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL);
-                    currentInducedVelocityReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL);
-                    // powerLossesTransform += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_TRANSFORM);
-                    powerLossesVelocity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_VELOCITY);
-                    energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_ENERGY_DENSITY);
-                    forceXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_REAL);
-                    forceYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_REAL);
-                    torqueReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE_REAL);
-                }
-
                 if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
                 {
                     currentReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_CURRENT_DENSITY_REAL);
@@ -1483,12 +1478,32 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
                     powerLossesTransform += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_TRANSFORM);
                     powerLossesVelocity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_VELOCITY);
                     energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_ENERGY_DENSITY);
-                    forceXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_REAL);
-                    forceXImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_IMAG);
-                    forceYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_REAL);
-                    forceYImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_IMAG);
+                    forceMaxwellX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_X_REAL);
+                    forceMaxwellY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_Y_REAL);
+                    forceLorentzXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_REAL);
+                    forceLorentzXImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_IMAG);
+                    forceLorentzYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_REAL);
+                    forceLorentzYImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_IMAG);
                     torqueReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE_REAL);
                     torqueImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE_IMAG);
+                }
+                if ((Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE) || (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT))
+                {
+                    currentReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_CURRENT_DENSITY_REAL);
+                    currentInducedVelocityReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL);
+                    powerLossesVelocity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_VELOCITY);
+                    energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_ENERGY_DENSITY);
+                    forceMaxwellX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_X_REAL);
+                    forceMaxwellY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_Y_REAL);
+                    forceLorentzXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_REAL);
+                    forceLorentzYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_REAL);
+                    torqueReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE_REAL);
+                }
+
+                if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
+                {
+                // currentInducedTransformReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_CURRENT_DENSITY_INDUCED_REAL);
+                // powerLossesTransform += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_TRANSFORM);
                 }
             }
         }
@@ -1515,10 +1530,10 @@ QStringList VolumeIntegralValueMagnetic::variables()
             QString("%1").arg(currentInducedVelocityImag, 0, 'e', 5) <<
             QString("%1").arg(currentTotalReal, 0, 'e', 5) <<
             QString("%1").arg(currentTotalImag, 0, 'e', 5) <<
-            QString("%1").arg(forceXReal, 0, 'e', 5) <<
-            QString("%1").arg(forceXImag, 0, 'e', 5) <<
-            QString("%1").arg(forceYReal, 0, 'e', 5) <<
-            QString("%1").arg(forceYImag, 0, 'e', 5) <<
+            QString("%1").arg(forceLorentzXReal, 0, 'e', 5) <<
+            QString("%1").arg(forceLorentzXImag, 0, 'e', 5) <<
+            QString("%1").arg(forceLorentzYReal, 0, 'e', 5) <<
+            QString("%1").arg(forceLorentzYImag, 0, 'e', 5) <<
             QString("%1").arg(torqueReal, 0, 'e', 5) <<
             QString("%1").arg(torqueImag, 0, 'e', 5) <<
             QString("%1").arg(powerLossesTransform, 0, 'e', 5) <<
@@ -1604,8 +1619,8 @@ QMap<QString, QString> SceneLabelMagneticMarker::data()
     out["Conductivity (S/m)"] = conductivity.text;
     out["Remanence (T)"] = remanence.text;
     out["Remanence angle (-)"] = remanence_angle.text;
-    out["Velocity x (m/s)"] = conductivity.text;
-    out["Velocity y (m/s)"] = conductivity.text;
+    out["Velocity x (m/s)"] = velocity_x.text;
+    out["Velocity y (m/s)"] = velocity_y.text;
     out["Angular velocity (m/s)"] = velocity_angular.text;
     return QMap<QString, QString>(out);
 }

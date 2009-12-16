@@ -822,8 +822,9 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    // ErrorResult result = Util::scene()->readFromFile("data/pokus.a2d");
-    ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/tmp_pipe.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/pokus.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");
@@ -832,7 +833,7 @@ void MainWindow::doPaste()
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_axisymmetric_actuator.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar_magnet.a2d");
+    ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar_magnet.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar_rotating_heating.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_circle_conductor.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_profile_conductor.a2d");

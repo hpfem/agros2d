@@ -42,6 +42,7 @@ HeatEdge *heatEdge;
 HeatLabel *heatLabel;
 bool heatPlanar;
 bool heatTransient;
+double heatInitialCondition;
 double heatTimeStep;
 double heatTimeTotal;
 
@@ -130,15 +131,18 @@ Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData
 
 QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
 {
-    heatPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
-    heatTransient = (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
-    heatTimeStep = Util::scene()->problemInfo()->timeStep;
-    heatTimeTotal = Util::scene()->problemInfo()->timeTotal;
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
     int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
     double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+
+    heatPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+
+    heatTransient = (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
+    heatTimeStep = Util::scene()->problemInfo()->timeStep;
+    heatTimeTotal = Util::scene()->problemInfo()->timeTotal;
+    heatInitialCondition = Util::scene()->problemInfo()->initialCondition;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -169,21 +173,18 @@ QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
     Solution *sln = new Solution();
     if (heatTransient)
     {
-        sln->set_const(&mesh, 20);
+        sln->set_const(&mesh, heatInitialCondition);
 
         // zero time
-        /*
         SolutionArray *solutionArray = new SolutionArray();
-        solutionArray->order1 = new Orderizer();
-        solutionArray->order1->process_solution(&space);
-        solutionArray->sln1 = new Solution();
-        solutionArray->sln1->copy(sln);
+        solutionArray->order = new Orderizer();
+        solutionArray->sln = new Solution();
+        solutionArray->sln->copy(sln);
         solutionArray->adaptiveError = 0.0;
-        solutionArray->adaptiveSteps = 0;
+        solutionArray->adaptiveSteps = 0.0;
         solutionArray->time = 0.0;
 
         solutionArrayList->append(solutionArray);
-        */
     }
     Solution rsln;
 
@@ -485,9 +486,9 @@ void HermesHeat::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegra
     heatNode->setText(0, tr("Heat Transfer"));
     heatNode->setExpanded(true);
 
-    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), tr("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("C"));
-    addTreeWidgetItemValue(heatNode, tr("Temperature dif.:"), tr("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("C"));
-    addTreeWidgetItemValue(heatNode, tr("Heat flux:"), tr("%1").arg(surfaceIntegralValueHeat->heatFlux, 0, 'e', 3), tr("W"));
+    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("C"));
+    addTreeWidgetItemValue(heatNode, tr("Temperature dif.:"), QString("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("C"));
+    addTreeWidgetItemValue(heatNode, tr("Heat flux:"), QString("%1").arg(surfaceIntegralValueHeat->heatFlux, 0, 'e', 3), tr("W"));
 }
 
 void HermesHeat::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
@@ -499,13 +500,13 @@ void HermesHeat::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralV
     heatNode->setText(0, tr("Heat transfer"));
     heatNode->setExpanded(true);
 
-    addTreeWidgetItemValue(heatNode, tr("Temperature:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
-    // addTreeWidgetItemValue(heatNode, tr("Gx avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientX, 0, 'e', 3), tr("K.m"));
-    // addTreeWidgetItemValue(heatNode, tr("Gy avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientY, 0, 'e', 3), tr("K.m"));
-    // addTreeWidgetItemValue(heatNode, tr("G avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageTemperatureGradient, 0, 'e', 3), tr("K.m"));
-    // addTreeWidgetItemValue(heatNode, tr("Fx avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageHeatFluxX, 0, 'e', 3), tr("W"));
-    // addTreeWidgetItemValue(heatNode, tr("Fy avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageHeatFluxY, 0, 'e', 3), tr("W"));
-    // addTreeWidgetItemValue(heatNode, tr("F avg.:"), tr("%1").arg(volumeIntegralValueHeat->averageHeatFlux, 0, 'e', 3), tr("W"));
+    addTreeWidgetItemValue(heatNode, tr("Temperature:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
+    // addTreeWidgetItemValue(heatNode, tr("Gx avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientX, 0, 'e', 3), tr("K.m"));
+    // addTreeWidgetItemValue(heatNode, tr("Gy avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientY, 0, 'e', 3), tr("K.m"));
+    // addTreeWidgetItemValue(heatNode, tr("G avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradient, 0, 'e', 3), tr("K.m"));
+    // addTreeWidgetItemValue(heatNode, tr("Fx avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageHeatFluxX, 0, 'e', 3), tr("W"));
+    // addTreeWidgetItemValue(heatNode, tr("Fy avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageHeatFluxY, 0, 'e', 3), tr("W"));
+    // addTreeWidgetItemValue(heatNode, tr("F avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageHeatFlux, 0, 'e', 3), tr("W"));
 }
 
 QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)

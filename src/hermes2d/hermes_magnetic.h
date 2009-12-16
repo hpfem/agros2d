@@ -75,7 +75,8 @@ public:
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY); }
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -152,10 +153,12 @@ public:
     double currentInducedVelocityImag;
     double currentTotalReal;
     double currentTotalImag;
-    double forceXReal;
-    double forceXImag;
-    double forceYReal;
-    double forceYImag;
+    double forceMaxwellX;
+    double forceMaxwellY;
+    double forceLorentzXReal;
+    double forceLorentzXImag;
+    double forceLorentzYReal;
+    double forceLorentzYImag;
     double powerLossesTransform;
     double powerLossesVelocity;
     double powerLosses;

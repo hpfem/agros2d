@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="transient" adaptivitysteps="1" polynomialorder="2" problemtype="planar" timetotal="25000" type="heat" timestep="700" id="0" name="Transient" initialcondition="20" >
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="transient" adaptivitysteps="1" polynomialorder="2" problemtype="planar" timetotal="25000" type="heat" timestep="700" id="0" name="Transient" initialcondition="10" >
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
