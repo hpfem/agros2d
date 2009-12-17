@@ -78,7 +78,8 @@ private:
 
     // grid
     QLineEdit *txtGridStep;
-
+    // snap to grid
+    QCheckBox *chkSnapToGrid;
     // rulers
     QCheckBox *chkRulers;
 
@@ -98,7 +99,7 @@ private:
     QCheckBox *chkDeleteHermes2DMeshFile;
 
     // clear command history
-    QPushButton *cmdClearCommandHistory;
+    QPushButton *cmdClearCommandHistory;   
 
     // show result in line edit value widget
     QCheckBox *chkLineEditValueShowResult;

@@ -79,6 +79,8 @@ void SceneViewSettings::load()
     gridStep = settings.value("SceneViewSettings/GridStep", 0.05).value<double>();
     // rulers
     showRulers = settings.value("SceneViewSettings/ShowRulers", false).value<bool>();
+    // snap to grid
+    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", false).value<bool>();
 
     // countour
     contoursCount = settings.value("SceneViewSettings/ContoursCount", 15).value<int>();
@@ -119,6 +121,8 @@ void SceneViewSettings::save()
     settings.setValue("SceneViewSettings/GridStep", gridStep);
     // rulers
     settings.setValue("SceneViewSettings/ShowRulers", showRulers);
+    // snap to grid
+    settings.setValue("SceneViewSettings/SnapToGrid", snapToGrid);
 
     // countour
     settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
@@ -404,6 +408,7 @@ void SceneView::paintGL()
     if (m_sceneViewSettings.showRulers) paintRulers();
 
     paintZoomRegion();
+    paintSnapToGrid();
     paintChartLine();
     paintSceneModeLabel();
 }
@@ -1303,7 +1308,7 @@ void SceneView::paintSceneModeLabel()
 void SceneView::paintZoomRegion()
 {
     // zoom or select region
-    if (!m_regionPos.isNull())
+    if (region)
     {
         Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
         Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
@@ -1320,6 +1325,24 @@ void SceneView::paintZoomRegion()
         glVertex2d(posStart.x, posEnd.y);
         glEnd();
         glDisable(GL_BLEND);
+    }
+}
+
+void SceneView::paintSnapToGrid()
+{
+    if (snapToGrid)
+    {
+        Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+
+        Point snapPoint;
+        snapPoint.x = round(p.x / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+        snapPoint.y = round(p.y / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+
+        glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
+        glPointSize(m_sceneViewSettings.geometryNodeSize - 1.0);
+        glBegin(GL_POINTS);
+        glVertex2d(snapPoint.x, snapPoint.y);
+        glEnd();
     }
 }
 
@@ -1515,6 +1538,10 @@ void SceneView::keyPressEvent(QKeyEvent *event)
         QGLWidget::keyPressEvent(event);
     }
 
+    // snap to grid
+    if ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier))
+        snapToGrid = true;
+
     // select all
     if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))
     {
@@ -1550,6 +1577,15 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void SceneView::keyReleaseEvent(QKeyEvent *event)
+{
+    if (snapToGrid)
+    {
+        snapToGrid = false;
+        updateGL();
+    }
+}
+
 void SceneView::mousePressEvent(QMouseEvent *event)
 {
     m_lastPos = event->pos();
@@ -1563,6 +1599,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             m_regionPos = m_lastPos;
             actSceneZoomRegion->setChecked(false);
             actSceneZoomRegion->setData(true);
+            region = true;
+
             return;
         }
 
@@ -1572,6 +1610,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             m_regionPos = m_lastPos;
             actSceneViewSelectRegion->setChecked(false);
             actSceneViewSelectRegion->setData(true);
+            region = true;
+
             return;
         }
 
@@ -1615,7 +1655,21 @@ void SceneView::mousePressEvent(QMouseEvent *event)
         // add node directly by mouse click
         if (m_sceneMode == SCENEMODE_OPERATE_ON_NODES)
         {
-            SceneNode *node = new SceneNode(p);
+            Point pointNode;
+            // snap to grid
+            if (snapToGrid)
+            {
+                Point snapPoint = position(Point(m_lastPos.x(), m_lastPos.y()));
+
+                pointNode.x = round(snapPoint.x / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+                pointNode.y = round(snapPoint.y / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+            }
+            else
+            {
+                pointNode = p;
+            }
+
+            SceneNode *node = new SceneNode(pointNode);
             SceneNode *nodeAdded = Util::scene()->addNode(node);
             if (nodeAdded == node) Util::scene()->undoStack()->push(new SceneNodeCommandAdd(node->point));
             updateGL();
@@ -1766,7 +1820,7 @@ void SceneView::mouseReleaseEvent(QMouseEvent *event)
     actSceneZoomRegion->setChecked(false);
     actSceneViewSelectRegion->setChecked(false);
 
-    if (!m_regionPos.isNull())
+    if (region)
     {
         Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
         Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
@@ -1778,13 +1832,11 @@ void SceneView::mouseReleaseEvent(QMouseEvent *event)
 
         actSceneZoomRegion->setData(false);
         actSceneViewSelectRegion->setData(false);
+    }    
 
-        m_regionPos.setX(NULL);
-        m_regionPos.setY(NULL);
+    region = false;
 
-        updateGL();
-    }
-
+    updateGL();
 }
 
 void SceneView::mouseMoveEvent(QMouseEvent *event)
@@ -1799,11 +1851,12 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     setToolTip("");
 
     // zoom or select region
-    if (event->buttons() & Qt::LeftButton)
-    {
-        if (!m_regionPos.isNull())
-            updateGL();
-    }
+    if (region)
+        updateGL();
+
+    // snap to grid
+    if (snapToGrid)
+        updateGL();
 
     // pan
     if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
@@ -1842,6 +1895,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
         }
     }
 
+    // hints
     if (event->modifiers() == 0)
     {
         // highlight scene objects
@@ -1893,7 +1947,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                            arg(label->marker->html()));
                 updateGL();
             }
-        }
+        }        
     }
 
     if (event->modifiers() & Qt::ControlModifier)
@@ -2017,6 +2071,9 @@ void SceneView::doSetChartLine(const Point &start, const Point &end)
 
 void SceneView::doDefaults()
 {
+    snapToGrid = false;
+    region = false;
+
     m_scale = 1.0;
     m_offset.x = 0.0;
     m_offset.y = 0.0;

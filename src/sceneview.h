@@ -59,6 +59,7 @@ public:
 
     // grid
     double gridStep;
+    bool snapToGrid;
 
     // contour
     int contoursCount;
@@ -173,6 +174,7 @@ protected:
     void setupViewport(int w, int h);
     
     void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
@@ -203,6 +205,9 @@ private:
     SceneViewSettings m_sceneViewSettings;
 
     double m_texScale, m_texShift;
+
+    bool snapToGrid;
+    bool region;
 
     QMenu *mnuInfo;
 
@@ -242,6 +247,7 @@ private:
     void paintColorBar(double min, double max);
     void paintSceneModeLabel();
     void paintZoomRegion();
+    void paintSnapToGrid();
     void paintChartLine();
 
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
