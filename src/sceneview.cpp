@@ -1539,7 +1539,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     }
 
     // snap to grid
-    if ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier))
+    if ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SCENEMODE_OPERATE_ON_NODES))
         snapToGrid = true;
 
     // select all
@@ -1966,7 +1966,17 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
         }
     }
 
-    emit mouseMoved(QPointF(p.x, p.y));
+    if (snapToGrid)
+    {
+        Point snapPoint;
+        snapPoint.x = round(p.x / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+        snapPoint.y = round(p.y / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+        emit mouseMoved(QPointF(snapPoint.x, snapPoint.y));
+    }
+    else
+    {
+        emit mouseMoved(QPointF(p.x, p.y));
+    }
 }
 
 void SceneView::wheelEvent(QWheelEvent *event)
