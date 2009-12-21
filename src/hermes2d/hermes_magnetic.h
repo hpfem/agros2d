@@ -155,15 +155,15 @@ public:
     double currentTotalImag;
     double forceMaxwellX;
     double forceMaxwellY;
-    double forceLorentzXReal;
+    double forceLorentzX;
     double forceLorentzXImag;
-    double forceLorentzYReal;
+    double forceLorentzY;
     double forceLorentzYImag;
     double powerLossesTransform;
     double powerLossesVelocity;
     double powerLosses;
     double energy;
-    double torqueReal;
+    double torque;
     double torqueImag;
 
     VolumeIntegralValueMagnetic();

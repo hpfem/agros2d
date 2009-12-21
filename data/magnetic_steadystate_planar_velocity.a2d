@@ -9,7 +9,7 @@
             <labels>
                 <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0" />
                 <label current_density_real="0" remanence="1.28" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="-90" id="2" name="Magnet" current_density_imag="0" permeability="1.11" velocity_angular="0" />
-                <label current_density_real="0" remanence="0" conductivity="33e6" velocity_x="2" velocity_y="0" remanence_angle="0" id="3" name="Al" current_density_imag="0" permeability="1" velocity_angular="0" />
+                <label current_density_real="0" remanence="0" conductivity="33e6" velocity_x="5" velocity_y="0" remanence_angle="0" id="3" name="Al" current_density_imag="0" permeability="1" velocity_angular="0" />
             </labels>
         </problem>
     </problems>

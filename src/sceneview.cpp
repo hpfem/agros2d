@@ -1539,8 +1539,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     }
 
     // snap to grid
-    if ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SCENEMODE_OPERATE_ON_NODES))
-        snapToGrid = true;
+    snapToGrid = ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SCENEMODE_OPERATE_ON_NODES));
 
     // select all
     if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))

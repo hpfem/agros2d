@@ -24,7 +24,7 @@ zoombestfit()
 solve()
 
 # point value
-point = pointresult(0.213175,0.25045)
+point = pointresult(0.213175, 0.25045)
 testPotential = abs(abs(point["V"]) - 7.285427) < 1e-2
 if (not testPotential): 
     print "Scalar potential: ", abs(point["V"]), " == ", 7.285427

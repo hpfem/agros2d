@@ -500,7 +500,7 @@ void HermesHeat::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralV
     heatNode->setText(0, tr("Heat transfer"));
     heatNode->setExpanded(true);
 
-    addTreeWidgetItemValue(heatNode, tr("Temperature:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
+    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
     // addTreeWidgetItemValue(heatNode, tr("Gx avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientX, 0, 'e', 3), tr("K.m"));
     // addTreeWidgetItemValue(heatNode, tr("Gy avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientY, 0, 'e', 3), tr("K.m"));
     // addTreeWidgetItemValue(heatNode, tr("G avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradient, 0, 'e', 3), tr("K.m"));

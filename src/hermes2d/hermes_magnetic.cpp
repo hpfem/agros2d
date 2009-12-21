@@ -521,9 +521,8 @@ VolumeIntegralValue *HermesMagnetic::volumeIntegralValue()
 QStringList HermesMagnetic::volumeIntegralValueHeader()
 {
     QStringList headers;
-    headers << "V" << "S" << "Ie_real" << "Ie_imag" << "Ii_real" << "Iv_imag" << "Iv_real" << "Ii_imag" << "I_real" << "I_imag"
-            << "Fx_real" << "Fx_imag" << "Fy_real" << "Fy_imag" << "T_real" << "T_imag"
-            << "Pjt" << "Pjv" << "Pj" << "Wm";
+    headers << "V" << "S" << "Ie_real" << "Ie_imag" << "Ii_real" << "Ii_imag" << "Iv_real" << "Iv_imag" << "I_real" << "I_imag"
+            << "Fx" << "Fy" << "T" << "Pjt" << "Pjv" << "Pj" << "Wm";
     return QStringList(headers);
 }
 
@@ -928,10 +927,10 @@ void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
         itemForce->setText(0, tr("Lorentz force avg."));
         itemForce->setExpanded(true);
 
-        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), QString("%1").arg(-volumeIntegralValueMagnetic->forceLorentzXReal/2.0, 0, 'e', 3), "N");
-        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), QString("%1").arg(-volumeIntegralValueMagnetic->forceLorentzYReal/2.0, 0, 'e', 3), "N");
+        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), QString("%1").arg(volumeIntegralValueMagnetic->forceLorentzX, 0, 'e', 3), "N");
+        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), QString("%1").arg(volumeIntegralValueMagnetic->forceLorentzY, 0, 'e', 3), "N");
 
-        addTreeWidgetItemValue(magneticNode, tr("Torque:"), QString("%1").arg(volumeIntegralValueMagnetic->torqueReal, 0, 'e', 3), tr("Nm"));
+        addTreeWidgetItemValue(magneticNode, tr("Torque:"), QString("%1").arg(volumeIntegralValueMagnetic->torque, 0, 'e', 3), tr("Nm"));
     }
     else
     {
@@ -945,10 +944,10 @@ void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
         itemForce->setText(0, tr("Force"));
         itemForce->setExpanded(true);
 
-        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), QString("%1").arg(volumeIntegralValueMagnetic->forceLorentzXReal + volumeIntegralValueMagnetic->forceMaxwellX, 0, 'e', 3), tr("N"));
-        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), QString("%1").arg(volumeIntegralValueMagnetic->forceLorentzYReal + volumeIntegralValueMagnetic->forceMaxwellY, 0, 'e', 3), tr("N"));
+        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), QString("%1").arg(volumeIntegralValueMagnetic->forceLorentzX + volumeIntegralValueMagnetic->forceMaxwellX, 0, 'e', 3), tr("N"));
+        addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), QString("%1").arg(volumeIntegralValueMagnetic->forceLorentzY + volumeIntegralValueMagnetic->forceMaxwellY, 0, 'e', 3), tr("N"));
 
-        addTreeWidgetItemValue(magneticNode, tr("Torque:"), QString("%1").arg(volumeIntegralValueMagnetic->torqueReal, 0, 'e', 3), tr("Nm"));
+        addTreeWidgetItemValue(magneticNode, tr("Torque:"), QString("%1").arg(volumeIntegralValueMagnetic->torque, 0, 'e', 3), tr("Nm"));
     }
 }
 
@@ -1456,12 +1455,9 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
         energy = 0;
         forceMaxwellX = 0;
         forceMaxwellY = 0;
-        forceLorentzXReal = 0;
-        forceLorentzXImag = 0;
-        forceLorentzYReal = 0;
-        forceLorentzYImag = 0;
-        torqueReal = 0;
-        torqueImag = 0;
+        forceLorentzX = 0;
+        forceLorentzY = 0;
+        torque = 0;
 
         for (int i = 0; i<Util::scene()->labels.length(); i++)
         {
@@ -1478,14 +1474,11 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
                     powerLossesTransform += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_TRANSFORM);
                     powerLossesVelocity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_VELOCITY);
                     energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_ENERGY_DENSITY);
-                    forceMaxwellX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_X_REAL);
-                    forceMaxwellY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_Y_REAL);
-                    forceLorentzXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_REAL);
-                    forceLorentzXImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_IMAG);
-                    forceLorentzYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_REAL);
-                    forceLorentzYImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_IMAG);
-                    torqueReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE_REAL);
-                    torqueImag += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE_IMAG);
+                    forceMaxwellX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_X);
+                    forceMaxwellY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_Y);
+                    forceLorentzX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X);
+                    forceLorentzY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y);
+                    torque += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE);
                 }
                 if ((Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE) || (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT))
                 {
@@ -1493,11 +1486,11 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
                     currentInducedVelocityReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL);
                     powerLossesVelocity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_POWER_LOSSES_VELOCITY);
                     energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_ENERGY_DENSITY);
-                    forceMaxwellX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_X_REAL);
-                    forceMaxwellY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_Y_REAL);
-                    forceLorentzXReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X_REAL);
-                    forceLorentzYReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y_REAL);
-                    torqueReal += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE_REAL);
+                    forceMaxwellX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_X);
+                    forceMaxwellY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_MAXWELL_FORCE_Y);
+                    forceLorentzX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_X);
+                    forceLorentzY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_LORENTZ_FORCE_Y);
+                    torque += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_MAGNETIC_TORQUE);
                 }
 
                 if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
@@ -1530,12 +1523,9 @@ QStringList VolumeIntegralValueMagnetic::variables()
             QString("%1").arg(currentInducedVelocityImag, 0, 'e', 5) <<
             QString("%1").arg(currentTotalReal, 0, 'e', 5) <<
             QString("%1").arg(currentTotalImag, 0, 'e', 5) <<
-            QString("%1").arg(forceLorentzXReal, 0, 'e', 5) <<
-            QString("%1").arg(forceLorentzXImag, 0, 'e', 5) <<
-            QString("%1").arg(forceLorentzYReal, 0, 'e', 5) <<
-            QString("%1").arg(forceLorentzYImag, 0, 'e', 5) <<
-            QString("%1").arg(torqueReal, 0, 'e', 5) <<
-            QString("%1").arg(torqueImag, 0, 'e', 5) <<
+            QString("%1").arg(forceLorentzX, 0, 'e', 5) <<
+            QString("%1").arg(forceLorentzY, 0, 'e', 5) <<
+            QString("%1").arg(torque, 0, 'e', 5) <<
             QString("%1").arg(powerLossesTransform, 0, 'e', 5) <<
             QString("%1").arg(powerLossesVelocity, 0, 'e', 5) <<
             QString("%1").arg(powerLossesTransform, 0, 'e', 5) <<
