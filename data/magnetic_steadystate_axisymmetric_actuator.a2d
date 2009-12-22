@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="2" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="axisymmetric" timetotal="1" type="magnetic" timestep="1" id="0" name="unnamed" initialcondition="0" >
+        <problem adaptivitytolerance="2" frequency="0" numberofrefinements="1" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="1" polynomialorder="2" problemtype="axisymmetric" timetotal="1" type="magnetic" timestep="1" id="0" name="unnamed" initialcondition="0" >
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>

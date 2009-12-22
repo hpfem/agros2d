@@ -138,6 +138,9 @@ public:
 class SurfaceIntegralValueMagnetic : public SurfaceIntegralValue
 {
 public:
+    double forceMaxwellX;
+    double forceMaxwellY;
+
     SurfaceIntegralValueMagnetic();
     QStringList variables();
 };

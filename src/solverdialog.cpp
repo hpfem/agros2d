@@ -465,7 +465,7 @@ bool SolverDialog::writeToTriangle()
     QTextStream out(&file);
 
 
-    // Util::scene()->nodes
+    // nodes
     QString outNodes;
     int nodesCount = 0;
     for (int i = 0; i<Util::scene()->nodes.count(); i++)
@@ -488,7 +488,7 @@ bool SolverDialog::writeToTriangle()
         else
         {
             // arc
-            // add pseudoUtil::scene()->nodes
+            // add pseudo nodes
             Point center = Util::scene()->edges[i]->center();
             double radius = Util::scene()->edges[i]->radius();
             double startAngle = atan2(center.y - Util::scene()->edges[i]->nodeStart->point.y, center.x - Util::scene()->edges[i]->nodeStart->point.x) / M_PI*180 - 180;

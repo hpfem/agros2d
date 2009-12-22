@@ -509,7 +509,7 @@ SurfaceIntegralValue *HermesMagnetic::surfaceIntegralValue()
 QStringList HermesMagnetic::surfaceIntegralValueHeader()
 {
     QStringList headers;
-    headers << "l" << "S";
+    headers << "l" << "S" << "Fx" << "Fy";
     return QStringList(headers);
 }
 
@@ -861,7 +861,19 @@ void HermesMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
 
 void HermesMagnetic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
 {
-    // SurfaceIntegralValueElasticity *surfaceIntegralValueElasticity = dynamic_cast<SurfaceIntegralValueElasticity *>(surfaceIntegralValue);
+    SurfaceIntegralValueMagnetic *surfaceIntegralValueMagnetic = dynamic_cast<SurfaceIntegralValueMagnetic *>(surfaceIntegralValue);
+
+    QTreeWidgetItem *magneticNode = new QTreeWidgetItem(trvWidget);
+    magneticNode->setText(0, tr("Magnetic field"));
+    magneticNode->setExpanded(true);
+
+    // force
+    QTreeWidgetItem *itemForce = new QTreeWidgetItem(magneticNode);
+    itemForce->setText(0, tr("Maxwell force"));
+    itemForce->setExpanded(true);
+
+    addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelX(), QString("%1").arg(surfaceIntegralValueMagnetic->forceMaxwellX, 0, 'e', 3), "N");
+    addTreeWidgetItemValue(itemForce, Util::scene()->problemInfo()->labelY(), QString("%1").arg(surfaceIntegralValueMagnetic->forceMaxwellY, 0, 'e', 3), "N");
 }
 
 void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
@@ -1421,9 +1433,19 @@ QStringList LocalPointValueMagnetic::variables()
 
 SurfaceIntegralValueMagnetic::SurfaceIntegralValueMagnetic() : SurfaceIntegralValue()
 {
+    forceMaxwellX = 0;
+    forceMaxwellY = 0;
+
     if (Util::scene()->sceneSolution()->isSolved())
     {
-
+        for (int i = 0; i<Util::scene()->edges.length(); i++)
+        {
+            if (Util::scene()->edges[i]->isSelected)
+            {
+                forceMaxwellX += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_MAGNETIC_MAXWELL_FORCE_X);
+                forceMaxwellY += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_MAGNETIC_MAXWELL_FORCE_Y);
+            }
+        }
     }
 }
 
@@ -1431,7 +1453,9 @@ QStringList SurfaceIntegralValueMagnetic::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
-            QString("%1").arg(surface, 0, 'e', 5);
+            QString("%1").arg(surface, 0, 'e', 5) <<
+            QString("%1").arg(forceMaxwellX, 0, 'e', 5) <<
+            QString("%1").arg(forceMaxwellY, 0, 'e', 5);
     return QStringList(row);
 }
 

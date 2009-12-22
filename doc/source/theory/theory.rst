@@ -207,7 +207,7 @@ Lorentz force:
 Maxwell force:
 
 .. math::
-   \vec{F}_\mathrm{M} = \int_S \vec{S}_\mathrm{M} \dif S = \int_V \div \vec{S}_\mathrm{M} \dif V\,\,\,\mathrm{(N)}
+   \vec{F}_\mathrm{M} = \oint_S \vec{S}_\mathrm{M} \dif S \,\,\,\mathrm{(N)}
 
 Torque (planar arrangement only):
 
