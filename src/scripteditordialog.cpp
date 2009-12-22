@@ -255,7 +255,11 @@ void ScriptEditorWidget::doRunPython()
     connect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
 
     txtOutput->clear();
-    ScriptResult result = runPythonScript(txtEditor->toPlainText(), file);
+    ScriptResult result;
+    if (txtEditor->textCursor().hasSelection())
+        result = runPythonScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), file);
+    else
+        result = runPythonScript(txtEditor->toPlainText(), file);
 
     if (result.isError)
         txtOutput->setPlainText(result.text);
