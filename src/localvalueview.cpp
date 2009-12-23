@@ -23,6 +23,39 @@
 LocalPointValue::LocalPointValue(Point &point)
 {
     this->point = point;
+
+    PointValue val = pointValue(Util::scene()->sceneSolution()->sln1(), point);
+
+    value = val.value;
+    derivative = val.derivative;
+    labelMarker = val.marker;
+}
+
+PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
+{
+    double tmpValue;
+    Point tmpDerivative;
+    SceneLabelMarker *tmpLabelMarker = NULL;
+
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        tmpValue = sln->get_pt_value(point.x, point.y, FN_VAL_0);
+        if (Util::scene()->problemInfo()->physicField() != PHYSICFIELD_ELASTICITY)
+        {
+            tmpDerivative.x =  sln->get_pt_value(point.x, point.y, FN_DX_0);
+            tmpDerivative.y =  sln->get_pt_value(point.x, point.y, FN_DY_0);
+        }
+    }
+
+    // find marker
+    int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->mesh(), point);
+    if (index > 0)
+    {
+        Element *element = Util::scene()->sceneSolution()->mesh()->get_element_fast(index);
+        tmpLabelMarker = Util::scene()->labels[element->marker]->marker;
+    }
+
+    return PointValue(tmpValue, tmpDerivative, tmpLabelMarker);
 }
 
 // *************************************************************************************************************************************

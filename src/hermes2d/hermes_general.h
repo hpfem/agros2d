@@ -86,6 +86,9 @@ public:
 
 class LocalPointValueGeneral : public LocalPointValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     double variable;
     double rightside;
@@ -99,15 +102,23 @@ public:
 
 class SurfaceIntegralValueGeneral : public SurfaceIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     SurfaceIntegralValueGeneral();
+
     QStringList variables();
 };
 
 class VolumeIntegralValueGeneral : public VolumeIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     VolumeIntegralValueGeneral();
+
     QStringList variables();
 };
 

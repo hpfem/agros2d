@@ -24,12 +24,92 @@ VolumeIntegralValue::VolumeIntegralValue()
 {
     crossSection = 0;
     volume = 0;
+}
+
+void VolumeIntegralValue::calculate()
+{
+    if (!Util::scene()->sceneSolution()->isSolved())
+        return;
+
+    quad = &g_quad_2d_std;
+
+    Solution *sln1 = NULL;
+    Solution *sln2 = NULL;
+    if (Util::scene()->sceneSolution()->sln1())
+        sln1 = Util::scene()->sceneSolution()->sln1();
+    if (Util::scene()->sceneSolution()->sln2())
+        sln2 = Util::scene()->sceneSolution()->sln2();
+
+    sln1->set_quad_2d(quad);
+
+    Mesh *mesh = sln1->get_mesh();
+
     for (int i = 0; i<Util::scene()->labels.length(); i++)
     {
         if (Util::scene()->labels[i]->isSelected)
         {
-            crossSection += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CROSSSECTION);
-            volume += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_VOLUME);
+            for_all_active_elements(e, mesh)
+            {
+                if (e->marker == i)
+                {
+                    update_limit_table(e->get_mode());
+
+                    sln1->set_active_element(e);
+                    if (sln2)
+                        sln2->set_active_element(e);
+
+                    ru = sln1->get_refmap();
+
+                    if (!sln2)
+                        o = sln1->get_fn_order() + ru->get_inv_ref_order();
+                    else
+                        o = sln1->get_fn_order() + sln2->get_fn_order() + ru->get_inv_ref_order();
+
+                    limit_order(o);
+
+                    // solution 1
+                    sln1->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
+                    // value
+                    value1 = sln1->get_fn_values();
+                    // derivative
+                    sln1->get_dx_dy_values(dudx1, dudy1);
+                    // coordinates
+                    x = ru->get_phys_x(o);
+                    y = ru->get_phys_y(o);
+
+                    // solution 2
+                    if (sln2)
+                    {
+                        sln2->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
+                        // value
+                        value2 = sln2->get_fn_values();
+                        // derivative
+                        sln2->get_dx_dy_values(dudx2, dudy2);
+                    }
+
+                    update_limit_table(e->get_mode());
+
+                    // cross section
+                    result = 0.0;
+                    h1_integrate_expression(1);
+                    crossSection += result;
+
+                    // volume
+                    result = 0.0;
+                    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                    {
+                        h1_integrate_expression(1);
+                    }
+                    else
+                    {
+                        h1_integrate_expression(2 * M_PI * x[i]);
+                    }
+                    volume += result;
+
+                    // other integrals
+                    calculateVariables(i);
+                }
+            }
         }
     }
 }

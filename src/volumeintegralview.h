@@ -22,9 +22,25 @@
 
 #include "util.h"
 #include "gui.h"
+#include "hermes2d.h"
 
 class VolumeIntegralValue
 {
+protected:
+    Element *e;
+
+    double *x, *y;
+    double *value1, *value2;
+    double *dudx1, *dudy1, *dudx2, *dudy2;
+
+    Quad2D *quad;
+    RefMap *ru;
+    int o;
+    double result;
+
+    void calculate();
+    virtual void calculateVariables(int i) = 0;
+
 public:
     double volume;
     double crossSection;

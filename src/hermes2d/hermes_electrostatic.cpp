@@ -251,7 +251,7 @@ VolumeIntegralValue *HermesElectrostatic::volumeIntegralValue()
 QStringList HermesElectrostatic::volumeIntegralValueHeader()
 {
     QStringList headers;
-    headers << "V" << "S" << "Ex_avg" << "Ey_avg" << "E_avg" << "Dx_avg" << "Dy_avg" << "D_avg" << "We";
+    headers << "V" << "S" << "We";
     return QStringList(headers);
 }
 
@@ -364,12 +364,6 @@ void HermesElectrostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, Volume
     electrostaticNode->setText(0, tr("Electrostatic field"));
     electrostaticNode->setExpanded(true);
 
-    // addTreeWidgetItemValue(electrostaticNode, tr("Ex avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldX, 0, 'e', 3), tr("V/m"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("Ey avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageElectricFieldY, 0, 'e', 3), tr("V/m"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("E avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageElectricField, 0, 'e', 3), tr("V/m"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("Dx avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementX, 0, 'e', 3), tr("C/m2"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("Dy avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageDisplacementY, 0, 'e', 3), tr("C/m2"));
-    // addTreeWidgetItemValue(electrostaticNode, tr("D avg.:"), QString("%1").arg(volumeIntegralValueElectrostatic->averageDisplacement, 0, 'e', 3), tr("C/m2"));
     addTreeWidgetItemValue(electrostaticNode, tr("Energy:"), QString("%1").arg(volumeIntegralValueElectrostatic->energy, 0, 'e', 3), tr("J"));
 }
 
@@ -438,19 +432,17 @@ LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point) : Local
     D = Point();
     we = 0;
 
-    if (Util::scene()->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        PointValue value = Util::scene()->sceneSolution()->pointValue(point, Util::scene()->sceneSolution()->sln1());
-
-        if (value.marker != NULL)
+        if (labelMarker)
         {
             // potential
-            potential = value.value;
+            potential = value;
 
             // electric field
-            E = value.derivative * (-1);
+            E = derivative * (-1);
 
-            SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(value.marker);
+            SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
 
             charge_density = marker->charge_density.number;
             permittivity = marker->permittivity.number;
@@ -544,17 +536,22 @@ QStringList LocalPointValueElectrostatic::variables()
 
 SurfaceIntegralValueElectrostatic::SurfaceIntegralValueElectrostatic() : SurfaceIntegralValue()
 {
-    surfaceCharge = 0;
+    surfaceCharge = 0.0;
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    calculate();
+
+    surfaceCharge /= 2.0;
+}
+
+void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
+{
+    if (boundary)
     {
-        for (int i = 0; i<Util::scene()->edges.length(); i++)
-        {
-            if (Util::scene()->edges[i]->isSelected)
-            {
-                surfaceCharge += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_ELECTROSTATIC_CHARGE_DENSITY);
-            }
-        }
+        SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+        else
+            surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
     }
 }
 
@@ -571,39 +568,24 @@ QStringList SurfaceIntegralValueElectrostatic::variables()
 
 VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic() : VolumeIntegralValue()
 {
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        averageElectricFieldX = 0;
-        averageElectricFieldY = 0;
-        averageElectricField = 0;
-        averageDisplacementX = 0;
-        averageDisplacementY = 0;
-        averageDisplacement = 0;
-        energy = 0;
-        for (int i = 0; i<Util::scene()->labels.length(); i++)
-        {
-            if (Util::scene()->labels[i]->isSelected)
-            {
-                averageElectricFieldX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_X);
-                averageElectricFieldY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD_Y);
-                averageElectricField += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ELECTRICFIELD);
-                averageDisplacementX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_X);
-                averageDisplacementY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT_Y);
-                averageDisplacement += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_DISPLACEMENT);
-                energy += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_ELECTROSTATIC_ENERGY_DENSITY);
-            }
-        }
+    energy = 0;
 
-        if (volume > 0)
-        {
-            averageElectricFieldX /= volume;
-            averageElectricFieldY /= volume;
-            averageElectricField /= volume;
-            averageDisplacementX /= volume;
-            averageDisplacementY /= volume;
-            averageDisplacement /= volume;
-        }
+    calculate();
+}
+
+void VolumeIntegralValueElectrostatic::calculateVariables(int i)
+{
+    result = 0.0;
+    SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+    {
+        h1_integrate_expression(0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
     }
+    else
+    {
+        h1_integrate_expression(2 * M_PI * x[i] * 0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
+    }
+    energy += result;
 }
 
 QStringList VolumeIntegralValueElectrostatic::variables()
@@ -611,12 +593,6 @@ QStringList VolumeIntegralValueElectrostatic::variables()
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
             QString("%1").arg(crossSection, 0, 'e', 5) <<
-            QString("%1").arg(averageElectricFieldX, 0, 'e', 5) <<
-            QString("%1").arg(averageElectricFieldY, 0, 'e', 5) <<
-            QString("%1").arg(averageElectricField, 0, 'e', 5) <<
-            QString("%1").arg(averageDisplacementX, 0, 'e', 5) <<
-            QString("%1").arg(averageDisplacementY, 0, 'e', 5) <<
-            QString("%1").arg(averageDisplacement, 0, 'e', 5) <<
             QString("%1").arg(energy, 0, 'e', 5);
     return QStringList(row);
 }

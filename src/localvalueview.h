@@ -22,9 +22,39 @@
 
 #include "util.h"
 #include "gui.h"
+#include "scenemarker.h"
+#include "hermes2d.h"
+
+struct PointValue
+{
+    PointValue()
+    {
+        this->value = 0.0;
+        this->derivative = Point();
+        this->marker = NULL;
+    }
+
+    PointValue(double value, Point derivative, SceneLabelMarker *marker)
+    {
+        this->value = value;
+        this->derivative = derivative;
+        this->marker = marker;
+    }
+
+    double value;
+    Point derivative;
+    SceneLabelMarker *marker;
+};
 
 class LocalPointValue
 {
+protected:
+    double value;
+    Point derivative;
+    SceneLabelMarker *labelMarker;
+
+    PointValue pointValue(Solution *sln, Point &point);
+
 public:
     Point point;
 

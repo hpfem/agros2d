@@ -101,17 +101,24 @@ public:
 
 class SurfaceIntegralValueHeat : public SurfaceIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     double averageTemperature;
     double temperatureDifference;
     double heatFlux;
 
     SurfaceIntegralValueHeat();
+
     QStringList variables();
 };
 
 class VolumeIntegralValueHeat : public VolumeIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     double averageTemperature;
     double averageTemperatureGradientX;

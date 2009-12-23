@@ -439,22 +439,18 @@ LocalPointValueCurrent::LocalPointValueCurrent(Point &point) : LocalPointValue(p
     E = Point();
     losses = 0;
 
-    if (Util::scene()->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        PointValue value = Util::scene()->sceneSolution()->pointValue(point, Util::scene()->sceneSolution()->sln1());
-        if (value.marker != NULL)
+        if (labelMarker != NULL)
         {
             // potential
-            potential = value.value;
+            potential = value;
 
-            // magnetic field
-            Point der;
-            der = value.derivative;
+            // electric field
+            E.x =  derivative.y;
+            E.y = -derivative.x;
 
-            E.x =  der.y;
-            E.y = -der.x;
-
-            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(value.marker);
+            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
 
             conductivity = marker->conductivity.number;
 
@@ -547,17 +543,22 @@ QStringList LocalPointValueCurrent::variables()
 
 SurfaceIntegralValueCurrent::SurfaceIntegralValueCurrent() : SurfaceIntegralValue()
 {
-    currentDensity = 0;
+    currentDensity = 0.0;
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    calculate();
+
+    currentDensity /= 2.0;
+}
+
+void SurfaceIntegralValueCurrent::calculateVariables(int i)
+{
+    if (boundary)
     {
-        for (int i = 0; i<Util::scene()->edges.length(); i++)
-        {
-            if (Util::scene()->edges[i]->isSelected)
-            {
-                currentDensity += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_CURRENT_CURRENT_DENSITY);
-            }
-        }
+        SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[e->marker]->marker);
+        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            currentDensity += pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+        else
+            currentDensity += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (- tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
     }
 }
 
@@ -574,39 +575,24 @@ QStringList SurfaceIntegralValueCurrent::variables()
 
 VolumeIntegralValueCurrent::VolumeIntegralValueCurrent() : VolumeIntegralValue()
 {
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        averageElectricFieldX = 0;
-        averageElectricFieldY = 0;
-        averageElectricField = 0;
-        averageCurrentDensityX = 0;
-        averageCurrentDensityY = 0;
-        averageCurrentDensity = 0;
-        losses = 0;
-        for (int i = 0; i<Util::scene()->labels.length(); i++)
-        {
-            if (Util::scene()->labels[i]->isSelected)
-            {
-                averageElectricFieldX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_X);
-                averageElectricFieldY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD_Y);
-                averageElectricField += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_ELECTRICFIELD);
-                averageCurrentDensityX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_X);
-                averageCurrentDensityY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY_Y);
-                averageCurrentDensity += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_CURRENT_DENSITY);
-                losses += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_CURRENT_LOSSES);
-            }
-        }
+    losses = 0.0;
 
-        if (volume > 0)
-        {
-            averageElectricFieldX /= volume;
-            averageElectricFieldY /= volume;
-            averageElectricField /= volume;
-            averageCurrentDensityX /= volume;
-            averageCurrentDensityY /= volume;
-            averageCurrentDensity /= volume;
-        }
+    calculate();
+}
+
+void VolumeIntegralValueCurrent::calculateVariables(int i)
+{
+    result = 0.0;
+    SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[e->marker]->marker);
+    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+    {
+        h1_integrate_expression(marker->conductivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
     }
+    else
+    {
+        h1_integrate_expression(2 * M_PI * x[i] * marker->conductivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
+    }
+    losses += result;
 }
 
 QStringList VolumeIntegralValueCurrent::variables()
@@ -614,12 +600,7 @@ QStringList VolumeIntegralValueCurrent::variables()
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
             QString("%1").arg(crossSection, 0, 'e', 5) <<
-            QString("%1").arg(averageElectricFieldX, 0, 'e', 5) <<
-            QString("%1").arg(averageElectricFieldY, 0, 'e', 5) <<
-            QString("%1").arg(averageElectricField, 0, 'e', 5) <<
-            QString("%1").arg(averageCurrentDensityX, 0, 'e', 5) <<
-            QString("%1").arg(averageCurrentDensityY, 0, 'e', 5) <<
-            QString("%1").arg(averageCurrentDensity, 0, 'e', 5);
+            QString("%1").arg(losses, 0, 'e', 5);
     return QStringList(row);
 }
 

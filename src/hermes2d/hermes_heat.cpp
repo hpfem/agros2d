@@ -501,12 +501,6 @@ void HermesHeat::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralV
     heatNode->setExpanded(true);
 
     addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
-    // addTreeWidgetItemValue(heatNode, tr("Gx avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientX, 0, 'e', 3), tr("K.m"));
-    // addTreeWidgetItemValue(heatNode, tr("Gy avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradientY, 0, 'e', 3), tr("K.m"));
-    // addTreeWidgetItemValue(heatNode, tr("G avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperatureGradient, 0, 'e', 3), tr("K.m"));
-    // addTreeWidgetItemValue(heatNode, tr("Fx avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageHeatFluxX, 0, 'e', 3), tr("W"));
-    // addTreeWidgetItemValue(heatNode, tr("Fy avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageHeatFluxY, 0, 'e', 3), tr("W"));
-    // addTreeWidgetItemValue(heatNode, tr("F avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageHeatFlux, 0, 'e', 3), tr("W"));
 }
 
 QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)
@@ -597,18 +591,17 @@ LocalPointValueHeat::LocalPointValueHeat(Point &point) : LocalPointValue(point)
     G = Point();
     F = Point();
 
-    if (Util::scene()->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        PointValue value = Util::scene()->sceneSolution()->pointValue(point, Util::scene()->sceneSolution()->sln1());
-        if (value.marker != NULL)
+        if (labelMarker)
         {
             // temperature
-            temperature = value.value;
+            temperature = value;
 
             // temperature gradient
-            G = value.derivative * (-1);
+            G = derivative * (-1);
 
-            SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(value.marker);
+            SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
 
             thermal_conductivity = marker->thermal_conductivity.number;
             volume_heat = marker->volume_heat.number;
@@ -694,26 +687,40 @@ QStringList LocalPointValueHeat::variables()
 
 SurfaceIntegralValueHeat::SurfaceIntegralValueHeat() : SurfaceIntegralValue()
 {
-    averageTemperature = 0;
-    temperatureDifference = 0;
-    heatFlux = 0;
+    averageTemperature = 0.0;
+    temperatureDifference = 0.0;
+    heatFlux = 0.0;
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    calculate();
+
+    if (length > 0.0)
     {
-        for (int i = 0; i<Util::scene()->edges.length(); i++)
-        {
-            if (Util::scene()->edges[i]->isSelected)
-            {
-                averageTemperature += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE);
-                temperatureDifference += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_TEMPERATURE_DIFFERENCE);
-                heatFlux += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_HEAT_FLUX);
-            }
-        }
+        averageTemperature /= length;
+    }
+    temperatureDifference /= 2.0;
+    averageTemperature /= 2.0;
+    heatFlux /= 2.0;
+}
 
-        if (length > 0)
-        {
-            averageTemperature /= length;
-        }
+void SurfaceIntegralValueHeat::calculateVariables(int i)
+{
+    if (boundary)
+    {
+        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            averageTemperature += pt[i][2] * tan[i][2] * value[i];
+        else
+            averageTemperature += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * value[i];
+
+        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            temperatureDifference += pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
+        else
+            temperatureDifference += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
+
+        SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[e->marker]->marker);
+        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            heatFlux += pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+        else
+            heatFlux += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
     }
 }
 
@@ -732,40 +739,28 @@ QStringList SurfaceIntegralValueHeat::variables()
 
 VolumeIntegralValueHeat::VolumeIntegralValueHeat() : VolumeIntegralValue()
 {
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        averageTemperature = 0;
-        averageTemperatureGradientX = 0;
-        averageTemperatureGradientY = 0;
-        averageTemperatureGradient = 0;
-        averageHeatFluxX = 0;
-        averageHeatFluxY = 0;
-        averageHeatFlux = 0;
-        for (int i = 0; i<Util::scene()->labels.length(); i++)
-        {
-            if (Util::scene()->labels[i]->isSelected)
-            {
-                averageTemperature += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE);
-                averageTemperatureGradientX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_X);
-                averageTemperatureGradientY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT_Y);
-                averageTemperatureGradient += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_TEMPERATURE_GRADIENT);
-                averageHeatFluxX += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX_X);
-                averageHeatFluxY += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX_Y);
-                averageHeatFlux += Util::scene()->sceneSolution()->volumeIntegral(i, PHYSICFIELDINTEGRAL_VOLUME_HEAT_FLUX);
-            }
-        }
+    averageTemperature = 0;
 
-        if (volume > 0)
-        {
-            averageTemperature /= volume;
-            averageTemperatureGradientX /= volume;
-            averageTemperatureGradientY /= volume;
-            averageTemperatureGradient /= volume;
-            averageHeatFluxX /= volume;
-            averageHeatFluxY /= volume;
-            averageHeatFlux /= volume;
-        }
+    calculate();
+
+    if (volume > 0)
+    {
+        averageTemperature /= volume;
     }
+}
+
+void VolumeIntegralValueHeat::calculateVariables(int i)
+{
+    result = 0.0;
+    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+    {
+        h1_integrate_expression(value1[i]);
+    }
+    else
+    {
+        h1_integrate_expression(2 * M_PI * x[i] * value1[i]);
+    }
+    averageTemperature += result;
 }
 
 QStringList VolumeIntegralValueHeat::variables()
@@ -773,13 +768,7 @@ QStringList VolumeIntegralValueHeat::variables()
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
             QString("%1").arg(crossSection, 0, 'e', 5) <<
-            QString("%1").arg(averageTemperature, 0, 'e', 5) <<
-            QString("%1").arg(averageTemperatureGradientX, 0, 'e', 5) <<
-            QString("%1").arg(averageTemperatureGradientY, 0, 'e', 5) <<
-            QString("%1").arg(averageTemperatureGradient, 0, 'e', 5) <<
-            QString("%1").arg(averageHeatFluxX, 0, 'e', 5) <<
-            QString("%1").arg(averageHeatFluxY, 0, 'e', 5) <<
-            QString("%1").arg(averageHeatFlux, 0, 'e', 5);
+            QString("%1").arg(averageTemperature, 0, 'e', 5);
     return QStringList(row);
 }
 

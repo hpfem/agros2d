@@ -38,27 +38,6 @@ class Vectorizer;
 class Orderizer;
 class Mesh;
 
-struct PointValue
-{
-    PointValue()
-    {
-        this->value = 0.0;
-        this->derivative = Point();
-        this->marker = NULL;
-    }
-
-    PointValue(double value, Point derivative, SceneLabelMarker *marker)
-    {
-        this->value = value;
-        this->derivative = derivative;
-        this->marker = marker;
-    }
-
-    double value;
-    Point derivative;
-    SceneLabelMarker *marker;
-};
-
 class SceneSolution
 {
 public:
@@ -103,10 +82,6 @@ public:
 
     // order view
     Orderizer &ordView();
-
-    PointValue pointValue(const Point &point, Solution *sln);
-    double volumeIntegral(int labelIndex, PhysicFieldIntegralVolume physicFieldIntegralVolume);
-    double surfaceIntegral(int edgeIndex, PhysicFieldIntegralSurface physicFieldIntegralSurface);
 
     inline int timeElapsed() { return m_timeElapsed; }
     double adaptiveError();

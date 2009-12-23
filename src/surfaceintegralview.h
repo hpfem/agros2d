@@ -22,9 +22,24 @@
 
 #include "util.h"
 #include "gui.h"
+#include "hermes2d.h"
 
 class SurfaceIntegralValue
 {
+protected:
+    Element *e;
+
+    double *x;
+    double *value;
+    double *dudx, *dudy;
+    double3 *pt;
+    double3 *tan;
+
+    bool boundary;
+
+    void calculate();
+    virtual void calculateVariables(int i) = 0;
+
 public:
     double length;
     double surface;

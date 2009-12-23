@@ -405,19 +405,17 @@ LocalPointValueGeneral::LocalPointValueGeneral(Point &point) : LocalPointValue(p
     constant = 0;
     gradient = Point();
 
-    if (Util::scene()->sceneSolution()->sln())
+    if (Util::scene()->sceneSolution()->isSolved())
     {
-        PointValue value = Util::scene()->sceneSolution()->pointValue(point, Util::scene()->sceneSolution()->sln1());
-
-        if (value.marker != NULL)
+        if (labelMarker)
         {
             // value
-            variable = value.value;
+            variable = value;
 
             // gradient
-            gradient = value.derivative * (-1);
+            gradient = derivative * (-1);
 
-            SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(value.marker);
+            SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
 
             rightside = marker->rightside.number;
             constant = marker->constant.number;
@@ -480,6 +478,11 @@ QStringList LocalPointValueGeneral::variables()
 
 SurfaceIntegralValueGeneral::SurfaceIntegralValueGeneral() : SurfaceIntegralValue()
 {
+    calculate();
+}
+
+void SurfaceIntegralValueGeneral::calculateVariables(int i)
+{
 
 }
 
@@ -494,6 +497,11 @@ QStringList SurfaceIntegralValueGeneral::variables()
 // ****************************************************************************************************************
 
 VolumeIntegralValueGeneral::VolumeIntegralValueGeneral() : VolumeIntegralValue()
+{
+    calculate();
+}
+
+void VolumeIntegralValueGeneral::calculateVariables(int i)
 {
 }
 

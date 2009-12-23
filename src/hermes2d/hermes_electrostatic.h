@@ -104,25 +104,27 @@ public:
 
 class SurfaceIntegralValueElectrostatic : public SurfaceIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     double surfaceCharge;
 
     SurfaceIntegralValueElectrostatic();
+
     QStringList variables();
 };
 
 class VolumeIntegralValueElectrostatic : public VolumeIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
-    double averageElectricFieldX;
-    double averageElectricFieldY;
-    double averageElectricField;
-    double averageDisplacementX;
-    double averageDisplacementY;
-    double averageDisplacement;
     double energy;
 
     VolumeIntegralValueElectrostatic();
+
     QStringList variables();
 };
 

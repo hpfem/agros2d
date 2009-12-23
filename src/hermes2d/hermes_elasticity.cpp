@@ -313,7 +313,7 @@ QStringList HermesElasticity::localPointValueHeader()
 
 SurfaceIntegralValue *HermesElasticity::surfaceIntegralValue()
 {
-    return new SurfaceIntegralValueElectrostatic();
+    return NULL; // new SurfaceIntegralValueElectrostatic();
 }
 
 QStringList HermesElasticity::surfaceIntegralValueHeader()
@@ -479,28 +479,19 @@ QList<SolutionArray *> *HermesElasticity::solve(SolverDialog *solverDialog)
 
 LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointValue(point)
 {
-    if (Util::scene()->sceneSolution()->sln())
-    {
-        von_mises_stress = 0;
-        // G = Point();
-        // F = Point();
+    von_mises_stress = 0;
 
-        PointValue value = Util::scene()->sceneSolution()->pointValue(point, Util::scene()->sceneSolution()->sln1());
-        if (value.marker != NULL)
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        if (labelMarker)
         {
             // Von Mises stress
-            von_mises_stress = value.value;
+            von_mises_stress = value;
 
-            // temperature gradient
-            // G = value.derivative * (-1);
-
-            SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(value.marker);
+            SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
 
             young_modulus = marker->young_modulus.number;
             poisson_ratio = marker->poisson_ratio.number;
-
-            // heat flux
-            // F = G * marker->thermal_conductivity;
         }
     }
 }
@@ -526,6 +517,46 @@ QStringList LocalPointValueElasticity::variables()
     QStringList row;
     row << QString("%1").arg(von_mises_stress, 0, 'e', 5);
 
+    return QStringList(row);
+}
+
+// *************************************************************************************************************************************
+
+SurfaceIntegralValueElasticity::SurfaceIntegralValueElasticity() : SurfaceIntegralValue()
+{
+    calculate();
+}
+
+void SurfaceIntegralValueElasticity::calculateVariables(int i)
+{
+
+}
+
+QStringList SurfaceIntegralValueElasticity::variables()
+{
+    QStringList row;
+    row <<  QString("%1").arg(length, 0, 'e', 5) <<
+            QString("%1").arg(surface, 0, 'e', 5);
+    return QStringList(row);
+}
+
+// ****************************************************************************************************************
+
+VolumeIntegralValueElasticity::VolumeIntegralValueElasticity() : VolumeIntegralValue()
+{
+    calculate();
+}
+
+void VolumeIntegralValueElasticity::calculateVariables(int i)
+{
+
+}
+
+QStringList VolumeIntegralValueElasticity::variables()
+{
+    QStringList row;
+    row <<  QString("%1").arg(volume, 0, 'e', 5) <<
+            QString("%1").arg(crossSection, 0, 'e', 5);
     return QStringList(row);
 }
 

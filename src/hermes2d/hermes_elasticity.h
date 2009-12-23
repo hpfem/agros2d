@@ -90,6 +90,27 @@ public:
     QStringList variables();
 };
 
+class SurfaceIntegralValueElasticity : public SurfaceIntegralValue
+{
+protected:
+    void calculateVariables(int i);
+
+public:
+    SurfaceIntegralValueElasticity();
+
+    QStringList variables();
+};
+
+class VolumeIntegralValueElasticity : public VolumeIntegralValue
+{
+protected:
+    void calculateVariables(int i);
+
+public:
+    VolumeIntegralValueElasticity();
+    QStringList variables();
+};
+
 class SceneEdgeElasticityMarker : public SceneEdgeMarker
 {
 public:

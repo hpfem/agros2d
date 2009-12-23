@@ -103,25 +103,27 @@ public:
 
 class SurfaceIntegralValueCurrent : public SurfaceIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     double currentDensity;
 
     SurfaceIntegralValueCurrent();
+
     QStringList variables();
 };
 
 class VolumeIntegralValueCurrent : public VolumeIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
-    double averageElectricFieldX;
-    double averageElectricFieldY;
-    double averageElectricField;
-    double averageCurrentDensityX;
-    double averageCurrentDensityY;
-    double averageCurrentDensity;
     double losses;
 
     VolumeIntegralValueCurrent();
+
     QStringList variables();
 };
 

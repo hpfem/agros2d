@@ -137,6 +137,9 @@ public:
 
 class SurfaceIntegralValueMagnetic : public SurfaceIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     double forceMaxwellX;
     double forceMaxwellY;
@@ -147,6 +150,9 @@ public:
 
 class VolumeIntegralValueMagnetic : public VolumeIntegralValue
 {
+protected:
+    void calculateVariables(int i);
+
 public:
     double currentReal;
     double currentImag;
@@ -156,18 +162,13 @@ public:
     double currentInducedVelocityImag;
     double currentTotalReal;
     double currentTotalImag;
-    double forceMaxwellX;
-    double forceMaxwellY;
     double forceLorentzX;
-    double forceLorentzXImag;
     double forceLorentzY;
-    double forceLorentzYImag;
     double powerLossesTransform;
     double powerLossesVelocity;
     double powerLosses;
     double energy;
     double torque;
-    double torqueImag;
 
     VolumeIntegralValueMagnetic();
     QStringList variables();

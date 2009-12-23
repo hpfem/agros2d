@@ -22,16 +22,96 @@
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {
-    length = 0;
-    surface = 0;
+    length = 0.0;
+    surface = 0.0;    
+}
+
+void SurfaceIntegralValue::calculate()
+{
+    if (!Util::scene()->sceneSolution()->isSolved())
+        return;
+
+    Quad2D *quad = &g_quad_2d_std;
+    Solution *sln1 = Util::scene()->sceneSolution()->sln1();
+
+    sln1->set_quad_2d(quad);
+
+    Mesh* mesh = sln1->get_mesh();
     for (int i = 0; i<Util::scene()->edges.length(); i++)
     {
         if (Util::scene()->edges[i]->isSelected)
         {
-            length += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_LENGTH);
-            surface += Util::scene()->sceneSolution()->surfaceIntegral(i, PHYSICFIELDINTEGRAL_SURFACE_SURFACE);
+            for_all_active_elements(e, mesh)
+            {
+                for (int edge = 0; edge < e->nvert; edge++)
+                {
+                    bool integrate = false;
+                    boundary = false;
+
+                    if (e->en[edge]->bnd && e->en[edge]->marker-1 == i)
+                    {
+                        // boundary
+                        integrate = true;
+                        boundary = true;
+                    }
+                    else
+                    {
+                        // inner edge
+                        Node *node1 = mesh->get_node(e->en[edge]->p1);
+                        Node *node2 = mesh->get_node(e->en[edge]->p2);
+
+                        SceneEdge *edge = Util::scene()->edges[i];
+                        if ((edge->distance(Point(node1->x, node1->y)) < EPS_ZERO) &&
+                            (edge->distance(Point(node2->x, node2->y)) < EPS_ZERO))
+                        {
+                            integrate = true;
+                        }
+                    }
+
+                    // integral
+                    if (integrate)
+                    {
+                        update_limit_table(e->get_mode());
+
+                        sln1->set_active_element(e);
+                        RefMap* ru = sln1->get_refmap();
+
+                        Quad2D* quad2d = ru->get_quad_2d();
+                        int eo = quad2d->get_edge_points(edge);
+                        sln1->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
+                        pt = quad2d->get_points(eo);
+                        tan = ru->get_tangent(edge);
+
+                        // value
+                        value = sln1->get_fn_values();
+                        // derivative
+                        sln1->get_dx_dy_values(dudx, dudy);
+                        // x - coordinate
+                        x = ru->get_phys_x(eo);
+
+                        for (int i = 0; i < quad2d->get_num_points(eo); i++)
+                        {
+                            // length
+                            length += pt[i][2] * tan[i][2];
+
+                            // surface
+
+                            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                                surface += pt[i][2] * tan[i][2];
+                            else
+                                surface += 2 * M_PI * x[i] * pt[i][2] * tan[i][2];
+
+                            // other integrals
+                            calculateVariables(i);
+                        }
+                    }
+                }
+            }
         }
     }
+
+    length /= (boundary) ? 2.0 : 4.0;
+    surface /= (boundary) ? 2.0 : 4.0;
 }
 
 SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget(tr("Surface Integral"), parent)
