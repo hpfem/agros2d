@@ -128,10 +128,12 @@ public:
     ~DSceneEdgeMarker();
 
 protected:
+    QGridLayout *layout;
+
     QLineEdit *txtName;
     SceneEdgeMarker *m_edgeMarker;
 
-    virtual QLayout *createContent() = 0;
+    virtual void createContent() = 0;
     void createDialog();
 
     virtual void load();
@@ -141,9 +143,6 @@ protected:
 private slots:
     void doAccept();
     void doReject();
-
-private:
-    QVBoxLayout *layout;
 };
 
 class DSceneLabelMarker: public QDialog
@@ -155,10 +154,12 @@ public:
     ~DSceneLabelMarker();
 
 protected:
+    QGridLayout *layout;
+
     QLineEdit *txtName;
     SceneLabelMarker *m_labelMarker;
 
-    virtual QLayout *createContent() = 0;
+    virtual void createContent() = 0;
     void createDialog();
     void setSize();
 
@@ -168,9 +169,6 @@ protected:
 private slots:
     void doAccept();
     void doReject();
-
-private:
-    QVBoxLayout *layout;
 };
 
 #endif // SCENEMARKER_H

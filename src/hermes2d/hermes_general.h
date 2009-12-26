@@ -155,7 +155,7 @@ public:
     ~DSceneEdgeGeneralMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();
@@ -173,7 +173,7 @@ public:
     ~DSceneLabelGeneralMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();

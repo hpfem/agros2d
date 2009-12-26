@@ -161,7 +161,7 @@ public:
     ~DSceneEdgeElectrostaticMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();
@@ -179,7 +179,7 @@ public:
     ~DSceneLabelElectrostaticMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();

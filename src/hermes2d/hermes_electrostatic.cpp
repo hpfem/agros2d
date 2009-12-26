@@ -687,7 +687,7 @@ DSceneEdgeElectrostaticMarker::~DSceneEdgeElectrostaticMarker()
     delete txtValue;
 }
 
-QLayout* DSceneEdgeElectrostaticMarker::createContent()
+void DSceneEdgeElectrostaticMarker::createContent()
 {
     cmbType = new QComboBox();
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
@@ -696,11 +696,10 @@ QLayout* DSceneEdgeElectrostaticMarker::createContent()
 
     txtValue = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC type:"), cmbType);
-    layoutMarker->addRow(tr("Value:"), txtValue);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
+    layout->addWidget(cmbType, 1, 1);
+    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
+    layout->addWidget(txtValue, 2, 1);
 }
 
 void DSceneEdgeElectrostaticMarker::load()
@@ -750,16 +749,15 @@ DSceneLabelElectrostaticMarker::~DSceneLabelElectrostaticMarker()
     delete txtChargeDensity;
 }
 
-QLayout* DSceneLabelElectrostaticMarker::createContent()
+void DSceneLabelElectrostaticMarker::createContent()
 {
     txtPermittivity = new SLineEditValue(this);
     txtChargeDensity = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Permittivity (-):"), txtPermittivity);
-    layoutMarker->addRow(tr("Charge density (C/m3):"), txtChargeDensity);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("Permittivity (-):")), 1, 0);
+    layout->addWidget(txtPermittivity, 1, 1);
+    layout->addWidget(new QLabel(tr("Charge density (C/m3):")), 2, 0);
+    layout->addWidget(txtChargeDensity, 2, 1);
 }
 
 void DSceneLabelElectrostaticMarker::load()

@@ -149,11 +149,6 @@ bool SLineEditValue::evaluate(bool quiet)
     }
 }
 
-void SLineEditValue::focusInEvent(QFocusEvent *event)
-{
-    txtLineEdit->setFocus(event->reason());
-}
-
 // ****************************************************************************************************************
 
 

@@ -33,7 +33,7 @@
 #include <math.h>
 #include <locale.h>
 
-const double EPS_ZERO = 1e-14;
+const double EPS_ZERO = 1e-10;
 const double EPS0 = 8.854e-12;
 const double MU0 = 4*M_PI*1e-7;
 const int NDOF_STOP = 40000;
@@ -401,7 +401,7 @@ inline QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable
     case PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL:
         return QObject::tr("Power losses - total");
     case PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE:
-        return QObject::tr("Force - Lorentz");
+        return QObject::tr("Lorentz force");
     case PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY:
         return QObject::tr("Energy density");
     case PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY:
@@ -700,6 +700,8 @@ inline QString physicFieldBCString(PhysicFieldBC physicFieldBC)
 {
     switch (physicFieldBC)
     {
+    case PHYSICFIELDBC_NONE:
+        return QObject::tr("none");
     case PHYSICFIELDBC_GENERAL_VALUE:
         return QObject::tr("Value");
     case PHYSICFIELDBC_GENERAL_DERIVATIVE:

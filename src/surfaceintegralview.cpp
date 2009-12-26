@@ -39,7 +39,8 @@ void SurfaceIntegralValue::calculate()
     Mesh* mesh = sln1->get_mesh();
     for (int i = 0; i<Util::scene()->edges.length(); i++)
     {
-        if (Util::scene()->edges[i]->isSelected)
+        SceneEdge *sceneEdge = Util::scene()->edges[i];
+        if (sceneEdge->isSelected)
         {
             for_all_active_elements(e, mesh)
             {
@@ -60,9 +61,8 @@ void SurfaceIntegralValue::calculate()
                         Node *node1 = mesh->get_node(e->en[edge]->p1);
                         Node *node2 = mesh->get_node(e->en[edge]->p2);
 
-                        SceneEdge *edge = Util::scene()->edges[i];
-                        if ((edge->distance(Point(node1->x, node1->y)) < EPS_ZERO) &&
-                            (edge->distance(Point(node2->x, node2->y)) < EPS_ZERO))
+                        if ((sceneEdge->distance(Point(node1->x, node1->y)) < EPS_ZERO) &&
+                            (sceneEdge->distance(Point(node2->x, node2->y)) < EPS_ZERO))
                         {
                             integrate = true;
                         }

@@ -216,7 +216,7 @@ public:
     ~DSceneEdgeMagneticMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();
@@ -235,7 +235,7 @@ public:
     ~DSceneLabelMagneticMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();

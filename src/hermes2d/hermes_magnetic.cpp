@@ -1760,8 +1760,8 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
                                                                                                                      (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
                                     +
                                     x[i] *
-                                    dudy1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
-                                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
+                                    dudy1[i] * (marker->current_density_real.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
 
         }
     }
@@ -1905,20 +1905,19 @@ DSceneEdgeMagneticMarker::~DSceneEdgeMagneticMarker()
     delete txtValue;
 }
 
-QLayout* DSceneEdgeMagneticMarker::createContent()
+void DSceneEdgeMagneticMarker::createContent()
 {
-    cmbType = new QComboBox();
+    cmbType = new QComboBox(this);
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT), PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT);
 
     txtValue = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC type:"), cmbType);
-    layoutMarker->addRow(tr("Value:"), txtValue);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
+    layout->addWidget(cmbType, 1, 1);
+    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
+    layout->addWidget(txtValue, 2, 1);
 }
 
 void DSceneEdgeMagneticMarker::load()
@@ -1972,7 +1971,7 @@ DSceneLabelMagneticMarker::~DSceneLabelMagneticMarker()
     delete txtCurrentDensityImag;
 }
 
-QLayout* DSceneLabelMagneticMarker::createContent()
+void DSceneLabelMagneticMarker::createContent()
 {
     txtPermeability = new SLineEditValue(this);
     txtConductivity = new SLineEditValue(this);
@@ -2009,17 +2008,14 @@ QLayout* DSceneLabelMagneticMarker::createContent()
     QGroupBox *grpVelocity = new QGroupBox(tr("Velocity"), this);
     grpVelocity->setLayout(layoutVelocity);
 
-    QFormLayout *layoutMarkerVariables = new QFormLayout();
-    layoutMarkerVariables->addRow(tr("Permeability (-):"), txtPermeability);
-    layoutMarkerVariables->addRow(tr("Conductivity (S/m):"), txtConductivity);
-    layoutMarkerVariables->addRow(tr("Current density (A/m2):"), layoutCurrentDensity);
-
-    QVBoxLayout *layoutMarker = new QVBoxLayout();
-    layoutMarker->addLayout(layoutMarkerVariables);
-    layoutMarker->addWidget(grpRemanence);
-    layoutMarker->addWidget(grpVelocity);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("Permeability (-):")), 1, 0);
+    layout->addWidget(txtPermeability, 1, 1);
+    layout->addWidget(new QLabel(tr("Conductivity (S/m):")), 2, 0);
+    layout->addWidget(txtConductivity, 2, 1);
+    layout->addWidget(new QLabel(tr("Current density (A/m2):")), 3, 0);
+    layout->addLayout(layoutCurrentDensity, 3, 1);
+    layout->addWidget(grpRemanence, 4, 0, 1, 2);
+    layout->addWidget(grpVelocity, 5, 0, 1, 2);
 }
 
 void DSceneLabelMagneticMarker::load()

@@ -603,7 +603,7 @@ DSceneEdgeGeneralMarker::~DSceneEdgeGeneralMarker()
     delete txtValue;
 }
 
-QLayout* DSceneEdgeGeneralMarker::createContent()
+void DSceneEdgeGeneralMarker::createContent()
 {
     cmbType = new QComboBox();
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
@@ -612,11 +612,10 @@ QLayout* DSceneEdgeGeneralMarker::createContent()
 
     txtValue = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC type:"), cmbType);
-    layoutMarker->addRow(tr("Value:"), txtValue);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
+    layout->addWidget(cmbType, 1, 1);
+    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
+    layout->addWidget(txtValue, 2, 1);
 }
 
 void DSceneEdgeGeneralMarker::load()
@@ -666,16 +665,15 @@ DSceneLabelGeneralMarker::~DSceneLabelGeneralMarker()
     delete txtRightSide;
 }
 
-QLayout* DSceneLabelGeneralMarker::createContent()
+void DSceneLabelGeneralMarker::createContent()
 {
     txtConstant = new SLineEditValue(this);
     txtRightSide = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Constant:"), txtConstant);
-    layoutMarker->addRow(tr("Rightside:"), txtRightSide);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("Constant:")), 1, 0);
+    layout->addWidget(txtConstant, 1, 1);
+    layout->addWidget(new QLabel(tr("Rightside:")), 2, 0);
+    layout->addWidget(txtRightSide, 2, 1);
 }
 
 void DSceneLabelGeneralMarker::load()

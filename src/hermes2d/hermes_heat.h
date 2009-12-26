@@ -172,7 +172,7 @@ public:
     ~DSceneEdgeHeatMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();
@@ -197,7 +197,7 @@ public:
     ~DSceneLabelHeatMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();

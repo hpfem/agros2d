@@ -689,7 +689,7 @@ DSceneEdgeCurrentMarker::~DSceneEdgeCurrentMarker()
     delete txtValue;
 }
 
-QLayout* DSceneEdgeCurrentMarker::createContent()
+void DSceneEdgeCurrentMarker::createContent()
 {
     cmbType = new QComboBox();
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
@@ -698,11 +698,10 @@ QLayout* DSceneEdgeCurrentMarker::createContent()
 
     txtValue = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC type:"), cmbType);
-    layoutMarker->addRow(tr("Value:"), txtValue);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
+    layout->addWidget(cmbType, 1, 1);
+    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
+    layout->addWidget(txtValue, 2, 1);
 }
 
 void DSceneEdgeCurrentMarker::load()
@@ -750,14 +749,12 @@ DSceneLabelCurrentMarker::~DSceneLabelCurrentMarker()
     delete txtConductivity;
 }
 
-QLayout* DSceneLabelCurrentMarker::createContent()
+void DSceneLabelCurrentMarker::createContent()
 {
     txtConductivity = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Conductivity (S/m):"), txtConductivity);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("Conductivity (S/m):")), 1, 0);
+    layout->addWidget(txtConductivity, 1, 1);
 }
 
 void DSceneLabelCurrentMarker::load()

@@ -660,7 +660,7 @@ DSceneEdgeElasticityMarker::~DSceneEdgeElasticityMarker()
     delete txtForceY;
 }
 
-QLayout* DSceneEdgeElasticityMarker::createContent()
+void DSceneEdgeElasticityMarker::createContent()
 {
     cmbTypeX = new QComboBox();
     cmbTypeX->addItem("none", PHYSICFIELDBC_NONE);
@@ -675,13 +675,14 @@ QLayout* DSceneEdgeElasticityMarker::createContent()
     txtForceX = new SLineEditValue(this);
     txtForceY = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC Type X:"), cmbTypeX);
-    layoutMarker->addRow(tr("BC Type Y:"), cmbTypeY);
-    layoutMarker->addRow(tr("Force X:"), txtForceX);
-    layoutMarker->addRow(tr("Force Y:"), txtForceY);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("BC Type X:")), 1, 0);
+    layout->addWidget(cmbTypeX, 1, 1);
+    layout->addWidget(new QLabel(tr("BC Type Y:")), 2, 0);
+    layout->addWidget(cmbTypeY, 2, 1);
+    layout->addWidget(new QLabel(tr("Force X (N):")), 3, 0);
+    layout->addWidget(txtForceX, 3, 1);
+    layout->addWidget(new QLabel(tr("Force Y (N):")), 4, 0);
+    layout->addWidget(txtForceY, 4, 1);
 }
 
 void DSceneEdgeElasticityMarker::load()
@@ -740,16 +741,15 @@ DSceneLabelElasticityMarker::~DSceneLabelElasticityMarker()
     delete txtPoissonNumber;
 }
 
-QLayout* DSceneLabelElasticityMarker::createContent()
+void DSceneLabelElasticityMarker::createContent()
 {
     txtYoungModulus = new SLineEditValue();
     txtPoissonNumber = new SLineEditValue();
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Young modulus (Pa):"), txtYoungModulus);
-    layoutMarker->addRow(tr("Poisson number (-):"), txtPoissonNumber);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("Young modulus (Pa):")), 1, 0);
+    layout->addWidget(txtYoungModulus, 1, 1);
+    layout->addWidget(new QLabel(tr("Poisson number (-):")), 1, 0);
+    layout->addWidget(txtPoissonNumber, 1, 1);
 }
 
 void DSceneLabelElasticityMarker::load()

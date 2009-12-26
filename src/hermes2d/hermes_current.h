@@ -160,7 +160,7 @@ public:
     ~DSceneEdgeCurrentMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();
@@ -179,7 +179,7 @@ public:
     ~DSceneLabelCurrentMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();

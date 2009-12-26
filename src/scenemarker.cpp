@@ -96,7 +96,7 @@ SceneLabelMarkerNone::SceneLabelMarkerNone() : SceneLabelMarker("none")
 
 DSceneEdgeMarker::DSceneEdgeMarker(QWidget *parent) : QDialog(parent)
 {
-    layout = new QVBoxLayout();
+    layout = new QGridLayout();
     txtName = new QLineEdit("");
 }
 
@@ -108,19 +108,18 @@ DSceneEdgeMarker::~DSceneEdgeMarker()
 
 void DSceneEdgeMarker::createDialog()
 {
-    QHBoxLayout *layoutName = new QHBoxLayout();
-    layoutName->addWidget(new QLabel(tr("Name:")));
-    layoutName->addWidget(txtName);
-
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
-    layout->addLayout(layoutName);
-    layout->addLayout(createContent());
-    layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addWidget(new QLabel(tr("Name:")), 0, 0);
+    layout->addWidget(txtName, 0, 1);
+
+    // content
+    createContent();
+
+    layout->addWidget(buttonBox, 100, 0, 1, 2);
 
     txtName->setFocus();
 
@@ -175,7 +174,7 @@ void DSceneEdgeMarker::doReject()
 
 DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
 {
-    layout = new QVBoxLayout();
+    layout = new QGridLayout();
     txtName = new QLineEdit("");
 }
 
@@ -187,19 +186,18 @@ DSceneLabelMarker::~DSceneLabelMarker()
 
 void DSceneLabelMarker::createDialog()
 {
-    QHBoxLayout *layoutName = new QHBoxLayout();
-    layoutName->addWidget(new QLabel(tr("Name:")));
-    layoutName->addWidget(txtName);
-
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
-    layout->addLayout(layoutName);
-    layout->addLayout(createContent());
-    layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addWidget(new QLabel(tr("Name:")), 0, 0);
+    layout->addWidget(txtName, 0, 1);
+
+    // content
+    createContent();
+
+    layout->addWidget(buttonBox, 100, 0, 1, 2);
 
     txtName->setFocus();
 

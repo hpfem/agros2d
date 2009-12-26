@@ -152,7 +152,7 @@ public:
     ~DSceneEdgeElasticityMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();
@@ -173,7 +173,7 @@ public:
     ~DSceneLabelElasticityMarker();
 
 protected:
-    QLayout *createContent();
+    void createContent();
 
     void load();
     bool save();

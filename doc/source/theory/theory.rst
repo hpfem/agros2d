@@ -146,7 +146,7 @@ and total current density is
 Maxwell stress tensor:
 
 .. math::
-   \vec{S}_\mathrm{M} = \vec{H} \otimes \vec{B} - \frac{1}{2} \vec{H} \vec{B} \cdot \delta
+   \mat{S}_\mathrm{M} = \vec{H} \otimes \vec{B} - \frac{1}{2} \vec{H} \vec{B} \cdot \mat{I}
 
 Boundary conditions
 ^^^^^^^^^^^^^^^^^^^
@@ -207,7 +207,7 @@ Lorentz force:
 Maxwell force:
 
 .. math::
-   \vec{F}_\mathrm{M} = \oint_S \vec{S}_\mathrm{M} \dif S \,\,\,\mathrm{(N)}
+   \vec{F}_\mathrm{M} = \oint_S \mat{S}_\mathrm{M} \dif S \,\,\,\mathrm{(N)}
 
 Torque (planar arrangement only):
 

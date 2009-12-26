@@ -894,7 +894,7 @@ DSceneEdgeHeatMarker::~DSceneEdgeHeatMarker()
     delete txtExternalTemperature;
 }
 
-QLayout* DSceneEdgeHeatMarker::createContent()
+void DSceneEdgeHeatMarker::createContent()
 {
     cmbType = new QComboBox();
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
@@ -907,14 +907,16 @@ QLayout* DSceneEdgeHeatMarker::createContent()
     txtHeatTransferCoefficient = new SLineEditValue(this);
     txtExternalTemperature = new SLineEditValue(this);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("BC Type:"), cmbType);
-    layoutMarker->addRow(tr("Temperature (deg.):"), txtTemperature);
-    layoutMarker->addRow(tr("Heat flux (W/m2):"), txtHeatFlux);
-    layoutMarker->addRow(tr("Heat transfer coef. (W/m2.K):"), txtHeatTransferCoefficient);
-    layoutMarker->addRow(tr("External temperature (deg.):"), txtExternalTemperature);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
+    layout->addWidget(cmbType, 1, 1);
+    layout->addWidget(new QLabel(tr("Temperature (deg.):")), 2, 0);
+    layout->addWidget(txtTemperature, 2, 1);
+    layout->addWidget(new QLabel(tr("Heat flux (W/m2):")), 3, 0);
+    layout->addWidget(txtHeatFlux, 3, 1);
+    layout->addWidget(new QLabel(tr("Heat transfer coef. (W/m2.K):")), 4, 0);
+    layout->addWidget(txtHeatTransferCoefficient, 4, 1);
+    layout->addWidget(new QLabel(tr("External temperature (deg.):")), 5, 0);
+    layout->addWidget(txtExternalTemperature, 5, 1);
 }
 
 void DSceneEdgeHeatMarker::load()
@@ -1028,7 +1030,7 @@ DSceneLabelHeatMarker::~DSceneLabelHeatMarker()
     delete txtSpecificHeat;
 }
 
-QLayout* DSceneLabelHeatMarker::createContent()
+void DSceneLabelHeatMarker::createContent()
 {
     txtThermalConductivity = new SLineEditValue(this);
     txtVolumeHeat = new SLineEditValue(this);
@@ -1037,13 +1039,14 @@ QLayout* DSceneLabelHeatMarker::createContent()
     txtSpecificHeat = new SLineEditValue(this);
     txtSpecificHeat->setEnabled(Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
 
-    QFormLayout *layoutMarker = new QFormLayout();
-    layoutMarker->addRow(tr("Thermal conductivity (W/m.K):"), txtThermalConductivity);
-    layoutMarker->addRow(tr("Volume heat (J/m3):"), txtVolumeHeat);
-    layoutMarker->addRow(tr("Density (kg/m3):"), txtDensity);
-    layoutMarker->addRow(tr("Specific heat (J/kg.K):"), txtSpecificHeat);
-
-    return layoutMarker;
+    layout->addWidget(new QLabel(tr("Thermal conductivity (W/m.K):")), 1, 0);
+    layout->addWidget(txtThermalConductivity, 1, 1);
+    layout->addWidget(new QLabel(tr("Volume heat (J/m3):")), 2, 0);
+    layout->addWidget(txtVolumeHeat, 2, 1);
+    layout->addWidget(new QLabel(tr("Density (kg/m3):")), 3, 0);
+    layout->addWidget(txtDensity, 3, 1);
+    layout->addWidget(new QLabel(tr("Specific heat (J/kg.K):")), 4, 0);
+    layout->addWidget(txtSpecificHeat, 4, 1);
 }
 
 void DSceneLabelHeatMarker::load()
