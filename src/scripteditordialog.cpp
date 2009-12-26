@@ -21,6 +21,31 @@
 #include "scripteditorcommandpython.h"
 
 static PythonEngine *pythonEngine = NULL;
+static QCompleter *m_completer = NULL;
+
+QCompleter *completer(bool invalidate)
+{
+    if (!m_completer)
+    {
+        m_completer = new QCompleter();
+        m_completer->setCaseSensitivity(Qt::CaseInsensitive);
+        m_completer->setCompletionMode(QCompleter::InlineCompletion);
+        m_completer->setModel(new QStringListModel());
+
+        invalidate = true;
+    }
+
+    if (invalidate)
+    {
+        QSettings settings;
+        QStringList list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
+
+        QStringListModel *model = dynamic_cast<QStringListModel *>(m_completer->model());
+        model->setStringList(list);
+    }
+
+    return m_completer;
+}
 
 void createScriptEngine(SceneView *sceneView)
 {
@@ -36,6 +61,39 @@ ScriptResult runPythonScript(const QString &script, const QString &fileName)
 ExpressionResult runPythonExpression(const QString &expression)
 {
     return pythonEngine->runPythonExpression(expression);
+}
+
+void runScript(const QString &fileName)
+{
+    if (QFile::exists(fileName))
+    {
+        QFile file(fileName);
+        if (file.open(QFile::ReadOnly | QFile::Text))
+        {
+            // run script
+            ScriptResult result = runPythonScript(file.readAll(), fileName);
+
+            if (result.isError)
+                QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
+            else if (!result.text.isEmpty())
+                QMessageBox::information(QApplication::activeWindow(), "Message", result.text);
+        }
+        file.close();
+    }
+}
+
+void runCommand(const QString &command)
+{
+    if (!command.isEmpty())
+    {
+        // run script
+        ScriptResult result = runPythonScript(command);
+
+        if (result.isError)
+            QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
+        else if (!result.text.isEmpty())
+            QMessageBox::information(QApplication::activeWindow(), "Message", result.text);
+    }
 }
 
 QString createPythonFromModel()
@@ -210,73 +268,22 @@ ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
     file = "";
 
     txtEditor = new ScriptEditor(this);
-    txtOutput = new QPlainTextEdit(this);
-    splitter = new QSplitter(this);
 
     createControls();
-
-    QSettings settings;
-    splitter->restoreGeometry(settings.value("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
-    splitter->restoreState(settings.value("ScriptEditorDialog/SplitterState", splitter->saveState()).toByteArray());
 }
 
 ScriptEditorWidget::~ScriptEditorWidget()
 {
-    QSettings settings;
-    settings.setValue("ScriptEditorDialog/SplitterGeometry", splitter->saveGeometry());
-    settings.setValue("ScriptEditorDialog/SplitterState", splitter->saveState());
-
     delete txtEditor;
-    delete txtOutput;
-    delete splitter;
 }
 
 void ScriptEditorWidget::createControls()
 {
-    txtOutput->setFont(QFont("Monospaced", 10));
-    txtOutput->setReadOnly(true);
-
     // contents
-    splitter->setOrientation(Qt::Vertical);
-    splitter->addWidget(txtEditor);
-    splitter->addWidget(txtOutput);
-
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(splitter);
+    layout->addWidget(txtEditor);
 
     setLayout(layout);
-
-    QSettings settings;
-    splitter->restoreGeometry(settings.value("ScriptEditorDialog/Splitter", splitter->saveGeometry()).toByteArray());
-}
-
-void ScriptEditorWidget::doRunPython()
-{
-    connect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
-
-    txtOutput->clear();
-    ScriptResult result;
-    if (txtEditor->textCursor().hasSelection())
-        result = runPythonScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), file);
-    else
-        result = runPythonScript(txtEditor->toPlainText(), file);
-
-    if (result.isError)
-        txtOutput->setPlainText(result.text);
-
-    disconnect(pythonEngine, SIGNAL(printStdout(QString)), this, SLOT(doPrintStdout(QString)));
-}
-
-void ScriptEditorWidget::doCreatePythonFromModel()
-{
-    txtEditor->setPlainText(createPythonFromModel());
-}
-
-void ScriptEditorWidget::doPrintStdout(const QString &message)
-{
-    txtOutput->appendPlainText(message);
-    txtOutput->ensureCursorVisible();
-    QApplication::processEvents();
 }
 
 // ***********************************************************************************************************
@@ -314,7 +321,7 @@ ScriptEditorDialog::~ScriptEditorDialog()
     settings.setValue("ScriptEditorDialog/State", saveState());
     settings.setValue("ScriptEditorDialog/RecentFiles", recentFiles);
 
-    delete pythonEngine;
+    delete pythonEngine;    
 }
 
 void ScriptEditorDialog::showDialog()
@@ -323,39 +330,6 @@ void ScriptEditorDialog::showDialog()
     activateWindow();
     raise();
     txtEditor->setFocus();
-}
-
-void ScriptEditorDialog::runScript(const QString &fileName)
-{
-    if (QFile::exists(fileName))
-    {
-        QFile file(fileName);
-        if (file.open(QFile::ReadOnly | QFile::Text))
-        {
-            // run script
-            ScriptResult result = runPythonScript(file.readAll(), fileName);
-
-            if (result.isError)
-                QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
-            else if (!result.text.isEmpty())
-                QMessageBox::information(QApplication::activeWindow(), "Message", result.text);
-        }
-        file.close();
-    }
-}
-
-void ScriptEditorDialog::runCommand(const QString &command)
-{
-    if (!command.isEmpty())
-    {
-        // run script
-        ScriptResult result = runPythonScript(command);
-
-        if (result.isError)
-            QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
-        else if (!result.text.isEmpty())
-            QMessageBox::information(QApplication::activeWindow(), "Message", result.text);
-    }
 }
 
 void ScriptEditorDialog::createActions()
@@ -417,6 +391,7 @@ void ScriptEditorDialog::createActions()
 
     actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
     actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
+    connect(actCreateFromModel, SIGNAL(triggered()), this, SLOT(doCreatePythonFromModel()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
@@ -515,13 +490,12 @@ void ScriptEditorDialog::createControls()
 
     doFileNew();
 
-    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doCloseTab(int)));
+    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doFileClose()));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(doCurrentPageChanged(int)));
 
     // main widget
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(tabWidget);
-    layout->setMargin(6);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -538,26 +512,34 @@ void ScriptEditorDialog::createViews()
 {
     QSettings settings;
 
+    // file browser
     filBrowser = new FileBrowser(this);
     filBrowser->setNameFilter("*.py");
     filBrowser->setDir(settings.value("ScriptEditorDialog/WorkDir", datadir()).value<QString>());
 
     connect(filBrowser, SIGNAL(fileItemDoubleClick(QString)), this, SLOT(doFileItemDoubleClick(QString)));
 
-    // main widget
     QVBoxLayout *layout = new QVBoxLayout();
-    // layout->addWidget(trvFile);
     layout->addWidget(filBrowser);
     layout->setContentsMargins(0, 0, 0, 7);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
 
-    QDockWidget *dock = new QDockWidget(tr("File browser"), this);
-    dock->setObjectName("ScriptEditorFileBrowser");
-    dock->setWidget(widget);
-    dock->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::LeftDockWidgetArea, dock);
+    QDockWidget *dockFileBrowser = new QDockWidget(tr("File browser"), this);
+    dockFileBrowser->setObjectName("ScriptEditorFileBrowserView");
+    dockFileBrowser->setWidget(widget);
+    dockFileBrowser->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::LeftDockWidgetArea, dockFileBrowser);
+
+    // terminal
+    terminal = new Terminal(this);
+
+    QDockWidget *dockTerminal = new QDockWidget(tr("Terminal"), this);
+    dockTerminal->setObjectName("TerminalView");
+    dockTerminal->setWidget(terminal);
+    dockTerminal->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::BottomDockWidgetArea, dockTerminal);
 }
 
 void ScriptEditorDialog::createStatusBar()
@@ -575,7 +557,28 @@ void ScriptEditorDialog::doRunPython()
     if (!scriptEditorWidget->file.isEmpty())
         filBrowser->setDir(QFileInfo(scriptEditorWidget->file).absolutePath());
 
-    scriptEditorWidget->doRunPython();
+    // run script
+    terminal->doPrintStdout("Run script: " + tabWidget->tabText(tabWidget->currentIndex()) + "\n", Qt::gray);
+
+    connect(pythonEngine, SIGNAL(printStdout(QString)), terminal, SLOT(doPrintStdout(QString)));
+
+    ScriptResult result;
+    if (txtEditor->textCursor().hasSelection())
+        result = runPythonScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), scriptEditorWidget->file);
+    else
+        result = runPythonScript(txtEditor->toPlainText(), scriptEditorWidget->file);
+
+    if (result.isError)
+        terminal->doPrintStdout(result.text + "\n", Qt::red);
+
+    disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminal, SLOT(doPrintStdout(QString)));
+}
+
+void ScriptEditorDialog::doCreatePythonFromModel()
+{
+    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+
+    scriptEditorWidget->txtEditor->setPlainText(createPythonFromModel());
 }
 
 void ScriptEditorDialog::doFileItemDoubleClick(const QString &path)
@@ -795,9 +798,6 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
     txtEditor = scriptEditorWidget->txtEditor;
 
-    actCreateFromModel->disconnect();
-    connect(actCreateFromModel, SIGNAL(triggered()), scriptEditorWidget, SLOT(doCreatePythonFromModel()));
-
     actCut->disconnect();
     connect(actCut, SIGNAL(triggered()), txtEditor, SLOT(cut()));
     actCopy->disconnect();
@@ -821,7 +821,8 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     actUndo->setEnabled(txtEditor->document()->isUndoAvailable());
     actRedo->setEnabled(txtEditor->document()->isRedoAvailable());
 
-    tabWidget->setTabsClosable(tabWidget->count() > 1);
+    // tabWidget->setTabsClosable(tabWidget->count() > 1);
+    tabWidget->setTabsClosable(true);
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
 
     QString fileName = tr("Untitled");

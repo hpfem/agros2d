@@ -173,6 +173,42 @@ struct RectPoint
     inline double height() { return fabs(end.y - start.y); }
 };
 
+struct ScriptResult
+{
+    ScriptResult()
+    {
+        text = "";
+        isError = false;
+    }
+
+    ScriptResult(const QString &text, bool isError = false)
+    {
+        this->text = text;
+        this->isError = isError;
+    }
+
+    QString text;
+    bool isError;
+};
+
+struct ExpressionResult
+{
+    ExpressionResult()
+    {
+        this->error = "";
+        this->value = 0.0;
+    }
+
+    ExpressionResult(double value, const QString &error)
+    {
+        this->error = error;
+        this->value = value;
+    }
+
+    QString error;
+    double value;
+};
+
 enum ErrorResultType
 {
     ERRORRESULT_NONE,

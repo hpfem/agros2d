@@ -35,7 +35,7 @@ mview.show(msh, lib="mpl", method="simple", notebook=False)
 
 """
 solve()
-print solutionfilename()
+print(solutionfilename())
 
 sln = Solution()
 sln.load(solutionfilename())

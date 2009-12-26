@@ -35,7 +35,7 @@ public:
     ~PythonEngine();
 
     void setSceneView(SceneView *sceneView);
-    inline void showMessage(const QString &message);
+    void showMessage(const QString &message);
 
     ScriptResult runPythonScript(const QString &script, const QString &fileName);
     ExpressionResult runPythonExpression(const QString &expression);

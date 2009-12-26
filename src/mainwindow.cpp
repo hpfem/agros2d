@@ -51,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     scriptEditorDialog = new ScriptEditorDialog(this);
     reportDialog = new ReportDialog(sceneView, this);
     videoDialog = new VideoDialog(sceneView, this);
+    terminalDialog = new TerminalDialog(this);
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
@@ -782,7 +783,7 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
     if (QFile::exists(fileNameScript))
     {
-        scriptEditorDialog->runScript(fileNameScript);
+        runScript(fileNameScript);
     }
     else
     {
@@ -791,25 +792,9 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
     }    
 }
 
-void MainWindow::doScriptEditorRunCommand(const QString &command)
+void MainWindow::doScriptEditorRunCommand()
 {
-    QString commandLine;
-    if (command.isEmpty())
-    {
-        CommandDialog commandDialog;
-        if (commandDialog.exec() == QDialog::Accepted)
-        {
-            commandLine = commandDialog.command();
-        }
-        // commandLine = QInputDialog::getText(this, tr("Command"), tr("Enter command:"), QLineEdit::Normal);
-    }
-    else
-    {
-        commandLine = command;
-    }
-
-    if (!commandLine.isEmpty())
-        scriptEditorDialog->runCommand(commandLine);
+    terminalDialog->exec();
 }
 
 void MainWindow::doCut()

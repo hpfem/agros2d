@@ -66,7 +66,7 @@ private slots:
     void doChart();
     void doScriptEditor();
     void doScriptEditorRunScript(const QString &fileName = "");
-    void doScriptEditorRunCommand(const QString &command = "");
+    void doScriptEditorRunCommand();
     void doOptions();
     void doReport();
     void doCreateVideo();
@@ -161,6 +161,7 @@ private:
     ScriptEditorDialog *scriptEditorDialog;
     ReportDialog *reportDialog;
     VideoDialog *videoDialog;
+    TerminalDialog *terminalDialog;
 
     void setRecentFiles();
 

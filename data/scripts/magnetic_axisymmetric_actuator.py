@@ -1,5 +1,5 @@
 # model
-newdocument("Actuator", "axisymmetric", "magnetic", 1, 4, "disabled", 1, 2, 0, "steadystate", 1, 1, 0)
+newdocument("Actuator", "axisymmetric", "magnetic", 1, 2, "disabled", 1, 2, 0, "steadystate", 1, 1, 0)
 
 # boundaries
 addboundary("A = 0", "magnetic_vector_potential", 0)
@@ -36,7 +36,7 @@ addedge(0.1, 0.05, 0, 0.15, 90, "A = 0")
 
 # labels
 addlabel(0.0348743, 0.0347237, 0, "Fe")
-addlabel(0.00512569, 0.04, 0, "Fe")
+addlabel(0.00512569, 0.04, 3e-06, "Fe")
 addlabel(0.021206, 0.0692964, 0, "Cu")
 addlabel(0.0141705, 0.12445, 0, "Air")
 
@@ -44,10 +44,11 @@ zoombestfit()
 selectnone()
 
 # calculation of force
-dz = 0.003
+zmax = (0.077-0.05)
+dz = zmax/(10-1)
 z = []
 Fz = []
-print "F = f(z) (N):"
+print("F = f(z) (N):")
 for i in range(10):
 	if i > 0:
 		selectedge(14, 15, 16, 17)
@@ -58,18 +59,19 @@ for i in range(10):
 
 	z.append(0 + (i*dz))
 	Fz.append(integral["Fy"])
+	print(z[-1], Fz[-1])
 
-# static characteristic
-# interpolate 
 import pylab as pl
 import numpy as np
 from scipy import interpolate
 from scipy.integrate import odeint
 
+# static characteristic
+# interpolate 
 fint = interpolate.interp1d(z, Fz, 1)
 
 # plot
-zint = np.linspace(0, 0.027)
+zint = np.linspace(0, zmax)
 Fzint = fint(zint)
 
 pl.subplot(3,1,1)

@@ -48,7 +48,7 @@ selectnone()
 # calculation of capacity
 r = []
 C = []
-print "C = f(r) (F):"
+print("C = f(r) (F):")
 for i in range(5):
 	if i > 0:
 		selectedge(6, 7, 8)
@@ -59,15 +59,13 @@ for i in range(5):
 
 	r.append(r1 + (i*dr))
 	C.append(2*2*integral["We"]/(U^2))
-
-print r
-print C
+	print(r[-1], C[-1])
 
 # plot chart
-import pylab
+import pylab as pl
 
-pylab.plot(r, C)
-pylab.grid(1)
-pylab.xlabel("r (m)")
-pylab.ylabel("C (F)")
-pylab.show()
+pl.plot(r, C)
+pl.grid(1)
+pl.xlabel("r (m)")
+pl.ylabel("C (F)")
+pl.show()

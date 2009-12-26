@@ -27,12 +27,12 @@ solve()
 point = pointresult(0.213175, 0.25045)
 testPotential = abs(abs(point["V"]) - 7.285427) < 1e-2
 if (not testPotential): 
-    print "Scalar potential: ", abs(point["V"]), " == ", 7.285427
+    print("Scalar potential: " + str(abs(point["V"])) + " == " + str(7.285427))
 
 # current
 integral = surfaceintegral(1)
 testI = abs(abs(integral["I"]) - 2.124955e8) < 1e6
 if (not testI):
-    print "Current: ", abs(integral.I), " == ", 2.124955e8
+    print("Current: " + str(abs(integral["I"])) + " == " + str(2.124955e8))
 
-print "Test: Current field - axisymmetric: ", (testPotential and testI)
+print("Test: Current field - axisymmetric: " + str(testPotential and testI))

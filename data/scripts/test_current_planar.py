@@ -35,12 +35,12 @@ solve()
 point = pointresult(0.11879, 0.346203)
 testPotential = abs(abs(point["V"]) - 0.928377) < 1e-2
 if (not testPotential):
-	print("Scalar potential: ", abs(point["V"]), " == ", 0.928377)
+	print("Scalar potential: " + str(abs(point["V"])) + " == " + str(0.928377))
 
 # current
 integral = surfaceintegral(0)
 testI = abs(abs(integral["I"]) - 3629.425713) < 1e2
 if (not testI):
-	print "Current: ", abs(integral["I"]), " == ", 3629.425713
+	print("Current: " + str(abs(integral["I"])) + " == " + str(3629.425713))
 
-print "Test: Current field - planar: ", (testPotential and testI)
+print("Test: Current field - planar: " + str(testPotential and testI))

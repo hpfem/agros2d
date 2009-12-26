@@ -822,10 +822,7 @@ PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
     char *str = NULL;
     if (PyArg_ParseTuple(pArgs, "s", &str))
     {
-        if (QString(str) != "\n")
-        {
-            emit pythonEngine->showMessage(str);
-        }
+        emit pythonEngine->showMessage(QString(str) + "\n");
         Py_RETURN_NONE;
     }
     return NULL;

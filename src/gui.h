@@ -99,21 +99,39 @@ private:
 
 // ****************************************************************************************************
 
-class CommandDialog : public QDialog
+class Terminal : public QWidget
 {
     Q_OBJECT
 public:
-    CommandDialog(QWidget *parent = 0);
-    ~CommandDialog();
-
-    inline QString command() { return cmbCommand->currentText(); }
-
-private:
-    QComboBox *cmbCommand;
-    // QCompleter *completer;
+    Terminal(QWidget *parent = 0);
+    ~Terminal();
 
 public slots:
-   void doAccept();
+    void doWriteResult(ScriptResult result);
+    void doPrintStdout(const QString &message, QColor color = Qt::blue);
+
+private:
+    QLineEdit *txtCommand;
+    QTextEdit *txtOutput;
+    QPushButton *btnExecute;
+    QPushButton *btnClear;
+
+private slots:
+    void doExecute();
+    void doCommandTextChanged(const QString &str);
+    void doPopupActivated(const QString &str);
+};
+
+// ****************************************************************************************************
+
+class TerminalDialog : public QDialog
+{
+public:
+    TerminalDialog(QWidget *parent = 0);
+    ~TerminalDialog();
+
+private:
+    Terminal *terminal;
 };
 
 // ****************************************************************************************************

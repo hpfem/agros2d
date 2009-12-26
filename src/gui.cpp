@@ -19,6 +19,7 @@
 
 #include "gui.h"
 #include "scene.h"
+#include "scripteditordialog.h"
 
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit)
 {
@@ -243,77 +244,148 @@ void Chart::setData(double *xval, double *yval, int count)
 
 // ***********************************************************************************************************
 
-CommandDialog::CommandDialog(QWidget *parent) : QDialog(parent)
+Terminal::Terminal(QWidget *parent) : QWidget(parent)
 {
-    setWindowTitle(tr("Command"));
+    setWindowTitle(tr("Command dialog"));
     setWindowIcon(icon("system-run"));   
 
-    cmbCommand = new QComboBox(this);
-    cmbCommand->setEditable(true);
-    cmbCommand->setMinimumWidth(350);
+    txtCommand = new QLineEdit(this);
+    txtCommand->setCompleter(completer());
+    txtCommand->setMinimumWidth(300);
+    connect(txtCommand, SIGNAL(returnPressed()), this, SLOT(doExecute()));
+    connect(txtCommand, SIGNAL(textChanged(QString)), this, SLOT(doCommandTextChanged(QString)));
 
-    // completer
-    QSettings settings;
-    QStringList list;
-    list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
-    /*
-    QStringListModel *model = new QStringListModel();
-    model->setStringList(list);
+    txtOutput = new QTextEdit(this);
+    txtOutput->setLineWrapMode (QTextEdit::NoWrap);
+    txtOutput->setFont(QFont("Monospaced", 9));
+    txtOutput->setReadOnly(true);
 
-    completer = new QCompleter(model, this);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    cmbCommand->setCompleter(completer);
-    */
-    cmbCommand->addItem("", "");
-    cmbCommand->addItems(list);
+    btnExecute = new QPushButton(this);
+    btnExecute->setText(tr("Execute"));
+    btnExecute->setEnabled(false);
+    connect(btnExecute, SIGNAL(clicked()), this, SLOT(doExecute()));
 
-    // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    btnClear = new QPushButton(this);
+    btnClear->setText(tr("Clear"));
+    connect(btnClear, SIGNAL(clicked()), txtOutput, SLOT(clear()));
 
+    // layout
     QHBoxLayout *layoutCommand = new QHBoxLayout();
     layoutCommand->addWidget(new QLabel(tr("Enter command:")));
-    layoutCommand->addWidget(cmbCommand);
-    layoutCommand->addStretch();
+    layoutCommand->addWidget(txtCommand, 1);
+    layoutCommand->addWidget(btnExecute);
+    layoutCommand->addWidget(btnClear);
 
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(txtOutput);
     layout->addLayout(layoutCommand);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
+    txtCommand->setFocus();
 
     setLayout(layout);
-
-    setMaximumSize(sizeHint());
 }
 
-CommandDialog::~CommandDialog()
+Terminal::~Terminal()
 {
-    delete cmbCommand;
-    // delete completer;
+    delete txtCommand;
+    delete txtOutput;
 }
 
-void CommandDialog::doAccept()
+void Terminal::doExecute()
 {
-    if (!command().isEmpty())
+    if (!txtCommand->text().isEmpty())
     {
         QSettings settings;
         QStringList list;
         list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
-        list.insert(0, command());
+        list.insert(0, txtCommand->text());
 
-        // remove last item (over 30), empty strings and duplicates
+        // remove last item (over 50), empty strings and duplicates
         list.removeAll("");
         list.removeDuplicates();
-        while (list.count() > 30)
+        while (list.count() > 50)
             list.removeAt(0);
 
         settings.setValue("CommandDialog/RecentCommands", list);
-    }
 
-    accept();
+        // invalidate
+        completer(true);
+
+        // command
+        doPrintStdout(">>> " + txtCommand->text() + "\n", Qt::black);
+
+        // execute command
+        doWriteResult(runPythonScript(txtCommand->text()));
+    }
+    txtCommand->clear();
+    txtCommand->setFocus();
+    cout << txtCommand->text().toStdString() << endl;
 }
 
+void Terminal::doCommandTextChanged(const QString &str)
+{
+    btnExecute->setEnabled(!str.isEmpty());
+}
+
+void Terminal::doPopupActivated(const QString &str)
+{
+    txtCommand->clear();
+}
+
+void Terminal::doWriteResult(ScriptResult result)
+{
+    QColor color = Qt::blue;
+    if (result.isError)
+        color = (Qt::red);
+
+    doPrintStdout(result.text.trimmed() + "\n", color);
+}
+
+void Terminal::doPrintStdout(const QString &message, QColor color)
+{
+    if (!message.trimmed().isEmpty())
+    {
+        // format
+        QTextCharFormat format;
+        format.setForeground(color);
+
+        // cursor
+        QTextCursor cursor = txtOutput->textCursor();
+        cursor.beginEditBlock();
+        cursor.insertText(message, format);
+        cursor.endEditBlock();
+
+        // output
+        txtOutput->setTextCursor(cursor);
+        txtOutput->ensureCursorVisible();
+        QApplication::processEvents();
+    }
+}
+
+// ****************************************************************************************************
+
+TerminalDialog::TerminalDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowIcon(icon("system-rum"));
+    setWindowTitle(tr("Terminal"));
+    setWindowFlags(Qt::Window);
+
+    terminal = new Terminal(this);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(terminal);
+    layout->setMargin(0);
+
+    setLayout(layout);
+
+    QSettings settings;
+    restoreGeometry(settings.value("TerminalDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+TerminalDialog::~TerminalDialog()
+{
+    QSettings settings;
+    settings.setValue("TerminalDialog/Geometry", saveGeometry());
+}
 
 // ****************************************************************************************************
 

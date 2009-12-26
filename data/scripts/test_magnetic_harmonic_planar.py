@@ -37,43 +37,43 @@ pointPotential = pointresult(0.00589,-0.005301)
 testPotentialReal = abs(abs(pointPotential["A_real"]) - 1.632192e-5) < 1e-7
 testPotentialImag = abs(abs(pointPotential["A_imag"]) - 4.083868e-5) < 1e-7
 if (not testPotentialReal):
-	print "Magnetic potential - real: ", abs(pointPotential["A_real"]), " == ", 1.632192e-5
+	print("Magnetic potential - real: " + str(abs(pointPotential["A_real"])) + " == " + str(1.632192e-5))
 if (not testPotentialImag):
-	print "Magnetic potential - imag: ", abs(pointPotential["A_imag"]), " == ", 4.083868e-5
+	print("Magnetic potential - imag: " + str(abs(pointPotential["A_imag"])) + " == " + str(4.083868e-5))
 
 pointTotalCurrentDensity = pointresult(0.013567, 0.017081)
 testTotalCurentDensityReal = abs(abs(pointTotalCurrentDensity["J_real"]) - 2.408328e5) < 1e2
 testTotalCurentDensityImag = abs(abs(pointTotalCurrentDensity["J_imag"]) - 3.299946e5) < 1e2
 if (not testTotalCurentDensityReal):
-	print "Total current density - real: ", abs(pointTotalCurrentDensity["J_real"]), " == ", 2.408328e5
+	print("Total current density - real: " + str(abs(pointTotalCurrentDensity["J_real"])) + " == " + str(2.408328e5))
 if (not testTotalCurentDensityImag):
-	print "Total current density - imag: ", abs(pointTotalCurrentDensity["J_imag"]), " == ", 3.299946e5
+	print("Total current density - imag: " + str(abs(pointTotalCurrentDensity["J_imag"])) + " == " + str(3.299946e5))
 
 pointFluxDensity = pointresult(0.009454, -0.004136)
 testFluxDensity = abs(abs(pointFluxDensity["B"]) - 0.00142) < 1e-4
 if (not testFluxDensity):
-	print "Flux density: ", abs(point["B"]), " == ", 0.00142
+	print("Flux density: " + str(abs(point["B"])) + " == " + str(0.00142))
 
 # energy
 integral = volumeintegral(0, 1, 2)
 testEnergy = abs(abs(integral["Wm"]) - 0.001923) < 1e-5
 if (not testEnergy):
-	print "Magnetic energy: ", abs(integral["Wm"]), " == ", 0.001923
+	print("Magnetic energy: " + str(abs(integral["Wm"])) + " == " + str(0.001923))
 
 # Lorentz force
 integral = volumeintegral(1);
 testLorentzForceX = abs(abs(integral["Fx"]) - 0.020612) < 1e-4
 testLorentzForceY = abs(abs(integral["Fy"]) - 0.011107) < 1e-4
 if (not testLorentzForceX):
-	print "Lorentz force - X: ", abs(integral["Fx"]), " == ", 0.020612
+	print("Lorentz force - X: " + str(abs(integral["Fx"])) + " == " + str(0.020612))
 if (not testLorentzForceY):
-	print "Lorentz force - Y: ", abs(integral["Fy"]), " == ", 0.011107
+	print("Lorentz force - Y: " + str(abs(integral["Fy"])) + " == " + str(0.011107))
 
 # Joule losses
 integral = volumeintegral(1)
 testJouleLosses = abs(abs(integral["Pj"]) - 0.25327) < 1e-4
 if (not testJouleLosses):
-	print "Joule losses: ", abs(integral["Pj"]), " == ", 0.25327
+	print("Joule losses: " + str(abs(integral["Pj"])) + " == " + str(0.25327))
 
-print "Test: Magnetic harmonic - planar: ", (testPotentialReal and testPotentialImag and testTotalCurentDensityReal and testTotalCurentDensityImag and 
-testFluxDensity and testEnergy and testLorentzForceX and testLorentzForceY and testJouleLosses)
+print("Test: Magnetic harmonic - planar: " + str(testPotentialReal and testPotentialImag and testTotalCurentDensityReal and testTotalCurentDensityImag and 
+testFluxDensity and testEnergy and testLorentzForceX and testLorentzForceY and testJouleLosses))

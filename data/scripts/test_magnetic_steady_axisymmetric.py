@@ -48,12 +48,12 @@ solve()
 point = pointresult(0.035324, 0.043477)
 testFluxDensity = abs(abs(point["B_real"]) - 0.032477) < 1e-4
 if (not testFluxDensity):
-	print "Flux density: ", abs(point["B_real"]), " == ", 0.032477
+	print("Flux density: " + str(abs(point["B_real"])) + " == " + str(0.032477))
 
 # energy
 integral = volumeintegral(0, 1, 2, 3)
 testEnergy = (abs(integral["Wm"]) - 0.036347) < 1e-5
 if (not testEnergy):
-	print "Magnetic energy: ", abs(integral["Wm"]), " == ", 0.036347
+	print("Magnetic energy: " + str(abs(integral["Wm"])) + " == " + str(0.036347))
 
-print "Test: Magnetic steady state - axisymmetric: ", (testFluxDensity and testEnergy)
+print("Test: Magnetic steady state - axisymmetric: " + str(testFluxDensity and testEnergy))

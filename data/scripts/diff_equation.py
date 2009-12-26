@@ -1,6 +1,6 @@
 from numpy import arange
 from scipy.integrate import odeint
-import pylab
+import pylab as pl
 
 R = 1e3
 L = 1e-3
@@ -16,10 +16,10 @@ t = arange(0, 5*L/R, L/R/10)
 y = odeint(func, y0, t)
 
 # chart
-pylab.close()
-pylab.plot(t, y)
-pylab.grid(1)
-pylab.xlabel("$t\,\mathrm{(s)}$")
-pylab.ylabel("$i\,\mathrm{(A)}$")
-# pylab.legend(("current"), "upper left")
-pylab.show()
+pl.close()
+pl.plot(t, y)
+pl.grid(1)
+pl.xlabel("$t\,\mathrm{(s)}$")
+pl.ylabel("$i\,\mathrm{(A)}$")
+# pl.legend(("current"), "upper left")
+pl.show()

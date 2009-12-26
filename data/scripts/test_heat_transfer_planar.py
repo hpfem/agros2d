@@ -38,12 +38,12 @@ if (not testTemperature):
 integral = volumeintegral(0);
 testTemperatureAvg = abs(abs(integral["T_avg"]) - (0.023972/0.005)) < 1e-2;
 if (not testTemperatureAvg):
-    print "Avg. temperature: ", abs(integral["T_avg"]), " == ", (0.023972/0.005)
+    print("Avg. temperature: " + str(abs(integral["T_avg"])) + " == " + str(0.023972/0.005))
 
 # heat flux
 integral = surfaceintegral(0, 6, 7);
 testFlux = abs(abs(integral["F"]) - 103.220778) < 1;
 if (not testFlux):
-    print "Heat flux: ", abs(integral["F"]), " == ", 103.220778
+    print("Heat flux: " + str(abs(integral["F"])) + " == " + str(103.220778))
 
-print "Test: Heat transfer - planar: ", (testTemperature and testTemperatureAvg and testFlux)
+print("Test: Heat transfer - planar: " + str(testTemperature and testTemperatureAvg and testFlux))

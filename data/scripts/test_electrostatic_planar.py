@@ -49,12 +49,12 @@ if (not testPotential):
 integral = volumeintegral(1)
 testEnergy = abs(abs(integral["We"]) - 1.307484e-7) < 1e-7
 if (not testEnergy):
-    print "Electric energy: ", abs(integral["We"]), " == ", 1.307484e-7
+    print("Electric energy: " + str(abs(integral["We"])) + " == " + str(1.307484e-7))
 
 # charge
 integral = surfaceintegral(0, 1, 2, 3)
 testCharge = abs(abs(integral["Q"]) - 1.048981e-7) < 5e-9
 if (not testCharge):
-    print "Electric charge: ", abs(integral["Q"]), " == ", 1.048981e-7
+    print("Electric charge: " + str(abs(integral["Q"])) + " == " + str(1.048981e-7))
 
-print "Test: Electrostatic - planar: ", (testPotential and testEnergy and testCharge)
+print("Test: Electrostatic - planar: " + str(testPotential and testEnergy and testCharge))

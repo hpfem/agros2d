@@ -28,51 +28,20 @@
 class SceneView;
 class FileBrowser;
 
-struct ScriptResult
-{
-    ScriptResult()
-    {
-        text = "";
-        isError = false;
-    }
-
-    ScriptResult(const QString &text, bool isError = false)
-    {
-        this->text = text;
-        this->isError = isError;
-    }
-
-    QString text;
-    bool isError;
-};
-
-struct ExpressionResult
-{
-    ExpressionResult()
-    {
-        this->error = "";
-        this->value = 0.0;
-    }
-
-    ExpressionResult(double value, const QString &error)
-    {
-        this->error = error;
-        this->value = value;
-    }
-
-    QString error;
-    double value;
-};
-
 class Scene;
 class SceneView;
 class ScriptEditor;
 class SearchDialog;
 
 void createScriptEngine(SceneView *sceneView);
+
 QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
 ExpressionResult runPythonExpression(const QString &expression);
+void runScript(const QString &fileName);
+void runCommand(const QString &command);
+
+QCompleter *completer(bool invalidate = false);
 
 class ScriptEngineRemote : QObject
 {
@@ -100,25 +69,15 @@ private:
 class ScriptEditorWidget : public QWidget
 {
     Q_OBJECT
-
-    public slots:
-    void doRunPython();
-    void doCreatePythonFromModel();
-    void doPrintStdout(const QString &message);
-
 public:
     QString file;
-    ScriptEditor *txtEditor;
-    QPlainTextEdit *txtOutput;
+    ScriptEditor *txtEditor;   
 
     ScriptEditorWidget(QWidget *parent);
     ~ScriptEditorWidget();
 
     void createControls();
     void createEngine();
-
-private:
-    QSplitter *splitter;
 };
 
 class ScriptEditorDialog : public QMainWindow
@@ -128,8 +87,6 @@ public:
     ScriptEditorDialog(QWidget *parent = 0);
     ~ScriptEditorDialog();
 
-    void runScript(const QString &fileName);
-    void runCommand(const QString &command);
     void showDialog();
 
 public slots:
@@ -155,6 +112,7 @@ private:
     FileBrowser *filBrowser;
 
     ScriptEditor *txtEditor;
+    Terminal *terminal;
     SearchDialog *searchDialog;
 
     QMenu *mnuFile;
@@ -197,6 +155,7 @@ private:
 
 private slots:
     void doRunPython();
+    void doCreatePythonFromModel();
     void doFileItemDoubleClick(const QString &path);
     void doCurrentPageChanged(int index);
     void doPathChangeDir();
