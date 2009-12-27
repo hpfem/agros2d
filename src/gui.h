@@ -70,12 +70,15 @@ public:
 public slots:
     bool evaluate(bool quiet = true);
 
+protected:
+    void focusInEvent(QFocusEvent *event);
+
 private:
     double m_number;
     bool m_showResult;
 
     QLineEdit *txtLineEdit;
-    QLabel *lblValue;
+    QLabel *lblValue;        
 };
 
 // ****************************************************************************************************
