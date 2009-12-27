@@ -21,31 +21,6 @@
 #include "scripteditorcommandpython.h"
 
 static PythonEngine *pythonEngine = NULL;
-static QCompleter *m_completer = NULL;
-
-QCompleter *completer(bool invalidate)
-{
-    if (!m_completer)
-    {
-        m_completer = new QCompleter();
-        m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-        m_completer->setCompletionMode(QCompleter::InlineCompletion);
-        m_completer->setModel(new QStringListModel());
-
-        invalidate = true;
-    }
-
-    if (invalidate)
-    {
-        QSettings settings;
-        QStringList list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
-
-        QStringListModel *model = dynamic_cast<QStringListModel *>(m_completer->model());
-        model->setStringList(list);
-    }
-
-    return m_completer;
-}
 
 void createScriptEngine(SceneView *sceneView)
 {
@@ -296,6 +271,7 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
 
     setWindowIcon(icon("script"));
 
+    // search dialog
     searchDialog = new SearchDialog(this);
 
     createActions();

@@ -517,7 +517,8 @@ void OptionsDialog::doClearCommandHistory()
 {
     QSettings settings;
     settings.setValue("CommandDialog/RecentCommands", QStringList());
-    completer(true);
+    QStringListModel *model = dynamic_cast<QStringListModel *>(Util::completer()->model());
+    model->setStringList(QStringList());
 
     QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared succesfully."));
 }

@@ -1744,7 +1744,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
                                             +
                                             dudx1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                          (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])))
-                                    +
+                                    -
                                     x[i] * (
                                             - ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudy1[i])
                                             + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudy2[i])
@@ -1758,7 +1758,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
             h1_integrate_expression(y[i] *
                                     dudx1[i] * (marker->current_density_real.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                                      (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
-                                    +
+                                    -
                                     x[i] *
                                     dudy1[i] * (marker->current_density_real.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                                      (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));

@@ -280,6 +280,7 @@ public:
     static Util* singleton();
     static inline Scene *scene() { return Util::singleton()->m_scene; }
     static inline HelpDialog *helpDialog() { return Util::singleton()->m_helpDialog; }
+    static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     
 protected:
     Util();
@@ -292,6 +293,7 @@ private:
     
     Scene *m_scene;
     HelpDialog *m_helpDialog;
+    QCompleter *m_completer;
 };
 
 #endif /* SCENE_H */

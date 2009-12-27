@@ -288,8 +288,8 @@ void MainWindow::createMenus()
     #ifdef BETA
     mnuEdit->addAction(actCut);
     mnuEdit->addAction(actCopy);
-    mnuEdit->addAction(actPaste);
     #endif
+    mnuEdit->addAction(actPaste);
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
 #ifdef Q_WS_X11
     mnuEdit->addSeparator();

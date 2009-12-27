@@ -250,7 +250,7 @@ Terminal::Terminal(QWidget *parent) : QWidget(parent)
     setWindowIcon(icon("system-run"));   
 
     txtCommand = new QLineEdit(this);
-    txtCommand->setCompleter(completer());
+    txtCommand->setCompleter(Util::completer());
     txtCommand->setMinimumWidth(300);
     connect(txtCommand, SIGNAL(returnPressed()), this, SLOT(doExecute()));
     connect(txtCommand, SIGNAL(textChanged(QString)), this, SLOT(doCommandTextChanged(QString)));
@@ -308,7 +308,8 @@ void Terminal::doExecute()
         settings.setValue("CommandDialog/RecentCommands", list);
 
         // invalidate
-        completer(true);
+        QStringListModel *model = dynamic_cast<QStringListModel *>(Util::completer()->model());
+        model->setStringList(list);
 
         // command
         doPrintStdout(">>> " + txtCommand->text() + "\n", Qt::black);

@@ -64,6 +64,17 @@ Util::Util()
     m_scene = new Scene();
     m_helpDialog = new HelpDialog(QApplication::activeWindow());
 
+    // completer
+    m_completer = new QCompleter();
+    m_completer->setCaseSensitivity(Qt::CaseInsensitive);
+    m_completer->setCompletionMode(QCompleter::InlineCompletion);
+    m_completer->setModel(new QStringListModel());
+
+    QSettings settings;
+    QStringList list = settings.value("CommandDialog/RecentCommands").value<QStringList>();
+    QStringListModel *model = dynamic_cast<QStringListModel *>(m_completer->model());
+    model->setStringList(list);
+
     initLists();
 }
 
@@ -71,6 +82,7 @@ Util::~Util()
 {
     delete m_scene;
     delete m_helpDialog;
+    delete m_completer;
 }
 
 Util *Util::singleton()
