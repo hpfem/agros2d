@@ -248,12 +248,53 @@ void Chart::setData(double *xval, double *yval, int count)
 
 // ***********************************************************************************************************
 
+TerminalLineEdit::TerminalLineEdit(QWidget *parent) : QLineEdit(parent)
+{
+    m_model = dynamic_cast<QStringListModel *>(Util::completer()->model());
+    m_index = -1;
+}
+
+void TerminalLineEdit::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Up)
+    {
+        m_index++;
+        if (m_index > (m_model->stringList().count()-1))
+            m_index = (m_model->stringList().count()-1);
+    }
+    if (event->key() == Qt::Key_Down)
+    {
+        m_index--;
+        if (m_index < 0) 
+            m_index = -1;
+    }
+    if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down)
+    {
+        if (m_index >= 0 && m_index < m_model->stringList().count())
+        {
+            setText(m_model->stringList().at(m_index));
+        }
+        else
+        {
+            m_index = -1;
+            setText("");
+        }
+    }
+
+    if (event->key() == Qt::Key_Enter)
+    {
+        m_index = -1;
+    }
+
+    QLineEdit::keyPressEvent(event);
+}
+
 Terminal::Terminal(QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(tr("Command dialog"));
     setWindowIcon(icon("system-run"));   
 
-    txtCommand = new QLineEdit(this);
+    txtCommand = new TerminalLineEdit(this);
     txtCommand->setCompleter(Util::completer());
     txtCommand->setMinimumWidth(300);
     connect(txtCommand, SIGNAL(returnPressed()), this, SLOT(doExecute()));
@@ -312,8 +353,7 @@ void Terminal::doExecute()
         settings.setValue("CommandDialog/RecentCommands", list);
 
         // invalidate
-        QStringListModel *model = dynamic_cast<QStringListModel *>(Util::completer()->model());
-        model->setStringList(list);
+        txtCommand->model()->setStringList(list);
 
         // command
         doPrintStdout(">>> " + txtCommand->text() + "\n", Qt::black);
@@ -323,17 +363,11 @@ void Terminal::doExecute()
     }
     txtCommand->clear();
     txtCommand->setFocus();
-    cout << txtCommand->text().toStdString() << endl;
 }
 
 void Terminal::doCommandTextChanged(const QString &str)
 {
     btnExecute->setEnabled(!str.isEmpty());
-}
-
-void Terminal::doPopupActivated(const QString &str)
-{
-    txtCommand->clear();
 }
 
 void Terminal::doWriteResult(ScriptResult result)

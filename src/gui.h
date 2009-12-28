@@ -102,6 +102,21 @@ private:
 
 // ****************************************************************************************************
 
+class TerminalLineEdit : public QLineEdit
+{
+    Q_OBJECT
+public:
+    TerminalLineEdit(QWidget *parent = 0);
+    inline QStringListModel *model() { return m_model; }
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
+private:
+    int m_index;
+    QStringListModel *m_model;
+};
+
 class Terminal : public QWidget
 {
     Q_OBJECT
@@ -114,7 +129,7 @@ public slots:
     void doPrintStdout(const QString &message, QColor color = Qt::blue);
 
 private:
-    QLineEdit *txtCommand;
+    TerminalLineEdit *txtCommand;
     QTextEdit *txtOutput;
     QPushButton *btnExecute;
     QPushButton *btnClear;
@@ -122,7 +137,6 @@ private:
 private slots:
     void doExecute();
     void doCommandTextChanged(const QString &str);
-    void doPopupActivated(const QString &str);
 };
 
 // ****************************************************************************************************
