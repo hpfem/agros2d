@@ -26,9 +26,11 @@
 #include "sceneview.h"
 #include "scenemarker.h"
 #include "scripteditorhighlighter.h"
+#include "terminalview.h"
 
 class SceneView;
 class FileBrowser;
+class TerminalView;
 
 class Scene;
 class SceneView;
@@ -112,8 +114,10 @@ private:
     FileBrowser *filBrowser;
 
     ScriptEditor *txtEditor;
-    Terminal *terminal;
     SearchDialog *searchDialog;
+
+    TerminalView *terminalView;
+    QDockWidget *fileBrowserView;
 
     QMenu *mnuFile;
     QMenu *mnuRecentFiles;

@@ -502,20 +502,15 @@ void ScriptEditorDialog::createViews()
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
 
-    QDockWidget *dockFileBrowser = new QDockWidget(tr("File browser"), this);
-    dockFileBrowser->setObjectName("ScriptEditorFileBrowserView");
-    dockFileBrowser->setWidget(widget);
-    dockFileBrowser->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::LeftDockWidgetArea, dockFileBrowser);
+    fileBrowserView = new QDockWidget(tr("File browser"), this);
+    fileBrowserView->setObjectName("ScriptEditorFileBrowserView");
+    fileBrowserView->setWidget(widget);
+    fileBrowserView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::LeftDockWidgetArea, fileBrowserView);
 
-    // terminal
-    terminal = new Terminal(this);
-
-    QDockWidget *dockTerminal = new QDockWidget(tr("Terminal"), this);
-    dockTerminal->setObjectName("TerminalView");
-    dockTerminal->setWidget(terminal);
-    dockTerminal->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::BottomDockWidgetArea, dockTerminal);
+    terminalView = new TerminalView(this);
+    terminalView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::BottomDockWidgetArea, terminalView);
 }
 
 void ScriptEditorDialog::createStatusBar()
@@ -534,9 +529,9 @@ void ScriptEditorDialog::doRunPython()
         filBrowser->setDir(QFileInfo(scriptEditorWidget->file).absolutePath());
 
     // run script
-    terminal->doPrintStdout("Run script: " + tabWidget->tabText(tabWidget->currentIndex()) + "\n", Qt::gray);
+    terminalView->terminal()->doPrintStdout("Run script: " + tabWidget->tabText(tabWidget->currentIndex()) + "\n", Qt::gray);
 
-    connect(pythonEngine, SIGNAL(printStdout(QString)), terminal, SLOT(doPrintStdout(QString)));
+    connect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
 
     ScriptResult result;
     if (txtEditor->textCursor().hasSelection())
@@ -545,9 +540,9 @@ void ScriptEditorDialog::doRunPython()
         result = runPythonScript(txtEditor->toPlainText(), scriptEditorWidget->file);
 
     if (result.isError)
-        terminal->doPrintStdout(result.text + "\n", Qt::red);
+        terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
 
-    disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminal, SLOT(doPrintStdout(QString)));
+    disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
 }
 
 void ScriptEditorDialog::doCreatePythonFromModel()

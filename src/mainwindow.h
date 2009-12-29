@@ -25,6 +25,7 @@
 #include "scenebasic.h"
 #include "sceneview.h"
 #include "sceneinfoview.h"
+#include "terminalview.h"
 #include "helpdialog.h"
 #include "solverdialog.h"
 #include "chartdialog.h"
@@ -155,13 +156,13 @@ private:
     LocalPointValueView *localPointValueView;
     VolumeIntegralValueView *volumeIntegralValueView;
     SurfaceIntegralValueView *surfaceIntegralValueView;
+    TerminalView *terminalView;
 
     HelpDialog *helpDialog;
     ChartDialog *chartDialog;
     ScriptEditorDialog *scriptEditorDialog;
     ReportDialog *reportDialog;
     VideoDialog *videoDialog;
-    TerminalDialog *terminalDialog;
 
     void setRecentFiles();
 

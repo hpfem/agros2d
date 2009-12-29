@@ -4,6 +4,7 @@ QT += opengl \
     webkit \
     network
 SUBDIRS = src-remote
+
 # DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
@@ -122,7 +123,8 @@ SOURCES += src/util.cpp \
     src/dxflib/dl_writer_ascii.cpp \
     src/dxflib/dl_dxf.cpp \
     src/reportdialog.cpp \
-    src/videodialog.cpp
+    src/videodialog.cpp \
+    src/terminalview.cpp
 HEADERS += src/util.h \
     src/scene.h \
     src/gui.h \
@@ -155,7 +157,8 @@ HEADERS += src/util.h \
     src/helpdialog.h \
     src/scenesolution.h \
     src/reportdialog.h \
-    src/videodialog.h
+    src/videodialog.h \
+    src/terminalview.h
 INCLUDEPATH += src \
     src/dxflib
 unix:INCLUDEPATH += /usr/include

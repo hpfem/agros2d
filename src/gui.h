@@ -102,57 +102,6 @@ private:
 
 // ****************************************************************************************************
 
-class TerminalLineEdit : public QLineEdit
-{
-    Q_OBJECT
-public:
-    TerminalLineEdit(QWidget *parent = 0);
-    inline QStringListModel *model() { return m_model; }
-
-protected:
-    void keyPressEvent(QKeyEvent *event);
-
-private:
-    int m_index;
-    QStringListModel *m_model;
-};
-
-class Terminal : public QWidget
-{
-    Q_OBJECT
-public:
-    Terminal(QWidget *parent = 0);
-    ~Terminal();
-
-public slots:
-    void doWriteResult(ScriptResult result);
-    void doPrintStdout(const QString &message, QColor color = Qt::blue);
-
-private:
-    TerminalLineEdit *txtCommand;
-    QTextEdit *txtOutput;
-    QPushButton *btnExecute;
-    QPushButton *btnClear;
-
-private slots:
-    void doExecute();
-    void doCommandTextChanged(const QString &str);
-};
-
-// ****************************************************************************************************
-
-class TerminalDialog : public QDialog
-{
-public:
-    TerminalDialog(QWidget *parent = 0);
-    ~TerminalDialog();
-
-private:
-    Terminal *terminal;
-};
-
-// ****************************************************************************************************
-
 class FileBrowser : public QListWidget
 {
     Q_OBJECT

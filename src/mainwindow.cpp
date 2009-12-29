@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     scriptEditorDialog = new ScriptEditorDialog(this);
     reportDialog = new ReportDialog(sceneView, this);
     videoDialog = new VideoDialog(sceneView, this);
-    terminalDialog = new TerminalDialog(this);
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
@@ -478,6 +477,10 @@ void MainWindow::createViews()
     surfaceIntegralValueView = new SurfaceIntegralValueView(this);
     surfaceIntegralValueView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::RightDockWidgetArea, surfaceIntegralValueView);
+
+    terminalView = new TerminalView(this);
+    terminalView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::BottomDockWidgetArea, terminalView);
 }
 
 void MainWindow::setRecentFiles()
@@ -794,7 +797,8 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
 void MainWindow::doScriptEditorRunCommand()
 {
-    terminalDialog->exec();
+    terminalView->setVisible(true);
+    terminalView->activateWindow();
 }
 
 void MainWindow::doCut()

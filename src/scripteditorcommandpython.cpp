@@ -572,31 +572,29 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
     if (Util::scene()->sceneSolution()->isSolved())
     {
         sceneView->actSceneModePostprocessor->trigger();
+
+        double x, y;
+        if (PyArg_ParseTuple(args, "dd", &x, &y))
+        {
+            Point point(x, y);
+            LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
+
+            QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
+            QStringList variables = localPointValue->variables();
+
+            PyObject *dict = PyDict_New();
+            for (int i = 0; i < variables.length(); i++)
+                PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
+
+            delete localPointValue;
+
+            return dict;
+        }
     }
     else
     {
         PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem is not solved.").toStdString().c_str());
-        return NULL;
     }
-
-    double x, y;
-    if (PyArg_ParseTuple(args, "dd", &x, &y))
-    {
-        Point point(x, y);
-        LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
-
-        QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
-        QStringList variables = localPointValue->variables();
-
-        PyObject *dict = PyDict_New();
-        for (int i = 0; i < variables.length(); i++)
-            PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
-
-        delete localPointValue;
-
-        return dict;
-    }
-
     return NULL;
 }
 
@@ -605,48 +603,44 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
+        // set mode
         sceneView->actSceneModePostprocessor->trigger();
+        sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+
+        python_int_array()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (index[i] == INT_MIN)
+                    continue;
+                if ((index[i] >= 0) && index[i] < Util::scene()->edges.count())
+                {
+                    Util::scene()->edges[index[i]]->isSelected = true;
+                }
+                else
+                {
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
+                    return NULL;
+                }
+            }
+
+            SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
+
+            QStringList headers = Util::scene()->problemInfo()->hermes()->surfaceIntegralValueHeader();
+            QStringList variables = surfaceIntegral->variables();
+
+            PyObject *dict = PyDict_New();
+            for (int i = 0; i < variables.length(); i++)
+                PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
+
+            delete surfaceIntegral;
+
+            return dict;
+        }
     }
     else
     {
         PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem is not solved.").toStdString().c_str());
-        return NULL;
-    }
-
-    // set mode
-    sceneView->actSceneModePostprocessor->trigger();
-    sceneView->actPostprocessorModeSurfaceIntegral->trigger();
-
-    python_int_array()
-    {
-        for (int i = 0; i < count; i++)
-        {
-            sceneView->actSceneModeEdge->trigger();
-            if (index[i] == INT_MIN)
-                continue;
-            if ((index[i] >= 0) && index[i] < Util::scene()->edges.count())
-            {
-                Util::scene()->edges[index[i]]->isSelected = true;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Edge index must be between 0 and '%1'.").arg(Util::scene()->edges.count()-1).toStdString().c_str());
-                return NULL;
-            }
-        }
-
-        SurfaceIntegralValue *surfaceIntegral = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
-
-        QStringList headers = Util::scene()->problemInfo()->hermes()->surfaceIntegralValueHeader();
-        QStringList variables = surfaceIntegral->variables();
-
-        PyObject *dict = PyDict_New();
-        for (int i = 0; i < variables.length(); i++)
-            PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
-
-        delete surfaceIntegral;
-
-        return dict;
     }
     return NULL;
 }
@@ -656,48 +650,44 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
+        // set mode
         sceneView->actSceneModePostprocessor->trigger();
+        sceneView->actPostprocessorModeVolumeIntegral->trigger();
+
+        python_int_array()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (index[i] == INT_MIN)
+                    continue;
+                if ((index[i] >= 0) && index[i] < Util::scene()->labels.count())
+                {
+                    Util::scene()->labels[index[i]]->isSelected = true;
+                }
+                else
+                {
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels.count()-1).toStdString().c_str());
+                    return NULL;
+                }
+            }
+
+            VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
+
+            QStringList headers = Util::scene()->problemInfo()->hermes()->volumeIntegralValueHeader();
+            QStringList variables = volumeIntegral->variables();
+
+            PyObject *dict = PyDict_New();
+            for (int i = 0; i < variables.length(); i++)
+                PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
+
+            delete volumeIntegral;
+
+            return dict;
+        }
     }
     else
     {
         PyErr_SetString(PyExc_RuntimeError, QObject::tr("Problem is not solved.").toStdString().c_str());
-        return NULL;
-    }
-
-    // set mode
-    sceneView->actSceneModePostprocessor->trigger();
-    sceneView->actPostprocessorModeVolumeIntegral->trigger();
-
-    python_int_array()
-    {
-        sceneView->actSceneModeLabel->trigger();
-        for (int i = 0; i < count; i++)
-        {
-            if (index[i] == INT_MIN)
-                continue;
-            if ((index[i] >= 0) && index[i] < Util::scene()->labels.count())
-            {
-                Util::scene()->labels[index[i]]->isSelected = true;
-            }
-            else
-            {
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label index must be between 0 and '%1'.").arg(Util::scene()->labels.count()-1).toStdString().c_str());
-                return NULL;
-            }
-        }
-
-        VolumeIntegralValue *volumeIntegral = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
-
-        QStringList headers = Util::scene()->problemInfo()->hermes()->volumeIntegralValueHeader();
-        QStringList variables = volumeIntegral->variables();
-
-        PyObject *dict = PyDict_New();
-        for (int i = 0; i < variables.length(); i++)
-            PyDict_SetItemString(dict, headers[i].toStdString().c_str(), Py_BuildValue("d", QString(variables[i]).toDouble()));
-
-        delete volumeIntegral;
-
-        return dict;
     }
     return NULL;
 }
