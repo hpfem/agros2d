@@ -179,4 +179,5 @@ unix:LIBS += -lpython2.6
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt
 win32:LIBS += -lpython26
-OTHER_FILES += 
+OTHER_FILES += src/python/agros2d.pyx \
+    functions.py

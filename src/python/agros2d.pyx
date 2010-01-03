@@ -27,6 +27,13 @@ cdef extern from "../scripteditorcommandpython.h":
     void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker) except +
     void pythonAddLabel(double x, double y, double area, char *marker) except +
 
+    void pythonDeleteNode(int index) except +
+    void pythonDeleteNodePoint(double x, double y)
+    void pythonDeleteEdge(int index) except +
+    void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
+    void pythonDeleteLabel(int index) except +
+    void pythonDeleteLabelPoint(double x, double y)
+
     void pythonSelectNone()
     void pythonSelectAll()
 
@@ -61,10 +68,6 @@ cdef extern from "../scripteditorcommandpython.h":
     void pythonSetTimeStep(int timestep) except +
     int pythonTimeStepCount()
     void pythonSaveImage(char *str, int w, int h) except +
-
-# classes
-
-
 
 # system
 
@@ -115,6 +118,24 @@ def addedge(double x1, double y1, double x2, double y2, double angle = 0, char *
 
 def addlabel(double x, double y, double area = 0, char *marker = "none"):
     pythonAddLabel(x, y, area, marker)
+
+def deletenode(int index):
+    pythonDeleteNode(index)
+
+def deletenodepoint(double x, double y):
+    pythonDeleteNodePoint(x, y)
+
+def deleteedge(int index):
+    pythonDeleteEdge(index)
+
+def deleteedgepoint(double x1, double y1, double x2, double y2, double angle):
+    pythonDeleteEdgePoint(x1, y1, x2, y2, angle)
+
+def deletelabel(int index):
+    pythonDeleteLabel(index)
+
+def deletelabelpoint(double x, double y):
+    pythonDeleteLabelPoint(x, y)
 
 def selectnone():
     pythonSelectNone()

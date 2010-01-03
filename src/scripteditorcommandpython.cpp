@@ -218,6 +218,18 @@ void pythonAddNode(double x, double y)
     Util::scene()->addNode(new SceneNode(Point(x, y)));
 }
 
+void pythonDeleteNode(int index)
+{
+    if (index < 0 || index >= Util::scene()->nodes.count())
+       throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+    Util::scene()->removeNode(Util::scene()->nodes[index]);
+}
+
+void pythonDeleteNodePoint(double x, double y)
+{
+    Util::scene()->removeNode(Util::scene()->getNode(Point(x, y)));
+}
+
 // addedge(x1, y1, x2, y2, angle = 0, marker = "none")
 void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker)
 {
@@ -236,6 +248,18 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
     Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, edgeMarker, angle));
 }
 
+void pythonDeleteEdge(int index)
+{
+    if (index < 0 || index >= Util::scene()->edges.count())
+       throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+    Util::scene()->removeEdge(Util::scene()->edges[index]);
+}
+
+void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
+{
+    Util::scene()->removeEdge(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
+}
+
 // addlabel(x, y, area = 0, marker = "none")
 void pythonAddLabel(double x, double y, double area, char *marker)
 {
@@ -244,6 +268,18 @@ void pythonAddLabel(double x, double y, double area, char *marker)
         throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
 
     Util::scene()->addLabel(new SceneLabel(Point(x, y), labelMarker, area));
+}
+
+void pythonDeleteLabel(int index)
+{
+    if (index < 0 || index >= Util::scene()->labels.count())
+       throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+    Util::scene()->removeLabel(Util::scene()->labels[index]);
+}
+
+void pythonDeleteLabelPoint(double x, double y)
+{
+    Util::scene()->removeLabel(Util::scene()->getLabel(Point(x, y)));
 }
 
 // addboundary(name, type, value, ...)

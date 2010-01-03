@@ -68,6 +68,7 @@ Util::Util()
     m_completer = new QCompleter();
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::InlineCompletion);
+    m_completer->setModelSorting(QCompleter::UnsortedModel);
     m_completer->setModel(new QStringListModel());
 
     QSettings settings;

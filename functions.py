@@ -4,6 +4,9 @@ from agros2file import *
 from math import *
 import sys
 
+MU0 = 4*pi*1e-7
+EPS0 = 8.854e-12
+
 # user functions
 def addsemicircle(x0, y0, radius, marker = "none"):
 	addedge(x0, y0-radius, x0, y0+radius, 180, marker)

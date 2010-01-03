@@ -75,6 +75,13 @@ void pythonAddNode(double x, double y);
 void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker);
 void pythonAddLabel(double x, double y, double area, char *marker);
 
+void pythonDeleteNode(int index);
+void pythonDeleteNodePoint(double x, double y);
+void pythonDeleteEdge(int index);
+void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle);
+void pythonDeleteLabel(int index);
+void pythonDeleteLabelPoint(double x, double y);
+
 void pythonSelectNone();
 void pythonSelectAll();
 
