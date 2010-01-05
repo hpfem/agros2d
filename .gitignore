@@ -26,3 +26,7 @@ install
 *.qch
 *.qm
 *.pyc
+data/data
+doc/doxygen
+src/python/agros2d.c
+*.ans

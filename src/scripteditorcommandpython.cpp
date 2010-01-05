@@ -947,6 +947,14 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     ScriptResult scriptResult;
     if (output)
     {
+        if (PyInt_Check(output))
+        {
+            cout << "int" << endl;
+        }
+        if (PyString_Check(output))
+        {
+            cout << "string" << endl;
+        }
         scriptResult.isError = false;
         scriptResult.text = m_stdOut;
     }
