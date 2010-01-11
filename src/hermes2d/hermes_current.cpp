@@ -675,10 +675,6 @@ DSceneEdgeCurrentMarker::DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCur
 
     createDialog();
 
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtValue);
-
     load();
     setSize();
 }
@@ -691,7 +687,7 @@ DSceneEdgeCurrentMarker::~DSceneEdgeCurrentMarker()
 
 void DSceneEdgeCurrentMarker::createContent()
 {
-    cmbType = new QComboBox();
+    cmbType = new QComboBox(this);
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_POTENTIAL), PHYSICFIELDBC_CURRENT_POTENTIAL);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW), PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW);
@@ -736,9 +732,6 @@ DSceneLabelCurrentMarker::DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCu
     m_labelMarker = labelCurrentMarker;
 
     createDialog();
-
-    // tab order
-    setTabOrder(txtName, txtConductivity);
 
     load();
     setSize();

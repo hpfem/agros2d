@@ -942,19 +942,42 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
 
     runPythonHeader();
 
-    PyObject *output = PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    PyObject *code = Py_CompileString(script.toStdString().c_str(), "", Py_file_input);
+    PyObject *output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+    // PyObject *output = PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
     ScriptResult scriptResult;
     if (output)
     {
+        if (output == Py_None)
+        {
+            cout << "none" << endl;
+        }
         if (PyInt_Check(output))
         {
             cout << "int" << endl;
+        }
+        if (PyFloat_Check(output))
+        {
+            cout << "float" << endl;
         }
         if (PyString_Check(output))
         {
             cout << "string" << endl;
         }
+        if (PyLong_Check(output))
+        {
+            cout << "long" << endl;
+        }
+        if (PyNumber_Check(output))
+        {
+            cout << "number" << endl;
+        }
+        if (PyBool_Check(output))
+        {
+            cout << "bool" << endl;
+        }
+
         scriptResult.isError = false;
         scriptResult.text = m_stdOut;
     }

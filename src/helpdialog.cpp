@@ -153,7 +153,8 @@ void HelpNetworkReply::abort()
 qint64 HelpNetworkReply::readData(char *buffer, qint64 maxlen)
 {
     qint64 len = qMin(qint64(data.length()), maxlen);
-    if (len) {
+    if (len)
+    {
         qMemCopy(buffer, data.constData(), len);
         data.remove(0, len);
     }
@@ -185,19 +186,24 @@ QNetworkReply *HelpNetworkAccessManager::createRequest(Operation op,
                                                        const QNetworkRequest &request, QIODevice *outgoingData)
 {
     const QString& scheme = request.url().scheme();
-    if (scheme == QLatin1String("qthelp") || scheme == QLatin1String("about")) {
+    if (scheme == QLatin1String("qthelp") || scheme == QLatin1String("about"))
+    {
         const QUrl& url = request.url();
         QString mimeType = url.toString();
-        if (mimeType.endsWith(QLatin1String(".svg"))
-            || mimeType.endsWith(QLatin1String(".svgz"))) {
+        if (mimeType.endsWith(QLatin1String(".svg")) || mimeType.endsWith(QLatin1String(".svgz")))
+        {
             mimeType = QLatin1String("image/svg+xml");
         }
-        else if (mimeType.endsWith(QLatin1String(".css"))) {
+        else if (mimeType.endsWith(QLatin1String(".css")))
+        {
             mimeType = QLatin1String("text/css");
         }
-        else if (mimeType.endsWith(QLatin1String(".js"))) {
+        else if (mimeType.endsWith(QLatin1String(".js")))
+        {
             mimeType = QLatin1String("text/javascript");
-        } else {
+        }
+        else
+        {
             mimeType = QLatin1String("text/html");
         }
         return new HelpNetworkReply(request, helpEngine->fileData(url), mimeType);
@@ -251,13 +257,14 @@ static bool isLocalUrl(const QUrl &url)
     return false;
 }
 
-bool HelpPage::acceptNavigationRequest(QWebFrame *,
-                                       const QNetworkRequest &request, QWebPage::NavigationType type)
+bool HelpPage::acceptNavigationRequest(QWebFrame *, const QNetworkRequest &request, QWebPage::NavigationType type)
 {
     const QUrl &url = request.url();
-    if (isLocalUrl(url)) {
+    if (isLocalUrl(url))
+    {
         const QString& path = url.path();
-        if (path.endsWith(QLatin1String(".pdf"))) {
+        if (path.endsWith(QLatin1String(".pdf")))
+        {
             const int lastDash = path.lastIndexOf(QChar('/'));
             QString fileName = QDir::tempPath() + QDir::separator();
             if (lastDash < 0)
@@ -266,7 +273,8 @@ bool HelpPage::acceptNavigationRequest(QWebFrame *,
                 fileName += path.mid(lastDash + 1, path.length());
 
             QFile tmpFile(QDir::cleanPath(fileName));
-            if (tmpFile.open(QIODevice::ReadWrite)) {
+            if (tmpFile.open(QIODevice::ReadWrite))
+            {
                 tmpFile.write(helpEngine->fileData(url));
                 tmpFile.close();
             }
@@ -275,8 +283,8 @@ bool HelpPage::acceptNavigationRequest(QWebFrame *,
         }
 
         if (type == QWebPage::NavigationTypeLinkClicked
-            && (m_keyboardModifiers & Qt::ControlModifier
-                || m_pressedButtons == Qt::MidButton)) {
+            && (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton))
+        {
             HelpViewer* viewer = centralWidget->newEmptyTab();
             if (viewer)
                 centralWidget->setSource(url);
@@ -306,7 +314,8 @@ HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *central, QWidget *par
 
     QAction* action = pageAction(QWebPage::OpenLinkInNewWindow);
     action->setText(tr("Open Link in New Tab"));
-    if (!parent) {
+    if (!central)
+    {
         multiTabsAllowed = false;
         action->setVisible(false);
     }
@@ -321,12 +330,12 @@ HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *central, QWidget *par
     connect(page(), SIGNAL(linkHovered(QString, QString, QString)), this, SIGNAL(highlighted(QString)));
     connect(this, SIGNAL(urlChanged(QUrl)), this, SIGNAL(sourceChanged(QUrl)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(setLoadFinished(bool)));
+
     setAcceptDrops(false);
 }
 
 void HelpViewer::setSource(const QUrl &url)
 {
-    // cout << url.toString().toStdString() << endl;
     loadFinished = false;
     if (!homeUrl.isValid())
         homeUrl = url;
@@ -367,9 +376,21 @@ void HelpViewer::home()
     setSource(homepage);
 }
 
+void HelpViewer::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Insert && e->modifiers() == Qt::CTRL)
+    {
+        if (hasSelection())
+            copy();
+    }
+
+    QWebView::keyPressEvent(e);
+}
+
 void HelpViewer::wheelEvent(QWheelEvent *e)
 {
-    if (e->modifiers() & Qt::ControlModifier) {
+    if (e->modifiers() & Qt::ControlModifier)
+    {
         const int delta = e->delta();
         if (delta > 0)
             zoomIn(delta / 120);
@@ -383,12 +404,14 @@ void HelpViewer::wheelEvent(QWheelEvent *e)
 
 void HelpViewer::mouseReleaseEvent(QMouseEvent *e)
 {
-    if (e->button() == Qt::XButton1) {
+    if (e->button() == Qt::XButton1)
+    {
         triggerPageAction(QWebPage::Back);
         return;
     }
 
-    if (e->button() == Qt::XButton2) {
+    if (e->button() == Qt::XButton2)
+    {
         triggerPageAction(QWebPage::Forward);
         return;
     }
@@ -410,7 +433,8 @@ void HelpViewer::actionChanged()
 void HelpViewer::mousePressEvent(QMouseEvent *event)
 {
     HelpPage *currentPage = static_cast<HelpPage*>(page());
-    if ((currentPage != 0) && multiTabsAllowed) {
+    if ((currentPage != 0) && multiTabsAllowed)
+    {
         currentPage->m_pressedButtons = event->buttons();
         currentPage->m_keyboardModifiers = event->modifiers();
     }
@@ -429,7 +453,8 @@ HelpViewer* helpViewerFromTabPosition(const QTabWidget *widget,
                                       const QPoint &point)
 {
     QTabBar *tabBar = qFindChild<QTabBar*>(widget);
-    for (int i = 0; i < tabBar->count(); ++i) {
+    for (int i = 0; i < tabBar->count(); ++i)
+    {
         if (tabBar->tabRect(i).contains(point))
             return qobject_cast<HelpViewer*>(widget->widget(i));
     }
@@ -500,7 +525,8 @@ CentralWidget::CentralWidget(QHelpEngine *engine, QWidget *parent)
     {
         tabBar->installEventFilter(this);
         tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
-        connect(tabBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showTabBarContextMenu(QPoint)));
+        connect(tabBar, SIGNAL(customContextMenuRequested(QPoint)), this,
+                SLOT(showTabBarContextMenu(QPoint)));
     }
 
     staticCentralWidget = this;
@@ -519,9 +545,11 @@ CentralWidget::~CentralWidget()
 
     QString zoomCount;
     QString currentPages;
-    for (int i = 0; i < tabWidget->count(); ++i) {
+    for (int i = 0; i < tabWidget->count(); ++i)
+    {
         HelpViewer *viewer = qobject_cast<HelpViewer*>(tabWidget->widget(i));
-        if (viewer && viewer->source().isValid()) {
+        if (viewer && viewer->source().isValid())
+        {
             currentPages += (viewer->source().toString() + QLatin1Char('|'));
             zoomCount += QString::number(viewer->zoom()) + QLatin1Char('|');
         }
@@ -539,7 +567,7 @@ CentralWidget *CentralWidget::instance()
 void CentralWidget::tabNew()
 {
     HelpViewer* viewer = currentHelpViewer();
-    if (viewer)
+    if (viewer && viewer->hasLoadFinished())
         setSourceInNewTab(viewer->source());
 }
 
@@ -557,19 +585,19 @@ void CentralWidget::zoomOut()
         viewer->zoomOut();
 }
 
-void CentralWidget::resetZoom()
-{
-    HelpViewer* viewer = currentHelpViewer();
-    if (viewer)
-        viewer->resetZoom();
-}
-
 void CentralWidget::nextPage()
 {
     int index = tabWidget->currentIndex() + 1;
     if (index >= tabWidget->count())
         index = 0;
     tabWidget->setCurrentIndex(index);
+}
+
+void CentralWidget::resetZoom()
+{
+    HelpViewer* viewer = currentHelpViewer();
+    if (viewer)
+        viewer->resetZoom();
 }
 
 void CentralWidget::previousPage()
@@ -598,17 +626,19 @@ void CentralWidget::tabClose(int index)
 void CentralWidget::setSource(const QUrl &url)
 {
     HelpViewer* viewer = currentHelpViewer();
-    HelpViewer* lastViewer =
-            qobject_cast<HelpViewer*>(tabWidget->widget(lastTabPage));
+    HelpViewer* lastViewer = qobject_cast<HelpViewer*>(tabWidget->widget(lastTabPage));
 
-    if (!viewer && !lastViewer) {
+    if (!viewer && !lastViewer)
+    {
         viewer = new HelpViewer(helpEngine, this, this);
         viewer->installEventFilter(this);
         lastTabPage = tabWidget->addTab(viewer, QString());
         tabWidget->setCurrentIndex(lastTabPage);
         connectSignals();
         qApp->processEvents();
-    } else {
+    }
+    else
+    {
         viewer = lastViewer;
     }
 
@@ -621,31 +651,30 @@ void CentralWidget::setSource(const QUrl &url)
 
 void CentralWidget::setLastShownPages()
 {
-    QString value = helpEngine->customValue(QLatin1String("LastShownPages"),
-                                            QString()).toString();
-    const QStringList lastShownPageList = value.split(QLatin1Char('|'),
-                                                      QString::SkipEmptyParts);
+    QString value = helpEngine->customValue(QLatin1String("LastShownPages"), QString()).toString();
+    const QStringList lastShownPageList = value.split(QLatin1Char('|'), QString::SkipEmptyParts);
     const int pageCount = lastShownPageList.count();
 
-    QString homePage = helpEngine->customValue(QLatin1String("DefaultHomePage"),
-                                               QLatin1String("about:blank")).toString();
+    QString homePage = helpEngine->customValue(QLatin1String("DefaultHomePage"), QLatin1String("about:blank")).toString();
 
     int option = helpEngine->customValue(QLatin1String("StartOption"), 2).toInt();
-    if (option == 0 || option == 1 || pageCount <= 0) {
-        if (option == 0) {
+    if (option == 0 || option == 1 || pageCount <= 0)
+    {
+        if (option == 0)
+        {
             homePage = helpEngine->customValue(QLatin1String("HomePage"),
                                                homePage).toString();
-        } else if (option == 1) {
+        }
+        else if (option == 1)
+        {
             homePage = QLatin1String("about:blank");
         }
         setSource(homePage);
         return;
     }
 
-    value = helpEngine->customValue(QLatin1String("LastShownPagesZoom"),
-                                    QString()).toString();
-    QVector<QString> zoomVector = value.split(QLatin1Char('|'),
-                                              QString::SkipEmptyParts).toVector();
+    value = helpEngine->customValue(QLatin1String("LastShownPagesZoom"), QString()).toString();
+    QVector<QString> zoomVector = value.split(QLatin1Char('|'), QString::SkipEmptyParts).toVector();
 
     const int zoomCount = zoomVector.count();
     zoomVector.insert(zoomCount, pageCount - zoomCount, QLatin1String("0"));
@@ -740,9 +769,9 @@ void CentralWidget::printPreview(QPrinter *p)
     if (viewer)
         viewer->print(p);
 #else
-    Q_UNUSED(p);
+    Q_UNUSED(p)
 #endif
-}
+        }
 
 void CentralWidget::pageSetup()
 {
@@ -816,6 +845,12 @@ void CentralWidget::setSourceInNewTab(const QUrl &url, int zoom)
     viewer->setSource(url);
     viewer->setFocus(Qt::OtherFocusReason);
 
+#if defined(QT_NO_WEBKIT)
+    QFont font = viewer->font();
+    font.setPointSize(font.pointSize() + int(zoom));
+    viewer->setFont(font);
+#endif
+
     tabWidget->setCurrentIndex(tabWidget->addTab(viewer,
                                                  quoteTabTitle(viewer->documentTitle())));
 
@@ -827,6 +862,9 @@ HelpViewer *CentralWidget::newEmptyTab()
     HelpViewer* viewer = new HelpViewer(helpEngine, this, this);
     viewer->installEventFilter(this);
     viewer->setFocus(Qt::OtherFocusReason);
+#if defined(QT_NO_WEBKIT)
+    viewer->setDocumentTitle(tr("unknown"));
+#endif
     tabWidget->setCurrentIndex(tabWidget->addTab(viewer, tr("unknown")));
 
     connectSignals();
@@ -836,7 +874,8 @@ HelpViewer *CentralWidget::newEmptyTab()
 void CentralWidget::connectSignals()
 {
     const HelpViewer* viewer = currentHelpViewer();
-    if (viewer) {
+    if (viewer)
+    {
         connect(viewer, SIGNAL(copyAvailable(bool)), this, SIGNAL(copyAvailable(bool)));
         connect(viewer, SIGNAL(forwardAvailable(bool)), this, SIGNAL(forwardAvailable(bool)));
         connect(viewer, SIGNAL(backwardAvailable(bool)), this, SIGNAL(backwardAvailable(bool)));
@@ -858,9 +897,12 @@ HelpViewer *CentralWidget::currentHelpViewer() const
 
 void CentralWidget::activateTab(bool onlyHelpViewer)
 {
-    if (currentHelpViewer()) {
+    if (currentHelpViewer())
+    {
         currentHelpViewer()->setFocus();
-    } else {
+    }
+    else
+    {
         int idx = 0;
         if (onlyHelpViewer)
             idx = lastTabPage;
@@ -873,11 +915,13 @@ void CentralWidget::setTabTitle(const QUrl& url)
 {
     Q_UNUSED(url)
     QTabBar *tabBar = qFindChild<QTabBar*>(tabWidget);
-    for (int i = 0; i < tabBar->count(); ++i) {
+    for (int i = 0; i < tabBar->count(); ++i)
+    {
         HelpViewer* view = qobject_cast<HelpViewer*>(tabWidget->widget(i));
-        if (view) {
+        if (view)
+        {
             tabWidget->setTabText(i,
-                quoteTabTitle(view->documentTitle().trimmed()));
+                                  quoteTabTitle(view->documentTitle().trimmed()));
         }
     }
 }
@@ -888,9 +932,6 @@ void CentralWidget::currentPageChanged(int index)
 
     tabWidget->setTabsClosable(tabWidget->count() > 1);
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
-
-    btnTabGoBack->setEnabled(isBackwardAvailable());
-    btnTabGoForward->setEnabled(isForwardAvailable());
 
     emit currentViewerChanged();
 }
@@ -924,16 +965,20 @@ void CentralWidget::showTabBarContextMenu(const QPoint &point)
     if (pickedAction == newPage)
         setSourceInNewTab(viewer->source());
 
-    if (pickedAction == closePage) {
+    if (pickedAction == closePage)
+    {
         tabWidget->removeTab(tabWidget->indexOf(viewer));
         QTimer::singleShot(0, viewer, SLOT(deleteLater()));
     }
 
-    if (pickedAction == closePages) {
+    if (pickedAction == closePages)
+    {
         int currentPage = tabWidget->indexOf(viewer);
-        for (int i = tabBar->count() -1; i >= 0; --i) {
+        for (int i = tabBar->count() -1; i >= 0; --i)
+        {
             viewer = qobject_cast<HelpViewer*>(tabWidget->widget(i));
-            if (i != currentPage && viewer) {
+            if (i != currentPage && viewer)
+            {
                 tabWidget->removeTab(i);
                 QTimer::singleShot(0, viewer, SLOT(deleteLater()));
 
@@ -961,15 +1006,16 @@ void CentralWidget::focusInEvent(QFocusEvent * /* event */)
 
 bool CentralWidget::eventFilter(QObject *object, QEvent *e)
 {
-    if (e->type() == QEvent::KeyPress){
-        if ((static_cast<QKeyEvent*>(e))->key() == Qt::Key_Backspace) {
+    if (e->type() == QEvent::KeyPress)
+    {
+        if ((static_cast<QKeyEvent*>(e))->key() == Qt::Key_Backspace)
+        {
             HelpViewer *viewer = currentHelpViewer();
             if (viewer == object) {
-                if (viewer->isBackwardAvailable()) {
-#if !defined(QT_NO_WEBKIT)
+                if (viewer->isBackwardAvailable())
+                {
                     // this helps in case there is an html <input> field
                     if (!viewer->hasFocus())
-#endif
                         viewer->backward();
                 }
                 return true;
@@ -979,7 +1025,8 @@ bool CentralWidget::eventFilter(QObject *object, QEvent *e)
 
     if (qobject_cast<QTabBar*>(object)) {
         bool dblClick = e->type() == QEvent::MouseButtonDblClick;
-        if((e->type() == QEvent::MouseButtonRelease) || dblClick) {
+        if ((e->type() == QEvent::MouseButtonRelease) || dblClick)
+        {
             if (tabWidget->count() <= 1)
                 return QWidget::eventFilter(object, e);
 
@@ -987,8 +1034,10 @@ bool CentralWidget::eventFilter(QObject *object, QEvent *e)
             HelpViewer *viewer = helpViewerFromTabPosition(tabWidget,
                                                            mouseEvent->pos());
 
-            if (viewer) {
-                if ((mouseEvent->button() == Qt::MidButton) || dblClick) {
+            if (viewer)
+            {
+                if ((mouseEvent->button() == Qt::MidButton) || dblClick)
+                {
                     tabWidget->removeTab(tabWidget->indexOf(viewer));
                     QTimer::singleShot(0, viewer, SLOT(deleteLater()));
                     currentPageChanged(tabWidget->currentIndex());
@@ -1006,7 +1055,8 @@ bool CentralWidget::find(const QString &txt, QTextDocument::FindFlags findFlags,
     HelpViewer* viewer = currentHelpViewer();
 
     Q_UNUSED(incremental)
-    if (viewer) {
+    if (viewer)
+    {
         QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
         if (findFlags & QTextDocument::FindBackward)
             options |= QWebPage::FindBackward;

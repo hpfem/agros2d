@@ -1891,10 +1891,6 @@ DSceneEdgeMagneticMarker::DSceneEdgeMagneticMarker(SceneEdgeMagneticMarker *edge
 
     createDialog();
 
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtValue);
-
     load();
     setSize();
 }
@@ -1952,12 +1948,6 @@ DSceneLabelMagneticMarker::DSceneLabelMagneticMarker(QWidget *parent, SceneLabel
     m_labelMarker = labelMagneticMarker;
 
     createDialog();
-
-    // tab order
-    setTabOrder(txtName, txtPermeability);
-    setTabOrder(txtPermeability, txtConductivity);
-    setTabOrder(txtConductivity, txtCurrentDensityReal);
-    setTabOrder(txtCurrentDensityReal, txtCurrentDensityImag);
 
     load();
     setSize();

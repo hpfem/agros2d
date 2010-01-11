@@ -874,13 +874,6 @@ DSceneEdgeHeatMarker::DSceneEdgeHeatMarker(SceneEdgeHeatMarker *edgeEdgeHeatMark
 
     createDialog();
 
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtTemperature);
-    setTabOrder(txtTemperature, txtHeatFlux);
-    setTabOrder(txtHeatFlux, txtHeatTransferCoefficient);
-    setTabOrder(txtHeatTransferCoefficient, txtExternalTemperature);
-
     load();
     setSize();
 }
@@ -896,7 +889,7 @@ DSceneEdgeHeatMarker::~DSceneEdgeHeatMarker()
 
 void DSceneEdgeHeatMarker::createContent()
 {
-    cmbType = new QComboBox();
+    cmbType = new QComboBox(this);
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HEAT_TEMPERATURE), PHYSICFIELDBC_HEAT_TEMPERATURE);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_HEAT_HEAT_FLUX), PHYSICFIELDBC_HEAT_HEAT_FLUX);
@@ -1011,12 +1004,6 @@ DSceneLabelHeatMarker::DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMark
     m_labelMarker = labelHeatMarker;
 
     createDialog();
-
-    // tab order
-    setTabOrder(txtName, txtThermalConductivity);
-    setTabOrder(txtThermalConductivity, txtVolumeHeat);
-    setTabOrder(txtVolumeHeat, txtDensity);
-    setTabOrder(txtDensity, txtSpecificHeat);
 
     load();
     setSize();

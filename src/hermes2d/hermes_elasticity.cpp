@@ -644,10 +644,6 @@ DSceneEdgeElasticityMarker::DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker
 
     createDialog();
 
-    // tab order
-    setTabOrder(txtName, cmbTypeX);
-    setTabOrder(cmbTypeX, txtForceX);
-
     load();
     setSize();
 }
@@ -662,12 +658,12 @@ DSceneEdgeElasticityMarker::~DSceneEdgeElasticityMarker()
 
 void DSceneEdgeElasticityMarker::createContent()
 {
-    cmbTypeX = new QComboBox();
+    cmbTypeX = new QComboBox(this);
     cmbTypeX->addItem("none", PHYSICFIELDBC_NONE);
     cmbTypeX->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FREE), PHYSICFIELDBC_ELASTICITY_FREE);
     cmbTypeX->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FIXED), PHYSICFIELDBC_ELASTICITY_FIXED);
 
-    cmbTypeY = new QComboBox();
+    cmbTypeY = new QComboBox(this);
     cmbTypeY->addItem("none", PHYSICFIELDBC_NONE);
     cmbTypeY->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FREE), PHYSICFIELDBC_ELASTICITY_FREE);
     cmbTypeY->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FIXED), PHYSICFIELDBC_ELASTICITY_FIXED);
@@ -727,10 +723,6 @@ DSceneLabelElasticityMarker::DSceneLabelElasticityMarker(QWidget *parent, SceneL
 
     createDialog();
 
-    // tab order
-    setTabOrder(txtName, txtYoungModulus);
-    setTabOrder(txtYoungModulus, txtPoissonNumber);
-
     load();
     setSize();
 }
@@ -743,8 +735,8 @@ DSceneLabelElasticityMarker::~DSceneLabelElasticityMarker()
 
 void DSceneLabelElasticityMarker::createContent()
 {
-    txtYoungModulus = new SLineEditValue();
-    txtPoissonNumber = new SLineEditValue();
+    txtYoungModulus = new SLineEditValue(this);
+    txtPoissonNumber = new SLineEditValue(this);
 
     layout->addWidget(new QLabel(tr("Young modulus (Pa):")), 1, 0);
     layout->addWidget(txtYoungModulus, 1, 1);

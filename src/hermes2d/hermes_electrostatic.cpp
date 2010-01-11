@@ -673,10 +673,6 @@ DSceneEdgeElectrostaticMarker::DSceneEdgeElectrostaticMarker(SceneEdgeElectrosta
 
     createDialog();
 
-    // tab order
-    setTabOrder(txtName, cmbType);
-    setTabOrder(cmbType, txtValue);
-
     load();
     setSize();
 }
@@ -689,7 +685,7 @@ DSceneEdgeElectrostaticMarker::~DSceneEdgeElectrostaticMarker()
 
 void DSceneEdgeElectrostaticMarker::createContent()
 {
-    cmbType = new QComboBox();
+    cmbType = new QComboBox(this);
     cmbType->addItem("none", PHYSICFIELDBC_NONE);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL), PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE), PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE);
@@ -734,10 +730,6 @@ DSceneLabelElectrostaticMarker::DSceneLabelElectrostaticMarker(QWidget *parent, 
     m_labelMarker = labelElectrostaticMarker;
 
     createDialog();
-
-    // tab order
-    setTabOrder(txtName, txtPermittivity);
-    setTabOrder(txtPermittivity, txtChargeDensity);
 
     load();
     setSize();

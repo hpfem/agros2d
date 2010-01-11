@@ -28,7 +28,7 @@ SceneSolution::SceneSolution()
     m_slnContourView = NULL;
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
-    m_slnVectorYView = NULL;
+    m_slnVectorYView = NULL;   
 }
 
 void SceneSolution::clear()

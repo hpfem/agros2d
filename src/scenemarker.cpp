@@ -97,7 +97,7 @@ SceneLabelMarkerNone::SceneLabelMarkerNone() : SceneLabelMarker("none")
 DSceneEdgeMarker::DSceneEdgeMarker(QWidget *parent) : QDialog(parent)
 {
     layout = new QGridLayout();
-    txtName = new QLineEdit("");
+    txtName = new QLineEdit(this);
 }
 
 DSceneEdgeMarker::~DSceneEdgeMarker()
@@ -175,7 +175,7 @@ void DSceneEdgeMarker::doReject()
 DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
 {
     layout = new QGridLayout();
-    txtName = new QLineEdit("");
+    txtName = new QLineEdit(this);
 }
 
 DSceneLabelMarker::~DSceneLabelMarker()
