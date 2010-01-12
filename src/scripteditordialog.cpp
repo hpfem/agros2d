@@ -441,7 +441,7 @@ void ScriptEditorDialog::createControls()
 
     doFileNew();
 
-    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doFileClose()));
+    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doCloseTab(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(doCurrentPageChanged(int)));
 
     // main widget
@@ -665,15 +665,7 @@ void ScriptEditorDialog::doFileSaveAs()
 
 void ScriptEditorDialog::doFileClose()
 {
-    if (tabWidget->count() > 1)
-    {
-        doCloseTab(tabWidget->currentIndex());
-    }
-    else
-    {
-         doFileNew();
-         doCloseTab(0);
-    }
+    doCloseTab(tabWidget->currentIndex());
 }
 
 void ScriptEditorDialog::doFind()
@@ -753,6 +745,10 @@ void ScriptEditorDialog::doHelp()
 
 void ScriptEditorDialog::doCloseTab(int index)
 {
+    if (tabWidget->count() == 1)
+    {
+        doFileNew();
+    }
     tabWidget->removeTab(index);
 }
 
