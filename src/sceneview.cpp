@@ -653,7 +653,6 @@ void SceneView::paintGeometry()
 
             if ((label->isSelected) || (label->isHighlighted))
             {
-                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 if (label->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
                 if (label->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
 
@@ -713,31 +712,32 @@ void SceneView::paintInitialMesh()
         }
     }
     glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void SceneView::paintSolutionMesh()
 {
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        // draw solution mesh
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glColor3f(m_sceneViewSettings.colorSolutionMesh.redF(), m_sceneViewSettings.colorSolutionMesh.greenF(), m_sceneViewSettings.colorSolutionMesh.blueF());
-        glLineWidth(1.0);
+    if (!Util::scene()->sceneSolution()->isSolved()) return;
 
-        // triangles
-        glBegin(GL_TRIANGLES);
-        for (int i = 0; i < Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_elements(); i++)
+    // draw solution mesh
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glColor3f(m_sceneViewSettings.colorSolutionMesh.redF(), m_sceneViewSettings.colorSolutionMesh.greenF(), m_sceneViewSettings.colorSolutionMesh.blueF());
+    glLineWidth(1.0);
+
+    // triangles
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_elements(); i++)
+    {
+        Element *element = Util::scene()->sceneSolution()->sln()->get_mesh()->get_element(i);
+        if (element->is_triangle())
         {
-            Element *element = Util::scene()->sceneSolution()->sln()->get_mesh()->get_element(i);
-            if (element->is_triangle())
-            {
-                glVertex2d(element->vn[0]->x, element->vn[0]->y);
-                glVertex2d(element->vn[1]->x, element->vn[1]->y);
-                glVertex2d(element->vn[2]->x, element->vn[2]->y);
-            }
+            glVertex2d(element->vn[0]->x, element->vn[0]->y);
+            glVertex2d(element->vn[1]->x, element->vn[1]->y);
+            glVertex2d(element->vn[2]->x, element->vn[2]->y);
         }
-        glEnd();
     }
+    glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void SceneView::paintOrder()
@@ -1125,6 +1125,7 @@ void SceneView::paintContours()
     double step = (rangeMax-rangeMin)/m_sceneViewSettings.contoursCount;
 
     // draw contours
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(m_sceneViewSettings.colorContours.redF(), m_sceneViewSettings.colorContours.greenF(), m_sceneViewSettings.colorContours.blueF());
     glBegin(GL_LINES);
     glLineWidth(1.0);
@@ -1137,10 +1138,12 @@ void SceneView::paintContours()
         }
     }
     glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     delete vert;
 
     Util::scene()->sceneSolution()->linContourView().unlock_data();
+
 }
 
 void SceneView::paintContoursTri(double3* vert, int3* tri, double step)

@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "sceneinfoview.h"
+#include "scripteditordialog.h"
 
 SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
 {
@@ -156,7 +157,11 @@ void SceneInfoView::keyPressEvent(QKeyEvent *event)
 
 void SceneInfoView::doInvalidated()
 {
+    // script speed improvement
+    if (scriptIsRunning()) return;
+
     blockSignals(true);
+    setUpdatesEnabled(false);
 
     clearNodes();
 
@@ -204,6 +209,7 @@ void SceneInfoView::doInvalidated()
     }
 
     // boundary conditions
+    QList<QTreeWidgetItem *> listMarkes;
     for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
@@ -211,17 +217,24 @@ void SceneInfoView::doInvalidated()
         item->setText(0, Util::scene()->edgeMarkers[i]->name);
         item->setIcon(0, icon("scene-edgemarker"));
         item->setData(0, Qt::UserRole, Util::scene()->edgeMarkers[i]->variant());
+
+        listMarkes.append(item);
     }
+    boundaryConditionsNode->addChildren(listMarkes);
 
     // materials
+    QList<QTreeWidgetItem *> listMaterials;
     for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
     {
-        QTreeWidgetItem *item = new QTreeWidgetItem(materialsNode);
+        QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, Util::scene()->labelMarkers[i]->name);
         item->setIcon(0, icon("scene-labelmarker"));
         item->setData(0, Qt::UserRole, Util::scene()->labelMarkers[i]->variant());
+
+        listMaterials.append(item);
     }
+    materialsNode->addChildren(listMaterials);
 
     #ifdef BETA
     // functions
@@ -237,35 +250,48 @@ void SceneInfoView::doInvalidated()
 
     // geometry
     // nodes
+    QList<QTreeWidgetItem *> listNodes;
     for (int i = 0; i<Util::scene()->nodes.count(); i++)
     {
-        QTreeWidgetItem *item = new QTreeWidgetItem(nodesNode);
+        QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-node"));
         item->setData(0, Qt::UserRole, Util::scene()->nodes[i]->variant());
+
+        listNodes.append(item);
     }
+    nodesNode->addChildren(listNodes);
 
     // edges
+    QList<QTreeWidgetItem *> listEdges;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        QTreeWidgetItem *item = new QTreeWidgetItem(edgesNode);
+        QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("[%1; %2] - [%3; %4]").arg(Util::scene()->edges[i]->nodeStart->point.x, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeStart->point.y, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeEnd->point.x, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeEnd->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-edge"));
         item->setData(0, Qt::UserRole, Util::scene()->edges[i]->variant());
+
+        listEdges.append(item);
     }
+    edgesNode->addChildren(listEdges);
 
     // labels
+    QList<QTreeWidgetItem *> listLabels;
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
-        QTreeWidgetItem *item = new QTreeWidgetItem(labelsNode);
+        QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText(0, QString("[%1; %2]").arg(Util::scene()->labels[i]->point.x, 0, 'e', 2).arg(Util::scene()->labels[i]->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-label"));
         item->setData(0, Qt::UserRole, Util::scene()->labels[i]->variant());
-    }
 
+        listLabels.append(item);
+    }
+    labelsNode->addChildren(listLabels);
+
+    setUpdatesEnabled(true);
     blockSignals(false);
 }
 

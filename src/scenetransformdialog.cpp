@@ -27,7 +27,7 @@ SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
     createControls();
 
     resize(sizeHint());
-    setMinimumSize(sizeHint());
+    setMinimumSize(300, 220);
     setMaximumSize(sizeHint());
 }
 
@@ -93,7 +93,7 @@ void SceneTransformDialog::createControls()
     layoutScale->addWidget(txtScaleBasePointX, 0, 1);
     layoutScale->addWidget(new QLabel(Util::scene()->problemInfo()->labelY() + ":"), 1, 0);
     layoutScale->addWidget(txtScaleBasePointY, 1, 1);
-    layoutScale->addWidget(new QLabel(tr("Scaling Factor:")), 2, 0);
+    layoutScale->addWidget(new QLabel(tr("Scaling factor:")), 2, 0);
     layoutScale->addWidget(txtScaleFactor, 2, 1);
 
     widScale = new QWidget();

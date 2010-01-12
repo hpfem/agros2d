@@ -40,11 +40,13 @@ public:
     ScriptResult runPythonScript(const QString &script, const QString &fileName);
     ExpressionResult runPythonExpression(const QString &expression);
     QString parseError();
+    inline bool isRunning() { return m_isRunning; }
 
 private slots:
     void doPrintStdout(const QString &message);
 
 private:
+    bool m_isRunning;
     QString m_stdOut;
 
     PyObject *m_dict;

@@ -233,7 +233,7 @@ void pythonDeleteNodePoint(double x, double y)
 // addedge(x1, y1, x2, y2, angle = 0, marker = "none")
 void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker)
 {
-    if (angle > 180)
+    if (angle > 180.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
     SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(QString(marker));
@@ -536,6 +536,7 @@ void pythonSolve()
     Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
     Util::scene()->refresh();
     sceneView->actSceneModePostprocessor->trigger();
+    sceneView->doInvalidated();
 }
 
 // zoombestfit()
@@ -874,6 +875,7 @@ static PyMethodDef pythonMethods[] =
 
 PythonEngine::PythonEngine()
 {
+    m_isRunning = false;
     m_stdOut = "";
 
     // connect stdout
@@ -922,6 +924,7 @@ void PythonEngine::showMessage(const QString &message)
 void PythonEngine::doPrintStdout(const QString &message)
 {
     m_stdOut.append(message);
+    QApplication::processEvents();
 }
 
 void PythonEngine::runPythonHeader()
@@ -938,6 +941,7 @@ void PythonEngine::runPythonHeader()
 
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
 {
+    m_isRunning = true;
     m_stdOut = "";
 
     runPythonHeader();
@@ -987,6 +991,10 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
         scriptResult.text = parseError();
     }
     Py_DECREF(Py_None);
+
+    m_isRunning = false;
+    Util::scene()->refresh();
+    sceneView->doInvalidated();
 
     return scriptResult;
 }

@@ -253,8 +253,6 @@ public:
     
     inline QUndoStack *undoStack() { return m_undoStack; }
     
-protected:
-    
 private:    
     QUndoStack *m_undoStack;
     ProblemInfo *m_problemInfo;

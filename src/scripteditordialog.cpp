@@ -38,37 +38,12 @@ ExpressionResult runPythonExpression(const QString &expression)
     return pythonEngine->runPythonExpression(expression);
 }
 
-void runScript(const QString &fileName)
+bool scriptIsRunning()
 {
-    if (QFile::exists(fileName))
-    {
-        QFile file(fileName);
-        if (file.open(QFile::ReadOnly | QFile::Text))
-        {
-            // run script
-            ScriptResult result = runPythonScript(file.readAll(), fileName);
-
-            if (result.isError)
-                QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
-            else if (!result.text.isEmpty())
-                QMessageBox::information(QApplication::activeWindow(), "Message", result.text);
-        }
-        file.close();
-    }
-}
-
-void runCommand(const QString &command)
-{
-    if (!command.isEmpty())
-    {
-        // run script
-        ScriptResult result = runPythonScript(command);
-
-        if (result.isError)
-            QMessageBox::critical(QApplication::activeWindow(), "Error", result.text);
-        else if (!result.text.isEmpty())
-            QMessageBox::information(QApplication::activeWindow(), "Message", result.text);
-    }
+    if (pythonEngine)
+        return pythonEngine->isRunning();
+    else
+        return false;
 }
 
 QString createPythonFromModel()
@@ -528,10 +503,20 @@ void ScriptEditorDialog::doRunPython()
     if (!scriptEditorWidget->file.isEmpty())
         filBrowser->setDir(QFileInfo(scriptEditorWidget->file).absolutePath());
 
+    // disable controls
+    terminalView->terminal()->setEnabled(false);
+    // actRunPython->setEnabled(false);
+    scriptEditorWidget->setCursor(Qt::BusyCursor);
+    QApplication::processEvents();
+
     // run script
     terminalView->terminal()->doPrintStdout("Run script: " + tabWidget->tabText(tabWidget->currentIndex()) + "\n", Qt::gray);
 
     connect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
+
+    // benchmark
+    QTime time;
+    time.start();
 
     ScriptResult result;
     if (txtEditor->textCursor().hasSelection())
@@ -542,7 +527,14 @@ void ScriptEditorDialog::doRunPython()
     if (result.isError)
         terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
 
+    // terminalView->terminal()->doPrintStdout(QString("Info: %1 ms \n").arg(time.elapsed()), Qt::gray);
+
     disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
+
+    // enable controls
+    terminalView->terminal()->setEnabled(true);
+    scriptEditorWidget->setCursor(Qt::ArrowCursor);
+    // actRunPython->setEnabled(true);
 }
 
 void ScriptEditorDialog::doCreatePythonFromModel()

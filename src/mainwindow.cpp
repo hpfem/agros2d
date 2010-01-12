@@ -25,6 +25,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
 
+    helpDialog = new HelpDialog(this);
+    chartDialog = new ChartDialog(this);
+    scriptEditorDialog = new ScriptEditorDialog(this);
+    reportDialog = new ReportDialog(sceneView, this);
+    videoDialog = new VideoDialog(sceneView, this);
+
     createActions();
     createScene();
     createViews();
@@ -45,12 +51,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
 
     sceneView->doDefaults();
-
-    helpDialog = new HelpDialog(this);
-    chartDialog = new ChartDialog(this);
-    scriptEditorDialog = new ScriptEditorDialog(this);
-    reportDialog = new ReportDialog(sceneView, this);
-    videoDialog = new VideoDialog(sceneView, this);
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 

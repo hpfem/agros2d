@@ -191,7 +191,7 @@ SceneNode *Scene::addNode(SceneNode *node)
         }
     }
     nodes.append(node);
-    emit invalidated();
+    if (!scriptIsRunning()) emit invalidated();
 
     return node;
 }
@@ -242,7 +242,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     }
 
     edges.append(edge);
-    emit invalidated();
+    if (!scriptIsRunning()) emit invalidated();
 
     return edge;
 }
@@ -289,7 +289,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
     }
 
     labels.append(label);
-    emit invalidated();
+    if (!scriptIsRunning()) emit invalidated();
 
     return label;
 }
@@ -325,7 +325,7 @@ void Scene::setLabelLabelMarker(SceneLabelMarker *labelMarker)
 void Scene::addEdgeMarker(SceneEdgeMarker *edgeMarker)
 {
     edgeMarkers.append(edgeMarker);
-    emit invalidated();
+    if (!scriptIsRunning()) emit invalidated();
 }
 
 void Scene::removeEdgeMarker(SceneEdgeMarker *edgeMarker)
@@ -381,7 +381,7 @@ bool Scene::setEdgeMarker(const QString &name, SceneEdgeMarker *edgeMarker)
 void Scene::addLabelMarker(SceneLabelMarker *labelMarker)
 {
     this->labelMarkers.append(labelMarker);
-    emit invalidated();
+    if (!scriptIsRunning()) emit invalidated();
 }
 
 bool Scene::setLabelMarker(const QString &name, SceneLabelMarker *labelMarker)

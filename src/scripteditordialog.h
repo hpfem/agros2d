@@ -42,8 +42,7 @@ void createScriptEngine(SceneView *sceneView);
 QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
 ExpressionResult runPythonExpression(const QString &expression);
-void runScript(const QString &fileName);
-void runCommand(const QString &command);
+bool scriptIsRunning();
 
 class ScriptEngineRemote : QObject
 {
