@@ -70,6 +70,9 @@ public:
 public slots:
     bool evaluate(bool quiet = true);
 
+signals:
+    void editingFinished();
+
 protected:
     void focusInEvent(QFocusEvent *event);
 

@@ -86,6 +86,7 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
     txtLineEdit->setToolTip(tr("This textedit allows using variables."));
     txtLineEdit->setText("0");
     connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
+    connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
 
     lblValue = new QLabel(this);
 

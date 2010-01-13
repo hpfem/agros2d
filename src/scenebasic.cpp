@@ -206,10 +206,16 @@ QLayout* DSceneNode::createContent()
 {
     txtPointX = new SLineEditValue();
     txtPointY = new SLineEditValue();
+    connect(txtPointX, SIGNAL(editingFinished()), this, SLOT(doEditingFinished()));
+    connect(txtPointY, SIGNAL(editingFinished()), this, SLOT(doEditingFinished()));
+    lblDistance = new QLabel();
+    lblAngle = new QLabel();
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
     layout->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
+    layout->addRow(tr("Distance:"), lblDistance);
+    layout->addRow(tr("Angle:"), lblAngle);
 
     return layout;
 }
@@ -220,6 +226,8 @@ bool DSceneNode::load()
 
     txtPointX->setNumber(sceneNode->point.x);
     txtPointY->setNumber(sceneNode->point.y);
+
+    doEditingFinished();
 
     return true;
 }
@@ -253,6 +261,14 @@ bool DSceneNode::save()
     return true;
 }
 
+void DSceneNode::doEditingFinished()
+{
+    lblDistance->setText(QString("%1 m").arg(sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number()))));
+    lblAngle->setText(QString("%1 deg.").arg(
+            (sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number())) > EPS_ZERO)
+            ? atan2(txtPointY->number(), txtPointX->number()) / M_PI * 180.0 : 0.0));
+}
+
 // *************************************************************************************************************************************
 
 DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
@@ -284,12 +300,15 @@ QLayout* DSceneEdge::createContent()
 {
     cmbNodeStart = new QComboBox();
     cmbNodeEnd = new QComboBox();
+    connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
+    connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
     cmbMarker = new QComboBox();
     connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
     btnMarker = new QPushButton("...");
     btnMarker->setMaximumWidth(25);
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtAngle = new SLineEditValue();
+    lblLength = new QLabel();
 
     QHBoxLayout *layoutMarker = new QHBoxLayout();
     layoutMarker->addWidget(cmbMarker);
@@ -300,6 +319,7 @@ QLayout* DSceneEdge::createContent()
     layout->addRow(tr("End point:"), cmbNodeEnd);
     layout->addRow(tr("Boundary condition:"), layoutMarker);
     layout->addRow(tr("Angle (deg.):"), txtAngle);
+    layout->addRow(tr("Length:"), lblLength);
 
     fillComboBox();
 
@@ -335,6 +355,8 @@ bool DSceneEdge::load()
     cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
     cmbMarker->setCurrentIndex(cmbMarker->findData(sceneEdge->marker->variant()));
     txtAngle->setNumber(sceneEdge->angle);
+
+    doNodeChanged();
 
     return true;
 }
@@ -390,6 +412,27 @@ void DSceneEdge::doMarkerClicked()
     {
         cmbMarker->setItemText(cmbMarker->currentIndex(), marker->name);
         Util::scene()->refresh();
+    }
+}
+
+void DSceneEdge::doNodeChanged()
+{
+    SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
+    SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
+
+    if (nodeStart && nodeEnd)
+    {
+        if (txtAngle->number() < EPS_ZERO)
+        {
+            // line
+            lblLength->setText(QString("%1 m").arg(sqrt(sqr(nodeEnd->point.x - nodeStart->point.x) + sqr(nodeEnd->point.y - nodeStart->point.y))));
+        }
+        else
+        {
+            // arc
+            SceneEdge edge(nodeStart, nodeEnd, Util::scene()->edgeMarkers[0], txtAngle->number());
+            lblLength->setText(QString("%1 m").arg(edge.radius() * edge.angle / 180.0 * M_PI));
+        }
     }
 }
 

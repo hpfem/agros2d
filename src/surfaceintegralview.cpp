@@ -92,14 +92,26 @@ void SurfaceIntegralValue::calculate()
                         for (int i = 0; i < quad2d->get_num_points(eo); i++)
                         {
                             // length
-                            length += pt[i][2] * tan[i][2];
+                            if (boundary)
+                                length += pt[i][2] * tan[i][2] / 2.0;
+                            else
+                                length += pt[i][2] * tan[i][2] / 4.0;
 
                             // surface
-
                             if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
-                                surface += pt[i][2] * tan[i][2];
+                            {
+                                if (boundary)
+                                    surface += pt[i][2] * tan[i][2] / 2.0;
+                                else
+                                    surface += pt[i][2] * tan[i][2] / 4.0;
+                            }
                             else
-                                surface += 2 * M_PI * x[i] * pt[i][2] * tan[i][2];
+                            {
+                                if (boundary)
+                                    surface += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] / 2.0;
+                                else
+                                    surface += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] / 4.0;
+                            }
 
                             // other integrals
                             calculateVariables(i);
@@ -109,9 +121,6 @@ void SurfaceIntegralValue::calculate()
             }
         }
     }
-
-    length /= (boundary) ? 2.0 : 4.0;
-    surface /= (boundary) ? 2.0 : 4.0;
 }
 
 SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget(tr("Surface Integral"), parent)

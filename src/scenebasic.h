@@ -152,6 +152,11 @@ protected:
 private:
     SLineEditValue *txtPointX;
     SLineEditValue *txtPointY;
+    QLabel *lblDistance;
+    QLabel *lblAngle;
+
+private slots:
+    void doEditingFinished();
 };
 
 // *************************************************************************************************************************************
@@ -176,12 +181,14 @@ private:
     QComboBox *cmbMarker;
     QPushButton *btnMarker;
     SLineEditValue *txtAngle;
+    QLabel *lblLength;
 
     void fillComboBox();
 
 private slots:
     void doMarkerChanged(int index);
     void doMarkerClicked();
+    void doNodeChanged();
 };
 
 // *************************************************************************************************************************************
