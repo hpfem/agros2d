@@ -694,7 +694,7 @@ void SceneView::paintInitialMesh()
 {
     if (!Util::scene()->sceneSolution()->isMeshed()) return;
 
-    // draw initial mesh
+    // draw initial mesh    
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(m_sceneViewSettings.colorInitialMesh.redF(), m_sceneViewSettings.colorInitialMesh.greenF(), m_sceneViewSettings.colorInitialMesh.blueF());
     glLineWidth(1.0);
@@ -750,7 +750,6 @@ void SceneView::paintOrder()
         int3* tris = Util::scene()->sceneSolution()->ordView().get_triangles();
 
         // draw mesh
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         int min = 11;
         int max = 1;
         for (int i = 0; i < Util::scene()->sceneSolution()->ordView().get_num_triangles(); i++)
@@ -866,7 +865,6 @@ void SceneView::paintColorBar(double min, double max)
     double border_scale = 0.05*k;
 
     glDisable(GL_DEPTH_TEST);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // background
     drawBlend(Point(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale), Point(1.0 - border_scale/2.0, scale_height + border_scale));
@@ -956,7 +954,6 @@ void SceneView::paintScalarField()
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, 1);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1.0, 1.0);
 
@@ -1038,8 +1035,7 @@ void SceneView::paintScalarField3D()
     glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
 
     glEnable(GL_TEXTURE_1D);
-    glBindTexture(GL_TEXTURE_1D, 1);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glBindTexture(GL_TEXTURE_1D, 1);   
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1.0, 1.0);
 
@@ -1124,8 +1120,7 @@ void SceneView::paintContours()
     // value range
     double step = (rangeMax-rangeMin)/m_sceneViewSettings.contoursCount;
 
-    // draw contours
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // draw contours    
     glColor3f(m_sceneViewSettings.colorContours.redF(), m_sceneViewSettings.colorContours.greenF(), m_sceneViewSettings.colorContours.blueF());
     glBegin(GL_LINES);
     glLineWidth(1.0);
@@ -1138,7 +1133,6 @@ void SceneView::paintContours()
         }
     }
     glEnd();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     delete vert;
 
@@ -1215,7 +1209,6 @@ void SceneView::paintVectors()
     // glEnable(GL_TEXTURE_1D);
     // glBindTexture(GL_TEXTURE_1D, 1);
     // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBegin(GL_TRIANGLES);
     for (int i = 0; i <= nx; i++)
     {
@@ -1318,7 +1311,6 @@ void SceneView::paintZoomRegion()
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glColor4d(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF(), 0.75);
 
         glBegin(GL_QUADS);
@@ -2558,7 +2550,6 @@ void SceneView::paintPostprocessorSelectedVolume()
     // draw mesh
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor4d(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF(), 0.5);
 
     // triangles

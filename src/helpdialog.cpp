@@ -336,6 +336,9 @@ HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *central, QWidget *par
 
 void HelpViewer::setSource(const QUrl &url)
 {
+    if ((!url.isEmpty()) && (this->url().toString() == url.toString()))
+        return;
+
     loadFinished = false;
     if (!homeUrl.isValid())
         homeUrl = url;
@@ -378,7 +381,7 @@ void HelpViewer::home()
 
 void HelpViewer::keyPressEvent(QKeyEvent *e)
 {
-    if (e->key() == Qt::Key_Insert && e->modifiers() == Qt::CTRL)
+    if ((e->key() == Qt::Key_C) && (e->modifiers() & Qt::ControlModifier))
     {
         if (hasSelection())
             copy();
@@ -566,8 +569,8 @@ CentralWidget *CentralWidget::instance()
 
 void CentralWidget::tabNew()
 {
-    HelpViewer* viewer = currentHelpViewer();
-    if (viewer && viewer->hasLoadFinished())
+    HelpViewer *viewer = currentHelpViewer();
+    if (viewer)
         setSourceInNewTab(viewer->source());
 }
 
@@ -625,8 +628,8 @@ void CentralWidget::tabClose(int index)
 
 void CentralWidget::setSource(const QUrl &url)
 {
-    HelpViewer* viewer = currentHelpViewer();
-    HelpViewer* lastViewer = qobject_cast<HelpViewer*>(tabWidget->widget(lastTabPage));
+    HelpViewer *viewer = currentHelpViewer();
+    HelpViewer *lastViewer = qobject_cast<HelpViewer*>(tabWidget->widget(lastTabPage));
 
     if (!viewer && !lastViewer)
     {
@@ -635,7 +638,6 @@ void CentralWidget::setSource(const QUrl &url)
         lastTabPage = tabWidget->addTab(viewer, QString());
         tabWidget->setCurrentIndex(lastTabPage);
         connectSignals();
-        qApp->processEvents();
     }
     else
     {
@@ -737,14 +739,11 @@ void CentralWidget::print()
     initPrinter();
 
     QPrintDialog *dlg = new QPrintDialog(printer, this);
-#if defined(QT_NO_WEBKIT)
-    if (viewer->textCursor().hasSelection())
-        dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
-#endif
     dlg->addEnabledOption(QAbstractPrintDialog::PrintPageRange);
     dlg->addEnabledOption(QAbstractPrintDialog::PrintCollateCopies);
     dlg->setWindowTitle(tr("Print Document"));
-    if (dlg->exec() == QDialog::Accepted) {
+    if (dlg->exec() == QDialog::Accepted)
+    {
         viewer->print(printer);
     }
     delete dlg;
@@ -839,20 +838,13 @@ void CentralWidget::setGlobalActions(const QList<QAction*> &actions)
 
 void CentralWidget::setSourceInNewTab(const QUrl &url, int zoom)
 {
-    HelpViewer* viewer = new HelpViewer(helpEngine, this, this);
+    HelpViewer *viewer = new HelpViewer(helpEngine, this, this);
     viewer->installEventFilter(this);
     viewer->setZoom(zoom);
     viewer->setSource(url);
     viewer->setFocus(Qt::OtherFocusReason);
 
-#if defined(QT_NO_WEBKIT)
-    QFont font = viewer->font();
-    font.setPointSize(font.pointSize() + int(zoom));
-    viewer->setFont(font);
-#endif
-
-    tabWidget->setCurrentIndex(tabWidget->addTab(viewer,
-                                                 quoteTabTitle(viewer->documentTitle())));
+    tabWidget->setCurrentIndex(tabWidget->addTab(viewer, quoteTabTitle(viewer->documentTitle())));
 
     connectSignals();
 }
@@ -862,9 +854,6 @@ HelpViewer *CentralWidget::newEmptyTab()
     HelpViewer* viewer = new HelpViewer(helpEngine, this, this);
     viewer->installEventFilter(this);
     viewer->setFocus(Qt::OtherFocusReason);
-#if defined(QT_NO_WEBKIT)
-    viewer->setDocumentTitle(tr("unknown"));
-#endif
     tabWidget->setCurrentIndex(tabWidget->addTab(viewer, tr("unknown")));
 
     connectSignals();
@@ -915,24 +904,32 @@ void CentralWidget::setTabTitle(const QUrl& url)
 {
     Q_UNUSED(url)
     QTabBar *tabBar = qFindChild<QTabBar*>(tabWidget);
-    for (int i = 0; i < tabBar->count(); ++i)
-    {
-        HelpViewer* view = qobject_cast<HelpViewer*>(tabWidget->widget(i));
-        if (view)
+
+    for (int tab = 0; tab < tabBar->count(); ++tab) {
+        HelpViewer *viewer = qobject_cast<HelpViewer*>(tabWidget->widget(tab));
+        if (viewer)
         {
-            tabWidget->setTabText(i,
-                                  quoteTabTitle(view->documentTitle().trimmed()));
+            tabWidget->setTabText(tab, quoteTabTitle(viewer->documentTitle().trimmed()));
         }
     }
 }
 
 void CentralWidget::currentPageChanged(int index)
 {
-    lastTabPage = index;
+    const HelpViewer *viewer = currentHelpViewer();
+
+    if (viewer)
+        lastTabPage = index;
 
     tabWidget->setTabsClosable(tabWidget->count() > 1);
-    tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
+    QWidget *widget = tabWidget->cornerWidget(Qt::TopRightCorner);
+    if (widget)
+    {
+        widget->setEnabled(viewer && (tabWidget->count() > 1));
 
+        widget = tabWidget->cornerWidget(Qt::TopLeftCorner);
+        widget->setEnabled(viewer ? true : false);
+    }
     emit currentViewerChanged();
 }
 
