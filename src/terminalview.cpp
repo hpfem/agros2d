@@ -23,6 +23,8 @@ TerminalLineEdit::TerminalLineEdit(QWidget *parent) : QLineEdit(parent)
 {
     m_model = dynamic_cast<QStringListModel *>(Util::completer()->model());
     m_index = -1;
+
+    connect(this, SIGNAL(returnPressed()), this, SLOT(doClear()));
 }
 
 void TerminalLineEdit::keyPressEvent(QKeyEvent *event)
@@ -54,6 +56,13 @@ void TerminalLineEdit::keyPressEvent(QKeyEvent *event)
 
     QLineEdit::keyPressEvent(event);
 }
+
+void TerminalLineEdit::doClear()
+{
+    m_index = -1;
+}
+
+// **********************************************************************************************************************
 
 Terminal::Terminal(QWidget *parent) : QWidget(parent)
 {

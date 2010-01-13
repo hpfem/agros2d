@@ -36,6 +36,9 @@ protected:
 private:
     int m_index;
     QStringListModel *m_model;
+
+private slots:
+    void doClear();
 };
 
 class Terminal : public QWidget
