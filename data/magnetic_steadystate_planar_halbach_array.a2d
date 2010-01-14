@@ -1,0 +1,70 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="2" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="10" polynomialorder="2" problemtype="planar" timetotal="1" type="magnetic" timestep="1" id="0" name="Halbach array" initialcondition="0" >
+            <scriptstartup></scriptstartup>
+            <description>For more informations visit: http://en.wikipedia.org/wiki/Halbach_array</description>
+            <edges>
+                <edge type="magnetic_vector_potential" value="0" id="1" name="A = 0" />
+            </edges>
+            <labels>
+                <label current_density_real="0" remanence="1.15" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="180" id="1" name="Magnet 1" current_density_imag="0" permeability="1.05" velocity_angular="0" />
+                <label current_density_real="0" remanence="1.15" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="90" id="2" name="Magnet 2" current_density_imag="0" permeability="1.05" velocity_angular="0" />
+                <label current_density_real="0" remanence="1.15" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="Magnet 3" current_density_imag="0" permeability="1.05" velocity_angular="0" />
+                <label current_density_real="0" remanence="1.15" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="-90" id="4" name="Magnet 4" current_density_imag="0" permeability="1.05" velocity_angular="0" />
+                <label current_density_real="0" remanence="1.15" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="180" id="5" name="Magnet 5" current_density_imag="0" permeability="1.05" velocity_angular="0" />
+                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="6" name="Air" current_density_imag="0" permeability="1" velocity_angular="0" />
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0" y="-0" id="0" />
+            <node x="0.01" y="-0" id="1" />
+            <node x="0.01" y="0.01" id="2" />
+            <node x="0" y="0.01" id="3" />
+            <node x="0.02" y="-0" id="4" />
+            <node x="0.02" y="0.01" id="5" />
+            <node x="0.03" y="0.01" id="6" />
+            <node x="0.03" y="0" id="7" />
+            <node x="0.04" y="0.01" id="8" />
+            <node x="0.04" y="0" id="9" />
+            <node x="0.05" y="0" id="10" />
+            <node x="0.05" y="0.01" id="11" />
+            <node x="-0.03" y="-0.03" id="12" />
+            <node x="0.08" y="-0.03" id="13" />
+            <node x="0.08" y="0.04" id="14" />
+            <node x="-0.03" y="0.04" id="15" />
+        </nodes>
+        <edges>
+            <edge end="2" marker="0" id="0" start="3" angle="0" />
+            <edge end="5" marker="0" id="1" start="2" angle="0" />
+            <edge end="6" marker="0" id="2" start="5" angle="0" />
+            <edge end="8" marker="0" id="3" start="6" angle="0" />
+            <edge end="8" marker="0" id="4" start="11" angle="0" />
+            <edge end="10" marker="0" id="5" start="11" angle="0" />
+            <edge end="9" marker="0" id="6" start="10" angle="0" />
+            <edge end="7" marker="0" id="7" start="9" angle="0" />
+            <edge end="4" marker="0" id="8" start="7" angle="0" />
+            <edge end="1" marker="0" id="9" start="4" angle="0" />
+            <edge end="0" marker="0" id="10" start="1" angle="0" />
+            <edge end="3" marker="0" id="11" start="0" angle="0" />
+            <edge end="1" marker="0" id="12" start="2" angle="0" />
+            <edge end="5" marker="0" id="13" start="4" angle="0" />
+            <edge end="7" marker="0" id="14" start="6" angle="0" />
+            <edge end="8" marker="0" id="15" start="9" angle="0" />
+            <edge end="13" marker="1" id="16" start="12" angle="0" />
+            <edge end="14" marker="1" id="17" start="13" angle="0" />
+            <edge end="15" marker="1" id="18" start="14" angle="0" />
+            <edge end="12" marker="1" id="19" start="15" angle="0" />
+        </edges>
+        <labels>
+            <label x="0.005" y="0.005" marker="1" id="0" area="0" />
+            <label x="0.015" y="0.005" marker="2" id="1" area="0" />
+            <label x="0.025" y="0.005" marker="3" id="2" area="0" />
+            <label x="0.035" y="0.005" marker="4" id="3" area="0" />
+            <label x="0.045" y="0.005" marker="5" id="4" area="0" />
+            <label x="0.025" y="0.025" marker="6" id="5" area="0" />
+        </labels>
+    </geometry>
+    <functions/>
+</document>
