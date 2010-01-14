@@ -304,7 +304,7 @@ void ScriptEditorDialog::createActions()
     actFileOpenRecentGroup = new QActionGroup(this);
     connect(actFileOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doFileOpenRecent(QAction *)));
 
-    actFileClose = new QAction(icon(""), tr("Close"), this);
+    actFileClose = new QAction(icon(""), tr("&Close"), this);
     actFileClose->setShortcuts(QKeySequence::Close);
     connect(actFileClose, SIGNAL(triggered()), this, SLOT(doFileClose()));
 
@@ -329,11 +329,11 @@ void ScriptEditorDialog::createActions()
     actFind->setShortcut(QKeySequence::Find);
     connect(actFind, SIGNAL(triggered()), this, SLOT(doFind()));
 
-    actFindNext = new QAction(icon("edit-find"), tr("&Find next"), this);
+    actFindNext = new QAction(icon("edit-find"), tr("Find &next"), this);
     actFindNext->setShortcut(QKeySequence::FindNext);
     connect(actFindNext, SIGNAL(triggered()), this, SLOT(doFindNext()));
 
-    actReplace = new QAction(icon("edit-find-replace"), tr("&Replace"), this);
+    actReplace = new QAction(icon("edit-find-replace"), tr("Replace"), this);
     actReplace->setShortcut(QKeySequence::Replace);
     connect(actReplace, SIGNAL(triggered()), this, SLOT(doReplace()));
 
@@ -356,7 +356,7 @@ void ScriptEditorDialog::createActions()
 
 void ScriptEditorDialog::createControls()
 {
-    mnuRecentFiles = new QMenu(tr("Recent files"), this);
+    mnuRecentFiles = new QMenu(tr("&Recent files"), this);
 
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actFileNew);

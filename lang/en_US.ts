@@ -506,11 +506,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="132"/>
-        <source>&amp;Save with solution</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="133"/>
         <source>Save the file to disk with solution</source>
         <translation type="unfinished"></translation>
@@ -539,11 +534,6 @@
         <location filename="../src/mainwindow.cpp" line="155"/>
         <location filename="../src/mainwindow.cpp" line="702"/>
         <source>Export image to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="158"/>
-        <source>Create video...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -623,12 +613,20 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="200"/>
+        <source>&amp;Shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="201"/>
         <source>Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="204"/>
+        <source>&amp;Online help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="205"/>
         <source>Online help</source>
         <translation type="unfinished"></translation>
@@ -664,23 +662,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/mainwindow.cpp" line="240"/>
+        <source>Script &amp;editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="241"/>
         <source>Script editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="245"/>
-        <source>&amp;Run script...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="246"/>
         <source>Run script...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="249"/>
-        <source>&amp;Run command...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -691,11 +684,6 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="251"/>
         <source>Run command...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="254"/>
-        <source>Report...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -810,6 +798,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/mainwindow.cpp" line="132"/>
+        <source>Save with solution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="138"/>
         <source>Save the file under a new name</source>
         <translation type="unfinished"></translation>
@@ -832,6 +825,11 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="151"/>
         <source>Export AutoCAD DXF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="158"/>
+        <source>Create &amp;video...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -865,18 +863,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="240"/>
-        <source>&amp;Script editor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="261"/>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="262"/>
-        <source>Recent files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -924,6 +912,26 @@
         <location filename="../src/mainwindow.cpp" line="602"/>
         <location filename="../src/mainwindow.cpp" line="794"/>
         <source>File open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="245"/>
+        <source>Run &amp;script...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="249"/>
+        <source>Run &amp;command...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="254"/>
+        <source>&amp;Report...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="262"/>
+        <source>&amp;Recent files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2790,23 +2798,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="307"/>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/scripteditordialog.cpp" line="328"/>
         <source>&amp;Find</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/scripteditordialog.cpp" line="332"/>
-        <source>&amp;Find next</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/scripteditordialog.cpp" line="336"/>
-        <source>&amp;Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2817,11 +2810,6 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="344"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/scripteditordialog.cpp" line="359"/>
-        <source>Recent files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2957,6 +2945,26 @@
         <location filename="../src/scripteditordialog.cpp" line="636"/>
         <location filename="../src/scripteditordialog.cpp" line="662"/>
         <source>Save file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="307"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="332"/>
+        <source>Find &amp;next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="336"/>
+        <source>Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="359"/>
+        <source>&amp;Recent files</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

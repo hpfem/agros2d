@@ -506,11 +506,6 @@
         <translation>&amp;Uložit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="132"/>
-        <source>&amp;Save with solution</source>
-        <translation>&amp;Uložit včetně řešení</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="133"/>
         <source>Save the file to disk with solution</source>
         <translation>Uložit včetně řešení</translation>
@@ -540,11 +535,6 @@
         <location filename="../src/mainwindow.cpp" line="702"/>
         <source>Export image to file</source>
         <translation>Export obrázku do souboru</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="158"/>
-        <source>Create video...</source>
-        <translation>Vytvořit video...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="159"/>
@@ -623,12 +613,20 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="200"/>
+        <source>&amp;Shortcuts</source>
+        <translation>Klávesové &amp;zkratky</translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="201"/>
         <source>Shortcuts</source>
         <translation>Klávesové zkratky</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="204"/>
+        <source>&amp;Online help</source>
+        <translation>&amp;Online nápověda</translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="205"/>
         <source>Online help</source>
         <translation>Online nápověda</translation>
@@ -664,24 +662,19 @@
         <translation>Vyřešit problém</translation>
     </message>
     <message>
+        <location filename="../src/mainwindow.cpp" line="240"/>
+        <source>Script &amp;editor</source>
+        <translation>&amp;Editor skriptů</translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="241"/>
         <source>Script editor</source>
         <translation>Editor skriptů</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="245"/>
-        <source>&amp;Run script...</source>
-        <translation>Spustit &amp;skript...</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="246"/>
         <source>Run script...</source>
         <translation>Spustit skript...</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="249"/>
-        <source>&amp;Run command...</source>
-        <translation>&amp;Příkaz...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="250"/>
@@ -694,14 +687,9 @@
         <translation>Příkaz...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="254"/>
-        <source>Report...</source>
-        <translation>Sestava...</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="255"/>
         <source>Problem html report</source>
-        <translation>HTML sestava</translation>
+        <translation>HTML zpráva</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="265"/>
@@ -810,6 +798,11 @@
         <translation>Uložit soubor na disk</translation>
     </message>
     <message>
+        <location filename="../src/mainwindow.cpp" line="132"/>
+        <source>Save with solution</source>
+        <translation>Uložit včetně řešení</translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="138"/>
         <source>Save the file under a new name</source>
         <translation>Uložit soubor na disk pod novým jménem</translation>
@@ -833,6 +826,11 @@
         <location filename="../src/mainwindow.cpp" line="151"/>
         <source>Export AutoCAD DXF</source>
         <translation>Export AutoCAD DXF</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="158"/>
+        <source>Create &amp;video...</source>
+        <translation>Vytvořit &amp;video...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="208"/>
@@ -865,19 +863,9 @@
         <translation>&amp;Graf veličin</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="240"/>
-        <source>&amp;Script editor</source>
-        <translation>Editor &amp;skriptů</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="261"/>
         <source>&amp;Add</source>
         <translation>Přid&amp;at</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="262"/>
-        <source>Recent files</source>
-        <translation>Nedávné soubory</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="308"/>
@@ -925,6 +913,26 @@
         <location filename="../src/mainwindow.cpp" line="794"/>
         <source>File open</source>
         <translation>Soubor otevřen</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="245"/>
+        <source>Run &amp;script...</source>
+        <translation>Spustit &amp;skript...</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="249"/>
+        <source>Run &amp;command...</source>
+        <translation>Spustit &amp;příkaz...</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="254"/>
+        <source>&amp;Report...</source>
+        <translation>&amp;Zpráva...</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="262"/>
+        <source>&amp;Recent files</source>
+        <translation>&amp;Nedávné soubory</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="655"/>
@@ -2080,7 +2088,7 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="30"/>
         <source>Report</source>
-        <translation>Sestava</translation>
+        <translation>Zpráva</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="49"/>
@@ -2790,24 +2798,9 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="307"/>
-        <source>Close</source>
-        <translation>Zavřít</translation>
-    </message>
-    <message>
         <location filename="../src/scripteditordialog.cpp" line="328"/>
         <source>&amp;Find</source>
         <translation>&amp;Najít</translation>
-    </message>
-    <message>
-        <location filename="../src/scripteditordialog.cpp" line="332"/>
-        <source>&amp;Find next</source>
-        <translation>Najít &amp;další</translation>
-    </message>
-    <message>
-        <location filename="../src/scripteditordialog.cpp" line="336"/>
-        <source>&amp;Replace</source>
-        <translation>Nah&amp;radit</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="340"/>
@@ -2818,11 +2811,6 @@
         <location filename="../src/scripteditordialog.cpp" line="344"/>
         <source>Ctrl+M</source>
         <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/scripteditordialog.cpp" line="359"/>
-        <source>Recent files</source>
-        <translation>Nedávné soubory</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="361"/>
@@ -2958,6 +2946,26 @@
         <location filename="../src/scripteditordialog.cpp" line="662"/>
         <source>Save file</source>
         <translation>Uložit soubor</translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="307"/>
+        <source>&amp;Close</source>
+        <translation>&amp;Zavřít</translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="332"/>
+        <source>Find &amp;next</source>
+        <translation>Najít &amp;další</translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="336"/>
+        <source>Replace</source>
+        <translation>Nahradit</translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="359"/>
+        <source>&amp;Recent files</source>
+        <translation>&amp;Nedávné soubory</translation>
     </message>
 </context>
 <context>
