@@ -1338,12 +1338,25 @@ void ViewScalarFilter::precalculate(int order, int mask)
             {
                 SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
                 node->values[0][0][i] = marker->remanence.number;
-            }
-            break;
-        case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE:
-            {
-                SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
-                node->values[0][0][i] = marker->remanence_angle.number;
+
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = marker->remanence.number * cos(marker->remanence_angle.number / 180.0 * M_PI);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = marker->remanence.number * sin(marker->remanence_angle.number / 180.0 * M_PI);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = marker->remanence.number;
+                    }
+                    break;
+                }
             }
             break;
         case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:

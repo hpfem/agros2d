@@ -74,7 +74,6 @@ public:
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE); }
 

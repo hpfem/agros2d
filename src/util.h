@@ -349,7 +349,6 @@ enum PhysicFieldVariable
     PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL,    
     PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE,
     PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE,
-    PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE,
     PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY,
     PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY,
     PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY,
@@ -446,8 +445,6 @@ inline QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable
         return QObject::tr("Conductivity");
     case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE:
         return QObject::tr("Remanent flux density");
-    case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE:
-        return QObject::tr("Remanent flux density - direction");
     case PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY:
         return QObject::tr("Velocity");
 
@@ -555,8 +552,6 @@ inline QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("S/m");
     case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE:
         return QObject::tr("T");
-    case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE:
-        return QObject::tr("deg.");
     case PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY:
         return QObject::tr("m/s");
     case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
@@ -638,8 +633,6 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY:
     case PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD:
     case PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY:
-    case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE:
-    case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE:
 
     case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
     case PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY:

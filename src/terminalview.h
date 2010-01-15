@@ -81,6 +81,10 @@ protected:
 
 private:
     Terminal *m_terminal;
+
+private slots:
+    void doVisibilityChanged(bool);
+
 };
 
 #endif // TERMINALVIEW_H

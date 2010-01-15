@@ -623,7 +623,6 @@ void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY), PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE);
     }
 
     // steady state and transient
@@ -645,7 +644,6 @@ void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY), PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE);
     }
 }
 
@@ -656,6 +654,7 @@ void HermesMagnetic::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE), PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
     }
@@ -665,6 +664,7 @@ void HermesMagnetic::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD), PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE), PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE), PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY);
     }
@@ -1366,12 +1366,18 @@ double LocalPointValueMagnetic::variableValue(PhysicFieldVariable physicFieldVar
         break;
     case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE:
         {
-            return remanence;
-        }
-        break;
-    case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE:
-        {
-            return remanence_angle;
+            switch (physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                return remanence * cos(remanence_angle / 180.0 * M_PI);
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                return remanence * sin(remanence_angle / 180.0 * M_PI);
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                return remanence;
+                break;
+            }
         }
         break;
     default:

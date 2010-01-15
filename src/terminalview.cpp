@@ -78,7 +78,7 @@ Terminal::Terminal(QWidget *parent) : QWidget(parent)
     txtOutput = new QTextEdit(this);
     txtOutput->setLineWrapMode (QTextEdit::NoWrap);
     txtOutput->setFont(QFont("Monospaced", 9));
-    txtOutput->setReadOnly(true);
+    txtOutput->setReadOnly(true);    
 
     btnExecute = new QPushButton(this);
     btnExecute->setText(tr("Execute"));
@@ -101,6 +101,10 @@ Terminal::Terminal(QWidget *parent) : QWidget(parent)
     layout->addLayout(layoutCommand);
     txtCommand->setFocus();
 
+    setTabOrder(txtCommand, btnExecute);
+    setTabOrder(btnExecute, btnClear);
+    setTabOrder(btnClear, txtCommand);
+
     setLayout(layout);
 }
 
@@ -113,6 +117,7 @@ Terminal::~Terminal()
 void Terminal::focusInEvent(QFocusEvent *event)
 {
     txtCommand->setFocus(event->reason());
+    QWidget::focusInEvent(event);
 }
 
 void Terminal::doExecute()
@@ -185,6 +190,8 @@ TerminalView::TerminalView(QWidget *parent) : QDockWidget(tr("Terminal"), parent
     setMinimumWidth(280);
     setObjectName("TerminalView");
 
+    connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(doVisibilityChanged(bool)));
+
     m_terminal = new Terminal(this);
 
     setWidget(m_terminal);
@@ -193,4 +200,10 @@ TerminalView::TerminalView(QWidget *parent) : QDockWidget(tr("Terminal"), parent
 void TerminalView::focusInEvent(QFocusEvent *event)
 {
     m_terminal->setFocus(event->reason());
+}
+
+void TerminalView::doVisibilityChanged(bool)
+{
+    if (isVisible())
+        m_terminal->setFocus();
 }

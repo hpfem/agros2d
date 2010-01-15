@@ -110,7 +110,6 @@ void initLists()
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY, "magnetic_permeability");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY, "magnetic_conductivity");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE, "magnetic_remanence");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE_ANGLE, "magnetic_remanence_angle");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY, "magnetic_velocity");
 
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_CURRENT_POTENTIAL, "current_potential");

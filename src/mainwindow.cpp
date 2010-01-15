@@ -129,7 +129,7 @@ void MainWindow::createActions()
     actDocumentSave->setStatusTip(tr("Save the file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
     
-    actDocumentSaveWithSolution = new QAction(icon(""), tr("&Save with solution"), this);
+    actDocumentSaveWithSolution = new QAction(icon(""), tr("Save with solution"), this);
     actDocumentSaveWithSolution->setStatusTip(tr("Save the file to disk with solution"));
     connect(actDocumentSaveWithSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveWithSolution()));
 
@@ -155,7 +155,7 @@ void MainWindow::createActions()
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
 
-    actCreateVideo = new QAction(tr("Create video..."), this);
+    actCreateVideo = new QAction(tr("Create &video..."), this);
     actCreateVideo->setStatusTip(tr("Create video"));
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
 
@@ -197,11 +197,11 @@ void MainWindow::createActions()
     actHelp->setShortcut(QKeySequence::HelpContents);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 
-    actHelpShortCut = new QAction(icon(""), tr("Shortcuts"), this);
+    actHelpShortCut = new QAction(icon(""), tr("&Shortcuts"), this);
     actHelpShortCut->setStatusTip(tr("Shortcuts"));
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
 
-    actOnlineHelp = new QAction(icon(""), tr("Online help"), this);
+    actOnlineHelp = new QAction(icon(""), tr("&Online help"), this);
     actOnlineHelp->setStatusTip(tr("Online help"));
     connect(actOnlineHelp, SIGNAL(triggered()), this, SLOT(doOnlineHelp()));
 
@@ -237,21 +237,21 @@ void MainWindow::createActions()
     actDocumentOpenRecentGroup = new QActionGroup(this);
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
 
-    actScriptEditor = new QAction(icon("script-python"), tr("&Script editor"), this);
+    actScriptEditor = new QAction(icon("script-python"), tr("Script &editor"), this);
     actScriptEditor->setStatusTip(tr("Script editor"));
     actScriptEditor->setShortcut(Qt::Key_F4);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
-    actScriptEditorRunScript = new QAction(icon("script"), tr("&Run script..."), this);
+    actScriptEditorRunScript = new QAction(icon("script"), tr("Run &script..."), this);
     actScriptEditorRunScript->setStatusTip(tr("Run script..."));
     connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
 
-    actScriptEditorRunCommand = new QAction(icon("system-run"), tr("&Run command..."), this);
+    actScriptEditorRunCommand = new QAction(icon("system-run"), tr("Run &command..."), this);
     actScriptEditorRunCommand->setShortcut(QKeySequence(tr("Alt+C")));
     actScriptEditorRunCommand->setStatusTip(tr("Run command..."));
     connect(actScriptEditorRunCommand, SIGNAL(triggered()), this, SLOT(doScriptEditorRunCommand()));
 
-    actReport = new QAction(icon(""), tr("Report..."), this);
+    actReport = new QAction(icon(""), tr("&Report..."), this);
     actReport->setStatusTip(tr("Problem html report"));
     connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 }
@@ -259,7 +259,7 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 {
     mnuAdd = new QMenu(tr("&Add"), this);
-    mnuRecentFiles = new QMenu(tr("Recent files"), this);
+    mnuRecentFiles = new QMenu(tr("&Recent files"), this);
     setRecentFiles();
 
     mnuFile = menuBar()->addMenu(tr("&File"));
@@ -797,7 +797,7 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
 void MainWindow::doScriptEditorRunCommand()
 {
-    terminalView->setVisible(true);
+    terminalView->show();
     terminalView->activateWindow();
 }
 

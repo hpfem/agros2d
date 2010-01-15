@@ -24,10 +24,10 @@ case "$1" in
 		lrelease $langPath/*.ts
 		;;
 	lang.update )
-		lupdate $srcPath/*.cpp $srcPath/*.h -ts $langPath/cs_CZ.ts $langPath/en_US.ts
+		lupdate agros2d.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts
 		;;
 	lang.update-noobsolete )
-		lupdate $srcPath/*.cpp $srcPath/*.h -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts
+		lupdate agros2d.pro -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts
 		;;
 	comp )
 		if qmake ./agros2d.pro ; then make ; fi
