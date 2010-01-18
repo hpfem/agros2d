@@ -90,6 +90,9 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
+    refreshTimer = new QTimer(this);
+    connect(refreshTimer, SIGNAL(timeout()), this, SLOT(doRefreshTimerUpdate()));
+
     connect(this, SIGNAL(solved()), this, SLOT(doFinished()));
 
     resize(minimumSize());
@@ -148,6 +151,7 @@ int SolverDialog::solve()
     btnCancel->setEnabled(true);
 
     QApplication::processEvents();
+    refreshTimer->start(1000);
     QTimer::singleShot(0, this, SLOT(doStart()));
 
     return exec();
@@ -199,6 +203,8 @@ void SolverDialog::doFinished()
     setFileNameOrig("");
     btnClose->setEnabled(true);
     btnCancel->setEnabled(false);
+
+    refreshTimer->stop();
 }
 
 void SolverDialog::doCancel()
@@ -212,6 +218,12 @@ void SolverDialog::doClose()
 {
     doCancel();
     hide();
+}
+
+void SolverDialog::doRefreshTimerUpdate()
+{
+    // cout << "running..." << endl;
+    QApplication::processEvents();
 }
 
 void SolverDialog::runMesh()

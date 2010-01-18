@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
 
+    createScene();
+
     helpDialog = new HelpDialog(this);
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new ScriptEditorDialog(this);
@@ -32,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     videoDialog = new VideoDialog(sceneView, this);
 
     createActions();
-    createScene();
     createViews();
     createMenus();
     createToolBars();
@@ -813,11 +814,11 @@ void MainWindow::doPaste()
 {
     //ErrorResult result = Util::scene()->readFromFile("data/tmp_pipe.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/pokus.a2d");
-    ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_planar.a2d");
+    ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_transient.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_detail.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar.a2d");

@@ -302,6 +302,7 @@ void SceneView::createMenu()
 
 void SceneView::initializeGL()
 {
+    glEnable(GL_MULTISAMPLE);
     glShadeModel(GL_SMOOTH);
 }
 
@@ -2604,9 +2605,7 @@ ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
 {
     QPixmap pixmap = renderPixmap(w, h);
     if (pixmap.save(fileName, "PNG"))
-    {
-        resizeGL(width(), height());
-    }
+         resizeGL(width(), height());
     else
         return ErrorResult(ERRORRESULT_CRITICAL, tr("Image cannot be saved to the file '%1'.").arg(fileName));
 

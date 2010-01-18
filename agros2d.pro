@@ -5,6 +5,9 @@ QT += opengl \
     network
 SUBDIRS = src-remote
 
+# run cython for python extensions
+unix:CONFIG(release) system(cython src/python/agros2d.pyx)
+
 # DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
@@ -34,6 +37,7 @@ QMAKE_CXXFLAGS_DEBUG += -w
 QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
+
 unix { 
     # use qmake PREFIX=... to customize your installation
     isEmpty(PREFIX):PREFIX = /usr/local

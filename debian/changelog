@@ -1,3 +1,9 @@
+agros2d (0.9-12ubuntu1) karmic; urgency=low
+
+  * bugfixes, improved script editor
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 15 Jan 2010 19:15:55 +0200
+
 agros2d (0.9-10ubuntu1) karmic; urgency=low
 
   * bugfixes, joined harminic and magnetostatic code

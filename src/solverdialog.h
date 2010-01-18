@@ -78,11 +78,13 @@ private slots:
     void doStart();
     void doMeshTriangleCreated(int exitCode);
     void doFinished();
+    void doRefreshTimerUpdate();
 
 private:
     QString m_fileNameOrig;
     SolverMode m_mode;
     bool m_isCanceled;
+    QTimer *refreshTimer;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;
