@@ -809,7 +809,7 @@ void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes.count() >= 2) && (edgeMarkers.count() >= 1));
     actNewLabel->setEnabled(labelMarkers.count() >= 1);
-    actClearSolution->setEnabled(m_sceneSolution->isSolved());
+    actClearSolution->setEnabled(m_sceneSolution->isSolved());    
 }
 
 void Scene::doNewNode(const Point &point)

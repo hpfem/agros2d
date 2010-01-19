@@ -321,6 +321,7 @@ void MainWindow::createMenus()
     mnuAdd->addAction(Util::scene()->actNewLabelMarker);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
+    mnuProblem->addAction(sceneView->actSceneViewSelectMarker);
     mnuProblem->addAction(Util::scene()->actTransform);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
@@ -814,11 +815,11 @@ void MainWindow::doPaste()
 {
     //ErrorResult result = Util::scene()->readFromFile("data/tmp_pipe.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/pokus.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");
-    ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_transient.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_transient.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_detail.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar.a2d");
@@ -863,7 +864,6 @@ void MainWindow::doInvalidated()
     lblProblemType->setText(tr("Problem Type: %1").arg(problemTypeString(Util::scene()->problemInfo()->problemType)));
     lblPhysicField->setText(tr("Physic Field: %1").arg(physicFieldString(Util::scene()->problemInfo()->physicField())));
     lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
-
 }
 
 void MainWindow::doHelp()

@@ -38,6 +38,7 @@
 #include "helpdialog.h"
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
+#include "scenemarkerselectdialog.h"
 #include "solverdialog.h"
 
 #include "hermes2d/hermes_field.h"
@@ -166,7 +167,7 @@ class Scene : public QObject
     void doNewEdgeMarker();
     void doNewLabelMarker();
     void doNewFunction();
-    void doTransform();
+    void doTransform();    
     void doClearSolution();
     void doProblemProperties();
     

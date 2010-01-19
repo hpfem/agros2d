@@ -37,7 +37,6 @@ QMAKE_CXXFLAGS_DEBUG += -w
 QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
-
 unix { 
     # use qmake PREFIX=... to customize your installation
     isEmpty(PREFIX):PREFIX = /usr/local
@@ -128,7 +127,8 @@ SOURCES += src/util.cpp \
     src/dxflib/dl_dxf.cpp \
     src/reportdialog.cpp \
     src/videodialog.cpp \
-    src/terminalview.cpp
+    src/terminalview.cpp \
+    src/scenemarkerselectdialog.cpp
 HEADERS += src/util.h \
     src/scene.h \
     src/gui.h \
@@ -162,7 +162,8 @@ HEADERS += src/util.h \
     src/scenesolution.h \
     src/reportdialog.h \
     src/videodialog.h \
-    src/terminalview.h
+    src/terminalview.h \
+    src/scenemarkerselectdialog.h
 INCLUDEPATH += src \
     src/dxflib
 unix:INCLUDEPATH += /usr/include

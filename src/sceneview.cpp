@@ -265,6 +265,10 @@ void SceneView::createActions()
     actSceneViewSelectRegion->setStatusTip(tr("Select region"));
     actSceneViewSelectRegion->setCheckable(true);
 
+    actSceneViewSelectMarker = new QAction(icon(""), tr("Select by marker"), this);
+    actSceneViewSelectMarker->setStatusTip(tr("Select by marker"));
+    connect(actSceneViewSelectMarker, SIGNAL(triggered()), this, SLOT(doSelectMarker()));
+
     // fullscreen
     actFullScreen = new QAction(icon(""), tr("Fullscreen mode"), this);
     actFullScreen->setShortcut(QKeySequence(tr("F11")));
@@ -302,7 +306,6 @@ void SceneView::createMenu()
 
 void SceneView::initializeGL()
 {
-    glEnable(GL_MULTISAMPLE);
     glShadeModel(GL_SMOOTH);
 }
 
@@ -2027,6 +2030,7 @@ void SceneView::doInvalidated()
     }
 
     actSceneModePostprocessor->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actSceneViewSelectMarker->setEnabled(Util::scene()->sceneSolution()->isSolved());
 
     emit mousePressed();
 
@@ -2254,6 +2258,12 @@ void SceneView::doSceneModeSet(QAction *)
     }
 
     doInvalidated();
+}
+
+void SceneView::doSelectMarker()
+{
+    SceneMarkerSelectDialog sceneMarkerSelectDialog(this, QApplication::activeWindow());
+    sceneMarkerSelectDialog.exec();
 }
 
 void SceneView::setRangeContour()

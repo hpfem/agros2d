@@ -287,7 +287,6 @@ void VideoDialog::doEncodeFFmpeg()
     processFFmpeg->setStandardErrorFile(tempProblemDir() + "/video/error.txt");
     connect(processFFmpeg, SIGNAL(finished(int)), this, SLOT(doVideoCreated(int)));
 
-    cout << commandFFmpeg.toStdString() << endl;
     processFFmpeg->start(commandFFmpeg);
 
     if (!processFFmpeg->waitForStarted())

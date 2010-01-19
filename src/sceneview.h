@@ -122,6 +122,7 @@ public slots:
     void doSceneViewProperties();
     void doSceneObjectProperties();
     void doSceneModeSet(QAction *);
+    void doSelectMarker();
     void doInvalidated();
     void doSolved();
     void doDefaults();
@@ -148,6 +149,7 @@ public:
     QAction *actPostprocessorModeVolumeIntegral;
 
     QAction *actSceneViewSelectRegion;
+    QAction *actSceneViewSelectMarker;
     QAction *actSceneViewProperties;
     QAction *actSceneObjectProperties;
     QAction *actFullScreen;
