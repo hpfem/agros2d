@@ -321,12 +321,12 @@ void MainWindow::createMenus()
     mnuAdd->addAction(Util::scene()->actNewLabelMarker);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
-    mnuProblem->addAction(sceneView->actSceneViewSelectMarker);
     mnuProblem->addAction(Util::scene()->actTransform);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
     mnuProblem->addAction(sceneView->actPostprocessorModeVolumeIntegral);
+    mnuProblem->addAction(sceneView->actSceneViewSelectMarker);
     mnuProblem->addSeparator();
     mnuProblem->addAction(actCreateMesh);
     mnuProblem->addAction(actSolve);
