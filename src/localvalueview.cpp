@@ -49,7 +49,7 @@ PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
 
     // find marker
     int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->mesh(), point);
-    if (index > 0)
+    if (index != -1)
     {
         Element *element = Util::scene()->sceneSolution()->mesh()->get_element_fast(index);
         tmpLabelMarker = Util::scene()->labels[element->marker]->marker;

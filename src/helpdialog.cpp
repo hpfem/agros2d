@@ -98,7 +98,7 @@ void HelpDialog::createControls()
     QHelpContentModel *contentModel = qobject_cast<QHelpContentModel*>(helpEngine->contentWidget()->model());
     connect(contentModel, SIGNAL(contentsCreated()), this, SLOT(doExpandTOC()));
 
-    showPage("index.html");
+    showPage("glossary.html");
 }
 
 void HelpDialog::showPage(const QString &str)

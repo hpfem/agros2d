@@ -1222,7 +1222,7 @@ void SceneView::paintVectors()
             double y = rect.start.y + j*gs;
 
             int index = Util::scene()->sceneSolution()->findTriangleInVectorizer(Util::scene()->sceneSolution()->vecVectorView(), Point(x, y));
-            if (index > 0)
+            if (index != -1)
             {
                 double dx = (vecVert[vecTris[index][0]][2] + vecVert[vecTris[index][1]][2] + vecVert[vecTris[index][2]][2]) / 3.0;
                 double dy = (vecVert[vecTris[index][0]][3] + vecVert[vecTris[index][1]][3] + vecVert[vecTris[index][2]][3]) / 3.0;
@@ -1623,7 +1623,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
                 int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->mesh(), p);
-                if (index > 0)
+                if (index != -1)
                 {
                     //  find label marker
                     int labelIndex = Util::scene()->sceneSolution()->mesh()->get_element_fast(index)->marker;

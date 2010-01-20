@@ -153,7 +153,7 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
-            solverDialog->showMessage(QObject::tr("Solver: relative error is %1 %").arg(error, 0, 'f', 5), false);
+            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
             if (solverDialog->isCanceled())
             {
                 solutionArrayList->clear();
