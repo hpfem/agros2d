@@ -41,6 +41,7 @@ private slots:
     void doAdaptivityChanged(int index);
     void doAnalysisTypeChanged(int index);
     void doTransientChanged();
+    void doShowEquation();
     void doAccept();
     void doReject();
 
@@ -73,6 +74,9 @@ private:
 
     // description
     QTextEdit *txtDescription;
+
+    // equation
+    QLabel *lblEquationPixmap;
 
     QTabWidget *tabType;
 

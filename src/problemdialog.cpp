@@ -88,6 +88,11 @@ void ProblemDialog::createControls()
 
 QWidget *ProblemDialog::createControlsGeneral()
 {
+    // equations
+    lblEquationPixmap = new QLabel("");
+    lblEquationPixmap->setMinimumHeight(50);
+
+    // problem
     cmbProblemType = new QComboBox();
     cmbPhysicField = new QComboBox();
     txtName = new QLineEdit("");
@@ -124,40 +129,53 @@ QWidget *ProblemDialog::createControlsGeneral()
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
     fillComboBox();
 
-    QGridLayout *layoutProblem = new QGridLayout();
+    QGridLayout *layoutProblemTable = new QGridLayout();
     // top
-    layoutProblem->addWidget(new QLabel(tr("Name:")), 1, 0);
-    layoutProblem->addWidget(txtName, 1, 1, 1, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Name:")), 1, 0);
+    layoutProblemTable->addWidget(txtName, 1, 1, 1, 3);
     // left
-    layoutProblem->addWidget(new QLabel(tr("Date:")), 2, 0);
-    layoutProblem->addWidget(dtmDate, 2, 1);
-    layoutProblem->addWidget(new QLabel(tr("Physic field:")), 3, 0);
-    layoutProblem->addWidget(cmbPhysicField, 3, 1);
-    layoutProblem->addWidget(new QLabel(tr("Problem type:")), 4, 0);
-    layoutProblem->addWidget(cmbProblemType, 4, 1);
-    layoutProblem->addWidget(new QLabel(tr("Number of refinements:")), 5, 0);
-    layoutProblem->addWidget(txtNumberOfRefinements, 5, 1);
-    layoutProblem->addWidget(new QLabel(tr("Polynomial order:")), 6, 0);
-    layoutProblem->addWidget(txtPolynomialOrder, 6, 1);
-    layoutProblem->addWidget(new QLabel(tr("Adaptivity:")), 7, 0);
-    layoutProblem->addWidget(cmbAdaptivityType, 7, 1);
-    layoutProblem->addWidget(new QLabel(tr("Adaptivity steps:")), 8, 0);
-    layoutProblem->addWidget(txtAdaptivitySteps, 8, 1);
-    layoutProblem->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
-    layoutProblem->addWidget(txtAdaptivityTolerance, 9, 1);
+    layoutProblemTable->addWidget(new QLabel(tr("Date:")), 2, 0);
+    layoutProblemTable->addWidget(dtmDate, 2, 1);
+    layoutProblemTable->addWidget(new QLabel(tr("Physic field:")), 3, 0);
+    layoutProblemTable->addWidget(cmbPhysicField, 3, 1);
+    layoutProblemTable->addWidget(new QLabel(tr("Problem type:")), 4, 0);
+    layoutProblemTable->addWidget(cmbProblemType, 4, 1);
+    layoutProblemTable->addWidget(new QLabel(tr("Number of refinements:")), 5, 0);
+    layoutProblemTable->addWidget(txtNumberOfRefinements, 5, 1);
+    layoutProblemTable->addWidget(new QLabel(tr("Polynomial order:")), 6, 0);
+    layoutProblemTable->addWidget(txtPolynomialOrder, 6, 1);
+    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity:")), 7, 0);
+    layoutProblemTable->addWidget(cmbAdaptivityType, 7, 1);
+    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity steps:")), 8, 0);
+    layoutProblemTable->addWidget(txtAdaptivitySteps, 8, 1);
+    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
+    layoutProblemTable->addWidget(txtAdaptivityTolerance, 9, 1);
     // right
-    layoutProblem->addWidget(new QLabel(tr("Frequency (Hz):")), 2, 2);
-    layoutProblem->addWidget(txtFrequency, 2, 3);
-    layoutProblem->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
-    layoutProblem->addWidget(cmbAnalysisType, 3, 3);
-    layoutProblem->addWidget(new QLabel(tr("Time step (s):")), 4, 2);
-    layoutProblem->addWidget(txtTransientTimeStep, 4, 3);
-    layoutProblem->addWidget(new QLabel(tr("Total time (s):")), 5, 2);
-    layoutProblem->addWidget(txtTransientTimeTotal, 5, 3);
-    layoutProblem->addWidget(new QLabel(tr("Initial condition:")), 6, 2);
-    layoutProblem->addWidget(txtTransientInitialCondition, 6, 3);
-    layoutProblem->addWidget(new QLabel(tr("Steps:")), 7, 2);
-    layoutProblem->addWidget(lblTransientSteps, 7, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 2, 2);
+    layoutProblemTable->addWidget(txtFrequency, 2, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
+    layoutProblemTable->addWidget(cmbAnalysisType, 3, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Time step (s):")), 4, 2);
+    layoutProblemTable->addWidget(txtTransientTimeStep, 4, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Total time (s):")), 5, 2);
+    layoutProblemTable->addWidget(txtTransientTimeTotal, 5, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Initial condition:")), 6, 2);
+    layoutProblemTable->addWidget(txtTransientInitialCondition, 6, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Steps:")), 7, 2);
+    layoutProblemTable->addWidget(lblTransientSteps, 7, 3);
+
+    // equation
+    QHBoxLayout *layoutEquation = new QHBoxLayout();
+    layoutEquation->addWidget(new QLabel(tr("Equation:")));
+    layoutEquation->addWidget(lblEquationPixmap, 1);
+
+    // QWidget *widgetEquation = new QWidget(this);
+    // widgetEquation->setLayout(widgetEquation);
+
+    QVBoxLayout *layoutProblem = new QVBoxLayout();
+    layoutProblem->addLayout(layoutProblemTable);
+    // layoutProblem->addWidget();
+    layoutProblem->addLayout(layoutEquation);
 
     QWidget *widMain = new QWidget();
     widMain->setLayout(layoutProblem);
@@ -354,9 +372,20 @@ void ProblemDialog::doAnalysisTypeChanged(int index)
     txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
 
     txtFrequency->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_HARMONIC);
+
+    doShowEquation();
 }
 
 void ProblemDialog::doTransientChanged()
 {
     lblTransientSteps->setText(QString("%1").arg(floor(txtTransientTimeTotal->value()/txtTransientTimeStep->value())));
+}
+
+void ProblemDialog::doShowEquation()
+{    
+    QPixmap pixmap;
+    pixmap.load(QString(":/images/equations/%1_%2.png")
+                .arg(physicFieldToStringKey((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
+                .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
+    lblEquationPixmap->setPixmap(pixmap);
 }

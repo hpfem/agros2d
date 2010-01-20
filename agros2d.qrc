@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/" >
+    <qresource prefix="/">
         <file>images/application-exit.png</file>
         <file>images/browser.png</file>
         <file>images/document-new.png</file>
@@ -30,7 +30,7 @@
         <file>images/options.png</file>
         <file>images/options-main.png</file>
         <file>images/options-view.png</file>
-        <file>images/options-colors.png</file>        
+        <file>images/options-colors.png</file>
         <file>images/scene-node.png</file>
         <file>images/scene-edge.png</file>
         <file>images/scene-label.png</file>
@@ -63,5 +63,13 @@
         <file>images/file-folder.png</file>
         <file>images/file-text.png</file>
         <file>images/file-python.png</file>
+        <file>images/equations/current_steadystate.png</file>
+        <file>images/equations/electrostatic_steadystate.png</file>
+        <file>images/equations/general_steadystate.png</file>
+        <file>images/equations/heat_steadystate.png</file>
+        <file>images/equations/heat_transient.png</file>
+        <file>images/equations/magnetic_harmonic.png</file>
+        <file>images/equations/magnetic_steadystate.png</file>
+        <file>images/equations/magnetic_transient.png</file>
     </qresource>
 </RCC>
