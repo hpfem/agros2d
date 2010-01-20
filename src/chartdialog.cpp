@@ -30,6 +30,16 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
+    // load
+    txtStartX->setValue(settings.value("ChartDialog/StartX", 0).toDouble());
+    txtEndX->setValue(settings.value("ChartDialog/EndX", 0).toDouble());
+    txtStartY->setValue(settings.value("ChartDialog/StartY", 0).toDouble());
+    txtEndY->setValue(settings.value("ChartDialog/EndY", 0).toDouble());
+    radAxisLength->setChecked(settings.value("ChartDialog/AxisLength", true).toBool());
+    radAxisX->setChecked(settings.value("ChartDialog/AxisX", false).toBool());
+    radAxisY->setChecked(settings.value("ChartDialog/AxisY", false).toBool());
+    txtAxisPoints->setValue(settings.value("ChartDialog/AxisPoints", 200).toInt());
+
     setMinimumSize(sizeHint());
 }
 
@@ -37,6 +47,15 @@ ChartDialog::~ChartDialog()
 {
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
+
+    settings.setValue("ChartDialog/StartX", txtStartX->value());
+    settings.setValue("ChartDialog/EndX", txtEndX->value());
+    settings.setValue("ChartDialog/StartY", txtStartY->value());
+    settings.setValue("ChartDialog/EndY", txtEndY->value());
+    settings.setValue("ChartDialog/AxisLength", radAxisLength->isChecked());
+    settings.setValue("ChartDialog/AxisX", radAxisX->isChecked());
+    settings.setValue("ChartDialog/AxisY", radAxisY->isChecked());
+    settings.setValue("ChartDialog/AxisPoints", txtAxisPoints->value());
 
     // geometry
     delete lblStartX;
@@ -177,6 +196,9 @@ void ChartDialog::createControls()
     axisGroup->addButton(radAxisLength);
     axisGroup->addButton(radAxisX);
     axisGroup->addButton(radAxisY);
+    connect(radAxisLength, SIGNAL(clicked()), this, SLOT(doPlot()));
+    connect(radAxisX, SIGNAL(clicked()), this, SLOT(doPlot()));
+    connect(radAxisY, SIGNAL(clicked()), this, SLOT(doPlot()));
     
     // axis
     QHBoxLayout *layoutAxis = new QHBoxLayout(this);
