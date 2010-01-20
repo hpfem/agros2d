@@ -43,7 +43,6 @@ public:
     ~MainWindow();
 
     void open(const QString &fileName);
-    void runScript(const QString &fileName);
 
 private slots:
     inline void doSetWindowTitle(const QString &name) { setWindowTitle("Agros2D - " + name); }

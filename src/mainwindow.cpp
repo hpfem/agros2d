@@ -77,7 +77,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         {
             if ((args[1] == "-run") || (args[1] == "-r"))
             {
-                runScript(args[2]);
+                if (QFile::exists(args[2]))
+                    runPythonScript(readFileContent(args[2]));
             }
         }
     }
@@ -105,12 +106,6 @@ MainWindow::~MainWindow()
 void MainWindow::open(const QString &fileName)
 {
     doDocumentOpen(fileName);
-}
-
-void MainWindow::runScript(const QString &fileName)
-{
-    QApplication::processEvents();
-    doScriptEditorRunScript(fileName);
 }
 
 void MainWindow::createActions()
@@ -788,7 +783,7 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
     if (QFile::exists(fileNameScript))
     {
-        runScript(fileNameScript);
+        runPythonScript(readFileContent(fileNameScript));
     }
     else
     {
