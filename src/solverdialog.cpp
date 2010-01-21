@@ -182,8 +182,6 @@ void SolverDialog::showMessage(const QString &message, bool isError)
     lblMessage->setText(message);
 
     // update
-    foreach (QWidget *widget, QApplication::allWidgets())
-        widget->update();
     QApplication::processEvents();
 }
 
@@ -222,11 +220,12 @@ void SolverDialog::doClose()
 
 void SolverDialog::doRefreshTimerUpdate()
 {
-    // cout << "running..." << endl;
+    // foreach (QWidget *widget, QApplication::allWidgets())
+    //    widget->update();
     QApplication::processEvents();
 }
 
-void SolverDialog::runMesh()
+bool SolverDialog::runMesh()
 {
     QFile::remove(tempProblemFileName() + ".mesh");
 
@@ -252,7 +251,7 @@ void SolverDialog::runMesh()
 
             progressBar->setValue(100);
             emit solved();
-            return;
+            return false;
         }
 
         // copy triangle files
@@ -270,12 +269,12 @@ void SolverDialog::runMesh()
         }
 
         while (!processTriangle->waitForFinished()) {}
+        return true;
     }
     else
     {
         // error
-        progressBar->setValue(100);
-        return;
+        return false;
     }
 }
 
@@ -356,10 +355,13 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
 
         if (m_mode == SOLVER_MESH_AND_SOLVE)
         {
-            runSolver();
+            if (runSolver())
+                emit solved();
         }
-
-        emit solved();
+        else
+        {
+            emit solved();
+        }
     }
     else
     {
@@ -371,10 +373,10 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
     }
 }
 
-void SolverDialog::runSolver()
+bool SolverDialog::runSolver()
 {
     if (!QFile::exists(tempProblemFileName() + ".mesh"))
-        return;
+        return false;
 
     // benchmark
     QTime time;
@@ -393,15 +395,17 @@ void SolverDialog::runSolver()
         Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
         showMessage(tr("Solver: problem was solved."), false);
         Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
+
+        progressBar->setValue(100);
+        return true;
     }
     else
     {
         Util::scene()->sceneSolution()->clear();
         showMessage(tr("Solver: problem was not solved."), true);
         Util::scene()->sceneSolution()->setTimeElapsed(0);
+        return false;
     }
-
-    progressBar->setValue(100);
 }
 
 bool SolverDialog::writeToTriangle()

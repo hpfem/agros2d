@@ -226,6 +226,11 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
             spaceimag.assign_dofs(ndof);
 
             sys.assemble();
+            if (sys.get_num_dofs() == 0)
+            {
+                solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
+                return solutionArrayList;
+            }
             sys.solve(2, slnreal, slnimag);
 
             // calculate errors and adapt the solution

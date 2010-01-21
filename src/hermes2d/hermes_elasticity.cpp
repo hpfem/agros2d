@@ -201,10 +201,17 @@ QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
     sys.set_spaces(2, &xdisp, &ydisp);
     sys.set_pss(2, &xpss, &ypss);
 
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
     // assemble the stiffness matrix and solve the system
     Solution *slnx = new Solution();
     Solution *slny = new Solution();
     sys.assemble();
+    if (sys.get_num_dofs() == 0)
+    {
+        solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
+        return solutionArrayList;
+    }
     sys.solve(2, slnx, slny);
 
     // output
@@ -214,7 +221,6 @@ QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
 
     // output
     SolutionArray *solutionArray;
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
 
     // x part
     solutionArray = new SolutionArray();

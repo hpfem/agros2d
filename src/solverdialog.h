@@ -94,8 +94,8 @@ private:
 
     void createControls();
 
-    void runMesh();
-    void runSolver();
+    bool runMesh();
+    bool runSolver();
 
     bool writeToTriangle();
     bool triangleToHermes2D();

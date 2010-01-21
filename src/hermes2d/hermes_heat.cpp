@@ -217,6 +217,11 @@ QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
         space.assign_dofs();
 
         sys.assemble();
+        if (sys.get_num_dofs() == 0)
+        {
+            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
+            return solutionArrayList;
+        }
         sys.solve(1, sln);
 
         // calculate errors and adapt the solution
