@@ -183,8 +183,7 @@ void SolverDialog::showMessage(const QString &message, bool isError)
 
     // update
     QApplication::processEvents();
-    foreach (QWidget *widget, QApplication::allWidgets())
-        widget->update();
+    lstMessage->update();
 }
 
 void SolverDialog::showProgress(int index)
@@ -222,10 +221,12 @@ void SolverDialog::doClose()
 
 void SolverDialog::doRefreshTimerUpdate()
 {
+    foreach (QWidget *widget, QApplication::allWidgets())
+        widget->update();
     QApplication::processEvents();
 }
 
-bool SolverDialog::runMesh()
+void SolverDialog::runMesh()
 {
     QFile::remove(tempProblemFileName() + ".mesh");
 
@@ -251,7 +252,7 @@ bool SolverDialog::runMesh()
 
             progressBar->setValue(100);
             emit solved();
-            return false;
+            return;
         }
 
         // copy triangle files
@@ -269,12 +270,6 @@ bool SolverDialog::runMesh()
         }
 
         while (!processTriangle->waitForFinished()) {}
-        return true;
-    }
-    else
-    {
-        // error
-        return false;
     }
 }
 
@@ -355,7 +350,8 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
 
         if (m_mode == SOLVER_MESH_AND_SOLVE)
         {
-            if (runSolver())
+            runSolver();
+            if (Util::scene()->sceneSolution()->isSolved())
                 emit solved();
         }
         else
@@ -373,10 +369,10 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
     }
 }
 
-bool SolverDialog::runSolver()
+void SolverDialog::runSolver()
 {
     if (!QFile::exists(tempProblemFileName() + ".mesh"))
-        return false;
+        return;
 
     // benchmark
     QTime time;
@@ -397,14 +393,12 @@ bool SolverDialog::runSolver()
         Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
 
         progressBar->setValue(100);
-        return true;
     }
     else
     {
         Util::scene()->sceneSolution()->clear();
         showMessage(tr("Solver: problem was not solved."), true);
         Util::scene()->sceneSolution()->setTimeElapsed(0);
-        return false;
     }
 }
 
