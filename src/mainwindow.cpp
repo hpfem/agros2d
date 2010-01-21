@@ -808,8 +808,8 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    ErrorResult result = Util::scene()->readFromFile("data/data/pokus3.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/data/pokus3.a2d");
+    ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");

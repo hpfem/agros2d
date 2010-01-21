@@ -183,6 +183,8 @@ void SolverDialog::showMessage(const QString &message, bool isError)
 
     // update
     QApplication::processEvents();
+    foreach (QWidget *widget, QApplication::allWidgets())
+        widget->update();
 }
 
 void SolverDialog::showProgress(int index)
@@ -220,8 +222,6 @@ void SolverDialog::doClose()
 
 void SolverDialog::doRefreshTimerUpdate()
 {
-    // foreach (QWidget *widget, QApplication::allWidgets())
-    //    widget->update();
     QApplication::processEvents();
 }
 
