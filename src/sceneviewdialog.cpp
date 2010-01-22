@@ -166,7 +166,7 @@ void SceneViewDialog::createControls()
     radPostprocessorScalarField = new QRadioButton(tr("Scalar view"), this);
     radPostprocessorScalarField3D = new QRadioButton(tr("Scalar view 3D"), this);
     // radPostprocessorScalarField3DSolid = new QRadioButton("Scalar view 3D solid", this);
-    radPostprocessorOrder = new QRadioButton(tr("Order"), this);
+    radPostprocessorOrder = new QRadioButton(tr("Polynomial order"), this);
 
     butPostprocessorGroup = new QButtonGroup(this);
     butPostprocessorGroup->addButton(radPostprocessorNone);
