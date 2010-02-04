@@ -181,6 +181,9 @@ void Scene::createActions()
 
 SceneNode *Scene::addNode(SceneNode *node)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     // check if node doesn't exists
     foreach (SceneNode *nodeCheck, nodes)
     {
@@ -198,6 +201,9 @@ SceneNode *Scene::addNode(SceneNode *node)
 
 void Scene::removeNode(SceneNode *node)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     // remove all edges connected to this node
     foreach (SceneEdge *edge, edges)
     {
@@ -228,6 +234,9 @@ SceneNode *Scene::getNode(const Point &point)
 
 SceneEdge *Scene::addEdge(SceneEdge *edge)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     // check if edge doesn't exists
     foreach (SceneEdge *edgeCheck, edges)
     {
@@ -249,6 +258,9 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
 
 void Scene::removeEdge(SceneEdge *edge)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     edges.removeOne(edge);
     // delete edge;
 
@@ -278,6 +290,9 @@ void Scene::setEdgeEdgeMarker(SceneEdgeMarker *edgeMarker)
 
 SceneLabel *Scene::addLabel(SceneLabel *label)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     // check if label doesn't exists
     foreach (SceneLabel *labelCheck, labels)
     {
@@ -296,6 +311,9 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
 
 void Scene::removeLabel(SceneLabel *label)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     labels.removeOne(label);
     // delete label;
 

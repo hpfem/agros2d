@@ -41,20 +41,21 @@ solve()
 
 # point value
 point = pointresult(13.257584, 11.117738)
-testPotential = abs(abs(point["V"]) - 1111.544813) < 0.5
-if (not testPotential): 
-    print "Scalar potential: ", abs(point["V"]), " == ", 1111.544813
+testV = test("Scalar potential", point["V"], 1111.544825)
+testE = test("Electric field", point["E"], 111.954358)
+testEx = test("Electric field - x", point["Ex"], 24.659054)
+testEy = test("Electric field - y", point["Ey"], -109.204896)
+testD = test("Displacement", point["D"], 9.912649e-10)
+testDx = test("Displacement - x", point["Dx"], 2.183359e-10)
+testDy = test("Displacement - y", point["Dy"], -9.669207e-10)
+testwe = test("Energy density", point["we"], 5.548821e-8)
 
-# energy
-integral = volumeintegral(1)
-testEnergy = abs(abs(integral["We"]) - 1.307484e-7) < 1e-7
-if (not testEnergy):
-    print("Electric energy: " + str(abs(integral["We"])) + " == " + str(1.307484e-7))
+# volume integral
+volume = volumeintegral(1)
+testEnergy = test("Energy", volume["We"], 1.307484e-7)
 
-# charge
-integral = surfaceintegral(0, 1, 2, 3)
-testCharge = abs(abs(integral["Q"]) - 1.048981e-7) < 5e-9
-if (not testCharge):
-    print("Electric charge: " + str(abs(integral["Q"])) + " == " + str(1.048981e-7))
+# surface integral
+surface = surfaceintegral(0, 1, 2, 3)
+testQ = test("Electric charge", surface["Q"], 1.048981e-7)
 
-print("Test: Electrostatic - planar: " + str(testPotential and testEnergy and testCharge))
+print("Test: Electrostatic - planar: " + str(testV and testE and testEx and testEy and testD and testDx and testDy and testwe and testEnergy and testQ))

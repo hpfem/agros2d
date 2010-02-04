@@ -43,19 +43,30 @@ int electrostatic_bc_types(int marker)
     {
     case PHYSICFIELDBC_NONE:
         return BC_NONE;
-        break;
     case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
         return BC_ESSENTIAL;
-        break;
     case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
         return BC_NATURAL;
-        break;
     }
 }
 
 scalar electrostatic_bc_values(int marker, double x, double y)
 {
     return electrostaticEdge[marker].value;
+}
+
+template<typename Real, typename Scalar>
+Scalar electrostatic_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    double surfaceCharge = 0.0;
+
+    if (electrostaticEdge[e->marker].type == PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE)
+        surfaceCharge = electrostaticEdge[e->marker].value;
+
+    if (electrostaticPlanar)
+        return surfaceCharge * int_v<Real, Scalar>(n, wt, v);
+    else
+        return surfaceCharge * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
 template<typename Real, typename Scalar>
@@ -91,7 +102,8 @@ QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
 
     // load the mesh file
     Mesh mesh;
-    mesh.load((tempProblemFileName() + ".mesh").toStdString().c_str());
+    H2DReader meshloader;
+    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
     for (int i = 0; i < numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
@@ -113,6 +125,7 @@ QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
     WeakForm wf(1);
     wf.add_biform(0, 0, callback(electrostatic_bilinear_form));
     wf.add_liform(0, callback(electrostatic_linear_form));
+    wf.add_liform_surf(0, callback(electrostatic_linear_form_surf));
 
     Solution *sln = new Solution();
     Solution rsln;
@@ -172,7 +185,7 @@ QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
     solutionArray->order->process_solution(&space);
     solutionArray->sln = sln;
     solutionArray->adaptiveError = error;
-    solutionArray->adaptiveSteps = i-1;   
+    solutionArray->adaptiveSteps = i-1;
 
     solutionArrayList->append(solutionArray);
 
@@ -208,7 +221,7 @@ void HermesElectrostatic::writeEdgeMarkerToDomElement(QDomElement *element, Scen
 }
 
 void HermesElectrostatic::readLabelMarkerFromDomElement(QDomElement *element)
-{  
+{
     Util::scene()->addLabelMarker(new SceneLabelElectrostaticMarker(element->attribute("name"),
                                                                     Value(element->attribute("charge_density", "0")),
                                                                     Value(element->attribute("permittivity", "1"))));
@@ -369,6 +382,16 @@ void HermesElectrostatic::showVolumeIntegralValue(QTreeWidget *trvWidget, Volume
 
     addTreeWidgetItemValue(electrostaticNode, tr("Energy:"), QString("%1").arg(volumeIntegralValueElectrostatic->energy, 0, 'e', 3), tr("J"));
 }
+
+ViewScalarFilter *HermesElectrostatic::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+{
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
+    return new ViewScalarFilterElectrostatic(sln1,
+                                             physicFieldVariable,
+                                             physicFieldVariableComp);
+}
+
+// *******************************************************************************************************************************
 
 QList<SolutionArray *> *HermesElectrostatic::solve(SolverDialog *solverDialog)
 {
@@ -591,6 +614,12 @@ void VolumeIntegralValueElectrostatic::calculateVariables(int i)
     energy += result;
 }
 
+void VolumeIntegralValueElectrostatic::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(0);
+    sln2 = NULL;
+}
+
 QStringList VolumeIntegralValueElectrostatic::variables()
 {
     QStringList row;
@@ -598,6 +627,82 @@ QStringList VolumeIntegralValueElectrostatic::variables()
             QString("%1").arg(crossSection, 0, 'e', 5) <<
             QString("%1").arg(energy, 0, 'e', 5);
     return QStringList(row);
+}
+
+// *************************************************************************************************************************************
+
+void ViewScalarFilterElectrostatic::calculateVariable(int i)
+{
+    switch (m_physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
+        {
+            node->values[0][0][i] = value1[i];
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
+        {
+            switch (m_physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                {
+                    node->values[0][0][i] = - dudx1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                {
+                    node->values[0][0][i] = - dudy1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                {
+                    node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+                }
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT:
+        {
+            SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
+
+            switch (m_physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                {
+                    node->values[0][0][i] = - EPS0 * marker->permittivity.number * dudx1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                {
+                    node->values[0][0][i] = - EPS0 * marker->permittivity.number * dudy1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                {
+                    node->values[0][0][i] = EPS0 * marker->permittivity.number * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+                }
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
+        {
+            SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
+            node->values[0][0][i] = 0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i]));
+        }
+        break;
+    case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
+        {
+            SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
+            node->values[0][0][i] = marker->permittivity.number;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterElectrostatic::calculateVariable()" << endl;
+        throw;
+        break;
+    }
 }
 
 // *************************************************************************************************************************************

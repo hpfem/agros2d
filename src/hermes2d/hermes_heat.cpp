@@ -126,7 +126,7 @@ Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData
         + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / heatTimeStep : 0.0);
     else
         return heatLabel[e->marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
-                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / heatTimeStep : 0.0);
+        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / heatTimeStep : 0.0);
 }
 
 QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
@@ -150,7 +150,8 @@ QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
 
     // load the mesh file
     Mesh mesh;
-    mesh.load((tempProblemFileName() + ".mesh").toStdString().c_str());
+    H2DReader meshloader;
+    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
     for (int i = 0; i < numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
@@ -508,6 +509,14 @@ void HermesHeat::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralV
     addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
 }
 
+ViewScalarFilter *HermesHeat::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+{
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep());
+    return new ViewScalarFilterHeat(sln1,
+                                    physicFieldVariable,
+                                    physicFieldVariableComp);
+}
+
 QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)
 {
     // edge markers
@@ -723,9 +732,9 @@ void SurfaceIntegralValueHeat::calculateVariables(int i)
 
         SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[e->marker]->marker);
         if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
-            heatFlux += pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            heatFlux -= pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
-            heatFlux += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            heatFlux -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
     }
 }
 
@@ -768,6 +777,14 @@ void VolumeIntegralValueHeat::calculateVariables(int i)
     averageTemperature += result;
 }
 
+void VolumeIntegralValueHeat::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep());
+    sln2 = NULL;
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() - 1);
+}
+
 QStringList VolumeIntegralValueHeat::variables()
 {
     QStringList row;
@@ -775,6 +792,75 @@ QStringList VolumeIntegralValueHeat::variables()
             QString("%1").arg(crossSection, 0, 'e', 5) <<
             QString("%1").arg(averageTemperature, 0, 'e', 5);
     return QStringList(row);
+}
+
+// *************************************************************************************************************************************
+
+void ViewScalarFilterHeat::calculateVariable(int i)
+{
+    switch (m_physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
+        {
+            node->values[0][0][i] = value1[i];
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT:
+        {
+            switch (m_physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                {
+                    node->values[0][0][i] = - dudx1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                {
+                    node->values[0][0][i] = - dudy1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                {
+                    node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+                }
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_FLUX:
+        {
+            SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
+            switch (m_physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                {
+                    node->values[0][0][i] = - marker->thermal_conductivity.number * dudx1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                {
+                    node->values[0][0][i] = - marker->thermal_conductivity.number * dudy1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                {
+                    node->values[0][0][i] =  marker->thermal_conductivity.number * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+                }
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY:
+        {
+            SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
+            node->values[0][0][i] = marker->thermal_conductivity.number;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterHeat::calculateVariable()" << endl;
+        throw;
+        break;
+    }
 }
 
 // *************************************************************************************************************************************

@@ -5,7 +5,7 @@
             <description></description>
             <edges>
                 <edge type="current_inward_current_flow" value="0" id="1" name="Neumann" />
-                <edge type="current_inward_current_flow" value="1000000" id="2" name="In" />
+                <edge type="current_inward_current_flow" value="1000000" id="2" name="Inlet" />
                 <edge type="current_potential" value="0" id="3" name="Zero" />
             </edges>
             <labels>

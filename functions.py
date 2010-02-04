@@ -31,6 +31,14 @@ def agroslistvariables():
 
 	return filter(lambda x: type(x) in [types.IntType, types.DictType], globals().values())
 
+def test(text, value, normal, error = 0.03):
+	if ((normal == 0.0) and abs(value < 1e-14)):
+		return True
+	test = abs((value - normal)/value) < error
+	if (not test):	
+		print(text + ": (" + str(value) + " != " + str(normal) + ")")
+	return test
+
 # redirect script output
 class StdoutCatcher:
 	def write(self, str):

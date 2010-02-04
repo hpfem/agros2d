@@ -43,19 +43,30 @@ int general_bc_types(int marker)
     {
     case PHYSICFIELDBC_NONE:
         return BC_NONE;
-        break;
     case PHYSICFIELDBC_GENERAL_VALUE:
         return BC_ESSENTIAL;
-        break;
     case PHYSICFIELDBC_GENERAL_DERIVATIVE:
         return BC_NATURAL;
-        break;
     }
 }
 
 scalar general_bc_values(int marker, double x, double y)
 {
     return generalEdge[marker].value;
+}
+
+template<typename Real, typename Scalar>
+Scalar general_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    double derivative = 0.0;
+
+    if (generalEdge[e->marker].type == PHYSICFIELDBC_GENERAL_DERIVATIVE)
+        derivative = generalEdge[e->marker].value;
+
+    if (generalPlanar)
+        return derivative * int_v<Real, Scalar>(n, wt, v);
+    else
+        return derivative * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
 template<typename Real, typename Scalar>
@@ -95,7 +106,8 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
 
     // load the mesh file
     Mesh mesh;
-    mesh.load((tempProblemFileName() + ".mesh").toStdString().c_str());
+    H2DReader meshloader;
+    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
     for (int i = 0; i < numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
@@ -117,6 +129,7 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
     WeakForm wf(1);
     wf.add_biform(0, 0, callback(general_bilinear_form));
     wf.add_liform(0, callback(general_linear_form));
+    wf.add_liform_surf(0, callback(general_linear_form_surf));
 
     Solution *sln = new Solution();
     Solution rsln;
@@ -348,6 +361,17 @@ void HermesGeneral::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegr
     VolumeIntegralValueGeneral *volumeIntegralValueGeneral = dynamic_cast<VolumeIntegralValueGeneral *>(volumeIntegralValue);
 }
 
+ViewScalarFilter *HermesGeneral::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+{
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
+
+    return new ViewScalarFilterGeneral(sln1,
+                                       physicFieldVariable,
+                                       physicFieldVariableComp);
+}
+
+// *******************************************************************************************************************************
+
 QList<SolutionArray *> *HermesGeneral::solve(SolverDialog *solverDialog)
 {
     // edge markers
@@ -510,12 +534,64 @@ void VolumeIntegralValueGeneral::calculateVariables(int i)
 {
 }
 
+void VolumeIntegralValueGeneral::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(0);
+    sln2 = NULL;
+}
+
 QStringList VolumeIntegralValueGeneral::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
             QString("%1").arg(crossSection, 0, 'e', 5);
     return QStringList(row);
+}
+
+// *************************************************************************************************************************************
+
+void ViewScalarFilterGeneral::calculateVariable(int i)
+{
+    switch (m_physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
+        {
+            node->values[0][0][i] = value1[i];
+        }
+        break;
+    case PHYSICFIELDVARIABLE_GENERAL_GRADIENT:
+        {
+            switch (m_physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                {
+                    node->values[0][0][i] = -dudx1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                {
+                    node->values[0][0][i] = -dudy1[i];
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                {
+                    node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+                }
+                break;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_GENERAL_CONSTANT:
+        {
+            SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
+            node->values[0][0][i] = marker->constant.number;
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterGeneral::calculateVariable()" << endl;
+        throw;
+        break;
+    }
 }
 
 // *************************************************************************************************************************************

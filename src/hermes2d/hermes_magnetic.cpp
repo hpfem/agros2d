@@ -23,7 +23,8 @@
 struct MagneticEdge
 {
     PhysicFieldBC type;
-    double value;
+    double value_real;
+    double value_imag;
 };
 
 struct MagneticLabel
@@ -55,24 +56,49 @@ int magnetic_bc_types(int marker)
     {
     case PHYSICFIELDBC_NONE:
         return BC_NONE;
-        break;
     case PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL:
         return BC_ESSENTIAL;
-        break;
     case PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT:
         return BC_NATURAL;
-        break;
     }
 }
 
 scalar magnetic_bc_values_real(int marker, double x, double y)
 {
-    return magneticEdge[marker].value;
+    return magneticEdge[marker].value_real;
 }
 
 scalar magnetic_bc_values_imag(int marker, double x, double y)
 {
-    return magneticEdge[marker].value;
+    return magneticEdge[marker].value_imag;
+}
+
+template<typename Real, typename Scalar>
+Scalar magnetic_linear_form_surf_real(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    double K = 0.0;
+
+    if (magneticEdge[e->marker].type == PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT)
+        K = magneticEdge[e->marker].value_real;
+
+    if (magneticPlanar)
+        return K * int_v<Real, Scalar>(n, wt, v);
+    else
+        return K * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
+}
+
+template<typename Real, typename Scalar>
+Scalar magnetic_linear_form_surf_imag(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    double K = 0.0;
+
+    if (magneticEdge[e->marker].type == PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT)
+        K = magneticEdge[e->marker].value_imag;
+
+    if (magneticPlanar)
+        return K * int_v<Real, Scalar>(n, wt, v);
+    else
+        return K * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
 template<typename Real, typename Scalar>
@@ -80,13 +106,13 @@ Scalar magnetic_bilinear_form_real_real(int n, double *wt, Func<Real> *u, Func<R
 {
     if (magneticPlanar)
         return 1.0 / (magneticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
-                magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
-                ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / magneticTimeStep : 0.0);
+               magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
+               ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / magneticTimeStep : 0.0);
 
     else
         return 1.0 / (magneticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
                 magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
-                ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / magneticTimeStep : 0.0);
+                ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / magneticTimeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
@@ -112,10 +138,10 @@ Scalar magnetic_bilinear_form_imag_imag(int n, double *wt, Func<Real> *u, Func<R
 {
     if (magneticPlanar)
         return 1.0 / (magneticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
-                magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular);
+               magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular);
     else
         return 1.0 / (magneticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
-                magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular);
+               magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular);
 }
 
 template<typename Real, typename Scalar>
@@ -123,12 +149,12 @@ Scalar magnetic_linear_form_real(int n, double *wt, Func<Real> *v, Geom<Real> *e
 {
     if (magneticPlanar)
         return magneticLabel[e->marker].current_density_real * int_v<Real, Scalar>(n, wt, v) +
-                magneticLabel[e->marker].remanence / (magneticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->marker].remanence_angle) +
+               magneticLabel[e->marker].remanence / (magneticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->marker].remanence_angle) +
                 ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / magneticTimeStep : 0.0);
     else
-        return magneticLabel[e->marker].current_density_real * int_v<Real, Scalar>(n, wt, v) +
+        return (magneticLabel[e->marker].current_density_real * int_v<Real, Scalar>(n, wt, v) -
                 magneticLabel[e->marker].remanence / (magneticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->marker].remanence_angle) +
-                ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / magneticTimeStep : 0.0);
+                ((magneticAnalysisType == ANALYSISTYPE_TRANSIENT) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / magneticTimeStep : 0.0));
 }
 
 template<typename Real, typename Scalar>
@@ -165,7 +191,8 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
 
     // load the mesh file
     Mesh mesh;
-    mesh.load((tempProblemFileName() + ".mesh").toStdString().c_str());
+    H2DReader meshloader;
+    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
     for (int i = 0; i < numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
@@ -200,6 +227,8 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
         wf.add_biform(1, 1, callback(magnetic_bilinear_form_imag_imag));
         wf.add_liform(0, callback(magnetic_linear_form_real));
         wf.add_liform(1, callback(magnetic_linear_form_imag));
+        wf.add_liform_surf(0, callback(magnetic_linear_form_surf_real));
+        wf.add_liform_surf(1, callback(magnetic_linear_form_surf_imag));
 
         // initialize the linear solver
         UmfpackSolver umfpack;
@@ -275,7 +304,8 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
         return solutionArrayList;
     }
 
-    if (magneticAnalysisType == ANALYSISTYPE_STEADYSTATE || magneticAnalysisType == ANALYSISTYPE_TRANSIENT)
+    if (magneticAnalysisType == ANALYSISTYPE_STEADYSTATE ||
+        magneticAnalysisType == ANALYSISTYPE_TRANSIENT)
     {
         // initialize the shapeset and the cache
         H1Shapeset shapeset;
@@ -316,6 +346,7 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
             wf.add_liform(0, callback(magnetic_linear_form_real), ANY, 1, sln);
         else
             wf.add_liform(0, callback(magnetic_linear_form_real));
+        wf.add_liform_surf(0, callback(magnetic_linear_form_surf_real));
 
         // initialize the linear solver
         UmfpackSolver umfpack;
@@ -443,7 +474,8 @@ void HermesMagnetic::readEdgeMarkerFromDomElement(QDomElement *element)
     case PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT:
         Util::scene()->addEdgeMarker(new SceneEdgeMagneticMarker(element->attribute("name"),
                                                                  type,
-                                                                 Value(element->attribute("value", "0"))));
+                                                                 Value(element->attribute("value_real", "0")),
+                                                                 Value(element->attribute("value_imag", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -456,7 +488,8 @@ void HermesMagnetic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdge
     SceneEdgeMagneticMarker *edgeMagneticMarker = dynamic_cast<SceneEdgeMagneticMarker *>(marker);
 
     element->setAttribute("type", physicFieldBCToStringKey(edgeMagneticMarker->type));
-    element->setAttribute("value", edgeMagneticMarker->value.text);
+    element->setAttribute("value_real", edgeMagneticMarker->value_real.text);
+    element->setAttribute("value_imag", edgeMagneticMarker->value_imag.text);
 }
 
 void HermesMagnetic::readLabelMarkerFromDomElement(QDomElement *element)
@@ -502,7 +535,8 @@ QStringList HermesMagnetic::localPointValueHeader()
             << "Jit_real" << "Jit_imag" << "Jit"
             << "Jiv_real" << "Jiv_imag" << "Jiv"
             << "J_real" << "J_imag" << "J"
-            << "pjt" << "pjv" << "pj" << "wm" << "mur" << "gamma" << "Br" << "Brangle" << "vx" << "vy";
+            << "pj" << "wm" << "mur" << "gamma" << "Br" << "Brangle" << "vx" << "vy"
+            << "Fx_real" << "Fy_real" << "Fx_imag" << "Fy_imag";
     return QStringList(headers);
 }
 
@@ -526,8 +560,8 @@ VolumeIntegralValue *HermesMagnetic::volumeIntegralValue()
 QStringList HermesMagnetic::volumeIntegralValueHeader()
 {
     QStringList headers;
-    headers << "V" << "S" << "Ie_real" << "Ie_imag" << "Ii_real" << "Ii_imag" << "Iv_real" << "Iv_imag" << "I_real" << "I_imag"
-            << "Fx" << "Fy" << "T" << "Pjt" << "Pjv" << "Pj" << "Wm";
+    headers << "V" << "S" << "Ie_real" << "Ie_imag" << "Iit_real" << "Iit_imag" << "Iiv_real" << "Iiv_imag" << "I_real" << "I_imag"
+            << "Fx" << "Fy" << "T" << "Pj" << "Wm";
     return QStringList(headers);
 }
 
@@ -535,21 +569,24 @@ SceneEdgeMarker *HermesMagnetic::newEdgeMarker()
 {    
     return new SceneEdgeMagneticMarker("new boundary",
                                        PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL,
+                                       Value("0"),
                                        Value("0"));
 }
 
 SceneEdgeMarker *HermesMagnetic::newEdgeMarker(PyObject *self, PyObject *args)
 {
-    double value;
+    double value_real;
+    double value_imag = 0.0;
     char *name, *type;
-    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    if (PyArg_ParseTuple(args, "ssd|d", &name, &type, &value_real, &value_imag))
     {
         // check name
         if (Util::scene()->getEdgeMarker(name)) return NULL;
 
         return new SceneEdgeMagneticMarker(name,
                                            physicFieldBCFromStringKey(type),
-                                           Value(QString::number(value)));
+                                           Value(QString::number(value_real)),
+                                           Value(QString::number(value_imag)));
     }
 
     return NULL;
@@ -619,9 +656,7 @@ void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE), PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY), PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY);
@@ -631,7 +666,8 @@ void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     }
 
     // steady state and transient
-    if (magneticAnalysisType == ANALYSISTYPE_STEADYSTATE || magneticAnalysisType == ANALYSISTYPE_TRANSIENT)
+    if (magneticAnalysisType == ANALYSISTYPE_STEADYSTATE ||
+        magneticAnalysisType == ANALYSISTYPE_TRANSIENT)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_REAL);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL);
@@ -640,9 +676,7 @@ void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
         if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_REAL);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL);
-        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL);
+        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES), PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE), PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY);
         cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY), PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY);
@@ -799,9 +833,7 @@ void HermesMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
         addTreeWidgetItemValue(itemLorentzForceImag, "FL", QString("%1").arg(localPointValueMagnetic->FL_imag.magnitude(), 0, 'e', 3), "N/m3");
 
         // Power losses
-        addTreeWidgetItemValue(magneticNode, tr("Losses dens. - avg. trans.:"), QString("%1").arg(localPointValueMagnetic->pj_transform, 0, 'e', 3), "W/m3");
-        addTreeWidgetItemValue(magneticNode, tr("Losses dens. - velocity:"), QString("%1").arg(localPointValueMagnetic->pj_velocity, 0, 'e', 3), "W/m3");
-        addTreeWidgetItemValue(magneticNode, tr("Losses dens. - total:"), QString("%1").arg(localPointValueMagnetic->pj_total, 0, 'e', 3), "W/m3");
+        addTreeWidgetItemValue(magneticNode, tr("Losses density:"), QString("%1").arg(localPointValueMagnetic->pj, 0, 'e', 3), "W/m3");
 
         // Energy density
         addTreeWidgetItemValue(magneticNode, tr("Energy density:"), QString("%1").arg(localPointValueMagnetic->wm, 0, 'e', 3), "J/m3");
@@ -852,12 +884,13 @@ void HermesMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
         itemInducedCurrentDensity->setText(0, tr("Current density"));
         itemInducedCurrentDensity->setExpanded(true);
 
-        addTreeWidgetItemValue(itemInducedCurrentDensity, tr("external:"), QString("%1").arg(localPointValueMagnetic->current_density_real, 0, 'e', 3), "m/s");
-        addTreeWidgetItemValue(itemInducedCurrentDensity, tr("velocity:"), QString("%1").arg(localPointValueMagnetic->current_density_induced_velocity_real, 0, 'e', 3), "m/s");
-        addTreeWidgetItemValue(itemInducedCurrentDensity, tr("total:"), QString("%1").arg(localPointValueMagnetic->current_density_total_real, 0, 'e', 3), "m/s");
+        addTreeWidgetItemValue(itemInducedCurrentDensity, tr("external:"), QString("%1").arg(localPointValueMagnetic->current_density_real, 0, 'e', 3), "A/m2");
+        addTreeWidgetItemValue(itemInducedCurrentDensity, tr("transform:"), QString("%1").arg(localPointValueMagnetic->current_density_induced_transform_real, 0, 'e', 3), "A/m2");
+        addTreeWidgetItemValue(itemInducedCurrentDensity, tr("velocity:"), QString("%1").arg(localPointValueMagnetic->current_density_induced_velocity_real, 0, 'e', 3), "A/m2");
+        addTreeWidgetItemValue(itemInducedCurrentDensity, tr("total:"), QString("%1").arg(localPointValueMagnetic->current_density_total_real, 0, 'e', 3), "A/m2");
 
         // Power losses
-        addTreeWidgetItemValue(magneticNode, tr("Power losses:"), QString("%1").arg(localPointValueMagnetic->pj_velocity, 0, 'e', 3), "W/m3");
+        addTreeWidgetItemValue(magneticNode, tr("Losses density:"), QString("%1").arg(localPointValueMagnetic->pj, 0, 'e', 3), "W/m3");
 
         // Energy density
         addTreeWidgetItemValue(magneticNode, tr("Energy density:"), QString("%1").arg(localPointValueMagnetic->wm, 0, 'e', 3), "J/m3");
@@ -928,15 +961,7 @@ void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
         addTreeWidgetItemValue(itemCurrentTotal, tr("imag:"), QString("%1").arg(volumeIntegralValueMagnetic->currentTotalImag, 0, 'e', 3), "A");
         addTreeWidgetItemValue(itemCurrentTotal, tr("magnitude:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->currentTotalReal) + sqr(volumeIntegralValueMagnetic->currentTotalImag)), 0, 'e', 3), "A");
 
-        // Power losses
-        QTreeWidgetItem *itemPowerLosses = new QTreeWidgetItem(magneticNode);
-        itemPowerLosses->setText(0, tr("Power losses"));
-        itemPowerLosses->setExpanded(true);
-
-        addTreeWidgetItemValue(itemPowerLosses, tr("transform avg.:"), QString("%1").arg(volumeIntegralValueMagnetic->powerLossesTransform, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemPowerLosses, tr("velocity:"), QString("%1").arg(volumeIntegralValueMagnetic->powerLossesVelocity, 0, 'e', 3), "A");
-        addTreeWidgetItemValue(itemPowerLosses, tr("total:"), QString("%1").arg(sqrt(sqr(volumeIntegralValueMagnetic->powerLosses)), 0, 'e', 3), "A");
-
+        addTreeWidgetItemValue(magneticNode, tr("Power Losses:"), QString("%1").arg(volumeIntegralValueMagnetic->powerLosses, 0, 'e', 3), tr("W"));
         addTreeWidgetItemValue(magneticNode, tr("Energy avg.:"), QString("%1").arg(volumeIntegralValueMagnetic->energy, 0, 'e', 3), tr("J"));
 
         // force
@@ -952,9 +977,10 @@ void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
     else
     {
         addTreeWidgetItemValue(magneticNode, tr("External current:"), QString("%1").arg(volumeIntegralValueMagnetic->currentReal, 0, 'e', 3), tr("A"));
+        addTreeWidgetItemValue(magneticNode, tr("Transform current:"), QString("%1").arg(volumeIntegralValueMagnetic->currentInducedTransformReal, 0, 'e', 3), tr("A"));
         addTreeWidgetItemValue(magneticNode, tr("Velocity current:"), QString("%1").arg(volumeIntegralValueMagnetic->currentInducedVelocityReal, 0, 'e', 3), tr("A"));
         addTreeWidgetItemValue(magneticNode, tr("Total current:"), QString("%1").arg(volumeIntegralValueMagnetic->currentTotalReal, 0, 'e', 3), tr("A"));
-        addTreeWidgetItemValue(magneticNode, tr("Losses:"), QString("%1").arg(volumeIntegralValueMagnetic->powerLossesVelocity, 0, 'e', 3), tr("W"));
+        addTreeWidgetItemValue(magneticNode, tr("Power Losses:"), QString("%1").arg(volumeIntegralValueMagnetic->powerLosses, 0, 'e', 3), tr("W"));
         addTreeWidgetItemValue(magneticNode, tr("Energy:"), QString("%1").arg(volumeIntegralValueMagnetic->energy, 0, 'e', 3), tr("J"));
 
         QTreeWidgetItem *itemForce = new QTreeWidgetItem(magneticNode);
@@ -968,28 +994,65 @@ void HermesMagnetic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
     }
 }
 
+ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+{
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
+    {
+        return new ViewScalarFilterMagnetic(sln1,
+                                            physicFieldVariable,
+                                            physicFieldVariableComp);
+    }
+
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+    {
+        Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
+        return new ViewScalarFilterMagnetic(sln1,
+                                            sln2,
+                                            physicFieldVariable,
+                                            physicFieldVariableComp);
+    }
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    {
+        Solution *sln2;
+        if (Util::scene()->sceneSolution()->timeStep() > 0)
+            sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() - 1);
+        else
+            sln2 = sln1;
+
+        return new ViewScalarFilterMagnetic(sln1,
+                                            sln2,
+                                            physicFieldVariable,
+                                            physicFieldVariableComp);
+    }
+}
+
 QList<SolutionArray *> *HermesMagnetic::solve(SolverDialog *solverDialog)
 {
     // edge markers
     magneticEdge = new MagneticEdge[Util::scene()->edges.count()+1];
     magneticEdge[0].type = PHYSICFIELDBC_NONE;
-    magneticEdge[0].value = 0;
+    magneticEdge[0].value_real = 0.0;
+    magneticEdge[0].value_imag = 0.0;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
         {
             magneticEdge[i+1].type = PHYSICFIELDBC_NONE;
-            magneticEdge[i+1].value = 0;
+            magneticEdge[i+1].value_real = 0.0;
+            magneticEdge[i+1].value_imag = 0.0;
         }
         else
         {
             SceneEdgeMagneticMarker *edgeMagneticMarker = dynamic_cast<SceneEdgeMagneticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeMagneticMarker->value.evaluate()) return NULL;
+            if (!edgeMagneticMarker->value_real.evaluate()) return NULL;
+            if (!edgeMagneticMarker->value_imag.evaluate()) return NULL;
 
             magneticEdge[i+1].type = edgeMagneticMarker->type;
-            magneticEdge[i+1].value = edgeMagneticMarker->value.number;
+            magneticEdge[i+1].value_real = edgeMagneticMarker->value_real.number;
+            magneticEdge[i+1].value_imag = edgeMagneticMarker->value_imag.number;
         }
     }
 
@@ -1062,110 +1125,169 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue
     FL_real = Point();
     FL_imag = Point();
 
-    pj_transform = 0;
-    pj_velocity = 0;
-    pj_total = 0;
+    pj = 0;
     wm = 0;
 
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        double frequency;
-
         // value real
         PointValue valueReal = PointValue(value, derivative, labelMarker);
 
-        // value imag
-        PointValue valueImag;
-        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
-        {
-            valueImag = pointValue(Util::scene()->sceneSolution()->sln2(), point);
-            frequency = Util::scene()->problemInfo()->frequency;
-        }
-        else
-        {
-            valueImag = PointValue();
-            frequency = 0.0;
-        }
-
-        // solution
         SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(valueReal.marker);
+        // solution
         if (marker != NULL)
         {
-            // potential
-            potential_real = valueReal.value;
-            potential_imag = valueImag.value;
-
-            // magnetic field
-            Point derReal;
-            derReal = valueReal.derivative;
-
-            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE ||
+                Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
             {
-                B_real.x =  derReal.y;
-                B_real.y = -derReal.x;
+                Point derReal;
+                derReal = valueReal.derivative;
+
+                if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                {
+                    // potential
+                    potential_real = valueReal.value;
+
+                    // flux density
+                    B_real.x =   derReal.y;
+                    B_real.y = - derReal.x;
+                }
+                else
+                {
+                    // potential
+                    potential_real = - valueReal.value;
+
+                    // flux density
+                    B_real.x =    derReal.y;
+                    B_real.y = - (derReal.x + ((point.x > 0.0) ? valueReal.value/point.x : 0.0));
+                }
+
+                permeability = marker->permeability.number;
+                conductivity = marker->conductivity.number;
+                remanence = marker->remanence.number;
+                remanence_angle = marker->remanence_angle.number;
+                velocity = Point(marker->velocity_x.number - marker->velocity_angular.number * point.y,
+                                 marker->velocity_y.number + marker->velocity_angular.number * point.x);
+
+                // current density
+                current_density_real = marker->current_density_real.number;
+
+                // induced transform current density
+                if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+                {
+                    Solution *sln2;
+                    if (Util::scene()->sceneSolution()->timeStep() > 0)
+                        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() - 1);
+                    else
+                        sln2 = Util::scene()->sceneSolution()->sln();
+
+                    PointValue valuePrevious = pointValue(sln2, point);
+                    current_density_induced_transform_real = - marker->conductivity.number * (valueReal.value - valuePrevious.value) / Util::scene()->problemInfo()->timeStep;
+                }
+
+                // induced current density velocity
+                current_density_induced_velocity_real = - conductivity * (velocity.x * derReal.x + velocity.y * derReal.y);
+
+                // total current density
+                current_density_total_real = current_density_real + current_density_induced_transform_real + current_density_induced_velocity_real;
+
+                // electric displacement
+                H_real = B_real / (marker->permeability.number * MU0);
+
+                // Lorentz force
+                FL_real.x = - current_density_total_real*B_real.y;
+                FL_real.y =   current_density_total_real*B_real.x;
+
+                // power losses
+                pj = (marker->conductivity.number > 0.0) ?
+                        1.0 / marker->conductivity.number * (sqr(current_density_total_real) + sqr(current_density_total_imag))
+                        :
+                        0.0;
+
+                // energy density
+                wm = 0.5 * (sqr(B_real.x) + sqr(B_real.y) + sqr(B_imag.x) + sqr(B_imag.y)) / (marker->permeability.number * MU0);
             }
-            else
+
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
             {
-                B_real.x = -derReal.y;
-                B_real.y =  derReal.x + ((point.x > 0.0) ? potential_real/point.x : 0.0);
+                Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
+
+                // value imag
+                PointValue valueImag = pointValue(sln2, point);
+                double frequency = Util::scene()->problemInfo()->frequency;
+
+                Point derReal = valueReal.derivative;
+                Point derImag = valueImag.derivative;
+
+                if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                {
+                    // potential
+                    potential_real = valueReal.value;
+                    potential_imag = valueImag.value;
+
+                    // flux density
+                    B_real.x =  derReal.y;
+                    B_real.y = -derReal.x;
+
+                    B_imag.x =  derImag.y;
+                    B_imag.y = -derImag.x;
+                }
+                else
+                {
+                    // potential
+                    potential_real = valueReal.value;
+                    potential_imag = valueImag.value;
+
+                    // flux density
+                    B_real.x =    derReal.y;
+                    B_real.y = - (derReal.x + ((point.x > 0.0) ? valueReal.value/point.x : 0.0));
+
+                    B_imag.x =    derImag.y;
+                    B_imag.y = - (derImag.x + ((point.x > 0.0) ? valueImag.value/point.x : 0.0));
+                }
+
+                permeability = marker->permeability.number;
+                conductivity = marker->conductivity.number;
+                remanence = marker->remanence.number;
+                remanence_angle = marker->remanence_angle.number;
+                velocity = Point(marker->velocity_x.number - marker->velocity_angular.number * point.y,
+                                 marker->velocity_y.number + marker->velocity_angular.number * point.x);
+
+                // current density
+                current_density_real = marker->current_density_real.number;
+                current_density_imag = marker->current_density_imag.number;
+
+                // induced current density transform (harmonic)
+                current_density_induced_transform_real =   2 * M_PI * frequency * marker->conductivity.number * valueImag.value;
+                current_density_induced_transform_imag = - 2 * M_PI * frequency * marker->conductivity.number * valueReal.value;
+
+                // induced current density velocity
+                current_density_induced_velocity_real = - conductivity * (velocity.x * derReal.x + velocity.y * derReal.y);
+                current_density_induced_velocity_imag = - conductivity * (velocity.x * derImag.x + velocity.y * derImag.y);
+
+                // total current density
+                current_density_total_real = current_density_real + current_density_induced_transform_real + current_density_induced_velocity_real;
+                current_density_total_imag = current_density_imag + current_density_induced_transform_imag + current_density_induced_velocity_imag;
+
+                // electric displacement
+                H_real = B_real / (marker->permeability.number * MU0);
+                H_imag = B_imag / (marker->permeability.number * MU0);
+
+                // Lorentz force
+                FL_real.x = - (current_density_total_real*B_real.y - current_density_total_imag*B_imag.y);
+                FL_real.y =   (current_density_total_real*B_real.x - current_density_total_imag*B_imag.x);
+                FL_imag.x = - (current_density_total_imag*B_real.y + current_density_total_real*B_imag.y);
+                FL_imag.y =   (current_density_total_imag*B_real.x + current_density_total_real*B_imag.x);
+
+                // power losses
+                pj = (marker->conductivity.number > 0.0) ?
+                        0.5 / marker->conductivity.number * (sqr(current_density_total_real) + sqr(current_density_total_imag))
+                        :
+                        0.0;
+
+                // energy density
+                wm = 0.25 * (sqr(B_real.x) + sqr(B_real.y) + sqr(B_imag.x) + sqr(B_imag.y)) / (marker->permeability.number * MU0);
             }
-
-            Point derImag;
-            derImag = valueImag.derivative;
-
-            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
-            {
-                B_imag.x =  derImag.y;
-                B_imag.y = -derImag.x;
-            }
-            else
-            {
-                B_imag.x = -derImag.y;
-                B_imag.y =  derImag.x + ((point.x > 0.0) ? potential_imag/point.x : 0.0);
-            }
-
-            permeability = marker->permeability.number;
-            conductivity = marker->conductivity.number;
-            remanence = marker->remanence.number;
-            remanence_angle = marker->remanence_angle.number;
-            velocity = Point(marker->velocity_x.number - marker->velocity_angular.number * point.y, marker->velocity_y.number + marker->velocity_angular.number * point.x);
-
-            // current density
-            current_density_real = marker->current_density_real.number;
-            current_density_imag = marker->current_density_imag.number;
-
-            // induced current density transform
-            current_density_induced_transform_real =   2 * M_PI * frequency * marker->conductivity.number * potential_imag;
-            current_density_induced_transform_imag = - 2 * M_PI * frequency * marker->conductivity.number * potential_real;
-
-            // induced current density velocity
-            current_density_induced_velocity_real = - conductivity * (velocity.x * derReal.x + velocity.y * derReal.y);
-            current_density_induced_velocity_imag = - conductivity * (velocity.x * derImag.x + velocity.y * derImag.y);
-
-            // total current density
-            current_density_total_real = current_density_real + current_density_induced_transform_real + current_density_induced_velocity_real;
-            current_density_total_imag = current_density_imag + current_density_induced_transform_imag + current_density_induced_velocity_imag;
-
-            // electric displacement
-            H_real = B_real / (marker->permeability.number * MU0);
-            H_imag = B_imag / (marker->permeability.number * MU0);
-
-            // Lorentz force
-            FL_real.x = - (current_density_total_real*B_real.y - current_density_total_imag*B_imag.y);
-            FL_real.y =   (current_density_total_real*B_real.x - current_density_total_imag*B_imag.x);
-            FL_imag.x = - (current_density_total_imag*B_real.y + current_density_total_real*B_imag.y);
-            FL_imag.y =   (current_density_total_imag*B_real.x + current_density_total_real*B_imag.x);
-
-            // power losses
-            pj_transform = (marker->conductivity.number > 0.0) ?
-                           0.5 / marker->conductivity.number * (sqr(current_density_induced_transform_real) + sqr(current_density_induced_transform_imag)) : 0.0;
-            pj_velocity = (marker->conductivity.number > 0.0) ?
-                          0.5 / marker->conductivity.number * (sqr(current_density_induced_velocity_real) + sqr(current_density_induced_velocity_imag)) : 0.0;
-
-            pj_total = pj_transform + pj_velocity;
-
-            // energy density
-            wm = 0.25 * (sqr(B_real.x) + sqr(B_real.y) + sqr(B_imag.x) + sqr(B_imag.y)) / (marker->permeability.number * MU0);
         }
     }
 }
@@ -1323,19 +1445,9 @@ double LocalPointValueMagnetic::variableValue(PhysicFieldVariable physicFieldVar
             return sqrt(sqr(current_density_total_real) + sqr(current_density_total_imag));
         }
         break;
-    case PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM:
+    case PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES:
         {
-            return pj_transform;
-        }
-        break;
-    case PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY:
-        {
-            return pj_velocity;
-        }
-        break;
-    case PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL:
-        {
-            return pj_total;
+            return pj;
         }
         break;
     case PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY:
@@ -1399,7 +1511,7 @@ QStringList LocalPointValueMagnetic::variables()
             QString("%1").arg(point.y, 0, 'e', 5) <<
             QString("%1").arg(potential_real, 0, 'e', 5) <<
             QString("%1").arg(potential_imag, 0, 'e', 5) <<
-            QString("%1").arg(sqr(potential_real) + sqr(potential_imag), 0, 'e', 5) <<
+            QString("%1").arg(sqrt(sqr(potential_real) + sqr(potential_imag)), 0, 'e', 5) <<
             QString("%1").arg(sqrt(sqr(B_real.x) + sqr(B_imag.x) + sqr(B_real.y) + sqr(B_imag.y)), 0, 'e', 5) <<
             QString("%1").arg(B_real.x, 0, 'e', 5) <<
             QString("%1").arg(B_real.y, 0, 'e', 5) <<
@@ -1426,16 +1538,18 @@ QStringList LocalPointValueMagnetic::variables()
             QString("%1").arg(current_density_total_real, 0, 'e', 5) <<
             QString("%1").arg(current_density_total_imag, 0, 'e', 5) <<
             QString("%1").arg(sqrt(sqr(current_density_total_real) + sqr(current_density_total_imag)), 0, 'e', 5) <<
-            QString("%1").arg(pj_transform, 0, 'e', 5) <<
-            QString("%1").arg(pj_velocity, 0, 'e', 5) <<
-            QString("%1").arg(pj_total, 0, 'e', 5) <<
+            QString("%1").arg(pj, 0, 'e', 5) <<
             QString("%1").arg(wm, 0, 'e', 5) <<
             QString("%1").arg(permeability, 0, 'f', 3) <<
             QString("%1").arg(conductivity, 0, 'e', 5) <<
             QString("%1").arg(remanence, 0, 'e', 5) <<
             QString("%1").arg(remanence_angle, 0, 'e', 5) <<
             QString("%1").arg(velocity.x, 0, 'e', 5) <<
-            QString("%1").arg(velocity.y, 0, 'e', 5);
+            QString("%1").arg(velocity.y, 0, 'e', 5) <<
+            QString("%1").arg(FL_real.x, 0, 'e', 5) <<
+            QString("%1").arg(FL_real.y, 0, 'e', 5) <<
+            QString("%1").arg(FL_imag.x, 0, 'e', 5) <<
+            QString("%1").arg(FL_imag.y, 0, 'e', 5);
 
     return QStringList(row);
 }
@@ -1508,8 +1622,7 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
     currentInducedVelocityImag = 0;
     currentTotalReal = 0;
     currentTotalImag = 0;
-    powerLossesTransform = 0;
-    powerLossesVelocity = 0;
+    powerLosses = 0;
     energy = 0;
     forceLorentzX = 0;
     forceLorentzY = 0;
@@ -1519,17 +1632,18 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
 
     currentTotalReal = currentReal + currentInducedTransformReal + currentInducedVelocityReal;
     currentTotalImag = currentImag + currentInducedTransformImag + currentInducedVelocityImag;
-    powerLosses = powerLossesTransform + powerLossesVelocity;
 }
 
 void VolumeIntegralValueMagnetic::calculateVariables(int i)
 {
     SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
 
+    // current - real
     result = 0.0;
     h1_integrate_expression(marker->current_density_real.number);
     currentReal += result;
 
+    // current - imag
     if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
     {
         result = 0.0;
@@ -1537,6 +1651,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         currentImag += result;
     }
 
+    // current induced transform - real
     if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
     {
         result = 0.0;
@@ -1550,7 +1665,21 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         }
         currentInducedTransformReal += result;
     }
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    {
+        result = 0.0;
+        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+        {
+            h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep);
+        }
+        else
+        {
+            h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep);
+        }
+        currentInducedTransformReal += result;
+    }
 
+    // current induced transform - imag
     if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
     {
         result = 0.0;
@@ -1565,6 +1694,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         currentInducedTransformImag += result;
     }
 
+    // current induced velocity - real
     result = 0.0;
     if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
     {
@@ -1573,7 +1703,8 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     }
     else
     {
-        // TODO
+        h1_integrate_expression(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]));
     }
     currentInducedVelocityReal += result;
 
@@ -1587,63 +1718,95 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         }
         else
         {
-            // TODO
         }
         currentInducedVelocityImag += result;
     }
 
-    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+    // power losses
+    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
     {
-        result = 0.0;
-        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
         {
+            result = 0.0;
+            h1_integrate_expression((marker->conductivity.number > 0.0) ?
+                                    1.0 / marker->conductivity.number * sqr(
+                                            marker->current_density_real.number
+                                          - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                           (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
+                                    :
+                                    0.0);
+            powerLosses += result;
+        }
+        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+        {
+            // TODO: add velocity
+            result = 0.0;
             h1_integrate_expression((marker->conductivity.number > 0.0) ?
                                     0.5 / marker->conductivity.number * (
                                               sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i])
                                             + sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]))
                                     :
                                     0.0);
+            powerLosses += result;
         }
-        else
+        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
         {
+            // TODO: add velocity
+            result = 0.0;
             h1_integrate_expression((marker->conductivity.number > 0.0) ?
-                                    2 * M_PI * x[i] * 0.5 / marker->conductivity.number * (
-                                            sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i])
-                                          + sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]))
+                                    1.0 / marker->conductivity.number * sqr(
+                                            marker->current_density_real.number
+                                            - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                            - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                             (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
                                     :
                                     0.0);
+            powerLosses += result;
         }
-        powerLossesTransform += result;
     }
-
-    result = 0.0;
-    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+    else
     {
+        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
+        {
+            result = 0.0;
+            h1_integrate_expression((marker->conductivity.number > 0.0) ?
+                                    2 * M_PI * x[i] * 1.0 / marker->conductivity.number * sqr(
+                                            marker->current_density_real.number
+                                          - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                           (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
+                                    :
+                                    0.0);
+            powerLosses += result;
+        }
         if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
         {
+            // TODO: add velocity
+            result = 0.0;
             h1_integrate_expression((marker->conductivity.number > 0.0) ?
-                                    1.0 / marker->conductivity.number * (
-                                              sqr(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
-                                                                                   (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
-                                              +
-                                              sqr(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx2[i] +
-                                                                                   (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy2[i])))
+                                    2 * M_PI * x[i] * 0.5 / marker->conductivity.number * (
+                                              sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i])
+                                            + sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]))
                                     :
                                     0.0);
+            powerLosses += result;
         }
-        else
+        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
         {
+            // TODO: add velocity
+            result = 0.0;
             h1_integrate_expression((marker->conductivity.number > 0.0) ?
-                                    1.0 / marker->conductivity.number * (
-                                              sqr(- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
-                                                                                   (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])))
+                                    2 * M_PI * x[i] * 1.0 / marker->conductivity.number * sqr(
+                                            marker->current_density_real.number
+                                            - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                            - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                             (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
                                     :
                                     0.0);
-
+            powerLosses += result;
         }
     }
-    powerLossesVelocity += result;
 
+    // energy
     result = 0.0;
     if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
     {
@@ -1670,6 +1833,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     }
     energy += result;
 
+    // Lorentz force X
     result = 0.0;
     if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
     {
@@ -1707,6 +1871,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     }
     forceLorentzX += result;
 
+    // Lorentz force Y
     result = 0.0;
     if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
     {
@@ -1716,12 +1881,12 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
                                              + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudy2[i]))
                                     +
                                     dudy1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
-                                                                                                                       (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
+                                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
         }
         else
         {
             h1_integrate_expression(dudy1[i] * (- marker->current_density_real.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
-                                                                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
+                                                                                                                       (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
 
         }
     }
@@ -1731,9 +1896,9 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         {
             h1_integrate_expression(- 0.5 * (- (2 * M_PI * x[i] * (marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudy1[i])
                                              + (2 * M_PI * x[i] * (marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudy2[i]))
-                    +
-                    dudy1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
-                                                                                                       (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
+                                    +
+                                    dudy1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
         }
         else
         {
@@ -1744,17 +1909,18 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     }
     forceLorentzY += result;
 
+    // torque
     result = 0.0;
     if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
     {
         if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
         {
             h1_integrate_expression(y[i] * (
-                                            - ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudx1[i])
-                                            + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudx2[i])
-                                            +
-                                            dudx1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
-                                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])))
+                    - ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudx1[i])
+                    + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudx2[i])
+                    +
+                    dudx1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])))
                                     -
                                     x[i] * (
                                             - ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudy1[i])
@@ -1783,6 +1949,16 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
     torque += result;
 }
 
+void VolumeIntegralValueMagnetic::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
+    sln2 = NULL;
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() - 1);
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
+}
+
 QStringList VolumeIntegralValueMagnetic::variables()
 { 
     QStringList row;
@@ -1799,26 +1975,742 @@ QStringList VolumeIntegralValueMagnetic::variables()
             QString("%1").arg(forceLorentzX, 0, 'e', 5) <<
             QString("%1").arg(forceLorentzY, 0, 'e', 5) <<
             QString("%1").arg(torque, 0, 'e', 5) <<
-            QString("%1").arg(powerLossesTransform, 0, 'e', 5) <<
-            QString("%1").arg(powerLossesVelocity, 0, 'e', 5) <<
-            QString("%1").arg(powerLossesTransform, 0, 'e', 5) <<
+            QString("%1").arg(powerLosses, 0, 'e', 5) <<
             QString("%1").arg(energy, 0, 'e', 5);
     return QStringList(row);
 }
 
 // *************************************************************************************************************************************
 
-SceneEdgeMagneticMarker::SceneEdgeMagneticMarker(const QString &name, PhysicFieldBC type, Value value) : SceneEdgeMarker(name, type)
+void ViewScalarFilterMagnetic::calculateVariable(int i)
 {
-    this->value = value;
+    switch (m_physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL:
+        {
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i]));
+            }
+            else
+            {
+                node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i])) * x[i];
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_REAL:
+        {
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                node->values[0][0][i] = value1[i];
+            }
+            else
+            {
+                node->values[0][0][i] = - value1[i] * x[i];
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_IMAG:
+        {
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                node->values[0][0][i] = value2[i];
+            }
+            else
+            {
+                node->values[0][0][i] = - value2[i] * x[i];
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY:
+        {
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) + sqr(dudy1[i]) + sqr(dudy2[i]));
+            }
+            else
+            {
+                node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0)));
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL:
+        {
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = dudy1[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = - dudx1[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i]));
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = dudy1[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = - dudx1[i] - ((x[i] > 0) ? value1[i] / x[i] : 0.0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)));
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_IMAG:
+        {
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = dudy2[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = - dudx2[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i]));
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = dudy2[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = - dudx2[i] - ((x > 0) ? value2[i] / x[i] : 0.0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0)));
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i])) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) + sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = dudy1[i] / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = - dudx1[i] / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i])) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = dudy1[i] / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = - (dudx1[i] - ((x[i] > 0) ? value1[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_IMAG:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = dudy2[i] / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = - dudx2[i] / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i])) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = dudy2[i] / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = - (dudx2[i] - ((x > 0) ? value2[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = sqrt(
+                    sqr(marker->current_density_real.number) +
+                    sqr(marker->current_density_imag.number));
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_REAL:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = marker->current_density_real.number;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_IMAG:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = marker->current_density_imag.number;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_REAL:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+            {
+                node->values[0][0][i] = 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i];
+            }
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+            {
+                node->values[0][0][i] = - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_IMAG:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = - 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i];
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = sqrt(
+                    sqr(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) +
+                    sqr(2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]));
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]);
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_IMAG:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx2[i] +
+                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy2[i]);
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * sqrt(sqr(dudx1[i]) + sqr(dudx2[i])) +
+                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * sqrt(sqr(dudy1[i]) + sqr(dudy2[i])));
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = marker->current_density_real.number -
+                                    marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                   (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]);
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                node->values[0][0][i] += 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i];
+
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+                node->values[0][0][i] -= marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = marker->current_density_imag.number +
+                                    marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                   (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]);
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                node->values[0][0][i] += 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i];
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = sqrt(
+                    sqr(marker->current_density_real.number +
+                        2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i] +
+                        marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                       (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
+                    +
+                    sqr(marker->current_density_imag.number +
+                        2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i] +
+                        marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx2[i] +
+                                                       (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy2[i]))
+
+                    );
+        }
+        break;    
+    case PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_STEADYSTATE)
+            {
+                node->values[0][0][i] = (marker->conductivity.number > 0.0) ?
+                                        1.0 / marker->conductivity.number * sqr(
+                                        marker->current_density_real.number +
+                                        - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
+                                        :
+                                        0.0;
+            }
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+            {
+                // TODO: add velocity
+                node->values[0][0][i] = (marker->conductivity.number > 0.0) ?
+                                        0.5 / marker->conductivity.number * (
+                                                sqr(marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) +
+                                                sqr(marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]))
+                                        :
+                                        0.0;
+            }
+            if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+            {
+                node->values[0][0][i] = (marker->conductivity.number > 0.0) ?
+                                        1.0 / marker->conductivity.number * sqr(
+                                        marker->current_density_real.number +
+                                        - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep)
+                                        :
+                                        0.0;
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                        {
+                            node->values[0][0][i] = - 0.5 * (- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudx1[i])
+                                                    +          ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudx2[i]))
+                                                    +
+                                                    dudx1[i] * (marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                               (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]));
+                        }
+                        else
+                        {
+                            node->values[0][0][i] = (dudx1[i] * (
+                                                                marker->current_density_real.number +
+                                                                - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                                                - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                                ));
+                        }
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                        {
+                            node->values[0][0][i] = - (0.5 * (- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudy1[i])
+                                                    +           ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudy2[i]))
+                                                    +
+                                                    dudy1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                                             (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
+                        }
+                        else
+                        {
+                            node->values[0][0][i] = (dudy1[i] * (
+                                                                 marker->current_density_real.number +
+                                                                 - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                  (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                                                 - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                                 ));
+                        }
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                        {
+                            node->values[0][0][i] = sqrt(sqr(
+                                                    0.5 * ( - ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudx1[i])
+                                                            + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudx2[i]))
+                                                    +
+                                                    dudx1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                                             (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
+                                                    ) + sqr(
+                                                            node->values[0][0][i] = - (0.5 * (- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudy1[i])
+                                                                                    +           ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudy2[i]))
+                                                                                    +
+                                                                                    dudy1[i] * (- marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])))
+                                                            ));
+                        }
+                        else
+                        {
+                            node->values[0][0][i] = sqrt(
+                                                      sqr(dudx1[i] * (
+                                                        marker->current_density_real.number +
+                                                        - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                        ))
+                                                    + sqr(dudy1[i] * (
+                                                        marker->current_density_real.number +
+                                                        - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                        )));
+                        }
+
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                        {
+                            node->values[0][0][i] = - 0.5 * (- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * (dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)))
+                                                             + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * (dudx2[i] + ((x[i] > 0) ? value2[i] / x[i] : 0.0))))
+                                                    +
+                                                    (dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) * (marker->current_density_real.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                                                     (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]));
+                        }
+                        else
+                        {
+                            node->values[0][0][i] = ((dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) * (
+                                                                marker->current_density_real.number +
+                                                                - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                 (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                                                - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                                ));
+                        }
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                        {
+                            node->values[0][0][i] = - 0.5 * (- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudy1[i])
+                                                             + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudy2[i]))
+                                                    +
+                                                    - dudy1[i] * (marker->current_density_real.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                                                       (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]));
+                        }
+                        else
+                        {
+                            node->values[0][0][i] = (dudy1[i] * (
+                                                                 marker->current_density_real.number +
+                                                                 - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                  (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                                                 - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                                 ));
+
+                        }
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                        {
+                            node->values[0][0][i] = sqrt(sqr(
+                                                        - 0.5 * (- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * (dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)))
+                                                                 + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * (dudx2[i] + ((x[i] > 0) ? value2[i] / x[i] : 0.0))))
+                                                        +
+                                                        (dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) * (marker->current_density_imag.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
+                                                ) + sqr(
+                                                        - 0.5 * (- ((marker->current_density_real.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i]) * dudy1[i])
+                                                                 + ((marker->current_density_imag.number + 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value1[i]) * dudy2[i]))
+                                                        +
+                                                        - dudy1[i] * (marker->current_density_imag.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                                                                           (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
+                                                        ));
+                        }
+                        else
+                        {
+                            node->values[0][0][i] = sqrt(
+                                                      sqr((dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) * (
+                                                        marker->current_density_real.number +
+                                                        - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                        ))
+                                                    + sqr(dudy1[i] * (
+                                                        marker->current_density_real.number +
+                                                        - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+                                                                                         (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                        )));
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                node->values[0][0][i] = 0.25 * (sqr(dudx1[i]) + sqr(dudy1[i])) / (marker->permeability.number * MU0);
+                if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                    node->values[0][0][i] += 0.25 * (sqr(dudx2[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
+            }
+            else
+            {
+                node->values[0][0][i] = 0.25 * (sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC)
+                    node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = marker->permeability.number;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = marker->conductivity.number;
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = marker->velocity_x.number - marker->velocity_angular.number * y[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = marker->velocity_y.number + marker->velocity_angular.number * x[i];
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = sqrt(sqr(marker->velocity_x.number - marker->velocity_angular.number * y[i]) +
+                                                     sqr(marker->velocity_y.number + marker->velocity_angular.number * x[i]));
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch (m_physicFieldVariableComp)
+                {
+                case PHYSICFIELDVARIABLECOMP_X:
+                    {
+                        node->values[0][0][i] = 0;
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_Y:
+                    {
+                        node->values[0][0][i] = marker->velocity_y.number;
+                    }
+                    break;
+                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                    {
+                        node->values[0][0][i] = fabs(marker->velocity_y.number);
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    case PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE:
+        {
+            SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
+            node->values[0][0][i] = marker->remanence.number;
+
+            switch (m_physicFieldVariableComp)
+            {
+            case PHYSICFIELDVARIABLECOMP_X:
+                {
+                    node->values[0][0][i] = marker->remanence.number * cos(marker->remanence_angle.number / 180.0 * M_PI);
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_Y:
+                {
+                    node->values[0][0][i] = marker->remanence.number * sin(marker->remanence_angle.number / 180.0 * M_PI);
+                }
+                break;
+            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+                {
+                    node->values[0][0][i] = marker->remanence.number;
+                }
+                break;
+            }
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterMagnetic::calculateVariable()" << endl;
+        throw;
+        break;
+    }
+}
+
+// *************************************************************************************************************************************
+
+SceneEdgeMagneticMarker::SceneEdgeMagneticMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag) : SceneEdgeMarker(name, type)
+{
+    this->value_real = value_real;
+    this->value_imag = value_imag;
 }
 
 QString SceneEdgeMagneticMarker::script()
 {
-    return QString("addboundary(\"%1\", \"%2\", %3)").
+    return QString("addboundary(\"%1\", \"%2\", %3, %4)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
-            arg(value.text);
+            arg(value_real.text).
+            arg(value_imag.text);
 }
 
 QMap<QString, QString> SceneEdgeMagneticMarker::data()
@@ -1827,10 +2719,12 @@ QMap<QString, QString> SceneEdgeMagneticMarker::data()
     switch (type)
     {
     case PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL:
-        out["Vector potential (Wb/m)"] = value.text;
+        out["Vector potential - real (Wb/m)"] = value_real.text;
+        out["Vector potential - real (Wb/m)"] = value_imag.text;
         break;
     case PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT:
-        out["Surface current (A/m2)"] = value.text;
+        out["Surface current - real (A/m)"] = value_real.text;
+        out["Surface current - imag (A/m)"] = value_imag.text;
         break;
     }
     return QMap<QString, QString>(out);
@@ -1909,7 +2803,8 @@ DSceneEdgeMagneticMarker::DSceneEdgeMagneticMarker(SceneEdgeMagneticMarker *edge
 DSceneEdgeMagneticMarker::~DSceneEdgeMagneticMarker()
 {
     delete cmbType;
-    delete txtValue;
+    delete txtValueReal;
+    delete txtValueImag;
 }
 
 void DSceneEdgeMagneticMarker::createContent()
@@ -1919,12 +2814,19 @@ void DSceneEdgeMagneticMarker::createContent()
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL), PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL);
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT), PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT);
 
-    txtValue = new SLineEditValue(this);
+    txtValueReal = new SLineEditValue(this);
+    txtValueImag = new SLineEditValue(this);
+    txtValueImag->setEnabled(Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC);
+
+    QHBoxLayout *layoutCurrentDensity = new QHBoxLayout();
+    layoutCurrentDensity->addWidget(txtValueReal);
+    layoutCurrentDensity->addWidget(new QLabel(" + j "));
+    layoutCurrentDensity->addWidget(txtValueImag);
 
     layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
     layout->addWidget(cmbType, 1, 1);
     layout->addWidget(new QLabel(tr("Value:")), 2, 0);
-    layout->addWidget(txtValue, 2, 1);
+    layout->addLayout(layoutCurrentDensity, 2, 1);
 }
 
 void DSceneEdgeMagneticMarker::load()
@@ -1934,7 +2836,8 @@ void DSceneEdgeMagneticMarker::load()
     SceneEdgeMagneticMarker *edgeMagneticMarker = dynamic_cast<SceneEdgeMagneticMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeMagneticMarker->type));
-    txtValue->setValue(edgeMagneticMarker->value);
+    txtValueReal->setValue(edgeMagneticMarker->value_real);
+    txtValueImag->setValue(edgeMagneticMarker->value_imag);
 }
 
 bool DSceneEdgeMagneticMarker::save() {
@@ -1944,8 +2847,13 @@ bool DSceneEdgeMagneticMarker::save() {
 
     edgeMagneticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
-    if (txtValue->evaluate())
-        edgeMagneticMarker->value  = txtValue->value();
+    if (txtValueReal->evaluate())
+        edgeMagneticMarker->value_real  = txtValueReal->value();
+    else
+        return false;
+
+    if (txtValueImag->evaluate())
+        edgeMagneticMarker->value_imag  = txtValueImag->value();
     else
         return false;
 

@@ -99,11 +99,7 @@ Physic Field Variables
 
 * magnetic_current_density_total
 
-* magnetic_power_losses_transform
-
-* magnetic_power_losses_velocity
-
-* magnetic_total_power_losses
+* magnetic_power_losses
 
 * magnetic_energy_density
 

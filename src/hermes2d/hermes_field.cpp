@@ -26,6 +26,8 @@
 #include "hermes_current.h"
 #include "hermes_elasticity.h"
 
+#include "scene.h"
+
 HermesField *hermesFieldFactory(PhysicField physicField)
 {
     switch (physicField)
@@ -47,4 +49,59 @@ HermesField *hermesFieldFactory(PhysicField physicField)
         throw;
         break;
     }
+}
+
+// *********************************************************************************************************************************************
+
+ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) : Filter(sln1)
+{
+    m_physicFieldVariable = physicFieldVariable;
+    m_physicFieldVariableComp = physicFieldVariableComp;
+}
+
+ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) : Filter(sln1, sln2)
+{
+    m_physicFieldVariable = physicFieldVariable;
+    m_physicFieldVariableComp = physicFieldVariableComp;
+}
+
+double ViewScalarFilter::get_pt_value(double x, double y, int item)
+{
+    error("Not implemented");
+}
+
+void ViewScalarFilter::precalculate(int order, int mask)
+{
+    Quad2D* quad = quads[cur_quad];
+    int np = quad->get_num_points(order);
+    node = new_node(FN_VAL_0, np);
+
+    if (sln[0])
+    {
+        sln[0]->set_quad_order(order, FN_VAL | FN_DX | FN_DY);
+        sln[0]->get_dx_dy_values(dudx1, dudy1);
+        value1 = sln[0]->get_fn_values();
+    }
+
+    if (num == 2 && sln[1])
+    {
+        sln[1]->set_quad_order(order, FN_VAL | FN_DX | FN_DY);
+        sln[1]->get_dx_dy_values(dudx2, dudy2);
+        value2 = sln[1]->get_fn_values();
+    }
+
+    update_refmap();
+
+    x = refmap->get_phys_x(order);
+    y = refmap->get_phys_y(order);
+    Element *e = refmap->get_active_element();
+
+    labelMarker = Util::scene()->labels[e->marker]->marker;
+
+    for (int i = 0; i < np; i++)
+    {
+        calculateVariable(i);
+    }
+
+    replace_cur_node(node);
 }

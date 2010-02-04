@@ -172,6 +172,7 @@ void Terminal::doPrintStdout(const QString &message, QColor color)
 
         // cursor
         QTextCursor cursor = txtOutput->textCursor();
+        cursor.movePosition(QTextCursor::End);
         cursor.beginEditBlock();
         cursor.insertText(message, format);
         cursor.endEditBlock();

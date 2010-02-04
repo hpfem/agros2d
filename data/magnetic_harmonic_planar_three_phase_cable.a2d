@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" analysistype="harmonic" adaptivitysteps="1" polynomialorder="2" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="3 phase cable" initialcondition="0" >
+        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" analysistype="harmonic" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="3 phase cable" initialcondition="0" >
             <scriptstartup>J0 = 1e6;
 J01r = J0;
 J01i = 0.0;
@@ -12,7 +12,7 @@ J03i = J0*sin(-240.0/180.0*pi);
 gamma = 57e6;</scriptstartup>
             <description></description>
             <edges>
-                <edge type="magnetic_vector_potential" value="0" id="1" name="A = 0" />
+                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0" />
             </edges>
             <labels>
                 <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0" />

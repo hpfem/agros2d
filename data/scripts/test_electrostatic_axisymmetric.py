@@ -1,5 +1,5 @@
 # model
-newdocument("Electrostatic", "axisymmetric", "electrostatic", 0, 3)
+newdocument("Electrostatic", "axisymmetric", "electrostatic", 1, 3)
 
 # boundaries
 addboundary("Source electrode", "electrostatic_potential", 10)
@@ -36,21 +36,22 @@ zoombestfit()
 solve()
 
 # point value
-point = pointresult(0.026532, 0.070937)
-testPotential = abs(abs(point["V"]) - 26.078318) < 0.1
-if (not testPotential):
-	print("Scalar potential: ", abs(point["V"]), " == ", 26.078318)
+point = pointresult(0.0255872, 0.0738211)
+testV = test("Scalar potential", point["V"], 25.89593)
+testE = test("Electric field", point["E"], 151.108324)
+testEr = test("Electric field - r", point["Ex"], 94.939342)
+testEz = test("Electric field - z", point["Ey"], 117.559546)
+testD = test("Displacement", point["D"], 1.337941e-8)
+testDr = test("Displacement - r", point["Dx"], 8.406108e-9)
+testDz = test("Displacement - z", point["Dy"], 1.040894e-8)
+testwe = test("Energy density", point["we"], 1.01087e-6)
 
-# energy
-integral = volumeintegral(0, 1, 2)
-testEnergy = abs(abs(integral["We"]) - 1.799349e-8) < 1e-10
-if (not testEnergy):
-	print("Electric energy: " + str(abs(integral["We"])) + " == " + str(1.799349e-8))
+# volume integral
+volume = volumeintegral(0, 1, 2)
+testEnergy = test("Energy", volume["We"], 1.799349e-8)
 
-# charge
-integral = surfaceintegral(1, 12)
-testQ = abs(abs(integral["Q"]) - 1.291778e-9) < 1e-11
-if (not testQ):
-	print("Electric charge: " + str(abs(integral["Q"])) + " == " + str(1.291778e-9))
+# surface integral
+surface = surfaceintegral(1, 12)
+testQ = test("Electric charge", surface["Q"], -1.291778e-9)
 
-print("Test: Electrostatic - axisymmetric: " + str(testPotential and testEnergy and testQ))
+print("Test: Electrostatic - axisymmetric: " + str(testV and testE and testEr and testEz and testD and testDr and testDz and testwe and testEnergy and testQ))

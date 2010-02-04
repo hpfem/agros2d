@@ -33,12 +33,7 @@ void VolumeIntegralValue::calculate()
 
     quad = &g_quad_2d_std;
 
-    Solution *sln1 = NULL;
-    Solution *sln2 = NULL;
-    if (Util::scene()->sceneSolution()->sln1())
-        sln1 = Util::scene()->sceneSolution()->sln1();
-    if (Util::scene()->sceneSolution()->sln2())
-        sln2 = Util::scene()->sceneSolution()->sln2();
+    initSolutions();
 
     sln1->set_quad_2d(quad);
 

@@ -946,10 +946,12 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
 
     runPythonHeader();
 
+    // compile
     PyObject *code = Py_CompileString(script.toStdString().c_str(), "", Py_file_input);
-    PyObject *output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
-    // PyObject *output = PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
-
+    // run
+    PyObject *output = NULL;
+    if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+    
     ScriptResult scriptResult;
     if (output)
     {

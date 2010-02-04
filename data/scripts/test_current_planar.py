@@ -1,5 +1,5 @@
 # model
-newdocument("Feeder", "planar", "current", 2, 5)
+newdocument("Feeder", "planar", "current", 3, 5)
 
 # boundaries
 addboundary("Neumann", "current_inward_current_flow", 0)
@@ -33,14 +33,17 @@ solve()
 
 # point value
 point = pointresult(0.11879, 0.346203)
-testPotential = abs(abs(point["V"]) - 0.928377) < 1e-2
-if (not testPotential):
-	print("Scalar potential: " + str(abs(point["V"])) + " == " + str(0.928377))
+testV = test("Scalar potential", point["V"], 0.928377)
+testE = test("Electric field", point["E"], 0.486928)
+testEx = test("Electric field - x", point["Ex"], -0.123527)
+testEy = test("Electric field - y", point["Ey"], -0.470999)
+testJ = test("Current density", point["J"], 48692.830437)
+testJx = test("Current density - x", point["Jx"], -12352.691339)
+testJy = test("Current density - y", point["Jy"], -47099.923064)
+testpj = test("Losses", point["pj"], 23709.917359)
 
-# current
-integral = surfaceintegral(0)
-testI = abs(abs(integral["I"]) - 3629.425713) < 1e2
-if (not testI):
-	print("Current: " + str(abs(integral["I"])) + " == " + str(3629.425713))
+# surface integral
+surface = surfaceintegral(0)
+testI = test("Current", surface["I"], 3629.425713)
 
-print("Test: Current field - planar: " + str(testPotential and testI))
+print("Test: Current field - planar: " + str(testV and testE and testEx and testEy and testJ and testJx and testJy and testpj and testI))

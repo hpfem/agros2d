@@ -51,9 +51,7 @@ public:
 
     inline Mesh *mesh() { return m_mesh; }
     inline void setMesh(Mesh *mesh) { if (m_mesh) { delete m_mesh; } m_mesh = mesh; }
-    Solution *sln();
-    Solution *sln1();
-    Solution *sln2();
+    Solution *sln(int i = -1);
     void setSolutionArrayList(QList<SolutionArray *> *solutionArrayList);
     inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; };
     void setTimeStep(int timeStep);
@@ -114,23 +112,6 @@ private:
     Mesh *m_mesh; // linearizer only for mesh (on empty solution)
 
     Vectorizer m_vec;
-};
-
-class ViewScalarFilter : public Filter
-{
-public:
-    ViewScalarFilter(MeshFunction* sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    ViewScalarFilter(MeshFunction* sln1, MeshFunction* sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-
-    double get_pt_value(double x, double y, int item = FN_VAL_0);
-
-protected:
-    virtual void precalculate(int order, int mask);
-    double get_value(double value, double dudx, double dudy, double x, double y, SceneLabelMarker *marker);
-
-private:
-    PhysicFieldVariable m_physicFieldVariable;
-    PhysicFieldVariableComp m_physicFieldVariableComp;
 };
 
 #endif // SCENESOLUTION_H

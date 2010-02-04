@@ -67,9 +67,7 @@ public:
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_IMAG ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL ||
+                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY ||
                                                                                             physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY ||
@@ -95,6 +93,8 @@ public:
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
     void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
     void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
+
+    ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueMagnetic : public LocalPointValue
@@ -124,9 +124,7 @@ public:
     Point B_imag;
     Point FL_real;
     Point FL_imag;
-    double pj_transform;
-    double pj_velocity;
-    double pj_total;
+    double pj;
     double wm;
 
     LocalPointValueMagnetic(Point &point);
@@ -151,6 +149,7 @@ class VolumeIntegralValueMagnetic : public VolumeIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     double currentReal;
@@ -163,8 +162,6 @@ public:
     double currentTotalImag;
     double forceLorentzX;
     double forceLorentzY;
-    double powerLossesTransform;
-    double powerLossesVelocity;
     double powerLosses;
     double energy;
     double torque;
@@ -173,12 +170,25 @@ public:
     QStringList variables();
 };
 
+class ViewScalarFilterMagnetic : public ViewScalarFilter
+{
+public:
+    ViewScalarFilterMagnetic(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {};
+    ViewScalarFilterMagnetic(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {};
+
+protected:
+    void calculateVariable(int i);
+};
+
 class SceneEdgeMagneticMarker : public SceneEdgeMarker
 {
 public:
-    Value value;
+    Value value_real;
+    Value value_imag;
 
-    SceneEdgeMagneticMarker(const QString &name, PhysicFieldBC type, Value value);
+    SceneEdgeMagneticMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
 
     QString script();
     QMap<QString, QString> data();
@@ -222,7 +232,8 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtValue;
+    SLineEditValue *txtValueReal;
+    SLineEditValue *txtValueImag;
 };
 
 class DSceneLabelMagneticMarker : public DSceneLabelMarker

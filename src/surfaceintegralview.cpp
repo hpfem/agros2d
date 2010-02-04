@@ -32,11 +32,11 @@ void SurfaceIntegralValue::calculate()
         return;
 
     Quad2D *quad = &g_quad_2d_std;
-    Solution *sln1 = Util::scene()->sceneSolution()->sln1();
+    Solution *sln = Util::scene()->sceneSolution()->sln();
 
-    sln1->set_quad_2d(quad);
+    sln->set_quad_2d(quad);
 
-    Mesh* mesh = sln1->get_mesh();
+    Mesh* mesh = sln->get_mesh();
     for (int i = 0; i<Util::scene()->edges.length(); i++)
     {
         SceneEdge *sceneEdge = Util::scene()->edges[i];
@@ -73,19 +73,19 @@ void SurfaceIntegralValue::calculate()
                     {
                         update_limit_table(e->get_mode());
 
-                        sln1->set_active_element(e);
-                        RefMap* ru = sln1->get_refmap();
+                        sln->set_active_element(e);
+                        RefMap* ru = sln->get_refmap();
 
                         Quad2D* quad2d = ru->get_quad_2d();
                         int eo = quad2d->get_edge_points(edge);
-                        sln1->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
+                        sln->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
                         pt = quad2d->get_points(eo);
                         tan = ru->get_tangent(edge);
 
                         // value
-                        value = sln1->get_fn_values();
+                        value = sln->get_fn_values();
                         // derivative
-                        sln1->get_dx_dy_values(dudx, dudy);
+                        sln->get_dx_dy_values(dudx, dudy);
                         // x - coordinate
                         x = ru->get_phys_x(eo);
 

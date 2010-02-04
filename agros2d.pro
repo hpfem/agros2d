@@ -11,7 +11,7 @@ unix:CONFIG(release) system(cython src/python/agros2d.pyx)
 # DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
-DEFINES += VERSION_SUB=11
+DEFINES += VERSION_SUB=13
 unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 
 # unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
@@ -22,9 +22,9 @@ win32:DEFINES += VERSION_GIT=270
 # win32::DEFINES += VERSION_YEAR=2009
 # win32::DEFINES += VERSION_MONTH=9
 # win32::DEFINES += VERSION_DAY=11
-DEFINES += VERSION_YEAR=2009
-DEFINES += VERSION_MONTH=12
-DEFINES += VERSION_DAY=26
+DEFINES += VERSION_YEAR=2010
+DEFINES += VERSION_MONTH=01
+DEFINES += VERSION_DAY=22
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
@@ -169,7 +169,7 @@ INCLUDEPATH += src \
 unix:INCLUDEPATH += /usr/include
 unix:INCLUDEPATH += /usr/include/suitesparse
 unix:INCLUDEPATH += /usr/include/qwt-qt4
-unix:INCLUDEPATH += /usr/include/python2.6
+unix:INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
 unix:INCLUDEPATH += /usr/include/hermes2d
 win32:INCLUDEPATH += c:/qt/mingw/include
 win32:INCLUDEPATH += c:/qt/mingw/include/hermes2d
@@ -180,7 +180,8 @@ LIBS += -lhermes2d-real \
     -lblas \
     -lJudy \
     -lpthread
-unix:LIBS += -lpython2.6
+unix:LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
+unix:LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
 unix:LIBS += -lqwt-qt4
 win32:LIBS += -lqwt
 win32:LIBS += -lpython26

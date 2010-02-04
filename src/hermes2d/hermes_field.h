@@ -46,6 +46,8 @@ class SceneViewSettings;
 class SolutionArray;
 class SolverDialog;
 
+class ViewScalarFilter;
+
 struct HermesField : public QObject
 {
     Q_OBJECT
@@ -92,12 +94,37 @@ public:
     virtual void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue) = 0;
     virtual void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue) = 0;
     virtual void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue) = 0;
+
+    virtual ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
 };
 
 HermesField *hermesFieldFactory(PhysicField physicField);
 
+class ViewScalarFilter : public Filter
+{
+public:
+    ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 
-// custom forms
+    double get_pt_value(double x, double y, int item = FN_VAL_0);
+
+protected:
+    PhysicFieldVariable m_physicFieldVariable;
+    PhysicFieldVariableComp m_physicFieldVariableComp;
+
+    Node* node;
+
+    double *dudx1, *dudy1, *dudx2, *dudy2;
+    double *value1, *value2;
+    double *x, *y;
+
+    SceneLabelMarker *labelMarker;
+
+    void precalculate(int order, int mask);
+    virtual void calculateVariable(int i) = 0;
+};
+
+// custom forms **************************************************************************************************************************
 
 template<typename Real, typename Scalar>
 Scalar int_x_u_v(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e)

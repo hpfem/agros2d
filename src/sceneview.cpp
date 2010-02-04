@@ -2270,17 +2270,8 @@ void SceneView::setRangeContour()
 {
     if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours)
     {
-        ViewScalarFilter *viewScalarFilter;
-        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 1)
-            viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
-                                                    m_sceneViewSettings.contourPhysicFieldVariable,
-                                                    PHYSICFIELDVARIABLECOMP_SCALAR);
-
-        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 2)
-            viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
-                                                    Util::scene()->sceneSolution()->sln2(),
-                                                    m_sceneViewSettings.contourPhysicFieldVariable,
-                                                    PHYSICFIELDVARIABLECOMP_SCALAR);
+        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.contourPhysicFieldVariable,
+                                                                                                      PHYSICFIELDVARIABLECOMP_SCALAR);
 
         Util::scene()->sceneSolution()->setSlnContourView(viewScalarFilter);
     }
@@ -2293,17 +2284,8 @@ void SceneView::setRangeScalar()
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D ||
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
-        ViewScalarFilter *viewScalarFilter;
-        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 1)
-            viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln(),
-                                                    m_sceneViewSettings.scalarPhysicFieldVariable,
-                                                    m_sceneViewSettings.scalarPhysicFieldVariableComp);
-
-        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 2)
-            viewScalarFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
-                                                    Util::scene()->sceneSolution()->sln2(),
-                                                    m_sceneViewSettings.scalarPhysicFieldVariable,
-                                                    m_sceneViewSettings.scalarPhysicFieldVariableComp);
+        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.scalarPhysicFieldVariable,
+                                                                                                      m_sceneViewSettings.scalarPhysicFieldVariableComp);
 
         Util::scene()->sceneSolution()->setSlnScalarView(viewScalarFilter);
 
@@ -2397,32 +2379,11 @@ void SceneView::setRangeVector()
 {
     if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showVectors)
     {
-        ViewScalarFilter *viewVectorXFilter;
-        ViewScalarFilter *viewVectorYFilter;
+        ViewScalarFilter *viewVectorXFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.vectorPhysicFieldVariable,
+                                                                                                       PHYSICFIELDVARIABLECOMP_X);
 
-        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 1)
-        {
-            viewVectorXFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
-                                                     m_sceneViewSettings.vectorPhysicFieldVariable,
-                                                     PHYSICFIELDVARIABLECOMP_X);
-
-            viewVectorYFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
-                                                     m_sceneViewSettings.vectorPhysicFieldVariable,
-                                                     PHYSICFIELDVARIABLECOMP_Y);
-        }
-
-        if (Util::scene()->problemInfo()->hermes()->numberOfSolution() == 2)
-        {
-            viewVectorXFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
-                                                     Util::scene()->sceneSolution()->sln2(),
-                                                     m_sceneViewSettings.vectorPhysicFieldVariable,
-                                                     PHYSICFIELDVARIABLECOMP_X);
-
-            viewVectorYFilter = new ViewScalarFilter(Util::scene()->sceneSolution()->sln1(),
-                                                     Util::scene()->sceneSolution()->sln2(),
-                                                     m_sceneViewSettings.vectorPhysicFieldVariable,
-                                                     PHYSICFIELDVARIABLECOMP_Y);
-        }
+        ViewScalarFilter *viewVectorYFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.vectorPhysicFieldVariable,
+                                                                                                       PHYSICFIELDVARIABLECOMP_Y);
 
         Util::scene()->sceneSolution()->setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
 

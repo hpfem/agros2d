@@ -100,7 +100,7 @@ QString createPythonFromModel()
     }
 
     // edges
-    if (Util::scene()->edges.count() > 1)
+    if (Util::scene()->edges.count() > 0)
     {
         str += "# edges\n";
         for (int i = 0; i<Util::scene()->edges.count(); i++)
@@ -117,7 +117,7 @@ QString createPythonFromModel()
     }
 
     // labels
-    if (Util::scene()->labels.count() > 1)
+    if (Util::scene()->labels.count() > 0)
     {
         str += "# labels\n";
         for (int i = 0; i<Util::scene()->labels.count(); i++)

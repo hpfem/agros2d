@@ -76,6 +76,8 @@ public:
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
     void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
     void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
+
+    ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueElasticity : public LocalPointValue
@@ -105,10 +107,23 @@ class VolumeIntegralValueElasticity : public VolumeIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     VolumeIntegralValueElasticity();
     QStringList variables();
+};
+
+class ViewScalarFilterElasticity : public ViewScalarFilter
+{
+public:
+    ViewScalarFilterElasticity(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {};
+    ViewScalarFilterElasticity(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {};
+
+protected:
+    void calculateVariable(int i);
 };
 
 class SceneEdgeElasticityMarker : public SceneEdgeMarker

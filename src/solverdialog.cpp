@@ -316,7 +316,8 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             setlocale (LC_NUMERIC, "C");
 
             Mesh *mesh = new Mesh();
-            mesh->load((tempProblemFileName() + ".mesh").toStdString().c_str());
+            H2DReader meshloader;
+            meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), mesh);
 
             // set system locale
             setlocale(LC_NUMERIC, plocale);

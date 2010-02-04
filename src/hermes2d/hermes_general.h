@@ -82,6 +82,8 @@ public:
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
     void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
     void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue);
+
+    ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
 class LocalPointValueGeneral : public LocalPointValue
@@ -115,11 +117,24 @@ class VolumeIntegralValueGeneral : public VolumeIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void initSolutions();
 
 public:
     VolumeIntegralValueGeneral();
 
     QStringList variables();
+};
+
+class ViewScalarFilterGeneral : public ViewScalarFilter
+{
+public:
+    ViewScalarFilterGeneral(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {};
+    ViewScalarFilterGeneral(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {};
+
+protected:
+    void calculateVariable(int i);
 };
 
 class SceneEdgeGeneralMarker : public SceneEdgeMarker

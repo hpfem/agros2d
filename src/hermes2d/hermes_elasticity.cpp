@@ -160,7 +160,8 @@ QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
 
     // load the mesh file
     Mesh xmesh, ymesh;
-    xmesh.load((tempProblemFileName() + ".mesh").toStdString().c_str());
+    H2DReader meshloader;
+    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &xmesh);
     for (int i = 0; i < numberOfRefinements; i++)
         xmesh.refine_all_elements(0);
     ymesh.copy(&xmesh);
@@ -423,6 +424,17 @@ void HermesElasticity::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInt
 
 }
 
+ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+{
+    Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
+    Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
+
+    return new ViewScalarFilterElasticity(sln1,
+                                          sln2,
+                                          physicFieldVariable,
+                                          physicFieldVariableComp);
+}
+
 QList<SolutionArray *> *HermesElasticity::solve(SolverDialog *solverDialog)
 {
     // edge markers
@@ -558,12 +570,47 @@ void VolumeIntegralValueElasticity::calculateVariables(int i)
 
 }
 
+void VolumeIntegralValueElasticity::initSolutions()
+{
+    sln1 = Util::scene()->sceneSolution()->sln(0);
+    sln2 = Util::scene()->sceneSolution()->sln(1);
+}
+
 QStringList VolumeIntegralValueElasticity::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
             QString("%1").arg(crossSection, 0, 'e', 5);
     return QStringList(row);
+}
+
+// *************************************************************************************************************************************
+
+void ViewScalarFilterElasticity::calculateVariable(int i)
+{
+    switch (m_physicFieldVariable)
+    {
+    case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
+        {
+            SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
+
+            // stress tensor
+            double tz = marker->lambda() * (dudx1[i] + dudy2[i]);
+            double tx = tz + 2*marker->mu() * dudx1[i];
+            double ty = tz + 2*marker->mu() * dudy2[i];
+            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_AXISYMMETRIC)
+                tz += 2*marker->mu() * value1[i] / x[i];
+            double txy = marker->mu() * (dudy1[i] + dudx2[i]);
+
+            // Von Mises stress
+            node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
+        }
+        break;
+    default:
+        cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterElasticity::calculateVariable()" << endl;
+        throw;
+        break;
+    }
 }
 
 // *************************************************************************************************************************************

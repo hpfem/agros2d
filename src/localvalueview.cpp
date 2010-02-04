@@ -24,7 +24,7 @@ LocalPointValue::LocalPointValue(Point &point)
 {
     this->point = point;
 
-    PointValue val = pointValue(Util::scene()->sceneSolution()->sln1(), point);
+    PointValue val = pointValue(Util::scene()->sceneSolution()->sln(), point);
 
     value = val.value;
     derivative = val.derivative;
@@ -37,22 +37,23 @@ PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
     Point tmpDerivative;
     SceneLabelMarker *tmpLabelMarker = NULL;
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (sln)
     {
-        tmpValue = sln->get_pt_value(point.x, point.y, FN_VAL_0);
-        if (Util::scene()->problemInfo()->physicField() != PHYSICFIELD_ELASTICITY)
+        int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->mesh(), point);
+        if (index != -1)
         {
-            tmpDerivative.x =  sln->get_pt_value(point.x, point.y, FN_DX_0);
-            tmpDerivative.y =  sln->get_pt_value(point.x, point.y, FN_DY_0);
-        }
-    }
 
-    // find marker
-    int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->mesh(), point);
-    if (index != -1)
-    {
-        Element *element = Util::scene()->sceneSolution()->mesh()->get_element_fast(index);
-        tmpLabelMarker = Util::scene()->labels[element->marker]->marker;
+            tmpValue = sln->get_pt_value(point.x, point.y, FN_VAL_0);
+            if (Util::scene()->problemInfo()->physicField() != PHYSICFIELD_ELASTICITY)
+            {
+                tmpDerivative.x =  sln->get_pt_value(point.x, point.y, FN_DX_0);
+                tmpDerivative.y =  sln->get_pt_value(point.x, point.y, FN_DY_0);
+            }
+
+            // find marker
+            Element *element = Util::scene()->sceneSolution()->mesh()->get_element_fast(index);
+            tmpLabelMarker = Util::scene()->labels[element->marker]->marker;
+        }
     }
 
     return PointValue(tmpValue, tmpDerivative, tmpLabelMarker);

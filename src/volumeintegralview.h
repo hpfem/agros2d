@@ -38,8 +38,12 @@ protected:
     int o;
     double result;
 
+    Solution *sln1;
+    Solution *sln2;
+
     void calculate();
     virtual void calculateVariables(int i) = 0;
+    virtual void initSolutions() = 0;
 
 public:
     double volume;

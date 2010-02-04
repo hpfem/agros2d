@@ -102,9 +102,7 @@ void initLists()
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL, "magnetic_current_density_total_real");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG, "magnetic_current_density_total_imag");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL, "magnetic_current_density_total");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TRANSFORM, "magnetic_power_losses_transform");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_VELOCITY, "magnetic_power_losses_velocity");
-    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES_TOTAL, "magnetic_total_power_losses");
+    physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES, "magnetic_power_losses");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE, "magnetic_lorentz_force");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY, "magnetic_energy_density");
     physicFieldVariableList.insert(PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY, "magnetic_permeability");
