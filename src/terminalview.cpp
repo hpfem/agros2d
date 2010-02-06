@@ -77,7 +77,9 @@ Terminal::Terminal(QWidget *parent) : QWidget(parent)
 
     txtOutput = new QTextEdit(this);
     txtOutput->setLineWrapMode (QTextEdit::NoWrap);
+#ifndef Q_WS_MAC
     txtOutput->setFont(QFont("Monospaced", 9));
+#endif
     txtOutput->setReadOnly(true);    
 
     btnExecute = new QPushButton(this);

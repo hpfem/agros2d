@@ -263,6 +263,9 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
     restoreState(settings.value("ScriptEditorDialog/State", saveState()).toByteArray());
 
     setMinimumSize(600, 400);
+
+    // macx
+    setUnifiedTitleAndToolBarOnMac(true);
 }
 
 ScriptEditorDialog::~ScriptEditorDialog()
@@ -829,7 +832,9 @@ ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
     lineNumberArea = new ScriptEditorLineNumberArea(this);
 
+#ifndef Q_WS_MAC
     setFont(QFont("Monospace", 10));
+#endif
     setTabStopWidth(40);
     setLineWrapMode(QPlainTextEdit::NoWrap);
 

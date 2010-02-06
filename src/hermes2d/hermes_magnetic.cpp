@@ -812,7 +812,7 @@ void HermesMagnetic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
         addTreeWidgetItemValue(itemCurrentDensityTotal, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueMagnetic->current_density_total_real) + sqr(localPointValueMagnetic->current_density_total_imag)), 0, 'e', 3), "A/m2");
 
         // Magnetic Field
-        addTreeWidgetItemValue(magneticNode, "Lorentz force:", QString("%1").arg(sqrt(sqr(localPointValueMagnetic->FL_real.x) + sqr(localPointValueMagnetic->FL_imag.x) + sqr(localPointValueMagnetic->FL_real.y) + sqr(localPointValueMagnetic->FL_imag.y)), 0, 'e', 3), "A/m");
+        addTreeWidgetItemValue(magneticNode, "Lorentz force:", QString("%1").arg(sqrt(sqr(localPointValueMagnetic->FL_real.x) + sqr(localPointValueMagnetic->FL_imag.x) + sqr(localPointValueMagnetic->FL_real.y) + sqr(localPointValueMagnetic->FL_imag.y)), 0, 'e', 3), "N");
 
         // Lorentz force - real
         QTreeWidgetItem *itemLorentzForceReal = new QTreeWidgetItem(magneticNode);
@@ -1155,11 +1155,11 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue
                 else
                 {
                     // potential
-                    potential_real = - valueReal.value;
+                    potential_real = valueReal.value;
 
                     // flux density
-                    B_real.x =    derReal.y;
-                    B_real.y = - (derReal.x + ((point.x > 0.0) ? valueReal.value/point.x : 0.0));
+                    B_real.x = -  derReal.y;
+                    B_real.y =   (derReal.x + ((point.x > 0.0) ? valueReal.value/point.x : 0.0));
                 }
 
                 permeability = marker->permeability.number;
@@ -1194,7 +1194,7 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue
                 // electric displacement
                 H_real = B_real / (marker->permeability.number * MU0);
 
-                // Lorentz force
+                // Ltorentz force
                 FL_real.x = - current_density_total_real*B_real.y;
                 FL_real.y =   current_density_total_real*B_real.x;
 
@@ -1239,11 +1239,11 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue
                     potential_imag = valueImag.value;
 
                     // flux density
-                    B_real.x =    derReal.y;
-                    B_real.y = - (derReal.x + ((point.x > 0.0) ? valueReal.value/point.x : 0.0));
+                    B_real.x = -  derReal.y;
+                    B_real.y =   (derReal.x + ((point.x > 0.0) ? valueReal.value/point.x : 0.0));
 
-                    B_imag.x =    derImag.y;
-                    B_imag.y = - (derImag.x + ((point.x > 0.0) ? valueImag.value/point.x : 0.0));
+                    B_imag.x = -  derImag.y;
+                    B_imag.y =   (derImag.x + ((point.x > 0.0) ? valueImag.value/point.x : 0.0));
                 }
 
                 permeability = marker->permeability.number;

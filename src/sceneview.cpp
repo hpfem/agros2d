@@ -2065,7 +2065,9 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
 
     double maxScene = (((double) contextWidth() / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/m_aspect : sceneHeight;
 
-    m_scale = 1.95/maxScene;
+    if (maxScene > 0.0)
+        m_scale = 1.95/maxScene;
+
     setZoom(0);
 }
 

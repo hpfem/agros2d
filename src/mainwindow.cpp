@@ -89,6 +89,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // accept drops
     setAcceptDrops(true);
 
+    // macx
+    setUnifiedTitleAndToolBarOnMac(true);
+
     doInvalidated();
 }
 
@@ -158,6 +161,7 @@ void MainWindow::createActions()
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
     actExit->setStatusTip(tr("Exit the application"));
+    actExit->setMenuRole(QAction::QuitRole);
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
     // undo framework
@@ -203,10 +207,12 @@ void MainWindow::createActions()
 
     actAbout = new QAction(icon("about"), tr("About &Agros2D"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
+    actAbout->setMenuRole(QAction::AboutRole);
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
 
     actAboutQt = new QAction(icon("help-about"), tr("About &Qt"), this);
     actAboutQt->setStatusTip(tr("Show the Qt library's About box"));
+    actAboutQt->setMenuRole(QAction::AboutQtRole);
     connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     
     actCut->setEnabled(true);
@@ -215,6 +221,7 @@ void MainWindow::createActions()
 
     actOptions = new QAction(icon("options"), tr("&Options"), this);
     actOptions->setStatusTip(tr("Options"));
+    actOptions->setMenuRole(QAction::PreferencesRole);
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
     actCreateMesh = new QAction(icon("scene-mesh"), tr("&Mesh area"), this);
@@ -273,17 +280,19 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentSaveImage);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
+#ifndef Q_WS_MAC
     mnuFile->addSeparator();
     mnuFile->addAction(actExit);
-    
+#endif
+
     mnuEdit = menuBar()->addMenu(tr("&Edit"));
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();
-    #ifdef BETA
+#ifdef BETA
     mnuEdit->addAction(actCut);
     mnuEdit->addAction(actCopy);
-    #endif
+#endif
     mnuEdit->addAction(actPaste);
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
 #ifdef Q_WS_X11
@@ -347,9 +356,14 @@ void MainWindow::createMenus()
     mnuHelp->addAction(actHelp);
     mnuHelp->addAction(actHelpShortCut);
     mnuHelp->addAction(actOnlineHelp);
+#ifndef Q_WS_MAC
     mnuHelp->addSeparator();
-    mnuHelp->addAction(actAbout);
-    mnuHelp->addAction(actAboutQt);
+#else
+    mnuHelp->addAction(actOptions); // will be added to "Agros2D" MacOSX menu
+    mnuHelp->addAction(actExit);    // will be added to "Agros2D" MacOSX menu
+#endif
+    mnuHelp->addAction(actAbout);   // will be added to "Agros2D" MacOSX menu
+    mnuHelp->addAction(actAboutQt); // will be added to "Agros2D" MacOSX menu
 }
 
 void MainWindow::createToolBars()

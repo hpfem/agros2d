@@ -5,26 +5,21 @@ QT += opengl \
     network
 SUBDIRS = src-remote
 
+# backup
+# VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
+
 # run cython for python extensions
-unix:CONFIG(release) system(cython src/python/agros2d.pyx)
+linux-g++:CONFIG(release) system(cython src/python/agros2d.pyx)
 
 # DEFINES += BETA
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
-DEFINES += VERSION_SUB=13
-unix:DEFINES += VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
-
-# unix::DEFINES += VERSION_YEAR=$$system(date +%Y)
-# unix::DEFINES += VERSION_MONTH=$$system(date +%-m)
-# unix::DEFINES += VERSION_DAY=$$system(date +%d)
-win32:DEFINES += VERSION_GIT=270
-
-# win32::DEFINES += VERSION_YEAR=2009
-# win32::DEFINES += VERSION_MONTH=9
-# win32::DEFINES += VERSION_DAY=11
+DEFINES += VERSION_SUB=14
+DEFINES += VERSION_GIT=270
 DEFINES += VERSION_YEAR=2010
-DEFINES += VERSION_MONTH=01
-DEFINES += VERSION_DAY=22
+DEFINES += VERSION_MONTH=02
+DEFINES += VERSION_DAY=06
+
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
@@ -37,60 +32,7 @@ QMAKE_CXXFLAGS_DEBUG += -w
 QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
-unix { 
-    # use qmake PREFIX=... to customize your installation
-    isEmpty(PREFIX):PREFIX = /usr/local
-    
-    # install examples
-    examples.path = $${PREFIX}/share/agros2d/data
-    examples.files = data/*.a2d
-    
-    # install script
-    script.path = $${PREFIX}/share/agros2d/data/script
-    script.files = data/script/*.py
-    
-    # install help
-    help.path = $${PREFIX}/share/agros2d/doc/help
-    help.files = doc/help/Agros2D.qch \
-        doc/help/Agros2D.qhc
-    
-    # install report
-    report.path = $${PREFIX}/share/agros2d/doc/report/template
-    report.files = doc/report/template/template.html \
-        doc/report/template/default.css
-    
-    # install translations
-    lang.path = $${PREFIX}/share/agros2d/lang
-    lang.files = lang/*.qm
-    
-    # install script
-    script.path = $${PREFIX}/share/agros2d
-    script.files = *.py
-    
-    # install pixmap
-    pixmap.path = $${PREFIX}/share/pixmaps
-    pixmap.files = images/agros2d.xpm
-    
-    # install desktop
-    desktop.path = $${PREFIX}/share/applications
-    desktop.files = agros2d.desktop
-    
-    # install binary
-    target.path = $${PREFIX}/bin
-    target-remote.path = $${PREFIX}/bin
-    target-remote.files = src-remote/agros2d-remote
-    
-    # "make install" configuration options
-    INSTALLS *= target \
-        target-remote \
-        examples \
-        help \
-        lang \
-        script \
-        pixmap \
-        report \
-        desktop
-}
+
 SUBDIRS += src
 SOURCES += src/util.cpp \
     src/scene.cpp \
@@ -166,24 +108,115 @@ HEADERS += src/util.h \
     src/scenemarkerselectdialog.h
 INCLUDEPATH += src \
     src/dxflib
-unix:INCLUDEPATH += /usr/include
-unix:INCLUDEPATH += /usr/include/suitesparse
-unix:INCLUDEPATH += /usr/include/qwt-qt4
-unix:INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-unix:INCLUDEPATH += /usr/include/hermes2d
-win32:INCLUDEPATH += c:/qt/mingw/include
-win32:INCLUDEPATH += c:/qt/mingw/include/hermes2d
-win32:INCLUDEPATH += c:/Python26/include
-LIBS += -lhermes2d-real \
-    -lumfpack \
-    -lamd \
-    -lblas \
-    -lJudy \
-    -lpthread
-unix:LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
-unix:LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
-unix:LIBS += -lqwt-qt4
-win32:LIBS += -lqwt
-win32:LIBS += -lpython26
+
 OTHER_FILES += src/python/agros2d.pyx \
     functions.py
+
+linux-g++ {
+    # use qmake PREFIX=... to customize your installation
+    isEmpty(PREFIX):PREFIX = /usr/local
+    
+    # install examples
+    examples.path = $${PREFIX}/share/agros2d/data
+    examples.files = data/*.a2d
+    
+    # install script
+    script.path = $${PREFIX}/share/agros2d/data/script
+    script.files = data/script/*.py
+    
+    # install help
+    help.path = $${PREFIX}/share/agros2d/doc/help
+    help.files = doc/help/Agros2D.qch \
+        doc/help/Agros2D.qhc
+    
+    # install report
+    report.path = $${PREFIX}/share/agros2d/doc/report/template
+    report.files = doc/report/template/template.html \
+        doc/report/template/default.css
+    
+    # install translations
+    lang.path = $${PREFIX}/share/agros2d/lang
+    lang.files = lang/*.qm
+    
+    # install script
+    script.path = $${PREFIX}/share/agros2d
+    script.files = *.py
+    
+    # install pixmap
+    pixmap.path = $${PREFIX}/share/pixmaps
+    pixmap.files = images/agros2d.xpm
+    
+    # install desktop
+    desktop.path = $${PREFIX}/share/applications
+    desktop.files = agros2d.desktop
+    
+    # install binary
+    target.path = $${PREFIX}/bin
+    target-remote.path = $${PREFIX}/bin
+    target-remote.files = src-remote/agros2d-remote
+    
+    # "make install" configuration options
+    INSTALLS *= target \
+        target-remote \
+        examples \
+        help \
+        lang \
+        script \
+        pixmap \
+        report \
+        desktop
+
+    INCLUDEPATH += /usr/include
+    INCLUDEPATH += /usr/include/suitesparse
+    INCLUDEPATH += /usr/include/qwt-qt4
+    INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
+    INCLUDEPATH += /usr/include/hermes2d
+
+    LIBS += -lhermes2d-real
+    LIBS += -lumfpack
+    LIBS += -lamd
+    LIBS += -lblas
+    LIBS += -lJudy
+    LIBS += -lpthread
+    LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
+    LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
+    LIBS += -lqwt-qt4
+}
+
+win32-gcc {
+    INCLUDEPATH += c:/qt/mingw/include
+    INCLUDEPATH += c:/qt/mingw/include/hermes2d
+    INCLUDEPATH += c:/Python26/include
+
+    LIBS += -lhermes2d-real
+    LIBS += -lumfpack
+    LIBS += -lamd
+    LIBS += -lblas
+    LIBS += -lJudy
+    LIBS += -lpthread
+    LIBS += -lqwt
+    LIBS += -lpython26
+}
+
+macx-g++ {
+    INCLUDEPATH += /opt/local/include
+    INCLUDEPATH += /opt/local/include/ufsparse
+    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.6
+    INCLUDEPATH += ../qwt-5.2.0/src
+    INCLUDEPATH += ../hermes2d/src
+
+    LIBS += -L/opt/local/lib
+    LIBS += -L/usr/lib
+    LIBS += -L/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/config
+    LIBS += -L../hermes2d/src
+    LIBS += -L../qwt-5.2.0/lib
+
+    LIBS += -lpthread
+    LIBS += -lhermes2d-real
+    LIBS += -lpython2.6
+    LIBS += -lqwt
+    LIBS += -lumfpack
+    LIBS += -lamd
+    LIBS += -lblas
+    LIBS += -lJudy
+}

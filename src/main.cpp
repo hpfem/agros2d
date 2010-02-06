@@ -27,6 +27,11 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain("hpfem.org");
     a.setApplicationName("Agros2D");
 
+#ifdef Q_WS_MAC
+    // don't show icons in menu
+    a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
+#endif
+
     // global exception handler
     // set_terminate(exception_global);
 
@@ -62,6 +67,11 @@ int main(int argc, char *argv[])
             style = "WindowsXP";
         else
             style = "Windows";
+#endif
+
+
+#ifdef Q_WS_MAC
+    style = "Aqua";
 #endif
 
         settings.setValue("General/GUIStyle", style);

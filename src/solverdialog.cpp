@@ -242,16 +242,21 @@ void SolverDialog::runMesh()
         processTriangle->setStandardErrorFile(tempProblemFileName() + ".triangle.err");
         connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
 
-        processTriangle->start("triangle -p -P -q30.0 -e -A -a -z -Q -I -p \"" + tempProblemFileName() + "\"");
+        QString triangleBinary = "triangle";
+        if (QFile::exists(QApplication::applicationDirPath() + "/triangle.exe"))
+            triangleBinary = "triangle.exe";
+        if (QFile::exists(QApplication::applicationDirPath() + "/triangle"))
+            triangleBinary = "./triangle";
+
+        processTriangle->start(QString("%1 -p -P -q30.0 -e -A -a -z -Q -I -p \"%2\"").arg(triangleBinary).arg(tempProblemFileName()));
         progressBar->setValue(30);
 
         if (!processTriangle->waitForStarted())
         {
-            showMessage(tr("Triangle: could not start Triangle."), false);
+            showMessage(tr("Triangle: could not start Triangle."), true);
             processTriangle->kill();
 
             progressBar->setValue(100);
-            emit solved();
             return;
         }
 
