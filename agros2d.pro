@@ -15,10 +15,10 @@ linux-g++:CONFIG(release) system(cython src/python/agros2d.pyx)
 DEFINES += VERSION_MAJOR=0
 DEFINES += VERSION_MINOR=9
 DEFINES += VERSION_SUB=14
-DEFINES += VERSION_GIT=270
+DEFINES += VERSION_GIT=304
 DEFINES += VERSION_YEAR=2010
 DEFINES += VERSION_MONTH=02
-DEFINES += VERSION_DAY=06
+DEFINES += VERSION_DAY=07
 
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
@@ -183,7 +183,7 @@ linux-g++ {
     LIBS += -lqwt-qt4
 }
 
-win32-gcc {
+win32-g++ {
     INCLUDEPATH += c:/qt/mingw/include
     INCLUDEPATH += c:/qt/mingw/include/hermes2d
     INCLUDEPATH += c:/Python26/include

@@ -228,6 +228,9 @@ void SolverDialog::doRefreshTimerUpdate()
 
 void SolverDialog::runMesh()
 {
+    if ((m_mode == SOLVER_MESH_AND_SOLVE) && (Util::scene()->sceneSolution()->isMeshed()))
+        doMeshTriangleCreated(0);
+
     QFile::remove(tempProblemFileName() + ".mesh");
 
     // create triangle files
@@ -248,7 +251,9 @@ void SolverDialog::runMesh()
         if (QFile::exists(QApplication::applicationDirPath() + "/triangle"))
             triangleBinary = "./triangle";
 
-        processTriangle->start(QString("%1 -p -P -q30.0 -e -A -a -z -Q -I -p \"%2\"").arg(triangleBinary).arg(tempProblemFileName()));
+        processTriangle->start(QString("%1 -p -P -q30.0 -e -A -a -z -Q -I -p \"%2\"").
+                               arg(triangleBinary).
+                               arg(tempProblemFileName()));
         progressBar->setValue(30);
 
         if (!processTriangle->waitForStarted())

@@ -63,6 +63,9 @@
         <file>images/file-folder.png</file>
         <file>images/file-text.png</file>
         <file>images/file-python.png</file>
+        <file>images/video.png</file>
+        <file>images/report.png</file>
+        <file>images/view-fullscreen.png</file>
         <file>images/equations/current_steadystate.png</file>
         <file>images/equations/electrostatic_steadystate.png</file>
         <file>images/equations/general_steadystate.png</file>

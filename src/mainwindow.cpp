@@ -154,7 +154,7 @@ void MainWindow::createActions()
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
 
-    actCreateVideo = new QAction(tr("Create &video..."), this);
+    actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
     actCreateVideo->setStatusTip(tr("Create video"));
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
 
@@ -254,7 +254,7 @@ void MainWindow::createActions()
     actScriptEditorRunCommand->setStatusTip(tr("Run command..."));
     connect(actScriptEditorRunCommand, SIGNAL(triggered()), this, SLOT(doScriptEditorRunCommand()));
 
-    actReport = new QAction(icon(""), tr("&Report..."), this);
+    actReport = new QAction(icon("report"), tr("&Report..."), this);
     actReport->setStatusTip(tr("Problem html report"));
     connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 }
@@ -803,7 +803,7 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
     {
         if (!fileNameScript.isEmpty())
             QMessageBox::critical(this, tr("File open"), tr("File '%1' doesn't exists.").arg(fileNameScript));
-    }    
+    }
 }
 
 void MainWindow::doScriptEditorRunCommand()
@@ -822,8 +822,8 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    //ErrorResult result = Util::scene()->readFromFile("data/data/pokus.a2d");
-    ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
+    ErrorResult result = Util::scene()->readFromFile("data/data/pokus.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");

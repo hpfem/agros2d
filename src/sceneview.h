@@ -172,8 +172,10 @@ signals:
 protected:
     void initializeGL();
     void resizeGL(int w, int h);
+    void transform();
     void paintGL();
     void setupViewport(int w, int h);
+    void renderTextPos(double x, double y, double z, const QString &str, bool blend = true);
     
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -256,7 +258,7 @@ private:
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
 
     void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments);
-    void drawBlend(Point start, Point end);
+    void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75);
 
     void setZoom(double power);
     void setRangeContour();

@@ -273,7 +273,7 @@ void VideoDialog::doCreateImages()
     for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
     {
         Util::scene()->sceneSolution()->setTimeStep(i);
-        m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000" + QString::number(i)).right(5)));
+        m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
     }
 
     btnEncodeFFmpeg->setEnabled(true);    
@@ -318,11 +318,21 @@ void VideoDialog::doOpenVideo()
 void VideoDialog::doCommandFFmpeg()
 {
     outputFile = tempProblemDir() + "/video/output." + cmbFormat->itemData(cmbFormat->currentIndex()).toString();
-    commandFFmpeg = QString("ffmpeg -r %4 -y -i \"%1video_%05d.png\" -vcodec %3 \"%2\"").
+
+    QString ffmpegBinary = "ffmpeg";
+    if (QFile::exists(QApplication::applicationDirPath() + "/ffmpeg.exe"))
+        ffmpegBinary = "ffmpeg.exe";
+    if (QFile::exists(QApplication::applicationDirPath() + "/ffmpeg"))
+        ffmpegBinary = "./ffmpeg";
+
+    commandFFmpeg = QString("%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"").
+                    arg(ffmpegBinary).
+                    arg(txtFPS->value()).
                     arg(tempProblemDir() + "/video/").
-                    arg(outputFile).
                     arg(cmbCodec->itemData(cmbCodec->currentIndex()).toString()).
-                    arg(txtFPS->value());
+                    arg(outputFile);
+
+    cout << commandFFmpeg.toStdString() << endl;
 }
 
 void VideoDialog::doVideoCreated(int result)
@@ -331,6 +341,10 @@ void VideoDialog::doVideoCreated(int result)
     {
         btnSaveVideo->setEnabled(true);
         btnOpenVideo->setEnabled(true);
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("FFmpeg error"), readFileContent(tempProblemDir() + "/video/error.txt"));
     }
 
     // remove files

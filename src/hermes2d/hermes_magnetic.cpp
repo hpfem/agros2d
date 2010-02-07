@@ -2131,45 +2131,11 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
             SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
             if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
             {
-                switch (m_physicFieldVariableComp)
-                {
-                case PHYSICFIELDVARIABLECOMP_X:
-                    {
-                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
-                    }
-                    break;
-                case PHYSICFIELDVARIABLECOMP_Y:
-                    {
-                        node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i])) / (marker->permeability.number * MU0);
-                    }
-                    break;
-                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
-                    {
-                        node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) + sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
-                    }
-                    break;
-                }
+                node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) + sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
             }
             else
             {
-                switch (m_physicFieldVariableComp)
-                {
-                case PHYSICFIELDVARIABLECOMP_X:
-                    {
-                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
-                    }
-                    break;
-                case PHYSICFIELDVARIABLECOMP_Y:
-                    {
-                        node->values[0][0][i] = sqrt(sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
-                    }
-                    break;
-                case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
-                    {
-                        node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
-                    }
-                    break;
-                }
+                node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
             }
         }
         break;

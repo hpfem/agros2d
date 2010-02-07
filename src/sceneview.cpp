@@ -155,6 +155,16 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
     m_sceneViewSettings.load();
+
+#ifdef Q_WS_X11
+    setFont(QFont("Monospace", 9));
+#endif
+#ifdef Q_WS_WIN
+    setFont(QFont("Courier New", 9));
+#endif
+#ifdef Q_WS_MAC
+    setFont(QFont("Monaco", 12));
+#endif
 }
 
 SceneView::~SceneView()
@@ -270,7 +280,7 @@ void SceneView::createActions()
     connect(actSceneViewSelectMarker, SIGNAL(triggered()), this, SLOT(doSelectMarker()));
 
     // fullscreen
-    actFullScreen = new QAction(icon(""), tr("Fullscreen mode"), this);
+    actFullScreen = new QAction(icon("view-fullscreen"), tr("Fullscreen mode"), this);
     actFullScreen->setShortcut(QKeySequence(tr("F11")));
     connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
 }
@@ -339,10 +349,15 @@ void SceneView::setupViewport(int w, int h)
         gluPerspective(0.0, m_aspect, 1.0, 1000.0);
     }
     else
-        glOrtho(5.0, w-10.0, h-10.0, 5.0, -10.0, -10.0);
+        glOrtho(3.0, w-6.0, h-6.0, 3.0, -10.0, -10.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+}
+
+void SceneView::transform()
+{
+
 }
 
 void SceneView::paintGL()
@@ -361,6 +376,7 @@ void SceneView::paintGL()
         glDisable(GL_DEPTH_TEST);
     }
 
+    // transform
     glLoadIdentity();
     glScaled(m_scale/m_aspect, m_scale, m_scale);
 
@@ -434,7 +450,7 @@ void SceneView::paintGrid()
         glBegin(GL_LINES);
 
         if ((((cornerMax.x-cornerMin.x)/m_sceneViewSettings.gridStep + (cornerMin.y-cornerMax.y)/m_sceneViewSettings.gridStep) < 200) &&
-            ((cornerMax.x-cornerMin.x)/m_sceneViewSettings.gridStep > 0) && ((cornerMin.y-cornerMax.y)/m_sceneViewSettings.gridStep > 0))
+             ((cornerMax.x-cornerMin.x)/m_sceneViewSettings.gridStep > 0) && ((cornerMin.y-cornerMax.y)/m_sceneViewSettings.gridStep > 0))
         {
             // vertical lines
             for (int i = 0; i<cornerMax.x/m_sceneViewSettings.gridStep; i++)
@@ -501,71 +517,39 @@ void SceneView::paintRulers()
     // rulers
     double step = (((int) ((cornerMax - cornerMin).x / m_sceneViewSettings.gridStep) + 1) / 5) * m_sceneViewSettings.gridStep;
 
+    Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale*m_aspect,
+               (2.0/contextHeight()*fontMetrics().height())/m_scale);
+
     if (step > 0.0)
     {
-        double w;
-        double h = 2.0/contextHeight()*fontMetrics().height()/m_scale/2.0;
-
         QString text;
-        QFont font("Monospace", 8, QFont::Normal);
-
-        // drawBlend(Point(cornerMin.x, cornerMax.y), Point(cornerMax.x, cornerMax.y + 1.5*h));
 
         if (((cornerMax.x-cornerMin.x)/step > 0) && ((cornerMin.y-cornerMax.y)/step > 0))
         {
-            // blend
+            glColor3f(0.3, 0.2, 0.0);
+
+            // horizontal ticks
             for (int i = 0; i<cornerMax.x/step; i++)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-                drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
+                renderTextPos(i*step - size.x*text.size() / 2.0, cornerMax.y + size.x / 4.0, 0.0, text);
             }
             for (int i = 0; i>cornerMin.x/step; i--)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-                drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
-            }
-            // horizontal ticks
-            for (int i = 0; i<cornerMin.y/step; i++)
-            {
-                text = QString::number(i*step, 'g', 4);
-                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-                drawBlend(Point(cornerMin.x, i*step + h*1.1), Point(cornerMin.x + h/4.0 + 2*w*1.1, i*step - h*1.1));
-            }
-            for (int i = 0; i>cornerMax.y/step; i--)
-            {
-                text = QString::number(i*step, 'g', 4);
-                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-                drawBlend(Point(i*step - w*1.1, cornerMax.y - h/4.0*1.1), Point(i*step + w*1.1, cornerMax.y + h*1.5*1.1));
+                renderTextPos(i*step - size.x*text.size() / 2.0, cornerMax.y + size.x / 4.0, 0.0, text);
             }
 
-            glColor3f(0.3, 0.2, 0.0);
             // vertical ticks
-            for (int i = 0; i<cornerMax.x/step; i++)
-            {
-                text = QString::number(i*step, 'g', 4);
-                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-                renderText(i*step - w, cornerMax.y + h/4.0, 0, text, font);
-            }
-            for (int i = 0; i>cornerMin.x/step; i--)
-            {
-                text = QString::number(i*step, 'g', 4);
-                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-                renderText(i*step - w, cornerMax.y + h/4.0, 0, text, font);
-            }
-            // horizontal ticks
             for (int i = 0; i<cornerMin.y/step; i++)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-                renderText(cornerMin.x + h/4.0, i*step - h/2.0, 0, text, font);
+                renderTextPos(cornerMin.x + size.x/4.0, i*step - size.y / 4.0, 0.0, text);
             }
             for (int i = 0; i>cornerMax.y/step; i--)
             {
                 text = QString::number(i*step, 'g', 4);
-                w = 2.0/contextWidth()*m_aspect*QFontMetrics(font).width(text)/m_scale/2.0;
-                renderText(cornerMin.x + h/4.0, i*step - h/2.0, 0, text, font);
+                renderTextPos(cornerMin.x + size.x/4.0, i*step - size.y / 4.0, 0.0, text);
             }
         }
     }
@@ -675,7 +659,7 @@ void SceneView::paintGeometry()
                 point.x = 2.0/contextWidth()*m_aspect*fontMetrics().width(label->marker->name)/m_scale/2.0;
                 point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale;
 
-                renderText(label->point.x-point.x, label->point.y-point.y, 0, label->marker->name);
+                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->marker->name);
             }
 
             // area size
@@ -748,6 +732,7 @@ void SceneView::paintOrder()
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
+        // order scalar view
         Util::scene()->sceneSolution()->ordView().lock_data();
 
         double3* vert = Util::scene()->sceneSolution()->ordView().get_vertices();
@@ -761,7 +746,7 @@ void SceneView::paintOrder()
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
         }
-        int num_boxes = max - min + 1;
+        int numBoxes = max - min + 1;
 
         // triangles
         const float* color;
@@ -778,79 +763,59 @@ void SceneView::paintOrder()
         glEnd();
         Util::scene()->sceneSolution()->ordView().unlock_data();
 
+        // order color map   
         glPushMatrix();
         glLoadIdentity();
 
-        double k = 700.0/(double) contextHeight()/m_aspect;
-
-        double labels_width = 0.08*k;
-        double scale_width = 0.04*k;
-        double scale_height = 0.93;
-        double border = 0.007*k;
-        double border_scale = 0.05*k;
+        glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
+        glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
 
         glDisable(GL_DEPTH_TEST);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        // background
-        drawBlend(Point(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale), Point(1.0 - border_scale/2.0, scale_height + border_scale));
+        // dimensions
+        int textWidth = fontMetrics().width("00");
+        int textHeight = fontMetrics().height();
+        Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
+        Point scaleBorder = Point(10, 10);
+        double scaleLeft = (contextWidth() - (20 + 3 * textWidth));
 
-        // palette
-        glColor3f(0.0, 0.0, 0.0);
-        glBegin(GL_QUADS);
-        glVertex2d(1.0 - scale_width - labels_width - border, - scale_height - border);
-        glVertex2d(1.0 - labels_width + border, - scale_height - border);
-        glVertex2d(1.0 - labels_width + border, scale_height + border);
-        glVertex2d(1.0 - scale_width - labels_width - border, scale_height + border);
-        glEnd();
+        // blended rectangle
+        drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
+                  0.91, 0.91, 0.91);
 
         // bars
         glBegin(GL_QUADS);
-        for (int i = 0; i < num_boxes; i++)
+        for (int i = 1; i < max+1; i++)
         {
-            glColor3d(palette_order[max-i][0], palette_order[max-i][1], palette_order[max-i][2]);
-            double y_tick_1 = scale_height - (double) (i  ) * 2*scale_height / (num_boxes);
-            double y_tick_2 = scale_height - (double) (i+1) * 2*scale_height / (num_boxes);
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+            glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+            glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+            glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
 
-            glVertex2d(1.0 - scale_width - labels_width, y_tick_1);
-            glVertex2d(1.0 - labels_width, y_tick_1);
-            glVertex2d(1.0 - labels_width, y_tick_2);
-            glVertex2d(1.0 - scale_width - labels_width, y_tick_2);
-        }
-        glEnd();
-
-        // ticks
-        glColor3f(0.0, 0.0, 0.0);
-
-        glLineWidth(1.0);
-        glBegin(GL_LINES);
-        for (int i = 0; i < num_boxes; i++)
-        {
-            double y_tick = scale_height - (double) (i+1) * 2*scale_height / (num_boxes);
-
-            glVertex2d(1.0 - scale_width - labels_width - border, y_tick);
-            glVertex2d(1.0 - scale_width - labels_width + border, y_tick);
-            glVertex2d(1.0 - labels_width - border, y_tick);
-            glVertex2d(1.0 - labels_width + border, y_tick);
+            glColor3d(palette_order[i][0], palette_order[i][1], palette_order[i][2]);
+            glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+            glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+            glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+            glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
         }
         glEnd();
 
         // labels
-        double h = 2.0*fontMetrics().height()/contextHeight();
-
-        for (int i = 0; i < num_boxes; i++)
+        glColor3f(0.0, 0.0, 0.0);
+        for (int i = 1; i < max+1; i++)
         {
-            int value = min + i;
-            double y_tick = - scale_height + (double) (i+0.5) * 2*scale_height / (num_boxes);
-
-            renderText(1.0 - labels_width + 0.022*(1.0/m_aspect) + border, y_tick-h/4.0, 0, QString::number(value));
+            int sizeNumber = fontMetrics().width(QString::number(i));
+            renderText(scaleLeft + 10 + 1.5 * textWidth - sizeNumber,
+                       scaleBorder.y + 10 + (i-1)*(2 * textHeight) + textHeight / 2.0, 0.0,
+                       QString::number(i));
         }
+
+        glPopMatrix();
 
         if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
             (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
             glEnable(GL_DEPTH_TEST);
-
-        glPopMatrix();
     }
 }
 
@@ -859,29 +824,33 @@ void SceneView::paintColorBar(double min, double max)
     glPushMatrix();
     glLoadIdentity();
 
-    double k = 700.0/(double) contextHeight()/m_aspect;
-
-    double labels_width = 0.18*k;
-    double scale_width = 0.04*k;
-    double scale_height = 0.93;
-    double scale_numticks = 9;
-    double border = 0.007*k;
-    double border_scale = 0.05*k;
+    glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
+    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
 
     glDisable(GL_DEPTH_TEST);
 
-    // background
-    drawBlend(Point(1.0 - scale_width - labels_width - border_scale, - scale_height - border_scale), Point(1.0 - border_scale/2.0, scale_height + border_scale));
+    // dimensions
+    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', 1)) + 3;
+    int textHeight = fontMetrics().height();
+    Point scaleSize = Point(45 + textWidth, (contextHeight() - 20));
+    Point scaleBorder = Point(10, 10);
+    double scaleLeft = (contextWidth() - (45 + textWidth));
+    int numTicks = 11;
 
-    // palette
+    // blended rectangle
+    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
+              0.91, 0.91, 0.91);
+
+    // palette border
     glColor3f(0.0, 0.0, 0.0);
     glBegin(GL_QUADS);
-    glVertex2d(1.0 - scale_width - labels_width - border, - scale_height - border);
-    glVertex2d(1.0 - labels_width + border, - scale_height - border);
-    glVertex2d(1.0 - labels_width + border, scale_height + border);
-    glVertex2d(1.0 - scale_width - labels_width - border, scale_height + border);
+    glVertex2d(scaleLeft + 10, scaleBorder.y + 10);
+    glVertex2d(scaleLeft + 30, scaleBorder.y + 10);
+    glVertex2d(scaleLeft + 30, scaleBorder.y + scaleSize.y - 10);
+    glVertex2d(scaleLeft + 10, scaleBorder.y + scaleSize.y - 10);
     glEnd();
 
+    // palette
     glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -890,52 +859,50 @@ void SceneView::paintColorBar(double min, double max)
         glTexCoord1d(m_texScale + m_texShift);
     else
         glTexCoord1d(m_texShift);
-    glVertex2d(1.0 - labels_width, scale_height);
-    glVertex2d(1.0 - scale_width - labels_width, scale_height);
+    glVertex2d(scaleLeft + 12, scaleBorder.y + 12);
+    glVertex2d(scaleLeft + 28, scaleBorder.y + 12);
     glTexCoord1d(m_texShift);
-    glVertex2d(1.0 - scale_width - labels_width, - scale_height);
-    glVertex2d(1.0 - labels_width, - scale_height);
+    glVertex2d(scaleLeft + 28, scaleBorder.y + scaleSize.y - 12);
+    glVertex2d(scaleLeft + 12, scaleBorder.y + scaleSize.y - 12);
     glEnd();
     glDisable(GL_TEXTURE_1D);
 
     // ticks
-    glColor3f(0.0, 0.0, 0.0);
-
     glLineWidth(1.0);
     glBegin(GL_LINES);
-    for (int i = 0; i < scale_numticks; i++)
+    for (int i = 1; i < numTicks+1; i++)
     {
-        double y_tick = scale_height - (double) (i+1) * 2*scale_height / (scale_numticks+1);
+        double tickY = (scaleSize.y - 20) / (numTicks-1);
 
-        glVertex2d(1.0 - scale_width - labels_width - border, y_tick);
-        glVertex2d(1.0 - scale_width - labels_width + border, y_tick);
-        glVertex2d(1.0 - labels_width - border, y_tick);
-        glVertex2d(1.0 - labels_width + border, y_tick);
+        glVertex2d(scaleLeft + 10, scaleBorder.y + 10 + i*tickY);
+        glVertex2d(scaleLeft + 15, scaleBorder.y + 10 + i*tickY);
+        glVertex2d(scaleLeft + 25, scaleBorder.y + 10 + i*tickY);
+        glVertex2d(scaleLeft + 30, scaleBorder.y + 10 + i*tickY);
     }
     glEnd();
 
     // labels
-    double h = 2.0*fontMetrics().height()/contextHeight();
-
-    for (int i = 0; i < scale_numticks+2; i++)
+    for (int i = 0; i < numTicks+1; i++)
     {
         double value = 0.0;
         if (!m_sceneViewSettings.scalarRangeLog)
-            value = min + (double) i / (scale_numticks+1) * (max - min);
+            value = min + (double) i / (numTicks-1) * (max - min);
         else
-            value = min + (double) pow(m_sceneViewSettings.scalarRangeBase, (i / (scale_numticks+1)))/m_sceneViewSettings.scalarRangeBase * (max - min);
+            value = min + (double) pow(m_sceneViewSettings.scalarRangeBase, (i / (numTicks-1)))/m_sceneViewSettings.scalarRangeBase * (max - min);
 
         if (fabs(value) < EPS_ZERO) value = 0.0;
-        double y_tick = - scale_height + (double) i * 2*scale_height / (scale_numticks+1);
+        double tickY = (scaleSize.y - 20) / (numTicks-1);
 
-        renderText(1.0 - labels_width + 0.022*(1.0/m_aspect), y_tick-h/4.0, 0, QString::number(value, '+e', 1));
+        renderText(scaleLeft + 33 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
+                   scaleBorder.y + 10 + (numTicks-1 - i)*tickY + textHeight / 4.0,
+                   QString::number(value, '+e', 1));
     }
+
+    glPopMatrix();
 
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         glEnable(GL_DEPTH_TEST);
-
-    glPopMatrix();
 }
 
 void SceneView::paintScalarField()
@@ -1250,16 +1217,11 @@ void SceneView::paintVectors()
     glEnd();
 
     Util::scene()->sceneSolution()->vecVectorView().unlock_data();
-
-    // paintColorBar(m_sceneViewSettings.vectorRangeMin, m_sceneViewSettings.vectorRangeMax);
 }
 
 void SceneView::paintSceneModeLabel()
 {
     QString text = "";
-
-    glPushMatrix();
-    glLoadIdentity();
 
     glDisable(GL_DEPTH_TEST);
 
@@ -1291,18 +1253,39 @@ void SceneView::paintSceneModeLabel()
         break;
     }
 
-    double w = 2.0*fontMetrics().width(text)/contextWidth();
 
-    drawBlend(Point(0.0 - w/1.5, 0.94), Point(0.0 + w/1.5, 1.0));
+    glPushMatrix();
+    glLoadIdentity();
 
+    glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
+    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+
+    glDisable(GL_DEPTH_TEST);
+
+    // render viewport label
+    QFont fontLabel = font();
+    fontLabel.setPointSize(fontLabel.pointSize() + 1);
+
+    Point posText = Point((contextWidth()-QFontMetrics(fontLabel).width(text)) / 2.0,
+                          (contextHeight() - QFontMetrics(fontLabel).height() / 1.3));
+
+    // blended rectangle
+    double xs = posText.x - QFontMetrics(fontLabel).width(" ");
+    double ys = posText.y - QFontMetrics(fontLabel).height() / 3.0;
+    double xe = xs + QFontMetrics(fontLabel).width(text + "  ");
+    double ye = contextHeight();
+
+    drawBlend(Point(xs, ys), Point(xe, ye), 0.8, 0.8, 0.8, 0.93);
+
+    // text
     glColor3f(0.0, 0.0, 0.0);
-    renderText((contextWidth()-fontMetrics().width(text))/2, 14, text);
+    renderText(posText.x, posText.y, 0.0, text, fontLabel);
+
+    glPopMatrix();
 
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
         (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
         glEnable(GL_DEPTH_TEST);
-
-    glPopMatrix();
 }
 
 void SceneView::paintZoomRegion()
@@ -1313,17 +1296,10 @@ void SceneView::paintZoomRegion()
         Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
         Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4d(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF(), 0.75);
-
-        glBegin(GL_QUADS);
-        glVertex2d(posStart.x, posStart.y);
-        glVertex2d(posEnd.x, posStart.y);
-        glVertex2d(posEnd.x, posEnd.y);
-        glVertex2d(posStart.x, posEnd.y);
-        glEnd();
-        glDisable(GL_BLEND);
+        drawBlend(posStart, posEnd,
+                  m_sceneViewSettings.colorHighlighted.redF(),
+                  m_sceneViewSettings.colorHighlighted.greenF(),
+                  m_sceneViewSettings.colorHighlighted.blueF());
     }
 }
 
@@ -2031,6 +2007,8 @@ void SceneView::doInvalidated()
 
     actSceneModePostprocessor->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actSceneViewSelectMarker->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actSceneZoomRegion->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR) ||
+                                   (m_sceneViewSettings.postprocessorShow != SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D));
 
     emit mousePressed();
 
@@ -2503,11 +2481,16 @@ void SceneView::drawArc(const Point &point, double r, double startAngle, double 
     glEnd();
 }
 
-void SceneView::drawBlend(Point start, Point end)
+void SceneView::drawBlend(Point start, Point end, double red, double green, double blue, double alpha)
 {
+    // store color
+    double color[4];
+    glGetDoublev(GL_CURRENT_COLOR, color);
+
+    // blended rectangle
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1.0, 1.0, 1.0, 0.75);
+    glColor4f(red, green, blue, alpha);
     glBegin(GL_QUADS);
     glVertex2d(start.x, start.y);
     glVertex2d(end.x, start.y);
@@ -2515,6 +2498,27 @@ void SceneView::drawBlend(Point start, Point end)
     glVertex2d(start.x, end.y);
     glEnd();
     glDisable(GL_BLEND);
+
+    // retrieve color
+    glColor4d(color[0], color[1], color[2], color[3]);
+}
+
+void SceneView::renderTextPos(double x, double y, double z, const QString &str, bool blend)
+{
+    if (blend)
+    {
+        Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale*m_aspect,
+                   (2.0/contextHeight()*fontMetrics().height())/m_scale);
+
+        double xs = x - size.x / 2.0;
+        double ys = y - size.y * 1.15 / 3.2;
+        double xe = xs + size.x * (str.size() + 1);
+        double ye = ys + size.y * 1.15;
+
+        drawBlend(Point(xs, ys), Point(xe, ye));
+    }
+
+    renderText(x, y, z, str);
 }
 
 void SceneView::paintPostprocessorSelectedVolume()
@@ -2524,7 +2528,10 @@ void SceneView::paintPostprocessorSelectedVolume()
     // draw mesh
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4d(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF(), 0.5);
+    glColor4d(m_sceneViewSettings.colorSelected.redF(),
+              m_sceneViewSettings.colorSelected.greenF(),
+              m_sceneViewSettings.colorSelected.blueF(),
+              0.5);
 
     // triangles
     glBegin(GL_TRIANGLES);
