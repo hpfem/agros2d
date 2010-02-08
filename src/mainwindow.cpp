@@ -548,9 +548,9 @@ void MainWindow::doDocumentNew()
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
         Util::scene()->clear();
-        sceneView->doDefaults();
         Util::scene()->setProblemInfo(problemInfo);
         Util::scene()->refresh();
+        sceneView->doDefaults();
 
         sceneView->actSceneModeNode->trigger();
         sceneView->doZoomBestFit();

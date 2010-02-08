@@ -247,9 +247,9 @@ void SolverDialog::runMesh()
 
         QString triangleBinary = "triangle";
         if (QFile::exists(QApplication::applicationDirPath() + "/triangle.exe"))
-            triangleBinary = "triangle.exe";
+            triangleBinary = QApplication::applicationDirPath() + "/triangle.exe";
         if (QFile::exists(QApplication::applicationDirPath() + "/triangle"))
-            triangleBinary = "./triangle";
+            triangleBinary = QApplication::applicationDirPath() + "/triangle";
 
         processTriangle->start(QString("%1 -p -P -q30.0 -e -A -a -z -Q -I -p \"%2\"").
                                arg(triangleBinary).

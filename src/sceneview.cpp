@@ -659,7 +659,7 @@ void SceneView::paintGeometry()
                 point.x = 2.0/contextWidth()*m_aspect*fontMetrics().width(label->marker->name)/m_scale/2.0;
                 point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale;
 
-                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->marker->name);
+                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->marker->name, false);
             }
 
             // area size
@@ -859,11 +859,11 @@ void SceneView::paintColorBar(double min, double max)
         glTexCoord1d(m_texScale + m_texShift);
     else
         glTexCoord1d(m_texShift);
-    glVertex2d(scaleLeft + 12, scaleBorder.y + 12);
-    glVertex2d(scaleLeft + 28, scaleBorder.y + 12);
-    glTexCoord1d(m_texShift);
     glVertex2d(scaleLeft + 28, scaleBorder.y + scaleSize.y - 12);
     glVertex2d(scaleLeft + 12, scaleBorder.y + scaleSize.y - 12);
+    glTexCoord1d(m_texShift);
+    glVertex2d(scaleLeft + 12, scaleBorder.y + 12);
+    glVertex2d(scaleLeft + 28, scaleBorder.y + 12);
     glEnd();
     glDisable(GL_TEXTURE_1D);
 
@@ -1243,9 +1243,11 @@ void SceneView::paintSceneModeLabel()
         case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D:
         case SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID:
             text = physicFieldVariableString(m_sceneViewSettings.scalarPhysicFieldVariable);
+            if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PHYSICFIELDVARIABLECOMP_SCALAR)
+                text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
             break;
         case SCENEVIEW_POSTPROCESSOR_SHOW_ORDER:
-            text = tr("Order");
+            text = tr("Polynomial order");
             break;
         default:
             text = tr("Postprocessor");
@@ -1448,7 +1450,6 @@ void SceneView::paletteUpdateTexAdjust()
 
 void SceneView::keyPressEvent(QKeyEvent *event)
 {
-    RectPoint rect = Util::scene()->boundingBox();
     Point view = position(Point(contextWidth(), contextHeight()));
 
     switch (event->key())
