@@ -24,8 +24,11 @@ static PythonEngine *pythonEngine = NULL;
 
 void createScriptEngine(SceneView *sceneView)
 {
-    pythonEngine = new PythonEngine();
-    pythonEngine->setSceneView(sceneView);
+    if (pythonEngine == NULL)
+    {
+        pythonEngine = new PythonEngine();
+        pythonEngine->setSceneView(sceneView);
+    }
 }
 
 ScriptResult runPythonScript(const QString &script, const QString &fileName)
@@ -63,9 +66,9 @@ QString createPythonFromModel()
            arg(Util::scene()->problemInfo()->adaptivityTolerance).
            arg(Util::scene()->problemInfo()->frequency).
            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
-           arg(Util::scene()->problemInfo()->timeStep).
-           arg(Util::scene()->problemInfo()->timeTotal).
-           arg(Util::scene()->problemInfo()->initialCondition)
+           arg(Util::scene()->problemInfo()->timeStep.text).
+           arg(Util::scene()->problemInfo()->timeTotal.text).
+           arg(Util::scene()->problemInfo()->initialCondition.text)
            + "\n";
     str += "\n";
 
@@ -255,8 +258,6 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
     createStatusBar();
 
     filBrowser->refresh();
-
-    pythonEngine = new PythonEngine();
 
     connect(actRunPython, SIGNAL(triggered()), this, SLOT(doRunPython()));
 

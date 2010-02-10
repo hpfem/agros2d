@@ -140,9 +140,9 @@ QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
     heatPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
 
     heatTransient = (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
-    heatTimeStep = Util::scene()->problemInfo()->timeStep;
-    heatTimeTotal = Util::scene()->problemInfo()->timeTotal;
-    heatInitialCondition = Util::scene()->problemInfo()->initialCondition;
+    heatTimeStep = Util::scene()->problemInfo()->timeStep.number;
+    heatTimeTotal = Util::scene()->problemInfo()->timeTotal.number;
+    heatInitialCondition = Util::scene()->problemInfo()->initialCondition.number;
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -519,6 +519,14 @@ ViewScalarFilter *HermesHeat::viewScalarFilter(PhysicFieldVariable physicFieldVa
 
 QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)
 {
+    // transient
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    {
+        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return NULL;
+        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return NULL;
+        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return NULL;
+    }
+
     // edge markers
     heatEdge = new HeatEdge[Util::scene()->edges.count()+1];
     heatEdge[0].type = PHYSICFIELDBC_NONE;

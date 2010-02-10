@@ -90,9 +90,9 @@ public:
 
     // transient
     AnalysisType analysisType;
-    double timeStep;
-    double timeTotal;
-    double initialCondition;
+    Value timeStep;
+    Value timeTotal;
+    Value initialCondition;
           
     ProblemInfo()
     {
@@ -129,9 +129,9 @@ public:
         frequency = 0.0;
         
         // transient
-        timeStep = 1.0;
-        timeTotal = 1.0;
-        initialCondition = 0.0;
+        timeStep = Value("1.0", false);
+        timeTotal = Value("1.0", false);
+        initialCondition = Value("0.0", false);
     }
     
     inline void setHermes(HermesField *hermes) { if (m_hermes) delete m_hermes; m_hermes = hermes; }

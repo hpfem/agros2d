@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
 
     createScene();
+    createScriptEngine(sceneView);
 
     helpDialog = new HelpDialog(this);
     chartDialog = new ChartDialog(this);
@@ -56,8 +57,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
-
-    createScriptEngine(sceneView);
 
     Util::scene()->clear();
 

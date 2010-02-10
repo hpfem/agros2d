@@ -156,9 +156,9 @@ QString ReportDialog::replaceTemplates(const QString &source)
 
     destination.replace("[Problem.Frequency]", (Util::scene()->problemInfo()->hermes()->hasHarmonic()) ? QString::number(Util::scene()->problemInfo()->frequency) : "", Qt::CaseSensitive);
     destination.replace("[Problem.AnalysisType]", analysisTypeString(Util::scene()->problemInfo()->analysisType), Qt::CaseSensitive);
-    destination.replace("[Problem.TimeStep]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeStep) : "", Qt::CaseSensitive);
-    destination.replace("[Problem.TimeTotal]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeTotal) : "", Qt::CaseSensitive);
-    destination.replace("[Problem.InititalCondition]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->initialCondition) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.TimeStep]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeStep.number) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.TimeTotal]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeTotal.number) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.InititalCondition]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->initialCondition.number) : "", Qt::CaseSensitive);
 
     // script
     destination.replace("[Script]", createPythonFromModel(), Qt::CaseSensitive);

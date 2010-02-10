@@ -1139,9 +1139,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
 
     // transient
-    m_problemInfo->timeStep = eleProblem.toElement().attribute("timestep", "1").toDouble();
-    m_problemInfo->timeTotal = eleProblem.toElement().attribute("timetotal", "1").toDouble();
-    m_problemInfo->initialCondition = eleProblem.toElement().attribute("initialcondition", "0").toDouble();
+    m_problemInfo->timeStep.text = eleProblem.toElement().attribute("timestep", "1");
+    m_problemInfo->timeTotal.text = eleProblem.toElement().attribute("timetotal", "1");
+    m_problemInfo->initialCondition.text = eleProblem.toElement().attribute("initialcondition", "0");
 
     // startup script
     QDomNode eleScriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
@@ -1327,9 +1327,9 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
     // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
     // transient
-    eleProblem.setAttribute("timestep", m_problemInfo->timeStep);
-    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal);
-    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition);
+    eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text);
+    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text);
+    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text);
 
     // startup script
     QDomElement eleScriptStartup = doc.createElement("scriptstartup");

@@ -177,9 +177,9 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
     magneticPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
 
     magneticAnalysisType = Util::scene()->problemInfo()->analysisType;
-    magneticTimeStep = Util::scene()->problemInfo()->timeStep;
-    magneticTimeTotal = Util::scene()->problemInfo()->timeTotal;
-    magneticInitialCondition = Util::scene()->problemInfo()->initialCondition;
+    magneticTimeStep = Util::scene()->problemInfo()->timeStep.number;
+    magneticTimeTotal = Util::scene()->problemInfo()->timeTotal.number;
+    magneticInitialCondition = Util::scene()->problemInfo()->initialCondition.number;
 
     magneticFrequency = (magneticAnalysisType == ANALYSISTYPE_HARMONIC) ? Util::scene()->problemInfo()->frequency : 0.0;
 
@@ -1029,6 +1029,14 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
 
 QList<SolutionArray *> *HermesMagnetic::solve(SolverDialog *solverDialog)
 {
+    // transient
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    {
+        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return NULL;
+        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return NULL;
+        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return NULL;
+    }
+
     // edge markers
     magneticEdge = new MagneticEdge[Util::scene()->edges.count()+1];
     magneticEdge[0].type = PHYSICFIELDBC_NONE;
@@ -1182,7 +1190,7 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue
                         sln2 = Util::scene()->sceneSolution()->sln();
 
                     PointValue valuePrevious = pointValue(sln2, point);
-                    current_density_induced_transform_real = - marker->conductivity.number * (valueReal.value - valuePrevious.value) / Util::scene()->problemInfo()->timeStep;
+                    current_density_induced_transform_real = - marker->conductivity.number * (valueReal.value - valuePrevious.value) / Util::scene()->problemInfo()->timeStep.number;
                 }
 
                 // induced current density velocity
@@ -1670,11 +1678,11 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         result = 0.0;
         if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
         {
-            h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep);
+            h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number);
         }
         else
         {
-            h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep);
+            h1_integrate_expression(- marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number);
         }
         currentInducedTransformReal += result;
     }
@@ -1756,7 +1764,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
             h1_integrate_expression((marker->conductivity.number > 0.0) ?
                                     1.0 / marker->conductivity.number * sqr(
                                             marker->current_density_real.number
-                                            - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                            - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                             - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                              (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
                                     :
@@ -1797,7 +1805,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
             h1_integrate_expression((marker->conductivity.number > 0.0) ?
                                     2 * M_PI * x[i] * 1.0 / marker->conductivity.number * sqr(
                                             marker->current_density_real.number
-                                            - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                            - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                             - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                              (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i]))
                                     :
@@ -2262,7 +2270,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
             }
             if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
             {
-                node->values[0][0][i] = - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep;
+                node->values[0][0][i] = - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number;
             }
         }
         break;
@@ -2311,7 +2319,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 node->values[0][0][i] += 2 * M_PI * Util::scene()->problemInfo()->frequency * marker->conductivity.number * value2[i];
 
             if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
-                node->values[0][0][i] -= marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep;
+                node->values[0][0][i] -= marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number;
         }
         break;
     case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
@@ -2371,7 +2379,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                         marker->current_density_real.number +
                                         - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                          (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep)
+                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number)
                                         :
                                         0.0;
             }
@@ -2401,7 +2409,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                                                 marker->current_density_real.number +
                                                                 - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                  (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                                - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                                - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                                                 ));
                         }
                     }
@@ -2422,7 +2430,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                                                  marker->current_density_real.number +
                                                                  - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                   (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                                 - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                                 - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                                                  ));
                         }
                     }
@@ -2452,13 +2460,13 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                                         marker->current_density_real.number +
                                                         - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                          (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                                         ))
                                                     + sqr(dudy1[i] * (
                                                         marker->current_density_real.number +
                                                         - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                          (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                                         )));
                         }
 
@@ -2486,7 +2494,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                                                 marker->current_density_real.number +
                                                                 - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                  (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                                - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                                - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                                                 ));
                         }
                     }
@@ -2507,7 +2515,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                                                  marker->current_density_real.number +
                                                                  - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                   (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                                 - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                                 - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                                                  ));
 
                         }
@@ -2538,13 +2546,13 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                                         marker->current_density_real.number +
                                                         - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                          (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                                         ))
                                                     + sqr(dudy1[i] * (
                                                         marker->current_density_real.number +
                                                         - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                          (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
                                                         )));
                         }
                     }

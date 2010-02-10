@@ -96,7 +96,7 @@ struct Value
     double number;
 
     Value() { text = "0"; number = 0;}
-    inline Value(const QString &value) { text = value; evaluate(true); }
+    inline Value(const QString &value, bool evaluateExpression = true) { text = value; if (evaluateExpression) evaluate(true); }
 
     bool evaluate(bool quiet = false);
 };

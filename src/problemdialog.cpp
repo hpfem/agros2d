@@ -116,9 +116,9 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // transient
     cmbAnalysisType = new QComboBox();
-    txtTransientTimeStep = new SLineEditDouble();
-    txtTransientTimeTotal = new SLineEditDouble();
-    txtTransientInitialCondition = new SLineEditDouble();
+    txtTransientTimeStep = new SLineEditValue();
+    txtTransientTimeTotal = new SLineEditValue();
+    txtTransientInitialCondition = new SLineEditValue();
     lblTransientSteps = new QLabel("0");
 
     connect(txtTransientTimeStep, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));
@@ -289,17 +289,20 @@ bool ProblemDialog::save()
 
     if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == ANALYSISTYPE_TRANSIENT)
     {
-        if (txtTransientTimeStep->value() <= 0.0)
+        txtTransientTimeStep->evaluate(false);
+        if (txtTransientTimeStep->number() <= 0.0)
         {
             QMessageBox::critical(this, tr("Error"), tr("Time step must be positive."));
             return false;
         }
-        if (txtTransientTimeTotal->value()<= 0.0)
+        txtTransientTimeTotal->evaluate(false);
+        if (txtTransientTimeTotal->number() <= 0.0)
         {
             QMessageBox::critical(this, tr("Error"), tr("Total time must be positive."));
             return false;
         }
-        if (txtTransientTimeStep->value() > txtTransientTimeTotal->value())
+        txtTransientTimeStep->evaluate(false);
+        if (txtTransientTimeStep->number() > txtTransientTimeTotal->number())
         {
             QMessageBox::critical(this, tr("Error"), tr("Time step is greater then total time."));
             return false;
@@ -378,7 +381,11 @@ void ProblemDialog::doAnalysisTypeChanged(int index)
 
 void ProblemDialog::doTransientChanged()
 {
-    lblTransientSteps->setText(QString("%1").arg(floor(txtTransientTimeTotal->value()/txtTransientTimeStep->value())));
+    if (txtTransientTimeStep->evaluate(true) &&
+        txtTransientTimeTotal->evaluate(true))
+    {
+        lblTransientSteps->setText(QString("%1").arg(floor(txtTransientTimeTotal->number()/txtTransientTimeStep->number())));
+    }
 }
 
 void ProblemDialog::doShowEquation()

@@ -64,9 +64,9 @@ private:
 
     // transient
     QComboBox *cmbAnalysisType;
-    SLineEditDouble *txtTransientTimeStep;
-    SLineEditDouble *txtTransientTimeTotal;
-    SLineEditDouble *txtTransientInitialCondition;
+    SLineEditValue *txtTransientTimeStep;
+    SLineEditValue *txtTransientTimeTotal;
+    SLineEditValue *txtTransientInitialCondition;
     QLabel *lblTransientSteps;
 
     // startup script

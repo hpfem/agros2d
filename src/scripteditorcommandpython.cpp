@@ -176,20 +176,25 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
     if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_UNDEFINED)
         throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
 
+    // analysis type
+    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_UNDEFINED)
+        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
+
     // transient timestep
     if (timestep > 0)
-        Util::scene()->problemInfo()->timeStep = timestep;
+        Util::scene()->problemInfo()->timeStep = Value(QString::number(timestep));
     else if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
         throw out_of_range(QObject::tr("Time step must be positive.").toStdString());
 
     // transient timetotal
     if (totaltime > 0)
-        Util::scene()->problemInfo()->timeTotal = totaltime;
+        Util::scene()->problemInfo()->timeTotal = Value(QString::number(totaltime));
     else if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
         throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
 
     // transient initial condition
-    Util::scene()->problemInfo()->initialCondition = initialcondition;
+    Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
 
     // invalidate
     sceneView->doDefaults();
