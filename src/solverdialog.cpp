@@ -85,7 +85,7 @@ SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
     setMaximumSize(minimumSize());
     setModal(true);
 
-    setWindowIcon(icon("system-run"));
+    setWindowIcon(icon("run"));
     setWindowTitle(tr("Solve problem..."));
 
     createControls();

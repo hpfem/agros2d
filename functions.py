@@ -4,6 +4,11 @@ from agros2file import *
 from math import *
 import sys
 
+# add actual directory to the path
+import sys
+sys.path.append("./")
+
+# consts
 MU0 = 4*pi*1e-7
 EPS0 = 8.854e-12
 

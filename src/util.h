@@ -28,7 +28,6 @@
 
 #include <typeinfo>
 #include <iostream>
-#include <string>
 #include <stdlib.h>
 #include <math.h>
 #include <locale.h>
@@ -86,9 +85,6 @@ QString readFileContent(const QString &fileName);
 // write content into the file
 void writeStringContent(const QString &fileName, QString *content);
 void writeStringContentByteArray(const QString &fileName, QByteArray content);
-
-// global exception handler
-void exception_global();
 
 struct Value
 {

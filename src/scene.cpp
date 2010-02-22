@@ -601,6 +601,8 @@ void Scene::deleteSelected()
     }
 
     m_undoStack->endMacro();
+
+    emit invalidated();
 }
 
 int Scene::selectedCount()
@@ -632,6 +634,9 @@ void Scene::highlightNone()
 
 void Scene::transformTranslate(const Point &point, bool copy)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     m_undoStack->beginMacro(tr("Translation"));
 
     foreach (SceneEdge *edge, edges)
@@ -694,6 +699,9 @@ void Scene::transformTranslate(const Point &point, bool copy)
 
 void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     m_undoStack->beginMacro(tr("Rotation"));
 
     foreach (SceneNode *node, nodes)
@@ -741,6 +749,9 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
 
 void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 {
+    // clear solution
+    m_sceneSolution->clear();
+
     m_undoStack->beginMacro(tr("Scale"));
 
     foreach (SceneNode *node, nodes)
@@ -931,7 +942,7 @@ void Scene::writeToDxf(const QString &fileName)
     DL_Codes::version exportVersion = DL_Codes::AC1015;
     DL_WriterA *dw = dxf->out(fileName.toStdString().c_str(), exportVersion);
     if (dw == NULL) {
-        cerr << fileName.toStdString() << " could not be opened." << endl;
+        qCritical() << fileName << " could not be opened.";
         return;
     }
 
@@ -1066,7 +1077,7 @@ void Scene::readFromDxf(const QString &fileName)
     DxfFilter *filter = new DxfFilter(this);
     DL_Dxf* dxf = new DL_Dxf();
     if (!dxf->in(fileName.toStdString(), filter)) {
-        cerr << fileName.toStdString() << " could not be opened." << endl;
+        qCritical() << fileName << " could not be opened.";
         return;
     }
 

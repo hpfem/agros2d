@@ -17,6 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "sceneview_data.h"
 #include "sceneview.h"
 
 SceneViewSettings::SceneViewSettings()
@@ -141,6 +142,7 @@ void SceneViewSettings::save()
 SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     m_mainWindow = (QMainWindow *) parent;
+    m_scene = Util::scene();
 
     m_normals = NULL;
 
@@ -295,22 +297,22 @@ void SceneView::createMenu()
     mnuModeGroup->addAction(actSceneModeLabel);
     mnuModeGroup->addAction(actSceneModePostprocessor);
 
-    mnuInfo->addAction(Util::scene()->actNewNode);
-    mnuInfo->addAction(Util::scene()->actNewEdge);
-    mnuInfo->addAction(Util::scene()->actNewLabel);
+    mnuInfo->addAction(m_scene->actNewNode);
+    mnuInfo->addAction(m_scene->actNewEdge);
+    mnuInfo->addAction(m_scene->actNewLabel);
     mnuInfo->addSeparator();
-    mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
-    mnuInfo->addAction(Util::scene()->actNewLabelMarker);
+    mnuInfo->addAction(m_scene->actNewEdgeMarker);
+    mnuInfo->addAction(m_scene->actNewLabelMarker);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actSceneViewSelectRegion);
-    mnuInfo->addAction(Util::scene()->actTransform);
+    mnuInfo->addAction(m_scene->actTransform);
     mnuInfo->addSeparator();
     mnuInfo->addMenu(mnuModeGroup);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actFullScreen);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actSceneObjectProperties);
-    mnuInfo->addAction(Util::scene()->actProblemProperties);
+    mnuInfo->addAction(m_scene->actProblemProperties);
     mnuInfo->addAction(actSceneViewProperties);
 }
 
@@ -323,7 +325,7 @@ void SceneView::resizeGL(int w, int h)
 {
     setupViewport(w, h);
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (m_scene->sceneSolution()->isSolved())
     {
         paletteFilter();
         paletteUpdateTexAdjust();
@@ -353,11 +355,6 @@ void SceneView::setupViewport(int w, int h)
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-}
-
-void SceneView::transform()
-{
-
 }
 
 void SceneView::paintGL()
@@ -390,7 +387,7 @@ void SceneView::paintGL()
     glTranslated(-m_offset.x, -m_offset.y, -m_offset.z);
 
     if (m_sceneViewSettings.showGrid) paintGrid();
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (m_scene->sceneSolution()->isSolved())
     {
         if (m_sceneMode == SCENEMODE_POSTPROCESSOR)
         {
@@ -558,7 +555,7 @@ void SceneView::paintRulers()
 void SceneView::paintGeometry()
 {
     // edges
-    foreach (SceneEdge *edge, Util::scene()->edges)
+    foreach (SceneEdge *edge, m_scene->edges)
     {
         glColor3f(m_sceneViewSettings.colorEdges.redF(), m_sceneViewSettings.colorEdges.greenF(), m_sceneViewSettings.colorEdges.blueF());
         glLineWidth(m_sceneViewSettings.geometryEdgeWidth);
@@ -594,7 +591,7 @@ void SceneView::paintGeometry()
     // nodes
     if (!(m_sceneMode == SCENEMODE_POSTPROCESSOR))
     {
-        foreach (SceneNode *node, Util::scene()->nodes)
+        foreach (SceneNode *node, m_scene->nodes)
         {
             glColor3f(m_sceneViewSettings.colorNodes.redF(), m_sceneViewSettings.colorNodes.greenF(), m_sceneViewSettings.colorNodes.blueF());
             glPointSize(m_sceneViewSettings.geometryNodeSize);
@@ -625,7 +622,7 @@ void SceneView::paintGeometry()
     // labels
     if (!(m_sceneMode == SCENEMODE_POSTPROCESSOR))
     {
-        foreach (SceneLabel *label, Util::scene()->labels)
+        foreach (SceneLabel *label, m_scene->labels)
         {
             glColor3f(m_sceneViewSettings.colorLabels.redF(), m_sceneViewSettings.colorLabels.greenF(), m_sceneViewSettings.colorLabels.blueF());
             glPointSize(m_sceneViewSettings.geometryLabelSize);
@@ -680,7 +677,7 @@ void SceneView::paintGeometry()
 
 void SceneView::paintInitialMesh()
 {
-    if (!Util::scene()->sceneSolution()->isMeshed()) return;
+    if (!m_scene->sceneSolution()->isMeshed()) return;
 
     // draw initial mesh    
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -689,9 +686,9 @@ void SceneView::paintInitialMesh()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->mesh()->get_num_elements(); i++)
     {
-        Element *element = Util::scene()->sceneSolution()->mesh()->get_element(i);
+        Element *element = m_scene->sceneSolution()->mesh()->get_element(i);
         if (element->is_triangle())
         {
             glVertex2d(element->vn[0]->x, element->vn[0]->y);
@@ -705,7 +702,7 @@ void SceneView::paintInitialMesh()
 
 void SceneView::paintSolutionMesh()
 {
-    if (!Util::scene()->sceneSolution()->isSolved()) return;
+    if (!m_isSolutionPrepared) return;
 
     // draw solution mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -714,9 +711,9 @@ void SceneView::paintSolutionMesh()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_elements(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->sln()->get_mesh()->get_num_elements(); i++)
     {
-        Element *element = Util::scene()->sceneSolution()->sln()->get_mesh()->get_element(i);
+        Element *element = m_scene->sceneSolution()->sln()->get_mesh()->get_element(i);
         if (element->is_triangle())
         {
             glVertex2d(element->vn[0]->x, element->vn[0]->y);
@@ -730,93 +727,92 @@ void SceneView::paintSolutionMesh()
 
 void SceneView::paintOrder()
 {
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (!m_isSolutionPrepared) return;
+
+    // order scalar view
+    m_scene->sceneSolution()->ordView().lock_data();
+
+    double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
+    int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
+
+    // draw mesh
+    int min = 11;
+    int max = 1;
+    for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
     {
-        // order scalar view
-        Util::scene()->sceneSolution()->ordView().lock_data();
-
-        double3* vert = Util::scene()->sceneSolution()->ordView().get_vertices();
-        int3* tris = Util::scene()->sceneSolution()->ordView().get_triangles();
-
-        // draw mesh
-        int min = 11;
-        int max = 1;
-        for (int i = 0; i < Util::scene()->sceneSolution()->ordView().get_num_triangles(); i++)
-        {
-            if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
-            if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
-        }
-        int numBoxes = max - min + 1;
-
-        // triangles
-        const float* color;
-        glBegin(GL_TRIANGLES);
-        for (int i = 0; i < Util::scene()->sceneSolution()->ordView().get_num_triangles(); i++)
-        {
-            int color = vert[tris[i][0]][2];
-            glColor3d(palette_order[color][0], palette_order[color][1], palette_order[color][2]);
-
-            glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
-            glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
-            glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
-        }
-        glEnd();
-        Util::scene()->sceneSolution()->ordView().unlock_data();
-
-        // order color map   
-        glPushMatrix();
-        glLoadIdentity();
-
-        glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
-        glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
-
-        glDisable(GL_DEPTH_TEST);
-
-        // dimensions
-        int textWidth = fontMetrics().width("00");
-        int textHeight = fontMetrics().height();
-        Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-        Point scaleBorder = Point(10, 10);
-        double scaleLeft = (contextWidth() - (20 + 3 * textWidth));
-
-        // blended rectangle
-        drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
-                  0.91, 0.91, 0.91);
-
-        // bars
-        glBegin(GL_QUADS);
-        for (int i = 1; i < max+1; i++)
-        {
-            glColor3f(0.0, 0.0, 0.0);
-            glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-            glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-            glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
-            glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
-
-            glColor3d(palette_order[i][0], palette_order[i][1], palette_order[i][2]);
-            glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-            glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-            glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
-            glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
-        }
-        glEnd();
-
-        // labels
-        glColor3f(0.0, 0.0, 0.0);
-        for (int i = 1; i < max+1; i++)
-        {
-            int sizeNumber = fontMetrics().width(QString::number(i));
-            renderText(scaleLeft + 10 + 1.5 * textWidth - sizeNumber,
-                       scaleBorder.y + 10 + (i-1)*(2 * textHeight) + textHeight / 2.0, 0.0,
-                       QString::number(i));
-        }
-
-        glPopMatrix();
-
-        if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
-            (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
-            glEnable(GL_DEPTH_TEST);
+        if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
+        if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
     }
+    int numBoxes = max - min + 1;
+
+    // triangles
+    const float* color;
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+    {
+        int color = vert[tris[i][0]][2];
+        glColor3d(paletteOrder[color][0], paletteOrder[color][1], paletteOrder[color][2]);
+
+        glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
+        glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
+        glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
+    }
+    glEnd();
+    m_scene->sceneSolution()->ordView().unlock_data();
+
+    // order color map
+    glPushMatrix();
+    glLoadIdentity();
+
+    glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
+    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+
+    glDisable(GL_DEPTH_TEST);
+
+    // dimensions
+    int textWidth = fontMetrics().width("00");
+    int textHeight = fontMetrics().height();
+    Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
+    Point scaleBorder = Point(10, 10);
+    double scaleLeft = (contextWidth() - (20 + 3 * textWidth));
+
+    // blended rectangle
+    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
+              0.91, 0.91, 0.91);
+
+    // bars
+    glBegin(GL_QUADS);
+    for (int i = 1; i < max+1; i++)
+    {
+        glColor3f(0.0, 0.0, 0.0);
+        glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+        glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+
+        glColor3d(paletteOrder[i][0], paletteOrder[i][1], paletteOrder[i][2]);
+        glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+        glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+        glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+    }
+    glEnd();
+
+    // labels
+    glColor3f(0.0, 0.0, 0.0);
+    for (int i = 1; i < max+1; i++)
+    {
+        int sizeNumber = fontMetrics().width(QString::number(i));
+        renderText(scaleLeft + 10 + 1.5 * textWidth - sizeNumber,
+                   scaleBorder.y + 10 + (i-1)*(2 * textHeight) + textHeight / 2.0, 0.0,
+                   QString::number(i));
+    }
+
+    glPopMatrix();
+
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
+        glEnable(GL_DEPTH_TEST);
 }
 
 void SceneView::paintColorBar(double min, double max)
@@ -907,20 +903,22 @@ void SceneView::paintColorBar(double min, double max)
 
 void SceneView::paintScalarField()
 {
+    if (!m_isSolutionPrepared) return;
+
     // range
     double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
     // special case: constant solution
     if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < EPS_ZERO)
         irange = 1.0;
 
-    Util::scene()->sceneSolution()->linScalarView().lock_data();
+    m_scene->sceneSolution()->linScalarView().lock_data();
 
-    double3* linVert = Util::scene()->sceneSolution()->linScalarView().get_vertices();
-    int3* linTris = Util::scene()->sceneSolution()->linScalarView().get_triangles();
+    double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
+    int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
     Point point[3];
     double value[3];
 
-    double max = qMax(Util::scene()->boundingBox().width(), Util::scene()->boundingBox().height());
+    double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     glEnable(GL_TEXTURE_1D);
@@ -929,7 +927,7 @@ void SceneView::paintScalarField()
     glPolygonOffset(1.0, 1.0);
 
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Util::scene()->sceneSolution()->linScalarView().get_num_triangles(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
     {
         point[0].x = linVert[linTris[i][0]][0];
         point[0].y = linVert[linTris[i][0]][1];
@@ -971,7 +969,7 @@ void SceneView::paintScalarField()
     glDisable(GL_TEXTURE_1D);
     glDisable(GL_LIGHTING);
 
-    Util::scene()->sceneSolution()->linScalarView().unlock_data();
+    m_scene->sceneSolution()->linScalarView().unlock_data();
 
     paintColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
 }
@@ -983,14 +981,14 @@ void SceneView::paintScalarField3D()
     // special case: constant solution
     if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.scalarRangeMin -= 0.5; }
 
-    Util::scene()->sceneSolution()->linScalarView().lock_data();
+    m_scene->sceneSolution()->linScalarView().lock_data();
 
-    double3* linVert = Util::scene()->sceneSolution()->linScalarView().get_vertices();
-    int3* linTris = Util::scene()->sceneSolution()->linScalarView().get_triangles();
+    double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
+    int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
     Point point[3];
     double value[3];
 
-    double max = qMax(Util::scene()->boundingBox().width(), Util::scene()->boundingBox().height());
+    double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
     if (m_sceneViewSettings.scalarView3DLighting)
     {
@@ -1011,7 +1009,7 @@ void SceneView::paintScalarField3D()
     glPolygonOffset(1.0, 1.0);
 
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Util::scene()->sceneSolution()->linScalarView().get_num_triangles(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
     {
         point[0].x = linVert[linTris[i][0]][0];
         point[0].y = linVert[linTris[i][0]][1];
@@ -1057,7 +1055,7 @@ void SceneView::paintScalarField3D()
 
     glPopMatrix();
 
-    Util::scene()->sceneSolution()->linScalarView().unlock_data();
+    m_scene->sceneSolution()->linScalarView().unlock_data();
 
     paintColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
 }
@@ -1068,17 +1066,19 @@ void SceneView::paintScalarField3DSolid()
 
 void SceneView::paintContours()
 {
-    Util::scene()->sceneSolution()->linContourView().lock_data();
+    if (!m_isSolutionPrepared) return;
 
-    double3* tvert = Util::scene()->sceneSolution()->linContourView().get_vertices();
-    int3* tris = Util::scene()->sceneSolution()->linContourView().get_triangles();
+    m_scene->sceneSolution()->linContourView().lock_data();
+
+    double3* tvert = m_scene->sceneSolution()->linContourView().get_vertices();
+    int3* tris = m_scene->sceneSolution()->linContourView().get_triangles();
 
     // transform variable
     double rangeMin =  1e100;
     double rangeMax = -1e100;
 
-    double3* vert = new double3[Util::scene()->sceneSolution()->linContourView().get_num_vertices()];
-    for (int i = 0; i < Util::scene()->sceneSolution()->linContourView().get_num_vertices(); i++)
+    double3* vert = new double3[m_scene->sceneSolution()->linContourView().get_num_vertices()];
+    for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_vertices(); i++)
     {
         vert[i][0] = tvert[i][0];
         vert[i][1] = tvert[i][1];
@@ -1096,7 +1096,7 @@ void SceneView::paintContours()
     glBegin(GL_LINES);
     glLineWidth(1.0);
 
-    for (int i = 0; i < Util::scene()->sceneSolution()->linContourView().get_num_triangles(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_triangles(); i++)
     {
         if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
         {
@@ -1107,7 +1107,7 @@ void SceneView::paintContours()
 
     delete vert;
 
-    Util::scene()->sceneSolution()->linContourView().unlock_data();
+    m_scene->sceneSolution()->linContourView().unlock_data();
 
 }
 
@@ -1160,9 +1160,11 @@ void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
 
 void SceneView::paintVectors()
 {
-    Util::scene()->sceneSolution()->vecVectorView().lock_data();
+    if (!m_isSolutionPrepared) return;
 
-    RectPoint rect = Util::scene()->boundingBox();
+    m_scene->sceneSolution()->vecVectorView().lock_data();
+
+    RectPoint rect = m_scene->boundingBox();
 
     double gs = (rect.width() + rect.height()) / 45.0;
 
@@ -1173,8 +1175,8 @@ void SceneView::paintVectors()
     // special case: constant solution
     if (fabs(m_sceneViewSettings.vectorRangeMin - m_sceneViewSettings.vectorRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.vectorRangeMin -= 0.5; }
 
-    double4* vecVert = Util::scene()->sceneSolution()->vecVectorView().get_vertices();
-    int3* vecTris = Util::scene()->sceneSolution()->vecVectorView().get_triangles();
+    double4* vecVert = m_scene->sceneSolution()->vecVectorView().get_vertices();
+    int3* vecTris = m_scene->sceneSolution()->vecVectorView().get_triangles();
 
     glColor3f(m_sceneViewSettings.colorVectors.redF(), m_sceneViewSettings.colorVectors.greenF(), m_sceneViewSettings.colorVectors.blueF());
     // glEnable(GL_TEXTURE_1D);
@@ -1188,7 +1190,7 @@ void SceneView::paintVectors()
             double x = rect.start.x + i*gs;
             double y = rect.start.y + j*gs;
 
-            int index = Util::scene()->sceneSolution()->findTriangleInVectorizer(Util::scene()->sceneSolution()->vecVectorView(), Point(x, y));
+            int index = m_scene->sceneSolution()->findTriangleInVectorizer(m_scene->sceneSolution()->vecVectorView(), Point(x, y));
             if (index != -1)
             {
                 double dx = (vecVert[vecTris[index][0]][2] + vecVert[vecTris[index][1]][2] + vecVert[vecTris[index][2]][2]) / 3.0;
@@ -1216,7 +1218,7 @@ void SceneView::paintVectors()
     }
     glEnd();
 
-    Util::scene()->sceneSolution()->vecVectorView().unlock_data();
+    m_scene->sceneSolution()->vecVectorView().unlock_data();
 }
 
 void SceneView::paintSceneModeLabel()
@@ -1293,7 +1295,7 @@ void SceneView::paintSceneModeLabel()
 void SceneView::paintZoomRegion()
 {
     // zoom or select region
-    if (region)
+    if (m_region)
     {
         Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
         Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
@@ -1307,7 +1309,7 @@ void SceneView::paintZoomRegion()
 
 void SceneView::paintSnapToGrid()
 {
-    if (snapToGrid)
+    if (m_snapToGrid)
     {
         Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
 
@@ -1342,45 +1344,45 @@ const float* SceneView::paletteColor(double x)
         {
             if (x < 0.0) x = 0.0;
             else if (x > 1.0) x = 1.0;
-            x *= num_pal_entries;
+            x *= numPalEntries;
             int n = (int) x;
-            return palette_data_jet[n];
+            return paletteDataJet[n];
         }
         break;
     case PALETTE_AUTUMN:
         {
             if (x < 0.0) x = 0.0;
             else if (x > 1.0) x = 1.0;
-            x *= num_pal_entries;
+            x *= numPalEntries;
             int n = (int) x;
-            return palette_data_autumn[n];
+            return paletteDataAutumn[n];
         }
         break;
     case PALETTE_COPPER:
         {
             if (x < 0.0) x = 0.0;
             else if (x > 1.0) x = 1.0;
-            x *= num_pal_entries;
+            x *= numPalEntries;
             int n = (int) x;
-            return palette_data_copper[n];
+            return paletteDataCopper[n];
         }
         break;
     case PALETTE_HOT:
         {
             if (x < 0.0) x = 0.0;
             else if (x > 1.0) x = 1.0;
-            x *= num_pal_entries;
+            x *= numPalEntries;
             int n = (int) x;
-            return palette_data_hot[n];
+            return paletteDataHot[n];
         }
         break;
     case PALETTE_COOL:
         {
             if (x < 0.0) x = 0.0;
             else if (x > 1.0) x = 1.0;
-            x *= num_pal_entries;
+            x *= numPalEntries;
             int n = (int) x;
-            return palette_data_cool[n];
+            return paletteDataCool[n];
         }
         break;
     case PALETTE_BW_ASC:
@@ -1416,10 +1418,7 @@ void SceneView::paletteCreate()
 
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
-#ifndef GL_CLAMP_TO_EDGE // fixme: this is needed on Windows
-#define GL_CLAMP_TO_EDGE 0x812F
-#endif
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 }
 
@@ -1490,7 +1489,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Delete:
         {
-            Util::scene()->deleteSelected();
+            m_scene->deleteSelected();
         }
         break;
     case Qt::Key_F11:
@@ -1505,7 +1504,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Escape:
         {
-            Util::scene()->selectNone();
+            m_scene->selectNone();
             emit mousePressed();
             doRefresh();
         }
@@ -1515,7 +1514,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     }
 
     // snap to grid
-    snapToGrid = ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SCENEMODE_OPERATE_ON_NODES));
+    m_snapToGrid = ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SCENEMODE_OPERATE_ON_NODES));
 
     // select all
     if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))
@@ -1525,20 +1524,20 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             // select volume integral area
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
-                Util::scene()->selectAll(SCENEMODE_OPERATE_ON_LABELS);
+                m_scene->selectAll(SCENEMODE_OPERATE_ON_LABELS);
                 emit mousePressed();
             }
 
             // select surface integral area
             if (actPostprocessorModeSurfaceIntegral->isChecked())
             {
-                Util::scene()->selectAll(SCENEMODE_OPERATE_ON_EDGES);
+                m_scene->selectAll(SCENEMODE_OPERATE_ON_EDGES);
                 emit mousePressed();
             }
         }
         else
         {
-            Util::scene()->selectAll(m_sceneMode);
+            m_scene->selectAll(m_sceneMode);
         }
 
         doRefresh();
@@ -1548,15 +1547,15 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_N))
     {
         Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-        Util::scene()->doNewNode(p);
+        m_scene->doNewNode(p);
     }
 }
 
 void SceneView::keyReleaseEvent(QKeyEvent *event)
 {
-    if (snapToGrid)
+    if (m_snapToGrid)
     {
-        snapToGrid = false;
+        m_snapToGrid = false;
         updateGL();
     }
 }
@@ -1574,7 +1573,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             m_regionPos = m_lastPos;
             actSceneZoomRegion->setChecked(false);
             actSceneZoomRegion->setData(true);
-            region = true;
+            m_region = true;
 
             return;
         }
@@ -1585,7 +1584,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             m_regionPos = m_lastPos;
             actSceneViewSelectRegion->setChecked(false);
             actSceneViewSelectRegion->setData(true);
-            region = true;
+            m_region = true;
 
             return;
         }
@@ -1599,13 +1598,13 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             // select volume integral area
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
-                int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->mesh(), p);
+                int index = m_scene->sceneSolution()->findTriangleInMesh(m_scene->sceneSolution()->mesh(), p);
                 if (index != -1)
                 {
                     //  find label marker
-                    int labelIndex = Util::scene()->sceneSolution()->mesh()->get_element_fast(index)->marker;
+                    int labelIndex = m_scene->sceneSolution()->mesh()->get_element_fast(index)->marker;
 
-                    Util::scene()->labels[labelIndex]->isSelected = !Util::scene()->labels[labelIndex]->isSelected;
+                    m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
                     updateGL();
                 }
                 emit mousePressed();
@@ -1631,8 +1630,9 @@ void SceneView::mousePressEvent(QMouseEvent *event)
         if (m_sceneMode == SCENEMODE_OPERATE_ON_NODES)
         {
             Point pointNode;
+
             // snap to grid
-            if (snapToGrid)
+            if (m_snapToGrid)
             {
                 Point snapPoint = position(Point(m_lastPos.x(), m_lastPos.y()));
 
@@ -1645,8 +1645,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             }
 
             SceneNode *node = new SceneNode(pointNode);
-            SceneNode *nodeAdded = Util::scene()->addNode(node);
-            if (nodeAdded == node) Util::scene()->undoStack()->push(new SceneNodeCommandAdd(node->point));
+            SceneNode *nodeAdded = m_scene->addNode(node);
+            if (nodeAdded == node) m_scene->undoStack()->push(new SceneNodeCommandAdd(node->point));
             updateGL();
         }
         if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
@@ -1664,9 +1664,9 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 {
                     if (node != m_nodeLast)
                     {
-                        SceneEdge *edge = new SceneEdge(m_nodeLast, node, Util::scene()->edgeMarkers[0], 0);
-                        SceneEdge *edgeAdded = Util::scene()->addEdge(edge);
-                        if (edgeAdded == edge) Util::scene()->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point, edge->nodeEnd->point, edge->marker->name, edge->angle));
+                        SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->edgeMarkers[0], 0);
+                        SceneEdge *edgeAdded = m_scene->addEdge(edge);
+                        if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point, edge->nodeEnd->point, edge->marker->name, edge->angle));
                     }
 
                     m_nodeLast->isSelected = false;
@@ -1679,9 +1679,9 @@ void SceneView::mousePressEvent(QMouseEvent *event)
         // add label directly by mouse click
         if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
         {
-            SceneLabel *label = new SceneLabel(p, Util::scene()->labelMarkers[0], 0);
-            SceneLabel *labelAdded = Util::scene()->addLabel(label);
-            if (labelAdded == label) Util::scene()->undoStack()->push(new SceneLabelCommandAdd(label->point, label->marker->name, label->area));
+            SceneLabel *label = new SceneLabel(p, m_scene->labelMarkers[0], 0);
+            SceneLabel *labelAdded = m_scene->addLabel(label);
+            if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point, label->marker->name, label->area));
             updateGL();
         }
     }
@@ -1738,7 +1738,7 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
         if (event->button() & Qt::LeftButton)
         {
             // select scene objects
-            Util::scene()->selectNone();
+            m_scene->selectNone();
             if (m_sceneMode == SCENEMODE_OPERATE_ON_NODES)
             {
                 // select the closest node
@@ -1781,7 +1781,7 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
                     }
                 }
             }
-            Util::scene()->selectNone();
+            m_scene->selectNone();
             updateGL();
         }
     }
@@ -1795,7 +1795,7 @@ void SceneView::mouseReleaseEvent(QMouseEvent *event)
     actSceneZoomRegion->setChecked(false);
     actSceneViewSelectRegion->setChecked(false);
 
-    if (region)
+    if (m_region)
     {
         Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
         Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
@@ -1809,7 +1809,7 @@ void SceneView::mouseReleaseEvent(QMouseEvent *event)
         actSceneViewSelectRegion->setData(false);
     }    
 
-    region = false;
+    m_region = false;
 
     updateGL();
 }
@@ -1826,11 +1826,18 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     setToolTip("");
 
     // zoom or select region
-    if (region)
+    if (m_region)
         updateGL();
 
     // snap to grid
-    if (snapToGrid)
+    if (m_snapToGrid && !(event->modifiers() & Qt::ControlModifier))
+    {
+        m_snapToGrid = false;
+        updateGL();
+    }
+    m_snapToGrid = ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SCENEMODE_OPERATE_ON_NODES));
+
+    if (m_snapToGrid)
         updateGL();
 
     // pan
@@ -1880,7 +1887,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             SceneNode *node = findClosestNode(p);
             if (node)
             {
-                Util::scene()->highlightNone();
+                m_scene->highlightNone();
                 node->isHighlighted = true;
                 setToolTip(tr("<h3>Node</h3>Point: [%1; %2]").
                            arg(node->point.x, 0, 'g', 3).
@@ -1894,7 +1901,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             SceneEdge *edge = findClosestEdge(p);
             if (edge)
             {
-                Util::scene()->highlightNone();
+                m_scene->highlightNone();
                 edge->isHighlighted = true;
                 setToolTip(tr("<h3>Edge</h3>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg. %7").
                            arg(edge->nodeStart->point.x, 0, 'g', 3).
@@ -1912,7 +1919,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             SceneLabel *label = findClosestLabel(p);
             if (label)
             {
-                Util::scene()->highlightNone();
+                m_scene->highlightNone();
                 label->isHighlighted = true;
                 setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle Area: %4 m<sup>2</sup> %5").
                            arg(label->point.x, 0, 'g', 3).
@@ -1934,18 +1941,20 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             SceneNode *node = findClosestNode(p);
             if (node)
             {
-                Util::scene()->highlightNone();
+                m_scene->highlightNone();
                 node->isHighlighted = true;
                 updateGL();
             }
         }
     }
 
-    if (snapToGrid)
+
+    if (m_snapToGrid)
     {
         Point snapPoint;
         snapPoint.x = round(p.x / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
         snapPoint.y = round(p.y / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+
         emit mouseMoved(QPointF(snapPoint.x, snapPoint.y));
     }
     else
@@ -1965,11 +1974,11 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
 
     // set boundary context menu
     if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
-        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
+        actSceneObjectProperties->setEnabled(m_scene->selectedCount() > 0);
 
     // set material context menu
     if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
-        actSceneObjectProperties->setEnabled(Util::scene()->selectedCount() > 0);
+        actSceneObjectProperties->setEnabled(m_scene->selectedCount() > 0);
 
 
     mnuInfo->exec(event->globalPos());
@@ -1984,30 +1993,16 @@ void SceneView::closeEvent(QCloseEvent *event)
 
 void SceneView::doInvalidated()
 {
-    if (m_normals)
-    {
-        delete m_normals;
-        m_normals = NULL;
-    }
+    resizeGL(width(), height());
 
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        setRangeContour();
-        setRangeScalar();
-        setRangeVector();
-
-        paletteFilter();
-        paletteUpdateTexAdjust();
-        paletteCreate();
-    }
-    else
+    if (!m_scene->sceneSolution()->isSolved())
     {
         if (m_sceneMode == SCENEMODE_POSTPROCESSOR)
             actSceneModeNode->trigger();
     }
 
-    actSceneModePostprocessor->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actSceneViewSelectMarker->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
+    actSceneViewSelectMarker->setEnabled(m_scene->sceneSolution()->isSolved());
     actSceneZoomRegion->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR) ||
                                    (m_sceneViewSettings.postprocessorShow != SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D));
 
@@ -2018,7 +2013,7 @@ void SceneView::doInvalidated()
 
 void SceneView::doZoomBestFit()
 {
-    RectPoint rect = Util::scene()->boundingBox();
+    RectPoint rect = m_scene->boundingBox();
     doZoomRegion(rect.start, rect.end);
 }
 
@@ -2061,8 +2056,9 @@ void SceneView::doSetChartLine(const Point &start, const Point &end)
 
 void SceneView::doDefaults()
 {
-    snapToGrid = false;
-    region = false;
+    m_snapToGrid = false;
+    m_region = false;
+    m_isSolutionPrepared = false;
 
     m_scale = 1.0;
     m_offset.x = 0.0;
@@ -2081,10 +2077,31 @@ void SceneView::doDefaults()
 
 void SceneView::doSolved()
 {
+    // m_isSolutionPrepared = false;
+    actSceneModePostprocessor->trigger();
+
+    if (m_normals)
+    {
+        delete m_normals;
+        m_normals = NULL;
+    }
+
     m_sceneViewSettings.showInitialMesh = false;
 
+    // run in separate thread
+    //QTimer::singleShot(0, this, SLOT(doProcessSolution()));
+    doProcessSolution();
+}
+
+void SceneView::doProcessSolution()
+{
+    setRangeContour();
+    setRangeScalar();
+    setRangeVector();
+
+    m_isSolutionPrepared = true;
+
     doInvalidated();
-    actSceneModePostprocessor->trigger();
 }
 
 void SceneView::doRefresh()
@@ -2096,13 +2113,13 @@ void SceneView::doRefresh()
 void SceneView::doMaterialGroup(QAction *action)
 {
     if (SceneLabelMarker *labelMarker = action->data().value<SceneLabelMarker *>())
-        Util::scene()->setLabelLabelMarker(labelMarker);
+        m_scene->setLabelLabelMarker(labelMarker);
 }
 
 void SceneView::doBoundaryGroup(QAction *action)
 {
     if (SceneEdgeMarker *edgeMarker = action->data().value<SceneEdgeMarker *>())
-        Util::scene()->setEdgeEdgeMarker(edgeMarker);
+        m_scene->setEdgeEdgeMarker(edgeMarker);
 }
 
 void SceneView::doShowGroup(QAction *action)
@@ -2116,7 +2133,7 @@ void SceneView::doShowGroup(QAction *action)
 
 void SceneView::doPostprocessorModeGroup(QAction *action)
 {
-    Util::scene()->selectNone();
+    m_scene->selectNone();
     updateGL();
 }
 
@@ -2124,10 +2141,10 @@ void SceneView::doSceneViewProperties()
 {
     SceneViewPostprocessorShow postprocessorShow = m_sceneViewSettings.postprocessorShow;
 
-    SceneViewDialog *sceneViewDialog = new SceneViewDialog(this, this);
-    if (sceneViewDialog->showDialog() == QDialog::Accepted)
+    SceneViewDialog sceneViewDialog(this, this);
+    if (sceneViewDialog.showDialog() == QDialog::Accepted)
     {
-        doInvalidated();
+        doProcessSolution();
 
         // set defaults
         if (postprocessorShow != m_sceneViewSettings.postprocessorShow)
@@ -2146,40 +2163,39 @@ void SceneView::doSceneViewProperties()
             }
         }
     }
-    delete sceneViewDialog;
 }
 
 void SceneView::doSceneObjectProperties()
 {
     if (m_sceneMode == SCENEMODE_OPERATE_ON_EDGES)
     {
-        if (Util::scene()->selectedCount() > 1)
+        if (m_scene->selectedCount() > 1)
         {
             EdgeMarkerDialog edgeMarkerDialog(this);
             edgeMarkerDialog.exec();
         }
-        if (Util::scene()->selectedCount() == 1)
+        if (m_scene->selectedCount() == 1)
         {
-            for (int i = 0; i < Util::scene()->edges.count(); i++)
+            for (int i = 0; i < m_scene->edges.count(); i++)
             {
-                if (Util::scene()->edges[i]->isSelected)
-                    Util::scene()->edges[i]->showDialog(this);
+                if (m_scene->edges[i]->isSelected)
+                    m_scene->edges[i]->showDialog(this);
             }
         }
     }
     if (m_sceneMode == SCENEMODE_OPERATE_ON_LABELS)
     {
-        if (Util::scene()->selectedCount() > 1)
+        if (m_scene->selectedCount() > 1)
         {
             LabelMarkerDialog labelMarkerDialog(this);
             labelMarkerDialog.exec();
         }
-        if (Util::scene()->selectedCount() == 1)
+        if (m_scene->selectedCount() == 1)
         {
-            for (int i = 0; i < Util::scene()->labels.count(); i++)
+            for (int i = 0; i < m_scene->labels.count(); i++)
             {
-                if (Util::scene()->labels[i]->isSelected)
-                    Util::scene()->labels[i]->showDialog(this);
+                if (m_scene->labels[i]->isSelected)
+                    m_scene->labels[i]->showDialog(this);
             }
         }
     }
@@ -2207,18 +2223,18 @@ void SceneView::doFullScreen()
 
 void SceneView::doSceneModeSet(QAction *)
 {
-    actSceneModePostprocessor->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
 
     if (actSceneModeNode->isChecked()) m_sceneMode = SCENEMODE_OPERATE_ON_NODES;
     if (actSceneModeEdge->isChecked()) m_sceneMode = SCENEMODE_OPERATE_ON_EDGES;
     if (actSceneModeLabel->isChecked()) m_sceneMode = SCENEMODE_OPERATE_ON_LABELS;
     if (actSceneModePostprocessor->isChecked()) m_sceneMode = SCENEMODE_POSTPROCESSOR;
 
-    Util::scene()->highlightNone();
-    Util::scene()->selectNone();
+    m_scene->highlightNone();
+    m_scene->selectNone();
 
-    Util::scene()->actTransform->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
-    Util::scene()->actDeleteSelected->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
+    m_scene->actTransform->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
+    m_scene->actDeleteSelected->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
     actSceneViewSelectRegion->setEnabled((m_sceneMode != SCENEMODE_POSTPROCESSOR));
 
     actPostprocessorModeLocalPointValue->setEnabled((m_sceneMode == SCENEMODE_POSTPROCESSOR));
@@ -2249,12 +2265,15 @@ void SceneView::doSelectMarker()
 
 void SceneView::setRangeContour()
 {
-    if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours)
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW ||
+         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D ||
+         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
-        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.contourPhysicFieldVariable,
-                                                                                                      PHYSICFIELDVARIABLECOMP_SCALAR);
+        ViewScalarFilter *viewScalarFilter = m_scene->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.contourPhysicFieldVariable,
+                                                                                                PHYSICFIELDVARIABLECOMP_SCALAR);
 
-        Util::scene()->sceneSolution()->setSlnContourView(viewScalarFilter);
+        m_scene->sceneSolution()->setSlnContourView(viewScalarFilter);
     }
 }
 
@@ -2265,20 +2284,20 @@ void SceneView::setRangeScalar()
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D ||
          m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
-        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.scalarPhysicFieldVariable,
-                                                                                                      m_sceneViewSettings.scalarPhysicFieldVariableComp);
+        ViewScalarFilter *viewScalarFilter = m_scene->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.scalarPhysicFieldVariable,
+                                                                                                m_sceneViewSettings.scalarPhysicFieldVariableComp);
 
-        Util::scene()->sceneSolution()->setSlnScalarView(viewScalarFilter);
+        m_scene->sceneSolution()->setSlnScalarView(viewScalarFilter);
 
         if (m_sceneViewSettings.scalarRangeAuto)
         {
-            m_sceneViewSettings.scalarRangeMin = Util::scene()->sceneSolution()->linScalarView().get_min_value();
-            m_sceneViewSettings.scalarRangeMax = Util::scene()->sceneSolution()->linScalarView().get_max_value();
+            m_sceneViewSettings.scalarRangeMin = m_scene->sceneSolution()->linScalarView().get_min_value();
+            m_sceneViewSettings.scalarRangeMax = m_scene->sceneSolution()->linScalarView().get_max_value();
         }
 
         if (m_sceneViewSettings.scalarView3DLighting)
         {
-            double max = qMax(Util::scene()->boundingBox().width(), Util::scene()->boundingBox().height());
+            double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
             // lighting
             float light_specular[] = {1.0, 1.0, 1.0, 1.0};
@@ -2308,12 +2327,12 @@ void SceneView::setRangeScalar()
 #endif
 
             // calculate normals
-            Util::scene()->sceneSolution()->linScalarView().lock_data();
+            m_scene->sceneSolution()->linScalarView().lock_data();
 
-            int nv = Util::scene()->sceneSolution()->linScalarView().get_num_vertices();
-            int nt = Util::scene()->sceneSolution()->linScalarView().get_num_triangles();
-            double3* vert = Util::scene()->sceneSolution()->linScalarView().get_vertices();
-            int3* tris = Util::scene()->sceneSolution()->linScalarView().get_triangles();
+            int nv = m_scene->sceneSolution()->linScalarView().get_num_vertices();
+            int nt = m_scene->sceneSolution()->linScalarView().get_num_triangles();
+            double3* vert = m_scene->sceneSolution()->linScalarView().get_vertices();
+            int3* tris = m_scene->sceneSolution()->linScalarView().get_triangles();
 
             m_normals = new double3[nv];
             memset(m_normals, 0, nv * sizeof(double3));
@@ -2351,27 +2370,30 @@ void SceneView::setRangeScalar()
                 m_normals[i][0] *= l; m_normals[i][1] *= l; m_normals[i][2] *= l;
             }
 
-            Util::scene()->sceneSolution()->linScalarView().unlock_data();
+            m_scene->sceneSolution()->linScalarView().unlock_data();
         }
     }
 }
 
 void SceneView::setRangeVector()
 {
-    if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showVectors)
+    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showVectors) &&
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW ||
+         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D ||
+         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
-        ViewScalarFilter *viewVectorXFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.vectorPhysicFieldVariable,
+        ViewScalarFilter *viewVectorXFilter = m_scene->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.vectorPhysicFieldVariable,
                                                                                                        PHYSICFIELDVARIABLECOMP_X);
 
-        ViewScalarFilter *viewVectorYFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.vectorPhysicFieldVariable,
+        ViewScalarFilter *viewVectorYFilter = m_scene->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.vectorPhysicFieldVariable,
                                                                                                        PHYSICFIELDVARIABLECOMP_Y);
 
-        Util::scene()->sceneSolution()->setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
+        m_scene->sceneSolution()->setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
 
         if (m_sceneViewSettings.vectorRangeAuto)
         {
-            m_sceneViewSettings.vectorRangeMin = Util::scene()->sceneSolution()->vecVectorView().get_min_value();
-            m_sceneViewSettings.vectorRangeMax = Util::scene()->sceneSolution()->vecVectorView().get_max_value();
+            m_sceneViewSettings.vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
+            m_sceneViewSettings.vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
         }
     }
 }
@@ -2388,23 +2410,23 @@ void SceneView::setZoom(double power)
 
 void SceneView::selectRegion(const Point &start, const Point &end)
 {
-    Util::scene()->selectNone();
+    m_scene->selectNone();
 
     switch (m_sceneMode)
     {
     case SCENEMODE_OPERATE_ON_NODES:
-        foreach (SceneNode *node, Util::scene()->nodes)
+        foreach (SceneNode *node, m_scene->nodes)
             if (node->point.x >= start.x && node->point.x <= end.x && node->point.y >= start.y && node->point.y <= end.y)
                 node->isSelected = true;
         break;
     case SCENEMODE_OPERATE_ON_EDGES:
-        foreach (SceneEdge *edge, Util::scene()->edges)
+        foreach (SceneEdge *edge, m_scene->edges)
             if (edge->nodeStart->point.x >= start.x && edge->nodeStart->point.x <= end.x && edge->nodeStart->point.y >= start.y && edge->nodeStart->point.y <= end.y &&
                 edge->nodeEnd->point.x >= start.x && edge->nodeEnd->point.x <= end.x && edge->nodeEnd->point.y >= start.y && edge->nodeEnd->point.y <= end.y)
                 edge->isSelected = true;
         break;
     case SCENEMODE_OPERATE_ON_LABELS:
-        foreach (SceneLabel *label, Util::scene()->labels)
+        foreach (SceneLabel *label, m_scene->labels)
             if (label->point.x >= start.x && label->point.x <= end.x && label->point.y >= start.y && label->point.y <= end.y)
                 label->isSelected = true;
         break;
@@ -2416,7 +2438,7 @@ SceneNode *SceneView::findClosestNode(const Point &point)
     SceneNode *nodeClosest = NULL;
 
     double distance = 1e100;
-    foreach (SceneNode *node, Util::scene()->nodes)
+    foreach (SceneNode *node, m_scene->nodes)
     {
         double nodeDistance = node->distance(point);
         if (node->distance(point) < distance)
@@ -2434,7 +2456,7 @@ SceneEdge *SceneView::findClosestEdge(const Point &point)
     SceneEdge *edgeClosest = NULL;
 
     double distance = 1e100;
-    foreach (SceneEdge *edge, Util::scene()->edges)
+    foreach (SceneEdge *edge, m_scene->edges)
     {
         double edgeDistance = edge->distance(point);
         if (edge->distance(point) < distance)
@@ -2452,7 +2474,7 @@ SceneLabel *SceneView::findClosestLabel(const Point &point)
     SceneLabel *labelClosest = NULL;
 
     double distance = 1e100;
-    foreach (SceneLabel *label, Util::scene()->labels)
+    foreach (SceneLabel *label, m_scene->labels)
     {
         double labelDistance = label->distance(point);
         if (label->distance(point) < distance)
@@ -2524,7 +2546,7 @@ void SceneView::renderTextPos(double x, double y, double z, const QString &str, 
 
 void SceneView::paintPostprocessorSelectedVolume()
 {
-    if (!Util::scene()->sceneSolution()->isMeshed()) return;
+    if (!m_scene->sceneSolution()->isMeshed()) return;
 
     // draw mesh
     glEnable(GL_BLEND);
@@ -2536,10 +2558,10 @@ void SceneView::paintPostprocessorSelectedVolume()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->mesh()->get_num_elements(); i++)
     {
-        Element *element = Util::scene()->sceneSolution()->mesh()->get_element(i);
-        if (Util::scene()->labels[element->marker]->isSelected)
+        Element *element = m_scene->sceneSolution()->mesh()->get_element(i);
+        if (m_scene->labels[element->marker]->isSelected)
         {
             if (element->is_triangle())
             {
@@ -2556,7 +2578,7 @@ void SceneView::paintPostprocessorSelectedVolume()
 void SceneView::paintPostprocessorSelectedSurface()
 {
     // edges
-    foreach (SceneEdge *edge, Util::scene()->edges) {
+    foreach (SceneEdge *edge, m_scene->edges) {
         glColor3d(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
         glLineWidth(3.0);
 
@@ -2586,7 +2608,7 @@ ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
 {
     QPixmap pixmap = renderPixmap(w, h);
     if (pixmap.save(fileName, "PNG"))
-         resizeGL(width(), height());
+        resizeGL(width(), height());
     else
         return ErrorResult(ERRORRESULT_CRITICAL, tr("Image cannot be saved to the file '%1'.").arg(fileName));
 
@@ -2627,7 +2649,7 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
     m_sceneViewSettings.showRulers = false;
 
     // mesh
-    if (Util::scene()->sceneSolution()->isMeshed())
+    if (m_scene->sceneSolution()->isMeshed())
     {
         // show only initial mesh
         actSceneModeLabel->trigger();
@@ -2638,7 +2660,7 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
             resultMesh1.showDialog();
         m_sceneViewSettings.showInitialMesh = false;
     }
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (m_scene->sceneSolution()->isSolved())
     {
         // when solved show both meshes
         actSceneModePostprocessor->trigger();
@@ -2655,18 +2677,18 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
         m_sceneViewSettings.showSolutionMesh = false;
     }
 
-    if (Util::scene()->sceneSolution()->isSolved())
+    if (m_scene->sceneSolution()->isSolved())
     {
         actSceneModePostprocessor->trigger();
 
         // last step
-        if (Util::scene()->problemInfo()->hermes()->hasTransient())
-            Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStepCount() - 1);
+        if (m_scene->problemInfo()->hermes()->hasTransient())
+            m_scene->sceneSolution()->setTimeStep(m_scene->sceneSolution()->timeStepCount() - 1);
 
         m_sceneViewSettings.scalarRangeAuto = true;
-        m_sceneViewSettings.scalarPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable();
-        m_sceneViewSettings.scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
-        m_sceneViewSettings.vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
+        m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->hermes()->scalarPhysicFieldVariable();
+        m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
+        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->hermes()->vectorPhysicFieldVariable();
 
         doInvalidated();
 

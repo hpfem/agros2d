@@ -331,8 +331,6 @@ void VideoDialog::doCommandFFmpeg()
                     arg(tempProblemDir() + "/video/").
                     arg(cmbCodec->itemData(cmbCodec->currentIndex()).toString()).
                     arg(outputFile);
-
-    cout << commandFFmpeg.toStdString() << endl;
 }
 
 void VideoDialog::doVideoCreated(int result)

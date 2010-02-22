@@ -28,7 +28,7 @@
 #include "sceneviewdialog.h"
 #include "scenebasic.h"
 
-#include "sceneview_data.h"
+class Scene;
 
 class SceneNode;
 class SceneEdge;
@@ -83,7 +83,7 @@ public:
     // 3d
     bool scalarView3DLighting;
 
-    // palete
+    // palette
     PaletteType paletteType;
     int paletteSteps;
     bool paletteFilter;
@@ -172,7 +172,6 @@ signals:
 protected:
     void initializeGL();
     void resizeGL(int w, int h);
-    void transform();
     void paintGL();
     void setupViewport(int w, int h);
     void renderTextPos(double x, double y, double z, const QString &str, bool blend = true);
@@ -191,6 +190,7 @@ protected:
     inline int contextHeight() { return context()->device()->height(); }
 
 private:
+    Scene *m_scene;
     QMainWindow *m_mainWindow;
 
     QPointF m_lastPos; // last position of cursor
@@ -210,8 +210,14 @@ private:
 
     double m_texScale, m_texShift;
 
-    bool snapToGrid;
-    bool region;
+    // helper for snap to grid
+    bool m_snapToGrid;
+
+    // helper for paint region
+    bool m_region;
+
+    // solution is prepared for paint (after solve)
+    bool m_isSolutionPrepared;
 
     QMenu *mnuInfo;
 
@@ -228,7 +234,7 @@ private:
     void createMenu();
 
     // palette
-    const float* paletteColor(double x);
+    const float *paletteColor(double x);
     void paletteCreate();
     void paletteFilter();
     void paletteUpdateTexAdjust();
@@ -272,6 +278,8 @@ private slots:
     void doBoundaryGroup(QAction *action);
     void doShowGroup(QAction *action);
     void doPostprocessorModeGroup(QAction *action);
+
+    void doProcessSolution();
 };
 
 #endif // SCENEVIEW_H

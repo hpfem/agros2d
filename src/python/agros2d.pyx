@@ -213,7 +213,7 @@ def showcontours(bool show):
 def showvectors(bool show):
     pythonShowVectors(int(show))
 
-def timesetstepcount(int timestep):
+def timestep(int timestep):
     pythonSetTimeStep(timestep)
 
 def timestepcount():

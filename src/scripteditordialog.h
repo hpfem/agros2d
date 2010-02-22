@@ -142,6 +142,11 @@ private:
     QAction *actFindNext;
     QAction *actReplace;
 
+    QAction *actIndentSelection;
+    QAction *actUnindentSelection;
+    QAction *actCommentSelection;
+    QAction *actUncommentSelection;
+
     QAction *actRunPython;
     QAction *actCreateFromModel;
 
@@ -156,12 +161,16 @@ private:
 
     void setRecentFiles();
 
+    inline ScriptEditorWidget *scriptEditorWidget() { return dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget()); }
+
 private slots:
     void doRunPython();
     void doCreatePythonFromModel();
     void doFileItemDoubleClick(const QString &path);
     void doCurrentPageChanged(int index);
     void doPathChangeDir();
+    void doCurrentDocumentChanged(bool changed);
+
 };
 
 class ScriptEditor : public QPlainTextEdit
@@ -177,14 +186,26 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void doUpdateLineNumberAreaWidth(int newBlockCount);
-    void doHighlightCurrentLine();
-    void doUpdateLineNumberArea(const QRect &, int);
+    void updateLineNumberAreaWidth(int newBlockCount);
+    void highlightCurrentLine();
+    void updateLineNumberArea(const QRect &, int);
+
+    void indentSelection();
+    void unindentSelection();
+    void commentSelection();
+    void uncommentSelection();
+
+    void matchParentheses(char left, char right);
 
 private:
-    QWidget *lineNumberArea;
+    QWidget *lineNumberArea;    
+
+    bool matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int index, int numRightParentheses);
+    bool matchRightParenthesis(char left, char right, QTextBlock currentBlock, int index, int numLeftParentheses);
+    void createParenthesisSelection(int pos);
 };
 
 class ScriptEditorLineNumberArea : public QWidget

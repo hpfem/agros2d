@@ -20,9 +20,10 @@
 #ifndef SCENEVIEW_DATA_H
 #define SCENEVIEW_DATA_H
 
-const int num_pal_entries = 256;
+const int numPalEntries = 256;
 
-const float palette_order[11][3] =
+/*
+const float paletteOrder[11][3] =
 {
     { 0.000000, 0.000000, 1.000000 },
     { 0.000000, 0.250000, 1.000000 },
@@ -36,9 +37,23 @@ const float palette_order[11][3] =
     { 1.000000, 0.750000, 0.000000 },
     { 1.000000, 0.500000, 0.000000 }
 };
+*/
+const float paletteOrder[11][3] =
+{
+    { 0.498039, 0.498039, 0.498039  },
+    { 0.498039, 0.164706, 1.000000 },
+    { 0.164706, 0.164706, 1.000000 },
+    { 0.164706, 0.498039, 1.000000 },
+    { 0.000000, 0.831373, 0.666667 },
+    { 0.000000, 0.666667, 0.266667 },
+    { 0.670588, 0.784314, 0.215686 },
+    { 1.000000, 0.831373, 0.164706 },
+    { 0.784314, 0.443137, 0.215686 },
+    { 0.784314, 0.215686, 0.215686 },
+    { 1.000000, 0.000000, 0.000000 }
+};
 
-
-const float palette_data_hot[num_pal_entries+1][3] =
+const float paletteDataHot[numPalEntries+1][3] =
 {
     { 0.010417, 0.000000, 0.000000 },
     { 0.020833, 0.000000, 0.000000 },
@@ -298,7 +313,7 @@ const float palette_data_hot[num_pal_entries+1][3] =
     { 1.000000, 1.000000, 1.000000 }
 };
 
-const float palette_data_autumn[num_pal_entries+1][3] =
+const float paletteDataAutumn[numPalEntries+1][3] =
 {
     { 1.000000, 0.000000, 0.000000 },
     { 1.000000, 0.003922, 0.000000 },
@@ -558,7 +573,7 @@ const float palette_data_autumn[num_pal_entries+1][3] =
     { 1.000000, 1.000000, 0.000000 }
 };
 
-const float palette_data_jet[num_pal_entries+1][3] =
+const float paletteDataJet[numPalEntries+1][3] =
 {
     { 0.000000, 0.000000, 0.515625 },
     { 0.000000, 0.000000, 0.531250 },
@@ -818,7 +833,7 @@ const float palette_data_jet[num_pal_entries+1][3] =
     { 0.500000, 0.000000, 0.000000 }
 };
 
-const float palette_data_copper[num_pal_entries+1][3] =
+const float paletteDataCopper[numPalEntries+1][3] =
 {
     { 0.000000, 0.000000, 0.000000 },
     { 0.004902, 0.003064, 0.001951 },
@@ -1078,7 +1093,7 @@ const float palette_data_copper[num_pal_entries+1][3] =
     { 1.000000, 0.781200, 0.497500 }
 };
 
-const float palette_data_cool[num_pal_entries+1][3] =
+const float paletteDataCool[numPalEntries+1][3] =
 {
     { 0.000000, 1.000000, 1.000000 },
     { 0.003922, 0.996078, 1.000000 },

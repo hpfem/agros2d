@@ -67,7 +67,7 @@ void TerminalLineEdit::doClear()
 Terminal::Terminal(QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(tr("Command dialog"));
-    setWindowIcon(icon("system-run"));
+    setWindowIcon(icon("run"));
 
     txtCommand = new TerminalLineEdit(this);
     txtCommand->setCompleter(Util::completer());

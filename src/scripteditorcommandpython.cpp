@@ -470,6 +470,7 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
     {
         sceneView->actSceneModeLabel->trigger();
         Util::scene()->selectNone();
+
         for (int i = 0; i < count; i++)
         {
             if (index[i] == INT_MIN)
@@ -538,10 +539,12 @@ void pythonMesh()
 // solve()
 void pythonSolve()
 {
-    Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
-    Util::scene()->refresh();
-    sceneView->actSceneModePostprocessor->trigger();
-    sceneView->doInvalidated();
+    Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);    
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        sceneView->actSceneModePostprocessor->trigger();
+        Util::scene()->refresh();
+    }
 }
 
 // zoombestfit()
@@ -648,9 +651,10 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
         // set mode
         sceneView->actSceneModePostprocessor->trigger();
         sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+        Util::scene()->selectNone();
 
         python_int_array()
-        {
+        {            
             for (int i = 0; i < count; i++)
             {
                 if (index[i] == INT_MIN)
@@ -695,6 +699,7 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
         // set mode
         sceneView->actSceneModePostprocessor->trigger();
         sceneView->actPostprocessorModeVolumeIntegral->trigger();
+        Util::scene()->selectNone();
 
         python_int_array()
         {
@@ -825,7 +830,7 @@ void pythonSetTimeStep(int timestep)
     else
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
-    if (Util::scene()->problemInfo()->analysisType != ANALYSISTYPE_STEADYSTATE)
+    if (Util::scene()->problemInfo()->analysisType != ANALYSISTYPE_TRANSIENT)
         throw invalid_argument(QObject::tr("Solved problem is not transient.").toStdString());
 
     if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))
@@ -951,15 +956,30 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
 
     runPythonHeader();
 
-    // compile
-    PyObject *code = Py_CompileString(script.toStdString().c_str(), "", Py_file_input);
-    // run
     PyObject *output = NULL;
-    if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
-    
+    if (QFile::exists(fileName))
+    {
+        // compile
+        PyObject *code = Py_CompileString(QString("import os\nos.chdir(\"" + QFileInfo(fileName).absolutePath() + "\")").toStdString().c_str(),
+                                          "", Py_file_input);
+        // run
+        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+
+        FILE* file = fopen(fileName.toStdString().c_str(), "r");
+        output = PyRun_File(file, fileName.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    }
+    else
+    {
+        // compile
+        PyObject *code = Py_CompileString(script.toStdString().c_str(), "", Py_file_input);
+        // run
+        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+    }
+
     ScriptResult scriptResult;
     if (output)
     {
+        /*
         if (output == Py_None)
         {
             cout << "none" << endl;
@@ -988,7 +1008,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
         {
             cout << "bool" << endl;
         }
-
+        */
         scriptResult.isError = false;
         scriptResult.text = m_stdOut;
     }

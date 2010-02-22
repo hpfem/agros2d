@@ -243,7 +243,7 @@ public:
     inline ProblemInfo *problemInfo() { return m_problemInfo; }
     inline void setProblemInfo(ProblemInfo *problemInfo) { m_problemInfo = problemInfo; }
     
-    inline void refresh() { emit invalidated(); }
+    inline void refresh() { doSolved(); }
     void createMeshAndSolve(SolverMode solverMode);
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
     

@@ -123,7 +123,6 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
     trvWidget->setColumnCount(3);
     trvWidget->setColumnWidth(0, settings.value("VolumeIntegralValueView/TreeViewColumn0", 150).value<int>());
     trvWidget->setColumnWidth(1, settings.value("VolumeIntegralValueView/TreeViewColumn1", 80).value<int>());
-    trvWidget->setColumnWidth(2, settings.value("VolumeIntegralValueView/TreeViewColumn2", 20).value<int>());
     trvWidget->setIndentation(12);
 
     QStringList labels;
@@ -138,7 +137,6 @@ VolumeIntegralValueView::~VolumeIntegralValueView()
     QSettings settings;
     settings.setValue("VolumeIntegralValueView/TreeViewColumn0", trvWidget->columnWidth(0));
     settings.setValue("VolumeIntegralValueView/TreeViewColumn1", trvWidget->columnWidth(1));
-    settings.setValue("VolumeIntegralValueView/TreeViewColumn2", trvWidget->columnWidth(2));
 }
 
 void VolumeIntegralValueView::doShowVolumeIntegral()
@@ -161,4 +159,6 @@ void VolumeIntegralValueView::doShowVolumeIntegral()
         Util::scene()->problemInfo()->hermes()->showVolumeIntegralValue(trvWidget, volumeIntegralValue);
 
     delete volumeIntegralValue;
+
+    trvWidget->resizeColumnToContents(2);
 }

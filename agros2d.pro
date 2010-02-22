@@ -7,7 +7,6 @@ SUBDIRS = src-remote
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
-
 # run cython for python extensions
 linux-g++:CONFIG(release) system(cython src/python/agros2d.pyx)
 
@@ -19,7 +18,6 @@ DEFINES += VERSION_GIT=304
 DEFINES += VERSION_YEAR=2010
 DEFINES += VERSION_MONTH=02
 DEFINES += VERSION_DAY=07
-
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
@@ -32,7 +30,6 @@ QMAKE_CXXFLAGS_DEBUG += -w
 QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
-
 SUBDIRS += src
 SOURCES += src/util.cpp \
     src/scene.cpp \
@@ -108,11 +105,9 @@ HEADERS += src/util.h \
     src/scenemarkerselectdialog.h
 INCLUDEPATH += src \
     src/dxflib
-
 OTHER_FILES += src/python/agros2d.pyx \
     functions.py
-
-linux-g++ {
+linux-g++ { 
     # use qmake PREFIX=... to customize your installation
     isEmpty(PREFIX):PREFIX = /usr/local
     
@@ -165,13 +160,13 @@ linux-g++ {
         pixmap \
         report \
         desktop
-
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/qwt-qt4
+    INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += /usr/include/hermes2d
-
+    INCLUDEPATH += ../hermes2d/src
+    LIBS += -L../hermes2d/src
     LIBS += -lhermes2d-real
     LIBS += -lumfpack
     LIBS += -lamd
@@ -182,12 +177,10 @@ linux-g++ {
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
     LIBS += -lqwt-qt4
 }
-
-win32-g++ {
+win32-g++ { 
     INCLUDEPATH += c:/qt/mingw/include
     INCLUDEPATH += c:/qt/mingw/include/hermes2d
     INCLUDEPATH += c:/Python26/include
-
     LIBS += -lhermes2d-real
     LIBS += -lumfpack
     LIBS += -lamd
@@ -197,20 +190,17 @@ win32-g++ {
     LIBS += -lqwt
     LIBS += -lpython26
 }
-
-macx-g++ {
+macx-g++ { 
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.6
     INCLUDEPATH += ../qwt-5.2.0/src
     INCLUDEPATH += ../hermes2d/src
-
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
     LIBS += -L/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/config
     LIBS += -L../hermes2d/src
     LIBS += -L../qwt-5.2.0/lib
-
     LIBS += -lpthread
     LIBS += -lhermes2d-real
     LIBS += -lpython2.6

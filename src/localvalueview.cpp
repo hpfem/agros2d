@@ -42,8 +42,13 @@ PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
         int index = Util::scene()->sceneSolution()->findTriangleInMesh(Util::scene()->sceneSolution()->mesh(), point);
         if (index != -1)
         {
+            if ((Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) &&
+                Util::scene()->sceneSolution()->timeStep() == 0)
+                // const solution at first time step
+                tmpValue = Util::scene()->problemInfo()->initialCondition.number;
+            else                
+                tmpValue = sln->get_pt_value(point.x, point.y, FN_VAL_0);
 
-            tmpValue = sln->get_pt_value(point.x, point.y, FN_VAL_0);
             if (Util::scene()->problemInfo()->physicField() != PHYSICFIELD_ELASTICITY)
             {
                 tmpDerivative.x =  sln->get_pt_value(point.x, point.y, FN_DX_0);
@@ -78,7 +83,6 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     trvWidget->setColumnCount(3);
     trvWidget->setColumnWidth(0, settings.value("LocalPointValueView/TreeViewColumn0", 180).value<int>());
     trvWidget->setColumnWidth(1, settings.value("LocalPointValueView/TreeViewColumn1", 80).value<int>());
-    trvWidget->setColumnWidth(2, settings.value("LocalPointValueView/TreeViewColumn2", 20).value<int>());
     trvWidget->setIndentation(12);
 
     QStringList labels;
@@ -110,7 +114,6 @@ LocalPointValueView::~LocalPointValueView()
     QSettings settings;
     settings.setValue("LocalPointValueView/TreeViewColumn0", trvWidget->columnWidth(0));
     settings.setValue("LocalPointValueView/TreeViewColumn1", trvWidget->columnWidth(1));
-    settings.setValue("LocalPointValueView/TreeViewColumn2", trvWidget->columnWidth(2));
 }
 
 void LocalPointValueView::createActions()
@@ -164,6 +167,8 @@ void LocalPointValueView::doShowPoint()
 
     if (Util::scene()->sceneSolution()->isSolved())
         Util::scene()->problemInfo()->hermes()->showLocalValue(trvWidget, Util::scene()->problemInfo()->hermes()->localPointValue(point));
+
+    trvWidget->resizeColumnToContents(2);
 }
 
 LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)

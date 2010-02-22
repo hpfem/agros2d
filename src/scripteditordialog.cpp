@@ -143,7 +143,7 @@ ScriptEngineRemote::ScriptEngineRemote()
     QLocalServer::removeServer("agros2d-server");
     if (!m_server->listen("agros2d-server"))
     {
-        cout << tr("Error: Unable to start the server (agros2d-server): %1.").arg(m_server->errorString()).toStdString() << endl;
+        qWarning() << tr("Error: Unable to start the server (agros2d-server): %1.").arg(m_server->errorString());
         return;
     }
 
@@ -204,13 +204,13 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
 {
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
-        cout << tr("Server error: The host was not found.").toStdString() << endl;
+        qWarning() << tr("Server error: The host was not found.");
         break;
     case QLocalSocket::ConnectionRefusedError:
-        cout << tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.").toStdString() << endl;
+        qWarning() << tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.");
         break;
     default:
-        cout << tr("Server error: The following error occurred: %1.").arg(m_client_socket->errorString()).toStdString() << endl;
+        qWarning() << tr("Server error: The following error occurred: %1.").arg(m_client_socket->errorString());
     }
 }
 
@@ -341,7 +341,19 @@ void ScriptEditorDialog::createActions()
     actReplace->setShortcut(QKeySequence::Replace);
     connect(actReplace, SIGNAL(triggered()), this, SLOT(doReplace()));
 
-    actRunPython = new QAction(icon("system-run"), tr("&Run Python script"), this);
+    actReplace = new QAction(icon("edit-find-replace"), tr("Replace"), this);
+    actReplace->setShortcut(QKeySequence::Replace);
+    connect(actReplace, SIGNAL(triggered()), this, SLOT(doReplace()));
+
+    actIndentSelection = new QAction(icon(""), tr("Indent"), this);
+    actUnindentSelection = new QAction(icon(""), tr("Unindent"), this);
+
+    actCommentSelection = new QAction(icon(""), tr("Comment"), this);
+    // actCommentSelection->setShortcut(tr("Ctrl+"));
+    actUncommentSelection = new QAction(icon(""), tr("Uncomment"), this);
+    actUncommentSelection->setShortcut(tr("Ctrl+U"));
+
+    actRunPython = new QAction(icon("run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
     actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
@@ -385,6 +397,12 @@ void ScriptEditorDialog::createControls()
     mnuEdit->addAction(actFind);
     mnuEdit->addAction(actFindNext);
     mnuEdit->addAction(actReplace);
+    mnuEdit->addSeparator();
+    mnuEdit->addAction(actIndentSelection);
+    mnuEdit->addAction(actUnindentSelection);
+    mnuEdit->addSeparator();
+    mnuEdit->addAction(actCommentSelection);
+    mnuEdit->addAction(actUncommentSelection);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
@@ -502,20 +520,17 @@ void ScriptEditorDialog::createStatusBar()
 
 void ScriptEditorDialog::doRunPython()
 {
-    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-
-    if (!scriptEditorWidget->file.isEmpty())
-        filBrowser->setDir(QFileInfo(scriptEditorWidget->file).absolutePath());
+    if (!scriptEditorWidget()->file.isEmpty())
+        filBrowser->setDir(QFileInfo(scriptEditorWidget()->file).absolutePath());
 
     // disable controls
     terminalView->terminal()->setEnabled(false);
     // actRunPython->setEnabled(false);
-    scriptEditorWidget->setCursor(Qt::BusyCursor);
+    scriptEditorWidget()->setCursor(Qt::BusyCursor);
     QApplication::processEvents();
 
     // run script
-    terminalView->terminal()->doPrintStdout("Run script: " + tabWidget->tabText(tabWidget->currentIndex()) + "\n", Qt::gray);
-
+    terminalView->terminal()->doPrintStdout("Run script: " + tabWidget->tabText(tabWidget->currentIndex()).replace("* ", "") + "\n", Qt::gray);
     connect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
 
     // benchmark
@@ -524,9 +539,22 @@ void ScriptEditorDialog::doRunPython()
 
     ScriptResult result;
     if (txtEditor->textCursor().hasSelection())
-        result = runPythonScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), scriptEditorWidget->file);
+    {
+        result = runPythonScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), "");
+    }
+    else if (scriptEditorWidget()->file.isEmpty())
+    {
+        result = runPythonScript(txtEditor->toPlainText());
+    }
     else
-        result = runPythonScript(txtEditor->toPlainText(), scriptEditorWidget->file);
+    {
+        if (!scriptEditorWidget()->file.isEmpty() &&
+            QFile::exists(scriptEditorWidget()->file))
+            doFileSave();
+
+        result = runPythonScript(txtEditor->toPlainText(),
+                                 QFileInfo(scriptEditorWidget()->file).absoluteFilePath());  
+    }
 
     if (result.isError)
         terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
@@ -537,15 +565,13 @@ void ScriptEditorDialog::doRunPython()
 
     // enable controls
     terminalView->terminal()->setEnabled(true);
-    scriptEditorWidget->setCursor(Qt::ArrowCursor);
+    scriptEditorWidget()->setCursor(Qt::ArrowCursor);
     // actRunPython->setEnabled(true);
 }
 
 void ScriptEditorDialog::doCreatePythonFromModel()
 {
-    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-
-    scriptEditorWidget->txtEditor->setPlainText(createPythonFromModel());
+    txtEditor->setPlainText(createPythonFromModel());
 }
 
 void ScriptEditorDialog::doFileItemDoubleClick(const QString &path)
@@ -581,8 +607,6 @@ void ScriptEditorDialog::doFileNew()
 
 void ScriptEditorDialog::doFileOpen(const QString &file)
 {
-    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-
     // open dialog
     QString fileName = file;
     if (fileName.isEmpty())
@@ -590,10 +614,12 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
 
     // read text
     if (!fileName.isEmpty()) {
+        ScriptEditorWidget *scriptEditor = scriptEditorWidget();
+
         for (int i = 0; i < tabWidget->count(); i++)
         {
-            ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->widget(i));
-            if (scriptEditorWidget->file == fileName)
+            ScriptEditorWidget *scriptEditorWidgetTmp = dynamic_cast<ScriptEditorWidget *>(tabWidget->widget(i));
+            if (scriptEditorWidgetTmp->file == fileName)
             {
                 tabWidget->setCurrentIndex(i);
                 QMessageBox::information(this, tr("Information"), tr("Script is already opened."));
@@ -602,19 +628,19 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
         }
 
         // check empty document
-        if (!scriptEditorWidget->txtEditor->toPlainText().isEmpty())
+        if (!scriptEditor->txtEditor->toPlainText().isEmpty())
         {
             doFileNew();
             // new widget
-            scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
+            scriptEditor = scriptEditorWidget();
         }
 
-        scriptEditorWidget->file = fileName;
-        txtEditor->setPlainText(readFileContent(scriptEditorWidget->file));
+        scriptEditor->file = fileName;
+        txtEditor->setPlainText(readFileContent(scriptEditor->file));
 
         setRecentFiles();
 
-        QFileInfo fileInfo(scriptEditorWidget->file);
+        QFileInfo fileInfo(scriptEditor->file);
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
 
         doCurrentPageChanged(tabWidget->currentIndex());
@@ -633,19 +659,17 @@ void ScriptEditorDialog::doFileOpenRecent(QAction *action)
 
 void ScriptEditorDialog::doFileSave()
 {
-    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-
     // save dialog
-    if (scriptEditorWidget->file.isEmpty())
-        scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
+    if (scriptEditorWidget()->file.isEmpty())
+        scriptEditorWidget()->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
 
     // write text
-    if (!scriptEditorWidget->file.isEmpty())
+    if (!scriptEditorWidget()->file.isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget->file);
-        if (fileInfo.suffix() != "py") scriptEditorWidget->file += ".py";
+        QFileInfo fileInfo(scriptEditorWidget()->file);
+        if (fileInfo.suffix() != "py") scriptEditorWidget()->file += ".py";
 
-        QFile fileName(dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget())->file);
+        QFile fileName(scriptEditorWidget()->file);
         if (fileName.open(QFile::WriteOnly | QFile::Text))
         {
             QTextStream out(&fileName);
@@ -656,15 +680,18 @@ void ScriptEditorDialog::doFileSave()
         setRecentFiles();
 
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
+        txtEditor->document()->setModified(false);
     }
 }
 
 void ScriptEditorDialog::doFileSaveAs()
 {
-    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-
-    scriptEditorWidget->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
-    doFileSave();
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
+    if (!fileName.isEmpty())
+    {
+        scriptEditorWidget()->file = fileName;
+        doFileSave();
+    }
 }
 
 void ScriptEditorDialog::doFileClose()
@@ -749,6 +776,17 @@ void ScriptEditorDialog::doHelp()
 
 void ScriptEditorDialog::doCloseTab(int index)
 {
+    if (txtEditor->document()->isModified())
+    {
+        QMessageBox::StandardButton ret;
+        ret = QMessageBox::warning(this, tr("Application"), tr("The document has been modified.\nDo you want to save your changes?"),
+                                   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save)
+            doFileSave();
+        else if (ret == QMessageBox::Cancel)
+            return;
+    }
+
     if (tabWidget->count() == 1)
     {
         doFileNew();
@@ -758,8 +796,7 @@ void ScriptEditorDialog::doCloseTab(int index)
 
 void ScriptEditorDialog::doCurrentPageChanged(int index)
 {
-    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-    txtEditor = scriptEditorWidget->txtEditor;
+    txtEditor = scriptEditorWidget()->txtEditor;
 
     actCut->disconnect();
     connect(actCut, SIGNAL(triggered()), txtEditor, SLOT(cut()));
@@ -772,6 +809,15 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     actRedo->disconnect();
     connect(actRedo, SIGNAL(triggered()), txtEditor, SLOT(redo()));
 
+    actIndentSelection->disconnect();
+    connect(actIndentSelection, SIGNAL(triggered()), txtEditor, SLOT(indentSelection()));
+    actUnindentSelection->disconnect();
+    connect(actUnindentSelection, SIGNAL(triggered()), txtEditor, SLOT(unindentSelection()));
+    actCommentSelection->disconnect();
+    connect(actCommentSelection, SIGNAL(triggered()), txtEditor, SLOT(commentSelection()));
+    actUncommentSelection->disconnect();
+    connect(actUncommentSelection, SIGNAL(triggered()), txtEditor, SLOT(uncommentSelection()));
+
     txtEditor->document()->disconnect(actUndo);
     txtEditor->document()->disconnect(actRedo);
     connect(txtEditor->document(), SIGNAL(undoAvailable(bool)), actUndo, SLOT(setEnabled(bool)));
@@ -781,6 +827,8 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     connect(txtEditor, SIGNAL(copyAvailable(bool)), actCut, SLOT(setEnabled(bool)));
     connect(txtEditor, SIGNAL(copyAvailable(bool)), actCopy, SLOT(setEnabled(bool)));
 
+    connect(txtEditor->document(), SIGNAL(modificationChanged(bool)), this, SLOT(doCurrentDocumentChanged(bool)));
+
     actUndo->setEnabled(txtEditor->document()->isUndoAvailable());
     actRedo->setEnabled(txtEditor->document()->isRedoAvailable());
 
@@ -789,27 +837,40 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
 
     QString fileName = tr("Untitled");
-    if (!scriptEditorWidget->file.isEmpty())
+    if (!scriptEditorWidget()->file.isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget->file);
+        QFileInfo fileInfo(scriptEditorWidget()->file);
         fileName = fileInfo.completeBaseName();
-        // filBrowser->setDir(fileInfo.absolutePath());
     }
     setWindowTitle(tr("Script editor - %1").arg(fileName));    
 
     txtEditor->setFocus();
 }
 
+void ScriptEditorDialog::doCurrentDocumentChanged(bool changed)
+{
+    // modified
+    QString fileName = tr("Untitled");
+    if (!scriptEditorWidget()->file.isEmpty())
+    {
+        QFileInfo fileInfo(scriptEditorWidget()->file);
+        fileName = fileInfo.completeBaseName();
+    }
+
+    if (changed)
+        tabWidget->setTabText(tabWidget->currentIndex(), QString("* %1").arg(fileName));
+    else
+        tabWidget->setTabText(tabWidget->currentIndex(), fileName);
+}
+
 void ScriptEditorDialog::setRecentFiles()
 {
     if (!tabWidget) return;
 
-    ScriptEditorWidget *scriptEditorWidget = dynamic_cast<ScriptEditorWidget *>(tabWidget->currentWidget());
-
-    // recent files
-    if (!scriptEditorWidget->file.isEmpty())
+     // recent files
+    if (!scriptEditorWidget()->file.isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget->file);
+        QFileInfo fileInfo(scriptEditorWidget()->file);
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
@@ -836,18 +897,19 @@ ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
 #ifndef Q_WS_MAC
     setFont(QFont("Monospace", 10));
 #endif
-    setTabStopWidth(40);
+    setTabStopWidth(fontMetrics().width(" ") * 4);
     setLineWrapMode(QPlainTextEdit::NoWrap);
+    setTabChangesFocus(false);
 
     // highlighter
     new QScriptSyntaxHighlighter(document());
 
-    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(doUpdateLineNumberAreaWidth(int)));
-    connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(doUpdateLineNumberArea(const QRect &, int)));
-    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(doHighlightCurrentLine()));
+    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
+    connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(updateLineNumberArea(const QRect &, int)));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
-    doUpdateLineNumberAreaWidth(0);
-    doHighlightCurrentLine();
+    updateLineNumberAreaWidth(0);
+    highlightCurrentLine();
 }
 
 ScriptEditor::~ScriptEditor()
@@ -877,12 +939,35 @@ void ScriptEditor::resizeEvent(QResizeEvent *e)
     lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
-void ScriptEditor::doUpdateLineNumberAreaWidth(int /* newBlockCount */)
+void ScriptEditor::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Tab)
+    {
+        if (textCursor().hasSelection())
+        {
+            indentSelection();
+            return;
+        }
+    }
+
+    if (event->key() == Qt::Key_Backtab)
+    {
+        if (textCursor().hasSelection())
+        {
+            unindentSelection();
+            return;
+        }
+    }
+
+    QPlainTextEdit::keyPressEvent(event);
+}
+
+void ScriptEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 
-void ScriptEditor::doUpdateLineNumberArea(const QRect &rect, int dy)
+void ScriptEditor::updateLineNumberArea(const QRect &rect, int dy)
 {
     if (dy)
         lineNumberArea->scroll(0, dy);
@@ -890,26 +975,122 @@ void ScriptEditor::doUpdateLineNumberArea(const QRect &rect, int dy)
         lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
 
     if (rect.contains(viewport()->rect()))
-        doUpdateLineNumberAreaWidth(0);
+        updateLineNumberAreaWidth(0);
 }
 
-void ScriptEditor::doHighlightCurrentLine()
+void ScriptEditor::indentSelection()
 {
-    QList<QTextEdit::ExtraSelection> extraSelections;
+    QTextCursor cursor = textCursor();
+    if (cursor.hasSelection())
+    {
+        bool go = true;
+        int start = cursor.selectionStart();
+        int end = cursor.selectionEnd();
 
-    if (!isReadOnly()) {
+        cursor.setPosition(start, QTextCursor::MoveAnchor);
+        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+
+        while (cursor.position() < end && go)
+        {
+            cursor.insertText("\t");
+            end++;
+            go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
+        }
+    }
+}
+
+void ScriptEditor::unindentSelection()
+{
+    QTextCursor cursor = textCursor();
+    if (cursor.hasSelection())
+    {
+        bool go = true;
+        int start = cursor.selectionStart();
+        int end = cursor.selectionEnd();
+
+        cursor.setPosition(start, QTextCursor::MoveAnchor);
+        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+
+        while (cursor.position() < end && go)
+        {
+            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+            if (cursor.selectedText() == "\t")
+            {
+                cursor.removeSelectedText();
+                end--;
+            }
+            go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
+        }
+    }
+}
+
+void ScriptEditor::commentSelection()
+{
+    QTextCursor cursor = textCursor();
+    if (cursor.hasSelection())
+    {
+        bool go = true;
+        int start = cursor.selectionStart();
+        int end = cursor.selectionEnd();
+
+        cursor.setPosition(start, QTextCursor::MoveAnchor);
+        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+
+        while (cursor.position() < end && go)
+        {
+            cursor.insertText("#");
+            end++;
+            go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
+        }
+    }
+}
+
+void ScriptEditor::uncommentSelection()
+{
+    QTextCursor cursor = textCursor();
+    if (cursor.hasSelection())
+    {
+        bool go = true;
+        int start = cursor.selectionStart();
+        int end = cursor.selectionEnd();
+
+        cursor.setPosition(start, QTextCursor::MoveAnchor);
+        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+
+        while (cursor.position() < end && go)
+        {
+            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+            if (cursor.selectedText() == "#")
+            {
+                cursor.removeSelectedText();
+                end--;
+            }
+            go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
+        }
+    }
+}
+
+void ScriptEditor::highlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> selections;
+
+    if (!isReadOnly())
+    {
         QTextEdit::ExtraSelection selection;
-
         QColor lineColor = QColor(Qt::yellow).lighter(180);
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = textCursor();
         selection.cursor.clearSelection();
-        extraSelections.append(selection);
+        selections.append(selection);
     }
 
-    setExtraSelections(extraSelections);
+    setExtraSelections(selections);
+
+    matchParentheses('(', ')');
+    // matchParentheses('[', ']');
+    // matchParentheses('{', '}');
 }
 
 void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
@@ -922,8 +1103,10 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
     int bottom = top + (int) blockBoundingRect(block).height();
 
-    while (block.isValid() && top <= event->rect().bottom()) {
-        if (block.isVisible() && bottom >= event->rect().top()) {
+    while (block.isValid() && top <= event->rect().bottom())
+    {
+        if (block.isVisible() && bottom >= event->rect().top())
+        {
             QString number = QString::number(blockNumber + 1);
             painter.setPen(Qt::black);
             painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
@@ -935,6 +1118,120 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
         bottom = top + (int) blockBoundingRect(block).height();
         ++blockNumber;
     }
+}
+
+void ScriptEditor::matchParentheses(char left, char right)
+{
+    TextBlockData *data = static_cast<TextBlockData *>(textCursor().block().userData());
+
+    if (data)
+    {
+        QVector<ParenthesisInfo *> infos = data->parentheses();
+
+        int pos = textCursor().block().position();
+        for (int i = 0; i < infos.size(); ++i)
+        {
+            ParenthesisInfo *info = infos.at(i);
+
+            int curPos = textCursor().position() - textCursor().block().position();
+            if (info->position == curPos - 1 && info->character == left)
+            {
+                if (matchLeftParenthesis(left, right, textCursor().block(), i + 1, 0))
+                    createParenthesisSelection(pos + info->position);
+            }
+            else if (info->position == curPos - 1 && info->character == right)
+            {
+                if (matchRightParenthesis(left, right, textCursor().block(), i - 1, 0))
+                    createParenthesisSelection(pos + info->position);
+            }
+        }
+    }
+}
+
+bool ScriptEditor::matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int i, int numLeftParentheses)
+{
+    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
+    QVector<ParenthesisInfo *> infos = data->parentheses();
+
+    int docPos = currentBlock.position();
+    for (; i < infos.size(); ++i)
+    {
+        ParenthesisInfo *info = infos.at(i);
+
+        if (info->character == left)
+        {
+            ++numLeftParentheses;
+            continue;
+        }
+
+        if (info->character == right && numLeftParentheses == 0)
+        {
+            createParenthesisSelection(docPos + info->position);
+            return true;
+        }
+        else
+        {
+            --numLeftParentheses;
+        }
+    }
+
+    currentBlock = currentBlock.next();
+    if (currentBlock.isValid())
+        return matchLeftParenthesis(left, right, currentBlock, 0, numLeftParentheses);
+
+    return false;
+}
+
+bool ScriptEditor::matchRightParenthesis(char left, char right, QTextBlock currentBlock, int i, int numRightParentheses)
+{
+    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
+    QVector<ParenthesisInfo *> parentheses = data->parentheses();
+
+    int docPos = currentBlock.position();
+    for (; i > -1 && parentheses.size() > 0; --i)
+    {
+        ParenthesisInfo *info = parentheses.at(i);
+        if (info->character == right)
+        {
+            ++numRightParentheses;
+            continue;
+        }
+        if (info->character == left && numRightParentheses == 0)
+        {
+            createParenthesisSelection(docPos + info->position);
+            return true;
+        }
+        else
+        {
+            --numRightParentheses;
+        }
+    }
+
+    currentBlock = currentBlock.previous();
+    if (currentBlock.isValid())
+        return matchRightParenthesis(left, right, currentBlock, 0, numRightParentheses);
+
+    return false;
+}
+
+void ScriptEditor::createParenthesisSelection(int pos)
+{
+    QList<QTextEdit::ExtraSelection> selections = extraSelections();
+
+    QTextEdit::ExtraSelection selection;
+    QTextCharFormat format = selection.format;
+    format.setForeground(Qt::red);
+    // format.setBackground(Qt::lightGray);
+    selection.format = format;
+
+    QTextCursor cursor = textCursor();
+    cursor.setPosition(pos);
+    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+    selection.cursor = cursor;
+
+    selections.append(selection);
+
+    setExtraSelections(selections);
 }
 
 // ***********************************************************************************************

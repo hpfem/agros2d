@@ -31,6 +31,24 @@
 
 class QTextDocument;
 
+struct ParenthesisInfo
+{
+    char character;
+    int position;
+};
+
+class TextBlockData : public QTextBlockUserData
+{
+public:
+    TextBlockData();
+
+    QVector<ParenthesisInfo *> parentheses();
+    void insert(ParenthesisInfo *info);
+
+private:
+    QVector<ParenthesisInfo *> m_parentheses;
+};
+
 class QScriptSyntaxHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
@@ -40,6 +58,7 @@ public:
 
 protected:
     void highlightBlock(const QString &text);
+    void highlightBlockParenthesis(const QString &text, char left, char right);
 
 private:
     struct HighlightingRule

@@ -603,7 +603,7 @@ QString datadir()
     if (dirData.exists())
         return QApplication::applicationDirPath() + "/data";
 
-    cerr << "Datadir not found." << endl;
+    qCritical() << "Datadir not found.";
     exit(1);
 }
 
@@ -757,15 +757,3 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content)
     }
 }
 
-void exception_global()
-{
-    try
-    {
-        throw;
-    }
-    catch (exception& e)
-    {
-        cerr << "Exiting due to error: " << e.what() << endl;
-    }
-    return;
-}

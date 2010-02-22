@@ -208,7 +208,7 @@ void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
                                                                 Value(element->attribute("value", "0"))));
         break;
     default:
-        std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
+        qCritical() << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type"));
         break;
     }
 }

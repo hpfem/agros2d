@@ -122,6 +122,9 @@ public slots:
     void deleteDir(const QString &dirName = "");
     void deleteFile(const QString &fileName = "");
     void deleteObject(const QString &name = "");
+    void renameDir(const QString &dirName);
+    void renameFile(const QString &fileName);
+    void renameObject(const QString &name = "");
 
 signals:
     void fileItemActivated(const QString &path);
@@ -139,6 +142,7 @@ private:
 
     QAction *actCreateDirectory;
     QAction *actCreateFile;
+    QAction *actRename;
     QAction *actDelete;
 
     QMenu *mnuContext;

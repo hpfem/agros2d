@@ -227,7 +227,7 @@ void MainWindow::createActions()
     actCreateMesh->setStatusTip(tr("Mesh area"));
     connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));
 
-    actSolve = new QAction(icon("system-run"), tr("&Solve problem"), this);
+    actSolve = new QAction(icon("run"), tr("&Solve problem"), this);
     actSolve->setShortcut(QKeySequence(tr("Alt+S")));
     actSolve->setStatusTip(tr("Solve problem"));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
@@ -248,7 +248,7 @@ void MainWindow::createActions()
     actScriptEditorRunScript->setStatusTip(tr("Run script..."));
     connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
 
-    actScriptEditorRunCommand = new QAction(icon("system-run"), tr("Run &command..."), this);
+    actScriptEditorRunCommand = new QAction(icon("run"), tr("Run &command..."), this);
     actScriptEditorRunCommand->setShortcut(QKeySequence(tr("Alt+C")));
     actScriptEditorRunCommand->setStatusTip(tr("Run command..."));
     connect(actScriptEditorRunCommand, SIGNAL(triggered()), this, SLOT(doScriptEditorRunCommand()));
@@ -759,11 +759,9 @@ void MainWindow::doSolve()
 
 void MainWindow::doOptions()
 {
-    OptionsDialog *optionsDialog = new OptionsDialog(&sceneView->sceneViewSettings(), this);
-    optionsDialog->exec();
+    OptionsDialog optionsDialog(&sceneView->sceneViewSettings(), this);
+    optionsDialog.exec();
     sceneView->doInvalidated();
-
-    delete optionsDialog;
 }
 
 void MainWindow::doReport()
@@ -828,6 +826,7 @@ void MainWindow::doPaste()
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_transient.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_detail.a2d");
+    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_building.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar.a2d");
     //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_axisymmetric_actuator.a2d");
