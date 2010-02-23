@@ -675,12 +675,17 @@ void ScriptEditorDialog::doFileSave()
             QTextStream out(&fileName);
             out << txtEditor->toPlainText();
             fileName.close();
+
+            setRecentFiles();
+
+            tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
+            txtEditor->document()->setModified(false);
         }
-
-        setRecentFiles();
-
-        tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
-        txtEditor->document()->setModified(false);
+        else
+        {
+            ErrorResult errorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->file));
+            errorResult.showDialog();
+        }
     }
 }
 

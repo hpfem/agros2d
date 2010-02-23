@@ -246,10 +246,10 @@ void SolverDialog::runMesh()
         connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
 
         QString triangleBinary = "triangle";
-        if (QFile::exists(QApplication::applicationDirPath() + "/triangle.exe"))
-            triangleBinary = QApplication::applicationDirPath() + "/triangle.exe";
-        if (QFile::exists(QApplication::applicationDirPath() + "/triangle"))
-            triangleBinary = QApplication::applicationDirPath() + "/triangle";
+        if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle.exe"))
+            triangleBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "triangle.exe\"";
+        if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle"))
+            triangleBinary = QApplication::applicationDirPath() + QDir::separator() + "triangle";
 
         processTriangle->start(QString("%1 -p -P -q30.0 -e -A -a -z -Q -I -p \"%2\"").
                                arg(triangleBinary).

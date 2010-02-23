@@ -1,3 +1,9 @@
+agros2d (1.0-1ubuntu1) karmic; urgency=low
+
+  * bugfixes, minor changes
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 22 Feb 2010 19:15:55 +0200
+
 agros2d (0.9-13ubuntu1) karmic; urgency=low
 
   * bugfixes
