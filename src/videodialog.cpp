@@ -32,9 +32,13 @@ VideoDialog::VideoDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent
     // store timestep
     m_timeStep = Util::scene()->sceneSolution()->timeStep();
 
-    // timer
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(doAnimateNextStep()));
+    // timer animate
+    timerAnimate = new QTimer(this);
+    connect(timerAnimate, SIGNAL(timeout()), this, SLOT(doAnimateNextStep()));
+
+    // timer create images
+    timerFile = new QTimer(this);
+    // connect(timerFile, SIGNAL(timeout()), this, SLOT(doAnimateNextStep()));
 
     createControls();
 
@@ -52,12 +56,13 @@ VideoDialog::~VideoDialog()
     delete cmbCodec;
     delete cmbFormat;
     delete txtFPS;
+    delete progressBar;
     
     delete btnAnimate;
     delete txtAnimateFrom;
     delete txtAnimateTo;
 
-    delete timer;
+    delete timerAnimate;
 }
 
 void VideoDialog::showDialog()
@@ -129,10 +134,13 @@ QWidget *VideoDialog::createControlsFile()
     txtFPS->setValue(fps);
     connect(txtFPS, SIGNAL(valueChanged(int)), this, SLOT(doCommandFFmpeg()));
 
+    progressBar = new QProgressBar(this);
+
     QFormLayout *layoutControlsFile = new QFormLayout();
     layoutControlsFile->addRow(tr("Codec:"), cmbCodec);
     layoutControlsFile->addRow(tr("Format:"), cmbFormat);
     layoutControlsFile->addRow(tr("FPS:"), txtFPS);
+    layoutControlsFile->addRow(tr("Progress:"), progressBar);
 
     // dialog buttons
     QPushButton *btnCreateImages = new QPushButton(tr("Create images"));
@@ -219,16 +227,16 @@ QWidget *VideoDialog::createControlsViewport()
 
 void VideoDialog::doAnimate()
 {
-    if (timer->isActive())
+    if (timerAnimate->isActive())
     {
-        timer->stop();
+        timerAnimate->stop();
         btnAnimate->setText(tr("Animate"));
     }
     else
     {
         btnAnimate->setText(tr("Stop"));
         doSetTimeStep(txtAnimateFrom->value());
-        timer->start(txtAnimateDelay->value() * 1e3);
+        timerAnimate->start(txtAnimateDelay->value() * 1e3);
     }
 }
 
@@ -240,7 +248,6 @@ void VideoDialog::doAnimateNextStep()
     }
     else
     {
-        // stop timer
         doAnimate();
     }
 }
@@ -268,10 +275,14 @@ void VideoDialog::doValueToChanged(int index)
 
 void VideoDialog::doCreateImages()
 {
+    progressBar->setMaximum(Util::scene()->sceneSolution()->timeStepCount() - 1);
+    progressBar->setValue(0);   
+
     // create directory
     QDir(tempProblemDir()).mkdir("video");
     for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
     {
+        progressBar->setValue(i);
         Util::scene()->sceneSolution()->setTimeStep(i);
         m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
     }

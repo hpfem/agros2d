@@ -236,6 +236,10 @@ void MainWindow::createActions()
     actChart->setStatusTip(tr("Chart"));
     connect(actChart, SIGNAL(triggered()), this, SLOT(doChart()));
 
+    actFullScreen = new QAction(icon("view-fullscreen"), tr("Fullscreen mode"), this);
+    actFullScreen->setShortcut(QKeySequence(tr("F11")));
+    connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
+
     actDocumentOpenRecentGroup = new QActionGroup(this);
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
 
@@ -305,7 +309,7 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneView->actSceneZoomIn);
     mnuView->addAction(sceneView->actSceneZoomOut);
     mnuView->addSeparator();
-    mnuView->addAction(sceneView->actFullScreen);
+    mnuView->addAction(actFullScreen);
     mnuView->addSeparator();
     mnuView->addAction(sceneView->actSceneViewProperties);
 
@@ -740,6 +744,13 @@ void MainWindow::doCreateMesh()
     doInvalidated();
 }
 
+void MainWindow::doFullScreen()
+{
+    if (isFullScreen())
+        showNormal();
+    else
+        showFullScreen();
+}
 
 void MainWindow::doSolve()
 {

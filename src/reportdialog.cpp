@@ -63,7 +63,7 @@ void ReportDialog::createControls()
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
-    layout->addStretch();
+    // layout->addStretch();
     layout->addLayout(layoutButtonFile);
 
     setLayout(layout);
@@ -92,8 +92,10 @@ void ReportDialog::showDialog()
 {
     QDir(tempProblemDir()).mkdir("report");
 
-    QFile::copy(QString("%1/doc/report/template/template.html").arg(datadir()), tempProblemDir() + "/report/template.html");
-    QFile::copy(QString("%1/doc/report/template/default.css").arg(datadir()), tempProblemDir() + "/report/default.css");
+    QFile::copy(QString("%1/doc/report/template/template.html").arg(datadir()),
+                QString("%1/report/template.html").arg(tempProblemDir()));
+    QFile::copy(QString("%1/doc/report/template/default.css").arg(datadir()),
+                QString("%1/report/default.css").arg(tempProblemDir()));
 
     generateFigures();
     generateIndex();
@@ -124,9 +126,10 @@ void ReportDialog::generateIndex()
 
     // save index.html
     QFile fileIndex(fileNameIndex);
-    if (fileIndex.open(QIODevice::WriteOnly))
+    if (fileIndex.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream stream(&fileIndex);
+        stream.setCodec("UTF-8");
 
         stream << replaceTemplates(content);
 

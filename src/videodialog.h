@@ -43,7 +43,8 @@ private:
 
     QTabWidget *tabType;
 
-    QTimer *timer;
+    QTimer *timerAnimate;
+    QTimer *timerFile;
 
     // file
     QPushButton *btnEncodeFFmpeg;
@@ -53,6 +54,7 @@ private:
     QComboBox *cmbCodec;
     QComboBox *cmbFormat;
     QSpinBox *txtFPS;
+    QProgressBar *progressBar;
 
     // viewport
     QSpinBox *txtAnimateFrom;

@@ -516,7 +516,7 @@ void ChartDialog::doExportData()
     {
         // open file for write
         QFile file(fileName + selectedFilter);
-        if (!file.open(QIODevice::WriteOnly))
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
             cerr << "Could not create " + fileName.toStdString() + " file." << endl;
             return;

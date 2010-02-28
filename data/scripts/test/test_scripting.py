@@ -102,7 +102,7 @@ addlabel(0, 0, 0, "Material")
 zoombestfit()
 solve()
 volume = volumeintegral(0)
-testAddCircle = test("addcircle()", volume["S"], pi*(r*r))
+testAddCircle = test("addcircle()", volume["S"], pi*(r**2))
 
 # addsemicircle
 selectnode(0, 1, 2, 3)
@@ -114,13 +114,13 @@ addlabel(r/2, 0, 0, "Material")
 zoombestfit()
 solve()
 volume = volumeintegral(0)
-testAddSemiCircle = test("addsemicircle()", volume["S"], (pi*(r*r))/2)
+testAddSemiCircle = test("addsemicircle()", volume["S"], (pi*(r**2))/2)
 
 # savedocument, opendocument
-savedocument("./data/test.a2d")
-opendocument("./data/test.a2d")
+savedocument("test_scripting.a2d")
+opendocument("test_scripting.a2d")
 solve()
 volume = volumeintegral(0)
-testSaveDocument = test("addsemicircle()", volume["S"], (pi*(r*r))/2)
+testSaveDocument = test("addsemicircle()", volume["S"], (pi*(r**2))/2)
 
 print("Test: Scripting: " + str(testMoveSelection1 and testMoveSelection2 and testScaleSelection1 and testScaleSelection2 and testRotateSelection1 and testRotateSelection2 and testAddRect and testAddCircle and testAddSemiCircle and testSaveDocument))

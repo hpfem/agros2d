@@ -696,7 +696,7 @@ void log(const QString &message)
     {
         QFile file(QApplication::applicationDirPath() + "/log.txt");
 
-        if (file.open(QIODevice::Append))
+        if (file.open(QIODevice::Append | QIODevice::Text))
         {
             QTextStream outFile(&file);
             outFile << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << ": " << message << endl;
@@ -710,7 +710,7 @@ QString readFileContent(const QString &fileName)
 {
     QString content;
     QFile file(fileName);
-    if (file.open(QIODevice::ReadOnly))
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QTextStream stream(&file);
         content = stream.readAll();

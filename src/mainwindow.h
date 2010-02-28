@@ -70,6 +70,7 @@ private slots:
     void doOptions();
     void doReport();
     void doCreateVideo();
+    void doFullScreen();
 
     void doCut();
     void doCopy();
@@ -128,7 +129,8 @@ private:
     QAction *actOptions;
     QAction *actCreateMesh;
     QAction *actSolve;
-    QAction *actChart; 
+    QAction *actChart;
+    QAction *actFullScreen;
 
     QAction *actScriptEditor;
     QAction *actScriptEditorRunScript;

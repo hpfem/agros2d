@@ -280,11 +280,6 @@ void SceneView::createActions()
     actSceneViewSelectMarker = new QAction(icon(""), tr("Select by marker"), this);
     actSceneViewSelectMarker->setStatusTip(tr("Select by marker"));
     connect(actSceneViewSelectMarker, SIGNAL(triggered()), this, SLOT(doSelectMarker()));
-
-    // fullscreen
-    actFullScreen = new QAction(icon("view-fullscreen"), tr("Fullscreen mode"), this);
-    actFullScreen->setShortcut(QKeySequence(tr("F11")));
-    connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
 }
 
 void SceneView::createMenu()
@@ -308,8 +303,6 @@ void SceneView::createMenu()
     mnuInfo->addAction(m_scene->actTransform);
     mnuInfo->addSeparator();
     mnuInfo->addMenu(mnuModeGroup);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(actFullScreen);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actSceneObjectProperties);
     mnuInfo->addAction(m_scene->actProblemProperties);
@@ -345,13 +338,15 @@ void SceneView::setupViewport(int w, int h)
     glLoadIdentity();
 
     if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
-        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
+        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || 
+         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
     {
-
         gluPerspective(0.0, m_aspect, 1.0, 1000.0);
     }
     else
+    {
         glOrtho(3.0, w-6.0, h-6.0, 3.0, -10.0, -10.0);
+    }
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -440,7 +435,9 @@ void SceneView::paintGrid()
     int step = (((int) ((cornerMax - cornerMin).x / m_sceneViewSettings.gridStep) + 1) / 5);
     if (step > 0.0)
     {
-        glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+        glColor3f(m_sceneViewSettings.colorGrid.redF(),
+                  m_sceneViewSettings.colorGrid.greenF(),
+                  m_sceneViewSettings.colorGrid.blueF());
         glLineWidth(1.0);
         glEnable(GL_LINE_STIPPLE);
         glLineStipple(1, 0x1C47);
@@ -453,18 +450,26 @@ void SceneView::paintGrid()
             for (int i = 0; i<cornerMax.x/m_sceneViewSettings.gridStep; i++)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+                    glColor3f(m_sceneViewSettings.colorCross.redF(),
+                              m_sceneViewSettings.colorCross.greenF(),
+                              m_sceneViewSettings.colorCross.blueF());
                 else
-                    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+                    glColor3f(m_sceneViewSettings.colorGrid.redF(),
+                              m_sceneViewSettings.colorGrid.greenF(),
+                              m_sceneViewSettings.colorGrid.blueF());
                 glVertex2d(i*m_sceneViewSettings.gridStep, cornerMin.y);
                 glVertex2d(i*m_sceneViewSettings.gridStep, cornerMax.y);
             }
             for (int i = 0; i>cornerMin.x/m_sceneViewSettings.gridStep; i--)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+                    glColor3f(m_sceneViewSettings.colorCross.redF(),
+                              m_sceneViewSettings.colorCross.greenF(),
+                              m_sceneViewSettings.colorCross.blueF());
                 else
-                    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+                    glColor3f(m_sceneViewSettings.colorGrid.redF(),
+                              m_sceneViewSettings.colorGrid.greenF(),
+                              m_sceneViewSettings.colorGrid.blueF());
                 glVertex2d(i*m_sceneViewSettings.gridStep, cornerMin.y);
                 glVertex2d(i*m_sceneViewSettings.gridStep, cornerMax.y);
             }
@@ -473,18 +478,26 @@ void SceneView::paintGrid()
             for (int i = 0; i<cornerMin.y/m_sceneViewSettings.gridStep; i++)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+                    glColor3f(m_sceneViewSettings.colorCross.redF(),
+                              m_sceneViewSettings.colorCross.greenF(),
+                              m_sceneViewSettings.colorCross.blueF());
                 else
-                    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+                    glColor3f(m_sceneViewSettings.colorGrid.redF(),
+                              m_sceneViewSettings.colorGrid.greenF(),
+                              m_sceneViewSettings.colorGrid.blueF());
                 glVertex2d(cornerMin.x, i*m_sceneViewSettings.gridStep);
                 glVertex2d(cornerMax.x, i*m_sceneViewSettings.gridStep);
             }
             for (int i = 0; i>cornerMax.y/m_sceneViewSettings.gridStep; i--)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+                    glColor3f(m_sceneViewSettings.colorCross.redF(),
+                              m_sceneViewSettings.colorCross.greenF(),
+                              m_sceneViewSettings.colorCross.blueF());
                 else
-                    glColor3f(m_sceneViewSettings.colorGrid.redF(), m_sceneViewSettings.colorGrid.greenF(), m_sceneViewSettings.colorGrid.blueF());
+                    glColor3f(m_sceneViewSettings.colorGrid.redF(),
+                              m_sceneViewSettings.colorGrid.greenF(),
+                              m_sceneViewSettings.colorGrid.blueF());
                 glVertex2d(cornerMin.x, i*m_sceneViewSettings.gridStep);
                 glVertex2d(cornerMax.x, i*m_sceneViewSettings.gridStep);
             }
@@ -494,7 +507,9 @@ void SceneView::paintGrid()
     }
 
     // axes
-    glColor3f(m_sceneViewSettings.colorCross.redF(), m_sceneViewSettings.colorCross.greenF(), m_sceneViewSettings.colorCross.blueF());
+    glColor3f(m_sceneViewSettings.colorCross.redF(),
+              m_sceneViewSettings.colorCross.greenF(),
+              m_sceneViewSettings.colorCross.blueF());
     glLineWidth(1.0);
     glBegin(GL_LINES);
     // y axis
@@ -557,16 +572,22 @@ void SceneView::paintGeometry()
     // edges
     foreach (SceneEdge *edge, m_scene->edges)
     {
-        glColor3f(m_sceneViewSettings.colorEdges.redF(), m_sceneViewSettings.colorEdges.greenF(), m_sceneViewSettings.colorEdges.blueF());
+        glColor3f(m_sceneViewSettings.colorEdges.redF(),
+                  m_sceneViewSettings.colorEdges.greenF(),
+                  m_sceneViewSettings.colorEdges.blueF());
         glLineWidth(m_sceneViewSettings.geometryEdgeWidth);
         if (edge->isHighlighted)
         {
-            glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
+            glColor3f(m_sceneViewSettings.colorHighlighted.redF(),
+                      m_sceneViewSettings.colorHighlighted.greenF(),
+                      m_sceneViewSettings.colorHighlighted.blueF());
             glLineWidth(m_sceneViewSettings.geometryEdgeWidth + 2.0);
         }
         if (edge->isSelected)
         {
-            glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
+            glColor3f(m_sceneViewSettings.colorSelected.redF(),
+                      m_sceneViewSettings.colorSelected.greenF(),
+                      m_sceneViewSettings.colorSelected.blueF());
             glLineWidth(m_sceneViewSettings.geometryEdgeWidth + 2.0);
         }
 
@@ -593,13 +614,17 @@ void SceneView::paintGeometry()
     {
         foreach (SceneNode *node, m_scene->nodes)
         {
-            glColor3f(m_sceneViewSettings.colorNodes.redF(), m_sceneViewSettings.colorNodes.greenF(), m_sceneViewSettings.colorNodes.blueF());
+            glColor3f(m_sceneViewSettings.colorNodes.redF(),
+                      m_sceneViewSettings.colorNodes.greenF(),
+                      m_sceneViewSettings.colorNodes.blueF());
             glPointSize(m_sceneViewSettings.geometryNodeSize);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
 
-            glColor3f(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF());
+            glColor3f(m_sceneViewSettings.colorBackground.redF(),
+                      m_sceneViewSettings.colorBackground.greenF(),
+                      m_sceneViewSettings.colorBackground.blueF());
             glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
@@ -607,8 +632,14 @@ void SceneView::paintGeometry()
 
             if ((node->isSelected) || (node->isHighlighted))
             {
-                if (node->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
-                if (node->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
+                if (node->isHighlighted)
+                    glColor3f(m_sceneViewSettings.colorHighlighted.redF(),
+                              m_sceneViewSettings.colorHighlighted.greenF(),
+                              m_sceneViewSettings.colorHighlighted.blueF());
+                if (node->isSelected)
+                    glColor3f(m_sceneViewSettings.colorSelected.redF(),
+                              m_sceneViewSettings.colorSelected.greenF(),
+                              m_sceneViewSettings.colorSelected.blueF());
 
                 glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
                 glBegin(GL_POINTS);
@@ -624,13 +655,17 @@ void SceneView::paintGeometry()
     {
         foreach (SceneLabel *label, m_scene->labels)
         {
-            glColor3f(m_sceneViewSettings.colorLabels.redF(), m_sceneViewSettings.colorLabels.greenF(), m_sceneViewSettings.colorLabels.blueF());
+            glColor3f(m_sceneViewSettings.colorLabels.redF(),
+                      m_sceneViewSettings.colorLabels.greenF(),
+                      m_sceneViewSettings.colorLabels.blueF());
             glPointSize(m_sceneViewSettings.geometryLabelSize);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
             glEnd();
 
-            glColor3f(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF());
+            glColor3f(m_sceneViewSettings.colorBackground.redF(),
+                      m_sceneViewSettings.colorBackground.greenF(),
+                      m_sceneViewSettings.colorBackground.blueF());
             glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
@@ -638,8 +673,14 @@ void SceneView::paintGeometry()
 
             if ((label->isSelected) || (label->isHighlighted))
             {
-                if (label->isHighlighted) glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
-                if (label->isSelected) glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
+                if (label->isHighlighted)
+                    glColor3f(m_sceneViewSettings.colorHighlighted.redF(),
+                              m_sceneViewSettings.colorHighlighted.greenF(),
+                              m_sceneViewSettings.colorHighlighted.blueF());
+                if (label->isSelected)
+                    glColor3f(m_sceneViewSettings.colorSelected.redF(),
+                              m_sceneViewSettings.colorSelected.greenF(),
+                              m_sceneViewSettings.colorSelected.blueF());
 
                 glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
                 glBegin(GL_POINTS);
@@ -681,7 +722,9 @@ void SceneView::paintInitialMesh()
 
     // draw initial mesh    
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3f(m_sceneViewSettings.colorInitialMesh.redF(), m_sceneViewSettings.colorInitialMesh.greenF(), m_sceneViewSettings.colorInitialMesh.blueF());
+    glColor3f(m_sceneViewSettings.colorInitialMesh.redF(),
+              m_sceneViewSettings.colorInitialMesh.greenF(),
+              m_sceneViewSettings.colorInitialMesh.blueF());
     glLineWidth(1.0);
 
     // triangles
@@ -706,7 +749,9 @@ void SceneView::paintSolutionMesh()
 
     // draw solution mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3f(m_sceneViewSettings.colorSolutionMesh.redF(), m_sceneViewSettings.colorSolutionMesh.greenF(), m_sceneViewSettings.colorSolutionMesh.blueF());
+    glColor3f(m_sceneViewSettings.colorSolutionMesh.redF(),
+              m_sceneViewSettings.colorSolutionMesh.greenF(),
+              m_sceneViewSettings.colorSolutionMesh.blueF());
     glLineWidth(1.0);
 
     // triangles
@@ -809,10 +854,6 @@ void SceneView::paintOrder()
     }
 
     glPopMatrix();
-
-    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
-        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
-        glEnable(GL_DEPTH_TEST);
 }
 
 void SceneView::paintColorBar(double min, double max)
@@ -895,10 +936,6 @@ void SceneView::paintColorBar(double min, double max)
     }
 
     glPopMatrix();
-
-    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
-        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
-        glEnable(GL_DEPTH_TEST);
 }
 
 void SceneView::paintScalarField()
@@ -1003,6 +1040,7 @@ void SceneView::paintScalarField3D()
     glPushMatrix();
     glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
 
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, 1);   
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -1052,6 +1090,7 @@ void SceneView::paintScalarField3D()
     glDisable(GL_POLYGON_OFFSET_FILL);
     glDisable(GL_TEXTURE_1D);
     glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
 
     glPopMatrix();
 
@@ -1092,7 +1131,9 @@ void SceneView::paintContours()
     double step = (rangeMax-rangeMin)/m_sceneViewSettings.contoursCount;
 
     // draw contours    
-    glColor3f(m_sceneViewSettings.colorContours.redF(), m_sceneViewSettings.colorContours.greenF(), m_sceneViewSettings.colorContours.blueF());
+    glColor3f(m_sceneViewSettings.colorContours.redF(),
+              m_sceneViewSettings.colorContours.greenF(),
+              m_sceneViewSettings.colorContours.blueF());
     glBegin(GL_LINES);
     glLineWidth(1.0);
 
@@ -1178,10 +1219,9 @@ void SceneView::paintVectors()
     double4* vecVert = m_scene->sceneSolution()->vecVectorView().get_vertices();
     int3* vecTris = m_scene->sceneSolution()->vecVectorView().get_triangles();
 
-    glColor3f(m_sceneViewSettings.colorVectors.redF(), m_sceneViewSettings.colorVectors.greenF(), m_sceneViewSettings.colorVectors.blueF());
-    // glEnable(GL_TEXTURE_1D);
-    // glBindTexture(GL_TEXTURE_1D, 1);
-    // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    glColor3f(m_sceneViewSettings.colorVectors.redF(),
+              m_sceneViewSettings.colorVectors.greenF(),
+              m_sceneViewSettings.colorVectors.blueF());
     glBegin(GL_TRIANGLES);
     for (int i = 0; i <= nx; i++)
     {
@@ -1286,10 +1326,6 @@ void SceneView::paintSceneModeLabel()
     renderText(posText.x, posText.y, 0.0, text, fontLabel);
 
     glPopMatrix();
-
-    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR) &&
-        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
-        glEnable(GL_DEPTH_TEST);
 }
 
 void SceneView::paintZoomRegion()
@@ -1317,7 +1353,9 @@ void SceneView::paintSnapToGrid()
         snapPoint.x = round(p.x / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
         snapPoint.y = round(p.y / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
 
-        glColor3f(m_sceneViewSettings.colorHighlighted.redF(), m_sceneViewSettings.colorHighlighted.greenF(), m_sceneViewSettings.colorHighlighted.blueF());
+        glColor3f(m_sceneViewSettings.colorHighlighted.redF(),
+                  m_sceneViewSettings.colorHighlighted.greenF(),
+                  m_sceneViewSettings.colorHighlighted.blueF());
         glPointSize(m_sceneViewSettings.geometryNodeSize - 1.0);
         glBegin(GL_POINTS);
         glVertex2d(snapPoint.x, snapPoint.y);
@@ -1327,7 +1365,9 @@ void SceneView::paintSnapToGrid()
 
 void SceneView::paintChartLine()
 {
-    glColor3f(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
+    glColor3f(m_sceneViewSettings.colorSelected.redF(),
+              m_sceneViewSettings.colorSelected.greenF(),
+              m_sceneViewSettings.colorSelected.blueF());
     glLineWidth(3.0);
 
     glBegin(GL_LINES);
@@ -1449,31 +1489,34 @@ void SceneView::paletteUpdateTexAdjust()
 
 void SceneView::keyPressEvent(QKeyEvent *event)
 {
-    Point view = position(Point(contextWidth(), contextHeight()));
+    Point stepTemp = position(Point(contextWidth(), contextHeight()));
+    stepTemp.x = stepTemp.x - m_offset.x;
+    stepTemp.y = stepTemp.y - m_offset.y;
+    double step = qMin(stepTemp.x, stepTemp.y) / 10.0;
 
     switch (event->key())
     {
     case Qt::Key_Up:
         {
-            m_offset.y -= view.y/10.0;
+            m_offset.y -= step;
             doRefresh();
         }
         break;
     case Qt::Key_Down:
         {
-            m_offset.y += view.y/10.0;;
+            m_offset.y += step;
             doRefresh();
         }
         break;
     case Qt::Key_Left:
         {
-            m_offset.x -= view.x/10.0;
+            m_offset.x -= step;
             doRefresh();
         }
         break;
     case Qt::Key_Right:
         {
-            m_offset.x += view.x/10.0;
+            m_offset.x += step;
             doRefresh();
         }
         break;
@@ -1490,11 +1533,6 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Delete:
         {
             m_scene->deleteSelected();
-        }
-        break;
-    case Qt::Key_F11:
-        {
-            doFullScreen();
         }
         break;
     case Qt::Key_Space:
@@ -2149,7 +2187,8 @@ void SceneView::doSceneViewProperties()
         // set defaults
         if (postprocessorShow != m_sceneViewSettings.postprocessorShow)
         {
-            if (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D || m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID)
+            if (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D ||
+                m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID)
             {
                 m_rotation.x =  66.0;
                 m_rotation.y = -35.0;
@@ -2201,26 +2240,6 @@ void SceneView::doSceneObjectProperties()
     }
 }
 
-void SceneView::doFullScreen()
-{
-    QSettings settings;
-    if (isFullScreen())
-    {
-        setParent(m_mainWindow);
-        m_mainWindow->setCentralWidget(this);
-        showNormal();
-
-        m_mainWindow->restoreState(settings.value("MainWindow/State", m_mainWindow->saveState()).toByteArray());
-    }
-    else
-    {
-        settings.setValue("MainWindow/State", m_mainWindow->saveState());
-
-        setParent(NULL);
-        showFullScreen();
-    }
-}
-
 void SceneView::doSceneModeSet(QAction *)
 {
     actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
@@ -2265,10 +2284,7 @@ void SceneView::doSelectMarker()
 
 void SceneView::setRangeContour()
 {
-    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours) &&
-        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW ||
-         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D ||
-         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
+    if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showContours)
     {
         ViewScalarFilter *viewScalarFilter = m_scene->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.contourPhysicFieldVariable,
                                                                                                 PHYSICFIELDVARIABLECOMP_SCALAR);
@@ -2303,7 +2319,7 @@ void SceneView::setRangeScalar()
             float light_specular[] = {1.0, 1.0, 1.0, 1.0};
             float light_ambient[]  = {0.3, 0.3, 0.3, 1.0};
             float light_diffuse[]  = {1.0, 1.0, 1.0, 1.0};
-            float light_position[] = { -5.0*max, 8.0*max, 5.0*max, 0.0 };
+            float light_position[] = { -10.0*max, 16.0*max, 10.0*max, 0.0 };
 
             glEnable(GL_LIGHT0);
             glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
@@ -2321,10 +2337,11 @@ void SceneView::setRangeScalar()
             glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 32.0);
             glDisable(GL_COLOR_MATERIAL);
 
+            glShadeModel(GL_SMOOTH);
             glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-#if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
-            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-#endif
+            #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
+                glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+            #endif
 
             // calculate normals
             m_scene->sceneSolution()->linScalarView().lock_data();
@@ -2377,10 +2394,7 @@ void SceneView::setRangeScalar()
 
 void SceneView::setRangeVector()
 {
-    if ((m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showVectors) &&
-        (m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW ||
-         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D ||
-         m_sceneViewSettings.postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID))
+    if (m_sceneMode == SCENEMODE_POSTPROCESSOR && m_sceneViewSettings.showVectors)
     {
         ViewScalarFilter *viewVectorXFilter = m_scene->problemInfo()->hermes()->viewScalarFilter(m_sceneViewSettings.vectorPhysicFieldVariable,
                                                                                                        PHYSICFIELDVARIABLECOMP_X);

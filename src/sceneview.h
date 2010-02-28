@@ -114,7 +114,6 @@ class SceneView : public QGLWidget
     Q_OBJECT
     
 public slots:
-    void doFullScreen();
     void doZoomBestFit();
     void doZoomIn();
     void doZoomOut();
@@ -152,7 +151,6 @@ public:
     QAction *actSceneViewSelectMarker;
     QAction *actSceneViewProperties;
     QAction *actSceneObjectProperties;
-    QAction *actFullScreen;
 
     SceneNode *findClosestNode(const Point &point);
     SceneEdge *findClosestEdge(const Point &point);

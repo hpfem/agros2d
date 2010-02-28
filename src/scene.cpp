@@ -704,6 +704,15 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
 
     m_undoStack->beginMacro(tr("Rotation"));
 
+    foreach (SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            edge->nodeStart->isSelected = true;
+            edge->nodeEnd->isSelected = true;
+        }
+    }
+
     foreach (SceneNode *node, nodes)
         if (node->isSelected)
         {
@@ -753,6 +762,15 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
     m_sceneSolution->clear();
 
     m_undoStack->beginMacro(tr("Scale"));
+
+    foreach (SceneEdge *edge, edges)
+    {
+        if (edge->isSelected)
+        {
+            edge->nodeStart->isSelected = true;
+            edge->nodeEnd->isSelected = true;
+        }
+    }
 
     foreach (SceneNode *node, nodes)
         if (node->isSelected)
@@ -1100,8 +1118,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     QDomDocument doc;
     QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly))
-        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be opened.").arg(fileName));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be opened (%2).").
+                           arg(fileName).
+                           arg(file.errorString()));
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -1475,7 +1495,9 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
     // save to file
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be saved.").arg(fileName));
+        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be saved (%2).").
+                           arg(fileName).
+                           arg(file.errorString()));
 
     QTextStream out(&file);
     doc.save(out, 4);

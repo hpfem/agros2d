@@ -273,7 +273,7 @@ bool HelpPage::acceptNavigationRequest(QWebFrame *, const QNetworkRequest &reque
                 fileName += path.mid(lastDash + 1, path.length());
 
             QFile tmpFile(QDir::cleanPath(fileName));
-            if (tmpFile.open(QIODevice::ReadWrite))
+            if (tmpFile.open(QIODevice::ReadWrite | QIODevice::Text))
             {
                 tmpFile.write(helpEngine->fileData(url));
                 tmpFile.close();

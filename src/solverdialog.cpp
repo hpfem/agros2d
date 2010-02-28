@@ -478,9 +478,9 @@ bool SolverDialog::writeToTriangle()
     dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
     QFile file(tempProblemFileName() + ".poly");
 
-    if (!file.open(QIODevice::WriteOnly))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        showMessage(tr("Triangle: could not create triangle poly mesh file."), true);
+        showMessage(tr("Triangle: could not create triangle poly mesh file (%1).").arg(file.errorString()), true);
         return false;
     }
     QTextStream out(&file);
@@ -562,12 +562,18 @@ bool SolverDialog::writeToTriangle()
     QString outLabels;
     int labelsCount = 0;
     for(int i = 0; i<Util::scene()->labels.count(); i++)
+    {
         if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) > 0)
         {
-        outLabels += QString("%1  %2  %3  %4  %5\n").arg(labelsCount).arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).arg(Util::scene()->labels[i]->point.y, 0, 'f', 10).arg(i).arg(Util::scene()->labels[i]->area);
-        labelsCount++;
+           outLabels += QString("%1  %2  %3  %4  %5\n").
+                        arg(labelsCount).
+                        arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
+                        arg(Util::scene()->labels[i]->point.y, 0, 'f', 10).
+                        arg(i + 1). // triangle returns zero region number for areas without marker, markers must start from 1
+                        arg(Util::scene()->labels[i]->area);
+           labelsCount++;
+        }
     }
-
 
     outNodes.insert(0, QString("%1 2 0 1\n").arg(nodesCount)); // + additional Util::scene()->nodes
     out << outNodes;
@@ -604,7 +610,7 @@ bool SolverDialog::triangleToHermes2D()
     QTextStream outMesh(&fileMesh);
 
     QFile fileNode(tempProblemFileName() + ".node");
-    if (!fileNode.open(QIODevice::ReadOnly))
+    if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         showMessage(tr("Hermes2D: could not read triangle node file."), true);
         return false;
@@ -612,7 +618,7 @@ bool SolverDialog::triangleToHermes2D()
     QTextStream inNode(&fileNode);
 
     QFile fileEdge(tempProblemFileName() + ".edge");
-    if (!fileEdge.open(QIODevice::ReadOnly))
+    if (!fileEdge.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         showMessage(tr("Hermes2D: could not read triangle edge file."), true);
         return false;
@@ -620,7 +626,7 @@ bool SolverDialog::triangleToHermes2D()
     QTextStream inEdge(&fileEdge);
 
     QFile fileEle(tempProblemFileName() + ".ele");
-    if (!fileEle.open(QIODevice::ReadOnly))
+    if (!fileEle.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         showMessage(tr("Hermes2D: could not read triangle ele file."), true);
         return false;
@@ -676,6 +682,13 @@ bool SolverDialog::triangleToHermes2D()
     {
         count++;
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
+        if (marker == 0)
+        {
+            showMessage(tr("Hermes2D: some areas have no label marker."), true);
+            return false;
+        }
+        // triangle returns zero region number for areas without marker, markers must start from 1
+        marker--;
         outElements += QString("\t{ %1, %2, %3, %4  }, \n").arg(node_1).arg(node_2).arg(node_3).arg(abs(marker));
     }
     outElements.truncate(outElements.length()-3);
