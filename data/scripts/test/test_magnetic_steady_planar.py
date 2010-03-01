@@ -2,7 +2,7 @@
 newdocument("Magnetostatic", "planar", "magnetic", 1, 4, "disabled", 1, 1, 0, "steadystate", 1, 1, 0)
 
 # boundaries
-addboundary("A = 0", "", 0)
+addboundary("A = 0", "magnetic_vector_potential", 0)
 
 # materials
 addmaterial("Cu", 1e+06, 0, 1, 0, 0, 0, 0, 0, 0)

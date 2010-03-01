@@ -12,18 +12,22 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+#ifdef VERSION_BETA
+    QString release = "beta";
+#else
+    QString release = "";
+#endif
+
     a.setWindowIcon(icon("agros2d"));
     a.setApplicationVersion(QString("%1.%2.%3.%4 %5 (%6-%7-%8)")
                             .arg(VERSION_MAJOR)
                             .arg(VERSION_MINOR)
                             .arg(VERSION_SUB)
                             .arg(VERSION_GIT)
+                            .arg(release)
                             .arg(VERSION_YEAR)
-                            .arg(QString("0%1")
-                            .arg(VERSION_TEXT)
-                            .arg(VERSION_MONTH).right(2))
-                            .arg(QString("0%1")
-                            .arg(VERSION_DAY).right(2)));
+                            .arg(QString("0%1").arg(VERSION_MONTH).right(2))
+                            .arg(QString("0%1").arg(VERSION_DAY).right(2)));
     a.setOrganizationName("hpfem.org");
     a.setOrganizationDomain("hpfem.org");
     a.setApplicationName("Agros2D");

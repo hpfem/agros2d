@@ -174,6 +174,7 @@ class Scene : public QObject
 signals:
     void invalidated();
     void solved();
+    void defaultValues();
     void fileNameChanged(const QString &fileName);
     
 public:
@@ -241,9 +242,9 @@ public:
     void transformScale(const Point &point, double scaleFactor, bool copy);
     
     inline ProblemInfo *problemInfo() { return m_problemInfo; }
-    inline void setProblemInfo(ProblemInfo *problemInfo) { m_problemInfo = problemInfo; }
+    inline void setProblemInfo(ProblemInfo *problemInfo) { m_problemInfo = problemInfo; emit defaultValues(); }
     
-    inline void refresh() { doSolved(); }
+    inline void refresh() { emit invalidated(); }
     void createMeshAndSolve(SolverMode solverMode);
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
     

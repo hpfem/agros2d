@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
     connect(Util::scene(), SIGNAL(solved()), sceneView, SLOT(doSolved()));
+    connect(Util::scene(), SIGNAL(defaultValues()), sceneView, SLOT(doDefaultValues()));
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
 
     connect(sceneView, SIGNAL(mousePressed()), localPointValueView, SLOT(doShowPoint()));
@@ -52,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneView, SIGNAL(mousePressed()), volumeIntegralValueView, SLOT(doShowVolumeIntegral()));
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
 
-    sceneView->doDefaults();
+    sceneView->doDefaultValues();
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
@@ -92,6 +93,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setUnifiedTitleAndToolBarOnMac(true);
 
     doInvalidated();
+
+    checkForNewVersion();
 }
 
 MainWindow::~MainWindow()
@@ -204,6 +207,10 @@ void MainWindow::createActions()
     actOnlineHelp->setStatusTip(tr("Online help"));
     connect(actOnlineHelp, SIGNAL(triggered()), this, SLOT(doOnlineHelp()));
 
+    actCheckVersion = new QAction(icon(""), tr("Check version"), this);
+    actCheckVersion->setStatusTip(tr("Check version"));
+    connect(actCheckVersion, SIGNAL(triggered()), this, SLOT(doCheckVersion()));
+
     actAbout = new QAction(icon("about"), tr("About &Agros2D"), this);
     actAbout->setStatusTip(tr("Show the application's About box"));
     actAbout->setMenuRole(QAction::AboutRole);
@@ -295,8 +302,8 @@ void MainWindow::createMenus()
 #ifdef BETA
     mnuEdit->addAction(actCut);
     mnuEdit->addAction(actCopy);
-    mnuEdit->addAction(actPaste);
 #endif
+    mnuEdit->addAction(actPaste);
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
 #ifdef Q_WS_X11
     mnuEdit->addSeparator();
@@ -359,6 +366,7 @@ void MainWindow::createMenus()
     mnuHelp->addAction(actHelp);
     mnuHelp->addAction(actHelpShortCut);
     mnuHelp->addAction(actOnlineHelp);
+    mnuHelp->addAction(actCheckVersion);
 #ifndef Q_WS_MAC
     mnuHelp->addSeparator();
 #else
@@ -553,7 +561,6 @@ void MainWindow::doDocumentNew()
         Util::scene()->clear();
         Util::scene()->setProblemInfo(problemInfo);
         Util::scene()->refresh();
-        sceneView->doDefaults();
 
         sceneView->actSceneModeNode->trigger();
         sceneView->doZoomBestFit();
@@ -592,7 +599,6 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 setRecentFiles();
 
-                sceneView->doDefaults();
                 sceneView->doZoomBestFit();
                 return;
             }
@@ -627,7 +633,6 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
         {
             setRecentFiles();
 
-            sceneView->doDefaults();
             sceneView->doZoomBestFit();
             return;
         }
@@ -683,7 +688,7 @@ void MainWindow::doDocumentSaveAs()
 void MainWindow::doDocumentClose()
 {
     Util::scene()->clear();
-    sceneView->doDefaults();
+    sceneView->doDefaultValues();
     Util::scene()->refresh();
 
     sceneView->actSceneModeNode->trigger();
@@ -854,7 +859,6 @@ void MainWindow::doPaste()
     if (result.isError())
         result.showDialog();
 
-    sceneView->doDefaults();
     doInvalidated();
     sceneView->doZoomBestFit();
 
@@ -891,13 +895,18 @@ void MainWindow::doHelp()
 
 void MainWindow::doHelpShortCut()
 {
-    Util::helpDialog()->showPage("getting_started/basic_control.html");
+    Util::helpDialog()->showPage("getting_started/basic_control.html#shortcut-keys");
     Util::helpDialog()->show();
 }
 
 void MainWindow::doOnlineHelp()
 {
     QDesktopServices::openUrl(QUrl("http://hpfem.org/agros2d/help"));
+}
+
+void MainWindow::doCheckVersion()
+{
+    checkForNewVersion();
 }
 
 void MainWindow::doAbout()

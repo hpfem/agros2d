@@ -2,7 +2,7 @@
 newdocument("Magnetostatic", "axisymmetric", "magnetic", 0, 3, "disabled", 1, 1, 0, "steadystate", 1, 1, 0)
 
 # boundaries
-addboundary("A = 0", "magnetostatic_vector_potential", 0)
+addboundary("A = 0", "magnetic_vector_potential", 0)
 
 # materials
 addmaterial("Air", 0, 0, 1, 0, 0, 0, 0, 0, 0)

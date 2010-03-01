@@ -1290,12 +1290,16 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     blockSignals(false);
 
+    // default values
+    emit invalidated();
+    emit defaultValues();
+
     // mesh
-     if (eleDoc.elementsByTagName("mesh").count() > 0)
-     {
+    if (eleDoc.elementsByTagName("mesh").count() > 0)
+    {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
         Util::scene()->sceneSolution()->loadMesh(&eleMesh.toElement());
-     }
+    }
 
     // solutions
     if (eleDoc.elementsByTagName("solutions").count() > 0)
@@ -1304,8 +1308,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         Util::scene()->sceneSolution()->loadSolution(&eleSolutions.toElement());
         doSolved();
     }
-
-    emit invalidated();
 
     return ErrorResult();
 }

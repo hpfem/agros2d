@@ -92,10 +92,14 @@ void ReportDialog::showDialog()
 {
     QDir(tempProblemDir()).mkdir("report");
 
-    QFile::copy(QString("%1/doc/report/template/template.html").arg(datadir()),
-                QString("%1/report/template.html").arg(tempProblemDir()));
-    QFile::copy(QString("%1/doc/report/template/default.css").arg(datadir()),
-                QString("%1/report/default.css").arg(tempProblemDir()));
+    QFile::remove(QString("%1/report/template.html").arg(tempProblemDir()));
+    QFile::remove(QString("%1/report/default.css").arg(tempProblemDir()));
+    bool fileTemplateOK = QFile::copy(QString("%1/doc/report/template/template.html").arg(datadir()),
+                                      QString("%1/report/template.html").arg(tempProblemDir()));
+    bool fileStyleOK = QFile::copy(QString("%1/doc/report/template/default.css").arg(datadir()),
+                                      QString("%1/report/default.css").arg(tempProblemDir()));
+    if (!fileTemplateOK || !fileStyleOK)
+        QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Report template could not be copied."));
 
     generateFigures();
     generateIndex();

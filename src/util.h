@@ -86,6 +86,25 @@ QString readFileContent(const QString &fileName);
 void writeStringContent(const QString &fileName, QString *content);
 void writeStringContentByteArray(const QString &fileName, QByteArray content);
 
+// check for new version
+void checkForNewVersion();
+
+class CheckVersion : public QObject
+{
+    Q_OBJECT
+public:
+    CheckVersion(QUrl url);
+    ~CheckVersion();
+    void run();
+
+private:
+    QUrl m_url; 
+    QNetworkAccessManager *m_manager;
+
+private slots:
+    void downloadFinished(QNetworkReply *networkReply);
+};
+
 struct Value
 {
     QString text;

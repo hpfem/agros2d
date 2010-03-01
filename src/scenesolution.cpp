@@ -96,7 +96,8 @@ void SceneSolution::loadMesh(QDomElement *element)
     setlocale (LC_NUMERIC, "C");
 
     Mesh *mesh = new Mesh();
-    mesh->load(fileName.toStdString().c_str());
+    H2DReader meshloader;
+    meshloader.load(fileName.toStdString().c_str(), mesh);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
@@ -114,7 +115,8 @@ void SceneSolution::saveMesh(QDomDocument *doc, QDomElement *element)
         char *plocale = setlocale (LC_NUMERIC, "");
         setlocale (LC_NUMERIC, "C");
 
-        m_mesh->save(fileName.toStdString().c_str());
+        H2DReader meshloader;
+        meshloader.save(fileName.toStdString().c_str(), m_mesh);
 
         // set system locale
         setlocale(LC_NUMERIC, plocale);
@@ -128,6 +130,22 @@ void SceneSolution::saveMesh(QDomDocument *doc, QDomElement *element)
 void SceneSolution::loadSolution(QDomElement *element)
 {
     QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
+    // constant solution cannot be saved
+    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    {
+        Util::scene()->problemInfo()->initialCondition.evaluate(true);
+
+        SolutionArray *solutionArray = new SolutionArray();
+        solutionArray->order = new Orderizer();
+        solutionArray->sln = new Solution();
+        solutionArray->sln->set_const(Util::scene()->sceneSolution()->mesh(), Util::scene()->problemInfo()->initialCondition.number);
+        solutionArray->adaptiveError = 0.0;
+        solutionArray->adaptiveSteps = 0.0;
+        solutionArray->time = 0.0;
+
+        solutionArrayList->append(solutionArray);
+    }
 
     QDomNode n = element->firstChild();
     while(!n.isNull())
@@ -149,7 +167,10 @@ void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
 {
     if (isSolved())
     {
-        for (int i = 0; i < timeStepCount(); i++)
+        // constant solution cannot be saved
+        int start = (Util::scene()->problemInfo()->analysisType != ANALYSISTYPE_TRANSIENT) ? 0 : 1;
+
+        for (int i = start; i < timeStepCount(); i++)
         {
             QDomNode eleSolution = doc->createElement("solution");
             m_solutionArrayList->value(i)->save(doc, &eleSolution.toElement());

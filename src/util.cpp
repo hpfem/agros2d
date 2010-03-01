@@ -757,3 +757,66 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content)
     }
 }
 
+CheckVersion *checkVersion = NULL;
+void checkForNewVersion()
+{
+    // download version
+    QUrl url("http://hpfem.org/agros2d/download/version.xml");
+    if (checkVersion == NULL)
+        checkVersion = new CheckVersion(url);
+
+    checkVersion->run();
+}
+
+CheckVersion::CheckVersion(QUrl url) : QObject()
+{
+    m_url = url;
+
+    m_manager = new QNetworkAccessManager(this);
+    connect(m_manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(downloadFinished(QNetworkReply *)));
+}
+
+CheckVersion::~CheckVersion()
+{
+    delete m_manager;
+}
+
+void CheckVersion::run()
+{
+    m_manager->get(QNetworkRequest(m_url));
+}
+
+void CheckVersion::downloadFinished(QNetworkReply *networkReply)
+{
+    qDebug() << "downloadFinished";
+    qDebug() << networkReply->errorString();
+    qDebug() << networkReply->url();
+
+    if (networkReply->errorString().isEmpty())
+    {
+        QDomDocument doc;
+        doc.setContent(networkReply->readAll());
+
+        // main document
+        QDomElement eleDoc = doc.documentElement();
+
+        // problems
+        QDomNode eleRoot = eleDoc.elementsByTagName("agros2d").at(0);
+        QDomNode eleVersion = eleRoot.toElement().elementsByTagName("version").at(0);
+
+        int beta = eleVersion.toElement().attribute("beta").toInt();
+        int major = eleVersion.toElement().attribute("major").toInt();
+        int minor = eleVersion.toElement().attribute("minor").toInt();
+        int sub = eleVersion.toElement().attribute("sub").toInt();
+        int git = eleVersion.toElement().attribute("git").toInt();
+        int year = eleVersion.toElement().attribute("year").toInt();
+        int month = eleVersion.toElement().attribute("month").toInt();
+        int day = eleVersion.toElement().attribute("day").toInt();
+
+        QDomNode eleUrl = eleRoot.toElement().elementsByTagName("url").at(0);
+
+        QString downloadUrl = eleUrl.toElement().text();
+
+        QMessageBox::information(QApplication::activeWindow(), "", QString::number(git));
+    }
+}

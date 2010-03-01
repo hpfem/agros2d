@@ -79,6 +79,7 @@ private slots:
     void doHelp();
     void doHelpShortCut();
     void doOnlineHelp();
+    void doCheckVersion();
     void doAbout();
     void doInvalidated();
 
@@ -141,6 +142,7 @@ private:
     QAction *actHelp;
     QAction *actHelpShortCut;
     QAction *actOnlineHelp;
+    QAction *actCheckVersion;
     QAction *actAbout;
     QAction *actAboutQt;
 

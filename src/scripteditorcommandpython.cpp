@@ -197,7 +197,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
     Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
 
     // invalidate
-    sceneView->doDefaults();
+    sceneView->doDefaultValues();
     Util::scene()->refresh();
 }
 

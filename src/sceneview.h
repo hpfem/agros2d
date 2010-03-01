@@ -124,7 +124,7 @@ public slots:
     void doSelectMarker();
     void doInvalidated();
     void doSolved();
-    void doDefaults();
+    void doDefaultValues();
     void doRefresh();
     void doSetChartLine(const Point &start, const Point &end);
 
