@@ -353,6 +353,9 @@ void ScriptEditorDialog::createActions()
     actUncommentSelection = new QAction(icon(""), tr("Uncomment"), this);
     actUncommentSelection->setShortcut(tr("Ctrl+U"));
 
+    actGotoLine = new QAction(icon(""), tr("Goto line"), this);
+    actGotoLine->setShortcut(tr("Alt+G"));
+
     actRunPython = new QAction(icon("run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
@@ -403,6 +406,8 @@ void ScriptEditorDialog::createControls()
     mnuEdit->addSeparator();
     mnuEdit->addAction(actCommentSelection);
     mnuEdit->addAction(actUncommentSelection);
+    mnuEdit->addSeparator();
+    mnuEdit->addAction(actGotoLine);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
@@ -822,6 +827,8 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     connect(actCommentSelection, SIGNAL(triggered()), txtEditor, SLOT(commentSelection()));
     actUncommentSelection->disconnect();
     connect(actUncommentSelection, SIGNAL(triggered()), txtEditor, SLOT(uncommentSelection()));
+    actGotoLine->disconnect();
+    connect(actGotoLine, SIGNAL(triggered()), txtEditor, SLOT(gotoLine()));
 
     txtEditor->document()->disconnect(actUndo);
     txtEditor->document()->disconnect(actRedo);
@@ -902,7 +909,7 @@ ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
 #ifndef Q_WS_MAC
     setFont(QFont("Monospace", 10));
 #endif
-    setTabStopWidth(fontMetrics().width(" ") * 4);
+    setTabStopWidth(fontMetrics().width("    "));
     setLineWrapMode(QPlainTextEdit::NoWrap);
     setTabChangesFocus(false);
 
@@ -1072,6 +1079,29 @@ void ScriptEditor::uncommentSelection()
             }
             go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
         }
+    }
+}
+
+void ScriptEditor::gotoLine(int line)
+{
+    // use dialog when (line == -1)
+    if (line == -1)
+    {
+        bool ok;
+        int lineDialog = QInputDialog::getInt(this, tr("Goto line"), tr("Line number:"),
+                                              0, 1, document()->blockCount(), 1, &ok);
+        if (ok)
+            line = lineDialog;
+    }
+
+    if (line >= 0 && line <= document()->blockCount())
+    {
+        int pos = document()->findBlockByNumber(line - 1).position();
+        QTextCursor cur = textCursor();
+        cur.setPosition(pos, QTextCursor::MoveAnchor);
+        setTextCursor(cur);
+        ensureCursorVisible();
+        setFocus();
     }
 }
 

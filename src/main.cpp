@@ -13,21 +13,13 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
 #ifdef VERSION_BETA
-    QString release = "beta";
+    bool beta = true;
 #else
-    QString release = "";
+    bool beta = false;
 #endif
 
     a.setWindowIcon(icon("agros2d"));
-    a.setApplicationVersion(QString("%1.%2.%3.%4 %5 (%6-%7-%8)")
-                            .arg(VERSION_MAJOR)
-                            .arg(VERSION_MINOR)
-                            .arg(VERSION_SUB)
-                            .arg(VERSION_GIT)
-                            .arg(release)
-                            .arg(VERSION_YEAR)
-                            .arg(QString("0%1").arg(VERSION_MONTH).right(2))
-                            .arg(QString("0%1").arg(VERSION_DAY).right(2)));
+    a.setApplicationVersion(versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_GIT, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta));
     a.setOrganizationName("hpfem.org");
     a.setOrganizationDomain("hpfem.org");
     a.setApplicationName("Agros2D");

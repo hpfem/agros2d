@@ -146,6 +146,7 @@ private:
     QAction *actUnindentSelection;
     QAction *actCommentSelection;
     QAction *actUncommentSelection;
+    QAction *actGotoLine;
 
     QAction *actRunPython;
     QAction *actCreateFromModel;
@@ -197,6 +198,7 @@ private slots:
     void unindentSelection();
     void commentSelection();
     void uncommentSelection();
+    void gotoLine(int line = -1);
 
     void matchParentheses(char left, char right);
 

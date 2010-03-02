@@ -94,7 +94,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     doInvalidated();
 
-    checkForNewVersion();
+    if (settings.value("General/CheckVersion", true).value<bool>())
+        checkForNewVersion();
 }
 
 MainWindow::~MainWindow()

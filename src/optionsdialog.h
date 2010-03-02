@@ -107,6 +107,9 @@ private:
     // save with solution
     QCheckBox *chkSaveWithSolution;
 
+    // check version
+    QCheckBox *chkCheckVersion;
+
     void load();
     void save();
 

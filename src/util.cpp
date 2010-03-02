@@ -783,28 +783,28 @@ CheckVersion::~CheckVersion()
 
 void CheckVersion::run()
 {
-    m_manager->get(QNetworkRequest(m_url));
+    m_networkReply = m_manager->get(QNetworkRequest(m_url));
+
+    connect(m_networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(showProgress(qint64,qint64)));
+    connect(m_networkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(handleError(QNetworkReply::NetworkError)));
 }
 
 void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 {
-    qDebug() << "downloadFinished";
-    qDebug() << networkReply->errorString();
-    qDebug() << networkReply->url();
+    QString text = networkReply->readAll();
 
-    if (networkReply->errorString().isEmpty())
+    if (!text.isEmpty())
     {
         QDomDocument doc;
-        doc.setContent(networkReply->readAll());
+        doc.setContent(text);
 
         // main document
         QDomElement eleDoc = doc.documentElement();
 
         // problems
-        QDomNode eleRoot = eleDoc.elementsByTagName("agros2d").at(0);
-        QDomNode eleVersion = eleRoot.toElement().elementsByTagName("version").at(0);
+        QDomNode eleVersion = eleDoc.toElement().elementsByTagName("version").at(0);
 
-        int beta = eleVersion.toElement().attribute("beta").toInt();
+        int beta = eleVersion.toElement().attribute("beta").toInt() == 1;
         int major = eleVersion.toElement().attribute("major").toInt();
         int minor = eleVersion.toElement().attribute("minor").toInt();
         int sub = eleVersion.toElement().attribute("sub").toInt();
@@ -813,10 +813,25 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
         int month = eleVersion.toElement().attribute("month").toInt();
         int day = eleVersion.toElement().attribute("day").toInt();
 
-        QDomNode eleUrl = eleRoot.toElement().elementsByTagName("url").at(0);
+        QDomNode eleUrl = eleDoc.toElement().elementsByTagName("url").at(0);
 
         QString downloadUrl = eleUrl.toElement().text();
-
-        QMessageBox::information(QApplication::activeWindow(), "", QString::number(git));
+        if (git > VERSION_GIT)
+        {
+            QMessageBox::information(QApplication::activeWindow(), tr("New version"), tr("New version available.</br></br>Actual version: %1</br>New version: %2</br>URL: <a href=\"%3\">%3</a>").
+                                     arg(QApplication::applicationVersion()).
+                                     arg(versionString(major, minor, sub, git, year, month, day, beta)).
+                                     arg(downloadUrl));
+        }
     }
+}
+
+void CheckVersion::showProgress(qint64 dl, qint64 all)
+{
+    qDebug() << QString("\rDownloaded %1 bytes of %2).").arg(dl).arg(all);
+}
+
+void CheckVersion::handleError(QNetworkReply::NetworkError error)
+{
+    qDebug() << "An error ocurred (code #" << error << ").";
 }

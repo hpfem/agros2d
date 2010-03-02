@@ -71,6 +71,9 @@ OptionsDialog::~OptionsDialog()
     // save with solution
     delete chkSaveWithSolution;
 
+    // check version
+    delete chkCheckVersion;
+
     delete lstView;
     delete panMain;
     delete panView;
@@ -98,6 +101,9 @@ void OptionsDialog::load()
             break;
         }
     }
+
+    // check version
+    chkCheckVersion->setChecked(settings.value("General/CheckVersion", true).value<bool>());
 
     // show result in line edit value widget
     chkLineEditValueShowResult->setChecked(settings.value("General/LineEditValueShowResult", false).value<bool>());
@@ -160,6 +166,9 @@ void OptionsDialog::save()
                                  tr("Language change"),
                                  tr("Interface language has been changed. You must restart the application."));
     settings.setValue("General/Language", cmbLanguage->currentText());
+
+    // check version
+    settings.setValue("General/CheckVersion", chkCheckVersion->isChecked());
 
     // show result in line edit value widget
     settings.setValue("General/LineEditValueShowResult", chkLineEditValueShowResult->isChecked());
@@ -288,7 +297,7 @@ QWidget *OptionsDialog::createMainWidget()
     // solver layout
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
-    chkSaveWithSolution = new QCheckBox("Save problem with solution");
+    chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
 
     QVBoxLayout *layoutSolver = new QVBoxLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
@@ -304,6 +313,7 @@ QWidget *OptionsDialog::createMainWidget()
     connect(cmdClearCommandHistory, SIGNAL(clicked()), this, SLOT(doClearCommandHistory()));
 
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
+    chkCheckVersion = new QCheckBox("Check new version.");
 
     QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
     layoutClearCommandHistory->addWidget(cmdClearCommandHistory);    
@@ -311,6 +321,7 @@ QWidget *OptionsDialog::createMainWidget()
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkLineEditValueShowResult);
+    layoutOther->addWidget(chkCheckVersion);
     layoutOther->addLayout(layoutClearCommandHistory);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));

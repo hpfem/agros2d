@@ -89,6 +89,20 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content);
 // check for new version
 void checkForNewVersion();
 
+// join version
+inline QString versionString(int major, int minor, int sub, int git, int year, int month, int day, bool beta)
+{
+    return QString("%1.%2.%3.%4 %5 (%6-%7-%8)")
+            .arg(major)
+            .arg(minor)
+            .arg(sub)
+            .arg(git)
+            .arg(beta ? "beta" : "")
+            .arg(year)
+            .arg(QString("0%1").arg(month).right(2))
+            .arg(QString("0%1").arg(day).right(2));
+}
+
 class CheckVersion : public QObject
 {
     Q_OBJECT
@@ -100,9 +114,12 @@ public:
 private:
     QUrl m_url; 
     QNetworkAccessManager *m_manager;
+    QNetworkReply *m_networkReply;
 
 private slots:
     void downloadFinished(QNetworkReply *networkReply);
+    void showProgress(qint64, qint64);
+    void handleError(QNetworkReply::NetworkError error);
 };
 
 struct Value
