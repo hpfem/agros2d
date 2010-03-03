@@ -87,7 +87,7 @@ void writeStringContent(const QString &fileName, QString *content);
 void writeStringContentByteArray(const QString &fileName, QByteArray content);
 
 // check for new version
-void checkForNewVersion();
+void checkForNewVersion(bool quiet = false);
 
 // join version
 inline QString versionString(int major, int minor, int sub, int git, int year, int month, int day, bool beta)
@@ -109,9 +109,10 @@ class CheckVersion : public QObject
 public:
     CheckVersion(QUrl url);
     ~CheckVersion();
-    void run();
+    void run(bool quiet);
 
 private:
+    bool m_quiet;
     QUrl m_url; 
     QNetworkAccessManager *m_manager;
     QNetworkReply *m_networkReply;

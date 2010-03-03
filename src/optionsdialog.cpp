@@ -313,7 +313,7 @@ QWidget *OptionsDialog::createMainWidget()
     connect(cmdClearCommandHistory, SIGNAL(clicked()), this, SLOT(doClearCommandHistory()));
 
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
-    chkCheckVersion = new QCheckBox("Check new version.");
+    chkCheckVersion = new QCheckBox(tr("Check new version during startup."));
 
     QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
     layoutClearCommandHistory->addWidget(cmdClearCommandHistory);    

@@ -1488,7 +1488,7 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
         Util::scene()->sceneSolution()->saveMesh(&doc, &eleMesh.toElement());
         eleDoc.appendChild(eleMesh);
 
-        // solutions
+        // solution
         QDomNode eleSolutions = doc.createElement("solutions");
         Util::scene()->sceneSolution()->saveSolution(&doc, &eleSolutions.toElement());
         eleDoc.appendChild(eleSolutions);

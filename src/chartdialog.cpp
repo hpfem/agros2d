@@ -293,8 +293,8 @@ void ChartDialog::createControls()
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();
     controls->setLayout(controlsLayout);
-    controls->setMinimumWidth(260);
-    controls->setMaximumWidth(260);
+    controls->setMinimumWidth(280);
+    controls->setMaximumWidth(280);
 
     controlsLayout->addWidget(tabAnalysisType);
     controlsLayout->addWidget(grpVariable);

@@ -64,6 +64,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneView->actSceneModeNode->trigger();
     sceneView->doZoomBestFit();
 
+    // run server
+    new ScriptEngineRemote();
+
+    // accept drops
+    setAcceptDrops(true);
+
+    // macx
+    setUnifiedTitleAndToolBarOnMac(true);
+
+    doInvalidated();
+
+    if (settings.value("General/CheckVersion", true).value<bool>())
+        checkForNewVersion(true);
+
     // parameters
     QStringList args = QCoreApplication::arguments();
     if (args.count() > 1)
@@ -82,20 +96,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             }
         }
     }
-
-    // run server
-    new ScriptEngineRemote();
-
-    // accept drops
-    setAcceptDrops(true);
-
-    // macx
-    setUnifiedTitleAndToolBarOnMac(true);
-
-    doInvalidated();
-
-    if (settings.value("General/CheckVersion", true).value<bool>())
-        checkForNewVersion();
 }
 
 MainWindow::~MainWindow()
@@ -813,7 +813,11 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
     {
         terminalView->terminal()->doPrintStdout("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n", Qt::gray);
         connectTerminal(terminalView->terminal());
-        runPythonScript(readFileContent(fileNameScript), fileNameScript);
+
+        ScriptResult result = runPythonScript(readFileContent(fileNameScript), fileNameScript);
+        if (result.isError)
+            terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
+
         disconnectTerminal(terminalView->terminal());
     }
     else

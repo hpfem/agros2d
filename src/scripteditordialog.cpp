@@ -579,8 +579,7 @@ void ScriptEditorDialog::doRunPython()
     if (result.isError)
         terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
 
-    // terminalView->terminal()->doPrintStdout(QString("Info: %1 ms \n").arg(time.elapsed()), Qt::gray);
-
+    // disconnect
     disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
 
     // enable controls

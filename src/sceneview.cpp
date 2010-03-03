@@ -1498,25 +1498,25 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Up:
         {
-            m_offset.y -= step;
+            m_offset.y += step;
             doRefresh();
         }
         break;
     case Qt::Key_Down:
         {
-            m_offset.y += step;
+            m_offset.y -= step;
             doRefresh();
         }
         break;
     case Qt::Key_Left:
         {
-            m_offset.x -= step;
+            m_offset.x += step;
             doRefresh();
         }
         break;
     case Qt::Key_Right:
         {
-            m_offset.x += step;
+            m_offset.x -= step;
             doRefresh();
         }
         break;

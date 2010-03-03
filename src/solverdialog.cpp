@@ -38,42 +38,59 @@ SolutionArray::~SolutionArray()
 
 void SolutionArray::load(QDomElement *element)
 {
-    QString fileName = tempProblemFileName() + ".sln";
-
-    QDomText text = element->childNodes().at(0).toText();
+    QString fileNameSolution = tempProblemFileName() + ".sln";
+    QString fileNameOrder = tempProblemFileName() + ".ord";
 
     // write content (saved solution)
-    QByteArray content;
-    content.append(text.nodeValue());    
-    writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
+    QByteArray contentSolution;
+    contentSolution.append(element->elementsByTagName("sln").at(0).toElement().childNodes().at(0).nodeValue());
+    writeStringContentByteArray(fileNameSolution, QByteArray::fromBase64(contentSolution));
+
+    // write content (saved order)
+    QByteArray contentOrder;
+    contentOrder.append(element->elementsByTagName("order").at(0).toElement().childNodes().at(0).nodeValue());
+    writeStringContentByteArray(fileNameOrder, QByteArray::fromBase64(contentOrder));
 
     order = new Orderizer();
-    // order->process_solution(&space);
+    order->load_data(fileNameOrder.toStdString().c_str());
     sln = new Solution();
-    sln->load(QString(fileName).toStdString().c_str());
+    sln->load(fileNameSolution.toStdString().c_str());
     adaptiveError = element->attribute("adaptiveerror").toDouble();
-    adaptiveSteps = element->toElement().attribute("adaptivesteps").toInt();
+    adaptiveSteps = element->attribute("adaptivesteps").toInt();
     time = element->attribute("time").toDouble();
 
     // delete solution
-    QFile::remove(fileName);
+    QFile::remove(fileNameSolution);
+    QFile::remove(fileNameOrder);
 }
 
 void SolutionArray::save(QDomDocument *doc, QDomElement *element)
 {
-    QString fileName = tempProblemFileName() + ".sln";
-    sln->save(fileName.toStdString().c_str(), false);
+    // solution
+    QString fileNameSolution = tempProblemFileName() + ".sln";
+    sln->save(fileNameSolution.toStdString().c_str(), false);
+    QDomText textSolution = doc->createTextNode(readFileContentByteArray(fileNameSolution).toBase64());
 
-    // read content (saved solution)
-    QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
-    element->appendChild(text);
+    // order
+    QString fileNameOrder = tempProblemFileName() + ".ord";
+    order->save_data(fileNameOrder.toStdString().c_str());
+    QDomNode textOrder = doc->createTextNode(readFileContentByteArray(fileNameOrder).toBase64());
+
+    QDomNode eleSolution = doc->createElement("sln");
+    QDomNode eleOrder = doc->createElement("order");
+
+    eleSolution.appendChild(textSolution);
+    eleOrder.appendChild(textOrder);
 
     element->setAttribute("time", time);
     element->setAttribute("adaptivesteps", adaptiveSteps);
     element->setAttribute("adaptiveerror", adaptiveError);
+    element->appendChild(eleSolution);
+    element->appendChild(eleOrder);
 
-    // delete solution
-    QFile::remove(fileName);
+    // delete
+    QFile::remove(fileNameSolution);
+    QFile::remove(fileNameOrder);
 }
 
 // *********************************************************************************************

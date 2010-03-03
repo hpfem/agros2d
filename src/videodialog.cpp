@@ -332,11 +332,11 @@ void VideoDialog::doCommandFFmpeg()
     outputFile = tempProblemDir() + "/video/output." + cmbFormat->itemData(cmbFormat->currentIndex()).toString();
 
     QString ffmpegBinary = "ffmpeg";
-    if (QFile::exists(QApplication::applicationDirPath() + "/ffmpeg.exe"))
-        ffmpegBinary = "ffmpeg.exe";
-    if (QFile::exists(QApplication::applicationDirPath() + "/ffmpeg"))
-        ffmpegBinary = "./ffmpeg";
-
+    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "ffmpeg.exe"))
+        ffmpegBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "ffmpeg.exe\"";
+    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "ffmpeg"))
+        ffmpegBinary = QApplication::applicationDirPath() + QDir::separator() + "ffmpeg";
+    
     commandFFmpeg = QString("%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"").
                     arg(ffmpegBinary).
                     arg(txtFPS->value()).

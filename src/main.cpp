@@ -29,9 +29,6 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
 #endif
 
-    // global exception handler
-    // set_terminate(exception_global);
-
     QSettings settings;
 
     enableLogFile(settings.value("General/EnableLogFile", false).value<bool>());

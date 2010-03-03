@@ -758,14 +758,14 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content)
 }
 
 CheckVersion *checkVersion = NULL;
-void checkForNewVersion()
+void checkForNewVersion(bool quiet)
 {
     // download version
     QUrl url("http://hpfem.org/agros2d/download/version.xml");
     if (checkVersion == NULL)
         checkVersion = new CheckVersion(url);
 
-    checkVersion->run();
+    checkVersion->run(quiet);
 }
 
 CheckVersion::CheckVersion(QUrl url) : QObject()
@@ -781,8 +781,9 @@ CheckVersion::~CheckVersion()
     delete m_manager;
 }
 
-void CheckVersion::run()
+void CheckVersion::run(bool quiet)
 {
+    m_quiet = quiet;
     m_networkReply = m_manager->get(QNetworkRequest(m_url));
 
     connect(m_networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(showProgress(qint64,qint64)));
@@ -815,6 +816,12 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 
         QDomNode eleUrl = eleDoc.toElement().elementsByTagName("url").at(0);
 
+        if (!m_quiet && git == 0)
+        {
+            QMessageBox::critical(QApplication::activeWindow(), tr("New version"), tr("File is corrupted or network is disconnected."));
+            return;
+        }
+
         QString downloadUrl = eleUrl.toElement().text();
         if (git > VERSION_GIT)
         {
@@ -828,12 +835,16 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 
             QMessageBox::information(QApplication::activeWindow(), tr("New version"), str);
         }
+        else if (!m_quiet)
+        {
+            QMessageBox::information(QApplication::activeWindow(), tr("New version"), tr("You are using actual version."));
+        }
     }
 }
 
 void CheckVersion::showProgress(qint64 dl, qint64 all)
 {
-    qDebug() << QString("\rDownloaded %1 bytes of %2).").arg(dl).arg(all);
+    // qDebug() << QString("\rDownloaded %1 bytes of %2).").arg(dl).arg(all);
 }
 
 void CheckVersion::handleError(QNetworkReply::NetworkError error)
