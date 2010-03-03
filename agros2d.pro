@@ -15,10 +15,10 @@ DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=0
 DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=312
+DEFINES += VERSION_GIT=315
 DEFINES += VERSION_YEAR=2010
 DEFINES += VERSION_MONTH=03
-DEFINES += VERSION_DAY=01
+DEFINES += VERSION_DAY=03
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
@@ -107,7 +107,8 @@ HEADERS += src/util.h \
 INCLUDEPATH += src \
     src/dxflib
 OTHER_FILES += src/python/agros2d.pyx \
-    functions.py
+    functions.py \
+    version.xml
 linux-g++ { 
     # use qmake PREFIX=... to customize your installation
     isEmpty(PREFIX):PREFIX = /usr/local
