@@ -28,9 +28,12 @@
 #include "scripteditorhighlighter.h"
 #include "terminalview.h"
 
+class PythonEngine;
+
 class SceneView;
 class FileBrowser;
 class TerminalView;
+class Terminal;
 
 class Scene;
 class SceneView;
@@ -38,11 +41,15 @@ class ScriptEditor;
 class SearchDialog;
 
 void createScriptEngine(SceneView *sceneView);
+PythonEngine *currentPythonEngine();
+void connectTerminal(Terminal *terminal);
+void disconnectTerminal(Terminal *terminal);
+bool scriptIsRunning();
 
 QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
 ExpressionResult runPythonExpression(const QString &expression);
-bool scriptIsRunning();
+
 
 class ScriptEngineRemote : QObject
 {

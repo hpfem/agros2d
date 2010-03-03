@@ -49,6 +49,21 @@ bool scriptIsRunning()
         return false;
 }
 
+void connectTerminal(Terminal *terminal)
+{
+    QObject::connect(pythonEngine, SIGNAL(printStdout(QString)), terminal, SLOT(doPrintStdout(QString)));
+}
+
+void disconnectTerminal(Terminal *terminal)
+{
+    QObject::disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminal, SLOT(doPrintStdout(QString)));
+}
+
+PythonEngine *currentPythonEngine()
+{
+    return pythonEngine;
+}
+
 QString createPythonFromModel()
 {
     QString str;

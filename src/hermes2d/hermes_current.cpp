@@ -776,6 +776,7 @@ void DSceneEdgeCurrentMarker::createContent()
     cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW), PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW);
 
     txtValue = new SLineEditValue(this);
+    connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
     layout->addWidget(cmbType, 1, 1);
@@ -828,6 +829,7 @@ DSceneLabelCurrentMarker::~DSceneLabelCurrentMarker()
 void DSceneLabelCurrentMarker::createContent()
 {
     txtConductivity = new SLineEditValue(this);
+    connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     layout->addWidget(new QLabel(tr("Conductivity (S/m):")), 1, 0);
     layout->addWidget(txtConductivity, 1, 1);

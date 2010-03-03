@@ -273,7 +273,7 @@ bool ProblemDialog::save()
             return false;
         }
     }
-    Util::scene()->problemInfo()->scriptStartup = txtStartupScript->toPlainText();
+    m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
 
     if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 

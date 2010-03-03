@@ -109,7 +109,7 @@ DSceneEdgeMarker::~DSceneEdgeMarker()
 void DSceneEdgeMarker::createDialog()
 {
     // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -170,6 +170,11 @@ void DSceneEdgeMarker::doReject()
     reject();
 }
 
+void DSceneEdgeMarker::evaluated(bool isError)
+{
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
+}
+
 // *************************************************************************************************************************************
 
 DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
@@ -187,7 +192,7 @@ DSceneLabelMarker::~DSceneLabelMarker()
 void DSceneLabelMarker::createDialog()
 {
     // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -246,6 +251,11 @@ void DSceneLabelMarker::doAccept()
 void DSceneLabelMarker::doReject()
 {
     reject();
+}
+
+void DSceneLabelMarker::evaluated(bool isError)
+{
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
 // ***********************************************************************************************************

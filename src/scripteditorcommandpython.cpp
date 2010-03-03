@@ -28,7 +28,6 @@
 #include "scripteditordialog.h"
 
 static SceneView *sceneView = NULL;
-static PythonEngine *pythonEngine = NULL;
 
 // FIX ********************************************************************************************************************************************************************
 // Terible, is it possible to write this code better???
@@ -859,7 +858,7 @@ PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
     char *str = NULL;
     if (PyArg_ParseTuple(pArgs, "s", &str))
     {
-        emit pythonEngine->showMessage(QString(str) + "\n");
+        emit currentPythonEngine()->showMessage(QString(str) + "\n");
         Py_RETURN_NONE;
     }
     return NULL;
@@ -939,9 +938,6 @@ void PythonEngine::doPrintStdout(const QString &message)
 
 void PythonEngine::runPythonHeader()
 {
-    // set current python engine
-    pythonEngine = this;
-
     // set sceneview
     sceneView = m_sceneView;
 

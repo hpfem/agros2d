@@ -101,8 +101,13 @@ public:
     Point point();
 
 private:
-    SLineEditDouble *txtPointX;
-    SLineEditDouble *txtPointY;
+    QDialogButtonBox *buttonBox;
+
+    SLineEditValue *txtPointX;
+    SLineEditValue *txtPointY;
+
+private slots:
+    void evaluated(bool isError);
 };
 
 #endif // LOCALVALUE_H

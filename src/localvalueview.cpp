@@ -178,15 +178,20 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
 
     setModal(true);
 
-    txtPointX = new SLineEditDouble(point.x);
-    txtPointY = new SLineEditDouble(point.y);
+    txtPointX = new SLineEditValue();
+    txtPointX->setNumber(point.x);
+    txtPointY = new SLineEditValue();
+    txtPointY->setNumber(point.y);
+
+    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     QFormLayout *layoutPoint = new QFormLayout();
     layoutPoint->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
     layoutPoint->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
 
     // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
@@ -210,5 +215,10 @@ LocalPointValueDialog::~LocalPointValueDialog()
 
 Point LocalPointValueDialog::point()
 {
-    return Point(txtPointX->value(), txtPointY->value());
+    return Point(txtPointX->value().number, txtPointY->value().number);
+}
+
+void LocalPointValueDialog::evaluated(bool isError)
+{
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }

@@ -67,11 +67,11 @@ public:
 
     inline SceneEdgeMarker *marker() { return (cmbMarker->currentIndex() >= 0) ? cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>() : NULL; }
 
+protected slots:
+    void doAccept();
+
 private:
     QComboBox *cmbMarker;
-
-public slots:
-    void doAccept();
 };
 
 // *************************************************************************************************************************************
@@ -110,11 +110,11 @@ public:
 
     inline SceneLabelMarker *marker() { return (cmbMarker->currentIndex() >= 0) ? cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>() : NULL; }
 
+protected slots:
+    void doAccept();
+
 private:
     QComboBox *cmbMarker;
-
-public slots:
-    void doAccept();
 };
 
 // *************************************************************************************************************************************
@@ -129,6 +129,7 @@ public:
 
 protected:
     QGridLayout *layout;
+    QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
     SceneEdgeMarker *m_edgeMarker;
@@ -139,6 +140,9 @@ protected:
     virtual void load();
     virtual bool save();
     void setSize();
+
+protected slots:
+    void evaluated(bool isError);
 
 private slots:
     void doAccept();
@@ -155,6 +159,7 @@ public:
 
 protected:
     QGridLayout *layout;
+    QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
     SceneLabelMarker *m_labelMarker;
@@ -165,6 +170,9 @@ protected:
 
     virtual void load();
     virtual bool save();
+
+protected slots:
+    void evaluated(bool isError);
 
 private slots:
     void doAccept();

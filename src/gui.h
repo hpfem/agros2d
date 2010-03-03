@@ -72,6 +72,7 @@ public slots:
 
 signals:
     void editingFinished();
+    void evaluated(bool isError);
 
 protected:
     void focusInEvent(QFocusEvent *event);

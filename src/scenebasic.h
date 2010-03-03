@@ -115,13 +115,10 @@ public:
     DSceneBasic(QWidget *parent, bool isNew = false);
     ~DSceneBasic();
 
-private slots:
-    void doAccept();
-    void doReject();
-
 protected:
     bool isNew;
     SceneBasic *m_object;
+    QDialogButtonBox *buttonBox;
 
     virtual QLayout *createContent() = 0;
     void createControls();
@@ -129,8 +126,15 @@ protected:
     virtual bool load() = 0;
     virtual bool save() = 0;
 
+protected slots:
+    void evaluated(bool isError);
+
 private:    
     QVBoxLayout *layout;
+
+private slots:
+    void doAccept();
+    void doReject();
 };
 
 // *************************************************************************************************************************************

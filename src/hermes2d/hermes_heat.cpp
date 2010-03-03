@@ -999,6 +999,11 @@ void DSceneEdgeHeatMarker::createContent()
     txtHeatTransferCoefficient = new SLineEditValue(this);
     txtExternalTemperature = new SLineEditValue(this);
 
+    connect(txtHeatFlux, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtHeatTransferCoefficient, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtExternalTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+
     layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
     layout->addWidget(cmbType, 1, 1);
     layout->addWidget(new QLabel(tr("Temperature (deg.):")), 2, 0);
@@ -1124,6 +1129,11 @@ void DSceneLabelHeatMarker::createContent()
     txtDensity->setEnabled(Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
     txtSpecificHeat = new SLineEditValue(this);
     txtSpecificHeat->setEnabled(Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT);
+
+    connect(txtThermalConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtVolumeHeat, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtSpecificHeat, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     layout->addWidget(new QLabel(tr("Thermal conductivity (W/m.K):")), 1, 0);
     layout->addWidget(txtThermalConductivity, 1, 1);

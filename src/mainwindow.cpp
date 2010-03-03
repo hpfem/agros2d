@@ -811,7 +811,10 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
     if (QFile::exists(fileNameScript))
     {
-        runPythonScript(readFileContent(fileNameScript));
+        terminalView->terminal()->doPrintStdout("Run script: " + QFileInfo(fileNameScript).fileName().left(QFileInfo(fileNameScript).fileName().length() - 3) + "\n", Qt::gray);
+        connectTerminal(terminalView->terminal());
+        runPythonScript(readFileContent(fileNameScript), fileNameScript);
+        disconnectTerminal(terminalView->terminal());
     }
     else
     {

@@ -137,6 +137,7 @@ bool SLineEditValue::evaluate(bool quiet)
         palette.setColor(QPalette::WindowText, QApplication::palette().color(QPalette::WindowText));
         lblValue->setPalette(palette);
         lblValue->setVisible(m_showResult);
+        emit evaluated(false);
         return true;
     }
     else
@@ -146,6 +147,7 @@ bool SLineEditValue::evaluate(bool quiet)
         lblValue->setPalette(palette);
         lblValue->setVisible(true);
         setFocus();
+        emit evaluated(true);
         return false;
     }
 }

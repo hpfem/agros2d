@@ -156,7 +156,7 @@ DSceneBasic::~DSceneBasic()
 void DSceneBasic::createControls()
 {
     // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -176,6 +176,11 @@ void DSceneBasic::doAccept()
 void DSceneBasic::doReject()
 {
     reject();
+}
+
+void DSceneBasic::evaluated(bool isError)
+{
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
 // *************************************************************************************************************************************
@@ -208,6 +213,8 @@ QLayout* DSceneNode::createContent()
     txtPointY = new SLineEditValue();
     connect(txtPointX, SIGNAL(editingFinished()), this, SLOT(doEditingFinished()));
     connect(txtPointY, SIGNAL(editingFinished()), this, SLOT(doEditingFinished()));
+    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     lblDistance = new QLabel();
     lblAngle = new QLabel();
 
@@ -308,6 +315,7 @@ QLayout* DSceneEdge::createContent()
     btnMarker->setMaximumWidth(25);
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtAngle = new SLineEditValue();
+    connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     lblLength = new QLabel();
 
     QHBoxLayout *layoutMarker = new QHBoxLayout();
@@ -467,12 +475,15 @@ QLayout* DSceneLabel::createContent()
 {
     txtPointX = new SLineEditValue();
     txtPointY = new SLineEditValue();
+    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     cmbMarker = new QComboBox();
     connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
     btnMarker = new QPushButton("...");
     btnMarker->setMaximumWidth(25);
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtArea = new SLineEditValue();
+    connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     QHBoxLayout *layoutMarker = new QHBoxLayout();
     layoutMarker->addWidget(cmbMarker);

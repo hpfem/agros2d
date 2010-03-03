@@ -2792,6 +2792,9 @@ void DSceneEdgeMagneticMarker::createContent()
     txtValueImag = new SLineEditValue(this);
     txtValueImag->setEnabled(Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_HARMONIC);
 
+    connect(txtValueReal, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtValueImag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+
     QHBoxLayout *layoutCurrentDensity = new QHBoxLayout();
     layoutCurrentDensity->addWidget(txtValueReal);
     layoutCurrentDensity->addWidget(new QLabel(" + j "));
@@ -2868,6 +2871,16 @@ void DSceneLabelMagneticMarker::createContent()
     txtVelocityY = new SLineEditValue(this);
     txtVelocityAngular = new SLineEditValue(this);
     txtVelocityAngular->setEnabled(Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+
+    connect(txtPermeability, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtCurrentDensityReal, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtCurrentDensityImag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtRemanence, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtRemanenceAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtVelocityX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtVelocityY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtVelocityAngular, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     QHBoxLayout *layoutCurrentDensity = new QHBoxLayout();
     layoutCurrentDensity->addWidget(txtCurrentDensityReal);

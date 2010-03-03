@@ -1624,7 +1624,7 @@
         <location filename="../src/mainwindow.cpp" line="198"/>
         <location filename="../src/mainwindow.cpp" line="366"/>
         <source>&amp;Help</source>
-        <translation>&amp;Nápověda</translation>
+        <translation>Nápově&amp;da</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="383"/>

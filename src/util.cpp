@@ -818,7 +818,7 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
         QString downloadUrl = eleUrl.toElement().text();
         if (git > VERSION_GIT)
         {
-            QMessageBox::information(QApplication::activeWindow(), tr("New version"), tr("New version available.</br></br>Actual version: %1</br>New version: %2</br>URL: <a href=\"%3\">%3</a>").
+            QMessageBox::information(QApplication::activeWindow(), tr("New version"), tr("New version available.\nActual version: %1\nNew version: %2\nURL: %3").
                                      arg(QApplication::applicationVersion()).
                                      arg(versionString(major, minor, sub, git, year, month, day, beta)).
                                      arg(downloadUrl));

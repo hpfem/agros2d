@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "sceneview.h"
+#include "Python.h"
 
 class PythonEngine : public QObject
 {
