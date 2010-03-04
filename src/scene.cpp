@@ -552,15 +552,15 @@ void Scene::selectAll(SceneMode sceneMode)
 
     switch (sceneMode)
     {
-    case SCENEMODE_OPERATE_ON_NODES:
+    case SceneMode_OperateOnNodes:
         foreach (SceneNode *node, nodes)
             node->isSelected = true;
         break;
-    case SCENEMODE_OPERATE_ON_EDGES:
+    case SceneMode_OperateOnEdges:
         foreach (SceneEdge *edge, edges)
             edge->isSelected = true;
         break;
-    case SCENEMODE_OPERATE_ON_LABELS:
+    case SceneMode_OperateOnLabels:
         foreach (SceneLabel *label, labels)
             label->isSelected = true;
         break;
@@ -595,7 +595,7 @@ void Scene::deleteSelected()
     {
         if (label->isSelected)
         {
-            m_undoStack->push(new SceneLabelCommandRemove(label->point, label->marker->name, label->area));
+            m_undoStack->push(new SceneLabelCommandRemove(label->point, label->marker->name, label->area, label->polynomialOrder));
             removeLabel(label);
         }
     }
@@ -685,9 +685,9 @@ void Scene::transformTranslate(const Point &point, bool copy)
             }
             else
             {
-                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area);
+                SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
                 SceneLabel *labelAdded = addLabel(labelNew);
-                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->marker->name, labelNew->area));
+                if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->marker->name, labelNew->area, label->polynomialOrder));
             }
         }
     }
@@ -745,9 +745,9 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
         }
         else
         {
-            SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area);
+            SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
             SceneLabel *labelAdded = addLabel(labelNew);
-            if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->marker->name, labelNew->area));
+            if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->marker->name, labelNew->area, labelNew->polynomialOrder));
         }
     }
 
@@ -798,9 +798,9 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
         }
         else
         {
-            SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area);
+            SceneLabel *labelNew = new SceneLabel(pointNew, label->marker, label->area, label->polynomialOrder);
             SceneLabel *labelAdded = addLabel(labelNew);
-            if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->marker->name, labelNew->area));
+            if (labelAdded == labelNew) m_undoStack->push(new SceneLabelCommandAdd(labelNew->point, labelNew->marker->name, labelNew->area, labelNew->polynomialOrder));
         }
     }
 
@@ -884,7 +884,7 @@ void Scene::doNewEdge()
 
 void Scene::doNewLabel()
 {
-    SceneLabel *label = new SceneLabel(Point(), labelMarkers[0], 0);
+    SceneLabel *label = new SceneLabel(Point(), labelMarkers[0], 0.0, 0);
     if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         addLabel(label);
@@ -1119,7 +1119,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     QDomDocument doc;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
-        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be opened (%2).").
+        return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be opened (%2).").
                            arg(fileName).
                            arg(file.errorString()));
 
@@ -1135,7 +1135,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     if (!doc.setContent(&file)) {
         file.close();
-        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' is not valid Agros2D file.").arg(fileName));
+        return ErrorResult(ErrorResultType_Critical, tr("File '%1' is not valid Agros2D file.").arg(fileName));
     }
     file.close();
 
@@ -1154,7 +1154,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // problem type                                                                                                                                                                                                                             `
     m_problemInfo->problemType = problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
     // analysis type
-    m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(ANALYSISTYPE_STEADYSTATE)));
+    m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(AnalysisType_SteadyState)));
     // physic field
     m_problemInfo->setHermes(hermesFieldFactory(physicFieldFromStringKey(eleProblem.toElement().attribute("type"))));
     // number of refinements
@@ -1268,9 +1268,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         element = n.toElement();
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
         SceneLabelMarker *marker = labelMarkers[element.attribute("marker").toInt()];
-        double area = element.attribute("area").toDouble();
+        double area = element.attribute("area", "0").toDouble();
+        int polynomialOrder = element.attribute("polynomialorder", "0").toInt();
 
-        addLabel(new SceneLabel(point, marker, area));
+        addLabel(new SceneLabel(point, marker, area, polynomialOrder));
         n = n.nextSibling();
     }
 
@@ -1424,6 +1425,7 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
         eleLabel.setAttribute("x", labels[i]->point.x);
         eleLabel.setAttribute("y", labels[i]->point.y);
         eleLabel.setAttribute("area", labels[i]->area);
+        eleLabel.setAttribute("polynomialorder", labels[i]->polynomialOrder);
         eleLabel.setAttribute("marker", labelMarkers.indexOf(labels[i]->marker));
 
         eleLabels.appendChild(eleLabel);
@@ -1440,7 +1442,7 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
 
         eleEdgeMarker.setAttribute("id", i);
         eleEdgeMarker.setAttribute("name", edgeMarkers[i]->name);
-        if (edgeMarkers[i]->type == PHYSICFIELDBC_NONE)
+        if (edgeMarkers[i]->type == PhysicFieldBC_None)
             eleEdgeMarker.setAttribute("type", "none");
 
         if (i > 0)
@@ -1500,7 +1502,7 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
     // save to file
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
-        return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be saved (%2).").
+        return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
                            arg(fileName).
                            arg(file.errorString()));
 

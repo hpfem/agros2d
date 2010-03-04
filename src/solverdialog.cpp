@@ -245,7 +245,7 @@ void SolverDialog::doRefreshTimerUpdate()
 
 void SolverDialog::runMesh()
 {
-    if ((m_mode == SOLVER_MESH_AND_SOLVE) && (Util::scene()->sceneSolution()->isMeshed()))
+    if ((m_mode == SolverMode_MeshAndSolve) && (Util::scene()->sceneSolution()->isMeshed()))
         doMeshTriangleCreated(0);
 
     QFile::remove(tempProblemFileName() + ".mesh");
@@ -332,7 +332,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".triangle.err");
             showMessage(tr("Triangle: mesh files was deleted."), false);
 
-            if (m_mode == SOLVER_MESH)
+            if (m_mode == SolverMode_Mesh)
                 progressBar->setValue(100);
             else
                 progressBar->setValue(50);
@@ -376,7 +376,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             return;
         }
 
-        if (m_mode == SOLVER_MESH_AND_SOLVE)
+        if (m_mode == SolverMode_MeshAndSolve)
         {
             runSolver();
             if (Util::scene()->sceneSolution()->isSolved())
@@ -674,7 +674,7 @@ bool SolverDialog::triangleToHermes2D()
         sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
         if (marker != 0)
         {
-            if (Util::scene()->edges[marker-1]->marker->type != PHYSICFIELDBC_NONE)
+            if (Util::scene()->edges[marker-1]->marker->type != PhysicFieldBC_None)
             {
                 count++;
                 outEdges += QString("\t{ %1, %2, %3 }, \n").arg(node_1).arg(node_2).arg(abs(marker));

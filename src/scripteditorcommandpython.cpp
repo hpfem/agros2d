@@ -122,12 +122,12 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 
     // type
     Util::scene()->problemInfo()->problemType = problemTypeFromStringKey(QString(type));
-    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_UNDEFINED)
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Undefined)
         throw invalid_argument(QObject::tr("Problem type '%1' is not implemented.").arg(QString(type)).toStdString());
 
     // physicfield
     PhysicField physicField = physicFieldFromStringKey(QString(physicfield));
-    if (physicField != PHYSICFIELD_UNDEFINED)
+    if (physicField != PhysicField_Undefined)
         Util::scene()->problemInfo()->setHermes(hermesFieldFactory(physicField));
     else
         throw invalid_argument(QObject::tr("Physic field '%1' is not implemented.").arg(QString(physicfield)).toStdString());
@@ -146,7 +146,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 
     // adaptivitytype
     Util::scene()->problemInfo()->adaptivityType = adaptivityTypeFromStringKey(QString(adaptivitytype));
-    if (Util::scene()->problemInfo()->adaptivityType == ADAPTIVITYTYPE_UNDEFINED)
+    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_Undefined)
         throw invalid_argument(QObject::tr("Adaptivity type '%1' is not implemented.").arg(QString(adaptivitytype)).toStdString());
 
     // adaptivitysteps
@@ -162,7 +162,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
         throw out_of_range(QObject::tr("Adaptivity tolerance '%1' is out of range.").arg(adaptivitytolerance).toStdString());
 
     // frequency
-    if (Util::scene()->problemInfo()->physicField() == PHYSICFIELD_MAGNETIC)
+    if (Util::scene()->problemInfo()->physicField() == PhysicField_Magnetic)
     {
         if (frequency >= 0)
             Util::scene()->problemInfo()->frequency = frequency;
@@ -172,24 +172,24 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 
     // analysis type
     Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
-    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_UNDEFINED)
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
         throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
 
     // analysis type
     Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
-    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_UNDEFINED)
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
         throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
 
     // transient timestep
     if (timestep > 0)
         Util::scene()->problemInfo()->timeStep = Value(QString::number(timestep));
-    else if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         throw out_of_range(QObject::tr("Time step must be positive.").toStdString());
 
     // transient timetotal
     if (totaltime > 0)
         Util::scene()->problemInfo()->timeTotal = Value(QString::number(totaltime));
-    else if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         throw out_of_range(QObject::tr("Total time must be positive.").toStdString());
 
     // transient initial condition
@@ -264,14 +264,14 @@ void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double an
     Util::scene()->removeEdge(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
 }
 
-// addlabel(x, y, area = 0, marker = "none")
-void pythonAddLabel(double x, double y, double area, char *marker)
+// addlabel(x, y, area = 0, marker = "none", polynomialorder = 0)
+void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *marker)
 {
     SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(QString(marker));
     if (!labelMarker)
         throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
 
-    Util::scene()->addLabel(new SceneLabel(Point(x, y), labelMarker, area));
+    Util::scene()->addLabel(new SceneLabel(Point(x, y), labelMarker, area, polynomialOrder));
 }
 
 void pythonDeleteLabel(int index)
@@ -367,15 +367,15 @@ void pythonSelectNone()
 // selectall()
 void pythonSelectAll()
 {
-    if (sceneView->sceneMode() == SCENEMODE_POSTPROCESSOR)
+    if (sceneView->sceneMode() == SceneMode_Postprocessor)
     {
         // select volume integral area
         if (sceneView->actPostprocessorModeVolumeIntegral->isChecked())
-            Util::scene()->selectAll(SCENEMODE_OPERATE_ON_LABELS);
+            Util::scene()->selectAll(SceneMode_OperateOnLabels);
 
         // select surface integral area
         if (sceneView->actPostprocessorModeSurfaceIntegral->isChecked())
-            Util::scene()->selectAll(SCENEMODE_OPERATE_ON_EDGES);
+            Util::scene()->selectAll(SceneMode_OperateOnEdges);
     }
     else
     {
@@ -531,14 +531,14 @@ void pythonDeleteSelection()
 // mesh()
 void pythonMesh()
 {
-    Util::scene()->createMeshAndSolve(SOLVER_MESH);
+    Util::scene()->createMeshAndSolve(SolverMode_Mesh);
     Util::scene()->refresh();
 }
 
 // solve()
 void pythonSolve()
 {
-    Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);    
+    Util::scene()->createMeshAndSolve(SolverMode_MeshAndSolve);    
     if (Util::scene()->sceneSolution()->isSolved())
     {
         sceneView->actSceneModePostprocessor->trigger();
@@ -743,24 +743,24 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
 {
     // type
     SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(QString(type));
-    if (postprocessorShow != SCENEVIEW_POSTPROCESSOR_SHOW_UNDEFINED)
+    if (postprocessorShow != SceneViewPostprocessorShow_Undefined)
         sceneView->sceneViewSettings().postprocessorShow = postprocessorShow;
     else
         throw invalid_argument(QObject::tr("View type '%1' is not implemented.").arg(QString(type)).toStdString());
 
     // variable
     sceneView->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
-    if (sceneView->sceneViewSettings().scalarPhysicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED)
+    if (sceneView->sceneViewSettings().scalarPhysicFieldVariable == PhysicFieldVariable_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable '%1' is not implemented.").arg(QString(variable)).toStdString());
     if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView->sceneViewSettings().scalarPhysicFieldVariable))
         throw invalid_argument(QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString());
 
     // variable component
     sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(QString(component));
-    if (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED)
+    if (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp == PhysicFieldVariableComp_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString());
     if ((isPhysicFieldVariableScalar(sceneView->sceneViewSettings().scalarPhysicFieldVariable)) &&
-        (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp != PHYSICFIELDVARIABLECOMP_SCALAR))
+        (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar))
         throw invalid_argument(QObject::tr("Physic field variable is scalar variable.").toStdString());
 
     // range
@@ -829,7 +829,7 @@ void pythonSetTimeStep(int timestep)
     else
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
-    if (Util::scene()->problemInfo()->analysisType != ANALYSISTYPE_TRANSIENT)
+    if (Util::scene()->problemInfo()->analysisType != AnalysisType_Transient)
         throw invalid_argument(QObject::tr("Solved problem is not transient.").toStdString());
 
     if ((timestep < 0) || (timestep > Util::scene()->sceneSolution()->timeStepCount()))

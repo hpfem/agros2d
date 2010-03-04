@@ -122,11 +122,12 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
 
 // *************************************************************************************************************************************
 
-SceneLabel::SceneLabel(const Point &point, SceneLabelMarker *marker, double area) : SceneBasic()
+SceneLabel::SceneLabel(const Point &point, SceneLabelMarker *marker, double area, int polynomialOrder) : SceneBasic()
 {
     this->point = point;
     this->marker = marker;
     this->area = area;
+    this->polynomialOrder = polynomialOrder;
 }
 
 double SceneLabel::distance(const Point &point)
@@ -484,16 +485,24 @@ QLayout* DSceneLabel::createContent()
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtArea = new SLineEditValue();
     connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    txtPolynomialOrder = new QSpinBox(this);
+    txtPolynomialOrder->setMinimum(0);
+    txtPolynomialOrder->setMaximum(10);
 
     QHBoxLayout *layoutMarker = new QHBoxLayout();
     layoutMarker->addWidget(cmbMarker);
     layoutMarker->addWidget(btnMarker);
+
+    QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
+    layoutPolynomialOrder->addWidget(txtPolynomialOrder);
+    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
     layout->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
     layout->addRow(tr("Material:"), layoutMarker);
     layout->addRow(tr("Triangle area (m):"), txtArea);
+    layout->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
 
     fillComboBox();
 
@@ -518,6 +527,7 @@ bool DSceneLabel::load()
     txtPointY->setNumber(sceneLabel->point.y);
     cmbMarker->setCurrentIndex(cmbMarker->findData(sceneLabel->marker->variant()));
     txtArea->setNumber(sceneLabel->area);
+    txtPolynomialOrder->setValue(sceneLabel->polynomialOrder);
 
     return true;
 }
@@ -550,6 +560,7 @@ bool DSceneLabel::save()
     sceneLabel->point = point;
     sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
     sceneLabel->area = txtArea->number();
+    sceneLabel->polynomialOrder = txtPolynomialOrder->value();
 
     return true;
 }
@@ -639,11 +650,12 @@ void SceneNodeCommandEdit::redo()
 
 // Label
 
-SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_point = point;
     m_markerName = markerName;
     m_area = area;
+    m_polynomialOrder = polynomialOrder;
 }
 
 void SceneLabelCommandAdd::undo()
@@ -655,21 +667,22 @@ void SceneLabelCommandAdd::redo()
 {
     SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(m_markerName);
     if (labelMarker == NULL) labelMarker = Util::scene()->labelMarkers[0];
-    Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area));
+    Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area, m_polynomialOrder));
 }
 
-SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_point = point;
     m_markerName = markerName;
     m_area = area;
+    m_polynomialOrder = polynomialOrder;
 }
 
 void SceneLabelCommandRemove::undo()
 {
     SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(m_markerName);
     if (labelMarker == NULL) labelMarker = Util::scene()->labelMarkers[0];
-    Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area));
+    Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area, m_polynomialOrder));
 }
 
 void SceneLabelCommandRemove::redo()

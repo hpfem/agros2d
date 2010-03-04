@@ -45,11 +45,11 @@ int current_bc_types(int marker)
 {
     switch (currentEdge[marker].type)
     {
-    case PHYSICFIELDBC_NONE:
+    case PhysicFieldBC_None:
         return BC_NONE;
-    case PHYSICFIELDBC_CURRENT_POTENTIAL:
+    case PhysicFieldBC_Current_Potential:
         return BC_ESSENTIAL;
-    case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
+    case PhysicFieldBC_Current_InwardCurrentFlow:
         return BC_NATURAL;
     }
 }
@@ -64,7 +64,7 @@ Scalar current_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e,
 {
     double J = 0.0;
 
-    if (currentEdge[e->marker].type == PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW)
+    if (currentEdge[e->marker].type == PhysicFieldBC_Current_InwardCurrentFlow)
         J = currentEdge[e->marker].value;
 
     if (currentPlanar)
@@ -90,7 +90,7 @@ Scalar current_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
 
 QList<SolutionArray *> *current_main(SolverDialog *solverDialog)
 {
-    currentPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    currentPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -119,7 +119,9 @@ QList<SolutionArray *> *current_main(SolverDialog *solverDialog)
     H1Space space(&mesh, &shapeset);
     space.set_bc_types(current_bc_types);
     space.set_bc_values(current_bc_values);
-    space.set_uniform_order(polynomialOrder);
+    // set order by element
+    for (int i = 0; i < Util::scene()->labels.count(); i++)
+        space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
     space.assign_dofs(0);
 
     // initialize the weak formulation
@@ -144,7 +146,7 @@ QList<SolutionArray *> *current_main(SolverDialog *solverDialog)
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    int adaptivitysteps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps;
+    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
     for (i = 0; i<(adaptivitysteps); i++)
     {
         space.assign_dofs();
@@ -158,7 +160,7 @@ QList<SolutionArray *> *current_main(SolverDialog *solverDialog)
         sys.solve(1, sln);
 
         // calculate errors and adapt the solution
-        if ((adaptivityType != ADAPTIVITYTYPE_NONE))
+        if ((adaptivityType != AdaptivityType_None))
         {
             RefSystem rs(&sys);
             rs.assemble();
@@ -200,9 +202,9 @@ void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
     {
-    case PHYSICFIELDBC_NONE:
-    case PHYSICFIELDBC_CURRENT_POTENTIAL:
-    case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
+    case PhysicFieldBC_None:
+    case PhysicFieldBC_Current_Potential:
+    case PhysicFieldBC_Current_InwardCurrentFlow:
         Util::scene()->addEdgeMarker(new SceneEdgeCurrentMarker(element->attribute("name"),
                                                                 type,
                                                                 Value(element->attribute("value", "0"))));
@@ -273,7 +275,7 @@ QStringList HermesCurrent::volumeIntegralValueHeader()
 SceneEdgeMarker *HermesCurrent::newEdgeMarker()
 {
     return new SceneEdgeCurrentMarker("new boundary",
-                                      PHYSICFIELDBC_CURRENT_POTENTIAL,
+                                      PhysicFieldBC_Current_Potential,
                                       Value("0"));
 }
 
@@ -382,13 +384,13 @@ QList<SolutionArray *> *HermesCurrent::solve(SolverDialog *solverDialog)
 {
     // edge markers
     currentEdge = new CurrentEdge[Util::scene()->edges.count()+1];
-    currentEdge[0].type = PHYSICFIELDBC_NONE;
+    currentEdge[0].type = PhysicFieldBC_None;
     currentEdge[0].value = 0;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
         {
-            currentEdge[i+1].type = PHYSICFIELDBC_NONE;
+            currentEdge[i+1].type = PhysicFieldBC_None;
             currentEdge[i+1].value = 0;
         }
         else
@@ -468,49 +470,49 @@ double LocalPointValueCurrent::variableValue(PhysicFieldVariable physicFieldVari
 {
     switch (physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
+    case PhysicFieldVariable_Current_Potential:
         {
             return potential;
         }
         break;
-    case PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD:
+    case PhysicFieldVariable_Current_ElectricField:
         {
             switch (physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 return E.x;
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 return E.y;
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 return E.magnitude();
                 break;
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY:
+    case PhysicFieldVariable_Current_CurrentDensity:
         {
             switch (physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 return J.x;
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 return J.y;
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 return J.magnitude();
                 break;
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_CURRENT_LOSSES:
+    case PhysicFieldVariable_Current_Losses:
         {
             return losses;
         }
         break;
-    case PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY:
+    case PhysicFieldVariable_Current_Conductivity:
         {
             return conductivity;
         }
@@ -556,7 +558,7 @@ void SurfaceIntegralValueCurrent::calculateVariables(int i)
     if (boundary)
     {
         SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[e->marker]->marker);
-        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             current -= pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
             current -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * marker->conductivity.number * (- tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
@@ -585,7 +587,7 @@ void VolumeIntegralValueCurrent::calculateVariables(int i)
 {
     result = 0.0;
     SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[e->marker]->marker);
-    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
     {
         h1_integrate_expression(marker->conductivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
     }
@@ -617,26 +619,26 @@ void ViewScalarFilterCurrent::calculateVariable(int i)
 {
     switch (m_physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
+    case PhysicFieldVariable_Current_Potential:
         {
             node->values[0][0][i] = value1[i];
         }
         break;
-    case PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD:
+    case PhysicFieldVariable_Current_ElectricField:
         {
             switch (m_physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 {
                     node->values[0][0][i] = - dudx1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 {
                     node->values[0][0][i] = - dudy1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 {
                     node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
                 }
@@ -644,23 +646,23 @@ void ViewScalarFilterCurrent::calculateVariable(int i)
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY:
+    case PhysicFieldVariable_Current_CurrentDensity:
         {
             SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
 
             switch (m_physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 {
                     node->values[0][0][i] = - marker->conductivity.number * dudx1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 {
                     node->values[0][0][i] = - marker->conductivity.number * dudy1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 {
                     node->values[0][0][i] = marker->conductivity.number * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
                 }
@@ -668,13 +670,13 @@ void ViewScalarFilterCurrent::calculateVariable(int i)
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_CURRENT_LOSSES:
+    case PhysicFieldVariable_Current_Losses:
         {
             SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
             node->values[0][0][i] = marker->conductivity.number * (sqr(dudx1[i]) + sqr(dudy1[i]));
         }
         break;
-    case PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY:
+    case PhysicFieldVariable_Current_Conductivity:
         {
             SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
             node->values[0][0][i] = marker->conductivity.number;
@@ -707,10 +709,10 @@ QMap<QString, QString> SceneEdgeCurrentMarker::data()
     QMap<QString, QString> out;
     switch (type)
     {
-    case PHYSICFIELDBC_CURRENT_POTENTIAL:
+    case PhysicFieldBC_Current_Potential:
         out["Potential (V)"] = value.text;
         break;
-    case PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW:
+    case PhysicFieldBC_Current_InwardCurrentFlow:
         out["Inward current flow: (A/m2)"] = value.text;
         break;
     }
@@ -771,9 +773,9 @@ DSceneEdgeCurrentMarker::~DSceneEdgeCurrentMarker()
 void DSceneEdgeCurrentMarker::createContent()
 {
     cmbType = new QComboBox(this);
-    cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_POTENTIAL), PHYSICFIELDBC_CURRENT_POTENTIAL);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW), PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW);
+    cmbType->addItem("none", PhysicFieldBC_None);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Current_Potential), PhysicFieldBC_Current_Potential);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Current_InwardCurrentFlow), PhysicFieldBC_Current_InwardCurrentFlow);
 
     txtValue = new SLineEditValue(this);
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

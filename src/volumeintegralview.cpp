@@ -91,7 +91,7 @@ void VolumeIntegralValue::calculate()
 
                     // volume
                     result = 0.0;
-                    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
                     {
                         h1_integrate_expression(1);
                     }

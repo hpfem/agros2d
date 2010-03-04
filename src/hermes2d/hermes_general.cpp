@@ -41,11 +41,11 @@ int general_bc_types(int marker)
 {
     switch (generalEdge[marker].type)
     {
-    case PHYSICFIELDBC_NONE:
+    case PhysicFieldBC_None:
         return BC_NONE;
-    case PHYSICFIELDBC_GENERAL_VALUE:
+    case PhysicFieldBC_General_Value:
         return BC_ESSENTIAL;
-    case PHYSICFIELDBC_GENERAL_DERIVATIVE:
+    case PhysicFieldBC_General_Derivative:
         return BC_NATURAL;
     }
 }
@@ -60,7 +60,7 @@ Scalar general_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e,
 {
     double derivative = 0.0;
 
-    if (generalEdge[e->marker].type == PHYSICFIELDBC_GENERAL_DERIVATIVE)
+    if (generalEdge[e->marker].type == PhysicFieldBC_General_Derivative)
         derivative = generalEdge[e->marker].value;
 
     if (generalPlanar)
@@ -93,7 +93,7 @@ Scalar general_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
 
 QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
 {
-    generalPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    generalPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -122,7 +122,9 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
     H1Space space(&mesh, &shapeset);
     space.set_bc_types(general_bc_types);
     space.set_bc_values(general_bc_values);
-    space.set_uniform_order(polynomialOrder);
+    // set order by element
+    for (int i = 0; i < Util::scene()->labels.count(); i++)
+        space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
     space.assign_dofs(0);
 
     // initialize the weak formulation
@@ -147,7 +149,7 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    int adaptivitysteps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps + 1;
+    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps + 1;
     for (i = 0; i<adaptivitysteps; i++)
     {
         space.assign_dofs();
@@ -161,7 +163,7 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
         sys.solve(1, sln);
 
         // calculate errors and adapt the solution
-        if (adaptivityType != ADAPTIVITYTYPE_NONE)
+        if (adaptivityType != AdaptivityType_None)
         {            
             RefSystem rs(&sys);
             rs.assemble();
@@ -203,9 +205,9 @@ void HermesGeneral::readEdgeMarkerFromDomElement(QDomElement *element)
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
     {
-    case PHYSICFIELDBC_NONE:
-    case PHYSICFIELDBC_GENERAL_VALUE:
-    case PHYSICFIELDBC_GENERAL_DERIVATIVE:
+    case PhysicFieldBC_None:
+    case PhysicFieldBC_General_Value:
+    case PhysicFieldBC_General_Derivative:
         Util::scene()->addEdgeMarker(new SceneEdgeGeneralMarker(element->attribute("name"),
                                                                 type,
                                                                 Value(element->attribute("value", "0"))));
@@ -278,7 +280,7 @@ QStringList HermesGeneral::volumeIntegralValueHeader()
 SceneEdgeMarker *HermesGeneral::newEdgeMarker()
 {
     return new SceneEdgeGeneralMarker("new boundary",
-                                      PHYSICFIELDBC_GENERAL_VALUE,
+                                      PhysicFieldBC_General_Value,
                                       Value("0"));
 }
 
@@ -376,13 +378,13 @@ QList<SolutionArray *> *HermesGeneral::solve(SolverDialog *solverDialog)
 {
     // edge markers
     generalEdge = new GeneralEdge[Util::scene()->edges.count()+1];
-    generalEdge[0].type = PHYSICFIELDBC_NONE;
+    generalEdge[0].type = PhysicFieldBC_None;
     generalEdge[0].value = 0;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
         {
-            generalEdge[i+1].type = PHYSICFIELDBC_NONE;
+            generalEdge[i+1].type = PhysicFieldBC_None;
             generalEdge[i+1].value = 0;
         }
         else
@@ -456,28 +458,28 @@ double LocalPointValueGeneral::variableValue(PhysicFieldVariable physicFieldVari
 {
     switch (physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
+    case PhysicFieldVariable_Variable:
         {
             return variable;
         }
         break;
-    case PHYSICFIELDVARIABLE_GENERAL_GRADIENT:
+    case PhysicFieldVariable_General_Gradient:
         {
             switch (physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 return gradient.x;
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 return gradient.y;
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 return gradient.magnitude();
                 break;
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_GENERAL_CONSTANT:
+    case PhysicFieldVariable_General_Constant:
         {
             return constant;
         }
@@ -554,26 +556,26 @@ void ViewScalarFilterGeneral::calculateVariable(int i)
 {
     switch (m_physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
+    case PhysicFieldVariable_Variable:
         {
             node->values[0][0][i] = value1[i];
         }
         break;
-    case PHYSICFIELDVARIABLE_GENERAL_GRADIENT:
+    case PhysicFieldVariable_General_Gradient:
         {
             switch (m_physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 {
                     node->values[0][0][i] = -dudx1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 {
                     node->values[0][0][i] = -dudy1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 {
                     node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
                 }
@@ -581,7 +583,7 @@ void ViewScalarFilterGeneral::calculateVariable(int i)
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_GENERAL_CONSTANT:
+    case PhysicFieldVariable_General_Constant:
         {
             SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
             node->values[0][0][i] = marker->constant.number;
@@ -615,10 +617,10 @@ QMap<QString, QString> SceneEdgeGeneralMarker::data()
     QMap<QString, QString> out;
     switch (type)
     {
-    case PHYSICFIELDBC_GENERAL_VALUE:
+    case PhysicFieldBC_General_Value:
         out["Value"] = value.text;
         break;
-    case PHYSICFIELDBC_GENERAL_DERIVATIVE:
+    case PhysicFieldBC_General_Derivative:
         out["Derivative"] = value.text;
         break;
     }
@@ -687,9 +689,9 @@ DSceneEdgeGeneralMarker::~DSceneEdgeGeneralMarker()
 void DSceneEdgeGeneralMarker::createContent()
 {
     cmbType = new QComboBox();
-    cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_GENERAL_VALUE), PHYSICFIELDBC_GENERAL_VALUE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_GENERAL_DERIVATIVE), PHYSICFIELDBC_GENERAL_DERIVATIVE);
+    cmbType->addItem("none", PhysicFieldBC_None);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_General_Value), PhysicFieldBC_General_Value);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_General_Derivative), PhysicFieldBC_General_Derivative);
 
     txtValue = new SLineEditValue(this);
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

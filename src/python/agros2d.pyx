@@ -25,7 +25,7 @@ cdef extern from "../scripteditorcommandpython.h":
     
     void pythonAddNode(double x, double y) except +
     void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker) except +
-    void pythonAddLabel(double x, double y, double area, char *marker) except +
+    void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *marker) except +
 
     void pythonDeleteNode(int index) except +
     void pythonDeleteNodePoint(double x, double y)
@@ -116,8 +116,8 @@ def addnode(double x, double y):
 def addedge(double x1, double y1, double x2, double y2, double angle = 0, char *marker = "none"):
     pythonAddEdge(x1, y1, x2, y2, angle, marker)
 
-def addlabel(double x, double y, double area = 0, char *marker = "none"):
-    pythonAddLabel(x, y, area, marker)
+def addlabel(double x, double y, double area = 0, int polynomialorder = 0, char *marker = "none"):
+    pythonAddLabel(x, y, area, polynomialorder, marker)
 
 def deletenode(int index):
     pythonDeleteNode(index)

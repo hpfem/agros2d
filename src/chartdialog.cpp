@@ -110,7 +110,7 @@ void ChartDialog::showDialog()
     radAxisX->setText(Util::scene()->problemInfo()->labelX());
     radAxisY->setText(Util::scene()->problemInfo()->labelY());
 
-    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
         tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
     }
@@ -332,9 +332,9 @@ void ChartDialog::plotGeometry()
 
     // variable
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
-    if (physicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED) return;
+    if (physicFieldVariable == PhysicFieldVariable_Undefined) return;
     PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
-    if (physicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED) return;
+    if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
 
     int count = txtAxisPoints->value();
     double *xval = new double[count];
@@ -402,9 +402,9 @@ void ChartDialog::plotTime()
 
     // variable
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
-    if (physicFieldVariable == PHYSICFIELDVARIABLE_UNDEFINED) return;
+    if (physicFieldVariable == PhysicFieldVariable_Undefined) return;
     PhysicFieldVariableComp physicFieldVariableComp = (PhysicFieldVariableComp) cmbFieldVariableComp->itemData(cmbFieldVariableComp->currentIndex()).toInt();
-    if (physicFieldVariableComp == PHYSICFIELDVARIABLECOMP_UNDEFINED) return;
+    if (physicFieldVariableComp == PhysicFieldVariableComp_Undefined) return;
 
     // store timestep
     int timeStep = Util::scene()->sceneSolution()->timeStep();
@@ -483,13 +483,13 @@ void ChartDialog::doFieldVariable(int index)
     cmbFieldVariableComp->clear();
     if (isPhysicFieldVariableScalar(physicFieldVariable))
     {
-        cmbFieldVariableComp->addItem(tr("Scalar"), PHYSICFIELDVARIABLECOMP_SCALAR);
+        cmbFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
     }
     else
     {
-        cmbFieldVariableComp->addItem(tr("Magnitude"), PHYSICFIELDVARIABLECOMP_MAGNITUDE);
-        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PHYSICFIELDVARIABLECOMP_X);
-        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PHYSICFIELDVARIABLECOMP_Y);
+        cmbFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
+        cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
     }
     
     if (cmbFieldVariableComp->currentIndex() == -1)

@@ -30,10 +30,10 @@ addedge(14, 18, 7, 18, 0, "none")
 addedge(7, 18, 7, 13, 0, "none")
 
 # labels
-addlabel(2.78257, 1.37346, 0, "none")
-addlabel(10.3839, 15.7187, 0, "Source")
-addlabel(3.37832, 15.8626, 0, "Air")
-addlabel(12.3992, 0.556005, 0, "Diel")
+addlabel(2.78257, 1.37346, 0, 0, "none")
+addlabel(10.3839, 15.7187, 0, 0, "Source")
+addlabel(3.37832, 15.8626, 0, 0, "Air")
+addlabel(12.3992, 0.556005, 0, 0, "Diel")
 
 # solve
 zoombestfit()

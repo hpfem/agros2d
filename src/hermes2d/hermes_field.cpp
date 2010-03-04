@@ -32,17 +32,17 @@ HermesField *hermesFieldFactory(PhysicField physicField)
 {
     switch (physicField)
     {
-    case PHYSICFIELD_GENERAL:
+    case PhysicField_General:
         return new HermesGeneral();
-    case PHYSICFIELD_ELECTROSTATIC:
+    case PhysicField_Electrostatic:
         return new HermesElectrostatic();
-    case PHYSICFIELD_MAGNETIC:
+    case PhysicField_Magnetic:
         return new HermesMagnetic();
-    case PHYSICFIELD_HEAT:
+    case PhysicField_Heat:
         return new HermesHeat();
-    case PHYSICFIELD_CURRENT:
+    case PhysicField_Current:
         return new HermesCurrent();
-    case PHYSICFIELD_ELASTICITY:
+    case PhysicField_Elasticity:
         return new HermesElasticity();
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. hermesObjectFactory()" << endl;

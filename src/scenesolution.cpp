@@ -132,7 +132,7 @@ void SceneSolution::loadSolution(QDomElement *element)
     QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
 
     // constant solution cannot be saved
-    if (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT)
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
         Util::scene()->problemInfo()->initialCondition.evaluate(true);
 
@@ -168,7 +168,7 @@ void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
     if (isSolved())
     {
         // constant solution cannot be saved
-        int start = (Util::scene()->problemInfo()->analysisType != ANALYSISTYPE_TRANSIENT) ? 0 : 1;
+        int start = (Util::scene()->problemInfo()->analysisType != AnalysisType_Transient) ? 0 : 1;
 
         for (int i = start; i < timeStepCount(); i++)
         {
@@ -287,7 +287,7 @@ void SceneSolution::setTimeStep(int timeStep)
     m_timeStep = timeStep;
     if (!isSolved()) return;
 
-    if (Util::scene()->problemInfo()->physicField() != PHYSICFIELD_ELASTICITY)
+    if (Util::scene()->problemInfo()->physicField() != PhysicField_Elasticity)
         m_vec.process_solution(sln(), FN_DX_0, sln(), FN_DY_0, EPS_NORMAL);
 
     Util::scene()->refresh();

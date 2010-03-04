@@ -1,37 +1,37 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="5" frequency="0" numberofrefinements="1" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="10" polynomialorder="2" problemtype="planar" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic planar capacitor" initialcondition="0" >
+        <problem adaptivitytolerance="5" frequency="0" numberofrefinements="1" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="10" polynomialorder="1" problemtype="planar" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic Planar Capacitor" initialcondition="0">
             <scriptstartup></scriptstartup>
-            <description></description>
+            <description>This model is an example.</description>
             <edges>
-                <edge type="electrostatic_potential" value="10" id="1" name="Source electrode" />
-                <edge type="electrostatic_potential" value="0" id="2" name="Ground electrode" />
-                <edge type="electrostatic_surface_charge_density" value="0" id="3" name="Neumann BC" />
+                <edge type="electrostatic_potential" value="10" id="1" name="Source"/>
+                <edge type="electrostatic_potential" value="0" id="2" name="Ground"/>
+                <edge type="electrostatic_surface_charge_density" value="0" id="3" name="Neumann"/>
             </edges>
             <labels>
-                <label charge_density="0" id="1" name="Dielectric" permittivity="10" />
+                <label charge_density="0" id="1" name="Dielectric" permittivity="10"/>
             </labels>
         </problem>
     </problems>
     <geometry>
         <nodes>
-            <node x="0.1" y="0" id="0" />
-            <node x="0.2" y="0" id="1" />
-            <node x="0.1" y="0.2" id="2" />
-            <node x="0" y="0.2" id="3" />
-            <node x="0" y="0.3" id="4" />
-            <node x="0.2" y="0.3" id="5" />
+            <node x="0.1" y="0" id="0"/>
+            <node x="0.2" y="0" id="1"/>
+            <node x="0.1" y="0.2" id="2"/>
+            <node x="0" y="0.2" id="3"/>
+            <node x="0" y="0.3" id="4"/>
+            <node x="0.2" y="0.3" id="5"/>
         </nodes>
         <edges>
-            <edge end="3" marker="3" id="0" start="4" angle="0" />
-            <edge end="2" marker="1" id="1" start="3" angle="0" />
-            <edge end="0" marker="1" id="2" start="2" angle="0" />
-            <edge end="1" marker="3" id="3" start="0" angle="0" />
-            <edge end="5" marker="2" id="4" start="1" angle="0" />
-            <edge end="4" marker="2" id="5" start="5" angle="0" />
+            <edge end="3" marker="3" id="0" start="4" angle="0"/>
+            <edge end="2" marker="1" id="1" start="3" angle="0"/>
+            <edge end="0" marker="1" id="2" start="2" angle="0"/>
+            <edge end="1" marker="3" id="3" start="0" angle="0"/>
+            <edge end="5" marker="2" id="4" start="1" angle="0"/>
+            <edge end="4" marker="2" id="5" start="5" angle="0"/>
         </edges>
         <labels>
-            <label x="0.129936" y="0.239288" marker="1" id="0" area="0" />
+            <label x="0.129936" y="0.239288" polynomialorder="0" marker="1" id="0" area="0"/>
         </labels>
     </geometry>
     <functions/>

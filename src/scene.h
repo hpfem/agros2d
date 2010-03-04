@@ -75,7 +75,7 @@ public:
     QString name;
     QDate date;
     QString fileName;
-    PhysicField physicField() { return (m_hermes) ? m_hermes->physicField : PHYSICFIELD_UNDEFINED; }
+    PhysicField physicField() { return (m_hermes) ? m_hermes->physicField : PhysicField_Undefined; }
     ProblemType problemType;
     int numberOfRefinements;
     int polynomialOrder;
@@ -107,8 +107,8 @@ public:
     
     void clear()
     {
-        problemType = PROBLEMTYPE_PLANAR;
-        analysisType = ANALYSISTYPE_STEADYSTATE;
+        problemType = ProblemType_Planar;
+        analysisType = AnalysisType_SteadyState;
 
         // hermes object
         if (m_hermes) delete m_hermes;
@@ -121,7 +121,7 @@ public:
         description = "";
         numberOfRefinements = 1;
         polynomialOrder = 2;
-        adaptivityType = ADAPTIVITYTYPE_NONE;
+        adaptivityType = AdaptivityType_None;
         adaptivitySteps = 0;
         adaptivityTolerance = 1.0;
         
@@ -137,8 +137,8 @@ public:
     inline void setHermes(HermesField *hermes) { if (m_hermes) delete m_hermes; m_hermes = hermes; }
     inline HermesField *hermes() { return m_hermes; }
 
-    inline QString labelX() { return ((problemType == PROBLEMTYPE_PLANAR) ? "X" : "R");  }
-    inline QString labelY() { return ((problemType == PROBLEMTYPE_PLANAR) ? "Y" : "Z");  }
+    inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
+    inline QString labelY() { return ((problemType == ProblemType_Planar) ? "Y" : "Z");  }
 
 private:
     HermesField *m_hermes;

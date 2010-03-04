@@ -29,10 +29,10 @@ addedge(0.01, -0.01, 0.01, -0.03, 0, "none")
 addedge(0.03, -0.01, 0.03, -0.03, 0, "none")
 
 # labels
-addlabel(0.035349, 0.036683, 0, "Air")
-addlabel(0.00778124, 0.00444642, 1e-05, "Cond 1")
-addlabel(-0.0111161, -0.00311249, 1e-05, "Cond 2")
-addlabel(0.016868, -0.0186625, 0, "Magnet")
+addlabel(0.035349, 0.036683, 0, 0, "Air")
+addlabel(0.00778124, 0.00444642, 1e-05, 0, "Cond 1")
+addlabel(-0.0111161, -0.00311249, 1e-05, 0, "Cond 2")
+addlabel(0.016868, -0.0186625, 0, 0, "Magnet")
 
 # solve
 zoombestfit()

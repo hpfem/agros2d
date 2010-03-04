@@ -41,11 +41,11 @@ addedge(0.009, 0.0395, 0.009, 0.03, 0, "none")
 addedge(0.009, 0.03, 0.0135, 0.03, 0, "Convection")
 
 # labels
-addlabel(0.0308709, 0.171031, 0, "Fe")
-addlabel(0.00316251, 0.011224, 0, "Fe")
-addlabel(0.0163723, 0.144289, 0, "Cu")
-addlabel(0.00380689, 0.151055, 0, "Air")
-addlabel(0.0112064, 0.0336487, 0, "Brass")
+addlabel(0.0308709, 0.171031, 0, 0, "Fe")
+addlabel(0.00316251, 0.011224, 0, 0, "Fe")
+addlabel(0.0163723, 0.144289, 0, 0, "Cu")
+addlabel(0.00380689, 0.151055, 0, 0, "Air")
+addlabel(0.0112064, 0.0336487, 0, 0, "Brass")
 
 # solve
 zoombestfit()

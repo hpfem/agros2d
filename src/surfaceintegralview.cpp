@@ -98,7 +98,7 @@ void SurfaceIntegralValue::calculate()
                                 length += pt[i][2] * tan[i][2] / 4.0;
 
                             // surface
-                            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+                            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
                             {
                                 if (boundary)
                                     surface += pt[i][2] * tan[i][2] / 2.0;

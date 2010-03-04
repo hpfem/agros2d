@@ -19,7 +19,7 @@ addedge(0.02, 0.04, 0.02, 0, 0, "Neumann")
 addedge(0.02, 0.04, 0.02, 0.1, 0, "Inlet")
 
 # labels
-addlabel(0.0460134, 0.0867717, 0.0003, "Material")
+addlabel(0.0460134, 0.0867717, 0.0003, 0, "Material")
 
 # solve
 zoombestfit()

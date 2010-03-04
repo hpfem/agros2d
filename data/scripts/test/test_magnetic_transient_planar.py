@@ -22,8 +22,8 @@ addedge(0.000192, 0.000576, 0.000192, 0.000384, 0, "none")
 addedge(0.000192, 0.000576, 0, 0.000768, 90, "none")
 
 # labels
-addlabel(0.000585418, 0.00126858, 0, "Air")
-addlabel(0.000109549, 8.6116e-05, 0, "Copper")
+addlabel(0.000585418, 0.00126858, 0, 0, "Air")
+addlabel(0.000109549, 8.6116e-05, 0, 0, "Copper")
 
 # solve
 zoombestfit()

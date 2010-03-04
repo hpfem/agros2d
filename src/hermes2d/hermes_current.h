@@ -27,7 +27,7 @@ struct HermesCurrent : public HermesField
 {
     Q_OBJECT
 public:
-    HermesCurrent() { physicField = PHYSICFIELD_CURRENT; }
+    HermesCurrent() { physicField = PhysicField_Current; }
 
     inline int numberOfSolution() { return 1; }
     bool hasHarmonic() { return false; }
@@ -47,13 +47,13 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_HEAT_TEMPERATURE ||
-                                                                          physicFieldBC == PHYSICFIELDBC_HEAT_HEAT_FLUX); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_POTENTIAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_LOSSES ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Magnetic_Temperature ||
+                                                                          physicFieldBC == PhysicFieldBC_Heat_Flux); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Current_Potential ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Current_ElectricField ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Current_CurrentDensity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Current_Losses ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Current_Conductivity); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -62,24 +62,24 @@ public:
 
     QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
-    inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_CURRENT_POTENTIAL; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_CURRENT_POTENTIAL; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PHYSICFIELDVARIABLECOMP_SCALAR; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY; }
+    inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Current_Potential; }
+    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Current_Potential; }
+    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
+    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Current_CurrentDensity; }
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_POTENTIAL), PHYSICFIELDVARIABLE_CURRENT_POTENTIAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD), PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY), PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_LOSSES), PHYSICFIELDVARIABLE_CURRENT_LOSSES);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY), PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Current_Potential), PhysicFieldVariable_Current_Potential);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Current_ElectricField), PhysicFieldVariable_Current_ElectricField);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Current_CurrentDensity), PhysicFieldVariable_Current_CurrentDensity);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Current_Losses), PhysicFieldVariable_Current_Losses);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Current_Conductivity), PhysicFieldVariable_Current_Conductivity);
     }
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD), PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY), PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Current_ElectricField), PhysicFieldVariable_Current_ElectricField);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Current_CurrentDensity), PhysicFieldVariable_Current_CurrentDensity);
     }
 
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);

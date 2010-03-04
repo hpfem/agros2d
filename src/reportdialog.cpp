@@ -158,14 +158,14 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Problem.NumberOfRefinements]", QString::number(Util::scene()->problemInfo()->numberOfRefinements), Qt::CaseSensitive);
     destination.replace("[Problem.PolynomialOrder]", QString::number(Util::scene()->problemInfo()->polynomialOrder), Qt::CaseSensitive);
     destination.replace("[Problem.AdaptivityType]", adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType), Qt::CaseSensitive);
-    destination.replace("[Problem.AdaptivitySteps]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->problemInfo()->adaptivitySteps) : "", Qt::CaseSensitive);
-    destination.replace("[Problem.AdaptivityTolerance]", (Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->problemInfo()->adaptivityTolerance) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.AdaptivitySteps]", (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None) ? QString::number(Util::scene()->problemInfo()->adaptivitySteps) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.AdaptivityTolerance]", (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None) ? QString::number(Util::scene()->problemInfo()->adaptivityTolerance) : "", Qt::CaseSensitive);
 
     destination.replace("[Problem.Frequency]", (Util::scene()->problemInfo()->hermes()->hasHarmonic()) ? QString::number(Util::scene()->problemInfo()->frequency) : "", Qt::CaseSensitive);
     destination.replace("[Problem.AnalysisType]", analysisTypeString(Util::scene()->problemInfo()->analysisType), Qt::CaseSensitive);
-    destination.replace("[Problem.TimeStep]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeStep.number) : "", Qt::CaseSensitive);
-    destination.replace("[Problem.TimeTotal]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->timeTotal.number) : "", Qt::CaseSensitive);
-    destination.replace("[Problem.InititalCondition]", (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT) ? QString::number(Util::scene()->problemInfo()->initialCondition.number) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.TimeStep]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->timeStep.number) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.TimeTotal]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->timeTotal.number) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.InititalCondition]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->initialCondition.number) : "", Qt::CaseSensitive);
 
     // script
     destination.replace("[Script]", createPythonFromModel(), Qt::CaseSensitive);
@@ -190,8 +190,8 @@ QString ReportDialog::replaceTemplates(const QString &source)
     if (Util::scene()->sceneSolution()->isSolved())
         time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
     destination.replace("[Solver.TimeElapsed]", (Util::scene()->sceneSolution()->isSolved()) ? time.toString("mm:ss.zzz") + " s" : "", Qt::CaseSensitive);
-    destination.replace("[Solver.AdaptiveError]", (Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) : "", Qt::CaseSensitive);
-    destination.replace("[Solver.AdaptiveSteps]", (Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->adaptivityType != ADAPTIVITYTYPE_NONE) ? QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.AdaptiveError]", (Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None) ? QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.AdaptiveSteps]", (Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None) ? QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) : "", Qt::CaseSensitive);
 
     // figures    
     destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", "Geometry"), Qt::CaseSensitive);

@@ -381,13 +381,13 @@ QWidget *OptionsDialog::createViewWidget()
 
     // layout palette
     cmbPalette = new QComboBox();
-    cmbPalette->addItem(tr("Jet"), PALETTE_JET);
-    cmbPalette->addItem(tr("Autumn"), PALETTE_AUTUMN);
-    cmbPalette->addItem(tr("Hot"), PALETTE_HOT);
-    cmbPalette->addItem(tr("Copper"), PALETTE_COPPER);
-    cmbPalette->addItem(tr("Cool"), PALETTE_COOL);
-    cmbPalette->addItem(tr("B/W ascending"), PALETTE_BW_ASC);
-    cmbPalette->addItem(tr("B/W descending"), PALETTE_BW_DESC);
+    cmbPalette->addItem(tr("Jet"), Palette_Jet);
+    cmbPalette->addItem(tr("Autumn"), Palette_Autumn);
+    cmbPalette->addItem(tr("Hot"), Palette_Hot);
+    cmbPalette->addItem(tr("Copper"), Palette_Copper);
+    cmbPalette->addItem(tr("Cool"), Palette_Cool);
+    cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
+    cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
 
     chkPaletteFilter = new QCheckBox();
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));

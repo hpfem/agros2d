@@ -21,8 +21,8 @@ addedge(0.1, 0.15, 0.1, 0.1, 0, "T outer");
 addedge(0.1, 0.1, 0.1, 0, 0, "T outer");
 
 #labels
-addlabel(0.0553981, 0.124595, 0.003, "Material 1");
-addlabel(0.070091, 0.068229, 0.003, "Material 2");
+addlabel(0.0553981, 0.124595, 0.003, 0, "Material 1");
+addlabel(0.070091, 0.068229, 0.003, 0, "Material 2");
 
 # solve
 zoombestfit();

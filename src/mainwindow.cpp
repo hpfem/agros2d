@@ -715,7 +715,7 @@ void MainWindow::doCreateVideo()
 void MainWindow::doCreateMesh()
 {
     // create mesh
-    Util::scene()->createMeshAndSolve(SOLVER_MESH);
+    Util::scene()->createMeshAndSolve(SolverMode_Mesh);
     if (Util::scene()->sceneSolution()->isMeshed())
     {
         sceneView->actSceneModeLabel->trigger();
@@ -737,7 +737,7 @@ void MainWindow::doFullScreen()
 void MainWindow::doSolve()
 {
     // solve problem
-    Util::scene()->createMeshAndSolve(SOLVER_MESH_AND_SOLVE);
+    Util::scene()->createMeshAndSolve(SolverMode_MeshAndSolve);
     if (Util::scene()->sceneSolution()->isSolved())
     {
         sceneView->actSceneModePostprocessor->trigger();
@@ -862,7 +862,7 @@ void MainWindow::doInvalidated()
 {    
     actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == ANALYSISTYPE_TRANSIENT));
+    actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
     fillComboBoxTimeStep(cmbTimeStep);
 

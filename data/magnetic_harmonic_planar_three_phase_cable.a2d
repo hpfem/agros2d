@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="0" adaptivitytype="disabled" analysistype="harmonic" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="3 phase cable" initialcondition="0">
+        <problem adaptivitytolerance="1" frequency="1000" numberofrefinements="1" adaptivitytype="disabled" analysistype="harmonic" adaptivitysteps="1" polynomialorder="2" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="Magnetic Harmonic Planar Three Phase Cable" initialcondition="0">
             <scriptstartup>J0 = 1e6
 J01r = J0
 J01i = 0.0
@@ -8,17 +8,16 @@ J02r = J0*cos(-120.0/180.0*pi)
 J02i = J0*sin(-120.0/180.0*pi)
 J03r = J0*cos(-240.0/180.0*pi)
 J03i = J0*sin(-240.0/180.0*pi)
-
 gamma = 57e6</scriptstartup>
-            <description></description>
+            <description>This model is an example.</description>
             <edges>
                 <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
             </edges>
             <labels>
                 <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
-                <label current_density_real="J01r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="L1" current_density_imag="J01i" permeability="1" velocity_angular="0"/>
-                <label current_density_real="J02r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="L2" current_density_imag="J02i" permeability="1" velocity_angular="0"/>
-                <label current_density_real="J03r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="4" name="L3" current_density_imag="J03i" permeability="1" velocity_angular="0"/>
+                <label current_density_real="J01r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Conductor 1" current_density_imag="J01i" permeability="1" velocity_angular="0"/>
+                <label current_density_real="J02r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="Conductor 2" current_density_imag="J02i" permeability="1" velocity_angular="0"/>
+                <label current_density_real="J03r" remanence="0" conductivity="gamma" velocity_x="0" velocity_y="0" remanence_angle="0" id="4" name="Conductor 3" current_density_imag="J03i" permeability="1" velocity_angular="0"/>
             </labels>
         </problem>
     </problems>
@@ -76,12 +75,12 @@ gamma = 57e6</scriptstartup>
             <edge end="20" marker="1" id="23" start="23" angle="90"/>
         </edges>
         <labels>
-            <label x="0.0162468" y="0.0243702" marker="1" id="0" area="0"/>
-            <label x="0.00559029" y="0.00375598" marker="1" id="1" area="0"/>
-            <label x="0" y="0.00497885" marker="2" id="2" area="1e-07"/>
-            <label x="0.00384333" y="-0.0023584" marker="3" id="3" area="1e-07"/>
-            <label x="-0.00419272" y="-0.00288249" marker="4" id="4" area="1e-07"/>
-            <label x="0.00758341" y="0.0059684" marker="1" id="5" area="0"/>
+            <label x="0.0162468" y="0.0243702" polynomialorder="0" marker="1" id="0" area="0"/>
+            <label x="0.00559029" y="0.00375598" polynomialorder="0" marker="1" id="1" area="0"/>
+            <label x="0" y="0.00497885" polynomialorder="0" marker="2" id="2" area="1e-07"/>
+            <label x="0.00384333" y="-0.0023584" polynomialorder="0" marker="3" id="3" area="1e-07"/>
+            <label x="-0.00419272" y="-0.00288249" polynomialorder="0" marker="4" id="4" area="1e-07"/>
+            <label x="0.00758341" y="0.0059684" polynomialorder="0" marker="1" id="5" area="0"/>
         </labels>
     </geometry>
     <functions/>

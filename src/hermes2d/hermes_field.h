@@ -53,7 +53,7 @@ struct HermesField : public QObject
     Q_OBJECT
 public:
     PhysicField physicField;
-    HermesField() { physicField = PHYSICFIELD_UNDEFINED; }
+    HermesField() { physicField = PhysicField_Undefined; }
 
     virtual int numberOfSolution() = 0;
     virtual bool hasHarmonic() = 0;

@@ -52,13 +52,13 @@ int elasticity_bc_types_x(int marker)
 {
     switch (elasticityEdge[marker].typeX)
     {
-    case PHYSICFIELDBC_NONE:
+    case PhysicFieldBC_None:
         return BC_NONE;
         break;
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
+    case PhysicFieldBC_Elasticity_Fixed:
         return BC_ESSENTIAL;
         break;
-    case PHYSICFIELDBC_ELASTICITY_FREE:
+    case PhysicFieldBC_Elasticity_Free:
         return BC_NATURAL;
         break;
     }
@@ -68,13 +68,13 @@ int elasticity_bc_types_y(int marker)
 {
     switch (elasticityEdge[marker].typeY)
     {
-    case PHYSICFIELDBC_NONE:
+    case PhysicFieldBC_None:
         return BC_NONE;
         break;
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
+    case PhysicFieldBC_Elasticity_Fixed:
         return BC_ESSENTIAL;
         break;
-    case PHYSICFIELDBC_ELASTICITY_FREE:
+    case PhysicFieldBC_Elasticity_Free:
         return BC_NATURAL;
         break;
     }
@@ -84,13 +84,13 @@ scalar elasticity_bc_values_x(int marker, double x, double y)
 {
     switch (elasticityEdge[marker].typeX)
     {
-    case PHYSICFIELDBC_NONE:
+    case PhysicFieldBC_None:
         return 0;
         break;
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
+    case PhysicFieldBC_Elasticity_Fixed:
         return 0;
         break;
-    case PHYSICFIELDBC_ELASTICITY_FREE:
+    case PhysicFieldBC_Elasticity_Free:
         return elasticityEdge[marker].forceX;
         break;
     }
@@ -100,13 +100,13 @@ scalar elasticity_bc_values_y(int marker, double x, double y)
 {
     switch (elasticityEdge[marker].typeY)
     {
-    case PHYSICFIELDBC_NONE:
+    case PhysicFieldBC_None:
         return 0;
         break;
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
+    case PhysicFieldBC_Elasticity_Fixed:
         return 0;
         break;
-    case PHYSICFIELDBC_ELASTICITY_FREE:
+    case PhysicFieldBC_Elasticity_Free:
         return elasticityEdge[marker].forceY;
         break;
     }
@@ -148,7 +148,7 @@ Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> 
 
 QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
 {
-    elasticityPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    elasticityPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
@@ -253,9 +253,9 @@ void HermesElasticity::readEdgeMarkerFromDomElement(QDomElement *element)
     PhysicFieldBC typeX = physicFieldBCFromStringKey(element->attribute("typex"));
     switch (typeX)
     {
-    case PHYSICFIELDBC_NONE:
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
-    case PHYSICFIELDBC_ELASTICITY_FREE:
+    case PhysicFieldBC_None:
+    case PhysicFieldBC_Elasticity_Fixed:
+    case PhysicFieldBC_Elasticity_Free:
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("typex")).toStdString() << endl;
@@ -265,16 +265,16 @@ void HermesElasticity::readEdgeMarkerFromDomElement(QDomElement *element)
     PhysicFieldBC typeY = physicFieldBCFromStringKey(element->attribute("typey"));
     switch (typeY)
     {
-    case PHYSICFIELDBC_NONE:
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
-    case PHYSICFIELDBC_ELASTICITY_FREE:
+    case PhysicFieldBC_None:
+    case PhysicFieldBC_Elasticity_Fixed:
+    case PhysicFieldBC_Elasticity_Free:
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("typey")).toStdString() << endl;
         break;
     }
 
-    if ((typeX != PHYSICFIELDBC_UNDEFINED) && (typeY != PHYSICFIELDBC_UNDEFINED))
+    if ((typeX != PhysicFieldBC_Undefined) && (typeY != PhysicFieldBC_Undefined))
         Util::scene()->addEdgeMarker(new SceneEdgeElasticityMarker(element->attribute("name"),
                                                                    typeX, typeY,
                                                                    Value(element->attribute("forcex", "0")),
@@ -345,8 +345,8 @@ QStringList HermesElasticity::volumeIntegralValueHeader()
 SceneEdgeMarker *HermesElasticity::newEdgeMarker()
 {
     return new SceneEdgeElasticityMarker("new boundary",
-                                         PHYSICFIELDBC_ELASTICITY_FREE,
-                                         PHYSICFIELDBC_ELASTICITY_FREE,
+                                         PhysicFieldBC_Elasticity_Free,
+                                         PhysicFieldBC_Elasticity_Free,
                                          Value("0"),
                                          Value("0"));
 }
@@ -439,16 +439,16 @@ QList<SolutionArray *> *HermesElasticity::solve(SolverDialog *solverDialog)
 {
     // edge markers
     elasticityEdge = new ElasticityEdge[Util::scene()->edges.count()+1];
-    elasticityEdge[0].typeX = PHYSICFIELDBC_NONE;
-    elasticityEdge[0].typeY = PHYSICFIELDBC_NONE;
+    elasticityEdge[0].typeX = PhysicFieldBC_None;
+    elasticityEdge[0].typeY = PhysicFieldBC_None;
     elasticityEdge[0].forceX = 0;
     elasticityEdge[0].forceY = 0;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
         {
-            elasticityEdge[i+1].typeX = PHYSICFIELDBC_NONE;
-            elasticityEdge[i+1].typeY = PHYSICFIELDBC_NONE;
+            elasticityEdge[i+1].typeX = PhysicFieldBC_None;
+            elasticityEdge[i+1].typeY = PhysicFieldBC_None;
             elasticityEdge[i+1].forceX = 0;
             elasticityEdge[i+1].forceY = 0;
         }
@@ -518,7 +518,7 @@ double LocalPointValueElasticity::variableValue(PhysicFieldVariable physicFieldV
 {
     switch (physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
+    case PhysicFieldVariable_Elasticity_VonMisesStress:
         {
             return von_mises_stress;
         }
@@ -590,7 +590,7 @@ void ViewScalarFilterElasticity::calculateVariable(int i)
 {
     switch (m_physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
+    case PhysicFieldVariable_Elasticity_VonMisesStress:
         {
             SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
 
@@ -598,7 +598,7 @@ void ViewScalarFilterElasticity::calculateVariable(int i)
             double tz = marker->lambda() * (dudx1[i] + dudy2[i]);
             double tx = tz + 2*marker->mu() * dudx1[i];
             double ty = tz + 2*marker->mu() * dudy2[i];
-            if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_AXISYMMETRIC)
+            if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
                 tz += 2*marker->mu() * value1[i] / x[i];
             double txy = marker->mu() * (dudy1[i] + dudx2[i]);
 
@@ -639,13 +639,13 @@ QMap<QString, QString> SceneEdgeElasticityMarker::data()
     QMap<QString, QString> out;
     switch (typeX)
     {
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
+    case PhysicFieldBC_Elasticity_Fixed:
         out["Force X: (N)"] = forceX.number;
         break;
     }
     switch (typeY)
     {
-    case PHYSICFIELDBC_ELASTICITY_FIXED:
+    case PhysicFieldBC_Elasticity_Fixed:
         out["Force Y: (N)"] = forceY.number;
         break;
     }
@@ -712,14 +712,14 @@ DSceneEdgeElasticityMarker::~DSceneEdgeElasticityMarker()
 void DSceneEdgeElasticityMarker::createContent()
 {
     cmbTypeX = new QComboBox(this);
-    cmbTypeX->addItem("none", PHYSICFIELDBC_NONE);
-    cmbTypeX->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FREE), PHYSICFIELDBC_ELASTICITY_FREE);
-    cmbTypeX->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FIXED), PHYSICFIELDBC_ELASTICITY_FIXED);
+    cmbTypeX->addItem("none", PhysicFieldBC_None);
+    cmbTypeX->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Free), PhysicFieldBC_Elasticity_Free);
+    cmbTypeX->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Fixed), PhysicFieldBC_Elasticity_Fixed);
 
     cmbTypeY = new QComboBox(this);
-    cmbTypeY->addItem("none", PHYSICFIELDBC_NONE);
-    cmbTypeY->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FREE), PHYSICFIELDBC_ELASTICITY_FREE);
-    cmbTypeY->addItem(physicFieldBCString(PHYSICFIELDBC_ELASTICITY_FIXED), PHYSICFIELDBC_ELASTICITY_FIXED);
+    cmbTypeY->addItem("none", PhysicFieldBC_None);
+    cmbTypeY->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Free), PhysicFieldBC_Elasticity_Free);
+    cmbTypeY->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Fixed), PhysicFieldBC_Elasticity_Fixed);
 
     txtForceX = new SLineEditValue(this);
     txtForceY = new SLineEditValue(this);

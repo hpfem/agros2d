@@ -18,7 +18,7 @@ addedge(0.2, 0.15, 0.35, 0.45, 0, "Neumann")
 addedge(0.35, 0.45, 0, 0.45, 0, "Voltage")
 
 # labels
-addlabel(0.0933957, 0.350253, 0, "Copper")
+addlabel(0.0933957, 0.350253, 0, 0, "Copper")
 
 # solve
 zoombestfit()

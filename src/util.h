@@ -244,10 +244,10 @@ struct ExpressionResult
 
 enum ErrorResultType
 {
-    ERRORRESULT_NONE,
-    ERRORRESULT_INFORMATION,
-    ERRORRESULT_WARNING,
-    ERRORRESULT_CRITICAL
+    ErrorResultType_None,
+    ErrorResultType_Information,
+    ErrorResultType_Warning,
+    ErrorResultType_Critical
 };
 
 class ErrorResult
@@ -258,7 +258,7 @@ public:
 
     inline ErrorResult()
     {
-        m_type = ERRORRESULT_NONE;
+        m_type = ErrorResultType_None;
         m_message = "";
     }
 
@@ -268,21 +268,21 @@ public:
         m_message = message;
     }
 
-    inline bool isError() { return (m_type != ERRORRESULT_NONE); }
+    inline bool isError() { return (m_type != ErrorResultType_None); }
 
     void showDialog()
     {
         switch (m_type)
         {
-        case ERRORRESULT_NONE:
+        case ErrorResultType_None:
             return;
-        case ERRORRESULT_INFORMATION:
+        case ErrorResultType_Information:
             QMessageBox::information(QApplication::activeWindow(), QObject::tr("Information"), m_message);
             break;
-        case ERRORRESULT_WARNING:
+        case ErrorResultType_Warning:
             QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Warning"), m_message);
             break;
-        case ERRORRESULT_CRITICAL:
+        case ErrorResultType_Critical:
             QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Critical"), m_message);
             break;
         }
@@ -295,167 +295,167 @@ private:
 
 enum SolverMode
 {
-    SOLVER_MESH,
-    SOLVER_MESH_AND_SOLVE
+    SolverMode_Mesh,
+    SolverMode_MeshAndSolve
 };
 
 enum ProblemType
 {
-    PROBLEMTYPE_UNDEFINED,
-    PROBLEMTYPE_PLANAR,
-    PROBLEMTYPE_AXISYMMETRIC
+    ProblemType_Undefined,
+    ProblemType_Planar,
+    ProblemType_Axisymmetric
 };
 
 enum AnalysisType
 {
-    ANALYSISTYPE_UNDEFINED,
-    ANALYSISTYPE_STEADYSTATE,
-    ANALYSISTYPE_TRANSIENT,
-    ANALYSISTYPE_HARMONIC
+    AnalysisType_Undefined,
+    AnalysisType_SteadyState,
+    AnalysisType_Transient,
+    AnalysisType_Harmonic
 };
 
 enum AdaptivityType
 {
-    ADAPTIVITYTYPE_UNDEFINED = 1000,
-    ADAPTIVITYTYPE_NONE = 3,
-    ADAPTIVITYTYPE_H = 1,
-    ADAPTIVITYTYPE_P = 2,
-    ADAPTIVITYTYPE_HP = 0
-                    };
+    AdaptivityType_Undefined = 1000,
+    AdaptivityType_None = 3,
+    AdaptivityType_H = 1,
+    AdaptivityType_P = 2,
+    AdaptivityType_HP = 0
+};
 
 enum PhysicFieldVariableComp
 {
-    PHYSICFIELDVARIABLECOMP_UNDEFINED,
-    PHYSICFIELDVARIABLECOMP_SCALAR,
-    PHYSICFIELDVARIABLECOMP_MAGNITUDE,
-    PHYSICFIELDVARIABLECOMP_X,
-    PHYSICFIELDVARIABLECOMP_Y
+    PhysicFieldVariableComp_Undefined,
+    PhysicFieldVariableComp_Scalar,
+    PhysicFieldVariableComp_Magnitude,
+    PhysicFieldVariableComp_X,
+    PhysicFieldVariableComp_Y
 };
 
 enum PhysicField
 {
-    PHYSICFIELD_UNDEFINED,
-    PHYSICFIELD_GENERAL,
-    PHYSICFIELD_ELECTROSTATIC,
-    PHYSICFIELD_CURRENT,
-    PHYSICFIELD_HEAT,
-    PHYSICFIELD_ELASTICITY,
-    PHYSICFIELD_MAGNETIC
+    PhysicField_Undefined,
+    PhysicField_General,
+    PhysicField_Electrostatic,
+    PhysicField_Current,
+    PhysicField_Heat,
+    PhysicField_Elasticity,
+    PhysicField_Magnetic
 };
 
 enum PhysicFieldVariable
 {
-    PHYSICFIELDVARIABLE_UNDEFINED,
-    PHYSICFIELDVARIABLE_NONE,
-    PHYSICFIELDVARIABLE_ORDER,
-    PHYSICFIELDVARIABLE_GENERAL_VARIABLE,
-    PHYSICFIELDVARIABLE_GENERAL_GRADIENT,
-    PHYSICFIELDVARIABLE_GENERAL_CONSTANT,
-    PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL,
-    PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD,
-    PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT,
-    PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY,
-    PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY,
-    PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_REAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_IMAG,
-    PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY,
-    PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_IMAG,
-    PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD,
-    PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_IMAG,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_REAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_IMAG,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_REAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_IMAG,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL,
-    PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_IMAG,
-    PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES,    
-    PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE,
-    PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE,
-    PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY,
-    PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY,
-    PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY,
-    PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY,
-    PHYSICFIELDVARIABLE_CURRENT_POTENTIAL,
-    PHYSICFIELDVARIABLE_CURRENT_ELECTRICFIELD,
-    PHYSICFIELDVARIABLE_CURRENT_CURRENT_DENSITY,
-    PHYSICFIELDVARIABLE_CURRENT_LOSSES,
-    PHYSICFIELDVARIABLE_CURRENT_CONDUCTIVITY,
-    PHYSICFIELDVARIABLE_HEAT_TEMPERATURE,
-    PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT,
-    PHYSICFIELDVARIABLE_HEAT_FLUX,
-    PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY,
-    PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS
+    PhysicFieldVariable_Undefined,
+    PhysicFieldVariable_None,
+    PhysicFieldVariable_Order,
+    PhysicFieldVariable_Variable,
+    PhysicFieldVariable_General_Gradient,
+    PhysicFieldVariable_General_Constant,
+    PhysicFieldVariable_Electrostatic_Potential,
+    PhysicFieldVariable_Electrostatic_ElectricField,
+    PhysicFieldVariable_Electrostatic_Displacement,
+    PhysicFieldVariable_Electrostatic_EnergyDensity,
+    PhysicFieldVariable_Electrostatic_Permittivity,
+    PhysicFieldVariable_Magnetic_VectorPotential,
+    PhysicFieldVariable_Magnetic_VectorPotentialReal,
+    PhysicFieldVariable_Magnetic_VectorPotentialImag,
+    PhysicFieldVariable_Magnetic_FluxDensity,
+    PhysicFieldVariable_Magnetic_FluxDensityReal,
+    PhysicFieldVariable_Magnetic_FluxDensityImag,
+    PhysicFieldVariable_Magnetic_MagneticField,
+    PhysicFieldVariable_Magnetic_MagneticFieldReal,
+    PhysicFieldVariable_Magnetic_MagneticFieldImag,
+    PhysicFieldVariable_Magnetic_CurrentDensity,
+    PhysicFieldVariable_Magnetic_CurrentDensityReal,
+    PhysicFieldVariable_Magnetic_CurrentDensityImag,
+    PhysicFieldVariable_Magnetic_CurrentDensityTotal,
+    PhysicFieldVariable_Magnetic_CurrentDensityTotalReal,
+    PhysicFieldVariable_Magnetic_CurrentDensityTotalImag,
+    PhysicFieldVariable_Magnetic_CurrentDensityInducedTransform,
+    PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformReal,
+    PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformImag,
+    PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocity,
+    PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityReal,
+    PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityImag,
+    PhysicFieldVariable_Magnetic_PowerLosses,
+    PhysicFieldVariable_Magnetic_LorentzForce,
+    PhysicFieldVariable_Magnetic_Remanence,
+    PhysicFieldVariable_Magnetic_EnergyDensity,
+    PhysicFieldVariable_Magnetic_Permeability,
+    PhysicFieldVariable_Magnetic_Conductivity,
+    PhysicFieldVariable_Magnetic_Velocity,
+    PhysicFieldVariable_Current_Potential,
+    PhysicFieldVariable_Current_ElectricField,
+    PhysicFieldVariable_Current_CurrentDensity,
+    PhysicFieldVariable_Current_Losses,
+    PhysicFieldVariable_Current_Conductivity,
+    PhysicFieldVariable_Heat_Temperature,
+    PhysicFieldVariable_Heat_TemperatureGradient,
+    PhysicFieldVariable_Heat_Flux,
+    PhysicFieldVariable_Heat_Conductivity,
+    PhysicFieldVariable_Elasticity_VonMisesStress
 };
 
 
 enum PhysicFieldBC
 {
-    PHYSICFIELDBC_UNDEFINED,
-    PHYSICFIELDBC_NONE,
-    PHYSICFIELDBC_GENERAL_VALUE,
-    PHYSICFIELDBC_GENERAL_DERIVATIVE,
-    PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL,
-    PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE,
-    PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL,
-    PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT,
-    PHYSICFIELDBC_HEAT_TEMPERATURE,
-    PHYSICFIELDBC_HEAT_HEAT_FLUX,
-    PHYSICFIELDBC_CURRENT_POTENTIAL,
-    PHYSICFIELDBC_CURRENT_INWARD_CURRENT_FLOW,
-    PHYSICFIELDBC_ELASTICITY_FIXED,
-    PHYSICFIELDBC_ELASTICITY_FREE
+    PhysicFieldBC_Undefined,
+    PhysicFieldBC_None,
+    PhysicFieldBC_General_Value,
+    PhysicFieldBC_General_Derivative,
+    PhysicFieldBC_Electrostatic_Potential,
+    PhysicFieldBC_Electrostatic_SurfaceCharge,
+    PhysicFieldBC_Magnetic_VectorPotential,
+    PhysicFieldBC_Magnetic_SurfaceCurrent,
+    PhysicFieldBC_Magnetic_Temperature,
+    PhysicFieldBC_Heat_Flux,
+    PhysicFieldBC_Current_Potential,
+    PhysicFieldBC_Current_InwardCurrentFlow,
+    PhysicFieldBC_Elasticity_Fixed,
+    PhysicFieldBC_Elasticity_Free
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
 {
     switch (physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_GENERAL_VARIABLE:
-    case PHYSICFIELDVARIABLE_GENERAL_CONSTANT:
+    case PhysicFieldVariable_Variable:
+    case PhysicFieldVariable_General_Constant:
 
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
+    case PhysicFieldVariable_Electrostatic_Potential:
+    case PhysicFieldVariable_Electrostatic_EnergyDensity:
+    case PhysicFieldVariable_Electrostatic_Permittivity:
 
-    case PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL:
-    case PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_REAL:
-    case PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_IMAG:
+    case PhysicFieldVariable_Magnetic_VectorPotential:
+    case PhysicFieldVariable_Magnetic_VectorPotentialReal:
+    case PhysicFieldVariable_Magnetic_VectorPotentialImag:
 
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_REAL:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_IMAG:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_REAL:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_IMAG:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_IMAG:
-    case PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY:
-    case PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES:
-    case PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY:
-    case PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY:
-    case PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD:
-    case PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY:
+    case PhysicFieldVariable_Magnetic_CurrentDensity:
+    case PhysicFieldVariable_Magnetic_CurrentDensityReal:
+    case PhysicFieldVariable_Magnetic_CurrentDensityImag:
+    case PhysicFieldVariable_Magnetic_CurrentDensityTotal:
+    case PhysicFieldVariable_Magnetic_CurrentDensityTotalReal:
+    case PhysicFieldVariable_Magnetic_CurrentDensityTotalImag:
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransform:
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformReal:
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformImag:
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocity:
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityReal:
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityImag:
+    case PhysicFieldVariable_Magnetic_EnergyDensity:
+    case PhysicFieldVariable_Magnetic_PowerLosses:
+    case PhysicFieldVariable_Magnetic_Permeability:
+    case PhysicFieldVariable_Magnetic_FluxDensity:
+    case PhysicFieldVariable_Magnetic_MagneticField:
+    case PhysicFieldVariable_Magnetic_Conductivity:
 
-    case PHYSICFIELDVARIABLE_HEAT_TEMPERATURE:
-    case PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY:
+    case PhysicFieldVariable_Heat_Temperature:
+    case PhysicFieldVariable_Heat_Conductivity:
 
-    case PHYSICFIELDVARIABLE_CURRENT_POTENTIAL:
-    case PHYSICFIELDVARIABLE_CURRENT_LOSSES:
+    case PhysicFieldVariable_Current_Potential:
+    case PhysicFieldVariable_Current_Losses:
 
-    case PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS:
+    case PhysicFieldVariable_Elasticity_VonMisesStress:
         return true;
         break;
     default:
@@ -466,38 +466,38 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
 
 enum SceneMode
 {
-    SCENEMODE_OPERATE_ON_NODES,
-    SCENEMODE_OPERATE_ON_EDGES,
-    SCENEMODE_OPERATE_ON_LABELS,
-    SCENEMODE_POSTPROCESSOR
+    SceneMode_OperateOnNodes,
+    SceneMode_OperateOnEdges,
+    SceneMode_OperateOnLabels,
+    SceneMode_Postprocessor
 };
 
 enum SceneModePostprocessor
 {
-    POSTPROCESSOR_LOCALVALUE,
-    POSTPROCESSOR_SURFACEINTEGRAL,
-    POSTPROCESSOR_VOLUMEINTEGRAL
+    SceneMode_LocalValue,
+    SceneMode_SurfaceIntegral,
+    SceneMode_VolumeIntegral
 };
 
 enum PaletteType
 {
-    PALETTE_JET,
-    PALETTE_AUTUMN,
-    PALETTE_COPPER,
-    PALETTE_HOT,
-    PALETTE_COOL,
-    PALETTE_BW_ASC,
-    PALETTE_BW_DESC
+    Palette_Jet,
+    Palette_Autumn,
+    Palette_Copper,
+    Palette_Hot,
+    Palette_Cool,
+    Palette_BWAsc,
+    Palette_BWDesc
 };
 
 enum SceneViewPostprocessorShow
 {
-    SCENEVIEW_POSTPROCESSOR_SHOW_UNDEFINED,
-    SCENEVIEW_POSTPROCESSOR_SHOW_NONE,
-    SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW,
-    SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3D,
-    SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID,
-    SCENEVIEW_POSTPROCESSOR_SHOW_ORDER
+    SceneViewPostprocessorShow_Undefined,
+    SceneViewPostprocessorShow_None,
+    SceneViewPostprocessorShow_ScalarView,
+    SceneViewPostprocessorShow_ScalarView3D,
+    SceneViewPostprocessorShow_ScalarView3DSolid,
+    SceneViewPostprocessorShow_Order
 };
 
 // captions
@@ -516,8 +516,8 @@ void initLists();
 QString physicFieldToStringKey(PhysicField physicField);
 PhysicField physicFieldFromStringKey(const QString &physicField);
 
-inline QString problemTypeToStringKey(ProblemType problemType) { return ((problemType == PROBLEMTYPE_PLANAR) ? "planar" : "axisymmetric"); }
-inline ProblemType problemTypeFromStringKey(const QString &problemType) { if (problemType == "planar") return PROBLEMTYPE_PLANAR; else if (problemType == "axisymmetric") return PROBLEMTYPE_AXISYMMETRIC; else return PROBLEMTYPE_UNDEFINED; }
+inline QString problemTypeToStringKey(ProblemType problemType) { return ((problemType == ProblemType_Planar) ? "planar" : "axisymmetric"); }
+inline ProblemType problemTypeFromStringKey(const QString &problemType) { if (problemType == "planar") return ProblemType_Planar; else if (problemType == "axisymmetric") return ProblemType_Axisymmetric; else return ProblemType_Undefined; }
 
 QString analysisTypeToStringKey(AnalysisType analysisType);
 AnalysisType analysisTypeFromStringKey(const QString &analysisType);

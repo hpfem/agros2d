@@ -42,12 +42,12 @@ addedge(0.04, 0.052, 0.04, 0, 0, "none")
 addedge(0.03, 0.01, 0.03, 0.052, 0, "none")
 
 # labels
-addlabel(0.0348743, 0.0347237, 0, "Fe")
-addlabel(0.00512569, -0.0070852, 0, "Fe")
-addlabel(0.021206, 0.0692964, 0, "Cu")
-addlabel(0.0141705, 0.12445, 0, "Air")
-addlabel(0.0346923, 0.0892198, 0, "Fe")
-addlabel(0.036093, 0.0654078, 0, "Magnet")
+addlabel(0.0348743, 0.0347237, 0, 0, "Fe")
+addlabel(0.00512569, -0.0070852, 0, 0, "Fe")
+addlabel(0.021206, 0.0692964, 0, 0, "Cu")
+addlabel(0.0141705, 0.12445, 0, 0, "Air")
+addlabel(0.0346923, 0.0892198, 0, 0, "Fe")
+addlabel(0.036093, 0.0654078, 0, 0, "Magnet")
 
 # solve
 zoombestfit()

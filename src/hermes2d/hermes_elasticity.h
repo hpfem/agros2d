@@ -27,7 +27,7 @@ struct HermesElasticity : public HermesField
 {
     Q_OBJECT
 public:
-    HermesElasticity() { physicField = PHYSICFIELD_ELASTICITY; }
+    HermesElasticity() { physicField = PhysicField_Elasticity; }
 
     inline int numberOfSolution() { return 2; }
     bool hasHarmonic() { return false; }
@@ -47,9 +47,9 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_ELASTICITY_FIXED ||
-                                                                          physicFieldBC == PHYSICFIELDBC_ELASTICITY_FREE); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Elasticity_Fixed ||
+                                                                          physicFieldBC == PhysicFieldBC_Elasticity_Free); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Elasticity_VonMisesStress); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -58,19 +58,19 @@ public:
 
     QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
-    inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PHYSICFIELDVARIABLECOMP_SCALAR; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PHYSICFIELDVARIABLE_UNDEFINED; }
+    inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Elasticity_VonMisesStress; }
+    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Elasticity_VonMisesStress; }
+    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
+    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Undefined; }
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS), PHYSICFIELDVARIABLE_ELASTICITY_VON_MISES_STRESS);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_VonMisesStress), PhysicFieldVariable_Elasticity_VonMisesStress);
     }
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_TemperatureGradient), PhysicFieldVariable_Heat_TemperatureGradient);
     }
 
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);

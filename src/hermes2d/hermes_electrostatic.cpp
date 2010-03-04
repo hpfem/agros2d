@@ -41,11 +41,11 @@ int electrostatic_bc_types(int marker)
 {
     switch (electrostaticEdge[marker].type)
     {
-    case PHYSICFIELDBC_NONE:
+    case PhysicFieldBC_None:
         return BC_NONE;
-    case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
+    case PhysicFieldBC_Electrostatic_Potential:
         return BC_ESSENTIAL;
-    case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
+    case PhysicFieldBC_Electrostatic_SurfaceCharge:
         return BC_NATURAL;
     }
 }
@@ -60,7 +60,7 @@ Scalar electrostatic_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Rea
 {
     double surfaceCharge = 0.0;
 
-    if (electrostaticEdge[e->marker].type == PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE)
+    if (electrostaticEdge[e->marker].type == PhysicFieldBC_Electrostatic_SurfaceCharge)
         surfaceCharge = electrostaticEdge[e->marker].value;
 
     if (electrostaticPlanar)
@@ -89,7 +89,7 @@ Scalar electrostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e
 
 QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
 {
-    electrostaticPlanar = (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR);
+    electrostaticPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -104,6 +104,7 @@ QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
     Mesh mesh;
     H2DReader meshloader;
     meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
+    
     for (int i = 0; i < numberOfRefinements; i++)
         mesh.refine_all_elements(0);
 
@@ -118,7 +119,9 @@ QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
     H1Space space(&mesh, &shapeset);
     space.set_bc_types(electrostatic_bc_types);
     space.set_bc_values(electrostatic_bc_values);
-    space.set_uniform_order(polynomialOrder);
+    // set order by element
+    for (int i = 0; i < Util::scene()->labels.count(); i++)
+        space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
     space.assign_dofs(0);
 
     // initialize the weak formulation
@@ -143,7 +146,7 @@ QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
     // assemble the stiffness matrix and solve the system
     double error;
     int i;
-    int adaptivitysteps = (adaptivityType == ADAPTIVITYTYPE_NONE) ? 1 : adaptivitySteps + 1;
+    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps + 1;
     for (i = 0; i<adaptivitysteps; i++)
     {
         space.assign_dofs();
@@ -157,7 +160,7 @@ QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
         sys.solve(1, sln);
 
         // calculate errors and adapt the solution
-        if (adaptivityType != ADAPTIVITYTYPE_NONE)
+        if (adaptivityType != AdaptivityType_None)
         {
             RefSystem rs(&sys);
             rs.assemble();
@@ -199,9 +202,9 @@ void HermesElectrostatic::readEdgeMarkerFromDomElement(QDomElement *element)
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
     {
-    case PHYSICFIELDBC_NONE:
-    case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
-    case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
+    case PhysicFieldBC_None:
+    case PhysicFieldBC_Electrostatic_Potential:
+    case PhysicFieldBC_Electrostatic_SurfaceCharge:
         Util::scene()->addEdgeMarker(new SceneEdgeElectrostaticMarker(element->attribute("name"),
                                                                       type,
                                                                       Value(element->attribute("value", "0"))));
@@ -274,7 +277,7 @@ QStringList HermesElectrostatic::volumeIntegralValueHeader()
 SceneEdgeMarker *HermesElectrostatic::newEdgeMarker()
 {
     return new SceneEdgeElectrostaticMarker("new boundary",
-                                            PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL,
+                                            PhysicFieldBC_Electrostatic_Potential,
                                             Value("0"));
 }
 
@@ -397,13 +400,13 @@ QList<SolutionArray *> *HermesElectrostatic::solve(SolverDialog *solverDialog)
 {
     // edge markers
     electrostaticEdge = new ElectrostaticEdge[Util::scene()->edges.count()+1];
-    electrostaticEdge[0].type = PHYSICFIELDBC_NONE;
+    electrostaticEdge[0].type = PhysicFieldBC_None;
     electrostaticEdge[0].value = 0;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
         {
-            electrostaticEdge[i+1].type = PHYSICFIELDBC_NONE;
+            electrostaticEdge[i+1].type = PhysicFieldBC_None;
             electrostaticEdge[i+1].value = 0;
         }
         else
@@ -486,49 +489,49 @@ double LocalPointValueElectrostatic::variableValue(PhysicFieldVariable physicFie
 {
     switch (physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
+    case PhysicFieldVariable_Electrostatic_Potential:
         {
             return potential;
         }
         break;
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
+    case PhysicFieldVariable_Electrostatic_ElectricField:
         {
             switch (physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 return E.x;
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 return E.y;
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 return E.magnitude();
                 break;
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT:
+    case PhysicFieldVariable_Electrostatic_Displacement:
         {
             switch (physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 return D.x;
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 return D.y;
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 return D.magnitude();
                 break;
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
+    case PhysicFieldVariable_Electrostatic_EnergyDensity:
         {
             return we;
         }
         break;
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
+    case PhysicFieldVariable_Electrostatic_Permittivity:
         {
             return permittivity;
         }
@@ -574,7 +577,7 @@ void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
     if (boundary)
     {
         SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[e->marker]->marker);
-        if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
             surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
@@ -603,7 +606,7 @@ void VolumeIntegralValueElectrostatic::calculateVariables(int i)
 {
     result = 0.0;
     SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[e->marker]->marker);
-    if (Util::scene()->problemInfo()->problemType == PROBLEMTYPE_PLANAR)
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
     {
         h1_integrate_expression(0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
     }
@@ -635,26 +638,26 @@ void ViewScalarFilterElectrostatic::calculateVariable(int i)
 {
     switch (m_physicFieldVariable)
     {
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL:
+    case PhysicFieldVariable_Electrostatic_Potential:
         {
             node->values[0][0][i] = value1[i];
         }
         break;
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD:
+    case PhysicFieldVariable_Electrostatic_ElectricField:
         {
             switch (m_physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 {
                     node->values[0][0][i] = - dudx1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 {
                     node->values[0][0][i] = - dudy1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 {
                     node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
                 }
@@ -662,23 +665,23 @@ void ViewScalarFilterElectrostatic::calculateVariable(int i)
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT:
+    case PhysicFieldVariable_Electrostatic_Displacement:
         {
             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
 
             switch (m_physicFieldVariableComp)
             {
-            case PHYSICFIELDVARIABLECOMP_X:
+            case PhysicFieldVariableComp_X:
                 {
                     node->values[0][0][i] = - EPS0 * marker->permittivity.number * dudx1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_Y:
+            case PhysicFieldVariableComp_Y:
                 {
                     node->values[0][0][i] = - EPS0 * marker->permittivity.number * dudy1[i];
                 }
                 break;
-            case PHYSICFIELDVARIABLECOMP_MAGNITUDE:
+            case PhysicFieldVariableComp_Magnitude:
                 {
                     node->values[0][0][i] = EPS0 * marker->permittivity.number * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
                 }
@@ -686,13 +689,13 @@ void ViewScalarFilterElectrostatic::calculateVariable(int i)
             }
         }
         break;
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY:
+    case PhysicFieldVariable_Electrostatic_EnergyDensity:
         {
             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
             node->values[0][0][i] = 0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i]));
         }
         break;
-    case PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY:
+    case PhysicFieldVariable_Electrostatic_Permittivity:
         {
             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
             node->values[0][0][i] = marker->permittivity.number;
@@ -726,10 +729,10 @@ QMap<QString, QString> SceneEdgeElectrostaticMarker::data()
     QMap<QString, QString> out;
     switch (type)
     {
-    case PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL:
+    case PhysicFieldBC_Electrostatic_Potential:
         out["Potential (V)"] = value.text;
         break;
-    case PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE:
+    case PhysicFieldBC_Electrostatic_SurfaceCharge:
         out["Surface charge density (C/m3)"] = value.text;
         break;
     }
@@ -794,9 +797,9 @@ DSceneEdgeElectrostaticMarker::~DSceneEdgeElectrostaticMarker()
 void DSceneEdgeElectrostaticMarker::createContent()
 {
     cmbType = new QComboBox(this);
-    cmbType->addItem("none", PHYSICFIELDBC_NONE);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL), PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL);
-    cmbType->addItem(physicFieldBCString(PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE), PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE);
+    cmbType->addItem("none", PhysicFieldBC_None);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_Potential), PhysicFieldBC_Electrostatic_Potential);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_SurfaceCharge), PhysicFieldBC_Electrostatic_SurfaceCharge);
 
     txtValue = new SLineEditValue(this);
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

@@ -27,9 +27,9 @@ addedge(0.01, 0.08, 0.03, 0.08, 0, "none")
 addedge(0.01, 0.08, 0, 0.08, 0, "Source electrode")
 
 # labels
-addlabel(0.019, 0.021, 5e-05, "Dielectric n.1")
-addlabel(0.0379, 0.051, 5e-05, "Dielectric n.2")
-addlabel(0.0284191, 0.123601, 0.0001, "Air")
+addlabel(0.019, 0.021, 5e-05, 0, "Dielectric n.1")
+addlabel(0.0379, 0.051, 5e-05, 0, "Dielectric n.2")
+addlabel(0.0284191, 0.123601, 0.0001, 0, "Air")
 
 # solve
 zoombestfit()

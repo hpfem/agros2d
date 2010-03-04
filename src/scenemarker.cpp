@@ -51,7 +51,7 @@ QVariant SceneEdgeMarker::variant()
     return v;
 }
 
-SceneEdgeMarkerNone::SceneEdgeMarkerNone() : SceneEdgeMarker("none", PHYSICFIELDBC_NONE)
+SceneEdgeMarkerNone::SceneEdgeMarkerNone() : SceneEdgeMarker("none", PhysicFieldBC_None)
 {
 }
 

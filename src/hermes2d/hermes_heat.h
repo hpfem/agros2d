@@ -27,7 +27,7 @@ struct HermesHeat : public HermesField
 {
     Q_OBJECT
 public:
-    HermesHeat() { physicField = PHYSICFIELD_HEAT; }
+    HermesHeat() { physicField = PhysicField_Heat; }
 
     inline int numberOfSolution() { return 1; }
     bool hasHarmonic() { return false; }
@@ -47,12 +47,12 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_HEAT_TEMPERATURE ||
-                                                                          physicFieldBC == PHYSICFIELDBC_HEAT_HEAT_FLUX); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_TEMPERATURE ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_FLUX ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Magnetic_Temperature ||
+                                                                          physicFieldBC == PhysicFieldBC_Heat_Flux); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Heat_Temperature ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Heat_TemperatureGradient ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Heat_Flux ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Heat_Conductivity); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -61,23 +61,23 @@ public:
 
     QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
-    inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_HEAT_TEMPERATURE; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_HEAT_TEMPERATURE; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PHYSICFIELDVARIABLECOMP_SCALAR; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PHYSICFIELDVARIABLE_HEAT_FLUX; }
+    inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
+    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
+    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
+    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Heat_Flux; }
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_FLUX), PHYSICFIELDVARIABLE_HEAT_FLUX);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY), PHYSICFIELDVARIABLE_HEAT_CONDUCTIVITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_Temperature), PhysicFieldVariable_Heat_Temperature);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_TemperatureGradient), PhysicFieldVariable_Heat_TemperatureGradient);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_Flux), PhysicFieldVariable_Heat_Flux);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_Conductivity), PhysicFieldVariable_Heat_Conductivity);
     }
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT), PHYSICFIELDVARIABLE_HEAT_TEMPERATURE_GRADIENT);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_HEAT_FLUX), PHYSICFIELDVARIABLE_HEAT_FLUX);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_TemperatureGradient), PhysicFieldVariable_Heat_TemperatureGradient);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_Flux), PhysicFieldVariable_Heat_Flux);
     }
 
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);

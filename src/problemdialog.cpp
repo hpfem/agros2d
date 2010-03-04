@@ -213,23 +213,23 @@ QWidget *ProblemDialog::createControlsDescription()
 void ProblemDialog::fillComboBox()
 {
     cmbProblemType->clear();
-    cmbProblemType->addItem(problemTypeString(PROBLEMTYPE_PLANAR), PROBLEMTYPE_PLANAR);
-    cmbProblemType->addItem(problemTypeString(PROBLEMTYPE_AXISYMMETRIC), PROBLEMTYPE_AXISYMMETRIC);
+    cmbProblemType->addItem(problemTypeString(ProblemType_Planar), ProblemType_Planar);
+    cmbProblemType->addItem(problemTypeString(ProblemType_Axisymmetric), ProblemType_Axisymmetric);
 
     cmbPhysicField->clear();
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_GENERAL), PHYSICFIELD_GENERAL);
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELECTROSTATIC), PHYSICFIELD_ELECTROSTATIC);
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_MAGNETIC), PHYSICFIELD_MAGNETIC);
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_CURRENT), PHYSICFIELD_CURRENT);
-    cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_HEAT), PHYSICFIELD_HEAT);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_General), PhysicField_General);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Electrostatic), PhysicField_Electrostatic);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Magnetic), PhysicField_Magnetic);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Current), PhysicField_Current);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
     // cmbPhysicField->addItem(physicFieldString(PHYSICFIELD_ELASTICITY), PHYSICFIELD_ELASTICITY);
     cmbPhysicField->setEnabled(m_isNewProblem);
 
     cmbAdaptivityType->clear();
-    cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_NONE), ADAPTIVITYTYPE_NONE);
-    cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_H), ADAPTIVITYTYPE_H);
-    cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_P), ADAPTIVITYTYPE_P);
-    cmbAdaptivityType->addItem(adaptivityTypeString(ADAPTIVITYTYPE_HP), ADAPTIVITYTYPE_HP);
+    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_None), AdaptivityType_None);
+    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_H), AdaptivityType_H);
+    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_P), AdaptivityType_P);
+    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 }
 
 void ProblemDialog::load()
@@ -277,7 +277,7 @@ bool ProblemDialog::save()
     if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
     // check values
-    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == ANALYSISTYPE_HARMONIC)
+    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
     {
         if (txtFrequency->value() < 0)
         {
@@ -286,7 +286,7 @@ bool ProblemDialog::save()
         }
     }
 
-    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == ANALYSISTYPE_TRANSIENT)
+    if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Transient)
     {
         txtTransientTimeStep->evaluate(false);
         if (txtTransientTimeStep->number() <= 0.0)
@@ -354,9 +354,9 @@ void ProblemDialog::doPhysicFieldChanged(int index)
     // analysis type
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
     cmbAnalysisType->clear();
-    cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_STEADYSTATE), ANALYSISTYPE_STEADYSTATE);
-    if (hermesField->hasHarmonic()) cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_HARMONIC), ANALYSISTYPE_HARMONIC);
-    if (hermesField->hasTransient()) cmbAnalysisType->addItem(analysisTypeString(ANALYSISTYPE_TRANSIENT), ANALYSISTYPE_TRANSIENT);
+    cmbAnalysisType->addItem(analysisTypeString(AnalysisType_SteadyState), AnalysisType_SteadyState);
+    if (hermesField->hasHarmonic()) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Harmonic), AnalysisType_Harmonic);
+    if (hermesField->hasTransient()) cmbAnalysisType->addItem(analysisTypeString(AnalysisType_Transient), AnalysisType_Transient);
     cmbAnalysisType->setCurrentIndex(cmbAnalysisType->findData(analysisType));
     if (cmbAnalysisType->currentIndex() == -1) cmbAnalysisType->setCurrentIndex(0);
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
@@ -368,17 +368,17 @@ void ProblemDialog::doPhysicFieldChanged(int index)
 
 void ProblemDialog::doAdaptivityChanged(int index)
 {
-    txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != ADAPTIVITYTYPE_NONE);
-    txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != ADAPTIVITYTYPE_NONE);
+    txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void ProblemDialog::doAnalysisTypeChanged(int index)
 {
-    txtTransientTimeStep->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
-    txtTransientTimeTotal->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
-    txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_TRANSIENT);
+    txtTransientTimeStep->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
+    txtTransientTimeTotal->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
+    txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
 
-    txtFrequency->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == ANALYSISTYPE_HARMONIC);
+    txtFrequency->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Harmonic);
 
     doShowEquation();
 }

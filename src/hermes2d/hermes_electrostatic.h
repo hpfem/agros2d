@@ -27,7 +27,7 @@ struct HermesElectrostatic : public HermesField
 {
     Q_OBJECT
 public:
-    HermesElectrostatic() { physicField = PHYSICFIELD_ELECTROSTATIC; }
+    HermesElectrostatic() { physicField = PhysicField_Electrostatic; }
 
     inline int numberOfSolution() { return 1; }
     bool hasHarmonic() { return false; }
@@ -47,13 +47,13 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_ELECTROSTATIC_POTENTIAL ||
-                                                                          physicFieldBC == PHYSICFIELDBC_ELECTROSTATIC_SURFACE_CHARGE); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Electrostatic_Potential ||
+                                                                          physicFieldBC == PhysicFieldBC_Electrostatic_SurfaceCharge); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Electrostatic_Potential ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Electrostatic_ElectricField ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Electrostatic_Displacement ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Electrostatic_EnergyDensity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Electrostatic_Permittivity); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -62,24 +62,24 @@ public:
 
     QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
-    inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL; } // PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PHYSICFIELDVARIABLECOMP_SCALAR; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD; }
+    inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; }
+    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; } // PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL
+    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
+    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_ElectricField; }
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL), PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD), PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT), PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY), PHYSICFIELDVARIABLE_ELECTROSTATIC_ENERGY_DENSITY);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY), PHYSICFIELDVARIABLE_ELECTROSTATIC_PERMITTIVITY);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_Potential), PhysicFieldVariable_Electrostatic_Potential);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_ElectricField), PhysicFieldVariable_Electrostatic_ElectricField);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_Displacement), PhysicFieldVariable_Electrostatic_Displacement);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_EnergyDensity), PhysicFieldVariable_Electrostatic_EnergyDensity);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_Permittivity), PhysicFieldVariable_Electrostatic_Permittivity);
     }
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD), PHYSICFIELDVARIABLE_ELECTROSTATIC_ELECTRICFIELD);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT), PHYSICFIELDVARIABLE_ELECTROSTATIC_DISPLACEMENT);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_ElectricField), PhysicFieldVariable_Electrostatic_ElectricField);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Electrostatic_Displacement), PhysicFieldVariable_Electrostatic_Displacement);
     }
 
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);

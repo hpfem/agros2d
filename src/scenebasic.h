@@ -97,8 +97,9 @@ public:
     SceneLabelMarker *marker;
     Point point;
     double area;
+    int polynomialOrder;
 
-    SceneLabel(const Point &point, SceneLabelMarker *marker, double area);
+    SceneLabel(const Point &point, SceneLabelMarker *marker, double area, int polynomialOrder);
 
     double distance(const Point &point);
 
@@ -217,6 +218,7 @@ private:
     QComboBox *cmbMarker;
     QPushButton *btnMarker;
     SLineEditValue *txtArea;
+    QSpinBox *txtPolynomialOrder;
 
     void fillComboBox();
 
@@ -268,7 +270,7 @@ private:
 class SceneLabelCommandAdd : public QUndoCommand
 {
 public:
-    SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
+    SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -276,12 +278,13 @@ private:
     Point m_point;
     QString m_markerName;
     double m_area;
+    int m_polynomialOrder;
 };
 
 class SceneLabelCommandRemove : public QUndoCommand
 {
 public:
-    SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, QUndoCommand *parent = 0);
+    SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -289,6 +292,7 @@ private:
     Point m_point;
     QString m_markerName;
     double m_area;
+    int m_polynomialOrder;
 };
 
 class SceneLabelCommandEdit : public QUndoCommand

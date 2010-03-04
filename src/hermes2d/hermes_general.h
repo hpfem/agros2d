@@ -30,7 +30,7 @@ struct HermesGeneral : public HermesField
 {
     Q_OBJECT
 public:
-    HermesGeneral() { physicField = PHYSICFIELD_GENERAL; }
+    HermesGeneral() { physicField = PhysicField_General; }
 
     inline int numberOfSolution() { return 1; }
     bool hasHarmonic() { return false; }
@@ -50,11 +50,11 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_GENERAL_VALUE ||
-                                                                          physicFieldBC == PHYSICFIELDBC_GENERAL_DERIVATIVE); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_GENERAL_VARIABLE ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_GENERAL_GRADIENT ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_GENERAL_CONSTANT); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_General_Value ||
+                                                                          physicFieldBC == PhysicFieldBC_General_Derivative); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Variable ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_General_Gradient ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_General_Constant); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -63,20 +63,20 @@ public:
 
     QList<SolutionArray *> *solve(SolverDialog *solverDialog);
 
-    inline PhysicFieldVariable contourPhysicFieldVariable() { return PHYSICFIELDVARIABLE_GENERAL_VARIABLE; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PHYSICFIELDVARIABLE_GENERAL_VARIABLE; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PHYSICFIELDVARIABLECOMP_SCALAR; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PHYSICFIELDVARIABLE_GENERAL_GRADIENT; }
+    inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Variable; }
+    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Variable; }
+    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
+    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_General_Gradient; }
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_GENERAL_VARIABLE), PHYSICFIELDVARIABLE_GENERAL_VARIABLE);
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_GENERAL_GRADIENT), PHYSICFIELDVARIABLE_GENERAL_GRADIENT);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Variable), PhysicFieldVariable_Variable);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_General_Gradient), PhysicFieldVariable_General_Gradient);
     }
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
-        cmbFieldVariable->addItem(physicFieldVariableString(PHYSICFIELDVARIABLE_GENERAL_GRADIENT), PHYSICFIELDVARIABLE_GENERAL_GRADIENT);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_General_Gradient), PhysicFieldVariable_General_Gradient);
     }
 
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);

@@ -1,41 +1,41 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="0" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="5" polynomialorder="1" problemtype="axisymmetric" timetotal="0" type="electrostatic" timestep="0" id="0" name="Sparkgap" initialcondition="0" >
+        <problem adaptivitytolerance="15" frequency="0" numberofrefinements="0" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic Axisymmetric Sparkgap" initialcondition="0">
             <scriptstartup></scriptstartup>
-            <description></description>
+            <description>This model is an example.</description>
             <edges>
-                <edge type="electrostatic_potential" value="1000" id="1" name="U = 1000 V" />
-                <edge type="electrostatic_potential" value="0" id="2" name="U = 0 V" />
-                <edge type="electrostatic_surface_charge_density" value="0" id="3" name="Neumann" />
+                <edge type="electrostatic_potential" value="1000" id="1" name="Source"/>
+                <edge type="electrostatic_potential" value="0" id="2" name="Ground"/>
+                <edge type="electrostatic_surface_charge_density" value="0" id="3" name="Border"/>
             </edges>
             <labels>
-                <label charge_density="0" id="1" name="air" permittivity="1" />
+                <label charge_density="0" id="1" name="Air" permittivity="1"/>
             </labels>
         </problem>
     </problems>
     <geometry>
         <nodes>
-            <node x="0" y="0.5" id="0" />
-            <node x="0.2" y="1" id="1" />
-            <node x="0" y="1" id="2" />
-            <node x="0" y="-0.25" id="3" />
-            <node x="0" y="0.25" id="4" />
-            <node x="0" y="-1" id="5" />
-            <node x="0" y="2" id="6" />
-            <node x="1.5" y="0.5" id="7" />
+            <node x="0" y="0.5" id="0"/>
+            <node x="0.2" y="1" id="1"/>
+            <node x="0" y="1" id="2"/>
+            <node x="0" y="-0.25" id="3"/>
+            <node x="0" y="0.25" id="4"/>
+            <node x="0" y="-1" id="5"/>
+            <node x="0" y="2" id="6"/>
+            <node x="1.5" y="0.5" id="7"/>
         </nodes>
         <edges>
-            <edge end="2" marker="3" id="0" start="6" angle="0" />
-            <edge end="1" marker="1" id="1" start="2" angle="0" />
-            <edge end="0" marker="1" id="2" start="1" angle="0" />
-            <edge end="4" marker="3" id="3" start="0" angle="0" />
-            <edge end="5" marker="3" id="4" start="3" angle="0" />
-            <edge end="4" marker="2" id="5" start="3" angle="180" />
-            <edge end="7" marker="3" id="6" start="5" angle="90" />
-            <edge end="6" marker="3" id="7" start="7" angle="90" />
+            <edge end="2" marker="3" id="0" start="6" angle="0"/>
+            <edge end="1" marker="1" id="1" start="2" angle="0"/>
+            <edge end="0" marker="1" id="2" start="1" angle="0"/>
+            <edge end="4" marker="3" id="3" start="0" angle="0"/>
+            <edge end="5" marker="3" id="4" start="3" angle="0"/>
+            <edge end="4" marker="2" id="5" start="3" angle="180"/>
+            <edge end="7" marker="3" id="6" start="5" angle="90"/>
+            <edge end="6" marker="3" id="7" start="7" angle="90"/>
         </edges>
         <labels>
-            <label x="0.879551" y="0.764057" marker="1" id="0" area="0.01" />
+            <label x="0.879551" y="0.764057" marker="1" id="0" area="0.01"/>
         </labels>
     </geometry>
     <functions/>

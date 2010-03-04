@@ -27,7 +27,7 @@ struct HermesMagnetic : public HermesField
 {
     Q_OBJECT
 public:
-    HermesMagnetic() { physicField = PHYSICFIELD_MAGNETIC; }
+    HermesMagnetic() { physicField = PhysicField_Magnetic; }
 
     int numberOfSolution();
     bool hasHarmonic() { return true; }
@@ -47,33 +47,33 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PHYSICFIELDBC_MAGNETIC_VECTOR_POTENTIAL ||
-                                                                          physicFieldBC == PHYSICFIELDBC_MAGNETIC_SURFACE_CURRENT); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_REAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_VECTOR_POTENTIAL_IMAG ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_REAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_FLUX_DENSITY_IMAG ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_REAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_MAGNETICFIELD_IMAG ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_REAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_TOTAL_IMAG ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_REAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_TRANSFORM_IMAG ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_REAL ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CURRENT_DENSITY_INDUCED_VELOCITY_IMAG ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_POWER_LOSSES ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_ENERGY_DENSITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_PERMEABILITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_CONDUCTIVITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_REMANENCE ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_VELOCITY ||
-                                                                                            physicFieldVariable == PHYSICFIELDVARIABLE_MAGNETIC_LORENTZ_FORCE); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Magnetic_VectorPotential ||
+                                                                          physicFieldBC == PhysicFieldBC_Magnetic_SurfaceCurrent); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Magnetic_VectorPotential ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_VectorPotentialReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_VectorPotentialImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_FluxDensity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_FluxDensityReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_FluxDensityImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_MagneticField ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_MagneticFieldReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_MagneticFieldImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityTotal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityTotalReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityTotalImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedTransform ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_PowerLosses ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_EnergyDensity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_Permeability ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_Conductivity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_Remanence ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_Velocity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Magnetic_LorentzForce); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);

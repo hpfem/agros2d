@@ -23,9 +23,9 @@ addedge(0, 0.5, 0.35, 0.5, 0, "none")
 addedge(0, 0.8, 0.6, 0.8, 0, "Voltage")
 
 # labels
-addlabel(0.3, 0.670924, 0, "mat 1")
-addlabel(0.105779, 0.364111, 0, "mat 2")
-addlabel(0.394296, 0.203668, 0, "mat 3")
+addlabel(0.3, 0.670924, 0, 0, "mat 1")
+addlabel(0.105779, 0.364111, 0, 0, "mat 2")
+addlabel(0.394296, 0.203668, 0, 0, "mat 3")
 
 # solve
 zoombestfit()

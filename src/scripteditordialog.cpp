@@ -140,10 +140,11 @@ QString createPythonFromModel()
         str += "# labels\n";
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            str += QString("addlabel(%1, %2, %3, \"%4\")").
+            str += QString("addlabel(%1, %2, %3, %4, \"%5\")").
                    arg(Util::scene()->labels[i]->point.x).
                    arg(Util::scene()->labels[i]->point.y).
                    arg(Util::scene()->labels[i]->area).
+                   arg(Util::scene()->labels[i]->polynomialOrder).
                    arg(Util::scene()->labels[i]->marker->name) + "\n";
         }
 
@@ -702,7 +703,7 @@ void ScriptEditorDialog::doFileSave()
         }
         else
         {
-            ErrorResult errorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->file));
+            ErrorResult errorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->file));
             errorResult.showDialog();
         }
     }
