@@ -273,7 +273,6 @@ bool ProblemDialog::save()
             return false;
         }
     }
-    m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
 
     if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
@@ -319,8 +318,10 @@ bool ProblemDialog::save()
     m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
     m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
+
     // harmonic magnetic
     m_problemInfo->frequency = txtFrequency->value();
+
     // transient
     m_problemInfo->analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
     m_problemInfo->timeStep = txtTransientTimeStep->value();
@@ -329,6 +330,9 @@ bool ProblemDialog::save()
 
     // description
     m_problemInfo->description = txtDescription->toPlainText();
+
+    // startup script
+    m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
 
     return true;
 }

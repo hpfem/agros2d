@@ -180,21 +180,6 @@ void MainWindow::createActions()
     actRedo->setShortcuts(QKeySequence::Redo);
     actRedo->setStatusTip(tr("Redo operation"));
 
-    actCut = new QAction(icon("edit-cut"), tr("Cu&t"), this);
-    actCut->setShortcuts(QKeySequence::Cut);
-    actCut->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
-    connect(actCut, SIGNAL(triggered()), this, SLOT(doCut()));
-
-    actCopy = new QAction(icon("edit-copy"), tr("&Copy"), this);
-    actCopy->setShortcuts(QKeySequence::Copy);
-    actCopy->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
-    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopy()));
-
-    actPaste = new QAction(icon("edit-paste"), tr("&Paste"), this);
-    actPaste->setShortcuts(QKeySequence::Paste);
-    actPaste->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
-    connect(actPaste, SIGNAL(triggered()), this, SLOT(doPaste()));
-
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setStatusTip(tr("Show help"));
     actHelp->setShortcut(QKeySequence::HelpContents);
@@ -221,10 +206,6 @@ void MainWindow::createActions()
     actAboutQt->setStatusTip(tr("Show the Qt library's About box"));
     actAboutQt->setMenuRole(QAction::AboutQtRole);
     connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-    
-    actCut->setEnabled(true);
-    actCopy->setEnabled(true);
-    actPaste->setEnabled(true);
 
     actOptions = new QAction(icon("options"), tr("&Options"), this);
     actOptions->setStatusTip(tr("Options"));
@@ -300,11 +281,6 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();
-#ifdef BETA
-    mnuEdit->addAction(actCut);
-    mnuEdit->addAction(actCopy);
-#endif
-    mnuEdit->addAction(actPaste);
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
 #ifdef Q_WS_X11
     mnuEdit->addSeparator();

@@ -123,9 +123,6 @@ private:
 
     QAction *actUndo;
     QAction *actRedo;
-    QAction *actCut;
-    QAction *actCopy;
-    QAction *actPaste;
 
     QAction *actOptions;
     QAction *actCreateMesh;

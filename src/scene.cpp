@@ -1118,7 +1118,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     QDomDocument doc;
     QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (!file.open(QIODevice::ReadOnly))
         return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be opened (%2).").
                            arg(fileName).
                            arg(file.errorString()));
@@ -1309,6 +1309,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         doSolved();
     }
 
+    // run script
+    runPythonScript(m_problemInfo->scriptStartup);
+
     return ErrorResult();
 }
 
@@ -1496,7 +1499,7 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
 
     // save to file
     QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly))
         return ErrorResult(ERRORRESULT_CRITICAL, tr("File '%1' cannot be saved (%2).").
                            arg(fileName).
                            arg(file.errorString()));

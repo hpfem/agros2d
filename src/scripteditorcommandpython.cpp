@@ -956,12 +956,12 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     if (QFile::exists(fileName))
     {
         // compile
-        PyObject *code = Py_CompileString(QString("from os import chdir\nchdir(\"" + QFileInfo(fileName).absolutePath() + "\")").toStdString().c_str(), "", Py_file_input);
+        PyObject *code = Py_CompileString(QString("from os import chdir \nchdir(\"" + QFileInfo(fileName).absolutePath() + "\")").toStdString().c_str(), "", Py_file_input);
         // run
         if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
     }
     // compile
-    PyObject *code = Py_CompileString(script.toStdString().c_str(), "", Py_file_input);
+    PyObject *code = Py_CompileString(script.toStdString().c_str(), fileName.toStdString().c_str(), Py_file_input);
     // run
     if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
 
