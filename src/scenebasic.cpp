@@ -497,12 +497,18 @@ QLayout* DSceneLabel::createContent()
     layoutPolynomialOrder->addWidget(txtPolynomialOrder);
     layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
 
+    QFormLayout *layoutMeshParameters = new QFormLayout();
+    layoutMeshParameters->addRow(tr("Triangle area (m):"), txtArea);
+    layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
+
+    QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
+    grpMeshParameters->setLayout(layoutMeshParameters);
+
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
     layout->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
     layout->addRow(tr("Material:"), layoutMarker);
-    layout->addRow(tr("Triangle area (m):"), txtArea);
-    layout->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
+    layout->addRow(grpMeshParameters);
 
     fillComboBox();
 

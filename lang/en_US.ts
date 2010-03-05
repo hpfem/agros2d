@@ -190,24 +190,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../src/util.cpp" line="828"/>
+        <location filename="../src/util.cpp" line="820"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="821"/>
-        <location filename="../src/util.cpp" line="836"/>
-        <location filename="../src/util.cpp" line="840"/>
+        <location filename="../src/util.cpp" line="813"/>
+        <location filename="../src/util.cpp" line="828"/>
+        <location filename="../src/util.cpp" line="832"/>
         <source>New version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="821"/>
+        <location filename="../src/util.cpp" line="813"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="840"/>
+        <location filename="../src/util.cpp" line="832"/>
         <source>You are using actual version.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -215,32 +215,32 @@
 <context>
     <name>DSceneEdge</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="286"/>
+        <location filename="../src/scenebasic.cpp" line="287"/>
         <source>Edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="326"/>
+        <location filename="../src/scenebasic.cpp" line="327"/>
         <source>Start point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="327"/>
+        <location filename="../src/scenebasic.cpp" line="328"/>
         <source>End point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="328"/>
+        <location filename="../src/scenebasic.cpp" line="329"/>
         <source>Boundary condition:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="329"/>
+        <location filename="../src/scenebasic.cpp" line="330"/>
         <source>Angle (deg.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="330"/>
+        <location filename="../src/scenebasic.cpp" line="331"/>
         <source>Length:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -248,12 +248,12 @@
 <context>
     <name>DSceneEdgeCurrentMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="781"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="783"/>
         <source>BC type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="783"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="785"/>
         <source>Value:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -284,12 +284,12 @@
 <context>
     <name>DSceneEdgeElectrostaticMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="804"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="807"/>
         <source>BC type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="806"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="809"/>
         <source>Value:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -297,12 +297,12 @@
 <context>
     <name>DSceneEdgeGeneralMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="697"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="699"/>
         <source>BC type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="699"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="701"/>
         <source>Value:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -310,27 +310,27 @@
 <context>
     <name>DSceneEdgeHeatMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1007"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1009"/>
         <source>BC type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1009"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1011"/>
         <source>Temperature (deg.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1011"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1013"/>
         <source>Heat flux (W/m2):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1013"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1015"/>
         <source>Heat transfer coef. (W/m2.K):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1015"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1017"/>
         <source>External temperature (deg.):</source>
         <translation type="unfinished"></translation>
     </message>
@@ -338,12 +338,12 @@
 <context>
     <name>DSceneEdgeMagneticMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2803"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2809"/>
         <source>BC type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2805"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2811"/>
         <source>Value:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -412,25 +412,40 @@
 <context>
     <name>DSceneLabel</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="454"/>
+        <location filename="../src/scenebasic.cpp" line="455"/>
         <source>Label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="495"/>
+        <location filename="../src/scenebasic.cpp" line="498"/>
+        <source>Global order is %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scenebasic.cpp" line="504"/>
+        <source>Mesh parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scenebasic.cpp" line="510"/>
         <source>Material:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="496"/>
+        <location filename="../src/scenebasic.cpp" line="501"/>
         <source>Triangle area (m):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scenebasic.cpp" line="502"/>
+        <source>Polynomial order (-):</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DSceneLabelCurrentMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="834"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="836"/>
         <source>Conductivity (S/m):</source>
         <translation type="unfinished"></translation>
     </message>
@@ -451,12 +466,12 @@
 <context>
     <name>DSceneLabelElectrostaticMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="860"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="863"/>
         <source>Permittivity (-):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="862"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="865"/>
         <source>Charge density (C/m3):</source>
         <translation type="unfinished"></translation>
     </message>
@@ -464,12 +479,12 @@
 <context>
     <name>DSceneLabelGeneralMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="758"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="760"/>
         <source>Constant:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="760"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="762"/>
         <source>Rightside:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -477,22 +492,22 @@
 <context>
     <name>DSceneLabelHeatMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1138"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1140"/>
         <source>Thermal conductivity (W/m.K):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1140"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1142"/>
         <source>Volume heat (J/m3):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1142"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1144"/>
         <source>Density (kg/m3):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1144"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1146"/>
         <source>Specific heat (J/kg.K):</source>
         <translation type="unfinished"></translation>
     </message>
@@ -500,48 +515,48 @@
 <context>
     <name>DSceneLabelMagneticMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2892"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2898"/>
         <source>Rem. flux dens. (T):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2893"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2899"/>
         <source>Direction of rem. (deg.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2895"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2901"/>
         <source>Permanent magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2900"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2901"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2906"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2907"/>
         <source>Velocity %1 (m/s):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2902"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2908"/>
         <source>Velocity angular (rad/s):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2904"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2910"/>
         <source>Velocity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2907"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2913"/>
         <source>Permeability (-):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2909"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2915"/>
         <source>Conductivity (S/m):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2911"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2917"/>
         <source>Current density (A/m2):</source>
         <translation type="unfinished"></translation>
     </message>
@@ -572,17 +587,17 @@
 <context>
     <name>DSceneNode</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="224"/>
+        <location filename="../src/scenebasic.cpp" line="225"/>
         <source>Distance:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="225"/>
+        <location filename="../src/scenebasic.cpp" line="226"/>
         <source>Angle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="193"/>
+        <location filename="../src/scenebasic.cpp" line="194"/>
         <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
@@ -702,57 +717,57 @@
 <context>
     <name>HermesCurrent</name>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="211"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="213"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="325"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="327"/>
         <source>Current field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="329"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="331"/>
         <source>Conductivity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="332"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="334"/>
         <source>Power losses dens.:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="332"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="334"/>
         <source>W/m3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="335"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="337"/>
         <source>Potential:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="339"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="341"/>
         <source>Electric field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="348"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="350"/>
         <source>Current density</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="362"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="364"/>
         <source>Current Field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="365"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="367"/>
         <source>Current:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="365"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="367"/>
         <source>A</source>
         <translation type="unfinished"></translation>
     </message>
@@ -789,68 +804,68 @@
 <context>
     <name>HermesElectrostatic</name>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="210"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="213"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="328"/>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="380"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="331"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="383"/>
         <source>Electrostatic field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="332"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="335"/>
         <source>Permittivity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="335"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="338"/>
         <source>Charge density:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="338"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="341"/>
         <source>Energy density:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="341"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="344"/>
         <source>Potential:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="345"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="348"/>
         <source>Electric field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="354"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="357"/>
         <source>Electric displacement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="368"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="371"/>
         <source>Electrostatic Field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="371"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="374"/>
         <source>Charge:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="371"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="374"/>
         <source>C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="383"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="386"/>
         <source>Energy:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="383"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="386"/>
         <source>J</source>
         <translation type="unfinished"></translation>
     </message>
@@ -858,32 +873,32 @@
 <context>
     <name>HermesGeneral</name>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="214"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="216"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="332"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="334"/>
         <source>General field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="336"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="338"/>
         <source>Constant:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="339"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="341"/>
         <source>Right side:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="342"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="344"/>
         <source>Value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="346"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="348"/>
         <source>Gradient</source>
         <translation type="unfinished"></translation>
     </message>
@@ -891,75 +906,75 @@
 <context>
     <name>HermesHeat</name>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="312"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="314"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="455"/>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="506"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="457"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="508"/>
         <source>Heat transfer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="459"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="461"/>
         <source>Thermal conductivity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="462"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="464"/>
         <source>Volume heat:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="465"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="467"/>
         <source>Temperature:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="469"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="471"/>
         <source>Heat flux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="478"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="480"/>
         <source>Temperature gradient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="492"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="494"/>
         <source>Heat Transfer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="495"/>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="509"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="497"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="511"/>
         <source>Temperature avg.:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="495"/>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="496"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="497"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="498"/>
         <source>C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="496"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="498"/>
         <source>Temperature dif.:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="497"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="499"/>
         <source>Heat flux:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="497"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="499"/>
         <source>W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="509"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="511"/>
         <source>deg.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -967,291 +982,291 @@
 <context>
     <name>HermesMagnetic</name>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="481"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="487"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="719"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="875"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="905"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="923"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="725"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="881"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="911"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="929"/>
         <source>Magnetic field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="725"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="844"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="731"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="850"/>
         <source>Permeability:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="729"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="735"/>
         <source>Vector potential</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="732"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="783"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="792"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="801"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="810"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="933"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="942"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="951"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="960"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="738"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="789"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="798"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="807"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="816"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="939"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="948"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="957"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="966"/>
         <source>real:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="733"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="784"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="793"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="802"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="811"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="934"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="943"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="952"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="961"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="739"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="790"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="799"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="808"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="817"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="940"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="949"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="958"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="967"/>
         <source>imag:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="734"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="785"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="794"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="803"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="812"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="935"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="944"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="953"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="962"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="740"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="791"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="800"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="809"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="818"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="941"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="950"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="959"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="968"/>
         <source>magnitude:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="741"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="747"/>
         <source>Flux density - real</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="750"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="756"/>
         <source>Flux density - imag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="762"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="768"/>
         <source>Magnetic field - real</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="771"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="777"/>
         <source>Magnetic field - imag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="780"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="786"/>
         <source>Currrent dens. - external</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="789"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="795"/>
         <source>Current density - avg. transform</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="798"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="804"/>
         <source>Current density - velocity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="807"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="813"/>
         <source>Current density - total</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="819"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="825"/>
         <source>Lorentz force - real</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="828"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="834"/>
         <source>Lorentz force - imag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="836"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="893"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="842"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="899"/>
         <source>Losses density:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="839"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="896"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="845"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="902"/>
         <source>Energy density:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="847"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="853"/>
         <source>Conductivity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="850"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="856"/>
         <source>Rem. flux dens.:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="851"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="857"/>
         <source>Direction of rem.:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="855"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="861"/>
         <source>Velocity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="862"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="868"/>
         <source>Vector potential:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="866"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="872"/>
         <source>Flux density</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="884"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="890"/>
         <source>Current density</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="887"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="893"/>
         <source>external:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="888"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="894"/>
         <source>transform:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="889"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="895"/>
         <source>velocity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="890"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="896"/>
         <source>total:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="910"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="916"/>
         <source>Maxwell force</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="930"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="936"/>
         <source>External current</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="939"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="945"/>
         <source>Transform induced current</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="948"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="954"/>
         <source>Velocity induced current</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="957"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="963"/>
         <source>Total current</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="965"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="971"/>
         <source>Energy avg.:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="965"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="984"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="971"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="990"/>
         <source>J</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="969"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="975"/>
         <source>Lorentz force avg.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="975"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="993"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="981"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="999"/>
         <source>Torque:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="975"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="993"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="981"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="999"/>
         <source>Nm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="979"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="985"/>
         <source>External current:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="979"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="980"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="981"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="982"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="985"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="986"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="987"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="988"/>
         <source>A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="980"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="986"/>
         <source>Transform current:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="981"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="987"/>
         <source>Velocity current:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="982"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="988"/>
         <source>Total current:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="964"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="983"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="970"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="989"/>
         <source>W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="964"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="983"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="970"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="989"/>
         <source>Power Losses:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="984"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="990"/>
         <source>Energy:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="987"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="993"/>
         <source>Force</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="990"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="991"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="996"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="997"/>
         <source>N</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1365,7 +1380,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="157"/>
-        <location filename="../src/mainwindow.cpp" line="722"/>
+        <location filename="../src/mainwindow.cpp" line="698"/>
         <source>Export image to file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1415,229 +1430,199 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="183"/>
-        <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="185"/>
-        <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="188"/>
-        <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="190"/>
-        <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="193"/>
-        <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="195"/>
-        <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="199"/>
+        <location filename="../src/mainwindow.cpp" line="184"/>
         <source>Show help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="203"/>
+        <location filename="../src/mainwindow.cpp" line="188"/>
         <source>&amp;Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="204"/>
+        <location filename="../src/mainwindow.cpp" line="189"/>
         <source>Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="207"/>
+        <location filename="../src/mainwindow.cpp" line="192"/>
         <source>&amp;Online help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="208"/>
+        <location filename="../src/mainwindow.cpp" line="193"/>
         <source>Online help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="211"/>
-        <location filename="../src/mainwindow.cpp" line="212"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
+        <location filename="../src/mainwindow.cpp" line="197"/>
         <source>Check version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="216"/>
+        <location filename="../src/mainwindow.cpp" line="201"/>
         <source>Show the application&apos;s About box</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="220"/>
+        <location filename="../src/mainwindow.cpp" line="205"/>
         <source>About &amp;Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="221"/>
+        <location filename="../src/mainwindow.cpp" line="206"/>
         <source>Show the Qt library&apos;s About box</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="230"/>
+        <location filename="../src/mainwindow.cpp" line="211"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="235"/>
+        <location filename="../src/mainwindow.cpp" line="216"/>
         <source>Mesh area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="240"/>
+        <location filename="../src/mainwindow.cpp" line="221"/>
         <source>Solve problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="247"/>
+        <location filename="../src/mainwindow.cpp" line="228"/>
         <source>Fullscreen mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="248"/>
+        <location filename="../src/mainwindow.cpp" line="229"/>
         <source>F11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="254"/>
+        <location filename="../src/mainwindow.cpp" line="235"/>
         <source>Script &amp;editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="255"/>
+        <location filename="../src/mainwindow.cpp" line="236"/>
         <source>Script editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="260"/>
+        <location filename="../src/mainwindow.cpp" line="241"/>
         <source>Run script...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="264"/>
+        <location filename="../src/mainwindow.cpp" line="245"/>
         <source>Alt+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="265"/>
+        <location filename="../src/mainwindow.cpp" line="246"/>
         <source>Run command...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="269"/>
+        <location filename="../src/mainwindow.cpp" line="250"/>
         <source>Problem html report</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="279"/>
+        <location filename="../src/mainwindow.cpp" line="260"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="299"/>
+        <location filename="../src/mainwindow.cpp" line="280"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="314"/>
+        <location filename="../src/mainwindow.cpp" line="290"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="423"/>
+        <location filename="../src/mainwindow.cpp" line="399"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="893"/>
+        <location filename="../src/mainwindow.cpp" line="869"/>
         <source>Problem Type: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="894"/>
+        <location filename="../src/mainwindow.cpp" line="870"/>
         <source>Physic Field: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="895"/>
+        <location filename="../src/mainwindow.cpp" line="871"/>
         <source>Analysis type: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="922"/>
+        <location filename="../src/mainwindow.cpp" line="898"/>
         <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Bugzilla: &lt;a href=&quot;http://hpfem.org/bugs/buglist.cgi?bug_status=__open__&amp;product=agros2d&quot;&gt;http://hpfem.org/bugs/.../agros2d&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="399"/>
+        <location filename="../src/mainwindow.cpp" line="375"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="583"/>
+        <location filename="../src/mainwindow.cpp" line="559"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="805"/>
+        <location filename="../src/mainwindow.cpp" line="781"/>
         <source>Python script (*.py)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="942"/>
+        <location filename="../src/mainwindow.cpp" line="918"/>
         <source>About Agros2D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="198"/>
-        <location filename="../src/mainwindow.cpp" line="366"/>
+        <location filename="../src/mainwindow.cpp" line="183"/>
+        <location filename="../src/mainwindow.cpp" line="342"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="383"/>
+        <location filename="../src/mainwindow.cpp" line="359"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="389"/>
+        <location filename="../src/mainwindow.cpp" line="365"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="459"/>
+        <location filename="../src/mainwindow.cpp" line="435"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="470"/>
+        <location filename="../src/mainwindow.cpp" line="446"/>
         <source>Position: [%1; %2]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="583"/>
+        <location filename="../src/mainwindow.cpp" line="559"/>
         <source>Open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="244"/>
+        <location filename="../src/mainwindow.cpp" line="225"/>
         <source>Chart</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1682,140 +1667,140 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="215"/>
+        <location filename="../src/mainwindow.cpp" line="200"/>
         <source>About &amp;Agros2D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="229"/>
+        <location filename="../src/mainwindow.cpp" line="210"/>
         <source>&amp;Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="234"/>
+        <location filename="../src/mainwindow.cpp" line="215"/>
         <source>&amp;Mesh area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="238"/>
+        <location filename="../src/mainwindow.cpp" line="219"/>
         <source>&amp;Solve problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="239"/>
+        <location filename="../src/mainwindow.cpp" line="220"/>
         <source>Alt+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="243"/>
+        <location filename="../src/mainwindow.cpp" line="224"/>
         <source>&amp;Chart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="275"/>
+        <location filename="../src/mainwindow.cpp" line="256"/>
         <source>&amp;Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="324"/>
+        <location filename="../src/mainwindow.cpp" line="300"/>
         <source>&amp;Problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="352"/>
+        <location filename="../src/mainwindow.cpp" line="328"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="406"/>
+        <location filename="../src/mainwindow.cpp" line="382"/>
         <source>Problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="432"/>
+        <location filename="../src/mainwindow.cpp" line="408"/>
         <source>Transient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="434"/>
+        <location filename="../src/mainwindow.cpp" line="410"/>
         <source>Time step:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="619"/>
+        <location filename="../src/mainwindow.cpp" line="595"/>
         <source>Unknown suffix.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="623"/>
+        <location filename="../src/mainwindow.cpp" line="599"/>
         <source>File &apos;%1&apos; is not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="826"/>
+        <location filename="../src/mainwindow.cpp" line="802"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="619"/>
-        <location filename="../src/mainwindow.cpp" line="623"/>
-        <location filename="../src/mainwindow.cpp" line="826"/>
+        <location filename="../src/mainwindow.cpp" line="595"/>
+        <location filename="../src/mainwindow.cpp" line="599"/>
+        <location filename="../src/mainwindow.cpp" line="802"/>
         <source>File open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="259"/>
+        <location filename="../src/mainwindow.cpp" line="240"/>
         <source>Run &amp;script...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="263"/>
+        <location filename="../src/mainwindow.cpp" line="244"/>
         <source>Run &amp;command...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="268"/>
+        <location filename="../src/mainwindow.cpp" line="249"/>
         <source>&amp;Report...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="276"/>
+        <location filename="../src/mainwindow.cpp" line="257"/>
         <source>&amp;Recent files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="675"/>
+        <location filename="../src/mainwindow.cpp" line="651"/>
         <source>Agros2D files (*.a2d)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="675"/>
+        <location filename="../src/mainwindow.cpp" line="651"/>
         <source>Save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="701"/>
+        <location filename="../src/mainwindow.cpp" line="677"/>
         <source>Import file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="701"/>
-        <location filename="../src/mainwindow.cpp" line="711"/>
+        <location filename="../src/mainwindow.cpp" line="677"/>
+        <location filename="../src/mainwindow.cpp" line="687"/>
         <source>DXF files (*.dxf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="711"/>
+        <location filename="../src/mainwindow.cpp" line="687"/>
         <source>Export file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="722"/>
+        <location filename="../src/mainwindow.cpp" line="698"/>
         <source>PNG files (*.png)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="805"/>
+        <location filename="../src/mainwindow.cpp" line="781"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2177,30 +2162,30 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="285"/>
-        <location filename="../src/problemdialog.cpp" line="295"/>
-        <location filename="../src/problemdialog.cpp" line="301"/>
-        <location filename="../src/problemdialog.cpp" line="307"/>
+        <location filename="../src/problemdialog.cpp" line="284"/>
+        <location filename="../src/problemdialog.cpp" line="294"/>
+        <location filename="../src/problemdialog.cpp" line="300"/>
+        <location filename="../src/problemdialog.cpp" line="306"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="285"/>
+        <location filename="../src/problemdialog.cpp" line="284"/>
         <source>Frequency cannot be negative.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="295"/>
+        <location filename="../src/problemdialog.cpp" line="294"/>
         <source>Time step must be positive.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="301"/>
+        <location filename="../src/problemdialog.cpp" line="300"/>
         <source>Total time must be positive.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="307"/>
+        <location filename="../src/problemdialog.cpp" line="306"/>
         <source>Time step is greater then total time.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2233,12 +2218,12 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="155"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="157"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="213"/>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="154"/>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="158"/>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="223"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="260"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="157"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="160"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="225"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="264"/>
         <source>Solver: DOF is zero.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2438,18 +2423,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="171"/>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="170"/>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="174"/>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="239"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="276"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="383"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="173"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="173"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="176"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="241"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="280"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="389"/>
         <source>Solver: relative error: %1 %</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="278"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="422"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="280"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="428"/>
         <source>Solver: time step: %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3153,7 +3138,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1500"/>
+        <location filename="../src/scene.cpp" line="1505"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3380,7 +3365,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="200"/>
-        <location filename="../src/sceneview.cpp" line="1273"/>
+        <location filename="../src/sceneview.cpp" line="1272"/>
         <source>Operate on nodes</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3391,7 +3376,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="205"/>
-        <location filename="../src/sceneview.cpp" line="1276"/>
+        <location filename="../src/sceneview.cpp" line="1275"/>
         <source>Operate on edges</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3407,7 +3392,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="215"/>
-        <location filename="../src/sceneview.cpp" line="1295"/>
+        <location filename="../src/sceneview.cpp" line="1294"/>
         <source>Postprocessor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3463,27 +3448,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="1292"/>
+        <location filename="../src/sceneview.cpp" line="1291"/>
         <source>Polynomial order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="1930"/>
+        <location filename="../src/sceneview.cpp" line="1929"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="1944"/>
+        <location filename="../src/sceneview.cpp" line="1943"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg. %7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="1962"/>
+        <location filename="../src/sceneview.cpp" line="1961"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle Area: %4 m&lt;sup&gt;2&lt;/sup&gt; %5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2634"/>
+        <location filename="../src/sceneview.cpp" line="2633"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3499,7 +3484,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="210"/>
-        <location filename="../src/sceneview.cpp" line="1279"/>
+        <location filename="../src/sceneview.cpp" line="1278"/>
         <source>Operate on labels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3641,12 +3626,12 @@
 <context>
     <name>ScriptEditor</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1105"/>
+        <location filename="../src/scripteditordialog.cpp" line="1106"/>
         <source>Goto line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1105"/>
+        <location filename="../src/scripteditordialog.cpp" line="1106"/>
         <source>Line number:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3654,265 +3639,265 @@
 <context>
     <name>ScriptEditorDialog</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="307"/>
+        <location filename="../src/scripteditordialog.cpp" line="308"/>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="311"/>
+        <location filename="../src/scripteditordialog.cpp" line="312"/>
         <source>&amp;Open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="315"/>
+        <location filename="../src/scripteditordialog.cpp" line="316"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="319"/>
+        <location filename="../src/scripteditordialog.cpp" line="320"/>
         <source>Save &amp;As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="381"/>
+        <location filename="../src/scripteditordialog.cpp" line="382"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="382"/>
+        <location filename="../src/scripteditordialog.cpp" line="383"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="383"/>
+        <location filename="../src/scripteditordialog.cpp" line="384"/>
         <source>Exit script editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="375"/>
+        <location filename="../src/scripteditordialog.cpp" line="376"/>
         <source>Ctrl+R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="347"/>
+        <location filename="../src/scripteditordialog.cpp" line="348"/>
         <source>&amp;Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="363"/>
+        <location filename="../src/scripteditordialog.cpp" line="364"/>
         <source>Indent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="364"/>
+        <location filename="../src/scripteditordialog.cpp" line="365"/>
         <source>Unindent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="366"/>
+        <location filename="../src/scripteditordialog.cpp" line="367"/>
         <source>Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="368"/>
+        <location filename="../src/scripteditordialog.cpp" line="369"/>
         <source>Uncomment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="369"/>
+        <location filename="../src/scripteditordialog.cpp" line="370"/>
         <source>Ctrl+U</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="371"/>
+        <location filename="../src/scripteditordialog.cpp" line="372"/>
         <source>Goto line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="372"/>
+        <location filename="../src/scripteditordialog.cpp" line="373"/>
         <source>Alt+G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="374"/>
+        <location filename="../src/scripteditordialog.cpp" line="375"/>
         <source>&amp;Run Python script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="378"/>
+        <location filename="../src/scripteditordialog.cpp" line="379"/>
         <source>Ctrl+M</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="395"/>
+        <location filename="../src/scripteditordialog.cpp" line="396"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="407"/>
+        <location filename="../src/scripteditordialog.cpp" line="408"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="427"/>
+        <location filename="../src/scripteditordialog.cpp" line="428"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="435"/>
+        <location filename="../src/scripteditordialog.cpp" line="436"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="441"/>
+        <location filename="../src/scripteditordialog.cpp" line="442"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="450"/>
+        <location filename="../src/scripteditordialog.cpp" line="451"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="466"/>
+        <location filename="../src/scripteditordialog.cpp" line="467"/>
         <source>Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="468"/>
+        <location filename="../src/scripteditordialog.cpp" line="469"/>
         <source>Path: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="479"/>
+        <location filename="../src/scripteditordialog.cpp" line="480"/>
         <source>Add new page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="522"/>
+        <location filename="../src/scripteditordialog.cpp" line="523"/>
         <source>File browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="537"/>
+        <location filename="../src/scripteditordialog.cpp" line="538"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="615"/>
+        <location filename="../src/scripteditordialog.cpp" line="616"/>
         <source>Select directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="622"/>
-        <location filename="../src/scripteditordialog.cpp" line="865"/>
-        <location filename="../src/scripteditordialog.cpp" line="879"/>
+        <location filename="../src/scripteditordialog.cpp" line="623"/>
+        <location filename="../src/scripteditordialog.cpp" line="866"/>
+        <location filename="../src/scripteditordialog.cpp" line="880"/>
         <source>Untitled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="632"/>
-        <location filename="../src/scripteditordialog.cpp" line="683"/>
-        <location filename="../src/scripteditordialog.cpp" line="713"/>
+        <location filename="../src/scripteditordialog.cpp" line="633"/>
+        <location filename="../src/scripteditordialog.cpp" line="684"/>
+        <location filename="../src/scripteditordialog.cpp" line="714"/>
         <source>Python files (*.py)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="705"/>
+        <location filename="../src/scripteditordialog.cpp" line="706"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="806"/>
+        <location filename="../src/scripteditordialog.cpp" line="807"/>
         <source>Application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="806"/>
+        <location filename="../src/scripteditordialog.cpp" line="807"/>
         <source>The document has been modified.
 Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="871"/>
+        <location filename="../src/scripteditordialog.cpp" line="872"/>
         <source>Script editor - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="386"/>
-        <location filename="../src/scripteditordialog.cpp" line="432"/>
+        <location filename="../src/scripteditordialog.cpp" line="387"/>
+        <location filename="../src/scripteditordialog.cpp" line="433"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="330"/>
+        <location filename="../src/scripteditordialog.cpp" line="331"/>
         <source>&amp;Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="333"/>
+        <location filename="../src/scripteditordialog.cpp" line="334"/>
         <source>&amp;Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="336"/>
+        <location filename="../src/scripteditordialog.cpp" line="337"/>
         <source>Cu&amp;t</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="340"/>
+        <location filename="../src/scripteditordialog.cpp" line="341"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="344"/>
+        <location filename="../src/scripteditordialog.cpp" line="345"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="377"/>
+        <location filename="../src/scripteditordialog.cpp" line="378"/>
         <source>&amp;Create script from model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="632"/>
+        <location filename="../src/scripteditordialog.cpp" line="633"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="644"/>
+        <location filename="../src/scripteditordialog.cpp" line="645"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="644"/>
+        <location filename="../src/scripteditordialog.cpp" line="645"/>
         <source>Script is already opened.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="683"/>
-        <location filename="../src/scripteditordialog.cpp" line="713"/>
+        <location filename="../src/scripteditordialog.cpp" line="684"/>
+        <location filename="../src/scripteditordialog.cpp" line="714"/>
         <source>Save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="326"/>
+        <location filename="../src/scripteditordialog.cpp" line="327"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="351"/>
+        <location filename="../src/scripteditordialog.cpp" line="352"/>
         <source>Find &amp;next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="355"/>
-        <location filename="../src/scripteditordialog.cpp" line="359"/>
+        <location filename="../src/scripteditordialog.cpp" line="356"/>
+        <location filename="../src/scripteditordialog.cpp" line="360"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="393"/>
+        <location filename="../src/scripteditordialog.cpp" line="394"/>
         <source>&amp;Recent files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3920,22 +3905,22 @@ Do you want to save your changes?</source>
 <context>
     <name>ScriptEngineRemote</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="161"/>
+        <location filename="../src/scripteditordialog.cpp" line="162"/>
         <source>Error: Unable to start the server (agros2d-server): %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="222"/>
+        <location filename="../src/scripteditordialog.cpp" line="223"/>
         <source>Server error: The host was not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="225"/>
+        <location filename="../src/scripteditordialog.cpp" line="226"/>
         <source>Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="228"/>
+        <location filename="../src/scripteditordialog.cpp" line="229"/>
         <source>Server error: The following error occurred: %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3943,52 +3928,52 @@ Do you want to save your changes?</source>
 <context>
     <name>SearchDialog</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1291"/>
+        <location filename="../src/scripteditordialog.cpp" line="1292"/>
         <source>Search and replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1297"/>
+        <location filename="../src/scripteditordialog.cpp" line="1298"/>
         <source>Find and replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1304"/>
+        <location filename="../src/scripteditordialog.cpp" line="1305"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1306"/>
+        <location filename="../src/scripteditordialog.cpp" line="1307"/>
         <source>Replace with:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1311"/>
+        <location filename="../src/scripteditordialog.cpp" line="1312"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1314"/>
+        <location filename="../src/scripteditordialog.cpp" line="1315"/>
         <source>Regular expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1317"/>
+        <location filename="../src/scripteditordialog.cpp" line="1318"/>
         <source>Case sensitive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1330"/>
+        <location filename="../src/scripteditordialog.cpp" line="1331"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1366"/>
+        <location filename="../src/scripteditordialog.cpp" line="1367"/>
         <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1376"/>
+        <location filename="../src/scripteditordialog.cpp" line="1377"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>

@@ -25,9 +25,9 @@ addedge(0, 0.17, 0, 0.05, 0, "A = 0")
 addedge(0, -0.05, 0, -0.17, 0, "A = 0")
 
 # labels
-addlabel(0.109339, 0.112786, 0, "Air")
-addlabel(0.0442134, 0.0328588, 0, "Coil")
-addlabel(0.0116506, -0.00740064, 0, "Iron")
+addlabel(0.109339, 0.112786, 0, 0, "Air")
+addlabel(0.0442134, 0.0328588, 0, 0, "Coil")
+addlabel(0.0116506, -0.00740064, 0, 0, "Iron")
 
 # solve
 zoombestfit()
