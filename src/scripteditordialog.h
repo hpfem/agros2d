@@ -192,20 +192,22 @@ public:
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
 
+public slots:
+    void gotoLine(int line = -1, bool isError = false);
+
 protected:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
-    void highlightCurrentLine();
+    void highlightCurrentLine(bool isError = false);
     void updateLineNumberArea(const QRect &, int);
 
     void indentSelection();
     void unindentSelection();
     void commentSelection();
     void uncommentSelection();
-    void gotoLine(int line = -1);
 
     void matchParentheses(char left, char right);
 

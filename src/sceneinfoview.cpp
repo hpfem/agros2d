@@ -183,8 +183,10 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *itemSolverVertices = new QTreeWidgetItem(problemInfoSolverNode);
         itemSolverVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_nodes()));
+
         QTreeWidgetItem *itemSolverEdges = new QTreeWidgetItem(problemInfoSolverNode);
         itemSolverEdges->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()));
+
         if (Util::scene()->sceneSolution()->isSolved())
         {
             if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
@@ -199,11 +201,21 @@ void SceneInfoView::doInvalidated()
 
             if (Util::scene()->sceneSolution()->adaptiveSteps() > 0)
             {
-                QTreeWidgetItem *itemSolverAdaptiveError = new QTreeWidgetItem(problemInfoSolverNode);
-                itemSolverAdaptiveError->setText(0, tr("Adaptive error: ") + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %");
+                QTreeWidgetItem *adaptivityNode = new QTreeWidgetItem(problemInfoSolverNode);
+                adaptivityNode->setText(0, tr("Adaptivity"));
+                adaptivityNode->setExpanded(true);
 
-                QTreeWidgetItem *itemSolverAdaptiveSteps = new QTreeWidgetItem(problemInfoSolverNode);
-                itemSolverAdaptiveSteps->setText(0, tr("Adaptive steps: ") + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()));
+                QTreeWidgetItem *itemSolverVertices = new QTreeWidgetItem(adaptivityNode);
+                itemSolverVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()));
+
+                QTreeWidgetItem *itemSolverEdges = new QTreeWidgetItem(adaptivityNode);
+                itemSolverEdges->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()));
+
+                QTreeWidgetItem *itemSolverAdaptiveError = new QTreeWidgetItem(adaptivityNode);
+                itemSolverAdaptiveError->setText(0, tr("Error: ") + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %");
+
+                QTreeWidgetItem *itemSolverAdaptiveSteps = new QTreeWidgetItem(adaptivityNode);
+                itemSolverAdaptiveSteps->setText(0, tr("Steps: ") + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()));
             }
         }
     }

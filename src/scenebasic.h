@@ -219,12 +219,16 @@ private:
     QPushButton *btnMarker;
     SLineEditValue *txtArea;
     QSpinBox *txtPolynomialOrder;
+    QCheckBox *chkArea;
+    QCheckBox *chkPolynomialOrder;
 
     void fillComboBox();
 
 private slots:
     void doMarkerChanged(int index);
     void doMarkerClicked();
+    void doArea(int);
+    void doPolynomialOrder(int);
 };
 
 // undo framework *******************************************************************************************************************

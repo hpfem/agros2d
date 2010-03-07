@@ -320,12 +320,14 @@ EdgeMarkerDialog::~EdgeMarkerDialog()
 
 void EdgeMarkerDialog::doAccept()
 {
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    if (marker())
     {
-        if (Util::scene()->edges[i]->isSelected)
-            Util::scene()->edges[i]->marker = marker();
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            if (Util::scene()->edges[i]->isSelected)
+                Util::scene()->edges[i]->marker = marker();
+        }
     }
-
     accept();
 }
 
@@ -333,7 +335,7 @@ void EdgeMarkerDialog::doAccept()
 
 LabelMarkerDialog::LabelMarkerDialog(QWidget *parent) : QDialog(parent)
 {
-    setWindowTitle(tr("Edge marker"));
+    setWindowTitle(tr("Label marker"));
     setWindowIcon(icon("scene-label"));
     setModal(true);
 
@@ -391,11 +393,13 @@ LabelMarkerDialog::~LabelMarkerDialog()
 
 void LabelMarkerDialog::doAccept()
 {
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    if (marker())
     {
-        if (Util::scene()->labels[i]->isSelected)
-            Util::scene()->labels[i]->marker = marker();
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            if (Util::scene()->labels[i]->isSelected)
+                Util::scene()->labels[i]->marker = marker();
+        }
     }
-
     accept();
 }

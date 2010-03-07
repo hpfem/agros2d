@@ -149,7 +149,7 @@ void ChartDialog::createControls()
     QPushButton *btnExportData = new QPushButton(controls);
     btnExportData->setText(tr("Export"));
     connect(btnExportData, SIGNAL(clicked()), SLOT(doExportData()));
-
+    
     // geometry   
     lblStartX = new QLabel("X:");
     lblStartY = new QLabel("Y:");

@@ -276,7 +276,6 @@ private slots:
     void doBoundaryGroup(QAction *action);
     void doShowGroup(QAction *action);
     void doPostprocessorModeGroup(QAction *action);
-
     void doProcessSolution();
 };
 

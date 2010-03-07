@@ -180,6 +180,11 @@ void MainWindow::createActions()
     actRedo->setShortcuts(QKeySequence::Redo);
     actRedo->setStatusTip(tr("Redo operation"));
 
+    actCopy = new QAction(icon("edit-copy"), tr("Copy"), this);
+    actCopy->setShortcuts(QKeySequence::Copy);
+    actCopy->setStatusTip(tr("Copy image to clipboard."));
+    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopy()));
+
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setStatusTip(tr("Show help"));
     actHelp->setShortcut(QKeySequence::HelpContents);
@@ -280,6 +285,8 @@ void MainWindow::createMenus()
     mnuEdit = menuBar()->addMenu(tr("&Edit"));
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
+    mnuEdit->addSeparator();
+    mnuEdit->addAction(actCopy);
     mnuEdit->addSeparator();
     mnuEdit->addAction(Util::scene()->actDeleteSelected);
 #ifdef Q_WS_X11
@@ -815,6 +822,9 @@ void MainWindow::doCut()
 
 void MainWindow::doCopy()
 {
+    // copy image to clipboard
+    QPixmap pixmap = sceneView->renderPixmap();
+    QApplication::clipboard()->setImage(pixmap.toImage());
 }
 
 void MainWindow::doPaste()

@@ -96,6 +96,7 @@ private slots:
     void doFieldVariableComp(int index);
     void doSaveImage();
     void doExportData();
+
     void doMoved(const QPoint &);
     void doChartLine();
     void doTimeStepChanged(int index);

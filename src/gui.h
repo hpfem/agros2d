@@ -96,6 +96,7 @@ public:
 
     inline QwtPlotCurve *curve() { return m_curve; }
     void saveImage(const QString &fileName = "");
+    QImage image() const;
 
 public slots:
    void setData(double *xval, double *yval, int count);

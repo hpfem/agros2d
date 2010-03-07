@@ -489,16 +489,30 @@ QLayout* DSceneLabel::createContent()
     txtPolynomialOrder->setMinimum(0);
     txtPolynomialOrder->setMaximum(10);
 
+    // marker
     QHBoxLayout *layoutMarker = new QHBoxLayout();
     layoutMarker->addWidget(cmbMarker);
     layoutMarker->addWidget(btnMarker);
 
+    // order
+    chkPolynomialOrder = new QCheckBox();
+    connect(chkPolynomialOrder, SIGNAL(stateChanged(int)), this, SLOT(doPolynomialOrder(int)));
+
     QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
+    layoutPolynomialOrder->addWidget(chkPolynomialOrder);
     layoutPolynomialOrder->addWidget(txtPolynomialOrder);
     layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(Util::scene()->problemInfo()->polynomialOrder)));
 
+    // area
+    chkArea = new QCheckBox();
+    connect(chkArea, SIGNAL(stateChanged(int)), this, SLOT(doArea(int)));
+
+    QHBoxLayout *layoutArea = new QHBoxLayout();
+    layoutArea->addWidget(chkArea);
+    layoutArea->addWidget(txtArea);
+
     QFormLayout *layoutMeshParameters = new QFormLayout();
-    layoutMeshParameters->addRow(tr("Triangle area (m):"), txtArea);
+    layoutMeshParameters->addRow(tr("Triangle area (m):"), layoutArea);
     layoutMeshParameters->addRow(tr("Polynomial order (-):"), layoutPolynomialOrder);
 
     QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
@@ -533,7 +547,11 @@ bool DSceneLabel::load()
     txtPointY->setNumber(sceneLabel->point.y);
     cmbMarker->setCurrentIndex(cmbMarker->findData(sceneLabel->marker->variant()));
     txtArea->setNumber(sceneLabel->area);
+    chkArea->setChecked(sceneLabel->area != 0.0);
+    txtArea->setEnabled(chkArea->isChecked());
     txtPolynomialOrder->setValue(sceneLabel->polynomialOrder);
+    chkPolynomialOrder->setChecked(sceneLabel->polynomialOrder > 0);
+    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 
     return true;
 }
@@ -555,6 +573,15 @@ bool DSceneLabel::save()
         return false;
     }
 
+    // area
+    if (txtArea->value().number < 0)
+    {
+        QMessageBox::warning(this, "Label", "Area must be positive or zero.");
+        txtArea->setFocus();
+        return false;
+    }
+
+
     if (!isNew)
     {
         if (sceneLabel->point != point)
@@ -565,8 +592,8 @@ bool DSceneLabel::save()
 
     sceneLabel->point = point;
     sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
-    sceneLabel->area = txtArea->number();
-    sceneLabel->polynomialOrder = txtPolynomialOrder->value();
+    sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
+    sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
 
     return true;
 }
@@ -584,6 +611,16 @@ void DSceneLabel::doMarkerClicked()
         cmbMarker->setItemText(cmbMarker->currentIndex(), marker->name);
         Util::scene()->refresh();
     }
+}
+
+void DSceneLabel::doPolynomialOrder(int state)
+{
+    txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
+}
+
+void DSceneLabel::doArea(int state)
+{
+    txtArea->setEnabled(chkArea->isChecked());
 }
 
 // undo framework *******************************************************************************************************************

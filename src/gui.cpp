@@ -230,10 +230,17 @@ void Chart::saveImage(const QString &fileName)
         QFileInfo fileInfo(fileNameTemp);
         if (fileInfo.suffix().toLower() != "png") fileNameTemp += ".png";
 
-        QImage image(1024, 768, QImage::Format_ARGB32);
-        print(image);
-        image.save(fileNameTemp, "PNG");
+        QImage imageChart = image();
+        imageChart.save(fileNameTemp, "PNG");
     }
+}
+
+QImage Chart::image() const
+{
+    QImage image(1024, 768, QImage::Format_ARGB32);
+    print(image);
+
+    return image;
 }
 
 void Chart::setData(double *xval, double *yval, int count)

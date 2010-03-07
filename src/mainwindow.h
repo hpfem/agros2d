@@ -123,6 +123,7 @@ private:
 
     QAction *actUndo;
     QAction *actRedo;
+    QAction *actCopy;
 
     QAction *actOptions;
     QAction *actCreateMesh;
@@ -174,7 +175,5 @@ private:
     void createScene();
     void createViews();
 };
-
-class generalException {};
 
 #endif // MAINWINDOW_H

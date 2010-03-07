@@ -212,16 +212,19 @@ struct ScriptResult
     {
         text = "";
         isError = false;
+        this->line = -1;
     }
 
-    ScriptResult(const QString &text, bool isError = false)
+    ScriptResult(const QString &text, bool isError = false, int line = -1)
     {
         this->text = text;
         this->isError = isError;
+        this->line = line;
     }
 
     QString text;
     bool isError;
+    int line;
 };
 
 struct ExpressionResult

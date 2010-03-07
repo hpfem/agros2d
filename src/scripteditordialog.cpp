@@ -578,7 +578,11 @@ void ScriptEditorDialog::doRunPython()
     }
 
     if (result.isError)
+    {
         terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
+        if (result.line >= 0)
+            txtEditor->gotoLine(result.line, true);
+    }
 
     // disconnect
     disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
@@ -587,6 +591,8 @@ void ScriptEditorDialog::doRunPython()
     terminalView->terminal()->setEnabled(true);
     scriptEditorWidget()->setCursor(Qt::ArrowCursor);
     // actRunPython->setEnabled(true);
+
+    txtEditor->setFocus();
 }
 
 void ScriptEditorDialog::doCreatePythonFromModel()
@@ -1097,7 +1103,7 @@ void ScriptEditor::uncommentSelection()
     }
 }
 
-void ScriptEditor::gotoLine(int line)
+void ScriptEditor::gotoLine(int line, bool isError)
 {
     // use dialog when (line == -1)
     if (line == -1)
@@ -1116,11 +1122,12 @@ void ScriptEditor::gotoLine(int line)
         cur.setPosition(pos, QTextCursor::MoveAnchor);
         setTextCursor(cur);
         ensureCursorVisible();
+        highlightCurrentLine(true);
         setFocus();
     }
 }
 
-void ScriptEditor::highlightCurrentLine()
+void ScriptEditor::highlightCurrentLine(bool isError)
 {
     QList<QTextEdit::ExtraSelection> selections;
 
@@ -1128,6 +1135,8 @@ void ScriptEditor::highlightCurrentLine()
     {
         QTextEdit::ExtraSelection selection;
         QColor lineColor = QColor(Qt::yellow).lighter(180);
+        if (isError)
+            lineColor = QColor(Qt::red).lighter(180);
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);

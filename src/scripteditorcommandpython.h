@@ -40,7 +40,7 @@ public:
 
     ScriptResult runPythonScript(const QString &script, const QString &fileName);
     ExpressionResult runPythonExpression(const QString &expression);
-    QString parseError();
+    ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }
 
 private slots:

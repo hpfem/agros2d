@@ -1003,8 +1003,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     }
     else
     {
-        scriptResult.isError = true;
-        scriptResult.text = parseError();
+        scriptResult = parseError();
     }
     Py_DECREF(Py_None);
 
@@ -1039,16 +1038,18 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
     }
     else
     {
-        expressionResult.error = parseError();
+        expressionResult.error = parseError().text;
     }
     Py_DECREF(Py_None);
 
     return expressionResult;
 }
 
-QString PythonEngine::parseError()
+ScriptResult PythonEngine::parseError()
 {   
-    QString msg;
+    // error
+    ScriptResult error;
+    error.isError = true;
 
     PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
     PyErr_Fetch(&type, &value, &traceback);
@@ -1056,39 +1057,40 @@ QString PythonEngine::parseError()
     if (traceback)
     {
         PyTracebackObject *object = (PyTracebackObject *) traceback;
-        msg.append(QString("Line %1: ").arg(object->tb_lineno));
+        error.text.append(QString("Line %1: ").arg(object->tb_lineno));
+        error.line = object->tb_lineno;
         Py_DECREF(traceback);
     }
 
     if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
     {
         Py_INCREF(type);
-        msg.append("\n");
-        msg.append(PyString_AsString(str));
+        error.text.append("\n");
+        error.text.append(PyString_AsString(str));
         if (type) Py_DECREF(type);
         if (str) Py_DECREF(str);
     }
     else
     {
-        msg.append("\n");
-        msg.append("<unknown exception type> ");
+        error.text.append("\n");
+        error.text.append("<unknown exception type> ");
     }
 
     if (value != NULL && (str = PyObject_Str(value)) != NULL && (PyString_Check(str)))
     {
         Py_INCREF(value);
-        msg.append("\n");
-        msg.append(PyString_AsString(value));
+        error.text.append("\n");
+        error.text.append(PyString_AsString(value));
         if (value) Py_DECREF(value);
         if (str) Py_DECREF(str);
     }
     else
     {
-        msg.append("\n");
-        msg.append("<unknown exception date> ");
+        error.text.append("\n");
+        error.text.append("<unknown exception date> ");
     }
 
     PyErr_Clear();
 
-    return msg;
+    return error;
 }
