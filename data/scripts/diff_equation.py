@@ -15,7 +15,6 @@ try:
 	
 	t = arange(0, 5*L/R, L/R/10)
 	y = odeint(func, y0, t)
-	xx
 	
 	# chart
 	pl.close()

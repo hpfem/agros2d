@@ -10,7 +10,7 @@ l = 0.16
 eps1 = 10
 eps2 = 3
 U = 10
-dr = 0.01
+dr = 0.003
 
 # boundaries
 addboundary("Source", "electrostatic_potential", U)
@@ -43,13 +43,12 @@ addlabel(0.0379, 0.051, 0, 0, "Dielectric 2")
 addlabel(0.0284191, 0.123601, 0, 0, "Air")
 
 zoombestfit()
-selectnone()
 
 # calculation of capacity
 r = []
 C = []
 print("C = f(r) (F):")
-for i in range(5):
+for i in range(15):
 	if i > 0:
 		selectedge(6, 7, 8)
 		moveselection(dr, 0, False)
