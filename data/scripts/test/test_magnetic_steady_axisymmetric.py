@@ -1,5 +1,5 @@
 # model
-newdocument("Magnetostatic", "axisymmetric", "magnetic", 0, 3, "disabled", 1, 1, 0, "steadystate", 1, 1, 0)
+newdocument("Magnetostatic", "axisymmetric", "magnetic", 0, 7, "disabled", 1, 1, 0, "steadystate", 1, 1, 0)
 
 # boundaries
 addboundary("A = 0", "magnetic_vector_potential", 0)
@@ -70,7 +70,7 @@ testWm = test("Energy", volume["Wm"], 0.002273)
 
 # surface integral
 surface = surfaceintegral(12, 13, 14, 15)
-testFz = test("Maxwell force - z", surface["Fy"], 0.368232, 0.2)
+testFz = test("Maxwell force - z", surface["Fy"], 0.368232)
 
 print("Test: Magnetic steady state - axisymmetric: " + str(point and testA and testB and testBr and testBz and testH and testHr and testHz and testwm 
 and testWm and testFz))

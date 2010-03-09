@@ -1926,9 +1926,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             {
                 m_scene->highlightNone();
                 node->isHighlighted = true;
-                setToolTip(tr("<h3>Node</h3>Point: [%1; %2]").
+                setToolTip(tr("<h3>Node</h3>Point: [%1; %2]<br/>Index: %3").
                            arg(node->point.x, 0, 'g', 3).
-                           arg(node->point.y, 0, 'g', 3));
+                           arg(node->point.y, 0, 'g', 3).
+                           arg(m_scene->nodes.indexOf(node)));
                 updateGL();
             }
         }
@@ -1940,12 +1941,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             {
                 m_scene->highlightNone();
                 edge->isHighlighted = true;
-                setToolTip(tr("<h3>Edge</h3>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg. %7").
+                setToolTip(tr("<h3>Edge</h3>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg.<br/>Index: %7 %8").
                            arg(edge->nodeStart->point.x, 0, 'g', 3).
                            arg(edge->nodeStart->point.y, 0, 'g', 3).
                            arg(edge->nodeEnd->point.x, 0, 'g', 3).
                            arg(edge->nodeEnd->point.y, 0, 'g', 3).
                            arg(edge->marker->name).arg(edge->angle, 0, 'f', 0).
+                           arg(m_scene->edges.indexOf(edge)).
                            arg(edge->marker->html()));
                 updateGL();
             }
@@ -1958,11 +1960,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             {
                 m_scene->highlightNone();
                 label->isHighlighted = true;
-                setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle Area: %4 m<sup>2</sup> %5").
+                setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
                            arg(label->point.x, 0, 'g', 3).
                            arg(label->point.y, 0, 'g', 3).
                            arg(label->marker->name).
                            arg(label->area, 0, 'g', 3).
+                           arg(label->polynomialOrder, 0, 'g', 3).
+                           arg(m_scene->labels.indexOf(label)).
                            arg(label->marker->html()));
                 updateGL();
             }

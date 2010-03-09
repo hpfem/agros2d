@@ -1,5 +1,5 @@
 # model
-newdocument("Magnetostatic", "planar", "magnetic", 1, 4, "disabled", 1, 1, 0, "steadystate", 1, 1, 0)
+newdocument("Magnetostatic", "planar", "magnetic", 1, 7, "disabled", 1, 1, 0, "steadystate", 1, 1, 0)
 
 # boundaries
 addboundary("A = 0", "magnetic_vector_potential", 0)
@@ -36,7 +36,7 @@ addedge(0.5, -0.2, -0.5, -0.2, 0, "none")
 addedge(0.5, -0.15, -0.5, -0.15, 0, "none")
 
 # labels
-addlabel(-0.0959509, 0.445344, 0.01, 0, "Fe")
+addlabel(-0.0959509, 0.445344, 0.001, 0, "Fe")
 addlabel(0.00301448, 0.0404858, 0.005, 0, "Cu")
 addlabel(-0.145434, -0.706253, 0.01, 0, "Air")
 addlabel(0.143596, -0.364811, 0, 0, "Magnet")
@@ -71,8 +71,11 @@ testT = test("Torque", volume["T"], 20.463818)
 
 # surface integral
 surface = surfaceintegral(2, 3, 4, 5)
-testFx = test("Maxwell force - x", surface["Fx"], 2.531945, 0.2)
-testFy = test("Maxwell force - y", surface["Fy"], -10.176192, 0.2)
+testFx = test("Maxwell force - x", surface["Fx"], 2.531945, 0.05)
+testFy = test("Maxwell force - y", surface["Fy"], -10.176192, 0.05)
+
+print(surface["Fx"])
+print(surface["Fy"])
 
 print("Test: Magnetic steady state - planar: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj 
 and testWm and testPj and testFxv and testFxv and testFyv and testT and testFx and testFy))

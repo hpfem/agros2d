@@ -1584,31 +1584,33 @@ SurfaceIntegralValueMagnetic::SurfaceIntegralValueMagnetic() : SurfaceIntegralVa
 void SurfaceIntegralValueMagnetic::calculateVariables(int i)
 {
     SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
-    if (marker->permeability.number < 1 + EPS_ZERO)
+    // qDebug() << marker->permeability.number;
+    if (fabs(marker->permeability.number - 1.0) < EPS_ZERO)
     {
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-        {
-            if (marker->permeability.number < 1.0 + EPS_ZERO)
-            {
-                forceMaxwellX -= pt[i][2] * tan[i][2] * 1 / (2 * MU0 * marker->permeability.number) *
-                                 (dudy[i] * 2 * (tan[i][1] * dudy[i] + tan[i][0] * dudx[i]) - tan[i][1] * (sqr(dudx[i]) + sqr(dudy[i])));
-            }
-            else
-            {
-                forceMaxwellX -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * 1 / (2 * MU0 * marker->permeability.number) *
-                                 (dudy[i] * 2 * (tan[i][1] * dudy[i] + tan[i][0] * (dudx[i] + ((x[i] > 0) ? value[i] / x[i] : 0.0))) - tan[i][1] * (sqr(dudx[i] + ((x[i] > 0) ? value[i] / x[i] : 0.0)) + sqr(dudy[i])));
-            }
-        }
+        double nx =   tan[i][1];
+        double ny = - tan[i][0];
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            forceMaxwellY -= pt[i][2] * tan[i][2] * 1 / (2 * MU0 * marker->permeability.number) *
-                             (- dudx[i] * 2 * (tan[i][1] * dudy[i] + tan[i][0] * dudx[i]) + tan[i][0] * (sqr(dudx[i]) + sqr(dudy[i]))) ;
+            double Bx = - dudy[i];
+            double By =   dudx[i];
+
+            forceMaxwellX -= pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
+                             (Bx * (nx * Bx + ny * By) - 0.5 * nx * (sqr(Bx) + sqr(By)));
+
+            forceMaxwellY -= pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
+                             (By * (nx * Bx + ny * By)
+                              - 0.5 * ny * (sqr(Bx) + sqr(By)));
         }
         else
         {
-            forceMaxwellY -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * 1 / (2 * MU0 * marker->permeability.number) *
-                             (- (dudx[i] + ((x[i] > 0) ? value[i] / x[i] : 0.0)) * 2 * (tan[i][1] * dudy[i] + tan[i][0] * (dudx[i] + ((x[i] > 0) ? value[i] / x[i] : 0.0))) + tan[i][0] * (sqr(dudx[i] + ((x[i] > 0) ? value[i] / x[i] : 0.0)) + sqr(dudy[i]))) ;
+            double Bx = - dudy[i];
+            double By =  (dudx[i] + ((x[i] > 0) ? value[i] / x[i] : 0.0));
+
+            forceMaxwellX  = 0.0;
+
+            forceMaxwellY -= 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * 1.0 / (MU0 * marker->permeability.number) *
+                             (By * (nx * Bx + ny * By) - 0.5 * ny * (sqr(Bx) + sqr(By)));
         }
     }
 }

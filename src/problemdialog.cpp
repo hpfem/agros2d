@@ -151,10 +151,10 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutProblemTable->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
     layoutProblemTable->addWidget(txtAdaptivityTolerance, 9, 1);
     // right
-    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 2, 2);
-    layoutProblemTable->addWidget(txtFrequency, 2, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
-    layoutProblemTable->addWidget(cmbAnalysisType, 3, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 2, 2);
+    layoutProblemTable->addWidget(cmbAnalysisType, 2, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 3, 2);
+    layoutProblemTable->addWidget(txtFrequency, 3, 3);
     layoutProblemTable->addWidget(new QLabel(tr("Time step (s):")), 4, 2);
     layoutProblemTable->addWidget(txtTransientTimeStep, 4, 3);
     layoutProblemTable->addWidget(new QLabel(tr("Total time (s):")), 5, 2);

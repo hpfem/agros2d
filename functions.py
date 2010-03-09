@@ -12,6 +12,9 @@ MU0 = 4*pi*1e-7
 EPS0 = 8.854e-12
 
 # user functions
+def sgn(number):
+	return (number >= 0) and 1 or -1 
+
 def addsemicircle(x0, y0, radius, marker = "none"):
 	addedge(x0, (y0)-radius, (x0)+radius, y0, 90, marker)
 	addedge((x0)+radius, y0, x0, (y0)+radius, 90, marker)
