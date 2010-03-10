@@ -328,6 +328,10 @@ void ScriptEditorDialog::createActions()
     actFileClose->setShortcuts(QKeySequence::Close);
     connect(actFileClose, SIGNAL(triggered()), this, SLOT(doFileClose()));
 
+    actFilePrint = new QAction(icon(""), tr("&Print"), this);
+    actFilePrint->setShortcuts(QKeySequence::Print);
+    connect(actFilePrint, SIGNAL(triggered()), this, SLOT(doFilePrint()));
+
     actUndo = new QAction(icon("edit-undo"), tr("&Undo"), this);
     actUndo->setShortcut(QKeySequence::Undo);
 
@@ -398,6 +402,8 @@ void ScriptEditorDialog::createControls()
     mnuFile->addAction(actFileOpen);
     mnuFile->addAction(actFileSave);
     mnuFile->addAction(actFileSaveAs);
+    mnuFile->addSeparator();
+    mnuFile->addAction(actFilePrint);
     mnuFile->addSeparator();
     mnuFile->addAction(actFileClose);
     mnuFile->addSeparator();
@@ -728,6 +734,19 @@ void ScriptEditorDialog::doFileSaveAs()
 void ScriptEditorDialog::doFileClose()
 {
     doCloseTab(tabWidget->currentIndex());
+}
+
+void ScriptEditorDialog::doFilePrint()
+{
+    QPrinter printer(QPrinter::HighResolution);
+
+    QPrintDialog printDialog(&printer, this);
+    printDialog.addEnabledOption(QAbstractPrintDialog::PrintCollateCopies);
+    printDialog.setWindowTitle(tr("Print Document"));
+    if (printDialog.exec() == QDialog::Accepted)
+    {
+        txtEditor->print(&printer);
+    }
 }
 
 void ScriptEditorDialog::doFind()

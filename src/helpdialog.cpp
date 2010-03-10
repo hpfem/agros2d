@@ -723,10 +723,8 @@ void CentralWidget::copySelection()
 
 void CentralWidget::initPrinter()
 {
-#ifndef QT_NO_PRINTER
     if (!printer)
         printer = new QPrinter(QPrinter::HighResolution);
-#endif
 }
 
 void CentralWidget::print()

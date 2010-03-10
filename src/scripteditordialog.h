@@ -104,6 +104,7 @@ public slots:
     void doFileSaveAs();
     void doFileClose();
     void doFileOpenRecent(QAction *action);
+    void doFilePrint();
 
     void doFind();
     void doFindNext(bool fromBegining = false);
@@ -136,6 +137,7 @@ private:
     QAction *actFileSave;
     QAction *actFileSaveAs;
     QAction *actFileClose;
+    QAction *actFilePrint;
     QAction *actExit;
     QActionGroup *actFileOpenRecentGroup;
 
