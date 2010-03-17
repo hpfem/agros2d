@@ -269,14 +269,14 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentSaveWithSolution);
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
+    mnuFile->addMenu(mnuRecentFiles);
+    mnuFile->addSeparator();
     mnuFile->addAction(actDocumentClose);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentImportDXF);
     mnuFile->addAction(actDocumentExportDXF);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSaveImage);
-    mnuFile->addSeparator();
-    mnuFile->addMenu(mnuRecentFiles);
 #ifndef Q_WS_MAC
     mnuFile->addSeparator();
     mnuFile->addAction(actExit);
@@ -653,7 +653,7 @@ void MainWindow::doDocumentSaveWithSolution()
 void MainWindow::doDocumentSaveAs()
 {
     QSettings settings;
-    QString dir = settings.value("LastDataDir", "data").toString();
+    QString dir = settings.value("General/LastDataDir", "data").toString();
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros2D files (*.a2d)"));
     if (!fileName.isEmpty())

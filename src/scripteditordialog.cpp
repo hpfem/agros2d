@@ -403,11 +403,10 @@ void ScriptEditorDialog::createControls()
     mnuFile->addAction(actFileSave);
     mnuFile->addAction(actFileSaveAs);
     mnuFile->addSeparator();
-    mnuFile->addAction(actFilePrint);
-    mnuFile->addSeparator();
+    mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addAction(actFileClose);
     mnuFile->addSeparator();
-    mnuFile->addMenu(mnuRecentFiles);
+   mnuFile->addAction(actFilePrint);
     mnuFile->addSeparator();
     mnuFile->addAction(actExit);
 
