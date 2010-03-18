@@ -198,6 +198,15 @@ QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
 
     // initialize the linear system and solver
     UmfpackSolver umfpack;
+
+    // prepare selector
+    bool ISO_ONLY = false;
+    double CONV_EXP = 1.0;
+    double THRESHOLD = 0.3;
+    int STRATEGY = 0;
+    int MESH_REGULARITY = -1;
+    // RefinementSelectors::H1NonUniformHP selector(ISO_ONLY, allowedCandidates(adaptivityType), CONV_EXP, H2DRS_DEFAULT_ORDER, &shapeset);
+
     LinSystem sys(&wf, &umfpack);
     sys.set_spaces(2, &xdisp, &ydisp);
     sys.set_pss(2, &xpss, &ypss);

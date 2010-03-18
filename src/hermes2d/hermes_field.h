@@ -124,6 +124,9 @@ protected:
     virtual void calculateVariable(int i) = 0;
 };
 
+// convert enums
+RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivityType);
+
 // custom forms **************************************************************************************************************************
 
 template<typename Real, typename Scalar>

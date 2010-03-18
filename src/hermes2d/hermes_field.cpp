@@ -51,6 +51,20 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     }
 }
 
+// convert enums
+RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivityType)
+{
+    switch (adaptivityType)
+    {
+    case AdaptivityType_H:
+        return RefinementSelectors::H2DRS_CAND_H_ONLY;
+    case AdaptivityType_P:
+        return RefinementSelectors::H2DRS_CAND_P_ONLY;
+    case AdaptivityType_HP:
+        return RefinementSelectors::H2DRS_CAND_HP;
+    }
+}
+
 // *********************************************************************************************************************************************
 
 ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) : Filter(sln1)

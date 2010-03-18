@@ -236,6 +236,15 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
 
         // initialize the linear solver
         UmfpackSolver umfpack;
+
+        // prepare selector
+        bool ISO_ONLY = false;
+        double CONV_EXP = 1.0;
+        double THRESHOLD = 0.3;
+        int STRATEGY = 0;
+        int MESH_REGULARITY = -1;
+        RefinementSelectors::H1NonUniformHP selector(ISO_ONLY, allowedCandidates(adaptivityType), CONV_EXP, H2DRS_DEFAULT_ORDER, &shapeset);
+
         Solution *slnreal = new Solution();
         Solution *slnimag = new Solution();
         Solution rslnreal, rslnimag;
@@ -273,7 +282,7 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
                 rs.assemble();
                 rs.solve(2, &rslnreal, &rslnimag);
 
-                H1OrthoHP hp(2, &spacereal, &spaceimag);
+                H1AdaptHP hp(2, &spacereal, &spaceimag);
                 error = hp.calc_error_2(slnreal, slnimag, &rslnreal, &rslnimag) * 100;
 
                 // emit signal
@@ -281,7 +290,7 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
                 if (solverDialog->isCanceled()) return solutionArrayList;
 
                 if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-                if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
+                if (i != adaptivitysteps-1) hp.adapt(THRESHOLD, STRATEGY, &selector, MESH_REGULARITY);
             }
         }
 
@@ -357,6 +366,14 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
         // initialize the linear solver
         UmfpackSolver umfpack;
 
+        // prepare selector
+        bool ISO_ONLY = false;
+        double CONV_EXP = 1.0;
+        double THRESHOLD = 0.3;
+        int STRATEGY = 0;
+        int MESH_REGULARITY = -1;
+        RefinementSelectors::H1NonUniformHP selector(ISO_ONLY, allowedCandidates(adaptivityType), CONV_EXP, H2DRS_DEFAULT_ORDER, &shapeset);
+
         // initialize the linear system
         LinSystem sys(&wf, &umfpack);
         sys.set_spaces(1, &space);
@@ -382,7 +399,7 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
                 rs.assemble();
                 rs.solve(1, &rsln);
 
-                H1OrthoHP hp(1, &space);
+                H1AdaptHP hp(1, &space);
                 error = hp.calc_error(sln, &rsln) * 100;
 
                 // emit signal
@@ -394,7 +411,7 @@ QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
                 }
 
                 if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-                if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
+                if (i != adaptivitysteps-1) hp.adapt(THRESHOLD, STRATEGY, &selector, MESH_REGULARITY);
             }
         }
 

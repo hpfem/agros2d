@@ -139,6 +139,14 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
     // initialize the linear solver
     UmfpackSolver umfpack;
 
+    // prepare selector
+    bool ISO_ONLY = false;
+    double CONV_EXP = 1.0;
+    double THRESHOLD = 0.3;
+    int STRATEGY = 0;
+    int MESH_REGULARITY = -1;
+    RefinementSelectors::H1NonUniformHP selector(ISO_ONLY, allowedCandidates(adaptivityType), CONV_EXP, H2DRS_DEFAULT_ORDER, &shapeset);
+
     // initialize the linear system
     LinSystem sys(&wf, &umfpack);
     sys.set_spaces(1, &space);
@@ -169,7 +177,7 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
             rs.assemble();
             rs.solve(1, &rsln);
 
-            H1OrthoHP hp(1, &space);
+            H1AdaptHP hp(1, &space);
             error = hp.calc_error(sln, &rsln) * 100;
 
             // emit signal
@@ -181,7 +189,7 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
             }
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            if (i != adaptivitysteps-1) hp.adapt(0.3, 0, (int) adaptivityType);
+            if (i != adaptivitysteps-1) hp.adapt(THRESHOLD, STRATEGY, &selector, MESH_REGULARITY);
         }
     }
 
