@@ -39,4 +39,4 @@ testpj = test("Losses", point["pj"], 5.858385e10)
 surface = surfaceintegral(1)
 testI = test("Current", surface["I"], -2.166256e8)
 
-print("Test: Current field - planar: " + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))
+print("Test: Current field - axisymmetric: " + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))

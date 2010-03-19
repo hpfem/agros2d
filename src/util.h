@@ -37,6 +37,18 @@ const double EPS0 = 8.854e-12;
 const double MU0 = 4*M_PI*1e-7;
 const int NDOF_STOP = 40000;
 
+
+// adaptivity
+const bool ADAPTIVITY_ISOONLY = false;
+const double ADAPTIVITY_CONVEXP = 1.0;
+const double ADAPTIVITY_THRESHOLD = 0.3;
+const int ADAPTIVITY_STRATEGY = 0;
+const int ADAPTIVITY_MESHREGULARITY = -1;
+
+// command argument
+const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I -p \"%2\"";
+const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
+
 using namespace std;
 
 // enable log file

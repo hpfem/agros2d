@@ -253,6 +253,8 @@ void SolverDialog::runMesh()
     // create triangle files
     if (writeToTriangle())
     {
+        QSettings settings;
+
         showMessage(tr("Triangle: poly file was created."), false);
         progressBar->setValue(20);
 
@@ -268,7 +270,8 @@ void SolverDialog::runMesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle"))
             triangleBinary = QApplication::applicationDirPath() + QDir::separator() + "triangle";
 
-        processTriangle->start(QString("%1 -p -P -q30.0 -e -A -a -z -Q -I -p \"%2\"").
+        QString argument = settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString();
+        processTriangle->start(QString(argument).
                                arg(triangleBinary).
                                arg(tempProblemFileName()));
         progressBar->setValue(30);
@@ -283,7 +286,6 @@ void SolverDialog::runMesh()
         }
 
         // copy triangle files
-        QSettings settings;
         bool deleteTriangleFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>();
 
         if ((!deleteTriangleFiles) && (!m_fileNameOrig.isEmpty()))

@@ -205,12 +205,13 @@ QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
     UmfpackSolver umfpack;
 
     // prepare selector
-    bool ISO_ONLY = false;
-    double CONV_EXP = 1.0;
-    double THRESHOLD = 0.3;
-    int STRATEGY = 0;
-    int MESH_REGULARITY = -1;
-    RefinementSelectors::H1NonUniformHP selector(ISO_ONLY, allowedCandidates(adaptivityType), CONV_EXP, H2DRS_DEFAULT_ORDER, &shapeset);
+    QSettings settings;
+    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
+    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
+    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
+    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
+    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
+    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
 
     // initialize the linear system
     LinSystem sys(&wf, &umfpack);
@@ -254,7 +255,7 @@ QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
             }
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            if (i != adaptivitysteps-1) hp.adapt(THRESHOLD, STRATEGY, &selector, MESH_REGULARITY);
+            if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
         }
     }
 

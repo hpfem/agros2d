@@ -35,52 +35,6 @@ OptionsDialog::OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *pare
     setMaximumSize(sizeHint());
 }
 
-OptionsDialog::~OptionsDialog()
-{
-    // main
-    delete cmbGUIStyle;
-    delete cmbLanguage;
-
-    // grid
-    delete txtGridStep;
-    delete chkSnapToGrid;
-    // rulers
-    delete chkRulers;
-
-    // contours
-    delete txtContoursCount;
-
-    // scalar field
-    delete cmbPalette;
-    delete chkPaletteFilter;
-    delete txtPaletteSteps;
-
-    // 3d
-    delete chkView3DLighting;
-
-    // delete files
-    delete chkDeleteTriangleMeshFiles;
-    delete chkDeleteHermes2DMeshFile;
-
-    // clear command history
-    delete cmdClearCommandHistory;
-
-    // show result in line edit value widget
-    delete chkLineEditValueShowResult;
-
-    // save with solution
-    delete chkSaveWithSolution;
-
-    // check version
-    delete chkCheckVersion;
-
-    delete lstView;
-    delete panMain;
-    delete panView;
-    delete panColors;
-    delete pages;
-}
-
 void OptionsDialog::load()
 {
     QSettings settings;
@@ -151,6 +105,17 @@ void OptionsDialog::load()
 
     // 3d
     chkView3DLighting->setChecked(m_sceneViewSettings->scalarView3DLighting);
+
+    // adaptivity
+    chkIsoOnly->setChecked(settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>());
+    txtConvExp->setValue(settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>());
+    txtThreshold->setValue(settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>());
+    cmbStrategy->setCurrentIndex(cmbStrategy->findData(settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>()));
+    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>()));
+
+    // command argument
+    txtArgumentTriangle->setText(settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString());
+    txtArgumentFFmpeg->setText(settings.value("Commands/FFmpeg", COMMANDS_FFMPEG).toString());
 }
 
 void OptionsDialog::save()
@@ -218,6 +183,17 @@ void OptionsDialog::save()
 
     // save
     m_sceneViewSettings->save();
+
+    // adaptivity
+    settings.setValue("Adaptivity/IsoOnly", chkIsoOnly->isChecked());
+    settings.setValue("Adaptivity/ConvExp", txtConvExp->value());
+    settings.setValue("Adaptivity/Threshold", txtThreshold->value());
+    settings.setValue("Adaptivity/Strategy", cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt());
+    settings.setValue("Adaptivity/MeshRegularity", cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt());
+
+    // command argument
+    settings.setValue("Commands/Triangle", txtArgumentTriangle->text());
+    settings.setValue("Commands/FFmpeg", txtArgumentFFmpeg->text());
 }
 
 void OptionsDialog::createControls()
@@ -228,6 +204,7 @@ void OptionsDialog::createControls()
     panMain = createMainWidget();
     panView = createViewWidget();
     panColors = createColorsWidget();
+    panAdvanced = createAdvancedWidget();
 
     // List View
     lstView->setCurrentRow(0);
@@ -253,9 +230,14 @@ void OptionsDialog::createControls()
     itemColors->setTextAlignment(Qt::AlignHCenter);
     itemColors->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
+    QListWidgetItem *itemAdvanced    = new QListWidgetItem(icon("options-advanced"), tr("Advanced"), lstView);
+    itemAdvanced->setTextAlignment(Qt::AlignHCenter);
+    itemAdvanced->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
     pages->addWidget(panMain);
     pages->addWidget(panView);
     pages->addWidget(panColors);
+    pages->addWidget(panAdvanced);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
     layoutHorizontal->addWidget(lstView);
@@ -502,6 +484,84 @@ QWidget *OptionsDialog::createColorsWidget()
     return colorsWidget;
 }
 
+QWidget *OptionsDialog::createAdvancedWidget()
+{
+    QWidget *viewWidget = new QWidget(this);
+
+    // adaptivity
+    chkIsoOnly = new QCheckBox(tr("Isotropic refinement"));
+    lblIsoOnly = new QLabel(tr("<table>"
+                               "<tr><td><b>true</b><td><td>isotropic refinement</td></tr>"
+                               "<tr><td><b>false</b><td><td>anisotropic refinement</td></tr>"
+                               "</table>"));
+    txtConvExp = new SLineEditDouble();
+    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of cancidates in hp-adaptivity"));
+    txtThreshold = new SLineEditDouble();
+    lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
+    cmbStrategy = new QComboBox();
+    cmbStrategy->addItem(tr("0"), 0);
+    cmbStrategy->addItem(tr("1"), 1);
+    cmbStrategy->addItem(tr("2"), 2);
+    lblStrategy = new QLabel(tr("<table>"
+                                 "<tr><td><b>0</b><td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
+                                 "<tr><td><b>1</b><td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
+                                 "<tr><td><b>2</b><td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
+                                 "</table>"));
+    cmbMeshRegularity = new QComboBox();
+    cmbMeshRegularity->addItem(tr("arbitrary level hang. nodes"), -1);
+    cmbMeshRegularity->addItem(tr("at most one-level hang. nodes"), 1);
+    cmbMeshRegularity->addItem(tr("at most two-level hang. nodes"), 2);
+    cmbMeshRegularity->addItem(tr("at most three-level hang. nodes"), 3);
+    cmbMeshRegularity->addItem(tr("at most four-level hang. nodes"), 4);
+    cmbMeshRegularity->addItem(tr("at most five-level hang. nodes"), 5);
+
+    QGridLayout *layoutAdaptivity = new QGridLayout();
+    layoutAdaptivity->addWidget(chkIsoOnly, 0, 0);
+    layoutAdaptivity->addWidget(lblIsoOnly, 1, 0, 1, 2);
+    layoutAdaptivity->addWidget(new QLabel(tr("Conv. exp.:")), 2, 0);
+    layoutAdaptivity->addWidget(txtConvExp, 2, 1);
+    layoutAdaptivity->addWidget(lblConvExp, 3, 0, 1, 2);
+    layoutAdaptivity->addWidget(new QLabel(tr("Strategy:")), 4, 0);
+    layoutAdaptivity->addWidget(cmbStrategy, 4, 1);
+    layoutAdaptivity->addWidget(lblStrategy, 5, 0, 1, 2);
+    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 6, 0);
+    layoutAdaptivity->addWidget(txtThreshold, 6, 1);
+    layoutAdaptivity->addWidget(lblThreshold, 7, 0, 1, 2);
+    layoutAdaptivity->addWidget(new QLabel(tr("Mesh regularity:")), 8, 0);
+    layoutAdaptivity->addWidget(cmbMeshRegularity, 8, 1);
+
+    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    grpAdaptivity->setLayout(layoutAdaptivity);
+
+    // commands
+    txtArgumentTriangle = new QLineEdit("");
+    txtArgumentFFmpeg = new QLineEdit("");
+
+    QGridLayout *layoutArgument = new QGridLayout();
+    layoutArgument->addWidget(new QLabel(tr("Triangle")), 0, 0);
+    layoutArgument->addWidget(txtArgumentTriangle, 1, 0);
+    layoutArgument->addWidget(new QLabel(tr("FFmpeg")), 2, 0);
+    layoutArgument->addWidget(txtArgumentFFmpeg, 3, 0);
+
+    QGroupBox *grpArgument = new QGroupBox(tr("Commands"));
+    grpArgument->setLayout(layoutArgument);
+
+    // default
+    QPushButton *btnDefault = new QPushButton(tr("Default"));
+    connect(btnDefault, SIGNAL(clicked()), this, SLOT(doAdvancedDefault()));
+
+    // layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(grpAdaptivity);
+    layout->addWidget(grpArgument);
+    layout->addStretch();
+    layout->addWidget(btnDefault, 0, Qt::AlignLeft);
+
+    viewWidget->setLayout(layout);
+
+    return viewWidget;
+}
+
 void OptionsDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     pages->setCurrentIndex(lstView->row(current));
@@ -532,6 +592,20 @@ void OptionsDialog::doClearCommandHistory()
     model->setStringList(QStringList());
 
     QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared succesfully."));
+}
+
+void OptionsDialog::doAdvancedDefault()
+{
+    // adaptivity
+    chkIsoOnly->setChecked(ADAPTIVITY_ISOONLY);
+    txtConvExp->setValue(ADAPTIVITY_CONVEXP);
+    txtThreshold->setValue(ADAPTIVITY_THRESHOLD);
+    cmbStrategy->setCurrentIndex(cmbStrategy->findData(ADAPTIVITY_STRATEGY));
+    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(ADAPTIVITY_MESHREGULARITY));
+
+    // command argument
+    txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
+    txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
 }
 
 // *******************************************************************************************************

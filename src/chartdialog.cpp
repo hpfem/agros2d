@@ -514,8 +514,13 @@ void ChartDialog::doExportData()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), "data", tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
     if (!fileName.isEmpty())
     {
+        QString ext = (selectedFilter.contains("CSV")) ? ".csv" : ".m";
+
         // open file for write
-        QFile file(fileName + selectedFilter);
+        if (QFileInfo(fileName).suffix().isEmpty())
+            fileName = fileName + ext;
+
+        QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
             cerr << "Could not create " + fileName.toStdString() + " file." << endl;
@@ -525,8 +530,7 @@ void ChartDialog::doExportData()
 
         // export
         // csv
-        QFileInfo fileInfo(fileName);
-        if (fileInfo.suffix().toLower() == "csv")
+        if (QFileInfo(fileName).suffix().toLower() == "csv")
         {
             // header
             for (int j = 0; j < trvTable->columnCount(); j++)
@@ -543,7 +547,7 @@ void ChartDialog::doExportData()
         }
 
         // m-file
-        if (fileInfo.suffix().toLower() == "m")
+        if (QFileInfo(fileName).suffix().toLower() == "m")
         {
             // items
             for (int j = 0; j < trvTable->columnCount(); j++)

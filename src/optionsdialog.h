@@ -33,12 +33,12 @@ class OptionsDialog : public QDialog
     Q_OBJECT
 public:
     OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *parent);
-    ~OptionsDialog();
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void doPaletteFilter(int state);
     void doClearCommandHistory();
+    void doAdvancedDefault();
 
     void doAccept();
     void doReject();
@@ -51,6 +51,7 @@ private:
     QWidget *panMain;
     QWidget *panView;
     QWidget *panColors;
+    QWidget *panAdvanced;
 
     // main
     QComboBox *cmbGUIStyle;
@@ -110,6 +111,20 @@ private:
     // check version
     QCheckBox *chkCheckVersion;
 
+    // advanced
+    QCheckBox *chkIsoOnly;
+    QLabel *lblIsoOnly;
+    SLineEditDouble *txtConvExp;
+    QLabel *lblConvExp;
+    SLineEditDouble *txtThreshold;
+    QLabel *lblThreshold;
+    QComboBox *cmbStrategy;
+    QLabel *lblStrategy;
+    QComboBox *cmbMeshRegularity;
+
+    QLineEdit *txtArgumentTriangle;
+    QLineEdit *txtArgumentFFmpeg;
+
     void load();
     void save();
 
@@ -117,6 +132,7 @@ private:
     QWidget *createMainWidget();
     QWidget *createViewWidget();
     QWidget *createColorsWidget();
+    QWidget *createAdvancedWidget();
 };
 
 // *************************************************************************

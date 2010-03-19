@@ -57,7 +57,9 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef Q_WS_WIN
-        if (styles.contains("WindowsXP"))
+        if (styles.contains("WindowsVista"))
+            style = "WindowsVista";
+        else if (styles.contains("WindowsXP"))
             style = "WindowsXP";
         else
             style = "Windows";

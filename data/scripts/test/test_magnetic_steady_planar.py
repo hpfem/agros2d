@@ -74,8 +74,5 @@ surface = surfaceintegral(2, 3, 4, 5)
 testFx = test("Maxwell force - x", surface["Fx"], 2.531945, 0.05)
 testFy = test("Maxwell force - y", surface["Fy"], -10.176192, 0.05)
 
-print(surface["Fx"])
-print(surface["Fy"])
-
 print("Test: Magnetic steady state - planar: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj 
 and testWm and testPj and testFxv and testFxv and testFyv and testT and testFx and testFy))
