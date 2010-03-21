@@ -9,7 +9,7 @@ try:
 	
 	# initial condition
 	y0 = [0]
-	
+
 	def func(y, t):
 		return [- R/L*y[0] + U0/L]
 	

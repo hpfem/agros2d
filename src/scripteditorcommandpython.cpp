@@ -956,7 +956,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     if (QFile::exists(fileName))
     {
         // compile
-        PyObject *code = Py_CompileString(QString("from os import chdir \nchdir(r'" + QFileInfo(fileName).absolutePath() + "')").toStdString().c_str(), "", Py_file_input);
+        PyObject *code = Py_CompileString(QString("from os import chdir \nchdir(u'" + QFileInfo(fileName).absolutePath() + "')").toStdString().c_str(), "", Py_file_input);
         // run
         if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
     }
