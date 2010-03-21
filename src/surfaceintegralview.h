@@ -60,8 +60,18 @@ public:
     SurfaceIntegralValueView(QWidget *parent = 0);
     ~SurfaceIntegralValueView();
 
+private slots:
+    void doCopyValue();
+    void doContextMenu(const QPoint &pos);
+
 private:
     QTreeWidget *trvWidget;
+
+    QAction *actCopy;
+    QMenu *mnuInfo;
+
+    void createActions();
+    void createMenu();
 };
 
 #endif // SURFACEINTEGRALVIEW_H

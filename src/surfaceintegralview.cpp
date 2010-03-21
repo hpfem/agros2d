@@ -130,6 +130,9 @@ SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget
     setMinimumWidth(280);
     setObjectName("SurfaceIntegralValueView");
 
+    createActions();
+    createMenu();
+
     trvWidget = new QTreeWidget();
     trvWidget->setHeaderHidden(false);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -138,6 +141,8 @@ SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget
     trvWidget->setColumnWidth(0, settings.value("SurfaceIntegralValueView/TreeViewColumn0", 150).value<int>());
     trvWidget->setColumnWidth(1, settings.value("SurfaceIntegralValueView/TreeViewColumn1", 80).value<int>());
     trvWidget->setIndentation(12);
+
+    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
 
     QStringList labels;
     labels << tr("Label") << tr("Value") << tr("Unit");
@@ -151,6 +156,37 @@ SurfaceIntegralValueView::~SurfaceIntegralValueView()
     QSettings settings;
     settings.setValue("SurfaceIntegralValueView/TreeViewColumn0", trvWidget->columnWidth(0));
     settings.setValue("SurfaceIntegralValueView/TreeViewColumn1", trvWidget->columnWidth(1));
+}
+
+void SurfaceIntegralValueView::createActions()
+{
+    // copy value
+    actCopy = new QAction(icon(""), tr("Copy value"), this);
+    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopyValue()));
+}
+
+void SurfaceIntegralValueView::createMenu()
+{
+    mnuInfo = new QMenu(this);
+    mnuInfo->addAction(actCopy);
+}
+
+void SurfaceIntegralValueView::doCopyValue()
+{
+    QTreeWidgetItem *item = trvWidget->currentItem();
+    if (item)
+        QApplication::clipboard()->setText(item->text(1));
+}
+
+void SurfaceIntegralValueView::doContextMenu(const QPoint &pos)
+{
+    QTreeWidgetItem *item = trvWidget->itemAt(pos);
+    if (item)
+        if (!item->text(1).isEmpty())
+        {
+            trvWidget->setCurrentItem(item);
+            mnuInfo->exec(QCursor::pos());
+        }
 }
 
 void SurfaceIntegralValueView::doShowSurfaceIntegral()

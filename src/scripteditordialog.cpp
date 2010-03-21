@@ -598,6 +598,7 @@ void ScriptEditorDialog::doRunPython()
     // actRunPython->setEnabled(true);
 
     txtEditor->setFocus();
+    activateWindow();
 }
 
 void ScriptEditorDialog::doCreatePythonFromModel()

@@ -756,6 +756,7 @@ void MainWindow::doSolve()
 
     doInvalidated();
     setFocus();
+    activateWindow();
 }
 
 void MainWindow::doOptions()

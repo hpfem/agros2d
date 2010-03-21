@@ -97,7 +97,7 @@ void SolutionArray::save(QDomDocument *doc, QDomElement *element)
 
 SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
 {
-    setWindowModality(Qt::ApplicationModal);
+    setWindowModality(Qt::WindowModal);
     setMinimumSize(420, 260);
     setMaximumSize(minimumSize());
     setModal(true);

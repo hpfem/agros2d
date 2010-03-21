@@ -1785,7 +1785,6 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         }
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         {
-            // TODO: add velocity
             result = 0.0;
             h1_integrate_expression((marker->conductivity.number > 0.0) ?
                                     1.0 / marker->conductivity.number * sqr(

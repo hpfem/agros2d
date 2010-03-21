@@ -538,7 +538,7 @@ void pythonMesh()
 // solve()
 void pythonSolve()
 {
-    Util::scene()->createMeshAndSolve(SolverMode_MeshAndSolve);    
+    Util::scene()->createMeshAndSolve(SolverMode_MeshAndSolve);
     if (Util::scene()->sceneSolution()->isSolved())
     {
         sceneView->actSceneModePostprocessor->trigger();

@@ -79,6 +79,7 @@ public:
 private:
     QTreeWidget *trvWidget;
     QAction *actPoint;
+    QAction *actCopy;
     QMenu *mnuInfo;
 
     Point point;
@@ -87,8 +88,9 @@ private:
     void createMenu();
 
 private slots:
-    void doPoint();
     void doContextMenu(const QPoint &pos);
+    void doPoint();
+    void doCopyValue();
 };
 
 class LocalPointValueDialog : public QDialog

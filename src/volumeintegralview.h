@@ -65,8 +65,18 @@ public:
     VolumeIntegralValueView(QWidget *parent = 0);
     ~VolumeIntegralValueView();
 
+private slots:
+    void doCopyValue();
+    void doContextMenu(const QPoint &pos);
+
 private:
     QTreeWidget *trvWidget;
+
+    QAction *actCopy;
+    QMenu *mnuInfo;
+
+    void createActions();
+    void createMenu();
 };
 
 #endif // VOLUMEINTEGRALVIEW_H

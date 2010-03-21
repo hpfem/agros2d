@@ -116,6 +116,9 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
     setMinimumWidth(280);
     setObjectName("VolumeIntegralValueView");
 
+    createActions();
+    createMenu();
+
     trvWidget = new QTreeWidget();
     trvWidget->setHeaderHidden(false);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -124,6 +127,8 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
     trvWidget->setColumnWidth(0, settings.value("VolumeIntegralValueView/TreeViewColumn0", 150).value<int>());
     trvWidget->setColumnWidth(1, settings.value("VolumeIntegralValueView/TreeViewColumn1", 80).value<int>());
     trvWidget->setIndentation(12);
+
+    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
 
     QStringList labels;
     labels << tr("Label") << tr("Value") << tr("Unit");
@@ -137,6 +142,37 @@ VolumeIntegralValueView::~VolumeIntegralValueView()
     QSettings settings;
     settings.setValue("VolumeIntegralValueView/TreeViewColumn0", trvWidget->columnWidth(0));
     settings.setValue("VolumeIntegralValueView/TreeViewColumn1", trvWidget->columnWidth(1));
+}
+
+void VolumeIntegralValueView::createActions()
+{
+    // copy value
+    actCopy = new QAction(icon(""), tr("Copy value"), this);
+    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopyValue()));
+}
+
+void VolumeIntegralValueView::createMenu()
+{
+    mnuInfo = new QMenu(this);
+    mnuInfo->addAction(actCopy);
+}
+
+void VolumeIntegralValueView::doCopyValue()
+{
+    QTreeWidgetItem *item = trvWidget->currentItem();
+    if (item)
+        QApplication::clipboard()->setText(item->text(1));
+}
+
+void VolumeIntegralValueView::doContextMenu(const QPoint &pos)
+{
+    QTreeWidgetItem *item = trvWidget->itemAt(pos);
+    if (item)
+        if (!item->text(1).isEmpty())
+        {
+            trvWidget->setCurrentItem(item);
+            mnuInfo->exec(QCursor::pos());
+        }
 }
 
 void VolumeIntegralValueView::doShowVolumeIntegral()

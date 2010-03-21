@@ -118,20 +118,24 @@ LocalPointValueView::~LocalPointValueView()
 
 void LocalPointValueView::createActions()
 {
+    // point
     actPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
     connect(actPoint, SIGNAL(triggered()), this, SLOT(doPoint()));
+
+    // copy value
+    actCopy = new QAction(icon(""), tr("Copy value"), this);
+    connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopyValue()));
 }
 
 void LocalPointValueView::createMenu()
 {
     mnuInfo = new QMenu(this);
-
     mnuInfo->addAction(actPoint);
+    mnuInfo->addAction(actCopy);
 }
 
 void LocalPointValueView::doPoint()
 {
-    
     LocalPointValueDialog localPointValueDialog(point);
     if (localPointValueDialog.exec() == QDialog::Accepted)
     {
@@ -141,6 +145,15 @@ void LocalPointValueView::doPoint()
 
 void LocalPointValueView::doContextMenu(const QPoint &pos)
 {
+    actCopy->setEnabled(false);
+    QTreeWidgetItem *item = trvWidget->itemAt(pos);
+    if (item)
+        if (!item->text(1).isEmpty())
+        {
+            trvWidget->setCurrentItem(item);
+            actCopy->setEnabled(true);
+        }
+
     mnuInfo->exec(QCursor::pos());
 }
 
@@ -149,6 +162,14 @@ void LocalPointValueView::doShowPoint(const Point &point)
     // store point
     this->point = point;
     doShowPoint();
+}
+
+void LocalPointValueView::doCopyValue()
+{
+    QTreeWidgetItem *item = trvWidget->currentItem();
+    if (item)
+        if (!item->text(1).isEmpty())
+            QApplication::clipboard()->setText(item->text(1));
 }
 
 void LocalPointValueView::doShowPoint()
