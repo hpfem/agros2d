@@ -64,6 +64,8 @@ You can double left click on the requested element (node, edge, and label) for e
 Tips
 ----
 
-Some operations can also be found in the context menu accessible by right clicking on the workspace or on the panel "Problem.
+For easy creation of geometry you can use function snap to grid. You can also view rules in the workspace. Both options can be found under "View" in the aplication settings.
 
-You can use the full screen display mode to make the most of the workspace view. To switch between modes use the F11 key or select "correct option" from the workspace context menu.
+Some operations can also be found in the context menu accessible by right clicking on the workspace or on the panel "Problem".
+
+You can use the full screen display mode to make the most of the workspace view. To switch between modes use the F11 key or select correct option from the workspace context menu.

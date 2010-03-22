@@ -65,7 +65,7 @@ Processing
 In this example, we will investigate the dependence of the capacity on the distance of electrodes. For this calculation we will use "do - while" cycle. Type the following code.
 
 .. literalinclude:: ./electrostatic_axisymmetric_capacitor.py
-   :lines: 49-64
+   :lines: 49-73
 
 To run the script select "Run" in the menu "Tools", or by pressing Ctrl+R.
 

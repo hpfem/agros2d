@@ -369,4 +369,3 @@ Average temperature:
 .. math::
 
    T_\mathrm{avg} = \frac{1}{V} \int_V T \dif V\,\,\,\mathrm{(deg.)}
-

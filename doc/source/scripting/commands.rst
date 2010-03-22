@@ -13,9 +13,9 @@ General Commands
 * **version()**
    Print Agros2D version.
 
-.. index:: print
+.. index:: print()
 
-* **print** *string*
+* **print(** *string* **)**
    Print string to console (Python command).
 
 .. index:: message()
@@ -94,7 +94,7 @@ Document Commands
    Create new document.
 
    - type = {"planar", "axisymmetric"}
-   - physicfield = {"general", "electrostatic", "magnetic", "current field", "heat transfer"}
+   - physicfield = {"general", "electrostatic", "magnetic", "current", "heat"}
    - numberofrefinements >= 0
    - polynomialorder = 1 to 10
    - adaptivitytype = {"disabled", "h-adaptivity", "p-adaptivity", "hp-adaptivity"}
@@ -105,6 +105,8 @@ Document Commands
    - timestep > 0
    - totaltime > 0
 
+   Key words that match a problem types, physic fields, adaptivity types and analysis types can be found in the :ref:`keyword-list`.
+
 An example:
 
 .. literalinclude:: ./examples.rst
@@ -112,7 +114,7 @@ An example:
 
 .. index:: opendocument()
 
-* **opendocument(** *filename* )**
+* **opendocument(** *filename* **)**
    Open document.
 
 .. index:: savedocument()
@@ -135,7 +137,7 @@ Geometry Commands
 
 .. index:: addlabel()
 
-* **addlabel(** *x, y, area = 0, marker = "none"* )**
+* **addlabel(** *x, y, area = 0, marker = "none"* **)**
    Add new label with coordinates [x, y], area of triangle and marker.
 
 .. index:: selectnone()
@@ -185,21 +187,21 @@ Geometry Commands
 
 .. index:: moveselection()
 
-* **moveselection(** *dx, dy, copy* **)**
+* **moveselection(** *dx, dy, copy = False* **)**
    Move selected objects.
 
    - copy = {True, False}
 
 .. index:: rotateselection()
 
-* **rotateselection(** *x, y, angle, copy* **)**
+* **rotateselection(** *x, y, angle, copy = False* **)**
    Rotate selected objects.
 
    - copy = {True, False}
 
 .. index:: scaleselection()
 
-* **scaleselection(** *x, y, scale, copy* **)**
+* **scaleselection(** *x, y, scale, copy = False* **)**
    Scale selected objects.
 
    - copy = {True, False}
@@ -213,16 +215,18 @@ Materials and Boundaries Commands
    Add boundary marker.
 
    - General field
-      addboundary(name, type = {"general_value", "general_derivative"}, value)
+      addboundary(name, type, value)
    - Electrostatic field
-      addboundary(name, type = {"electrostatic_potential", "electrostatic_surface_charge_density"}, value)
+      addboundary(name, type, value)
    - Magnetic field
-      addboundary(name, type = {"magnetic_vector_potential", "magnetic_surface_current_density"}, value)
-   - Electric current field
-      addboundary(name, type = {"current_potential", "current_inward_current_flow"}, value)
+      addboundary(name, type, value)
+   - Current field
+      addboundary(name, type, value)
    - Heat transfer
-      addboundary(name, type = {"heat_temperature"}, temperature)
-      addboundary(name, type = {"heat_flux"}, heat_flux, h, external_temperature)
+      addboundary(name, type, temperature)
+      addboundary(name, type, heat_flux, h, external_temperature)
+
+   Key words that match a boundary condition types can be found in the :ref:`keyword-list`.
 
 .. index:: modifyboundary()
 
@@ -240,7 +244,7 @@ Materials and Boundaries Commands
       addmaterial(name, charge_density, permittivity)
    - Magnetic field
       addmaterial(name, current_density, permeability, density, specificheat)
-   - Electric current field
+   - Current field
       addmaterial(name, conductivity)
    - Heat transfer
       addmaterial(name, volume_heat, thermal_conductivity)
@@ -256,20 +260,7 @@ Postprocessor Commands
 .. index:: pointresult()
 
 * **result = pointresult(** *x, y* **)**
-   Local variables at point [x, y].
-
-   - General field
-       Properties: X, Y, V, Gx, Gy, G, constant.
-   - Electrostatic field
-      Properties: X, Y, V, Ex, Ey, E, Dx, Dy, wj, epsr.
-   - Magnetic field (stadystate analysis)
-      Properties: X, Y, A, Bx, By, B, Hx, Hy, H, wm, mur.
-   - Magnetic field (harmonic analysis)
-      Properties: X, Y, A_real, A_imag, A, B, Bx_real, By_real, B_real, Bx_imag, By_imag, B_imag, H, Hx_real, Hy_real, H_real, Hx_imag, Hy_imag, H_imag, Ji_real, Ji_imag, Ji_real, J_real, J_imag, J_real, pj, wm, mur.
-   - Electric current field
-      Properties: X, Y, V, Jx, Jy, J, Ex, Ey, E, pj, gamma.
-   - Heat transfer
-      Properties: X, Y, T, Gx, Gy, G, Fx, Fy, F, lambda.
+   Local variables at point [x, y]. Key words that match a point results can be found in the :ref:`keyword-list`.
 
 An example:
 
@@ -278,21 +269,8 @@ An example:
 
 .. index:: volumeintegral()
 
-* **integral = volumeintegral(** *index, ...* **)**
-   Volume integral in areas with given index.
-
-   - General field
-      Properties: V, S.
-   - Electrostatic field
-      Properties: V, S, Ex_avg, Ey_avg, E_avg, Dx_avg, Dy_avg, D_avg, We.
-   - Magnetic field (stadystate analysis)
-      Properties: V, S, Bx_avg, By_avg, B_avg, Hx_avg, Hy_avg, H_avg, Wm.
-   - Magnetic field (harmonic analysis)
-      Properties: V, S, Ii_real, Ii_imag, It_real, It_imag, Pj, Fx_real, Fx_imag, Fy_real, Fy_imag, Wm.
-   - Electric current field
-      Properties: V, S, Jx_avg, Jy_avg, J_avg, Ex_avg, Ey_avg, E_avg, Pj.
-   - Heat transfer
-      Properties: V, S, T, Gx_avg, Gy_avg, G_avg, Fx_avg, Fy_avg, F_avg.
+* **result = volumeintegral(** *index, ...* **)**
+   Volume integral in areas with given index. Key words that match a volume integrals can be found in the :ref:`keyword-list`.
 
 An example:
 
@@ -301,19 +279,8 @@ An example:
 
 .. index:: surfaceintegral()
 
-* **integral = surfaceintegral(** *index, ...* **)**
-   Surface integral in edges with given index.
-
-   - General field
-       Properties: l, S.
-   - Electrostatic field
-      Properties: l, S, Q.
-   - Magnetic field
-      Properties: l, S.
-   - Electric current field
-      Properties: l, S, I.
-   - Heat transfer
-      Properties: l, S, T_avg, T_diff, F.
+* **result = surfaceintegral(** *index, ...* **)**
+   Surface integral in edges with given index. Key words that match a surface integrals can be found in the :ref:`keyword-list`.
 
 An example:
 
@@ -369,10 +336,17 @@ An example:
 
     - type = {"none", "scalar", "scalar3d", "order"}
 
-.. index:: settimestep()
+   Key words that match a view types, physic field variables and components can be found in the :ref:`keyword-list`.
 
-* **settimestep(** *timeStep* **)**
+.. index:: timestep()
+
+* **timestep(** *timeStep* **)**
    Set time level of transient problem.
+
+Mathematical Operations
+-----------------------
+
+You can use full of basic mathematical operations in Python. When dividing you must use a float type in the the denominator. For example: x/2.0.
 
 .. _`predefined-functions`:
 
@@ -381,18 +355,18 @@ Predefined User Functions
 
 .. index:: addsemicircle()
 
-* **addsemicircle(** *x0, y0, radius, marker* **)**
-   Add semicircle with center coordinates [x0, y0], radius and marker.
+* **addsemicircle(** *x0, y0, radius, marker = "none", label* **)**
+   Add semicircle with center coordinates [x0, y0], radius, marker and label.
 
 .. index:: addcircle()
 
-* **addcircle(** *x0, y0, radius, marker* **)**
-   Add circle with center coordinates [x, y], radius and marker.
+* **addcircle(** *x0, y0, radius, marker = "none", label* **)**
+   Add circle with center coordinates [x, y], radius, marker and label.
 
 .. index:: addrect()
 
-* **addrect(** *x0, y0, width, height, marker* **)**
-   Add rect with starting coordinates [x0, y0], width, height and marker.
+* **addrect(** *x0, y0, width, height, marker = "none", label* **)**
+   Add rect with starting coordinates [x0, y0], width, height, marker and label.
 
 Examples
 --------

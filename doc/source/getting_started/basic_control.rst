@@ -4,20 +4,20 @@ Basic Control
 Description of Agros2D
 ----------------------
 
-Main Window
+Main window
 ^^^^^^^^^^^
 
-Main Window consists of several parts.
+Main window consists of several parts.
 
-* Menu Bar and Toolbar
+* Menu bar and toolbar
 
-  Menu Bar is the main control element; you can find all commands there. In Toolbar the most frequently used commands are placed.
+  Menu bar is the main control element; you can find all commands there. In toolbar the most frequently used commands are placed.
 
 * Workspace
 
   Workspace is used for actual work with the model (geometry editing, viewing of the results, etc.). You can use the context menu, which is accessible by double left click in the Workspace area, to select commands from list.
 
-* Problem Panel
+* Problem panel
 
   Problem panel displays information about the problem. Here you can use the context menu to perform certain commands. It consists of a tree.
 
@@ -37,39 +37,43 @@ Main Window consists of several parts.
 
     Information about elements of geometry that are added to the workspace is contained here.
 
-* Local Values Panel
+* Local Values panel
 
   This panel displays calculated field quantity of local points.
 
-* Volume Integral Panel
+* Volume Integral panel
 
   This panel displays calculated field quantity of volume integrals.
 
-* Surface Integral Panel
+* Surface Integral panel
 
   This panel displays calculated field quantity of surface integrals.
 
-* Status Bar
+* Terminal panel
+
+  This panel is used to enter commands and display their output.
+
+* Status bar
 
   Status bar is used to display information about the type of problem, solution of the physical field and cursor position in workspace.
 
 .. image:: ./main_window.png
 
-Fig. 1.: Main Window
+Fig. 1.: Main window
 
-Script Editor Window
+Script editor window
 ^^^^^^^^^^^^^^^^^^^^
 
-The main part of the Script Editor Window is editing area, which works with scripts. In the bottom of the window there is an area for printing script warnings and messages. Script Editor Window also contains the Menu Bar and Toolbar.
+The main part of the script editor window is editing area, which works with scripts. In the bottom of the window there is terminal panel. Script editor window also contains the file browser panel, menu bar and toolbar.
 
 .. image:: ./script_editor_window.png
 
-Fig. 2.: Script Editor Window
+Fig. 2.: Script editor window
 
-Chart Window
+Chart window
 ^^^^^^^^^^^^
 
-The main part of the Chart Window is the area to display the chart or data. You can switch among chart and data views through tabs at the top of the area. To enter the necessary data for the chart and to work with it controls on the right side of the window are used.
+The main part of the chart window is the area to display the chart or data. You can switch among chart and data views through tabs at the top of the area. To enter the necessary data for the chart and to work with it controls on the right side of the window are used.
 
 .. image:: ./chart_window.png
 
@@ -78,8 +82,8 @@ Fig. 3.: Chart window
 Shortcut Keys
 -------------
 
-Basic Shortcuts
-^^^^^^^^^^^^^^^
+Basic shortcuts in main window
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * **F4**
 
@@ -125,7 +129,26 @@ Basic Shortcuts
 
   Solve problem.
 
-Advanced Shortcuts
+Basic shortcuts in script editor
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* **Ctrl+R**
+
+  Run script.
+
+* **Ctrl+M**
+
+  Create script from model.
+
+* **Ctrl+U**
+
+  Uncoment selected code.
+
+* **Alt+G**
+
+  Go to line.
+
+Advanced shortcuts
 ^^^^^^^^^^^^^^^^^^
 
 * **Ctrl+left click**
@@ -142,11 +165,11 @@ Advanced Shortcuts
 
 * **Shift+left click**
 
-  Move with Workspace (also is possible to use middle mouse button).
+  Move with workspace (also is possible to use middle mouse button or arrows keys).
 
 Tips
 ----
 
-Both the Main Window and the Script Editor Window can be customized. For adjustments, use context menu of the Menu Bar or Toolbar (also label of each panel) and choose which parts you want to view.
+Both the main window and the script editor window can be customized. For adjustments, use context menu of the menu bar or toolbar (also label of each panel) and choose which parts you want to view.
 
-You can use rulers in Workspace after switching them on in program properties.
+You can use rulers in workspace after switching them on in program properties.

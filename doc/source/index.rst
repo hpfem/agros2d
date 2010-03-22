@@ -24,11 +24,7 @@ Indices and Tables
 
 * :ref:`genindex`
 
-.. * :ref:`modindex`
-
 * :ref:`glossary`
-
-.. * :ref:`search`
 
 .. _Agros2D: http://www.hpfem.org/agros2d
 .. _Hermes2D: http://www.hpfem.org/hermes2d

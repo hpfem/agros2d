@@ -11,14 +11,14 @@ SUBDIRS = src-remote
 linux-g++:CONFIG(release) system(cython src/python/agros2d.pyx)
 
 # DEFINES += BETA
-DEFINES += VERSION_BETA
+# DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=0
 DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=326
+DEFINES += VERSION_GIT=332
 DEFINES += VERSION_YEAR=2010
 DEFINES += VERSION_MONTH=03
-DEFINES += VERSION_DAY=19
+DEFINES += VERSION_DAY=22
 CONFIG += help
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
@@ -181,8 +181,9 @@ linux-g++ {
 }
 win32-g++ { 
     INCLUDEPATH += c:/qt/mingw/include
-    INCLUDEPATH += c:/qt/mingw/include/hermes2d
     INCLUDEPATH += c:/Python26/include
+    INCLUDEPATH += ../hermes2d/src
+    LIBS += -L../hermes2d/src
     LIBS += -lhermes2d-real
     LIBS += -lumfpack
     LIBS += -lamd

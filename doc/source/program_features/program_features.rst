@@ -15,6 +15,19 @@ You can write your own functions to use in your scripts. If you write these func
 
 .. index:: agros2d-remote
 
+Startup Script
+--------------
+
+You can use the variable even if not using scripting. Variables must first define in the Startup script, which can be found in the setting of the problem. After you can use these variables example in dialog for adding new material or boundary conditions.
+
+.. image:: ./startup_script.png
+
+Fig. 1.: Example of defining variables in Startup script
+
+.. image:: ./boundary_condition.png
+
+Fig. 2.: Example of using variables for adding a new boundary condition
+
 Remote Control
 --------------
 
