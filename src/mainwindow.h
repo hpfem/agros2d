@@ -113,7 +113,9 @@ private:
     QAction *actDocumentNew;
     QAction *actDocumentOpen;   
     QAction *actDocumentSave;
+    #ifdef BETA
     QAction *actDocumentSaveWithSolution;
+    #endif
     QAction *actDocumentSaveAs;
     QAction *actDocumentClose;
     QAction *actDocumentImportDXF;

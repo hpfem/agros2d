@@ -36,3 +36,22 @@ void TooltipView::loadTooltip(const QString &html)
 {
     webView->setHtml(html);
 }
+
+void TooltipView::loadTooltip(SceneMode sceneMode)
+{
+    switch (sceneMode)
+    {
+    case SceneMode_OperateOnNodes:
+        loadTooltip(tr("Tooltip_OperateOnNodes"));
+        break;
+    case SceneMode_OperateOnEdges:
+        loadTooltip(tr("Tooltip_OperateOnEdges"));
+        break;
+    case SceneMode_OperateOnLabels:
+        loadTooltip(tr("Tooltip_OperateOnLabels"));
+        break;
+    case SceneMode_Postprocessor:
+        loadTooltip(tr("Tooltip_Postprocessor"));
+        break;
+    }
+}

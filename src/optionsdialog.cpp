@@ -73,7 +73,9 @@ void OptionsDialog::load()
     chkDeleteHermes2DMeshFile->setChecked(settings.value("Solver/DeleteHermes2DMeshFile", true).value<bool>());
 
     // save problem with solution
+#ifdef BETA
     chkSaveWithSolution->setChecked(settings.value("Solver/SaveProblemWithSolution", false).value<bool>());
+#endif
 
     // colors
     colorBackground->setColor(m_sceneViewSettings->colorBackground);
@@ -149,7 +151,9 @@ void OptionsDialog::save()
     settings.setValue("Solver/DeleteHermes2DMeshFile", chkDeleteHermes2DMeshFile->isChecked());
 
     // save problem with solution
+#ifdef BETA
     settings.setValue("Solver/SaveProblemWithSolution", chkSaveWithSolution->isChecked());
+#endif
 
     // color
     m_sceneViewSettings->colorBackground = colorBackground->color();
@@ -279,12 +283,16 @@ QWidget *OptionsDialog::createMainWidget()
     // solver layout
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
+#ifdef BETA
     chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
+#endif
 
     QVBoxLayout *layoutSolver = new QVBoxLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
     layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
+#ifdef BETA
     layoutSolver->addWidget(chkSaveWithSolution);
+#endif
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);

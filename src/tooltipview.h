@@ -32,6 +32,7 @@ public:
 
 public slots:
     void loadTooltip(const QString &html);
+    void loadTooltip(SceneMode sceneMode);
 
 private:
      QWebView *webView;

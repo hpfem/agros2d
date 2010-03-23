@@ -106,7 +106,9 @@ private:
     QCheckBox *chkLineEditValueShowResult;
 
     // save with solution
+#ifdef BETA
     QCheckBox *chkSaveWithSolution;
+#endif
 
     // check version
     QCheckBox *chkCheckVersion;

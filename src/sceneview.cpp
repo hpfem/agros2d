@@ -2250,7 +2250,7 @@ void SceneView::doSceneObjectProperties()
     }
 }
 
-void SceneView::doSceneModeSet(QAction *)
+void SceneView::doSceneModeSet(QAction *action)
 {
     actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
 
@@ -2284,6 +2284,8 @@ void SceneView::doSceneModeSet(QAction *)
     }
 
     doInvalidated();
+
+    emit sceneModeChanged(m_sceneMode);
 }
 
 void SceneView::doSelectMarker()

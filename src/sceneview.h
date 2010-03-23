@@ -120,7 +120,7 @@ public slots:
     void doZoomRegion(const Point &start, const Point &end);
     void doSceneViewProperties();
     void doSceneObjectProperties();
-    void doSceneModeSet(QAction *);
+    void doSceneModeSet(QAction *action);
     void doSelectMarker();
     void doInvalidated();
     void doSolved();
@@ -165,7 +165,8 @@ public:
 signals:
     void mouseMoved(const QPointF &position);
     void mousePressed();
-    void mousePressed(const Point &point);    
+    void mousePressed(const Point &point);
+    void sceneModeChanged(SceneMode sceneMode);
     
 protected:
     void initializeGL();

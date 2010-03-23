@@ -52,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneView, SIGNAL(mousePressed(const Point &)), localPointValueView, SLOT(doShowPoint(const Point &)));
     connect(sceneView, SIGNAL(mousePressed()), volumeIntegralValueView, SLOT(doShowVolumeIntegral()));
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
+    connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
+    connect(sceneView, SIGNAL(sceneModeChanged(SceneMode)), tooltipView, SLOT(loadTooltip(SceneMode)));
 
     sceneView->doDefaultValues();
 
@@ -131,9 +133,14 @@ void MainWindow::createActions()
     actDocumentSave->setStatusTip(tr("Save the file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
     
+#ifdef BETA
     actDocumentSaveWithSolution = new QAction(icon(""), tr("Save with solution"), this);
     actDocumentSaveWithSolution->setStatusTip(tr("Save the file to disk with solution"));
     connect(actDocumentSaveWithSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveWithSolution()));
+#else
+    QSettings settings;
+    settings.setValue("Solver/SaveProblemWithSolution", false);
+#endif
 
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
@@ -266,7 +273,9 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addAction(actDocumentSave);
+#ifdef BETA
     mnuFile->addAction(actDocumentSaveWithSolution);
+#endif
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
@@ -486,8 +495,6 @@ void MainWindow::createViews()
     tooltipView = new TooltipView(this);
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
-
-    tooltipView->loadTooltip(tr("tooltip_01"));
 }
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
@@ -878,7 +885,9 @@ void MainWindow::doTimeStepChanged(int index)
 
 void MainWindow::doInvalidated()
 {    
+#ifdef BETA
     actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
+#endif
     actChart->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actCreateVideo->setEnabled(Util::scene()->sceneSolution()->isSolved() && (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient));
     tlbTransient->setEnabled(Util::scene()->sceneSolution()->isSolved());
