@@ -4408,22 +4408,130 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../src/tooltipview.cpp" line="45"/>
         <source>Tooltip_OperateOnNodes</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
+&lt;head&gt;
+		&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
+		&lt;title&gt;Agros2D - tipy&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style=&quot;font-size: 11px;&quot;&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přidat uzel přímo pomocí myši&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přidat uzel pomocí souřadnic (otevře se dialog)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl+Shift+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přidat uzel pomocí souřadnic (v dialogu se využijí aktuální souřadnice kurzoru myši)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Kolečko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přiblížení a oddálení pracovní plochy&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;</translation>
     </message>
     <message>
         <location filename="../src/tooltipview.cpp" line="48"/>
         <source>Tooltip_OperateOnEdges</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
+	&lt;title&gt;Agros2D - tipy&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style=&quot;font-size: 11px;&quot;&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přidat hranu přímo pomocí myši&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Mezerník&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;otevřít dialog pro nastavení vlastností vybrané hrany&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Kolečko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přiblížení a oddálení pracovní plochy&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;</translation>
     </message>
     <message>
         <location filename="../src/tooltipview.cpp" line="51"/>
         <source>Tooltip_OperateOnLabels</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
+	&lt;title&gt;Agros2D - tipy&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style=&quot;font-size: 11px;&quot;&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přidat značku oblasti přímo pomocí myši&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl+L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přidat značku oblastí pomocí souřadnic (otevře se dialog)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Mezerník&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;otevřít dialog pro nastavení vlastností vybrané značky oblasti&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Kolečko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přiblížení a oddálení pracovní plochy&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;</translation>
     </message>
     <message>
         <location filename="../src/tooltipview.cpp" line="54"/>
         <source>Tooltip_Postprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
+	&lt;title&gt;Agros2D - tipy&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style=&quot;font-size: 11px;&quot;&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;F12&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;otevřít dialog pro nastavení scény&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Kolečko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;přiblížení a oddálení pracovní plochy&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;/td&gt;
+		&lt;td&gt;Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály. Vždy musíte vybrat správný nástroj pro jejich označení z nabýdky &quot;Problém&quot; nebo z panelu nástrojů.&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;</translation>
     </message>
 </context>
 <context>

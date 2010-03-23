@@ -4407,104 +4407,129 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/tooltipview.cpp" line="45"/>
         <source>Tooltip_OperateOnNodes</source>
-        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
-		&lt;head&gt;
-			&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
-			&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
-		&lt;/head&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
+	&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
+&lt;/head&gt;
 &lt;body style=&quot;font-size: 11px;&quot;&gt;
 &lt;table&gt;
-    &lt;tr&gt;
-        &lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add node directly by mouse click&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-    &lt;td&gt;&lt;b&gt;Ctrl+N&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add node by dialog window&lt;/td&gt;        
-    &lt;/tr&gt;
-    &lt;tr&gt;
-    &lt;td&gt;&lt;b&gt;Ctrl+Shift+N&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add node by dialog window actual cursor position&lt;/td&gt;        
-    &lt;/tr&gt;
-    &lt;tr&gt;
-    &lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;pan the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;        
-    &lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;add node directly by mouse&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;add node by coordinates (open dialog)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl+Shift+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;add node by coordinates (in the dialog will be used the actual coordinates of the mouse cursor)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Zoom the workspace&lt;/td&gt;
+	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
     </message>
     <message>
         <location filename="../src/tooltipview.cpp" line="48"/>
         <source>Tooltip_OperateOnEdges</source>
-        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
-		&lt;head&gt;
-			&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
-			&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
-		&lt;/head&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
+	&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
+&lt;/head&gt;
 &lt;body style=&quot;font-size: 11px;&quot;&gt;
 &lt;table&gt;
-    &lt;tr&gt;
-        &lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add edge directly by mouse click&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-    &lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;open dialog for setting markers&lt;/td&gt;        
-    &lt;/tr&gt;
-    &lt;tr&gt;
-    &lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;pan the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;        
-    &lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;add edge directly by mouse&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;open dialog for setting selected edge&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Zoom the workspace&lt;/td&gt;
+	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
     </message>
     <message>
         <location filename="../src/tooltipview.cpp" line="51"/>
         <source>Tooltip_OperateOnLabels</source>
-        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
-		&lt;head&gt;
-			&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
-			&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
-		&lt;/head&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
+	&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
+&lt;/head&gt;
 &lt;body style=&quot;font-size: 11px;&quot;&gt;
 &lt;table&gt;
-    &lt;tr&gt;
-        &lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add label directly by mouse click&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-    &lt;td&gt;&lt;b&gt;Ctrl+L&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add label by dialog window&lt;/td&gt;        
-    &lt;/tr&gt;
-    &lt;tr&gt;
-    &lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;open dialog for setting markers&lt;/td&gt;        
-    &lt;/tr&gt;
-    &lt;tr&gt;
-    &lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;pan the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;        
-    &lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;add label directly by mouse&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl+L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;add label by coordinates (open dialog)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;open dialog for setting selected label&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Zoom the workspace&lt;/td&gt;
+	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
     </message>
     <message>
         <location filename="../src/tooltipview.cpp" line="54"/>
         <source>Tooltip_Postprocessor</source>
-        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
-		&lt;head&gt;
-			&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
-			&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
-		&lt;/head&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
+	&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
+&lt;/head&gt;
 &lt;body style=&quot;font-size: 11px;&quot;&gt;
 &lt;table&gt;
-    &lt;tr&gt;
-        &lt;td&gt;&lt;b&gt;xx&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;xx&lt;/td&gt;
-    &lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;F12&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;open dialog for setting scene properties&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Zoom the workspace&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;/td&gt;
+		&lt;td&gt;You can also calculate variables at the point and surface or volume integrals. Always you must choose the tool for the collection them of menu &quot;Problem&quot; or the toolbar.&lt;/td&gt;
+	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
     </message>
