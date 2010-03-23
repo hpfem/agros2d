@@ -1,8 +1,8 @@
 [Setup]
 
 AppName=Agros2D
-AppVerName=Agros2D 1.0.0.322 (2010-03-07)
-OutputBaseFilename=Agros2D_1.0.0.322_beta
+AppVerName=Agros2D 1.0.0.336 (2010-03-23)
+OutputBaseFilename=Agros2D_1.0.0.336
 DefaultGroupName=Agros2D
 LicenseFile=COPYING
 
@@ -70,6 +70,8 @@ Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http:/
 Type: files; Name: {app}\Agros2D.url
 
 [Code]
+
+
 
 
 

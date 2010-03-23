@@ -4455,7 +4455,7 @@ Do you want to save your changes?</source>
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;open dialog for setting selected edge&lt;/td&gt;
+		&lt;td&gt;open dialog for setting of selected edge&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 	&lt;tr&gt;
@@ -4486,11 +4486,11 @@ Do you want to save your changes?</source>
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl+L&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;add label by coordinates (open dialog)&lt;/td&gt;
+		&lt;td&gt;add label using coordinates (open dialog)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;open dialog for setting selected label&lt;/td&gt;
+		&lt;td&gt;open dialog for setting of selected label&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
