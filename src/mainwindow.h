@@ -26,6 +26,7 @@
 #include "sceneview.h"
 #include "sceneinfoview.h"
 #include "terminalview.h"
+#include "tooltipview.h"
 #include "helpdialog.h"
 #include "solverdialog.h"
 #include "chartdialog.h"
@@ -158,6 +159,7 @@ private:
     VolumeIntegralValueView *volumeIntegralValueView;
     SurfaceIntegralValueView *surfaceIntegralValueView;
     TerminalView *terminalView;
+    TooltipView *tooltipView;
 
     HelpDialog *helpDialog;
     ChartDialog *chartDialog;

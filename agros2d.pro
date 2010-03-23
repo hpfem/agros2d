@@ -68,7 +68,8 @@ SOURCES += src/util.cpp \
     src/reportdialog.cpp \
     src/videodialog.cpp \
     src/terminalview.cpp \
-    src/scenemarkerselectdialog.cpp
+    src/scenemarkerselectdialog.cpp \
+    src/tooltipview.cpp
 HEADERS += src/util.h \
     src/scene.h \
     src/gui.h \
@@ -103,7 +104,8 @@ HEADERS += src/util.h \
     src/reportdialog.h \
     src/videodialog.h \
     src/terminalview.h \
-    src/scenemarkerselectdialog.h
+    src/scenemarkerselectdialog.h \
+    src/tooltipview.h
 INCLUDEPATH += src \
     src/dxflib
 OTHER_FILES += src/python/agros2d.pyx \

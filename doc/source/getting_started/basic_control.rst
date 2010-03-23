@@ -151,21 +151,21 @@ Basic shortcuts in script editor
 Advanced shortcuts
 ^^^^^^^^^^^^^^^^^^
 
-* **Ctrl+left click**
+* **Ctrl+left mouse**
 
-  Add elements of geometry use selected (with mouse) coordinates.
+  Add nodes, edges and labels directly by left mouse click.
 
 * **Ctrl+Shift+N**
 
-  Add elements of geometry use enter selected (with mouse) coordinates.
+  Add nodes by dialog window using actual cursor position.
 
 * **Space**
 
-  Open dialog for set markers (only with selected edges or labels).
+  Open dialog for setting markers (only with selected edges or labels).
 
-* **Shift+left click**
+* **Shift+left mouse**
 
-  Move with workspace (also is possible to use middle mouse button or arrows keys).
+  Pan the workspace (you can also use middle mouse button or arrows keys).
 
 Tips
 ----

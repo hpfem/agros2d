@@ -448,11 +448,6 @@ void MainWindow::createStatusBar()
     connect(sceneView, SIGNAL(mouseMoved(const QPointF &)), this, SLOT(doSceneMouseMoved(const QPointF &)));
 }
 
-void MainWindow::doSceneMouseMoved(const QPointF &position)
-{
-    lblPosition->setText(tr("Position: [%1; %2]").arg(position.x(), 8, 'f', 5).arg(position.y(), 8, 'f', 5));
-}
-
 void MainWindow::createScene()
 {
     QHBoxLayout *layout = new QHBoxLayout;
@@ -487,6 +482,17 @@ void MainWindow::createViews()
     terminalView = new TerminalView(this);
     terminalView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::BottomDockWidgetArea, terminalView);
+
+    tooltipView = new TooltipView(this);
+    tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
+
+    tooltipView->loadTooltip(tr("tooltip_01"));
+}
+
+void MainWindow::doSceneMouseMoved(const QPointF &position)
+{
+    lblPosition->setText(tr("Position: [%1; %2]").arg(position.x(), 8, 'f', 5).arg(position.y(), 8, 'f', 5));
 }
 
 void MainWindow::setRecentFiles()
