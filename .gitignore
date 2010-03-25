@@ -1,4 +1,5 @@
 *.o
+*.a
 moc_*
 qrc_*
 qtc-*
@@ -29,3 +30,4 @@ install
 data/data
 doc/doxygen
 *.ans
+*.user

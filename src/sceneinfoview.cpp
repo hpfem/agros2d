@@ -181,14 +181,28 @@ void SceneInfoView::doInvalidated()
     // solver
     if (Util::scene()->sceneSolution()->isMeshed())
     {
-        QTreeWidgetItem *itemSolverVertices = new QTreeWidgetItem(problemInfoSolverNode);
-        itemSolverVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_nodes()));
+        QTreeWidgetItem *itemInitialMeshNode = new QTreeWidgetItem(problemInfoSolverNode);
+        itemInitialMeshNode->setText(0, tr("Initial mesh"));
+        itemInitialMeshNode->setExpanded(true);
 
-        QTreeWidgetItem *itemSolverEdges = new QTreeWidgetItem(problemInfoSolverNode);
-        itemSolverEdges->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()));
+        QTreeWidgetItem *itemSolverInitialVertices = new QTreeWidgetItem(itemInitialMeshNode);
+        itemSolverInitialVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_nodes()));
+
+        QTreeWidgetItem *itemSolverInitialElements = new QTreeWidgetItem(itemInitialMeshNode);
+        itemSolverInitialElements->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()));
 
         if (Util::scene()->sceneSolution()->isSolved())
         {
+            QTreeWidgetItem *itemSolvedMeshNode = new QTreeWidgetItem(problemInfoSolverNode);
+            itemSolvedMeshNode->setText(0, tr("Solved mesh"));
+            itemSolvedMeshNode->setExpanded(true);
+
+            QTreeWidgetItem *itemSolverSolvedVertices = new QTreeWidgetItem(itemSolvedMeshNode);
+            itemSolverSolvedVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()));
+
+            QTreeWidgetItem *itemSolverSolvedElements = new QTreeWidgetItem(itemSolvedMeshNode);
+            itemSolverSolvedElements->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()));
+
             if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
             {
                 QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
@@ -204,12 +218,6 @@ void SceneInfoView::doInvalidated()
                 QTreeWidgetItem *adaptivityNode = new QTreeWidgetItem(problemInfoSolverNode);
                 adaptivityNode->setText(0, tr("Adaptivity"));
                 adaptivityNode->setExpanded(true);
-
-                QTreeWidgetItem *itemSolverVertices = new QTreeWidgetItem(adaptivityNode);
-                itemSolverVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_nodes()));
-
-                QTreeWidgetItem *itemSolverEdges = new QTreeWidgetItem(adaptivityNode);
-                itemSolverEdges->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()));
 
                 QTreeWidgetItem *itemSolverAdaptiveError = new QTreeWidgetItem(adaptivityNode);
                 itemSolverAdaptiveError->setText(0, tr("Error: ") + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) + " %");

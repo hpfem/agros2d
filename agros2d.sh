@@ -6,9 +6,9 @@ webPath="./doc/web"
 latexPath="./doc/latex"
 langPath="./lang"
 temporaryDirectory="./tmp"
-debianizedFiles="./data ./debian ./doc ./images ./lang ./src ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./agros2d.qrc ./agros2d.qrc ./agros2d.rc ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
+debianizedFiles="./data ./debian ./doc ./images ./lang ./src ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
 
-version="1.0_1"
+version="1.0"
 
 case "$1" in
 	help )
@@ -27,10 +27,10 @@ case "$1" in
 		lrelease $langPath/*.ts
 		;;
 	lang.update )
-		lupdate agros2d.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts
+		lupdate src/src.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts
 		;;
 	lang.update-noobsolete )
-		lupdate agros2d.pro -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts
+		lupdate src/src.pro -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts
 		;;
 	comp )
 		if qmake ./agros2d.pro ; then make ; fi
@@ -43,9 +43,8 @@ case "$1" in
 		./agros2d.sh help
 		./agros2d.sh lang
 		
-		rm -f hermes2d/CMakeCache.txt 
-		rm -f -r hermes2d/CMakeFiles hermes2d/src/CMakeFiles
-
+		rm -f -r $temporaryDirectory
+	
 		if [ -e $temporaryDirectory ]
 		then
 			if [ -e $temporaryDirectory/agros2d-$version ]
@@ -63,7 +62,7 @@ case "$1" in
 		done
 		
 		cd $temporaryDirectory/agros2d-$version
-		debuild -S -sa
+		echo "Run 'debuild -S -sa"
 		echo "Run 'dput ppa:pkarban/ppa *.changes' for upload"
 		;;
 	* )

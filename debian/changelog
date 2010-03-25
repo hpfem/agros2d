@@ -1,3 +1,7 @@
+agros2d (1.0-1ubuntu2) karmic; urgency=low
+
+  * refactored source code tree
+
 agros2d (1.0-1ubuntu1) karmic; urgency=low
 
   * bugfixes, minor changes

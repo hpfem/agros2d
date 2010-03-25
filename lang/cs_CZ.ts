@@ -3407,38 +3407,48 @@
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="185"/>
-        <location filename="../src/sceneinfoview.cpp" line="209"/>
+        <source>Initial mesh</source>
+        <translation>Počáteční síť</translation>
+    </message>
+    <message>
+        <location filename="../src/sceneinfoview.cpp" line="189"/>
+        <location filename="../src/sceneinfoview.cpp" line="201"/>
         <source>Nodes: </source>
         <translation>Počet uzlů: </translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="188"/>
-        <location filename="../src/sceneinfoview.cpp" line="212"/>
+        <location filename="../src/sceneinfoview.cpp" line="192"/>
+        <location filename="../src/sceneinfoview.cpp" line="204"/>
         <source>Elements: </source>
         <translation>Počet elementů: </translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="195"/>
+        <location filename="../src/sceneinfoview.cpp" line="197"/>
+        <source>Solved mesh</source>
+        <translation>Řešená síť</translation>
+    </message>
+    <message>
+        <location filename="../src/sceneinfoview.cpp" line="209"/>
         <source>DOFs: </source>
         <translation>Stupně volnosti: </translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="200"/>
+        <location filename="../src/sceneinfoview.cpp" line="214"/>
         <source>Time elapsed: </source>
         <translation>Čas výpočtu: </translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="205"/>
+        <location filename="../src/sceneinfoview.cpp" line="219"/>
         <source>Adaptivity</source>
         <translation>Adaptivita</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="215"/>
+        <location filename="../src/sceneinfoview.cpp" line="223"/>
         <source>Error: </source>
         <translation>Chyba:</translation>
     </message>
     <message>
-        <location filename="../src/sceneinfoview.cpp" line="218"/>
+        <location filename="../src/sceneinfoview.cpp" line="226"/>
         <source>Steps: </source>
         <translation>Počet kroků:</translation>
     </message>
