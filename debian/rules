@@ -14,12 +14,15 @@ build: build-stamp
 
 build-stamp: configure-stamp  
 	dh_testdir	
+	rm -f hermes2d/CMakeCache.txt 
+	rm -f -r hermes2d/CMakeFiles hermes2d/src/CMakeFiles
+	hermes2d/build.sh	
 	$(MAKE)
 
 clean: 
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp configure-stamp
+	rm -f build-stamp configure-stamp -f 
 	qmake-qt4 CONFIG-="debug" CONFIG+="release"
 	$(MAKE) distclean
 	dh_clean

@@ -1,8 +1,13 @@
 [Setup]
 
-AppName=Agros2D
-AppVerName=Agros2D 1.0.0.336 (2010-03-23)
-OutputBaseFilename=Agros2D_1.0.0.336
+#define AppName "Agros2D"
+#define AppVersion "1.0.1.336"
+#define AppDate "2010-03-23"
+#define OutputBaseFileName "Agros2D" + "_" + AppVersion
+
+AppName={#AppName}
+AppVerName={#AppName} {#AppVersion} ({#AppDate})
+OutputBaseFilename={#OutputBaseFileName}
 DefaultGroupName=Agros2D
 LicenseFile=COPYING
 

@@ -169,8 +169,8 @@ linux-g++ {
     INCLUDEPATH += /usr/include/qwt-qt4
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
-    INCLUDEPATH += ../hermes2d/src
-    LIBS += -L../hermes2d/src
+    INCLUDEPATH += hermes2d/src
+    LIBS += -Lhermes2d/src
     LIBS += -lhermes2d-real
     LIBS += -lumfpack
     LIBS += -lamd
@@ -184,8 +184,8 @@ linux-g++ {
 win32-g++ { 
     INCLUDEPATH += c:/qt/mingw/include
     INCLUDEPATH += c:/Python26/include
-    INCLUDEPATH += ../hermes2d/src
-    LIBS += -L../hermes2d/src
+    INCLUDEPATH += hermes2d/src
+    LIBS += -Lhermes2d/src
     LIBS += -lhermes2d-real
     LIBS += -lumfpack
     LIBS += -lamd
@@ -200,11 +200,11 @@ macx-g++ {
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.6
     INCLUDEPATH += ../qwt-5.2.0/src
-    INCLUDEPATH += ../hermes2d/src
+    INCLUDEPATH += hermes2d/src
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
     LIBS += -L/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/config
-    LIBS += -L../hermes2d/src
+    LIBS += -Lhermes2d/src
     LIBS += -L../qwt-5.2.0/lib
     LIBS += -lpthread
     LIBS += -lhermes2d-real
