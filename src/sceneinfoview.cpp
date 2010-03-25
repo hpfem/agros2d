@@ -203,16 +203,6 @@ void SceneInfoView::doInvalidated()
             QTreeWidgetItem *itemSolverSolvedElements = new QTreeWidgetItem(itemSolvedMeshNode);
             itemSolverSolvedElements->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()));
 
-            if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
-            {
-                QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
-                itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
-            }
-            
-            QTime time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
-            QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);
-            itemSolverTimeElapsed->setText(0, tr("Time elapsed: ") + time.toString("mm:ss.zzz"));
-
             if (Util::scene()->sceneSolution()->adaptiveSteps() > 0)
             {
                 QTreeWidgetItem *adaptivityNode = new QTreeWidgetItem(problemInfoSolverNode);
@@ -225,6 +215,16 @@ void SceneInfoView::doInvalidated()
                 QTreeWidgetItem *itemSolverAdaptiveSteps = new QTreeWidgetItem(adaptivityNode);
                 itemSolverAdaptiveSteps->setText(0, tr("Steps: ") + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()));
             }
+
+            if (Util::scene()->sceneSolution()->sln()->get_num_dofs() > 0)
+            {
+                QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
+                itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
+            }
+            
+            QTime time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
+            QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);
+            itemSolverTimeElapsed->setText(0, tr("Time elapsed: ") + time.toString("mm:ss.zzz"));
         }
     }
 

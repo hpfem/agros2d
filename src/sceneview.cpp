@@ -1946,7 +1946,8 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                            arg(edge->nodeStart->point.y, 0, 'g', 3).
                            arg(edge->nodeEnd->point.x, 0, 'g', 3).
                            arg(edge->nodeEnd->point.y, 0, 'g', 3).
-                           arg(edge->marker->name).arg(edge->angle, 0, 'f', 0).
+                           arg(edge->marker->name).
+                           arg(edge->angle, 0, 'f', 0).
                            arg(m_scene->edges.indexOf(edge)).
                            arg(edge->marker->html()));
                 updateGL();
@@ -1965,7 +1966,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                            arg(label->point.y, 0, 'g', 3).
                            arg(label->marker->name).
                            arg(label->area, 0, 'g', 3).
-                           arg(label->polynomialOrder, 0, 'g', 3).
+                           arg(label->polynomialOrder).
                            arg(m_scene->labels.indexOf(label)).
                            arg(label->marker->html()));
                 updateGL();

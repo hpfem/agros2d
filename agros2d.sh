@@ -6,7 +6,7 @@ webPath="./doc/web"
 latexPath="./doc/latex"
 langPath="./lang"
 temporaryDirectory="./tmp"
-debianizedFiles="./data ./debian ./doc ./images ./lang ./src ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
+debianizedFiles="./data ./debian ./doc ./lang ./src ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
 
 version="1.0"
 
@@ -43,7 +43,7 @@ case "$1" in
 		./agros2d.sh help
 		./agros2d.sh lang
 		
-		rm -f -r $temporaryDirectory
+		rm -r $temporaryDirectory
 	
 		if [ -e $temporaryDirectory ]
 		then
@@ -62,7 +62,7 @@ case "$1" in
 		done
 		
 		cd $temporaryDirectory/agros2d-$version
-		echo "Run 'debuild -S -sa"
+		echo "Run 'debuild -S -sa'"
 		echo "Run 'dput ppa:pkarban/ppa *.changes' for upload"
 		;;
 	* )

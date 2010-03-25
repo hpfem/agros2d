@@ -45,7 +45,10 @@ linux-g++ {
     desktop.files = agros2d.desktop
 
     # install binary
+    system(touch agros2d)
+    system(touch src-remote/agros2d-remote)
     target.path = $${PREFIX}/bin
+    target.files = agros2d
     target-remote.path = $${PREFIX}/bin
     target-remote.files = src-remote/agros2d-remote
 
