@@ -1,8 +1,20 @@
+agros2d (1.0-1ubuntu4) karmic; urgency=low
+
+  * added missing opengl dev package
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 26 Mar 2010 22:15:55 +0200
+
+agros2d (1.0-1ubuntu3) karmic; urgency=low
+
+  * added missing dep packages
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 26 Mar 2010 19:15:55 +0200
+
 agros2d (1.0-1ubuntu2) karmic; urgency=low
 
   * refactored source code tree
 
- -- Pavel Karban <pkarban@gmail.com>  Thu, 22 Feb 2010 19:15:55 +0200
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 23 Mar 2010 19:15:55 +0200
 
 agros2d (1.0-1ubuntu1) karmic; urgency=low
 
