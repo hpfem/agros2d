@@ -67,6 +67,11 @@ public:
     Value value();
     void setValue(Value value);
 
+    inline void setMinimum(double min) { m_minimum = min; }
+    inline void setMinimumSharp(double min) { m_minimumSharp = min; }
+    inline void setMaximum(double max) { m_maximum = max; }
+    inline void setMaximumSharp(double max) { m_maximumSharp = max; }
+
 public slots:
     bool evaluate(bool quiet = true);
 
@@ -78,11 +83,17 @@ protected:
     void focusInEvent(QFocusEvent *event);
 
 private:
+    double m_minimum;
+    double m_minimumSharp;
+    double m_maximum;
+    double m_maximumSharp;
     double m_number;
     bool m_showResult;
 
     QLineEdit *txtLineEdit;
-    QLabel *lblValue;        
+    QLabel *lblValue;
+
+    void setLabel(const QString &text, QColor color, bool isVisible);
 };
 
 // ****************************************************************************************************

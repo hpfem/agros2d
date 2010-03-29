@@ -47,7 +47,7 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Magnetic_Temperature ||
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Heat_Temperature ||
                                                                           physicFieldBC == PhysicFieldBC_Heat_Flux); }
     inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Current_Potential ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Current_ElectricField ||

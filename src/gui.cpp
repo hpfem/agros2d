@@ -68,9 +68,16 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
     // clear combo
     cmbFieldVariable->clear();
-    for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList()->value(i)->time, 'e', 2), i);
+        for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
+        {
+            cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList()->value(i * Util::scene()->problemInfo()->hermes()->numberOfSolution())->time, 'e', 2), i);
+        }
+    }
+    else
+    {
+        cmbFieldVariable->addItem(QString::number(0.0, 'e', 2), 0);
     }
 
     cmbFieldVariable->setCurrentIndex(timeStep);
@@ -81,6 +88,11 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
 SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 {
+    m_minimum = -1e100;
+    m_minimumSharp = -1e100;
+    m_maximum =  1e100;
+    m_maximumSharp =  1e100;
+
     // create controls
     txtLineEdit = new QLineEdit(this);
     txtLineEdit->setToolTip(tr("This textedit allows using variables."));
@@ -128,28 +140,59 @@ Value SLineEditValue::value()
 
 bool SLineEditValue::evaluate(bool quiet)
 {
+    bool isOk = false;
+
     Value val = value();
-    QPalette palette = lblValue->palette();
     if (val.evaluate(quiet))
     {
-        m_number = val.number;
-        lblValue->setText(QString("%1").arg(m_number, 0, 'g', 3));
-        palette.setColor(QPalette::WindowText, QApplication::palette().color(QPalette::WindowText));
-        lblValue->setPalette(palette);
-        lblValue->setVisible(m_showResult);
+        if (val.number <= m_minimumSharp)
+        {
+            setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
+        }
+        else if (val.number >= m_maximumSharp)
+        {
+            setLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
+        }
+        else if (val.number < m_minimum)
+        {
+            setLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
+        }
+        else if (val.number > m_maximum)
+        {
+            setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
+        }
+        else
+        {
+            m_number = val.number;
+            setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), m_showResult);
+            isOk = true;
+        }
+    }
+    else
+    {
+        setLabel(tr("error"), QColor(Qt::red), true);
+        setFocus();
+    }
+
+    if (isOk)
+    {
         emit evaluated(false);
         return true;
     }
     else
     {
-        lblValue->setText(tr("error"));
-        palette.setColor(QPalette::WindowText, QColor(Qt::red));
-        lblValue->setPalette(palette);
-        lblValue->setVisible(true);
-        setFocus();
         emit evaluated(true);
         return false;
     }
+}
+
+void SLineEditValue::setLabel(const QString &text, QColor color, bool isVisible)
+{
+    lblValue->setText(text);
+    QPalette palette = lblValue->palette();
+    palette.setColor(QPalette::WindowText, color);
+    lblValue->setPalette(palette);
+    lblValue->setVisible(isVisible);
 }
 
 void SLineEditValue::focusInEvent(QFocusEvent *event)

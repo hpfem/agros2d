@@ -105,6 +105,7 @@ class ViewScalarFilter : public Filter
 public:
     ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, MeshFunction *sln3, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 
     double get_pt_value(double x, double y, int item = FN_VAL_0);
 
@@ -114,8 +115,8 @@ protected:
 
     Node* node;
 
-    double *dudx1, *dudy1, *dudx2, *dudy2;
-    double *value1, *value2;
+    double *dudx1, *dudy1, *dudx2, *dudy2, *dudx3, *dudy3;
+    double *value1, *value2, *value3;
     double *x, *y;
 
     SceneLabelMarker *labelMarker;

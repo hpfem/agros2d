@@ -70,6 +70,7 @@ public:
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
+        // FIX ME
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_TemperatureGradient), PhysicFieldVariable_Heat_TemperatureGradient);
     }
 
@@ -118,9 +119,9 @@ class ViewScalarFilterElasticity : public ViewScalarFilter
 {
 public:
     ViewScalarFilterElasticity(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {};
+            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {}
     ViewScalarFilterElasticity(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {};
+            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {}
 
 protected:
     void calculateVariable(int i);
@@ -150,8 +151,8 @@ public:
     SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio);
 
     // Lame constant
-    inline double lambda() { return (young_modulus.number * poisson_ratio.number) / ((1 + poisson_ratio.number) * (1 - 2*poisson_ratio.number)); }
-    inline double mu() { return young_modulus.number / (2*(1 + poisson_ratio.number)); }
+    inline double lambda() { return (young_modulus.number * poisson_ratio.number) / ((1.0 + poisson_ratio.number) * (1.0 - 2.0*poisson_ratio.number)); }
+    inline double mu() { return young_modulus.number / (2.0*(1.0 + poisson_ratio.number)); }
 
     QString script();
     QMap<QString, QString> data();

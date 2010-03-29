@@ -52,7 +52,7 @@ int heat_bc_types(int marker)
     {
     case PhysicFieldBC_None:
         return BC_NONE;
-    case PhysicFieldBC_Magnetic_Temperature:
+    case PhysicFieldBC_Heat_Temperature:
         return BC_ESSENTIAL;
     case PhysicFieldBC_Heat_Flux:
         return BC_NATURAL;
@@ -63,7 +63,7 @@ scalar heat_bc_values(int marker, double x, double y)
 {
     switch (heatEdge[marker].type)
     {
-    case PhysicFieldBC_Magnetic_Temperature:
+    case PhysicFieldBC_Heat_Temperature:
         return heatEdge[marker].temperature;
     case PhysicFieldBC_Heat_Flux:
         return heatEdge[marker].heatFlux;
@@ -282,7 +282,7 @@ QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
         solutionArray->sln->copy(sln);
         solutionArray->adaptiveError = error;
         solutionArray->adaptiveSteps = i-1;
-        if (heatTransient > 0) solutionArray->time = (n+1)*heatTimeStep;
+        if (heatTransient) solutionArray->time = (n+1)*heatTimeStep;
 
         solutionArrayList->append(solutionArray);
 
@@ -308,7 +308,7 @@ void HermesHeat::readEdgeMarkerFromDomElement(QDomElement *element)
     case PhysicFieldBC_None:
         // TODO
         break;
-    case PhysicFieldBC_Magnetic_Temperature:
+    case PhysicFieldBC_Heat_Temperature:
         Util::scene()->addEdgeMarker(new SceneEdgeHeatMarker(element->attribute("name"),
                                                              type,
                                                              Value(element->attribute("temperature", "0"))));
@@ -331,7 +331,7 @@ void HermesHeat::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMark
 
     element->setAttribute("type", physicFieldBCToStringKey(edgeHeatMarker->type));
 
-    if (edgeHeatMarker->type == PhysicFieldBC_Magnetic_Temperature)
+    if (edgeHeatMarker->type == PhysicFieldBC_Heat_Temperature)
     {
         element->setAttribute("temperature", edgeHeatMarker->temperature.text);
     }
@@ -401,7 +401,7 @@ QStringList HermesHeat::volumeIntegralValueHeader()
 SceneEdgeMarker *HermesHeat::newEdgeMarker()
 {
     return new SceneEdgeHeatMarker("new boundary",
-                                   PhysicFieldBC_Magnetic_Temperature,
+                                   PhysicFieldBC_Heat_Temperature,
                                    Value("0"));
 }
 
@@ -414,7 +414,7 @@ SceneEdgeMarker *HermesHeat::newEdgeMarker(PyObject *self, PyObject *args)
         // check name
         if (Util::scene()->getEdgeMarker(name)) return NULL;
 
-        if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Magnetic_Temperature)
+        if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Heat_Temperature)
             return new SceneEdgeHeatMarker(name,
                                            physicFieldBCFromStringKey(type),
                                            Value(QString::number(value)));
@@ -557,7 +557,7 @@ QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)
             heatEdge[i+1].type = edgeHeatMarker->type;
             switch (edgeHeatMarker->type)
             {
-            case PhysicFieldBC_Magnetic_Temperature:
+            case PhysicFieldBC_Heat_Temperature:
                 {
                     // evaluate script
                     if (!edgeHeatMarker->temperature.evaluate()) return NULL;
@@ -898,7 +898,7 @@ SceneEdgeHeatMarker::SceneEdgeHeatMarker(const QString &name, PhysicFieldBC type
 
 QString SceneEdgeHeatMarker::script()
 {
-    if (type == PhysicFieldBC_Magnetic_Temperature)
+    if (type == PhysicFieldBC_Heat_Temperature)
     {
         return QString("addboundary(\"%1\", \"%2\", %3)").
                 arg(name).
@@ -921,7 +921,7 @@ QMap<QString, QString> SceneEdgeHeatMarker::data()
     QMap<QString, QString> out;
     switch (type)
     {
-    case PhysicFieldBC_Magnetic_Temperature:
+    case PhysicFieldBC_Heat_Temperature:
         out["Temperature (deg.)"] = temperature.text;
         break;
     case PhysicFieldBC_Heat_Flux:
@@ -1000,8 +1000,7 @@ DSceneEdgeHeatMarker::~DSceneEdgeHeatMarker()
 void DSceneEdgeHeatMarker::createContent()
 {
     cmbType = new QComboBox(this);
-    cmbType->addItem("none", PhysicFieldBC_None);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Magnetic_Temperature), PhysicFieldBC_Magnetic_Temperature);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Heat_Temperature), PhysicFieldBC_Heat_Temperature);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Heat_Flux), PhysicFieldBC_Heat_Flux);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
@@ -1036,7 +1035,7 @@ void DSceneEdgeHeatMarker::load()
     cmbType->setCurrentIndex(cmbType->findData(edgeHeatMarker->type));
     switch (edgeHeatMarker->type)
     {
-    case PhysicFieldBC_Magnetic_Temperature:
+    case PhysicFieldBC_Heat_Temperature:
         {
             txtTemperature->setValue(edgeHeatMarker->temperature);
         }
@@ -1059,7 +1058,7 @@ bool DSceneEdgeHeatMarker::save() {
     edgeHeatMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
     switch (edgeHeatMarker->type)
     {
-    case PhysicFieldBC_Magnetic_Temperature:
+    case PhysicFieldBC_Heat_Temperature:
         {
             if (txtTemperature->evaluate())
                 edgeHeatMarker->temperature  = txtTemperature->value();
@@ -1097,7 +1096,7 @@ void DSceneEdgeHeatMarker::doTypeChanged(int index)
 
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
-    case PhysicFieldBC_Magnetic_Temperature:
+    case PhysicFieldBC_Heat_Temperature:
         {
             txtTemperature->setEnabled(true);
         }
@@ -1135,6 +1134,7 @@ DSceneLabelHeatMarker::~DSceneLabelHeatMarker()
 void DSceneLabelHeatMarker::createContent()
 {
     txtThermalConductivity = new SLineEditValue(this);
+    txtThermalConductivity->setMinimumSharp(0.0);
     txtVolumeHeat = new SLineEditValue(this);
     txtDensity = new SLineEditValue(this);
     txtDensity->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);

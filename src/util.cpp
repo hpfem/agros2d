@@ -67,6 +67,7 @@ void initLists()
     physicFieldList.insert(PhysicField_Heat, "heat");
     physicFieldList.insert(PhysicField_Elasticity, "elasticity");
     physicFieldList.insert(PhysicField_Magnetic, "magnetic");
+    physicFieldList.insert(PhysicField_Flow, "flow");
 
     // PHYSICFIELDVARIABLE
     physicFieldVariableList.insert(PhysicFieldVariable_Undefined, "");
@@ -123,6 +124,11 @@ void initLists()
 
     physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_VonMisesStress, "elasticity_von_mises_stress");
 
+    physicFieldVariableList.insert(PhysicFieldVariable_Flow_Velocity, "flow_velocity");
+    physicFieldVariableList.insert(PhysicFieldVariable_Flow_VelocityX, "flow_velocity_x");
+    physicFieldVariableList.insert(PhysicFieldVariable_Flow_VelocityY, "flow_velocity_y");
+    physicFieldVariableList.insert(PhysicFieldVariable_Flow_Pressure, "flow_velocity");
+
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Scalar, "scalar");
@@ -139,12 +145,16 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Electrostatic_SurfaceCharge, "electrostatic_surface_charge_density");
     physicFieldBCList.insert(PhysicFieldBC_Magnetic_VectorPotential, "magnetic_vector_potential");
     physicFieldBCList.insert(PhysicFieldBC_Magnetic_SurfaceCurrent, "magnetic_surface_current_density");
-    physicFieldBCList.insert(PhysicFieldBC_Magnetic_Temperature, "heat_temperature");
+    physicFieldBCList.insert(PhysicFieldBC_Heat_Temperature, "heat_temperature");
     physicFieldBCList.insert(PhysicFieldBC_Heat_Flux, "heat_heat_flux");
     physicFieldBCList.insert(PhysicFieldBC_Current_Potential, "current_potential");
     physicFieldBCList.insert(PhysicFieldBC_Current_InwardCurrentFlow, "current_inward_current_flow");
     physicFieldBCList.insert(PhysicFieldBC_Elasticity_Fixed, "elasticity_fixed");
     physicFieldBCList.insert(PhysicFieldBC_Elasticity_Free, "elasticity_free");
+    physicFieldBCList.insert(PhysicFieldBC_Flow_Velocity, "flow_velocity");
+    physicFieldBCList.insert(PhysicFieldBC_Flow_Pressure, "flow_pressure");
+    physicFieldBCList.insert(PhysicFieldBC_Flow_Outlet, "flow_outlet");
+    physicFieldBCList.insert(PhysicFieldBC_Flow_Wall, "flow_wall");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -262,6 +272,15 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
 
     case PhysicFieldVariable_Elasticity_VonMisesStress:
         return QObject::tr("Von Mises stress");
+
+    case PhysicFieldVariable_Flow_Velocity:
+        return QObject::tr("Velocity");
+    case PhysicFieldVariable_Flow_VelocityX:
+        return QObject::tr("Velocity X");
+    case PhysicFieldVariable_Flow_VelocityY:
+        return QObject::tr("Velocity Y");
+    case PhysicFieldVariable_Flow_Pressure:
+        return QObject::tr("Pressure");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -362,6 +381,14 @@ QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("W/m.K");
     case PhysicFieldVariable_Elasticity_VonMisesStress:
         return QObject::tr("Pa");
+    case PhysicFieldVariable_Flow_Velocity:
+        return QObject::tr("m/s");
+    case PhysicFieldVariable_Flow_VelocityX:
+        return QObject::tr("m/s");
+    case PhysicFieldVariable_Flow_VelocityY:
+        return QObject::tr("m/s");
+    case PhysicFieldVariable_Flow_Pressure:
+        return QObject::tr("Pa");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -384,6 +411,8 @@ QString physicFieldString(PhysicField physicField)
         return QObject::tr("Heat transfer");
     case PhysicField_Elasticity:
         return QObject::tr("Elasticity");
+    case PhysicField_Flow:
+        return QObject::tr("Incompressible flow");
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
         throw;
@@ -424,7 +453,7 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Vector potential");
     case PhysicFieldBC_Magnetic_SurfaceCurrent:
         return QObject::tr("Surface current density");
-    case PhysicFieldBC_Magnetic_Temperature:
+    case PhysicFieldBC_Heat_Temperature:
         return QObject::tr("Temperature");
     case PhysicFieldBC_Heat_Flux:
         return QObject::tr("Heat flux");
@@ -436,6 +465,14 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Fixed");
     case PhysicFieldBC_Elasticity_Free:
         return QObject::tr("Free");
+    case PhysicFieldBC_Flow_Outlet:
+        return QObject::tr("Outlet");
+    case PhysicFieldBC_Flow_Wall:
+        return QObject::tr("Wall");
+    case PhysicFieldBC_Flow_Velocity:
+        return QObject::tr("Velocity");
+    case PhysicFieldBC_Flow_Pressure:
+        return QObject::tr("Pressure");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
@@ -484,7 +521,8 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
 
 bool Value::evaluate(bool quiet)
 {
-    ExpressionResult expressionResult = runPythonExpression(text);
+    ExpressionResult expressionResult;
+    expressionResult = runPythonExpression(text);
     if (expressionResult.error.isEmpty())
     {
         number = expressionResult.value;
@@ -494,9 +532,8 @@ bool Value::evaluate(bool quiet)
         if (!quiet)
             QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
     }
-
     return expressionResult.error.isEmpty();
-};
+}
 
 void enableLogFile(bool enable)
 {

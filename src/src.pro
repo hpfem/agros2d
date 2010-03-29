@@ -4,12 +4,7 @@ QT += opengl \
     webkit \
     network
 
-# backup
-# VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
-# run cython for python extensions
-linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
-
-# DEFINES += BETA
+CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=0
@@ -18,6 +13,12 @@ DEFINES += VERSION_GIT=338
 DEFINES += VERSION_YEAR=2010
 DEFINES += VERSION_MONTH=03
 DEFINES += VERSION_DAY=25
+
+# backup
+# VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
+# run cython for python extensions
+linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
+
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
 CONFIG += help
@@ -68,7 +69,8 @@ SOURCES += util.cpp \
     videodialog.cpp \
     terminalview.cpp \
     scenemarkerselectdialog.cpp \
-    tooltipview.cpp
+    tooltipview.cpp \
+    hermes2d/hermes_flow.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -104,7 +106,8 @@ HEADERS += util.h \
     videodialog.h \
     terminalview.h \
     scenemarkerselectdialog.h \
-    tooltipview.h
+    tooltipview.h \
+    hermes2d/hermes_flow.h
 INCLUDEPATH += . \
     dxflib
 OTHER_FILES += python/agros2d.pyx \

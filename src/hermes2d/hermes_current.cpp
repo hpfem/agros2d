@@ -122,7 +122,6 @@ QList<SolutionArray *> *current_main(SolverDialog *solverDialog)
     // set order by element
     for (int i = 0; i < Util::scene()->labels.count(); i++)
         space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-    space.assign_dofs(0);
 
     // initialize the weak formulation
     WeakForm wf(1);
@@ -782,7 +781,6 @@ DSceneEdgeCurrentMarker::~DSceneEdgeCurrentMarker()
 void DSceneEdgeCurrentMarker::createContent()
 {
     cmbType = new QComboBox(this);
-    cmbType->addItem("none", PhysicFieldBC_None);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Current_Potential), PhysicFieldBC_Current_Potential);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Current_InwardCurrentFlow), PhysicFieldBC_Current_InwardCurrentFlow);
 

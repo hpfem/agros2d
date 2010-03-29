@@ -182,7 +182,7 @@ void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
 Solution *SceneSolution::sln(int i)
 {
     int currentTimeStep = i;
-    if (isSolved() && currentTimeStep < timeStepCount())
+    if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->problemInfo()->hermes()->numberOfSolution())
     {
         // default
         if (currentTimeStep == -1)
@@ -279,7 +279,7 @@ int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
 void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayList)
 {
     m_solutionArrayList = solutionArrayList;
-    setTimeStep(timeStepCount() / Util::scene()->problemInfo()->hermes()->numberOfSolution() - 1);
+    setTimeStep(timeStepCount() - 1);
 }
 
 void SceneSolution::setTimeStep(int timeStep)
@@ -287,10 +287,15 @@ void SceneSolution::setTimeStep(int timeStep)
     m_timeStep = timeStep;
     if (!isSolved()) return;
 
-    if (Util::scene()->problemInfo()->physicField() != PhysicField_Elasticity)
+    if (Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable() != PhysicFieldVariable_Undefined)
         m_vec.process_solution(sln(), FN_DX_0, sln(), FN_DY_0, EPS_NORMAL);
 
     Util::scene()->refresh();
+}
+
+int SceneSolution::timeStepCount()
+{
+    return (m_solutionArrayList) ? m_solutionArrayList->count() / Util::scene()->problemInfo()->hermes()->numberOfSolution() : 0;
 }
 
 double SceneSolution::time()
@@ -327,8 +332,7 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     m_linScalarView.process_solution(m_slnScalarView, FN_VAL_0);
 
     // deformed shape
-    /*
-    if (Util::scene()->problemInfo()->physicField() == PHYSICFIELD_ELASTICITY)
+    if (Util::scene()->problemInfo()->physicField() == PhysicField_Elasticity)
     {
         double3* linVert = m_linScalarView.get_vertices();
 
@@ -339,8 +343,8 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
             double x = linVert[i][0];
             double y = linVert[i][1];
 
-            double dx = Util::scene()->sceneSolution()->sln1()->get_pt_value(x, y);
-            double dy = Util::scene()->sceneSolution()->sln2()->get_pt_value(x, y);
+            double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
+            double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
 
             double dm = sqrt(sqr(dx) + sqr(dy));
 
@@ -356,14 +360,13 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
             double x = linVert[i][0];
             double y = linVert[i][1];
 
-            double dx = Util::scene()->sceneSolution()->sln1()->get_pt_value(x, y);
-            double dy = Util::scene()->sceneSolution()->sln2()->get_pt_value(x, y);
+            double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
+            double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
 
             linVert[i][0] += k*dx;
             linVert[i][1] += k*dy;
         }
     }
-    */
 }
 
 void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScalarFilter *slnVectorYView)

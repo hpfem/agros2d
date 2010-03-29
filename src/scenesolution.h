@@ -56,7 +56,7 @@ public:
     inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; };
     void setTimeStep(int timeStep);
     inline int timeStep() { return m_timeStep; }
-    inline int timeStepCount() { return (m_solutionArrayList) ? m_solutionArrayList->count() : 0; }
+    int timeStepCount();
     double time();
 
     bool isSolved() { return (m_timeStep != -1); }

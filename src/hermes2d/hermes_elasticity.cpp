@@ -18,12 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "hermes_elasticity.h"
-
 #include "scene.h"
-
-#include "localvalueview.h"
-#include "surfaceintegralview.h"
-#include "volumeintegralview.h"
 
 struct ElasticityEdge
 {
@@ -40,8 +35,8 @@ struct ElasticityLabel
     double poisson_ratio;
 
     // Lame constant
-    inline double lambda() { return (young_modulus * poisson_ratio) / ((1 + poisson_ratio) * (1 - 2*poisson_ratio)); }
-    inline double mu() { return young_modulus / (2*(1 + poisson_ratio)); }
+    inline double lambda() { return (young_modulus * poisson_ratio) / ((1.0 + poisson_ratio) * (1.0 - 2.0*poisson_ratio)); }
+    inline double mu() { return young_modulus / (2.0*(1.0 + poisson_ratio)); }
 };
 
 ElasticityEdge *elasticityEdge;
@@ -148,23 +143,24 @@ Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> 
 
 QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
 {
-    elasticityPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
     int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
     int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
     double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+
+    elasticityPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
 
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
     // load the mesh file
-    Mesh xmesh, ymesh;
+    Mesh mesh;
     H2DReader meshloader;
-    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &xmesh);
+    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
     for (int i = 0; i < numberOfRefinements; i++)
-        xmesh.refine_all_elements(0);
-    ymesh.copy(&xmesh);
+        mesh.refine_all_elements(0);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
@@ -175,18 +171,20 @@ QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
     PrecalcShapeset ypss(&shapeset);
 
     // create the x displacement space
-    H1Space xdisp(&xmesh, &shapeset);
+    H1Space xdisp(&mesh, &shapeset);
     xdisp.set_bc_types(elasticity_bc_types_x);
     xdisp.set_bc_values(elasticity_bc_values_x);
-    xdisp.set_uniform_order(polynomialOrder);
-    int ndof = xdisp.assign_dofs(0);
+    // set order by element
+    for (int i = 0; i < Util::scene()->labels.count(); i++)
+        xdisp.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
 
     // create the y displacement space
-    H1Space ydisp(&ymesh, &shapeset);
+    H1Space ydisp(&mesh, &shapeset);
     ydisp.set_bc_types(elasticity_bc_types_y);
     ydisp.set_bc_values(elasticity_bc_values_y);
-    ydisp.set_uniform_order(polynomialOrder);
-    ydisp.assign_dofs();
+    // set order by element
+    for (int i = 0; i < Util::scene()->labels.count(); i++)
+        ydisp.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
 
     // initialize the weak formulation
     WeakForm wf(2);
@@ -200,45 +198,70 @@ QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
     UmfpackSolver umfpack;
 
     // prepare selector
-    bool ISO_ONLY = false;
-    double CONV_EXP = 1.0;
-    double THRESHOLD = 0.3;
-    int STRATEGY = 0;
-    int MESH_REGULARITY = -1;
-    // RefinementSelectors::H1NonUniformHP selector(ISO_ONLY, allowedCandidates(adaptivityType), CONV_EXP, H2DRS_DEFAULT_ORDER, &shapeset);
+    QSettings settings;
+    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
+    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
+    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
+    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
+    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
+    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
 
+    Solution *slnx = new Solution();
+    Solution *slny = new Solution();
+    Solution rslnx, rslny;
+
+    // initialize the linear system
     LinSystem sys(&wf, &umfpack);
     sys.set_spaces(2, &xdisp, &ydisp);
     sys.set_pss(2, &xpss, &ypss);
 
+    // output
+    SolutionArray *solutionArray;
     QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
 
     // assemble the stiffness matrix and solve the system
-    Solution *slnx = new Solution();
-    Solution *slny = new Solution();
-    sys.assemble();
-    if (sys.get_num_dofs() == 0)
+    double error;
+    int i;
+    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
+    for (i = 0; i<(adaptivitysteps); i++)
     {
-        solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
-        return solutionArrayList;
+        int ndof = xdisp.assign_dofs(0);
+        ydisp.assign_dofs(ndof);
+
+        sys.assemble();
+        if (sys.get_num_dofs() == 0)
+        {
+            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
+            return solutionArrayList;
+        }
+        sys.solve(2, slnx, slny);
+
+        // calculate errors and adapt the solution
+        if (adaptivityType != AdaptivityType_None)
+        {
+            RefSystem rs(&sys);
+            rs.assemble();
+            rs.solve(2, &rslnx, &rslny);
+
+            H1AdaptHP hp(2, &xdisp, &ydisp);
+            error = hp.calc_error_2(slnx, slny, &rslnx, &rslny) * 100;
+
+            // emit signal
+            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverDialog->isCanceled()) return solutionArrayList;
+
+            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
+            if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
+        }
     }
-    sys.solve(2, slnx, slny);
-
-    // output
-    xdisp.assign_dofs();
-    ydisp.assign_dofs();
-
-
-    // output
-    SolutionArray *solutionArray;
 
     // x part
     solutionArray = new SolutionArray();
     solutionArray->order = new Orderizer();
     solutionArray->order->process_solution(&xdisp);
     solutionArray->sln = slnx;
-    // solutionArray->adaptiveError = error;
-    // solutionArray->adaptiveSteps = i-1;
+    solutionArray->adaptiveError = error;
+    solutionArray->adaptiveSteps = i-1;
 
     solutionArrayList->append(solutionArray);
 
@@ -247,8 +270,8 @@ QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
     solutionArray->order = new Orderizer();
     solutionArray->order->process_solution(&ydisp);
     solutionArray->sln = slny;
-    // solutionArray->adaptiveError = error;
-    // solutionArray->adaptiveSteps = i-1;
+    solutionArray->adaptiveError = error;
+    solutionArray->adaptiveSteps = i-1;
 
     solutionArrayList->append(solutionArray);
 
@@ -309,10 +332,10 @@ void HermesElasticity::readLabelMarkerFromDomElement(QDomElement *element)
 
 void HermesElasticity::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
 {
-    SceneLabelElasticityMarker *labelHeatMarker = dynamic_cast<SceneLabelElasticityMarker *>(marker);
+    SceneLabelElasticityMarker *labelElasticityMarker = dynamic_cast<SceneLabelElasticityMarker *>(marker);
 
-    element->setAttribute("young_modulus", labelHeatMarker->young_modulus.text);
-    element->setAttribute("poisson_ratio", labelHeatMarker->poisson_ratio.text);
+    element->setAttribute("young_modulus", labelElasticityMarker->young_modulus.text);
+    element->setAttribute("poisson_ratio", labelElasticityMarker->poisson_ratio.text);
 }
 
 LocalPointValue *HermesElasticity::localPointValue(Point point)
@@ -329,7 +352,7 @@ QStringList HermesElasticity::localPointValueHeader()
 
 SurfaceIntegralValue *HermesElasticity::surfaceIntegralValue()
 {
-    return NULL; // new SurfaceIntegralValueElectrostatic();
+    return new SurfaceIntegralValueElasticity();
 }
 
 QStringList HermesElasticity::surfaceIntegralValueHeader()
@@ -341,7 +364,7 @@ QStringList HermesElasticity::surfaceIntegralValueHeader()
 
 VolumeIntegralValue *HermesElasticity::volumeIntegralValue()
 {
-    return new VolumeIntegralValueElectrostatic();
+    return new VolumeIntegralValueElasticity();
 }
 
 QStringList HermesElasticity::volumeIntegralValueHeader()
@@ -802,8 +825,8 @@ void DSceneLabelElasticityMarker::createContent()
 
     layout->addWidget(new QLabel(tr("Young modulus (Pa):")), 1, 0);
     layout->addWidget(txtYoungModulus, 1, 1);
-    layout->addWidget(new QLabel(tr("Poisson number (-):")), 1, 0);
-    layout->addWidget(txtPoissonNumber, 1, 1);
+    layout->addWidget(new QLabel(tr("Poisson number (-):")), 2, 0);
+    layout->addWidget(txtPoissonNumber, 2, 1);
 }
 
 void DSceneLabelElasticityMarker::load()

@@ -222,7 +222,10 @@ void ProblemDialog::fillComboBox()
     cmbPhysicField->addItem(physicFieldString(PhysicField_Magnetic), PhysicField_Magnetic);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Current), PhysicField_Current);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
+#ifdef BETA
     cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
+#endif
     cmbPhysicField->setEnabled(m_isNewProblem);
 
     cmbAdaptivityType->clear();

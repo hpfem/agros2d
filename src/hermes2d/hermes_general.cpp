@@ -125,7 +125,6 @@ QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
     // set order by element
     for (int i = 0; i < Util::scene()->labels.count(); i++)
         space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-    space.assign_dofs(0);
 
     // initialize the weak formulation
     WeakForm wf(1);
@@ -698,7 +697,6 @@ DSceneEdgeGeneralMarker::~DSceneEdgeGeneralMarker()
 void DSceneEdgeGeneralMarker::createContent()
 {
     cmbType = new QComboBox();
-    cmbType->addItem("none", PhysicFieldBC_None);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_General_Value), PhysicFieldBC_General_Value);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_General_Derivative), PhysicFieldBC_General_Derivative);
 
@@ -761,6 +759,7 @@ DSceneLabelGeneralMarker::~DSceneLabelGeneralMarker()
 void DSceneLabelGeneralMarker::createContent()
 {
     txtConstant = new SLineEditValue(this);
+    txtConstant->setMinimumSharp(0.0);
     txtRightSide = new SLineEditValue(this);
 
     connect(txtConstant, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

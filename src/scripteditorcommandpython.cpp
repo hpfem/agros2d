@@ -48,9 +48,9 @@ const int count = 100; \
                                                   &index[80], &index[81], &index[82], &index[83], &index[84], &index[85], &index[86], &index[87], &index[88], &index[89], \
                                                   &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
                                                   )) \
-// FIX ********************************************************************************************************************************************************************
+                             // FIX ********************************************************************************************************************************************************************
 
-static PyObject *pythonVersion(PyObject *self, PyObject *args)
+                             static PyObject *pythonVersion(PyObject *self, PyObject *args)
 {
     return Py_BuildValue("s", QApplication::applicationVersion().toStdString());
 }
@@ -225,7 +225,7 @@ void pythonAddNode(double x, double y)
 void pythonDeleteNode(int index)
 {
     if (index < 0 || index >= Util::scene()->nodes.count())
-       throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
     Util::scene()->removeNode(Util::scene()->nodes[index]);
 }
 
@@ -255,7 +255,7 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
 void pythonDeleteEdge(int index)
 {
     if (index < 0 || index >= Util::scene()->edges.count())
-       throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
     Util::scene()->removeEdge(Util::scene()->edges[index]);
 }
 
@@ -277,7 +277,7 @@ void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *
 void pythonDeleteLabel(int index)
 {
     if (index < 0 || index >= Util::scene()->labels.count())
-       throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
     Util::scene()->removeLabel(Util::scene()->labels[index]);
 }
 
@@ -582,8 +582,8 @@ void pythonMode(char *str)
     else if (QString(str) == "postprocessor")
         if (Util::scene()->sceneSolution()->isSolved())
             sceneView->actSceneModePostprocessor->trigger();
-        else
-            throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+    else
+        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
     else
         throw invalid_argument(QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString());
 
@@ -1025,15 +1025,29 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
     ExpressionResult expressionResult;
     if (output)
     {
-        // parse result
-        PyObject *result = PyDict_GetItemString(m_dict, "result");
-        if (result)
+        PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
+        PyErr_Fetch(&type, &value, &traceback);
+
+        if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
         {
-            Py_INCREF(result);
-            PyArg_Parse(result, "d", &expressionResult.value);
-            if (fabs(expressionResult.value) < EPS_ZERO)
-                expressionResult.value = 0.0;
-            Py_DECREF(result);
+            Py_INCREF(type);
+
+            expressionResult.error = PyString_AsString(str);
+            if (type) Py_DECREF(type);
+            if (str) Py_DECREF(str);
+        }
+        else
+        {
+            // parse result
+            PyObject *result = PyDict_GetItemString(m_dict, "result");
+            if (result)
+            {
+                Py_INCREF(result);
+                PyArg_Parse(result, "d", &expressionResult.value);
+                if (fabs(expressionResult.value) < EPS_ZERO)
+                    expressionResult.value = 0.0;
+                Py_DECREF(result);
+            }
         }
     }
     else

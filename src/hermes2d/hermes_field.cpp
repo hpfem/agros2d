@@ -25,6 +25,7 @@
 #include "hermes_heat.h"
 #include "hermes_current.h"
 #include "hermes_elasticity.h"
+#include "hermes_flow.h"
 
 #include "scene.h"
 
@@ -44,6 +45,8 @@ HermesField *hermesFieldFactory(PhysicField physicField)
         return new HermesCurrent();
     case PhysicField_Elasticity:
         return new HermesElasticity();
+    case PhysicField_Flow:
+        return new HermesFlow();
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. hermesObjectFactory()" << endl;
         throw;
@@ -67,13 +70,22 @@ RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivi
 
 // *********************************************************************************************************************************************
 
-ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) : Filter(sln1)
+ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+    : Filter(sln1)
 {
     m_physicFieldVariable = physicFieldVariable;
     m_physicFieldVariableComp = physicFieldVariableComp;
 }
 
-ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) : Filter(sln1, sln2)
+ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+    : Filter(sln1, sln2)
+{
+    m_physicFieldVariable = physicFieldVariable;
+    m_physicFieldVariableComp = physicFieldVariableComp;
+}
+
+ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, MeshFunction *sln3, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+    : Filter(sln1, sln2, sln3)
 {
     m_physicFieldVariable = physicFieldVariable;
     m_physicFieldVariableComp = physicFieldVariableComp;
@@ -97,11 +109,18 @@ void ViewScalarFilter::precalculate(int order, int mask)
         value1 = sln[0]->get_fn_values();
     }
 
-    if (num == 2 && sln[1])
+    if (num >= 2 && sln[1])
     {
         sln[1]->set_quad_order(order, FN_VAL | FN_DX | FN_DY);
         sln[1]->get_dx_dy_values(dudx2, dudy2);
         value2 = sln[1]->get_fn_values();
+    }
+
+    if (num >= 3 && sln[2])
+    {
+        sln[2]->set_quad_order(order, FN_VAL | FN_DX | FN_DY);
+        sln[2]->get_dx_dy_values(dudx3, dudy3);
+        value3 = sln[2]->get_fn_values();
     }
 
     update_refmap();

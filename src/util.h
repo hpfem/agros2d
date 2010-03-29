@@ -352,10 +352,11 @@ enum PhysicField
     PhysicField_Undefined,
     PhysicField_General,
     PhysicField_Electrostatic,
+    PhysicField_Magnetic,
     PhysicField_Current,
     PhysicField_Heat,
     PhysicField_Elasticity,
-    PhysicField_Magnetic
+    PhysicField_Flow
 };
 
 enum PhysicFieldVariable
@@ -408,7 +409,11 @@ enum PhysicFieldVariable
     PhysicFieldVariable_Heat_TemperatureGradient,
     PhysicFieldVariable_Heat_Flux,
     PhysicFieldVariable_Heat_Conductivity,
-    PhysicFieldVariable_Elasticity_VonMisesStress
+    PhysicFieldVariable_Elasticity_VonMisesStress,
+    PhysicFieldVariable_Flow_Velocity,
+    PhysicFieldVariable_Flow_VelocityX,
+    PhysicFieldVariable_Flow_VelocityY,
+    PhysicFieldVariable_Flow_Pressure
 };
 
 
@@ -422,12 +427,16 @@ enum PhysicFieldBC
     PhysicFieldBC_Electrostatic_SurfaceCharge,
     PhysicFieldBC_Magnetic_VectorPotential,
     PhysicFieldBC_Magnetic_SurfaceCurrent,
-    PhysicFieldBC_Magnetic_Temperature,
+    PhysicFieldBC_Heat_Temperature,
     PhysicFieldBC_Heat_Flux,
     PhysicFieldBC_Current_Potential,
     PhysicFieldBC_Current_InwardCurrentFlow,
     PhysicFieldBC_Elasticity_Fixed,
-    PhysicFieldBC_Elasticity_Free
+    PhysicFieldBC_Elasticity_Free,
+    PhysicFieldBC_Flow_Velocity,
+    PhysicFieldBC_Flow_Pressure,
+    PhysicFieldBC_Flow_Outlet,
+    PhysicFieldBC_Flow_Wall,
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
@@ -471,6 +480,11 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Current_Losses:
 
     case PhysicFieldVariable_Elasticity_VonMisesStress:
+
+    case PhysicFieldVariable_Flow_Velocity:
+    case PhysicFieldVariable_Flow_VelocityX:
+    case PhysicFieldVariable_Flow_VelocityY:
+    case PhysicFieldVariable_Flow_Pressure:
         return true;
         break;
     default:

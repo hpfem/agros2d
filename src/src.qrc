@@ -75,5 +75,7 @@
         <file>images/equations/magnetic_harmonic.png</file>
         <file>images/equations/magnetic_steadystate.png</file>
         <file>images/equations/magnetic_transient.png</file>
+        <file>images/equations/flow_steadystate.png</file>
+        <file>images/equations/flow_transient.png</file>
     </qresource>
 </RCC>

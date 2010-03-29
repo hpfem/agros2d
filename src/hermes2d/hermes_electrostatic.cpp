@@ -122,7 +122,6 @@ QList<SolutionArray *> *electrostatic_main(SolverDialog *solverDialog)
     // set order by element
     for (int i = 0; i < Util::scene()->labels.count(); i++)
         space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-    space.assign_dofs(0);
 
     // initialize the weak formulation
     WeakForm wf(1);
@@ -807,7 +806,6 @@ DSceneEdgeElectrostaticMarker::~DSceneEdgeElectrostaticMarker()
 void DSceneEdgeElectrostaticMarker::createContent()
 {
     cmbType = new QComboBox(this);
-    cmbType->addItem("none", PhysicFieldBC_None);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_Potential), PhysicFieldBC_Electrostatic_Potential);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_SurfaceCharge), PhysicFieldBC_Electrostatic_SurfaceCharge);
 
@@ -866,6 +864,7 @@ DSceneLabelElectrostaticMarker::~DSceneLabelElectrostaticMarker()
 void DSceneLabelElectrostaticMarker::createContent()
 {
     txtPermittivity = new SLineEditValue(this);
+    txtPermittivity->setMinimumSharp(0.0);
     txtChargeDensity = new SLineEditValue(this);
     connect(txtPermittivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtChargeDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
