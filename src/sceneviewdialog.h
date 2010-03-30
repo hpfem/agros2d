@@ -64,8 +64,6 @@ private:
     QCheckBox *chkScalarFieldRangeAuto;
     QLineEdit *txtScalarFieldRangeMin;
     QLineEdit *txtScalarFieldRangeMax;
-    QCheckBox *chkScalarFieldRangeLog;
-    QLineEdit *txtScalarFieldRangeBase;
 
     // vector field
     QComboBox *cmbVectorFieldVariable;
@@ -81,7 +79,6 @@ private:
 private slots:
     void doScalarFieldVariable(int index);
     void doScalarFieldRangeAuto(int state);
-    void doScalarFieldLog(int state);
 };
 
 #endif // SCENEVIEWDIALOG_H

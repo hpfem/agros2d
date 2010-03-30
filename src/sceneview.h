@@ -76,9 +76,10 @@ public:
 
     // vector view
     PhysicFieldVariable vectorPhysicFieldVariable;
-    bool vectorRangeAuto;
-    double vectorRangeMin;
-    double vectorRangeMax;
+    bool vectorProportional;
+    bool vectorColor;
+    int vectorCount;
+    double vectorScale;
 
     // 3d
     bool scalarView3DLighting;

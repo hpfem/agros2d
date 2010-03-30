@@ -43,13 +43,12 @@ void SceneViewSettings::defaultValues()
     showVectors = false;
     showSolutionMesh = false;
 
-    scalarPhysicFieldVariable = PhysicFieldVariable_None;
-    scalarPhysicFieldVariableComp = PhysicFieldVariableComp_Scalar;
-    scalarRangeAuto = true;
-
     contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
+
     scalarPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable();
     scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
+    scalarRangeAuto = true;
+
     vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
 }
 
@@ -90,6 +89,12 @@ void SceneViewSettings::load()
     paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", Palette_Jet).value<int>();
     paletteFilter = settings.value("SceneViewSettings/PaletteFilter", false).value<bool>();
     paletteSteps = settings.value("SceneViewSettings/PaletteSteps", 30).value<int>();
+
+    // vector view
+    vectorProportional = settings.value("SceneViewSettings/VectorProportional", false).value<bool>();
+    vectorColor = settings.value("SceneViewSettings/VectorColor", true).value<bool>();
+    vectorCount = settings.value("SceneViewSettings/VectorNumber", 50).value<int>();
+    vectorScale = settings.value("SceneViewSettings/VectorScale", 0.6).value<double>();
 
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).value<bool>();
@@ -132,6 +137,12 @@ void SceneViewSettings::save()
     settings.setValue("SceneViewSettings/PaletteType", paletteType);
     settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
     settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
+
+    // vector view
+    settings.setValue("SceneViewSettings/VectorProportional", vectorProportional);
+    settings.setValue("SceneViewSettings/VectorColor", vectorColor);
+    settings.setValue("SceneViewSettings/VectorNumber", vectorCount);
+    settings.setValue("SceneViewSettings/VectorScale", vectorScale);
 
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
@@ -572,6 +583,13 @@ void SceneView::paintGeometry()
     // edges
     foreach (SceneEdge *edge, m_scene->edges)
     {
+        // edge with marker
+        if (m_sceneMode == SceneMode_OperateOnEdges && edge->marker->type == PhysicFieldBC_None)
+        {
+            glEnable(GL_LINE_STIPPLE);
+            glLineStipple(1, 0x8FFF);
+        }
+
         glColor3f(m_sceneViewSettings.colorEdges.redF(),
                   m_sceneViewSettings.colorEdges.greenF(),
                   m_sceneViewSettings.colorEdges.blueF());
@@ -606,6 +624,8 @@ void SceneView::paintGeometry()
 
             drawArc(center, radius, startAngle, edge->angle, edge->angle/2);
         }
+
+        glDisable(GL_LINE_STIPPLE);
         glLineWidth(1.0);
     }
 
@@ -955,8 +975,6 @@ void SceneView::paintScalarField()
     Point point[3];
     double value[3];
 
-    double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
-
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, 1);
@@ -1198,6 +1216,88 @@ void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
     }
 }
 
+void plot_arrow(double x, double y, double xval, double yval, double max, double min, double gs)
+{
+    double length_coef = 1.0;
+    glColor3f(0.5f,0.5f,0.5f);
+
+    // magnitude
+    double real_mag = sqrt(sqr(xval) + sqr(yval));
+    double mag = real_mag;
+    if (real_mag > max) mag = max;
+    double length = mag/max * gs * length_coef;
+    double width = 0.1 * gs;
+    width *= 1.2;
+    double xnew = x + gs * xval * mag / (max * real_mag) * length_coef;
+    double ynew = y - gs * yval * mag / (max * real_mag) * length_coef;
+
+    glPushMatrix();
+
+    if ((mag)/(max - min) < 1e-5)
+    {
+        glTranslated(x, y, 0.0);
+
+        glBegin(GL_QUADS);
+        glVertex2d( width,  width);
+        glVertex2d( width, -width);
+        glVertex2d(-width, -width);
+        glVertex2d(-width,  width);
+        glEnd();
+    }
+    else
+    {
+        glBegin(GL_LINES);
+        glVertex2d(x,y);
+        glVertex2d(xnew, ynew);
+        glEnd();
+
+        glTranslated(x, y, 0.0);
+        glRotated(atan2(-yval, xval) * 180.0/M_PI, 0.0, 0.0, 1.0);
+
+        glBegin(GL_TRIANGLES);
+        glVertex2d(length + 3 * width,  0.0);
+        glVertex2d(length - 2 * width,  width);
+        glVertex2d(length - 2 * width, -width);
+        glEnd();
+    }
+
+    // glLoadIdentity();
+
+    // float color[3];
+    // get_palette_color((mag - min)/(max - min), color); //  0.0 -- 1.0
+    // glColor3f(color[0], color[1], color[2]);
+
+    if (mag/(max - min) < 1e-5)
+    {
+        glBegin(GL_QUADS);
+        glVertex2d( width,  width);
+        glVertex2d( width, -width);
+        glVertex2d(-width, -width);
+        glVertex2d(-width,  width);
+        glEnd();
+    }
+    else
+    {
+        glBegin(GL_LINES);
+        glVertex2d(x,y);
+        glVertex2d(xnew, ynew);
+        glEnd();
+
+        glTranslated(x - 1, y, 0.0);
+        glRotated(atan2(-yval, xval) * 180.0/M_PI, 0.0, 0.0, 1.0);
+
+        glBegin(GL_TRIANGLES);
+        glVertex2d(length + 3 * width,  0.0);
+        glVertex2d(length - 2 * width,  width);
+        glVertex2d(length - 2 * width, -width);
+        glEnd();
+
+        glLoadIdentity();
+    }
+
+    glPopMatrix();
+}
+
 void SceneView::paintVectors()
 {
     if (!m_isSolutionPrepared) return;
@@ -1206,51 +1306,122 @@ void SceneView::paintVectors()
 
     RectPoint rect = m_scene->boundingBox();
 
-    double gs = (rect.width() + rect.height()) / 45.0;
+    double gs = (rect.width() + rect.height()) / m_sceneViewSettings.vectorCount;
 
-    int nx = ceil(rect.width() / gs);
-    int ny = ceil(rect.height() / gs);
+    double vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
+    double vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
 
-    double irange = 1.0 / (m_sceneViewSettings.vectorRangeMax - m_sceneViewSettings.vectorRangeMin);
+    double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
     // special case: constant solution
-    if (fabs(m_sceneViewSettings.vectorRangeMin - m_sceneViewSettings.vectorRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.vectorRangeMin -= 0.5; }
+    if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) { irange = 1.0; vectorRangeMin -= 0.5; }
 
     double4* vecVert = m_scene->sceneSolution()->vecVectorView().get_vertices();
     int3* vecTris = m_scene->sceneSolution()->vecVectorView().get_triangles();
 
-    glColor3f(m_sceneViewSettings.colorVectors.redF(),
-              m_sceneViewSettings.colorVectors.greenF(),
-              m_sceneViewSettings.colorVectors.blueF());
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i <= nx; i++)
+    for (int i = 0; i < m_scene->sceneSolution()->vecVectorView().get_num_triangles(); i++)
     {
-        for (int j = 0; j <= ny; j++)
+        Point a(vecVert[vecTris[i][0]][0], vecVert[vecTris[i][0]][1]);
+        Point b(vecVert[vecTris[i][1]][0], vecVert[vecTris[i][1]][1]);
+        Point c(vecVert[vecTris[i][2]][0], vecVert[vecTris[i][2]][1]);
+
+        RectPoint r;
+        r.start = Point(qMin(qMin(a.x, b.x), c.x), qMin(qMin(a.y, b.y), c.y));
+        r.end = Point(qMax(qMax(a.x, b.x), c.x), qMax(qMax(a.y, b.y), c.y));
+
+        // double area
+        double area2 = a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y);
+
+        // plane equation
+        double aa = b.x*c.y - c.x*b.y;
+        double ab = c.x*a.y - a.x*c.y;
+        double ac = a.x*b.y - b.x*a.y;
+        double ba = b.y - c.y;
+        double bb = c.y - a.y;
+        double bc = a.y - b.y;
+        double ca = c.x - b.x;
+        double cb = a.x - c.x;
+        double cc = b.x - a.x;
+
+        double ax = (aa * vecVert[vecTris[i][0]][2] + ab * vecVert[vecTris[i][1]][2] + ac * vecVert[vecTris[i][2]][2]) / area2;
+        double bx = (ba * vecVert[vecTris[i][0]][2] + bb * vecVert[vecTris[i][1]][2] + bc * vecVert[vecTris[i][2]][2]) / area2;
+        double cx = (ca * vecVert[vecTris[i][0]][2] + cb * vecVert[vecTris[i][1]][2] + cc * vecVert[vecTris[i][2]][2]) / area2;
+
+        double ay = (aa * vecVert[vecTris[i][0]][3] + ab * vecVert[vecTris[i][1]][3] + ac * vecVert[vecTris[i][2]][3]) / area2;
+        double by = (ba * vecVert[vecTris[i][0]][3] + bb * vecVert[vecTris[i][1]][3] + bc * vecVert[vecTris[i][2]][3]) / area2;
+        double cy = (ca * vecVert[vecTris[i][0]][3] + cb * vecVert[vecTris[i][1]][3] + cc * vecVert[vecTris[i][2]][3]) / area2;
+
+        for (int j = floor(r.start.x / gs); j < ceil(r.end.x / gs); j++)
         {
-            double x = rect.start.x + i*gs;
-            double y = rect.start.y + j*gs;
-
-            int index = m_scene->sceneSolution()->findTriangleInVectorizer(m_scene->sceneSolution()->vecVectorView(), Point(x, y));
-            if (index != -1)
+            for (int k = floor(r.start.y / gs); k < ceil(r.end.y / gs); k++)
             {
-                double dx = (vecVert[vecTris[index][0]][2] + vecVert[vecTris[index][1]][2] + vecVert[vecTris[index][2]][2]) / 3.0;
-                double dy = (vecVert[vecTris[index][0]][3] + vecVert[vecTris[index][1]][3] + vecVert[vecTris[index][2]][3]) / 3.0;
+                Point point(j*gs, k*gs);
+                if (k % 2 == 0) point.x += gs/2.0;
 
-                double value = sqrt(sqr(dx) + sqr(dy));
-                double angle = atan2(dy, dx);
+                if (qAbs(vecVert[vecTris[i][0]][2]) + qAbs(vecVert[vecTris[i][1]][2]) + qAbs(vecVert[vecTris[i][2]][2]) +
+                    qAbs(vecVert[vecTris[i][0]][3]) + qAbs(vecVert[vecTris[i][1]][3]) + qAbs(vecVert[vecTris[i][2]][3]) < EPS_ZERO)
+                    continue;
 
-                // glTexCoord2d((value - m_sceneViewSettings.vectorRangeMin) * irange * m_texScale + m_texShift, 0.0);
+                // find in triangle
+                bool inTriangle = true;
 
-                dx = gs/1.6 * cos(angle);
-                dy = gs/1.6 * sin(angle);
-                // dx = (dx - m_sceneViewSettings.vectorRangeMin) * irange * gs;
-                // dy = (dy - m_sceneViewSettings.vectorRangeMin) * irange * gs;
-                double dm = sqrt(sqr(dx) + sqr(dy));
-
-                if (value > EPS_ZERO)
+                for (int l = 0; l < 3; l++)
                 {
-                    glVertex2d(x + dm/5.0 * cos(angle - M_PI_2), y + dm/5.0 * sin(angle - M_PI_2));
-                    glVertex2d(x + dm/5.0 * cos(angle + M_PI_2), y + dm/5.0 * sin(angle + M_PI_2));
-                    glVertex2d(x + dm * cos(angle), y + dm * sin(angle));
+                    int p = l + 1;
+                    if (p == 3)
+                        p = 0;
+
+                    double z = (vecVert[vecTris[i][p]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
+                               (vecVert[vecTris[i][p]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
+
+                    if (z < 0)
+                    {
+                        inTriangle = false;
+                        break;
+                    }
+                }
+
+                if (inTriangle)
+                {
+                    // view
+                    double dx = ax + bx * point.x + cx * point.y;
+                    double dy = ay + by * point.x + cy * point.y;
+
+                    double value = sqrt(sqr(dx) + sqr(dy));
+                    double angle = atan2(dy, dx);
+
+                    if (m_sceneViewSettings.vectorProportional)
+                    {
+                        dx = ((value - vectorRangeMin) * irange) * m_sceneViewSettings.vectorScale * gs * cos(angle);
+                        dy = ((value - vectorRangeMin) * irange) * m_sceneViewSettings.vectorScale * gs * sin(angle);
+                    }
+                    else
+                    {
+                        dx = m_sceneViewSettings.vectorScale * gs * cos(angle);
+                        dy = m_sceneViewSettings.vectorScale * gs * sin(angle);
+                    }
+
+                    double dm = sqrt(sqr(dx) + sqr(dy));
+
+                    if (value > EPS_ZERO)
+                    {
+                        // color
+                        if (m_sceneViewSettings.vectorColor)
+                        {
+                            double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
+                            glColor3f(color, color, color);
+                        }
+                        else
+                        {
+                            glColor3f(m_sceneViewSettings.colorVectors.redF(),
+                                      m_sceneViewSettings.colorVectors.greenF(),
+                                      m_sceneViewSettings.colorVectors.blueF());
+                        }
+
+                        glVertex2d(point.x + dm/5.0 * cos(angle - M_PI_2), point.y + dm/5.0 * sin(angle - M_PI_2));
+                        glVertex2d(point.x + dm/5.0 * cos(angle + M_PI_2), point.y + dm/5.0 * sin(angle + M_PI_2));
+                        glVertex2d(point.x + dm     * cos(angle),          point.y + dm     * sin(angle));
+                    }
                 }
             }
         }
@@ -2416,12 +2587,6 @@ void SceneView::setRangeVector()
                                                                                                        PhysicFieldVariableComp_Y);
 
         m_scene->sceneSolution()->setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
-
-        if (m_sceneViewSettings.vectorRangeAuto)
-        {
-            m_sceneViewSettings.vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
-            m_sceneViewSettings.vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
-        }
     }
 }
 

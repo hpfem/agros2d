@@ -560,8 +560,8 @@ void ScriptEditorDialog::doRunPython()
     connect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
 
     // benchmark
-    QTime time;
-    time.start();
+    // QTime time;
+    // time.start();
 
     ScriptResult result;
     if (txtEditor->textCursor().hasSelection())

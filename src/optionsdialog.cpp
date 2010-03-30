@@ -104,6 +104,16 @@ void OptionsDialog::load()
     chkPaletteFilter->setChecked(m_sceneViewSettings->paletteFilter);
     doPaletteFilter(chkPaletteFilter->checkState());
     txtPaletteSteps->setValue(m_sceneViewSettings->paletteSteps);    
+    chkScalarFieldRangeLog->setChecked(m_sceneViewSettings->scalarRangeLog);
+    doScalarFieldLog(chkScalarFieldRangeLog->checkState());
+    txtScalarFieldRangeBase->setText(QString::number(m_sceneViewSettings->scalarRangeBase));
+
+    // vector field
+    chkVectorProportional->setChecked(m_sceneViewSettings->vectorProportional);
+    chkVectorColor->setChecked(m_sceneViewSettings->vectorColor);
+    txtVectorCount->setValue(m_sceneViewSettings->vectorCount);
+    txtVectorCount->setToolTip(tr("Width and height of bounding box over vector count."));
+    txtVectorScale->setValue(m_sceneViewSettings->vectorScale);
 
     // 3d
     chkView3DLighting->setChecked(m_sceneViewSettings->scalarView3DLighting);
@@ -181,6 +191,14 @@ void OptionsDialog::save()
     m_sceneViewSettings->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
     m_sceneViewSettings->paletteFilter = chkPaletteFilter->isChecked();
     m_sceneViewSettings->paletteSteps = txtPaletteSteps->value();
+    m_sceneViewSettings->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
+    m_sceneViewSettings->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
+
+    // vector field
+    m_sceneViewSettings->vectorProportional = chkVectorProportional->isChecked();
+    m_sceneViewSettings->vectorColor = chkVectorColor->isChecked();
+    m_sceneViewSettings->vectorCount = txtVectorCount->value();
+    m_sceneViewSettings->vectorScale = txtVectorScale->value();
 
     // 3d
     m_sceneViewSettings->scalarView3DLighting = chkView3DLighting->isChecked();
@@ -386,6 +404,11 @@ QWidget *OptionsDialog::createViewWidget()
     txtPaletteSteps->setMinimum(5);
     txtPaletteSteps->setMaximum(100);
 
+    // log scale
+    chkScalarFieldRangeLog = new QCheckBox("");
+    txtScalarFieldRangeBase = new QLineEdit("10");
+    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
+
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
     layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 3);
@@ -394,6 +417,10 @@ QWidget *OptionsDialog::createViewWidget()
     layoutScalarField->addWidget(chkPaletteFilter, 1, 1);
     layoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 2);
     layoutScalarField->addWidget(txtPaletteSteps, 1, 3);
+    layoutScalarField->addWidget(new QLabel(tr("Log. scale:")), 2, 0);
+    layoutScalarField->addWidget(chkScalarFieldRangeLog, 2, 1);
+    layoutScalarField->addWidget(new QLabel(tr("Base:")), 2, 2);
+    layoutScalarField->addWidget(txtScalarFieldRangeBase, 2, 3);
 
     QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
     grpScalarView->setLayout(layoutScalarField);
@@ -410,6 +437,25 @@ QWidget *OptionsDialog::createViewWidget()
     QGroupBox *grpContours = new QGroupBox(tr("Contours"));
     grpContours->setLayout(layoutContours);
 
+    // vector field
+    chkVectorProportional = new QCheckBox(tr("Proportional"), this);
+    chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
+    txtVectorCount = new QSpinBox(this);
+    txtVectorCount->setMinimum(1);
+    txtVectorCount->setMaximum(100);
+    txtVectorScale = new SLineEditDouble(0);
+
+    QGridLayout *layoutVectorField = new QGridLayout();
+    layoutVectorField->addWidget(new QLabel(tr("Vectors:")), 0, 0);
+    layoutVectorField->addWidget(txtVectorCount, 0, 1);
+    layoutVectorField->addWidget(chkVectorProportional, 0, 2);
+    layoutVectorField->addWidget(new QLabel(tr("Scale:")), 1, 0);
+    layoutVectorField->addWidget(txtVectorScale, 1, 1);
+    layoutVectorField->addWidget(chkVectorColor, 1, 2);
+
+    QGroupBox *grpVectorView = new QGroupBox(tr("Vector view"));
+    grpVectorView->setLayout(layoutVectorField);
+
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
 
@@ -425,6 +471,7 @@ QWidget *OptionsDialog::createViewWidget()
     layout->addWidget(grpGrid);
     layout->addWidget(grpContours);
     layout->addWidget(grpScalarView);
+    layout->addWidget(grpVectorView);
     layout->addWidget(grp3D);
     layout->addStretch();
 
@@ -614,6 +661,11 @@ void OptionsDialog::doAdvancedDefault()
     // command argument
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
+}
+
+void OptionsDialog::doScalarFieldLog(int state)
+{
+    txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }
 
 // *******************************************************************************************************

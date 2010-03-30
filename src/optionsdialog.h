@@ -39,6 +39,7 @@ private slots:
     void doPaletteFilter(int state);
     void doClearCommandHistory();
     void doAdvancedDefault();
+    void doScalarFieldLog(int state);
 
     void doAccept();
     void doReject();
@@ -91,6 +92,14 @@ private:
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
     QSpinBox *txtPaletteSteps;
+    QCheckBox *chkScalarFieldRangeLog;
+    QLineEdit *txtScalarFieldRangeBase;
+
+    // vector field
+    QCheckBox *chkVectorProportional;
+    QCheckBox *chkVectorColor;
+    QSpinBox *txtVectorCount;
+    SLineEditDouble *txtVectorScale;
 
     // 3d
     QCheckBox *chkView3DLighting;
