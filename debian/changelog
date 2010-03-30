@@ -1,3 +1,10 @@
+agros2d (1.0-2ubuntu5) karmic; urgency=low
+
+  * reworked vector view
+  * fixes
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 26 Mar 2010 22:15:55 +0200
+
 agros2d (1.0-1ubuntu4) karmic; urgency=low
 
   * added missing opengl dev package

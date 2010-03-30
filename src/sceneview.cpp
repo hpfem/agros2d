@@ -1358,10 +1358,6 @@ void SceneView::paintVectors()
                 Point point(j*gs, k*gs);
                 if (k % 2 == 0) point.x += gs/2.0;
 
-                if (qAbs(vecVert[vecTris[i][0]][2]) + qAbs(vecVert[vecTris[i][1]][2]) + qAbs(vecVert[vecTris[i][2]][2]) +
-                    qAbs(vecVert[vecTris[i][0]][3]) + qAbs(vecVert[vecTris[i][1]][3]) + qAbs(vecVert[vecTris[i][2]][3]) < EPS_ZERO)
-                    continue;
-
                 // find in triangle
                 bool inTriangle = true;
 
@@ -1403,25 +1399,22 @@ void SceneView::paintVectors()
 
                     double dm = sqrt(sqr(dx) + sqr(dy));
 
-                    if (value > EPS_ZERO)
+                    // color
+                    if (m_sceneViewSettings.vectorColor)
                     {
-                        // color
-                        if (m_sceneViewSettings.vectorColor)
-                        {
-                            double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
-                            glColor3f(color, color, color);
-                        }
-                        else
-                        {
-                            glColor3f(m_sceneViewSettings.colorVectors.redF(),
-                                      m_sceneViewSettings.colorVectors.greenF(),
-                                      m_sceneViewSettings.colorVectors.blueF());
-                        }
-
-                        glVertex2d(point.x + dm/5.0 * cos(angle - M_PI_2), point.y + dm/5.0 * sin(angle - M_PI_2));
-                        glVertex2d(point.x + dm/5.0 * cos(angle + M_PI_2), point.y + dm/5.0 * sin(angle + M_PI_2));
-                        glVertex2d(point.x + dm     * cos(angle),          point.y + dm     * sin(angle));
+                        double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
+                        glColor3f(color, color, color);
                     }
+                    else
+                    {
+                        glColor3f(m_sceneViewSettings.colorVectors.redF(),
+                                  m_sceneViewSettings.colorVectors.greenF(),
+                                  m_sceneViewSettings.colorVectors.blueF());
+                    }
+
+                    glVertex2d(point.x + dm/5.0 * cos(angle - M_PI_2), point.y + dm/5.0 * sin(angle - M_PI_2));
+                    glVertex2d(point.x + dm/5.0 * cos(angle + M_PI_2), point.y + dm/5.0 * sin(angle + M_PI_2));
+                    glVertex2d(point.x + dm     * cos(angle),          point.y + dm     * sin(angle));
                 }
             }
         }
