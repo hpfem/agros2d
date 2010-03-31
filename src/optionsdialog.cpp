@@ -397,7 +397,7 @@ QWidget *OptionsDialog::createViewWidget()
     cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
     cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
 
-    chkPaletteFilter = new QCheckBox();
+    chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
 
     txtPaletteSteps = new QSpinBox(this);
@@ -405,22 +405,20 @@ QWidget *OptionsDialog::createViewWidget()
     txtPaletteSteps->setMaximum(100);
 
     // log scale
-    chkScalarFieldRangeLog = new QCheckBox("");
+    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
     txtScalarFieldRangeBase = new QLineEdit("10");
     connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
 
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 3);
+    layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 2);
 
-    layoutScalarField->addWidget(new QLabel(tr("Filter:")), 1, 0);
-    layoutScalarField->addWidget(chkPaletteFilter, 1, 1);
-    layoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 2);
-    layoutScalarField->addWidget(txtPaletteSteps, 1, 3);
-    layoutScalarField->addWidget(new QLabel(tr("Log. scale:")), 2, 0);
-    layoutScalarField->addWidget(chkScalarFieldRangeLog, 2, 1);
-    layoutScalarField->addWidget(new QLabel(tr("Base:")), 2, 2);
-    layoutScalarField->addWidget(txtScalarFieldRangeBase, 2, 3);
+    layoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 0);
+    layoutScalarField->addWidget(txtPaletteSteps, 1, 1);
+    layoutScalarField->addWidget(chkPaletteFilter, 1, 2);
+    layoutScalarField->addWidget(new QLabel(tr("Base:")), 2, 0);
+    layoutScalarField->addWidget(txtScalarFieldRangeBase, 2, 1);
+    layoutScalarField->addWidget(chkScalarFieldRangeLog, 2, 2);
 
     QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
     grpScalarView->setLayout(layoutScalarField);

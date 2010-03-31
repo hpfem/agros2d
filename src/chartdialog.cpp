@@ -31,10 +31,10 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
     createControls();
 
     // load
-    txtStartX->setValue(settings.value("ChartDialog/StartX", 0).toDouble());
-    txtEndX->setValue(settings.value("ChartDialog/EndX", 0).toDouble());
-    txtStartY->setValue(settings.value("ChartDialog/StartY", 0).toDouble());
-    txtEndY->setValue(settings.value("ChartDialog/EndY", 0).toDouble());
+    txtStartX->setValue(settings.value("ChartDialog/StartX", "0").toString());
+    txtEndX->setValue(settings.value("ChartDialog/EndX", "0").toString());
+    txtStartY->setValue(settings.value("ChartDialog/StartY", "0").toString());
+    txtEndY->setValue(settings.value("ChartDialog/EndY", "0").toString());
     radAxisLength->setChecked(settings.value("ChartDialog/AxisLength", true).toBool());
     radAxisX->setChecked(settings.value("ChartDialog/AxisX", false).toBool());
     radAxisY->setChecked(settings.value("ChartDialog/AxisY", false).toBool());
@@ -48,51 +48,14 @@ ChartDialog::~ChartDialog()
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
 
-    settings.setValue("ChartDialog/StartX", txtStartX->value());
-    settings.setValue("ChartDialog/EndX", txtEndX->value());
-    settings.setValue("ChartDialog/StartY", txtStartY->value());
-    settings.setValue("ChartDialog/EndY", txtEndY->value());
+    settings.setValue("ChartDialog/StartX", txtStartX->value().text);
+    settings.setValue("ChartDialog/EndX", txtEndX->value().text);
+    settings.setValue("ChartDialog/StartY", txtStartY->value().text);
+    settings.setValue("ChartDialog/EndY", txtEndY->value().text);
     settings.setValue("ChartDialog/AxisLength", radAxisLength->isChecked());
     settings.setValue("ChartDialog/AxisX", radAxisX->isChecked());
     settings.setValue("ChartDialog/AxisY", radAxisY->isChecked());
     settings.setValue("ChartDialog/AxisPoints", txtAxisPoints->value());
-
-    // geometry
-    delete lblStartX;
-    delete lblStartY;
-    delete lblEndX;
-    delete lblEndY;
-
-    delete txtStartX;
-    delete txtStartY;
-    delete txtEndX;
-    delete txtEndY;
-    
-    delete radAxisLength;
-    delete radAxisX;
-    delete radAxisY;
-
-    delete cmbTimeStep;
-
-    // time
-    delete lblPointX;
-    delete lblPointY;
-    delete txtPointX;
-    delete txtPointY;
-
-    delete txtAxisPoints;
-
-    delete cmbFieldVariable;
-    delete cmbFieldVariableComp;
-
-    delete picker;
-    delete chart;    
-
-    delete widGeometry;
-    delete widTime;
-
-    delete tabAnalysisType;
-    delete tabOutput;
 }
 
 void ChartDialog::showDialog()
@@ -156,10 +119,10 @@ void ChartDialog::createControls()
     lblEndX = new QLabel("X:");
     lblEndY = new QLabel("Y:");
 
-    txtStartX = new SLineEditDouble();
-    txtStartY = new SLineEditDouble();
-    txtEndX = new SLineEditDouble(0.0035);
-    txtEndY = new SLineEditDouble();
+    txtStartX = new SLineEditValue();
+    txtStartY = new SLineEditValue();
+    txtEndX = new SLineEditValue();
+    txtEndY = new SLineEditValue();
 
     connect(txtStartX, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
     connect(txtStartY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
@@ -229,8 +192,8 @@ void ChartDialog::createControls()
     // time
     lblPointX = new QLabel("X:");
     lblPointY = new QLabel("Y:");
-    txtPointX = new SLineEditDouble();
-    txtPointY = new SLineEditDouble();
+    txtPointX = new SLineEditValue();
+    txtPointY = new SLineEditValue();
 
     QGridLayout *layoutTime = new QGridLayout();
     layoutTime->addWidget(lblPointX, 0, 0);
@@ -294,7 +257,6 @@ void ChartDialog::createControls()
     QVBoxLayout *controlsLayout = new QVBoxLayout();
     controls->setLayout(controlsLayout);
     controls->setMinimumWidth(280);
-    controls->setMaximumWidth(280);
 
     controlsLayout->addWidget(tabAnalysisType);
     controlsLayout->addWidget(grpVariable);
@@ -328,6 +290,11 @@ void ChartDialog::createControls()
 
 void ChartDialog::plotGeometry()
 {
+    if (!txtStartX->evaluate()) return;
+    if (!txtStartY->evaluate()) return;
+    if (!txtEndX->evaluate()) return;
+    if (!txtEndY->evaluate()) return;
+
     doChartLine();
 
     // variable
@@ -360,8 +327,8 @@ void ChartDialog::plotGeometry()
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
-    Point start(txtStartX->value(), txtStartY->value());
-    Point end(txtEndX->value(), txtEndY->value());
+    Point start(txtStartX->value().number, txtStartY->value().number);
+    Point end(txtEndX->value().number, txtEndY->value().number);
     
     Point diff((end.x - start.x)/(count-1), (end.y - start.y)/(count-1));
     
@@ -398,6 +365,9 @@ void ChartDialog::plotGeometry()
 
 void ChartDialog::plotTime()
 {
+    if (!txtPointX->evaluate()) return;
+    if (!txtPointY->evaluate()) return;
+
     doChartLine();
 
     // variable
@@ -437,7 +407,7 @@ void ChartDialog::plotTime()
         // change time level
         Util::scene()->sceneSolution()->setTimeStep(i);
 
-        Point point(txtPointX->value(), txtPointY->value());
+        Point point(txtPointX->value().number, txtPointY->value().number);
         LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
 
         // x value
@@ -582,10 +552,22 @@ void ChartDialog::doChartLine()
     if (isVisible())
     {
         if (tabAnalysisType->currentWidget() == widGeometry)
-            emit setChartLine(Point(txtStartX->value(), txtStartY->value()), Point(txtEndX->value(), txtEndY->value()));
-   
-        if (tabAnalysisType->currentWidget() == widTime)
-            emit setChartLine(Point(txtPointX->value(), txtPointY->value()), Point(txtPointX->value(), txtPointY->value()));
+        {
+            if (!txtStartX->evaluate()) return;
+            if (!txtStartY->evaluate()) return;
+            if (!txtEndX->evaluate()) return;
+            if (!txtEndY->evaluate()) return;
+
+            emit setChartLine(Point(txtStartX->value().number, txtStartY->value().number), Point(txtEndX->value().number, txtEndY->value().number));
+
+        }
+        if (tabAnalysisType->currentWidget() == widGeometry)
+        {
+            if (!txtPointX->evaluate()) return;
+            if (!txtPointY->evaluate()) return;
+
+            emit setChartLine(Point(txtPointX->value().number, txtPointY->value().number), Point(txtPointX->value().number, txtPointY->value().number));
+        }
     }
     else
     {

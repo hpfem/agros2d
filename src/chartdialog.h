@@ -60,10 +60,10 @@ private:
     QLabel *lblEndX;
     QLabel *lblEndY;
 
-    SLineEditDouble *txtStartX;
-    SLineEditDouble *txtStartY;
-    SLineEditDouble *txtEndX;
-    SLineEditDouble *txtEndY;
+    SLineEditValue *txtStartX;
+    SLineEditValue *txtStartY;
+    SLineEditValue *txtEndX;
+    SLineEditValue *txtEndY;
 
     QRadioButton *radAxisLength;
     QRadioButton *radAxisX;
@@ -74,8 +74,8 @@ private:
     // time
     QLabel *lblPointX;
     QLabel *lblPointY;
-    SLineEditDouble *txtPointX;
-    SLineEditDouble *txtPointY;
+    SLineEditValue *txtPointX;
+    SLineEditValue *txtPointY;
 
     QComboBox *cmbFieldVariable;
     QComboBox *cmbFieldVariableComp;
