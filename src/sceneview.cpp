@@ -2413,6 +2413,8 @@ void SceneView::doSceneObjectProperties()
             }
         }
     }
+
+    m_scene->selectNone();
 }
 
 void SceneView::doSceneModeSet(QAction *action)
