@@ -2171,7 +2171,22 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
 void SceneView::wheelEvent(QWheelEvent *event)
 {
-    setZoom(event->delta()/150.0);
+    Point posMouse;
+    posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
+                    -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale);
+
+    m_offset.x += posMouse.x;
+    m_offset.y += posMouse.y;
+
+    m_scale = m_scale * pow(1.2, event->delta()/150.0);
+
+    posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
+                    -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale);
+
+    m_offset.x -= posMouse.x;
+    m_offset.y -= posMouse.y;
+
+    updateGL();
 }
 
 void SceneView::contextMenuEvent(QContextMenuEvent *event)

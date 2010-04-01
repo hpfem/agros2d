@@ -299,7 +299,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="891"/>
         <source>BC Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ okr. podmínky:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="893"/>
@@ -3710,7 +3710,7 @@
     <message>
         <location filename="../src/sceneview.cpp" line="219"/>
         <source>Operate on &amp;labels</source>
-        <translation>Práce se &amp;začkami oblastí</translation>
+        <translation>Práce se &amp;značkami oblastí</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="224"/>
