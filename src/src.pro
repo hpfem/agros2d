@@ -11,8 +11,8 @@ DEFINES += VERSION_MINOR=0
 DEFINES += VERSION_SUB=2
 DEFINES += VERSION_GIT=343
 DEFINES += VERSION_YEAR=2010
-DEFINES += VERSION_MONTH=03
-DEFINES += VERSION_DAY=30
+DEFINES += VERSION_MONTH=04
+DEFINES += VERSION_DAY=01
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -42,6 +42,7 @@ SOURCES += util.cpp \
     hermes2d/hermes_magnetic.cpp \
     hermes2d/hermes_current.cpp \
     hermes2d/hermes_elasticity.cpp \
+    hermes2d/hermes_flow.cpp \
     localvalueview.cpp \
     surfaceintegralview.cpp \
     volumeintegralview.cpp \
@@ -69,8 +70,7 @@ SOURCES += util.cpp \
     videodialog.cpp \
     terminalview.cpp \
     scenemarkerselectdialog.cpp \
-    tooltipview.cpp \
-    hermes2d/hermes_flow.cpp
+    tooltipview.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -81,6 +81,7 @@ HEADERS += util.h \
     hermes2d/hermes_magnetic.h \
     hermes2d/hermes_current.h \
     hermes2d/hermes_elasticity.h \
+    hermes2d/hermes_flow.h \
     localvalueview.h \
     surfaceintegralview.h \
     volumeintegralview.h \
@@ -106,8 +107,7 @@ HEADERS += util.h \
     videodialog.h \
     terminalview.h \
     scenemarkerselectdialog.h \
-    tooltipview.h \
-    hermes2d/hermes_flow.h
+    tooltipview.h
 INCLUDEPATH += . \
     dxflib
 OTHER_FILES += python/agros2d.pyx \

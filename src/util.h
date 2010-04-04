@@ -98,6 +98,9 @@ QString readFileContent(const QString &fileName);
 void writeStringContent(const QString &fileName, QString *content);
 void writeStringContentByteArray(const QString &fileName, QByteArray content);
 
+// fill physic field combo box
+void fillComboBoxPhysicField(QComboBox *cmbPhysicField);
+
 // check for new version
 void checkForNewVersion(bool quiet = false);
 

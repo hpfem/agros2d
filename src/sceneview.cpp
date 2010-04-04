@@ -1302,18 +1302,17 @@ void SceneView::paintVectors()
 {
     if (!m_isSolutionPrepared) return;
 
-    m_scene->sceneSolution()->vecVectorView().lock_data();
-
-    RectPoint rect = m_scene->boundingBox();
-
-    double gs = (rect.width() + rect.height()) / m_sceneViewSettings.vectorCount;
-
     double vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
     double vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
 
     double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
-    // special case: constant solution
-    if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) { irange = 1.0; vectorRangeMin -= 0.5; }
+    if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
+
+    RectPoint rect = m_scene->boundingBox();
+    double gs = (rect.width() + rect.height()) / m_sceneViewSettings.vectorCount;
+
+    // paint
+    m_scene->sceneSolution()->vecVectorView().lock_data();
 
     double4* vecVert = m_scene->sceneSolution()->vecVectorView().get_vertices();
     int3* vecTris = m_scene->sceneSolution()->vecVectorView().get_triangles();
@@ -2171,22 +2170,33 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
 void SceneView::wheelEvent(QWheelEvent *event)
 {
-    Point posMouse;
-    posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
-                    -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale);
+    QSettings settings;
+    bool zoomToMouse = settings.value("Geometry/ZoomToMouse", true).value<bool>();
 
-    m_offset.x += posMouse.x;
-    m_offset.y += posMouse.y;
+    if (zoomToMouse)
+    {
+        Point posMouse;
+        posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
+                        -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale);
 
-    m_scale = m_scale * pow(1.2, event->delta()/150.0);
+        m_offset.x += posMouse.x;
+        m_offset.y += posMouse.y;
 
-    posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
-                    -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale);
+        m_scale = m_scale * pow(1.2, event->delta()/150.0);
 
-    m_offset.x -= posMouse.x;
-    m_offset.y -= posMouse.y;
 
-    updateGL();
+        posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
+                        -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale);
+
+        m_offset.x -= posMouse.x;
+        m_offset.y -= posMouse.y;
+
+        updateGL();
+    }
+    else
+    {
+        setZoom(event->delta()/150.0);
+    }
 }
 
 void SceneView::contextMenuEvent(QContextMenuEvent *event)

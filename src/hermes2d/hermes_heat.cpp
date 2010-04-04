@@ -37,14 +37,8 @@ struct HeatLabel
     double specific_heat;
 };
 
-
 HeatEdge *heatEdge;
 HeatLabel *heatLabel;
-bool heatPlanar;
-bool heatTransient;
-double heatInitialCondition;
-double heatTimeStep;
-double heatTimeTotal;
 
 int heat_bc_types(int marker)
 {
@@ -78,7 +72,7 @@ Scalar heat_bilinear_form_surf(int n, double *wt, Func<Real> *u, Func<Real> *v, 
     if (heatEdge[e->marker].type == PhysicFieldBC_Heat_Flux)
         h = heatEdge[e->marker].h;
 
-    if (heatPlanar)
+    if (isPlanar)
         return h * int_u_v<Real, Scalar>(n, wt, u, v);
     else
         return h * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
@@ -101,7 +95,7 @@ Scalar heat_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, Ex
         Text = heatEdge[e->marker].externalTemperature;
     }
 
-    if (heatPlanar)
+    if (isPlanar)
         return (q + Text * h) * int_v<Real, Scalar>(n, wt, v);
     else
         return (q + Text * h) * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
@@ -110,192 +104,40 @@ Scalar heat_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, Ex
 template<typename Real, typename Scalar>
 Scalar heat_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (heatPlanar)
+    if (isPlanar)
         return heatLabel[e->marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / heatTimeStep : 0.0);
+        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
     else
         return heatLabel[e->marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
-                + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / heatTimeStep : 0.0);
+                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
 Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (heatPlanar)
+    if (isPlanar)
         return heatLabel[e->marker].volume_heat * int_v<Real, Scalar>(n, wt, v)
-        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / heatTimeStep : 0.0);
+        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
     else
         return heatLabel[e->marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
-        + ((heatTransient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / heatTimeStep : 0.0);
+        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
-QList<SolutionArray *> *heat_main(SolverDialog *solverDialog)
+void callbackHeatSpace(QList<H1Space *> *space)
 {
-    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+    space->at(0)->set_bc_types(heat_bc_types);
+    space->at(0)->set_bc_values(heat_bc_values);
+}
 
-    heatPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
-
-    heatTransient = (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
-    heatTimeStep = Util::scene()->problemInfo()->timeStep.number;
-    heatTimeTotal = Util::scene()->problemInfo()->timeTotal.number;
-    heatInitialCondition = Util::scene()->problemInfo()->initialCondition.number;
-
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    // load the mesh file
-    Mesh mesh;
-    H2DReader meshloader;
-    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
-    for (int i = 0; i < numberOfRefinements; i++)
-        mesh.refine_all_elements(0);
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-
-    // initialize the shapeset and the cache
-    H1Shapeset shapeset;
-    PrecalcShapeset pss(&shapeset);
-
-    // create an H1 space
-    H1Space space(&mesh, &shapeset);
-    space.set_bc_types(heat_bc_types);
-    space.set_bc_values(heat_bc_values);
-    // set order by element
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
-        space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-
-    // solution
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-
-    Solution *sln = new Solution();
-    if (heatTransient)
-    {
-        sln->set_const(&mesh, heatInitialCondition);
-
-        // zero time
-        SolutionArray *solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->sln = new Solution();
-        solutionArray->sln->copy(sln);
-        solutionArray->adaptiveError = 0.0;
-        solutionArray->adaptiveSteps = 0.0;
-        solutionArray->time = 0.0;
-
-        solutionArrayList->append(solutionArray);
-    }
-    Solution rsln;
-
-    // initialize the weak formulation
-    WeakForm wf(1);
-    wf.add_biform(0, 0, callback(heat_bilinear_form));
-    if (heatTransient)
-        wf.add_liform(0, callback(heat_linear_form), ANY, 1, sln);
+void callbackHeatWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+{
+    wf->add_biform(0, 0, callback(heat_bilinear_form));
+    if (analysisType == AnalysisType_Transient)
+        wf->add_liform(0, callback(heat_linear_form), ANY, 1, slnArray->at(0));
     else
-        wf.add_liform(0, callback(heat_linear_form));
-    wf.add_biform_surf(0, 0, callback(heat_bilinear_form_surf));
-    wf.add_liform_surf(0, callback(heat_linear_form_surf));
-
-    // initialize the linear solver
-    UmfpackSolver umfpack;
-
-    // prepare selector
-    QSettings settings;
-    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
-    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
-    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
-    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
-    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
-    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
-
-    // initialize the linear system
-    LinSystem sys(&wf, &umfpack);
-    sys.set_spaces(1, &space);
-    sys.set_pss(1, &pss);
-
-    // assemble the stiffness matrix and solve the system
-    int i;
-    double error;
-
-    // adaptivity
-    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-    for (i = 0; i<adaptivitysteps; i++)
-    {
-        space.assign_dofs();
-
-        sys.assemble();
-        if (sys.get_num_dofs() == 0)
-        {
-            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
-            return solutionArrayList;
-        }
-        sys.solve(1, sln);
-
-        // calculate errors and adapt the solution
-        if (adaptivityType != AdaptivityType_None)
-        {
-            RefSystem rs(&sys);
-            rs.assemble();
-            rs.solve(1, &rsln);
-
-            H1AdaptHP hp(1, &space);
-            error = hp.calc_error(sln, &rsln) * 100;
-
-            // emit signal
-            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverDialog->isCanceled())
-            {
-                solutionArrayList->clear();
-                return solutionArrayList;
-            }
-
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
-        }
-    }
-
-    // timesteps
-    int timesteps = (heatTransient) ? floor(heatTimeTotal/heatTimeStep) : 1;
-    for (int n = 0; n<timesteps; n++)
-    {
-        if (timesteps > 1)
-        {
-            sys.assemble(true);
-            sys.solve(1, sln);
-        }
-        else if (n > 0)
-        {
-            space.assign_dofs();
-            sys.assemble();
-        }
-
-        // output
-        SolutionArray *solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->order->process_solution(&space);
-        solutionArray->sln = new Solution();
-        solutionArray->sln->copy(sln);
-        solutionArray->adaptiveError = error;
-        solutionArray->adaptiveSteps = i-1;
-        if (heatTransient) solutionArray->time = (n+1)*heatTimeStep;
-
-        solutionArrayList->append(solutionArray);
-
-        if (heatTransient) solverDialog->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
-        if (solverDialog->isCanceled())
-        {
-            solutionArrayList->clear();
-            return solutionArrayList;
-        }
-        solverDialog->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
-    }
-
-    return solutionArrayList;
+        wf->add_liform(0, callback(heat_linear_form));
+    wf->add_biform_surf(0, 0, callback(heat_bilinear_form_surf));
+    wf->add_liform_surf(0, callback(heat_linear_form_surf));
 }
 
 // *******************************************************************************************************
@@ -605,7 +447,7 @@ QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = heat_main(solverDialog);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackHeatSpace, callbackHeatWeakForm);
 
     delete [] heatEdge;
     delete [] heatLabel;
@@ -1013,6 +855,9 @@ void DSceneEdgeHeatMarker::createContent()
     connect(txtTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtHeatTransferCoefficient, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtExternalTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+
+    // set active marker
+    doTypeChanged(cmbType->currentIndex());
 
     layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
     layout->addWidget(cmbType, 1, 1);

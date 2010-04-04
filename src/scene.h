@@ -150,7 +150,8 @@ public:
     DxfFilter(Scene *scene);
     
     void addArc(const DL_ArcData& a);
-    void addLine(const DL_LineData& d);
+    void addLine(const DL_LineData& l);
+    void addCircle(const DL_CircleData& c);
 private:
     Scene *m_scene;
 };

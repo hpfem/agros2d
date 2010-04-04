@@ -559,9 +559,8 @@ void ChartDialog::doChartLine()
             if (!txtEndY->evaluate()) return;
 
             emit setChartLine(Point(txtStartX->value().number, txtStartY->value().number), Point(txtEndX->value().number, txtEndY->value().number));
-
         }
-        if (tabAnalysisType->currentWidget() == widGeometry)
+        if (tabAnalysisType->currentWidget() == widTime)
         {
             if (!txtPointX->evaluate()) return;
             if (!txtPointY->evaluate()) return;

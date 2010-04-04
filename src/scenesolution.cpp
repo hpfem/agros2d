@@ -39,10 +39,8 @@ void SceneSolution::clear()
     if (m_solutionArrayList)
     {
         for (int i = 0; i < m_solutionArrayList->count(); i++)
-        {
-            delete m_solutionArrayList->value(i);
-        }
-
+            delete m_solutionArrayList->at(i);
+        m_solutionArrayList->clear();
         delete m_solutionArrayList;
         m_solutionArrayList = NULL;
     }
@@ -173,7 +171,7 @@ void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
         for (int i = start; i < timeStepCount(); i++)
         {
             QDomNode eleSolution = doc->createElement("solution");
-            m_solutionArrayList->value(i)->save(doc, &eleSolution.toElement());
+            m_solutionArrayList->at(i)->save(doc, &eleSolution.toElement());
             element->appendChild(eleSolution);
         }
     }
@@ -278,6 +276,14 @@ int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
 
 void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayList)
 {
+    if (m_solutionArrayList)
+    {
+        for (int i = 0; i < m_solutionArrayList->count(); i++)
+            delete m_solutionArrayList->at(i);
+        m_solutionArrayList->clear();
+        delete m_solutionArrayList;
+    }
+
     m_solutionArrayList = solutionArrayList;
     setTimeStep(timeStepCount() - 1);
 }

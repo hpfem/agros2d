@@ -216,16 +216,7 @@ void ProblemDialog::fillComboBox()
     cmbProblemType->addItem(problemTypeString(ProblemType_Planar), ProblemType_Planar);
     cmbProblemType->addItem(problemTypeString(ProblemType_Axisymmetric), ProblemType_Axisymmetric);
 
-    cmbPhysicField->clear();
-    cmbPhysicField->addItem(physicFieldString(PhysicField_General), PhysicField_General);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Electrostatic), PhysicField_Electrostatic);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Magnetic), PhysicField_Magnetic);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Current), PhysicField_Current);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
-#ifdef BETA
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
-    cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
-#endif
+    fillComboBoxPhysicField(cmbPhysicField);
     cmbPhysicField->setEnabled(m_isNewProblem);
 
     cmbAdaptivityType->clear();
@@ -238,7 +229,7 @@ void ProblemDialog::fillComboBox()
 void ProblemDialog::load()
 {
     // main
-    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_problemInfo->physicField()));
+    if (!m_isNewProblem) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_problemInfo->physicField()));
     txtName->setText(m_problemInfo->name);
     cmbProblemType->setCurrentIndex(cmbProblemType->findData(m_problemInfo->problemType));
     dtmDate->setDate(m_problemInfo->date);

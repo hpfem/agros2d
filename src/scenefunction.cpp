@@ -18,23 +18,34 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scenefunction.h"
+#include "scripteditordialog.h"
 
-SceneFunction::SceneFunction(const QString &name, const QString &function)
+SceneFunction::SceneFunction(const QString &name, const QString &function, Value start, Value end)
 {
     this->name = name;
-    this->function = function;      
+    this->function = function;
+    this->start = start;
+    this->end = end;
+
+    m_countDefault = 200;
+    m_count = 0;
+    m_valuesX = new double[m_count];
+    m_valuesY = new double[m_count];
 }
 
 SceneFunction::~SceneFunction()
 {
-
+    if (m_valuesX) delete m_valuesX;
+    if (m_valuesY) delete m_valuesY;
 }
 
 QString SceneFunction::script()
 {
-    return QString("addfunction(\"%1\", \"%2\")").
+    return QString("addfunction(\"%1\", \"%2\", %3, %4)").
             arg(name).
-            arg(function);
+            arg(function).
+            arg(start.text).
+            arg(end.text);
 }
 
 QVariant SceneFunction::variant()
@@ -44,22 +55,70 @@ QVariant SceneFunction::variant()
     return v;
 }
 
-double SceneFunction::evaluate(double number) throw (const QString &)
+double SceneFunction::evaluate(double number, bool fromTable) throw (const QString &)
 {
-    // TODO
-    // evaluate
-    /*
-    QString text = QString("var x = %1; \n %2").arg(number).arg(function);
-    QScriptValue scriptValue = m_engine->evaluate(text);
-    if (scriptValue.isNumber())
+    if (fromTable)
     {
-        return scriptValue.toNumber();
+        if (number < start.number)
+            return start.number;
+        if (number > end.number)
+            return end.number;
+
+        double step = (end.number - start.number) / (double) m_count;
+        for (int i = 0; i<m_count; i++)
+            if (number >= i*step && number < (i+1)*step)
+                return ((i+1)*step - i*step)/step + i*step;
     }
     else
     {
-        throw QString(QObject::tr("Expression '%1' cannot be evaluated.").arg(text));
+        runPythonExpression(QString("val = %1").arg(number));
+        ExpressionResult expressionResult = runPythonExpression(QString("%1").arg(function));
+        if (expressionResult.error.isEmpty())
+        {
+            return expressionResult.value;
+        }
+        else
+        {
+            throw expressionResult.error;
+        }
     }
-    */
+}
+
+bool SceneFunction::evaluateValues() throw (const QString &)
+{
+    if (!start.evaluate(true)) return false;
+    if (!end.evaluate(true)) return false;
+
+    m_count = m_countDefault;
+    double step = (end.number - start.number) / (double) m_count;
+    m_valuesX = new double[m_count];
+    m_valuesY = new double[m_count];
+
+    // calculate values
+    for (int i = 0; i<m_count; i++)
+    {
+        m_valuesX[i] = start.number + i*step;
+
+        // evaluate
+        try
+        {
+            m_valuesY[i] = evaluate(m_valuesX[i]);
+        }
+        catch (const QString &e)
+        {
+            delete[] m_valuesX;
+            delete[] m_valuesY;
+            m_count = 0;
+            m_valuesX = new double[0];
+            m_valuesY = new double[0];
+
+            throw e;
+
+            break;
+        }
+    }
+
+    return (m_count > 0);
 }
 
 int SceneFunction::showDialog(QWidget *parent)
@@ -109,13 +168,16 @@ void DSceneFunction::createControls()
     txtFunction = new QLineEdit();
 
     // interval
-    txtStart = new SLineEditDouble();
+    txtStart = new SLineEditValue();
     txtStart->setMaximumWidth(100);
     connect(txtStart, SIGNAL(editingFinished()), this, SLOT(doPlot()));
 
-    txtEnd = new SLineEditDouble(10);
+    txtEnd = new SLineEditValue();
     txtEnd->setMaximumWidth(100);
     connect(txtEnd, SIGNAL(editingFinished()), this, SLOT(doPlot()));
+
+    lblError = new QLabel();
+    lblError->setVisible(false);
 
     QPushButton *btnPlot = new QPushButton(this);
     btnPlot->setText(tr("Plot"));
@@ -134,8 +196,9 @@ void DSceneFunction::createControls()
     controlsLayout->addWidget(txtName, 0, 3);
     controlsLayout->addWidget(new QLabel(tr("Function:")), 1, 2);
     controlsLayout->addWidget(txtFunction, 1, 3);
-    controlsLayout->addWidget(btnPlot, 0, 4);
-    controlsLayout->addWidget(btnSaveImage, 1, 4);
+    controlsLayout->addWidget(lblError, 0, 4, 2, 1);
+    controlsLayout->addWidget(btnPlot, 0, 5);
+    controlsLayout->addWidget(btnSaveImage, 1, 5);
 
     // dialog buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -157,53 +220,40 @@ void DSceneFunction::doSaveImage()
 
 void DSceneFunction::doPlot()
 {
-    int count = 200;
-    double step = (txtEnd->value() - txtStart->value()) / (double) count;
-    double *xval = new double[count];
-    double *yval = new double[count];
-
-    SceneFunction function("plot", txtFunction->text());
-
-    // calculate values
-    for (int i = 0; i<count; i++)
+    // evaluate
+    try
     {
-        xval[i] = txtStart->value() + i*step;
-
-        // evaluate
-        try
-        {
-            yval[i] = function.evaluate(xval[i]);
-        }
-        catch (const QString &e)
-        {
-            delete[] xval;
-            delete[] yval;
-            xval = new double[0];
-            yval = new double[0];
-            count = 0;
-
-            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), QObject::tr("Expression '%1' cannot be evaluated.").arg(txtFunction->text()));
-
-            break;
-        }
+        lblError->setVisible(false);
+        m_sceneFunction->function = txtFunction->text();
+        m_sceneFunction->evaluateValues();
+    }
+    catch (const QString &e)
+    {
+        lblError->setVisible(true);
+        lblError->setText(e);
+        QPalette palette = lblError->palette();
+        palette.setColor(QPalette::WindowText, Qt::red);
+        lblError->setPalette(palette);
+        lblError->setVisible(true);
     }
 
-    chart->setData(xval, yval, count);
-
-    delete[] xval;
-    delete[] yval;
+    chart->setData(m_sceneFunction->valuesX(), m_sceneFunction->valuesY(), m_sceneFunction->count());
 }
 
 void DSceneFunction::load()
 {
     txtName->setText(m_sceneFunction->name);
     txtFunction->setText(m_sceneFunction->function);
+    txtStart->setValue(m_sceneFunction->start);
+    txtEnd->setValue(m_sceneFunction->end);
 }
 
 bool DSceneFunction::save()
 {
     m_sceneFunction->name = txtName->text();
     m_sceneFunction->function = txtFunction->text();
+    m_sceneFunction->start = txtStart->value();
+    m_sceneFunction->end = txtEnd->value();
 
     return true;
 }
@@ -211,7 +261,9 @@ bool DSceneFunction::save()
 void DSceneFunction::doAccept()
 {
     if (save())
+    {       
         accept();
+    }
 }
 
 void DSceneFunction::doReject()

@@ -128,6 +128,15 @@ protected:
 // convert enums
 RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivityType);
 
+extern bool isPlanar;
+extern AnalysisType analysisType;
+extern double frequency;
+extern double actualTime;
+extern double timeStep;
+
+// solve
+QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *));
+
 // custom forms **************************************************************************************************************************
 
 template<typename Real, typename Scalar>

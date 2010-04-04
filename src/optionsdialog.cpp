@@ -40,7 +40,8 @@ void OptionsDialog::load()
     QSettings settings;
 
     // gui style
-    for (int i = 0; i < cmbGUIStyle->count(); i++) {
+    for (int i = 0; i < cmbGUIStyle->count(); i++)
+    {
         if (cmbGUIStyle->itemText(i) == settings.value("General/GUIStyle"))
         {
             cmbGUIStyle->setCurrentIndex(i);
@@ -49,12 +50,18 @@ void OptionsDialog::load()
     }
 
     // language
-    for (int i = 0; i < cmbLanguage->count(); i++) {
-        if (cmbLanguage->itemText(i) == settings.value("General/Language")) {
+    for (int i = 0; i < cmbLanguage->count(); i++)
+    {
+        if (cmbLanguage->itemText(i) == settings.value("General/Language"))
+        {
             cmbLanguage->setCurrentIndex(i);
             break;
         }
     }
+
+    // default physic field
+    cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(
+            physicFieldFromStringKey(settings.value("General/DefaultPhysicField", physicFieldToStringKey(PhysicField_Electrostatic)).toString())));
 
     // check version
     chkCheckVersion->setChecked(settings.value("General/CheckVersion", true).value<bool>());
@@ -67,6 +74,7 @@ void OptionsDialog::load()
     txtGeometryNodeSize->setValue(m_sceneViewSettings->geometryNodeSize);
     txtGeometryEdgeWidth->setValue(m_sceneViewSettings->geometryEdgeWidth);
     txtGeometryLabelSize->setValue(m_sceneViewSettings->geometryLabelSize);
+    chkZoomToMouse->setChecked(settings.value("Geometry/ZoomToMouse", true).value<bool>());
 
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>());
@@ -144,6 +152,9 @@ void OptionsDialog::save()
                                  tr("Interface language has been changed. You must restart the application."));
     settings.setValue("General/Language", cmbLanguage->currentText());
 
+    // default physic field
+    settings.setValue("General/DefaultPhysicField", physicFieldToStringKey((PhysicField) cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toInt()));
+
     // check version
     settings.setValue("General/CheckVersion", chkCheckVersion->isChecked());
 
@@ -155,6 +166,7 @@ void OptionsDialog::save()
     m_sceneViewSettings->geometryNodeSize = txtGeometryNodeSize->value();
     m_sceneViewSettings->geometryEdgeWidth = txtGeometryEdgeWidth->value();
     m_sceneViewSettings->geometryLabelSize = txtGeometryLabelSize->value();
+    settings.setValue("Geometry/ZoomToMouse", chkZoomToMouse->isChecked());
 
     // delete files
     settings.setValue("Solver/DeleteTriangleMeshFiles", chkDeleteTriangleMeshFiles->isChecked());
@@ -289,11 +301,16 @@ QWidget *OptionsDialog::createMainWidget()
     cmbLanguage = new QComboBox(mainWidget);
     cmbLanguage->addItems(availableLanguages());
 
+    cmbDefaultPhysicField = new QComboBox();
+    fillComboBoxPhysicField(cmbDefaultPhysicField);
+
     QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->addWidget(new QLabel(tr("UI:")), 0, 0);
     layoutGeneral->addWidget(cmbGUIStyle, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Language:")), 1, 0);
     layoutGeneral->addWidget(cmbLanguage, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Default physic field:")), 2, 0);
+    layoutGeneral->addWidget(cmbDefaultPhysicField, 2, 1);
 
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
@@ -355,19 +372,26 @@ QWidget *OptionsDialog::createViewWidget()
     txtGeometryAngleSegmentsCount = new QSpinBox(this);
     txtGeometryAngleSegmentsCount->setMinimum(1);
     txtGeometryAngleSegmentsCount->setMaximum(100);
+    txtGeometryAngleSegmentsCount->setMaximumWidth(60);
     txtGeometryNodeSize = new SLineEditDouble();
+    txtGeometryNodeSize->setMaximumWidth(60);
     txtGeometryEdgeWidth = new SLineEditDouble();
+    txtGeometryEdgeWidth->setMaximumWidth(60);
     txtGeometryLabelSize = new SLineEditDouble();
+    txtGeometryLabelSize->setMaximumWidth(60);
+
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
 
     QGridLayout *layoutGeometry = new QGridLayout();
     layoutGeometry->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
     layoutGeometry->addWidget(txtGeometryAngleSegmentsCount, 0, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 1, 0);
-    layoutGeometry->addWidget(txtGeometryNodeSize, 1, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 2, 0);
-    layoutGeometry->addWidget(txtGeometryEdgeWidth, 2, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 3, 0);
-    layoutGeometry->addWidget(txtGeometryLabelSize, 3, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 2);
+    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 3);
+    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
+    layoutGeometry->addWidget(txtGeometryEdgeWidth, 1, 1);
+    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 1, 2);
+    layoutGeometry->addWidget(txtGeometryLabelSize, 1, 3);
+    layoutGeometry->addWidget(chkZoomToMouse, 2, 0, 1, 4);
 
     QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
     grpGeometry->setLayout(layoutGeometry);
@@ -381,8 +405,8 @@ QWidget *OptionsDialog::createViewWidget()
     QGridLayout *layoutGrid = new QGridLayout();
     layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
     layoutGrid->addWidget(txtGridStep, 0, 1);
-    layoutGrid->addWidget(chkSnapToGrid, 2, 0);
-    layoutGrid->addWidget(chkRulers, 1, 0);
+    layoutGrid->addWidget(chkSnapToGrid, 0, 2);
+    layoutGrid->addWidget(chkRulers, 1, 2);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
@@ -440,7 +464,7 @@ QWidget *OptionsDialog::createViewWidget()
     chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
     txtVectorCount = new QSpinBox(this);
     txtVectorCount->setMinimum(1);
-    txtVectorCount->setMaximum(100);
+    txtVectorCount->setMaximum(200);
     txtVectorScale = new SLineEditDouble(0);
 
     QGridLayout *layoutVectorField = new QGridLayout();

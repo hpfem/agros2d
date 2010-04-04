@@ -10,3 +10,10 @@ Changes in Agros2D
 ----------------------
 
 * fixed initial and solved mesh informations
+
+1.0.3.347 (01.04.2010)
+----------------------
+
+* zoom to mouse
+* expressions chart window
+* nicer vectors view

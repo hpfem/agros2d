@@ -68,6 +68,324 @@ RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivi
     }
 }
 
+
+bool isPlanar;
+AnalysisType analysisType;
+double frequency;
+double actualTime;
+double timeStep;
+
+Mesh *readMesh(const QString &fileName)
+{
+    // save locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    // load the mesh file
+    Mesh *mesh = new Mesh();
+    H2DReader meshloader;
+    meshloader.load(fileName.toStdString().c_str(), mesh);
+    for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
+        mesh->refine_all_elements(0);
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+
+    return mesh;
+}
+
+SolutionArray *solutionArray(Solution *sln, H1Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0)
+{
+    SolutionArray *slnArray = new SolutionArray();
+    slnArray->order = new Orderizer();
+    if (space) slnArray->order->process_solution(space);
+    slnArray->sln = new Solution();
+    if (sln) slnArray->sln->copy(sln);
+    slnArray->adaptiveError = adaptiveError;
+    slnArray->adaptiveSteps = adaptiveSteps;
+    slnArray->time = time;
+
+    return slnArray;
+}
+
+void solveSystem(LinSystem *sys, QList<Solution *> *slnArray)
+{
+    int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
+
+    switch (numberOfSolution)
+    {
+    case 1:
+        sys->solve(numberOfSolution, slnArray->at(0));
+        break;
+    case 2:
+        sys->solve(numberOfSolution, slnArray->at(0), slnArray->at(1));
+        break;
+    case 3:
+        sys->solve(numberOfSolution, slnArray->at(0), slnArray->at(1), slnArray->at(2));
+        break;
+    }
+}
+
+QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *))
+{
+    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
+    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+    int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
+    double timeTotal = Util::scene()->problemInfo()->timeTotal.number;
+    double initialCondition = Util::scene()->problemInfo()->initialCondition.number;
+
+    timeStep = Util::scene()->problemInfo()->timeStep.number;
+    isPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
+    analysisType = Util::scene()->problemInfo()->analysisType;
+    frequency = Util::scene()->problemInfo()->frequency;
+
+    // solution agros array
+    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+
+    // load the mesh file
+    Mesh *mesh = readMesh(tempProblemFileName() + ".mesh");
+
+    // initialize the shapeset
+    H1Shapeset shapeset;
+
+    // create shapeset cache
+    QList<PrecalcShapeset *> *pss = new QList<PrecalcShapeset *>();
+    // create an H1 space
+    QList<H1Space *> *space = new QList<H1Space *>();
+    // create hermes solution array
+    QList<Solution *> *slnArray = new QList<Solution *>();
+    // create reference solution
+    QList<Solution *> *rslnArray = new QList<Solution *>();
+
+    for (int i = 0; i < numberOfSolution; i++)
+    {
+        // cache
+        pss->append(new PrecalcShapeset(&shapeset));
+
+        // space
+        space->append(new H1Space(mesh, &shapeset));
+        // set order by element
+        for (int j = 0; j < Util::scene()->labels.count(); j++)
+            space->at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder, j);
+
+        // solution agros array
+        slnArray->append(new Solution());
+
+        // reference solution
+        if ((adaptivityType != AdaptivityType_None))
+            rslnArray->append(new Solution());
+    }
+
+    // callback space
+    cbSpace(space);
+
+    if (analysisType == AnalysisType_Transient)
+    {
+        for (int i = 0; i < numberOfSolution; i++)
+        {
+            // constant initial solution
+            slnArray->at(i)->set_const(mesh, initialCondition);
+            solutionArrayList->append(solutionArray(slnArray->at(i)));
+        }
+    }
+
+    // initialize the weak formulation
+    WeakForm wf(numberOfSolution);
+    // callback weakform
+    cbWeakForm(&wf, slnArray);
+
+    // initialize the linear solver
+    UmfpackSolver umfpack;
+
+    // prepare selector
+    QSettings settings;
+    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
+    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
+    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
+    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
+    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
+    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
+
+    // initialize the linear system
+    LinSystem sys(&wf, &umfpack);
+    switch (numberOfSolution)
+    {
+    case 1:
+        {
+            sys.set_spaces(numberOfSolution, space->at(0));
+            sys.set_pss(numberOfSolution, pss->at(0));
+            break;
+        }
+    case 2:
+        {
+            sys.set_spaces(numberOfSolution, space->at(0), space->at(1));
+            sys.set_pss(numberOfSolution, pss->at(0), pss->at(1));
+            break;
+        }
+    case 3:
+        {
+            sys.set_spaces(numberOfSolution, space->at(0), space->at(1), space->at(2));
+            sys.set_pss(numberOfSolution, pss->at(0),  pss->at(1), pss->at(2));
+            break;
+        }
+    }
+
+    // assemble the stiffness matrix and solve the system
+    double error;
+
+    // set actual time
+    actualTime = 0;
+
+    // error marker
+    bool isError = false;
+
+    // solution
+    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
+    for (int i = 0; i<adaptivitysteps; i++)
+    {
+        // assign dofs
+        int ndofs = 0;
+        for (int j = 0; j < numberOfSolution; j++)
+            ndofs += space->at(j)->assign_dofs(ndofs);
+
+        sys.assemble();
+        if (sys.get_num_dofs() == 0)
+        {
+            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
+            isError = true;
+            break;
+        }
+        solveSystem(&sys, slnArray);
+
+        // calculate errors and adapt the solution
+        if (adaptivityType != AdaptivityType_None)
+        {
+            RefSystem rs(&sys);
+            rs.assemble();
+
+            H1AdaptHP *hp;
+            switch (numberOfSolution)
+            {
+            case 1:
+                {
+                    rs.solve(numberOfSolution, rslnArray->at(0));
+                    hp = new H1AdaptHP(numberOfSolution, space->at(0));
+                    error = hp->calc_error_n(numberOfSolution, slnArray->at(0), rslnArray->at(0)) * 100;
+                }
+                break;
+            case 2:
+                {
+                    rs.solve(numberOfSolution, rslnArray->at(0), rslnArray->at(1));
+                    hp = new H1AdaptHP(numberOfSolution, space->at(0), space->at(1));
+                    error = hp->calc_error_n(numberOfSolution, slnArray->at(0), slnArray->at(1), rslnArray->at(0), rslnArray->at(1)) * 100;
+                }
+                break;
+            case 3:
+                {
+                    rs.solve(numberOfSolution, rslnArray->at(0), rslnArray->at(1), rslnArray->at(2));
+                    hp = new H1AdaptHP(numberOfSolution, space->at(0), space->at(1), space->at(2));
+                    error = hp->calc_error_n(numberOfSolution, slnArray->at(0), slnArray->at(1), rslnArray->at(2), rslnArray->at(0), rslnArray->at(1), rslnArray->at(2)) * 100;
+                }
+                break;
+            }
+
+            // emit signal
+            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
+            if (solverDialog->isCanceled())
+            {
+                delete hp;
+                isError = true;
+                break;
+            }
+
+            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP)
+            {
+                delete hp;
+                break;
+            }
+            if (i != adaptivitysteps-1) hp->adapt(threshold, strategy, &selector, meshRegularity);
+        }
+    }
+
+    // timesteps
+    if (!isError)
+    {
+        int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
+        for (int n = 0; n<timesteps; n++)
+        {
+            // set actual time
+            actualTime = (n+1)*timeStep;
+
+            if (timesteps > 1)
+            {
+                // transient
+                sys.assemble(true);
+                solveSystem(&sys, slnArray);
+            }
+            else if (n > 0)
+            {
+                int ndofs = 0;
+                for (int i = 0; i < numberOfSolution; i++)
+                    ndofs += space->at(i)->assign_dofs(ndofs);
+
+                sys.assemble();
+            }
+
+            // output
+            for (int i = 0; i < numberOfSolution; i++)
+            {
+                solutionArrayList->append(solutionArray(slnArray->at(i), space->at(i), error, i-1, (n+1)*timeStep));
+            }
+
+            if (analysisType == AnalysisType_Transient) solverDialog->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
+            if (solverDialog->isCanceled())
+            {
+                isError = true;
+                break;
+            }
+            solverDialog->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
+        }
+    }
+
+    // delete mesh
+    delete mesh;
+
+    // delete pss
+    for (int i = 0; i < pss->count(); i++)
+        delete pss->at(i);
+    pss->clear();
+    delete pss;
+
+    // delete space
+    for (int i = 0; i < space->count(); i++)
+        delete space->at(i);
+    space->clear();
+    delete space;
+
+    // delete last solution
+    for (int i = 0; i < slnArray->count(); i++)
+        delete slnArray->at(i);
+    slnArray->clear();
+    delete slnArray;
+
+    // delete reference solution
+    for (int i = 0; i < rslnArray->count(); i++)
+        delete rslnArray->at(i);
+    rslnArray->clear();
+    delete rslnArray;
+
+    if (isError)
+    {
+        for (int i = 0; i < solutionArrayList->count(); i++)
+            delete solutionArrayList->at(i);
+        solutionArrayList->clear();
+    }
+
+    return solutionArrayList;
+}
+
 // *********************************************************************************************************************************************
 
 ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)

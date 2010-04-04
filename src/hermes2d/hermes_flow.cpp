@@ -37,12 +37,6 @@ struct FlowLabel
 
 FlowEdge *flowEdge;
 FlowLabel *flowLabel;
-bool flowPlanar;
-AnalysisType flowAnalysisType;
-
-double flowInitialCondition;
-double flowTimeStep;
-double flowTimeTotal;
 
 int flow_bc_types(int marker)
 {
@@ -52,12 +46,12 @@ int flow_bc_types(int marker)
         return BC_ESSENTIAL;
     case PhysicFieldBC_Flow_Outlet:
         return BC_NONE;
-    case PhysicFieldBC_None:
-        return BC_NONE;
     case PhysicFieldBC_Flow_Velocity:
         return BC_ESSENTIAL;
     case PhysicFieldBC_Flow_Pressure:
         return BC_ESSENTIAL;
+    case PhysicFieldBC_None:
+        return BC_NONE;
     }
 }
 
@@ -99,7 +93,7 @@ template<typename Real, typename Scalar>
 Scalar bilinear_form_sym_0_0_1_1(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     return flowLabel[e->marker].dynamic_viscosity / flowLabel[e->marker].density * (int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) +
-            ((flowAnalysisType == AnalysisType_Transient) ? int_u_v<Real, Scalar>(n, wt, u, v) / flowTimeStep : 0.0));
+            ((analysisType == AnalysisType_Transient) ? int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0));
 }
 
 template<typename Real, typename Scalar>
@@ -107,7 +101,7 @@ Scalar bilinear_form_unsym_0_0_1_1(int n, double *wt, Func<Real> *u, Func<Real> 
 {
     Func<Scalar>* xvel_prev = ext->fn[0];
     Func<Scalar>* yvel_prev = ext->fn[1];
-    return ((flowAnalysisType == AnalysisType_Transient) ? int_w_nabla_u_v<Real, Scalar>(n, wt, xvel_prev, yvel_prev, u, v) : 0.0);
+    return ((analysisType == AnalysisType_Transient) ? int_w_nabla_u_v<Real, Scalar>(n, wt, xvel_prev, yvel_prev, u, v) : 0.0);
 }
 
 template<typename Real, typename Scalar>
@@ -115,7 +109,7 @@ Scalar linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scal
 {
     // this form is used with both velocity components
     Func<Scalar>* vel_prev = ext->fn[0];
-    return ((flowAnalysisType == AnalysisType_Transient) ? int_u_v<Real, Scalar>(n, wt, vel_prev, v) / flowTimeStep : 0.0);
+    return ((analysisType == AnalysisType_Transient) ? int_u_v<Real, Scalar>(n, wt, vel_prev, v) / timeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
@@ -130,255 +124,42 @@ Scalar bilinear_form_unsym_1_2(int n, double *wt, Func<Real> *p, Func<Real> *v, 
     return - int_u_dvdy<Real, Scalar>(n, wt, p, v);
 }
 
-QList<SolutionArray *> *flow_main(SolverDialog *solverDialog)
+void callbackFlowSpace(QList<H1Space *> *space)
 {
-    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+    space->at(0)->set_bc_types(flow_bc_types);
+    space->at(0)->set_bc_values(flow_bc_values_x);
 
-    flowPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
+    space->at(1)->set_bc_types(flow_bc_types);
+    space->at(1)->set_bc_values(flow_bc_values_y);
 
-    flowAnalysisType = Util::scene()->problemInfo()->analysisType;
-    flowTimeStep = Util::scene()->problemInfo()->timeStep.number;
-    flowTimeTotal = Util::scene()->problemInfo()->timeTotal.number;
-    flowInitialCondition = Util::scene()->problemInfo()->initialCondition.number;
+    space->at(2)->set_bc_types(flow_bc_types);
+    space->at(2)->set_bc_values(flow_bc_values_pressure);
+}
 
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    // load the mesh file
-    Mesh mesh;
-    H2DReader meshloader;
-    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
-    for (int i = 0; i < numberOfRefinements; i++)
-        mesh.refine_all_elements(0);
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-
-    // initialize the shapeset and the cache
-    H1Shapeset shapeset;
-    PrecalcShapeset pss(&shapeset);
-
-    // create the x velocity space
-    H1Space xvel(&mesh, &shapeset);
-    xvel.set_bc_types(flow_bc_types);
-    xvel.set_bc_values(flow_bc_values_x);
-    // set order by element
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
-        xvel.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder + 1 : polynomialOrder, i);
-
-    // create the y velocity space
-    H1Space yvel(&mesh, &shapeset);
-    yvel.set_bc_types(flow_bc_types);
-    yvel.set_bc_values(flow_bc_values_y);
-    // set order by element
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
-        yvel.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder + 1 : polynomialOrder, i);
-
-    // create the pressure space
-    H1Space press(&mesh, &shapeset);
-    press.set_bc_types(flow_bc_types);
-    press.set_bc_values(flow_bc_values_pressure);
-    // set order by element
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
-        press.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-
-    // solution
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-
-    Solution *slnx = new Solution();
-    Solution *slny = new Solution();
-    Solution *slnpress = new Solution();
-    if (flowAnalysisType == AnalysisType_Transient)
-    {
-        slnx->set_const(&mesh, 0.0);
-        slny->set_const(&mesh, 0.0);
-        slnpress->set_const(&mesh, 0.0);
-
-        SolutionArray *solutionArray;
-
-        // zero time
-        solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->sln = new Solution();
-        solutionArray->sln->copy(slnx);
-        solutionArray->adaptiveError = 0.0;
-        solutionArray->adaptiveSteps = 0.0;
-        solutionArray->time = 0.0;
-
-        solutionArrayList->append(solutionArray);
-
-        solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->sln = new Solution();
-        solutionArray->sln->copy(slny);
-        solutionArray->adaptiveError = 0.0;
-        solutionArray->adaptiveSteps = 0.0;
-        solutionArray->time = 0.0;
-
-        solutionArrayList->append(solutionArray);
-
-        solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->sln = new Solution();
-        solutionArray->sln->copy(slnpress);
-        solutionArray->adaptiveError = 0.0;
-        solutionArray->adaptiveSteps = 0.0;
-        solutionArray->time = 0.0;
-
-        solutionArrayList->append(solutionArray);
-    }
-
-    // initialize the weak formulation
-    WeakForm wf(3);
-    wf.add_biform(0, 0, callback(bilinear_form_sym_0_0_1_1), SYM);
-    if (flowAnalysisType == AnalysisType_Transient)
-        wf.add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), UNSYM, ANY, 2, slnx, slny);
+void callbackFlowWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+{
+    wf->add_biform(0, 0, callback(bilinear_form_sym_0_0_1_1), SYM);
+    if (analysisType == AnalysisType_Transient)
+        wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), UNSYM, ANY, 2, slnArray->at(0), slnArray->at(1));
     else
-        wf.add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), UNSYM);
-    wf.add_biform(1, 1, callback(bilinear_form_sym_0_0_1_1), SYM);
-    if (flowAnalysisType == AnalysisType_Transient)
-        wf.add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), UNSYM, ANY, 2, slnx, slny);
+        wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), UNSYM);
+    wf->add_biform(1, 1, callback(bilinear_form_sym_0_0_1_1), SYM);
+    if (analysisType == AnalysisType_Transient)
+        wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), UNSYM, ANY, 2, slnArray->at(0), slnArray->at(1));
     else
-        wf.add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), UNSYM);
-    wf.add_biform(0, 2, callback(bilinear_form_unsym_0_2), ANTISYM);
-    wf.add_biform(1, 2, callback(bilinear_form_unsym_1_2), ANTISYM);
-    if (flowAnalysisType == AnalysisType_Transient)
+        wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), UNSYM);
+    wf->add_biform(0, 2, callback(bilinear_form_unsym_0_2), ANTISYM);
+    wf->add_biform(1, 2, callback(bilinear_form_unsym_1_2), ANTISYM);
+    if (analysisType == AnalysisType_Transient)
     {
-        wf.add_liform(0, callback(linear_form), ANY, 1, slnx);
-        wf.add_liform(1, callback(linear_form), ANY, 1, slny);
+        wf->add_liform(0, callback(linear_form), ANY, 1, slnArray->at(0));
+        wf->add_liform(1, callback(linear_form), ANY, 1, slnArray->at(1));
     }
     else
     {
-        wf.add_liform(0, callback(linear_form));
-        wf.add_liform(1, callback(linear_form));
+        wf->add_liform(0, callback(linear_form));
+        wf->add_liform(1, callback(linear_form));
     }
-
-    // initialize the linear system and solver
-    UmfpackSolver umfpack;
-
-    // prepare selector
-    QSettings settings;
-    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
-    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
-    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
-    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
-    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
-    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
-
-    Solution rslnx, rslny, rslnpress;
-
-    // initialize the linear system
-    LinSystem sys(&wf, &umfpack);
-    sys.set_spaces(3, &xvel, &yvel, &press);
-    sys.set_pss(1, &pss);
-
-    // output
-    SolutionArray *solutionArray;
-
-    // assemble the stiffness matrix and solve the system
-    double error;
-    int i;
-    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-    for (i = 0; i<(adaptivitysteps); i++)
-    {
-        int ndof = xvel.assign_dofs(0);
-        ndof += yvel.assign_dofs(ndof);
-        ndof += press.assign_dofs(ndof);
-
-        sys.assemble();
-        if (sys.get_num_dofs() == 0)
-        {
-            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
-            return solutionArrayList;
-        }
-        sys.solve(3, slnx, slny, slnpress);
-
-        // calculate errors and adapt the solution
-        if (adaptivityType != AdaptivityType_None)
-        {
-            RefSystem rs(&sys);
-            rs.assemble();
-            rs.solve(3, &rslnx, &rslny, &rslnpress);
-
-            H1AdaptHP hp(3, &xvel, &yvel, &press);
-            error = hp.calc_error_n(3, slnx, slny, slnpress, &rslnx, &rslny, &rslnpress) * 100;
-
-            // emit signal
-            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverDialog->isCanceled()) return solutionArrayList;
-
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
-        }
-    }
-
-    // timesteps
-    int timesteps = (flowAnalysisType == AnalysisType_Transient) ? floor(flowTimeTotal/flowTimeStep) : 1;
-    for (int n = 0; n<timesteps; n++)
-    {
-        if (timesteps > 1)
-        {
-            sys.assemble(true);
-            sys.solve(3, slnx, slny, slnpress);
-        }
-        else if (n > 0)
-        {
-            int ndof = xvel.assign_dofs(0);
-            ndof += yvel.assign_dofs(ndof);
-            ndof += press.assign_dofs(ndof);
-            sys.assemble();
-        }
-        // x part
-        solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->order->process_solution(&xvel);
-        solutionArray->sln = new Solution();
-        solutionArray->sln->copy(slnx);
-        solutionArray->adaptiveError = error;
-        solutionArray->adaptiveSteps = i-1;
-        if (flowAnalysisType == AnalysisType_Transient) solutionArray->time = (n+1)*flowTimeStep;
-
-        solutionArrayList->append(solutionArray);
-
-        // y part
-        solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->order->process_solution(&yvel);
-        solutionArray->sln = new Solution();
-        solutionArray->sln->copy(slny);
-        solutionArray->adaptiveError = error;
-        solutionArray->adaptiveSteps = i-1;
-        if (flowAnalysisType == AnalysisType_Transient) solutionArray->time = (n+1)*flowTimeStep;
-
-        solutionArrayList->append(solutionArray);
-
-        // press part
-        solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->order->process_solution(&press);
-        solutionArray->sln = new Solution();
-        solutionArray->sln->copy(slnpress);
-        solutionArray->adaptiveError = error;
-        solutionArray->adaptiveSteps = i-1;
-        if (flowAnalysisType == AnalysisType_Transient) solutionArray->time = (n+1)*flowTimeStep;
-
-        solutionArrayList->append(solutionArray);
-
-        if (flowAnalysisType == AnalysisType_Transient) solverDialog->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
-        if (solverDialog->isCanceled())
-        {
-            solutionArrayList->clear();
-            return solutionArrayList;
-        }
-        solverDialog->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
-    }
-
-    return solutionArrayList;
 }
 
 // *******************************************************************************************************
@@ -627,7 +408,7 @@ QList<SolutionArray *> *HermesFlow::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = flow_main(solverDialog);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackFlowSpace, callbackFlowWeakForm);
 
     delete [] flowEdge;
     delete [] flowLabel;

@@ -42,13 +42,6 @@ struct MagneticLabel
 
 MagneticEdge *magneticEdge;
 MagneticLabel *magneticLabel;
-bool magneticPlanar;
-AnalysisType magneticAnalysisType;
-
-double magneticInitialCondition;
-double magneticTimeStep;
-double magneticTimeTotal;
-double magneticFrequency;
 
 int magnetic_bc_types(int marker)
 {
@@ -81,7 +74,7 @@ Scalar magnetic_linear_form_surf_real(int n, double *wt, Func<Real> *v, Geom<Rea
     if (magneticEdge[e->marker].type == PhysicFieldBC_Magnetic_SurfaceCurrent)
         K = magneticEdge[e->marker].value_real;
 
-    if (magneticPlanar)
+    if (isPlanar)
         return K * int_v<Real, Scalar>(n, wt, v);
     else
         return K * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
@@ -95,7 +88,7 @@ Scalar magnetic_linear_form_surf_imag(int n, double *wt, Func<Real> *v, Geom<Rea
     if (magneticEdge[e->marker].type == PhysicFieldBC_Magnetic_SurfaceCurrent)
         K = magneticEdge[e->marker].value_imag;
 
-    if (magneticPlanar)
+    if (isPlanar)
         return K * int_v<Real, Scalar>(n, wt, v);
     else
         return K * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
@@ -104,39 +97,39 @@ Scalar magnetic_linear_form_surf_imag(int n, double *wt, Func<Real> *v, Geom<Rea
 template<typename Real, typename Scalar>
 Scalar magnetic_bilinear_form_real_real(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (magneticPlanar)
+    if (isPlanar)
         return 1.0 / (magneticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
                magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
-               ((magneticAnalysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / magneticTimeStep : 0.0);
+               ((analysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
 
     else
         return 1.0 / (magneticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
                 magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
-                ((magneticAnalysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / magneticTimeStep : 0.0);
+                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
 Scalar magnetic_bilinear_form_real_imag(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (magneticPlanar)
-        return - 2 * M_PI * magneticFrequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+    if (isPlanar)
+        return - 2 * M_PI * frequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return - 2 * M_PI * magneticFrequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+        return - 2 * M_PI * frequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
 Scalar magnetic_bilinear_form_imag_real(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (magneticPlanar)
-        return + 2 * M_PI * magneticFrequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+    if (isPlanar)
+        return + 2 * M_PI * frequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return + 2 * M_PI * magneticFrequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+        return + 2 * M_PI * frequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
 Scalar magnetic_bilinear_form_imag_imag(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (magneticPlanar)
+    if (isPlanar)
         return 1.0 / (magneticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
                magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular);
     else
@@ -147,313 +140,63 @@ Scalar magnetic_bilinear_form_imag_imag(int n, double *wt, Func<Real> *u, Func<R
 template<typename Real, typename Scalar>
 Scalar magnetic_linear_form_real(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (magneticPlanar)
+    if (isPlanar)
         return magneticLabel[e->marker].current_density_real * int_v<Real, Scalar>(n, wt, v) +
                magneticLabel[e->marker].remanence / (magneticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->marker].remanence_angle) +
-                ((magneticAnalysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / magneticTimeStep : 0.0);
+                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
     else
         return (magneticLabel[e->marker].current_density_real * int_v<Real, Scalar>(n, wt, v) -
                 magneticLabel[e->marker].remanence / (magneticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->marker].remanence_angle) +
-                ((magneticAnalysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / magneticTimeStep : 0.0));
+                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0));
 }
 
 template<typename Real, typename Scalar>
 Scalar magnetic_linear_form_imag(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (magneticPlanar)
+    if (isPlanar)
         return magneticLabel[e->marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
     else
         return magneticLabel[e->marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
 }
 
-QList<SolutionArray *> *magnetic_main(SolverDialog *solverDialog)
+void callbackMagneticSpace(QList<H1Space *> *space)
 {
-    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
-
-    magneticPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
-
-    magneticAnalysisType = Util::scene()->problemInfo()->analysisType;
-    magneticTimeStep = Util::scene()->problemInfo()->timeStep.number;
-    magneticTimeTotal = Util::scene()->problemInfo()->timeTotal.number;
-    magneticInitialCondition = Util::scene()->problemInfo()->initialCondition.number;
-
-    magneticFrequency = (magneticAnalysisType == AnalysisType_Harmonic) ? Util::scene()->problemInfo()->frequency : 0.0;
-
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    int ndof;
-
-    // load the mesh file
-    Mesh mesh;
-    H2DReader meshloader;
-    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
-    for (int i = 0; i < numberOfRefinements; i++)
-        mesh.refine_all_elements(0);
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-
-    if (magneticAnalysisType == AnalysisType_Harmonic)
+    if (space->count() == 1)
     {
-        // initialize the shapeset and the cache
-        H1Shapeset shapeset;
-        PrecalcShapeset pssreal(&shapeset);
-        PrecalcShapeset pssimag(&shapeset);
-
-        // create the x displacement space
-        H1Space spacereal(&mesh, &shapeset);
-        spacereal.set_bc_types(magnetic_bc_types);
-        spacereal.set_bc_values(magnetic_bc_values_real);
-        // set order by element
-        for (int i = 0; i < Util::scene()->labels.count(); i++)
-            spacereal.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-        ndof = spacereal.assign_dofs(0);
-
-        // create the y displacement space
-        H1Space spaceimag(&mesh, &shapeset);
-        spaceimag.set_bc_types(magnetic_bc_types);
-        spaceimag.set_bc_values(magnetic_bc_values_imag);
-        // set order by element
-        for (int i = 0; i < Util::scene()->labels.count(); i++)
-            spaceimag.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-
-        // initialize the weak formulation
-        WeakForm wf(2);
-        wf.add_biform(0, 0, callback(magnetic_bilinear_form_real_real));
-        wf.add_biform(0, 1, callback(magnetic_bilinear_form_real_imag));
-        wf.add_biform(1, 0, callback(magnetic_bilinear_form_imag_real));
-        wf.add_biform(1, 1, callback(magnetic_bilinear_form_imag_imag));
-        wf.add_liform(0, callback(magnetic_linear_form_real));
-        wf.add_liform(1, callback(magnetic_linear_form_imag));
-        wf.add_liform_surf(0, callback(magnetic_linear_form_surf_real));
-        wf.add_liform_surf(1, callback(magnetic_linear_form_surf_imag));
-
-        // initialize the linear solver
-        UmfpackSolver umfpack;
-
-        // prepare selector
-        QSettings settings;
-        bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
-        double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
-        double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
-        int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
-        int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
-        RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
-
-        Solution *slnreal = new Solution();
-        Solution *slnimag = new Solution();
-        Solution rslnreal, rslnimag;
-
-        // initialize the linear system
-        LinSystem sys(&wf, &umfpack);
-        sys.set_spaces(2, &spacereal, &spaceimag);
-        sys.set_pss(2, &pssreal, &pssimag);
-
-        // output
-        SolutionArray *solutionArray;
-        QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-
-        // assemble the stiffness matrix and solve the system
-        double error;
-        int i;
-        int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-        for (i = 0; i<(adaptivitysteps); i++)
-        {
-            int ndof = spacereal.assign_dofs(0);
-            spaceimag.assign_dofs(ndof);
-
-            sys.assemble();
-            if (sys.get_num_dofs() == 0)
-            {
-                solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
-                return solutionArrayList;
-            }
-            sys.solve(2, slnreal, slnimag);
-
-            // calculate errors and adapt the solution
-            if (adaptivityType != AdaptivityType_None)
-            {
-                RefSystem rs(&sys);
-                rs.assemble();
-                rs.solve(2, &rslnreal, &rslnimag);
-
-                H1AdaptHP hp(2, &spacereal, &spaceimag);
-                error = hp.calc_error_2(slnreal, slnimag, &rslnreal, &rslnimag) * 100;
-
-                // emit signal
-                solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-                if (solverDialog->isCanceled()) return solutionArrayList;
-
-                if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-                if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
-            }
-        }
-
-        // real part
-        solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->order->process_solution(&spacereal);
-        solutionArray->sln = slnreal;
-        solutionArray->adaptiveError = error;
-        solutionArray->adaptiveSteps = i-1;
-
-        solutionArrayList->append(solutionArray);
-
-        // imag part
-        solutionArray = new SolutionArray();
-        solutionArray->order = new Orderizer();
-        solutionArray->order->process_solution(&spaceimag);
-        solutionArray->sln = slnimag;
-        solutionArray->adaptiveError = error;
-        solutionArray->adaptiveSteps = i-1;
-
-        solutionArrayList->append(solutionArray);
-
-        return solutionArrayList;
+        space->at(0)->set_bc_types(magnetic_bc_types);
+        space->at(0)->set_bc_values(magnetic_bc_values_real);
     }
-
-    if (magneticAnalysisType == AnalysisType_SteadyState ||
-        magneticAnalysisType == AnalysisType_Transient)
+    else
     {
-        // initialize the shapeset and the cache
-        H1Shapeset shapeset;
-        PrecalcShapeset pss(&shapeset);
+        space->at(0)->set_bc_types(magnetic_bc_types);
+        space->at(0)->set_bc_values(magnetic_bc_values_real);
 
-        // create an H1 space
-        H1Space space(&mesh, &shapeset);
-        space.set_bc_types(magnetic_bc_types);
-        space.set_bc_values(magnetic_bc_values_real);
-        // set order by element
-        for (int i = 0; i < Util::scene()->labels.count(); i++)
-            space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-        space.assign_dofs();
+        space->at(1)->set_bc_types(magnetic_bc_types);
+        space->at(1)->set_bc_values(magnetic_bc_values_imag);
+    }
+}
 
-        // solution
-        QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-
-        Solution *sln = new Solution();
-        if (magneticAnalysisType == AnalysisType_Transient)
-        {
-            sln->set_const(&mesh, magneticInitialCondition);
-
-            // zero time
-            SolutionArray *solutionArray = new SolutionArray();
-            solutionArray->order = new Orderizer();
-            solutionArray->sln = new Solution();
-            solutionArray->sln->copy(sln);
-            solutionArray->adaptiveError = 0.0;
-            solutionArray->adaptiveSteps = 0.0;
-            solutionArray->time = 0.0;
-
-            solutionArrayList->append(solutionArray);
-        }
-        Solution rsln;
-
-        // initialize the weak formulation
-        WeakForm wf(1);
-        wf.add_biform(0, 0, callback(magnetic_bilinear_form_real_real));
-        if (magneticAnalysisType == AnalysisType_Transient)
-            wf.add_liform(0, callback(magnetic_linear_form_real), ANY, 1, sln);
+void callbackMagneticWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+{
+    if (slnArray->count() == 1)
+    {
+        wf->add_biform(0, 0, callback(magnetic_bilinear_form_real_real));
+        if (analysisType == AnalysisType_Transient)
+            wf->add_liform(0, callback(magnetic_linear_form_real), ANY, 1, slnArray->at(0));
         else
-            wf.add_liform(0, callback(magnetic_linear_form_real));
-        wf.add_liform_surf(0, callback(magnetic_linear_form_surf_real));
-
-        // initialize the linear solver
-        UmfpackSolver umfpack;
-
-        // prepare selector
-        QSettings settings;
-        bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
-        double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
-        double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
-        int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
-        int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
-        RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
-
-        // initialize the linear system
-        LinSystem sys(&wf, &umfpack);
-        sys.set_spaces(1, &space);
-        sys.set_pss(1, &pss);
-
-        // assemble the stiffness matrix and solve the system
-        int i;
-        double error;
-
-        // adaptivity
-        int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-        for (i = 0; i<adaptivitysteps; i++)
-        {
-            space.assign_dofs();
-
-            sys.assemble();
-            sys.solve(1, sln);
-
-            // calculate errors and adapt the solution
-            if (adaptivityType != AdaptivityType_None)
-            {
-                RefSystem rs(&sys);
-                rs.assemble();
-                rs.solve(1, &rsln);
-
-                H1AdaptHP hp(1, &space);
-                error = hp.calc_error(sln, &rsln) * 100;
-
-                // emit signal
-                solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-                if (solverDialog->isCanceled())
-                {
-                    solutionArrayList->clear();
-                    return solutionArrayList;
-                }
-
-                if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-                if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
-            }
-        }
-
-        // timesteps
-        int timesteps = (magneticAnalysisType == AnalysisType_Transient) ? floor(magneticTimeTotal/magneticTimeStep) : 1;
-        for (int n = 0; n<timesteps; n++)
-        {
-            if (timesteps > 1)
-            {
-                sys.assemble(true);
-                sys.solve(1, sln);
-            }
-            else if (n > 0)
-            {
-                space.assign_dofs();
-                sys.assemble();
-            }
-
-            // output
-            SolutionArray *solutionArray = new SolutionArray();
-            solutionArray->order = new Orderizer();
-            solutionArray->order->process_solution(&space);
-            solutionArray->sln = new Solution();
-            solutionArray->sln->copy(sln);
-            solutionArray->adaptiveError = error;
-            solutionArray->adaptiveSteps = i-1;
-            if (magneticAnalysisType == AnalysisType_Transient) solutionArray->time = (n+1)*magneticTimeStep;
-
-            solutionArrayList->append(solutionArray);
-
-            if (magneticAnalysisType == AnalysisType_Transient) solverDialog->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
-            if (solverDialog->isCanceled())
-            {
-                solutionArrayList->clear();
-                return solutionArrayList;
-            }
-            solverDialog->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
-        }
-
-        return solutionArrayList;
+            wf->add_liform(0, callback(magnetic_linear_form_real));
+        wf->add_liform_surf(0, callback(magnetic_linear_form_surf_real));
+    }
+    else
+    {
+        wf->add_biform(0, 0, callback(magnetic_bilinear_form_real_real));
+        wf->add_biform(0, 1, callback(magnetic_bilinear_form_real_imag));
+        wf->add_biform(1, 0, callback(magnetic_bilinear_form_imag_real));
+        wf->add_biform(1, 1, callback(magnetic_bilinear_form_imag_imag));
+        wf->add_liform(0, callback(magnetic_linear_form_real));
+        wf->add_liform(1, callback(magnetic_linear_form_imag));
+        wf->add_liform_surf(0, callback(magnetic_linear_form_surf_real));
+        wf->add_liform_surf(1, callback(magnetic_linear_form_surf_imag));
     }
 }
 
@@ -691,8 +434,8 @@ void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     }
 
     // steady state and transient
-    if (magneticAnalysisType == AnalysisType_SteadyState ||
-        magneticAnalysisType == AnalysisType_Transient)
+    if (analysisType == AnalysisType_SteadyState ||
+        analysisType == AnalysisType_Transient)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Magnetic_VectorPotential), PhysicFieldVariable_Magnetic_VectorPotentialReal);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Magnetic_FluxDensity), PhysicFieldVariable_Magnetic_FluxDensityReal);
@@ -724,7 +467,7 @@ void HermesMagnetic::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     }
 
     // steady state and transient
-    if (magneticAnalysisType == AnalysisType_SteadyState || magneticAnalysisType == AnalysisType_Transient)
+    if (analysisType == AnalysisType_SteadyState || analysisType == AnalysisType_Transient)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Magnetic_FluxDensity), PhysicFieldVariable_Magnetic_FluxDensityReal);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Magnetic_MagneticField), PhysicFieldVariable_Magnetic_MagneticFieldReal);
@@ -1123,7 +866,7 @@ QList<SolutionArray *> *HermesMagnetic::solve(SolverDialog *solverDialog)
             magneticLabel[i].velocity_angular = labelMagneticMarker->velocity_angular.number;        }
     }
 
-    QList<SolutionArray *> *solutionArrayList = magnetic_main(solverDialog);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackMagneticSpace, callbackMagneticWeakForm);
 
     delete [] magneticEdge;
     delete [] magneticLabel;

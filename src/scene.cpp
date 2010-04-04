@@ -24,12 +24,12 @@ DxfFilter::DxfFilter(Scene *scene)
     this->m_scene = scene;
 }
 
-void DxfFilter::addLine(const DL_LineData &d)
+void DxfFilter::addLine(const DL_LineData &l)
 {
     // start node
-    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(d.x1, d.y1)));
+    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(l.x1, l.y1)));
     // end node
-    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(d.x2, d.y2)));
+    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(l.x2, l.y2)));
     
     // edge
     m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, m_scene->edgeMarkers[0], 0));
@@ -52,6 +52,22 @@ void DxfFilter::addArc(const DL_ArcData& a)
     
     // edge
     m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, m_scene->edgeMarkers[0], (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1));
+}
+
+void DxfFilter::addCircle(const DL_CircleData& c)
+{
+    qDebug() << "OK";
+    // nodes
+    SceneNode *node1 = m_scene->addNode(new SceneNode(Point(c.cx + c.radius, c.cy)));
+    SceneNode *node2 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy + c.radius)));
+    SceneNode *node3 = m_scene->addNode(new SceneNode(Point(c.cx - c.radius, c.cy)));
+    SceneNode *node4 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy - c.radius)));
+
+    // edges
+    m_scene->addEdge(new SceneEdge(node1, node2, m_scene->edgeMarkers[0], 90));
+    m_scene->addEdge(new SceneEdge(node2, node3, m_scene->edgeMarkers[0], 90));
+    m_scene->addEdge(new SceneEdge(node3, node4, m_scene->edgeMarkers[0], 90));
+    m_scene->addEdge(new SceneEdge(node4, node1, m_scene->edgeMarkers[0], 90));
 }
 
 // ************************************************************************************************************************
@@ -920,7 +936,7 @@ void Scene::doNewLabelMarker()
 
 void Scene::doNewFunction()
 {
-    SceneFunction *function = new SceneFunction(tr("unnamed function"), "x");
+    SceneFunction *function = new SceneFunction(tr("unnamed function"), "x", Value("0"), Value("10"));
     if (function->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
         addFunction(function);
@@ -952,6 +968,8 @@ void Scene::doProblemProperties()
 
 void Scene::writeToDxf(const QString &fileName)
 {
+    RectPoint box = boundingBox();
+
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
@@ -1015,10 +1033,10 @@ void Scene::writeToDxf(const QString &fileName)
     dxf->writeLayer(*dw,
                     DL_LayerData("main", 0),
                     DL_Attributes(
-                            std::string(""),      // leave empty
-                            DL_Codes::black,      // default color
-                            100,                  // default width
-                            "CONTINUOUS"));       // default line style
+                            std::string(""),            // leave empty
+                            DL_Codes::black,            // default color
+                            qMax(box.width(), box.height())/100.0,   // default width
+                            "CONTINUOUS"));             // default line style
 
     dw->tableEnd();
     dxf->writeStyle(*dw);
@@ -1094,7 +1112,8 @@ void Scene::readFromDxf(const QString &fileName)
 
     DxfFilter *filter = new DxfFilter(this);
     DL_Dxf* dxf = new DL_Dxf();
-    if (!dxf->in(fileName.toStdString(), filter)) {
+    if (!dxf->in(fileName.toStdString(), filter))
+    {
         qCritical() << fileName << " could not be opened.";
         return;
     }
@@ -1282,7 +1301,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         element = n.toElement();
 
-        addFunction(new SceneFunction(element.attribute("name"), element.attribute("function")));
+        addFunction(new SceneFunction(element.attribute("name"), element.attribute("function"), element.attribute("start"), element.attribute("end")));
         n = n.nextSibling();
     }
 
@@ -1482,6 +1501,8 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
 
         eleFunction.setAttribute("name", functions[i]->name);
         eleFunction.setAttribute("function", functions[i]->function);
+        eleFunction.setAttribute("start", functions[i]->start.text);
+        eleFunction.setAttribute("end", functions[i]->end.text);
 
         eleFunctions.appendChild(eleFunction);
     }

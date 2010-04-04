@@ -35,7 +35,6 @@ struct GeneralLabel
 
 GeneralEdge *generalEdge;
 GeneralLabel *generalLabel;
-bool generalPlanar;
 
 int general_bc_types(int marker)
 {
@@ -63,7 +62,7 @@ Scalar general_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e,
     if (generalEdge[e->marker].type == PhysicFieldBC_General_Derivative)
         derivative = generalEdge[e->marker].value;
 
-    if (generalPlanar)
+    if (isPlanar)
         return derivative * int_v<Real, Scalar>(n, wt, v);
     else
         return derivative * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
@@ -74,7 +73,7 @@ Scalar general_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Ge
 {
     int marker = e->marker;
 
-    if (generalPlanar)
+    if (isPlanar)
         return generalLabel[marker].constant * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
         return generalLabel[marker].constant * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
@@ -85,125 +84,23 @@ Scalar general_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
 {
     int marker = e->marker;
 
-    if (generalPlanar)
+    if (isPlanar)
         return generalLabel[marker].rightside * int_v<Real, Scalar>(n, wt, v);
     else
         return generalLabel[marker].rightside * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-QList<SolutionArray *> *general_main(SolverDialog *solverDialog)
+void callbackGeneralSpace(QList<H1Space *> *space)
 {
-    generalPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
-    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+    space->at(0)->set_bc_types(general_bc_types);
+    space->at(0)->set_bc_values(general_bc_values);
+}
 
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    // load the mesh file
-    Mesh mesh;
-    H2DReader meshloader;
-    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
-    for (int i = 0; i < numberOfRefinements; i++)
-        mesh.refine_all_elements(0);
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-
-    // initialize the shapeset and the cache
-    H1Shapeset shapeset;
-    PrecalcShapeset pss(&shapeset);
-
-    // create an H1 space
-    H1Space space(&mesh, &shapeset);
-    space.set_bc_types(general_bc_types);
-    space.set_bc_values(general_bc_values);
-    // set order by element
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
-        space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-
-    // initialize the weak formulation
-    WeakForm wf(1);
-    wf.add_biform(0, 0, callback(general_bilinear_form));
-    wf.add_liform(0, callback(general_linear_form));
-    wf.add_liform_surf(0, callback(general_linear_form_surf));
-
-    Solution *sln = new Solution();
-    Solution rsln;
-
-    // initialize the linear solver
-    UmfpackSolver umfpack;
-
-    // prepare selector
-    QSettings settings;
-    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
-    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
-    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
-    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
-    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
-    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
-
-    // initialize the linear system
-    LinSystem sys(&wf, &umfpack);
-    sys.set_spaces(1, &space);
-    sys.set_pss(1, &pss);
-
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-
-    // assemble the stiffness matrix and solve the system
-    double error;
-    int i;
-    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps + 1;
-    for (i = 0; i<adaptivitysteps; i++)
-    {
-        space.assign_dofs();
-
-        sys.assemble();
-        if (sys.get_num_dofs() == 0)
-        {
-            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
-            return solutionArrayList;
-        }
-        sys.solve(1, sln);
-
-        // calculate errors and adapt the solution
-        if (adaptivityType != AdaptivityType_None)
-        {            
-            RefSystem rs(&sys);
-            rs.assemble();
-            rs.solve(1, &rsln);
-
-            H1AdaptHP hp(1, &space);
-            error = hp.calc_error(sln, &rsln) * 100;
-
-            // emit signal
-            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverDialog->isCanceled())
-            {
-                solutionArrayList->clear();
-                return solutionArrayList;
-            }
-
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
-        }
-    }
-
-    // output
-    SolutionArray *solutionArray = new SolutionArray();
-    solutionArray->order = new Orderizer();
-    solutionArray->order->process_solution(&space);
-    solutionArray->sln = sln;
-    solutionArray->adaptiveError = error;
-    solutionArray->adaptiveSteps = i-1;
-    
-    solutionArrayList->append(solutionArray);
-
-    return solutionArrayList;
+void callbackGeneralWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+{
+    wf->add_biform(0, 0, callback(general_bilinear_form));
+    wf->add_liform(0, callback(general_linear_form));
+    wf->add_liform_surf(0, callback(general_linear_form_surf));
 }
 
 // **************************************************************************************************************************
@@ -427,7 +324,7 @@ QList<SolutionArray *> *HermesGeneral::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = general_main(solverDialog);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackGeneralSpace, callbackGeneralWeakForm);
 
     delete [] generalEdge;
     delete [] generalLabel;

@@ -519,6 +519,26 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
     }
 }
 
+void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
+{
+    cmbPhysicField->clear();
+    cmbPhysicField->addItem(physicFieldString(PhysicField_General), PhysicField_General);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Electrostatic), PhysicField_Electrostatic);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Magnetic), PhysicField_Magnetic);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Current), PhysicField_Current);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
+#ifdef BETA
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
+#endif
+
+    // default physic field
+    QSettings settings;
+    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(
+            physicFieldFromStringKey(settings.value("General/DefaultPhysicField", physicFieldToStringKey(PhysicField_Electrostatic)).toString())));
+    if (cmbPhysicField->currentIndex() == -1) cmbPhysicField->setCurrentIndex(0);
+}
+
 bool Value::evaluate(bool quiet)
 {
     ExpressionResult expressionResult;

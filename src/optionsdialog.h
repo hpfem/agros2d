@@ -57,6 +57,28 @@ private:
     // main
     QComboBox *cmbGUIStyle;
     QComboBox *cmbLanguage;
+    QComboBox *cmbDefaultPhysicField;
+
+    // delete files
+    QCheckBox *chkDeleteTriangleMeshFiles;
+    QCheckBox *chkDeleteHermes2DMeshFile;
+
+    // clear command history
+    QPushButton *cmdClearCommandHistory;
+
+    // show result in line edit value widget
+    QCheckBox *chkLineEditValueShowResult;
+
+    // save with solution
+#ifdef BETA
+    QCheckBox *chkSaveWithSolution;
+#endif
+
+    // check version
+    QCheckBox *chkCheckVersion;
+
+    // general view
+    QCheckBox *chkZoomToMouse;
 
     // geometry
     QSpinBox *txtGeometryAngleSegmentsCount;
@@ -103,24 +125,6 @@ private:
 
     // 3d
     QCheckBox *chkView3DLighting;
-
-    // delete files
-    QCheckBox *chkDeleteTriangleMeshFiles;
-    QCheckBox *chkDeleteHermes2DMeshFile;
-
-    // clear command history
-    QPushButton *cmdClearCommandHistory;   
-
-    // show result in line edit value widget
-    QCheckBox *chkLineEditValueShowResult;
-
-    // save with solution
-#ifdef BETA
-    QCheckBox *chkSaveWithSolution;
-#endif
-
-    // check version
-    QCheckBox *chkCheckVersion;
 
     // advanced
     QCheckBox *chkIsoOnly;

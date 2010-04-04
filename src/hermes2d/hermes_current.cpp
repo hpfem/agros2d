@@ -18,12 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "hermes_current.h"
-
 #include "scene.h"
-
-#include "localvalueview.h"
-#include "surfaceintegralview.h"
-#include "volumeintegralview.h"
 
 struct CurrentEdge
 {
@@ -39,7 +34,6 @@ struct CurrentLabel
 
 CurrentEdge *currentEdge;
 CurrentLabel *currentLabel;
-bool currentPlanar;
 
 int current_bc_types(int marker)
 {
@@ -67,7 +61,7 @@ Scalar current_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e,
     if (currentEdge[e->marker].type == PhysicFieldBC_Current_InwardCurrentFlow)
         J = currentEdge[e->marker].value;
 
-    if (currentPlanar)
+    if (isPlanar)
         return J * int_v<Real, Scalar>(n, wt, v);
     else
         return J * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
@@ -76,7 +70,7 @@ Scalar current_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e,
 template<typename Real, typename Scalar>
 Scalar current_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (currentPlanar)
+    if (isPlanar)
         return currentLabel[e->marker].conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
         return currentLabel[e->marker].conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
@@ -88,119 +82,17 @@ Scalar current_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
     return 0.0;
 }
 
-QList<SolutionArray *> *current_main(SolverDialog *solverDialog)
+void callbackCurrentSpace(QList<H1Space *> *space)
 {
-    currentPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
-    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+    space->at(0)->set_bc_types(current_bc_types);
+    space->at(0)->set_bc_values(current_bc_values);
+}
 
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    // load the mesh file
-    Mesh mesh;
-    H2DReader meshloader;
-    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
-    for (int i = 0; i < numberOfRefinements; i++)
-        mesh.refine_all_elements(0);
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-
-    // initialize the shapeset and the cache
-    H1Shapeset shapeset;
-    PrecalcShapeset pss(&shapeset);
-
-    // create an H1 space
-    H1Space space(&mesh, &shapeset);
-    space.set_bc_types(current_bc_types);
-    space.set_bc_values(current_bc_values);
-    // set order by element
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
-        space.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-
-    // initialize the weak formulation
-    WeakForm wf(1);
-    wf.add_biform(0, 0, callback(current_bilinear_form));
-    wf.add_liform(0, callback(current_linear_form));
-    wf.add_liform_surf(0, callback(current_linear_form_surf));
-
-    Solution *sln = new Solution();
-    Solution rsln;
-
-    // initialize the linear solver
-    UmfpackSolver umfpack;
-
-    // prepare selector
-    QSettings settings;
-    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
-    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
-    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
-    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
-    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
-    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
-
-    // initialize the linear system
-    LinSystem sys(&wf, &umfpack);
-    sys.set_spaces(1, &space);
-    sys.set_pss(1, &pss);
-
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-
-    // assemble the stiffness matrix and solve the system
-    double error;
-    int i;
-    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-    for (i = 0; i<(adaptivitysteps); i++)
-    {
-        space.assign_dofs();
-
-        sys.assemble();
-        if (sys.get_num_dofs() == 0)
-        {
-            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
-            return solutionArrayList;
-        }
-        sys.solve(1, sln);
-
-        // calculate errors and adapt the solution
-        if ((adaptivityType != AdaptivityType_None))
-        {
-            RefSystem rs(&sys);
-            rs.assemble();
-            rs.solve(1, &rsln);
-
-            H1AdaptHP hp(1, &space);
-            error = hp.calc_error(sln, &rsln) * 100;
-
-            // emit signal
-            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverDialog->isCanceled())
-            {
-                solutionArrayList->clear();
-                return solutionArrayList;
-            }
-
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
-        }
-    }
-
-    // output
-    SolutionArray *solutionArray = new SolutionArray();
-    solutionArray->order = new Orderizer();
-    solutionArray->order->process_solution(&space);
-    solutionArray->sln = sln;
-    solutionArray->adaptiveError = error;
-    solutionArray->adaptiveSteps = i-1;
-
-    solutionArrayList->append(solutionArray);
-
-    return solutionArrayList;
+void callbackCurrentWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+{
+    wf->add_biform(0, 0, callback(current_bilinear_form));
+    wf->add_liform(0, callback(current_linear_form));
+    wf->add_liform_surf(0, callback(current_linear_form_surf));
 }
 
 // *******************************************************************************************************
@@ -431,7 +323,7 @@ QList<SolutionArray *> *HermesCurrent::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = current_main(solverDialog);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackCurrentSpace, callbackCurrentWeakForm);
 
     delete [] currentEdge;
     delete [] currentLabel;

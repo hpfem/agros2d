@@ -24,11 +24,8 @@
 #include "gui.h"
 
 class SLineEdit;
-
 struct Point;
-
 class Chart;
-
 class SceneFunction;
 
 Q_DECLARE_METATYPE(SceneFunction *);
@@ -38,16 +35,29 @@ class SceneFunction
 public:
     QString name;
     QString function;
+    Value start;
+    Value end;
 
-    SceneFunction(const QString &name, const QString &function);
+    SceneFunction(const QString &name, const QString &function, Value start, Value end);
     ~SceneFunction();
 
     int showDialog(QWidget *parent);
 
-    double evaluate(double number) throw (const QString &);
+    double evaluate(double number, bool fromTable = false) throw (const QString &);
+    bool evaluateValues() throw (const QString &);
 
     QString script();
     QVariant variant();
+
+    inline int count() { return m_count; }
+    double *valuesX() { return m_valuesX; }
+    double *valuesY() { return m_valuesY; }
+
+private:
+    int m_countDefault;
+    int m_count;
+    double *m_valuesX;
+    double *m_valuesY;
 };
 
 // ************************************************************************************************************************
@@ -67,8 +77,9 @@ private:
 
     QLineEdit *txtName;
     QLineEdit *txtFunction;
-    SLineEditDouble *txtStart;
-    SLineEditDouble *txtEnd;
+    QLabel *lblError;
+    SLineEditValue *txtStart;
+    SLineEditValue *txtEnd;
 
     void createControls();
     void load();

@@ -141,141 +141,23 @@ Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> 
     return elasticityEdge[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
 }
 
-QList<SolutionArray *> *elasticity_main(SolverDialog *solverDialog)
+
+void callbackElasticitySpace(QList<H1Space *> *space)
 {
-    int numberOfRefinements = Util::scene()->problemInfo()->numberOfRefinements;
-    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+    space->at(0)->set_bc_types(elasticity_bc_types_x);
+    space->at(0)->set_bc_values(elasticity_bc_values_x);
 
-    elasticityPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
+    space->at(1)->set_bc_types(elasticity_bc_types_y);
+    space->at(1)->set_bc_values(elasticity_bc_values_y);
+}
 
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    // load the mesh file
-    Mesh mesh;
-    H2DReader meshloader;
-    meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), &mesh);
-    for (int i = 0; i < numberOfRefinements; i++)
-        mesh.refine_all_elements(0);
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-
-    // initialize the shapeset and the cache
-    H1Shapeset shapeset;
-    PrecalcShapeset xpss(&shapeset);
-    PrecalcShapeset ypss(&shapeset);
-
-    // create the x displacement space
-    H1Space xdisp(&mesh, &shapeset);
-    xdisp.set_bc_types(elasticity_bc_types_x);
-    xdisp.set_bc_values(elasticity_bc_values_x);
-    // set order by element
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
-        xdisp.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-
-    // create the y displacement space
-    H1Space ydisp(&mesh, &shapeset);
-    ydisp.set_bc_types(elasticity_bc_types_y);
-    ydisp.set_bc_values(elasticity_bc_values_y);
-    // set order by element
-    for (int i = 0; i < Util::scene()->labels.count(); i++)
-        ydisp.set_uniform_order(Util::scene()->labels[i]->polynomialOrder > 0 ? Util::scene()->labels[i]->polynomialOrder : polynomialOrder, i);
-
-    // initialize the weak formulation
-    WeakForm wf(2);
-    wf.add_biform(0, 0, callback(elasticity_bilinear_form_0_0), SYM);
-    wf.add_biform(0, 1, callback(elasticity_bilinear_form_0_1), SYM);
-    // wf.add_biform(1, 0, callback(elasticity_bilinear_form_1_0), SYM);
-    wf.add_biform(1, 1, callback(elasticity_bilinear_form_1_1), SYM);
-    wf.add_liform_surf(1, callback(elasticity_linear_form_surf));
-
-    // initialize the linear system and solver
-    UmfpackSolver umfpack;
-
-    // prepare selector
-    QSettings settings;
-    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
-    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
-    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
-    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
-    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
-    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
-
-    Solution *slnx = new Solution();
-    Solution *slny = new Solution();
-    Solution rslnx, rslny;
-
-    // initialize the linear system
-    LinSystem sys(&wf, &umfpack);
-    sys.set_spaces(2, &xdisp, &ydisp);
-    sys.set_pss(2, &xpss, &ypss);
-
-    // output
-    SolutionArray *solutionArray;
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
-
-    // assemble the stiffness matrix and solve the system
-    double error;
-    int i;
-    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-    for (i = 0; i<(adaptivitysteps); i++)
-    {
-        int ndof = xdisp.assign_dofs(0);
-        ydisp.assign_dofs(ndof);
-
-        sys.assemble();
-        if (sys.get_num_dofs() == 0)
-        {
-            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
-            return solutionArrayList;
-        }
-        sys.solve(2, slnx, slny);
-
-        // calculate errors and adapt the solution
-        if (adaptivityType != AdaptivityType_None)
-        {
-            RefSystem rs(&sys);
-            rs.assemble();
-            rs.solve(2, &rslnx, &rslny);
-
-            H1AdaptHP hp(2, &xdisp, &ydisp);
-            error = hp.calc_error_2(slnx, slny, &rslnx, &rslny) * 100;
-
-            // emit signal
-            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverDialog->isCanceled()) return solutionArrayList;
-
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP) break;
-            if (i != adaptivitysteps-1) hp.adapt(threshold, strategy, &selector, meshRegularity);
-        }
-    }
-
-    // x part
-    solutionArray = new SolutionArray();
-    solutionArray->order = new Orderizer();
-    solutionArray->order->process_solution(&xdisp);
-    solutionArray->sln = slnx;
-    solutionArray->adaptiveError = error;
-    solutionArray->adaptiveSteps = i-1;
-
-    solutionArrayList->append(solutionArray);
-
-    // y part
-    solutionArray = new SolutionArray();
-    solutionArray->order = new Orderizer();
-    solutionArray->order->process_solution(&ydisp);
-    solutionArray->sln = slny;
-    solutionArray->adaptiveError = error;
-    solutionArray->adaptiveSteps = i-1;
-
-    solutionArrayList->append(solutionArray);
-
-    return solutionArrayList;
+void callbackElasticityWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+{
+    wf->add_biform(0, 0, callback(elasticity_bilinear_form_0_0), SYM);
+    wf->add_biform(0, 1, callback(elasticity_bilinear_form_0_1), SYM);
+    // wf->add_biform(1, 0, callback(elasticity_bilinear_form_1_0), SYM);
+    wf->add_biform(1, 1, callback(elasticity_bilinear_form_1_1), SYM);
+    wf->add_liform_surf(1, callback(elasticity_linear_form_surf));
 }
 
 // *******************************************************************************************************
@@ -517,7 +399,7 @@ QList<SolutionArray *> *HermesElasticity::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = elasticity_main(solverDialog);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackElasticitySpace, callbackElasticityWeakForm);
 
     delete [] elasticityEdge;
     delete [] elasticityLabel;
