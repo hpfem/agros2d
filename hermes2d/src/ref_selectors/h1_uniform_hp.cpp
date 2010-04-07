@@ -162,12 +162,12 @@ namespace RefinementSelectors {
   }
 
   void H1UniformHP::calc_projection_errors(Element* e, const int max_quad_order_h, const int max_quad_order_p, const int max_quad_order_aniso, Solution* rsln, SonProjectionError herr[4], SonProjectionError anisoerr[4], SonProjectionError perr) {
-    debug_assert(get_h_order(max_quad_order_h) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_h) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of H-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_h), get_v_order(max_quad_order_h));
-    debug_assert(get_h_order(max_quad_order_p) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_p) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of P-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_p), get_v_order(max_quad_order_p));
-    debug_assert(get_h_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of ANISO-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_aniso), get_v_order(max_quad_order_aniso));
-    debug_assert(get_h_order(max_quad_order_h) == get_v_order(max_quad_order_h), "E maximum orders (H:%d,V:%d) of H-candidate is in not uniform", get_h_order(max_quad_order_h), get_v_order(max_quad_order_h));
-    debug_assert(get_h_order(max_quad_order_p) == get_v_order(max_quad_order_p), "E maximum orders (H:%d,V:%d) of P-candidate is in not uniform", get_h_order(max_quad_order_p), get_v_order(max_quad_order_p));
-    debug_assert(get_h_order(max_quad_order_aniso) == get_v_order(max_quad_order_aniso), "E maximum orders (H:%d,V:%d) of ANISO-candidate is in not uniform", get_h_order(max_quad_order_aniso), get_v_order(max_quad_order_aniso));
+    assert_msg(get_h_order(max_quad_order_h) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_h) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of H-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_h), get_v_order(max_quad_order_h));
+    assert_msg(get_h_order(max_quad_order_p) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_p) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of P-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_p), get_v_order(max_quad_order_p));
+    assert_msg(get_h_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of ANISO-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_aniso), get_v_order(max_quad_order_aniso));
+    assert_msg(get_h_order(max_quad_order_h) == get_v_order(max_quad_order_h), "E maximum orders (H:%d,V:%d) of H-candidate is in not uniform", get_h_order(max_quad_order_h), get_v_order(max_quad_order_h));
+    assert_msg(get_h_order(max_quad_order_p) == get_v_order(max_quad_order_p), "E maximum orders (H:%d,V:%d) of P-candidate is in not uniform", get_h_order(max_quad_order_p), get_v_order(max_quad_order_p));
+    assert_msg(get_h_order(max_quad_order_aniso) == get_v_order(max_quad_order_aniso), "E maximum orders (H:%d,V:%d) of ANISO-candidate is in not uniform", get_h_order(max_quad_order_aniso), get_v_order(max_quad_order_aniso));
 
     int i, j, s, k, r, son;
     int m = e->get_mode();
@@ -389,7 +389,7 @@ namespace RefinementSelectors {
   }
 
   void H1UniformHP::update_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders) {
-    debug_assert(get_v_order(orig_quad_order) == 0 || get_h_order(orig_quad_order) == get_v_order(orig_quad_order), "E non-uniform orig_quad_order (H:%d,V:%d) not support for this selector", get_h_order(orig_quad_order), get_v_order(orig_quad_order));
+    assert_msg(get_v_order(orig_quad_order) == 0 || get_h_order(orig_quad_order) == get_v_order(orig_quad_order), "E non-uniform orig_quad_order (H:%d,V:%d) not support for this selector", get_h_order(orig_quad_order), get_v_order(orig_quad_order));
 
     //update orders
     ProjBasedSelector::update_shared_mesh_orders(element, orig_quad_order, refinement, tgt_quad_orders, suggested_quad_orders);

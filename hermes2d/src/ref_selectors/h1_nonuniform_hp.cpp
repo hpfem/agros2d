@@ -100,9 +100,9 @@ namespace RefinementSelectors {
   }
 
   void H1NonUniformHP::calc_projection_errors(Element* e, const int max_quad_order_h, const int max_quad_order_p, const int max_quad_order_aniso, Solution* rsln, SonProjectionError herr[4], SonProjectionError anisoerr[4], SonProjectionError perr) {
-    debug_assert(get_h_order(max_quad_order_h) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_h) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of H-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_h), get_v_order(max_quad_order_h));
-    debug_assert(get_h_order(max_quad_order_p) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_p) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of P-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_p), get_v_order(max_quad_order_p));
-    debug_assert(get_h_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of ANISO-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_aniso), get_v_order(max_quad_order_aniso));
+    assert_msg(get_h_order(max_quad_order_h) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_h) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of H-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_h), get_v_order(max_quad_order_h));
+    assert_msg(get_h_order(max_quad_order_p) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_p) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of P-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_p), get_v_order(max_quad_order_p));
+    assert_msg(get_h_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of ANISO-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_aniso), get_v_order(max_quad_order_aniso));
 
     int mode = e->get_mode();
 
@@ -242,7 +242,7 @@ namespace RefinementSelectors {
       while (inx_shape < full_shape_indices.size()) {
         ShapeInx& shape = full_shape_indices[inx_shape];
         if (order_h >= shape.order_h && order_v >= shape.order_v) {
-          debug_assert(num_shapes < max_num_shapes, "E more shapes than predicted, possible incosistency");
+          assert_msg(num_shapes < max_num_shapes, "E more shapes than predicted, possible incosistency");
           shape_inxs[num_shapes] = shape.inx;
           num_shapes++;
         }

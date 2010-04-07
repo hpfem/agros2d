@@ -35,6 +35,12 @@
 #include "scenemarker.h"
 #include "solverdialog.h"
 
+extern bool isPlanar;
+extern AnalysisType analysisType;
+extern double frequency;
+extern double actualTime;
+extern double timeStep;
+
 class LocalPointValue;
 class VolumeIntegralValue;
 class SurfaceIntegralValue;
@@ -128,11 +134,8 @@ protected:
 // convert enums
 RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivityType);
 
-extern bool isPlanar;
-extern AnalysisType analysisType;
-extern double frequency;
-extern double actualTime;
-extern double timeStep;
+// read mesh
+Mesh *readMesh(const QString &fileName);
 
 // solve
 QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *));

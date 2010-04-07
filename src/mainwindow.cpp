@@ -425,7 +425,7 @@ void MainWindow::createToolBars()
     tlbTransient->setObjectName("Transient");
     tlbTransient->addWidget(new QLabel(tr("Time step:") + " "));
     cmbTimeStep = new QComboBox(this);
-    cmbTimeStep->setMinimumWidth(80);
+    cmbTimeStep->setMinimumWidth(1.7*fontMetrics().width("0.00e+00"));
     connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
     tlbTransient->addWidget(cmbTimeStep);
 }
@@ -774,7 +774,7 @@ void MainWindow::doSolve()
 
 void MainWindow::doOptions()
 {
-    OptionsDialog optionsDialog(&sceneView->sceneViewSettings(), this);
+    ConfigDialog optionsDialog(this);
     optionsDialog.exec();
     sceneView->doInvalidated();
 }
@@ -878,9 +878,7 @@ void MainWindow::doPaste()
 void MainWindow::doTimeStepChanged(int index)
 {
     if (cmbTimeStep->currentIndex() != -1)
-    {
         Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());
-    }
 }
 
 void MainWindow::doInvalidated()

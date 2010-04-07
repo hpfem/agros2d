@@ -109,9 +109,6 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 
     setLayout(layout);
 
-    QSettings settings;
-    m_showResult = settings.value("General/LineEditValueShowResult", false).value<bool>();
-
     evaluate();
 }
 
@@ -164,7 +161,7 @@ bool SLineEditValue::evaluate(bool quiet)
         else
         {
             m_number = val.number;
-            setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), m_showResult);
+            setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), Util::config()->lineEditValueShowResult);
             isOk = true;
         }
     }

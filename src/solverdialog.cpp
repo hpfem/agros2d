@@ -32,8 +32,8 @@ SolutionArray::SolutionArray()
 
 SolutionArray::~SolutionArray()
 {
-    if (sln) delete sln;
-    if (order) delete order;
+    if (sln) { delete sln; sln = NULL; }
+    if (order) { delete order; order = NULL; }
 }
 
 void SolutionArray::load(QDomElement *element)
@@ -286,9 +286,7 @@ void SolverDialog::runMesh()
         }
 
         // copy triangle files
-        bool deleteTriangleFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>();
-
-        if ((!deleteTriangleFiles) && (!m_fileNameOrig.isEmpty()))
+        if ((!Util::config()->deleteTriangleMeshFiles) && (!m_fileNameOrig.isEmpty()))
         {
             QFileInfo fileInfoOrig(m_fileNameOrig);
 
@@ -315,10 +313,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             showMessage(tr("Triangle: mesh was converted to Hermes2D mesh file."), false);
 
             // copy triangle files
-            QSettings settings;
-            bool deleteHermes2D = settings.value("Solver/DeleteHermes2DMeshFile", true).value<bool>();
-
-            if ((!deleteHermes2D) && (!m_fileNameOrig.isEmpty()))
+            if ((!Util::config()->deleteHermes2DMeshFile) && (!m_fileNameOrig.isEmpty()))
             {
                 QFileInfo fileInfoOrig(m_fileNameOrig);
 
@@ -340,16 +335,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
                 progressBar->setValue(50);
 
             // load mesh
-            // save locale
-            char *plocale = setlocale (LC_NUMERIC, "");
-            setlocale (LC_NUMERIC, "C");
-
-            Mesh *mesh = new Mesh();
-            H2DReader meshloader;
-            meshloader.load((tempProblemFileName() + ".mesh").toStdString().c_str(), mesh);
-
-            // set system locale
-            setlocale(LC_NUMERIC, plocale);
+            Mesh *mesh = readMesh(tempProblemFileName() + ".mesh");
 
             // check that all boundary edges have a marker assigned
             for (int i = 0; i < mesh->get_max_node_id(); i++)
@@ -367,6 +353,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
                     }
                 }
             }
+
             Util::scene()->sceneSolution()->setMesh(mesh);
         }
         else
@@ -418,18 +405,17 @@ void SolverDialog::runSolver()
 
     if (!solutionArrayList->isEmpty())
     {
-        Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
+
         showMessage(tr("Solver: problem was solved."), false);
         Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
-
-        progressBar->setValue(100);
     }
     else
     {
-        Util::scene()->sceneSolution()->clear();
         showMessage(tr("Solver: problem was not solved."), true);
         Util::scene()->sceneSolution()->setTimeElapsed(0);
-    }
+    }    
+    progressBar->setValue(100);
+    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
 }
 
 bool SolverDialog::writeToTriangle()
@@ -533,9 +519,7 @@ bool SolverDialog::writeToTriangle()
             double radius = Util::scene()->edges[i]->radius();
             double startAngle = atan2(center.y - Util::scene()->edges[i]->nodeStart->point.y, center.x - Util::scene()->edges[i]->nodeStart->point.x) / M_PI*180 - 180;
             int segments = Util::scene()->edges[i]->angle/5.0 + 1;
-            QSettings settings;
-            double angleSegmentsCount = settings.value("Geometry/AngleSegmentsCount", 5).value<double>();
-            if (segments < angleSegmentsCount) segments = angleSegmentsCount; // minimum segments
+            if (segments < Util::config()->angleSegmentsCount) segments = Util::config()->angleSegmentsCount; // minimum segments
 
             double theta = Util::scene()->edges[i]->angle / float(segments - 1);
 

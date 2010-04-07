@@ -464,7 +464,7 @@ void ScriptEditorDialog::createControls()
     txtPath->setReadOnly(true);
 
     QPushButton *btnPath = new QPushButton("...");
-    btnPath->setMaximumWidth(25);
+    btnPath->setMaximumSize(btnPath->sizeHint());
 
     connect(btnPath, SIGNAL(clicked()), this, SLOT(doPathChangeDir()));
     connect(filBrowser, SIGNAL(directoryChanged(QString)), txtPath, SLOT(setText(QString)));

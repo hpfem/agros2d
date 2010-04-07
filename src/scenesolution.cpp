@@ -89,16 +89,7 @@ void SceneSolution::loadMesh(QDomElement *element)
     content.append(text.nodeValue());
     writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    Mesh *mesh = new Mesh();
-    H2DReader meshloader;
-    meshloader.load(fileName.toStdString().c_str(), mesh);
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    Mesh *mesh = readMesh(tempProblemFileName() + ".mesh");
 
     setMesh(mesh);
 }

@@ -78,7 +78,7 @@ void OrderView::init_order_palette(double3* vert) {
     if ((int) vert[i][2] < min) min = (int) vert[i][2];
     if ((int) vert[i][2] > max) max = (int) vert[i][2];
   }
-  debug_assert(max <= H2DV_MAX_VIEWABLE_ORDER, "E maximum order in data is %d but OrderView supports only order %d", max, H2DV_MAX_VIEWABLE_ORDER);
+  assert_msg(max <= H2DV_MAX_VIEWABLE_ORDER, "E maximum order in data is %d but OrderView supports only order %d", max, H2DV_MAX_VIEWABLE_ORDER);
 
   num_boxes = max - min + 1;
   char* buf = text_buffer;

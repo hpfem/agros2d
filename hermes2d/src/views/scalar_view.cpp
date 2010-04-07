@@ -724,7 +724,7 @@ void ScalarView::prepare_gl_geometry(const double value_min, const double value_
 
 void ScalarView::draw_values_2d(const double value_min, const double value_irange)
 {
-  debug_assert(gl_pallete_tex_id != 0, "E palette texture ID is zero, palette not set\n");
+  assert_msg(gl_pallete_tex_id != 0, "E palette texture ID is zero, palette not set\n");
 
   //set texture for coloring
   glEnable(GL_TEXTURE_1D);
@@ -1426,7 +1426,7 @@ void ScalarView::save_numbered(const char* format, int number)
 
 void ScalarView::draw_svg_edge(int inx_vert_a, int inx_vert_b, ScalarView* viewer, void* param)
 {
-  debug_assert(param != NULL, "E param parameter equals to NULL (ScalarView::draw_svg_edge)\n");
+  assert_msg(param != NULL, "E param parameter equals to NULL (ScalarView::draw_svg_edge)\n");
 
   SVGExportParams* pars = (SVGExportParams*)param;
   double3* verts = viewer->lin.get_vertices();

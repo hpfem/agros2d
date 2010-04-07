@@ -29,8 +29,6 @@ void SceneViewSettings::defaultValues()
 {
     scalarRangeMin = 0;
     scalarRangeMax = 1;
-    scalarRangeLog = false;
-    scalarRangeBase = 10.0;
 
     // visible objects
     showGeometry = true;
@@ -52,102 +50,6 @@ void SceneViewSettings::defaultValues()
     vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
 }
 
-void SceneViewSettings::load()
-{
-    QSettings settings;
-
-    // colors
-    colorBackground = settings.value("SceneViewSettings/ColorBackground", QColor::fromRgb(255, 255, 255)).value<QColor>();
-    colorGrid = settings.value("SceneViewSettings/ColorGrid", QColor::fromRgb(200, 200, 200)).value<QColor>();
-    colorCross = settings.value("SceneViewSettings/ColorCross", QColor::fromRgb(150, 150, 150)).value<QColor>();
-    colorNodes = settings.value("SceneViewSettings/ColorNodes", QColor::fromRgb(150, 0, 0)).value<QColor>();
-    colorEdges = settings.value("SceneViewSettings/ColorEdges", QColor::fromRgb(0, 0, 150)).value<QColor>();
-    colorLabels = settings.value("SceneViewSettings/ColorLabels", QColor::fromRgb(0, 150, 0)).value<QColor>();
-    colorContours = settings.value("SceneViewSettings/ColorContours", QColor::fromRgb(0, 0, 0)).value<QColor>();
-    colorVectors = settings.value("SceneViewSettings/ColorVectors", QColor::fromRgb(0, 0, 0)).value<QColor>();
-    colorInitialMesh = settings.value("SceneViewSettings/ColorInitialMesh", QColor::fromRgb(250, 250, 0)).value<QColor>();
-    colorSolutionMesh = settings.value("SceneViewSettings/ColorSolutionMesh", QColor::fromRgb(150, 70, 0)).value<QColor>();
-    colorHighlighted = settings.value("SceneViewSettings/ColorHighlighted", QColor::fromRgb(250, 150, 0)).value<QColor>();
-    colorSelected = settings.value("SceneViewSettings/ColorSelected", QColor::fromRgb(150, 0, 0)).value<QColor>();
-
-    // geometry
-    geometryNodeSize = settings.value("SceneViewSettings/NodeSize", 6.0).value<double>();
-    geometryEdgeWidth = settings.value("SceneViewSettings/EdgeWidth", 2.0).value<double>();
-    geometryLabelSize = settings.value("SceneViewSettings/LabelSize", 6.0).value<double>();
-
-    // grid
-    gridStep = settings.value("SceneViewSettings/GridStep", 0.05).value<double>();
-    // rulers
-    showRulers = settings.value("SceneViewSettings/ShowRulers", false).value<bool>();
-    // snap to grid
-    snapToGrid = settings.value("SceneViewSettings/SnapToGrid", false).value<bool>();
-
-    // countour
-    contoursCount = settings.value("SceneViewSettings/ContoursCount", 15).value<int>();
-
-    // scalar view
-    paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", Palette_Jet).value<int>();
-    paletteFilter = settings.value("SceneViewSettings/PaletteFilter", false).value<bool>();
-    paletteSteps = settings.value("SceneViewSettings/PaletteSteps", 30).value<int>();
-
-    // vector view
-    vectorProportional = settings.value("SceneViewSettings/VectorProportional", false).value<bool>();
-    vectorColor = settings.value("SceneViewSettings/VectorColor", true).value<bool>();
-    vectorCount = settings.value("SceneViewSettings/VectorNumber", 50).value<int>();
-    vectorScale = settings.value("SceneViewSettings/VectorScale", 0.6).value<double>();
-
-    // 3d
-    scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).value<bool>();
-}
-
-void SceneViewSettings::save()
-{
-    QSettings settings;
-
-    // colors
-    settings.setValue("SceneViewSettings/ColorBackground", colorBackground);
-    settings.setValue("SceneViewSettings/ColorGrid", colorGrid);
-    settings.setValue("SceneViewSettings/ColorCross", colorCross);
-    settings.setValue("SceneViewSettings/ColorNodes", colorNodes);
-    settings.setValue("SceneViewSettings/ColorEdges", colorEdges);
-    settings.setValue("SceneViewSettings/ColorLabels", colorLabels);
-    settings.setValue("SceneViewSettings/ColorContours", colorContours);
-    settings.setValue("SceneViewSettings/ColorVectors", colorVectors);
-    settings.setValue("SceneViewSettings/ColorInitialMesh", colorInitialMesh);
-    settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSolutionMesh);
-    settings.setValue("SceneViewSettings/ColorInitialMesh", colorHighlighted);
-    settings.setValue("SceneViewSettings/ColorSolutionMesh", colorSelected);
-
-    // geometry
-    settings.setValue("SceneViewSettings/NodeSize", geometryNodeSize);
-    settings.setValue("SceneViewSettings/EdgeWidth", geometryEdgeWidth);
-    settings.setValue("SceneViewSettings/LabelSize", geometryLabelSize);
-
-    // grid
-    settings.setValue("SceneViewSettings/GridStep", gridStep);
-    // rulers
-    settings.setValue("SceneViewSettings/ShowRulers", showRulers);
-    // snap to grid
-    settings.setValue("SceneViewSettings/SnapToGrid", snapToGrid);
-
-    // countour
-    settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
-
-    // scalar view
-    settings.setValue("SceneViewSettings/PaletteType", paletteType);
-    settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
-    settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
-
-    // vector view
-    settings.setValue("SceneViewSettings/VectorProportional", vectorProportional);
-    settings.setValue("SceneViewSettings/VectorColor", vectorColor);
-    settings.setValue("SceneViewSettings/VectorNumber", vectorCount);
-    settings.setValue("SceneViewSettings/VectorScale", vectorScale);
-
-    // 3d
-    settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
-}
-
 // *******************************************************************************************************
 
 SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
@@ -166,8 +68,6 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
-
-    m_sceneViewSettings.load();
 
 #ifdef Q_WS_X11
     setFont(QFont("Monospace", 9));
@@ -365,7 +265,7 @@ void SceneView::setupViewport(int w, int h)
 
 void SceneView::paintGL()
 {
-    glClearColor(m_sceneViewSettings.colorBackground.redF(), m_sceneViewSettings.colorBackground.greenF(), m_sceneViewSettings.colorBackground.blueF(), 0);
+    glClearColor(Util::config()->colorBackground.redF(), Util::config()->colorBackground.greenF(), Util::config()->colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if ((m_sceneMode == SceneMode_Postprocessor) &&
@@ -428,7 +328,7 @@ void SceneView::paintGL()
         if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
     }
 
-    if (m_sceneViewSettings.showRulers) paintRulers();
+    if (Util::config()->showRulers) paintRulers();
 
     paintZoomRegion();
     paintSnapToGrid();
@@ -443,74 +343,74 @@ void SceneView::paintGrid()
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
-    int step = (((int) ((cornerMax - cornerMin).x / m_sceneViewSettings.gridStep) + 1) / 5);
+    int step = (((int) ((cornerMax - cornerMin).x / Util::config()->gridStep) + 1) / 5);
     if (step > 0.0)
     {
-        glColor3f(m_sceneViewSettings.colorGrid.redF(),
-                  m_sceneViewSettings.colorGrid.greenF(),
-                  m_sceneViewSettings.colorGrid.blueF());
+        glColor3f(Util::config()->colorGrid.redF(),
+                  Util::config()->colorGrid.greenF(),
+                  Util::config()->colorGrid.blueF());
         glLineWidth(1.0);
         glEnable(GL_LINE_STIPPLE);
         glLineStipple(1, 0x1C47);
         glBegin(GL_LINES);
 
-        if ((((cornerMax.x-cornerMin.x)/m_sceneViewSettings.gridStep + (cornerMin.y-cornerMax.y)/m_sceneViewSettings.gridStep) < 200) &&
-             ((cornerMax.x-cornerMin.x)/m_sceneViewSettings.gridStep > 0) && ((cornerMin.y-cornerMax.y)/m_sceneViewSettings.gridStep > 0))
+        if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
+             ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
         {
             // vertical lines
-            for (int i = 0; i<cornerMax.x/m_sceneViewSettings.gridStep; i++)
+            for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(m_sceneViewSettings.colorCross.redF(),
-                              m_sceneViewSettings.colorCross.greenF(),
-                              m_sceneViewSettings.colorCross.blueF());
+                    glColor3f(Util::config()->colorCross.redF(),
+                              Util::config()->colorCross.greenF(),
+                              Util::config()->colorCross.blueF());
                 else
-                    glColor3f(m_sceneViewSettings.colorGrid.redF(),
-                              m_sceneViewSettings.colorGrid.greenF(),
-                              m_sceneViewSettings.colorGrid.blueF());
-                glVertex2d(i*m_sceneViewSettings.gridStep, cornerMin.y);
-                glVertex2d(i*m_sceneViewSettings.gridStep, cornerMax.y);
+                    glColor3f(Util::config()->colorGrid.redF(),
+                              Util::config()->colorGrid.greenF(),
+                              Util::config()->colorGrid.blueF());
+                glVertex2d(i*Util::config()->gridStep, cornerMin.y);
+                glVertex2d(i*Util::config()->gridStep, cornerMax.y);
             }
-            for (int i = 0; i>cornerMin.x/m_sceneViewSettings.gridStep; i--)
+            for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(m_sceneViewSettings.colorCross.redF(),
-                              m_sceneViewSettings.colorCross.greenF(),
-                              m_sceneViewSettings.colorCross.blueF());
+                    glColor3f(Util::config()->colorCross.redF(),
+                              Util::config()->colorCross.greenF(),
+                              Util::config()->colorCross.blueF());
                 else
-                    glColor3f(m_sceneViewSettings.colorGrid.redF(),
-                              m_sceneViewSettings.colorGrid.greenF(),
-                              m_sceneViewSettings.colorGrid.blueF());
-                glVertex2d(i*m_sceneViewSettings.gridStep, cornerMin.y);
-                glVertex2d(i*m_sceneViewSettings.gridStep, cornerMax.y);
+                    glColor3f(Util::config()->colorGrid.redF(),
+                              Util::config()->colorGrid.greenF(),
+                              Util::config()->colorGrid.blueF());
+                glVertex2d(i*Util::config()->gridStep, cornerMin.y);
+                glVertex2d(i*Util::config()->gridStep, cornerMax.y);
             }
 
             // horizontal lines
-            for (int i = 0; i<cornerMin.y/m_sceneViewSettings.gridStep; i++)
+            for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(m_sceneViewSettings.colorCross.redF(),
-                              m_sceneViewSettings.colorCross.greenF(),
-                              m_sceneViewSettings.colorCross.blueF());
+                    glColor3f(Util::config()->colorCross.redF(),
+                              Util::config()->colorCross.greenF(),
+                              Util::config()->colorCross.blueF());
                 else
-                    glColor3f(m_sceneViewSettings.colorGrid.redF(),
-                              m_sceneViewSettings.colorGrid.greenF(),
-                              m_sceneViewSettings.colorGrid.blueF());
-                glVertex2d(cornerMin.x, i*m_sceneViewSettings.gridStep);
-                glVertex2d(cornerMax.x, i*m_sceneViewSettings.gridStep);
+                    glColor3f(Util::config()->colorGrid.redF(),
+                              Util::config()->colorGrid.greenF(),
+                              Util::config()->colorGrid.blueF());
+                glVertex2d(cornerMin.x, i*Util::config()->gridStep);
+                glVertex2d(cornerMax.x, i*Util::config()->gridStep);
             }
-            for (int i = 0; i>cornerMax.y/m_sceneViewSettings.gridStep; i--)
+            for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(m_sceneViewSettings.colorCross.redF(),
-                              m_sceneViewSettings.colorCross.greenF(),
-                              m_sceneViewSettings.colorCross.blueF());
+                    glColor3f(Util::config()->colorCross.redF(),
+                              Util::config()->colorCross.greenF(),
+                              Util::config()->colorCross.blueF());
                 else
-                    glColor3f(m_sceneViewSettings.colorGrid.redF(),
-                              m_sceneViewSettings.colorGrid.greenF(),
-                              m_sceneViewSettings.colorGrid.blueF());
-                glVertex2d(cornerMin.x, i*m_sceneViewSettings.gridStep);
-                glVertex2d(cornerMax.x, i*m_sceneViewSettings.gridStep);
+                    glColor3f(Util::config()->colorGrid.redF(),
+                              Util::config()->colorGrid.greenF(),
+                              Util::config()->colorGrid.blueF());
+                glVertex2d(cornerMin.x, i*Util::config()->gridStep);
+                glVertex2d(cornerMax.x, i*Util::config()->gridStep);
             }
         }
         glEnd();
@@ -518,9 +418,9 @@ void SceneView::paintGrid()
     }
 
     // axes
-    glColor3f(m_sceneViewSettings.colorCross.redF(),
-              m_sceneViewSettings.colorCross.greenF(),
-              m_sceneViewSettings.colorCross.blueF());
+    glColor3f(Util::config()->colorCross.redF(),
+              Util::config()->colorCross.greenF(),
+              Util::config()->colorCross.blueF());
     glLineWidth(1.0);
     glBegin(GL_LINES);
     // y axis
@@ -538,7 +438,7 @@ void SceneView::paintRulers()
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
 
     // rulers
-    double step = (((int) ((cornerMax - cornerMin).x / m_sceneViewSettings.gridStep) + 1) / 5) * m_sceneViewSettings.gridStep;
+    double step = (((int) ((cornerMax - cornerMin).x / Util::config()->gridStep) + 1) / 5) * Util::config()->gridStep;
 
     Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale*m_aspect,
                (2.0/contextHeight()*fontMetrics().height())/m_scale);
@@ -590,23 +490,23 @@ void SceneView::paintGeometry()
             glLineStipple(1, 0x8FFF);
         }
 
-        glColor3f(m_sceneViewSettings.colorEdges.redF(),
-                  m_sceneViewSettings.colorEdges.greenF(),
-                  m_sceneViewSettings.colorEdges.blueF());
-        glLineWidth(m_sceneViewSettings.geometryEdgeWidth);
+        glColor3f(Util::config()->colorEdges.redF(),
+                  Util::config()->colorEdges.greenF(),
+                  Util::config()->colorEdges.blueF());
+        glLineWidth(Util::config()->edgeWidth);
         if (edge->isHighlighted)
         {
-            glColor3f(m_sceneViewSettings.colorHighlighted.redF(),
-                      m_sceneViewSettings.colorHighlighted.greenF(),
-                      m_sceneViewSettings.colorHighlighted.blueF());
-            glLineWidth(m_sceneViewSettings.geometryEdgeWidth + 2.0);
+            glColor3f(Util::config()->colorHighlighted.redF(),
+                      Util::config()->colorHighlighted.greenF(),
+                      Util::config()->colorHighlighted.blueF());
+            glLineWidth(Util::config()->edgeWidth + 2.0);
         }
         if (edge->isSelected)
         {
-            glColor3f(m_sceneViewSettings.colorSelected.redF(),
-                      m_sceneViewSettings.colorSelected.greenF(),
-                      m_sceneViewSettings.colorSelected.blueF());
-            glLineWidth(m_sceneViewSettings.geometryEdgeWidth + 2.0);
+            glColor3f(Util::config()->colorSelected.redF(),
+                      Util::config()->colorSelected.greenF(),
+                      Util::config()->colorSelected.blueF());
+            glLineWidth(Util::config()->edgeWidth + 2.0);
         }
 
         if (edge->angle == 0)
@@ -634,18 +534,18 @@ void SceneView::paintGeometry()
     {
         foreach (SceneNode *node, m_scene->nodes)
         {
-            glColor3f(m_sceneViewSettings.colorNodes.redF(),
-                      m_sceneViewSettings.colorNodes.greenF(),
-                      m_sceneViewSettings.colorNodes.blueF());
-            glPointSize(m_sceneViewSettings.geometryNodeSize);
+            glColor3f(Util::config()->colorNodes.redF(),
+                      Util::config()->colorNodes.greenF(),
+                      Util::config()->colorNodes.blueF());
+            glPointSize(Util::config()->nodeSize);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
 
-            glColor3f(m_sceneViewSettings.colorBackground.redF(),
-                      m_sceneViewSettings.colorBackground.greenF(),
-                      m_sceneViewSettings.colorBackground.blueF());
-            glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
+            glColor3f(Util::config()->colorBackground.redF(),
+                      Util::config()->colorBackground.greenF(),
+                      Util::config()->colorBackground.blueF());
+            glPointSize(Util::config()->nodeSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(node->point.x, node->point.y);
             glEnd();
@@ -653,15 +553,15 @@ void SceneView::paintGeometry()
             if ((node->isSelected) || (node->isHighlighted))
             {
                 if (node->isHighlighted)
-                    glColor3f(m_sceneViewSettings.colorHighlighted.redF(),
-                              m_sceneViewSettings.colorHighlighted.greenF(),
-                              m_sceneViewSettings.colorHighlighted.blueF());
+                    glColor3f(Util::config()->colorHighlighted.redF(),
+                              Util::config()->colorHighlighted.greenF(),
+                              Util::config()->colorHighlighted.blueF());
                 if (node->isSelected)
-                    glColor3f(m_sceneViewSettings.colorSelected.redF(),
-                              m_sceneViewSettings.colorSelected.greenF(),
-                              m_sceneViewSettings.colorSelected.blueF());
+                    glColor3f(Util::config()->colorSelected.redF(),
+                              Util::config()->colorSelected.greenF(),
+                              Util::config()->colorSelected.blueF());
 
-                glPointSize(m_sceneViewSettings.geometryNodeSize - 2.0);
+                glPointSize(Util::config()->nodeSize - 2.0);
                 glBegin(GL_POINTS);
                 glVertex2d(node->point.x, node->point.y);
                 glEnd();
@@ -675,18 +575,18 @@ void SceneView::paintGeometry()
     {
         foreach (SceneLabel *label, m_scene->labels)
         {
-            glColor3f(m_sceneViewSettings.colorLabels.redF(),
-                      m_sceneViewSettings.colorLabels.greenF(),
-                      m_sceneViewSettings.colorLabels.blueF());
-            glPointSize(m_sceneViewSettings.geometryLabelSize);
+            glColor3f(Util::config()->colorLabels.redF(),
+                      Util::config()->colorLabels.greenF(),
+                      Util::config()->colorLabels.blueF());
+            glPointSize(Util::config()->labelSize);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
             glEnd();
 
-            glColor3f(m_sceneViewSettings.colorBackground.redF(),
-                      m_sceneViewSettings.colorBackground.greenF(),
-                      m_sceneViewSettings.colorBackground.blueF());
-            glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
+            glColor3f(Util::config()->colorBackground.redF(),
+                      Util::config()->colorBackground.greenF(),
+                      Util::config()->colorBackground.blueF());
+            glPointSize(Util::config()->labelSize - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point.x, label->point.y);
             glEnd();
@@ -694,15 +594,15 @@ void SceneView::paintGeometry()
             if ((label->isSelected) || (label->isHighlighted))
             {
                 if (label->isHighlighted)
-                    glColor3f(m_sceneViewSettings.colorHighlighted.redF(),
-                              m_sceneViewSettings.colorHighlighted.greenF(),
-                              m_sceneViewSettings.colorHighlighted.blueF());
+                    glColor3f(Util::config()->colorHighlighted.redF(),
+                              Util::config()->colorHighlighted.greenF(),
+                              Util::config()->colorHighlighted.blueF());
                 if (label->isSelected)
-                    glColor3f(m_sceneViewSettings.colorSelected.redF(),
-                              m_sceneViewSettings.colorSelected.greenF(),
-                              m_sceneViewSettings.colorSelected.blueF());
+                    glColor3f(Util::config()->colorSelected.redF(),
+                              Util::config()->colorSelected.greenF(),
+                              Util::config()->colorSelected.blueF());
 
-                glPointSize(m_sceneViewSettings.geometryLabelSize - 2.0);
+                glPointSize(Util::config()->labelSize - 2.0);
                 glBegin(GL_POINTS);
                 glVertex2d(label->point.x, label->point.y);
                 glEnd();
@@ -742,9 +642,9 @@ void SceneView::paintInitialMesh()
 
     // draw initial mesh    
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3f(m_sceneViewSettings.colorInitialMesh.redF(),
-              m_sceneViewSettings.colorInitialMesh.greenF(),
-              m_sceneViewSettings.colorInitialMesh.blueF());
+    glColor3f(Util::config()->colorInitialMesh.redF(),
+              Util::config()->colorInitialMesh.greenF(),
+              Util::config()->colorInitialMesh.blueF());
     glLineWidth(1.3);
 
     // triangles
@@ -769,9 +669,9 @@ void SceneView::paintSolutionMesh()
 
     // draw solution mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3f(m_sceneViewSettings.colorSolutionMesh.redF(),
-              m_sceneViewSettings.colorSolutionMesh.greenF(),
-              m_sceneViewSettings.colorSolutionMesh.blueF());
+    glColor3f(Util::config()->colorSolutionMesh.redF(),
+              Util::config()->colorSolutionMesh.greenF(),
+              Util::config()->colorSolutionMesh.blueF());
     glLineWidth(1.0);
 
     // triangles
@@ -941,10 +841,10 @@ void SceneView::paintColorBar(double min, double max)
     for (int i = 1; i < numTicks+1; i++)
     {
         double value = 0.0;
-        if (!m_sceneViewSettings.scalarRangeLog)
+        if (!Util::config()->scalarRangeLog)
             value = min + (double) (i-1) / (numTicks-1) * (max - min);
         else
-            value = min + (double) pow(m_sceneViewSettings.scalarRangeBase, ((i-1) / (numTicks-1)))/m_sceneViewSettings.scalarRangeBase * (max - min);
+            value = min + (double) pow(Util::config()->scalarRangeBase, ((i-1) / (numTicks-1)))/Util::config()->scalarRangeBase * (max - min);
 
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 20.0) / (numTicks - 1.0);
@@ -1001,20 +901,20 @@ void SceneView::paintScalarField()
                 continue;
         }
 
-        if (m_sceneViewSettings.scalarRangeLog)
-            glTexCoord2d(log10(1.0 + (m_sceneViewSettings.scalarRangeBase-1.0)*(value[0] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(m_sceneViewSettings.scalarRangeBase) * m_texScale + m_texShift, 0.0);
+        if (Util::config()->scalarRangeLog)
+            glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[0] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
         else
             glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex2d(point[0].x, point[0].y);
 
-        if (m_sceneViewSettings.scalarRangeLog)
-            glTexCoord2d(log10(1.0 + (m_sceneViewSettings.scalarRangeBase-1.0)*(value[1] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(m_sceneViewSettings.scalarRangeBase) * m_texScale + m_texShift, 0.0);
+        if (Util::config()->scalarRangeLog)
+            glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[1] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
         else
             glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex2d(point[1].x, point[1].y);
 
-        if (m_sceneViewSettings.scalarRangeLog)
-            glTexCoord2d(log10(1.0 + (m_sceneViewSettings.scalarRangeBase-1.0)*(value[2] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(m_sceneViewSettings.scalarRangeBase) * m_texScale + m_texShift, 0.0);
+        if (Util::config()->scalarRangeLog)
+            glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[2] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
         else
             glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex2d(point[2].x, point[2].y);
@@ -1045,7 +945,7 @@ void SceneView::paintScalarField3D()
 
     double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
-    if (m_sceneViewSettings.scalarView3DLighting)
+    if (Util::config()->scalarView3DLighting)
     {
         glEnable(GL_LIGHTING);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -1086,19 +986,19 @@ void SceneView::paintScalarField3D()
 
         double delta = 0.0;
 
-        if (m_sceneViewSettings.scalarView3DLighting)
+        if (Util::config()->scalarView3DLighting)
             glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
         glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
         // glVertex3d(point[0].x, point[0].y, - delta - value[0]);
 
-        if (m_sceneViewSettings.scalarView3DLighting)
+        if (Util::config()->scalarView3DLighting)
             glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
         glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
         // glVertex3d(point[1].x, point[1].y, - delta - value[1]);
 
-        if (m_sceneViewSettings.scalarView3DLighting)
+        if (Util::config()->scalarView3DLighting)
             glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
         glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
         glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
@@ -1146,13 +1046,13 @@ void SceneView::paintContours()
     }
 
     // value range
-    double step = (rangeMax-rangeMin)/m_sceneViewSettings.contoursCount;
+    double step = (rangeMax-rangeMin)/Util::config()->contoursCount;
 
     // draw contours    
     glLineWidth(1.0);
-    glColor3f(m_sceneViewSettings.colorContours.redF(),
-              m_sceneViewSettings.colorContours.greenF(),
-              m_sceneViewSettings.colorContours.blueF());
+    glColor3f(Util::config()->colorContours.redF(),
+              Util::config()->colorContours.greenF(),
+              Util::config()->colorContours.blueF());
     glBegin(GL_LINES);
 
     for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_triangles(); i++)
@@ -1309,7 +1209,7 @@ void SceneView::paintVectors()
     if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
 
     RectPoint rect = m_scene->boundingBox();
-    double gs = (rect.width() + rect.height()) / m_sceneViewSettings.vectorCount;
+    double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
 
     // paint
     m_scene->sceneSolution()->vecVectorView().lock_data();
@@ -1385,30 +1285,30 @@ void SceneView::paintVectors()
                     double value = sqrt(sqr(dx) + sqr(dy));
                     double angle = atan2(dy, dx);
 
-                    if (m_sceneViewSettings.vectorProportional)
+                    if (Util::config()->vectorProportional)
                     {
-                        dx = ((value - vectorRangeMin) * irange) * m_sceneViewSettings.vectorScale * gs * cos(angle);
-                        dy = ((value - vectorRangeMin) * irange) * m_sceneViewSettings.vectorScale * gs * sin(angle);
+                        dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
+                        dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
                     }
                     else
                     {
-                        dx = m_sceneViewSettings.vectorScale * gs * cos(angle);
-                        dy = m_sceneViewSettings.vectorScale * gs * sin(angle);
+                        dx = Util::config()->vectorScale * gs * cos(angle);
+                        dy = Util::config()->vectorScale * gs * sin(angle);
                     }
 
                     double dm = sqrt(sqr(dx) + sqr(dy));
 
                     // color
-                    if (m_sceneViewSettings.vectorColor)
+                    if (Util::config()->vectorColor)
                     {
                         double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
                         glColor3f(color, color, color);
                     }
                     else
                     {
-                        glColor3f(m_sceneViewSettings.colorVectors.redF(),
-                                  m_sceneViewSettings.colorVectors.greenF(),
-                                  m_sceneViewSettings.colorVectors.blueF());
+                        glColor3f(Util::config()->colorVectors.redF(),
+                                  Util::config()->colorVectors.greenF(),
+                                  Util::config()->colorVectors.blueF());
                     }
 
                     glVertex2d(point.x + dm/5.0 * cos(angle - M_PI_2), point.y + dm/5.0 * sin(angle - M_PI_2));
@@ -1499,9 +1399,9 @@ void SceneView::paintZoomRegion()
         Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
 
         drawBlend(posStart, posEnd,
-                  m_sceneViewSettings.colorHighlighted.redF(),
-                  m_sceneViewSettings.colorHighlighted.greenF(),
-                  m_sceneViewSettings.colorHighlighted.blueF());
+                  Util::config()->colorHighlighted.redF(),
+                  Util::config()->colorHighlighted.greenF(),
+                  Util::config()->colorHighlighted.blueF());
     }
 }
 
@@ -1512,13 +1412,13 @@ void SceneView::paintSnapToGrid()
         Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
 
         Point snapPoint;
-        snapPoint.x = round(p.x / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
-        snapPoint.y = round(p.y / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+        snapPoint.x = round(p.x / Util::config()->gridStep) * Util::config()->gridStep;
+        snapPoint.y = round(p.y / Util::config()->gridStep) * Util::config()->gridStep;
 
-        glColor3f(m_sceneViewSettings.colorHighlighted.redF(),
-                  m_sceneViewSettings.colorHighlighted.greenF(),
-                  m_sceneViewSettings.colorHighlighted.blueF());
-        glPointSize(m_sceneViewSettings.geometryNodeSize - 1.0);
+        glColor3f(Util::config()->colorHighlighted.redF(),
+                  Util::config()->colorHighlighted.greenF(),
+                  Util::config()->colorHighlighted.blueF());
+        glPointSize(Util::config()->nodeSize - 1.0);
         glBegin(GL_POINTS);
         glVertex2d(snapPoint.x, snapPoint.y);
         glEnd();
@@ -1527,9 +1427,9 @@ void SceneView::paintSnapToGrid()
 
 void SceneView::paintChartLine()
 {
-    glColor3f(m_sceneViewSettings.colorSelected.redF(),
-              m_sceneViewSettings.colorSelected.greenF(),
-              m_sceneViewSettings.colorSelected.blueF());
+    glColor3f(Util::config()->colorSelected.redF(),
+              Util::config()->colorSelected.greenF(),
+              Util::config()->colorSelected.blueF());
     glLineWidth(3.0);
 
     glBegin(GL_LINES);
@@ -1540,7 +1440,7 @@ void SceneView::paintChartLine()
 
 const float* SceneView::paletteColor(double x)
 {
-    switch (m_sceneViewSettings.paletteType)
+    switch (Util::config()->paletteType)
     {
     case Palette_Jet:
         {
@@ -1608,15 +1508,15 @@ void SceneView::paletteCreate()
 {
     int i;
     unsigned char palette[256][3];
-    for (i = 0; i < m_sceneViewSettings.paletteSteps; i++)
+    for (i = 0; i < Util::config()->paletteSteps; i++)
     {
-        const float* color = paletteColor((double) i / m_sceneViewSettings.paletteSteps);
+        const float* color = paletteColor((double) i / Util::config()->paletteSteps);
         palette[i][0] = (unsigned char) (color[0] * 255);
         palette[i][1] = (unsigned char) (color[1] * 255);
         palette[i][2] = (unsigned char) (color[2] * 255);
     }
-    for (i = m_sceneViewSettings.paletteSteps; i < 256; i++)
-        memcpy(palette[i], palette[m_sceneViewSettings.paletteSteps-1], 3);
+    for (i = Util::config()->paletteSteps; i < 256; i++)
+        memcpy(palette[i], palette[Util::config()->paletteSteps-1], 3);
 
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
@@ -1626,7 +1526,7 @@ void SceneView::paletteCreate()
 
 void SceneView::paletteFilter()
 {
-    int pal_filter = m_sceneViewSettings.paletteFilter ? GL_LINEAR : GL_NEAREST;
+    int pal_filter = Util::config()->paletteFilter ? GL_LINEAR : GL_NEAREST;
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, pal_filter);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, pal_filter);
@@ -1635,14 +1535,14 @@ void SceneView::paletteFilter()
 
 void SceneView::paletteUpdateTexAdjust()
 {
-    if (m_sceneViewSettings.paletteFilter)
+    if (Util::config()->paletteFilter)
     {
-        m_texScale = (double) (m_sceneViewSettings.paletteSteps-1) / 256.0;
+        m_texScale = (double) (Util::config()->paletteSteps-1) / 256.0;
         m_texShift = 0.5 / 256.0;
     }
     else
     {
-        m_texScale = (double) m_sceneViewSettings.paletteSteps / 256.0;
+        m_texScale = (double) Util::config()->paletteSteps / 256.0;
         m_texShift = 0.0;
     }
 }
@@ -1714,7 +1614,7 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     }
 
     // snap to grid
-    m_snapToGrid = ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
+    m_snapToGrid = ((Util::config()->snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
 
     // select all
     if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))
@@ -1836,8 +1736,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             {
                 Point snapPoint = position(Point(m_lastPos.x(), m_lastPos.y()));
 
-                pointNode.x = round(snapPoint.x / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
-                pointNode.y = round(snapPoint.y / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+                pointNode.x = round(snapPoint.x / Util::config()->gridStep) * Util::config()->gridStep;
+                pointNode.y = round(snapPoint.y / Util::config()->gridStep) * Util::config()->gridStep;
             }
             else
             {
@@ -2035,7 +1935,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
         m_snapToGrid = false;
         updateGL();
     }
-    m_snapToGrid = ((m_sceneViewSettings.snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
+    m_snapToGrid = ((Util::config()->snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
 
     if (m_snapToGrid)
         updateGL();
@@ -2157,8 +2057,8 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     if (m_snapToGrid)
     {
         Point snapPoint;
-        snapPoint.x = round(p.x / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
-        snapPoint.y = round(p.y / m_sceneViewSettings.gridStep) * m_sceneViewSettings.gridStep;
+        snapPoint.x = round(p.x / Util::config()->gridStep) * Util::config()->gridStep;
+        snapPoint.y = round(p.y / Util::config()->gridStep) * Util::config()->gridStep;
 
         emit mouseMoved(QPointF(snapPoint.x, snapPoint.y));
     }
@@ -2170,10 +2070,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
 void SceneView::wheelEvent(QWheelEvent *event)
 {
-    QSettings settings;
-    bool zoomToMouse = settings.value("Geometry/ZoomToMouse", true).value<bool>();
-
-    if (zoomToMouse)
+    if (Util::config()->zoomToMouse)
     {
         Point posMouse;
         posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
@@ -2515,7 +2412,7 @@ void SceneView::setRangeScalar()
             m_sceneViewSettings.scalarRangeMax = m_scene->sceneSolution()->linScalarView().get_max_value();
         }
 
-        if (m_sceneViewSettings.scalarView3DLighting)
+        if (Util::config()->scalarView3DLighting)
         {
             double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
@@ -2763,9 +2660,9 @@ void SceneView::paintPostprocessorSelectedVolume()
     // draw mesh
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4d(m_sceneViewSettings.colorSelected.redF(),
-              m_sceneViewSettings.colorSelected.greenF(),
-              m_sceneViewSettings.colorSelected.blueF(),
+    glColor4d(Util::config()->colorSelected.redF(),
+              Util::config()->colorSelected.greenF(),
+              Util::config()->colorSelected.blueF(),
               0.5);
 
     // triangles
@@ -2791,7 +2688,7 @@ void SceneView::paintPostprocessorSelectedSurface()
 {
     // edges
     foreach (SceneEdge *edge, m_scene->edges) {
-        glColor3d(m_sceneViewSettings.colorSelected.redF(), m_sceneViewSettings.colorSelected.greenF(), m_sceneViewSettings.colorSelected.blueF());
+        glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
         glLineWidth(3.0);
 
         if (edge->isSelected)
@@ -2849,7 +2746,7 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
     m_sceneViewSettings.showGeometry = true;
     m_sceneViewSettings.showGrid = true;
     m_sceneViewSettings.showInitialMesh = false;
-    m_sceneViewSettings.showRulers = true;
+    // m_sceneViewSettings.showRulers = true;
     m_sceneViewSettings.showSolutionMesh = false;
     m_sceneViewSettings.showVectors = false;
 
@@ -2858,7 +2755,7 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
     ErrorResult resultGeometry = saveImageToFile(path + "/geometry.png", w, h);
     if (resultGeometry.isError())
         resultGeometry.showDialog();
-    m_sceneViewSettings.showRulers = false;
+    // m_sceneViewSettings.showRulers = false;
 
     // mesh
     if (m_scene->sceneSolution()->isMeshed())

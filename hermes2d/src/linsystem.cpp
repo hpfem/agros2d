@@ -1068,7 +1068,7 @@ HERMES2D_API void update_limit_table(int mode)
 
 HERMES2D_API void warn_order()
 {
-  if (!warned_order && warn_integration)
+  if (!warned_order)
   {
     warn("Not enough integration rules for exact integration.");
     warned_order = true;

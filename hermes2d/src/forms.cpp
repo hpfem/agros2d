@@ -37,11 +37,13 @@ Geom<Ord>* init_geom_ord()
 // Initialize element marker and coordinates
 Geom<double>* init_geom_vol(RefMap *rm, const int order)
 {
-	Geom<double>* e = new Geom<double>;
-  e->marker = rm->get_active_element()->marker;
-	e->x = rm->get_phys_x(order);
-	e->y = rm->get_phys_y(order);
-	return e;
+    Geom<double>* e = new Geom<double>;
+    e->element = rm->get_active_element();
+    e->id = rm->get_active_element()->id;
+    e->marker = rm->get_active_element()->marker;
+    e->x = rm->get_phys_x(order);
+    e->y = rm->get_phys_y(order);
+    return e;
 }
 
 // Initialize edge marker, coordinates, tangent and normals
@@ -76,6 +78,9 @@ Func<Ord>* init_fn_ord(const int order)
 	Func<Ord>* f = new Func<Ord>;
 	f->val = d;
 	f->dx = f->dy = d;
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+        f->laplace = d;
+#endif
 	f->val0 = f->val1 = d;
 	f->dx0 = f->dx1 = d;
 	f->dy0 = f->dy1 = d;
@@ -90,7 +95,8 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 	u->nc = fu->get_num_components();
   int space_type = fu->get_type();
   Quad2D* quad = fu->get_quad_2d();
-  fu->set_quad_order(order);
+  if (u->nc == 1) fu->set_quad_order(order, FN_ALL);
+  else fu->set_quad_order(order);
   double3* pt = quad->get_points(order);
   int np = quad->get_num_points(order);
 
@@ -100,16 +106,40 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 		u->val = new double [np];
 		u->dx  = new double [np];
 		u->dy  = new double [np];
-
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+                u->laplace = new double [np];
+#endif
 		double *fn = fu->get_fn_values();
 		double *dx = fu->get_dx_values();
 		double *dy = fu->get_dy_values();
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+                double *dxx = fu->get_dxx_values();
+                double *dxy = fu->get_dxy_values();
+                double *dyy = fu->get_dyy_values();
+#endif
+
 		double2x2 *m = rm->get_inv_ref_map(order);
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+                double3x2 *mm = rm->get_second_ref_map(order);
+#endif
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+		for (int i = 0; i < np; i++, m++, mm++)
+#else
 		for (int i = 0; i < np; i++, m++)
+#endif
     {
 			u->val[i] = fn[i];
 			u->dx[i] = (dx[i] * (*m)[0][0] + dy[i] * (*m)[0][1]);
 			u->dy[i] = (dx[i] * (*m)[1][0] + dy[i] * (*m)[1][1]);
+
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+                        double axx = (sqr((*m)[0][0]) + sqr((*m)[1][0]));
+                        double ayy = (sqr((*m)[0][1]) + sqr((*m)[1][1]));
+                        double axy = 2.0 * ((*m)[0][0]*(*m)[0][1] + (*m)[1][0]*(*m)[1][1]);
+                        double ax = (*mm)[0][0] + (*mm)[2][0];
+                        double ay = (*mm)[0][1] + (*mm)[2][1];
+                        u->laplace[i] = ( dx[i] * ax + dy[i] * ay + dxx[i] * axx + dxy[i] * axy + dyy[i] * ayy );
+#endif
 		}
 	}
   // Hcurl space

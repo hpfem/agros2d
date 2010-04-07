@@ -406,8 +406,9 @@ static void assignment(bool debug)
 
   // print numerical temporary variables
   if (debug)
-    if (sym->data->n < 0)
+    if (sym->data->n < 0) {
       info("%s = %.18g", sym->name, sym->data->val);
+    }
 }
 
 

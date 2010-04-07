@@ -533,9 +533,7 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 #endif
 
     // default physic field
-    QSettings settings;
-    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(
-            physicFieldFromStringKey(settings.value("General/DefaultPhysicField", physicFieldToStringKey(PhysicField_Electrostatic)).toString())));
+    cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));
     if (cmbPhysicField->currentIndex() == -1) cmbPhysicField->setCurrentIndex(0);
 }
 

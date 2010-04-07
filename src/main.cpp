@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
 #endif
 
     QSettings settings;
-
     enableLogFile(settings.value("General/EnableLogFile", false).value<bool>());
 
     // first run

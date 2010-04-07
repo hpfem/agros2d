@@ -29,6 +29,12 @@
 
 #include "scene.h"
 
+bool isPlanar;
+AnalysisType analysisType;
+double frequency;
+double actualTime;
+double timeStep;
+
 HermesField *hermesFieldFactory(PhysicField physicField)
 {
     switch (physicField)
@@ -68,13 +74,6 @@ RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivi
     }
 }
 
-
-bool isPlanar;
-AnalysisType analysisType;
-double frequency;
-double actualTime;
-double timeStep;
-
 Mesh *readMesh(const QString &fileName)
 {
     // save locale
@@ -85,8 +84,6 @@ Mesh *readMesh(const QString &fileName)
     Mesh *mesh = new Mesh();
     H2DReader meshloader;
     meshloader.load(fileName.toStdString().c_str(), mesh);
-    for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
-        mesh->refine_all_elements(0);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
@@ -146,6 +143,9 @@ QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbS
 
     // load the mesh file
     Mesh *mesh = readMesh(tempProblemFileName() + ".mesh");
+    // refine mesh
+    for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
+        mesh->refine_all_elements(0);
 
     // initialize the shapeset
     H1Shapeset shapeset;
@@ -200,13 +200,11 @@ QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbS
     UmfpackSolver umfpack;
 
     // prepare selector
-    QSettings settings;
-    bool isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>();
-    double convExp = settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>();
-    double threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>();
-    int strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>();
-    int meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>();
-    RefinementSelectors::H1NonUniformHP selector(isoOnly, allowedCandidates(adaptivityType), convExp, H2DRS_DEFAULT_ORDER, &shapeset);
+    RefinementSelectors::H1NonUniformHP selector(Util::config()->isoOnly,
+                                                 allowedCandidates(adaptivityType),
+                                                 Util::config()->convExp,
+                                                 H2DRS_DEFAULT_ORDER,
+                                                 &shapeset);
 
     // initialize the linear system
     LinSystem sys(&wf, &umfpack);
@@ -305,7 +303,9 @@ QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbS
                 delete hp;
                 break;
             }
-            if (i != adaptivitysteps-1) hp->adapt(threshold, strategy, &selector, meshRegularity);
+            if (i != adaptivitysteps-1) hp->adapt(Util::config()->threshold, Util::config()->strategy,
+                                                  &selector,
+                                                  Util::config()->meshRegularity);
         }
     }
 

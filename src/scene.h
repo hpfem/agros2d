@@ -49,6 +49,8 @@
 #include "hermes2d/hermes_current.h"
 #include "hermes2d/hermes_elasticity.h"
 
+#include "config.h"
+
 struct HermesObject;
 struct HermesGeneral;
 
@@ -68,6 +70,8 @@ class SolverDialog;
 class ProblemDialog;
 class SceneTransformDialog;
 class HelpDialog;
+
+class Config;
 
 class ProblemInfo
 {    
@@ -160,7 +164,7 @@ class Scene : public QObject
 {
     Q_OBJECT
     
-    public slots:
+public slots:
     void doNewNode(const Point &point = Point());
     void doNewEdge();
     void doNewLabel();
@@ -282,7 +286,8 @@ public:
     static inline Scene *scene() { return Util::singleton()->m_scene; }
     static inline HelpDialog *helpDialog() { return Util::singleton()->m_helpDialog; }
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
-    
+    static inline Config *config() { return Util::singleton()->m_config; }
+
 protected:
     Util();
     Util(const Util &);
@@ -295,6 +300,7 @@ private:
     Scene *m_scene;
     HelpDialog *m_helpDialog;
     QCompleter *m_completer;
+    Config *m_config;
 };
 
 #endif /* SCENE_H */

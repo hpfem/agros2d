@@ -888,7 +888,7 @@ void Linearizer::load_data(const char* filename)
 //// others ///////////////////////////////////////////////////////////////////////////////////
 
 void Linearizer::calc_vertices_aabb(double* min_x, double* max_x, double* min_y, double* max_y) const {
-  debug_assert(verts != NULL, "E cannot calculate AABB from NULL vertices");
+  assert_msg(verts != NULL, "E cannot calculate AABB from NULL vertices");
   calc_aabb(&verts[0][0], &verts[0][1], sizeof(double3), nv, min_x, max_x, min_y, max_y);
 }
 

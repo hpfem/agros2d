@@ -37,7 +37,6 @@ const double EPS0 = 8.854e-12;
 const double MU0 = 4*M_PI*1e-7;
 const int NDOF_STOP = 40000;
 
-
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;
 const double ADAPTIVITY_CONVEXP = 1.0;

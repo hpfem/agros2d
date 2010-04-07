@@ -53,7 +53,7 @@ public:
     inline void setMesh(Mesh *mesh) { if (m_mesh) { delete m_mesh; } m_mesh = mesh; }
     Solution *sln(int i = -1);
     void setSolutionArrayList(QList<SolutionArray *> *solutionArrayList);
-    inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; };
+    inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; }
     void setTimeStep(int timeStep);
     inline int timeStep() { return m_timeStep; }
     int timeStepCount();

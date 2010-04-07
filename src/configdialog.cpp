@@ -19,10 +19,8 @@
 
 #include "optionsdialog.h"
 
-OptionsDialog::OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *parent) : QDialog(parent)
+ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
-    m_sceneViewSettings = sceneViewSettings;
-
     setWindowIcon(icon("options"));
     setWindowTitle(tr("Options"));
     
@@ -35,202 +33,186 @@ OptionsDialog::OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *pare
     setMaximumSize(sizeHint());
 }
 
-void OptionsDialog::load()
+void ConfigDialog::load()
 {
-    QSettings settings;
-
     // gui style
-    for (int i = 0; i < cmbGUIStyle->count(); i++)
-    {
-        if (cmbGUIStyle->itemText(i) == settings.value("General/GUIStyle"))
-        {
-            cmbGUIStyle->setCurrentIndex(i);
-            break;
-        }
-    }
+    cmbGUIStyle->setCurrentIndex(cmbGUIStyle->findText(Util::config()->guiStyle));
+    if (cmbGUIStyle->currentIndex() == -1 && cmbGUIStyle->count() > 0) cmbGUIStyle->setCurrentIndex(0);
 
     // language
-    for (int i = 0; i < cmbLanguage->count(); i++)
-    {
-        if (cmbLanguage->itemText(i) == settings.value("General/Language"))
-        {
-            cmbLanguage->setCurrentIndex(i);
-            break;
-        }
-    }
+    cmbLanguage->setCurrentIndex(cmbLanguage->findText(Util::config()->language));
+    if (cmbLanguage->currentIndex() == -1 && cmbLanguage->count() > 0) cmbLanguage->setCurrentIndex(0);
 
     // default physic field
-    cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(
-            physicFieldFromStringKey(settings.value("General/DefaultPhysicField", physicFieldToStringKey(PhysicField_Electrostatic)).toString())));
+    cmbDefaultPhysicField->setCurrentIndex(cmbDefaultPhysicField->findData(Util::config()->defaultPhysicField));
 
     // check version
-    chkCheckVersion->setChecked(settings.value("General/CheckVersion", true).value<bool>());
+    chkCheckVersion->setChecked(Util::config()->checkVersion);
 
     // show result in line edit value widget
-    chkLineEditValueShowResult->setChecked(settings.value("General/LineEditValueShowResult", false).value<bool>());
+    chkLineEditValueShowResult->setChecked(Util::config()->lineEditValueShowResult);
 
     // geometry
-    txtGeometryAngleSegmentsCount->setValue(settings.value("Geometry/AngleSegmentsCount", 5).value<int>());
-    txtGeometryNodeSize->setValue(m_sceneViewSettings->geometryNodeSize);
-    txtGeometryEdgeWidth->setValue(m_sceneViewSettings->geometryEdgeWidth);
-    txtGeometryLabelSize->setValue(m_sceneViewSettings->geometryLabelSize);
-    chkZoomToMouse->setChecked(settings.value("Geometry/ZoomToMouse", true).value<bool>());
+    txtGeometryAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
+    txtGeometryNodeSize->setValue(Util::config()->nodeSize);
+    txtGeometryEdgeWidth->setValue(Util::config()->edgeWidth);
+    txtGeometryLabelSize->setValue(Util::config()->labelSize);
+    chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
 
     // delete files
-    chkDeleteTriangleMeshFiles->setChecked(settings.value("Solver/DeleteTriangleMeshFiles", true).value<bool>());
-    chkDeleteHermes2DMeshFile->setChecked(settings.value("Solver/DeleteHermes2DMeshFile", true).value<bool>());
+    chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteTriangleMeshFiles);
+    chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermes2DMeshFile);
 
     // save problem with solution
 #ifdef BETA
-    chkSaveWithSolution->setChecked(settings.value("Solver/SaveProblemWithSolution", false).value<bool>());
+    chkSaveWithSolution->setChecked(Util::config()->saveProblemWithSolution);
 #endif
 
     // colors
-    colorBackground->setColor(m_sceneViewSettings->colorBackground);
-    colorGrid->setColor(m_sceneViewSettings->colorGrid);
-    colorCross->setColor(m_sceneViewSettings->colorCross);
-    colorNodes->setColor(m_sceneViewSettings->colorNodes);
-    colorEdges->setColor(m_sceneViewSettings->colorEdges);
-    colorLabels->setColor(m_sceneViewSettings->colorLabels);
-    colorContours->setColor(m_sceneViewSettings->colorContours);
-    colorVectors->setColor(m_sceneViewSettings->colorVectors);
-    colorInitialMesh->setColor(m_sceneViewSettings->colorInitialMesh);
-    colorSolutionMesh->setColor(m_sceneViewSettings->colorSolutionMesh);
-    colorHighlighted->setColor(m_sceneViewSettings->colorHighlighted);
-    colorSelected->setColor(m_sceneViewSettings->colorSelected);
+    colorBackground->setColor(Util::config()->colorBackground);
+    colorGrid->setColor(Util::config()->colorGrid);
+    colorCross->setColor(Util::config()->colorCross);
+    colorNodes->setColor(Util::config()->colorNodes);
+    colorEdges->setColor(Util::config()->colorEdges);
+    colorLabels->setColor(Util::config()->colorLabels);
+    colorContours->setColor(Util::config()->colorContours);
+    colorVectors->setColor(Util::config()->colorVectors);
+    colorInitialMesh->setColor(Util::config()->colorInitialMesh);
+    colorSolutionMesh->setColor(Util::config()->colorSolutionMesh);
+    colorHighlighted->setColor(Util::config()->colorHighlighted);
+    colorSelected->setColor(Util::config()->colorSelected);
 
     // grid
-    txtGridStep->setText(QString::number(m_sceneViewSettings->gridStep));
-    chkSnapToGrid->setChecked(m_sceneViewSettings->snapToGrid);
-    chkRulers->setChecked(m_sceneViewSettings->showRulers);
+    txtGridStep->setText(QString::number(Util::config()->gridStep));
+    chkSnapToGrid->setChecked(Util::config()->snapToGrid);
+    chkRulers->setChecked(Util::config()->showRulers);
 
     // contours
-    txtContoursCount->setValue(m_sceneViewSettings->contoursCount);
+    txtContoursCount->setValue(Util::config()->contoursCount);
 
     // scalar field
-    cmbPalette->setCurrentIndex(cmbPalette->findData(m_sceneViewSettings->paletteType));
-    chkPaletteFilter->setChecked(m_sceneViewSettings->paletteFilter);
+    cmbPalette->setCurrentIndex(cmbPalette->findData(Util::config()->paletteType));
+    chkPaletteFilter->setChecked(Util::config()->paletteFilter);
     doPaletteFilter(chkPaletteFilter->checkState());
-    txtPaletteSteps->setValue(m_sceneViewSettings->paletteSteps);    
-    chkScalarFieldRangeLog->setChecked(m_sceneViewSettings->scalarRangeLog);
+    txtPaletteSteps->setValue(Util::config()->paletteSteps);
+    chkScalarFieldRangeLog->setChecked(Util::config()->scalarRangeLog);
     doScalarFieldLog(chkScalarFieldRangeLog->checkState());
-    txtScalarFieldRangeBase->setText(QString::number(m_sceneViewSettings->scalarRangeBase));
+    txtScalarFieldRangeBase->setText(QString::number(Util::config()->scalarRangeBase));
 
     // vector field
-    chkVectorProportional->setChecked(m_sceneViewSettings->vectorProportional);
-    chkVectorColor->setChecked(m_sceneViewSettings->vectorColor);
-    txtVectorCount->setValue(m_sceneViewSettings->vectorCount);
+    chkVectorProportional->setChecked(Util::config()->vectorProportional);
+    chkVectorColor->setChecked(Util::config()->vectorColor);
+    txtVectorCount->setValue(Util::config()->vectorCount);
     txtVectorCount->setToolTip(tr("Width and height of bounding box over vector count."));
-    txtVectorScale->setValue(m_sceneViewSettings->vectorScale);
+    txtVectorScale->setValue(Util::config()->vectorScale);
 
     // 3d
-    chkView3DLighting->setChecked(m_sceneViewSettings->scalarView3DLighting);
+    chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
 
     // adaptivity
-    chkIsoOnly->setChecked(settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).value<bool>());
-    txtConvExp->setValue(settings.value("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP).value<double>());
-    txtThreshold->setValue(settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).value<double>());
-    cmbStrategy->setCurrentIndex(cmbStrategy->findData(settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).value<int>()));
-    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).value<int>()));
+    chkIsoOnly->setChecked(Util::config()->isoOnly);
+    txtConvExp->setValue(Util::config()->convExp);
+    txtThreshold->setValue(Util::config()->threshold);
+    cmbStrategy->setCurrentIndex(cmbStrategy->findData(Util::config()->strategy));
+    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Util::config()->meshRegularity));
 
     // command argument
-    txtArgumentTriangle->setText(settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString());
-    txtArgumentFFmpeg->setText(settings.value("Commands/FFmpeg", COMMANDS_FFMPEG).toString());
+    txtArgumentTriangle->setText(Util::config()->commandTriangle);
+    txtArgumentFFmpeg->setText(Util::config()->commandFFmpeg);
 }
 
-void OptionsDialog::save()
+void ConfigDialog::save()
 {
-    QSettings settings;
     // gui style
-    settings.setValue("General/GUIStyle", cmbGUIStyle->currentText());
+    Util::config()->guiStyle = cmbGUIStyle->currentText();
     setGUIStyle(cmbGUIStyle->currentText());
 
     // language
-    if (settings.value("General/Language", QLocale::system().name()) != cmbLanguage->currentText())
+    if (Util::config()->language != cmbLanguage->currentText())
         QMessageBox::warning(QApplication::activeWindow(),
                                  tr("Language change"),
                                  tr("Interface language has been changed. You must restart the application."));
-    settings.setValue("General/Language", cmbLanguage->currentText());
+    Util::config()->language = cmbLanguage->currentText();
 
     // default physic field
-    settings.setValue("General/DefaultPhysicField", physicFieldToStringKey((PhysicField) cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toInt()));
+    Util::config()->defaultPhysicField = (PhysicField) cmbDefaultPhysicField->itemData(cmbDefaultPhysicField->currentIndex()).toInt();
 
     // check version
-    settings.setValue("General/CheckVersion", chkCheckVersion->isChecked());
+    Util::config()->checkVersion = chkCheckVersion->isChecked();
 
     // show result in line edit value widget
-    settings.setValue("General/LineEditValueShowResult", chkLineEditValueShowResult->isChecked());
+    Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
 
     // geometry
-    settings.setValue("Geometry/AngleSegmentsCount", txtGeometryAngleSegmentsCount->value());
-    m_sceneViewSettings->geometryNodeSize = txtGeometryNodeSize->value();
-    m_sceneViewSettings->geometryEdgeWidth = txtGeometryEdgeWidth->value();
-    m_sceneViewSettings->geometryLabelSize = txtGeometryLabelSize->value();
-    settings.setValue("Geometry/ZoomToMouse", chkZoomToMouse->isChecked());
+    Util::config()->angleSegmentsCount = txtGeometryAngleSegmentsCount->value();
+    Util::config()->nodeSize = txtGeometryNodeSize->value();
+    Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
+    Util::config()->labelSize = txtGeometryLabelSize->value();
+    Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
 
     // delete files
-    settings.setValue("Solver/DeleteTriangleMeshFiles", chkDeleteTriangleMeshFiles->isChecked());
-    settings.setValue("Solver/DeleteHermes2DMeshFile", chkDeleteHermes2DMeshFile->isChecked());
+    Util::config()->deleteTriangleMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
+    Util::config()->deleteHermes2DMeshFile = chkDeleteHermes2DMeshFile->isChecked();
 
     // save problem with solution
 #ifdef BETA
-    settings.setValue("Solver/SaveProblemWithSolution", chkSaveWithSolution->isChecked());
+    Util::config()->saveProblemWithSolution = chkSaveWithSolution->isChecked();
 #endif
 
     // color
-    m_sceneViewSettings->colorBackground = colorBackground->color();
-    m_sceneViewSettings->colorGrid = colorGrid->color();
-    m_sceneViewSettings->colorCross = colorCross->color();
-    m_sceneViewSettings->colorNodes = colorNodes->color();
-    m_sceneViewSettings->colorEdges = colorEdges->color();
-    m_sceneViewSettings->colorLabels = colorLabels->color();
-    m_sceneViewSettings->colorContours = colorContours->color();
-    m_sceneViewSettings->colorVectors = colorVectors->color();
-    m_sceneViewSettings->colorInitialMesh = colorInitialMesh->color();
-    m_sceneViewSettings->colorSolutionMesh = colorSolutionMesh->color();
-    m_sceneViewSettings->colorHighlighted = colorHighlighted->color();
-    m_sceneViewSettings->colorSelected = colorSelected->color();
+    Util::config()->colorBackground = colorBackground->color();
+    Util::config()->colorGrid = colorGrid->color();
+    Util::config()->colorCross = colorCross->color();
+    Util::config()->colorNodes = colorNodes->color();
+    Util::config()->colorEdges = colorEdges->color();
+    Util::config()->colorLabels = colorLabels->color();
+    Util::config()->colorContours = colorContours->color();
+    Util::config()->colorVectors = colorVectors->color();
+    Util::config()->colorInitialMesh = colorInitialMesh->color();
+    Util::config()->colorSolutionMesh = colorSolutionMesh->color();
+    Util::config()->colorHighlighted = colorHighlighted->color();
+    Util::config()->colorSelected = colorSelected->color();
 
     // grid
-    m_sceneViewSettings->gridStep = txtGridStep->text().toDouble();
-    m_sceneViewSettings->showRulers = chkRulers->isChecked();
-    m_sceneViewSettings->snapToGrid = chkSnapToGrid->isChecked();
+    Util::config()->gridStep = txtGridStep->text().toDouble();
+    Util::config()->showRulers = chkRulers->isChecked();
+    Util::config()->snapToGrid = chkSnapToGrid->isChecked();
 
     // contours
-    m_sceneViewSettings->contoursCount = txtContoursCount->value();
+    Util::config()->contoursCount = txtContoursCount->value();
 
     // scalar field
-    m_sceneViewSettings->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
-    m_sceneViewSettings->paletteFilter = chkPaletteFilter->isChecked();
-    m_sceneViewSettings->paletteSteps = txtPaletteSteps->value();
-    m_sceneViewSettings->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
-    m_sceneViewSettings->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
+    Util::config()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
+    Util::config()->paletteFilter = chkPaletteFilter->isChecked();
+    Util::config()->paletteSteps = txtPaletteSteps->value();
+    Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
+    Util::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
 
     // vector field
-    m_sceneViewSettings->vectorProportional = chkVectorProportional->isChecked();
-    m_sceneViewSettings->vectorColor = chkVectorColor->isChecked();
-    m_sceneViewSettings->vectorCount = txtVectorCount->value();
-    m_sceneViewSettings->vectorScale = txtVectorScale->value();
+    Util::config()->vectorProportional = chkVectorProportional->isChecked();
+    Util::config()->vectorColor = chkVectorColor->isChecked();
+    Util::config()->vectorCount = txtVectorCount->value();
+    Util::config()->vectorScale = txtVectorScale->value();
 
     // 3d
-    m_sceneViewSettings->scalarView3DLighting = chkView3DLighting->isChecked();
+    Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
 
     // save
-    m_sceneViewSettings->save();
+    Util::config()->save();
 
     // adaptivity
-    settings.setValue("Adaptivity/IsoOnly", chkIsoOnly->isChecked());
-    settings.setValue("Adaptivity/ConvExp", txtConvExp->value());
-    settings.setValue("Adaptivity/Threshold", txtThreshold->value());
-    settings.setValue("Adaptivity/Strategy", cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt());
-    settings.setValue("Adaptivity/MeshRegularity", cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt());
+    Util::config()->isoOnly = chkIsoOnly->isChecked();
+    Util::config()->convExp = txtConvExp->value();
+    Util::config()->threshold = txtThreshold->value();
+    Util::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
+    Util::config()->meshRegularity = cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt();
 
     // command argument
-    settings.setValue("Commands/Triangle", txtArgumentTriangle->text());
-    settings.setValue("Commands/FFmpeg", txtArgumentFFmpeg->text());
+    Util::config()->commandTriangle = txtArgumentTriangle->text();
+    Util::config()->commandFFmpeg = txtArgumentFFmpeg->text();
 }
 
-void OptionsDialog::createControls()
+void ConfigDialog::createControls()
 {    
     lstView = new QListWidget(this);
     pages = new QStackedWidget(this);
@@ -290,7 +272,7 @@ void OptionsDialog::createControls()
     setLayout(layout);
 }
 
-QWidget *OptionsDialog::createMainWidget()
+QWidget *ConfigDialog::createMainWidget()
 {
     QWidget *mainWidget = new QWidget(this);
 
@@ -364,7 +346,7 @@ QWidget *OptionsDialog::createMainWidget()
     return mainWidget;
 }
 
-QWidget *OptionsDialog::createViewWidget()
+QWidget *ConfigDialog::createViewWidget()
 {
     QWidget *viewWidget = new QWidget(this);
 
@@ -502,7 +484,7 @@ QWidget *OptionsDialog::createViewWidget()
     return viewWidget;
 }
 
-QWidget *OptionsDialog::createColorsWidget()
+QWidget *ConfigDialog::createColorsWidget()
 {
     QWidget *colorsWidget = new QWidget(this);
 
@@ -561,7 +543,7 @@ QWidget *OptionsDialog::createColorsWidget()
     return colorsWidget;
 }
 
-QWidget *OptionsDialog::createAdvancedWidget()
+QWidget *ConfigDialog::createAdvancedWidget()
 {
     QWidget *viewWidget = new QWidget(this);
 
@@ -639,29 +621,29 @@ QWidget *OptionsDialog::createAdvancedWidget()
     return viewWidget;
 }
 
-void OptionsDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+void ConfigDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     pages->setCurrentIndex(lstView->row(current));
 }
 
-void OptionsDialog::doAccept()
+void ConfigDialog::doAccept()
 {
     save();
 
     accept();
 }
 
-void OptionsDialog::doReject()
+void ConfigDialog::doReject()
 {
     reject();
 }
 
-void OptionsDialog::doPaletteFilter(int state)
+void ConfigDialog::doPaletteFilter(int state)
 {
     txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
 }
 
-void OptionsDialog::doClearCommandHistory()
+void ConfigDialog::doClearCommandHistory()
 {
     QSettings settings;
     settings.setValue("CommandDialog/RecentCommands", QStringList());
@@ -671,7 +653,7 @@ void OptionsDialog::doClearCommandHistory()
     QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared succesfully."));
 }
 
-void OptionsDialog::doAdvancedDefault()
+void ConfigDialog::doAdvancedDefault()
 {
     // adaptivity
     chkIsoOnly->setChecked(ADAPTIVITY_ISOONLY);
@@ -685,7 +667,7 @@ void OptionsDialog::doAdvancedDefault()
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
 }
 
-void OptionsDialog::doScalarFieldLog(int state)
+void ConfigDialog::doScalarFieldLog(int state)
 {
     txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }

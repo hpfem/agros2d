@@ -4,15 +4,15 @@ QT += opengl \
     webkit \
     network
 
-CONFIG(debug): DEFINES += BETA
+# CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=0
-DEFINES += VERSION_SUB=2
-DEFINES += VERSION_GIT=343
+DEFINES += VERSION_SUB=3
+DEFINES += VERSION_GIT=348
 DEFINES += VERSION_YEAR=2010
 DEFINES += VERSION_MONTH=04
-DEFINES += VERSION_DAY=01
+DEFINES += VERSION_DAY=05
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -61,7 +61,8 @@ SOURCES += util.cpp \
     problemdialog.cpp \
     scenetransformdialog.cpp \
     sceneviewdialog.cpp \
-    optionsdialog.cpp \
+    config.cpp \
+    configdialog.cpp \
     helpdialog.cpp \
     scenesolution.cpp \
     dxflib/dl_writer_ascii.cpp \
@@ -100,7 +101,8 @@ HEADERS += util.h \
     problemdialog.h \
     scenetransformdialog.h \
     sceneviewdialog.h \
-    optionsdialog.h \
+    config.h \
+    configdialog.h \
     helpdialog.h \
     scenesolution.h \
     reportdialog.h \

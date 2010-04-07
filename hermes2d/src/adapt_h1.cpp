@@ -73,7 +73,7 @@ H1AdaptHP::~H1AdaptHP()
 }
 
 void H1AdaptHP::init_instance(int num, Space** spaces) {
-  debug_assert(num < H2D_MAX_NUM_EQUATIONS, "E to many spaces (%d), only %d supported", num, H2D_MAX_NUM_EQUATIONS);
+  assert_msg(num < H2D_MAX_NUM_EQUATIONS, "E to many spaces (%d), only %d supported", num, H2D_MAX_NUM_EQUATIONS);
 
   this->num = num;
   for (int i = 0; i < num; i++)

@@ -43,7 +43,6 @@ class SceneViewSettings
 public:
     bool showGeometry;
     bool showGrid;
-    bool showRulers;
     bool showInitialMesh;
 
     SceneViewPostprocessorShow postprocessorShow;
@@ -52,17 +51,7 @@ public:
     bool showVectors;
     bool showSolutionMesh;
 
-    // geometry
-    double geometryNodeSize;
-    double geometryEdgeWidth;
-    double geometryLabelSize;
-
-    // grid
-    double gridStep;
-    bool snapToGrid;
-
     // contour
-    int contoursCount;
     PhysicFieldVariable contourPhysicFieldVariable;
 
     // scalar view
@@ -71,43 +60,13 @@ public:
     bool scalarRangeAuto;
     double scalarRangeMin;
     double scalarRangeMax;
-    bool scalarRangeLog;
-    double scalarRangeBase;
 
     // vector view
     PhysicFieldVariable vectorPhysicFieldVariable;
-    bool vectorProportional;
-    bool vectorColor;
-    int vectorCount;
-    double vectorScale;
-
-    // 3d
-    bool scalarView3DLighting;
-
-    // palette
-    PaletteType paletteType;
-    int paletteSteps;
-    bool paletteFilter;
-
-    // colors
-    QColor colorBackground;
-    QColor colorGrid;
-    QColor colorCross;
-    QColor colorNodes;
-    QColor colorEdges;
-    QColor colorLabels;
-    QColor colorContours;
-    QColor colorVectors;
-    QColor colorInitialMesh;
-    QColor colorSolutionMesh;
-    QColor colorHighlighted;
-    QColor colorSelected;    
 
     SceneViewSettings();
 
     void defaultValues();
-    void load();
-    void save();
 };
 
 class SceneView : public QGLWidget

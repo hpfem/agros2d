@@ -38,7 +38,7 @@ WeakForm::WeakForm(int neq, bool mat_free)
 
 scalar WeakForm::LiFormVol::evaluate_fn(int point_cnt, double *weights, Func<double> *values_v, Geom<double> *geometry, ExtData<scalar> *values_ext_fnc, Element* element, Shapeset* shape_set, int shape_inx)
 {
-  debug_assert(fn != NULL || fn_extended != NULL, "E both version of functions of LinForm are NULL");
+  assert_msg(fn != NULL || fn_extended != NULL, "E both version of functions of LinForm are NULL");
   if (fn != NULL)
     return fn(point_cnt, weights, values_v, geometry, values_ext_fnc);
   else
@@ -47,7 +47,7 @@ scalar WeakForm::LiFormVol::evaluate_fn(int point_cnt, double *weights, Func<dou
 
 Ord WeakForm::LiFormVol::evaluate_ord(int point_cnt, double *weights, Func<Ord> *values_v, Geom<Ord> *geometry, ExtData<Ord> *values_ext_fnc, Element* element, Shapeset* shape_set, int shape_inx)
 {
-  debug_assert(ord != NULL || ord_extended != NULL, "E both version of order functions of LinForm are NULL");
+  assert_msg(ord != NULL || ord_extended != NULL, "E both version of order functions of LinForm are NULL");
   if (ord != NULL)
     return ord(point_cnt, weights, values_v, geometry, values_ext_fnc);
   else

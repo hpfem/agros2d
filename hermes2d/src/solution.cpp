@@ -606,9 +606,9 @@ void Solution::set_active_element(Element* e)
 
       make_dx_coefs(mode, o, mono, dxdy_coefs[i][1] = dxdy_buffer+m);  m += n;
       make_dy_coefs(mode, o, mono, dxdy_coefs[i][2] = dxdy_buffer+m);  m += n;
-      //make_dx_coefs(mode, o, dxdy_coefs[i][1], dxdy_coefs[i][3] = dxdy_buffer+m);  m += n;
-      //make_dy_coefs(mode, o, dxdy_coefs[i][2], dxdy_coefs[i][4] = dxdy_buffer+m);  m += n;
-      //make_dx_coefs(mode, o, dxdy_coefs[i][2], dxdy_coefs[i][5] = dxdy_buffer+m);  m += n;
+      make_dx_coefs(mode, o, dxdy_coefs[i][1], dxdy_coefs[i][3] = dxdy_buffer+m);  m += n;
+      make_dy_coefs(mode, o, dxdy_coefs[i][2], dxdy_coefs[i][4] = dxdy_buffer+m);  m += n;
+      make_dx_coefs(mode, o, dxdy_coefs[i][2], dxdy_coefs[i][5] = dxdy_buffer+m);  m += n;
     }
   }
   else if (type == EXACT)
@@ -652,17 +652,39 @@ static inline void vec_x_vec_p_vec(int n, scalar* y, scalar* x, scalar* z)
 
 
 static const int GRAD = FN_DX_0 | FN_DY_0;
+static const int SECOND = FN_DXX_0 | FN_DXY_0 | FN_DYY_0;
 static const int CURL = FN_DX | FN_DY;
 
 
 void Solution::transform_values(int order, Node* node, int newmask, int oldmask, int np)
 {
   double2x2 *mat, *m;
+  double3x2 *mat2, *mm;
   int i, mstep = 0;
 
   // H1 space
   if (space_type == 0)
   {
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+    if (((newmask & SECOND) == SECOND && (oldmask & SECOND) != SECOND))
+    {
+      update_refmap();
+      mat = refmap->get_inv_ref_map(order);
+      mat2 = refmap->get_second_ref_map(order);
+      for (i = 0, m = mat, mm = mat2; i < np; i++, m++, mm++)
+      {
+        scalar vx = node->values[0][1][i];
+        scalar vy = node->values[0][2][i];
+        scalar vxx = node->values[0][3][i];
+        scalar vyy = node->values[0][4][i];
+        scalar vxy = node->values[0][5][i];
+
+        node->values[0][3][i] = sqr((*m)[0][0])*vxx + 2*(*m)[0][1]*(*m)[0][0]*vxy + sqr((*m)[0][1])*vyy + (*mm)[0][0]*vx + (*mm)[0][1]*vy;   // dxx
+        node->values[0][4][i] = sqr((*m)[1][0])*vxx + 2*(*m)[1][1]*(*m)[1][0]*vxy + sqr((*m)[1][1])*vyy + (*mm)[2][0]*vx + (*mm)[2][1]*vy;   // dyy
+        node->values[0][5][i] = (*m)[0][0]*(*m)[1][0]*vxx + ((*m)[0][0]*(*m)[1][1]+(*m)[1][0]*(*m)[0][1])*vxy + (*m)[0][1]*(*m)[1][1]*vyy + (*mm)[1][0]*vx + (*mm)[1][1]*vy;   //dxy
+      }
+    }
+#endif
     if ((newmask & GRAD) == GRAD && (oldmask & GRAD) != GRAD)
     {
       update_refmap();
@@ -746,11 +768,15 @@ void Solution::precalculate(int order, int mask)
   {
     // if we are required to transform vectors, we must precalculate both their components
     const int GRAD = FN_DX_0 | FN_DY_0;
+    const int SECOND = FN_DXX_0 | FN_DXY_0 | FN_DYY_0;
     const int CURL = FN_DX | FN_DY; // sic
     if (transform)
     {
       if (num_components == 1)                                            // H1 space
-        { if ((mask & FN_DX_0)  || (mask & FN_DY_0))  mask |= GRAD; }
+      {
+        if ((mask & FN_DX_0)  || (mask & FN_DY_0))  mask |= GRAD;
+        if ((mask & FN_DXX_0)  || (mask & FN_DXY_0) || (mask & FN_DYY_0))  mask |= SECOND;
+      }
       else if (space_type == 1)                                           // Hcurl space
         { if ((mask & FN_VAL_0) || (mask & FN_VAL_1)) mask |= FN_VAL;
           if ((mask & FN_DX_1)  || (mask & FN_DY_0))  mask |= CURL; }

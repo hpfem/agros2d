@@ -481,7 +481,7 @@ QLayout* DSceneLabel::createContent()
     cmbMarker = new QComboBox();
     connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
     btnMarker = new QPushButton("...");
-    btnMarker->setMaximumWidth(25);
+    btnMarker->setMaximumSize(btnMarker->sizeHint());
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtArea = new SLineEditValue();
     connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

@@ -80,10 +80,14 @@ template<typename T>
 class Func
 {
 public:
-	int nc;							// number of components
-	T *val;							// function values. If orders differ for a diffrent direction, this returns max(h_order, v_order).
+	int nc;					// number of components
+	T *val;					// function values. If orders differ for a diffrent 
+                                                // direction, this returns max(h_order, v_order).
 	T *dx, *dy; 				// derivatives
-
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+        T *laplace;                             // must be enabled by defining H2D_SECOND_DERIVATIVES_ENABLED  
+                                                // in common.h. Default is NOT ENABLED.
+#endif
 	T *val0, *val1;				// components of function values
 	T *dx0, *dx1;				// components of derivatives
 	T *dy0, *dy1;
@@ -96,6 +100,9 @@ public:
 		dx = dx0 = dx1 = NULL;
 		dy = dy0 = dy1 = NULL;
 		curl = NULL;
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+                laplace = NULL;
+#endif
 	}
 
   void free_ord()  {  delete val;  }
@@ -104,6 +111,9 @@ public:
     delete [] val;
     delete [] dx;
     delete [] dy;
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+    delete [] laplace;
+#endif
 
     delete [] val0; delete [] val1;
     delete [] dx0;  delete [] dx1;
@@ -119,13 +129,17 @@ class Geom
 {
 public:
   int marker;      // marker
-	T *x, *y;				 // coordinates [in physical domain]
+  int id;
+  Element *element; // active element
+
+  T *x, *y;				 // coordinates [in physical domain]
 	T *nx, *ny;			 // normals [in physical domain]
 	T *tx, *ty;			 // tangents [in physical domain]
 
 	Geom()
   {
     marker = 0;
+    id = 0;
 		x = y = NULL;
 		nx = ny = NULL;
 		tx = ty = NULL;

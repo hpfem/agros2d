@@ -337,9 +337,7 @@ void VideoDialog::doCommandFFmpeg()
     if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "ffmpeg"))
         ffmpegBinary = QApplication::applicationDirPath() + QDir::separator() + "ffmpeg";
 
-    QSettings settings;
-    QString argument = settings.value("Commands/FFmpeg", COMMANDS_FFMPEG).toString();
-    commandFFmpeg = QString(argument).
+    commandFFmpeg = QString(Util::config()->commandFFmpeg).
                     arg(ffmpegBinary).
                     arg(txtFPS->value()).
                     arg(tempProblemDir() + "/video/").

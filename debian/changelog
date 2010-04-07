@@ -1,3 +1,10 @@
+agros2d (1.0-3ubuntu7) karmic; urgency=low
+
+  * expressions in chart editor
+  * zoom to mouse
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 05 Apr 2010 22:50:00 +0200
+
 agros2d (1.0-3ubuntu6) karmic; urgency=low
 
   * expressions in chart editor

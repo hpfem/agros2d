@@ -28,11 +28,11 @@ class ColorButton;
 
 struct SceneViewSettings;
 
-class OptionsDialog : public QDialog
+class ConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    OptionsDialog(SceneViewSettings *sceneViewSettings, QWidget *parent);
+    ConfigDialog(QWidget *parent);
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
@@ -45,8 +45,6 @@ private slots:
     void doReject();
 
 private:
-    SceneViewSettings *m_sceneViewSettings;
-
     QListWidget *lstView;
     QStackedWidget *pages;
     QWidget *panMain;

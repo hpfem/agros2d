@@ -27,8 +27,8 @@ namespace RefinementSelectors {
     : start_order_h(get_h_order(start_quad_order)), start_order_v(get_v_order(start_quad_order))
     , end_order_h(get_h_order(end_quad_order)), end_order_v(get_v_order(end_quad_order))
     , uniform(uniform), tgt_quad_order(tgt_quad_order) {
-    debug_assert(!uniform || start_order_h == start_order_v, "E uniform orders requested but start orders (H:%d, V:%d) are not uniform", order_h, order_v);
-    debug_assert(start_order_h <= end_order_h && start_order_v <= end_order_v, "E end orders (H:%d, V:%d) are below start orders (H:%d, V:%d)", end_order_h, end_order_v, start_order_h, start_order_v);
+    assert_msg(!uniform || start_order_h == start_order_v, "E uniform orders requested but start orders (H:%d, V:%d) are not uniform", order_h, order_v);
+    assert_msg(start_order_h <= end_order_h && start_order_v <= end_order_v, "E end orders (H:%d, V:%d) are below start orders (H:%d, V:%d)", end_order_h, end_order_v, start_order_h, start_order_v);
     reset();
   }
 
@@ -62,7 +62,7 @@ namespace RefinementSelectors {
   OptimumSelector::OptimumSelector(bool iso_only, AllowedCandidates cands_allowed, double conv_exp, int max_order, Shapeset* shapeset)
     : Selector(max_order), iso_only(iso_only), cands_allowed(cands_allowed)
     , conv_exp(conv_exp), shapeset(shapeset) {
-    debug_assert(shapeset != NULL, "E shapeset is NULL");
+    assert_msg(shapeset != NULL, "E shapeset is NULL");
   }
 
   void OptimumSelector::set_current_order_range(Element* element) {
@@ -307,14 +307,14 @@ namespace RefinementSelectors {
     //make an uniform order in a case of a triangle
     int order_h = get_h_order(quad_order), order_v = get_v_order(quad_order);
     if (element->is_triangle()) {
-      debug_assert(order_v == 0, "E element %d is a triangle but order_v (%d) is not zero", element->id, order_v);
+      assert_msg(order_v == 0, "E element %d is a triangle but order_v (%d) is not zero", element->id, order_v);
       order_v = order_h;
       quad_order = make_quad_order(order_h, order_v); //in a case of a triangle, order_v is zero. Set it to order_h in order to simplify the routines.
     }
 
     //check validity
-    debug_assert(!iso_only || order_h == order_v, "E iso_only requested but order (%d, %d) of element %d does not match", order_h, order_v);
-    debug_assert(std::max(order_h, order_v) <= H2DRS_MAX_ORDER, "E given order (%d, %d) exceedes the maximum supported order %d", order_h, order_v, H2DRS_MAX_ORDER);
+    assert_msg(!iso_only || order_h == order_v, "E iso_only requested but order (%d, %d) of element %d does not match", order_h, order_v);
+    assert_msg(std::max(order_h, order_v) <= H2DRS_MAX_ORDER, "E given order (%d, %d) exceedes the maximum supported order %d", order_h, order_v, H2DRS_MAX_ORDER);
 
     //set shapeset mode
     if (element->is_triangle())
@@ -360,9 +360,9 @@ namespace RefinementSelectors {
     if (element->is_triangle())
     {
       for(int i = 0; i < H2D_MAX_ELEMENT_SONS; i++) {
-        debug_assert(get_v_order(refinement.p[i]) == 0 || get_h_order(refinement.p[i]) == get_v_order(refinement.p[i]), "E triangle processed but the resulting order (%d, %d) of son %d is not uniform", get_h_order(refinement.p[i]), get_v_order(refinement.p[i]), i);
+        assert_msg(get_v_order(refinement.p[i]) == 0 || get_h_order(refinement.p[i]) == get_v_order(refinement.p[i]), "E triangle processed but the resulting order (%d, %d) of son %d is not uniform", get_h_order(refinement.p[i]), get_v_order(refinement.p[i]), i);
         refinement.p[i] = make_quad_order(get_h_order(refinement.p[i]), 0);
-        debug_assert(get_v_order(refinement.q[i]) == 0 || get_h_order(refinement.q[i]) == get_v_order(refinement.q[i]), "E triangle processed but the resulting q-order (%d, %d) of son %d is not uniform", get_h_order(refinement.q[i]), get_v_order(refinement.q[i]), i);
+        assert_msg(get_v_order(refinement.q[i]) == 0 || get_h_order(refinement.q[i]) == get_v_order(refinement.q[i]), "E triangle processed but the resulting q-order (%d, %d) of son %d is not uniform", get_h_order(refinement.q[i]), get_v_order(refinement.q[i]), i);
         refinement.q[i] = make_quad_order(get_h_order(refinement.q[i]), 0);
       }
     }
@@ -374,7 +374,7 @@ namespace RefinementSelectors {
   }
 
   void OptimumSelector::update_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders) {
-    debug_assert(refinement != H2D_REFINEMENT_P, "E P-candidate not supported for updating shared orders");
+    assert_msg(refinement != H2D_REFINEMENT_P, "E P-candidate not supported for updating shared orders");
     const int num_sons = get_refin_sons(refinement);
     if (suggested_quad_orders != NULL) {
       for(int i = 0; i < num_sons; i++)

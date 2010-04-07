@@ -56,7 +56,6 @@ void DxfFilter::addArc(const DL_ArcData& a)
 
 void DxfFilter::addCircle(const DL_CircleData& c)
 {
-    qDebug() << "OK";
     // nodes
     SceneNode *node1 = m_scene->addNode(new SceneNode(Point(c.cx + c.radius, c.cy)));
     SceneNode *node2 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy + c.radius)));
@@ -92,6 +91,10 @@ Util::Util()
     QStringListModel *model = dynamic_cast<QStringListModel *>(m_completer->model());
     model->setStringList(list);
 
+    // config
+    m_config = new Config();
+    m_config->load();
+
     initLists();
 }
 
@@ -100,6 +103,7 @@ Util::~Util()
     delete m_scene;
     delete m_helpDialog;
     delete m_completer;
+    delete m_config;
 }
 
 Util *Util::singleton()

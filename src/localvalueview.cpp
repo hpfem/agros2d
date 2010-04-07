@@ -91,10 +91,10 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
 
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
 
-    QToolButton *btnPoint = new QToolButton();
+    QPushButton *btnPoint = new QPushButton();
     btnPoint->setText(actPoint->text());
     btnPoint->setIcon(actPoint->icon());
-    btnPoint->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    btnPoint->setMaximumSize(btnPoint->sizeHint());
     connect(btnPoint, SIGNAL(clicked()), this, SLOT(doPoint()));
 
     // main widget
