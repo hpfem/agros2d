@@ -17,7 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "optionsdialog.h"
+#include "configdialog.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
@@ -417,7 +417,7 @@ QWidget *ConfigDialog::createViewWidget()
 
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 2);
+    layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 1);
 
     layoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 0);
     layoutScalarField->addWidget(txtPaletteSteps, 1, 1);

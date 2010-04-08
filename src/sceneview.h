@@ -82,6 +82,7 @@ public slots:
     void doSceneObjectProperties();
     void doSceneModeSet(QAction *action);
     void doSelectMarker();
+    void doProcessSolution();
     void doInvalidated();
     void doSolved();
     void doDefaultValues();
@@ -169,6 +170,13 @@ private:
 
     double m_texScale, m_texShift;
 
+    // gl lists
+    int m_listContours;
+    int m_listVectors;
+    int m_listScalarField;
+    int m_listScalarField3D;
+    int m_listOrder;
+
     // helper for snap to grid
     bool m_snapToGrid;
 
@@ -230,14 +238,16 @@ private:
     void setRangeScalar();
     void setRangeVector();
     void selectRegion(const Point &start, const Point &end);
+
     inline Point &position(const Point &point) { Point p((2.0/contextWidth()*point.x-1)/m_scale*m_aspect+m_offset.x, -(2.0/contextHeight()*point.y-1)/m_scale+m_offset.y); return p; }
+
+    void clearGLLists();
 
 private slots:
     void doMaterialGroup(QAction *action);
     void doBoundaryGroup(QAction *action);
     void doShowGroup(QAction *action);
     void doPostprocessorModeGroup(QAction *action);
-    void doProcessSolution();
 };
 
 #endif // SCENEVIEW_H

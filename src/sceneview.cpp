@@ -336,6 +336,20 @@ void SceneView::paintGL()
     paintSceneModeLabel();
 }
 
+
+void SceneView::clearGLLists()
+{
+    glDeleteLists(1, 5);
+
+    m_listContours = -1;
+    m_listVectors = -1;
+    m_listScalarField = -1;
+    m_listScalarField3D = -1;
+    m_listOrder = -1;
+
+    updateGL();
+}
+
 // paint *****************************************************************************************************************************
 
 void SceneView::paintGrid()
@@ -660,7 +674,6 @@ void SceneView::paintInitialMesh()
         }
     }
     glEnd();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void SceneView::paintSolutionMesh()
@@ -687,92 +700,103 @@ void SceneView::paintSolutionMesh()
         }
     }
     glEnd();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void SceneView::paintOrder()
 {
     if (!m_isSolutionPrepared) return;
 
-    // order scalar view
-    m_scene->sceneSolution()->ordView().lock_data();
-
-    double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
-    int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
-
-    // draw mesh
-    int min = 11;
-    int max = 1;
-    for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+    if (m_listOrder == -1)
     {
-        if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
-        if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
-    }
+        m_listOrder = glGenLists(1);
+        glNewList(m_listOrder, GL_COMPILE);
 
-    // triangles
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
-    {
-        int color = vert[tris[i][0]][2];
-        glColor3d(paletteOrder[color][0], paletteOrder[color][1], paletteOrder[color][2]);
+        // order scalar view
+        m_scene->sceneSolution()->ordView().lock_data();
 
-        glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
-        glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
-        glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
-    }
-    glEnd();
-    m_scene->sceneSolution()->ordView().unlock_data();
+        double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
+        int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
 
-    // order color map
-    glPushMatrix();
-    glLoadIdentity();
+        // draw mesh
+        int min = 11;
+        int max = 1;
+        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+        {
+            if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
+            if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
+        }
 
-    glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
-    glTranslated(- contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+        // triangles
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+        {
+            int color = vert[tris[i][0]][2];
+            glColor3d(paletteOrder[color][0], paletteOrder[color][1], paletteOrder[color][2]);
 
-    glDisable(GL_DEPTH_TEST);
+            glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
+            glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
+            glVertex2d(vert[tris[i][2]][0], vert[tris[i][2]][1]);
+        }
+        glEnd();
+        m_scene->sceneSolution()->ordView().unlock_data();
 
-    // dimensions
-    int textWidth = fontMetrics().width("00");
-    int textHeight = fontMetrics().height();
-    Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, 10.0);
-    double scaleLeft = (contextWidth() - (20 + 3 * textWidth));
+        // order color map
+        glPushMatrix();
+        glLoadIdentity();
 
-    // blended rectangle
-    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
-              0.91, 0.91, 0.91);
+        glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
+        glTranslated(- contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
 
-    // bars
-    glBegin(GL_QUADS);
-    for (int i = 1; i < max+1; i++)
-    {
+        glDisable(GL_DEPTH_TEST);
+
+        // dimensions
+        int textWidth = fontMetrics().width("00");
+        int textHeight = fontMetrics().height();
+        Point scaleSize = Point(20 + 3 * textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
+        Point scaleBorder = Point(10.0, 10.0);
+        double scaleLeft = (contextWidth() - (20 + 3 * textWidth));
+
+        // blended rectangle
+        drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
+                  0.91, 0.91, 0.91);
+
+        // bars
+        glBegin(GL_QUADS);
+        for (int i = 1; i < max+1; i++)
+        {
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+            glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
+            glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+            glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+
+            glColor3d(paletteOrder[i][0], paletteOrder[i][1], paletteOrder[i][2]);
+            glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+            glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
+            glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+            glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+        }
+        glEnd();
+
+        // labels
         glColor3f(0.0, 0.0, 0.0);
-        glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
-        glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
+        for (int i = 1; i < max + 1; i++)
+        {
+            int sizeNumber = fontMetrics().width(QString::number(i));
+            renderText(scaleLeft + 10 + 1.5 * textWidth - sizeNumber,
+                       scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
+                       0.0,
+                       QString::number(i));
+        }
 
-        glColor3d(paletteOrder[i][0], paletteOrder[i][1], paletteOrder[i][2]);
-        glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
-        glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
-        glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
+        glPopMatrix();
+
+        glEndList();
     }
-    glEnd();
-
-    // labels
-    glColor3f(0.0, 0.0, 0.0);
-    for (int i = 1; i < max + 1; i++)
+    else
     {
-        int sizeNumber = fontMetrics().width(QString::number(i));
-        renderText(scaleLeft + 10 + 1.5 * textWidth - sizeNumber,
-                   scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
-                   0.0,
-                   QString::number(i));
+        glCallList(m_listOrder);
     }
-
-    glPopMatrix();
 }
 
 void SceneView::paintColorBar(double min, double max)
@@ -862,157 +886,183 @@ void SceneView::paintScalarField()
 {
     if (!m_isSolutionPrepared) return;
 
-    // range
-    double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
-    // special case: constant solution
-    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < EPS_ZERO)
-        irange = 1.0;
-
-    m_scene->sceneSolution()->linScalarView().lock_data();
-
-    double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
-    int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
-    Point point[3];
-    double value[3];
-
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-    glEnable(GL_TEXTURE_1D);
-    glBindTexture(GL_TEXTURE_1D, 1);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonOffset(1.0, 1.0);
-
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+    if (m_listScalarField == -1)
     {
-        point[0].x = linVert[linTris[i][0]][0];
-        point[0].y = linVert[linTris[i][0]][1];
-        value[0]   = linVert[linTris[i][0]][2];
-        point[1].x = linVert[linTris[i][1]][0];
-        point[1].y = linVert[linTris[i][1]][1];
-        value[1]   = linVert[linTris[i][1]][2];
-        point[2].x = linVert[linTris[i][2]][0];
-        point[2].y = linVert[linTris[i][2]][1];
-        value[2]   = linVert[linTris[i][2]][2];
+        m_listScalarField = glGenLists(1);
+        glNewList(m_listScalarField, GL_COMPILE);
 
-        if (!m_sceneViewSettings.scalarRangeAuto)
+        // range
+        double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
+        // special case: constant solution
+        if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < EPS_ZERO)
+            irange = 1.0;
+
+        m_scene->sceneSolution()->linScalarView().lock_data();
+
+        double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
+        int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
+        Point point[3];
+        double value[3];
+
+        glEnable(GL_TEXTURE_1D);
+        glBindTexture(GL_TEXTURE_1D, 1);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPolygonOffset(1.0, 1.0);
+
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
         {
-            double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-            if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
-                continue;
+            point[0].x = linVert[linTris[i][0]][0];
+            point[0].y = linVert[linTris[i][0]][1];
+            value[0]   = linVert[linTris[i][0]][2];
+            point[1].x = linVert[linTris[i][1]][0];
+            point[1].y = linVert[linTris[i][1]][1];
+            value[1]   = linVert[linTris[i][1]][2];
+            point[2].x = linVert[linTris[i][2]][0];
+            point[2].y = linVert[linTris[i][2]][1];
+            value[2]   = linVert[linTris[i][2]][2];
+
+            if (!m_sceneViewSettings.scalarRangeAuto)
+            {
+                double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                    continue;
+            }
+
+            if (Util::config()->scalarRangeLog)
+                glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[0] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
+            else
+                glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+            glVertex2d(point[0].x, point[0].y);
+
+            if (Util::config()->scalarRangeLog)
+                glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[1] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
+            else
+                glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+            glVertex2d(point[1].x, point[1].y);
+
+            if (Util::config()->scalarRangeLog)
+                glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[2] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
+            else
+                glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+            glVertex2d(point[2].x, point[2].y);
         }
+        glEnd();
+        glDisable(GL_POLYGON_OFFSET_FILL);
+        glDisable(GL_TEXTURE_1D);
 
-        if (Util::config()->scalarRangeLog)
-            glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[0] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
-        else
-            glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        glVertex2d(point[0].x, point[0].y);
+        m_scene->sceneSolution()->linScalarView().unlock_data();
 
-        if (Util::config()->scalarRangeLog)
-            glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[1] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
-        else
-            glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        glVertex2d(point[1].x, point[1].y);
-
-        if (Util::config()->scalarRangeLog)
-            glTexCoord2d(log10(1.0 + (Util::config()->scalarRangeBase-1.0)*(value[2] - m_sceneViewSettings.scalarRangeMin) * irange)/log10(Util::config()->scalarRangeBase) * m_texScale + m_texShift, 0.0);
-        else
-            glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        glVertex2d(point[2].x, point[2].y);
+        glEndList();
     }
-    glEnd();
-    glDisable(GL_POLYGON_OFFSET_FILL);
-    glDisable(GL_TEXTURE_1D);
-    glDisable(GL_LIGHTING);
-
-    m_scene->sceneSolution()->linScalarView().unlock_data();
+    else
+    {
+        glCallList(m_listScalarField);
+    }
 
     paintColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
 }
 
 void SceneView::paintScalarField3D()
 {
-    // range
-    double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
-    // special case: constant solution
-    if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.scalarRangeMin -= 0.5; }
+    if (!m_isSolutionPrepared) return;
 
-    m_scene->sceneSolution()->linScalarView().lock_data();
-
-    double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
-    int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
-    Point point[3];
-    double value[3];
-
-    double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
-
-    if (Util::config()->scalarView3DLighting)
+    if (m_listScalarField3D == -1)
     {
-        glEnable(GL_LIGHTING);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        m_listScalarField3D = glGenLists(1);
+        glNewList(m_listScalarField3D, GL_COMPILE);
+
+        // range
+        double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
+        // special case: constant solution
+        if (fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax) < 1e-8) { irange = 1.0; m_sceneViewSettings.scalarRangeMin -= 0.5; }
+
+        m_scene->sceneSolution()->linScalarView().lock_data();
+
+        double3* linVert = m_scene->sceneSolution()->linScalarView().get_vertices();
+        int3* linTris = m_scene->sceneSolution()->linScalarView().get_triangles();
+        Point point[3];
+        double value[3];
+
+        double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
+
+        if (Util::config()->scalarView3DLighting)
+        {
+            glEnable(GL_LIGHTING);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        }
+        else
+        {
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        }
+
+        glPushMatrix();
+        glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_1D);
+        glBindTexture(GL_TEXTURE_1D, 1);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonOffset(1.0, 1.0);
+
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
+        {
+            point[0].x = linVert[linTris[i][0]][0];
+            point[0].y = linVert[linTris[i][0]][1];
+            value[0]   = linVert[linTris[i][0]][2];
+            point[1].x = linVert[linTris[i][1]][0];
+            point[1].y = linVert[linTris[i][1]][1];
+            value[1]   = linVert[linTris[i][1]][2];
+            point[2].x = linVert[linTris[i][2]][0];
+            point[2].y = linVert[linTris[i][2]][1];
+            value[2]   = linVert[linTris[i][2]][2];
+
+            if (!m_sceneViewSettings.scalarRangeAuto)
+            {
+                double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
+                    continue;
+            }
+
+            double delta = 0.0;
+
+            if (Util::config()->scalarView3DLighting)
+                glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
+            glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+            glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
+            // glVertex3d(point[0].x, point[0].y, - delta - value[0]);
+
+            if (Util::config()->scalarView3DLighting)
+                glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
+            glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+            glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
+            // glVertex3d(point[1].x, point[1].y, - delta - value[1]);
+
+            if (Util::config()->scalarView3DLighting)
+                glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
+            glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
+            glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
+            // glVertex3d(point[2].x, point[2].y, - delta - value[2]);
+        }
+        glEnd();
+        glDisable(GL_POLYGON_OFFSET_FILL);
+        glDisable(GL_TEXTURE_1D);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_DEPTH_TEST);
+
+        glPopMatrix();
+
+        m_scene->sceneSolution()->linScalarView().unlock_data();
+
+        glEndList();
     }
     else
     {
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        glCallList(m_listScalarField3D);
     }
-
-    glPushMatrix();
-    glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_1D);
-    glBindTexture(GL_TEXTURE_1D, 1);   
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonOffset(1.0, 1.0);
-
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->linScalarView().get_num_triangles(); i++)
-    {
-        point[0].x = linVert[linTris[i][0]][0];
-        point[0].y = linVert[linTris[i][0]][1];
-        value[0]   = linVert[linTris[i][0]][2];
-        point[1].x = linVert[linTris[i][1]][0];
-        point[1].y = linVert[linTris[i][1]][1];
-        value[1]   = linVert[linTris[i][1]][2];
-        point[2].x = linVert[linTris[i][2]][0];
-        point[2].y = linVert[linTris[i][2]][1];
-        value[2]   = linVert[linTris[i][2]][2];
-
-        if (!m_sceneViewSettings.scalarRangeAuto)
-        {
-            double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-            if (avgValue < m_sceneViewSettings.scalarRangeMin || avgValue > m_sceneViewSettings.scalarRangeMax)
-                continue;
-        }
-
-        double delta = 0.0;
-
-        if (Util::config()->scalarView3DLighting)
-            glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
-        glTexCoord2d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
-        // glVertex3d(point[0].x, point[0].y, - delta - value[0]);
-
-        if (Util::config()->scalarView3DLighting)
-            glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
-        glTexCoord2d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
-        // glVertex3d(point[1].x, point[1].y, - delta - value[1]);
-
-        if (Util::config()->scalarView3DLighting)
-            glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
-        glTexCoord2d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange * m_texScale + m_texShift, 0.0);
-        glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
-        // glVertex3d(point[2].x, point[2].y, - delta - value[2]);
-    }
-    glEnd();
-    glDisable(GL_POLYGON_OFFSET_FILL);
-    glDisable(GL_TEXTURE_1D);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_DEPTH_TEST);
-
-    glPopMatrix();
-
-    m_scene->sceneSolution()->linScalarView().unlock_data();
 
     paintColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
 }
@@ -1025,48 +1075,60 @@ void SceneView::paintContours()
 {
     if (!m_isSolutionPrepared) return;
 
-    m_scene->sceneSolution()->linContourView().lock_data();
-
-    double3* tvert = m_scene->sceneSolution()->linContourView().get_vertices();
-    int3* tris = m_scene->sceneSolution()->linContourView().get_triangles();
-
-    // transform variable
-    double rangeMin =  1e100;
-    double rangeMax = -1e100;
-
-    double3* vert = new double3[m_scene->sceneSolution()->linContourView().get_num_vertices()];
-    for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_vertices(); i++)
+    if (m_listContours == -1)
     {
-        vert[i][0] = tvert[i][0];
-        vert[i][1] = tvert[i][1];
-        vert[i][2] = tvert[i][2];
+        m_listContours = glGenLists(1);
+        glNewList(m_listContours, GL_COMPILE);
 
-        if (vert[i][2] > rangeMax) rangeMax = tvert[i][2];
-        if (vert[i][2] < rangeMin) rangeMin = tvert[i][2];
-    }
+        m_scene->sceneSolution()->linContourView().lock_data();
 
-    // value range
-    double step = (rangeMax-rangeMin)/Util::config()->contoursCount;
+        double3* tvert = m_scene->sceneSolution()->linContourView().get_vertices();
+        int3* tris = m_scene->sceneSolution()->linContourView().get_triangles();
 
-    // draw contours    
-    glLineWidth(1.0);
-    glColor3f(Util::config()->colorContours.redF(),
-              Util::config()->colorContours.greenF(),
-              Util::config()->colorContours.blueF());
-    glBegin(GL_LINES);
+        // transform variable
+        double rangeMin =  1e100;
+        double rangeMax = -1e100;
 
-    for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_triangles(); i++)
-    {
-        if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
+        double3* vert = new double3[m_scene->sceneSolution()->linContourView().get_num_vertices()];
+        for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_vertices(); i++)
         {
-            paintContoursTri(vert, &tris[i], step);
+            vert[i][0] = tvert[i][0];
+            vert[i][1] = tvert[i][1];
+            vert[i][2] = tvert[i][2];
+
+            if (vert[i][2] > rangeMax) rangeMax = tvert[i][2];
+            if (vert[i][2] < rangeMin) rangeMin = tvert[i][2];
         }
+
+        // value range
+        double step = (rangeMax-rangeMin)/Util::config()->contoursCount;
+
+        // draw contours
+        glLineWidth(1.0);
+        glColor3f(Util::config()->colorContours.redF(),
+                  Util::config()->colorContours.greenF(),
+                  Util::config()->colorContours.blueF());
+        glBegin(GL_LINES);
+
+        for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_triangles(); i++)
+        {
+            if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
+            {
+                paintContoursTri(vert, &tris[i], step);
+            }
+        }
+        glEnd();
+
+        delete vert;
+
+        m_scene->sceneSolution()->linContourView().unlock_data();
+
+        glEndList();
     }
-    glEnd();
-
-    delete vert;
-
-    m_scene->sceneSolution()->linContourView().unlock_data();
+    else
+    {
+        glCallList(m_listContours);
+    }
 }
 
 void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
@@ -1116,211 +1178,145 @@ void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
     }
 }
 
-void plot_arrow(double x, double y, double xval, double yval, double max, double min, double gs)
-{
-    double length_coef = 1.0;
-    glColor3f(0.5f,0.5f,0.5f);
-
-    // magnitude
-    double real_mag = sqrt(sqr(xval) + sqr(yval));
-    double mag = real_mag;
-    if (real_mag > max) mag = max;
-    double length = mag/max * gs * length_coef;
-    double width = 0.1 * gs;
-    width *= 1.2;
-    double xnew = x + gs * xval * mag / (max * real_mag) * length_coef;
-    double ynew = y - gs * yval * mag / (max * real_mag) * length_coef;
-
-    glPushMatrix();
-
-    if ((mag)/(max - min) < 1e-5)
-    {
-        glTranslated(x, y, 0.0);
-
-        glBegin(GL_QUADS);
-        glVertex2d( width,  width);
-        glVertex2d( width, -width);
-        glVertex2d(-width, -width);
-        glVertex2d(-width,  width);
-        glEnd();
-    }
-    else
-    {
-        glBegin(GL_LINES);
-        glVertex2d(x,y);
-        glVertex2d(xnew, ynew);
-        glEnd();
-
-        glTranslated(x, y, 0.0);
-        glRotated(atan2(-yval, xval) * 180.0/M_PI, 0.0, 0.0, 1.0);
-
-        glBegin(GL_TRIANGLES);
-        glVertex2d(length + 3 * width,  0.0);
-        glVertex2d(length - 2 * width,  width);
-        glVertex2d(length - 2 * width, -width);
-        glEnd();
-    }
-
-    // glLoadIdentity();
-
-    // float color[3];
-    // get_palette_color((mag - min)/(max - min), color); //  0.0 -- 1.0
-    // glColor3f(color[0], color[1], color[2]);
-
-    if (mag/(max - min) < 1e-5)
-    {
-        glBegin(GL_QUADS);
-        glVertex2d( width,  width);
-        glVertex2d( width, -width);
-        glVertex2d(-width, -width);
-        glVertex2d(-width,  width);
-        glEnd();
-    }
-    else
-    {
-        glBegin(GL_LINES);
-        glVertex2d(x,y);
-        glVertex2d(xnew, ynew);
-        glEnd();
-
-        glTranslated(x - 1, y, 0.0);
-        glRotated(atan2(-yval, xval) * 180.0/M_PI, 0.0, 0.0, 1.0);
-
-        glBegin(GL_TRIANGLES);
-        glVertex2d(length + 3 * width,  0.0);
-        glVertex2d(length - 2 * width,  width);
-        glVertex2d(length - 2 * width, -width);
-        glEnd();
-
-        glLoadIdentity();
-    }
-
-    glPopMatrix();
-}
-
 void SceneView::paintVectors()
 {
     if (!m_isSolutionPrepared) return;
 
-    double vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
-    double vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
-
-    double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
-    if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
-
-    RectPoint rect = m_scene->boundingBox();
-    double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
-
-    // paint
-    m_scene->sceneSolution()->vecVectorView().lock_data();
-
-    double4* vecVert = m_scene->sceneSolution()->vecVectorView().get_vertices();
-    int3* vecTris = m_scene->sceneSolution()->vecVectorView().get_triangles();
-
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->vecVectorView().get_num_triangles(); i++)
+    if (m_listVectors == -1)
     {
-        Point a(vecVert[vecTris[i][0]][0], vecVert[vecTris[i][0]][1]);
-        Point b(vecVert[vecTris[i][1]][0], vecVert[vecTris[i][1]][1]);
-        Point c(vecVert[vecTris[i][2]][0], vecVert[vecTris[i][2]][1]);
+        m_listVectors = glGenLists(1);
+        glNewList(m_listVectors, GL_COMPILE);
 
-        RectPoint r;
-        r.start = Point(qMin(qMin(a.x, b.x), c.x), qMin(qMin(a.y, b.y), c.y));
-        r.end = Point(qMax(qMax(a.x, b.x), c.x), qMax(qMax(a.y, b.y), c.y));
+        double vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
+        double vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
 
-        // double area
-        double area2 = a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y);
+        double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
+        if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
 
-        // plane equation
-        double aa = b.x*c.y - c.x*b.y;
-        double ab = c.x*a.y - a.x*c.y;
-        double ac = a.x*b.y - b.x*a.y;
-        double ba = b.y - c.y;
-        double bb = c.y - a.y;
-        double bc = a.y - b.y;
-        double ca = c.x - b.x;
-        double cb = a.x - c.x;
-        double cc = b.x - a.x;
+        RectPoint rect = m_scene->boundingBox();
+        double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
 
-        double ax = (aa * vecVert[vecTris[i][0]][2] + ab * vecVert[vecTris[i][1]][2] + ac * vecVert[vecTris[i][2]][2]) / area2;
-        double bx = (ba * vecVert[vecTris[i][0]][2] + bb * vecVert[vecTris[i][1]][2] + bc * vecVert[vecTris[i][2]][2]) / area2;
-        double cx = (ca * vecVert[vecTris[i][0]][2] + cb * vecVert[vecTris[i][1]][2] + cc * vecVert[vecTris[i][2]][2]) / area2;
+        // paint
+        m_scene->sceneSolution()->vecVectorView().lock_data();
 
-        double ay = (aa * vecVert[vecTris[i][0]][3] + ab * vecVert[vecTris[i][1]][3] + ac * vecVert[vecTris[i][2]][3]) / area2;
-        double by = (ba * vecVert[vecTris[i][0]][3] + bb * vecVert[vecTris[i][1]][3] + bc * vecVert[vecTris[i][2]][3]) / area2;
-        double cy = (ca * vecVert[vecTris[i][0]][3] + cb * vecVert[vecTris[i][1]][3] + cc * vecVert[vecTris[i][2]][3]) / area2;
+        double4* vecVert = m_scene->sceneSolution()->vecVectorView().get_vertices();
+        int3* vecTris = m_scene->sceneSolution()->vecVectorView().get_triangles();
 
-        for (int j = floor(r.start.x / gs); j < ceil(r.end.x / gs); j++)
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < m_scene->sceneSolution()->vecVectorView().get_num_triangles(); i++)
         {
-            for (int k = floor(r.start.y / gs); k < ceil(r.end.y / gs); k++)
+            Point a(vecVert[vecTris[i][0]][0], vecVert[vecTris[i][0]][1]);
+            Point b(vecVert[vecTris[i][1]][0], vecVert[vecTris[i][1]][1]);
+            Point c(vecVert[vecTris[i][2]][0], vecVert[vecTris[i][2]][1]);
+
+            RectPoint r;
+            r.start = Point(qMin(qMin(a.x, b.x), c.x), qMin(qMin(a.y, b.y), c.y));
+            r.end = Point(qMax(qMax(a.x, b.x), c.x), qMax(qMax(a.y, b.y), c.y));
+
+            // double area
+            double area2 = a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y);
+
+            // plane equation
+            double aa = b.x*c.y - c.x*b.y;
+            double ab = c.x*a.y - a.x*c.y;
+            double ac = a.x*b.y - b.x*a.y;
+            double ba = b.y - c.y;
+            double bb = c.y - a.y;
+            double bc = a.y - b.y;
+            double ca = c.x - b.x;
+            double cb = a.x - c.x;
+            double cc = b.x - a.x;
+
+            double ax = (aa * vecVert[vecTris[i][0]][2] + ab * vecVert[vecTris[i][1]][2] + ac * vecVert[vecTris[i][2]][2]) / area2;
+            double bx = (ba * vecVert[vecTris[i][0]][2] + bb * vecVert[vecTris[i][1]][2] + bc * vecVert[vecTris[i][2]][2]) / area2;
+            double cx = (ca * vecVert[vecTris[i][0]][2] + cb * vecVert[vecTris[i][1]][2] + cc * vecVert[vecTris[i][2]][2]) / area2;
+
+            double ay = (aa * vecVert[vecTris[i][0]][3] + ab * vecVert[vecTris[i][1]][3] + ac * vecVert[vecTris[i][2]][3]) / area2;
+            double by = (ba * vecVert[vecTris[i][0]][3] + bb * vecVert[vecTris[i][1]][3] + bc * vecVert[vecTris[i][2]][3]) / area2;
+            double cy = (ca * vecVert[vecTris[i][0]][3] + cb * vecVert[vecTris[i][1]][3] + cc * vecVert[vecTris[i][2]][3]) / area2;
+
+            for (int j = floor(r.start.x / gs); j < ceil(r.end.x / gs); j++)
             {
-                Point point(j*gs, k*gs);
-                if (k % 2 == 0) point.x += gs/2.0;
-
-                // find in triangle
-                bool inTriangle = true;
-
-                for (int l = 0; l < 3; l++)
+                for (int k = floor(r.start.y / gs); k < ceil(r.end.y / gs); k++)
                 {
-                    int p = l + 1;
-                    if (p == 3)
-                        p = 0;
+                    Point point(j*gs, k*gs);
+                    if (k % 2 == 0) point.x += gs/2.0;
 
-                    double z = (vecVert[vecTris[i][p]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
-                               (vecVert[vecTris[i][p]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
+                    // find in triangle
+                    bool inTriangle = true;
 
-                    if (z < 0)
+                    for (int l = 0; l < 3; l++)
                     {
-                        inTriangle = false;
-                        break;
-                    }
-                }
+                        int p = l + 1;
+                        if (p == 3)
+                            p = 0;
 
-                if (inTriangle)
-                {
-                    // view
-                    double dx = ax + bx * point.x + cx * point.y;
-                    double dy = ay + by * point.x + cy * point.y;
+                        double z = (vecVert[vecTris[i][p]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
+                                   (vecVert[vecTris[i][p]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
 
-                    double value = sqrt(sqr(dx) + sqr(dy));
-                    double angle = atan2(dy, dx);
-
-                    if (Util::config()->vectorProportional)
-                    {
-                        dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
-                        dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
-                    }
-                    else
-                    {
-                        dx = Util::config()->vectorScale * gs * cos(angle);
-                        dy = Util::config()->vectorScale * gs * sin(angle);
+                        if (z < 0)
+                        {
+                            inTriangle = false;
+                            break;
+                        }
                     }
 
-                    double dm = sqrt(sqr(dx) + sqr(dy));
-
-                    // color
-                    if (Util::config()->vectorColor)
+                    if (inTriangle)
                     {
-                        double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
-                        glColor3f(color, color, color);
-                    }
-                    else
-                    {
-                        glColor3f(Util::config()->colorVectors.redF(),
-                                  Util::config()->colorVectors.greenF(),
-                                  Util::config()->colorVectors.blueF());
-                    }
+                        // view
+                        double dx = ax + bx * point.x + cx * point.y;
+                        double dy = ay + by * point.x + cy * point.y;
 
-                    glVertex2d(point.x + dm/5.0 * cos(angle - M_PI_2), point.y + dm/5.0 * sin(angle - M_PI_2));
-                    glVertex2d(point.x + dm/5.0 * cos(angle + M_PI_2), point.y + dm/5.0 * sin(angle + M_PI_2));
-                    glVertex2d(point.x + dm     * cos(angle),          point.y + dm     * sin(angle));
+                        double value = sqrt(sqr(dx) + sqr(dy));
+                        double angle = atan2(dy, dx);
+
+                        if (Util::config()->vectorProportional)
+                        {
+                            dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
+                            dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
+                        }
+                        else
+                        {
+                            dx = Util::config()->vectorScale * gs * cos(angle);
+                            dy = Util::config()->vectorScale * gs * sin(angle);
+                        }
+
+                        double dm = sqrt(sqr(dx) + sqr(dy));
+
+                        // color
+                        if (Util::config()->vectorColor)
+                        {
+                            double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
+                            glColor3f(color, color, color);
+                        }
+                        else
+                        {
+                            glColor3f(Util::config()->colorVectors.redF(),
+                                      Util::config()->colorVectors.greenF(),
+                                      Util::config()->colorVectors.blueF());
+                        }
+
+                        glVertex2d(point.x + dm/5.0 * cos(angle - M_PI_2), point.y + dm/5.0 * sin(angle - M_PI_2));
+                        glVertex2d(point.x + dm/5.0 * cos(angle + M_PI_2), point.y + dm/5.0 * sin(angle + M_PI_2));
+                        glVertex2d(point.x + dm     * cos(angle),          point.y + dm     * sin(angle));
+                    }
                 }
             }
         }
-    }
-    glEnd();
+        glEnd();
+        glDisable(GL_POLYGON_OFFSET_FILL);
 
-    m_scene->sceneSolution()->vecVectorView().unlock_data();
+        m_scene->sceneSolution()->vecVectorView().unlock_data();
+
+        glEndList();
+    }
+    else
+    {
+        glCallList(m_listVectors);
+    }
 }
 
 void SceneView::paintSceneModeLabel()
@@ -2215,6 +2211,8 @@ void SceneView::doInvalidated()
         setRangeContour();
         setRangeScalar();
         setRangeVector();
+
+        clearGLLists();
     }
 
     emit mousePressed();
@@ -2233,6 +2231,8 @@ void SceneView::doProcessSolution()
     setRangeContour();
     setRangeScalar();
     setRangeVector();
+
+    clearGLLists();
 
     m_isSolutionPrepared = true;
 

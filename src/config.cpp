@@ -109,6 +109,22 @@ void Config::save()
 {
     QSettings settings;
 
+    // general
+    settings.setValue("General/GUIStyle", guiStyle);
+    settings.setValue("General/Language", language);
+    settings.setValue("General/DefaultPhysicField", defaultPhysicField);
+
+    settings.setValue("General/CheckVersion", checkVersion);
+    settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
+    settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
+
+    // zoom
+    settings.setValue("General/ZoomToMouse", zoomToMouse);
+
+    // delete files
+    settings.setValue("Solver/DeleteTriangleMeshFiles", deleteTriangleMeshFiles);
+    settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermes2DMeshFile);
+
     // colors
     settings.setValue("SceneViewSettings/ColorBackground", colorBackground);
     settings.setValue("SceneViewSettings/ColorGrid", colorGrid);
@@ -127,6 +143,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/NodeSize", nodeSize);
     settings.setValue("SceneViewSettings/EdgeWidth", edgeWidth);
     settings.setValue("SceneViewSettings/LabelSize", labelSize);
+    settings.setValue("SceneViewSettings/AngleSegmentsCount", angleSegmentsCount);
 
     // grid
     settings.setValue("SceneViewSettings/GridStep", gridStep);
@@ -151,4 +168,15 @@ void Config::save()
 
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
+
+    // adaptivity
+    settings.setValue("Adaptivity/IsoOnly", isoOnly);
+    settings.setValue("Adaptivity/ConvExp", convExp);
+    settings.setValue("Adaptivity/Threshold", threshold);
+    settings.setValue("Adaptivity/Strategy", strategy);
+    settings.setValue("Adaptivity/MeshRegularity", meshRegularity);
+
+    // command argument
+    settings.setValue("Commands/Triangle", commandTriangle);
+    settings.setValue("Commands/FFmpeg", commandFFmpeg);
 }

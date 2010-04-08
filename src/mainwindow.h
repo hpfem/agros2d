@@ -30,7 +30,7 @@
 #include "helpdialog.h"
 #include "solverdialog.h"
 #include "chartdialog.h"
-#include "optionsdialog.h"
+#include "configdialog.h"
 #include "scripteditordialog.h"
 #include "reportdialog.h"
 #include "videodialog.h"

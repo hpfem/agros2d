@@ -774,9 +774,10 @@ void MainWindow::doSolve()
 
 void MainWindow::doOptions()
 {
-    ConfigDialog optionsDialog(this);
-    optionsDialog.exec();
-    sceneView->doInvalidated();
+    ConfigDialog configDialog(this);
+    configDialog.exec();
+
+    sceneView->doProcessSolution();
 }
 
 void MainWindow::doReport()
