@@ -123,7 +123,7 @@ void solveSystem(LinSystem *sys, QList<Solution *> *slnArray)
     }
 }
 
-QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *))
+QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *))
 {
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -200,11 +200,23 @@ QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbS
     UmfpackSolver umfpack;
 
     // prepare selector
-    RefinementSelectors::H1NonUniformHP selector(Util::config()->isoOnly,
-                                                 allowedCandidates(adaptivityType),
-                                                 Util::config()->convExp,
-                                                 H2DRS_DEFAULT_ORDER,
-                                                 &shapeset);
+    RefinementSelectors::Selector *selector = NULL;
+    switch (adaptivityType)
+    {
+    case AdaptivityType_H:
+        selector = new RefinementSelectors::H1OnlyH();
+        break;
+    case AdaptivityType_P:
+        selector = new RefinementSelectors::H1OnlyP(H2DRS_DEFAULT_ORDER);
+        break;
+    case AdaptivityType_HP:
+        selector = new RefinementSelectors::H1UniformHP(Util::config()->isoOnly,
+                                                           allowedCandidates(adaptivityType),
+                                                           Util::config()->convExp,
+                                                           H2DRS_DEFAULT_ORDER,
+                                                           &shapeset);
+        break;
+    }
 
     // initialize the linear system
     LinSystem sys(&wf, &umfpack);
@@ -251,7 +263,7 @@ QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbS
         sys.assemble();
         if (sys.get_num_dofs() == 0)
         {
-            solverDialog->showMessage(QObject::tr("Solver: DOF is zero."), true);
+            progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero."), true);
             isError = true;
             break;
         }
@@ -290,8 +302,9 @@ QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbS
             }
 
             // emit signal
-            solverDialog->showMessage(QObject::tr("Solver: relative error: %1 %").arg(error, 0, 'f', 5), false);
-            if (solverDialog->isCanceled())
+            progressItemSolve->emitMessage(QObject::tr("relative error: %1 %").
+                                           arg(error, 0, 'f', 5), false, 1);
+            if (progressItemSolve->isCanceled())
             {
                 delete hp;
                 isError = true;
@@ -304,10 +317,14 @@ QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbS
                 break;
             }
             if (i != adaptivitysteps-1) hp->adapt(Util::config()->threshold, Util::config()->strategy,
-                                                  &selector,
+                                                  selector,
                                                   Util::config()->meshRegularity);
         }
     }
+
+    // delete selector
+    if (selector) delete selector;
+
 
     // timesteps
     if (!isError)
@@ -339,13 +356,15 @@ QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbS
                 solutionArrayList->append(solutionArray(slnArray->at(i), space->at(i), error, i-1, (n+1)*timeStep));
             }
 
-            if (analysisType == AnalysisType_Transient) solverDialog->showMessage(QObject::tr("Solver: time step: %1/%2").arg(n+1).arg(timesteps), false);
-            if (solverDialog->isCanceled())
+            if (analysisType == AnalysisType_Transient)
+                progressItemSolve->emitMessage(QObject::tr("time step: %1/%2").
+                                               arg(n+1).
+                                               arg(timesteps), false, n+2);
+            if (progressItemSolve->isCanceled())
             {
                 isError = true;
                 break;
             }
-            solverDialog->showProgress((int) (60.0 + 40.0*(n+1)/timesteps));
         }
     }
 

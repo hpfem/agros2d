@@ -158,11 +158,11 @@ static int call_in_thread(CTC_FUNC func, void* param) {
   if (view_thread == NULL) {
     ThreadInfo* new_thread_info = NULL;
     try { new_thread_info = new ThreadInfo(); }
-    catch(std::bad_alloc&) { error("E failed to allocate structure for view thread"); }
+    catch(std::bad_alloc&) { error("failed to allocate structure for view thread"); }
     int err = pthread_create(&new_thread_info->thread, NULL, view_thread_func, new_thread_info);
     if (err) {
       delete new_thread_info;
-      error("E failed to create main thread, error: %d", err);
+      error("failed to create main thread, error: %d", err);
     }
     view_thread = new_thread_info;
   }
@@ -185,12 +185,11 @@ static int call_in_thread(CTC_FUNC func, void* param) {
 /// Sets a title of a view. Function has to be called just from the inside of view thread with a locked sync_view.
 static int set_view_title_in_thread(void* title_pars_ptr)
 {
-  assert_msg(!need_safe_call(), "E set_view_title_in_thread called from other thread.");
+  error_if(need_safe_call(), "set_view_title_in_thread called from other thread.");
   TitleParams& title_params = *((TitleParams*)title_pars_ptr);
   std::map<int, View*>::iterator found_view = view_instances.find(title_params.view_id);
-  //assert_msg(found_view != view_instances.end(), "E removing of a view that is not registered");
   if (found_view == view_instances.end()) {
-    debug_log("W settings title of a view that is not registered.");
+    debug_log("settings title of a view that is not registered.");
     return -1;
   }
 
@@ -204,7 +203,7 @@ static int set_view_title_in_thread(void* title_pars_ptr)
 /// Adds a new view. Function has to be called just from the inside of view thread with a locked sync_view.
 int add_view_in_thread(void* view_pars_ptr)
 {
-  assert_msg(!need_safe_call(), "E add_view_in_thread called from other thread.");
+  error_if(need_safe_call(), "add_view_in_thread called from other thread.");
   ViewParams& view_params = *((ViewParams*)view_pars_ptr);
 
   //create GLUT window
@@ -241,12 +240,11 @@ int add_view_in_thread(void* view_pars_ptr)
 /// Removes a new view. Function has to be called just from the inside of view thread with a locked sync_view.
 int remove_view_in_thread(void* remove_params_ptr)
 {
-  assert_msg(!need_safe_call(), "E remove_view_in_thread called from other thread.");
+  error_if(need_safe_call(), "remove_view_in_thread called from other thread.");
   RemoveParams& params = *(RemoveParams*)remove_params_ptr;
   std::map<int, View*>::iterator found_view = view_instances.find(params.view_id);
-  //assert_msg(found_view != view_instances.end(), "E removing of a view that is not registered");
   if (found_view == view_instances.end()) {
-    debug_log("W removing of a view that is not registered\n");
+    debug_log("removing of a view that is not registered\n");
     return -1;
   }
 
@@ -284,10 +282,10 @@ int remove_view_in_thread(void* remove_params_ptr)
 
 /// Forces a redisplay of a view. Function has to be called just from the inside of view thread.
 static int refresh_view_in_thread(void* view_id_ptr) {
-  assert_msg(!need_safe_call(), "E refresh_view_in_thread called from other thread.");
+  error_if(need_safe_call(), "refresh_view_in_thread called from other thread.");
   int view_id = *((int*)view_id_ptr);
   std::map<int, View*>::iterator found_view = view_instances.find(view_id);
-  assert_msg(found_view != view_instances.end(), "E refreshing a view that is not registered");
+  assert_msg(found_view != view_instances.end(), "refreshing a view that is not registered");
 
   //redisplay
   if (found_view != view_instances.end()) {

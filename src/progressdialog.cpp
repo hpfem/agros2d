@@ -17,8 +17,9 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "solverdialog.h"
+#include "progressdialog.h"
 #include "scene.h"
+#include "sceneview.h"
 
 SolutionArray::SolutionArray()
 {
@@ -95,174 +96,43 @@ void SolutionArray::save(QDomDocument *doc, QDomElement *element)
 
 // *********************************************************************************************
 
-SolverDialog::SolverDialog(QWidget *parent) : QDialog(parent)
+ProgressItem::ProgressItem()
 {
-    setWindowModality(Qt::WindowModal);
-    setMinimumSize(420, 260);
-    setMaximumSize(minimumSize());
-    setModal(true);
-
-    setWindowIcon(icon("run"));
-    setWindowTitle(tr("Solve problem..."));
-
-    createControls();
-
-    refreshTimer = new QTimer(this);
-    connect(refreshTimer, SIGNAL(timeout()), this, SLOT(doRefreshTimerUpdate()));
-
-    connect(this, SIGNAL(solved()), this, SLOT(doFinished()));
-
-    resize(minimumSize());
-}
-
-SolverDialog::~SolverDialog()
-{
-    QFile::remove(tempProblemFileName() + ".mesh");
-
-    delete btnCancel;
-    delete btnClose;
-    delete progressBar;
-    delete lblMessage;
-    delete lstMessage;       
-}
-
-void SolverDialog::createControls()
-{
-    lblMessage = new QLabel(this);
-    progressBar = new QProgressBar(this);
-
-    lstMessage = new QTextEdit(this);
-    lstMessage->setReadOnly(true);
-
-    // cancel button
-    btnCancel = new QPushButton(tr("&Cancel"));
-    btnCancel->setDefault(true);
-    connect(btnCancel, SIGNAL(clicked()), this, SLOT(doCancel()));
-    connect(this, SIGNAL(finished(int)), this, SLOT(doCancel()));
-
-    btnClose = new QPushButton(tr("&Close"));
-    btnClose->setDefault(true);
-    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
-    buttonBox->addButton(btnClose, QDialogButtonBox::RejectRole);
-    buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(lblMessage);
-    layout->addWidget(progressBar);
-    layout->addWidget(lstMessage);
-    layout->addStretch();
-    layout->addWidget(buttonBox);
-
-    setLayout(layout);
-}
-
-int SolverDialog::solve()
-{
-    lblMessage->setText(tr("Solver: solve problem..."));
-    lstMessage->clear();
-    progressBar->setValue(0);
-
+    m_name = "";
+    m_steps = 0;
+    m_isError = false;
     m_isCanceled = false;
-    btnCancel->setEnabled(true);
 
-    QApplication::processEvents();
-    refreshTimer->start(1000);
-    QTimer::singleShot(0, this, SLOT(doStart()));
-
-    return exec();
+    connect(this, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
 }
 
-void SolverDialog::cancel()
+void ProgressItem::showMessage(const QString &msg, bool isError, int position)
 {
-    QApplication::processEvents();
-    m_isCanceled = true;
+    m_isError = isError;
 }
 
-void SolverDialog::showMessage(const QString &message, bool isError)
+// *********************************************************************************************
+
+ProgressItemMesh::ProgressItemMesh() : ProgressItem()
 {
-    btnCancel->setEnabled(!isError);
-
-    if (isError)
-    {
-        lstMessage->setTextColor(QColor(Qt::red));
-        doFinished();
-    }
-    else
-    {
-        lstMessage->setTextColor(QColor(Qt::black));
-    }
-
-    lstMessage->insertPlainText(message + "\n");
-    lstMessage->ensureCursorVisible();
-    lblMessage->setText(message);
-
-    // update
-    QApplication::processEvents();
-    lstMessage->update();
+    m_name = tr("Mesh");
+    m_steps = 4;
 }
 
-void SolverDialog::showProgress(int index)
+bool ProgressItemMesh::run()
 {
-    progressBar->setValue(index);
-}
-
-void SolverDialog::doStart()
-{
-    btnClose->setEnabled(false);
-    runMesh();
-}
-
-void SolverDialog::doFinished()
-{
-    setFileNameOrig("");
-    btnClose->setEnabled(true);
-    btnCancel->setEnabled(false);
-
-    refreshTimer->stop();
-}
-
-void SolverDialog::doCancel()
-{
-    m_isCanceled = true;
-    doFinished();
-    QApplication::processEvents();
-}
-
-void SolverDialog::doClose()
-{
-    doCancel();
-    hide();
-}
-
-void SolverDialog::doRefreshTimerUpdate()
-{
-    foreach (QWidget *widget, QApplication::allWidgets())
-        widget->update();
-    QApplication::processEvents();
-}
-
-void SolverDialog::runMesh()
-{
-    if ((m_mode == SolverMode_MeshAndSolve) && (Util::scene()->sceneSolution()->isMeshed()))
-        doMeshTriangleCreated(0);
-
     QFile::remove(tempProblemFileName() + ".mesh");
 
     // create triangle files
     if (writeToTriangle())
     {
-        QSettings settings;
-
-        showMessage(tr("Triangle: poly file was created."), false);
-        progressBar->setValue(20);
+        emit message(tr("poly file was created"), false, 1);
 
         // exec triangle
-        QProcess *processTriangle = new QProcess();
-        processTriangle->setStandardOutputFile(tempProblemFileName() + ".triangle.out");
-        processTriangle->setStandardErrorFile(tempProblemFileName() + ".triangle.err");
-        connect(processTriangle, SIGNAL(finished(int)), this, SLOT(doMeshTriangleCreated(int)));
+        QProcess processTriangle;
+        processTriangle.setStandardOutputFile(tempProblemFileName() + ".triangle.out");
+        processTriangle.setStandardErrorFile(tempProblemFileName() + ".triangle.err");
+        connect(&processTriangle, SIGNAL(finished(int)), this, SLOT(meshTriangleCreated(int)));
 
         QString triangleBinary = "triangle";
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle.exe"))
@@ -270,25 +140,22 @@ void SolverDialog::runMesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle"))
             triangleBinary = QApplication::applicationDirPath() + QDir::separator() + "triangle";
 
-        QString argument = settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString();
-        processTriangle->start(QString(argument).
-                               arg(triangleBinary).
-                               arg(tempProblemFileName()));
-        progressBar->setValue(30);
+        processTriangle.start(QString(Util::config()->commandTriangle).
+                              arg(triangleBinary).
+                              arg(tempProblemFileName()));
 
-        if (!processTriangle->waitForStarted())
+        if (!processTriangle.waitForStarted())
         {
-            showMessage(tr("Triangle: could not start Triangle."), true);
-            processTriangle->kill();
+            emit message(tr("could not start Triangle"), true, 0);
+            processTriangle.kill();
 
-            progressBar->setValue(100);
-            return;
+            return !m_isError;
         }
 
         // copy triangle files
-        if ((!Util::config()->deleteTriangleMeshFiles) && (!m_fileNameOrig.isEmpty()))
+        if ((!Util::config()->deleteTriangleMeshFiles) && (!Util::scene()->problemInfo()->fileName.isEmpty()))
         {
-            QFileInfo fileInfoOrig(m_fileNameOrig);
+            QFileInfo fileInfoOrig(Util::scene()->problemInfo()->fileName);
 
             QFile::copy(tempProblemFileName() + ".poly", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".poly");
             QFile::copy(tempProblemFileName() + ".node", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".node");
@@ -296,26 +163,27 @@ void SolverDialog::runMesh()
             QFile::copy(tempProblemFileName() + ".ele", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".ele");
         }
 
-        while (!processTriangle->waitForFinished()) {}
+        while (!processTriangle.waitForFinished()) {}
     }
+
+    return !m_isError;
 }
 
-void SolverDialog::doMeshTriangleCreated(int exitCode)
+void ProgressItemMesh::meshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
-        showMessage(tr("Triangle: mesh files was created."), false);
-        progressBar->setValue(40);
+        emit message(tr("mesh files was created."), false, 2);
 
         // convert triangle mesh to hermes mesh
         if (triangleToHermes2D())
         {
-            showMessage(tr("Triangle: mesh was converted to Hermes2D mesh file."), false);
+            emit message(tr("mesh was converted to Hermes2D mesh file"), false, 3);
 
             // copy triangle files
-            if ((!Util::config()->deleteHermes2DMeshFile) && (!m_fileNameOrig.isEmpty()))
+            if ((!Util::config()->deleteHermes2DMeshFile) && (!Util::scene()->problemInfo()->fileName.isEmpty()))
             {
-                QFileInfo fileInfoOrig(m_fileNameOrig);
+                QFileInfo fileInfoOrig(Util::scene()->problemInfo()->fileName);
 
                 QFile::copy(tempProblemFileName() + ".mesh", fileInfoOrig.absolutePath() + "/" + fileInfoOrig.baseName() + ".mesh");
             }
@@ -327,12 +195,7 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".ele");
             QFile::remove(tempProblemFileName() + ".triangle.out");
             QFile::remove(tempProblemFileName() + ".triangle.err");
-            showMessage(tr("Triangle: mesh files was deleted."), false);
-
-            if (m_mode == SolverMode_Mesh)
-                progressBar->setValue(100);
-            else
-                progressBar->setValue(50);
+            emit message(tr("mesh files was deleted"), false, 4);
 
             // load mesh
             Mesh *mesh = readMesh(tempProblemFileName() + ".mesh");
@@ -346,7 +209,8 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
                     {
                         if (node->ref < 2 && node->marker == 0)
                         {
-                            showMessage(tr("Hermes2D: boundary edge does not have a boundary marker."), true);
+                            emit message(tr("boundary edge does not have a boundary marker"), true, 0);
+
                             delete mesh;
                             return;
                         }
@@ -358,77 +222,27 @@ void SolverDialog::doMeshTriangleCreated(int exitCode)
         }
         else
         {
-            // error
-            progressBar->setValue(100);
-
             QFile::remove(Util::scene()->problemInfo()->fileName + ".mesh");
-            return;
-        }
-
-        if (m_mode == SolverMode_MeshAndSolve)
-        {
-            runSolver();
-            if (Util::scene()->sceneSolution()->isSolved())
-                emit solved();
-        }
-        else
-        {
-            emit solved();
         }
     }
     else
     {
-        // error
-        progressBar->setValue(100);
-
         QString errorMessage = readFileContent(Util::scene()->problemInfo()->fileName + ".triangle.out");
-        showMessage(tr("Triangle: ") + errorMessage, true);
+        emit message(errorMessage, true, 0);
     }
 }
 
-void SolverDialog::runSolver()
-{
-    if (!QFile::exists(tempProblemFileName() + ".mesh"))
-        return;
-
-    // benchmark
-    QTime time;
-    time.start();
-
-    showMessage(tr("Solver: solver was started: %1 (%2, %3) ").
-                 arg(physicFieldString(Util::scene()->problemInfo()->physicField())).
-                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
-                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false);
-    progressBar->setValue(60);
-
-    QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo()->hermes()->solve(this);
-
-    if (!solutionArrayList->isEmpty())
-    {
-
-        showMessage(tr("Solver: problem was solved."), false);
-        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
-    }
-    else
-    {
-        showMessage(tr("Solver: problem was not solved."), true);
-        Util::scene()->sceneSolution()->setTimeElapsed(0);
-    }    
-    progressBar->setValue(100);
-    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
-}
-
-bool SolverDialog::writeToTriangle()
+bool ProgressItemMesh::writeToTriangle()
 {
     // basic check
     if (Util::scene()->nodes.count() < 3)
     {
-        showMessage(tr("Triangle: invalid number of nodes (%1 < 3).").arg(Util::scene()->nodes.count()), true);
+        emit message(tr("invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes.count()), true, 0);
         return false;
     }
     if (Util::scene()->edges.count() < 3)
     {
-        showMessage(tr("Triangle: invalid number of edges (%1 < 3).").arg(Util::scene()->edges.count()), true);
+        emit message(tr("invalid number of edges (%1 < 3)").arg(Util::scene()->edges.count()), true, 0);
         return false;
     }
     else
@@ -441,13 +255,13 @@ bool SolverDialog::writeToTriangle()
 
         if (count == 0)
         {
-            showMessage(tr("Triangle: at least one boundary condition has to be assigned."), true);
+            emit message(tr("at least one boundary condition has to be assigned"), true, 0);
             return false;
         }
     }
     if (Util::scene()->labels.count() < 1)
     {
-        showMessage(tr("Triangle: invalid number of labels (%1 < 1).").arg(Util::scene()->labels.count()), true);
+        emit message(tr("invalid number of labels (%1 < 1)").arg(Util::scene()->labels.count()), true, 0);
         return false;
     }
     else
@@ -460,18 +274,18 @@ bool SolverDialog::writeToTriangle()
 
         if (count == 0)
         {
-            showMessage(tr("Triangle: at least one material has to be assigned."), true);
+            emit message(tr("at least one material has to be assigned."), true, 0);
             return false;
         }
     }
     if (Util::scene()->edgeMarkers.count() < 2) // + none marker
     {
-        showMessage(tr("Triangle: invalid number of boundary conditions (%1 < 1).").arg(Util::scene()->edgeMarkers.count()), true);
+        emit message(tr("invalid number of boundary conditions (%1 < 1).").arg(Util::scene()->edgeMarkers.count()), true, 0);
         return false;
     }
     if (Util::scene()->labelMarkers.count() < 2) // + none marker
     {
-        showMessage(tr("Triangle: invalid number of materials (%1 < 1).").arg(Util::scene()->labelMarkers.count()), true);
+        emit message(tr("invalid number of materials (%1 < 1).").arg(Util::scene()->labelMarkers.count()), true, 0);
         return false;
     }
 
@@ -485,7 +299,7 @@ bool SolverDialog::writeToTriangle()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        showMessage(tr("Triangle: could not create triangle poly mesh file (%1).").arg(file.errorString()), true);
+        emit message(tr("could not create triangle poly mesh file (%1).").arg(file.errorString()), true, 0);
         return false;
     }
     QTextStream out(&file);
@@ -595,9 +409,9 @@ bool SolverDialog::writeToTriangle()
     return true;
 }
 
-bool SolverDialog::triangleToHermes2D()
+bool ProgressItemMesh::triangleToHermes2D()
 {
-    int i, n, k, l, count, marker, node_1, node_2, node_3;
+    int i, n, k, count, marker, node_1, node_2, node_3;
     double x, y;
 
     // save current locale
@@ -607,7 +421,7 @@ bool SolverDialog::triangleToHermes2D()
     QFile fileMesh(tempProblemFileName() + ".mesh");
     if (!fileMesh.open(QIODevice::WriteOnly))
     {
-        showMessage(tr("Hermes2D: could not create hermes2d mesh file."), true);
+        emit message(tr("could not create hermes2d mesh file"), true, 0);
         return false;
     }
     QTextStream outMesh(&fileMesh);
@@ -615,7 +429,7 @@ bool SolverDialog::triangleToHermes2D()
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        showMessage(tr("Hermes2D: could not read triangle node file."), true);
+        emit message(tr("could not read triangle node file"), true, 0);
         return false;
     }
     QTextStream inNode(&fileNode);
@@ -623,7 +437,7 @@ bool SolverDialog::triangleToHermes2D()
     QFile fileEdge(tempProblemFileName() + ".edge");
     if (!fileEdge.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        showMessage(tr("Hermes2D: could not read triangle edge file."), true);
+        emit message(tr("could not read triangle edge file."), true, 0);
         return false;
     }
     QTextStream inEdge(&fileEdge);
@@ -631,7 +445,7 @@ bool SolverDialog::triangleToHermes2D()
     QFile fileEle(tempProblemFileName() + ".ele");
     if (!fileEle.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        showMessage(tr("Hermes2D: could not read triangle ele file."), true);
+        emit message(tr("could not read triangle ele file."), true, 0);
         return false;
     }
     QTextStream inEle(&fileEle);
@@ -671,7 +485,7 @@ bool SolverDialog::triangleToHermes2D()
     outEdges += "\n} \n\n";
     if (count < 1)
     {
-        showMessage(tr("Hermes2D: invalid number of edge markers."), true);
+        emit message(tr("invalid number of edge markers."), true, 0);
         return false;
     }
 
@@ -687,7 +501,7 @@ bool SolverDialog::triangleToHermes2D()
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
         if (marker == 0)
         {
-            showMessage(tr("Hermes2D: some areas have no label marker."), true);
+            emit message(tr("some areas have no label marker."), true, 0);
             return false;
         }
         // triangle returns zero region number for areas without marker, markers must start from 1
@@ -698,7 +512,7 @@ bool SolverDialog::triangleToHermes2D()
     outElements += "\n} \n\n";
     if (count < 1)
     {
-        showMessage(tr("Hermes2D: invalid number of label markers."), true);
+        emit message(tr("invalid number of label markers."), true, 0);
         return false;
     }
 
@@ -717,4 +531,285 @@ bool SolverDialog::triangleToHermes2D()
     setlocale(LC_NUMERIC, plocale);
 
     return true;
+}
+
+// *********************************************************************************************
+
+ProgressItemSolve::ProgressItemSolve() : ProgressItem()
+{
+    m_name = tr("Solver");
+    m_steps = 1;
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        m_steps += floor(Util::scene()->problemInfo()->timeTotal.number / Util::scene()->problemInfo()->timeStep.number);
+}
+
+bool ProgressItemSolve::run()
+{
+    solve();
+
+    return !m_isError;
+}
+
+void ProgressItemSolve::solve()
+{
+    qDebug() << "ProgressItemSolve::solve()";
+
+    if (!QFile::exists(tempProblemFileName() + ".mesh"))
+      return;
+
+    // benchmark
+    QTime time;
+    time.start();
+
+    emit message(tr("solver was started: %1 (%2, %3)").
+                 arg(physicFieldString(Util::scene()->problemInfo()->physicField())).
+                 arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
+                 arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
+
+    QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo()->hermes()->solve(this);
+
+    if (!solutionArrayList->isEmpty())
+    {
+        emit message(tr("problem was solved"), false, 2);
+        Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
+    }
+    else
+    {
+        emit message(tr("problem was not solved"), true, 0);
+        Util::scene()->sceneSolution()->setTimeElapsed(0);
+    }
+
+    Util::scene()->sceneSolution()->setSolutionArrayList(solutionArrayList);
+}
+
+// *********************************************************************************************
+
+ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
+{
+    m_name = tr("View");
+
+    m_steps = 0;
+    if (sceneView()->sceneViewSettings().showContours == 1)
+        m_steps += 1;
+    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView || sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
+        m_steps += 1;
+    if (sceneView()->sceneViewSettings().showVectors == 1)
+        m_steps += 1;
+}
+
+bool ProgressItemProcessView::run()
+{
+    process();
+
+    return !m_isError;
+}
+
+void ProgressItemProcessView::process()
+{
+    int step = 0;
+
+    if (sceneView()->sceneViewSettings().showContours == 1)
+    {
+        step++;
+        emit message(tr("processing countour view cache"), false, step);
+        Util::scene()->sceneSolution()->processRangeContour();
+    }
+    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView || sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
+    {
+        step++;
+        emit message(tr("processing scalar view cache"), false, step);
+        Util::scene()->sceneSolution()->processRangeScalar();
+    }
+    if (sceneView()->sceneViewSettings().showVectors == 1)
+    {
+        step++;
+        emit message(tr("processing vector view cache"), false, step);
+        Util::scene()->sceneSolution()->processRangeVector();
+    }
+}
+
+// ***********************************************************************************************
+
+ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowModality(Qt::ApplicationModal);
+    setMinimumSize(420, 260);
+    setMaximumSize(minimumSize());
+    setModal(true);
+
+    setWindowIcon(icon("run"));
+    setWindowTitle(tr("Progress..."));
+
+    createControls();
+    clear();
+
+    // QSettings settings;
+    // restoreGeometry(settings.value("ProgressDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ProgressDialog::~ProgressDialog()
+{
+    // QSettings settings;
+    // settings.setValue("ProgressDialog/Geometry", saveGeometry());
+
+    clear();
+}
+
+void ProgressDialog::clear()
+{
+    // delete progress items
+    for (int i = 0; i < m_progressItem.count(); i++)
+        delete m_progressItem.at(i);
+    m_progressItem.clear();
+
+    m_currentProgressItem = NULL;
+    m_showViewProgress = true;
+}
+
+void ProgressDialog::createControls()
+{
+    lblMessage = new QLabel("", this);
+    progressBar = new QProgressBar(this);
+
+    lstMessage = new QTextEdit(this);
+    lstMessage->setReadOnly(true);
+
+    // cancel button
+    btnCancel = new QPushButton(tr("Cance&l"));
+    btnCancel->setDefault(true);
+    connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
+    connect(this, SIGNAL(finished(int)), this, SLOT(cancel()));
+
+    btnClose = new QPushButton(tr("&Close"));
+    btnClose->setDefault(true);
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
+    buttonBox->addButton(btnClose, QDialogButtonBox::RejectRole);
+    buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(lblMessage);
+    layout->addWidget(progressBar);
+    layout->addWidget(lstMessage);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    setLayout(layout);
+}
+
+int ProgressDialog::progressSteps()
+{
+    int steps = 0;
+    for (int i = 0; i < m_progressItem.count(); i++)
+        steps += m_progressItem.at(i)->steps();
+
+    return steps;
+}
+
+int ProgressDialog::currentProgressStep()
+{
+    int steps = 0;
+    for (int i = 0; i < m_progressItem.count(); i++)
+    {
+        if (m_progressItem.at(i) == m_currentProgressItem)
+            return steps;
+
+        steps += m_progressItem.at(i)->steps();
+    }
+
+    return -1;
+}
+
+void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
+{
+    m_progressItem.append(progressItem);
+
+    connect(progressItem, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
+    connect(this, SIGNAL(cancelProgressItem()), progressItem, SLOT(cancelProgressItem()));
+}
+
+bool ProgressDialog::run(bool showViewProgress)
+{
+    m_showViewProgress = showViewProgress;
+    QTimer::singleShot(0, this, SLOT(start()));
+
+    return exec();
+}
+
+void ProgressDialog::start()
+{
+    lstMessage->clear();
+
+    progressBar->setRange(0, progressSteps());
+    progressBar->setValue(0);
+    QApplication::processEvents();
+
+    for (int i = 0; i < m_progressItem.count(); i++)
+    {
+        m_currentProgressItem = m_progressItem.at(i);
+
+        if (!m_currentProgressItem->run())
+        {
+            // error
+            finished();
+
+            clear();
+            return;
+        }
+    }
+
+    // successfull run
+    clear();
+    close();
+}
+
+void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
+{
+    btnCancel->setEnabled(!isError);
+
+    if (isError)
+    {
+        lstMessage->setTextColor(QColor(Qt::red));
+        finished();
+    }
+    else
+    {
+        lstMessage->setTextColor(QColor(Qt::black));
+    }
+
+    QString message = QString("%1: %2\n").
+                      arg(m_currentProgressItem->name()).
+                      arg(msg);
+
+    lstMessage->insertPlainText(message);
+
+    lstMessage->ensureCursorVisible();
+    lblMessage->setText(message);
+
+    if (position > 0)
+        progressBar->setValue(currentProgressStep() + position);
+
+    // update
+    QApplication::processEvents();
+    lstMessage->update();
+}
+
+void ProgressDialog::finished()
+{
+    btnClose->setEnabled(true);
+    btnCancel->setEnabled(false);
+}
+
+void ProgressDialog::cancel()
+{
+    emit cancelProgressItem();
+    finished();
+    QApplication::processEvents();
+}
+
+void ProgressDialog::close()
+{
+    cancel();
+    accept();
 }

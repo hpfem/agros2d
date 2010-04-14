@@ -17,7 +17,7 @@
 #include "space.h"
 #include "matrix.h"
 #include "auto_local_array.h"
-
+#include <valarray>
 
 Space::Space(Mesh* mesh, Shapeset* shapeset)
      : mesh(mesh), shapeset(shapeset)
@@ -503,3 +503,28 @@ void Space::free_extra_data()
     printf("\n");
   }
 }*/
+
+// new way of enumerating degrees of freedom
+HERMES2D_API int assign_dofs(int n, ...) {
+  // reading variable argument list
+  std::vector<Space*> spaces(n);
+  va_list ap;
+  va_start(ap, n);
+  for (int i = 0; i < n; i++) {
+    spaces[i] = va_arg(ap, Space*);
+  }
+  va_end(ap);
+
+  // assigning dofs to each space
+  int ndof = 0;  
+  for (int i = 0; i < n; i++) {
+    ndof += spaces[i]->assign_dofs(ndof);
+  }
+
+  return ndof;
+}
+
+HERMES2D_API int assign_dofs(Space *s) {
+  return assign_dofs(1, s);
+}
+

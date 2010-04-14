@@ -349,7 +349,7 @@ ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariable physicF
                                           physicFieldVariableComp);
 }
 
-QList<SolutionArray *> *HermesElasticity::solve(SolverDialog *solverDialog)
+QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     elasticityEdge = new ElasticityEdge[Util::scene()->edges.count()+1];
@@ -399,7 +399,7 @@ QList<SolutionArray *> *HermesElasticity::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackElasticitySpace, callbackElasticityWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackElasticitySpace, callbackElasticityWeakForm);
 
     delete [] elasticityEdge;
     delete [] elasticityLabel;

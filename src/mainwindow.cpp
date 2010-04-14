@@ -25,8 +25,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
 
+    createScriptEngine();
     createScene();
-    createScriptEngine(sceneView);
 
     helpDialog = new HelpDialog(this);
     chartDialog = new ChartDialog(this);
@@ -40,12 +40,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createToolBars();
     createStatusBar();
 
-    connect(Util::scene(), SIGNAL(invalidated()), sceneView, SLOT(doInvalidated()));
-    connect(Util::scene(), SIGNAL(invalidated()), sceneInfoView, SLOT(doInvalidated()));
     connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
-
-    connect(Util::scene(), SIGNAL(solved()), sceneView, SLOT(doSolved()));
-    connect(Util::scene(), SIGNAL(defaultValues()), sceneView, SLOT(doDefaultValues()));
     connect(Util::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
 
     connect(sceneView, SIGNAL(mousePressed()), localPointValueView, SLOT(doShowPoint()));
@@ -735,7 +730,7 @@ void MainWindow::doCreateVideo()
 void MainWindow::doCreateMesh()
 {
     // create mesh
-    Util::scene()->createMeshAndSolve(SolverMode_Mesh);
+    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
     if (Util::scene()->sceneSolution()->isMeshed())
     {
         sceneView->actSceneModeLabel->trigger();
@@ -757,7 +752,7 @@ void MainWindow::doFullScreen()
 void MainWindow::doSolve()
 {
     // solve problem
-    Util::scene()->createMeshAndSolve(SolverMode_MeshAndSolve);
+    Util::scene()->sceneSolution()->solve(SolverMode_MeshAndSolve);
     if (Util::scene()->sceneSolution()->isSolved())
     {
         sceneView->actSceneModePostprocessor->trigger();
@@ -777,7 +772,8 @@ void MainWindow::doOptions()
     ConfigDialog configDialog(this);
     configDialog.exec();
 
-    sceneView->doProcessSolution();
+    sceneView->timeStepChanged(true);
+    activateWindow();
 }
 
 void MainWindow::doReport()
@@ -845,41 +841,12 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
-    ErrorResult result = Util::scene()->readFromFile("data/data/pokus.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_capacitor.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_axisymmetric_sparkgap.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/electrostatic_planar_poisson.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_axisymmetric.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_transient.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_detail.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_building.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/heat_transfer_actuator.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_axisymmetric_actuator.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar_magnet.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_steadystate_planar_rotating_heating.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_circle_conductor.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_profile_conductor.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_proximity_effect.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_planar_three_phase_cable.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_axisymmetric_furnace.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/magnetic_harmonic_axisymmetric_heating.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/current_feeder.a2d");
-    //ErrorResult result = Util::scene()->readFromFile("data/elasticity_planar.a2d");
-    if (result.isError())
-        result.showDialog();
-
-    doInvalidated();
-    sceneView->doZoomBestFit();
-
-    // doSolve();
-    // sceneView->doZoomBestFit();
 }
 
 void MainWindow::doTimeStepChanged(int index)
 {
     if (cmbTimeStep->currentIndex() != -1)
-        Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());
+        Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
 }
 
 void MainWindow::doInvalidated()

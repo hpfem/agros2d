@@ -50,13 +50,13 @@ SOURCES += util.cpp \
     scripteditordialog.cpp \
     scripteditorcommandpython.cpp \
     scripteditorhighlighter.cpp \
-    solverdialog.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenebasic.cpp \
     scenefunction.cpp \
     sceneinfoview.cpp \
     sceneview.cpp \
+    progressdialog.cpp \
     chartdialog.cpp \
     problemdialog.cpp \
     scenetransformdialog.cpp \
@@ -90,13 +90,13 @@ HEADERS += util.h \
     scripteditordialog.h \
     scripteditorcommandpython.h \
     scripteditorhighlighter.h \
-    solverdialog.h \
     scenebasic.h \
     sceneinfoview.h \
     scenemarker.h \
     scenefunction.h \
     sceneview_data.h \
     sceneview.h \
+    progressdialog.h \
     chartdialog.h \
     problemdialog.h \
     scenetransformdialog.h \

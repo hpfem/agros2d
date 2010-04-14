@@ -179,7 +179,7 @@ bool NonlinSystem::solve(int n, ...)
 {
   // The solve() function is almost identical to the original one in LinSystem
   // except that Y_{n+1} = Y_{n} + dY_{n+1}
-  begin_time();
+  TimePeriod cpu_time;
 
   // perform symbolic analysis of the matrix
   if (struct_changed)
@@ -198,7 +198,7 @@ bool NonlinSystem::solve(int n, ...)
   // solve the system
   scalar* delta = (scalar*) malloc(ndofs * sizeof(scalar));
   solver->solve(slv_ctx, ndofs, Ap, Ai, Ax, false, RHS, delta);
-  verbose("  (total solve time: %g sec)", end_time());
+  verbose("  (total solve time: %g s)", cpu_time.tick().last());
 
   // if not initialized by set_ic(), assume Vec is a zero vector
   if (Vec == NULL)
@@ -213,7 +213,7 @@ bool NonlinSystem::solve(int n, ...)
   ::free(delta);
 
   // initialize the Solution classes
-  begin_time();
+  cpu_time.tick(H2D_SKIP);
   va_list ap;
   va_start(ap, n);
   if (n > wf->neq) n = wf->neq;
@@ -223,7 +223,7 @@ bool NonlinSystem::solve(int n, ...)
     sln->set_fe_solution(spaces[i], pss[i], Vec);
   }
   va_end(ap);
-  verbose("Exported solution in %g sec", end_time());
+  verbose("Exported solution in %g s", cpu_time.tick().last());
 
   return true;
 }
@@ -237,7 +237,7 @@ bool NonlinSystem::solve_newton_1(Solution* u_prev, double newton_tol, int newto
     Space *space = this->get_space(0);
     do
     {
-      info("---- Newton iter %d:\n", it++);
+      info("---- Newton iter %d:", it); it++;
       //printf("ndof = %d\n", space->get_num_dofs());
 
       // reinitialization of filters (if relevant)
@@ -252,7 +252,7 @@ bool NonlinSystem::solve_newton_1(Solution* u_prev, double newton_tol, int newto
 
       // calculate the l2-norm of residual vector
       res_l2_norm = this->get_residuum_l2_norm();
-      info("Residuum L2 norm: %g\n", res_l2_norm);
+      info("Residuum L2 norm: %g", res_l2_norm);
 
       // save the new solution as "previous" for the
       // next Newton's iteration
@@ -275,7 +275,7 @@ bool NonlinSystem::solve_newton_2(Solution* u_prev_1, Solution* u_prev_2, double
     Space *space_2 = this->get_space(1);
     do
     {
-      info("---- Newton iter %d:\n", it++);
+      info("---- Newton iter %d:", it); it++;
       //printf("ndof = %d\n", space_1->get_num_dofs() + space_2->get_num_dofs());
 
       // reinitialization of filters (if relevant)
@@ -290,7 +290,7 @@ bool NonlinSystem::solve_newton_2(Solution* u_prev_1, Solution* u_prev_2, double
 
       // calculate the l2-norm of residual vector
       res_l2_norm = this->get_residuum_l2_norm();
-      info("Residuum L2 norm: %g\n", res_l2_norm);
+      info("Residuum L2 norm: %g", res_l2_norm);
 
       // save the new solutions as "previous" for the
       // next Newton's iteration
@@ -316,7 +316,7 @@ bool NonlinSystem::solve_newton_3(Solution* u_prev_1, Solution* u_prev_2, Soluti
     Space *space_3 = this->get_space(2);
     do
     {
-      info("---- Newton iter %d:\n", it++);
+      info("---- Newton iter %d:", it); it++;
       //printf("ndof = %d\n", space_1->get_num_dofs() + space_2->get_num_dofs() + space_3->get_num_dofs());
 
       // reinitialization of filters (if relevant)
@@ -331,7 +331,7 @@ bool NonlinSystem::solve_newton_3(Solution* u_prev_1, Solution* u_prev_2, Soluti
 
       // calculate the l2-norm of residual vector
       res_l2_norm = this->get_residuum_l2_norm();
-      info("Residuum L2 norm: %g\n", res_l2_norm);
+      info("Residuum L2 norm: %g", res_l2_norm);
 
       // save the new solutions as "previous" for the
       // next Newton's iteration

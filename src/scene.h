@@ -39,7 +39,7 @@
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
 #include "scenemarkerselectdialog.h"
-#include "solverdialog.h"
+#include "progressdialog.h"
 
 #include "hermes2d/hermes_field.h"
 #include "hermes2d/hermes_general.h"
@@ -66,7 +66,6 @@ class SceneFunction;
 struct SceneViewSettings;
 class SceneSolution;
 
-class SolverDialog;
 class ProblemDialog;
 class SceneTransformDialog;
 class HelpDialog;
@@ -178,7 +177,6 @@ public slots:
     
 signals:
     void invalidated();
-    void solved();
     void defaultValues();
     void fileNameChanged(const QString &fileName);
     
@@ -250,7 +248,6 @@ public:
     inline void setProblemInfo(ProblemInfo *problemInfo) { m_problemInfo = problemInfo; emit defaultValues(); }
     
     inline void refresh() { emit invalidated(); }
-    void createMeshAndSolve(SolverMode solverMode);
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
     
     void readFromDxf(const QString &fileName);
@@ -267,14 +264,10 @@ private:
     // scene solution
     SceneSolution *m_sceneSolution;
     
-    // solver dialog
-    SolverDialog *solverDialog;
-    
     void createActions();
     
 private slots:    
     void doInvalidated();
-    void doSolved();
 };
 
 // **************************************************************************************

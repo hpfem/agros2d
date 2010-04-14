@@ -22,9 +22,6 @@
 
 #include "util.h"
 #include "hermes_field.h"
-#include "hermes2d.h"
-#include "solverdialog.h"
-#include "solver_umfpack.h"
 
 struct HermesGeneral : public HermesField
 {
@@ -61,7 +58,7 @@ public:
     SceneLabelMarker *newLabelMarker();
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(SolverDialog *solverDialog);
+    QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Variable; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Variable; }

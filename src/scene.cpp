@@ -132,10 +132,8 @@ Scene::Scene()
     m_undoStack = new QUndoStack(this);
     m_sceneSolution = new SceneSolution();
 
-    solverDialog = new SolverDialog(QApplication::activeWindow());
-    connect(solverDialog, SIGNAL(solved()), this, SLOT(doSolved()));
-
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(m_sceneSolution, SIGNAL(solved()), this, SLOT(doInvalidated()));
 
     clear();
 }
@@ -144,7 +142,6 @@ Scene::~Scene()
 {
     clear();
 
-    delete solverDialog;
     delete m_sceneSolution;
     delete m_undoStack;
 }
@@ -535,8 +532,8 @@ void Scene::clear()
 
 RectPoint Scene::boundingBox()
 {
-    Point min( 1e100,  1e100);
-    Point max(-1e100, -1e100);
+    Point min( CONST_DOUBLE,  CONST_DOUBLE);
+    Point max(-CONST_DOUBLE, -CONST_DOUBLE);
 
     foreach (SceneNode *node, nodes) {
         if (node->point.x<min.x) min.x = node->point.x;
@@ -827,49 +824,6 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
     m_undoStack->endMacro();
 
     emit invalidated();
-}
-
-void Scene::createMeshAndSolve(SolverMode solverMode)
-{
-    // clear problem
-    sceneSolution()->clear();
-
-    // store orig name
-    QString fileNameOrig = m_problemInfo->fileName;
-
-    // save as temp name
-    m_problemInfo->fileName = tempProblemFileName() + ".a2d";
-
-    // save problem    
-    ErrorResult result = writeToFile(m_problemInfo->fileName);
-    if (result.isError())
-        result.showDialog();
-
-    // solve
-    solverDialog->setFileNameOrig(QFileInfo(fileNameOrig).absoluteFilePath());
-    solverDialog->setMode(solverMode);
-    solverDialog->solve();
-
-    // restore orig name
-    m_problemInfo->fileName = fileNameOrig;
-}
-
-void Scene::doSolved()
-{
-    solverDialog->hide();
-
-    // set solver results
-    if (m_sceneSolution->isSolved())
-        emit solved();
-
-    emit invalidated();
-
-    // delete temp file
-    if (m_problemInfo->fileName == tempProblemFileName() + ".a2d")
-    {
-        QFile::remove(m_problemInfo->fileName);
-        m_problemInfo->fileName = "";
-    }
 }
 
 void Scene::doInvalidated()
@@ -1330,7 +1284,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     {
         QDomNode eleSolutions = eleDoc.elementsByTagName("solutions").at(0);
         Util::scene()->sceneSolution()->loadSolution(&eleSolutions.toElement());
-        doSolved();
+        emit invalidated();
     }
 
     // run script
@@ -1339,20 +1293,20 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     return ErrorResult();
 }
 
-ErrorResult Scene::writeToFile(const QString &fileName) {
+ErrorResult Scene::writeToFile(const QString &fileName)
+{
     QSettings settings;
 
-    if (!problemInfo()->fileName.contains("temp.a2d"))
+    if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
     {
         QFileInfo fileInfo(fileName);
         settings.setValue("General/LastDataDir", fileInfo.absoluteFilePath());
+        m_problemInfo->fileName = fileName;
     }
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
-
-    m_problemInfo->fileName = fileName;
 
     QDomDocument doc;
 
@@ -1537,7 +1491,7 @@ ErrorResult Scene::writeToFile(const QString &fileName) {
     file.waitForBytesWritten(0);
     file.close();
 
-    if (!problemInfo()->fileName.contains("temp.a2d"))
+    if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
         emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
 
     emit invalidated();

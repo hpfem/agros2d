@@ -349,7 +349,7 @@ ViewScalarFilter *HermesFlow::viewScalarFilter(PhysicFieldVariable physicFieldVa
                                     physicFieldVariableComp);
 }
 
-QList<SolutionArray *> *HermesFlow::solve(SolverDialog *solverDialog)
+QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
@@ -408,7 +408,7 @@ QList<SolutionArray *> *HermesFlow::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackFlowSpace, callbackFlowWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackFlowSpace, callbackFlowWeakForm);
 
     delete [] flowEdge;
     delete [] flowLabel;

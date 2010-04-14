@@ -1,7 +1,7 @@
 #ifndef __HERMES2D_AUTO_LOCAL_ARRAY_H
 #define __HERMES2D_AUTO_LOCAL_ARRAY_H
 
-#include <malloc.h>
+#include <stdlib.h>
 
 /// \brief Allocation of a local array on the stack.
 // An array of ordinal types or strctures.

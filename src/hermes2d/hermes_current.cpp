@@ -280,7 +280,7 @@ ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariable physicFiel
                                        physicFieldVariableComp);
 }
 
-QList<SolutionArray *> *HermesCurrent::solve(SolverDialog *solverDialog)
+QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     currentEdge = new CurrentEdge[Util::scene()->edges.count()+1];
@@ -323,7 +323,7 @@ QList<SolutionArray *> *HermesCurrent::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackCurrentSpace, callbackCurrentWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackCurrentSpace, callbackCurrentWeakForm);
 
     delete [] currentEdge;
     delete [] currentLabel;

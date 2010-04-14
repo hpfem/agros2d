@@ -22,6 +22,7 @@
 SceneSolution::SceneSolution()
 {
     m_timeStep = -1;
+    m_isSolving = false;
 
     m_mesh = NULL;
     m_solutionArrayList = NULL;
@@ -77,6 +78,44 @@ void SceneSolution::clear()
         delete m_slnVectorYView;
         m_slnVectorYView = NULL;
     }
+}
+
+void SceneSolution::solve(SolverMode solverMode)
+{
+    if (isSolving()) return;
+
+    // clear problem
+    clear();
+
+    m_isSolving = true;
+
+    // save problem
+    ErrorResult result = Util::scene()->writeToFile(tempProblemFileName() + ".a2d");
+    if (result.isError())
+        result.showDialog();
+
+    ProgressDialog progressDialog;
+    progressDialog.appendProgressItem(new ProgressItemMesh());
+    if (solverMode == SolverMode_MeshAndSolve)
+    {
+        progressDialog.appendProgressItem(new ProgressItemSolve());
+        progressDialog.appendProgressItem(new ProgressItemProcessView());
+    }
+
+    if (progressDialog.run())
+    {
+        Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStepCount() - 1);
+        emit solved();
+    }
+
+    // delete temp file
+    if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
+    {
+        QFile::remove(Util::scene()->problemInfo()->fileName);
+        Util::scene()->problemInfo()->fileName = "";
+    }
+
+    m_isSolving = false;
 }
 
 void SceneSolution::loadMesh(QDomElement *element)
@@ -276,18 +315,22 @@ void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayLi
     }
 
     m_solutionArrayList = solutionArrayList;
+
+    // if (!isSolving())
     setTimeStep(timeStepCount() - 1);
 }
 
-void SceneSolution::setTimeStep(int timeStep)
+void SceneSolution::setTimeStep(int timeStep, bool showViewProgress)
 {
+    qDebug() << "SceneSolution::setTimeStep";
+
     m_timeStep = timeStep;
     if (!isSolved()) return;
 
     if (Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable() != PhysicFieldVariable_Undefined)
         m_vec.process_solution(sln(), FN_DX_0, sln(), FN_DY_0, EPS_NORMAL);
 
-    Util::scene()->refresh();
+    emit timeStepChanged(showViewProgress);
 }
 
 int SceneSolution::timeStepCount()
@@ -333,8 +376,8 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     {
         double3* linVert = m_linScalarView.get_vertices();
 
-        double min =  1e100;
-        double max = -1e100;
+        double min =  CONST_DOUBLE;
+        double max = -CONST_DOUBLE;
         for (int i = 0; i < m_linScalarView.get_num_vertices(); i++)
         {
             double x = linVert[i][0];
@@ -383,4 +426,41 @@ void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScala
     m_slnVectorYView = slnVectorYView;
     
     m_vecVectorView.process_solution(m_slnVectorXView, FN_VAL_0, m_slnVectorYView, FN_VAL_0, EPS_LOW);
+}
+
+void SceneSolution::processRangeContour()
+{
+    if (isSolved())
+    {
+        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
+                                                                                                      PhysicFieldVariableComp_Scalar);
+        setSlnContourView(viewScalarFilter);
+        emit processedRangeContour();
+    }
+}
+
+void SceneSolution::processRangeScalar()
+{
+    if (isSolved())
+    {
+        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().scalarPhysicFieldVariable,
+                                                                                                      sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
+        setSlnScalarView(viewScalarFilter);
+        emit processedRangeScalar();
+    }
+}
+
+void SceneSolution::processRangeVector()
+{
+    if (isSolved())
+    {
+        ViewScalarFilter *viewVectorXFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().vectorPhysicFieldVariable,
+                                                                                                       PhysicFieldVariableComp_X);
+
+        ViewScalarFilter *viewVectorYFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().vectorPhysicFieldVariable,
+                                                                                                       PhysicFieldVariableComp_Y);
+
+        setSlnVectorView(viewVectorXFilter, viewVectorYFilter);
+        emit processedRangeVector();
+    }
 }

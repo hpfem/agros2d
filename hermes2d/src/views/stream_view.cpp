@@ -412,22 +412,20 @@ void StreamView::show(MeshFunction* xsln, MeshFunction* ysln, int marker, double
   min_tau = initial_tau / 50;
   max_mag = vec.get_max_value();
 
-  begin_time();
+  TimePeriod cpu_time;
   root = new Node;
   build_tree();
-  info("Time to build searching tree: %g s", end_time());
+  report_time("Time to build searching tree: %g s", cpu_time.tick().last());
 
-  begin_time();
   double2* initial_points;
   find_initial_points(marker, step, initial_points);
-  info("Time to find initial points: %g s", end_time());
+  report_time("Time to find initial points: %g s", cpu_time.tick().last());
 
-  begin_time();
   streamlines = (double2**) malloc(sizeof(double2*) * (num_stream));
   streamlength = (int*) malloc(sizeof(int) * (num_stream));
   for (int i = 0; i < num_stream; i++)
     streamlength[i] =  create_streamline(initial_points[i][0], initial_points[i][1], i);
-  info("Time to create streamlines: %g s", end_time());
+  report_time("Time to create streamlines: %g s", cpu_time.tick().last());
 
   delete [] initial_points;
 
@@ -445,13 +443,13 @@ void StreamView::add_streamline(double x, double y)
 {
   if (root == NULL)
     error("Function add_streamline must be called after StreamView::show().");
-  begin_time();
+  TimePeriod cpu_time;
   streamlines = (double2**) realloc(streamlines, sizeof(double2*) * (num_stream + 1));
   streamlength = (int*) realloc(streamlength, sizeof(int) * (num_stream + 1));
   streamlength[num_stream] = create_streamline(x, y, num_stream);
   num_stream++;
   refresh();
-  info("Time to create streamline: %g s", end_time());
+  info("Time to create streamline: %g s", cpu_time.tick().last());
 }
 
 
@@ -598,13 +596,13 @@ void StreamView::on_left_mouse_down(int x, int y)
   // adding streamline (initial point set at (x,y))
   if (!scale_focused && glutGetModifiers() == GLUT_ACTIVE_CTRL)
   {
-    begin_time();
+    TimePeriod cpu_time;
     streamlines = (double2**) realloc(streamlines, sizeof(double2*) * (num_stream + 1));
     streamlength = (int*) realloc(streamlength, sizeof(int) * (num_stream + 1));
     streamlength[num_stream] = create_streamline(untransform_x(x), untransform_y(y), num_stream);
     num_stream++;
     refresh();
-    info("Time to create streamline: %g s", end_time());
+    info("Time to create streamline: %g s", cpu_time.tick().last());
   }
 }
 

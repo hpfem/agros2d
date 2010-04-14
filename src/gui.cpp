@@ -88,10 +88,10 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
 SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 {
-    m_minimum = -1e100;
-    m_minimumSharp = -1e100;
-    m_maximum =  1e100;
-    m_maximumSharp =  1e100;
+    m_minimum = -CONST_DOUBLE;
+    m_minimumSharp = -CONST_DOUBLE;
+    m_maximum =  CONST_DOUBLE;
+    m_maximumSharp =  CONST_DOUBLE;
 
     // create controls
     txtLineEdit = new QLineEdit(this);

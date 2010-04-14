@@ -51,6 +51,7 @@ SOURCES += src/compat/fmemopen.cpp \
         src/adapt_ortho_hcurl.cpp \
         src/adapt_ortho_l2.cpp \
         src/common.cpp \
+        src/common_time_period.cpp \
         src/matrix.cpp \
         src/hermes2d.cpp \
         src/weakform.cpp \

@@ -32,6 +32,10 @@ SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget
     createMenu();
     createTreeView();
 
+    connect(Util::scene(), SIGNAL(invalidated()), this, SLOT(doInvalidated()));
+    connect(Util::scene()->sceneSolution(), SIGNAL(solved()), this, SLOT(doInvalidated()));
+    connect(Util::scene()->sceneSolution(), SIGNAL(timeStepChanged(bool)), this, SLOT(doInvalidated()));
+
     connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
     connect(trvWidget, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
     connect(trvWidget, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
@@ -222,7 +226,7 @@ void SceneInfoView::doInvalidated()
                 itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
             }
             
-            QTime time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
+            QTime time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
             QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);
             itemSolverTimeElapsed->setText(0, tr("Time elapsed: ") + time.toString("mm:ss.zzz"));
         }
@@ -414,7 +418,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
                 m_sceneView->actSceneModeLabel->trigger();
 
             objectBasic->isSelected = true;
-            m_sceneView->doRefresh();
+            m_sceneView->refresh();
             m_sceneView->setFocus();
 
             actProperties->setEnabled(true);
@@ -431,7 +435,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
                 if (Util::scene()->edges[i]->marker == objectEdgeMarker)
                     Util::scene()->edges[i]->isSelected = true;
             }            
-            m_sceneView->doRefresh();
+            m_sceneView->refresh();
             m_sceneView->setFocus();
 
             actProperties->setEnabled(true);
@@ -448,7 +452,7 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
                 if (Util::scene()->labels[i]->marker == objectLabelMarker)
                     Util::scene()->labels[i]->isSelected = true;
             }            
-            m_sceneView->doRefresh();
+            m_sceneView->refresh();
             m_sceneView->setFocus();
 
             actProperties->setEnabled(true);
@@ -476,7 +480,7 @@ void SceneInfoView::doProperties() {
         {
             if (objectBasic->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneView->doRefresh();
+                m_sceneView->refresh();
                 doInvalidated();
             }
         }
@@ -486,7 +490,7 @@ void SceneInfoView::doProperties() {
         {
             if (objectEdgeMarker->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneView->doRefresh();
+                m_sceneView->refresh();
                 doInvalidated();
             }
         }
@@ -496,7 +500,7 @@ void SceneInfoView::doProperties() {
         {
             if (objectLabelMarker->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneView->doRefresh();
+                m_sceneView->refresh();
                 doInvalidated();
             }
         }
@@ -506,7 +510,7 @@ void SceneInfoView::doProperties() {
         {
             if (objectFunction->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneView->doRefresh();
+                m_sceneView->refresh();
                 doInvalidated();
             }
         }
@@ -553,6 +557,6 @@ void SceneInfoView::doDelete()
             Util::scene()->removeFunction(objectFunction);
         }
 
-        m_sceneView->doRefresh();
+        m_sceneView->refresh();
     }
 }

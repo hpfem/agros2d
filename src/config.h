@@ -60,9 +60,6 @@ public:
     int contoursCount;
 
     // scalar view
-    bool scalarRangeAuto;
-    double scalarRangeMin;
-    double scalarRangeMax;
     bool scalarRangeLog;
     double scalarRangeBase;
 
@@ -71,6 +68,9 @@ public:
     bool vectorColor;
     int vectorCount;
     double vectorScale;
+
+    // order view
+    bool orderLabel;
 
     // 3d
     bool scalarView3DLighting;

@@ -796,7 +796,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
     }
 }
 
-QList<SolutionArray *> *HermesMagnetic::solve(SolverDialog *solverDialog)
+QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
@@ -866,7 +866,7 @@ QList<SolutionArray *> *HermesMagnetic::solve(SolverDialog *solverDialog)
             magneticLabel[i].velocity_angular = labelMagneticMarker->velocity_angular.number;        }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackMagneticSpace, callbackMagneticWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackMagneticSpace, callbackMagneticWeakForm);
 
     delete [] magneticEdge;
     delete [] magneticLabel;

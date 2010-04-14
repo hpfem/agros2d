@@ -35,7 +35,6 @@ public:
     PythonEngine();
     ~PythonEngine();
 
-    void setSceneView(SceneView *sceneView);
     void showMessage(const QString &message);
 
     ScriptResult runPythonScript(const QString &script, const QString &fileName);
@@ -52,7 +51,6 @@ private:
 
     PyObject *m_dict;
     QString m_functions;
-    SceneView *m_sceneView;
 
     void runPythonHeader();
 };

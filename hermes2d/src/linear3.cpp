@@ -360,7 +360,7 @@ void Vectorizer::find_min_max()
 void Vectorizer::process_solution(MeshFunction* xsln, int xitem, MeshFunction* ysln, int yitem, double eps)
 {
   lock_data();
-  begin_time();
+  TimePeriod cpu_time;
 
   // initialization
   this->xsln = xsln;
@@ -499,7 +499,7 @@ void Vectorizer::process_solution(MeshFunction* xsln, int xitem, MeshFunction* y
 
   find_min_max();
 
-  verbose("Vectorizer: %d verts, %d tris in %0.3g sec", nv, nt, end_time());
+  verbose("Vectorizer: %d verts, %d tris in %0.3g s", nv, nt, cpu_time.tick().last());
   //if (verbose_mode) print_hash_stats();
   unlock_data();
 
@@ -583,6 +583,6 @@ Vectorizer::~Vectorizer()
 //// others ///////////////////////////////////////////////////////////////////////////////////
 
 void Vectorizer::calc_vertices_aabb(double* min_x, double* max_x, double* min_y, double* max_y) const {
-  assert_msg(verts != NULL, "E cannot calculate AABB from NULL vertices");
+  assert_msg(verts != NULL, "cannot calculate AABB from NULL vertices");
   calc_aabb(&verts[0][0], &verts[0][1], sizeof(double4), nv, min_x, max_x, min_y, max_y);
 }

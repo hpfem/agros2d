@@ -27,8 +27,6 @@
 #include "scenemarker.h"
 #include "scripteditordialog.h"
 
-static SceneView *sceneView = NULL;
-
 // FIX ********************************************************************************************************************************************************************
 // Terible, is it possible to write this code better???
 #define python_int_array() \
@@ -196,7 +194,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
     Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
 
     // invalidate
-    sceneView->doDefaultValues();
+    sceneView()->doDefaultValues();
     Util::scene()->refresh();
 }
 
@@ -367,21 +365,21 @@ void pythonSelectNone()
 // selectall()
 void pythonSelectAll()
 {
-    if (sceneView->sceneMode() == SceneMode_Postprocessor)
+    if (sceneView()->sceneMode() == SceneMode_Postprocessor)
     {
         // select volume integral area
-        if (sceneView->actPostprocessorModeVolumeIntegral->isChecked())
+        if (sceneView()->actPostprocessorModeVolumeIntegral->isChecked())
             Util::scene()->selectAll(SceneMode_OperateOnLabels);
 
         // select surface integral area
-        if (sceneView->actPostprocessorModeSurfaceIntegral->isChecked())
+        if (sceneView()->actPostprocessorModeSurfaceIntegral->isChecked())
             Util::scene()->selectAll(SceneMode_OperateOnEdges);
     }
     else
     {
-        Util::scene()->selectAll(sceneView->sceneMode());
+        Util::scene()->selectAll(sceneView()->sceneMode());
     }
-    sceneView->doInvalidated();
+    sceneView()->doInvalidated();
 }
 
 // selectnode(index, ...)
@@ -389,7 +387,7 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
 {
     python_int_array()
     {
-        sceneView->actSceneModeEdge->trigger();
+        sceneView()->actSceneModeEdge->trigger();
         Util::scene()->selectNone();
 
         for (int i = 0; i < count; i++)
@@ -406,7 +404,7 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
                 return NULL;
             }
         }
-        sceneView->doInvalidated();
+        sceneView()->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -415,11 +413,11 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
 // selectnodepoint(x, y)
 void pythonSelectNodePoint(double x, double y)
 {
-    SceneNode *node = sceneView->findClosestNode(Point(x, y));
+    SceneNode *node = sceneView()->findClosestNode(Point(x, y));
     if (node)
     {
         node->isSelected = true;
-        sceneView->doInvalidated();
+        sceneView()->doInvalidated();
     }
 }
 
@@ -428,7 +426,7 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
 {
     python_int_array()
     {
-        sceneView->actSceneModeEdge->trigger();
+        sceneView()->actSceneModeEdge->trigger();
         Util::scene()->selectNone();
 
         for (int i = 0; i < count; i++)
@@ -445,7 +443,7 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
                 return NULL;
             }
         }
-        sceneView->doInvalidated();
+        sceneView()->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -454,11 +452,11 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
 // selectedgepoint(x, y)
 void pythonSelectEdgePoint(double x, double y)
 {
-    SceneEdge *edge = sceneView->findClosestEdge(Point(x, y));
+    SceneEdge *edge = sceneView()->findClosestEdge(Point(x, y));
     if (edge)
     {
         edge->isSelected = true;
-        sceneView->doInvalidated();
+        sceneView()->doInvalidated();
     }
 }
 
@@ -467,7 +465,7 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
 {
     python_int_array()
     {
-        sceneView->actSceneModeLabel->trigger();
+        sceneView()->actSceneModeLabel->trigger();
         Util::scene()->selectNone();
 
         for (int i = 0; i < count; i++)
@@ -484,7 +482,7 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
                 return NULL;
             }
         }
-        sceneView->doInvalidated();
+        sceneView()->doInvalidated();
         Py_RETURN_NONE;
     }
     return NULL;
@@ -493,11 +491,11 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
 // selectlabelpoint(x, y)
 void pythonSelectLabelPoint(double x, double y)
 {
-    SceneLabel *label = sceneView->findClosestLabel(Point(x, y));
+    SceneLabel *label = sceneView()->findClosestLabel(Point(x, y));
     if (label)
     {
         label->isSelected = true;
-        sceneView->doInvalidated();
+        sceneView()->doInvalidated();
     }
 }
 
@@ -505,21 +503,21 @@ void pythonSelectLabelPoint(double x, double y)
 void pythonRotateSelection(double x, double y, double angle, bool copy)
 {
     Util::scene()->transformRotate(Point(x, y), angle, copy);
-    sceneView->doInvalidated();
+    sceneView()->doInvalidated();
 }
 
 // scaleselection(x, y, scale, copy = {True, False})
 void pythonScaleSelection(double x, double y, double scale, bool copy)
 {
     Util::scene()->transformScale(Point(x, y), scale, copy);
-    sceneView->doInvalidated();
+    sceneView()->doInvalidated();
 }
 
 // moveselection(dx, dy, copy = {True, False})
 void pythonMoveSelection(double dx, double dy, bool copy)
 {
     Util::scene()->transformTranslate(Point(dx, dy), copy);
-    sceneView->doInvalidated();
+    sceneView()->doInvalidated();
 }
 
 // deleteselection()
@@ -531,17 +529,17 @@ void pythonDeleteSelection()
 // mesh()
 void pythonMesh()
 {
-    Util::scene()->createMeshAndSolve(SolverMode_Mesh);
+    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
     Util::scene()->refresh();
 }
 
 // solve()
 void pythonSolve()
 {
-    Util::scene()->createMeshAndSolve(SolverMode_MeshAndSolve);
+    Util::scene()->sceneSolution()->solve(SolverMode_MeshAndSolve);
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        sceneView->actSceneModePostprocessor->trigger();
+        sceneView()->actSceneModePostprocessor->trigger();
         Util::scene()->refresh();
     }
 }
@@ -549,65 +547,65 @@ void pythonSolve()
 // zoombestfit()
 void pythonZoomBestFit()
 {
-    sceneView->doZoomBestFit();
+    sceneView()->doZoomBestFit();
 }
 
 // zoomin()
 void pythonZoomIn()
 {
-    sceneView->doZoomIn();
+    sceneView()->doZoomIn();
 }
 
 // zoomout()
 void pythonZoomOut()
 {
-    sceneView->doZoomOut();
+    sceneView()->doZoomOut();
 }
 
 // zoomregion(x1, y1, x2, y2)
 void pythonZoomRegion(double x1, double y1, double x2, double y2)
 {
-    sceneView->doZoomRegion(Point(x1, y1), Point(x2, y2));
+    sceneView()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 // mode(mode = {"node", "edge", "label", "postprocessor"})
 void pythonMode(char *str)
 {
     if (QString(str) == "node")
-        sceneView->actSceneModeNode->trigger();
+        sceneView()->actSceneModeNode->trigger();
     else if (QString(str) == "edge")
-        sceneView->actSceneModeEdge->trigger();
+        sceneView()->actSceneModeEdge->trigger();
     else if (QString(str) == "label")
-        sceneView->actSceneModeLabel->trigger();
+        sceneView()->actSceneModeLabel->trigger();
     else if (QString(str) == "postprocessor")
         if (Util::scene()->sceneSolution()->isSolved())
-            sceneView->actSceneModePostprocessor->trigger();
+            sceneView()->actSceneModePostprocessor->trigger();
     else
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
     else
         throw invalid_argument(QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString());
 
-    sceneView->doInvalidated();
+    sceneView()->doInvalidated();
 }
 
 // postprocessormode(mode = {"point", "surface", "volume"})
 void pythonPostprocessorMode(char *str)
 {
     if (Util::scene()->sceneSolution()->isSolved())
-        sceneView->actSceneModePostprocessor->trigger();
+        sceneView()->actSceneModePostprocessor->trigger();
     else
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
     if (QString(str) == "point")
-        sceneView->actPostprocessorModeLocalPointValue->trigger();
+        sceneView()->actPostprocessorModeLocalPointValue->trigger();
     else if (QString(str) == "surface")
-        sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+        sceneView()->actPostprocessorModeSurfaceIntegral->trigger();
     else if (QString(str) == "volume")
-        sceneView->actPostprocessorModeVolumeIntegral->trigger();
+        sceneView()->actPostprocessorModeVolumeIntegral->trigger();
     else
         throw invalid_argument(QObject::tr("Postprocessor mode '%1' is not implemented.").arg(QString(str)).toStdString());
 
-    sceneView->doInvalidated();
+    sceneView()->doInvalidated();
 }
 
 // result = pointresult(x, y)
@@ -615,7 +613,7 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
 {
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        sceneView->actSceneModePostprocessor->trigger();
+        sceneView()->actSceneModePostprocessor->trigger();
 
         double x, y;
         if (PyArg_ParseTuple(args, "dd", &x, &y))
@@ -648,8 +646,8 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
     if (Util::scene()->sceneSolution()->isSolved())
     {
         // set mode
-        sceneView->actSceneModePostprocessor->trigger();
-        sceneView->actPostprocessorModeSurfaceIntegral->trigger();
+        sceneView()->actSceneModePostprocessor->trigger();
+        sceneView()->actPostprocessorModeSurfaceIntegral->trigger();
         Util::scene()->selectNone();
 
         python_int_array()
@@ -696,8 +694,8 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
     if (Util::scene()->sceneSolution()->isSolved())
     {
         // set mode
-        sceneView->actSceneModePostprocessor->trigger();
-        sceneView->actPostprocessorModeVolumeIntegral->trigger();
+        sceneView()->actSceneModePostprocessor->trigger();
+        sceneView()->actPostprocessorModeVolumeIntegral->trigger();
         Util::scene()->selectNone();
 
         python_int_array()
@@ -744,88 +742,88 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
     // type
     SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(QString(type));
     if (postprocessorShow != SceneViewPostprocessorShow_Undefined)
-        sceneView->sceneViewSettings().postprocessorShow = postprocessorShow;
+        sceneView()->sceneViewSettings().postprocessorShow = postprocessorShow;
     else
         throw invalid_argument(QObject::tr("View type '%1' is not implemented.").arg(QString(type)).toStdString());
 
     // variable
-    sceneView->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
-    if (sceneView->sceneViewSettings().scalarPhysicFieldVariable == PhysicFieldVariable_Undefined)
+    sceneView()->sceneViewSettings().scalarPhysicFieldVariable = physicFieldVariableFromStringKey(QString(variable));
+    if (sceneView()->sceneViewSettings().scalarPhysicFieldVariable == PhysicFieldVariable_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable '%1' is not implemented.").arg(QString(variable)).toStdString());
-    if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView->sceneViewSettings().scalarPhysicFieldVariable))
+    if (Util::scene()->problemInfo()->hermes()->physicFieldVariableCheck(sceneView()->sceneViewSettings().scalarPhysicFieldVariable))
         throw invalid_argument(QObject::tr("Physic field variable '%1' cannot be used with this field.").arg(QString(variable)).toStdString());
 
     // variable component
-    sceneView->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(QString(component));
-    if (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp == PhysicFieldVariableComp_Undefined)
+    sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+    if (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp == PhysicFieldVariableComp_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString());
-    if ((isPhysicFieldVariableScalar(sceneView->sceneViewSettings().scalarPhysicFieldVariable)) &&
-        (sceneView->sceneViewSettings().scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar))
+    if ((isPhysicFieldVariableScalar(sceneView()->sceneViewSettings().scalarPhysicFieldVariable)) &&
+        (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar))
         throw invalid_argument(QObject::tr("Physic field variable is scalar variable.").toStdString());
 
     // range
     if (rangemin != INT_MIN)
     {
-        sceneView->sceneViewSettings().scalarRangeAuto = false;
-        sceneView->sceneViewSettings().scalarRangeMin = rangemin;
+        sceneView()->sceneViewSettings().scalarRangeAuto = false;
+        sceneView()->sceneViewSettings().scalarRangeMin = rangemin;
     }
     else
     {
-        sceneView->sceneViewSettings().scalarRangeAuto = true;
+        sceneView()->sceneViewSettings().scalarRangeAuto = true;
     }
     if (rangemax != INT_MIN)
-        sceneView->sceneViewSettings().scalarRangeMax = rangemax;
+        sceneView()->sceneViewSettings().scalarRangeMax = rangemax;
 
-    sceneView->doInvalidated();
+    sceneView()->doInvalidated();
 }
 
 // showgrid(show = {True, False})
 void pythonShowGrid(bool show)
 {
-    sceneView->sceneViewSettings().showGrid = show;
-    sceneView->doInvalidated();
+    sceneView()->sceneViewSettings().showGrid = show;
+    sceneView()->doInvalidated();
 }
 
 // showgeometry(show = {True, False})
 void pythonShowGeometry(bool show)
 {
-    sceneView->sceneViewSettings().showGeometry = show;
-    sceneView->doInvalidated();
+    sceneView()->sceneViewSettings().showGeometry = show;
+    sceneView()->doInvalidated();
 }
 
 // showinitialmesh(show = {True, False})
 void pythonShowInitialMesh(bool show)
 {
-    sceneView->sceneViewSettings().showInitialMesh = show;
-    sceneView->doInvalidated();
+    sceneView()->sceneViewSettings().showInitialMesh = show;
+    sceneView()->doInvalidated();
 }
 
 // showsolutionmesh(show = {True, False})
 void pythonShowSolutionMesh(bool show)
 {
-    sceneView->sceneViewSettings().showSolutionMesh = show;
-    sceneView->doInvalidated();
+    sceneView()->sceneViewSettings().showSolutionMesh = show;
+    sceneView()->doInvalidated();
 }
 
 // showcontours(show = {True, False})
 void pythonShowContours(bool show)
 {
-    sceneView->sceneViewSettings().showContours = show;
-    sceneView->doInvalidated();
+    sceneView()->sceneViewSettings().showContours = show;
+    sceneView()->doInvalidated();
 }
 
 // showvectors(show = {True, False})
 void pythonShowVectors(bool show)
 {
-    sceneView->sceneViewSettings().showVectors = show;
-    sceneView->doInvalidated();
+    sceneView()->sceneViewSettings().showVectors = show;
+    sceneView()->doInvalidated();
 }
 
 // settimestep(level)
 void pythonSetTimeStep(int timestep)
 {
     if (Util::scene()->sceneSolution()->isSolved())
-        sceneView->actSceneModePostprocessor->trigger();
+        sceneView()->actSceneModePostprocessor->trigger();
     else
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
@@ -847,7 +845,7 @@ int pythonTimeStepCount()
 // saveimage(filename)
 void pythonSaveImage(char *str, int w, int h)
 {
-    ErrorResult result = sceneView->saveImageToFile(QString(str), w, h);
+    ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
     if (result.isError())
         throw invalid_argument(result.message().toStdString());
 }
@@ -920,11 +918,6 @@ PythonEngine::~PythonEngine()
         Py_Finalize();
 }
 
-void PythonEngine::setSceneView(SceneView *sceneView)
-{
-    m_sceneView = sceneView;
-}
-
 void PythonEngine::showMessage(const QString &message)
 {
     emit printStdout(message);
@@ -938,11 +931,9 @@ void PythonEngine::doPrintStdout(const QString &message)
 
 void PythonEngine::runPythonHeader()
 {
-    // set sceneview
-    sceneView = m_sceneView;
-
     // startup script
-    PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);     
+    if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
+        PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 }
 
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
@@ -1009,7 +1000,7 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
 
     m_isRunning = false;
     Util::scene()->refresh();
-    sceneView->doInvalidated();
+    sceneView()->doInvalidated();
 
     return scriptResult;
 }

@@ -111,7 +111,7 @@ protected:
   {
     Data* data = (Data*) ctx;
     if (data->symbolic != NULL) umfpack_free_symbolic(&data->symbolic);
-    verbose("UMFPACK: analyzing matrix...");
+    trace("UMFPACK: analyzing matrix");
     int status = umfpack_symbolic(n, n, Ap, Ai, NULL, &data->symbolic,
                                   control_array, info_array);
     print_status(status);
@@ -123,7 +123,7 @@ protected:
   {
     Data* data = (Data*) ctx;
     if (data->numeric != NULL) umfpack_free_numeric(&data->numeric);
-    verbose("UMFPACK: factorizing matrix...");
+    trace("UMFPACK: factorizing matrix");
     if (!n) return true;
     int status = umfpack_numeric(Ap, Ai, Ax, data->symbolic, &data->numeric,
                                  control_array, info_array);
@@ -136,7 +136,7 @@ protected:
                      scalar* RHS, scalar* vec)
   {
     Data* data = (Data*) ctx;
-    verbose("UMFPACK: solving system...");
+    trace("UMFPACK: solving system");
     if (!n) return true;
     int status = umfpack_solve(UMFPACK_A, Ap, Ai, Ax, vec, RHS, data->numeric,
                                control_array, info_array);

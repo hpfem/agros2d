@@ -188,7 +188,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Solver.DOFs]", (Util::scene()->sceneSolution()->isSolved()) ? QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) : "", Qt::CaseSensitive);
     QTime time;
     if (Util::scene()->sceneSolution()->isSolved())
-        time = milliSecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
+        time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
     destination.replace("[Solver.TimeElapsed]", (Util::scene()->sceneSolution()->isSolved()) ? time.toString("mm:ss.zzz") + " s" : "", Qt::CaseSensitive);
     destination.replace("[Solver.AdaptiveError]", (Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None) ? QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3) : "", Qt::CaseSensitive);
     destination.replace("[Solver.AdaptiveSteps]", (Util::scene()->sceneSolution()->isSolved() && Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None) ? QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) : "", Qt::CaseSensitive);

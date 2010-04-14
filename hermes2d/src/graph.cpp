@@ -117,8 +117,9 @@ void SimpleGraph::save(const char* filename)
       fprintf(f, "%.14g  %.14g\n", rows[i].data[j].x, rows[i].data[j].y);
   }
 
-  info("Graph saved to file '%s'.", filename);
   fclose(f);
+
+  debug_log("Graph saved to file '%s'.", filename);
 }
 
 
@@ -179,8 +180,9 @@ void MatlabGraph::save(const char* filename)
 
   fprintf(f, "grid %s;\n", grid ? "on" : "off");
 
-  info("Graph saved. Run the file '%s' in Matlab.", filename);
   fclose(f);
+
+  debug_log("Graph saved. Run the file '%s' in Matlab.", filename);
 }
 
 
@@ -290,6 +292,7 @@ void GnuplotGraph::save(const char* filename)
   }
 
   fprintf(f, "set terminal x11\n");
-  info("Graph saved. Process the file '%s' with gnuplot.", filename);
   fclose(f);
+
+  debug_log("Graph saved. Process the file '%s' with gnuplot.", filename);
 }

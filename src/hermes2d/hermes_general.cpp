@@ -279,7 +279,7 @@ ViewScalarFilter *HermesGeneral::viewScalarFilter(PhysicFieldVariable physicFiel
 
 // *******************************************************************************************************************************
 
-QList<SolutionArray *> *HermesGeneral::solve(SolverDialog *solverDialog)
+QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     generalEdge = new GeneralEdge[Util::scene()->edges.count()+1];
@@ -324,7 +324,7 @@ QList<SolutionArray *> *HermesGeneral::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackGeneralSpace, callbackGeneralWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackGeneralSpace, callbackGeneralWeakForm);
 
     delete [] generalEdge;
     delete [] generalLabel;

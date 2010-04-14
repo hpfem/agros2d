@@ -83,12 +83,17 @@ void Config::load()
     paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", Palette_Jet).toInt();
     paletteFilter = settings.value("SceneViewSettings/PaletteFilter", false).toBool();
     paletteSteps = settings.value("SceneViewSettings/PaletteSteps", 30).toInt();
+    scalarRangeLog = settings.value("SceneViewSettings/ScalarRangeLog", false).toBool();
+    scalarRangeBase = settings.value("SceneViewSettings/ScalarRangeBase", 10).toDouble();
 
     // vector view
     vectorProportional = settings.value("SceneViewSettings/VectorProportional", false).toBool();
     vectorColor = settings.value("SceneViewSettings/VectorColor", true).toBool();
     vectorCount = settings.value("SceneViewSettings/VectorNumber", 50).toInt();
     vectorScale = settings.value("SceneViewSettings/VectorScale", 0.6).toDouble();
+
+    // order view
+    orderLabel = settings.value("SceneViewSettings/OrderLabel", false).toBool();
 
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
@@ -159,12 +164,17 @@ void Config::save()
     settings.setValue("SceneViewSettings/PaletteType", paletteType);
     settings.setValue("SceneViewSettings/PaletteFilter", paletteFilter);
     settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
+    settings.setValue("SceneViewSettings/ScalarRangeLog", scalarRangeLog);
+    settings.setValue("SceneViewSettings/ScalarRangeBase", scalarRangeBase);
 
     // vector view
     settings.setValue("SceneViewSettings/VectorProportional", vectorProportional);
     settings.setValue("SceneViewSettings/VectorColor", vectorColor);
     settings.setValue("SceneViewSettings/VectorNumber", vectorCount);
     settings.setValue("SceneViewSettings/VectorScale", vectorScale);
+
+    // order view
+    settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
 
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);

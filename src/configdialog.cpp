@@ -106,6 +106,9 @@ void ConfigDialog::load()
     txtVectorCount->setToolTip(tr("Width and height of bounding box over vector count."));
     txtVectorScale->setValue(Util::config()->vectorScale);
 
+    // order view
+    chkOrderLabel->setChecked(Util::config()->orderLabel);
+
     // 3d
     chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
 
@@ -193,6 +196,9 @@ void ConfigDialog::save()
     Util::config()->vectorColor = chkVectorColor->isChecked();
     Util::config()->vectorCount = txtVectorCount->value();
     Util::config()->vectorScale = txtVectorScale->value();
+
+    // order view
+    Util::config()->orderLabel = chkOrderLabel->isChecked();
 
     // 3d
     Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
@@ -469,6 +475,15 @@ QWidget *ConfigDialog::createViewWidget()
     QGroupBox *grp3D = new QGroupBox(tr("3D"));
     grp3D->setLayout(layout3D);
 
+    // layout order
+    chkOrderLabel = new QCheckBox(tr("Show order label"), this);
+
+    QHBoxLayout *layoutOrder = new QHBoxLayout();
+    layoutOrder->addWidget(chkOrderLabel);
+
+    QGroupBox *grpOrder = new QGroupBox(tr("Order"));
+    grpOrder->setLayout(layoutOrder);
+
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeometry);
@@ -476,6 +491,7 @@ QWidget *ConfigDialog::createViewWidget()
     layout->addWidget(grpContours);
     layout->addWidget(grpScalarView);
     layout->addWidget(grpVectorView);
+    layout->addWidget(grpOrder);
     layout->addWidget(grp3D);
     layout->addStretch();
 

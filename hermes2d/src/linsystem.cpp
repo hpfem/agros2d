@@ -325,7 +325,8 @@ void LinSystem::create_matrix(bool rhsonly)
 
   // spaces have changed: create the matrix from scratch
   free();
-  verbose("Creating matrix sparse structure..."); begin_time();
+  verbose("Creating matrix sparse structure...");
+  TimePeriod cpu_time;
 
   // calculate the total number of DOFs
   ndofs = 0;
@@ -354,7 +355,7 @@ void LinSystem::create_matrix(bool rhsonly)
   }
   Ap[i] = pos;
   verbose("  (ndof: %d, nnz: %d, size: %0.1lf MB, time: %g sec)",
-          ndofs, pos, (double) get_matrix_size() / (1024*1024), end_time());
+          ndofs, pos, (double) get_matrix_size() / (1024*1024), cpu_time.tick().last());
   delete [] pages;
 
   // shrink Ai to the actual size
@@ -475,7 +476,7 @@ void LinSystem::assemble(bool rhsonly)
   if (!ndofs) return;
 
   info("Assembling stiffness matrix...");
-  begin_time();
+  TimePeriod cpu_time;
 
   // create slave pss's for test functions, init quadrature points
   AUTOLA_OR(PrecalcShapeset*, spss, wf->neq);
@@ -689,7 +690,7 @@ void LinSystem::assemble(bool rhsonly)
     for (int i = 0; i < ndofs; i++)
       RHS[i] += Dir[i];
 
-  verbose("  (stages: %d, time: %g sec)", stages.size(), end_time());
+  verbose("  (stages: %d, time: %g s)", stages.size(), cpu_time.tick().last());
   for (int i = 0; i < wf->neq; i++) delete spss[i];
   delete [] buffer;
 
@@ -936,7 +937,7 @@ scalar LinSystem::eval_form(WeakForm::LiFormSurf *lf, PrecalcShapeset *fv, RefMa
 bool LinSystem::solve(int n, ...)
 {
   if (!solver) error("Cannot solve -- no solver was provided.");
-  begin_time();
+  TimePeriod cpu_time;
 
   // perform symbolic analysis of the matrix
   if (struct_changed)
@@ -956,10 +957,9 @@ bool LinSystem::solve(int n, ...)
   if (Vec != NULL) ::free(Vec);
   Vec = (scalar*) malloc(ndofs * sizeof(scalar));
   solver->solve(slv_ctx, ndofs, Ap, Ai, Ax, false, RHS, Vec);
-  verbose("  (total solve time: %g sec)", end_time());
+  report_time("LinSystem solved in %g s", cpu_time.tick().last());
 
   // initialize the Solution classes
-  begin_time();
   va_list ap;
   va_start(ap, n);
   if (n > wf->neq) n = wf->neq;
@@ -969,7 +969,7 @@ bool LinSystem::solve(int n, ...)
     sln->set_fe_solution(spaces[i], pss[i], Vec);
   }
   va_end(ap);
-  verbose("Exported solution in %g sec", end_time());
+  report_time("Exported solution in %g s", cpu_time.tick().last());
 
   return true;
 }
@@ -1070,7 +1070,8 @@ HERMES2D_API void warn_order()
 {
   if (!warned_order)
   {
-    warn("Not enough integration rules for exact integration.");
+    warn_intr("Not enough integration rules for exact integration.");
     warned_order = true;
   }
 }
+

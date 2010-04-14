@@ -73,7 +73,7 @@ View::~View()
 {
   if (output_id >= 0)
   {
-    verbose("I view is being destroyed; closing window #%d.", output_id);
+    debug_log("view is being destroyed; closing view \"%s\", window #%d", title.c_str(), output_id);
     close();
   }
 }
@@ -167,7 +167,7 @@ void View::on_create(int output_id)
 void View::on_close()
 {
   view_sync.enter();
-  verbose("I window #%d closed", output_id);
+  debug_log("closed view \"%s\", window #%d", title.c_str(), output_id);
   output_id = -1;
   view_sync.leave();
 }
@@ -445,9 +445,9 @@ void View::on_key_down(unsigned char key, int x, int y)
         case H2DV_PT_HUESCALE: pal_type = H2DV_PT_GRAYSCALE; break;
         case H2DV_PT_GRAYSCALE: pal_type = H2DV_PT_INVGRAYSCALE; break;
         case H2DV_PT_INVGRAYSCALE: pal_type = H2DV_PT_DEFAULT; break;
-        default: error("E invalid palette type");
+        default: error("invalid palette type");
       }
-      debug_log("I switche to palette type %d", (int)pal_type);
+      debug_log("switched to a palette type %d", (int)pal_type);
       create_gl_palette();
       refresh();
       break;
@@ -476,7 +476,7 @@ void View::on_special_key(int key, int x, int y)
 
 void View::wait_for_keypress(const char* text)
 {
-  debug_log("W calling deprecated function (View::wait_for_keypress), use View::wait instead");
+  warn("function View::wait_for_keypress deprecated: use View::wait instead");
   View::wait(H2DV_WAIT_KEYPRESS, text);
 }
 
@@ -607,7 +607,7 @@ void View::set_palette_filter(bool linear)
 
 void View::set_palette(ViewPaletteType type)
 {
-  assert_msg(type >= H2DV_PT_DEFAULT && type < H2DV_PT_MAX_ID, "E unknown palette type %d", (int)type);
+  assert_msg(type >= H2DV_PT_DEFAULT && type < H2DV_PT_MAX_ID, "unknown palette type %d", (int)type);
 
   view_sync.enter();
   pal_type = type;

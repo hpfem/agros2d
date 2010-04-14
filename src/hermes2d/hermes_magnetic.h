@@ -80,7 +80,7 @@ public:
     SceneLabelMarker *newLabelMarker();
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(SolverDialog *solverDialog);
+    QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve);
 
     PhysicFieldVariable contourPhysicFieldVariable();
     PhysicFieldVariable scalarPhysicFieldVariable();

@@ -26,6 +26,8 @@
 
 #include <QtHelp/QHelpEngine>
 
+#include <Python.h>
+
 #include <typeinfo>
 #include <iostream>
 #include <stdlib.h>
@@ -36,6 +38,8 @@ const double EPS_ZERO = 1e-10;
 const double EPS0 = 8.854e-12;
 const double MU0 = 4*M_PI*1e-7;
 const int NDOF_STOP = 40000;
+
+const double CONST_DOUBLE = 1e100;
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;
@@ -51,7 +55,7 @@ const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 
 using namespace std;
 
 // enable log file
-void enableLogFile(bool enable);
+void logOutput(QtMsgType type, const char *msg);
 
 // set gui style
 void setGUIStyle(const QString &styleName);
@@ -78,7 +82,7 @@ QString tempProblemDir();
 QString tempProblemFileName();
 
 // convert time in ms to QTime
-QTime milliSecondsToTime(int ms);
+QTime milisecondsToTime(int ms);
 
 // remove directory content
 bool removeDirectory(const QDir &dir);

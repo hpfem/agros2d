@@ -631,7 +631,7 @@ void Linearizer::process_solution(MeshFunction* sln, int item, double eps, doubl
                                   MeshFunction* xdisp, MeshFunction* ydisp, double dmult)
 {
   lock_data();
-  begin_time();
+  TimePeriod time_period;
 
   // initialization
   this->sln = sln;
@@ -800,7 +800,7 @@ void Linearizer::process_solution(MeshFunction* sln, int item, double eps, doubl
   }
 
   find_min_max();
-  //verbose("Linearizer: %d verts, %d tris in %0.3g sec", nv, nt, end_time());
+  //verbose("Linearizer: %d verts, %d tris in %0.3g sec", nv, nt, time_period.tick().last());
   //if (verbose_mode) print_hash_stats();
   unlock_data();
 
@@ -888,7 +888,7 @@ void Linearizer::load_data(const char* filename)
 //// others ///////////////////////////////////////////////////////////////////////////////////
 
 void Linearizer::calc_vertices_aabb(double* min_x, double* max_x, double* min_y, double* max_y) const {
-  assert_msg(verts != NULL, "E cannot calculate AABB from NULL vertices");
+  assert_msg(verts != NULL, "cannot calculate AABB from NULL vertices");
   calc_aabb(&verts[0][0], &verts[0][1], sizeof(double3), nv, min_x, max_x, min_y, max_y);
 }
 

@@ -52,17 +52,6 @@ VideoDialog::~VideoDialog()
     // restore previous timestep
     Util::scene()->sceneSolution()->setTimeStep(m_timeStep);
 
-    delete btnEncodeFFmpeg;
-    delete btnSaveVideo;
-    delete cmbCodec;
-    delete cmbFormat;
-    delete txtFPS;
-    delete progressBar;
-    
-    delete btnAnimate;
-    delete txtAnimateFrom;
-    delete txtAnimateTo;
-
     delete timerAnimate;
 }
 
@@ -255,7 +244,7 @@ void VideoDialog::doAnimateNextStep()
 
 void VideoDialog::doSetTimeStep(int index)
 {
-    Util::scene()->sceneSolution()->setTimeStep(index - 1);
+    Util::scene()->sceneSolution()->setTimeStep(index - 1, false);
     sldAnimate->setValue(index);
 
     QString time = QString::number(Util::scene()->sceneSolution()->time(), 'g');

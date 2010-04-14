@@ -370,7 +370,7 @@ ViewScalarFilter *HermesHeat::viewScalarFilter(PhysicFieldVariable physicFieldVa
                                     physicFieldVariableComp);
 }
 
-QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)
+QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
@@ -447,7 +447,7 @@ QList<SolutionArray *> *HermesHeat::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackHeatSpace, callbackHeatWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackHeatSpace, callbackHeatWeakForm);
 
     delete [] heatEdge;
     delete [] heatLabel;

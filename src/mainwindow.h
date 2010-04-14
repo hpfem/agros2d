@@ -28,7 +28,6 @@
 #include "terminalview.h"
 #include "tooltipview.h"
 #include "helpdialog.h"
-#include "solverdialog.h"
 #include "chartdialog.h"
 #include "configdialog.h"
 #include "scripteditordialog.h"

@@ -22,8 +22,6 @@
 
 #include <QDomDocument>
 
-#include <Python.h>
-
 #include "util.h"
 #include "hermes2d.h"
 #include "solver_umfpack.h"
@@ -33,7 +31,7 @@
 #include "volumeintegralview.h"
 
 #include "scenemarker.h"
-#include "solverdialog.h"
+#include "progressdialog.h"
 
 extern bool isPlanar;
 extern AnalysisType analysisType;
@@ -50,7 +48,6 @@ class SceneLabelMarker;
 class SceneViewSettings;
 
 class SolutionArray;
-class SolverDialog;
 
 class ViewScalarFilter;
 
@@ -87,7 +84,7 @@ public:
     virtual SceneLabelMarker *newLabelMarker() = 0;
     virtual SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args) = 0;
 
-    virtual QList<SolutionArray *> *solve(SolverDialog *solverDialog) = 0;
+    virtual QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve) = 0;
 
     virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
     virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;
@@ -138,7 +135,7 @@ RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivi
 Mesh *readMesh(const QString &fileName);
 
 // solve
-QList<SolutionArray *> *solveSolutioArray(SolverDialog *solverDialog, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *));
+QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *));
 
 // custom forms **************************************************************************************************************************
 

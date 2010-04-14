@@ -121,6 +121,9 @@ private:
     QSpinBox *txtVectorCount;
     SLineEditDouble *txtVectorScale;
 
+    // order view
+    QCheckBox *chkOrderLabel;
+
     // 3d
     QCheckBox *chkView3DLighting;
 

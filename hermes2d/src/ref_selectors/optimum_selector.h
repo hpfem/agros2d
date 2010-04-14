@@ -60,7 +60,7 @@ namespace RefinementSelectors {
           case H2D_REFINEMENT_ANISO_V:
             return 2;
           default:
-            error("E invalid split type %d", split);
+            error("invalid split type %d", split);
             return -1;
             break;
         }

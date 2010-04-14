@@ -211,17 +211,17 @@ bool H1AdaptHP::adapt(double thr, int strat, RefinementSelectors::Selector* refi
     }
   }
 
-  debug_log("I examined elements: %d", num_exam_elem);
-  debug_log("  elements taken from priority queue: %d", num_priority_elem);
-  debug_log("  ignored elements: %d", num_ignored_elem);
-  debug_log("  not changed elements: %d", num_not_changed);
-  debug_log("  elements to process: %d", elem_inx_to_proc.size());
+  verbose("examined elements: %d", num_exam_elem);
+  verbose(" elements taken from priority queue: %d", num_priority_elem);
+  verbose(" ignored elements: %d", num_ignored_elem);
+  verbose(" not changed elements: %d", num_not_changed);
+  verbose(" elements to process: %d", elem_inx_to_proc.size());
   bool done = false;
   if (num_exam_elem == 0)
     done = true;
   else if (elem_inx_to_proc.empty())
   {
-    warn("W none of the elements selected for refinement could be refined. Adaptivity step not successful, returning 'true'.\n");
+    warn("none of the elements selected for refinement could be refined. Adaptivity step not successful, returning 'true'.\n");
     done = true;
   }
 
@@ -271,7 +271,7 @@ bool H1AdaptHP::adapt(double thr, int strat, RefinementSelectors::Selector* refi
     rsln[j]->enable_transform(true);
 
 
-  verbose("I refined element: %d", elem_inx_to_proc.size());
+  verbose("refined element: %d", elem_inx_to_proc.size());
   have_errors = false;
   if (strat == 2 && done == true) have_errors = true; // space without changes
 

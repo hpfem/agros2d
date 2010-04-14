@@ -316,6 +316,8 @@ QLayout* DSceneEdge::createContent()
     btnMarker->setMaximumWidth(25);
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtAngle = new SLineEditValue();
+    txtAngle->setMinimum(0.0);
+    txtAngle->setMaximum(180.0);
     connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     lblLength = new QLabel();
 

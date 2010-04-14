@@ -40,7 +40,7 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 
-void createScriptEngine(SceneView *sceneView);
+void createScriptEngine();
 PythonEngine *currentPythonEngine();
 void connectTerminal(Terminal *terminal);
 void disconnectTerminal(Terminal *terminal);

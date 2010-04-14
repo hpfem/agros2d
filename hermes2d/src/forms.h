@@ -81,11 +81,11 @@ class Func
 {
 public:
 	int nc;					// number of components
-	T *val;					// function values. If orders differ for a diffrent 
+	T *val;					// function values. If orders differ for a diffrent
                                                 // direction, this returns max(h_order, v_order).
 	T *dx, *dy; 				// derivatives
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
-        T *laplace;                             // must be enabled by defining H2D_SECOND_DERIVATIVES_ENABLED  
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+        T *laplace;                             // must be enabled by defining H2D_SECOND_DERIVATIVES_ENABLED
                                                 // in common.h. Default is NOT ENABLED.
 #endif
 	T *val0, *val1;				// components of function values
@@ -100,7 +100,7 @@ public:
 		dx = dx0 = dx1 = NULL;
 		dy = dy0 = dy1 = NULL;
 		curl = NULL;
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
                 laplace = NULL;
 #endif
 	}
@@ -111,7 +111,7 @@ public:
     delete [] val;
     delete [] dx;
     delete [] dy;
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
     delete [] laplace;
 #endif
 

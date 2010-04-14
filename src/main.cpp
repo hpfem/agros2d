@@ -10,6 +10,8 @@
 
 int main(int argc, char *argv[])
 {
+    qInstallMsgHandler(logOutput);
+
     QApplication a(argc, argv);
 
 #ifdef VERSION_BETA
@@ -30,7 +32,6 @@ int main(int argc, char *argv[])
 #endif
 
     QSettings settings;
-    enableLogFile(settings.value("General/EnableLogFile", false).value<bool>());
 
     // first run
     if (settings.value("General/GUIStyle").value<QString>().isEmpty())

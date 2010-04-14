@@ -41,7 +41,7 @@ testJ = test("Current density", point["J"], 48692.830437)
 testJx = test("Current density - x", point["Jx"], -12352.691339)
 testJy = test("Current density - y", point["Jy"], -47099.923064)
 testpj = test("Losses", point["pj"], 23709.917359)
-
+dd
 # surface integral
 surface = surfaceintegral(0)
 testI = test("Current", surface["I"], 3629.425713)

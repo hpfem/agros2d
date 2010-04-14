@@ -300,7 +300,7 @@ ViewScalarFilter *HermesElectrostatic::viewScalarFilter(PhysicFieldVariable phys
 
 // *******************************************************************************************************************************
 
-QList<SolutionArray *> *HermesElectrostatic::solve(SolverDialog *solverDialog)
+QList<SolutionArray *> *HermesElectrostatic::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     electrostaticEdge = new ElectrostaticEdge[Util::scene()->edges.count()+1];
@@ -345,7 +345,7 @@ QList<SolutionArray *> *HermesElectrostatic::solve(SolverDialog *solverDialog)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(solverDialog, callbackElectrostaticSpace, callbackElectrostaticWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackElectrostaticSpace, callbackElectrostaticWeakForm);
 
     delete [] electrostaticEdge;
     delete [] electrostaticLabel;

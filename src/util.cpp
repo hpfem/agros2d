@@ -21,8 +21,6 @@
 #include "scene.h"
 #include "scripteditordialog.h"
 
-static bool logFile;
-
 static QHash<PhysicField, QString> physicFieldList;
 static QHash<PhysicFieldVariable, QString> physicFieldVariableList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
@@ -553,11 +551,6 @@ bool Value::evaluate(bool quiet)
     return expressionResult.error.isEmpty();
 }
 
-void enableLogFile(bool enable)
-{
-    logFile = enable;
-}
-
 void setGUIStyle(const QString &styleName)
 {
     QStyle *style = QStyleFactory::create(styleName);
@@ -666,7 +659,7 @@ QString tempProblemFileName()
     return tempProblemDir() + "/temp";
 }
 
-QTime milliSecondsToTime(int ms)
+QTime milisecondsToTime(int ms)
 {
     // store the current ms remaining
     int tmp_ms = ms;
@@ -737,20 +730,49 @@ void msleep(unsigned long msecs)
     sleepMutex.unlock();
 }
 
-void log(const QString &message)
+void logOutput(QtMsgType type, const char *msg)
 {
-    if (logFile)
+    QString msgType = "";
+
+    switch (type) {
+    case QtDebugMsg:
+        msgType = "Debug";
+        break;
+    case QtWarningMsg:
+        msgType = "Warning";
+        break;
+    case QtCriticalMsg:
+        msgType = "Critical";
+        break;
+    case QtFatalMsg:
+        msgType = "Fatal";
+        break;
+    }
+
+    QString str = QString("%1  %2: %3").
+                  arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz")).
+                  arg(msgType).
+                  arg(msg);
+
+    // string
+    fprintf(stderr, "%s\n", str.toStdString().c_str());
+
+    QSettings settings;
+    if (settings.value("General/EnableLogFile", false).value<bool>())
     {
-        QFile file(QApplication::applicationDirPath() + "/log.txt");
+        QFile file(QApplication::applicationDirPath() + "/agros2d.log");
 
         if (file.open(QIODevice::Append | QIODevice::Text))
         {
             QTextStream outFile(&file);
-            outFile << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << ": " << message << endl;
+            outFile << str << endl;
 
             file.close();
         }
     }
+
+    if (type == QtFatalMsg)
+        abort();
 }
 
 QString readFileContent(const QString &fileName)

@@ -38,8 +38,10 @@ class Vectorizer;
 class Orderizer;
 class Mesh;
 
-class SceneSolution
+class SceneSolution : public QObject
 {
+    Q_OBJECT
+
 public:
     SceneSolution();
 
@@ -49,18 +51,20 @@ public:
     void loadSolution(QDomElement *element);
     void saveSolution(QDomDocument *doc, QDomElement *element);
 
+    void solve(SolverMode solverMode);
     inline Mesh *mesh() { return m_mesh; }
     inline void setMesh(Mesh *mesh) { if (m_mesh) { delete m_mesh; } m_mesh = mesh; }
     Solution *sln(int i = -1);
     void setSolutionArrayList(QList<SolutionArray *> *solutionArrayList);
     inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; }
-    void setTimeStep(int timeStep);
+    void setTimeStep(int timeStep, bool showViewProgress = true);
     inline int timeStep() { return m_timeStep; }
     int timeStepCount();
     double time();
 
     bool isSolved() { return (m_timeStep != -1); }
-    bool isMeshed() { return (m_mesh); }
+    bool isMeshed() { return m_mesh; }
+    bool isSolving() { return m_isSolving; }
 
     // contour
     inline ViewScalarFilter *slnContourView() { return m_slnContourView; }
@@ -89,8 +93,22 @@ public:
     int findTriangleInMesh(Mesh *mesh, const Point &point);
     int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point);
 
+    // process
+    void processRangeContour();
+    void processRangeScalar();
+    void processRangeVector();
+
+signals:
+    void timeStepChanged(bool showViewProgress = true);
+    void solved();
+
+    void processedRangeContour();
+    void processedRangeScalar();
+    void processedRangeVector();
+
 private:
     int m_timeElapsed;
+    bool m_isSolving;
 
     // general solution array
     QList<SolutionArray *> *m_solutionArrayList;

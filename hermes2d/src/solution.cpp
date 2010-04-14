@@ -665,7 +665,7 @@ void Solution::transform_values(int order, Node* node, int newmask, int oldmask,
   // H1 space
   if (space_type == 0)
   {
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED 
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
     if (((newmask & SECOND) == SECOND && (oldmask & SECOND) != SECOND))
     {
       update_refmap();

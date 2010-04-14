@@ -27,7 +27,7 @@ void Node::ref_element(Element* e)
     // store the element pointer in a free slot of 'elem'
     if (elem[0] == NULL) elem[0] = e;
     else if (elem[1] == NULL) elem[1] = e;
-    else assert_msg(false, "E no free slot 'elem'");
+    else assert_msg(false, "no free slot 'elem'");
   }
   ref++;
 }
@@ -1019,18 +1019,28 @@ void Mesh::free()
   HashTable::free();
 }
 
-void Mesh::copy_refine(Mesh* mesh)
+void Mesh::copy_converted(Mesh* mesh)
 {
   free();
   HashTable::copy(mesh);
+ // clear refernce for all nodes
+  for(int i = 0; i < nodes.get_size(); i++)
+  {
+    Node& node = nodes[i];
+    if (node.type == TYPE_EDGE) { //process only edge nodes
+      for(int k = 0; k < 2; k++)
+        node.elem[k] = NULL;
+    }
+  }
 
-  // copy refined elements
+  // copy active elements
   Element* e;
 
-  for_all_refine_elements(e, mesh)
+  for_all_active_elements(e, mesh)
   {
     Element* enew;
     Node *v0 = &nodes[e->vn[0]->id], *v1 = &nodes[e->vn[1]->id], *v2 = &nodes[e->vn[2]->id];
+    Node *e0 = &nodes[e->en[0]->id], *e1 = &nodes[e->en[1]->id], *e2 = &nodes[e->en[2]->id];
     if (e->is_triangle())
     {
       // create a new element
@@ -1046,14 +1056,15 @@ void Mesh::copy_refine(Mesh* mesh)
       enew->vn[0] = v0;
       enew->vn[1] = v1;
       enew->vn[2] = v2;
-      enew->en[0] = get_edge_node(v0->id, v1->id);
-      enew->en[1] = get_edge_node(v1->id, v2->id);
-      enew->en[2] = get_edge_node(v2->id, v0->id);
+      enew->en[0] = e0;
+      enew->en[1] = e1;
+      enew->en[2] = e2;
     }
     else
     {
       // create a new element
       Node *v3 = &nodes[e->vn[3]->id];
+      Node *e3 = &nodes[e->en[3]->id];
       enew = elements.add();
       enew->active = 1;
       enew->marker = e->marker;
@@ -1067,10 +1078,10 @@ void Mesh::copy_refine(Mesh* mesh)
       enew->vn[1] = v1;
       enew->vn[2] = v2;
       enew->vn[3] = v3;
-      enew->en[0] = get_edge_node(v0->id, v1->id);
-      enew->en[1] = get_edge_node(v1->id, v2->id);
-      enew->en[2] = get_edge_node(v2->id, v3->id);
-      enew->en[3] = get_edge_node(v3->id, v0->id);
+      enew->en[0] = e0;
+      enew->en[1] = e1;
+      enew->en[2] = e2;
+      enew->en[3] = e3;
     }
 
     // copy edge markers
@@ -1086,29 +1097,29 @@ void Mesh::copy_refine(Mesh* mesh)
       enew->cm = new CurvMap(e->cm);
   }
 
-  nbase = nactive = ninitial = mesh->nbase = get_max_element_id();
+  nbase = nactive = ninitial = mesh->nactive;
   ntopvert = mesh->ntopvert = get_num_nodes();
   seq = g_mesh_seq++;
 }
 
 ////convert a triangle element into three quadrilateral elements///////
 
-void Mesh::convert_to_quads(int refinement)
+void Mesh::convert_triangles_to_quads()
 {
   Element* e;
   Mesh tmp;
 
   elements.set_append_only(true);
   for_all_active_elements(e, this)
-    refine_element_to_quads(e->id, refinement);
+    refine_element_to_quads(e->id);
   elements.set_append_only(false);
 
-  tmp.copy_refine(this);
+  tmp.copy_converted(this);
   copy(&tmp);
 }
 
 ////convert a quad element into two triangle elements///////
-void Mesh::convert_to_triangles()
+void Mesh::convert_quads_to_triangles()
 {
   Element* e;
   Mesh tmp;
@@ -1118,7 +1129,7 @@ void Mesh::convert_to_triangles()
     refine_element_to_triangles(e->id);
   elements.set_append_only(false);
 
-  tmp.copy_refine(this);
+  tmp.copy_converted(this);
   copy(&tmp);
 }
 
@@ -1362,7 +1373,7 @@ void Mesh::refine_triangle_to_quads(Element* e)
 }
 
 
-void Mesh::refine_element_to_quads(int id, int refinement)
+void Mesh::refine_element_to_quads(int id)
 {
   Element* e = get_element(id);
   if (!e->used) error("invalid element id number.");
@@ -1371,7 +1382,7 @@ void Mesh::refine_element_to_quads(int id, int refinement)
   if (e->is_triangle())
     refine_triangle_to_quads(e);
   else
-    refine_quad(e, refinement);
+    return;
 
   seq = g_mesh_seq++;
 }
@@ -1564,7 +1575,7 @@ void Mesh::refine_element_to_triangles(int id)
   if (!e->active) error("attempt to refine element #%d which has been refined already.", e->id);
 
   if (e->is_triangle())
-    refine_triangle(e);
+    return;
   else
     refine_quad_to_triangles(e);
 

@@ -27,6 +27,7 @@
 
 #include "sceneviewdialog.h"
 #include "scenebasic.h"
+#include "progressdialog.h"
 
 class Scene;
 
@@ -37,6 +38,9 @@ class SceneLabel;
 class LocalPointValue;
 class SurfaceIntegralValue;
 class VolumeIntegralValue;
+
+// scene view
+SceneView *sceneView();
 
 class SceneViewSettings
 {
@@ -82,12 +86,16 @@ public slots:
     void doSceneObjectProperties();
     void doSceneModeSet(QAction *action);
     void doSelectMarker();
-    void doProcessSolution();
     void doInvalidated();
-    void doSolved();
+    void solved();
     void doDefaultValues();
-    void doRefresh();
+    void refresh();
     void doSetChartLine(const Point &start, const Point &end);
+    void timeStepChanged(bool showViewProgress = false);
+
+    void processedRangeVector();
+    void processedRangeScalar();
+    void processedRangeContour();
 
 public:
     SceneView(QWidget *parent = 0);
@@ -122,6 +130,10 @@ public:
 
     ErrorResult saveImageToFile(const QString &fileName, int w = 0, int h = 0);
     void saveImagesForReport(const QString &path, int w = 0, int h = 0);
+
+    void processRangeContour();
+    void processRangeScalar();
+    void processRangeVector();
 
 signals:
     void mouseMoved(const QPointF &position);
@@ -219,9 +231,10 @@ private:
     void paintScalarField(); // paint scalar field surface
     void paintScalarField3D(); // paint scalar field 3d surface
     void paintScalarField3DSolid(); // paint scalar field 3d solid
+    void paintScalarFieldColorBar(double min, double max);
     void paintOrder();
+    void paintOrderColorBar();
 
-    void paintColorBar(double min, double max);
     void paintSceneModeLabel();
     void paintZoomRegion();
     void paintSnapToGrid();
@@ -234,9 +247,6 @@ private:
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75);
 
     void setZoom(double power);
-    void setRangeContour();
-    void setRangeScalar();
-    void setRangeVector();
     void selectRegion(const Point &start, const Point &end);
 
     inline Point &position(const Point &point) { Point p((2.0/contextWidth()*point.x-1)/m_scale*m_aspect+m_offset.x, -(2.0/contextHeight()*point.y-1)/m_scale+m_offset.y); return p; }

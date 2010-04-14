@@ -212,6 +212,12 @@ public:
   ExactSolution(Mesh* mesh, scalar2& (*exactfn)(double x, double y, scalar2& dx, scalar2& dy))
     { set_exact(mesh, exactfn); }
 
+  int update(Mesh* mesh, scalar   (*exactfn)(double x, double y, scalar& dx , scalar& dy))
+    { set_exact(mesh, exactfn);  return 1; }
+
+  int update(Mesh* mesh, scalar2& (*exactfn)(double x, double y, scalar2& dx, scalar2& dy))
+    { set_exact(mesh, exactfn);  return 1; }
+
 };
 
 
