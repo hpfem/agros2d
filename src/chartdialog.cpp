@@ -271,7 +271,7 @@ void ChartDialog::createControls()
     // main layout
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(controls);
-    layout->addWidget(tabOutput);
+    layout->addWidget(tabOutput, 1);
     
     // chart picker
     picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
@@ -310,7 +310,9 @@ void ChartDialog::plotGeometry()
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
-    text.setText(physicFieldVariableString(physicFieldVariable) + " (" + physicFieldVariableUnits(physicFieldVariable) + ")");
+    text.setText(QString("%1 (%2)").
+                 arg(physicFieldVariableString(physicFieldVariable)).
+                 arg(physicFieldVariableUnitsString(physicFieldVariable)));
     chart->setAxisTitle(QwtPlot::yLeft, text);
     
     // table
@@ -386,7 +388,9 @@ void ChartDialog::plotTime()
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
-    text.setText(physicFieldVariableString(physicFieldVariable) + " (" + physicFieldVariableUnits(physicFieldVariable) + ")");
+    text.setText(QString("%1 (%2)").
+                 arg(physicFieldVariableString(physicFieldVariable)).
+                 arg(physicFieldVariableUnitsString(physicFieldVariable)));
     chart->setAxisTitle(QwtPlot::yLeft, text);
 
     // table

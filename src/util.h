@@ -537,7 +537,8 @@ enum SceneViewPostprocessorShow
 
 // captions
 QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable);
-QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable);
+QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable);
+QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable);
 QString physicFieldString(PhysicField physicField);
 QString analysisTypeString(AnalysisType analysisType);
 QString physicFieldBCString(PhysicFieldBC physicFieldBC);

@@ -930,10 +930,10 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     // palette border
     glColor3f(0.0, 0.0, 0.0);
     glBegin(GL_QUADS);
+    glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 50.0);
+    glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 50.0);
     glVertex2d(scaleLeft + 10.0, scaleBorder.y + 10.0);
     glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0);
-    glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 10.0);
-    glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 10.0);
     glEnd();
 
     glDisable(GL_POLYGON_OFFSET_FILL);
@@ -948,8 +948,8 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
         glTexCoord1d(m_texScale + m_texShift);
     else
         glTexCoord1d(m_texShift);
-    glVertex2d(scaleLeft + 28.0, scaleBorder.y + scaleSize.y - 12.0);
-    glVertex2d(scaleLeft + 12.0, scaleBorder.y + scaleSize.y - 12.0);
+    glVertex2d(scaleLeft + 28.0, scaleBorder.y + scaleSize.y - 52.0);
+    glVertex2d(scaleLeft + 12.0, scaleBorder.y + scaleSize.y - 52.0);
     glTexCoord1d(m_texShift);
     glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
     glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
@@ -962,12 +962,12 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     glBegin(GL_LINES);
     for (int i = 1; i < numTicks+1; i++)
     {
-        double tickY = (scaleSize.y - 20.0) / (numTicks - 1.0);
+        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
-        glVertex2d(scaleLeft + 10.0, scaleBorder.y + 10.0 + i*tickY);
-        glVertex2d(scaleLeft + 15.0, scaleBorder.y + 10.0 + i*tickY);
-        glVertex2d(scaleLeft + 25.0, scaleBorder.y + 10.0 + i*tickY);
-        glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0 + i*tickY);
+        glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 15.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 25.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
     }
     glEnd();
 
@@ -981,13 +981,23 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
             value = min + (double) pow(Util::config()->scalarRangeBase, ((i-1) / (numTicks-1)))/Util::config()->scalarRangeBase * (max - min);
 
         if (fabs(value) < EPS_ZERO) value = 0.0;
-        double tickY = (scaleSize.y - 20.0) / (numTicks - 1.0);
+        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
         renderText(scaleLeft + 33.0 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
                    0.0,
                    QString::number(value, '+e', 1));
     }
+
+    // variable
+    QString str = QString("%1 (%2)").
+                  arg(physicFieldVariableShortcutString(m_sceneViewSettings.scalarPhysicFieldVariable)).
+                  arg(physicFieldVariableUnitsString(m_sceneViewSettings.scalarPhysicFieldVariable));
+
+    renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
+               scaleBorder.y + scaleSize.y - 25.0,
+               0.0,
+               str);
 
     glPopMatrix();
 }
@@ -1494,7 +1504,6 @@ void SceneView::paintSceneModeLabel()
         break;
     }
 
-
     glPushMatrix();
     glLoadIdentity();
 
@@ -1783,6 +1792,11 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     {
         Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
         m_scene->doNewNode(p);
+    }
+    if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_L))
+    {
+        Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+        m_scene->doNewLabel(p);
     }
 }
 

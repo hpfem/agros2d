@@ -277,10 +277,18 @@ void Chart::saveImage(const QString &fileName)
 
 QImage Chart::image() const
 {
-    QImage image(1024, 768, QImage::Format_ARGB32);
-    print(image);
+    QPixmap pixmap(width(), height());
+    pixmap.fill(Qt::white); // Qt::transparent
 
-    return image;
+    QwtPlotPrintFilter filter;
+    int options = QwtPlotPrintFilter::PrintAll;
+    options &= ~QwtPlotPrintFilter::PrintBackground;
+    options |= QwtPlotPrintFilter::PrintFrameWithScales;
+    filter.setOptions(options);
+
+    print(pixmap, filter);
+
+    return pixmap.toImage();
 }
 
 void Chart::setData(double *xval, double *yval, int count)

@@ -135,6 +135,7 @@ void SceneViewDialog::save()
     m_sceneView->sceneViewSettings().vectorPhysicFieldVariable = (PhysicFieldVariable) cmbVectorFieldVariable->itemData(cmbVectorFieldVariable->currentIndex()).toInt();
 
     // time step
+    QApplication::processEvents();
     Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());
 }
 

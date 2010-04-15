@@ -856,12 +856,13 @@ void Scene::doNewEdge()
         delete edge;
 }
 
-void Scene::doNewLabel()
+void Scene::doNewLabel(const Point &point)
 {
-    SceneLabel *label = new SceneLabel(Point(), labelMarkers[0], 0.0, 0);
+    SceneLabel *label = new SceneLabel(point, labelMarkers[0], 0.0, 0);
     if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
-        addLabel(label);
+        SceneLabel *labelAdded = addLabel(label);
+        if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point, label->marker->name, label->area, label->polynomialOrder));
     }
     else
         delete label;

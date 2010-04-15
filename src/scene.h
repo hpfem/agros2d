@@ -166,7 +166,7 @@ class Scene : public QObject
 public slots:
     void doNewNode(const Point &point = Point());
     void doNewEdge();
-    void doNewLabel();
+    void doNewLabel(const Point &point = Point());
     void doDeleteSelected();
     void doNewEdgeMarker();
     void doNewLabelMarker();

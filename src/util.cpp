@@ -285,7 +285,123 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
     }
 }
 
-QString physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)
+QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)
+{
+    switch (physicFieldVariable)
+    {
+    case PhysicFieldVariable_Variable:
+        return QObject::tr("V");
+    case PhysicFieldVariable_General_Gradient:
+        return QObject::tr("G");
+    case PhysicFieldVariable_General_Constant:
+        return QObject::tr("C");
+
+    case PhysicFieldVariable_Electrostatic_Potential:
+        return QObject::tr("V");
+    case PhysicFieldVariable_Electrostatic_ElectricField:
+        return QObject::tr("E");
+    case PhysicFieldVariable_Electrostatic_Displacement:
+        return QObject::tr("D");
+    case PhysicFieldVariable_Electrostatic_EnergyDensity:
+        return QObject::tr("we");
+    case PhysicFieldVariable_Electrostatic_Permittivity:
+        return QObject::tr("epsr");
+
+    case PhysicFieldVariable_Magnetic_VectorPotentialReal:
+        return QObject::tr("Are");
+    case PhysicFieldVariable_Magnetic_VectorPotentialImag:
+        return QObject::tr("Aim");
+    case PhysicFieldVariable_Magnetic_VectorPotential:
+        return QObject::tr("A");
+    case PhysicFieldVariable_Magnetic_FluxDensityReal:
+        return QObject::tr("Bre");
+    case PhysicFieldVariable_Magnetic_FluxDensityImag:
+        return QObject::tr("Bim");
+    case PhysicFieldVariable_Magnetic_FluxDensity:
+        return QObject::tr("B");
+    case PhysicFieldVariable_Magnetic_MagneticFieldReal:
+        return QObject::tr("Hre");
+    case PhysicFieldVariable_Magnetic_MagneticFieldImag:
+        return QObject::tr("Him");
+    case PhysicFieldVariable_Magnetic_MagneticField:
+        return QObject::tr("H");
+    case PhysicFieldVariable_Magnetic_CurrentDensityReal:
+        return QObject::tr("Jere");
+    case PhysicFieldVariable_Magnetic_CurrentDensityImag:
+        return QObject::tr("Jeim");
+    case PhysicFieldVariable_Magnetic_CurrentDensity:
+        return QObject::tr("Je");
+    case PhysicFieldVariable_Magnetic_CurrentDensityTotalReal:
+        return QObject::tr("Jtre");
+    case PhysicFieldVariable_Magnetic_CurrentDensityTotalImag:
+        return QObject::tr("Jtim");
+    case PhysicFieldVariable_Magnetic_CurrentDensityTotal:
+        return QObject::tr("Jt");
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformReal:
+        return QObject::tr("Jitre");
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransformImag:
+        return QObject::tr("Jitim");
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedTransform:
+        return QObject::tr("Jit");
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityReal:
+        return QObject::tr("Jivre");
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocityImag:
+        return QObject::tr("Jivim");
+    case PhysicFieldVariable_Magnetic_CurrentDensityInducedVelocity:
+        return QObject::tr("Jiv");
+    case PhysicFieldVariable_Magnetic_PowerLosses:
+        return QObject::tr("pj");
+    case PhysicFieldVariable_Magnetic_LorentzForce:
+        return QObject::tr("FL");
+    case PhysicFieldVariable_Magnetic_EnergyDensity:
+        return QObject::tr("wm");
+    case PhysicFieldVariable_Magnetic_Permeability:
+        return QObject::tr("mur");
+    case PhysicFieldVariable_Magnetic_Conductivity:
+        return QObject::tr("g");
+    case PhysicFieldVariable_Magnetic_Remanence:
+        return QObject::tr("Br");
+    case PhysicFieldVariable_Magnetic_Velocity:
+        return QObject::tr("v");
+
+    case PhysicFieldVariable_Current_Potential:
+        return QObject::tr("V");
+    case PhysicFieldVariable_Current_ElectricField:
+        return QObject::tr("E");
+    case PhysicFieldVariable_Current_CurrentDensity:
+        return QObject::tr("J");
+    case PhysicFieldVariable_Current_Losses:
+        return QObject::tr("pj");
+    case PhysicFieldVariable_Current_Conductivity:
+        return QObject::tr("g");
+
+    case PhysicFieldVariable_Heat_Temperature:
+        return QObject::tr("T");
+    case PhysicFieldVariable_Heat_TemperatureGradient:
+        return QObject::tr("G");
+    case PhysicFieldVariable_Heat_Flux:
+        return QObject::tr("F");
+    case PhysicFieldVariable_Heat_Conductivity:
+        return QObject::tr("k");
+
+    case PhysicFieldVariable_Elasticity_VonMisesStress:
+        return QObject::tr("E");
+
+    case PhysicFieldVariable_Flow_Velocity:
+        return QObject::tr("v");
+    case PhysicFieldVariable_Flow_VelocityX:
+        return QObject::tr("vx");
+    case PhysicFieldVariable_Flow_VelocityY:
+        return QObject::tr("vy");
+    case PhysicFieldVariable_Flow_Pressure:
+        return QObject::tr("p");
+    default:
+        std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)" << endl;
+        throw;
+    }
+}
+
+QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
 {
     switch (physicFieldVariable)
     {
