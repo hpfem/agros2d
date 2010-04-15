@@ -799,6 +799,9 @@ void SceneView::paintOrder()
     // paint labels
     if (Util::config()->orderLabel)
     {
+        QFont fontLabel = font();
+        fontLabel.setPointSize(fontLabel.pointSize() - 3);
+
         m_scene->sceneSolution()->ordView().lock_data();
 
         double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
@@ -818,7 +821,8 @@ void SceneView::paintOrder()
                 renderText(vert[lvert[i]][0] - size.x / 2.0,
                            vert[lvert[i]][1] - size.y / 2.0,
                            0.0,
-                           ltext[i]);
+                           ltext[i],
+                           fontLabel);
             }
         }
 
