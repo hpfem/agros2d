@@ -187,6 +187,7 @@ private:
     int m_listVectors;
     int m_listScalarField;
     int m_listScalarField3D;
+    int m_listScalarField3DSolid;
     int m_listOrder;
 
     // helper for snap to grid

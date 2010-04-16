@@ -74,6 +74,7 @@ public:
 
     // 3d
     bool scalarView3DLighting;
+    double scalarView3DAngle;
 
     // palette
     PaletteType paletteType;

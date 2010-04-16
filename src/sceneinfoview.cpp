@@ -279,7 +279,10 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
-        item->setText(0, QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2));
+        item->setText(0, QString("%1 - [%2; %3]").
+                      arg(i).
+                      arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).
+                      arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-node"));
         item->setData(0, Qt::UserRole, Util::scene()->nodes[i]->variant());
 
@@ -293,7 +296,11 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
-        item->setText(0, QString("[%1; %2] - [%3; %4]").arg(Util::scene()->edges[i]->nodeStart->point.x, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeStart->point.y, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeEnd->point.x, 0, 'e', 2).arg(Util::scene()->edges[i]->nodeEnd->point.y, 0, 'e', 2));
+        item->setText(0, QString("%1 - %2 m").
+                      arg(i).
+                      arg((Util::scene()->edges[i]->angle < EPS_ZERO) ?
+                          sqrt(sqr(Util::scene()->edges[i]->nodeEnd->point.x - Util::scene()->edges[i]->nodeStart->point.x) + sqr(Util::scene()->edges[i]->nodeEnd->point.y - Util::scene()->edges[i]->nodeStart->point.y)) :
+                          Util::scene()->edges[i]->radius() * Util::scene()->edges[i]->angle / 180.0 * M_PI, 0, 'e', 2));
         item->setIcon(0, icon("scene-edge"));
         item->setData(0, Qt::UserRole, Util::scene()->edges[i]->variant());
 
@@ -307,7 +314,10 @@ void SceneInfoView::doInvalidated()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
-        item->setText(0, QString("[%1; %2]").arg(Util::scene()->labels[i]->point.x, 0, 'e', 2).arg(Util::scene()->labels[i]->point.y, 0, 'e', 2));
+        item->setText(0, QString("%1 - [%2; %3]").
+                      arg(i).
+                      arg(Util::scene()->labels[i]->point.x, 0, 'e', 2).
+                      arg(Util::scene()->labels[i]->point.y, 0, 'e', 2));
         item->setIcon(0, icon("scene-label"));
         item->setData(0, Qt::UserRole, Util::scene()->labels[i]->variant());
 

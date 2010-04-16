@@ -35,38 +35,6 @@ SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialo
     setMaximumSize(sizeHint());
 }
 
-SceneViewDialog::~SceneViewDialog()
-{
-    // show
-    delete chkShowGrid;
-    delete chkShowGeometry;
-    delete chkShowInitialMesh;
-
-    delete butPostprocessorGroup;
-    delete radPostprocessorNone;
-    delete radPostprocessorScalarField;
-    delete radPostprocessorScalarField3D;
-    // delete radPostprocessorScalarField3DSolid;
-    delete radPostprocessorOrder;
-
-    delete chkShowContours;
-    delete chkShowVectors;
-    delete chkShowSolutionMesh;
-
-    // scalar field
-    delete cmbScalarFieldVariable;
-    delete cmbScalarFieldVariableComp;
-    delete chkScalarFieldRangeAuto;
-    delete txtScalarFieldRangeMin;
-    delete txtScalarFieldRangeMax;
-
-    // vector field
-    delete cmbVectorFieldVariable;
-
-    // transient
-    delete cmbTimeStep;
-}
-
 int SceneViewDialog::showDialog()
 {
     return exec();
@@ -82,7 +50,7 @@ void SceneViewDialog::load()
     radPostprocessorNone->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_None);
     radPostprocessorScalarField->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView);
     radPostprocessorScalarField3D->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D);
-    // radPostprocessorScalarField3DSolid->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID);
+    radPostprocessorScalarField3DSolid->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid);
     radPostprocessorOrder->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_Order);
 
     chkShowContours->setChecked(m_sceneView->sceneViewSettings().showContours);
@@ -117,7 +85,7 @@ void SceneViewDialog::save()
     if (radPostprocessorNone->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_None;
     if (radPostprocessorScalarField->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView;
     if (radPostprocessorScalarField3D->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3D;
-    // if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SCENEVIEW_POSTPROCESSOR_SHOW_SCALARVIEW3DSOLID;
+    if (radPostprocessorScalarField3DSolid->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
     if (radPostprocessorOrder->isChecked()) m_sceneView->sceneViewSettings().postprocessorShow = SceneViewPostprocessorShow_Order;
 
     m_sceneView->sceneViewSettings().showContours = chkShowContours->isChecked();
@@ -159,21 +127,21 @@ void SceneViewDialog::createControls()
     radPostprocessorNone = new QRadioButton(tr("None"), this);
     radPostprocessorScalarField = new QRadioButton(tr("Scalar view"), this);
     radPostprocessorScalarField3D = new QRadioButton(tr("Scalar view 3D"), this);
-    // radPostprocessorScalarField3DSolid = new QRadioButton("Scalar view 3D solid", this);
+    radPostprocessorScalarField3DSolid = new QRadioButton("Scalar view solid", this);
     radPostprocessorOrder = new QRadioButton(tr("Polynomial order"), this);
 
     butPostprocessorGroup = new QButtonGroup(this);
     butPostprocessorGroup->addButton(radPostprocessorNone);
     butPostprocessorGroup->addButton(radPostprocessorScalarField);
     butPostprocessorGroup->addButton(radPostprocessorScalarField3D);
-    // butPostprocessorGroup->addButton(radPostprocessorScalarField3DSolid);
+    butPostprocessorGroup->addButton(radPostprocessorScalarField3DSolid);
     butPostprocessorGroup->addButton(radPostprocessorOrder);
 
     QVBoxLayout *layoutPostprocessorMode = new QVBoxLayout();
     layoutPostprocessorMode->addWidget(radPostprocessorNone);
     layoutPostprocessorMode->addWidget(radPostprocessorScalarField);
     layoutPostprocessorMode->addWidget(radPostprocessorScalarField3D);
-    // layoutPostprocessorMode->addWidget(radPostprocessorScalarField3DSolid);
+    layoutPostprocessorMode->addWidget(radPostprocessorScalarField3DSolid);
     layoutPostprocessorMode->addWidget(radPostprocessorOrder);
 
     // postprocessor show
@@ -283,7 +251,7 @@ void SceneViewDialog::createControls()
     radPostprocessorNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
     radPostprocessorScalarField->setEnabled(Util::scene()->sceneSolution()->isSolved());
     radPostprocessorScalarField3D->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    // radPostprocessorScalarField3DSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    radPostprocessorScalarField3DSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
     radPostprocessorOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
     chkScalarFieldRangeAuto->setEnabled(Util::scene()->sceneSolution()->isSolved());
     txtScalarFieldRangeMin->setEnabled(Util::scene()->sceneSolution()->isSolved());

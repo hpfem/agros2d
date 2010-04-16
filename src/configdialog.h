@@ -126,6 +126,7 @@ private:
 
     // 3d
     QCheckBox *chkView3DLighting;
+    SLineEditDouble *txtView3DAngle;
 
     // advanced
     QCheckBox *chkIsoOnly;

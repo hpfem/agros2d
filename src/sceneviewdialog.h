@@ -31,7 +31,6 @@ class SceneViewDialog : public QDialog
 
 public:
     SceneViewDialog(SceneView *sceneView, QWidget *parent);
-    ~SceneViewDialog();
 
     int showDialog();
 

@@ -111,6 +111,7 @@ void ConfigDialog::load()
 
     // 3d
     chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
+    txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
 
     // adaptivity
     chkIsoOnly->setChecked(Util::config()->isoOnly);
@@ -202,6 +203,7 @@ void ConfigDialog::save()
 
     // 3d
     Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
+    Util::config()->scalarView3DAngle = txtView3DAngle->value();
 
     // save
     Util::config()->save();
@@ -468,9 +470,12 @@ QWidget *ConfigDialog::createViewWidget()
 
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
+    txtView3DAngle = new SLineEditDouble(0, this);
 
-    QHBoxLayout *layout3D = new QHBoxLayout();
-    layout3D->addWidget(chkView3DLighting);
+    QGridLayout *layout3D = new QGridLayout();
+    layout3D->addWidget(new QLabel(tr("Angle:")), 0, 1);
+    layout3D->addWidget(txtView3DAngle, 0, 2);
+    layout3D->addWidget(chkView3DLighting, 0, 3);
 
     QGroupBox *grp3D = new QGroupBox(tr("3D"));
     grp3D->setLayout(layout3D);

@@ -591,7 +591,9 @@ ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
     m_steps = 0;
     if (sceneView()->sceneViewSettings().showContours == 1)
         m_steps += 1;
-    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView || sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
+    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
+        sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+        sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
         m_steps += 1;
     if (sceneView()->sceneViewSettings().showVectors == 1)
         m_steps += 1;
@@ -614,7 +616,9 @@ void ProgressItemProcessView::process()
         emit message(tr("processing countour view cache"), false, step);
         Util::scene()->sceneSolution()->processRangeContour();
     }
-    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView || sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
+    if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
+        sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+        sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
     {
         step++;
         emit message(tr("processing scalar view cache"), false, step);
