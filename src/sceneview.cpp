@@ -351,7 +351,9 @@ void SceneView::setupViewport(int w, int h)
 
 void SceneView::paintGL()
 {
-    glClearColor(Util::config()->colorBackground.redF(), Util::config()->colorBackground.greenF(), Util::config()->colorBackground.blueF(), 0);
+    glClearColor(Util::config()->colorBackground.redF(),
+                 Util::config()->colorBackground.greenF(),
+                 Util::config()->colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // if (Util::scene()->sceneSolution()->isSolving())
@@ -465,10 +467,16 @@ void SceneView::paintBackground()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glBegin(GL_QUADS);
-    glColor3f(0.99, 0.99, 0.99);
+    if (Util::config()->scalarView3DBackground)
+        glColor3f(0.99, 0.99, 0.99);
+    else
+        glColor3f(Util::config()->colorBackground.redF(),
+                  Util::config()->colorBackground.greenF(),
+                  Util::config()->colorBackground.blueF());
     glVertex3d(-1.0, -1.0, 0.0);
     glVertex3d(1.0, -1.0, 0.0);
-    glColor3f(0.44, 0.56, 0.89);
+    if (Util::config()->scalarView3DBackground)
+        glColor3f(0.44, 0.56, 0.89);
     glVertex3d(1.0, 1.0, 0.0);
     glVertex3d(-1.0, 1.0, 0.0);
     glEnd();

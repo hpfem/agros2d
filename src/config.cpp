@@ -99,6 +99,7 @@ void Config::load()
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
     scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
+    scalarView3DBackground = settings.value("SceneViewSettings/ScalarView3DBackground", true).toBool();
 
     // adaptivity
     isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).toBool();
@@ -181,6 +182,7 @@ void Config::save()
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
     settings.setValue("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
+    settings.setValue("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
 
     // adaptivity
     settings.setValue("Adaptivity/IsoOnly", isoOnly);

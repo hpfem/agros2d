@@ -53,6 +53,7 @@ void SceneViewDialog::load()
     radPostprocessorScalarField3DSolid->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid);
     radPostprocessorModel->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_Model);
     radPostprocessorOrder->setChecked(m_sceneView->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_Order);
+    buttonClicked(butPostprocessorGroup->checkedButton());
 
     chkShowContours->setChecked(m_sceneView->sceneViewSettings().showContours);
     chkShowVectors->setChecked(m_sceneView->sceneViewSettings().showVectors);
@@ -140,6 +141,7 @@ void SceneViewDialog::createControls()
     butPostprocessorGroup->addButton(radPostprocessorScalarField3D);
     butPostprocessorGroup->addButton(radPostprocessorScalarField3DSolid);
     butPostprocessorGroup->addButton(radPostprocessorModel);
+    connect(butPostprocessorGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(buttonClicked(QAbstractButton*)));
 
     // postprocessor 2d
     QVBoxLayout *layoutPostprocessorMode = new QVBoxLayout();
@@ -295,6 +297,24 @@ void SceneViewDialog::doScalarFieldRangeAuto(int state)
 {
     txtScalarFieldRangeMin->setEnabled(!chkScalarFieldRangeAuto->isChecked());
     txtScalarFieldRangeMax->setEnabled(!chkScalarFieldRangeAuto->isChecked());       
+}
+
+void SceneViewDialog::buttonClicked(QAbstractButton *button)
+{
+    if (!Util::scene()->sceneSolution()->isSolved())
+        return;
+
+    bool is3D = (button == radPostprocessorScalarField3D ||
+                 button == radPostprocessorScalarField3DSolid ||
+                 button == radPostprocessorModel);
+    {
+        chkShowGrid->setEnabled(!is3D);
+        chkShowInitialMesh->setEnabled(!is3D);
+        chkShowSolutionMesh->setEnabled(!is3D);
+        chkShowGeometry->setEnabled(!is3D);
+        chkShowContours->setEnabled(!is3D);
+        chkShowVectors->setEnabled(!is3D);
+    }
 }
 
 void SceneViewDialog::doAccept()
