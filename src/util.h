@@ -532,6 +532,7 @@ enum SceneViewPostprocessorShow
     SceneViewPostprocessorShow_ScalarView,
     SceneViewPostprocessorShow_ScalarView3D,
     SceneViewPostprocessorShow_ScalarView3DSolid,
+    SceneViewPostprocessorShow_Model,
     SceneViewPostprocessorShow_Order
 };
 

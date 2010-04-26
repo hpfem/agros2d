@@ -648,7 +648,8 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 
     // default physic field
     cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));
-    if (cmbPhysicField->currentIndex() == -1) cmbPhysicField->setCurrentIndex(0);
+    if (cmbPhysicField->currentIndex() == -1)
+        cmbPhysicField->setCurrentIndex(0);
 }
 
 bool Value::evaluate(bool quiet)

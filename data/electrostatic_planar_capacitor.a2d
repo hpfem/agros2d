@@ -31,7 +31,7 @@
             <edge end="4" marker="2" id="5" start="5" angle="0"/>
         </edges>
         <labels>
-            <label x="0.129936" y="0.239288" polynomialorder="0" marker="1" id="0" area="0"/>
+            <label x="0.129936" y="0.239288" polynomialorder="0" marker="1" id="0" area="0.002"/>
         </labels>
     </geometry>
     <functions/>

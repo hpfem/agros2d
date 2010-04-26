@@ -100,6 +100,7 @@ public:
 
 signals:
     void timeStepChanged(bool showViewProgress = true);
+    void meshed();
     void solved();
 
     void processedRangeContour();

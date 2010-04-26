@@ -32,17 +32,6 @@ SceneMarkerSelectDialog::SceneMarkerSelectDialog(SceneView *sceneView, QWidget *
     setMinimumSize(sizeHint());
 }
 
-SceneMarkerSelectDialog::~SceneMarkerSelectDialog()
-{    
-    delete lstSurface;
-    delete lstVolume;
-
-    delete widSurface;
-    delete widVolume;
-
-    delete tabWidget;
-}
-
 void SceneMarkerSelectDialog::createControls()
 {
     // surface

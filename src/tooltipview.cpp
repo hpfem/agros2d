@@ -19,7 +19,7 @@
 
 #include "tooltipview.h"
 
-TooltipView::TooltipView(QWidget *parent): QDockWidget(tr("Hints"), parent)
+TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
 {
     setMinimumSize(160, 160);
     setObjectName("TooltipView");

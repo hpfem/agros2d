@@ -4,7 +4,7 @@ QT += opengl \
     webkit \
     network
 
-# CONFIG(debug): DEFINES += BETA
+CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=0
@@ -71,7 +71,8 @@ SOURCES += util.cpp \
     videodialog.cpp \
     terminalview.cpp \
     scenemarkerselectdialog.cpp \
-    tooltipview.cpp
+    tooltipview.cpp \
+    scenebasicselectdialog.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -109,7 +110,8 @@ HEADERS += util.h \
     videodialog.h \
     terminalview.h \
     scenemarkerselectdialog.h \
-    tooltipview.h
+    tooltipview.h \
+    scenebasicselectdialog.h
 INCLUDEPATH += . \
     dxflib
 OTHER_FILES += python/agros2d.pyx \

@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef SCENEMARKERSELECTDIALOG_H
-#define SCENEMARKERSELECTDIALOG_H
+#ifndef SCENEBASICSELECTDIALOG_H
+#define SCENEBASICSELECTDIALOG_H
 
 #include "util.h"
 #include "gui.h"
@@ -27,11 +27,11 @@
 
 class Scene;
 
-class SceneMarkerSelectDialog : public QDialog
+class SceneBasicSelectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    SceneMarkerSelectDialog(SceneView *sceneView, QWidget *parent = 0);
+    SceneBasicSelectDialog(SceneView *sceneView, QWidget *parent = 0);
 
 private slots:
     void doAccept();
@@ -43,13 +43,9 @@ protected:
 private:
     SceneView *m_sceneView;
 
-    QTabWidget* tabWidget;
+    QWidget *widEdge;
 
-    QWidget *widSurface;
-    QWidget *widVolume;
-
-    QListWidget *lstSurface;
-    QListWidget *lstVolume;
+    QListWidget *lstEdges;
 };
 
-#endif // SCENEMARKERSELECTDIALOG_H
+#endif // SCENEBASICSELECTDIALOG_H

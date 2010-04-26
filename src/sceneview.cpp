@@ -28,6 +28,29 @@ SceneView *sceneView()
     return m_sceneView;
 }
 
+static inline double* computeNormal(double p0x, double p0y, double p0z, double p1x, double p1y, double p1z, double p2x, double p2y, double p2z)
+{
+    double ax = (p1x - p0x);
+    double ay = (p1y - p0y);
+    double az = (p1z - p0z);
+
+    double bx = (p2x - p0x);
+    double by = (p2y - p0y);
+    double bz = (p2z - p0z);
+
+    double nx = ay * bz - az * by;
+    double ny = az * bx - ax * bz;
+    double nz = ax * by - ay * bx;
+
+    // normalize
+    // double l = 1.0 / sqrt(sqr(nx) + sqr(ny) + sqr(nz));
+    // double p[3] = { nx*l, ny*l, nz*l };
+
+    double p[3] = { nx, ny, nz };
+
+    return p;
+}
+
 // *******************************************************************************************************
 
 SceneViewSettings::SceneViewSettings()
@@ -75,6 +98,7 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     connect(m_scene->sceneSolution(), SIGNAL(processedRangeContour()), this, SLOT(processedRangeContour()));
     connect(m_scene->sceneSolution(), SIGNAL(processedRangeScalar()), this, SLOT(processedRangeScalar()));
     connect(m_scene->sceneSolution(), SIGNAL(processedRangeVector()), this, SLOT(processedRangeVector()));
+    connect(m_scene->sceneSolution(), SIGNAL(meshed()), this, SLOT(clearGLLists()));
 
     connect(m_scene, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
     connect(m_scene, SIGNAL(defaultValues()), this, SLOT(doDefaultValues()));
@@ -211,6 +235,10 @@ void SceneView::createActions()
     actSceneViewSelectMarker = new QAction(icon(""), tr("Select by marker"), this);
     actSceneViewSelectMarker->setStatusTip(tr("Select by marker"));
     connect(actSceneViewSelectMarker, SIGNAL(triggered()), this, SLOT(doSelectMarker()));
+
+    actSceneViewSelectBasic = new QAction(icon(""), tr("Select edges in model"), this);
+    actSceneViewSelectBasic->setStatusTip(tr("Select edges in model"));
+    connect(actSceneViewSelectBasic, SIGNAL(triggered()), this, SLOT(doSelectBasic()));
 }
 
 void SceneView::createMenu()
@@ -243,46 +271,85 @@ void SceneView::createMenu()
 void SceneView::initializeGL()
 {
     glShadeModel(GL_SMOOTH);    
+    glEnable(GL_NORMALIZE);
 }
 
 void SceneView::resizeGL(int w, int h)
 {
     setupViewport(w, h);
+}
 
-    /*
-    if (m_scene->sceneSolution()->isSolved())
+void SceneView::loadProjection2d(bool setScene)
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(3.0, contextWidth()-6.0, contextHeight()-6.0, 3.0, -10.0, -10.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    if (setScene)
     {
-        paletteFilter();
-        paletteUpdateTexAdjust();
-        paletteCreate();
+        glScaled(m_scale2d/aspect(), m_scale2d, m_scale2d);
 
-        updateGL();
+        glTranslated(-m_offset2d.x, -m_offset2d.y, 0.0);
     }
-    */
+}
+
+void SceneView::loadProjection3d(bool setScene)
+{
+    int fov = 10;
+    double znear = 0.001;
+    double zfar = 100.0;
+
+    double right = znear * tan((double) fov / 2.0 / 180.0 * M_PI);
+    double top = (double) contextHeight() / contextWidth() * right;
+    double left = -right;
+    double bottom = -top;
+    double offsx = (right - left) / contextWidth();
+    double offsy = (top - bottom) / contextHeight();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum(left - offsx, right - offsx, bottom - offsy, top - offsy, znear, zfar);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    if (setScene)
+    {        
+        // move to origin
+        RectPoint rect = Util::scene()->boundingBox();
+        // glTranslated(-m_offset3d.x, -m_offset3d.y, -m_offset3d.z);
+
+        glRotated(m_rotation3d.x, 1.0, 0.0, 0.0);
+        glRotated(m_rotation3d.y, 0.0, 1.0, 0.0);
+        glRotated(m_rotation3d.z, 0.0, 0.0, 1.0);
+
+        if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
+        {
+            glTranslated(- m_scale3d/aspect() * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
+        }
+        else
+        {
+            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+            {
+                glTranslated(- m_scale3d/aspect() * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
+            }
+            else
+            {
+                glTranslated(0.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
+            }
+        }
+
+        glScaled(m_scale3d/aspect(), m_scale3d, m_scale3d);
+    }
 }
 
 void SceneView::setupViewport(int w, int h)
 {
     glViewport(0, 0, w, h);
-
-    m_aspect = (double) w/(double) h;
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    if ((m_sceneMode == SceneMode_Postprocessor) &&
-        (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D || 
-         m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
-    {
-        gluPerspective(0.0, m_aspect, 1.0, 1000.0);
-    }
-    else
-    {
-        glOrtho(3.0, w-6.0, h-6.0, 3.0, -10.0, -10.0);
-    }
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
 }
 
 void SceneView::paintGL()
@@ -293,92 +360,74 @@ void SceneView::paintGL()
     // if (Util::scene()->sceneSolution()->isSolving())
     //    return;
 
-    if ((m_sceneMode == SceneMode_Postprocessor) &&
-        (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-         m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
+    if (is3DMode())
     {
         glClear(GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
     }
     else
     {
         glDisable(GL_DEPTH_TEST);
     }
 
-    // transform
-    glLoadIdentity();
-    glScaled(m_scale/m_aspect, m_scale, m_scale);
-
-    if ((m_sceneMode == SceneMode_Postprocessor) &&
-        (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-         m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
+    if (is3DMode())
     {
-        glRotated(m_rotation.x, 1.0, 0.0, 0.0);
-        glRotated(m_rotation.y, 0.0, 0.0, 1.0);
-    }
-
-    glTranslated(-m_offset.x, -m_offset.y, -m_offset.z);
-
-    // grid
-    if (m_sceneViewSettings.showGrid) paintGrid();
-
-    // view
-    if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
-    {
-        switch (m_sceneViewSettings.postprocessorShow)
+        if (m_scene->sceneSolution()->isMeshed() && (m_sceneMode == SceneMode_Postprocessor))
         {
-        case SceneViewPostprocessorShow_ScalarView:
-            paintScalarField();
-            break;
-        case SceneViewPostprocessorShow_ScalarView3D:
-            paintScalarField3D();
-            break;
-        case SceneViewPostprocessorShow_ScalarView3DSolid:
-            paintScalarField3DSolid();
-            break;
-        case SceneViewPostprocessorShow_Order:
-            paintOrder();
-            break;
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model) paintModel();
         }
 
-        if (m_sceneViewSettings.showContours) paintContours();
-        if (m_sceneViewSettings.showVectors) paintVectors();
-        if (m_sceneViewSettings.showSolutionMesh) paintSolutionMesh();
-    }
-
-    // initial mesh
-    if (m_sceneViewSettings.showInitialMesh) paintInitialMesh();
-    // geometry
-    if (m_sceneViewSettings.showGeometry) paintGeometry();
-
-    if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
-    {
-        if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
-        if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
-
-        // bars
-        switch (m_sceneViewSettings.postprocessorShow)
+        if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
         {
-        case SceneViewPostprocessorShow_ScalarView:
-        case SceneViewPostprocessorShow_ScalarView3D:
-        case SceneViewPostprocessorShow_ScalarView3DSolid:
-            paintScalarFieldColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
-            break;
-        case SceneViewPostprocessorShow_Order:
-            paintOrderColorBar();
-            break;
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D) paintScalarField3D();
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid) paintScalarField3DSolid();
+
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+                m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+                paintScalarFieldColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
         }
     }
+    else
+    {
+        // grid
+        if (m_sceneViewSettings.showGrid) paintGrid();
 
-    // rulers
-    if (Util::config()->showRulers) paintRulers();
+        // view
+        if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
+        {
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView) paintScalarField();
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) paintOrder();
 
-    paintZoomRegion();
-    paintSnapToGrid();
-    paintChartLine();
+            if (m_sceneViewSettings.showContours) paintContours();
+            if (m_sceneViewSettings.showVectors) paintVectors();
+            if (m_sceneViewSettings.showSolutionMesh) paintSolutionMesh();
+        }
+
+        // initial mesh
+        if (m_sceneViewSettings.showInitialMesh) paintInitialMesh();
+
+        // geometry
+        if (m_sceneViewSettings.showGeometry) paintGeometry();
+
+        if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
+        {
+            if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
+            if (actPostprocessorModeSurfaceIntegral->isChecked()) paintPostprocessorSelectedSurface();
+
+            // bars
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView) paintScalarFieldColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
+            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Order) paintOrderColorBar();
+        }
+
+        // rulers
+        if (Util::config()->showRulers) paintRulers();
+
+        paintZoomRegion();
+        paintSnapToGrid();
+        paintChartLine();
+    }
+
     paintSceneModeLabel();
 }
-
 
 void SceneView::clearGLLists()
 {
@@ -388,6 +437,7 @@ void SceneView::clearGLLists()
     if (m_listScalarField3D != -1) glDeleteLists(m_listScalarField3D, 1);
     if (m_listScalarField3DSolid != -1) glDeleteLists(m_listScalarField3DSolid, 1);
     if (m_listOrder != -1) glDeleteLists(m_listOrder, 1);
+    if (m_listModel != -1) glDeleteLists(m_listModel, 1);
 
     m_listContours = -1;
     m_listVectors = -1;
@@ -395,19 +445,50 @@ void SceneView::clearGLLists()
     m_listScalarField3D = -1;
     m_listScalarField3DSolid = -1;
     m_listOrder = -1;
+    m_listModel = -1;
 }
 
 // paint *****************************************************************************************************************************
 
+void SceneView::paintBackground()
+{
+    // background
+    glPushMatrix();
+    glLoadIdentity();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, -10.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glBegin(GL_QUADS);
+    glColor3f(0.99, 0.99, 0.99);
+    glVertex3d(-1.0, -1.0, 0.0);
+    glVertex3d(1.0, -1.0, 0.0);
+    glColor3f(0.44, 0.56, 0.89);
+    glVertex3d(1.0, 1.0, 0.0);
+    glVertex3d(-1.0, 1.0, 0.0);
+    glEnd();
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
+    glPopMatrix();
+}
+
 void SceneView::paintGrid()
 {
-    if ((m_sceneMode == SceneMode_Postprocessor) &&
-        (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-         m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
-        return;
+    loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
+
+    glDisable(GL_DEPTH_TEST);
 
     int step = (((int) ((cornerMax - cornerMin).x / Util::config()->gridStep) + 1) / 5);
     if (step > 0.0)
@@ -500,10 +581,7 @@ void SceneView::paintGrid()
 
 void SceneView::paintRulers()
 {
-    if ((m_sceneMode == SceneMode_Postprocessor) &&
-        (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-         m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
-        return;
+    loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
     Point cornerMax = position(Point(contextWidth(), contextHeight()));
@@ -511,8 +589,8 @@ void SceneView::paintRulers()
     // rulers
     double step = (((int) ((cornerMax - cornerMin).x / Util::config()->gridStep) + 1) / 5) * Util::config()->gridStep;
 
-    Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale*m_aspect,
-               (2.0/contextHeight()*fontMetrics().height())/m_scale);
+    Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale2d*aspect(),
+               (2.0/contextHeight()*fontMetrics().height())/m_scale2d);
 
     if (step > 0.0)
     {
@@ -551,10 +629,7 @@ void SceneView::paintRulers()
 
 void SceneView::paintGeometry()
 {
-    if ((m_sceneMode == SceneMode_Postprocessor) &&
-        (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-         m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
-        return;
+    loadProjection2d(true);
 
     // edges
     foreach (SceneEdge *edge, m_scene->edges)
@@ -692,8 +767,8 @@ void SceneView::paintGeometry()
                 glColor3f(0.1, 0.1, 0.1);
 
                 Point point;
-                point.x = 2.0/contextWidth()*m_aspect*fontMetrics().width(label->marker->name)/m_scale/2.0;
-                point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale;
+                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(label->marker->name)/m_scale2d/2.0;
+                point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
 
                 renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->marker->name, false);
             }
@@ -714,13 +789,223 @@ void SceneView::paintGeometry()
     }
 }
 
+void SceneView::paintModel()
+{
+    if (!Util::scene()->sceneSolution()->isMeshed())
+        return;
+
+    loadProjection3d(true);
+
+    if (m_listModel == -1)
+    {
+        m_listModel = glGenLists(1);
+        glNewList(m_listModel, GL_COMPILE);
+
+        RectPoint rect = Util::scene()->boundingBox();
+        double max = qMax(rect.width(), rect.height());
+        double depth = max / 4.0;
+
+        double phi = 240.0;
+
+        Point point[3];
+        double *normal;
+
+        // gradient background
+        paintBackground();
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        initLighting();
+
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            // draw blended mesh
+            glBegin(GL_TRIANGLES);
+            for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
+            {
+                point[0].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[0]->x;
+                point[0].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[0]->y;
+                point[1].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[1]->x;
+                point[1].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[1]->y;
+                point[2].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[2]->x;
+                point[2].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[2]->y;
+
+                // z = 0.0
+                normal = computeNormal(point[0].x, point[0].y, -depth/2.0, point[1].x, point[1].y, -depth/2.0, point[2].x, point[2].y, -depth/2.0);
+                glNormal3d(normal[0], normal[1], normal[2]);
+                glVertex3d(point[0].x, point[0].y, -depth/2.0);
+                glVertex3d(point[1].x, point[1].y, -depth/2.0);
+                glVertex3d(point[2].x, point[2].y, -depth/2.0);
+
+                // z = depth
+                normal = computeNormal(point[0].x, point[0].y, depth/2.0, point[1].x, point[1].y, depth/2.0, point[2].x, point[2].y, depth/2.0);
+                glNormal3d(normal[0], normal[1], normal[2]);
+                glVertex3d(point[0].x, point[0].y, depth/2.0);
+                glVertex3d(point[1].x, point[1].y, depth/2.0);
+                glVertex3d(point[2].x, point[2].y, depth/2.0);
+            }
+            glEnd();
+
+            // length
+            glBegin(GL_QUADS);
+            for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
+            {
+                point[0].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[0]->x;
+                point[0].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[0]->y;
+                point[1].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[1]->x;
+                point[1].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[1]->y;
+                point[2].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[2]->x;
+                point[2].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[2]->y;
+
+                for (int j = 0; j<Util::scene()->edges.length(); j++)
+                {
+                    int l = -1;
+                    int m = -1;
+
+                    SceneEdge *sceneEdge = Util::scene()->edges[j];
+
+                    if ((sceneEdge->distance(Point(point[0].x, point[0].y)) < EPS_ZERO) &&
+                        (sceneEdge->distance(Point(point[1].x, point[1].y)) < EPS_ZERO))
+                    {
+                        l = 0;
+                        m = 1;
+                    }
+
+                    if ((sceneEdge->distance(Point(point[1].x, point[1].y)) < EPS_ZERO) &&
+                        (sceneEdge->distance(Point(point[2].x, point[2].y)) < EPS_ZERO))
+                    {
+                        l = 1;
+                        m = 2;
+                    }
+
+                    if ((sceneEdge->distance(Point(point[2].x, point[2].y)) < EPS_ZERO) &&
+                        (sceneEdge->distance(Point(point[0].x, point[0].y)) < EPS_ZERO))
+                    {
+                        l = 2;
+                        m = 0;
+                    }
+
+                    if (l != -1 && m != -1)
+                    {
+                        normal = computeNormal(point[l].x, point[l].y, -depth/2.0, point[m].x, point[m].y, -depth/2.0, point[m].x, point[m].y,  depth/2.0);
+                        glNormal3d(normal[0], normal[1], normal[2]);
+                        glVertex3d(point[l].x, point[l].y, -depth/2.0);
+                        glVertex3d(point[m].x, point[m].y, -depth/2.0);
+                        glVertex3d(point[m].x, point[m].y,  depth/2.0);
+                        glVertex3d(point[l].x, point[l].y,  depth/2.0);
+                    }
+                }
+            }
+            glEnd();
+        }
+        else
+        {
+            // side
+            glBegin(GL_TRIANGLES);
+            for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
+            {
+                point[0].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[0]->x;
+                point[0].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[0]->y;
+                point[1].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[1]->x;
+                point[1].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[1]->y;
+                point[2].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[2]->x;
+                point[2].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[2]->y;
+
+                for (int j = 0; j < 2; j++)
+                {
+                    normal = computeNormal(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI),
+                                           point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
+                                           point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI));
+                    glNormal3d(normal[0], normal[1], normal[2]);
+                    glVertex3d(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI));
+                    glVertex3d(point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI));
+                    glVertex3d(point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI));
+                }
+            }
+            glEnd();
+
+            // symmetry
+            glBegin(GL_QUADS);
+            for (int i = 0; i < Util::scene()->sceneSolution()->mesh()->get_num_elements(); i++)
+            {
+                point[0].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[0]->x;
+                point[0].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[0]->y;
+                point[1].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[1]->x;
+                point[1].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[1]->y;
+                point[2].x = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[2]->x;
+                point[2].y = Util::scene()->sceneSolution()->mesh()->get_element(i)->vn[2]->y;
+
+                int count = 30;
+                double step = phi/count;
+
+                for (int j = 0; j<Util::scene()->edges.length(); j++)
+                {
+                    int l = -1;
+                    int m = -1;
+
+                    SceneEdge *sceneEdge = Util::scene()->edges[j];
+
+                    if ((sceneEdge->distance(Point(point[0].x, point[0].y)) < EPS_ZERO) &&
+                        (sceneEdge->distance(Point(point[1].x, point[1].y)) < EPS_ZERO))
+                    {
+                        l = 0;
+                        m = 1;
+                    }
+
+                    if ((sceneEdge->distance(Point(point[1].x, point[1].y)) < EPS_ZERO) &&
+                        (sceneEdge->distance(Point(point[2].x, point[2].y)) < EPS_ZERO))
+                    {
+                        l = 1;
+                        m = 2;
+                    }
+
+                    if ((sceneEdge->distance(Point(point[2].x, point[2].y)) < EPS_ZERO) &&
+                        (sceneEdge->distance(Point(point[0].x, point[0].y)) < EPS_ZERO))
+                    {
+                        l = 2;
+                        m = 0;
+                    }
+
+                    if (l != -1 && m != -1)
+                    {
+                        for (int k = 0; k < count; k++)
+                        {
+                            normal = computeNormal(point[l].x * cos((k+0)*step/180.0*M_PI), point[l].y, point[l].x * sin((k+0)*step/180.0*M_PI),
+                                                   point[m].x * cos((k+0)*step/180.0*M_PI), point[m].y, point[m].x * sin((k+0)*step/180.0*M_PI),
+                                                   point[m].x * cos((k+1)*step/180.0*M_PI), point[m].y, point[m].x * sin((k+1)*step/180.0*M_PI));
+                            glNormal3d(normal[0], normal[1], normal[2]);
+                            glVertex3d(point[l].x * cos((k+0)*step/180.0*M_PI), point[l].y, point[l].x * sin((k+0)*step/180.0*M_PI));
+                            glVertex3d(point[m].x * cos((k+0)*step/180.0*M_PI), point[m].y, point[m].x * sin((k+0)*step/180.0*M_PI));
+                            glVertex3d(point[m].x * cos((k+1)*step/180.0*M_PI), point[m].y, point[m].x * sin((k+1)*step/180.0*M_PI));
+                            glVertex3d(point[l].x * cos((k+1)*step/180.0*M_PI), point[l].y, point[l].x * sin((k+1)*step/180.0*M_PI));
+                        }
+                    }
+                }
+            }
+            glEnd();
+        }
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+
+        glPopMatrix();
+
+        glEndList();
+    }
+    else
+    {
+       glCallList(m_listModel);
+    }
+}
+
 void SceneView::paintInitialMesh()
 {
     if (!m_scene->sceneSolution()->isMeshed()) return;
 
-    if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-        m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
-        return;
+    loadProjection2d(true);
 
     // draw initial mesh    
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -748,9 +1033,7 @@ void SceneView::paintSolutionMesh()
 {
     if (!m_isSolutionPrepared) return;
 
-    if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-        m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
-        return;
+    loadProjection2d(true);
 
     // draw solution mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -777,6 +1060,8 @@ void SceneView::paintSolutionMesh()
 void SceneView::paintOrder()
 {
     if (!m_isSolutionPrepared) return;
+
+    loadProjection2d(true);
 
     if (m_listOrder == -1)
     {
@@ -837,13 +1122,13 @@ void SceneView::paintOrder()
         double2* lbox;
         int nl = m_scene->sceneSolution()->ordView().get_labels(lvert, ltext, lbox);
 
-        Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale*m_aspect,
-                   (2.0/contextHeight()*fontMetrics().height())/m_scale);
+        Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale2d*aspect(),
+                   (2.0/contextHeight()*fontMetrics().height())/m_scale2d);
 
         for (int i = 0; i < nl; i++)
         {
             glColor3f(1, 1, 1);
-            // if (lbox[i][0]/m_scale*m_aspect > size.x && lbox[i][1]/m_scale > size.y)
+            // if (lbox[i][0]/m_scale*aspect() > size.x && lbox[i][1]/m_scale > size.y)
             {
                 renderText(vert[lvert[i]][0] - size.x / 2.0,
                            vert[lvert[i]][1] - size.y / 2.0,
@@ -878,8 +1163,7 @@ void SceneView::paintOrderColorBar()
     m_scene->sceneSolution()->ordView().unlock_data();
 
     // order color map
-    glPushMatrix();
-    glLoadIdentity();
+    loadProjection2d();
 
     glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
     glTranslated(- contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
@@ -929,18 +1213,14 @@ void SceneView::paintOrderColorBar()
                    0.0,
                    QString::number(i));
     }
-
-    glPopMatrix();
 }
 
 void SceneView::paintScalarFieldColorBar(double min, double max)
 {
-    glPushMatrix();
-    glLoadIdentity();
+    loadProjection2d();
 
     glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
     glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
-
 
     // dimensions
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', 1)) + 3;
@@ -1035,13 +1315,13 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
     glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
     glEnd();
-
-    glPopMatrix();
 }
 
 void SceneView::paintScalarField()
 {
     if (!m_isSolutionPrepared) return;
+
+    loadProjection2d(true);
 
     if (m_listScalarField == -1)
     {
@@ -1136,12 +1416,20 @@ void SceneView::paintScalarField3D()
 {
     if (!m_isSolutionPrepared) return;
 
+    loadProjection3d(true);
+
     if (m_listScalarField3D == -1)
     {
         qDebug() << "SceneView::paintScalarField3D(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
 
         m_listScalarField3D = glGenLists(1);
         glNewList(m_listScalarField3D, GL_COMPILE);
+
+        // gradient background
+        paintBackground();
+        glEnable(GL_DEPTH_TEST);
+
+        initLighting();
 
         // range
         double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);
@@ -1167,7 +1455,8 @@ void SceneView::paintScalarField3D()
         }
         else
         {
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
+;
         }
 
         glPushMatrix();
@@ -1210,25 +1499,72 @@ void SceneView::paintScalarField3D()
                 glNormal3d(m_normals[linTris[i][0]][0], m_normals[linTris[i][0]][1], -m_normals[linTris[i][0]][2]);
             glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
             glVertex3d(point[0].x, point[0].y, - delta - (value[0] - m_sceneViewSettings.scalarRangeMin));
-            // glVertex3d(point[0].x, point[0].y, - delta - value[0]);
 
             if (Util::config()->scalarView3DLighting)
                 glNormal3d(m_normals[linTris[i][1]][0], m_normals[linTris[i][1]][1], -m_normals[linTris[i][1]][2]);
             glTexCoord1d((value[1] - m_sceneViewSettings.scalarRangeMin) * irange);
             glVertex3d(point[1].x, point[1].y, - delta - (value[1] - m_sceneViewSettings.scalarRangeMin));
-            // glVertex3d(point[1].x, point[1].y, - delta - value[1]);
 
             if (Util::config()->scalarView3DLighting)
                 glNormal3d(m_normals[linTris[i][2]][0], m_normals[linTris[i][2]][1], -m_normals[linTris[i][2]][2]);
             glTexCoord1d((value[2] - m_sceneViewSettings.scalarRangeMin) * irange);
             glVertex3d(point[2].x, point[2].y, - delta - (value[2] - m_sceneViewSettings.scalarRangeMin));
-            // glVertex3d(point[2].x, point[2].y, - delta - value[2]);
+        }
+        glEnd();
+
+        glDisable(GL_TEXTURE_1D);
+        glDisable(GL_LIGHTING);
+
+        // draw blended mesh
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4d(0.5, 0.5, 0.5, 0.3);
+
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < m_scene->sceneSolution()->mesh()->get_num_elements(); i++)
+        {
+            Element *element = m_scene->sceneSolution()->mesh()->get_element(i);
+            if (element->is_triangle())
+            {
+                glVertex3d(element->vn[0]->x, element->vn[0]->y, 0.0);
+                glVertex3d(element->vn[1]->x, element->vn[1]->y, 0.0);
+                glVertex3d(element->vn[2]->x, element->vn[2]->y, 0.0);
+            }
         }
         glEnd();
 
         glDisable(GL_POLYGON_OFFSET_FILL);
-        glDisable(GL_TEXTURE_1D);
-        glDisable(GL_LIGHTING);
+        glDisable(GL_BLEND);
+
+        // geometry - edges
+        foreach (SceneEdge *edge, m_scene->edges)
+        {
+
+            glColor3f(Util::config()->colorEdges.redF(),
+                      Util::config()->colorEdges.greenF(),
+                      Util::config()->colorEdges.blueF());
+            glLineWidth(Util::config()->edgeWidth);
+
+            if (edge->angle == 0)
+            {
+                glBegin(GL_LINES);
+                glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, 0.0);
+                glVertex3d(edge->nodeEnd->point.x, edge->nodeEnd->point.y, 0.0);
+                glEnd();
+            }
+            else
+            {
+                Point center = edge->center();
+                double radius = edge->radius();
+                double startAngle = atan2(center.y - edge->nodeStart->point.y, center.x - edge->nodeStart->point.x) / M_PI*180.0 - 180.0;
+
+                drawArc(center, radius, startAngle, edge->angle, edge->angle/2);
+            }
+
+            glDisable(GL_LINE_STIPPLE);
+            glLineWidth(1.0);
+        }
+
         glDisable(GL_DEPTH_TEST);
 
         // switch-off texture transform
@@ -1252,12 +1588,20 @@ void SceneView::paintScalarField3DSolid()
 {
     if (!m_isSolutionPrepared) return;
 
+    loadProjection3d(true);
+
     if (m_listScalarField3DSolid == -1)
     {
         qDebug() << "SceneView::paintScalarField3DSolid(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
 
         m_listScalarField3DSolid = glGenLists(1);
         glNewList(m_listScalarField3DSolid, GL_COMPILE);
+
+        // gradient background
+        paintBackground();
+        glEnable(GL_DEPTH_TEST);
+
+        initLighting();
 
         RectPoint rect = m_scene->boundingBox();
         double max = qMax(rect.width(), rect.height());
@@ -1280,16 +1624,7 @@ void SceneView::paintScalarField3DSolid()
         int3* linEdges = m_scene->sceneSolution()->linScalarView().get_edges();
         Point point[3];
         double value[3];
-
-        if (Util::config()->scalarView3DLighting)
-        {
-            glEnable(GL_LIGHTING);
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        }
-        else
-        {
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-        }
+        double *normal;
 
         glPushMatrix();
 
@@ -1327,6 +1662,9 @@ void SceneView::paintScalarField3DSolid()
                 }
 
                 // z = 0.0
+                normal = computeNormal(point[0].x, point[0].y, -depth/2.0, point[1].x, point[1].y, -depth/2.0, point[2].x, point[2].y, -depth/2.0);
+                glNormal3d(normal[0], normal[1], normal[2]);
+
                 glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
                 glVertex3d(point[0].x, point[0].y, -depth/2.0);
 
@@ -1337,6 +1675,9 @@ void SceneView::paintScalarField3DSolid()
                 glVertex3d(point[2].x, point[2].y, -depth/2.0);
 
                 // z = depth
+                normal = computeNormal(point[0].x, point[0].y, depth/2.0, point[1].x, point[1].y, depth/2.0, point[2].x, point[2].y, depth/2.0);
+                glNormal3d(normal[0], normal[1], normal[2]);
+
                 glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
                 glVertex3d(point[0].x, point[0].y, depth/2.0);
 
@@ -1567,6 +1908,8 @@ void SceneView::paintContours()
 {
     if (!m_isSolutionPrepared) return;
 
+    loadProjection2d(true);
+
     if (m_listContours == -1)
     {
         m_listContours = glGenLists(1);
@@ -1675,6 +2018,8 @@ void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
 void SceneView::paintVectors()
 {
     if (!m_isSolutionPrepared) return;
+
+    loadProjection2d(true);
 
     if (m_listVectors == -1)
     {
@@ -1820,8 +2165,6 @@ void SceneView::paintSceneModeLabel()
 {
     QString text = "";
 
-    glDisable(GL_DEPTH_TEST);
-
     switch (m_sceneMode)
     {
     case SceneMode_OperateOnNodes:
@@ -1843,6 +2186,9 @@ void SceneView::paintSceneModeLabel()
             if (m_sceneViewSettings.scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar)
                 text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
             break;
+        case SceneViewPostprocessorShow_Model:
+            text = tr("View model");
+            break;
         case SceneViewPostprocessorShow_Order:
             text = tr("Polynomial order");
             break;
@@ -1852,7 +2198,8 @@ void SceneView::paintSceneModeLabel()
         break;
     }
 
-    glPushMatrix();
+    loadProjection2d();
+
     glLoadIdentity();
 
     glScaled(2.0/contextWidth(), 2.0/contextHeight(), 1.0);
@@ -1878,12 +2225,12 @@ void SceneView::paintSceneModeLabel()
     // text
     glColor3f(0.0, 0.0, 0.0);
     renderText(posText.x, posText.y, 0.0, text, fontLabel);
-
-    glPopMatrix();
 }
 
 void SceneView::paintZoomRegion()
 {
+    loadProjection2d(true);
+
     // zoom or select region
     if (m_region)
     {
@@ -1901,6 +2248,8 @@ void SceneView::paintSnapToGrid()
 {
     if (m_snapToGrid)
     {
+        loadProjection2d(true);
+
         Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
 
         Point snapPoint;
@@ -1919,6 +2268,8 @@ void SceneView::paintSnapToGrid()
 
 void SceneView::paintChartLine()
 {
+    loadProjection2d(true);
+
     glColor3f(Util::config()->colorSelected.redF(),
               Util::config()->colorSelected.greenF(),
               Util::config()->colorSelected.blueF());
@@ -2039,330 +2390,336 @@ void SceneView::paletteUpdateTexAdjust()
     }
 }
 
+void SceneView::initLighting()
+{
+    if (Util::config()->scalarView3DLighting)
+    {
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        // lighting
+        glPushMatrix();
+        glLoadIdentity();
+
+        float light_specular[] = {  0.1f, 0.1f, 0.1f, 1.0f };
+        float light_ambient[]  = {  0.1f, 0.1f, 0.1f, 1.0f };
+        float light_diffuse[]  = {  0.8f, 0.8f, 0.8f, 0.9f };
+        float light_position[] = {  -100.0f, -60.0f, 10.0f, 0.0f };
+
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+        glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+        float material_ambient[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
+        float material_diffuse[]  = { 0.8f, 0.8f, 0.8f, 0.8f };
+        float material_specular[] = { 0.5f, 0.5f, 0.5f, 0.5f };
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 8);
+        glDisable(GL_COLOR_MATERIAL);
+
+        glShadeModel(GL_SMOOTH);
+        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+        #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
+            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+        #endif
+
+        glPopMatrix();
+    }
+}
+
 // events *****************************************************************************************************************************
 
 void SceneView::keyPressEvent(QKeyEvent *event)
 {
-    Point stepTemp = position(Point(contextWidth(), contextHeight()));
-    stepTemp.x = stepTemp.x - m_offset.x;
-    stepTemp.y = stepTemp.y - m_offset.y;
-    double step = qMin(stepTemp.x, stepTemp.y) / 10.0;
-
-    switch (event->key())
+    if (is3DMode())
     {
-    case Qt::Key_Up:
-        {
-            m_offset.y -= step;
-            refresh();
-        }
-        break;
-    case Qt::Key_Down:
-        {
-            m_offset.y += step;
-            refresh();
-        }
-        break;
-    case Qt::Key_Left:
-        {
-            m_offset.x += step;
-            refresh();
-        }
-        break;
-    case Qt::Key_Right:
-        {
-            m_offset.x -= step;
-            refresh();
-        }
-        break;
-    case Qt::Key_Plus:
-        {
-            doZoomIn();
-        }
-        break;
-    case Qt::Key_Minus:
-        {
-            doZoomOut();
-        }
-        break;
-    case Qt::Key_Delete:
-        {
-            m_scene->deleteSelected();
-        }
-        break;
-    case Qt::Key_Space:
-        {
-            doSceneObjectProperties();
-        }
-        break;
-    case Qt::Key_Escape:
-        {
-            m_scene->selectNone();
-            emit mousePressed();
-            refresh();
-        }
-        break;
-    default:
-        QGLWidget::keyPressEvent(event);
+
     }
-
-    // snap to grid
-    m_snapToGrid = ((Util::config()->snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
-
-    // select all
-    if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))
+    else
     {
-        if (m_sceneMode == SceneMode_Postprocessor)
+        Point stepTemp = position(Point(contextWidth(), contextHeight()));
+        stepTemp.x = stepTemp.x - m_offset2d.x;
+        stepTemp.y = stepTemp.y - m_offset2d.y;
+        double step = qMin(stepTemp.x, stepTemp.y) / 10.0;
+
+        switch (event->key())
         {
-            // select volume integral area
-            if (actPostprocessorModeVolumeIntegral->isChecked())
+        case Qt::Key_Up:
             {
-                m_scene->selectAll(SceneMode_OperateOnLabels);
+                m_offset2d.y += step;
+                refresh();
+            }
+            break;
+        case Qt::Key_Down:
+            {
+                m_offset2d.y -= step;
+                refresh();
+            }
+            break;
+        case Qt::Key_Left:
+            {
+                m_offset2d.x -= step;
+                refresh();
+            }
+            break;
+        case Qt::Key_Right:
+            {
+                m_offset2d.x += step;
+                refresh();
+            }
+            break;
+        case Qt::Key_Plus:
+            {
+                doZoomIn();
+            }
+            break;
+        case Qt::Key_Minus:
+            {
+                doZoomOut();
+            }
+            break;
+        case Qt::Key_Delete:
+            {
+                m_scene->deleteSelected();
+            }
+            break;
+        case Qt::Key_Space:
+            {
+                doSceneObjectProperties();
+            }
+            break;
+        case Qt::Key_Escape:
+            {
+                m_scene->selectNone();
                 emit mousePressed();
+                refresh();
+            }
+            break;
+        default:
+            QGLWidget::keyPressEvent(event);
+        }
+
+        // snap to grid
+        m_snapToGrid = ((Util::config()->snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
+
+        // select all
+        if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))
+        {
+            if (m_sceneMode == SceneMode_Postprocessor)
+            {
+                // select volume integral area
+                if (actPostprocessorModeVolumeIntegral->isChecked())
+                {
+                    m_scene->selectAll(SceneMode_OperateOnLabels);
+                    emit mousePressed();
+                }
+
+                // select surface integral area
+                if (actPostprocessorModeSurfaceIntegral->isChecked())
+                {
+                    m_scene->selectAll(SceneMode_OperateOnEdges);
+                    emit mousePressed();
+                }
+            }
+            else
+            {
+                m_scene->selectAll(m_sceneMode);
             }
 
-            // select surface integral area
-            if (actPostprocessorModeSurfaceIntegral->isChecked())
-            {
-                m_scene->selectAll(SceneMode_OperateOnEdges);
-                emit mousePressed();
-            }
+            refresh();
         }
-        else
+
+        // add node with coordinates under mouse pointer
+        if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_N))
         {
-            m_scene->selectAll(m_sceneMode);
+            Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+            m_scene->doNewNode(p);
         }
-
-        refresh();
-    }
-
-    // add node with coordinates under mouse pointer
-    if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_N))
-    {
-        Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-        m_scene->doNewNode(p);
-    }
-    if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_L))
-    {
-        Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-        m_scene->doNewLabel(p);
+        if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_L))
+        {
+            Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+            m_scene->doNewLabel(p);
+        }
     }
 }
 
 void SceneView::keyReleaseEvent(QKeyEvent *event)
 {
-    if (m_snapToGrid)
+    if (is3DMode())
     {
-        m_snapToGrid = false;
-        updateGL();
+
+    }
+    else
+    {
+        if (m_snapToGrid)
+        {
+            m_snapToGrid = false;
+            updateGL();
+        }
     }
 }
 
 void SceneView::mousePressEvent(QMouseEvent *event)
 {
     m_lastPos = event->pos();
-    Point p = position(Point(event->pos().x(), event->pos().y()));
 
-    if (event->button() & Qt::LeftButton)
+    if (is3DMode())
     {
-        // zoom region
-        if (actSceneZoomRegion->isChecked())
-        {
-            m_regionPos = m_lastPos;
-            actSceneZoomRegion->setChecked(false);
-            actSceneZoomRegion->setData(true);
-            m_region = true;
 
-            return;
-        }
-
-        // select region
-        if (actSceneViewSelectRegion->isChecked())
-        {
-            m_regionPos = m_lastPos;
-            actSceneViewSelectRegion->setChecked(false);
-            actSceneViewSelectRegion->setData(true);
-            m_region = true;
-
-            return;
-        }
-
-        if ((m_sceneMode == SceneMode_Postprocessor) &&
-            !(m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-              m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
-        {
-            // local point value
-            if (actPostprocessorModeLocalPointValue->isChecked())
-                emit mousePressed(p);
-            // select volume integral area
-            if (actPostprocessorModeVolumeIntegral->isChecked())
-            {
-                int index = m_scene->sceneSolution()->findTriangleInMesh(m_scene->sceneSolution()->mesh(), p);
-                if (index != -1)
-                {
-                    //  find label marker
-                    int labelIndex = m_scene->sceneSolution()->mesh()->get_element_fast(index)->marker;
-
-                    m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
-                    updateGL();
-                }
-                emit mousePressed();
-            }
-            // select surface integral area
-            if (actPostprocessorModeSurfaceIntegral->isChecked())
-            {
-                //  find edge marker
-                SceneEdge *edge = findClosestEdge(p);
-
-                edge->isSelected = !edge->isSelected;
-                updateGL();
-
-                emit mousePressed();
-            }
-        }
     }
-
-    // add node edge or label by mouse click
-    if (event->modifiers() & Qt::ControlModifier)
+    else
     {
-        // add node directly by mouse click
-        if (m_sceneMode == SceneMode_OperateOnNodes)
-        {
-            Point pointNode;
-
-            // snap to grid
-            if (m_snapToGrid)
-            {
-                Point snapPoint = position(Point(m_lastPos.x(), m_lastPos.y()));
-
-                pointNode.x = round(snapPoint.x / Util::config()->gridStep) * Util::config()->gridStep;
-                pointNode.y = round(snapPoint.y / Util::config()->gridStep) * Util::config()->gridStep;
-            }
-            else
-            {
-                pointNode = p;
-            }
-
-            SceneNode *node = new SceneNode(pointNode);
-            SceneNode *nodeAdded = m_scene->addNode(node);
-            if (nodeAdded == node) m_scene->undoStack()->push(new SceneNodeCommandAdd(node->point));
-            updateGL();
-        }
-        if (m_sceneMode == SceneMode_OperateOnEdges)
-        {
-            // add edge directly by mouse click
-            SceneNode *node = findClosestNode(p);
-            if (node)
-            {
-                if (m_nodeLast == NULL)
-                {
-                    m_nodeLast = node;
-                    m_nodeLast->isSelected = true;
-                }
-                else
-                {
-                    if (node != m_nodeLast)
-                    {
-                        SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->edgeMarkers[0], 0);
-                        SceneEdge *edgeAdded = m_scene->addEdge(edge);
-                        if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point, edge->nodeEnd->point, edge->marker->name, edge->angle));
-                    }
-
-                    m_nodeLast->isSelected = false;
-                    m_nodeLast = NULL;
-                }
-
-                updateGL();
-            }
-        }
-        // add label directly by mouse click
-        if (m_sceneMode == SceneMode_OperateOnLabels)
-        {
-            SceneLabel *label = new SceneLabel(p, m_scene->labelMarkers[0], 0, 0);
-            SceneLabel *labelAdded = m_scene->addLabel(label);
-            if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point, label->marker->name, label->area, label->polynomialOrder));
-            updateGL();
-        }
-    }
-
-    if ((event->modifiers() == 0) && (event->button() & Qt::LeftButton))
-    {
-        // select scene objects
-        if (m_sceneMode == SceneMode_OperateOnNodes)
-        {
-            // select the closest node
-            SceneNode *node = findClosestNode(p);
-            if (node)
-            {
-                node->isSelected = !node->isSelected;
-                updateGL();
-            }
-        }
-
-        if (m_sceneMode == SceneMode_OperateOnEdges)
-        {
-            // select the closest label
-            SceneEdge *edge = findClosestEdge(p);
-            if (edge)
-            {
-                edge->isSelected = !edge->isSelected;
-                updateGL();
-            }
-        }
-        if (m_sceneMode == SceneMode_OperateOnLabels)
-        {
-            // select the closest label
-            SceneLabel *label = findClosestLabel(p);
-            if (label)
-            {
-                label->isSelected = !label->isSelected;
-                updateGL();
-            }
-        }
-    }
-}
-
-void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
-{
-    Point p = position(Point(event->pos().x(), event->pos().y()));
-
-    // zoom best fit
-    if (!(event->modifiers() & Qt::ControlModifier))
-    {
-        if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
-        {
-            doZoomBestFit();
-        }
+        Point p = position(Point(event->pos().x(), event->pos().y()));
 
         if (event->button() & Qt::LeftButton)
         {
+            // zoom region
+            if (actSceneZoomRegion->isChecked())
+            {
+                m_regionPos = m_lastPos;
+                actSceneZoomRegion->setChecked(false);
+                actSceneZoomRegion->setData(true);
+                m_region = true;
+
+                return;
+            }
+
+            // select region
+            if (actSceneViewSelectRegion->isChecked())
+            {
+                m_regionPos = m_lastPos;
+                actSceneViewSelectRegion->setChecked(false);
+                actSceneViewSelectRegion->setData(true);
+                m_region = true;
+
+                return;
+            }
+
+            if ((m_sceneMode == SceneMode_Postprocessor) &&
+                !(m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+                  m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
+            {
+                // local point value
+                if (actPostprocessorModeLocalPointValue->isChecked())
+                    emit mousePressed(p);
+                // select volume integral area
+                if (actPostprocessorModeVolumeIntegral->isChecked())
+                {
+                    int index = m_scene->sceneSolution()->findTriangleInMesh(m_scene->sceneSolution()->mesh(), p);
+                    if (index != -1)
+                    {
+                        //  find label marker
+                        int labelIndex = m_scene->sceneSolution()->mesh()->get_element_fast(index)->marker;
+
+                        m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
+                        updateGL();
+                    }
+                    emit mousePressed();
+                }
+                // select surface integral area
+                if (actPostprocessorModeSurfaceIntegral->isChecked())
+                {
+                    //  find edge marker
+                    SceneEdge *edge = findClosestEdge(p);
+
+                    edge->isSelected = !edge->isSelected;
+                    updateGL();
+
+                    emit mousePressed();
+                }
+            }
+        }
+
+        // add node edge or label by mouse click
+        if (event->modifiers() & Qt::ControlModifier)
+        {
+            // add node directly by mouse click
+            if (m_sceneMode == SceneMode_OperateOnNodes)
+            {
+                Point pointNode;
+
+                // snap to grid
+                if (m_snapToGrid)
+                {
+                    Point snapPoint = position(Point(m_lastPos.x(), m_lastPos.y()));
+
+                    pointNode.x = round(snapPoint.x / Util::config()->gridStep) * Util::config()->gridStep;
+                    pointNode.y = round(snapPoint.y / Util::config()->gridStep) * Util::config()->gridStep;
+                }
+                else
+                {
+                    pointNode = p;
+                }
+
+                SceneNode *node = new SceneNode(pointNode);
+                SceneNode *nodeAdded = m_scene->addNode(node);
+                if (nodeAdded == node) m_scene->undoStack()->push(new SceneNodeCommandAdd(node->point));
+                updateGL();
+            }
+            if (m_sceneMode == SceneMode_OperateOnEdges)
+            {
+                // add edge directly by mouse click
+                SceneNode *node = findClosestNode(p);
+                if (node)
+                {
+                    if (m_nodeLast == NULL)
+                    {
+                        m_nodeLast = node;
+                        m_nodeLast->isSelected = true;
+                    }
+                    else
+                    {
+                        if (node != m_nodeLast)
+                        {
+                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->edgeMarkers[0], 0);
+                            SceneEdge *edgeAdded = m_scene->addEdge(edge);
+                            if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point, edge->nodeEnd->point, edge->marker->name, edge->angle));
+                        }
+
+                        m_nodeLast->isSelected = false;
+                        m_nodeLast = NULL;
+                    }
+
+                    updateGL();
+                }
+            }
+            // add label directly by mouse click
+            if (m_sceneMode == SceneMode_OperateOnLabels)
+            {
+                SceneLabel *label = new SceneLabel(p, m_scene->labelMarkers[0], 0, 0);
+                SceneLabel *labelAdded = m_scene->addLabel(label);
+                if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point, label->marker->name, label->area, label->polynomialOrder));
+                updateGL();
+            }
+        }
+
+        if ((event->modifiers() == 0) && (event->button() & Qt::LeftButton))
+        {
             // select scene objects
-            m_scene->selectNone();
             if (m_sceneMode == SceneMode_OperateOnNodes)
             {
                 // select the closest node
                 SceneNode *node = findClosestNode(p);
                 if (node)
                 {
-                    node->isSelected = true;
+                    node->isSelected = !node->isSelected;
                     updateGL();
-                    if (node->showDialog(this) == QDialog::Accepted)
-                    {
-                        updateGL();
-                    }
                 }
             }
+
             if (m_sceneMode == SceneMode_OperateOnEdges)
             {
                 // select the closest label
                 SceneEdge *edge = findClosestEdge(p);
                 if (edge)
                 {
-                    edge->isSelected = true;
+                    edge->isSelected = !edge->isSelected;
                     updateGL();
-                    if (edge->showDialog(this) == QDialog::Accepted)
-                    {
-                        updateGL();
-                    }
                 }
             }
             if (m_sceneMode == SceneMode_OperateOnLabels)
@@ -2371,16 +2728,81 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
                 SceneLabel *label = findClosestLabel(p);
                 if (label)
                 {
-                    label->isSelected = true;
+                    label->isSelected = !label->isSelected;
                     updateGL();
-                    if (label->showDialog(this) == QDialog::Accepted)
-                    {
-                        updateGL();
-                    }
                 }
             }
-            m_scene->selectNone();
-            updateGL();
+        }
+    }
+}
+
+void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
+{
+    if (is3DMode())
+    {
+
+    }
+    else
+    {
+        Point p = position(Point(event->pos().x(), event->pos().y()));
+
+        // zoom best fit
+        if (!(event->modifiers() & Qt::ControlModifier))
+        {
+            if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
+            {
+                doZoomBestFit();
+            }
+
+            if (event->button() & Qt::LeftButton)
+            {
+                // select scene objects
+                m_scene->selectNone();
+                if (m_sceneMode == SceneMode_OperateOnNodes)
+                {
+                    // select the closest node
+                    SceneNode *node = findClosestNode(p);
+                    if (node)
+                    {
+                        node->isSelected = true;
+                        updateGL();
+                        if (node->showDialog(this) == QDialog::Accepted)
+                        {
+                            updateGL();
+                        }
+                    }
+                }
+                if (m_sceneMode == SceneMode_OperateOnEdges)
+                {
+                    // select the closest label
+                    SceneEdge *edge = findClosestEdge(p);
+                    if (edge)
+                    {
+                        edge->isSelected = true;
+                        updateGL();
+                        if (edge->showDialog(this) == QDialog::Accepted)
+                        {
+                            updateGL();
+                        }
+                    }
+                }
+                if (m_sceneMode == SceneMode_OperateOnLabels)
+                {
+                    // select the closest label
+                    SceneLabel *label = findClosestLabel(p);
+                    if (label)
+                    {
+                        label->isSelected = true;
+                        updateGL();
+                        if (label->showDialog(this) == QDialog::Accepted)
+                        {
+                            updateGL();
+                        }
+                    }
+                }
+                m_scene->selectNone();
+                updateGL();
+            }
         }
     }
 }
@@ -2389,25 +2811,32 @@ void SceneView::mouseReleaseEvent(QMouseEvent *event)
 {
     setCursor(Qt::ArrowCursor);
 
-    // zoom or select region
-    actSceneZoomRegion->setChecked(false);
-    actSceneViewSelectRegion->setChecked(false);
-
-    if (m_region)
+    if (is3DMode())
     {
-        Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
-        Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
 
-        if (actSceneZoomRegion->data().value<bool>())
-            doZoomRegion(Point(qMin(posStart.x, posEnd.x), qMin(posStart.y, posEnd.y)), Point(qMax(posStart.x, posEnd.x), qMax(posStart.y, posEnd.y)));
-        if (actSceneViewSelectRegion->data().value<bool>())
-            selectRegion(Point(qMin(posStart.x, posEnd.x), qMin(posStart.y, posEnd.y)), Point(qMax(posStart.x, posEnd.x), qMax(posStart.y, posEnd.y)));
+    }
+    else
+    {
+        // zoom or select region
+        actSceneZoomRegion->setChecked(false);
+        actSceneViewSelectRegion->setChecked(false);
 
-        actSceneZoomRegion->setData(false);
-        actSceneViewSelectRegion->setData(false);
-    }    
+        if (m_region)
+        {
+            Point posStart = position(Point(m_regionPos.x(), m_regionPos.y()));
+            Point posEnd = position(Point(m_lastPos.x(), m_lastPos.y()));
 
-    m_region = false;
+            if (actSceneZoomRegion->data().value<bool>())
+                doZoomRegion(Point(qMin(posStart.x, posEnd.x), qMin(posStart.y, posEnd.y)), Point(qMax(posStart.x, posEnd.x), qMax(posStart.y, posEnd.y)));
+            if (actSceneViewSelectRegion->data().value<bool>())
+                selectRegion(Point(qMin(posStart.x, posEnd.x), qMin(posStart.y, posEnd.y)), Point(qMax(posStart.x, posEnd.x), qMax(posStart.y, posEnd.y)));
+
+            actSceneZoomRegion->setData(false);
+            actSceneViewSelectRegion->setData(false);
+        }
+
+        m_region = false;
+    }
 
     updateGL();
 }
@@ -2419,180 +2848,193 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
     m_lastPos = event->pos();
 
-    Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-
-    setToolTip("");
-
-    // zoom or select region
-    if (m_region)
-        updateGL();
-
-    // snap to grid
-    if (m_snapToGrid && !(event->modifiers() & Qt::ControlModifier))
+    if (is3DMode())
     {
-        m_snapToGrid = false;
-        updateGL();
-    }
-    m_snapToGrid = ((Util::config()->snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
-
-    if (m_snapToGrid)
-        updateGL();
-
-    // pan
-    if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
-    {
-        setCursor(Qt::PointingHandCursor);
-
-        if ((m_sceneMode == SceneMode_Postprocessor) &&
-            (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-             m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
+        // pan
+        if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
         {
-            m_offset.x += 2.0/contextWidth() *(- dx * cos(m_rotation.y/180.0*M_PI) + dy * sin(m_rotation.y/180.0*M_PI))/m_scale*m_aspect;
-            m_offset.y += 2.0/contextHeight()*(  dy * cos(m_rotation.y/180.0*M_PI) + dx * sin(m_rotation.y/180.0*M_PI))/m_scale;
-            m_offset.z -= 2.0/contextHeight()*(  dy * sin(m_rotation.x/180.0*M_PI))/m_scale;
-        }
-        else
-        {
-            m_offset.x -= 2.0/contextWidth() * dx / m_scale*m_aspect;
-            m_offset.y += 2.0/contextHeight() * dy / m_scale;
-            m_offset.z = 0.0;
+            setCursor(Qt::PointingHandCursor);
+
+            // m_offset3d.x += 2.0/contextWidth()*(- dx * cos(m_rotation3d.y/180.0*M_PI) + dy * sin(m_rotation3d.y/180.0*M_PI))/m_scale3d*aspect();
+            // m_offset3d.y += 2.0/contextWidth()*(  dx * sin(m_rotation3d.y/180.0*M_PI) + dy * cos(m_rotation3d.y/180.0*M_PI))/m_scale3d;
+            // m_offset3d.z -= 2.0/contextWidth()*(  dx * cos(m_rotation3d.x/180.0*M_PI) + dy * sin(m_rotation3d.x/180.0*M_PI))/m_scale3d;
+
+
+            // m_offset3d.x -= 2.0/contextWidth() * dx*aspect();
+            // m_offset3d.y += 2.0/contextHeight() * dy;
+
+            m_rotation3d.y += dx;
+
+            updateGL();
         }
 
-        updateGL();
-    }
-
-    // rotate
-    if ((m_sceneMode == SceneMode_Postprocessor) &&
-        (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-         m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
-    {
+        // rotate
         if (event->buttons() & Qt::LeftButton)
         {
             setCursor(Qt::PointingHandCursor);
 
-            m_rotation.x -= dy;
-            m_rotation.y += dx;
+            m_rotation3d.x -= dy;
+            m_rotation3d.z += dx;
 
             updateGL();
         }
     }
-
-    // hints
-    if (event->modifiers() == 0)
-    {
-        // highlight scene objects
-        if (m_sceneMode == SceneMode_OperateOnNodes)
-        {
-            // highlight the closest node
-            SceneNode *node = findClosestNode(p);
-            if (node)
-            {
-                m_scene->highlightNone();
-                node->isHighlighted = true;
-                setToolTip(tr("<h3>Node</h3>Point: [%1; %2]<br/>Index: %3").
-                           arg(node->point.x, 0, 'g', 3).
-                           arg(node->point.y, 0, 'g', 3).
-                           arg(m_scene->nodes.indexOf(node)));
-                updateGL();
-            }
-        }
-        if (m_sceneMode == SceneMode_OperateOnEdges)
-        {
-            // highlight the closest label
-            SceneEdge *edge = findClosestEdge(p);
-            if (edge)
-            {
-                m_scene->highlightNone();
-                edge->isHighlighted = true;
-                setToolTip(tr("<h3>Edge</h3>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg.<br/>Index: %7 %8").
-                           arg(edge->nodeStart->point.x, 0, 'g', 3).
-                           arg(edge->nodeStart->point.y, 0, 'g', 3).
-                           arg(edge->nodeEnd->point.x, 0, 'g', 3).
-                           arg(edge->nodeEnd->point.y, 0, 'g', 3).
-                           arg(edge->marker->name).
-                           arg(edge->angle, 0, 'f', 0).
-                           arg(m_scene->edges.indexOf(edge)).
-                           arg(edge->marker->html()));
-                updateGL();
-            }
-        }
-        if (m_sceneMode == SceneMode_OperateOnLabels)
-        {
-            // highlight the closest label
-            SceneLabel *label = findClosestLabel(p);
-            if (label)
-            {
-                m_scene->highlightNone();
-                label->isHighlighted = true;
-                setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
-                           arg(label->point.x, 0, 'g', 3).
-                           arg(label->point.y, 0, 'g', 3).
-                           arg(label->marker->name).
-                           arg(label->area, 0, 'g', 3).
-                           arg(label->polynomialOrder).
-                           arg(m_scene->labels.indexOf(label)).
-                           arg(label->marker->html()));
-                updateGL();
-            }
-        }        
-    }
-
-    if (event->modifiers() & Qt::ControlModifier)
-    {
-        // add edge directly by mouse click - highlight
-        if (m_sceneMode == SceneMode_OperateOnEdges)
-        {
-            // add edge directly by mouse click
-            SceneNode *node = findClosestNode(p);
-            if (node)
-            {
-                m_scene->highlightNone();
-                node->isHighlighted = true;
-                updateGL();
-            }
-        }
-    }
-
-
-    if (m_snapToGrid)
-    {
-        Point snapPoint;
-        snapPoint.x = round(p.x / Util::config()->gridStep) * Util::config()->gridStep;
-        snapPoint.y = round(p.y / Util::config()->gridStep) * Util::config()->gridStep;
-
-        emit mouseMoved(QPointF(snapPoint.x, snapPoint.y));
-    }
     else
     {
-        emit mouseMoved(QPointF(p.x, p.y));
+        Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+
+        setToolTip("");
+
+        // zoom or select region
+        if (m_region)
+            updateGL();
+
+        // snap to grid
+        if (m_snapToGrid && !(event->modifiers() & Qt::ControlModifier))
+        {
+            m_snapToGrid = false;
+            updateGL();
+        }
+        m_snapToGrid = ((Util::config()->snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
+
+        if (m_snapToGrid)
+            updateGL();
+
+        // pan
+        if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
+        {
+            setCursor(Qt::PointingHandCursor);
+
+            m_offset2d.x -= 2.0/contextWidth() * dx/m_scale2d*aspect();
+            m_offset2d.y += 2.0/contextHeight() * dy/m_scale2d;
+
+            updateGL();
+        }
+
+        // hints
+        if (event->modifiers() == 0)
+        {
+            // highlight scene objects
+            if (m_sceneMode == SceneMode_OperateOnNodes)
+            {
+                // highlight the closest node
+                SceneNode *node = findClosestNode(p);
+                if (node)
+                {
+                    m_scene->highlightNone();
+                    node->isHighlighted = true;
+                    setToolTip(tr("<h3>Node</h3>Point: [%1; %2]<br/>Index: %3").
+                               arg(node->point.x, 0, 'g', 3).
+                               arg(node->point.y, 0, 'g', 3).
+                               arg(m_scene->nodes.indexOf(node)));
+                    updateGL();
+                }
+            }
+            if (m_sceneMode == SceneMode_OperateOnEdges)
+            {
+                // highlight the closest label
+                SceneEdge *edge = findClosestEdge(p);
+                if (edge)
+                {
+                    m_scene->highlightNone();
+                    edge->isHighlighted = true;
+                    setToolTip(tr("<h3>Edge</h3>Point: [%1; %2] - [%3; %4]<br/>Boundary Condition: %5<br/>Angle: %6 deg.<br/>Index: %7 %8").
+                               arg(edge->nodeStart->point.x, 0, 'g', 3).
+                               arg(edge->nodeStart->point.y, 0, 'g', 3).
+                               arg(edge->nodeEnd->point.x, 0, 'g', 3).
+                               arg(edge->nodeEnd->point.y, 0, 'g', 3).
+                               arg(edge->marker->name).
+                               arg(edge->angle, 0, 'f', 0).
+                               arg(m_scene->edges.indexOf(edge)).
+                               arg(edge->marker->html()));
+                    updateGL();
+                }
+            }
+            if (m_sceneMode == SceneMode_OperateOnLabels)
+            {
+                // highlight the closest label
+                SceneLabel *label = findClosestLabel(p);
+                if (label)
+                {
+                    m_scene->highlightNone();
+                    label->isHighlighted = true;
+                    setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
+                               arg(label->point.x, 0, 'g', 3).
+                               arg(label->point.y, 0, 'g', 3).
+                               arg(label->marker->name).
+                               arg(label->area, 0, 'g', 3).
+                               arg(label->polynomialOrder).
+                               arg(m_scene->labels.indexOf(label)).
+                               arg(label->marker->html()));
+                    updateGL();
+                }
+            }
+        }
+
+        if (event->modifiers() & Qt::ControlModifier)
+        {
+            // add edge directly by mouse click - highlight
+            if (m_sceneMode == SceneMode_OperateOnEdges)
+            {
+                // add edge directly by mouse click
+                SceneNode *node = findClosestNode(p);
+                if (node)
+                {
+                    m_scene->highlightNone();
+                    node->isHighlighted = true;
+                    updateGL();
+                }
+            }
+        }
+
+
+        if (m_snapToGrid)
+        {
+            Point snapPoint;
+            snapPoint.x = round(p.x / Util::config()->gridStep) * Util::config()->gridStep;
+            snapPoint.y = round(p.y / Util::config()->gridStep) * Util::config()->gridStep;
+
+            emit mouseMoved(QPointF(snapPoint.x, snapPoint.y));
+        }
+        else
+        {
+            emit mouseMoved(QPointF(p.x, p.y));
+        }
     }
 }
 
 void SceneView::wheelEvent(QWheelEvent *event)
 {
-    if (Util::config()->zoomToMouse)
+    if (is3DMode())
     {
-        Point posMouse;
-        posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
-                        -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale);
-
-        m_offset.x += posMouse.x;
-        m_offset.y += posMouse.y;
-
-        m_scale = m_scale * pow(1.2, event->delta()/150.0);
-
-
-        posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale*m_aspect,
-                        -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale);
-
-        m_offset.x -= posMouse.x;
-        m_offset.y -= posMouse.y;
-
-        updateGL();
+        setZoom(event->delta()/150.0);
     }
     else
     {
-        setZoom(event->delta()/150.0);
+        if (Util::config()->zoomToMouse)
+        {
+            Point posMouse;
+            posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0)),
+                            -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0)));
+
+            m_offset2d.x += posMouse.x;
+            m_offset2d.y += posMouse.y;
+
+            m_scale2d = m_scale2d * pow(1.2, event->delta()/150.0);
+
+
+            posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0)),
+                            -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0)));
+
+            m_offset2d.x -= posMouse.x;
+            m_offset2d.y -= posMouse.y;
+
+            updateGL();
+        }
+        else
+        {
+            setZoom(event->delta()/150.0);
+        }
     }
 }
 
@@ -2639,16 +3081,16 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
 {
     if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO) return;
 
-    m_offset.x = (start.x+end.x)/2.0;
-    m_offset.y = (start.y+end.y)/2.0;
+    m_offset2d.x = (start.x+end.x)/2.0;
+    m_offset2d.y = (start.y+end.y)/2.0;
 
     double sceneWidth = end.x-start.x;
     double sceneHeight = end.y-start.y;
 
-    double maxScene = (((double) contextWidth() / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/m_aspect : sceneHeight;
+    double maxScene = (((double) contextWidth() / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
-        m_scale = 1.95/maxScene;
+        m_scale2d = 1.95/maxScene;
 
     setZoom(0);
 }
@@ -2668,9 +3110,14 @@ void SceneView::doDefaultValues()
     m_region = false;
     m_isSolutionPrepared = false;
 
-    m_scale = 1.0;
-    m_offset.x = 0.0;
-    m_offset.y = 0.0;
+    // 2d
+    m_scale2d = 1.0;
+    m_offset2d = Point();
+
+    // 3d
+    m_scale3d = 1.0;
+    m_offset3d = Point3();
+    m_rotation3d = Point3();
 
     m_chartLine.start = Point();
     m_chartLine.end = Point();
@@ -2699,6 +3146,7 @@ void SceneView::doInvalidated()
             actSceneModeNode->trigger();
     }
 
+    actSceneViewSelectBasic->setEnabled(m_scene->sceneSolution()->isMeshed());
     actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
     actSceneViewSelectMarker->setEnabled(m_scene->sceneSolution()->isSolved());
     actSceneZoomRegion->setEnabled((m_sceneMode != SceneMode_Postprocessor) ||
@@ -2785,18 +3233,16 @@ void SceneView::doSceneViewProperties()
         if (postprocessorShow != m_sceneViewSettings.postprocessorShow)
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-                m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+                m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid ||
+                m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model)
             {
-                m_rotation.x =  66.0;
-                m_rotation.y = -35.0;
-                doZoomBestFit();
+                m_rotation3d.x = 66.0;
+                m_rotation3d.y = 0.0;
+                m_rotation3d.z = -35.0;
+
+                m_scale3d = 0.6 * m_scale2d;
             }
-            else
-            {
-                m_rotation.x = 0.0;
-                m_rotation.y = 0.0;
-                doZoomBestFit();
-            }
+            doZoomBestFit();
         }
     }
 }
@@ -2883,6 +3329,12 @@ void SceneView::doSelectMarker()
     sceneMarkerSelectDialog.exec();
 }
 
+void SceneView::doSelectBasic()
+{
+    SceneBasicSelectDialog sceneBasicSelectDialog(this, QApplication::activeWindow());
+    sceneBasicSelectDialog.exec();
+}
+
 void SceneView::processedRangeContour()
 {
 
@@ -2902,36 +3354,6 @@ void SceneView::processedRangeScalar()
 
     if (Util::config()->scalarView3DLighting)
     {
-        double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
-
-        // lighting
-        float light_specular[] = {1.0, 1.0, 1.0, 1.0};
-        float light_ambient[]  = {0.3, 0.3, 0.3, 1.0};
-        float light_diffuse[]  = {1.0, 1.0, 1.0, 1.0};
-        float light_position[] = { -10.0*max, 16.0*max, 10.0*max, 0.0 };
-
-        glEnable(GL_LIGHT0);
-        glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-        glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
-        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-        float material_ambient[]  = {1.0, 1.0, 1.0, 1.0};
-        float material_diffuse[]  = {0.4, 0.4, 0.4, 1.0};
-        float material_specular[] = {0.3, 0.3, 0.3, 1.0};
-
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 32.0);
-        glDisable(GL_COLOR_MATERIAL);
-
-        glShadeModel(GL_SMOOTH);
-        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-        #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
-            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-        #endif
-
         // calculate normals
         m_scene->sceneSolution()->linScalarView().lock_data();
 
@@ -2969,11 +3391,14 @@ void SceneView::processedRangeScalar()
             }
         }
 
+        // normalize
         for (int i = 0; i < nv; i++)
         {
-            // normalize
             double l = 1.0 / sqrt(sqr(m_normals[i][0]) + sqr(m_normals[i][1]) + sqr(m_normals[i][2]));
-            m_normals[i][0] *= l; m_normals[i][1] *= l; m_normals[i][2] *= l;
+
+            m_normals[i][0] *= l;
+            m_normals[i][1] *= l;
+            m_normals[i][2] *= l;
         }
 
         m_scene->sceneSolution()->linScalarView().unlock_data();
@@ -2986,7 +3411,14 @@ void SceneView::processedRangeVector()
 
 void SceneView::setZoom(double power)
 {
-    m_scale = m_scale * pow(1.2, power);
+    if (is3DMode())
+    {
+        m_scale3d = m_scale3d * pow(1.2, power);
+    }
+    else
+    {
+        m_scale2d = m_scale2d * pow(1.2, power);
+    }
 
     updateGL();
 
@@ -3085,7 +3517,7 @@ void SceneView::drawArc(const Point &point, double r, double startAngle, double 
         double x = r * cos(arc);
         double y = r * sin(arc);
 
-        glVertex2d(point.x + x, point.y + y);
+        glVertex3d(point.x + x, point.y + y, 0.0);
     }
     glEnd();
 }
@@ -3122,8 +3554,8 @@ void SceneView::renderTextPos(double x, double y, double z, const QString &str, 
 {
     if (blend)
     {
-        Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale*m_aspect,
-                   (2.0/contextHeight()*fontMetrics().height())/m_scale);
+        Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale2d*aspect(),
+                   (2.0/contextHeight()*fontMetrics().height())/m_scale2d);
 
         double xs = x - size.x / 2.0;
         double ys = y - size.y * 1.15 / 3.2;
@@ -3216,10 +3648,10 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
     // store sceneview settings
     SceneViewSettings sceneViewSettingsCopy = m_sceneViewSettings;
     SceneMode sceneModeCopy = m_sceneMode;
-    double scaleCopy = m_scale;
-    double aspectCopy = m_aspect;
-    Point3 offsetCopy = m_offset;
-    Point rotationCopy = m_rotation;
+    double scale2dCopy = m_scale2d;
+    Point offset2dCopy = m_offset2d;
+    Point3 offset3dCopy = m_offset3d;
+    Point3 rotation3dCopy = m_rotation3d;
 
     // remove old files
     QFile::remove(path + "/geometry.png");
@@ -3306,15 +3738,15 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
     // restore sceneview settings
     m_sceneViewSettings = sceneViewSettingsCopy;
     m_sceneMode = sceneModeCopy;
-    m_scale = scaleCopy;
-    m_aspect = aspectCopy;
-    m_offset = offsetCopy;
-    m_rotation = rotationCopy;
+    m_scale2d = scale2dCopy;
+    m_offset2d = offset2dCopy;
+    m_offset3d = offset3dCopy;
+    m_rotation3d = rotation3dCopy;
 
     if (m_sceneMode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
     if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();
     if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeLabel->isChecked();
     if (m_sceneMode == SceneMode_Postprocessor) actSceneModePostprocessor->isChecked();
 
-    updateGL();
+    refresh();
 }

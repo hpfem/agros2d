@@ -324,6 +324,7 @@ void MainWindow::createMenus()
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
     mnuProblem->addAction(Util::scene()->actTransform);
+    // mnuProblem->addAction(sceneView->actSceneViewSelectBasic);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
@@ -490,6 +491,13 @@ void MainWindow::createViews()
     tooltipView = new TooltipView(this);
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
+
+    /*
+    modelView = new ModelView(this);
+    connect(Util::scene()->sceneSolution(), SIGNAL(meshed()), modelView, SLOT(invalidated()));
+    modelView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::LeftDockWidgetArea, modelView);
+    */
 }
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
@@ -591,6 +599,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 setRecentFiles();
 
+                sceneView->actSceneModeNode->trigger();
                 sceneView->doZoomBestFit();
                 return;
             }

@@ -77,7 +77,7 @@ class SceneView : public QGLWidget
 {
     Q_OBJECT
     
-public slots:
+    public slots:
     void doZoomBestFit();
     void doZoomIn();
     void doZoomOut();
@@ -86,6 +86,7 @@ public slots:
     void doSceneObjectProperties();
     void doSceneModeSet(QAction *action);
     void doSelectMarker();
+    void doSelectBasic();
     void doInvalidated();
     void solved();
     void doDefaultValues();
@@ -118,6 +119,7 @@ public:
 
     QAction *actSceneViewSelectRegion;
     QAction *actSceneViewSelectMarker;
+    QAction *actSceneViewSelectBasic;
     QAction *actSceneViewProperties;
     QAction *actSceneObjectProperties;
 
@@ -160,6 +162,14 @@ protected:
 
     inline int contextWidth() { return context()->device()->width(); }
     inline int contextHeight() { return context()->device()->height(); }
+    inline double aspect() { return (double) contextWidth() / (double) contextHeight(); }
+    inline bool is3DMode()
+    {
+        return ((m_sceneMode == SceneMode_Postprocessor) &&
+                (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid ||
+                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model));
+    }
 
 private:
     Scene *m_scene;
@@ -167,10 +177,14 @@ private:
 
     QPointF m_lastPos; // last position of cursor
     QPointF m_regionPos;
-    double m_scale; // scale
-    double m_aspect;
-    Point3 m_offset; // offset
-    Point m_rotation; // rotation
+    // 2d
+    double m_scale2d; // scale
+    Point m_offset2d; // offset
+    // 3d
+    double m_scale3d; // scale
+    Point3 m_offset3d; // offset
+    Point3 m_rotation3d; // rotation
+
     double3* m_normals;
 
     RectPoint m_chartLine; // line
@@ -189,6 +203,7 @@ private:
     int m_listScalarField3D;
     int m_listScalarField3DSolid;
     int m_listOrder;
+    int m_listModel;
 
     // helper for snap to grid
     bool m_snapToGrid;
@@ -219,10 +234,14 @@ private:
     void paletteFilter();
     void paletteUpdateTexAdjust();
 
+    void initLighting();
+
+    void paintBackground(); // gradient background
     void paintGrid(); // paint grid
     void paintRulers(); // paint rulers
     void paintGeometry(); // paint nodes, edges and labels
     void paintInitialMesh();
+    void paintModel(); // paint 3d model
 
     void paintContours(); // paint scalar field contours
     void paintContoursTri(double3* vert, int3* tri, double step);
@@ -250,15 +269,27 @@ private:
     void setZoom(double power);
     void selectRegion(const Point &start, const Point &end);
 
-    inline Point &position(const Point &point) { Point p((2.0/contextWidth()*point.x-1)/m_scale*m_aspect+m_offset.x, -(2.0/contextHeight()*point.y-1)/m_scale+m_offset.y); return p; }
+    void loadProjection2d(bool setScene = false);
+    void loadProjection3d(bool setScene = false);
 
-    void clearGLLists();
+    inline Point &position(double x, double y)
+    {
+        return position(Point(x, y));
+    }
+
+    inline Point &position(const Point &point)
+    {
+        Point p((2.0/contextWidth()*point.x-1)/m_scale2d*aspect()+m_offset2d.x, -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);
+
+        return p;
+    }
 
 private slots:
     void doMaterialGroup(QAction *action);
     void doBoundaryGroup(QAction *action);
     void doShowGroup(QAction *action);
     void doPostprocessorModeGroup(QAction *action);
+    void clearGLLists();
 };
 
 #endif // SCENEVIEW_H

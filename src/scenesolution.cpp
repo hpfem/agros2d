@@ -105,6 +105,7 @@ void SceneSolution::solve(SolverMode solverMode)
     if (progressDialog.run())
     {
         Util::scene()->sceneSolution()->setTimeStep(Util::scene()->sceneSolution()->timeStepCount() - 1);
+        emit meshed();
         emit solved();
     }
 

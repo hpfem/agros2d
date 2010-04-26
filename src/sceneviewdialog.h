@@ -51,6 +51,7 @@ private:
     QRadioButton *radPostprocessorScalarField;
     QRadioButton *radPostprocessorScalarField3D;
     QRadioButton *radPostprocessorScalarField3DSolid;
+    QRadioButton *radPostprocessorModel;
     QRadioButton *radPostprocessorOrder;
 
     QCheckBox *chkShowContours;

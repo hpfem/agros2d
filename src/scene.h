@@ -39,6 +39,7 @@
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
 #include "scenemarkerselectdialog.h"
+#include "scenebasicselectdialog.h"
 #include "progressdialog.h"
 
 #include "hermes2d/hermes_field.h"
