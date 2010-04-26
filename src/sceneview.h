@@ -182,10 +182,8 @@ private:
     Point m_offset2d; // offset
     // 3d
     double m_scale3d; // scale
-    Point3 m_offset3d; // offset
-    Point3 m_rotation3d; // rotation
-
-    double3* m_normals;
+    Point m_offset3d; // offset
+    Point m_rotation3d; // rotation
 
     RectPoint m_chartLine; // line
 
@@ -241,7 +239,6 @@ private:
     void paintRulers(); // paint rulers
     void paintGeometry(); // paint nodes, edges and labels
     void paintInitialMesh();
-    void paintModel(); // paint 3d model
 
     void paintContours(); // paint scalar field contours
     void paintContoursTri(double3* vert, int3* tri, double step);

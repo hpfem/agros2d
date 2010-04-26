@@ -988,7 +988,6 @@ void ScalarView::on_display()
     // initialize light and material
     init_lighting();
 
-
     glTranslated(xtrans, ytrans, ztrans);
 
     // set model transforamtion
