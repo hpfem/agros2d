@@ -132,7 +132,7 @@ void SparseMatrix::prealloc(int n)
 
 void SparseMatrix::pre_add_ij(int row, int col)
 {
-  if (pages[col] == NULL || pages[col]->count >= PAGE_SIZE)
+  if (pages[col] == NULL || pages[col]->count >= H2D_PAGE_SIZE)
   {
     Page *new_page = new Page;
     new_page->count = 0;

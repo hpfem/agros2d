@@ -37,6 +37,7 @@
 
 #include "refmap.h"
 #include "traverse.h"
+#include "trans.h"
 
 #include "weakform.h"
 #include "linsystem.h"

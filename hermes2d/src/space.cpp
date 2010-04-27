@@ -85,24 +85,24 @@ void Space::resize_tables()
 }
 
 
-void Space::check_order(int order)
+void Space::H2D_CHECK_ORDER(int order)
 {
-  if (get_h_order(order) < 0 || get_v_order(order) < 0)
-    error("order cannot be negative.");
-  if (get_h_order(order) > 10 || get_v_order(order) > 10)
-    error("order = %d, maximum is 10.", order);
+  if (H2D_GET_H_ORDER(order) < 0 || H2D_GET_V_ORDER(order) < 0)
+    error("Order cannot be negative.");
+  if (H2D_GET_H_ORDER(order) > 10 || H2D_GET_V_ORDER(order) > 10)
+    error("Order = %d, maximum is 10.", order);
 }
 
 
 void Space::set_element_order(int id, int order)
 {
   if (id < 0 || id >= mesh->get_max_element_id())
-    error("invalid element id.");
-  check_order(order);
+    error("Invalid element id.");
+  H2D_CHECK_ORDER(order);
 
   resize_tables();
-  if (mesh->get_element(id)->is_quad() && get_v_order(order) == 0)
-     order = make_quad_order(order, order);
+  if (mesh->get_element(id)->is_quad() && H2D_GET_V_ORDER(order) == 0)
+     order = H2D_MAKE_QUAD_ORDER(order, order);
   edata[id].order = order;
   seq++;
 }
@@ -118,13 +118,13 @@ int Space::get_element_order(int id) const
 void Space::set_uniform_order(int order, int marker)
 {
   resize_tables();
-  check_order(order);
-  int quad_order = make_quad_order(order, order);
+  H2D_CHECK_ORDER(order);
+  int quad_order = H2D_MAKE_QUAD_ORDER(order, order);
 
   Element* e;
   for_all_active_elements(e, mesh)
   {
-    if (marker == ANY || e->marker == marker)
+    if (marker == H2D_ANY || e->marker == marker)
     {
       ElementData* ed = &edata[e->id];
       if (e->is_triangle())
@@ -139,7 +139,7 @@ void Space::set_uniform_order(int order, int marker)
 
 void Space::set_default_order(int tri_order, int quad_order)
 {
-  if (quad_order == 0) quad_order = make_quad_order(tri_order, tri_order);
+  if (quad_order == 0) quad_order = H2D_MAKE_QUAD_ORDER(tri_order, tri_order);
   default_tri_order = tri_order;
   default_quad_order = quad_order;
 }
@@ -166,11 +166,11 @@ void Space::copy_orders(Space* space, int inc)
     if (oo < 0) error("Source space has an uninitialized order (element id = %d)", e->id);
 
     int mo = shapeset->get_max_order();
-    int ho = std::max(1, std::min(get_h_order(oo) + inc, mo));
-    int vo = std::max(1, std::min(get_v_order(oo) + inc, mo));
-    oo = e->is_triangle() ? ho : make_quad_order(ho, vo);
+    int ho = std::max(1, std::min(H2D_GET_H_ORDER(oo) + inc, mo));
+    int vo = std::max(1, std::min(H2D_GET_V_ORDER(oo) + inc, mo));
+    oo = e->is_triangle() ? ho : H2D_MAKE_QUAD_ORDER(ho, vo);
 
-    check_order(oo);
+    H2D_CHECK_ORDER(oo);
     copy_orders_recurrent(mesh->get_element/*sic!*/(e->id), oo);
   }
   seq++;
@@ -191,7 +191,7 @@ int Space::get_edge_order(Element* e, int edge)
 
 int Space::get_edge_order_internal(Node* en)
 {
-  assert(en->type == TYPE_EDGE);
+  assert(en->type == H2D_TYPE_EDGE);
   Element** e = en->elem;
   int o1 = 1000, o2 = 1000;
   assert(e[0] != NULL || e[1] != NULL);
@@ -199,17 +199,17 @@ int Space::get_edge_order_internal(Node* en)
   if (e[0] != NULL)
   {
     if (e[0]->is_triangle() || en == e[0]->en[0] || en == e[0]->en[2])
-      o1 = get_h_order(edata[e[0]->id].order);
+      o1 = H2D_GET_H_ORDER(edata[e[0]->id].order);
     else
-      o1 = get_v_order(edata[e[0]->id].order);
+      o1 = H2D_GET_V_ORDER(edata[e[0]->id].order);
   }
 
   if (e[1] != NULL)
   {
     if (e[1]->is_triangle() || en == e[1]->en[0] || en == e[1]->en[2])
-      o2 = get_h_order(edata[e[1]->id].order);
+      o2 = H2D_GET_H_ORDER(edata[e[1]->id].order);
     else
-      o2 = get_v_order(edata[e[1]->id].order);
+      o2 = H2D_GET_V_ORDER(edata[e[1]->id].order);
   }
 
   if (o1 == 0) return o2 == 1000 ? 0 : o2;
@@ -245,8 +245,8 @@ void Space::distribute_orders(Mesh* mesh, int* parents)
   for_all_active_elements(e, mesh)
   {
     int p = get_element_order(parents[e->id]);
-    if (e->is_triangle() && (get_v_order(p) != 0))
-      p = std::max(get_h_order(p), get_v_order(p));
+    if (e->is_triangle() && (H2D_GET_V_ORDER(p) != 0))
+      p = std::max(H2D_GET_H_ORDER(p), H2D_GET_V_ORDER(p));
     orders[e->id] = p;
   }
   for_all_active_elements(e, mesh)
@@ -391,8 +391,8 @@ void Space::precalculate_projection_matrix(int nv, double**& mat, double*& p)
   int component = get_type() == 2 ? 1 : 0;
 
   Quad1DStd quad1d;
-  //shapeset->set_mode(MODE_TRIANGLE);
-  shapeset->set_mode(MODE_QUAD);
+  //shapeset->set_mode(H2D_MODE_TRIANGLE);
+  shapeset->set_mode(H2D_MODE_QUAD);
   for (int i = 0; i < n; i++)
   {
     for (int j = i; j < n; j++)
@@ -485,7 +485,7 @@ void Space::free_extra_data()
   for_all_nodes(n, mesh)
   {
     NodeData* nd = &ndata[n->id];
-    if (n->type == TYPE_VERTEX)
+    if (n->type == H2D_TYPE_VERTEX)
     {
       printf("vert node id=%d ref=%d bnd=%d x=%g y=%g dof=%d n=%d ",
              n->id, n->ref, n->bnd, n->x, n->y, nd->dof, nd->n);

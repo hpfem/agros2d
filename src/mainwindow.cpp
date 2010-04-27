@@ -779,9 +779,9 @@ void MainWindow::doSolve()
 void MainWindow::doOptions()
 {
     ConfigDialog configDialog(this);
-    configDialog.exec();
+    if (configDialog.exec())
+        sceneView->timeStepChanged(true);
 
-    sceneView->timeStepChanged(true);
     activateWindow();
 }
 

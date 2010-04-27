@@ -52,7 +52,7 @@ public:
   ScalarView(const char* title = "ScalarView", DEFAULT_WINDOW_POS);
   virtual ~ScalarView();
 
-  void show(MeshFunction* sln, double eps = EPS_NORMAL, int item = FN_VAL_0,
+  void show(MeshFunction* sln, double eps = H2D_EPS_NORMAL, int item = FN_VAL_0,
             MeshFunction* xdisp = NULL, MeshFunction* ydisp = NULL, double dmult = 1.0);
 
   void show_mesh(bool show = true) { show_edges = show; refresh(); }
@@ -137,7 +137,7 @@ protected: //values
     float coord;
     GLVertex2() {};
     GLVertex2(float x, float y, float coord) : x(x), y(y), coord(coord) {};
-    static const size_t offsetof_coord = 2*sizeof(float); ///< Offset of coordinate
+    static const size_t H2D_OFFSETOF_COORD = 2*sizeof(float); ///< Offset of coordinate
   };
 #pragma pack(pop)
 
@@ -223,9 +223,9 @@ class HERMES2D_API ScalarView : public View
 public:
   ScalarView(const char* title = "ScalarView", DEFAULT_WINDOW_POS) {}
   virtual ~ScalarView() {}
-  void show(MeshFunction* sln, double eps = EPS_NORMAL, int item = FN_VAL_0,
+  void show(MeshFunction* sln, double eps = H2D_EPS_NORMAL, int item = FN_VAL_0,
             MeshFunction* xdisp = NULL, MeshFunction* ydisp = NULL, double dmult = 1.0)
-     { info("ScalarView: Hermes2D compiled without OpenGL support, skipping visualization."); }
+     { verbose("ScalarView: Hermes2D compiled without OpenGL support, skipping visualization."); }
   void show_mesh(bool show = true) {}
   void show_contours(double step, double orig = 0.0) {}
   void hide_contours() {}

@@ -48,9 +48,9 @@ PrecalcShapeset::PrecalcShapeset(PrecalcShapeset* pss)
 
 void PrecalcShapeset::update_max_index()
 {
-  shapeset->set_mode(MODE_TRIANGLE);
+  shapeset->set_mode(H2D_MODE_TRIANGLE);
   max_index[0] = shapeset->get_max_index();
-  shapeset->set_mode(MODE_QUAD);
+  shapeset->set_mode(H2D_MODE_QUAD);
   max_index[1] = shapeset->get_max_index();
 }
 
@@ -96,7 +96,7 @@ void PrecalcShapeset::set_active_shape(int index)
 
   this->index = index;
   order = shapeset->get_order(index);
-  order = std::max(get_h_order(order), get_v_order(order));
+  order = std::max(H2D_GET_H_ORDER(order), H2D_GET_V_ORDER(order));
 }
 
 
@@ -125,7 +125,7 @@ void PrecalcShapeset::precalculate(int order, int mask)
   // initialization
   Quad2D* quad = get_quad_2d();
   quad->set_mode(mode);
-  check_order(quad, order);
+  H2D_CHECK_ORDER(quad, order);
   int np = quad->get_num_points(order);
   double3* pt = quad->get_points(order);
 

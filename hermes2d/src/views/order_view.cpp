@@ -78,7 +78,7 @@ void OrderView::init_order_palette(double3* vert) {
     if ((int) vert[i][2] < min) min = (int) vert[i][2];
     if ((int) vert[i][2] > max) max = (int) vert[i][2];
   }
-  assert_msg(max <= H2DV_MAX_VIEWABLE_ORDER, "maximum order in data is %d but OrderView supports only order %d", max, H2DV_MAX_VIEWABLE_ORDER);
+  assert_msg(max <= H2DV_MAX_VIEWABLE_ORDER, "Maximum order in data is %d but OrderView supports only order %d", max, H2DV_MAX_VIEWABLE_ORDER);
 
   num_boxes = max - min + 1;
   char* buf = text_buffer;
@@ -210,9 +210,9 @@ void OrderView::on_key_down(unsigned char key, int x, int y)
         case H2DV_PT_HUESCALE: pal_type = H2DV_PT_GRAYSCALE; break;
         case H2DV_PT_GRAYSCALE: pal_type = H2DV_PT_INVGRAYSCALE; break;
         case H2DV_PT_INVGRAYSCALE: pal_type = H2DV_PT_DEFAULT; break;
-        default: error("invalid palette type");
+        default: error("Invalid palette type");
       }
-      debug_log("switched to palette type %d", (int)pal_type);
+      debug_log("Switched to palette type %d in view \"%s\"", (int)pal_type, title.c_str());
       ord.lock_data();
       init_order_palette(ord.get_vertices());
       ord.unlock_data();

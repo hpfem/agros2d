@@ -80,6 +80,8 @@ private slots:
     void doScalarFieldVariable(int index);
     void doScalarFieldRangeAuto(int state);
     void buttonClicked(QAbstractButton *button);
+
+    void setControls();
 };
 
 #endif // SCENEVIEWDIALOG_H

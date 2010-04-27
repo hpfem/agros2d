@@ -59,10 +59,11 @@ void VectorBaseView::update_solution()
 
 void VectorBaseView::update_title()
 {
-  char text[500];
-  sprintf(text, "%s - dof = %d%s", title.c_str(), base_index,
-          (base_index < 0) ? " (Dirichlet lift)" : "");
-  set_title(text);
+  std::stringstream str;
+  str << title << " - dof = " << base_index;
+  if (base_index < 0)
+    str << " (Dirichlet lift)";
+  set_title(str.str().c_str());
 }
 
 

@@ -74,7 +74,7 @@ public:
   MeshView(const char* title = "MeshView", DEFAULT_WINDOW_POS) {}
   virtual ~MeshView() {}
   void show(Mesh* mesh)
-     { info("MeshView: Hermes2D compiled without OpenGL support, skipping visualization."); }
+     { verbose("MeshView: Hermes2D compiled without OpenGL support, skipping visualization."); }
 };
 
 #endif // NOGLUT

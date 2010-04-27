@@ -72,7 +72,7 @@ public:
 
   Quad2DCheb()
   {
-    mode = MODE_TRIANGLE;
+    mode = H2D_MODE_TRIANGLE;
     max_order[0]  = max_order[1]  = 10;
     num_tables[0] = num_tables[1] = 11;
     tables = cheb_tab;
@@ -335,9 +335,9 @@ void Solution::set_fe_solution(Space* space, PrecalcShapeset* pss, scalar* vec, 
 
   // some sanity checks
   if (!space->is_up_to_date())
-    error("'space' is not up to date.");
+    error("Provided 'space' is not up to date.");
   if (space->get_shapeset() != pss->get_shapeset())
-    error("'space' and 'pss' must have the same shapesets.");
+    error("Provided 'space' and 'pss' must have the same shapesets.");
 
   space_type = space->get_type();
 
@@ -368,7 +368,7 @@ void Solution::set_fe_solution(Space* space, PrecalcShapeset* pss, scalar* vec, 
   {
     mode = e->get_mode();
     o = space->get_element_order(e->id);
-    o = std::max(get_h_order(o), get_v_order(o));
+    o = std::max(H2D_GET_H_ORDER(o), H2D_GET_V_ORDER(o));
     for (unsigned int k = 0; k < e->nvert; k++) {
       int eo = space->get_edge_order(e, k);
       if (eo > o) o = eo;
@@ -651,9 +651,9 @@ static inline void vec_x_vec_p_vec(int n, scalar* y, scalar* x, scalar* z)
 }
 
 
-static const int GRAD = FN_DX_0 | FN_DY_0;
-static const int SECOND = FN_DXX_0 | FN_DXY_0 | FN_DYY_0;
-static const int CURL = FN_DX | FN_DY;
+static const int H2D_GRAD = FN_DX_0 | FN_DY_0;
+static const int H2D_SECOND = FN_DXX_0 | FN_DXY_0 | FN_DYY_0;
+static const int H2D_CURL = FN_DX | FN_DY;
 
 
 void Solution::transform_values(int order, Node* node, int newmask, int oldmask, int np)
@@ -666,7 +666,7 @@ void Solution::transform_values(int order, Node* node, int newmask, int oldmask,
   if (space_type == 0)
   {
 #ifdef H2D_SECOND_DERIVATIVES_ENABLED
-    if (((newmask & SECOND) == SECOND && (oldmask & SECOND) != SECOND))
+    if (((newmask & H2D_SECOND) == H2D_SECOND && (oldmask & H2D_SECOND) != H2D_SECOND))
     {
       update_refmap();
       mat = refmap->get_inv_ref_map(order);
@@ -685,7 +685,7 @@ void Solution::transform_values(int order, Node* node, int newmask, int oldmask,
       }
     }
 #endif
-    if ((newmask & GRAD) == GRAD && (oldmask & GRAD) != GRAD)
+    if ((newmask & H2D_GRAD) == H2D_GRAD && (oldmask & H2D_GRAD) != H2D_GRAD)
     {
       update_refmap();
       mat = refmap->get_const_inv_ref_map();
@@ -706,7 +706,7 @@ void Solution::transform_values(int order, Node* node, int newmask, int oldmask,
   {
     bool trans_val = false, trans_curl = false;
     if ((newmask & FN_VAL) == FN_VAL && (oldmask & FN_VAL) != FN_VAL) trans_val  = true;
-    if ((newmask &   CURL) ==   CURL && (oldmask &   CURL) !=   CURL) trans_curl = true;
+    if ((newmask &   H2D_CURL) ==   H2D_CURL && (oldmask &   H2D_CURL) !=   H2D_CURL) trans_curl = true;
 
     if (trans_val || trans_curl)
     {
@@ -761,25 +761,25 @@ void Solution::precalculate(int order, int mask)
   Node* node;
   Quad2D* quad = quads[cur_quad];
   quad->set_mode(mode);
-  check_order(quad, order);
+  H2D_CHECK_ORDER(quad, order);
   int np = quad->get_num_points(order);
 
   if (type == SLN)
   {
     // if we are required to transform vectors, we must precalculate both their components
-    const int GRAD = FN_DX_0 | FN_DY_0;
-    const int SECOND = FN_DXX_0 | FN_DXY_0 | FN_DYY_0;
-    const int CURL = FN_DX | FN_DY; // sic
+    const int H2D_GRAD = FN_DX_0 | FN_DY_0;
+    const int H2D_SECOND = FN_DXX_0 | FN_DXY_0 | FN_DYY_0;
+    const int H2D_CURL = FN_DX | FN_DY; // sic
     if (transform)
     {
       if (num_components == 1)                                            // H1 space
       {
-        if ((mask & FN_DX_0)  || (mask & FN_DY_0))  mask |= GRAD;
-        if ((mask & FN_DXX_0)  || (mask & FN_DXY_0) || (mask & FN_DYY_0))  mask |= SECOND;
+        if ((mask & FN_DX_0)  || (mask & FN_DY_0))  mask |= H2D_GRAD;
+        if ((mask & FN_DXX_0)  || (mask & FN_DXY_0) || (mask & FN_DYY_0))  mask |= H2D_SECOND;
       }
       else if (space_type == 1)                                           // Hcurl space
         { if ((mask & FN_VAL_0) || (mask & FN_VAL_1)) mask |= FN_VAL;
-          if ((mask & FN_DX_1)  || (mask & FN_DY_0))  mask |= CURL; }
+          if ((mask & FN_DX_1)  || (mask & FN_DY_0))  mask |= H2D_CURL; }
       else                                                                // Hdiv space
         { if ((mask & FN_VAL_0) || (mask & FN_VAL_1)) mask |= FN_VAL; }
     }
@@ -935,10 +935,10 @@ void Solution::save(const char* filename, bool compress)
   if (compress)
   {
     fclose(f);
-    char cmdline[270];
-    sprintf(cmdline, "gzip > %s.gz", filename);
-    f = popen(cmdline, "w");
-    if (f == NULL) error("Could not create compressed stream (command line: %s).", cmdline);
+    std::stringstream cmdline;
+    cmdline << "gzip > " << filename << ".gz";
+    f = popen(cmdline.str().c_str(), "w");
+    if (f == NULL) error("Could not create compressed stream (command line: %s).", cmdline.str().c_str());
   }
 
   // write header
@@ -987,10 +987,10 @@ void Solution::load(const char* filename)
   if (compressed)
   {
     fclose(f);
-    char cmdline[270];
-    sprintf(cmdline, "gunzip < %s", filename);
-    f = popen(cmdline, "r");
-    if (f == NULL) error("Could not read from compressed stream (command line: %s).", cmdline);
+    std::stringstream cmdline;
+    cmdline << "gunzip < " << filename << ".gz";
+    f = popen(cmdline.str().c_str(), "r");
+    if (f == NULL) error("Could not read from compressed stream (command line: %s).", cmdline.str().c_str());
   }
 
   // load header

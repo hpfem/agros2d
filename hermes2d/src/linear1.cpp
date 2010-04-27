@@ -111,7 +111,7 @@ public:
 
   Quad2DLin()
   {
-    mode = MODE_TRIANGLE;
+    mode = H2D_MODE_TRIANGLE;
     max_order[0]  = max_order[1]  = 1;
     num_tables[0] = num_tables[1] = 2;
     tables = lin_tables;
@@ -643,9 +643,9 @@ void Linearizer::process_solution(MeshFunction* sln, int item, double eps, doubl
   nv = nt = ne = 0;
   del_slot = -1;
 
-  if (!item) error("'item' cannot be zero.");
+  if (!item) error("Parameter 'item' cannot be zero.");
   get_gv_a_b(item, ia, ib);
-  if (ib >= 6) error("Invalid 'item'.");
+  if (ib >= 6) error("Invalid value of parameter 'item'.");
 
   disp = (xdisp != NULL || ydisp != NULL);
   if (disp && (xdisp == NULL || ydisp == NULL))
@@ -724,7 +724,7 @@ void Linearizer::process_solution(MeshFunction* sln, int item, double eps, doubl
     sln->set_active_element(e);
     sln->set_quad_order(0, item);
     scalar* val = sln->get_values(ia, ib);
-    if (val == NULL) error("item not defined in the solution.");
+    if (val == NULL) error("Item not defined in the solution.");
 
     scalar *dx, *dy;
     if (disp)
@@ -865,9 +865,9 @@ void Linearizer::load_data(const char* filename)
     error("Error reading %s", filename);
 
   if (hdr.magic[0] != 'H' || hdr.magic[1] != '2' || hdr.magic[2] != 'D' || hdr.magic[3] != 'L')
-    error("%s is not a Hermes2D Linearizer file.", filename);
+    error("File %s is not a Hermes2D Linearizer file.", filename);
   if (hdr.ver > 1)
-    error("%s -- unsupported file version.", filename);
+    error("File %s -- unsupported file version.", filename);
 
   #define read_array(array, type, n, c, what) \
     if (fread(&n, sizeof(int), 1, f) != 1) \
@@ -888,7 +888,7 @@ void Linearizer::load_data(const char* filename)
 //// others ///////////////////////////////////////////////////////////////////////////////////
 
 void Linearizer::calc_vertices_aabb(double* min_x, double* max_x, double* min_y, double* max_y) const {
-  assert_msg(verts != NULL, "cannot calculate AABB from NULL vertices");
+  assert_msg(verts != NULL, "Cannot calculate AABB from NULL vertices");
   calc_aabb(&verts[0][0], &verts[0][1], sizeof(double3), nv, min_x, max_x, min_y, max_y);
 }
 

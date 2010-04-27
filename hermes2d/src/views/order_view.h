@@ -72,7 +72,7 @@ class HERMES2D_API OrderView : public View
 public:
   OrderView(const char* title = "OrderView", DEFAULT_WINDOW_POS) {}
   void show(Space* space)
-     { info("OrderView: Hermes2D compiled without OpenGL support, skipping visualization."); }
+     { verbose("OrderView: Hermes2D compiled without OpenGL support, skipping visualization."); }
   void load_data(const char* filename) {}
   void save_data(const char* filename) {}
   void save_numbered(const char* format, int number) {}

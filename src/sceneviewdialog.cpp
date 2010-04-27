@@ -58,6 +58,7 @@ void SceneViewDialog::load()
     chkShowContours->setChecked(m_sceneView->sceneViewSettings().showContours);
     chkShowVectors->setChecked(m_sceneView->sceneViewSettings().showVectors);
     chkShowSolutionMesh->setChecked(m_sceneView->sceneViewSettings().showSolutionMesh);
+    connect(chkShowVectors, SIGNAL(clicked()), this, SLOT(setControls()));
 
     // scalar field
     cmbScalarFieldVariable->setCurrentIndex(cmbScalarFieldVariable->findData(m_sceneView->sceneViewSettings().scalarPhysicFieldVariable));
@@ -117,20 +118,11 @@ void SceneViewDialog::createControls()
     chkShowGeometry = new QCheckBox(tr("Geometry"));
     chkShowInitialMesh = new QCheckBox(tr("Initial mesh"));
 
-    QVBoxLayout *layoutShow = new QVBoxLayout();
-    layoutShow->addWidget(chkShowGrid);
-    layoutShow->addWidget(chkShowGeometry);
-    layoutShow->addWidget(chkShowInitialMesh);
-    layoutShow->addStretch();
-
-    QGroupBox *grpShow = new QGroupBox(tr("Show"));
-    grpShow->setLayout(layoutShow);
-
     // postprocessor mode
     radPostprocessorNone = new QRadioButton(tr("None"), this);
     radPostprocessorOrder = new QRadioButton(tr("Polynomial order"), this);
     radPostprocessorScalarField = new QRadioButton(tr("Scalar view"), this);
-    radPostprocessorScalarField3D = new QRadioButton(tr("Scalar view 3D"), this);
+    radPostprocessorScalarField3D = new QRadioButton(tr("Scalar view"), this);
     radPostprocessorScalarField3DSolid = new QRadioButton("Scalar view solid", this);
     radPostprocessorModel = new QRadioButton("Model", this);
 
@@ -144,29 +136,41 @@ void SceneViewDialog::createControls()
     connect(butPostprocessorGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(buttonClicked(QAbstractButton*)));
 
     // postprocessor 2d
-    QVBoxLayout *layoutPostprocessorMode = new QVBoxLayout();
-    layoutPostprocessorMode->addWidget(radPostprocessorNone);
-    layoutPostprocessorMode->addWidget(radPostprocessorOrder);
-    layoutPostprocessorMode->addWidget(radPostprocessorScalarField);
-    layoutPostprocessorMode->addWidget(radPostprocessorScalarField3D);
-    layoutPostprocessorMode->addWidget(radPostprocessorScalarField3DSolid);
-    layoutPostprocessorMode->addWidget(radPostprocessorModel);
+    QVBoxLayout *layoutPostprocessorMode2D = new QVBoxLayout();
+    layoutPostprocessorMode2D->addWidget(new QLabel(tr("2D mode")));
+    layoutPostprocessorMode2D->addWidget(radPostprocessorNone);
+    layoutPostprocessorMode2D->addWidget(radPostprocessorOrder);
+    layoutPostprocessorMode2D->addWidget(radPostprocessorScalarField);
+    layoutPostprocessorMode2D->addStretch();
+
+    QVBoxLayout *layoutPostprocessorMode3D = new QVBoxLayout();
+    layoutPostprocessorMode3D->addWidget(new QLabel(tr("3D mode")));
+    layoutPostprocessorMode3D->addWidget(radPostprocessorScalarField3D);
+    layoutPostprocessorMode3D->addWidget(radPostprocessorScalarField3DSolid);
+    layoutPostprocessorMode3D->addWidget(radPostprocessorModel);
+    layoutPostprocessorMode3D->addStretch();
 
     // postprocessor show
     chkShowContours = new QCheckBox(tr("Contours"));
     chkShowVectors = new QCheckBox(tr("Vectors"));
     chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
 
-    QVBoxLayout *layoutPostprocessorShow = new QVBoxLayout();
-    layoutPostprocessorShow->addWidget(chkShowContours);
-    layoutPostprocessorShow->addWidget(chkShowVectors);
-    layoutPostprocessorShow->addWidget(chkShowSolutionMesh);
-    layoutPostprocessorShow->addStretch();
+    QVBoxLayout *layoutShow = new QVBoxLayout();
+    layoutShow->addWidget(chkShowGrid);
+    layoutShow->addWidget(chkShowGeometry);
+    layoutShow->addWidget(chkShowInitialMesh);
+    layoutShow->addWidget(chkShowSolutionMesh);
+    layoutShow->addWidget(chkShowContours);
+    layoutShow->addWidget(chkShowVectors);
+    layoutShow->addStretch();
+
+    QGroupBox *grpShow = new QGroupBox(tr("Show"));
+    grpShow->setLayout(layoutShow);
 
     // postprocessor
     QHBoxLayout *layoutPostprocessor = new QHBoxLayout();
-    layoutPostprocessor->addLayout(layoutPostprocessorMode);
-    layoutPostprocessor->addLayout(layoutPostprocessorShow);
+    layoutPostprocessor->addLayout(layoutPostprocessorMode2D);
+    layoutPostprocessor->addLayout(layoutPostprocessorMode3D);
 
     QGroupBox *grpPostprocessor = new QGroupBox(tr("Postprocessor"));
     grpPostprocessor->setLayout(layoutPostprocessor);
@@ -248,24 +252,7 @@ void SceneViewDialog::createControls()
     layout->addStretch();
     layout->addWidget(buttonBox);
 
-    // enable controls
-    chkShowInitialMesh->setEnabled(Util::scene()->sceneSolution()->isMeshed());
-    chkShowSolutionMesh->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    chkShowContours->setEnabled(Util::scene()->sceneSolution()->isSolved() && (cmbScalarFieldVariable->count() > 0));
-    chkShowVectors->setEnabled(Util::scene()->sceneSolution()->isSolved() && (cmbVectorFieldVariable->count() > 0));
-    cmbScalarFieldVariable->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    cmbScalarFieldVariableComp->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    cmbVectorFieldVariable->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    radPostprocessorNone->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    radPostprocessorScalarField->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    radPostprocessorOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    radPostprocessorScalarField3D->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    radPostprocessorScalarField3DSolid->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    radPostprocessorModel->setEnabled(Util::scene()->sceneSolution()->isMeshed());
-    chkScalarFieldRangeAuto->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    txtScalarFieldRangeMin->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    txtScalarFieldRangeMax->setEnabled(Util::scene()->sceneSolution()->isSolved());
-    cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    setControls();
 
     setLayout(layout);
 }
@@ -299,22 +286,85 @@ void SceneViewDialog::doScalarFieldRangeAuto(int state)
     txtScalarFieldRangeMax->setEnabled(!chkScalarFieldRangeAuto->isChecked());       
 }
 
+void SceneViewDialog::setControls()
+{
+    // disable controls
+    chkShowGeometry->setEnabled(true);
+    chkShowGrid->setEnabled(true);
+
+    chkShowInitialMesh->setEnabled(false);
+    chkShowSolutionMesh->setEnabled(false);
+    chkShowContours->setEnabled(false);
+    chkShowVectors->setEnabled(false);
+
+    radPostprocessorNone->setEnabled(false);
+    radPostprocessorScalarField->setEnabled(false);
+    radPostprocessorOrder->setEnabled(false);
+    radPostprocessorScalarField3D->setEnabled(false);
+    radPostprocessorScalarField3DSolid->setEnabled(false);
+    radPostprocessorModel->setEnabled(false);
+
+    cmbScalarFieldVariable->setEnabled(false);
+    cmbScalarFieldVariableComp->setEnabled(false);
+    cmbVectorFieldVariable->setEnabled(false);
+
+    chkScalarFieldRangeAuto->setEnabled(false);
+    txtScalarFieldRangeMin->setEnabled(false);
+    txtScalarFieldRangeMax->setEnabled(false);
+    cmbTimeStep->setEnabled(false);
+
+    if (Util::scene()->sceneSolution()->isMeshed() && !Util::scene()->sceneSolution()->isSolved())
+    {
+        chkShowInitialMesh->setEnabled(true);
+    }
+
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        radPostprocessorNone->setEnabled(true);
+        radPostprocessorScalarField->setEnabled(true);
+        radPostprocessorOrder->setEnabled(true);
+        radPostprocessorScalarField3D->setEnabled(true);
+        radPostprocessorScalarField3DSolid->setEnabled(true);
+        radPostprocessorModel->setEnabled(true);
+
+        cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
+
+        if (butPostprocessorGroup->checkedButton() == radPostprocessorScalarField3D ||
+            butPostprocessorGroup->checkedButton() == radPostprocessorScalarField3DSolid ||
+            butPostprocessorGroup->checkedButton() == radPostprocessorModel);
+        {
+            chkShowGeometry->setEnabled(false);
+            chkShowGrid->setEnabled(false);
+        }
+
+        if (butPostprocessorGroup->checkedButton() == radPostprocessorScalarField ||
+            butPostprocessorGroup->checkedButton() == radPostprocessorScalarField3D ||
+            butPostprocessorGroup->checkedButton() == radPostprocessorScalarField3DSolid)
+        {
+            cmbScalarFieldVariable->setEnabled(true);
+            cmbScalarFieldVariableComp->setEnabled(true);
+
+            chkScalarFieldRangeAuto->setEnabled(true);
+            doScalarFieldRangeAuto(-1);
+        }
+
+        if (butPostprocessorGroup->checkedButton() == radPostprocessorNone ||
+            butPostprocessorGroup->checkedButton() == radPostprocessorOrder ||
+            butPostprocessorGroup->checkedButton() == radPostprocessorScalarField)
+        {
+            chkShowInitialMesh->setEnabled(true);
+            chkShowSolutionMesh->setEnabled(true);
+            chkShowContours->setEnabled(cmbScalarFieldVariable->count() > 0);
+            chkShowVectors->setEnabled(cmbVectorFieldVariable->count() > 0);
+
+            cmbVectorFieldVariable->setEnabled(chkShowVectors->isChecked());
+        }
+    }
+}
+
 void SceneViewDialog::buttonClicked(QAbstractButton *button)
 {
-    if (!Util::scene()->sceneSolution()->isSolved())
-        return;
-
-    bool is3D = (button == radPostprocessorScalarField3D ||
-                 button == radPostprocessorScalarField3DSolid ||
-                 button == radPostprocessorModel);
-    {
-        chkShowGrid->setEnabled(!is3D);
-        chkShowInitialMesh->setEnabled(!is3D);
-        chkShowSolutionMesh->setEnabled(!is3D);
-        chkShowGeometry->setEnabled(!is3D);
-        chkShowContours->setEnabled(!is3D);
-        chkShowVectors->setEnabled(!is3D);
-    }
+    setControls();
 }
 
 void SceneViewDialog::doAccept()

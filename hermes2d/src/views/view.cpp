@@ -73,7 +73,7 @@ View::~View()
 {
   if (output_id >= 0)
   {
-    debug_log("view is being destroyed; closing view \"%s\", window #%d", title.c_str(), output_id);
+    debug_log("View is being destroyed; closing view \"%s\", window #%d", title.c_str(), output_id);
     close();
   }
 }
@@ -109,7 +109,7 @@ void View::wait(ViewWaitEvent wait_event, const char* text) {
     switch(wait_event) {
       case H2DV_WAIT_CLOSE: str << H2DV_WAIT_CLOSE_MSG; break;
       case H2DV_WAIT_KEYPRESS: str << H2DV_WAIT_KEYPRESS_MSG; break;
-      default: error("unknown wait event"); break;
+      default: error("Unknown wait event"); break;
     }
   }
   str << " >>" << std::endl;
@@ -118,7 +118,7 @@ void View::wait(ViewWaitEvent wait_event, const char* text) {
   switch(wait_event) {
     case H2DV_WAIT_CLOSE: wait_for_all_views_close(str.str().c_str()); break;
     case H2DV_WAIT_KEYPRESS: wait_for_any_key(str.str().c_str()); break;
-    default: error("unknown wait event"); break;
+    default: error("Unknown wait event"); break;
   }
 }
 
@@ -167,7 +167,7 @@ void View::on_create(int output_id)
 void View::on_close()
 {
   view_sync.enter();
-  debug_log("closed view \"%s\", window #%d", title.c_str(), output_id);
+  debug_log("Closed view \"%s\", window #%d", title.c_str(), output_id);
   output_id = -1;
   view_sync.leave();
 }
@@ -445,9 +445,9 @@ void View::on_key_down(unsigned char key, int x, int y)
         case H2DV_PT_HUESCALE: pal_type = H2DV_PT_GRAYSCALE; break;
         case H2DV_PT_GRAYSCALE: pal_type = H2DV_PT_INVGRAYSCALE; break;
         case H2DV_PT_INVGRAYSCALE: pal_type = H2DV_PT_DEFAULT; break;
-        default: error("invalid palette type");
+        default: error("Invalid palette type");
       }
-      debug_log("switched to a palette type %d", (int)pal_type);
+      debug_log("Switched to a palette type %d in view \"%s\"", (int)pal_type, title.c_str());
       create_gl_palette();
       refresh();
       break;
@@ -476,7 +476,7 @@ void View::on_special_key(int key, int x, int y)
 
 void View::wait_for_keypress(const char* text)
 {
-  warn("function View::wait_for_keypress deprecated: use View::wait instead");
+  warn("Function View::wait_for_keypress deprecated: use View::wait instead");
   View::wait(H2DV_WAIT_KEYPRESS, text);
 }
 
@@ -607,7 +607,7 @@ void View::set_palette_filter(bool linear)
 
 void View::set_palette(ViewPaletteType type)
 {
-  assert_msg(type >= H2DV_PT_DEFAULT && type < H2DV_PT_MAX_ID, "unknown palette type %d", (int)type);
+  assert_msg(type >= H2DV_PT_DEFAULT && type < H2DV_PT_MAX_ID, "Unknown palette type %d", (int)type);
 
   view_sync.enter();
   pal_type = type;
@@ -795,7 +795,7 @@ void View::save_screenshot_internal(const char *file_name)
   glReadPixels(0, 0, output_width, output_height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, pixels);
 #else
   glReadPixels(0, 0, output_width, output_height, GL_RGBA, GL_UNSIGNED_BYTE, pixels); // FIXME!!!
-  warn("dont have GL_BGRA_EXT format");
+  warn("BGRA format not supported. Saved image will have inverted colors");
 #endif
 
   // opening file for binary writing
@@ -827,15 +827,15 @@ void View::save_screenshot_internal(const char *file_name)
   info_header.clr_important = 0;
 
   if (fwrite(&info_header, sizeof(info_header), 1, file) != 1)
-    error("Error writing bitmap header\n");
+    error("Error writing bitmap header");
 
   // write image pixels
   if (fwrite((GLubyte*) pixels, 1, info_header.size_image, file) != info_header.size_image)
-    error("Error writing pixel data\n");
+    error("Error writing pixel data");
 
   fclose(file);
   free((void*) pixels);
-  info("Saved %s", file_name);
+  info("Image \"%s\" saved.", file_name);
 }
 
 

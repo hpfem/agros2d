@@ -40,9 +40,9 @@ protected:
   int  size, nitems;
   bool append_only;
 
-  static const int PAGE_BITS = 10;
-  static const int PAGE_SIZE = 1 << PAGE_BITS;
-  static const int PAGE_MASK = PAGE_SIZE-1;
+  static const int H2D_PAGE_BITS = 10;
+  static const int H2D_PAGE_SIZE = 1 << H2D_PAGE_BITS;
+  static const int H2D_PAGE_MASK = H2D_PAGE_SIZE-1;
 
 public:
 
@@ -69,8 +69,8 @@ public:
 
     for (unsigned i = 0; i < pages.size(); i++)
     {
-      T* new_page = new T[PAGE_SIZE];
-      memcpy(new_page, pages[i], sizeof(T) * PAGE_SIZE);
+      T* new_page = new T[H2D_PAGE_SIZE];
+      memcpy(new_page, pages[i], sizeof(T) * H2D_PAGE_SIZE);
       pages[i] = new_page;
     }
   }
@@ -104,12 +104,12 @@ public:
     T* item;
     if (unused.empty() || append_only)
     {
-      if (!(size & PAGE_MASK))
+      if (!(size & H2D_PAGE_MASK))
       {
-        T* new_page = new T[PAGE_SIZE];
+        T* new_page = new T[H2D_PAGE_SIZE];
         pages.push_back(new_page);
       }
-      item = pages[size >> PAGE_BITS] + (size & PAGE_MASK);
+      item = pages[size >> H2D_PAGE_BITS] + (size & H2D_PAGE_MASK);
       item->id = size++;
       item->used = 1;
     }
@@ -117,7 +117,7 @@ public:
     {
       int id = unused.back();
       unused.pop_back();
-      item = pages[id >> PAGE_BITS] + (id & PAGE_MASK);
+      item = pages[id >> H2D_PAGE_BITS] + (id & H2D_PAGE_MASK);
       item->used = 1;
     }
     nitems++;
@@ -131,7 +131,7 @@ public:
   void remove(int id)
   {
     assert(id >= 0 && id < size);
-    T* item = pages[id >> PAGE_BITS] + (id & PAGE_MASK);
+    T* item = pages[id >> H2D_PAGE_BITS] + (id & H2D_PAGE_MASK);
     assert(item->used);
     item->used = 0;
     unused.push_back(id);
@@ -146,12 +146,12 @@ public:
     free();
     while (size > 0)
     {
-      T* new_page = new T[PAGE_SIZE];
-      memset(new_page, 0, sizeof(T) * PAGE_SIZE);
+      T* new_page = new T[H2D_PAGE_SIZE];
+      memset(new_page, 0, sizeof(T) * H2D_PAGE_SIZE);
       pages.push_back(new_page);
-      size -= PAGE_SIZE;
+      size -= H2D_PAGE_SIZE;
     }
-    this->size = pages.size() * PAGE_SIZE;
+    this->size = pages.size() * H2D_PAGE_SIZE;
   }
 
   /// Counts the items in the array and registers unused items.
@@ -171,12 +171,12 @@ public:
   /// This is a special-purpose function used to create empty element slots.
   void skip_slot()
   {
-    if (!(size & PAGE_MASK))
+    if (!(size & H2D_PAGE_MASK))
     {
-      T* new_page = new T[PAGE_SIZE];
+      T* new_page = new T[H2D_PAGE_SIZE];
       pages.push_back(new_page);
     }
-    T* item = pages[size >> PAGE_BITS] + (size & PAGE_MASK);
+    T* item = pages[size >> H2D_PAGE_BITS] + (size & H2D_PAGE_MASK);
     item->id = size++;
     item->used = 0;
     nitems++;
@@ -185,7 +185,7 @@ public:
   int get_size() const { return size; }
   int get_num_items() const { return nitems; }
 
-  T& get_item(int id) const { return pages[id >> PAGE_BITS][id & PAGE_MASK]; }
+  T& get_item(int id) const { return pages[id >> H2D_PAGE_BITS][id & H2D_PAGE_MASK]; }
   T& operator[] (int id) const { return get_item(id); }
 
 };

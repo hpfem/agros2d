@@ -16,11 +16,11 @@ struct AssocKV
 };
 
 
-const int default_assoc_hash_size = 32;
+const int H2D_DEFAULT_ASSOC_HASH_SIZE = 32;
 
 
 template<typename KeyType>
-void** assoc_ins(void** array, KeyType key, int hash_size = default_assoc_hash_size)
+void** assoc_ins(void** array, KeyType key, int hash_size = H2D_DEFAULT_ASSOC_HASH_SIZE)
 {
   typedef AssocKV<KeyType> KV;
   KV** ht = (KV**) *array;
@@ -90,7 +90,7 @@ void** assoc_ins(void** array, KeyType key, int hash_size = default_assoc_hash_s
 
 
 template<typename KeyType>
-void assoc_forall(void** array, void (*fn)(KeyType key, void* val), int hash_size = default_assoc_hash_size)
+void assoc_forall(void** array, void (*fn)(KeyType key, void* val), int hash_size = H2D_DEFAULT_ASSOC_HASH_SIZE)
 {
   typedef AssocKV<KeyType> KV;
   KV** ht = (KV**) *array;
@@ -107,7 +107,7 @@ void assoc_forall(void** array, void (*fn)(KeyType key, void* val), int hash_siz
 
 
 template<typename KeyType>
-void assoc_free(void** array, int hash_size = default_assoc_hash_size)
+void assoc_free(void** array, int hash_size = H2D_DEFAULT_ASSOC_HASH_SIZE)
 {
   typedef AssocKV<KeyType> KV;
   KV** ht = (KV**) *array;
@@ -123,7 +123,7 @@ void assoc_free(void** array, int hash_size = default_assoc_hash_size)
 
 
 template<typename KeyType>
-void assoc_dump(void** array, int hash_size = default_assoc_hash_size)
+void assoc_dump(void** array, int hash_size = H2D_DEFAULT_ASSOC_HASH_SIZE)
 {
   typedef AssocKV<KeyType> KV;
   KV** ht = (KV**) *array;

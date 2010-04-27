@@ -117,7 +117,7 @@ void HcurlOrthoHP::calc_ortho_base()
       for (j = 0; j < nv; j++)
         idx[n++] = shapeset.get_edge_index(j, 0, i);
 
-      ii = m ? make_quad_order(i, i) : i;
+      ii = m ? H2D_MAKE_QUAD_ORDER(i, i) : i;
       nb = shapeset.get_num_bubbles(ii);
       int* bub = shapeset.get_bubble_indices(ii);
       for (j = 0; j < nb; j++)
@@ -469,7 +469,7 @@ void HcurlOrthoHP::get_optimal_refinement(Element* e, int order, Solution* rsln,
   int i, j, k, n = 0;
   const int maxcand = 300;
 
-  order = std::max(get_h_order(order), get_v_order(order));
+  order = std::max(H2D_GET_H_ORDER(order), H2D_GET_V_ORDER(order));
   bool tri = e->is_triangle();
 
   // calculate maximal order of elements
@@ -687,8 +687,8 @@ bool HcurlOrthoHP::adapt(double thr, int strat, int adapt_type, bool iso_only, i
     if (adapt_type == 2)
     {
       split = -1;
-      p[0] = std::min(9, get_h_order(current) + 1);
-      if (get_h_order(current) < p[0]) successfully_refined++;
+      p[0] = std::min(9, H2D_GET_H_ORDER(current) + 1);
+      if (H2D_GET_H_ORDER(current) < p[0]) successfully_refined++;
     }
     // h-adaptivity
     else if ((adapt_type == 1 && iso_only) || (adapt_type == 1 && e->is_triangle()))

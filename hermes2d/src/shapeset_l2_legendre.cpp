@@ -4000,7 +4000,7 @@ int* leg_quad_edge_indices[4] =
 };
 
 
-#define oo make_quad_order
+#define oo H2D_MAKE_QUAD_ORDER
 #define XX(a,b) oo(a,b), oo(a,b)
 
 int leg_quad_index_to_order[] = {
@@ -5619,5 +5619,5 @@ L2ShapesetLegendre::L2ShapesetLegendre()
 
   comb_table = NULL;
 
-  set_mode(MODE_TRIANGLE);
+  set_mode(H2D_MODE_TRIANGLE);
 }

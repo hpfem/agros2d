@@ -23,8 +23,8 @@ namespace RefinementSelectors {
 
   bool H1OnlyP::select_refinement(Element* element, int quad_order, Solution* rsln, ElementToRefine& refinement) {
     refinement.split = -1;
-    refinement.p[0] = refinement.q[0] = std::min(H2DRS_MAX_ORDER, get_h_order(quad_order) + 1);
-    if (get_h_order(quad_order) < refinement.p[0])
+    refinement.p[0] = refinement.q[0] = std::min(H2DRS_MAX_ORDER, H2D_GET_H_ORDER(quad_order) + 1);
+    if (H2D_GET_H_ORDER(quad_order) < refinement.p[0])
       return true;
     else
       return false;

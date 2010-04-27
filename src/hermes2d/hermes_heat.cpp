@@ -133,7 +133,7 @@ void callbackHeatWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
 {
     wf->add_biform(0, 0, callback(heat_bilinear_form));
     if (analysisType == AnalysisType_Transient)
-        wf->add_liform(0, callback(heat_linear_form), ANY, 1, slnArray->at(0));
+        wf->add_liform(0, callback(heat_linear_form), H2D_ANY, 1, slnArray->at(0));
     else
         wf->add_liform(0, callback(heat_linear_form));
     wf->add_biform_surf(0, 0, callback(heat_bilinear_form_surf));

@@ -261,11 +261,11 @@ public:
   unsigned col_storage:1;
 
 protected:
-  static const int PAGE_SIZE = 62;
+  static const int H2D_PAGE_SIZE = 62;
 
   struct Page {
     int count;
-    int idx[PAGE_SIZE];
+    int idx[H2D_PAGE_SIZE];
     Page *next;
   };
 

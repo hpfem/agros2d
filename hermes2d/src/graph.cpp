@@ -119,7 +119,7 @@ void SimpleGraph::save(const char* filename)
 
   fclose(f);
 
-  debug_log("Graph saved to file '%s'.", filename);
+  verbose("Graph saved to file '%s'.", filename);
 }
 
 
@@ -182,7 +182,7 @@ void MatlabGraph::save(const char* filename)
 
   fclose(f);
 
-  debug_log("Graph saved. Run the file '%s' in Matlab.", filename);
+  verbose("Graph saved. Run the file '%s' in Matlab.", filename);
 }
 
 
@@ -294,5 +294,5 @@ void GnuplotGraph::save(const char* filename)
   fprintf(f, "set terminal x11\n");
   fclose(f);
 
-  debug_log("Graph saved. Process the file '%s' with gnuplot.", filename);
+  verbose("Graph saved. Process the file '%s' with gnuplot.", filename);
 }

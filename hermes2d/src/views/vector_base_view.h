@@ -64,7 +64,7 @@ public:
   VectorBaseView(const char* title = "BaseView", DEFAULT_WINDOW_POS) {}
   virtual ~VectorBaseView() {}
   void show(Space* space)
-     { info("VectorBaseView: Hermes2D compiled without OpenGL support, skipping visualization."); }
+     { verbose("VectorBaseView: Hermes2D compiled without OpenGL support, skipping visualization."); }
 };
 
 #endif // NOGLUT

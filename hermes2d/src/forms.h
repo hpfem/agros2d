@@ -34,25 +34,33 @@ class Ord
 {
 public:
 
-	Ord() { order = 0; }
-	Ord(int o) { order = o; }
+  Ord(): order(0) {}
+  explicit Ord(int o): order(o) {}
+  Ord(double d): order(0) {}
 
-	int get_order() const { return order; }
+  int get_order() const { return order; }
   int get_max_order() const {return 30;}
 
-	Ord operator+(const Ord &o) { return Ord(std::max(this->order, o.order)); }
-	Ord operator-(const Ord &o) { return Ord(std::max(this->order, o.order)); }
-	Ord operator-(double d) { return *this; }
-	Ord operator*(const Ord &o) { return Ord(this->order + o.order); }
+  Ord operator+(const Ord &o) { return Ord(std::max(this->order, o.order)); }
+  Ord operator+(double d) { return *this; }
+  Ord operator-(const Ord &o) { return Ord(std::max(this->order, o.order)); }
+  Ord operator-(double d) { return *this; }
+  Ord operator*(const Ord &o) { return Ord(this->order + o.order); }
+  Ord operator*(double d) { return *this; }
   Ord operator/(const Ord &o) { return Ord(this->get_max_order()); }
+  Ord operator/(double d) { return *this; }
 
-	Ord operator/(double d) { return *this; }
+  Ord operator+=(const Ord &o) { this->order = std::max(this->order, o.order); return *this; }
 
-	Ord operator+=(const Ord &o) { this->order = std::max(this->order, o.order); return *this; }
-	bool operator<(double d) { return true; }
+  Ord operator+=(const double &d) { return *this; }
+  Ord operator-=(const double &d) { return *this; }
+  Ord operator*=(const double &d) { return *this; }
+  Ord operator/=(const double &d) { return *this; }
+
+  bool operator<(double d) { return true; }
 
 protected:
-	int order;
+  int order;
 
 };
 
@@ -80,30 +88,30 @@ template<typename T>
 class Func
 {
 public:
-	int nc;					// number of components
-	T *val;					// function values. If orders differ for a diffrent
+  int nc;					// number of components
+  T *val;					// function values. If orders differ for a diffrent
                                                 // direction, this returns max(h_order, v_order).
-	T *dx, *dy; 				// derivatives
+  T *dx, *dy; 					// derivatives
 #ifdef H2D_SECOND_DERIVATIVES_ENABLED
-        T *laplace;                             // must be enabled by defining H2D_SECOND_DERIVATIVES_ENABLED
+  T *laplace;                                   // must be enabled by defining H2D_SECOND_DERIVATIVES_ENABLED
                                                 // in common.h. Default is NOT ENABLED.
 #endif
-	T *val0, *val1;				// components of function values
-	T *dx0, *dx1;				// components of derivatives
-	T *dy0, *dy1;
+  T *val0, *val1;				// components of function values
+  T *dx0, *dx1;					// components of derivatives
+  T *dy0, *dy1;
 
-	T *curl;         		// components of curl
+  T *curl;					 // components of curl
 
-	Func()
+  Func()
   {
-		val = val0 = val1 = NULL;
-		dx = dx0 = dx1 = NULL;
-		dy = dy0 = dy1 = NULL;
-		curl = NULL;
+    val = val0 = val1 = NULL;
+    dx = dx0 = dx1 = NULL;
+    dy = dy0 = dy1 = NULL;
+    curl = NULL;
 #ifdef H2D_SECOND_DERIVATIVES_ENABLED
-                laplace = NULL;
+    laplace = NULL;
 #endif
-	}
+  }
 
   void free_ord()  {  delete val;  }
   void free_fn()
@@ -133,17 +141,17 @@ public:
   Element *element; // active element
 
   T *x, *y;				 // coordinates [in physical domain]
-	T *nx, *ny;			 // normals [in physical domain]
-	T *tx, *ty;			 // tangents [in physical domain]
+  T *nx, *ny;				 // normals [in physical domain]
+  T *tx, *ty;				 // tangents [in physical domain]
 
-	Geom()
+  Geom()
   {
     marker = 0;
     id = 0;
-		x = y = NULL;
-		nx = ny = NULL;
-		tx = ty = NULL;
-	}
+    x = y = NULL;
+    nx = ny = NULL;
+    tx = ty = NULL;
+  }
 
   void free()
   {
@@ -178,8 +186,8 @@ public:
 	Func<T>** fn;				// array of pointers to functions
 
 	ExtData() {
-		nf = 0;
-		fn = NULL;
+          nf = 0;
+          fn = NULL;
 	}
 
   void free()

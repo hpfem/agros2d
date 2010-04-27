@@ -75,17 +75,17 @@ public:
   typedef Ord (*resform_ord_t)(int n, double *wt, Func<Ord> *u[], Func<Ord> *vi, Geom<Ord> *e, ExtData<Ord> *);
 
   // linear case
-  void add_biform(int i, int j, biform_val_t fn, biform_ord_t ord, SymFlag sym = UNSYM, int area = ANY, int nx = 0, ...);
-  void add_biform_surf(int i, int j, biform_val_t fn, biform_ord_t ord, int area = ANY, int nx = 0, ...);
-  void add_liform(int i, liform_val_t fn, liform_ord_t ord, int area = ANY, int nx = 0, ...);
-  void add_liform_surf(int i, liform_val_t fn, liform_ord_t ord, int area = ANY, int nx = 0, ...);
-  void add_liform(int i, liform_val_extended_t fn, liform_ord_extended_t ord, int area = ANY, int nx = 0, ...);
+  void add_biform(int i, int j, biform_val_t fn, biform_ord_t ord, SymFlag sym = UNSYM, int area = H2D_ANY, int nx = 0, ...);
+  void add_biform_surf(int i, int j, biform_val_t fn, biform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
+  void add_liform(int i, liform_val_t fn, liform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
+  void add_liform_surf(int i, liform_val_t fn, liform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
+  void add_liform(int i, liform_val_extended_t fn, liform_ord_extended_t ord, int area = H2D_ANY, int nx = 0, ...);
 
   // nonlinear case
-  void add_jacform(int i, int j, jacform_val_t fn, jacform_ord_t ord, SymFlag sym = UNSYM, int area = ANY, int nx = 0, ...);
-  void add_jacform_surf(int i, int j, jacform_val_t fn, jacform_ord_t ord, int area = ANY, int nx = 0, ...);
-  void add_resform(int i, resform_val_t fn, resform_ord_t ord, int area = ANY, int nx = 0, ...);
-  void add_resform_surf(int i, resform_val_t fn, resform_ord_t ord, int area = ANY, int nx = 0, ...);
+  void add_jacform(int i, int j, jacform_val_t fn, jacform_ord_t ord, SymFlag sym = UNSYM, int area = H2D_ANY, int nx = 0, ...);
+  void add_jacform_surf(int i, int j, jacform_val_t fn, jacform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
+  void add_resform(int i, resform_val_t fn, resform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
+  void add_resform_surf(int i, resform_val_t fn, resform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
 
   void set_ext_fns(void* fn, int nx, ...);
 

@@ -107,13 +107,13 @@ void L2OrthoHP::calc_ortho_base()
       for (j = 0; j < nv; j++)
         idx[n++] = shapeset.get_edge_index(j, 0, i);
 
-      ii = m ? make_quad_order(i, i) : i;
+      ii = m ? H2D_MAKE_QUAD_ORDER(i, i) : i;
       nb = shapeset.get_num_bubbles(ii);
       int* bub = shapeset.get_bubble_indices(ii);
       for (j = 0; j < nb; j++)
       {
         o = shapeset.get_order(bub[j]);
-        if (get_h_order(o) == i || get_v_order(o) == i)
+        if (H2D_GET_H_ORDER(o) == i || H2D_GET_V_ORDER(o) == i)
           idx[n++] = bub[j];
       }
       basecnt[m][i] = n;
@@ -361,7 +361,7 @@ void L2OrthoHP::get_optimal_refinement(Element* e, int order, Solution* rsln, in
   int i, j, k, n = 0;
   const int maxcand = 300;
 
-  order = std::max(get_h_order(order), get_v_order(order));
+  order = std::max(H2D_GET_H_ORDER(order), H2D_GET_V_ORDER(order));
   bool tri = e->is_triangle();
 
   // calculate maximal order of elements

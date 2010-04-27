@@ -66,7 +66,7 @@ enum
 ///         set_element_order(). You can also set the same order for all elements using
 ///         set_uniform_order(). Quadrilateral elements can have different orders in the vertical
 ///         and horizontal directions. It is therefore necessary to form the order using the macro
-///         make_quad_order() when calling the aforementioned functions.
+///         H2D_MAKE_QUAD_ORDER() when calling the aforementioned functions.
 ///
 ///    <li> It builds and enumerates the basis functions. After all element orders have been set,
 ///         you must call the function assign_dofs(). This function assigns the DOF (degree-of-
@@ -118,7 +118,7 @@ public:
   /// Returns element polynomial order.
   int  get_element_order(int id) const;
   /// Sets the same polynomial order for all elements in the mesh.
-  void set_uniform_order(int order, int marker = ANY);
+  void set_uniform_order(int order, int marker = H2D_ANY);
   /// Sets the order automatically assigned to all newly created elements.
   /// (The order of these is normally undefined and has to be set explicitly.)
   void set_default_order(int tri_order, int quad_order = 0);
@@ -211,7 +211,7 @@ protected:
     int bdof, n;
   };
 
-public: //DEBUG
+public:
   NodeData* ndata;    ///< node data table
   int nsize, ndata_allocated; ///< number of items in ndata, allocated space
   ElementData* edata; ///< element data table
@@ -229,7 +229,7 @@ protected: //DEBUG
   /// enough to contain all node and element id's, and to reallocate them if not.
   virtual void resize_tables();
 
-  void check_order(int order);
+  void H2D_CHECK_ORDER(int order);
   void copy_orders_recurrent(Element* e, int order);
 
   virtual void assign_vertex_dofs() = 0;

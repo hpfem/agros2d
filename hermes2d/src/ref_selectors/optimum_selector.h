@@ -85,7 +85,7 @@ namespace RefinementSelectors {
       void reset(); ///< Resets permutator to the start order.
       int get_order_h() const { return order_h; }; ///< Returns horizontal order.
       int get_order_v() const { return order_v; }; ///< Returns vertical order.
-      int get_quad_order() const { return make_quad_order(order_h, order_v); }; ///< Returns quad order.
+      int get_quad_order() const { return H2D_MAKE_QUAD_ORDER(order_h, order_v); }; ///< Returns quad order.
     };
 
     bool iso_only; ///< True if ANISO-candidates are not allowed.

@@ -138,22 +138,22 @@ void callbackFlowSpace(QList<H1Space *> *space)
 
 void callbackFlowWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
 {
-    wf->add_biform(0, 0, callback(bilinear_form_sym_0_0_1_1), SYM);
+    wf->add_biform(0, 0, callback(bilinear_form_sym_0_0_1_1), SYM, H2D_ANY);
     if (analysisType == AnalysisType_Transient)
-        wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), UNSYM, ANY, 2, slnArray->at(0), slnArray->at(1));
+        wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), UNSYM, H2D_ANY, 2, slnArray->at(0), slnArray->at(1));
     else
         wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), UNSYM);
     wf->add_biform(1, 1, callback(bilinear_form_sym_0_0_1_1), SYM);
     if (analysisType == AnalysisType_Transient)
-        wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), UNSYM, ANY, 2, slnArray->at(0), slnArray->at(1));
+        wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), UNSYM, H2D_ANY, 2, slnArray->at(0), slnArray->at(1));
     else
         wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), UNSYM);
     wf->add_biform(0, 2, callback(bilinear_form_unsym_0_2), ANTISYM);
     wf->add_biform(1, 2, callback(bilinear_form_unsym_1_2), ANTISYM);
     if (analysisType == AnalysisType_Transient)
     {
-        wf->add_liform(0, callback(linear_form), ANY, 1, slnArray->at(0));
-        wf->add_liform(1, callback(linear_form), ANY, 1, slnArray->at(1));
+        wf->add_liform(0, callback(linear_form), H2D_ANY, 1, slnArray->at(0));
+        wf->add_liform(1, callback(linear_form), H2D_ANY, 1, slnArray->at(1));
     }
     else
     {

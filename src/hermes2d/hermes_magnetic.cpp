@@ -182,7 +182,7 @@ void callbackMagneticWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
     {
         wf->add_biform(0, 0, callback(magnetic_bilinear_form_real_real));
         if (analysisType == AnalysisType_Transient)
-            wf->add_liform(0, callback(magnetic_linear_form_real), ANY, 1, slnArray->at(0));
+            wf->add_liform(0, callback(magnetic_linear_form_real), H2D_ANY, 1, slnArray->at(0));
         else
             wf->add_liform(0, callback(magnetic_linear_form_real));
         wf->add_liform_surf(0, callback(magnetic_linear_form_surf_real));

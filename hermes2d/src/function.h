@@ -247,7 +247,7 @@ protected:
 
   void update_nodes_ptr()
   {
-    if (sub_idx > max_idx)
+    if (sub_idx > H2D_MAX_IDX)
       handle_overflow_idx();
     else {
       //debug_assert((sub_idx << (sizeof(Word_t) * 8)) == 0, "E index is larger than JudyLins can contain (Function::update_nodes_ptr)");
@@ -280,7 +280,7 @@ protected:
     cur_node = node;
   }
 
-  void check_order(Quad2D* quad, int order)
+  void H2D_CHECK_ORDER(Quad2D* quad, int order)
   {
     if (order < 0 || order >= quad->get_num_tables())
       error("Order out of range (%d, %d).", order, quad->get_num_tables());

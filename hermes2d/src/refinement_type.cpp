@@ -7,7 +7,7 @@ int get_refin_sons(const int refin_type) {
     case H2D_REFINEMENT_H: return 4; break;
     case H2D_REFINEMENT_ANISO_H:
     case H2D_REFINEMENT_ANISO_V: return 2; break;
-    default: error("invalid refinement type %d", (int)refin_type); return -1;
+    default: error("Invalid refinement type %d", (int)refin_type); return -1;
   }
 }
 

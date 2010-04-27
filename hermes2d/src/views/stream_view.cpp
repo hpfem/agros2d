@@ -449,7 +449,7 @@ void StreamView::add_streamline(double x, double y)
   streamlength[num_stream] = create_streamline(x, y, num_stream);
   num_stream++;
   refresh();
-  info("Time to create streamline: %g s", cpu_time.tick().last());
+  report_time("Time to create streamline: %g s", cpu_time.tick().last());
 }
 
 
@@ -602,7 +602,7 @@ void StreamView::on_left_mouse_down(int x, int y)
     streamlength[num_stream] = create_streamline(untransform_x(x), untransform_y(y), num_stream);
     num_stream++;
     refresh();
-    info("Time to create streamline: %g s", cpu_time.tick().last());
+    report_time("Time to create streamline: %g s", cpu_time.tick().last());
   }
 }
 

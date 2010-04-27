@@ -21,7 +21,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static MToken* token; // current token from the lexer
-static const char* parser_filename;
+static const char* H2D_PARSER_FILENAME;
 
 inline void next_token()
   { token = mesh_get_token(); }
@@ -37,20 +37,20 @@ void serror(const char* msg, ...)
   vsprintf(buffer, msg, ap);
   va_end(ap);
   printf("ERROR: Mesh::load(const char*):\n"
-         "%s, line %d: %s\n", parser_filename, mesh_lexer_line_num, buffer);
+         "%s, line %d: %s\n", H2D_PARSER_FILENAME, mesh_lexer_line_num, buffer);
   exit(1);
 }
 
 
 //// memory management /////////////////////////////////////////////////////////////////////////////
 
-static const int PAGE_SIZE = 32*1024; // 32K
+static const int H2D_PAGE_SIZE = 32*1024; // 32K
 static std::vector<char*> pages;
-static int last_page_size;
+static int H2D_LAST_PAGE_SIZE;
 
 static void init_mem()
 {
-  last_page_size = PAGE_SIZE;
+  H2D_LAST_PAGE_SIZE = H2D_PAGE_SIZE;
   pages.clear();
 }
 
@@ -58,15 +58,15 @@ static void* new_block(int size)
 {
   // this is a simple and fast memory allocation function
   char* p;
-  if (last_page_size + size <= PAGE_SIZE)
+  if (H2D_LAST_PAGE_SIZE + size <= H2D_PAGE_SIZE)
     p = pages.back();
   else {
-    p = (char*) malloc(PAGE_SIZE);
-    last_page_size = 0;
+    p = (char*) malloc(H2D_PAGE_SIZE);
+    H2D_LAST_PAGE_SIZE = 0;
     pages.push_back(p);
   }
-  p += last_page_size;
-  last_page_size += size;
+  p += H2D_LAST_PAGE_SIZE;
+  H2D_LAST_PAGE_SIZE += size;
   return p;
 }
 
@@ -91,8 +91,8 @@ static inline char* new_string(const char* str)
 
 //// symbol table //////////////////////////////////////////////////////////////////////////////////
 
-static const int TABLE_SIZE = 256;  // must be a power of two
-MSymbol* symbol_table[TABLE_SIZE];
+static const int H2D_TABLE_SIZE = 256;  // must be a power of two
+MSymbol* symbol_table[H2D_TABLE_SIZE];
 
 static inline unsigned hash(const char* str)
 {
@@ -105,7 +105,7 @@ static inline unsigned hash(const char* str)
 
 static MSymbol* get_symbol(const char* name)
 {
-  unsigned index = hash(name) & (TABLE_SIZE-1);
+  unsigned index = hash(name) &(H2D_TABLE_SIZE-1);
   MSymbol* s = symbol_table[index];
   while (s != NULL && strcmp(s->name, name))
     s = s->next_hash;
@@ -122,7 +122,7 @@ static MSymbol* get_symbol(const char* name)
 
 static MSymbol* peek_symbol(const char* name)
 {
-  unsigned index = hash(name) & (TABLE_SIZE-1);
+  unsigned index = hash(name) &(H2D_TABLE_SIZE-1);
   MSymbol* s = symbol_table[index];
   while (s != NULL && strcmp(s->name, name))
     s = s->next_hash;
@@ -417,7 +417,7 @@ static void assignment(bool debug)
 void mesh_parser_init(FILE* f, const char* filename)
 {
   mesh_lexer_init(f);
-  parser_filename = filename;
+  H2D_PARSER_FILENAME = filename;
   init_mem();
   init_symbols();
 }
@@ -465,7 +465,7 @@ bool mesh_parser_get_ints(MItem* list, int n, ...)
   MItem* it = list->list;
   va_list ap; va_start(ap, n);
   for (int i = 0; i < n; i++, it = it->next) {
-    if (it->n >= 0 || !is_int(it->val)) return false;
+    if (it->n >= 0 || !H2D_IS_INT(it->val)) return false;
     *(va_arg(ap, int*)) = (int) it->val;
   }
   va_end(ap);

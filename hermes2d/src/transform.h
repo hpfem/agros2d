@@ -121,8 +121,8 @@ protected:
 
   Trf* ctm;  ///< current sub-element transformation matrix
   uint64_t sub_idx; ///< sub-element transformation index. Data type is equal to the type used by Judy.
-  //static const unsigned max_idx = 0x49249248; ///< largest sub_idx for top <= 10
-  static const uint64_t max_idx = 0x4000; ///< largest sub_idx for top <= 10. Data type is equal to the type used by Judy.
+  //static const unsigned H2D_MAX_IDX = 0x49249248; ///< largest sub_idx for top <= 10
+  static const uint64_t H2D_MAX_IDX = 0x4000; ///< largest sub_idx for top <= 10. Data type is equal to the type used by Judy.
 
   Trf stack[21]; ///< transformation matrix stack
   int top;       ///< stack top

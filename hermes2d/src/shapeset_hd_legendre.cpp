@@ -8600,7 +8600,7 @@ static int* hdiv_leg_quad_edge_indices[4] =
   hdiv_leg_quad_edge_indices_3,
 };
 
-#define oo make_quad_order
+#define oo H2D_MAKE_QUAD_ORDER
 
 static int hdiv_leg_quad_index_to_order[] =
 {
@@ -8738,7 +8738,7 @@ HdivShapesetLegendre::HdivShapesetLegendre()
 
   comb_table = NULL;
 
-  set_mode(MODE_TRIANGLE);
+  set_mode(H2D_MODE_TRIANGLE);
 }
 
 #endif

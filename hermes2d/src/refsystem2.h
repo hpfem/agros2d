@@ -104,15 +104,15 @@ public:
           Element* e = mesh->get_element(re->id);
           int max_o = 0;
           if (e->active)
-            max_o = get_h_order(base->spaces[i]->get_element_order(e->id));
+            max_o = H2D_GET_H_ORDER(base->spaces[i]->get_element_order(e->id));
           else
           {
             for (int son = 0; son < 4; son++)
             {
               if (e->sons[son] != NULL)
               {
-                //max_o += get_h_order(base->spaces[i]->get_element_order(e->sons[son]->id));
-                int o = get_h_order(base->spaces[i]->get_element_order(e->sons[son]->id));
+                //max_o += H2D_GET_H_ORDER(base->spaces[i]->get_element_order(e->sons[son]->id));
+                int o = H2D_GET_H_ORDER(base->spaces[i]->get_element_order(e->sons[son]->id));
                 if (o > max_o) max_o = o;
               }
             }

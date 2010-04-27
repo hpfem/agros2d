@@ -193,8 +193,9 @@ void ScalarView::show(MeshFunction* sln, double eps, int item,
   refresh();
   wait_for_draw();
 
-  verbose("showing data in view \"%s\", used value range [%g; %g]", title.c_str(), range_min, range_max);
-  verbose(" value range of data: [%g, %g]", lin.get_min_value(), lin.get_max_value());
+  verbose("Showing data in view \"%s\"", title.c_str());
+  verbose(" Used value range [%g; %g]", range_min, range_max);
+  verbose(" Value range of data: [%g, %g]", lin.get_min_value(), lin.get_max_value());
 }
 
 void ScalarView::update_mesh_info() {
@@ -714,7 +715,7 @@ void ScalarView::prepare_gl_geometry(const double value_min, const double value_
     }
     catch(std::exception &e)
     { //out-of-memory or any other failure
-      debug_log("unable to use VBO: %s", e.what());
+      debug_log("Unable to use VBO: %s", e.what());
       if (gl_coord_buffer) { glDeleteBuffersARB(1, &gl_coord_buffer); gl_coord_buffer = 0; }
       if (gl_index_buffer) { glDeleteBuffersARB(1, &gl_index_buffer); gl_index_buffer = 0; }
       if (gl_edge_inx_buffer) { glDeleteBuffersARB(1, &gl_edge_inx_buffer); gl_edge_inx_buffer = 0; }
@@ -724,7 +725,7 @@ void ScalarView::prepare_gl_geometry(const double value_min, const double value_
 
 void ScalarView::draw_values_2d(const double value_min, const double value_irange)
 {
-  assert_msg(gl_pallete_tex_id != 0, "palette texture ID is zero, palette not set\n");
+  assert_msg(gl_pallete_tex_id != 0, "Palette GL texture ID is zero, palette not set");
 
   //set texture for coloring
   glEnable(GL_TEXTURE_1D);
@@ -772,7 +773,7 @@ void ScalarView::draw_values_2d(const double value_min, const double value_irang
       //bind vertices
       glBindBufferARB(GL_ARRAY_BUFFER_ARB, gl_coord_buffer);
       glVertexPointer(2, GL_FLOAT, sizeof(GLVertex2), GL_BUFFER_OFFSET(0));
-      glTexCoordPointer(1, GL_FLOAT, sizeof(GLVertex2), GL_BUFFER_OFFSET(GLVertex2::offsetof_coord));
+      glTexCoordPointer(1, GL_FLOAT, sizeof(GLVertex2), GL_BUFFER_OFFSET(GLVertex2::H2D_OFFSETOF_COORD));
       glEnableClientState(GL_VERTEX_ARRAY);
       glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -987,6 +988,7 @@ void ScalarView::on_display()
 
     // initialize light and material
     init_lighting();
+
 
     glTranslated(xtrans, ytrans, ztrans);
 
@@ -1331,9 +1333,9 @@ void ScalarView::on_right_mouse_down(int x, int y)
       }
       else { //select node
 # ifdef ENABLE_VIEWER_GUI
-        char buffer[1024];
-        sprintf(buffer, "Vertex node: %d", pointed_vertex_node->id);
-        TwBar* bar = TwNewBar(buffer);
+        stringstream str;
+        str << "Vertex node: " << pointed_vertex_node->id;
+        TwBar* bar = TwNewBar(str.str().c_str());
         TwAddVarRO(bar, "X", TW_TYPE_FLOAT, &pointed_vertex_node->x, NULL);
         TwAddVarRO(bar, "Y", TW_TYPE_FLOAT, &pointed_vertex_node->y, NULL);
         int intTmp = 0; TwSetParam(bar, NULL, "iconifiable", TW_PARAM_INT32, 1, &intTmp);
@@ -1411,7 +1413,7 @@ void ScalarView::save_data(const char* filename)
   num_tris = lin.get_num_triangles();
   lin.unlock_data();
   if (num_tris <= 0)
-    error("no data to save.");
+    error("No data to save.");
   lin.save_data(filename);
 }
 
@@ -1425,7 +1427,7 @@ void ScalarView::save_numbered(const char* format, int number)
 
 void ScalarView::draw_svg_edge(int inx_vert_a, int inx_vert_b, ScalarView* viewer, void* param)
 {
-  assert_msg(param != NULL, "param parameter equals to NULL");
+  assert_msg(param != NULL, "Param parameter equals to NULL");
 
   SVGExportParams* pars = (SVGExportParams*)param;
   double3* verts = viewer->lin.get_vertices();
@@ -1449,7 +1451,7 @@ void ScalarView::export_mesh_edges_svg(const char* filename, float width_mm)
 
   //get AABB
   double width = vertices_max_x - vertices_min_x, height = vertices_max_y - vertices_min_y;
-  error_if(width == 0.0 || height == 0.0, "no edges to save or edge vertices are corrupted");
+  error_if(width == 0.0 || height == 0.0, "No edges to save or edge vertices are corrupted");
   double height_mm = height * width_mm/width;
 
   //prepare output

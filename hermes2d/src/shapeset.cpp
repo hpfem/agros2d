@@ -138,9 +138,9 @@ double* Shapeset::get_constrained_edge_combination(int order, int part, int ori,
     while (index >= table_size) table_size *= 2;
 
     // reallocate the table
-    verbose("Shapeset::get_constrained_edge_combination(): realloc to table_size=%d\n", table_size);
+    verbose("Shapeset::get_constrained_edge_combination(): realloc to table_size=%d", table_size);
     comb_table = (double**) realloc(comb_table, table_size * sizeof(double*));
-    memset(comb_table + old_size, 0, (table_size - old_size) * sizeof(double*));
+    memset(comb_table + old_size, 0,(table_size - old_size) * sizeof(double*));
   }
 
   // do we have the required linear combination yet?

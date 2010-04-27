@@ -56,11 +56,11 @@ protected:
   HERMES2D_API_USED_TEMPLATE(Array<Node>);
   Array<Node> nodes; ///< Array storing all nodes
 
-  static const int DEFAULT_HASH_SIZE = 0x20000; // 128K entries
+  static const int H2D_DEFAULT_HASH_SIZE = 0x20000; // 128K entries
 
   /// Initializes the hash table.
   /// \param size [in] Hash table size; must be a power of two.
-  void init(int size = DEFAULT_HASH_SIZE);
+  void init(int size = H2D_DEFAULT_HASH_SIZE);
 
   /// Copies another hash table contents
   void copy(const HashTable* ht);

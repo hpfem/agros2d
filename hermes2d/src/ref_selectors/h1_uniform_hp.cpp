@@ -34,13 +34,13 @@ namespace RefinementSelectors {
       for (int j = 0; j < nv; j++)
         idx[n++] = shapeset->get_edge_index(j, 0, i);
 
-      int ii = mode ? make_quad_order(i, i) : i;
+      int ii = mode ? H2D_MAKE_QUAD_ORDER(i, i) : i;
       int nb = shapeset->get_num_bubbles(ii);
       int* bub = shapeset->get_bubble_indices(ii);
       for (int j = 0; j < nb; j++)
       {
         int o = shapeset->get_order(bub[j]);
-        if (get_h_order(o) == i || get_v_order(o) == i)
+        if (H2D_GET_H_ORDER(o) == i || H2D_GET_V_ORDER(o) == i)
           idx[n++] = bub[j];
       }
       basecnt[mode][i] = n;
@@ -162,12 +162,12 @@ namespace RefinementSelectors {
   }
 
   void H1UniformHP::calc_projection_errors(Element* e, const int max_quad_order_h, const int max_quad_order_p, const int max_quad_order_aniso, Solution* rsln, SonProjectionError herr[4], SonProjectionError anisoerr[4], SonProjectionError perr) {
-    assert_msg(get_h_order(max_quad_order_h) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_h) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of H-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_h), get_v_order(max_quad_order_h));
-    assert_msg(get_h_order(max_quad_order_p) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_p) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of P-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_p), get_v_order(max_quad_order_p));
-    assert_msg(get_h_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER && get_v_order(max_quad_order_aniso) <= H2DRS_MAX_ORDER, "E maximum allowed order of a son of ANISO-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, get_h_order(max_quad_order_aniso), get_v_order(max_quad_order_aniso));
-    assert_msg(get_h_order(max_quad_order_h) == get_v_order(max_quad_order_h), "E maximum orders (H:%d,V:%d) of H-candidate is in not uniform", get_h_order(max_quad_order_h), get_v_order(max_quad_order_h));
-    assert_msg(get_h_order(max_quad_order_p) == get_v_order(max_quad_order_p), "E maximum orders (H:%d,V:%d) of P-candidate is in not uniform", get_h_order(max_quad_order_p), get_v_order(max_quad_order_p));
-    assert_msg(get_h_order(max_quad_order_aniso) == get_v_order(max_quad_order_aniso), "E maximum orders (H:%d,V:%d) of ANISO-candidate is in not uniform", get_h_order(max_quad_order_aniso), get_v_order(max_quad_order_aniso));
+    assert_msg(H2D_GET_H_ORDER(max_quad_order_h) <= H2DRS_MAX_ORDER && H2D_GET_V_ORDER(max_quad_order_h) <= H2DRS_MAX_ORDER, "Maximum allowed order of a son of H-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, H2D_GET_H_ORDER(max_quad_order_h), H2D_GET_V_ORDER(max_quad_order_h));
+    assert_msg(H2D_GET_H_ORDER(max_quad_order_p) <= H2DRS_MAX_ORDER && H2D_GET_V_ORDER(max_quad_order_p) <= H2DRS_MAX_ORDER, "Maximum allowed order of a son of P-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, H2D_GET_H_ORDER(max_quad_order_p), H2D_GET_V_ORDER(max_quad_order_p));
+    assert_msg(H2D_GET_H_ORDER(max_quad_order_aniso) <= H2DRS_MAX_ORDER && H2D_GET_V_ORDER(max_quad_order_aniso) <= H2DRS_MAX_ORDER, "Maximum allowed order of a son of ANISO-candidate is %d but order (H:%d,V:%d) requested", H2DRS_MAX_ORDER, H2D_GET_H_ORDER(max_quad_order_aniso), H2D_GET_V_ORDER(max_quad_order_aniso));
+    assert_msg(H2D_GET_H_ORDER(max_quad_order_h) == H2D_GET_V_ORDER(max_quad_order_h), "Maximum orders (H:%d,V:%d) of H-candidate is in not uniform", H2D_GET_H_ORDER(max_quad_order_h), H2D_GET_V_ORDER(max_quad_order_h));
+    assert_msg(H2D_GET_H_ORDER(max_quad_order_p) == H2D_GET_V_ORDER(max_quad_order_p), "Maximum orders (H:%d,V:%d) of P-candidate is in not uniform", H2D_GET_H_ORDER(max_quad_order_p), H2D_GET_V_ORDER(max_quad_order_p));
+    assert_msg(H2D_GET_H_ORDER(max_quad_order_aniso) == H2D_GET_V_ORDER(max_quad_order_aniso), "Maximum orders (H:%d,V:%d) of ANISO-candidate is in not uniform", H2D_GET_H_ORDER(max_quad_order_aniso), H2D_GET_V_ORDER(max_quad_order_aniso));
 
     int i, j, s, k, r, son;
     int m = e->get_mode();
@@ -205,7 +205,7 @@ namespace RefinementSelectors {
     // h-cadidates: calculate products of the reference solution with orthonormal basis
     // functions on son elements, obtaining (partial) projections and their errors
     // the error is scaled by 4 (error of four sons of an element of summed togethers; error for every element is evaluted in a reference domain
-    int max_order = get_h_order(max_quad_order_h);
+    int max_order = H2D_GET_H_ORDER(max_quad_order_h);
     scalar3 proj[4][121];
     for (son = 0; son < 4; son++)
     {
@@ -242,7 +242,7 @@ namespace RefinementSelectors {
       const double my[4] = { 1.0, 1.0, 2.0, 2.0};
       const int sons[4][2] = { {0,1}, {3,2}, {0,3}, {1,2} };
       const int tr[4][2]   = { {6,7}, {6,7}, {4,5}, {4,5} };
-      max_order = get_h_order(max_quad_order_aniso);
+      max_order = H2D_GET_H_ORDER(max_quad_order_aniso);
 
       for (son = 0; son < 4; son++) // 2 sons for vertical split, 2 sons for horizontal split
       {
@@ -278,7 +278,7 @@ namespace RefinementSelectors {
     }
 
     // p-candidates: calculate projections and their errors
-    max_order = get_h_order(max_quad_order_p);
+    max_order = H2D_GET_H_ORDER(max_quad_order_p);
     memset(proj, 0, sizeof(proj));
     for (i = 1; i <= max_order; i++)
     {
@@ -330,18 +330,18 @@ namespace RefinementSelectors {
       candidates.reserve(H2DRS_ASSUMED_MAX_CANDS);
 
     int n = 0;
-    int order = std::max(get_h_order(quad_order), get_v_order(quad_order));
-    int max_p_order = std::max(get_h_order(max_p_quad_order), get_v_order(max_p_quad_order));
-    int max_ha_order = std::max(get_h_order(max_ha_quad_order), get_v_order(max_ha_quad_order));
+    int order = std::max(H2D_GET_H_ORDER(quad_order), H2D_GET_V_ORDER(quad_order));
+    int max_p_order = std::max(H2D_GET_H_ORDER(max_p_quad_order), H2D_GET_V_ORDER(max_p_quad_order));
+    int max_ha_order = std::max(H2D_GET_H_ORDER(max_ha_quad_order), H2D_GET_V_ORDER(max_ha_quad_order));
 
     bool tri = e->is_triangle();
 
-#define make_p_cand(q) candidates.push_back(Cand(H2D_REFINEMENT_P, make_quad_order(q, q)))
+#define make_p_cand(q) candidates.push_back(Cand(H2D_REFINEMENT_P, H2D_MAKE_QUAD_ORDER(q, q)))
 
 #define make_hp_cand(q0, q1, q2, q3) candidates.push_back(Cand(H2D_REFINEMENT_H, \
-    make_quad_order(q0, q0), make_quad_order(q1, q1), make_quad_order(q2, q2), make_quad_order(q3, q3)))
+    H2D_MAKE_QUAD_ORDER(q0, q0), H2D_MAKE_QUAD_ORDER(q1, q1), H2D_MAKE_QUAD_ORDER(q2, q2), H2D_MAKE_QUAD_ORDER(q3, q3)))
 
-#define make_ani_cand(q0, q1, iso) candidates.push_back(Cand(iso, make_quad_order(q0, q0), make_quad_order(q1, q1)))
+#define make_ani_cand(q0, q1, iso) candidates.push_back(Cand(iso, H2D_MAKE_QUAD_ORDER(q0, q0), H2D_MAKE_QUAD_ORDER(q1, q1)))
 
     if (cands_allowed == H2DRS_CAND_H_ONLY)
     {
@@ -389,7 +389,7 @@ namespace RefinementSelectors {
   }
 
   void H1UniformHP::update_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders) {
-    assert_msg(get_v_order(orig_quad_order) == 0 || get_h_order(orig_quad_order) == get_v_order(orig_quad_order), "E non-uniform orig_quad_order (H:%d,V:%d) not support for this selector", get_h_order(orig_quad_order), get_v_order(orig_quad_order));
+    assert_msg(H2D_GET_V_ORDER(orig_quad_order) == 0 || H2D_GET_H_ORDER(orig_quad_order) == H2D_GET_V_ORDER(orig_quad_order), "Non-uniform orig_quad_order (H:%d,V:%d) not support for this selector", H2D_GET_H_ORDER(orig_quad_order), H2D_GET_V_ORDER(orig_quad_order));
 
     //update orders
     ProjBasedSelector::update_shared_mesh_orders(element, orig_quad_order, refinement, tgt_quad_orders, suggested_quad_orders);
@@ -397,13 +397,13 @@ namespace RefinementSelectors {
     //enforce uniform orders
     const int num_sons = get_refin_sons(refinement);
     for(int i = 0; i < num_sons; i++) {
-      int order = get_h_order(tgt_quad_orders[i]);
+      int order = H2D_GET_H_ORDER(tgt_quad_orders[i]);
       if (refinement == H2D_REFINEMENT_ANISO_H)
-        order = get_v_order(tgt_quad_orders[i]);
+        order = H2D_GET_V_ORDER(tgt_quad_orders[i]);
       if (element->is_triangle())
-        tgt_quad_orders[i] = make_quad_order(order, 0);
+        tgt_quad_orders[i] = H2D_MAKE_QUAD_ORDER(order, 0);
       else
-        tgt_quad_orders[i] = make_quad_order(order, order);
+        tgt_quad_orders[i] = H2D_MAKE_QUAD_ORDER(order, order);
     }
   }
 

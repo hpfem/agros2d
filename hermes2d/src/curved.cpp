@@ -205,7 +205,7 @@ static void calc_ref_map_quad(Element* e, Nurbs** nurbs, double xi_1, double xi_
 
 static void calc_ref_map(Element* e, Nurbs** nurbs, double xi_1, double xi_2, double2& f)
 {
-  if (e->get_mode() == MODE_QUAD)
+  if (e->get_mode() == H2D_MODE_QUAD)
     calc_ref_map_quad(e, nurbs, xi_1, xi_2, f[0], f[1]);
   else
     calc_ref_map_tri(e, nurbs, xi_1, xi_2, f[0], f[1]);
@@ -257,7 +257,7 @@ static double** calculate_bubble_projection_matrix(int nb, int* indices)
     {
       int ii = indices[i], ij = indices[j];
       int o = ref_map_shapeset.get_order(ii) + ref_map_shapeset.get_order(ij);
-      o = std::max(get_v_order(o), get_h_order(o));
+      o = std::max(H2D_GET_V_ORDER(o), H2D_GET_H_ORDER(o));
 
       ref_map_pss.set_active_shape(ii);
       ref_map_pss.set_quad_order(o);
@@ -283,7 +283,7 @@ static double** calculate_bubble_projection_matrix(int nb, int* indices)
 static void precalculate_cholesky_projection_matrices_bubble()
 {
   // *** triangles ***
-  ref_map_pss.set_mode(MODE_TRIANGLE);
+  ref_map_pss.set_mode(H2D_MODE_TRIANGLE);
   int order = ref_map_shapeset.get_max_order();
 
   // calculate projection matrix of maximum order
@@ -296,9 +296,9 @@ static void precalculate_cholesky_projection_matrices_bubble()
   choldc(bubble_proj_matrix_tri, nb, bubble_tri_p);
 
   // *** quads ***
-  ref_map_pss.set_mode(MODE_QUAD);
+  ref_map_pss.set_mode(H2D_MODE_QUAD);
   order = ref_map_shapeset.get_max_order();
-  order = make_quad_order(order, order);
+  order = H2D_MAKE_QUAD_ORDER(order, order);
 
   // calculate projection matrix of maximum order
   nb = ref_map_shapeset.get_num_bubbles(order);
@@ -437,7 +437,7 @@ static void calc_bubble_projection(Element* e, Nurbs** nurbs, int order, double2
   int i, j, k;
   int mo2 = quad2d.get_max_order();
   int np = quad2d.get_num_points(mo2);
-  int qo = e->is_quad() ? make_quad_order(order, order) : order;
+  int qo = e->is_quad() ? H2D_MAKE_QUAD_ORDER(order, order) : order;
   int nb = ref_map_shapeset.get_num_bubbles(qo);
 
   AUTOLA_OR(double2, fn, np);
@@ -536,7 +536,7 @@ void CurvMap::update_refmap_coefs(Element* e)
   // allocate projection coefficients
   int nv = e->nvert;
   int ne = order - 1;
-  int qo = e->is_quad() ? make_quad_order(order, order) : order;
+  int qo = e->is_quad() ? H2D_MAKE_QUAD_ORDER(order, order) : order;
   int nb = ref_map_shapeset.get_num_bubbles(qo);
   nc = nv + nv*ne + nb;
   if (coefs != NULL) delete [] coefs;

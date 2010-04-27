@@ -298,7 +298,7 @@ void FeProblem::assemble(const Vector *x, Vector *rhs, Matrix *jac)
         {
           WeakForm::JacFormVol* bfv = s->jfvol[ww];
           if (isempty[bfv->i] || isempty[bfv->j]) continue;
-          if (bfv->area != ANY && !wf->is_in_area(marker, bfv->area)) continue;
+          if (bfv->area != H2D_ANY && !wf->is_in_area(marker, bfv->area)) continue;
           m = bfv->i;  fv = spss[m];  am = &al[m];
           n = bfv->j;  fu = pss[n];   an = &al[n];
           bool tra = (m != n) && (bfv->sym != 0);
@@ -349,7 +349,7 @@ void FeProblem::assemble(const Vector *x, Vector *rhs, Matrix *jac)
         {
           WeakForm::ResFormVol* lfv = s->rfvol[ww];
           if (isempty[lfv->i]) continue;
-          if (lfv->area != ANY && !wf->is_in_area(marker, lfv->area)) continue;
+          if (lfv->area != H2D_ANY && !wf->is_in_area(marker, lfv->area)) continue;
           m = lfv->i;  fv = spss[m];  am = &al[m];
 
           for (int i = 0; i < am->cnt; i++)
@@ -382,7 +382,7 @@ void FeProblem::assemble(const Vector *x, Vector *rhs, Matrix *jac)
           {
             WeakForm::JacFormSurf* bfs = s->jfsurf[ww];
             if (isempty[bfs->i] || isempty[bfs->j]) continue;
-            if (bfs->area != ANY && !wf->is_in_area(marker, bfs->area)) continue;
+            if (bfs->area != H2D_ANY && !wf->is_in_area(marker, bfs->area)) continue;
             m = bfs->i;  fv = spss[m];  am = &al[m];
             n = bfs->j;  fu = pss[n];   an = &al[n];
 
@@ -413,7 +413,7 @@ void FeProblem::assemble(const Vector *x, Vector *rhs, Matrix *jac)
           {
             WeakForm::ResFormSurf* lfs = s->rfsurf[ww];
             if (isempty[lfs->i]) continue;
-            if (lfs->area != ANY && !wf->is_in_area(marker, lfs->area)) continue;
+            if (lfs->area != H2D_ANY && !wf->is_in_area(marker, lfs->area)) continue;
             m = lfs->i;  fv = spss[m];  am = &al[m];
 
             if (!nat[m]) continue;
@@ -765,7 +765,7 @@ scalar* Projection::project()
   for (int i = 0; i < num; i++)
   {
     wf.add_biform(i, i, callback(L2projection_biform));
-    wf.add_liform(i, callback(L2projection_liform), ANY, 1, slns[i]);
+    wf.add_liform(i, callback(L2projection_liform), H2D_ANY, 1, slns[i]);
   }
 
   LinSystem ps(&wf, solver);

@@ -407,12 +407,12 @@ void Vectorizer::process_solution(MeshFunction* xsln, int xitem, MeshFunction* y
   xsln->set_quad_2d((Quad2D*) &quad_lin);
   ysln->set_quad_2d((Quad2D*) &quad_lin);
 
-  if (!xitem) error("'xitem' cannot be zero.");
-  if (!yitem) error("'yitem' cannot be zero.");
+  if (!xitem) error("Parameter 'xitem' cannot be zero.");
+  if (!yitem) error("Parameter 'yitem' cannot be zero.");
   get_gv_a_b(xitem, xia, xib);
   get_gv_a_b(yitem, yia, yib);
-  if (xib >= 6) error("Invalid 'xitem'.");
-  if (yib >= 6) error("Invalid 'yitem'.");
+  if (xib >= 6) error("Invalid value of paremeter 'xitem'.");
+  if (yib >= 6) error("Invalid value of paremeter 'yitem'.");
 
   max = 1e-10;
   trav.begin(2, meshes, fns);
@@ -499,7 +499,7 @@ void Vectorizer::process_solution(MeshFunction* xsln, int xitem, MeshFunction* y
 
   find_min_max();
 
-  verbose("Vectorizer: %d verts, %d tris in %0.3g s", nv, nt, cpu_time.tick().last());
+  verbose("Vectorizer created %d verts and %d tris in %0.3g s", nv, nt, cpu_time.tick().last());
   //if (verbose_mode) print_hash_stats();
   unlock_data();
 
@@ -551,9 +551,9 @@ void Vectorizer::load_data(const char* filename)
     error("Error reading %s", filename);
 
   if (hdr.magic[0] != 'H' || hdr.magic[1] != '2' || hdr.magic[2] != 'D' || hdr.magic[3] != 'V')
-    error("%s is not a Hermes2D Vectorizer file.", filename);
+    error("File %s is not a Hermes2D Vectorizer file.", filename);
   if (hdr.ver > 1)
-    error("%s -- unsupported file version.", filename);
+    error("File %s -- unsupported file version.", filename);
 
   #define read_array(array, type, n, c, what) \
     if (fread(&n, sizeof(int), 1, f) != 1) \
@@ -583,6 +583,6 @@ Vectorizer::~Vectorizer()
 //// others ///////////////////////////////////////////////////////////////////////////////////
 
 void Vectorizer::calc_vertices_aabb(double* min_x, double* max_x, double* min_y, double* max_y) const {
-  assert_msg(verts != NULL, "cannot calculate AABB from NULL vertices");
+  assert_msg(verts != NULL, "Cannot calculate AABB from NULL vertices");
   calc_aabb(&verts[0][0], &verts[0][1], sizeof(double4), nv, min_x, max_x, min_y, max_y);
 }

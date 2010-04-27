@@ -4262,5 +4262,5 @@ H1ShapesetBeuchler::H1ShapesetBeuchler()
 
   comb_table = NULL;
 
-  set_mode(MODE_TRIANGLE);
+  set_mode(H2D_MODE_TRIANGLE);
 }

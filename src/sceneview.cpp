@@ -297,7 +297,7 @@ void SceneView::loadProjection2d(bool setScene)
 
 void SceneView::loadProjection3d(bool setScene)
 {
-    int fov = 1.0;
+    int fov = 50.0;
     double znear = 0.001;
     double zfar = 100.0;
 
@@ -310,13 +310,16 @@ void SceneView::loadProjection3d(bool setScene)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(left - offsx, right - offsx, bottom - offsy, top - offsy, znear, zfar);
+    // glFrustum(left - offsx, right - offsx, bottom - offsy, top - offsy, znear, zfar);
+    glOrtho(3.0, contextWidth()-6.0, contextHeight()-6.0, 3.0, -10.0, -10.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     if (setScene)
     {        
+        glScaled(1.0/aspect(), 1.0, 1.0);
+
         // move to origin
         RectPoint rect = Util::scene()->boundingBox();
         glTranslated(-m_offset3d.x, -m_offset3d.y, 0.0);
@@ -326,7 +329,7 @@ void SceneView::loadProjection3d(bool setScene)
 
         if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
         {
-            glTranslated(- m_scale3d/aspect() * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
+            glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
         }
         else
         {
@@ -340,7 +343,7 @@ void SceneView::loadProjection3d(bool setScene)
             }
         }
 
-        glScaled(m_scale3d/aspect(), m_scale3d, m_scale3d);
+        glScaled(m_scale3d, m_scale3d, m_scale3d);
     }
 }
 
@@ -2179,7 +2182,7 @@ void SceneView::initLighting()
         float light_specular[] = {  0.3f, 0.3f, 0.3f, 1.0f };
         float light_ambient[]  = {  0.1f, 0.1f, 0.1f, 1.0f };
         float light_diffuse[]  = {  0.8f, 0.8f, 0.8f, 0.9f };
-        float light_position[] = {  -10.0f, -20.0f, 10.0f, 1.0f };
+        float light_position[] = {  0.0f, 10.0f, 0.0f, 1.0f };
 
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);

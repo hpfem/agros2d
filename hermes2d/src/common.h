@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <pthread.h>
 #include <math.h>
+#include <time.h>
 
 #include <float.h>
 
@@ -56,28 +57,28 @@
 
 enum // node types
 {
-  TYPE_VERTEX = 0,
-  TYPE_EDGE = 1
+  H2D_TYPE_VERTEX = 0,
+  H2D_TYPE_EDGE = 1
 };
 
 enum // element modes
 {
-  MODE_TRIANGLE = 0,
-  MODE_QUAD = 1
+  H2D_MODE_TRIANGLE = 0,
+  H2D_MODE_QUAD = 1
 };
 
 
-const int ANY = -1234;
+const int H2D_ANY = -1234;
 
 // how many bits the order number takes
-const int order_bits = 5;
-const int order_mask = (1 << order_bits) - 1;
+const int H2D_ORDER_BITS = 5;
+const int H2D_ORDER_MASK = (1 << H2D_ORDER_BITS) - 1;
 
 
 // macros for combining quad horizontal and vertical orders
-#define make_quad_order(h_order, v_order) (((v_order) << order_bits) + (h_order))
-#define get_h_order(order) ((order) & order_mask)
-#define get_v_order(order) ((order) >> order_bits)
+#define H2D_MAKE_QUAD_ORDER(h_order, v_order) (((v_order) << H2D_ORDER_BITS) + (h_order))
+#define H2D_GET_H_ORDER(order) ((order) & H2D_ORDER_MASK)
+#define H2D_GET_V_ORDER(order) ((order) >> H2D_ORDER_BITS)
 extern HERMES2D_API const std::string get_quad_order_str(const int quad_order); ///< Returns string representation of the quad order: used for debugging purposses.
 
 #ifdef COMPLEX
@@ -121,7 +122,7 @@ inline double conj(double a) {  return a; }
 inline cplx conj(cplx a) { return std::conj(a); }
 #endif
 
-#define is_int(x) ((int) (x) == (x))
+#define H2D_IS_INT(x) ((int) (x) == (x))
 
 /* basic logging functions */
 struct HERMES2D_API __h2d_log_info { ///< Info of a log record. Used for output log function.

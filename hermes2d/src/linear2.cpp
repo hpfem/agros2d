@@ -45,7 +45,7 @@ public:
 
   Quad2DOrd()
   {
-    mode = MODE_TRIANGLE;
+    mode = H2D_MODE_TRIANGLE;
     max_order[0] = max_order[1] = 1;
     num_tables[0] = num_tables[1] = 2;
     tables = ord_tables;
@@ -136,8 +136,8 @@ void Orderizer::process_solution(Space* space)
     int mode = e->get_mode();
     if (e->is_quad())
     {
-      o[4] = get_h_order(oo);
-      o[5] = get_v_order(oo);
+      o[4] = H2D_GET_H_ORDER(oo);
+      o[5] = H2D_GET_V_ORDER(oo);
     }
     make_vert(lvert[nl], x[0], y[0], o[4]);
 
@@ -198,7 +198,7 @@ void Orderizer::save_data(const char* filename)
       sscanf(ltext[i], "%d|%d", &ho, &vo);
     else
       { sscanf(ltext[i], "%d", &ho); vo = ho; }
-    orders[i] = make_quad_order(ho, vo);
+    orders[i] = H2D_MAKE_QUAD_ORDER(ho, vo);
   }
 
   if (fwrite("H2DO\001\000\000\000", 1, 8, f) != 8 ||
@@ -232,9 +232,9 @@ void Orderizer::load_data(const char* filename)
     error("Error reading %s", filename);
 
   if (hdr.magic[0] != 'H' || hdr.magic[1] != '2' || hdr.magic[2] != 'D' || hdr.magic[3] != 'O')
-    error("%s is not a Hermes2D Orderizer file.", filename);
+    error("File %s is not a Hermes2D Orderizer file.", filename);
   if (hdr.ver > 1)
-    error("%s -- unsupported file version.", filename);
+    error("File %s -- unsupported file version.", filename);
 
   #define read_array(array, type, n, c, what) \
     if (fread(&n, sizeof(int), 1, f) != 1) \
@@ -258,7 +258,7 @@ void Orderizer::load_data(const char* filename)
 
   lin_init_array(ltext, char*, cl2, nl);
   for (int i = 0; i < nl; i++)
-    ltext[i] = labels[get_h_order(orders[i])][get_v_order(orders[i])];
+    ltext[i] = labels[H2D_GET_H_ORDER(orders[i])][H2D_GET_V_ORDER(orders[i])];
 
   find_min_max();
   unlock_data();

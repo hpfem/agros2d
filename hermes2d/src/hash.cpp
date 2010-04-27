@@ -31,7 +31,7 @@ void HashTable::init(int size)
   nqueries = ncollisions = 0;
 
   mask = size-1;
-  if (size & mask) error("'size' must be a power of two.");
+  if (size & mask) error("Parameter 'size' must be a power of two.");
 
   // allocate and initialize the hash tables
   v_table = new Node*[size];
@@ -84,7 +84,7 @@ void HashTable::rebuild()
     if (p1 > p2) std::swap(p1, p2);
     int idx = hash(p1, p2);
 
-    if (node->type == TYPE_VERTEX)
+    if (node->type == H2D_TYPE_VERTEX)
     {
       node->next_hash = v_table[idx];
       v_table[idx] = node;
@@ -118,7 +118,7 @@ void HashTable::free()
 void HashTable::dump_hash_stat()
 {
   if (ncollisions > 2*nqueries)
-    warn("nqueries=%d ncollisions=%d\a", nqueries, ncollisions);
+    warn("Hashtable: nqueries=%d ncollisions=%d\a", nqueries, ncollisions);
 }
 
 
@@ -145,12 +145,12 @@ Node* HashTable::get_vertex_node(int p1, int p2)
 
   // not found - create a new one
   Node* newnode = nodes.add();
-  newnode->type = TYPE_VERTEX;
+  newnode->type = H2D_TYPE_VERTEX;
   newnode->ref = 0;
   newnode->bnd = 0;
   newnode->p1 = p1;
   newnode->p2 = p2;
-  assert(nodes[p1].type == TYPE_VERTEX && nodes[p2].type == TYPE_VERTEX);
+  assert(nodes[p1].type == H2D_TYPE_VERTEX && nodes[p2].type == H2D_TYPE_VERTEX);
   newnode->x = (nodes[p1].x + nodes[p2].x) * 0.5;
   newnode->y = (nodes[p1].y + nodes[p2].y) * 0.5;
 
@@ -172,7 +172,7 @@ Node* HashTable::get_edge_node(int p1, int p2)
 
   // not found - create a new one
   Node* newnode = nodes.add();
-  newnode->type = TYPE_EDGE;
+  newnode->type = H2D_TYPE_EDGE;
   newnode->ref = 0;
   newnode->bnd = 0;
   newnode->p1 = p1;

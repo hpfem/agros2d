@@ -156,15 +156,15 @@ protected:
   double const_jacobian;
   double2x2 const_inv_ref_map;
 
-  static const int max_tables = g_max_quad + 1 + 4;
+  static const int H2D_MAX_TABLES = g_max_quad + 1 + 4;
 
   struct Node
   {
-    double* jacobian[max_tables];
-    double2x2* inv_ref_map[max_tables];
-    double3x2* second_ref_map[max_tables];
-    double* phys_x[max_tables];
-    double* phys_y[max_tables];
+    double* jacobian[H2D_MAX_TABLES];
+    double2x2* inv_ref_map[H2D_MAX_TABLES];
+    double3x2* second_ref_map[H2D_MAX_TABLES];
+    double* phys_x[H2D_MAX_TABLES];
+    double* phys_y[H2D_MAX_TABLES];
     double3* tan[4];
   };
 
@@ -175,7 +175,7 @@ protected:
   void update_cur_node()
   {
     Node** pp = NULL;
-    if (sub_idx > max_idx)
+    if (sub_idx > H2D_MAX_IDX)
       pp = handle_overflow();
     else {
       pp = (Node**) JudyLIns(&nodes, (Word_t)sub_idx, NULL);

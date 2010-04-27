@@ -230,8 +230,8 @@ Element** Traverse::get_next_state(bool* bnd, EdgePos* ep)
     {
       // push the state of a new base element
       s = push_state();
-      static const Rect unity = { 0, 0, ONE, ONE };
-      s->cr = unity;
+      static const Rect H2D_UNITY = { 0, 0, ONE, ONE };
+      s->cr = H2D_UNITY;
       while (1)
       {
         // no more base elements? we're finished
@@ -244,7 +244,7 @@ Element** Traverse::get_next_state(bool* bnd, EdgePos* ep)
           s->e[i] = meshes[i]->get_element(id);
           if (!s->e[i]->used) { s->e[i] = NULL; continue; }
           if (s->e[i]->active && fn != NULL) fn[i]->set_active_element(s->e[i]);
-          s->er[i] = unity;
+          s->er[i] = H2D_UNITY;
           subs[i] = 0;
           nused++;
           base = s->e[i];
@@ -676,8 +676,8 @@ UniData** Traverse::construct_union_mesh(Mesh* unimesh)
     for (i = 0; i < num; i++)
     {
       e[i] = meshes[i]->get_element(id);
-      static const Rect unity = { 0, 0, ONE, ONE };
-      cr = er[i] = unity;
+      static const Rect H2D_UNITY = { 0, 0, ONE, ONE };
+      cr = er[i] = H2D_UNITY;
     }
     base = e[0];
     tri = base->is_triangle();

@@ -22,12 +22,12 @@
 
 void Node::ref_element(Element* e)
 {
-  if (type == TYPE_EDGE)
+  if (type == H2D_TYPE_EDGE)
   {
     // store the element pointer in a free slot of 'elem'
     if (elem[0] == NULL) elem[0] = e;
     else if (elem[1] == NULL) elem[1] = e;
-    else assert_msg(false, "no free slot 'elem'");
+    else assert_msg(false, "No free slot 'elem'");
   }
   ref++;
 }
@@ -35,7 +35,7 @@ void Node::ref_element(Element* e)
 
 void Node::unref_element(HashTable* ht, Element* e)
 {
-  if (type == TYPE_VERTEX)
+  if (type == H2D_TYPE_VERTEX)
   {
     if (!--ref) ht->remove_vertex_node(id);
   }
@@ -136,7 +136,7 @@ Mesh::Mesh() : HashTable()
 Element* Mesh::get_element(int id) const
 {
   if (id < 0 || id >= elements.get_size())
-    error("invalid element id number.");
+    error("Invalid element ID %d, current range: [0; %d]", id, elements.get_size());
   return &(elements[id]);
 }
 
@@ -577,8 +577,8 @@ void Mesh::unrefine_element_internal(Element* e)
 void Mesh::refine_element(int id, int refinement)
 {
   Element* e = get_element(id);
-  if (!e->used) error("invalid element id number.");
-  if (!e->active) error("attempt to refine element #%d which has been refined already.", e->id);
+  if (!e->used) error("Invalid element id number.");
+  if (!e->active) error("Attempt to refine element #%d which has been refined already.", e->id);
 
   if (e->is_triangle())
     refine_triangle(e);
@@ -681,7 +681,7 @@ void Mesh::refine_towards_boundary(int marker, int depth, bool aniso)
 void Mesh::unrefine_element(int id)
 {
   Element* e = get_element(id);
-  if (!e->used) error("invalid element id number.");
+  if (!e->used) error("Invalid element id number.");
   if (e->active) return;
 
   for (int i = 0; i < 4; i++)
@@ -852,7 +852,7 @@ void Mesh::create(int nv, double2* verts, int nt, int4* tris,
     Node* node = nodes.add();
     assert(node->id == i);
     node->ref = TOP_LEVEL_REF;
-    node->type = TYPE_VERTEX;
+    node->type = H2D_TYPE_VERTEX;
     node->bnd = 0;
     node->p1 = node->p2 = -1;
     node->next_hash = NULL;
@@ -873,7 +873,7 @@ void Mesh::create(int nv, double2* verts, int nt, int4* tris,
   for (int i = 0; i < nm; i++)
   {
     Node* en = peek_edge_node(mark[i][0], mark[i][1]);
-    if (en == NULL) error("boundary data error (edge does not exist)");
+    if (en == NULL) error("Boundary data error (edge does not exist)");
     en->marker = mark[i][2];
 
     if (en->marker > 0)
@@ -968,7 +968,7 @@ void Mesh::copy_base(Mesh* mesh)
     Node* node = &(mesh->nodes[i]);
     if (node->ref < TOP_LEVEL_REF) break;
     Node* newnode = nodes.add();
-    assert(newnode->id == i && node->type == TYPE_VERTEX);
+    assert(newnode->id == i && node->type == H2D_TYPE_VERTEX);
     memcpy(newnode, node, sizeof(Node));
     newnode->ref = TOP_LEVEL_REF;
   }
@@ -1027,7 +1027,7 @@ void Mesh::copy_converted(Mesh* mesh)
   for(int i = 0; i < nodes.get_size(); i++)
   {
     Node& node = nodes[i];
-    if (node.type == TYPE_EDGE) { //process only edge nodes
+    if (node.type == H2D_TYPE_EDGE) { //process only edge nodes
       for(int k = 0; k < 2; k++)
         node.elem[k] = NULL;
     }
@@ -1376,8 +1376,8 @@ void Mesh::refine_triangle_to_quads(Element* e)
 void Mesh::refine_element_to_quads(int id)
 {
   Element* e = get_element(id);
-  if (!e->used) error("invalid element id number.");
-  if (!e->active) error("attempt to refine element #%d which has been refined already.", e->id);
+  if (!e->used) error("Invalid element id number.");
+  if (!e->active) error("Attempt to refine element #%d which has been refined already.", e->id);
 
   if (e->is_triangle())
     refine_triangle_to_quads(e);
@@ -1571,8 +1571,8 @@ void Mesh::refine_quad_to_triangles(Element* e)
 void Mesh::refine_element_to_triangles(int id)
 {
   Element* e = get_element(id);
-  if (!e->used) error("invalid element id number.");
-  if (!e->active) error("attempt to refine element #%d which has been refined already.", e->id);
+  if (!e->used) error("Invalid element id number.");
+  if (!e->active) error("Attempt to refine element #%d which has been refined already.", e->id);
 
   if (e->is_triangle())
     return;
@@ -1655,7 +1655,7 @@ void Mesh::save_raw(FILE* f)
     unsigned bits = n->ref | (n->type << 29) | (n->bnd << 30) | (n->used << 31);
     output(bits, unsigned);
 
-    if (n->type == TYPE_VERTEX)
+    if (n->type == H2D_TYPE_VERTEX)
     {
       output(n->x, double);
       output(n->y, double);
@@ -1755,7 +1755,7 @@ void Mesh::load_raw(FILE* f)
     n->type = (bits >> 29) & 0x1;
     n->bnd  = (bits >> 30) & 0x1;
 
-    if (n->type == TYPE_VERTEX)
+    if (n->type == H2D_TYPE_VERTEX)
     {
       input(n->x, double);
       input(n->y, double);
@@ -1773,7 +1773,7 @@ void Mesh::load_raw(FILE* f)
   }
   nodes.post_load_scan();
 
-  int hsize = DEFAULT_HASH_SIZE;
+  int hsize = H2D_DEFAULT_HASH_SIZE;
   while (hsize < nv) hsize *= 2;
   HashTable::init(hsize);
   HashTable::rebuild();

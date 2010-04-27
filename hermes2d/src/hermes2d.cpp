@@ -19,13 +19,13 @@
 
 void hermes2d_initialize(int* argc, char* argv[])
 {
-  warn("this function is deprecated.");
+  warn("Calling deprecated function.");
 }
 
 
 void hermes2d_finalize(bool force_quit)
 {
-  warn("this function is deprecated.");
+  warn("Calling deprecated function.");
   //free_ortho_base();
   // TODO: free matrices in curved.cpp
 }

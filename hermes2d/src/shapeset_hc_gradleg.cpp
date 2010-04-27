@@ -15716,7 +15716,7 @@ static int* gradleg_quad_edge_indices[4] =
   gradleg_quad_edge_indices_3,
 };
 
-#define oo make_quad_order
+#define oo H2D_MAKE_QUAD_ORDER
 
 static int gradleg_quad_index_to_order[] =
 {
@@ -15814,7 +15814,7 @@ static int* gradleg_index_to_order[2] =
 
 static void check_gradleg_tri(Shapeset* shapeset)
 {
-  shapeset->set_mode(MODE_TRIANGLE);
+  shapeset->set_mode(H2D_MODE_TRIANGLE);
   for (int i = 1; i <= 10; i++)
   {
     int nb = shapeset->get_num_bubbles(i);
@@ -15882,7 +15882,7 @@ HcurlShapesetGradLeg::HcurlShapesetGradLeg()
   comb_table = NULL;
 
   check_gradleg_tri(this);
-  set_mode(MODE_TRIANGLE);
+  set_mode(H2D_MODE_TRIANGLE);
 }
 
 #endif

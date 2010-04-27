@@ -4457,7 +4457,7 @@ int* simple_quad_edge_indices[4] =
 };
 
 
-#define oo make_quad_order
+#define oo H2D_MAKE_QUAD_ORDER
 #define XX(a,b) oo(a,b), oo(a,b)
 
 int simple_quad_index_to_order[] = {

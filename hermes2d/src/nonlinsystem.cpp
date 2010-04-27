@@ -122,13 +122,13 @@ void NonlinSystem::set_ic_n(int proj_norm, int n, ...)
     for (i = 0; i < n; i++)
     {
       wf->add_biform(i, i, H1projection_biform<double, scalar>, H1projection_biform<Ord, Ord>);
-      wf->add_liform(i, H1projection_liform<double, scalar>, H1projection_liform<Ord, Ord>, ANY, 1, fn[i]);
+      wf->add_liform(i, H1projection_liform<double, scalar>, H1projection_liform<Ord, Ord>, H2D_ANY, 1, fn[i]);
     }
   else
     for (i = 0; i < n; i++)
     {
       wf->add_biform(i, i, L2projection_biform<double, scalar>, L2projection_biform<Ord, Ord>);
-      wf->add_liform(i, L2projection_liform<double, scalar>, L2projection_liform<Ord, Ord>, ANY, 1, fn[i]);
+      wf->add_liform(i, L2projection_liform<double, scalar>, L2projection_liform<Ord, Ord>, H2D_ANY, 1, fn[i]);
     }
 
   want_dir_contrib = true;
@@ -154,7 +154,7 @@ void NonlinSystem::set_vec_zero()
 
 void NonlinSystem::assemble(bool rhsonly)
 {
-  if (rhsonly) error("rhsonly has no meaning in NonlinSystem.");
+  if (rhsonly) error("Parameter rhsonly = true has no meaning in NonlinSystem.");
 
   // assemble J(Y_n) and store in A, assemble F(Y_n) and store in RHS
   LinSystem::assemble();
@@ -198,7 +198,7 @@ bool NonlinSystem::solve(int n, ...)
   // solve the system
   scalar* delta = (scalar*) malloc(ndofs * sizeof(scalar));
   solver->solve(slv_ctx, ndofs, Ap, Ai, Ax, false, RHS, delta);
-  verbose("  (total solve time: %g s)", cpu_time.tick().last());
+  report_time("Solved in %g s", cpu_time.tick().last());
 
   // if not initialized by set_ic(), assume Vec is a zero vector
   if (Vec == NULL)
@@ -223,7 +223,7 @@ bool NonlinSystem::solve(int n, ...)
     sln->set_fe_solution(spaces[i], pss[i], Vec);
   }
   va_end(ap);
-  verbose("Exported solution in %g s", cpu_time.tick().last());
+  report_time("Exported solution in %g s", cpu_time.tick().last());
 
   return true;
 }

@@ -345,7 +345,7 @@ int* Mesh::regularize(int n)
       }
     }
   }
-  while(!ok);
+  while (!ok);
 
 
   if (reg)
