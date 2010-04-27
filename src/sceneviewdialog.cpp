@@ -329,17 +329,9 @@ void SceneViewDialog::setControls()
 
         cmbTimeStep->setEnabled(Util::scene()->sceneSolution()->timeStepCount() > 0);
 
-        if (butPostprocessorGroup->checkedButton() == radPostprocessorScalarField3D ||
-            butPostprocessorGroup->checkedButton() == radPostprocessorScalarField3DSolid ||
-            butPostprocessorGroup->checkedButton() == radPostprocessorModel);
-        {
-            chkShowGeometry->setEnabled(false);
-            chkShowGrid->setEnabled(false);
-        }
-
-        if (butPostprocessorGroup->checkedButton() == radPostprocessorScalarField ||
-            butPostprocessorGroup->checkedButton() == radPostprocessorScalarField3D ||
-            butPostprocessorGroup->checkedButton() == radPostprocessorScalarField3DSolid)
+        if (radPostprocessorScalarField->isChecked() ||
+            radPostprocessorScalarField3D->isChecked() ||
+            radPostprocessorScalarField3DSolid->isChecked())
         {
             cmbScalarFieldVariable->setEnabled(true);
             cmbScalarFieldVariableComp->setEnabled(true);
@@ -348,16 +340,23 @@ void SceneViewDialog::setControls()
             doScalarFieldRangeAuto(-1);
         }
 
-        if (butPostprocessorGroup->checkedButton() == radPostprocessorNone ||
-            butPostprocessorGroup->checkedButton() == radPostprocessorOrder ||
-            butPostprocessorGroup->checkedButton() == radPostprocessorScalarField)
+        if (radPostprocessorNone->isChecked() ||
+            radPostprocessorOrder->isChecked() ||
+            radPostprocessorScalarField->isChecked())
         {
+            chkShowGeometry->setEnabled(true);
+            chkShowGrid->setEnabled(true);
             chkShowInitialMesh->setEnabled(true);
             chkShowSolutionMesh->setEnabled(true);
             chkShowContours->setEnabled(cmbScalarFieldVariable->count() > 0);
             chkShowVectors->setEnabled(cmbVectorFieldVariable->count() > 0);
 
             cmbVectorFieldVariable->setEnabled(chkShowVectors->isChecked());
+        }
+        else
+        {
+            chkShowGeometry->setEnabled(false);
+            chkShowGrid->setEnabled(false);
         }
     }
 }

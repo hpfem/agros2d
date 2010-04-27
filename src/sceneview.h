@@ -183,7 +183,7 @@ private:
     // 3d
     double m_scale3d; // scale
     Point m_offset3d; // offset
-    Point m_rotation3d; // rotation
+    Point3 m_rotation3d; // rotation
 
     RectPoint m_chartLine; // line
 

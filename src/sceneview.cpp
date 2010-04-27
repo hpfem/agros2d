@@ -325,6 +325,7 @@ void SceneView::loadProjection3d(bool setScene)
         glTranslated(-m_offset3d.x, -m_offset3d.y, 0.0);
 
         glRotated(m_rotation3d.x, 1.0, 0.0, 0.0);
+        glRotated(m_rotation3d.z, 0.0, 1.0, 0.0);
         glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
 
         if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
@@ -2669,12 +2670,20 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
         }
 
         // rotate
-        if (event->buttons() & Qt::LeftButton)
+        if ((event->buttons() & Qt::LeftButton) && !(event->modifiers() & Qt::ShiftModifier) && !(event->modifiers() & Qt::ControlModifier))
         {
             setCursor(Qt::PointingHandCursor);
 
             m_rotation3d.x -= dy;
             m_rotation3d.y += dx;
+
+            updateGL();
+        }
+        if ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ControlModifier))
+        {
+            setCursor(Qt::PointingHandCursor);
+
+            m_rotation3d.z -= dy;
 
             updateGL();
         }
@@ -2917,7 +2926,7 @@ void SceneView::doDefaultValues()
     // 3d
     m_scale3d = 1.0;
     m_offset3d = Point();
-    m_rotation3d = Point();
+    m_rotation3d = Point3();
 
     m_chartLine.start = Point();
     m_chartLine.end = Point();
@@ -3032,6 +3041,7 @@ void SceneView::doSceneViewProperties()
             {
                 m_rotation3d.x = 66.0;
                 m_rotation3d.y = -35.0;
+                m_rotation3d.z = 0.0;
 
                 m_offset3d.x = 0.0;
                 m_offset3d.y = 0.0;
@@ -3395,7 +3405,7 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
     double scale2dCopy = m_scale2d;
     Point offset2dCopy = m_offset2d;
     Point offset3dCopy = m_offset3d;
-    Point rotation3dCopy = m_rotation3d;
+    Point3 rotation3dCopy = m_rotation3d;
 
     // remove old files
     QFile::remove(path + "/geometry.png");
