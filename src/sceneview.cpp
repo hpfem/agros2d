@@ -2958,9 +2958,15 @@ void SceneView::doInvalidated()
     actSceneViewSelectBasic->setEnabled(m_scene->sceneSolution()->isMeshed());
     actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
     actSceneViewSelectMarker->setEnabled(m_scene->sceneSolution()->isSolved());
-    actSceneZoomRegion->setEnabled((m_sceneMode != SceneMode_Postprocessor) ||
-                                   (m_sceneViewSettings.postprocessorShow != SceneViewPostprocessorShow_ScalarView3D) ||
-                                   (m_sceneViewSettings.postprocessorShow != SceneViewPostprocessorShow_ScalarView3DSolid));
+    actSceneZoomRegion->setEnabled(!is3DMode());
+
+    m_scene->actTransform->setEnabled(m_sceneMode != SceneMode_Postprocessor);
+    m_scene->actDeleteSelected->setEnabled(m_sceneMode != SceneMode_Postprocessor);
+    actSceneViewSelectRegion->setEnabled(m_sceneMode != SceneMode_Postprocessor);
+
+    actPostprocessorModeLocalPointValue->setEnabled(m_sceneMode == SceneMode_Postprocessor && !is3DMode());
+    actPostprocessorModeSurfaceIntegral->setEnabled(m_sceneMode == SceneMode_Postprocessor && !is3DMode());
+    actPostprocessorModeVolumeIntegral->setEnabled(m_sceneMode == SceneMode_Postprocessor && !is3DMode());
 
     emit mousePressed();
 
@@ -3035,9 +3041,7 @@ void SceneView::doSceneViewProperties()
         // set defaults
         if (postprocessorShow != m_sceneViewSettings.postprocessorShow)
         {
-            if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-                m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid ||
-                m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model)
+            if (is3DMode())
             {
                 m_rotation3d.x = 66.0;
                 m_rotation3d.y = -35.0;
@@ -3048,6 +3052,7 @@ void SceneView::doSceneViewProperties()
 
                 m_scale3d = 0.6 * m_scale2d;
             }
+
             doZoomBestFit();
         }
     }
@@ -3102,14 +3107,6 @@ void SceneView::doSceneModeSet(QAction *action)
 
     m_scene->highlightNone();
     m_scene->selectNone();
-
-    m_scene->actTransform->setEnabled((m_sceneMode != SceneMode_Postprocessor));
-    m_scene->actDeleteSelected->setEnabled((m_sceneMode != SceneMode_Postprocessor));
-    actSceneViewSelectRegion->setEnabled((m_sceneMode != SceneMode_Postprocessor));
-
-    actPostprocessorModeLocalPointValue->setEnabled((m_sceneMode == SceneMode_Postprocessor));
-    actPostprocessorModeSurfaceIntegral->setEnabled((m_sceneMode == SceneMode_Postprocessor));
-    actPostprocessorModeVolumeIntegral->setEnabled((m_sceneMode == SceneMode_Postprocessor));
 
     switch (m_sceneMode)
     {
