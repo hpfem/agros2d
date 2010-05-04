@@ -119,7 +119,6 @@ public:
 
     QAction *actSceneViewSelectRegion;
     QAction *actSceneViewSelectMarker;
-    QAction *actSceneViewSelectBasic;
     QAction *actSceneViewProperties;
     QAction *actSceneObjectProperties;
 

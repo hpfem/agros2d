@@ -490,7 +490,7 @@ QWidget *ConfigDialog::createViewWidget()
     QHBoxLayout *layoutOrder = new QHBoxLayout();
     layoutOrder->addWidget(chkOrderLabel);
 
-    QGroupBox *grpOrder = new QGroupBox(tr("Order"));
+    QGroupBox *grpOrder = new QGroupBox(tr("Polynomial order"));
     grpOrder->setLayout(layoutOrder);
 
     // layout

@@ -126,6 +126,8 @@ private:
     TerminalView *terminalView;
     QDockWidget *fileBrowserView;
 
+    QLabel *lblCurrentPosition;
+
     QMenu *mnuFile;
     QMenu *mnuRecentFiles;
     QMenu *mnuEdit;
@@ -177,9 +179,10 @@ private slots:
     void doRunPython();
     void doCreatePythonFromModel();
     void doFileItemDoubleClick(const QString &path);
-    void doCurrentPageChanged(int index);
     void doPathChangeDir();
     void doCurrentDocumentChanged(bool changed);
+    void doCurrentPageChanged(int index);
+    void doCursorPositionChanged();
 
 };
 

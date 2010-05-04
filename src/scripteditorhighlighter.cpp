@@ -66,21 +66,17 @@ QScriptSyntaxHighlighter::QScriptSyntaxHighlighter(QTextDocument *parent) : QSyn
 
     keywordFormat.setForeground(Qt::darkBlue);
     keywordFormat.setFontWeight(QFont::Bold);
+
     QStringList keywordPatterns;
-    keywordPatterns << "\\band\\b" << "\\bdel\\b" << "\\bfrom\\b"
-            << "\\bnot\\b" << "\\bwhile\\b" << "\\bas\\b"
-            << "\\belif\\b" << "\\bglobal\\b" << "\\bor\\b"
-            << "\\bwith\\b" << "\\bassert\\b" << "\\belse\\b"
-            << "\\bif\\b" << "\\bpass\\b" << "\\byield\\b"
-            << "\\bbreak\b" << "\\bexcept\\b" << "\\bimport\\b"
-            << "\\bin\\b" << "\\braise\\b" << "\\bcontinue\\b"
-            << "\\bfinally\\b" << "\\bis\\b" << "\\breturn\\b"
-            << "\\bdef\\b" << "\\bfor\\b" << "\\blambda\\b"
-            << "\\btry\\b";
+    keywordPatterns << "and" << "assert" << "break" << "class" << "continue" << "def"
+            << "del" << "elif" << "else" << "except" << "exec" << "finally"
+            << "for" << "from" << "global" << "if" << "import" << "in"
+            << "is" << "lambda" << "not" << "or" << "pass" << "print" << "raise"
+            << "return" << "try" << "while" << "yield";
 
     foreach (const QString &pattern, keywordPatterns)
     {
-        rule.pattern = QRegExp(pattern);
+        rule.pattern = QRegExp("\\b" + pattern + "\\b", Qt::CaseInsensitive);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
@@ -108,8 +104,14 @@ QScriptSyntaxHighlighter::QScriptSyntaxHighlighter(QTextDocument *parent) : QSyn
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
-    commentStartExpression = QRegExp("\"\\\"\\\"");
-    commentEndExpression = QRegExp("\"\\\"\\\"");
+    operatorFormat.setForeground(Qt::magenta);
+    rule.pattern = QRegExp("[\\\\|\\<|\\>|\\=|\\!|\\+|\\-|\\*|\\/|\\%]+");
+    rule.pattern.setMinimal(true);
+    rule.format = operatorFormat;
+    highlightingRules.append(rule);
+
+    commentStartExpression = QRegExp("\"\"\"");
+    commentEndExpression = QRegExp("\"\"\"");
 }
 
 void QScriptSyntaxHighlighter::highlightBlock(const QString &text)

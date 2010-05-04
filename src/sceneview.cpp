@@ -233,10 +233,6 @@ void SceneView::createActions()
     actSceneViewSelectMarker = new QAction(icon(""), tr("Select by marker"), this);
     actSceneViewSelectMarker->setStatusTip(tr("Select by marker"));
     connect(actSceneViewSelectMarker, SIGNAL(triggered()), this, SLOT(doSelectMarker()));
-
-    actSceneViewSelectBasic = new QAction(icon(""), tr("Select edges in model"), this);
-    actSceneViewSelectBasic->setStatusTip(tr("Select edges in model"));
-    connect(actSceneViewSelectBasic, SIGNAL(triggered()), this, SLOT(doSelectBasic()));
 }
 
 void SceneView::createMenu()
@@ -366,14 +362,7 @@ void SceneView::paintGL()
     if (is3DMode())
     {
         glClear(GL_DEPTH_BUFFER_BIT);
-    }
-    else
-    {
-        glDisable(GL_DEPTH_TEST);
-    }
 
-    if (is3DMode())
-    {
         if (m_scene->sceneSolution()->isMeshed() && (m_sceneMode == SceneMode_Postprocessor))
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model) paintScalarField3DSolid();
@@ -391,6 +380,8 @@ void SceneView::paintGL()
     }
     else
     {
+        glDisable(GL_DEPTH_TEST);
+
         // grid
         if (m_sceneViewSettings.showGrid) paintGrid();
 
@@ -1119,6 +1110,17 @@ void SceneView::paintScalarField()
     if (!m_isSolutionPrepared) return;
 
     loadProjection2d(true);
+
+    // set texture for coloring
+    glEnable(GL_TEXTURE_1D);
+    glBindTexture(GL_TEXTURE_1D, 1);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    // set texture transformation matrix
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+    glTranslated(m_texShift, 0.0, 0.0);
+    glScaled(m_texScale, 0.0, 0.0);
 
     if (m_listScalarField == -1)
     {
@@ -1971,7 +1973,7 @@ void SceneView::paintSceneModeLabel()
                 text += " - " + physicFieldVariableCompString(m_sceneViewSettings.scalarPhysicFieldVariableComp);
             break;
         case SceneViewPostprocessorShow_Model:
-            text = tr("View model");
+            text = tr("Model");
             break;
         case SceneViewPostprocessorShow_Order:
             text = tr("Polynomial order");
@@ -2153,10 +2155,10 @@ void SceneView::paletteCreate()
 
 void SceneView::paletteFilter()
 {
-    int pal_filter = Util::config()->paletteFilter ? GL_LINEAR : GL_NEAREST;
+    int palFilter = Util::config()->paletteFilter ? GL_LINEAR : GL_NEAREST;
     glBindTexture(GL_TEXTURE_1D, 1);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, pal_filter);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, pal_filter);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, palFilter);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, palFilter);
     paletteUpdateTexAdjust();
 }
 
@@ -2831,7 +2833,6 @@ void SceneView::wheelEvent(QWheelEvent *event)
 
             m_scale2d = m_scale2d * pow(1.2, event->delta()/150.0);
 
-
             posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0)),
                             -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0)));
 
@@ -2955,12 +2956,10 @@ void SceneView::doInvalidated()
             actSceneModeNode->trigger();
     }
 
-    actSceneViewSelectBasic->setEnabled(m_scene->sceneSolution()->isMeshed());
     actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
     actSceneViewSelectMarker->setEnabled(m_scene->sceneSolution()->isSolved());
     actSceneZoomRegion->setEnabled(!is3DMode());
 
-    m_scene->actTransform->setEnabled(m_sceneMode != SceneMode_Postprocessor);
     m_scene->actDeleteSelected->setEnabled(m_sceneMode != SceneMode_Postprocessor);
     actSceneViewSelectRegion->setEnabled(m_sceneMode != SceneMode_Postprocessor);
 
@@ -2970,6 +2969,7 @@ void SceneView::doInvalidated()
 
     emit mousePressed();
 
+    paintGL();
     updateGL();
 }
 

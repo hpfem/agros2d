@@ -267,10 +267,10 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
     // search dialog
     searchDialog = new SearchDialog(this);
 
+    createStatusBar();
     createActions();
     createViews();
     createControls();
-    createStatusBar();
 
     filBrowser->refresh();
 
@@ -537,10 +537,10 @@ void ScriptEditorDialog::createViews()
 
 void ScriptEditorDialog::createStatusBar()
 {
-    QLabel *lblDir = new QLabel(statusBar());
+    lblCurrentPosition = new QLabel(statusBar());
 
     statusBar()->showMessage(tr("Ready"));
-    statusBar()->addPermanentWidget(lblDir);
+    statusBar()->addPermanentWidget(lblCurrentPosition);
 }
 
 void ScriptEditorDialog::doRunPython()
@@ -882,7 +882,12 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     connect(txtEditor, SIGNAL(copyAvailable(bool)), actCut, SLOT(setEnabled(bool)));
     connect(txtEditor, SIGNAL(copyAvailable(bool)), actCopy, SLOT(setEnabled(bool)));
 
+    // modifications
     connect(txtEditor->document(), SIGNAL(modificationChanged(bool)), this, SLOT(doCurrentDocumentChanged(bool)));
+
+    // line number
+    connect(txtEditor, SIGNAL(cursorPositionChanged()), this, SLOT(doCursorPositionChanged()));
+    doCursorPositionChanged();
 
     actUndo->setEnabled(txtEditor->document()->isUndoAvailable());
     actRedo->setEnabled(txtEditor->document()->isRedoAvailable());
@@ -900,6 +905,13 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
     setWindowTitle(tr("Script editor - %1").arg(fileName));    
 
     txtEditor->setFocus();
+}
+
+void ScriptEditorDialog::doCursorPositionChanged()
+{
+    QTextCursor cur(txtEditor->textCursor());
+    lblCurrentPosition->setText(tr("Line: %1, Col: %2").arg(cur.blockNumber()+1)
+                                                       .arg(cur.columnNumber()+1));
 }
 
 void ScriptEditorDialog::doCurrentDocumentChanged(bool changed)

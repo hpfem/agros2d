@@ -77,6 +77,7 @@ private:
     QTextCharFormat multiLineCommentFormat;
     QTextCharFormat quotationFormat;
     QTextCharFormat functionFormat;
+    QTextCharFormat operatorFormat;
 };
 
 #endif // QSCRIPTSYNTAXHIGHLIGHTER_H

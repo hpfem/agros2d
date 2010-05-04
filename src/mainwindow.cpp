@@ -324,7 +324,6 @@ void MainWindow::createMenus()
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actSceneViewSelectRegion);
     mnuProblem->addAction(Util::scene()->actTransform);
-    // mnuProblem->addAction(sceneView->actSceneViewSelectBasic);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneView->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneView->actPostprocessorModeSurfaceIntegral);
