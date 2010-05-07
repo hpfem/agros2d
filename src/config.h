@@ -110,6 +110,9 @@ public:
     QString commandTriangle;
     QString commandFFmpeg;
 
+    // global script
+    QString globalScript;
+
     void load();
     void save();
 };

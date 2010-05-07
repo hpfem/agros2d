@@ -931,6 +931,10 @@ void PythonEngine::doPrintStdout(const QString &message)
 
 void PythonEngine::runPythonHeader()
 {
+    // global script
+    if (!Util::config()->globalScript.isEmpty())
+        PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+
     // startup script
     if (!Util::scene()->problemInfo()->scriptStartup.isEmpty())
         PyRun_String(Util::scene()->problemInfo()->scriptStartup.toStdString().c_str(), Py_file_input, m_dict, m_dict);

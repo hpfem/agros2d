@@ -131,6 +131,7 @@ public:
 
     ErrorResult saveImageToFile(const QString &fileName, int w = 0, int h = 0);
     void saveImagesForReport(const QString &path, int w = 0, int h = 0);
+    QPixmap renderScenePixmap(int w = 0, int h = 0, bool useContext = false);
 
     void processRangeContour();
     void processRangeScalar();
@@ -147,6 +148,7 @@ protected:
     void resizeGL(int w, int h);
     void paintGL();
     void setupViewport(int w, int h);
+
     void renderTextPos(double x, double y, double z, const QString &str, bool blend = true);
     
     void keyPressEvent(QKeyEvent *event);

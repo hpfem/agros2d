@@ -11,7 +11,7 @@
         <file>images/document-save-as.png</file>
         <file>images/document-properties.png</file>
         <file>images/document-open-recent.png</file>
-        <file>images/edit-copy.png</file>
+        <file>images/edit-copy.png</file>                              
         <file>images/edit-copy-windows.png</file>
         <file>images/edit-cut.png</file>
         <file>images/edit-cut-windows.png</file>
@@ -32,6 +32,7 @@
         <file>images/options-view.png</file>
         <file>images/options-colors.png</file>
         <file>images/options-advanced.png</file>
+        <file>images/options-python.png</file>
         <file>images/scene-node.png</file>
         <file>images/scene-edge.png</file>
         <file>images/scene-label.png</file>

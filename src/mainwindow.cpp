@@ -843,7 +843,7 @@ void MainWindow::doCut()
 void MainWindow::doCopy()
 {
     // copy image to clipboard
-    QPixmap pixmap = sceneView->renderPixmap();
+    QPixmap pixmap = sceneView->renderScenePixmap();
     QApplication::clipboard()->setImage(pixmap.toImage());
 }
 

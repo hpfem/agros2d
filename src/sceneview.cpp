@@ -271,6 +271,13 @@ void SceneView::initializeGL()
 void SceneView::resizeGL(int w, int h)
 {
     setupViewport(w, h);
+
+    if (Util::scene()->sceneSolution()->isSolved() && m_sceneMode == SceneMode_Postprocessor)
+    {
+        paletteFilter();
+        paletteUpdateTexAdjust();
+        paletteCreate();
+    }
 }
 
 void SceneView::loadProjection2d(bool setScene)
@@ -347,6 +354,15 @@ void SceneView::loadProjection3d(bool setScene)
 void SceneView::setupViewport(int w, int h)
 {
     glViewport(0, 0, w, h);
+}
+
+QPixmap SceneView::renderScenePixmap(int w, int h, bool useContext)
+{
+    QPixmap pixmap = renderPixmap(w, h, useContext);
+
+    resizeGL(contextWidth(), contextHeight());
+
+    return pixmap;
 }
 
 void SceneView::paintGL()
@@ -3385,7 +3401,7 @@ void SceneView::paintPostprocessorSelectedSurface()
 
 ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
 {
-    QPixmap pixmap = renderPixmap(w, h);
+    QPixmap pixmap = renderScenePixmap(w, h);
     if (pixmap.save(fileName, "PNG"))
         resizeGL(width(), height());
     else

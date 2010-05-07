@@ -124,6 +124,9 @@ void ConfigDialog::load()
     // command argument
     txtArgumentTriangle->setText(Util::config()->commandTriangle);
     txtArgumentFFmpeg->setText(Util::config()->commandFFmpeg);
+
+    // global script
+    txtGlobalScript->setPlainText(Util::config()->globalScript);
 }
 
 void ConfigDialog::save()
@@ -220,6 +223,9 @@ void ConfigDialog::save()
     // command argument
     Util::config()->commandTriangle = txtArgumentTriangle->text();
     Util::config()->commandFFmpeg = txtArgumentFFmpeg->text();
+
+    // global script
+    Util::config()->globalScript = txtGlobalScript->toPlainText();
 }
 
 void ConfigDialog::createControls()
@@ -230,6 +236,7 @@ void ConfigDialog::createControls()
     panMain = createMainWidget();
     panView = createViewWidget();
     panColors = createColorsWidget();
+    panGlobalScriptWidget = createGlobalScriptWidget();
     panAdvanced = createAdvancedWidget();
 
     // List View
@@ -256,13 +263,18 @@ void ConfigDialog::createControls()
     itemColors->setTextAlignment(Qt::AlignHCenter);
     itemColors->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-    QListWidgetItem *itemAdvanced    = new QListWidgetItem(icon("options-advanced"), tr("Advanced"), lstView);
+    QListWidgetItem *itemGlobalScript = new QListWidgetItem(icon("options-python"), tr("Python"), lstView);
+    itemGlobalScript->setTextAlignment(Qt::AlignHCenter);
+    itemGlobalScript->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    QListWidgetItem *itemAdvanced = new QListWidgetItem(icon("options-advanced"), tr("Advanced"), lstView);
     itemAdvanced->setTextAlignment(Qt::AlignHCenter);
     itemAdvanced->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     pages->addWidget(panMain);
     pages->addWidget(panView);
     pages->addWidget(panColors);
+    pages->addWidget(panGlobalScriptWidget);
     pages->addWidget(panAdvanced);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
@@ -640,6 +652,21 @@ QWidget *ConfigDialog::createAdvancedWidget()
     layout->addWidget(grpArgument);
     layout->addStretch();
     layout->addWidget(btnDefault, 0, Qt::AlignLeft);
+
+    viewWidget->setLayout(layout);
+
+    return viewWidget;
+}
+
+QWidget *ConfigDialog::createGlobalScriptWidget()
+{
+    QWidget *viewWidget = new QWidget(this);
+
+    txtGlobalScript = new ScriptEditor(this);
+
+    // layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(txtGlobalScript);
 
     viewWidget->setLayout(layout);
 

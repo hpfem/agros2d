@@ -111,6 +111,9 @@ void Config::load()
     // command argument
     commandTriangle = settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString();
     commandFFmpeg = settings.value("Commands/FFmpeg", COMMANDS_FFMPEG).toString();
+
+    // global script
+    globalScript = settings.value("Python/GlobalScript", "").toString();
 }
 
 void Config::save()
@@ -194,4 +197,7 @@ void Config::save()
     // command argument
     settings.setValue("Commands/Triangle", commandTriangle);
     settings.setValue("Commands/FFmpeg", commandFFmpeg);
+
+    // global script
+    settings.setValue("Python/GlobalScript", globalScript);
 }

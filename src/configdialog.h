@@ -51,6 +51,7 @@ private:
     QWidget *panView;
     QWidget *panColors;
     QWidget *panAdvanced;
+    QWidget *panGlobalScriptWidget;
 
     // main
     QComboBox *cmbGUIStyle;
@@ -143,6 +144,9 @@ private:
     QLineEdit *txtArgumentTriangle;
     QLineEdit *txtArgumentFFmpeg;
 
+    // global script
+    ScriptEditor *txtGlobalScript;
+
     void load();
     void save();
 
@@ -151,6 +155,7 @@ private:
     QWidget *createViewWidget();
     QWidget *createColorsWidget();
     QWidget *createAdvancedWidget();
+    QWidget *createGlobalScriptWidget();
 };
 
 // *************************************************************************
