@@ -19,8 +19,8 @@
 
 // $Id: view.h 1086 2008-10-21 09:05:44Z jakub $
 
-#ifndef __HERMES2D_STREAM_VIEW_H
-#define __HERMES2D_STREAM_VIEW_H
+#ifndef __H2D_STREAM_VIEW_H
+#define __H2D_STREAM_VIEW_H
 
 #include "view.h"
 
@@ -31,7 +31,7 @@
 ///
 /// StreamView is a visualization window for all vector-valued PDE solutions (especially for flow problems).
 ///
-class HERMES2D_API StreamView : public View
+class H2D_API StreamView : public View
 {
 public:
 
@@ -97,7 +97,7 @@ protected:
 #else // NOGLUT
 
 /* Empty dummy implementation in a case GLUT is not used */
-class HERMES2D_API StreamView : public View
+class H2D_API StreamView : public View
 {
 public:
 

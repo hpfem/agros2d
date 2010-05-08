@@ -176,7 +176,7 @@ void RefMap::calc_second_ref_map(int order)
   {
     double *dxy, *dxx, *dyy;
     ref_map_pss.set_active_shape(indices[i]);
-    ref_map_pss.set_quad_order(order, FN_ALL);
+    ref_map_pss.set_quad_order(order, H2D_FN_ALL);
     dxx = ref_map_pss.get_dxx_values();
     dyy = ref_map_pss.get_dyy_values();
     dxy = ref_map_pss.get_dxy_values();

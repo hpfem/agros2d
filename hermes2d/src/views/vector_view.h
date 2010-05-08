@@ -19,8 +19,8 @@
 
 // $Id: view.h 1086 2008-10-21 09:05:44Z jakub $
 
-#ifndef __HERMES2D_VECTOR_VIEW_H
-#define __HERMES2D_VECTOR_VIEW_H
+#ifndef __H2D_VECTOR_VIEW_H
+#define __H2D_VECTOR_VIEW_H
 
 #include "view.h"
 
@@ -31,7 +31,7 @@
 ///
 /// VectorView is a visualization window for all vector-valued PDE solutions.
 ///
-class HERMES2D_API VectorView : public View
+class H2D_API VectorView : public View
 {
 public:
 
@@ -67,7 +67,7 @@ protected:
 
 #else // NOGLUT
 
-class HERMES2D_API VectorView : public View
+class H2D_API VectorView : public View
 {
 public:
   VectorView(const char* title = "VectorView", DEFAULT_WINDOW_POS) {}

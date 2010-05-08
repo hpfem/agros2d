@@ -28,9 +28,13 @@ Geom<Ord>* init_geom_ord()
 	static Ord tx[] = { Ord(1) };
 	static Ord ty[] = { Ord(1) };
 
+	static Ord diam = Ord(1);
+
+        // element = NULL;
 	e->x = x; e->y = y;
 	e->nx = nx; e->ny = ny;
 	e->tx = tx; e->ty = ty;
+        e->diam = diam;
 	return e;
 }
 
@@ -38,7 +42,8 @@ Geom<Ord>* init_geom_ord()
 Geom<double>* init_geom_vol(RefMap *rm, const int order)
 {
     Geom<double>* e = new Geom<double>;
-    e->element = rm->get_active_element();
+    //e->element = rm->get_active_element();
+    e->diam = (rm->get_active_element())->get_diameter();
     e->id = rm->get_active_element()->id;
     e->marker = rm->get_active_element()->marker;
     e->x = rm->get_phys_x(order);
@@ -95,7 +100,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 	u->nc = fu->get_num_components();
   int space_type = fu->get_type();
   Quad2D* quad = fu->get_quad_2d();
-  if (u->nc == 1) fu->set_quad_order(order, FN_ALL);
+  if (u->nc == 1) fu->set_quad_order(order, H2D_FN_ALL);
   else fu->set_quad_order(order);
   double3* pt = quad->get_points(order);
   int np = quad->get_num_points(order);

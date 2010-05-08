@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SHAPESET_H1_ALL
-#define __HERMES2D_SHAPESET_H1_ALL
+#ifndef __H2D_SHAPESET_H1_ALL
+#define __H2D_SHAPESET_H1_ALL
 
 // This file is a common header for all H1 shapesets.
 
@@ -22,7 +22,7 @@
 
 
 /// H1 shapeset with orthogonalized bubble functions for improved conditioning.
-class HERMES2D_API H1ShapesetOrtho : public Shapeset
+class H2D_API H1ShapesetOrtho : public Shapeset
 {
   public: H1ShapesetOrtho();
   virtual int get_id() const { return 0; }
@@ -30,7 +30,7 @@ class HERMES2D_API H1ShapesetOrtho : public Shapeset
 
 
 /// Sven Beuchler's shape functions based on integrated Jacobi polynomials.
-class HERMES2D_API H1ShapesetBeuchler : public Shapeset
+class H2D_API H1ShapesetBeuchler : public Shapeset
 {
   public: H1ShapesetBeuchler();
   virtual int get_id() const { return 1; }
@@ -38,7 +38,7 @@ class HERMES2D_API H1ShapesetBeuchler : public Shapeset
 
 
 // Experimental.
-class HERMES2D_API H1ShapesetEigen : public Shapeset
+class H2D_API H1ShapesetEigen : public Shapeset
 {
   public: H1ShapesetEigen();
   virtual int get_id() const { return 2; }

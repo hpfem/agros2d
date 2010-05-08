@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_REFINEMENT_SELECTOR_H
-#define __HERMES2D_REFINEMENT_SELECTOR_H
+#ifndef __H2D_REFINEMENT_SELECTOR_H
+#define __H2D_REFINEMENT_SELECTOR_H
 
 #include "../refinement_type.h"
 
@@ -26,7 +26,7 @@ class Solution;
 #define H2DRS_MAX_ORDER 9 ///< A maximum order.
 
 namespace RefinementSelectors {
-  class HERMES2D_API Selector { ///< Basic class for selecting a refinement. All selectors has to inherit from this class.
+  class H2D_API Selector { ///< Basic class for selecting a refinement. All selectors has to inherit from this class.
   public:
     const int max_order; ///< A maximum allowed order.
   public:
@@ -48,14 +48,14 @@ namespace RefinementSelectors {
     virtual void update_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders) = 0;
   };
 
-  class HERMES2D_API H1OnlyH : public Selector { ///< Selector that does only H-adaptivity.
+  class H2D_API H1OnlyH : public Selector { ///< Selector that does only H-adaptivity.
   public:
     H1OnlyH() : Selector() {};
     virtual bool select_refinement(Element* element, int quad_order, Solution* rsln, ElementToRefine& refinement); ///< Suggests refinement.
     virtual void update_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders); ///< Updates orders of a refinement in another multimesh component which shares a mesh.
   };
 
-  class HERMES2D_API H1OnlyP : public Selector { ///< Selector that does only P-adaptivity.
+  class H2D_API H1OnlyP : public Selector { ///< Selector that does only P-adaptivity.
   public:
     H1OnlyP(int max_order) : Selector(max_order) {};
     virtual bool select_refinement(Element* element, int quad_order, Solution* rsln, ElementToRefine& refinement); ///< Suggests refinement.

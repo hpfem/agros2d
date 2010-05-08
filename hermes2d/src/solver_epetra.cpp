@@ -29,7 +29,7 @@ EpetraMatrix::EpetraMatrix()
 {
 #ifdef HAVE_EPETRA
 	this->mat = NULL;
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	this->mat_im = NULL;
 #endif
 	this->grph = NULL;
@@ -85,7 +85,7 @@ void EpetraMatrix::finish()
 {
 #ifdef HAVE_EPETRA
 	mat->FillComplete();
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	mat_im->FillComplete();
 #endif
 #endif
@@ -97,7 +97,7 @@ void EpetraMatrix::alloc()
 	grph->FillComplete();
 	// create the matrix
 	mat = new Epetra_CrsMatrix(Copy, *grph);
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	mat_im = new Epetra_CrsMatrix(Copy, *grph);
 #endif
 #endif
@@ -108,7 +108,7 @@ void EpetraMatrix::free()
 #ifdef HAVE_EPETRA
 	if (owner) {
 		delete mat; mat = NULL;
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 		delete mat_im; mat_im = NULL;
 #endif
 		delete grph; grph = NULL;
@@ -149,7 +149,7 @@ void EpetraMatrix::zero()
 {
 #ifdef HAVE_EPETRA
 	mat->PutScalar(0.0);
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	mat_im->PutScalar(0.0);
 #endif
 #endif
@@ -159,7 +159,7 @@ void EpetraMatrix::add(int m, int n, scalar v)
 {
 #ifdef HAVE_EPETRA
 	if (v != 0.0 && m >= 0 && n >= 0) {		// ignore dirichlet DOFs
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
 		int ierr = mat->SumIntoGlobalValues(m, 1, &v, &n);
 		assert(ierr == 0);
 #else
@@ -205,7 +205,7 @@ EpetraVector::EpetraVector()
 #ifdef HAVE_EPETRA
 	this->std_map = NULL;
 	this->vec = NULL;
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	this->vec_im = NULL;
 #endif
 	this->size = 0;
@@ -237,7 +237,7 @@ void EpetraVector::alloc(int n)
 	size = n;
 	std_map = new Epetra_Map(size, 0, seq_comm);
 	vec = new Epetra_Vector(*std_map);
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	vec_im = new Epetra_Vector(*std_map);
 #endif
 	zero();
@@ -248,7 +248,7 @@ void EpetraVector::zero()
 {
 #ifdef HAVE_EPETRA
 	for (int i = 0; i < size; i++) (*vec)[i] = 0.0;
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	for (int i = 0; i < size; i++) (*vec_im)[i] = 0.0;
 #endif
 #endif
@@ -259,7 +259,7 @@ void EpetraVector::free()
 #ifdef HAVE_EPETRA
 	delete std_map; std_map = NULL;
 	delete vec; vec = NULL;
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	delete vec_im; vec_im = NULL;
 #endif
 	size = 0;
@@ -269,7 +269,7 @@ void EpetraVector::free()
 void EpetraVector::set(int idx, scalar y)
 {
 #ifdef HAVE_EPETRA
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
 	if (idx >= 0) (*vec)[idx] = y;
 #else
 	if (idx >= 0) {
@@ -283,7 +283,7 @@ void EpetraVector::set(int idx, scalar y)
 void EpetraVector::add(int idx, scalar y)
 {
 #ifdef HAVE_EPETRA
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
 	if (idx >= 0) (*vec)[idx] += y;
 #else
 	if (idx >= 0) {

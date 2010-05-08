@@ -233,7 +233,7 @@ void Linearizer::print_hash_stats()
 
 //// process_triangle & process_quad ///////////////////////////////////////////////////////////////
 
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
   #define getval(i) (val[i])
   #define realpart(x) (x)
 #else
@@ -272,8 +272,8 @@ void Linearizer::process_triangle(int iv0, int iv1, int iv2, int level,
         {
           xdisp->force_transform(sln);
           ydisp->force_transform(sln);
-          xdisp->set_quad_order(1, FN_VAL);
-          ydisp->set_quad_order(1, FN_VAL);
+          xdisp->set_quad_order(1, H2D_FN_VAL);
+          ydisp->set_quad_order(1, H2D_FN_VAL);
           scalar* dx = xdisp->get_fn_values();
           scalar* dy = ydisp->get_fn_values();
           for (i = 0; i < lin_np_tri[1]; i++) {
@@ -397,8 +397,8 @@ void Linearizer::process_quad(int iv0, int iv1, int iv2, int iv3, int level,
         {
           xdisp->force_transform(sln);
           ydisp->force_transform(sln);
-          xdisp->set_quad_order(1, FN_VAL);
-          ydisp->set_quad_order(1, FN_VAL);
+          xdisp->set_quad_order(1, H2D_FN_VAL);
+          ydisp->set_quad_order(1, H2D_FN_VAL);
           scalar* dx = xdisp->get_fn_values();
           scalar* dy = ydisp->get_fn_values();
           for (i = 0; i < lin_np_quad[1]; i++) {
@@ -731,8 +731,8 @@ void Linearizer::process_solution(MeshFunction* sln, int item, double eps, doubl
     {
       xdisp->set_active_element(e);
       ydisp->set_active_element(e);
-      xdisp->set_quad_order(0, FN_VAL);
-      ydisp->set_quad_order(0, FN_VAL);
+      xdisp->set_quad_order(0, H2D_FN_VAL);
+      ydisp->set_quad_order(0, H2D_FN_VAL);
       dx = xdisp->get_fn_values();
       dy = ydisp->get_fn_values();
     }

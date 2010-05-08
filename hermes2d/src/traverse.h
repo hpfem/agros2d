@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_TRAVERSE_H
-#define __HERMES2D_TRAVERSE_H
+#ifndef __H2D_TRAVERSE_H
+#define __H2D_TRAVERSE_H
 
 class Mesh;
 class Transformable;
@@ -33,7 +33,7 @@ struct UniData
 /// same base mesh it walks through all (pseudo-)elements of the union of all
 /// the N meshes.
 ///
-class HERMES2D_API Traverse
+class H2D_API Traverse
 {
 public:
 

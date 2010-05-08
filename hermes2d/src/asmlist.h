@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_ASMLIST_H
-#define __HERMES2D_ASMLIST_H
+#ifndef __H2D_ASMLIST_H
+#define __H2D_ASMLIST_H
 
 #include "common.h"
 
@@ -25,7 +25,7 @@
 /// automatically by the class. The class provides a list of triples (idx, dof, coef).
 /// The triples are flattened to separate arrays of length 'cnt'.
 ///
-class HERMES2D_API AsmList
+class H2D_API AsmList
 {
 public:
 

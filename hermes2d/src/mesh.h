@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_MESH_H
-#define __HERMES2D_MESH_H
+#ifndef __H2D_MESH_H
+#define __H2D_MESH_H
 
 #include "common.h"
 #include "curved.h"
@@ -33,7 +33,7 @@ struct MItem;
 ///      <li> H2D_TYPE_EDGE   -- edge node. Only stores edge marker and two element pointers.
 /// </ol>
 ///
-struct HERMES2D_API Node
+struct H2D_API Node
 {
   int id;          ///< node id number
   unsigned ref:29; ///< the number of elements using the node
@@ -86,7 +86,7 @@ struct HERMES2D_API Node
 /// If an element has curved edges, the member 'cm' points to an associated CurvMap structure,
 /// otherwise it is NULL.
 ///
-struct HERMES2D_API Element
+struct H2D_API Element
 {
   int id;            ///< element id number
   unsigned nvert:30; ///< number of vertices (3 or 4)
@@ -142,7 +142,7 @@ struct HERMES2D_API Element
 ///
 ///
 ///
-class HERMES2D_API Mesh : public HashTable
+class H2D_API Mesh : public HashTable
 {
 public:
 
@@ -263,7 +263,7 @@ public:
   void convert_quads_to_triangles();
 
 protected:
-  HERMES2D_API_USED_TEMPLATE(Array<Element>);
+  H2D_API_USED_TEMPLATE(Array<Element>);
   Array<Element> elements;
   int nbase, ntopvert;
   int nactive, ninitial;

@@ -14,8 +14,8 @@
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef __HERMES2D_FORMS_H
-#define __HERMES2D_FORMS_H
+#ifndef __H2D_FORMS_H
+#define __H2D_FORMS_H
 
 #include "common.h"
 #include "quad.h"
@@ -136,13 +136,18 @@ template<typename T>
 class Geom
 {
 public:
-  int marker;      // marker
+  int marker;                            // marker
   int id;
-  Element *element; // active element
+  //Element *element;                      // active element. NOTE: We used this for some time but 
+                                         // decided against it because (a) it disables automatic order 
+                                         // parsing and (b) if the form is called with T == Ord, 
+                                         // element is not initialized, so the user has to be aware
+                                         // of this and test it in his weak form.  
 
   T *x, *y;				 // coordinates [in physical domain]
   T *nx, *ny;				 // normals [in physical domain]
   T *tx, *ty;				 // tangents [in physical domain]
+  T diam;                                // element diameter
 
   Geom()
   {
@@ -151,6 +156,7 @@ public:
     x = y = NULL;
     nx = ny = NULL;
     tx = ty = NULL;
+    diam = 0;
   }
 
   void free()

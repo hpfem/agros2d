@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_MATRIX_H
-#define __HERMES2D_MATRIX_H
+#ifndef __H2D_MATRIX_H
+#define __H2D_MATRIX_H
 
 #include "common.h"
 
@@ -82,7 +82,7 @@ void chsgn(T** matrix, int m, int n)
 /// pivoting; d is output as +-1 depending on whether the number of row interchanges was even
 /// or odd, respectively. This routine is used in combination with lubksb to solve linear equations
 /// or invert a matrix.
-extern HERMES2D_API void ludcmp(double** a, int n, int* indx, double* d);
+extern H2D_API void ludcmp(double** a, int n, int* indx, double* d);
 
 /// Solves the set of n linear equations AX = B. Here a[n][n] is input, not as the matrix
 /// A but rather as its LU decomposition, determined by the routine ludcmp. indx[n] is input
@@ -120,7 +120,7 @@ void lubksb(double** a, int n, int* indx, T* b)
 /// decomposition, A = L*L^T . On input, only the upper triangle of a need be given; it is not
 /// modified. The Cholesky factor L is returned in the lower triangle of a, except for its diagonal
 /// elements which are returned in p[n].
-extern HERMES2D_API void choldc(double **a, int n, double p[]);
+extern H2D_API void choldc(double **a, int n, double p[]);
 
 /// Solves the set of n linear equations A*x = b, where a is a positive-definite symmetric matrix.
 /// a[n][n] and p[n] are input as the output of the routine choldc. Only the lower

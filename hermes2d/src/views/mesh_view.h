@@ -19,8 +19,8 @@
 
 // $Id: view.h 1086 2008-10-21 09:05:44Z jakub $
 
-#ifndef __HERMES2D_MESH_VIEW_H
-#define __HERMES2D_MESH_VIEW_H
+#ifndef __H2D_MESH_VIEW_H
+#define __H2D_MESH_VIEW_H
 
 #include "view.h"
 
@@ -32,7 +32,7 @@
 /// MeshView is a debugging tool for displaying meshes together with its element
 /// id numbers, boundary markers etc.
 ///
-class HERMES2D_API MeshView : public View
+class H2D_API MeshView : public View
 {
 public:
 
@@ -68,7 +68,7 @@ protected:
 
 #else // NOGLUT
 
-class HERMES2D_API MeshView : public View
+class H2D_API MeshView : public View
 {
 public:
   MeshView(const char* title = "MeshView", DEFAULT_WINDOW_POS) {}

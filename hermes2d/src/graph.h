@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_GRAPH_H
-#define __HERMES2D_GRAPH_H
+#ifndef __H2D_GRAPH_H
+#define __H2D_GRAPH_H
 
 ///  Graph is a utility class storing a simple XY graph (eg., a convergence graph).
 ///  One or more data rows can be defined by calling add_row(). The actual data
@@ -24,7 +24,7 @@
 ///  Please note that this is a base class that cannot be instantiated.
 ///  Use MatlabGraph or GnuplotGraph instead.
 ///
-class HERMES2D_API Graph
+class H2D_API Graph
 {
 public:
 
@@ -67,7 +67,7 @@ protected:
     std::vector<Values> data;
   };
 
-  HERMES2D_API_USED_STL_VECTOR(Row);
+  H2D_API_USED_STL_VECTOR(Row);
   std::vector<Row> rows;
 
 };
@@ -75,7 +75,7 @@ protected:
 
 ///  Outputs just two numbers per row
 ///
-class HERMES2D_API SimpleGraph : public Graph
+class H2D_API SimpleGraph : public Graph
 {
 public:
 
@@ -89,7 +89,7 @@ public:
 
 ///  Outputs a MATLAB graph.
 ///
-class HERMES2D_API MatlabGraph : public Graph
+class H2D_API MatlabGraph : public Graph
 {
 public:
 
@@ -103,7 +103,7 @@ public:
 
 ///  Outputs a GNUPLOT graph.
 ///
-class HERMES2D_API GnuplotGraph : public Graph
+class H2D_API GnuplotGraph : public Graph
 {
 public:
 

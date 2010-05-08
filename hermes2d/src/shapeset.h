@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SHAPESET_H
-#define __HERMES2D_SHAPESET_H
+#ifndef __H2D_SHAPESET_H
+#define __H2D_SHAPESET_H
 
 #include "common.h"
 
@@ -60,7 +60,7 @@
 ///
 /// Shape functions are always real-valued.
 ///
-class HERMES2D_API Shapeset
+class H2D_API Shapeset
 {
 public:
 

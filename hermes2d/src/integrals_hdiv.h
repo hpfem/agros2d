@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_INTEGRALS_HDIV_H
-#define __HERMES2D_INTEGRALS_HDIV_H
+#ifndef __H2D_INTEGRALS_HDIV_H
+#define __H2D_INTEGRALS_HDIV_H
 
 // a
 //// volume integrals //////////////////////////////////////////////////////////////////////////////
@@ -25,8 +25,8 @@ inline T int_g_h(Function<T>* fg, Function<T>* fh, RefMap* rg, RefMap* rh)
   Quad2D* quad = rg->get_quad_2d();
   int o = fg->get_fn_order() + fh->get_fn_order() + 2 + rg->get_inv_ref_order();
   limit_order(o);
-  fg->set_quad_order(o, FN_VAL);
-  fh->set_quad_order(o, FN_VAL);
+  fg->set_quad_order(o, H2D_FN_VAL);
+  fh->set_quad_order(o, H2D_FN_VAL);
 
   T *g0 = fg->get_fn_values(0), *g1 = fg->get_fn_values(1);
   T *h0 = fh->get_fn_values(0), *h1 = fh->get_fn_values(1);

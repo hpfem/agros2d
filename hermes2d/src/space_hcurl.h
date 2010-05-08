@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SPACE_HCURL_H
-#define __HERMES2D_SPACE_HCURL_H
+#ifndef __H2D_SPACE_HCURL_H
+#define __H2D_SPACE_HCURL_H
 
 #include "space.h"
 
@@ -24,7 +24,7 @@
 ///
 ///
 ///
-class HERMES2D_API HcurlSpace : public Space
+class H2D_API HcurlSpace : public Space
 {
 public:
 

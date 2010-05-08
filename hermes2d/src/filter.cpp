@@ -234,8 +234,8 @@ void SimpleFilter::init_components()
   for (int i = 0; i < num; i++)
   {
     if (sln[i]->get_num_components() > 1) vec1 = true;
-    if ((item[i] & FN_COMPONENT_0) && (item[i] & FN_COMPONENT_1)) vec2 = true;
-    if (sln[i]->get_num_components() == 1) item[i] &= FN_COMPONENT_0;
+    if ((item[i] & H2D_FN_COMPONENT_0) && (item[i] & H2D_FN_COMPONENT_1)) vec2 = true;
+    if (sln[i]->get_num_components() == 1) item[i] &= H2D_FN_COMPONENT_0;
   }
   num_components = (vec1 && vec2) ? 2 : 1;
 }
@@ -243,12 +243,12 @@ void SimpleFilter::init_components()
 
 void SimpleFilter::precalculate(int order, int mask)
 {
-  if (mask & (FN_DX | FN_DY | FN_DXX | FN_DYY | FN_DXY))
+  if (mask & (H2D_FN_DX | H2D_FN_DY | H2D_FN_DXX | H2D_FN_DYY | H2D_FN_DXY))
     error("Filter not defined for derivatives.");
 
   Quad2D* quad = quads[cur_quad];
   int np = quad->get_num_points(order);
-  Node* node = new_node(FN_VAL, np);
+  Node* node = new_node(H2D_FN_VAL, np);
 
   // precalculate all solutions
   for (int i = 0; i < num; i++)
@@ -284,7 +284,7 @@ void SimpleFilter::precalculate(int order, int mask)
 
 scalar SimpleFilter::get_pt_value(double x, double y, int it)
 {
-  if (it & (FN_DX | FN_DY | FN_DXX | FN_DYY | FN_DXY))
+  if (it & (H2D_FN_DX | H2D_FN_DY | H2D_FN_DXX | H2D_FN_DYY | H2D_FN_DXY))
     error("Filter not defined for derivatives.");
   scalar val[4];
   for (int i = 0; i < num; i++)
@@ -348,11 +348,11 @@ void DXDYFilter::precalculate(int order, int mask)
 {
   Quad2D* quad = quads[cur_quad];
   int np = quad->get_num_points(order);
-  Node* node = new_node(FN_DEFAULT, np);
+  Node* node = new_node(H2D_FN_DEFAULT, np);
 
   // precalculate all solutions
   for (int i = 0; i < num; i++)
-    sln[i]->set_quad_order(order, FN_DEFAULT);
+    sln[i]->set_quad_order(order, H2D_FN_DEFAULT);
 
   for (int j = 0; j < num_components; j++)
   {
@@ -406,7 +406,7 @@ MagFilter::MagFilter(MeshFunction* sln1, MeshFunction* sln2, int item1, int item
          : SimpleFilter(magnitude_fn_2, sln1, sln2, item1, item2) {}
 
 MagFilter::MagFilter(MeshFunction* sln1, int item1)
-         : SimpleFilter(magnitude_fn_2, sln1, sln1, item1 & FN_COMPONENT_0, item1 & FN_COMPONENT_1)
+         : SimpleFilter(magnitude_fn_2, sln1, sln1, item1 & H2D_FN_COMPONENT_0, item1 & H2D_FN_COMPONENT_1)
 {
   if (sln1->get_num_components() < 2)
     error("The single-argument constructor is intended for vector-valued solutions.");
@@ -435,7 +435,7 @@ SumFilter::SumFilter(MeshFunction* sln1, MeshFunction* sln2, int item1, int item
 
 static void square_fn_1(int n, scalar* v1, scalar* result)
 {
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
   for (int i = 0; i < n; i++)
     result[i] = std::norm(v1[i]);
 #else
@@ -450,7 +450,7 @@ SquareFilter::SquareFilter(MeshFunction* sln1, int item1)
 
 static void real_part_fn_1(int n, scalar* v1, scalar* result)
 {
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
   memcpy(result, v1, sizeof(scalar) * n);
 #else
   for (int i = 0; i < n; i++)
@@ -464,7 +464,7 @@ RealFilter::RealFilter(MeshFunction* sln1, int item1)
 
 static void imag_part_fn_1(int n, scalar* v1, scalar* result)
 {
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
   memset(result, 0, sizeof(scalar) * n);
 #else
   for (int i = 0; i < n; i++)
@@ -478,7 +478,7 @@ ImagFilter::ImagFilter(MeshFunction* sln1, int item1)
 
 static void abs_fn_1(int n, scalar* v1, scalar* result)
 {
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
   for (int i = 0; i < n; i++)
     result[i] = fabs(v1[i]);
 #else
@@ -493,7 +493,7 @@ AbsFilter::AbsFilter(MeshFunction* sln1, int item1)
 
 static void angle_fn_1(int n, scalar* v1, scalar* result)
 {
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
   for (int i = 0; i < n; i++)
     result[i] = 0.0;
 #else
@@ -508,7 +508,7 @@ AngleFilter::AngleFilter(MeshFunction* sln1, int item1)
 
 //// VonMisesFilter ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
   #define getval(exp) (exp)
 #else
   #define getval(exp) (exp.real())
@@ -517,15 +517,15 @@ AngleFilter::AngleFilter(MeshFunction* sln1, int item1)
 
 void VonMisesFilter::precalculate(int order, int mask)
 {
-  if (mask & (FN_DX | FN_DY | FN_DXX | FN_DYY | FN_DXY))
+  if (mask & (H2D_FN_DX | H2D_FN_DY | H2D_FN_DXX | H2D_FN_DYY | H2D_FN_DXY))
     error("VonMisesFilter not defined for derivatives.");
 
   Quad2D* quad = quads[cur_quad];
   int np = quad->get_num_points(order);
-  Node* node = new_node(FN_VAL_0, np);
+  Node* node = new_node(H2D_FN_VAL_0, np);
 
-  sln[0]->set_quad_order(order, FN_VAL | FN_DX | FN_DY);
-  sln[1]->set_quad_order(order, FN_DX | FN_DY);
+  sln[0]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
+  sln[1]->set_quad_order(order, H2D_FN_DX | H2D_FN_DY);
 
   scalar *dudx, *dudy, *dvdx, *dvdy;
   sln[0]->get_dx_dy_values(dudx, dudy);
@@ -571,7 +571,7 @@ void LinearFilter::precalculate(int order, int mask)
 {
   Quad2D* quad = quads[cur_quad];
   int np = quad->get_num_points(order);
-  Node* node = new_node(FN_DEFAULT, np);
+  Node* node = new_node(H2D_FN_DEFAULT, np);
 
   // precalculate all solutions
   for (int i = 0; i < num; i++)

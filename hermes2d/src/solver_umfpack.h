@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SOLVER_UMFPACK_H
-#define __HERMES2D_SOLVER_UMFPACK_H
+#ifndef __H2D_SOLVER_UMFPACK_H
+#define __H2D_SOLVER_UMFPACK_H
 
 
 #include <umfpack.h>
@@ -35,7 +35,7 @@
 
 //// helper macros /////////////////////////////////////////////////////////////////////////////////
 
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
   // macros for calling complex UMFPACK in packed-complex mode
   #define umfpack_symbolic(m, n, Ap, Ai, Ax, S, C, I) \
           umfpack_zi_symbolic(m, n, Ap, Ai, (double*) (Ax), NULL, S, C, I)

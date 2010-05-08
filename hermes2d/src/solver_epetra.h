@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SOLVER_EPETRA_H_
-#define __HERMES2D_SOLVER_EPETRA_H_
+#ifndef __H2D_SOLVER_EPETRA_H_
+#define __H2D_SOLVER_EPETRA_H_
 
 #include "config.h"
 #include "itersolver.h"
@@ -58,7 +58,7 @@ protected:
 	Epetra_BlockMap *std_map;
 	Epetra_CrsGraph *grph;
 	Epetra_CrsMatrix *mat;
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	Epetra_CrsMatrix *mat_im;		// imaginary part of the matrix, mat holds the real part
 #endif
 	bool owner;
@@ -85,7 +85,7 @@ public:
 	virtual void free();
 #ifdef HAVE_EPETRA
 	virtual scalar get(int idx) { return (*vec)[idx]; }
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
 	virtual void extract(scalar *v) const { vec->ExtractCopy(v); }
 #else
 	virtual void extract(scalar *v) const { }
@@ -104,7 +104,7 @@ protected:
 #ifdef HAVE_EPETRA
 	Epetra_BlockMap *std_map;
 	Epetra_Vector *vec;
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 	Epetra_Vector *vec_im;		// imaginary part of the vector, vec holds the real part
 #endif
 	bool owner;

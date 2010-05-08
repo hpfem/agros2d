@@ -14,8 +14,8 @@
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef __HERMES2D_WEAKFORM_H
-#define __HERMES2D_WEAKFORM_H
+#ifndef __H2D_WEAKFORM_H
+#define __H2D_WEAKFORM_H
 
 #include "function.h"
 
@@ -37,9 +37,9 @@ template<typename T> class ExtData;
 // Bilinear form symmetry flag, see WeakForm::add_biform
 enum SymFlag
 {
-  ANTISYM = -1,
-  UNSYM = 0,
-  SYM = 1
+  H2D_ANTISYM = -1,
+  H2D_UNSYM = 0,
+  H2D_SYM = 1
 };
 
 /// \brief Represents the weak formulation of a problem.
@@ -52,7 +52,7 @@ enum SymFlag
 ///
 ///
 ///
-class HERMES2D_API WeakForm
+class H2D_API WeakForm
 {
 public:
 
@@ -75,14 +75,14 @@ public:
   typedef Ord (*resform_ord_t)(int n, double *wt, Func<Ord> *u[], Func<Ord> *vi, Geom<Ord> *e, ExtData<Ord> *);
 
   // linear case
-  void add_biform(int i, int j, biform_val_t fn, biform_ord_t ord, SymFlag sym = UNSYM, int area = H2D_ANY, int nx = 0, ...);
+  void add_biform(int i, int j, biform_val_t fn, biform_ord_t ord, SymFlag sym = H2D_UNSYM, int area = H2D_ANY, int nx = 0, ...);
   void add_biform_surf(int i, int j, biform_val_t fn, biform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
   void add_liform(int i, liform_val_t fn, liform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
   void add_liform_surf(int i, liform_val_t fn, liform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
   void add_liform(int i, liform_val_extended_t fn, liform_ord_extended_t ord, int area = H2D_ANY, int nx = 0, ...);
 
   // nonlinear case
-  void add_jacform(int i, int j, jacform_val_t fn, jacform_ord_t ord, SymFlag sym = UNSYM, int area = H2D_ANY, int nx = 0, ...);
+  void add_jacform(int i, int j, jacform_val_t fn, jacform_ord_t ord, SymFlag sym = H2D_UNSYM, int area = H2D_ANY, int nx = 0, ...);
   void add_jacform_surf(int i, int j, jacform_val_t fn, jacform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
   void add_resform(int i, resform_val_t fn, resform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
   void add_resform_surf(int i, resform_val_t fn, resform_ord_t ord, int area = H2D_ANY, int nx = 0, ...);
@@ -103,9 +103,9 @@ protected:
 
   struct Area  {  /*std::string name;*/  std::vector<int> markers;  };
 
-  HERMES2D_API_USED_STL_VECTOR(Area);
+  H2D_API_USED_STL_VECTOR(Area);
   std::vector<Area> areas;
-  HERMES2D_API_USED_STL_VECTOR(MeshFunction*);
+  H2D_API_USED_STL_VECTOR(MeshFunction*);
 
   // linear case
   struct BiFormVol   {  int i, j, sym, area;  biform_val_t  fn;  biform_ord_t  ord;  std::vector<MeshFunction*> ext;  };
@@ -137,13 +137,13 @@ protected:
   struct ResFormSurf {  int i, area;          resform_val_t fn;  resform_ord_t ord;  std::vector<MeshFunction *> ext; };
 
   // linear case
-  HERMES2D_API_USED_STL_VECTOR(BiFormVol);
+  H2D_API_USED_STL_VECTOR(BiFormVol);
   std::vector<BiFormVol>  bfvol;
-  HERMES2D_API_USED_STL_VECTOR(BiFormSurf);
+  H2D_API_USED_STL_VECTOR(BiFormSurf);
   std::vector<BiFormSurf> bfsurf;
-  HERMES2D_API_USED_STL_VECTOR(LiFormVol);
+  H2D_API_USED_STL_VECTOR(LiFormVol);
   std::vector<LiFormVol>  lfvol;
-  HERMES2D_API_USED_STL_VECTOR(LiFormSurf);
+  H2D_API_USED_STL_VECTOR(LiFormSurf);
   std::vector<LiFormSurf> lfsurf;
 
   // nonlinear case

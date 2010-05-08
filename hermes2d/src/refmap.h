@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_REFMAP_H
-#define __HERMES2D_REFMAP_H
+#ifndef __H2D_REFMAP_H
+#define __H2D_REFMAP_H
 
 #include "common.h"
 #include "precalc.h"
@@ -31,7 +31,7 @@ struct Element;
 /// the calculation of integration points positions in the physical domain and
 /// the calculation of edge tangents in 1D integration points.
 ///
-class HERMES2D_API RefMap : public Transformable
+class H2D_API RefMap : public Transformable
 {
 public:
 

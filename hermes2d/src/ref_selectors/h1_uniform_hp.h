@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_REFINEMENT_SELECTORS_H1_UNIFORM_HP_H
-#define __HERMES2D_REFINEMENT_SELECTORS_H1_UNIFORM_HP_H
+#ifndef __H2D_REFINEMENT_SELECTORS_H1_UNIFORM_HP_H
+#define __H2D_REFINEMENT_SELECTORS_H1_UNIFORM_HP_H
 
 #include "proj_based_selector.h"
 
 namespace RefinementSelectors {
-  class HERMES2D_API H1UniformHP : public ProjBasedSelector { ///< Selector that does HP-adaptivity using uniform orders on quadrilateral elements.
+  class H2D_API H1UniformHP : public ProjBasedSelector { ///< Selector that does HP-adaptivity using uniform orders on quadrilateral elements.
   protected: //candidates
     /// \brief Calculate various projection errors for sons of a candidates of given combination of orders. Errors are not normalized. Overloadable.
     /// \param[in] e Element which is being processed.

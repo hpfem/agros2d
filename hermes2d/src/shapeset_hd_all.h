@@ -13,16 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SHAPESET_HD_ALL_H
-#define __HERMES2D_SHAPESET_HD_ALL_H
+#ifndef __H2D_SHAPESET_HD_ALL_H
+#define __H2D_SHAPESET_HD_ALL_H
 
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 
 #include "shapeset.h"
 
 
 /// H(div) shapeset based on Legendre polynomials.
-class HERMES2D_API HdivShapesetLegendre : public Shapeset
+class H2D_API HdivShapesetLegendre : public Shapeset
 {
   public: HdivShapesetLegendre();
   virtual int get_id() const { return 20; }
@@ -33,6 +33,6 @@ class HERMES2D_API HdivShapesetLegendre : public Shapeset
 typedef HdivShapesetLegendre HdivShapeset;
 
 
-#endif // COMPLEX
+#endif // H2D_COMPLEX
 
 #endif

@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_REFSYSTEM_H
-#define __HERMES2D_REFSYSTEM_H
+#ifndef __H2D_REFSYSTEM_H
+#define __H2D_REFSYSTEM_H
 
 #include "linsystem.h"
 
@@ -24,7 +24,7 @@ class ExactSolution;
 ///
 ///
 ///
-class HERMES2D_API RefSystem : public LinSystem
+class H2D_API RefSystem : public LinSystem
 {
 public:
 
@@ -53,6 +53,11 @@ public:
   /// automatically on desctruction.
   void free_ref_data();
 
+  /// Gets pointer to reference space [i]
+  Space* get_ref_space(int i=0) {return ref_spaces[i];}
+
+  /// Gets pointer to reference mesh [i]
+  Mesh* get_ref_mesh(int i=0) {return ref_meshes[i];}
 
 protected:
 

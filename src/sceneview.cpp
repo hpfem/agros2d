@@ -266,6 +266,8 @@ void SceneView::initializeGL()
 {
     glShadeModel(GL_SMOOTH);    
     glEnable(GL_NORMALIZE);
+
+    clearGLLists();
 }
 
 void SceneView::resizeGL(int w, int h)
@@ -906,6 +908,8 @@ void SceneView::paintOrder()
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         glEndList();
+
+        glCallList(m_listOrder);
     }
     else
     {
@@ -1127,17 +1131,6 @@ void SceneView::paintScalarField()
 
     loadProjection2d(true);
 
-    // set texture for coloring
-    glEnable(GL_TEXTURE_1D);
-    glBindTexture(GL_TEXTURE_1D, 1);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-    // set texture transformation matrix
-    glMatrixMode(GL_TEXTURE);
-    glLoadIdentity();
-    glTranslated(m_texShift, 0.0, 0.0);
-    glScaled(m_texScale, 0.0, 0.0);
-
     if (m_listScalarField == -1)
     {
         qDebug() << "SceneView::paintScalarField(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
@@ -1208,6 +1201,8 @@ void SceneView::paintScalarField()
         m_scene->sceneSolution()->linScalarView().unlock_data();
 
         glEndList();
+
+        glCallList(m_listScalarField);
     }
     else
     {
@@ -1369,6 +1364,8 @@ void SceneView::paintScalarField3D()
         m_scene->sceneSolution()->linScalarView().unlock_data();
 
         glEndList();
+
+        glCallList(m_listScalarField3D);
     }
     else
     {
@@ -1699,6 +1696,8 @@ void SceneView::paintScalarField3DSolid()
         m_scene->sceneSolution()->linScalarView().unlock_data();
 
         glEndList();
+
+        glCallList(m_listScalarField3DSolid);
     }
     else
     {
@@ -1763,6 +1762,8 @@ void SceneView::paintContours()
         m_scene->sceneSolution()->linContourView().unlock_data();
 
         glEndList();
+
+        glCallList(m_listContours);
     }
     else
     {
@@ -1956,6 +1957,8 @@ void SceneView::paintVectors()
         m_scene->sceneSolution()->vecVectorView().unlock_data();
 
         glEndList();
+
+        glCallList(m_listVectors);
     }
     else
     {
@@ -2841,16 +2844,16 @@ void SceneView::wheelEvent(QWheelEvent *event)
         if (Util::config()->zoomToMouse)
         {
             Point posMouse;
-            posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0)),
-                            -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0)));
+            posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale2d*aspect(),
+                            -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale2d);
 
             m_offset2d.x += posMouse.x;
             m_offset2d.y += posMouse.y;
 
             m_scale2d = m_scale2d * pow(1.2, event->delta()/150.0);
 
-            posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0)),
-                            -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0)));
+            posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale2d*aspect(),
+                            -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale2d);
 
             m_offset2d.x -= posMouse.x;
             m_offset2d.y -= posMouse.y;

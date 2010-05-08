@@ -110,7 +110,7 @@ public:
     ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, MeshFunction *sln3, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 
-    double get_pt_value(double x, double y, int item = FN_VAL_0);
+    double get_pt_value(double x, double y, int item = H2D_FN_VAL);
 
 protected:
     PhysicFieldVariable m_physicFieldVariable;

@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_REFINEMENT_SELECTORS_H1_NONUNIFORM_HP_H
-#define __HERMES2D_REFINEMENT_SELECTORS_H1_NONUNIFORM_HP_H
+#ifndef __H2D_REFINEMENT_SELECTORS_H1_NONUNIFORM_HP_H
+#define __H2D_REFINEMENT_SELECTORS_H1_NONUNIFORM_HP_H
 
 #include "proj_based_selector.h"
 
@@ -27,7 +27,7 @@
 
 namespace RefinementSelectors {
 
-  class HERMES2D_API H1NonUniformHP : public ProjBasedSelector { ///< Selector that does HP-adaptivity using non-uniform orders on quadrilateral elements.
+  class H2D_API H1NonUniformHP : public ProjBasedSelector { ///< Selector that does HP-adaptivity using non-uniform orders on quadrilateral elements.
   protected: //projection and error evaluation
     template<typename T>
     struct ValueCacheItem { ///< An item of a value cache.

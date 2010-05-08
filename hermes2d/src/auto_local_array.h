@@ -1,5 +1,5 @@
-#ifndef __HERMES2D_AUTO_LOCAL_ARRAY_H
-#define __HERMES2D_AUTO_LOCAL_ARRAY_H
+#ifndef __H2D_AUTO_LOCAL_ARRAY_H
+#define __H2D_AUTO_LOCAL_ARRAY_H
 
 #include <stdlib.h>
 

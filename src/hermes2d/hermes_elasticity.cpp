@@ -153,10 +153,10 @@ void callbackElasticitySpace(QList<H1Space *> *space)
 
 void callbackElasticityWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
 {
-    wf->add_biform(0, 0, callback(elasticity_bilinear_form_0_0), SYM);
-    wf->add_biform(0, 1, callback(elasticity_bilinear_form_0_1), SYM);
-    // wf->add_biform(1, 0, callback(elasticity_bilinear_form_1_0), SYM);
-    wf->add_biform(1, 1, callback(elasticity_bilinear_form_1_1), SYM);
+    wf->add_biform(0, 0, callback(elasticity_bilinear_form_0_0), H2D_SYM);
+    wf->add_biform(0, 1, callback(elasticity_bilinear_form_0_1), H2D_SYM);
+    // wf->add_biform(1, 0, callback(elasticity_bilinear_form_1_0), H2D_SYM);
+    wf->add_biform(1, 1, callback(elasticity_bilinear_form_1_1), H2D_SYM);
     wf->add_liform_surf(1, callback(elasticity_linear_form_surf));
 }
 

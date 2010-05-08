@@ -83,7 +83,7 @@ int Vectorizer::get_vertex(int p1, int p2, double x, double y, double xvalue, do
 
 //// process_triangle & process_quad ///////////////////////////////////////////////////////////////
 
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
   #define getvalx(i) (xval[i])
   #define getvaly(i) (yval[i])
   #define getmag(i) (sqrt(sqr(xval[i]) + sqr(yval[i])))

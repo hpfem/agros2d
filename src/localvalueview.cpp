@@ -47,12 +47,12 @@ PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
                 // const solution at first time step
                 tmpValue = Util::scene()->problemInfo()->initialCondition.number;
             else                
-                tmpValue = sln->get_pt_value(point.x, point.y, FN_VAL_0);
+                tmpValue = sln->get_pt_value(point.x, point.y, H2D_FN_VAL_0);
 
             if (Util::scene()->problemInfo()->physicField() != PhysicField_Elasticity)
             {
-                tmpDerivative.x =  sln->get_pt_value(point.x, point.y, FN_DX_0);
-                tmpDerivative.y =  sln->get_pt_value(point.x, point.y, FN_DY_0);
+                tmpDerivative.x =  sln->get_pt_value(point.x, point.y, H2D_FN_DX_0);
+                tmpDerivative.y =  sln->get_pt_value(point.x, point.y, H2D_FN_DY_0);
             }
 
             // find marker

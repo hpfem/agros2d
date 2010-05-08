@@ -79,7 +79,7 @@ bool AztecOOSolver::solve()
 	// no output
 	aztec.SetAztecOption(AZ_output, AZ_none);	// AZ_all | AZ_warnings | AZ_last | AZ_summary
 
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
 	// setup the problem
 	aztec.SetUserMatrix(m.mat);
 	aztec.SetRHS(rhs.vec);

@@ -52,7 +52,7 @@ void VectorBaseView::update_solution()
     vec[base_index + 1] = 1.0;
   sln->set_fe_solution(space, pss, vec);
 
-  VectorView::show(sln,  sln, 0.001, FN_VAL_0, FN_VAL_1);
+  VectorView::show(sln,  sln, 0.001, H2D_FN_VAL_0, H2D_FN_VAL_1);
   update_title();
 }
 

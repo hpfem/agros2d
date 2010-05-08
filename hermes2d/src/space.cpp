@@ -259,6 +259,9 @@ void Space::distribute_orders(Mesh* mesh, int* parents)
 
 int Space::assign_dofs(int first_dof, int stride)
 {
+  //warn("Deprecated function used. Please update your code to use assign_dofs(Space *s) or assign_dofs(int n, Space *s1, Space *s2, ..., Space *sn).");
+
+
   if (first_dof < 0) error("Invalid first_dof.");
   if (stride < 1)    error("Invalid stride.");
 
@@ -505,7 +508,7 @@ void Space::free_extra_data()
 }*/
 
 // new way of enumerating degrees of freedom
-HERMES2D_API int assign_dofs(int n, ...) {
+H2D_API int assign_dofs(int n, ...) {
   // reading variable argument list
   std::vector<Space*> spaces(n);
   va_list ap;
@@ -524,7 +527,7 @@ HERMES2D_API int assign_dofs(int n, ...) {
   return ndof;
 }
 
-HERMES2D_API int assign_dofs(Space *s) {
+H2D_API int assign_dofs(Space *s) {
   return assign_dofs(1, s);
 }
 

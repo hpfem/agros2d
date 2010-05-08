@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SHAPESET_H1_QUAD_H
-#define __HERMES2D_SHAPESET_H1_QUAD_H
+#ifndef __H2D_SHAPESET_H1_QUAD_H
+#define __H2D_SHAPESET_H1_QUAD_H
 
 
 extern Shapeset::shape_fn_t* simple_quad_shape_fn_table[1];

@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SPACE_H
-#define __HERMES2D_SPACE_H
+#ifndef __H2D_SPACE_H
+#define __H2D_SPACE_H
 
 #include "mesh.h"
 #include "shapeset.h"
@@ -98,7 +98,7 @@ enum
 ///
 /// The handling of irregular meshes is desribed in H1Space and HcurlSpace.
 ///
-class HERMES2D_API Space
+class H2D_API Space
 {
 public:
 
@@ -258,7 +258,7 @@ protected: //DEBUG
   /// the DOFs have been assigned.
   virtual void post_assign() {}
 
-  HERMES2D_API_USED_STL_VECTOR(void*);
+  H2D_API_USED_STL_VECTOR(void*);
   std::vector<void*> extra_data;
   void free_extra_data();
 
@@ -278,7 +278,7 @@ public:
 };
 
 // new way of enumerating degrees of freedom
-extern HERMES2D_API int assign_dofs(int n, ...);  // assigns dofs in multiple spaces
-extern HERMES2D_API int assign_dofs(Space *s);    // assigns dofs to one space
+extern H2D_API int assign_dofs(int n, ...);  // assigns dofs in multiple spaces
+extern H2D_API int assign_dofs(Space *s);    // assigns dofs to one space
 
 #endif

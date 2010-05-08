@@ -23,7 +23,7 @@
 #include "traverse.h"
 
 
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 
 
 HcurlOrthoHP::HcurlOrthoHP(int num, ...)
@@ -959,7 +959,7 @@ double HcurlOrthoHP::calc_error_n(int n, ...)
         double e, t;
         if (form[i][j] != NULL)
         {
-          #ifndef COMPLEX
+          #ifndef H2D_COMPLEX
           e = fabs(eval_error(form[i][j], ord[i][j], sln[i], sln[j], rsln[i], rsln[j], rmi, rmj, rrmi, rrmj));
           t = fabs(eval_norm(form[i][j], ord[i][j], rsln[i], rsln[j], rrmi, rrmj));
           #else

@@ -25,7 +25,7 @@ const std::string get_quad_order_str(const int quad_order) {
   return str.str();
 }
 
-HERMES2D_API void __h2d_exit_if(bool cond, int code) {
+H2D_API void __h2d_exit_if(bool cond, int code) {
   if (cond)
     exit(code);
 }
@@ -132,7 +132,7 @@ static bool write_console(const char code, const bool emphasize, const char* tex
 #endif
 }
 
-HERMES2D_API bool __h2d_log_message_if(bool cond, const __h2d_log_info& info, const char* msg, ...) {
+H2D_API bool __h2d_log_message_if(bool cond, const __h2d_log_info& info, const char* msg, ...) {
   if (cond) {
     logger_monitor.enter();
 
@@ -253,32 +253,32 @@ __h2d_logo __h2d_logo_instance;
 #endif
 
 //// runtime report control varibles //////////////////////////////////////////////////////////////////////////////////
-#if defined(HERMES2D_REPORT_WARNING)
+#if defined(H2D_REPORT_WARNING)
 # define __H2D_REP_WARN true
 #else
 # define __H2D_REP_WARN false
 #endif
-#if defined(HERMES2D_REPORT_INTR_WARNING)
+#if defined(H2D_REPORT_INTR_WARNING)
 # define __H2D_REP_WARN_INTR true
 #else
 # define __H2D_REP_WARN_INTR false
 #endif
-#if defined(HERMES2D_REPORT_INFO)
+#if defined(H2D_REPORT_INFO)
 # define __H2D_REP_INFO true
 #else
 # define __H2D_REP_INFO false
 #endif
-#if defined(HERMES2D_REPORT_VERBOSE)
+#if defined(H2D_REPORT_VERBOSE)
 # define __H2D_REP_VERB true
 #else
 # define __H2D_REP_VERB false
 #endif
-#if defined(HERMES2D_REPORT_TRACE)
+#if defined(H2D_REPORT_TRACE)
 # define __H2D_REP_TRAC true
 #else
 # define __H2D_REP_TRAC false
 #endif
-#if defined(HERMES2D_REPORT_TIME)
+#if defined(H2D_REPORT_TIME)
 # define __H2D_REP_TIME true
 #else
 # define __H2D_REP_TIME false
@@ -289,16 +289,16 @@ __h2d_logo __h2d_logo_instance;
 # define __H2D_REP_DEBG false
 #endif
 
-HERMES2D_API bool __h2d_report_warn = __H2D_REP_WARN;
-HERMES2D_API bool __h2d_report_warn_intr = __H2D_REP_WARN_INTR;
-HERMES2D_API bool __h2d_report_info = __H2D_REP_INFO;
-HERMES2D_API bool __h2d_report_verbose = __H2D_REP_VERB;
-HERMES2D_API bool __h2d_report_trace = __H2D_REP_TRAC;
-HERMES2D_API bool __h2d_report_time = __H2D_REP_TIME;
-HERMES2D_API bool __h2d_report_debug = __H2D_REP_DEBG;
+H2D_API bool __h2d_report_warn = __H2D_REP_WARN;
+H2D_API bool __h2d_report_warn_intr = __H2D_REP_WARN_INTR;
+H2D_API bool __h2d_report_info = __H2D_REP_INFO;
+H2D_API bool __h2d_report_verbose = __H2D_REP_VERB;
+H2D_API bool __h2d_report_trace = __H2D_REP_TRAC;
+H2D_API bool __h2d_report_time = __H2D_REP_TIME;
+H2D_API bool __h2d_report_debug = __H2D_REP_DEBG;
 
 //// python support //////////////////////////////////////////////////////////////////////////////////
-HERMES2D_API void throw_exception(char *text)
+H2D_API void throw_exception(char *text)
 {
   throw std::runtime_error(text);
 }

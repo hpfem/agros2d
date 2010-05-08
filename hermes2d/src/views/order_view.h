@@ -19,8 +19,8 @@
 
 // $Id: view.h 1086 2008-10-21 09:05:44Z jakub $
 
-#ifndef __HERMES2D_ORDER_VIEW_H
-#define __HERMES2D_ORDER_VIEW_H
+#ifndef __H2D_ORDER_VIEW_H
+#define __H2D_ORDER_VIEW_H
 
 #include "view.h"
 
@@ -33,7 +33,7 @@
 ///
 /// OrderView is a tool for displaying the polynomial degrees of the elements in a space.
 ///
-class HERMES2D_API OrderView : public View
+class H2D_API OrderView : public View
 {
 public:
 
@@ -67,7 +67,7 @@ protected:
 
 #else // NOGLUT
 
-class HERMES2D_API OrderView : public View
+class H2D_API OrderView : public View
 {
 public:
   OrderView(const char* title = "OrderView", DEFAULT_WINDOW_POS) {}

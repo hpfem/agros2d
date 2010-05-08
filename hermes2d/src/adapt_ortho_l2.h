@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_ADAPT_ORTHO_L2_H
-#define __HERMES2D_ADAPT_ORTHO_L2_H
+#ifndef __H2D_ADAPT_ORTHO_L2_H
+#define __H2D_ADAPT_ORTHO_L2_H
 
 #include "forms.h"
 #include "weakform.h"
@@ -30,7 +30,7 @@
 ///
 /// TODO: describe difference from H1OrthoHP
 ///
-class HERMES2D_API L2OrthoHP
+class H2D_API L2OrthoHP
 {
 public:
 

@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_ARRAY_H
-#define __HERMES2D_ARRAY_H
+#ifndef __H2D_ARRAY_H
+#define __H2D_ARRAY_H
 
 #include "common.h"
 //#include "vector.h"
@@ -33,9 +33,9 @@ template<class T>
 class Array
 {
 protected:
-  HERMES2D_API_USED_STL_VECTOR(T*);
+  H2D_API_USED_STL_VECTOR(T*);
   std::vector<T*>  pages; // todo: standard array for maximum access speed
-  HERMES2D_API_USED_STL_VECTOR(int);
+  H2D_API_USED_STL_VECTOR(int);
   std::vector<int> unused;
   int  size, nitems;
   bool append_only;

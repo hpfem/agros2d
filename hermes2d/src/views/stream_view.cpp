@@ -40,7 +40,7 @@ void StreamView::show(MeshFunction* xsln, MeshFunction* ysln, int marker, double
 {
   if (xsln == ysln)
     error("Identical solutions passed to the two-argument version of show(). This is most likely a mistake.");
-  show(xsln, ysln, marker, step, eps, FN_VAL_0, FN_VAL_0);
+  show(xsln, ysln, marker, step, eps, H2D_FN_VAL_0, H2D_FN_VAL_0);
 }
 
 

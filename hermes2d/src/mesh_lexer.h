@@ -15,8 +15,8 @@
 
 // $Id$
 
-#ifndef __HERMES2D_MESH_LEXER_H
-#define __HERMES2D_MESH_LEXER_H
+#ifndef __H2D_MESH_LEXER_H
+#define __H2D_MESH_LEXER_H
 
 
 enum MTType

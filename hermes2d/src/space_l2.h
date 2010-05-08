@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SPACE_L2
-#define __HERMES2D_SPACE_L2
+#ifndef __H2D_SPACE_L2
+#define __H2D_SPACE_L2
 
 #include "space.h"
 
@@ -23,7 +23,7 @@
 /// mesh edges.
 ///
 ///
-class HERMES2D_API L2Space : public Space
+class H2D_API L2Space : public Space
 {
 public:
 

@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_REFSYSTEM2_H
-#define __HERMES2D_REFSYSTEM2_H
+#ifndef __H2D_REFSYSTEM2_H
+#define __H2D_REFSYSTEM2_H
 
 #include "linsystem.h"
 
 class Mesh;
 
 
-class HERMES2D_API RefNonlinSystem : public NonlinSystem
+class H2D_API RefNonlinSystem : public NonlinSystem
 {
 public:
 

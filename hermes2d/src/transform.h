@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_TRANSFORM_H
-#define __HERMES2D_TRANSFORM_H
+#ifndef __H2D_TRANSFORM_H
+#define __H2D_TRANSFORM_H
 
 #include "mesh.h"
 
@@ -25,8 +25,8 @@ struct Trf
   double2 t; ///< translation vector
 };
 
-extern HERMES2D_API Trf tri_trf[4];  ///< table of triangle sub-element transforms
-extern HERMES2D_API Trf quad_trf[8]; ///< table of quad sub-element transforms
+extern H2D_API Trf tri_trf[4];  ///< table of triangle sub-element transforms
+extern H2D_API Trf quad_trf[8]; ///< table of quad sub-element transforms
 
 
 /// Transformable is a base class for all classes that perform some kind of precalculation of
@@ -34,7 +34,7 @@ extern HERMES2D_API Trf quad_trf[8]; ///< table of quad sub-element transforms
 /// from Transformable the ability to transform integration points to the sub-elements
 /// of an element.
 ///
-class HERMES2D_API Transformable
+class H2D_API Transformable
 {
 public:
 

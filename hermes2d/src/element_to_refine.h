@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_ELEMENT_TO_REFINE_H
-#define __HERMES2D_ELEMENT_TO_REFINE_H
+#ifndef __H2D_ELEMENT_TO_REFINE_H
+#define __H2D_ELEMENT_TO_REFINE_H
 
 #include "refinement_type.h"
 
-struct HERMES2D_API ElementToRefine { ///< A record of an element and a selected candidate.
+struct H2D_API ElementToRefine { ///< A record of an element and a selected candidate.
   int id; //ID of element
   int comp; //componet
   int split; //proposed refinement
@@ -39,6 +39,6 @@ public:
   }
 };
 
-extern HERMES2D_API std::ostream& operator<<(std::ostream& stream, const ElementToRefine& elem_ref); ///< Dumps contants of the structure. Used for debugging purposes.
+extern H2D_API std::ostream& operator<<(std::ostream& stream, const ElementToRefine& elem_ref); ///< Dumps contants of the structure. Used for debugging purposes.
 
 #endif

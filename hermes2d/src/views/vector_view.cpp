@@ -39,14 +39,14 @@ void VectorView::show(MeshFunction* vsln, double eps)
 {
   if (vsln->get_num_components() < 2)
     error("The single-argument version of show() is only for vector-valued solutions.");
-  show(vsln, vsln, eps, FN_VAL_0, FN_VAL_1);
+  show(vsln, vsln, eps, H2D_FN_VAL_0, H2D_FN_VAL_1);
 }
 
 void VectorView::show(MeshFunction* xsln, MeshFunction* ysln, double eps)
 {
   if (xsln == ysln)
     error("Identical solutions passed to the two-argument version of show(). This is most likely a mistake.");
-  show(xsln, ysln, eps, FN_VAL_0, FN_VAL_0);
+  show(xsln, ysln, eps, H2D_FN_VAL_0, H2D_FN_VAL_0);
 }
 
 

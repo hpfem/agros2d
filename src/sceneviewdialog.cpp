@@ -76,6 +76,8 @@ void SceneViewDialog::load()
 
     // transient view
     cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
+
+    setControls();
 }
 
 void SceneViewDialog::save()

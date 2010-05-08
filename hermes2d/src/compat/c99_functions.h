@@ -1,5 +1,5 @@
-#ifndef __HERMES2D_C99_FUNCTIONS_H
-#define __HERMES2D_C99_FUNCTIONS_H
+#ifndef __H2D_C99_FUNCTIONS_H
+#define __H2D_C99_FUNCTIONS_H
 
 #ifdef IMPLELENT_C99
 
@@ -8,12 +8,12 @@
  */
 
 // Not-a-number constant.
-extern HERMES2D_API const double NAN;
+extern H2D_API const double NAN;
 
 // functions
-extern HERMES2D_API double exp2(double x); ///< exp 2
-extern HERMES2D_API double log2(double x); ///< log 2
-extern HERMES2D_API double cbrt(double x); ///< cubic root
+extern H2D_API double exp2(double x); ///< exp 2
+extern H2D_API double log2(double x); ///< log 2
+extern H2D_API double cbrt(double x); ///< cubic root
 
 #endif /* IMPLELENT_C99 */
 

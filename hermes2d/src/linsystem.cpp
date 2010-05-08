@@ -57,11 +57,11 @@ static int default_order_table_quad[] =
 };
 #endif
 
-HERMES2D_API int  g_max_order;
-HERMES2D_API int  g_safe_max_order;
+H2D_API int  g_max_order;
+H2D_API int  g_safe_max_order;
 int* g_order_table_quad = default_order_table_quad;
 int* g_order_table_tri  = default_order_table_tri;
-HERMES2D_API int* g_order_table = NULL;
+H2D_API int* g_order_table = NULL;
 bool warned_order = false;
 //extern bool warned_order;
 extern void update_limit_table(int mode);
@@ -988,7 +988,7 @@ void LinSystem::save_matrix_matlab(const char* filename, const char* varname)
   fprintf(f, "%% Size: %dx%d\n%% Nonzeros: %d\ntemp = zeros(%d, 3);\ntemp = [\n", ndofs, ndofs, Ap[ndofs], Ap[ndofs]);
   for (int j = 0; j < ndofs; j++)
     for (int i = Ap[j]; i < Ap[j+1]; i++)
-      #ifndef COMPLEX
+      #ifndef H2D_COMPLEX
         fprintf(f, "%d %d %.18e\n", Ai[i]+1, j+1, Ax[i]);
       #else
         fprintf(f, "%d %d %.18e + %.18ei\n", Ai[i]+1, j+1, Ax[i].real(), Ax[i].imag());
@@ -1006,7 +1006,7 @@ void LinSystem::save_rhs_matlab(const char* filename, const char* varname)
   verbose("Saving RHS vector in MATLAB format...");
   fprintf(f, "%% Size: %dx1\n%s = [\n", ndofs, varname);
   for (int i = 0; i < ndofs; i++)
-    #ifndef COMPLEX
+    #ifndef H2D_COMPLEX
       fprintf(f, "%.18e\n", RHS[i]);
     #else
       fprintf(f, "%.18e + %.18ei\n", RHS[i].real(), RHS[i].imag());
@@ -1051,7 +1051,7 @@ void LinSystem::save_rhs_bin(const char* filename)
 
 //// order limitation and warning //////////////////////////////////////////////////////////////////
 
-HERMES2D_API void set_order_limit_table(int* tri_table, int* quad_table, int n)
+H2D_API void set_order_limit_table(int* tri_table, int* quad_table, int n)
 {
   if (n < 24) error("Order limit tables must have at least 24 entries.");
   g_order_table_tri  = tri_table;
@@ -1059,7 +1059,7 @@ HERMES2D_API void set_order_limit_table(int* tri_table, int* quad_table, int n)
 }
 
 
-HERMES2D_API void update_limit_table(int mode)
+H2D_API void update_limit_table(int mode)
 {
   g_quad_2d_std.set_mode(mode);
   g_max_order = g_quad_2d_std.get_max_order();
@@ -1068,7 +1068,7 @@ HERMES2D_API void update_limit_table(int mode)
 }
 
 
-HERMES2D_API void warn_order()
+H2D_API void warn_order()
 {
   if (!warned_order)
   {

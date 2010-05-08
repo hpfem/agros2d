@@ -13,29 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_NORM_H
-#define __HERMES2D_NORM_H
+#ifndef __H2D_NORM_H
+#define __H2D_NORM_H
 
 #include "solution.h"
 #include "refmap.h"
 
-extern HERMES2D_API double calc_error(double (*fn)(MeshFunction*, MeshFunction*, RefMap*, RefMap*), MeshFunction* sln1, MeshFunction* sln2);
-extern HERMES2D_API double calc_norm(double (*fn)(MeshFunction*, RefMap*), MeshFunction* sln);
+extern H2D_API double calc_error(double (*fn)(MeshFunction*, MeshFunction*, RefMap*, RefMap*), MeshFunction* sln1, MeshFunction* sln2);
+extern H2D_API double calc_norm(double (*fn)(MeshFunction*, RefMap*), MeshFunction* sln);
 
 
-extern HERMES2D_API double l2_error(MeshFunction* sln1, MeshFunction* sln2);
-extern HERMES2D_API double l2_norm(MeshFunction* sln);
+extern H2D_API double l2_error(MeshFunction* sln1, MeshFunction* sln2);
+extern H2D_API double l2_norm(MeshFunction* sln);
 
-extern HERMES2D_API double h1_error(MeshFunction* sln1, MeshFunction* sln2);
-extern HERMES2D_API double h1_norm(MeshFunction* sln);
+extern H2D_API double h1_error(MeshFunction* sln1, MeshFunction* sln2);
+extern H2D_API double h1_norm(MeshFunction* sln);
 
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 
-extern HERMES2D_API double hcurl_error(MeshFunction* sln1, MeshFunction* sln2);
-extern HERMES2D_API double hcurl_norm(MeshFunction* sln);
+extern H2D_API double hcurl_error(MeshFunction* sln1, MeshFunction* sln2);
+extern H2D_API double hcurl_norm(MeshFunction* sln);
 
-extern HERMES2D_API double hcurl_l2error(MeshFunction* sln1, MeshFunction* sln2);
-extern HERMES2D_API double hcurl_l2norm(MeshFunction* sln);
+extern H2D_API double hcurl_l2error(MeshFunction* sln1, MeshFunction* sln2);
+extern H2D_API double hcurl_l2norm(MeshFunction* sln);
 
 #endif
 

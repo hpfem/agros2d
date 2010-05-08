@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_HASH_H
-#define __HERMES2D_HASH_H
+#ifndef __H2D_HASH_H
+#define __H2D_HASH_H
 
 #include "array.h"
 
@@ -27,7 +27,7 @@ struct Node;
 /// HashTable is a base class for Mesh. It serves as a container for all nodes
 /// of a mesh. Moreover, it has node searching functions based on hash tables.
 ///
-class HERMES2D_API HashTable
+class H2D_API HashTable
 {
 public:
 
@@ -53,7 +53,7 @@ public:
 // The following functions are used by the derived class Mesh:
 protected:
 
-  HERMES2D_API_USED_TEMPLATE(Array<Node>);
+  H2D_API_USED_TEMPLATE(Array<Node>);
   Array<Node> nodes; ///< Array storing all nodes
 
   static const int H2D_DEFAULT_HASH_SIZE = 0x20000; // 128K entries

@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_REFINEMENT_PROJ_BASED_SELECTOR_H
-#define __HERMES2D_REFINEMENT_PROJ_BASED_SELECTOR_H
+#ifndef __H2D_REFINEMENT_PROJ_BASED_SELECTOR_H
+#define __H2D_REFINEMENT_PROJ_BASED_SELECTOR_H
 
 #include "optimum_selector.h"
 
 namespace RefinementSelectors {
   typedef double SonProjectionError[H2DRS_MAX_ORDER+2][H2DRS_MAX_ORDER+2]; ///< Error of a son of a candidate for various order combinations. The maximum allowed order is H2DRS_MAX_ORDER+1.
 
-  class HERMES2D_API ProjBasedSelector : public OptimumSelector {
+  class H2D_API ProjBasedSelector : public OptimumSelector {
   protected:
     /// \brief Calculate various projection errors for sons of a candidates of given combination of orders. Errors are not normalized. Overloadable.
     /// \param[in] e Element which is being processed.

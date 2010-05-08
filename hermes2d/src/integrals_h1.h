@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_INTEGRALS_H1_H
-#define __HERMES2D_INTEGRALS_H1_H
+#ifndef __H2D_INTEGRALS_H1_H
+#define __H2D_INTEGRALS_H1_H
 
 
-//// new volume integrals //////////////////////////////////////////////////////////////////////////////
+//// the following integrals can be used in both volume and surface forms //////////////////////////////////////////////////////////////////////////////
 
 template<typename Real, typename Scalar>
 Scalar int_v(int n, double *wt, Func<Real> *v)
@@ -234,8 +234,8 @@ inline double int_l2_error(Function<T>* fu, Function<T>* fv, RefMap* ru, RefMap*
 
   int o = std::max(2*fu->get_fn_order(), 2*fv->get_fn_order()) + ru->get_inv_ref_order();
   limit_order(o);
-  fu->set_quad_order(o, FN_VAL);
-  fv->set_quad_order(o, FN_VAL);
+  fu->set_quad_order(o, H2D_FN_VAL);
+  fv->set_quad_order(o, H2D_FN_VAL);
 
   scalar* fnu = fu->get_fn_values();
   scalar* fnv = fv->get_fn_values();
@@ -333,7 +333,7 @@ inline double int_l2_norm(Function<T>* fu, RefMap* ru)
 
   int o = 2*fu->get_fn_order() + ru->get_inv_ref_order();
   limit_order(o);
-  fu->set_quad_order(o, FN_VAL);
+  fu->set_quad_order(o, H2D_FN_VAL);
 
   scalar* fnu = fu->get_fn_values();
 

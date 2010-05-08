@@ -26,6 +26,10 @@ TimePeriod::SysTime TimePeriod::get_time() const {
   else {
     return clock();
   }
+#elif defined(__APPLE__) //Mac
+  // FIXME: implement time measurement on Mac
+  timespec tm;
+  return tm;
 #else //Linux
   timespec tm;
   clock_gettime(CLOCK_REALTIME, &tm);
@@ -97,7 +101,7 @@ string TimePeriod::to_string(double secs) const {
   }
 }
 
-HERMES2D_API ostream& operator<<(ostream& stream, const TimePeriod& period) {
+H2D_API ostream& operator<<(ostream& stream, const TimePeriod& period) {
   stream << period.accumulated_str();
   return stream;
 }

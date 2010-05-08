@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_PRECALC_H
-#define __HERMES2D_PRECALC_H
+#ifndef __H2D_PRECALC_H
+#define __H2D_PRECALC_H
 
 #include "function.h"
 #include "shapeset.h"
@@ -25,7 +25,7 @@
 /// PrecalcShapeset is a cache of precalculated shape function values.
 ///
 ///
-class HERMES2D_API PrecalcShapeset : public RealFunction
+class H2D_API PrecalcShapeset : public RealFunction
 {
 public:
 

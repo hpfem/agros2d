@@ -19,8 +19,8 @@
 
 // $Id: view.h 1086 2008-10-21 09:05:44Z jakub $
 
-#ifndef __HERMES2D_BASE_VIEW_H
-#define __HERMES2D_BASE_VIEW_H
+#ifndef __H2D_BASE_VIEW_H
+#define __H2D_BASE_VIEW_H
 
 #include "../common.h"
 #include "scalar_view.h"
@@ -33,13 +33,13 @@
 /// BaseView is a debugging tool for the visualization of the basis functions
 /// of a given space.
 ///
-class HERMES2D_API BaseView : public ScalarView
+class H2D_API BaseView : public ScalarView
 {
 public:
 
   BaseView(const char* title = "BaseView", DEFAULT_WINDOW_POS);
 
-  void show(Space* space, double eps = H2D_EPS_LOW, int item = FN_VAL_0);
+  void show(Space* space, double eps = H2D_EPS_LOW, int item = H2D_FN_VAL_0);
 
   virtual ~BaseView() { free(); }
 
@@ -64,12 +64,12 @@ protected:
 
 #else // NOGLUT
 
-class HERMES2D_API BaseView : public ScalarView
+class H2D_API BaseView : public ScalarView
 {
 public:
   BaseView(const char* title = "BaseView", DEFAULT_WINDOW_POS) {}
   virtual ~BaseView() {}
-  void show(Space* space, double eps = H2D_EPS_LOW, int item = FN_VAL_0)
+  void show(Space* space, double eps = H2D_EPS_LOW, int item = H2D_FN_VAL_0)
      { verbose("BaseView: Hermes2D compiled without OpenGL support, skipping visualization."); }
 };
 

@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SOLVER_PARDISO_H
-#define __HERMES2D_SOLVER_PARDISO_H
+#ifndef __H2D_SOLVER_PARDISO_H
+#define __H2D_SOLVER_PARDISO_H
 
 #ifdef AIX
 #define F77_FUNC(func)  func
@@ -79,7 +79,7 @@ protected:
     data->Ai1 = NULL;
 
     // matrix type (structurally symmetric / unsymmetric)
-    #ifndef COMPLEX
+    #ifndef H2D_COMPLEX
     data->mtype = sym ? 1 : 11;
     #else
     data->mtype = sym ? 3 : 13;

@@ -78,7 +78,7 @@ void SurfaceIntegralValue::calculate()
 
                         Quad2D* quad2d = ru->get_quad_2d();
                         int eo = quad2d->get_edge_points(edge);
-                        sln->set_quad_order(eo, FN_VAL | FN_DX | FN_DY);
+                        sln->set_quad_order(eo, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
                         pt = quad2d->get_points(eo);
                         tan = ru->get_tangent(edge);
 

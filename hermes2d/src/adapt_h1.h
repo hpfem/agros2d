@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_ADAPT_H1_H
-#define __HERMES2D_ADAPT_H1_H
+#ifndef __H2D_ADAPT_H1_H
+#define __H2D_ADAPT_H1_H
 
 #include "forms.h"
 #include "weakform.h"
@@ -32,7 +32,7 @@
 /// If not specifie by the used, this class uses the most accurate adaptivity
 /// selection algorithm which is slow.
 ///
-class HERMES2D_API H1AdaptHP
+class H2D_API H1AdaptHP
 {
 public:
 

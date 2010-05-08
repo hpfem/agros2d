@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_QUAD_ALL_H
-#define __HERMES2D_QUAD_ALL_H
+#ifndef __H2D_QUAD_ALL_H
+#define __H2D_QUAD_ALL_H
 
 // This is a common header for all available 1D and 2D quadrature tables
 
@@ -22,7 +22,7 @@
 
 
 /// 1D quadrature points on the standard reference domain (-1,1)
-class HERMES2D_API Quad1DStd : public Quad1D
+class H2D_API Quad1DStd : public Quad1D
 {
   public: Quad1DStd();
 
@@ -31,7 +31,7 @@ class HERMES2D_API Quad1DStd : public Quad1D
 
 
 /// 2D quadrature points on the standard reference domains (-1,1)^2
-class HERMES2D_API Quad2DStd : public Quad2D
+class H2D_API Quad2DStd : public Quad2D
 {
   public:  Quad2DStd();
           ~Quad2DStd();
@@ -40,8 +40,8 @@ class HERMES2D_API Quad2DStd : public Quad2D
 };
 
 
-extern HERMES2D_API Quad1DStd g_quad_1d_std;
-extern HERMES2D_API Quad2DStd g_quad_2d_std;
+extern H2D_API Quad1DStd g_quad_1d_std;
+extern H2D_API Quad2DStd g_quad_2d_std;
 
 
 #endif

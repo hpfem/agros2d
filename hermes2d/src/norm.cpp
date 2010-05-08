@@ -142,8 +142,8 @@ double error_fn_l2(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* r
   int o = 2*std::max(sln1->get_fn_order(), sln2->get_fn_order()) + ru->get_inv_ref_order();
   limit_order_nowarn(o);
 
-  sln1->set_quad_order(o, FN_VAL);
-  sln2->set_quad_order(o, FN_VAL);
+  sln1->set_quad_order(o, H2D_FN_VAL);
+  sln2->set_quad_order(o, H2D_FN_VAL);
 
   scalar *uval, *vval;
   uval = sln1->get_fn_values();
@@ -163,7 +163,7 @@ double norm_fn_l2(MeshFunction* sln, RefMap* ru)
   int o = 2 *sln->get_fn_order() + ru->get_inv_ref_order();
   limit_order_nowarn(o);
 
-  sln->set_quad_order(o, FN_VAL);
+  sln->set_quad_order(o, H2D_FN_VAL);
 
   scalar* uval = sln->get_fn_values();
 
@@ -188,7 +188,7 @@ double l2_norm(MeshFunction* sln)
 
 //// Hcurl space ///////////////////////////////////////////////////////////////////////////////////
 
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 
 // function used to calculate error in Hcurl norm
 double error_fn_hc(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv)

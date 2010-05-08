@@ -19,15 +19,15 @@
 
 // $Id: view.h 1086 2008-10-21 09:05:44Z jakub $
 
-#ifndef __HERMES2D_VECTOR_BASE_VIEW_H
-#define __HERMES2D_VECTOR_BASE_VIEW_H
+#ifndef __H2D_VECTOR_BASE_VIEW_H
+#define __H2D_VECTOR_BASE_VIEW_H
 
 #include "vector_view.h"
 
 // you can define NOGLUT to turn off all OpenGL stuff in Hermes2D
 #ifndef NOGLUT
 
-class HERMES2D_API VectorBaseView : public VectorView
+class H2D_API VectorBaseView : public VectorView
 {
 public:
 
@@ -58,7 +58,7 @@ protected:
 
 #else // NOGLUT
 
-class HERMES2D_API VectorBaseView : public VectorView
+class H2D_API VectorBaseView : public VectorView
 {
 public:
   VectorBaseView(const char* title = "BaseView", DEFAULT_WINDOW_POS) {}

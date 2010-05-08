@@ -407,7 +407,7 @@ void Solution::set_fe_solution(Space* space, PrecalcShapeset* pss, scalar* vec, 
       for (int k = 0; k < al.cnt; k++)
       {
         pss->set_active_shape(al.idx[k]);
-        pss->set_quad_order(o, FN_VAL);
+        pss->set_quad_order(o, H2D_FN_VAL);
         int dof = al.dof[k];
         scalar coef = al.coef[k] * (dof >= 0 ? vec[dof] : dir);
         double* shape = pss->get_fn_values(l);
@@ -651,9 +651,9 @@ static inline void vec_x_vec_p_vec(int n, scalar* y, scalar* x, scalar* z)
 }
 
 
-static const int H2D_GRAD = FN_DX_0 | FN_DY_0;
-static const int H2D_SECOND = FN_DXX_0 | FN_DXY_0 | FN_DYY_0;
-static const int H2D_CURL = FN_DX | FN_DY;
+static const int H2D_GRAD = H2D_FN_DX_0 | H2D_FN_DY_0;
+static const int H2D_SECOND = H2D_FN_DXX_0 | H2D_FN_DXY_0 | H2D_FN_DYY_0;
+static const int H2D_CURL = H2D_FN_DX | H2D_FN_DY;
 
 
 void Solution::transform_values(int order, Node* node, int newmask, int oldmask, int np)
@@ -705,7 +705,7 @@ void Solution::transform_values(int order, Node* node, int newmask, int oldmask,
   else if (space_type == 1)
   {
     bool trans_val = false, trans_curl = false;
-    if ((newmask & FN_VAL) == FN_VAL && (oldmask & FN_VAL) != FN_VAL) trans_val  = true;
+    if ((newmask & H2D_FN_VAL) == H2D_FN_VAL && (oldmask & H2D_FN_VAL) != H2D_FN_VAL) trans_val  = true;
     if ((newmask &   H2D_CURL) ==   H2D_CURL && (oldmask &   H2D_CURL) !=   H2D_CURL) trans_curl = true;
 
     if (trans_val || trans_curl)
@@ -737,7 +737,7 @@ void Solution::transform_values(int order, Node* node, int newmask, int oldmask,
   // Hdiv space
   else if (space_type == 2)
   {
-    if ((newmask & FN_VAL) == FN_VAL && (oldmask & FN_VAL) != FN_VAL)
+    if ((newmask & H2D_FN_VAL) == H2D_FN_VAL && (oldmask & H2D_FN_VAL) != H2D_FN_VAL)
     {
       update_refmap();
       mat = refmap->get_const_inv_ref_map();
@@ -767,21 +767,21 @@ void Solution::precalculate(int order, int mask)
   if (type == SLN)
   {
     // if we are required to transform vectors, we must precalculate both their components
-    const int H2D_GRAD = FN_DX_0 | FN_DY_0;
-    const int H2D_SECOND = FN_DXX_0 | FN_DXY_0 | FN_DYY_0;
-    const int H2D_CURL = FN_DX | FN_DY; // sic
+    const int H2D_GRAD = H2D_FN_DX_0 | H2D_FN_DY_0;
+    const int H2D_SECOND = H2D_FN_DXX_0 | H2D_FN_DXY_0 | H2D_FN_DYY_0;
+    const int H2D_CURL = H2D_FN_DX | H2D_FN_DY; // sic
     if (transform)
     {
       if (num_components == 1)                                            // H1 space
       {
-        if ((mask & FN_DX_0)  || (mask & FN_DY_0))  mask |= H2D_GRAD;
-        if ((mask & FN_DXX_0)  || (mask & FN_DXY_0) || (mask & FN_DYY_0))  mask |= H2D_SECOND;
+        if ((mask & H2D_FN_DX_0)  || (mask & H2D_FN_DY_0))  mask |= H2D_GRAD;
+        if ((mask & H2D_FN_DXX_0)  || (mask & H2D_FN_DXY_0) || (mask & H2D_FN_DYY_0))  mask |= H2D_SECOND;
       }
       else if (space_type == 1)                                           // Hcurl space
-        { if ((mask & FN_VAL_0) || (mask & FN_VAL_1)) mask |= FN_VAL;
-          if ((mask & FN_DX_1)  || (mask & FN_DY_0))  mask |= H2D_CURL; }
+        { if ((mask & H2D_FN_VAL_0) || (mask & H2D_FN_VAL_1)) mask |= H2D_FN_VAL;
+          if ((mask & H2D_FN_DX_1)  || (mask & H2D_FN_DY_0))  mask |= H2D_CURL; }
       else                                                                // Hdiv space
-        { if ((mask & FN_VAL_0) || (mask & FN_VAL_1)) mask |= FN_VAL; }
+        { if ((mask & H2D_FN_VAL_0) || (mask & H2D_FN_VAL_1)) mask |= H2D_FN_VAL; }
     }
 
     int oldmask = (cur_node != NULL) ? cur_node->mask : 0;
@@ -835,9 +835,9 @@ void Solution::precalculate(int order, int mask)
   }
   else if (type == EXACT)
   {
-    if (mask & ~FN_DEFAULT)
+    if (mask & ~H2D_FN_DEFAULT)
       error("Cannot obtain second derivatives of an exact solution.");
-    node = new_node(mask = FN_DEFAULT, np);
+    node = new_node(mask = H2D_FN_DEFAULT, np);
 
     update_refmap();
     double* x = refmap->get_phys_x(order);
@@ -892,9 +892,9 @@ void Solution::precalculate(int order, int mask)
   }
   else if (type == CNST)
   {
-    if (mask & ~FN_DEFAULT)
+    if (mask & ~H2D_FN_DEFAULT)
       error("Second derivatives of a constant solution not implemented.");
-    node = new_node(mask = FN_DEFAULT, np);
+    node = new_node(mask = H2D_FN_DEFAULT, np);
 
     for (j = 0; j < num_components; j++)
       for (i = 0; i < np; i++)
@@ -1013,7 +1013,7 @@ void Solution::load(const char* filename)
     double* temp = new double[num_coefs];
     hermes2d_fread(temp, sizeof(double), num_coefs, f);
 
-    #ifndef COMPLEX
+    #ifndef H2D_COMPLEX
       mono_coefs = temp;
     #else
       mono_coefs = new scalar[num_coefs];
@@ -1024,8 +1024,8 @@ void Solution::load(const char* filename)
   }
   else if (hdr.ss == 2*sizeof(double))
   {
-    #ifndef COMPLEX
-      warn("Ignoring imaginary part of the complex solution since this is not COMPLEX code.");
+    #ifndef H2D_COMPLEX
+      warn("Ignoring imaginary part of the complex solution since this is not H2D_COMPLEX code.");
       scalar* temp = new double[num_coefs*2];
       hermes2d_fread(temp, sizeof(scalar), num_coefs*2, f);
       mono_coefs = new double[num_coefs];
@@ -1114,8 +1114,8 @@ scalar Solution::get_ref_value_transformed(Element* e, double xi1, double xi2, i
       refmap->inv_ref_map_at_point(xi1, xi2, xx, yy, m);
       scalar dx = get_ref_value(e_last = e, xi1, xi2, a, 1);
       scalar dy = get_ref_value(e, xi1, xi2, a, 2);
-      if (b == 1) return m[0][0]*dx + m[0][1]*dy; // FN_DX
-      if (b == 2) return m[1][0]*dx + m[1][1]*dy; // FN_DY
+      if (b == 1) return m[0][0]*dx + m[0][1]*dy; // H2D_FN_DX
+      if (b == 2) return m[1][0]*dx + m[1][1]*dy; // H2D_FN_DY
     }
     else
       error("Getting second derivatives of the solution: Not implemented yet.");
@@ -1129,8 +1129,8 @@ scalar Solution::get_ref_value_transformed(Element* e, double xi1, double xi2, i
       refmap->inv_ref_map_at_point(xi1, xi2, xx, yy, m);
       scalar vx = get_ref_value(e, xi1, xi2, 0, 0);
       scalar vy = get_ref_value(e, xi1, xi2, 1, 0);
-      if (a == 0) return m[0][0]*vx + m[0][1]*vy; // FN_VAL_0
-      if (a == 1) return m[1][0]*vx + m[1][1]*vy; // FN_VAL_1
+      if (a == 0) return m[0][0]*vx + m[0][1]*vy; // H2D_FN_VAL_0
+      if (a == 1) return m[1][0]*vx + m[1][1]*vy; // H2D_FN_VAL_1
     }
     else
       error("Getting derivatives of the vector solution: Not implemented yet.");
@@ -1143,7 +1143,7 @@ scalar Solution::get_pt_value(double x, double y, int item)
   double xi1, xi2;
 
   int a = 0, b = 0, mask = item; // a = component, b = val, dx, dy, dxx, dyy, dxy
-  if (num_components == 1) mask = mask & FN_COMPONENT_0;
+  if (num_components == 1) mask = mask & H2D_FN_COMPONENT_0;
   if ((mask & (mask - 1)) != 0) error("'item' is invalid. ");
   if (mask >= 0x40) { a = 1; mask >>= 6; }
   while (!(mask & 1)) { mask >>= 1; b++; }

@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_LINSYSTEM_H
-#define __HERMES2D_LINSYSTEM_H
+#ifndef __H2D_LINSYSTEM_H
+#define __H2D_LINSYSTEM_H
 
 #include "matrix.h"
 #include "forms.h"
@@ -33,7 +33,7 @@ struct Page;
 ///
 ///
 ///
-class HERMES2D_API LinSystem
+class H2D_API LinSystem
 {
 public:
 
@@ -177,12 +177,12 @@ protected:
 };
 
 // can be called to set a custom order limiting table
-extern HERMES2D_API void set_order_limit_table(int* tri_table, int* quad_table, int n);
+extern H2D_API void set_order_limit_table(int* tri_table, int* quad_table, int n);
 
 // limit_order is used in integrals
-extern HERMES2D_API int  g_safe_max_order;
-extern HERMES2D_API int  g_max_order;
-extern HERMES2D_API int* g_order_table;
+extern H2D_API int  g_safe_max_order;
+extern H2D_API int  g_max_order;
+extern H2D_API int* g_order_table;
 
 #ifndef DEBUG_ORDER
   #define limit_order(o) \
@@ -199,7 +199,7 @@ extern HERMES2D_API int* g_order_table;
     o = g_safe_max_order;
 #endif
 
-extern HERMES2D_API void warn_order();
-extern HERMES2D_API void update_limit_table(int mode);
+extern H2D_API void warn_order();
+extern H2D_API void update_limit_table(int mode);
 
 #endif

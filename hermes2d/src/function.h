@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_FUNCTION_H
-#define __HERMES2D_FUNCTION_H
+#ifndef __H2D_FUNCTION_H
+#define __H2D_FUNCTION_H
 
 #include "common.h"
 #include "transform.h"
@@ -24,28 +24,28 @@
 // Precalculation masks
 enum
 {
-  FN_VAL_0 = 0x0001, FN_VAL_1 = 0x0040, // Function values
-  FN_DX_0  = 0x0002, FN_DX_1  = 0x0080, // First derivative
-  FN_DY_0  = 0x0004, FN_DY_1  = 0x0100, // First derivative
-  FN_DXX_0 = 0x0008, FN_DXX_1 = 0x0200, // Second derivative
-  FN_DYY_0 = 0x0010, FN_DYY_1 = 0x0400, // Second derivative
-  FN_DXY_0 = 0x0020, FN_DXY_1 = 0x0800  // Second mixed derivative
+  H2D_FN_VAL_0 = 0x0001, H2D_FN_VAL_1 = 0x0040, // Function values
+  H2D_FN_DX_0  = 0x0002, H2D_FN_DX_1  = 0x0080, // First derivative
+  H2D_FN_DY_0  = 0x0004, H2D_FN_DY_1  = 0x0100, // First derivative
+  H2D_FN_DXX_0 = 0x0008, H2D_FN_DXX_1 = 0x0200, // Second derivative
+  H2D_FN_DYY_0 = 0x0010, H2D_FN_DYY_1 = 0x0400, // Second derivative
+  H2D_FN_DXY_0 = 0x0020, H2D_FN_DXY_1 = 0x0800  // Second mixed derivative
 };
 
 // Both components are usually requested together...
-const int FN_VAL = FN_VAL_0 | FN_VAL_1;
-const int FN_DX  = FN_DX_0  | FN_DX_1;
-const int FN_DY  = FN_DY_0  | FN_DY_1;
-const int FN_DXX = FN_DXX_0 | FN_DXX_1;
-const int FN_DYY = FN_DYY_0 | FN_DYY_1;
-const int FN_DXY = FN_DXY_0 | FN_DXY_1;
+const int H2D_FN_VAL = H2D_FN_VAL_0 | H2D_FN_VAL_1;
+const int H2D_FN_DX  = H2D_FN_DX_0  | H2D_FN_DX_1;
+const int H2D_FN_DY  = H2D_FN_DY_0  | H2D_FN_DY_1;
+const int H2D_FN_DXX = H2D_FN_DXX_0 | H2D_FN_DXX_1;
+const int H2D_FN_DYY = H2D_FN_DYY_0 | H2D_FN_DYY_1;
+const int H2D_FN_DXY = H2D_FN_DXY_0 | H2D_FN_DXY_1;
 
-// The most common case is FN_DEFAULT, ie. values and the gradient.
-const int FN_DEFAULT = FN_VAL | FN_DX | FN_DY;            // default precalculation mask
-const int FN_ALL = FN_DEFAULT | FN_DXX | FN_DYY | FN_DXY; // precalculate everything
+// The most common case is H2D_FN_DEFAULT, ie. values and the gradient.
+const int H2D_FN_DEFAULT = H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY;            // default precalculation mask
+const int H2D_FN_ALL = H2D_FN_DEFAULT | H2D_FN_DXX | H2D_FN_DYY | H2D_FN_DXY; // precalculate everything
 
-const int FN_COMPONENT_0 = FN_VAL_0 | FN_DX_0 | FN_DY_0 | FN_DXX_0 | FN_DYY_0 | FN_DXY_0;
-const int FN_COMPONENT_1 = FN_VAL_1 | FN_DX_1 | FN_DY_1 | FN_DXX_1 | FN_DYY_1 | FN_DXY_1;
+const int H2D_FN_COMPONENT_0 = H2D_FN_VAL_0 | H2D_FN_DX_0 | H2D_FN_DY_0 | H2D_FN_DXX_0 | H2D_FN_DYY_0 | H2D_FN_DXY_0;
+const int H2D_FN_COMPONENT_1 = H2D_FN_VAL_1 | H2D_FN_DX_1 | H2D_FN_DY_1 | H2D_FN_DXX_1 | H2D_FN_DYY_1 | H2D_FN_DXY_1;
 
 // Plenty of checking stuff for the debug version
 #ifndef NDEBUG
@@ -108,10 +108,10 @@ public:
   /// Activates an integration rule of the specified order. Subsequent calls to
   /// get_values(), get_dx_values() etc. will be returning function values at these points.
   /// \param order [in] Integration rule order.
-  /// \param mask [in] A combination of one or more of the constants FN_VAL, FN_DX, FN_DY,
-  ///   FN_DXX, FN_DYY, FN_DXY specifying the values which should be precalculated. The default is
-  ///   FN_VAL | FN_DX | FN_DY. You can also use FN_ALL to precalculate everything.
-  void set_quad_order(int order, int mask = FN_DEFAULT)
+  /// \param mask [in] A combination of one or more of the constants H2D_FN_VAL, H2D_FN_DX, H2D_FN_DY,
+  ///   H2D_FN_DXX, H2D_FN_DYY, H2D_FN_DXY specifying the values which should be precalculated. The default is
+  ///   H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY. You can also use H2D_FN_ALL to precalculate everything.
+  void set_quad_order(int order, int mask = H2D_FN_DEFAULT)
   {
     pp_cur_node = (void**) JudyLIns(nodes, order, NULL);
     // if you get SIGSEGV here, you maybe forgot to include the function in the list
@@ -229,7 +229,7 @@ protected:
 # define H2D_Node_HDR_SIZE (sizeof(Node) - sizeof(TYPE)) ///< Size of the header part of the structure Node
   struct Node
   {
-    int mask;           ///< a combination of FN_XXX: specifies which tables are present
+    int mask;           ///< a combination of H2D_FN_XXX: specifies which tables are present
     int size;           ///< size in bytes of this struct (for maintaining total_mem)
     TYPE* values[2][6]; ///< pointers to 'data'
 
@@ -373,8 +373,8 @@ void Function<TYPE>::pop_transform()
 template<typename TYPE>
 int Function<TYPE>::idx2mask[6][2] =
 {
-  { FN_VAL_0, FN_VAL_1 }, { FN_DX_0,  FN_DX_1  }, { FN_DY_0,  FN_DY_1  },
-  { FN_DXX_0, FN_DXX_1 }, { FN_DYY_0, FN_DYY_1 }, { FN_DXY_0, FN_DXY_1 }
+  { H2D_FN_VAL_0, H2D_FN_VAL_1 }, { H2D_FN_DX_0,  H2D_FN_DX_1  }, { H2D_FN_DY_0,  H2D_FN_DY_1  },
+  { H2D_FN_DXX_0, H2D_FN_DXX_1 }, { H2D_FN_DYY_0, H2D_FN_DYY_1 }, { H2D_FN_DXY_0, H2D_FN_DXY_1 }
 };
 
 
@@ -383,7 +383,7 @@ typename Function<TYPE>::Node* Function<TYPE>::new_node(int mask, int num_points
 {
   // get the number of tables
   int nt = 0, m = mask;
-  if (num_components < 2) m &= FN_VAL_0 | FN_DX_0 | FN_DY_0 | FN_DXX_0 | FN_DYY_0 | FN_DXY_0;
+  if (num_components < 2) m &= H2D_FN_VAL_0 | H2D_FN_DX_0 | H2D_FN_DY_0 | H2D_FN_DXX_0 | H2D_FN_DYY_0 | H2D_FN_DXY_0;
   while (m) { nt += m & 1; m >>= 1; }
 
   // allocate a node including its data part, init table pointers

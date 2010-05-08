@@ -437,25 +437,25 @@ void ViewScalarFilter::precalculate(int order, int mask)
 {
     Quad2D* quad = quads[cur_quad];
     int np = quad->get_num_points(order);
-    node = new_node(FN_VAL_0, np);
+    node = new_node(H2D_FN_VAL, np);
 
     if (sln[0])
     {
-        sln[0]->set_quad_order(order, FN_VAL | FN_DX | FN_DY);
+        sln[0]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
         sln[0]->get_dx_dy_values(dudx1, dudy1);
         value1 = sln[0]->get_fn_values();
     }
 
     if (num >= 2 && sln[1])
     {
-        sln[1]->set_quad_order(order, FN_VAL | FN_DX | FN_DY);
+        sln[1]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
         sln[1]->get_dx_dy_values(dudx2, dudy2);
         value2 = sln[1]->get_fn_values();
     }
 
     if (num >= 3 && sln[2])
     {
-        sln[2]->set_quad_order(order, FN_VAL | FN_DX | FN_DY);
+        sln[2]->set_quad_order(order, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
         sln[2]->get_dx_dy_values(dudx3, dudy3);
         value3 = sln[2]->get_fn_values();
     }

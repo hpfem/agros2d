@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_COMMON_TIME_PERIOD_H
-#define __HERMES2D_COMMON_TIME_PERIOD_H
+#ifndef __H2D_COMMON_TIME_PERIOD_H
+#define __H2D_COMMON_TIME_PERIOD_H
 
 enum TimerPeriodTickType { ///< Tick type.
   H2D_ACCUMULATE, ///< Accumulate a period between ticks.
@@ -26,7 +26,7 @@ enum TimerPeriodTickType { ///< Tick type.
 //TODO: Measure time that CPU spent on the task instead of a global time.
 /// \brief A named time period measurement with accumulation.
 /// An instance of the timer should not be used across threads. Timer is not thread-safe.
-class HERMES2D_API TimePeriod {
+class H2D_API TimePeriod {
 public:
   TimePeriod(const char *name = NULL); ///< Constructs internal structures and starts measuring.
 
@@ -57,8 +57,8 @@ private:
   double period_in_seconds(const SysTime& begin, const SysTime& end) const; ///< Calculates distance between times (in platform specific units) and returns it in seconds.
   std::string to_string(const double time) const; ///< Converts time from seconds to human readable form.
 
-  friend HERMES2D_API std::ofstream& operator<<(std::ofstream& stream, const TimePeriod& period);
+  friend H2D_API std::ofstream& operator<<(std::ofstream& stream, const TimePeriod& period);
 };
-extern HERMES2D_API std::ostream& operator<<(std::ostream& stream, const TimePeriod& period);
+extern H2D_API std::ostream& operator<<(std::ostream& stream, const TimePeriod& period);
 
 #endif

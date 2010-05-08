@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_FILTER_H
-#define __HERMES2D_FILTER_H
+#ifndef __H2D_FILTER_H
+#define __H2D_FILTER_H
 
 #include "solution.h"
 
@@ -27,7 +27,7 @@ struct UniData;
 ///
 /// (This class cannot be instantiated.)
 ///
-class HERMES2D_API Filter : public MeshFunction
+class H2D_API Filter : public MeshFunction
 {
 public:
 
@@ -69,33 +69,33 @@ protected:
 /// combining function.
 ///
 /// The user specifies the combining function, the arguments ('sln1', 'sln2', 'sln3'), and
-/// optionally the 'item' for each argument, which can be any of FN_VAL_0, FN_DX_0, FN_DY_0
+/// optionally the 'item' for each argument, which can be any of H2D_FN_VAL_0, H2D_FN_DX_0, H2D_FN_DY_0
 /// etc.
 ///
 /// SimpleFilter is vector-valued, if at least one input function is vector-valued and
-/// both components are specified in 'item', e.g., item1 = FN_DX (which is FN_DX_0 | FN_DX_1).
+/// both components are specified in 'item', e.g., item1 = H2D_FN_DX (which is H2D_FN_DX_0 | H2D_FN_DX_1).
 /// Otherwise it is scalar-valued.
 ///
-class HERMES2D_API SimpleFilter : public Filter
+class H2D_API SimpleFilter : public Filter
 {
 public:
 
   SimpleFilter(void (*filter_fn)(int n, scalar* val1, scalar* result),
-               MeshFunction* sln1, int item1 = FN_VAL);
+               MeshFunction* sln1, int item1 = H2D_FN_VAL);
 
   SimpleFilter(void (*filter_fn)(int n, scalar* val1, scalar* val2, scalar* result),
-               MeshFunction* sln1, MeshFunction* sln2, int item1 = FN_VAL, int item2 = FN_VAL);
+               MeshFunction* sln1, MeshFunction* sln2, int item1 = H2D_FN_VAL, int item2 = H2D_FN_VAL);
 
   SimpleFilter(void (*filter_fn)(int n, scalar* val1, scalar* val2, scalar* val3, scalar* result),
                MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3,
-               int item1 = FN_VAL, int item2 = FN_VAL, int item3 = FN_VAL);
+               int item1 = H2D_FN_VAL, int item2 = H2D_FN_VAL, int item3 = H2D_FN_VAL);
 
   SimpleFilter(void (*filter_fn)(int n, scalar* val1, scalar* val2, scalar* val3, scalar* val4, scalar* result),
                MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3, MeshFunction* sln4,
-               int item1 = FN_VAL, int item2 = FN_VAL, int item3 = FN_VAL, int item4 = FN_VAL);
+               int item1 = H2D_FN_VAL, int item2 = H2D_FN_VAL, int item3 = H2D_FN_VAL, int item4 = H2D_FN_VAL);
 
 
-  virtual scalar get_pt_value(double x, double y, int item = FN_VAL_0);
+  virtual scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0);
 
 protected:
 
@@ -117,7 +117,7 @@ protected:
 /// result. The user-supplied combining function has a different format: it takes and must
 /// return also the DX and DY values.
 ///
-class HERMES2D_API DXDYFilter : public Filter
+class H2D_API DXDYFilter : public Filter
 {
 public:
 
@@ -148,7 +148,7 @@ public:
   DXDYFilter(filter_fn_3_t fn, MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3);
   DXDYFilter(filter_fn_4_t fn, MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3, MeshFunction* sln4);
 
-  virtual scalar get_pt_value(double x, double y, int item = FN_VAL_0)
+  virtual scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0)
   { error("Not implemented yet"); return 0; }
 
 protected:
@@ -167,59 +167,59 @@ protected:
 /// MagFilter takes two functions representing the components of a vector function and
 /// calculates the vector magnitude, sqrt(x^2 + y^2).
 /// \brief Calculates the magnitude of a vector function.
-class HERMES2D_API MagFilter : public SimpleFilter
+class H2D_API MagFilter : public SimpleFilter
 {
-  public: MagFilter(MeshFunction* sln1, MeshFunction* sln2, int item1 = FN_VAL, int item2 = FN_VAL);
-          MagFilter(MeshFunction* sln1, int item1 = FN_VAL); // for vector-valued sln1
+  public: MagFilter(MeshFunction* sln1, MeshFunction* sln2, int item1 = H2D_FN_VAL, int item2 = H2D_FN_VAL);
+          MagFilter(MeshFunction* sln1, int item1 = H2D_FN_VAL); // for vector-valued sln1
 };
 
 
 /// Calculates the difference of two functions.
-class HERMES2D_API DiffFilter : public SimpleFilter
+class H2D_API DiffFilter : public SimpleFilter
 {
-  public: DiffFilter(MeshFunction* sln1, MeshFunction* sln2, int item1 = FN_VAL, int item2 = FN_VAL);
+  public: DiffFilter(MeshFunction* sln1, MeshFunction* sln2, int item1 = H2D_FN_VAL, int item2 = H2D_FN_VAL);
 };
 
 
 /// Calculates the sum of two functions.
-class HERMES2D_API SumFilter : public SimpleFilter
+class H2D_API SumFilter : public SimpleFilter
 {
-  public: SumFilter(MeshFunction* sln1, MeshFunction* sln2, int item1 = FN_VAL, int item2 = FN_VAL);
+  public: SumFilter(MeshFunction* sln1, MeshFunction* sln2, int item1 = H2D_FN_VAL, int item2 = H2D_FN_VAL);
 };
 
 
 /// Calculates the square of a function.
-class HERMES2D_API SquareFilter : public SimpleFilter
+class H2D_API SquareFilter : public SimpleFilter
 {
-  public: SquareFilter(MeshFunction* sln1, int item1 = FN_VAL);
+  public: SquareFilter(MeshFunction* sln1, int item1 = H2D_FN_VAL);
 };
 
 
 /// Removes the imaginary part from a function.
-class HERMES2D_API RealFilter : public SimpleFilter
+class H2D_API RealFilter : public SimpleFilter
 {
-  public: RealFilter(MeshFunction* sln1, int item1 = FN_VAL);
+  public: RealFilter(MeshFunction* sln1, int item1 = H2D_FN_VAL);
 };
 
 
 /// ImagFilter puts the imaginary part of the input function to the real part of the
 /// output, allowing it to be visualized.
-class HERMES2D_API ImagFilter : public SimpleFilter
+class H2D_API ImagFilter : public SimpleFilter
 {
-  public: ImagFilter(MeshFunction* sln1, int item1 = FN_VAL);
+  public: ImagFilter(MeshFunction* sln1, int item1 = H2D_FN_VAL);
 };
 
 
 /// Computes the absolute value of a complex solution.
-class HERMES2D_API AbsFilter : public SimpleFilter
+class H2D_API AbsFilter : public SimpleFilter
 {
-  public: AbsFilter(MeshFunction* sln1, int item1 = FN_VAL);
+  public: AbsFilter(MeshFunction* sln1, int item1 = H2D_FN_VAL);
 };
 
 /// Computes the angle of a complex solution.
-class HERMES2D_API AngleFilter : public SimpleFilter
+class H2D_API AngleFilter : public SimpleFilter
 {
-  public: AngleFilter(MeshFunction* sln1, int item1 = FN_VAL);
+  public: AngleFilter(MeshFunction* sln1, int item1 = H2D_FN_VAL);
 };
 
 
@@ -227,14 +227,14 @@ class HERMES2D_API AngleFilter : public SimpleFilter
 /// It calculates the stress tensor and applies the Von Mises equivalent stress formula
 /// to obtain the resulting stress measure.
 /// \brief Calculates the Von Mises stress.
-class HERMES2D_API VonMisesFilter : public Filter
+class H2D_API VonMisesFilter : public Filter
 {
 public: // TODO: cylindrical coordinates
 
   VonMisesFilter(MeshFunction* sln1, MeshFunction* sln2, double lambda, double mu,
-                 int cyl = 0, int item1 = FN_VAL, int item2 = FN_VAL);
+                 int cyl = 0, int item1 = H2D_FN_VAL, int item2 = H2D_FN_VAL);
 
-  virtual scalar get_pt_value(double x, double y, int item = FN_VAL_0)
+  virtual scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0)
   { error("Not implemented yet"); return 0; }
 
 protected:
@@ -250,12 +250,12 @@ protected:
 /// Linearization filter for use in nonlinear problems. From one or two previous
 /// solution values it extrapolates an estimate of the new one.
 /// With adaptive time step: tau_frac = tau_new / tau_old
-class HERMES2D_API LinearFilter : public Filter
+class H2D_API LinearFilter : public Filter
 {
   public: LinearFilter(MeshFunction* old);
           LinearFilter(MeshFunction* older, MeshFunction* old, double tau_frac = 1);
 
-  virtual scalar get_pt_value(double x, double y, int item = FN_VAL_0)
+  virtual scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0)
   { error("Not implemented yet"); return 0; }
 
   protected:

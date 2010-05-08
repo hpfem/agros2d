@@ -384,7 +384,7 @@ bool NoxSolver::solve()
     achieved_tol = final_pars->sublist("Direction").sublist(nl_dir).sublist("Linear Solver").sublist("Output").get("Achieved Tolerance", 0.0);
 
 		// Get the Epetra_Vector with the final solution from the solver
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
 		const NOX::Epetra::Group &f_grp =
 			dynamic_cast<const NOX::Epetra::Group &>(solver->getSolutionGroup());
 		const Epetra_Vector &f_sln =
@@ -395,7 +395,7 @@ bool NoxSolver::solve()
 		delete [] sln;
 		sln = new scalar[n];
 		memset(sln, 0, n * sizeof(double));
-#ifndef COMPLEX
+#ifndef H2D_COMPLEX
 		f_sln.ExtractCopy(sln);
 #else
 #endif

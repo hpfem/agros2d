@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SHAPESET_L2_ALL
-#define __HERMES2D_SHAPESET_L2_ALL
+#ifndef __H2D_SHAPESET_L2_ALL
+#define __H2D_SHAPESET_L2_ALL
 
 // This file is a common header for all L2 shapesets.
 
@@ -22,7 +22,7 @@
 
 
 /// L2 shapeset - products of legendre polynomials
-class HERMES2D_API L2ShapesetLegendre : public Shapeset
+class H2D_API L2ShapesetLegendre : public Shapeset
 {
   public: L2ShapesetLegendre();
   virtual int get_id() const { return 30; }

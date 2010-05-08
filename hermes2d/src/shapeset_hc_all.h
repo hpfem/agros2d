@@ -13,16 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SHAPESET_HC_ALL_H
-#define __HERMES2D_SHAPESET_HC_ALL_H
+#ifndef __H2D_SHAPESET_HC_ALL_H
+#define __H2D_SHAPESET_HC_ALL_H
 
-#ifdef COMPLEX
+#ifdef H2D_COMPLEX
 
 #include "shapeset.h"
 
 
 /// H(curl) shapeset based on Legendre polynomials.
-class HERMES2D_API HcurlShapesetLegendre : public Shapeset
+class H2D_API HcurlShapesetLegendre : public Shapeset
 {
   public: HcurlShapesetLegendre();
   virtual int get_id() const { return 10; }
@@ -30,7 +30,7 @@ class HERMES2D_API HcurlShapesetLegendre : public Shapeset
 
 
 // Experimental.
-class HERMES2D_API HcurlShapesetEigen2 : public Shapeset
+class H2D_API HcurlShapesetEigen2 : public Shapeset
 {
   public: HcurlShapesetEigen2();
   virtual int get_id() const { return 11; }
@@ -38,7 +38,7 @@ class HERMES2D_API HcurlShapesetEigen2 : public Shapeset
 
 
 // Experimental.
-class HERMES2D_API HcurlShapesetGradEigen : public Shapeset
+class H2D_API HcurlShapesetGradEigen : public Shapeset
 {
   public: HcurlShapesetGradEigen();
   virtual int get_id() const { return 12; }
@@ -46,7 +46,7 @@ class HERMES2D_API HcurlShapesetGradEigen : public Shapeset
 
 
 /// H(curl) shapeset with Legendre bubbles and gradients of H1 functions as edges
-class HERMES2D_API HcurlShapesetGradLeg : public Shapeset
+class H2D_API HcurlShapesetGradLeg : public Shapeset
 {
   public: HcurlShapesetGradLeg();
   virtual int get_id() const { return 13; }
@@ -57,6 +57,6 @@ class HERMES2D_API HcurlShapesetGradLeg : public Shapeset
 typedef HcurlShapesetGradLeg HcurlShapeset;
 
 
-#endif // COMPLEX
+#endif // H2D_COMPLEX
 
 #endif

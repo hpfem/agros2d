@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_SOLUTION_H
-#define __HERMES2D_SOLUTION_H
+#ifndef __H2D_SOLUTION_H
+#define __H2D_SOLUTION_H
 
 #include "function.h"
 #include "space.h"
@@ -32,7 +32,7 @@ class PrecalcShapeset;
 ///
 /// (This is an abstract class and cannot be instantiated.)
 ///
-class HERMES2D_API MeshFunction : public ScalarFunction
+class H2D_API MeshFunction : public ScalarFunction
 {
 public:
 
@@ -45,7 +45,7 @@ public:
   Mesh*   get_mesh() const { return mesh; }
   RefMap* get_refmap() { update_refmap(); return refmap; }
 
-  virtual scalar get_pt_value(double x, double y, int item = FN_VAL_0) = 0;
+  virtual scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0) = 0;
 
 protected:
 
@@ -77,7 +77,7 @@ public:
 ///
 /// TODO: write how to obtain solution values, maybe include inherited methods from Function as comments.
 ///
-class HERMES2D_API Solution : public MeshFunction
+class H2D_API Solution : public MeshFunction
 {
 public:
 
@@ -102,8 +102,8 @@ public:
   void set_dirichlet_lift(Space* space, PrecalcShapeset* pss);
 
   /// Enables or disables transformation of the solution derivatives (H1 case)
-  /// or values (vector (Hcurl) case). This means FN_DX_0 and FN_DY_0 or
-  /// FN_VAL_0 and FN_VAL_1 will or will not be returned premultiplied by the reference
+  /// or values (vector (Hcurl) case). This means H2D_FN_DX_0 and H2D_FN_DY_0 or
+  /// H2D_FN_VAL_0 and H2D_FN_VAL_1 will or will not be returned premultiplied by the reference
   /// mapping matrix. The default is enabled (true).
   void enable_transform(bool enable = true);
 
@@ -131,11 +131,11 @@ public:
   scalar get_ref_value_transformed(Element* e, double xi1, double xi2, int a, int b);
 
   /// Returns solution value or derivatives at the physical domain point (x, y).
-  /// 'item' controls the returned value: FN_VAL_0, FN_VAL_1, FN_DX_0, FN_DX_1, FN_DY_0,....
+  /// 'item' controls the returned value: H2D_FN_VAL_0, H2D_FN_VAL_1, H2D_FN_DX_0, H2D_FN_DX_1, H2D_FN_DY_0,....
   /// NOTE: This function should be used for postprocessing only, it is not effective
   /// enough for calculations. Since it searches for an element sequentinally, it is extremelly
   /// slow. Prefer Solution::get_ref_value if possible.
-  virtual scalar get_pt_value(double x, double y, int item = FN_VAL_0);
+  virtual scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0);
 
   /// Returns the number of degrees of freedom of the solution.
   /// Returns -1 for exact or constant solutions.
@@ -202,7 +202,7 @@ protected:
 /// Please note that the same functionality can be obtained by using Solution::set_exact().
 /// This class is provided merely for convenience.
 ///
-class HERMES2D_API ExactSolution : public Solution
+class H2D_API ExactSolution : public Solution
 {
 public:
 

@@ -63,7 +63,7 @@ void VolumeIntegralValue::calculate()
                     limit_order(o);
 
                     // solution 1
-                    sln1->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
+                    sln1->set_quad_order(o, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
                     // value
                     value1 = sln1->get_fn_values();
                     // derivative
@@ -75,7 +75,7 @@ void VolumeIntegralValue::calculate()
                     // solution 2
                     if (sln2)
                     {
-                        sln2->set_quad_order(o, FN_VAL | FN_DX | FN_DY);
+                        sln2->set_quad_order(o, H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY);
                         // value
                         value2 = sln2->get_fn_values();
                         // derivative

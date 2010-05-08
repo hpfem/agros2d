@@ -19,8 +19,8 @@
 
 // $Id: view.h 1086 2008-10-21 09:05:44Z jakub $
 
-#ifndef __HERMES2D_VIEW_H
-#define __HERMES2D_VIEW_H
+#ifndef __H2D_VIEW_H
+#define __H2D_VIEW_H
 
 #include "../common.h"
 #include "../linear.h"
@@ -56,7 +56,7 @@ enum ViewPaletteType {
 /// to provide zooming and panning capabilities for use by the descendant
 /// classes, etc.
 ///
-class HERMES2D_API View
+class H2D_API View
 {
 public:
 
@@ -213,7 +213,7 @@ protected: //internal functions
 
 #else // NOGLUT
 
-class HERMES2D_API View
+class H2D_API View
 {
 public:
   View() {}

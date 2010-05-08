@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_REFINEMENT_OPTIMUM_SELECTOR_H
-#define __HERMES2D_REFINEMENT_OPTIMUM_SELECTOR_H
+#ifndef __H2D_REFINEMENT_OPTIMUM_SELECTOR_H
+#define __H2D_REFINEMENT_OPTIMUM_SELECTOR_H
 
 #include <ostream>
 #include "selector.h"
@@ -29,7 +29,7 @@ namespace RefinementSelectors {
 	  H2DRS_CAND_P_ONLY, ///< P-candidates only.
   };
 
-  class HERMES2D_API OptimumSelector : public Selector { ///< Selector that chooses an optimal candidates based on error decrease per a new DOF.
+  class H2D_API OptimumSelector : public Selector { ///< Selector that chooses an optimal candidates based on error decrease per a new DOF.
   public: //candidates
     struct Cand { ///< A candidate.
       double error; ///< Error of this candidate.
@@ -66,7 +66,7 @@ namespace RefinementSelectors {
         }
       }
 
-      friend HERMES2D_API std::ostream& operator<<(std::ostream& stream, const Cand& cand);
+      friend H2D_API std::ostream& operator<<(std::ostream& stream, const Cand& cand);
     };
     const std::vector<Cand>& get_candidates() const { return candidates; }; ///< Returns current candidates.
 
@@ -119,7 +119,7 @@ namespace RefinementSelectors {
     virtual void update_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders); ///< Updates orders of a refinement in another multimesh component which shares a mesh.
   };
 
-  extern HERMES2D_API std::ostream& operator<<(std::ostream& stream, const OptimumSelector::Cand& cand); ///< Flushes contents of a candidate to a stream. Useful for debug print-outs.
+  extern H2D_API std::ostream& operator<<(std::ostream& stream, const OptimumSelector::Cand& cand); ///< Flushes contents of a candidate to a stream. Useful for debug print-outs.
 }
 
 #endif

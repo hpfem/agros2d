@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __HERMES2D_QUAD_H
-#define __HERMES2D_QUAD_H
+#ifndef __H2D_QUAD_H
+#define __H2D_QUAD_H
 
 #include "common.h"
 #include "config.h"
@@ -37,7 +37,7 @@
 
 /// Quad1D is a base class for all 1D quadrature points.
 ///
-class HERMES2D_API Quad1D
+class H2D_API Quad1D
 {
 public:
 
@@ -62,7 +62,7 @@ protected:
 
 /// Quad2D is a base class for all 2D quadrature points on triangles and quads.
 ///
-class HERMES2D_API Quad2D
+class H2D_API Quad2D
 {
 public:
 
