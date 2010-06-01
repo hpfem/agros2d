@@ -35,7 +35,7 @@ struct CurrentLabel
 CurrentEdge *currentEdge;
 CurrentLabel *currentLabel;
 
-int current_bc_types(int marker)
+BCType current_bc_types(int marker)
 {
     switch (currentEdge[marker].type)
     {
@@ -82,13 +82,13 @@ Scalar current_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
     return 0.0;
 }
 
-void callbackCurrentSpace(QList<H1Space *> *space)
+void callbackCurrentSpace(Tuple<Space *> space)
 {
-    space->at(0)->set_bc_types(current_bc_types);
-    space->at(0)->set_bc_values(current_bc_values);
+    space.at(0)->set_bc_types(current_bc_types);
+    space.at(0)->set_essential_bc_values(current_bc_values);
 }
 
-void callbackCurrentWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+void callbackCurrentWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
     wf->add_biform(0, 0, callback(current_bilinear_form));
     wf->add_liform(0, callback(current_linear_form));
@@ -323,7 +323,9 @@ QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolv
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackCurrentSpace, callbackCurrentWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  callbackCurrentSpace,
+                                                                  callbackCurrentWeakForm);
 
     delete [] currentEdge;
     delete [] currentLabel;

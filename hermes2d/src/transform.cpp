@@ -16,16 +16,22 @@
 #include "common.h"
 #include "transform.h"
 
+#define H2D_IDENTIFY_TRF { 1.0,  1.0 }, { 0.0, 0.0 } ///< Identity transformation.
 
-Trf tri_trf[4] =
+Trf tri_trf[H2D_TRF_NUM] =
 {
   { { 0.5,  0.5 }, { -0.5, -0.5 } }, // son 0
   { { 0.5,  0.5 }, {  0.5, -0.5 } }, // son 1
   { { 0.5,  0.5 }, { -0.5,  0.5 } }, // son 2
-  { {-0.5, -0.5 }, { -0.5, -0.5 } }  // son 3
+  { {-0.5, -0.5 }, { -0.5, -0.5 } }, // son 3
+  { H2D_IDENTIFY_TRF },              // identity
+  { H2D_IDENTIFY_TRF },              // identity
+  { H2D_IDENTIFY_TRF },              // identity
+  { H2D_IDENTIFY_TRF },              // identity
+  { H2D_IDENTIFY_TRF }               // identity
 };
 
-Trf quad_trf[8] =
+Trf quad_trf[H2D_TRF_NUM] =
 {
   { { 0.5, 0.5 }, { -0.5, -0.5 } }, // son 0
   { { 0.5, 0.5 }, {  0.5, -0.5 } }, // son 1
@@ -34,7 +40,8 @@ Trf quad_trf[8] =
   { { 1.0, 0.5 }, {  0.0, -0.5 } }, // horz son 0
   { { 1.0, 0.5 }, {  0.0,  0.5 } }, // horz son 1
   { { 0.5, 1.0 }, { -0.5,  0.0 } }, // vert son 0
-  { { 0.5, 1.0 }, {  0.5,  0.0 } }  // vert son 1
+  { { 0.5, 1.0 }, {  0.5,  0.0 } }, // vert son 1
+  { H2D_IDENTIFY_TRF }              // identity
 };
 
 

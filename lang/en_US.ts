@@ -225,454 +225,459 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="138"/>
+        <location filename="../src/configdialog.cpp" line="141"/>
         <source>Language change</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="139"/>
+        <location filename="../src/configdialog.cpp" line="142"/>
         <source>Interface language has been changed. You must restart the application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="247"/>
+        <location filename="../src/configdialog.cpp" line="254"/>
         <source>Main</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="251"/>
+        <location filename="../src/configdialog.cpp" line="258"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="255"/>
-        <location filename="../src/configdialog.cpp" line="559"/>
+        <location filename="../src/configdialog.cpp" line="262"/>
+        <location filename="../src/configdialog.cpp" line="571"/>
         <source>Colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="259"/>
+        <location filename="../src/configdialog.cpp" line="266"/>
+        <source>Python</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog.cpp" line="270"/>
         <source>Advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="300"/>
+        <location filename="../src/configdialog.cpp" line="312"/>
         <source>UI:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="302"/>
+        <location filename="../src/configdialog.cpp" line="314"/>
         <source>Language:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="304"/>
+        <location filename="../src/configdialog.cpp" line="316"/>
         <source>Default physic field:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="307"/>
+        <location filename="../src/configdialog.cpp" line="319"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="311"/>
+        <location filename="../src/configdialog.cpp" line="323"/>
         <source>Delete files with initial mesh (Triangle)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="312"/>
+        <location filename="../src/configdialog.cpp" line="324"/>
         <source>Delete files with solution mesh (Hermes2D)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="314"/>
+        <location filename="../src/configdialog.cpp" line="326"/>
         <source>Save problem with solution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="324"/>
+        <location filename="../src/configdialog.cpp" line="336"/>
         <source>Solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="329"/>
+        <location filename="../src/configdialog.cpp" line="341"/>
         <source>Clear command history</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="332"/>
+        <location filename="../src/configdialog.cpp" line="344"/>
         <source>Show value result in line edit input</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="333"/>
+        <location filename="../src/configdialog.cpp" line="345"/>
         <source>Check new version during startup.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="344"/>
+        <location filename="../src/configdialog.cpp" line="356"/>
         <source>Other</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="375"/>
+        <location filename="../src/configdialog.cpp" line="387"/>
         <source>Zoom to mouse pointer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="378"/>
+        <location filename="../src/configdialog.cpp" line="390"/>
         <source>Angle segments count:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="380"/>
+        <location filename="../src/configdialog.cpp" line="392"/>
         <source>Node size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="382"/>
+        <location filename="../src/configdialog.cpp" line="394"/>
         <source>Edge width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="384"/>
+        <location filename="../src/configdialog.cpp" line="396"/>
         <source>Label size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="388"/>
+        <location filename="../src/configdialog.cpp" line="400"/>
         <source>Geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="394"/>
+        <location filename="../src/configdialog.cpp" line="406"/>
         <source>Show rulers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="395"/>
+        <location filename="../src/configdialog.cpp" line="407"/>
         <source>Snap to grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="398"/>
+        <location filename="../src/configdialog.cpp" line="410"/>
         <source>Grid step:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="403"/>
+        <location filename="../src/configdialog.cpp" line="415"/>
         <source>Grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="408"/>
+        <location filename="../src/configdialog.cpp" line="420"/>
         <source>Jet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="409"/>
+        <location filename="../src/configdialog.cpp" line="421"/>
         <source>Autumn</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="410"/>
+        <location filename="../src/configdialog.cpp" line="422"/>
         <source>Hot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="411"/>
+        <location filename="../src/configdialog.cpp" line="423"/>
         <source>Copper</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="412"/>
+        <location filename="../src/configdialog.cpp" line="424"/>
         <source>Cool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="413"/>
+        <location filename="../src/configdialog.cpp" line="425"/>
         <source>B/W ascending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="414"/>
+        <location filename="../src/configdialog.cpp" line="426"/>
         <source>B/W descending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="416"/>
+        <location filename="../src/configdialog.cpp" line="428"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="424"/>
+        <location filename="../src/configdialog.cpp" line="436"/>
         <source>Log. scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="429"/>
+        <location filename="../src/configdialog.cpp" line="441"/>
         <source>Palette:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="432"/>
+        <location filename="../src/configdialog.cpp" line="444"/>
         <source>Steps:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="435"/>
+        <location filename="../src/configdialog.cpp" line="447"/>
         <source>Base:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="439"/>
+        <location filename="../src/configdialog.cpp" line="451"/>
         <source>Scalar view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="448"/>
+        <location filename="../src/configdialog.cpp" line="460"/>
         <source>Contours count:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="451"/>
+        <location filename="../src/configdialog.cpp" line="463"/>
         <source>Contours</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="455"/>
+        <location filename="../src/configdialog.cpp" line="467"/>
         <source>Proportional</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="456"/>
+        <location filename="../src/configdialog.cpp" line="468"/>
         <source>Color (b/w)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="463"/>
-        <location filename="../src/configdialog.cpp" line="540"/>
+        <location filename="../src/configdialog.cpp" line="475"/>
+        <location filename="../src/configdialog.cpp" line="552"/>
         <source>Vectors:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="466"/>
+        <location filename="../src/configdialog.cpp" line="478"/>
         <source>Scale:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="470"/>
+        <location filename="../src/configdialog.cpp" line="482"/>
         <source>Vector view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="474"/>
+        <location filename="../src/configdialog.cpp" line="486"/>
         <source>Ligthing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="476"/>
+        <location filename="../src/configdialog.cpp" line="488"/>
         <source>Gradient background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="479"/>
+        <location filename="../src/configdialog.cpp" line="491"/>
         <source>Angle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="484"/>
+        <location filename="../src/configdialog.cpp" line="496"/>
         <source>3D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="488"/>
+        <location filename="../src/configdialog.cpp" line="500"/>
         <source>Show order label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="493"/>
+        <location filename="../src/configdialog.cpp" line="505"/>
         <source>Polynomial order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="533"/>
+        <location filename="../src/configdialog.cpp" line="545"/>
         <source>Background:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="534"/>
+        <location filename="../src/configdialog.cpp" line="546"/>
         <source>Grid:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="535"/>
+        <location filename="../src/configdialog.cpp" line="547"/>
         <source>Cross:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="536"/>
+        <location filename="../src/configdialog.cpp" line="548"/>
         <source>Nodes:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="537"/>
+        <location filename="../src/configdialog.cpp" line="549"/>
         <source>Edges:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="538"/>
+        <location filename="../src/configdialog.cpp" line="550"/>
         <source>Labels:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="539"/>
+        <location filename="../src/configdialog.cpp" line="551"/>
         <source>Contours:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="541"/>
+        <location filename="../src/configdialog.cpp" line="553"/>
         <source>Initial mesh:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="542"/>
+        <location filename="../src/configdialog.cpp" line="554"/>
         <source>Solution mesh:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="543"/>
+        <location filename="../src/configdialog.cpp" line="555"/>
         <source>Highlighted elements:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="544"/>
+        <location filename="../src/configdialog.cpp" line="556"/>
         <source>Selected elements:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="576"/>
+        <location filename="../src/configdialog.cpp" line="588"/>
         <source>Isotropic refinement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="577"/>
+        <location filename="../src/configdialog.cpp" line="589"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="582"/>
+        <location filename="../src/configdialog.cpp" line="594"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of cancidates in hp-adaptivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="584"/>
+        <location filename="../src/configdialog.cpp" line="596"/>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="586"/>
+        <location filename="../src/configdialog.cpp" line="598"/>
         <source>0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="587"/>
+        <location filename="../src/configdialog.cpp" line="599"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="588"/>
+        <location filename="../src/configdialog.cpp" line="600"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="589"/>
+        <location filename="../src/configdialog.cpp" line="601"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="595"/>
+        <location filename="../src/configdialog.cpp" line="607"/>
         <source>arbitrary level hang. nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="596"/>
+        <location filename="../src/configdialog.cpp" line="608"/>
         <source>at most one-level hang. nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="597"/>
+        <location filename="../src/configdialog.cpp" line="609"/>
         <source>at most two-level hang. nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="598"/>
+        <location filename="../src/configdialog.cpp" line="610"/>
         <source>at most three-level hang. nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="599"/>
+        <location filename="../src/configdialog.cpp" line="611"/>
         <source>at most four-level hang. nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="600"/>
+        <location filename="../src/configdialog.cpp" line="612"/>
         <source>at most five-level hang. nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="605"/>
+        <location filename="../src/configdialog.cpp" line="617"/>
         <source>Conv. exp.:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="608"/>
+        <location filename="../src/configdialog.cpp" line="620"/>
         <source>Strategy:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="611"/>
+        <location filename="../src/configdialog.cpp" line="623"/>
         <source>Threshold:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="614"/>
+        <location filename="../src/configdialog.cpp" line="626"/>
         <source>Mesh regularity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="617"/>
+        <location filename="../src/configdialog.cpp" line="629"/>
         <source>Adaptivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="625"/>
+        <location filename="../src/configdialog.cpp" line="637"/>
         <source>Triangle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="627"/>
+        <location filename="../src/configdialog.cpp" line="639"/>
         <source>FFmpeg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="630"/>
+        <location filename="../src/configdialog.cpp" line="642"/>
         <source>Commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="634"/>
+        <location filename="../src/configdialog.cpp" line="646"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="678"/>
+        <location filename="../src/configdialog.cpp" line="705"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="678"/>
+        <location filename="../src/configdialog.cpp" line="705"/>
         <source>Command history was cleared succesfully.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -713,12 +718,12 @@
 <context>
     <name>DSceneEdgeCurrentMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="682"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="684"/>
         <source>BC type:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="684"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="686"/>
         <source>Value:</source>
         <translation></translation>
     </message>
@@ -726,22 +731,22 @@
 <context>
     <name>DSceneEdgeElasticityMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="641"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="643"/>
         <source>BC Type X:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="643"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="645"/>
         <source>BC Type Y:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="645"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="647"/>
         <source>Force X (N):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="647"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="649"/>
         <source>Force Y (N):</source>
         <translation></translation>
     </message>
@@ -785,12 +790,12 @@
 <context>
     <name>DSceneEdgeGeneralMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="603"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="605"/>
         <source>BC type:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="605"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="607"/>
         <source>Value:</source>
         <translation></translation>
     </message>
@@ -826,12 +831,12 @@
 <context>
     <name>DSceneEdgeMagneticMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2572"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2576"/>
         <source>BC type:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2574"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2578"/>
         <source>Value:</source>
         <translation></translation>
     </message>
@@ -933,7 +938,7 @@
 <context>
     <name>DSceneLabelCurrentMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="735"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="737"/>
         <source>Conductivity (S/m):</source>
         <translation></translation>
     </message>
@@ -941,12 +946,12 @@
 <context>
     <name>DSceneLabelElasticityMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="708"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="710"/>
         <source>Young modulus (Pa):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="710"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="712"/>
         <source>Poisson number (-):</source>
         <translation></translation>
     </message>
@@ -980,12 +985,12 @@
 <context>
     <name>DSceneLabelGeneralMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="665"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="667"/>
         <source>Constant:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="667"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="669"/>
         <source>Rightside:</source>
         <translation></translation>
     </message>
@@ -1016,48 +1021,48 @@
 <context>
     <name>DSceneLabelMagneticMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2661"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2665"/>
         <source>Rem. flux dens. (T):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2662"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2666"/>
         <source>Direction of rem. (deg.):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2664"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2668"/>
         <source>Permanent magnet</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2669"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2670"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2673"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2674"/>
         <source>Velocity %1 (m/s):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2671"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2675"/>
         <source>Velocity angular (rad/s):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2673"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2677"/>
         <source>Velocity</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2676"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2680"/>
         <source>Permeability (-):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2678"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2682"/>
         <source>Conductivity (S/m):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2680"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2684"/>
         <source>Current density (A/m2):</source>
         <translation></translation>
     </message>
@@ -2100,35 +2105,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>tooltip_01</source>
-        <translation type="obsolete">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
-&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
-		&lt;head&gt;
-			&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
-			&lt;title&gt;Agros2D - tooltips&lt;/title&gt;
-		&lt;/head&gt;
-&lt;body style=&quot;font-size: 11px;&quot;&gt;
-&lt;table&gt;
-    &lt;tr&gt;
-        &lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add nodes, edges and labels directly by mouse click&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;td&gt;&lt;b&gt;Ctrl+N&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add nodes by dialog window&lt;/td&gt;        
-    &lt;/tr&gt;
-    &lt;td&gt;&lt;b&gt;Ctrl+Shift+N&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;add nodes by dialog window actual cursor position&lt;/td&gt;        
-    &lt;/tr&gt;
-    &lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;open dialog for setting markers&lt;/td&gt;        
-    &lt;/tr&gt;
-    &lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-        &lt;td&gt;pan the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;        
-    &lt;/tr&gt;
-&lt;/table&gt;
-&lt;/body&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="870"/>
         <source>Problem Type: %1</source>
         <translation></translation>
@@ -2694,17 +2670,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="266"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="284"/>
         <source>Solver: DOF is zero.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="305"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="321"/>
         <source>relative error: %1 %</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="360"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="375"/>
         <source>time step: %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4096,7 +4072,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="153"/>
-        <location filename="../src/sceneview.cpp" line="1951"/>
+        <location filename="../src/sceneview.cpp" line="1976"/>
         <source>Operate on nodes</source>
         <translation></translation>
     </message>
@@ -4107,7 +4083,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="158"/>
-        <location filename="../src/sceneview.cpp" line="1954"/>
+        <location filename="../src/sceneview.cpp" line="1979"/>
         <source>Operate on edges</source>
         <translation></translation>
     </message>
@@ -4123,7 +4099,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="168"/>
-        <location filename="../src/sceneview.cpp" line="1976"/>
+        <location filename="../src/sceneview.cpp" line="2001"/>
         <source>Postprocessor</source>
         <translation></translation>
     </message>
@@ -4179,32 +4155,32 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="1970"/>
-        <source>View model</source>
+        <location filename="../src/sceneview.cpp" line="1995"/>
+        <source>Model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="1973"/>
+        <location filename="../src/sceneview.cpp" line="1998"/>
         <source>Polynomial order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2731"/>
+        <location filename="../src/sceneview.cpp" line="2756"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2746"/>
+        <location filename="../src/sceneview.cpp" line="2771"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2766"/>
+        <location filename="../src/sceneview.cpp" line="2791"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3387"/>
+        <location filename="../src/sceneview.cpp" line="3411"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation></translation>
     </message>
@@ -4220,7 +4196,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="163"/>
-        <location filename="../src/sceneview.cpp" line="1957"/>
+        <location filename="../src/sceneview.cpp" line="1982"/>
         <source>Operate on labels</source>
         <translation></translation>
     </message>
@@ -4233,124 +4209,129 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="117"/>
+        <location filename="../src/sceneviewdialog.cpp" line="119"/>
         <source>Grid</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="118"/>
+        <location filename="../src/sceneviewdialog.cpp" line="120"/>
         <source>Geometry</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="123"/>
+        <location filename="../src/sceneviewdialog.cpp" line="125"/>
         <source>Polynomial order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="140"/>
+        <location filename="../src/sceneviewdialog.cpp" line="142"/>
         <source>2D mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="147"/>
+        <location filename="../src/sceneviewdialog.cpp" line="149"/>
         <source>3D mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="154"/>
+        <location filename="../src/sceneviewdialog.cpp" line="156"/>
         <source>Contours</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="155"/>
+        <location filename="../src/sceneviewdialog.cpp" line="157"/>
         <source>Vectors</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="167"/>
+        <location filename="../src/sceneviewdialog.cpp" line="169"/>
         <source>Show</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="175"/>
+        <location filename="../src/sceneviewdialog.cpp" line="177"/>
         <source>Postprocessor</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="194"/>
-        <location filename="../src/sceneviewdialog.cpp" line="215"/>
+        <location filename="../src/sceneviewdialog.cpp" line="196"/>
+        <location filename="../src/sceneviewdialog.cpp" line="217"/>
         <source>Variable:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="207"/>
+        <location filename="../src/sceneviewdialog.cpp" line="209"/>
         <source>Scalar field</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="119"/>
+        <location filename="../src/sceneviewdialog.cpp" line="121"/>
         <source>Initial mesh</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="122"/>
+        <location filename="../src/sceneviewdialog.cpp" line="124"/>
         <source>None</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="124"/>
-        <location filename="../src/sceneviewdialog.cpp" line="125"/>
+        <location filename="../src/sceneviewdialog.cpp" line="126"/>
+        <location filename="../src/sceneviewdialog.cpp" line="127"/>
         <source>Scalar view</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="156"/>
+        <location filename="../src/sceneviewdialog.cpp" line="128"/>
+        <source>Scalar view solid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/sceneviewdialog.cpp" line="158"/>
         <source>Solution mesh</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="197"/>
+        <location filename="../src/sceneviewdialog.cpp" line="199"/>
         <source>Component:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="200"/>
+        <location filename="../src/sceneviewdialog.cpp" line="202"/>
         <source>Auto range:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="202"/>
+        <location filename="../src/sceneviewdialog.cpp" line="204"/>
         <source>Minimum:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="204"/>
+        <location filename="../src/sceneviewdialog.cpp" line="206"/>
         <source>Maximum:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="219"/>
+        <location filename="../src/sceneviewdialog.cpp" line="221"/>
         <source>Vector field</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="227"/>
+        <location filename="../src/sceneviewdialog.cpp" line="229"/>
         <source>Time step:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="231"/>
+        <location filename="../src/sceneviewdialog.cpp" line="233"/>
         <source>Transient analysis</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="268"/>
+        <location filename="../src/sceneviewdialog.cpp" line="270"/>
         <source>Scalar</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="272"/>
+        <location filename="../src/sceneviewdialog.cpp" line="274"/>
         <source>Magnitude</source>
         <translation></translation>
     </message>
@@ -4358,12 +4339,12 @@
 <context>
     <name>ScriptEditor</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1134"/>
+        <location filename="../src/scripteditordialog.cpp" line="1146"/>
         <source>Goto line</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1134"/>
+        <location filename="../src/scripteditordialog.cpp" line="1146"/>
         <source>Line number:</source>
         <translation></translation>
     </message>
@@ -4527,8 +4508,8 @@
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="638"/>
-        <location filename="../src/scripteditordialog.cpp" line="894"/>
-        <location filename="../src/scripteditordialog.cpp" line="908"/>
+        <location filename="../src/scripteditordialog.cpp" line="899"/>
+        <location filename="../src/scripteditordialog.cpp" line="920"/>
         <source>Untitled</source>
         <translation></translation>
     </message>
@@ -4561,9 +4542,14 @@ Do you want to save your changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="900"/>
+        <location filename="../src/scripteditordialog.cpp" line="905"/>
         <source>Script editor - %1</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/scripteditordialog.cpp" line="913"/>
+        <source>Line: %1, Col: %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="390"/>
@@ -4670,52 +4656,52 @@ Do you want to save your changes?</source>
 <context>
     <name>SearchDialog</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1323"/>
+        <location filename="../src/scripteditordialog.cpp" line="1335"/>
         <source>Search and replace</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1329"/>
+        <location filename="../src/scripteditordialog.cpp" line="1341"/>
         <source>Find and replace</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1336"/>
+        <location filename="../src/scripteditordialog.cpp" line="1348"/>
         <source>Search for:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1338"/>
+        <location filename="../src/scripteditordialog.cpp" line="1350"/>
         <source>Replace with:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1343"/>
+        <location filename="../src/scripteditordialog.cpp" line="1355"/>
         <source>Options</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1346"/>
+        <location filename="../src/scripteditordialog.cpp" line="1358"/>
         <source>Regular expression</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1349"/>
+        <location filename="../src/scripteditordialog.cpp" line="1361"/>
         <source>Case sensitive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1362"/>
+        <location filename="../src/scripteditordialog.cpp" line="1374"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1398"/>
+        <location filename="../src/scripteditordialog.cpp" line="1410"/>
         <source>Find</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1408"/>
+        <location filename="../src/scripteditordialog.cpp" line="1420"/>
         <source>Replace</source>
         <translation></translation>
     </message>

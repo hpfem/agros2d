@@ -18,15 +18,20 @@
 
 #include "mesh.h"
 
-// 2D transform
+/// 2D transformatin.
 struct Trf
 {
   double2 m; ///< 2x2 diagonal transformation matrix
   double2 t; ///< translation vector
 };
 
-extern H2D_API Trf tri_trf[4];  ///< table of triangle sub-element transforms
-extern H2D_API Trf quad_trf[8]; ///< table of quad sub-element transforms
+#define H2D_TRF_TRI_NUM 4 ///< A total number of valid transformation of a triangle to a sub-domain.
+#define H2D_TRF_QUAD_NUM 8 ///< A total number of valid transformation of a quad to a sub-domain.
+#define H2D_TRF_NUM (H2D_TRF_QUAD_NUM + 1) ///< A total number of transformations.
+#define H2D_TRF_IDENTITY H2D_TRF_QUAD_NUM ///< An index of identity transformation.
+
+extern H2D_API Trf tri_trf[H2D_TRF_NUM];  ///< A table of triangle sub-subdomain transforms. Only first ::H2D_TRF_TRI_NUM transformations are valid, the rest are identity transformation.
+extern H2D_API Trf quad_trf[H2D_TRF_NUM]; ///< A table of quad sub-subdomain transforms. Only first ::H2D_TRF_QUAD_NUM transformations are valid, the rest are identity transformation.
 
 
 /// Transformable is a base class for all classes that perform some kind of precalculation of

@@ -15,9 +15,8 @@
 
 #include "common.h"
 #include "space.h"
-#include "matrix.h"
+#include "matrix_old.h"
 #include "auto_local_array.h"
-#include <valarray>
 
 Space::Space(Mesh* mesh, Shapeset* shapeset)
      : mesh(mesh), shapeset(shapeset)
@@ -33,8 +32,8 @@ Space::Space(Mesh* mesh, Shapeset* shapeset)
   was_assigned = false;
 
   set_bc_types(NULL);
-  set_bc_values((scalar (*)(int, double, double)) NULL);
-  set_bc_values((scalar (*)(EdgePos*)) NULL);
+  set_essential_bc_values((scalar (*)(int, double, double)) NULL);
+  set_essential_bc_values((scalar (*)(EdgePos*)) NULL);
 }
 
 
@@ -96,12 +95,14 @@ void Space::H2D_CHECK_ORDER(int order)
 
 void Space::set_element_order(int id, int order)
 {
+  assert_msg(mesh->get_element(id)->is_triangle() || H2D_GET_V_ORDER(order) != 0, "Element #%d is quad but given vertical order is zero", id);
+  assert_msg(mesh->get_element(id)->is_quad() || H2D_GET_V_ORDER(order) == 0, "Element #%d is triangle but vertical is not zero", id);
   if (id < 0 || id >= mesh->get_max_element_id())
     error("Invalid element id.");
   H2D_CHECK_ORDER(order);
 
   resize_tables();
-  if (mesh->get_element(id)->is_quad() && H2D_GET_V_ORDER(order) == 0)
+  if (mesh->get_element(id)->is_quad() && H2D_GET_V_ORDER(order) == 0) //FIXME: Hcurl uses zero orders
      order = H2D_MAKE_QUAD_ORDER(order, order);
   edata[id].order = order;
   seq++;
@@ -229,6 +230,7 @@ void Space::set_mesh(Mesh* mesh)
 
 void Space::propagate_zero_orders(Element* e)
 {
+  warn_if(get_element_order(e->id) != 0, "zeroing order of an element ID:%d, original order (H:%d; V:%d)", e->id, H2D_GET_H_ORDER(get_element_order(e->id)), H2D_GET_V_ORDER(get_element_order(e->id)));
   set_element_order(e->id, 0);
   if (!e->active)
     for (int i = 0; i < 4; i++)
@@ -268,10 +270,14 @@ int Space::assign_dofs(int first_dof, int stride)
   resize_tables();
 
   Element* e;
-  for_all_base_elements(e, mesh)
-    if (get_element_order(e->id) == 0)
-      propagate_zero_orders(e);
+  /** \todo Find out whether the following code this is crucial.
+   *  If uncommented, this enforces 0 order for all sons if the base element has 0 order.
+   *  In this case, an element with 0 order means an element which is left out from solution. */
+  //for_all_base_elements(e, mesh)
+  //  if (get_element_order(e->id) == 0)
+  //    propagate_zero_orders(e);
 
+  //check validity of orders
   for_all_active_elements(e, mesh)
     if (e->id >= esize || edata[e->id].order < 0)
       error("Uninitialized element order (id = #%d).", e->id);
@@ -279,6 +285,7 @@ int Space::assign_dofs(int first_dof, int stride)
   this->first_dof = next_dof = first_dof;
   this->stride = stride;
 
+  reset_dof_assignment();
   assign_vertex_dofs();
   assign_edge_dofs();
   assign_bubble_dofs();
@@ -294,6 +301,33 @@ int Space::assign_dofs(int first_dof, int stride)
   return get_num_dofs();
 }
 
+void Space::reset_dof_assignment() {
+  // First assume that all vertex nodes are part of a natural BC. the member NodeData::n
+  // is misused for this purpose, since it stores nothing at this point. Also assume
+  // that all DOFs are unassigned.
+  int i, j;
+  for (i = 0; i < mesh->get_max_node_id(); i++)
+  {
+    ndata[i].n = BC_NATURAL;
+    ndata[i].dof = H2D_UNASSIGNED_DOF;
+  }
+
+  // next go through all boundary edge nodes constituting an essential BC and mark their
+  // neighboring vertex nodes also as essential
+  Element* e;
+  for_all_active_elements(e, mesh)
+  {
+    for (unsigned int i = 0; i < e->nvert; i++)
+    {
+      if (e->en[i]->bnd && bc_type_callback(e->en[i]->marker) == BC_ESSENTIAL)
+      {
+        j = e->next_vert(i);
+        ndata[e->vn[i]->id].n = BC_ESSENTIAL;
+        ndata[e->vn[j]->id].n = BC_ESSENTIAL;
+      }
+    }
+  }
+}
 
 //// assembly lists ///////////////////////////////////////////////////////////////////////////////
 
@@ -336,9 +370,20 @@ void Space::get_edge_assembly_list(Element* e, int edge, AsmList* al)
 }
 
 
+void Space::get_bubble_assembly_list(Element* e, AsmList* al)
+{
+  ElementData* ed = &edata[e->id];
+
+  if (!ed->n) return;
+
+  int* indices = shapeset->get_bubble_indices(ed->order);
+  for (int i = 0, dof = ed->bdof; i < ed->n; i++, dof += stride, indices++)
+    al->add_triplet(*indices, dof, 1.0);
+}
+
 //// BC stuff /////////////////////////////////////////////////////////////////////////////////////
 
-static int default_bc_type(int marker)
+static BCType default_bc_type(int marker)
 {
   return BC_NATURAL;
 }
@@ -357,21 +402,21 @@ scalar default_bc_value_by_edge(EdgePos* ep)
 }
 
 
-void Space::set_bc_types(int (*bc_type_callback)(int))
+void Space::set_bc_types(BCType (*bc_type_callback)(int))
 {
   if (bc_type_callback == NULL) bc_type_callback = default_bc_type;
   this->bc_type_callback = bc_type_callback;
   seq++;
 }
 
-void Space::set_bc_values(scalar (*bc_value_callback_by_coord)(int, double, double))
+void Space::set_essential_bc_values(scalar (*bc_value_callback_by_coord)(int, double, double))
 {
   if (bc_value_callback_by_coord == NULL) bc_value_callback_by_coord = default_bc_value_by_coord;
   this->bc_value_callback_by_coord = bc_value_callback_by_coord;
   seq++;
 }
 
-void Space::set_bc_values(scalar (*bc_value_callback_by_edge)(EdgePos*))
+void Space::set_essential_bc_values(scalar (*bc_value_callback_by_edge)(EdgePos*))
 {
   if (bc_value_callback_by_edge == NULL) bc_value_callback_by_edge = default_bc_value_by_edge;
   this->bc_value_callback_by_edge = bc_value_callback_by_edge;
@@ -421,14 +466,13 @@ void Space::precalculate_projection_matrix(int nv, double**& mat, double*& p)
 
 void Space::update_edge_bc(Element* e, EdgePos* ep)
 {
-  const int UNASSIGNED = -2;
   if (e->active)
   {
     Node* en = e->en[ep->edge];
     NodeData* nd = &ndata[en->id];
     nd->edge_bc_proj = NULL;
 
-    if (nd->dof != UNASSIGNED && en->bnd && bc_type_callback(en->marker) == BC_ESSENTIAL)
+    if (nd->dof != H2D_UNASSIGNED_DOF && en->bnd && bc_type_callback(en->marker) == BC_ESSENTIAL)
     {
       int order = get_edge_order_internal(en);
       ep->marker = en->marker;

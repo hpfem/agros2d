@@ -36,7 +36,7 @@ struct ElectrostaticLabel
 ElectrostaticEdge *electrostaticEdge;
 ElectrostaticLabel *electrostaticLabel;
 
-int electrostatic_bc_types(int marker)
+BCType electrostatic_bc_types(int marker)
 {
     switch (electrostaticEdge[marker].type)
     {
@@ -86,13 +86,13 @@ Scalar electrostatic_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e
         return electrostaticLabel[e->marker].charge_density / EPS0 * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-void callbackElectrostaticSpace(QList<H1Space *> *space)
+void callbackElectrostaticSpace(Tuple<Space *> space)
 {
-    space->at(0)->set_bc_types(electrostatic_bc_types);
-    space->at(0)->set_bc_values(electrostatic_bc_values);
+    space.at(0)->set_bc_types(electrostatic_bc_types);
+    space.at(0)->set_essential_bc_values(electrostatic_bc_values);
 }
 
-void callbackElectrostaticWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+void callbackElectrostaticWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
     wf->add_biform(0, 0, callback(electrostatic_bilinear_form));
     wf->add_liform(0, callback(electrostatic_linear_form));

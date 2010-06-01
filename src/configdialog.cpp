@@ -612,8 +612,8 @@ QWidget *ConfigDialog::createAdvancedWidget()
     cmbMeshRegularity->addItem(tr("at most five-level hang. nodes"), 5);
 
     QGridLayout *layoutAdaptivity = new QGridLayout();
-    layoutAdaptivity->addWidget(chkIsoOnly, 0, 0);
-    layoutAdaptivity->addWidget(lblIsoOnly, 1, 0, 1, 2);
+    // layoutAdaptivity->addWidget(chkIsoOnly, 0, 0);
+    // layoutAdaptivity->addWidget(lblIsoOnly, 1, 0, 1, 2);
     layoutAdaptivity->addWidget(new QLabel(tr("Conv. exp.:")), 2, 0);
     layoutAdaptivity->addWidget(txtConvExp, 2, 1);
     layoutAdaptivity->addWidget(lblConvExp, 3, 0, 1, 2);

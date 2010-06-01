@@ -190,10 +190,10 @@ void SceneInfoView::doInvalidated()
         itemInitialMeshNode->setExpanded(true);
 
         QTreeWidgetItem *itemSolverInitialVertices = new QTreeWidgetItem(itemInitialMeshNode);
-        itemSolverInitialVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_nodes()));
+        itemSolverInitialVertices->setText(0, tr("Nodes: ") + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()));
 
         QTreeWidgetItem *itemSolverInitialElements = new QTreeWidgetItem(itemInitialMeshNode);
-        itemSolverInitialElements->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()));
+        itemSolverInitialElements->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()));
 
         if (Util::scene()->sceneSolution()->isSolved())
         {

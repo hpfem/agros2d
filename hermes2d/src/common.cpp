@@ -17,42 +17,56 @@
 
 using namespace std;
 
+/// A size of a delimiter in a log file. \internal \ingroup g_logging
 #define H2D_LOG_FILE_DELIM_SIZE 80
 
-const std::string get_quad_order_str(const int quad_order) {
+H2D_API const std::string get_quad_order_str(const int quad_order) {
   std::stringstream str;
   str << "(H:" << H2D_GET_H_ORDER(quad_order) << ";V:" << H2D_GET_V_ORDER(quad_order) << ")";
   return str.str();
 }
 
-H2D_API void __h2d_exit_if(bool cond, int code) {
+H2D_API void hermes2d_exit_if(bool cond, int code) {
   if (cond)
     exit(code);
 }
 
-class LoggerMonitor { ///< Logger monitor
+/// Logging output monitor. \internal \ingroup g_logging
+/** This class protects a logging function __h2d_log_message_if() in multithreded environment. */
+class LoggerMonitor {
   pthread_mutexattr_t mutex_attr; ///< Mutext attributes.
   pthread_mutex_t mutex; ///< Mutex that protects monitor.
 
 public:
+  /// Constructor. Creates a mutex.
   LoggerMonitor() {
     pthread_mutexattr_init(&mutex_attr);
     pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&mutex, &mutex_attr);
   };
+  /// Destructor. Deletes a mutex.
   ~LoggerMonitor() {
     pthread_mutex_destroy(&mutex);
     pthread_mutexattr_destroy(&mutex_attr);
   };
-  void enter() { pthread_mutex_lock(&mutex); }; ///< enters protected section
-  void leave() { pthread_mutex_unlock(&mutex); }; ///< leaves protected section
+
+  /// Enters protected section.
+  void enter() { pthread_mutex_lock(&mutex); };
+
+  /// Leaves protected section.
+  void leave() { pthread_mutex_unlock(&mutex); };
 };
-static LoggerMonitor logger_monitor; ///< Monitor that protects logging function.
+static LoggerMonitor logger_monitor; ///< A monitor that protects logging function. \internal \ingroup g_logging
 
-static map<string, bool> logger_written; ///< List of all logs which were already written.
+static map<string, bool> logger_written; ///< A list of all log files that were used to write a log. Used to write a log header to a log file. \internal \ingroup g_logging
 
-static bool write_console(const char code, const bool emphasize, const char* text) { ///< Writes text to console, being fancy.
-#ifdef WIN32
+/// Writes a fancy formatted text to a console. \internal \ingroup g_logging
+/** \param[in] code An event code, e.g., ::H2D_EC_ERROR.
+ *  \param[in] emphasize True if the message should be emphasized.
+ *  \param[in] text A message. A C-style string.
+ *  \return True if the message was written. False if it failed due to some reasone. */
+static bool write_console(const char code, const bool emphasize, const char* text) {
+#ifdef WIN32 //Windows platform
   HANDLE h_console = GetStdHandle(STD_OUTPUT_HANDLE);
   if (h_console == INVALID_HANDLE_VALUE)
     return false;
@@ -132,7 +146,7 @@ static bool write_console(const char code, const bool emphasize, const char* tex
 #endif
 }
 
-H2D_API bool __h2d_log_message_if(bool cond, const __h2d_log_info& info, const char* msg, ...) {
+H2D_API bool hermes2d_log_message_if(bool cond, const Hermes2DLogEventInfo& info, const char* msg, ...) {
   if (cond) {
     logger_monitor.enter();
 
@@ -218,26 +232,27 @@ H2D_API bool __h2d_log_message_if(bool cond, const __h2d_log_info& info, const c
   return cond;
 }
 
-void __hermes2d_fwrite(const void* ptr, size_t size, size_t nitems, FILE* stream, const __h2d_log_info& err_info)
+void __hermes2d_fwrite(const void* ptr, size_t size, size_t nitems, FILE* stream, const Hermes2DLogEventInfo& err_info)
 {
   if (fwrite(ptr, size, nitems, stream) != nitems || ferror(stream))
-    __h2d_exit_if(__h2d_log_message_if(true, err_info, "Error writing to file: %s", strerror(ferror(stream))));
+    hermes2d_exit_if(hermes2d_log_message_if(true, err_info, "Error writing to file: %s", strerror(ferror(stream))));
 }
 
-void __hermes2d_fread(void* ptr, size_t size, size_t nitems, FILE* stream, const __h2d_log_info& err_info)
+void __hermes2d_fread(void* ptr, size_t size, size_t nitems, FILE* stream, const Hermes2DLogEventInfo& err_info)
 {
   size_t ret = fread(ptr, size, nitems, stream);
   if (ret < nitems)
-    __h2d_exit_if(__h2d_log_message_if(true, err_info, "Premature end of file."));
+    hermes2d_exit_if(hermes2d_log_message_if(true, err_info, "Premature end of file."));
   else if (ferror(stream))
-    __h2d_exit_if(__h2d_log_message_if(true, err_info, "Error reading file: %s", strerror(ferror(stream))));
+    hermes2d_exit_if(hermes2d_log_message_if(true, err_info, "Error reading file: %s", strerror(ferror(stream))));
 }
 
 //// logo //////////////////////////////////////////////////////////////////////////////////
-#ifndef HERMED2D_NO_LOGO
-class __h2d_logo {
+#ifndef H2D_NO_LOGO
+/// Generates a logo when the library is loaded and the logo is enabled (a preprocessor directive ::H2D_NO_LOGO). \internal \ingroup g_logging
+class Hermes2DLogoMessage {
 public:
-  __h2d_logo() {
+  Hermes2DLogoMessage() {
     printf("\n-------------------------------------------------\n");
     printf("          This application uses Hermes2D\n");
     printf("       Hermes2D is a C++ library for rapid \n");
@@ -249,7 +264,7 @@ public:
     fflush(stdout);
   }
 };
-__h2d_logo __h2d_logo_instance;
+Hermes2DLogoMessage hermes2d_logo_message;
 #endif
 
 //// runtime report control varibles //////////////////////////////////////////////////////////////////////////////////

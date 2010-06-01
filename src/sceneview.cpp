@@ -822,9 +822,9 @@ void SceneView::paintInitialMesh()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->mesh()->get_num_elements(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
-        Element *element = m_scene->sceneSolution()->mesh()->get_element(i);
+        Element *element = m_scene->sceneSolution()->meshInitial()->get_element_fast(i);
         if (element->is_triangle())
         {
             glVertex2d(element->vn[0]->x, element->vn[0]->y);
@@ -850,9 +850,9 @@ void SceneView::paintSolutionMesh()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->sln()->get_mesh()->get_num_elements(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->sln()->get_mesh()->get_num_active_elements(); i++)
     {
-        Element *element = m_scene->sceneSolution()->sln()->get_mesh()->get_element(i);
+        Element *element = m_scene->sceneSolution()->sln()->get_mesh()->get_element_fast(i);
         if (element->is_triangle())
         {
             glVertex2d(element->vn[0]->x, element->vn[0]->y);
@@ -1308,9 +1308,9 @@ void SceneView::paintScalarField3D()
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->mesh()->get_num_elements(); i++)
+        for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
         {
-            Element *element = m_scene->sceneSolution()->mesh()->get_element(i);
+            Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
             if (element->is_triangle())
             {
                 glVertex3d(element->vn[0]->x, element->vn[0]->y, 0.0);
@@ -2439,11 +2439,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 // select volume integral area
                 if (actPostprocessorModeVolumeIntegral->isChecked())
                 {
-                    int index = m_scene->sceneSolution()->findTriangleInMesh(m_scene->sceneSolution()->mesh(), p);
+                    int index = m_scene->sceneSolution()->findTriangleInMesh(m_scene->sceneSolution()->meshInitial(), p);
                     if (index != -1)
                     {
                         //  find label marker
-                        int labelIndex = m_scene->sceneSolution()->mesh()->get_element_fast(index)->marker;
+                        int labelIndex = m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker;
 
                         m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
                         updateGL();
@@ -2677,6 +2677,8 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
     m_lastPos = event->pos();
 
+    setToolTip("");
+
     if (is3DMode())
     {
         // pan
@@ -2712,8 +2714,6 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     else
     {
         Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-
-        setToolTip("");
 
         // zoom or select region
         if (m_region)
@@ -3354,9 +3354,9 @@ void SceneView::paintPostprocessorSelectedVolume()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->mesh()->get_num_elements(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
-        Element *element = m_scene->sceneSolution()->mesh()->get_element(i);
+        Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
         if (m_scene->labels[element->marker]->isSelected)
         {
             if (element->is_triangle())

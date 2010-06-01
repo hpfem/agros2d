@@ -27,10 +27,10 @@ case "$1" in
 		lrelease $langPath/*.ts
 		;;
 	lang.update )
-		lupdate src/src.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts
+		lupdate src/src.pro -ts $langPath/*.ts
 		;;
 	lang.update-noobsolete )
-		lupdate src/src.pro -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts
+		lupdate src/src.pro -noobsolete -ts $langPath/*.ts
 		;;
 	comp )
 		if qmake ./agros2d.pro ; then make ; fi

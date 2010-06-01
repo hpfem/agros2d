@@ -15,7 +15,7 @@
 
 #include "common.h"
 #include "space_h1.h"
-#include "matrix.h"
+#include "matrix_old.h"
 #include "quad_all.h"
 
 
@@ -57,8 +57,6 @@ Space* H1Space::dup(Mesh* mesh) const
 
 //// dof assignment ////////////////////////////////////////////////////////////////////////////////
 
-const int UNASSIGNED = -2;
-
 void H1Space::assign_vertex_dofs()
 {
   // Before assigning vertex DOFs, we must know which boundary vertex nodes are part of
@@ -69,33 +67,8 @@ void H1Space::assign_vertex_dofs()
   // look at the adjacent edge nodes given a vertex node, thus we have to walk through
   // all elements in the mesh.
 
-  // First assume that all vertex nodes are part of a natural BC. the member NodeData::n
-  // is misused for this purpose, since it stores nothing at this point. Also assume
-  // that all DOFs are unassigned.
-  int i, j;
-  for (i = 0; i < mesh->get_max_node_id(); i++)
-  {
-    ndata[i].n = BC_NATURAL;
-    ndata[i].dof = UNASSIGNED;
-  }
-
-  // next go through all boundary edge nodes constituting an essential BC and mark their
-  // neighboring vertex nodes also as essential
-  Element* e;
-  for_all_active_elements(e, mesh)
-  {
-    for (unsigned int i = 0; i < e->nvert; i++)
-    {
-      if (e->en[i]->bnd && bc_type_callback(e->en[i]->marker) == BC_ESSENTIAL)
-      {
-        j = e->next_vert(i);
-        ndata[e->vn[i]->id].n = BC_ESSENTIAL;
-        ndata[e->vn[j]->id].n = BC_ESSENTIAL;
-      }
-    }
-  }
-
   // loop through all elements and assign vertex, edge and bubble dofs
+  Element* e;
   for_all_active_elements(e, mesh)
   {
     int order = get_element_order(e->id);
@@ -106,11 +79,11 @@ void H1Space::assign_vertex_dofs()
         // vertex dofs
         Node* vn = e->vn[i];
         NodeData* nd = ndata + vn->id;
-        if (!vn->is_constrained_vertex() && nd->dof == UNASSIGNED)
+        if (!vn->is_constrained_vertex() && nd->dof == H2D_UNASSIGNED_DOF)
         {
           if (nd->n == BC_ESSENTIAL || is_fixed_vertex(vn->id))
           {
-            nd->dof = -1;
+            nd->dof = H2D_CONSTRAINED_DOF;
           }
           else
           {
@@ -123,7 +96,7 @@ void H1Space::assign_vertex_dofs()
         // edge dofs
         Node* en = e->en[i];
         nd = ndata + en->id;
-        if (nd->dof == UNASSIGNED)
+        if (nd->dof == H2D_UNASSIGNED_DOF)
         {
           // if the edge node is not constrained, assign it dofs
           if (en->ref > 1 || en->bnd || mesh->peek_vertex_node(en->p1, en->p2) != NULL)
@@ -133,7 +106,7 @@ void H1Space::assign_vertex_dofs()
 
             if (en->bnd && bc_type_callback(en->marker) == BC_ESSENTIAL)
             {
-              nd->dof = -1;
+              nd->dof = H2D_CONSTRAINED_DOF;
             }
             else
             {
@@ -227,17 +200,6 @@ void H1Space::get_edge_assembly_list_internal(Element* e, int ie, AsmList* al)
     for (int j = 0, dof = nd->dof; j < nd->n; j++, dof += stride)
       al->add_triplet(shapeset->get_constrained_edge_index(ie, j+2, ori, part), dof, 1.0);
   }
-}
-
-
-void H1Space::get_bubble_assembly_list(Element* e, AsmList* al)
-{
-  ElementData* ed = &edata[e->id];
-  if (!ed->n) return;
-
-  int* indices = shapeset->get_bubble_indices(ed->order);
-  for (int i = 0, dof = ed->bdof; i < ed->n; i++, dof += stride)
-    al->add_triplet(*indices++, dof, 1.0);
 }
 
 

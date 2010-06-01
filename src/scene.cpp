@@ -1277,7 +1277,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     if (eleDoc.elementsByTagName("mesh").count() > 0)
     {
         QDomNode eleMesh = eleDoc.elementsByTagName("mesh").at(0);
-        Util::scene()->sceneSolution()->loadMesh(&eleMesh.toElement());
+        Util::scene()->sceneSolution()->loadMeshInitial(&eleMesh.toElement());
     }
 
     // solutions
@@ -1470,7 +1470,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     {
         // mesh
         QDomNode eleMesh = doc.createElement("mesh");
-        Util::scene()->sceneSolution()->saveMesh(&doc, &eleMesh.toElement());
+        Util::scene()->sceneSolution()->saveMeshInitial(&doc, &eleMesh.toElement());
         eleDoc.appendChild(eleMesh);
 
         // solution

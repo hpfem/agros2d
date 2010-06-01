@@ -43,7 +43,7 @@ ElasticityEdge *elasticityEdge;
 ElasticityLabel *elasticityLabel;
 bool elasticityPlanar;
 
-int elasticity_bc_types_x(int marker)
+BCType elasticity_bc_types_x(int marker)
 {
     switch (elasticityEdge[marker].typeX)
     {
@@ -59,7 +59,7 @@ int elasticity_bc_types_x(int marker)
     }
 }
 
-int elasticity_bc_types_y(int marker)
+BCType elasticity_bc_types_y(int marker)
 {
     switch (elasticityEdge[marker].typeY)
     {
@@ -142,16 +142,16 @@ Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> 
 }
 
 
-void callbackElasticitySpace(QList<H1Space *> *space)
+void callbackElasticitySpace(Tuple<Space *> space)
 {
-    space->at(0)->set_bc_types(elasticity_bc_types_x);
-    space->at(0)->set_bc_values(elasticity_bc_values_x);
+    space.at(0)->set_bc_types(elasticity_bc_types_x);
+    space.at(0)->set_essential_bc_values(elasticity_bc_values_x);
 
-    space->at(1)->set_bc_types(elasticity_bc_types_y);
-    space->at(1)->set_bc_values(elasticity_bc_values_y);
+    space.at(1)->set_bc_types(elasticity_bc_types_y);
+    space.at(1)->set_essential_bc_values(elasticity_bc_values_y);
 }
 
-void callbackElasticityWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+void callbackElasticityWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
     wf->add_biform(0, 0, callback(elasticity_bilinear_form_0_0), H2D_SYM);
     wf->add_biform(0, 1, callback(elasticity_bilinear_form_0_1), H2D_SYM);
@@ -399,7 +399,9 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackElasticitySpace, callbackElasticityWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  callbackElasticitySpace,
+                                                                  callbackElasticityWeakForm);
 
     delete [] elasticityEdge;
     delete [] elasticityLabel;

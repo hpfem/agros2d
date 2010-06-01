@@ -15,7 +15,7 @@
 
 #include "common.h"
 #include "space_hcurl.h"
-#include "matrix.h"
+#include "matrix_old.h"
 #include "quad_all.h"
 
 
@@ -56,7 +56,17 @@ Space* HcurlSpace::dup(Mesh* mesh) const
   return space;
 }
 
+void HcurlSpace::set_element_order(int id, int order)
+{
+  assert_msg(mesh->get_element(id)->is_quad() || H2D_GET_V_ORDER(order) == 0, "Element #%d is triangle but vertical is not zero", id);
+  if (id < 0 || id >= mesh->get_max_element_id())
+    error("Invalid element id.");
+  H2D_CHECK_ORDER(order);
 
+  resize_tables();
+  edata[id].order = order;
+  seq++;
+}
 
 //// dof assignment ////////////////////////////////////////////////////////////////////////////////
 
@@ -101,8 +111,6 @@ void HcurlSpace::assign_bubble_dofs()
   }
 }
 
-
-
 //// assembly lists ////////////////////////////////////////////////////////////////////////////////
 
 void HcurlSpace::get_edge_assembly_list_internal(Element* e, int ie, AsmList* al)
@@ -135,18 +143,6 @@ void HcurlSpace::get_edge_assembly_list_internal(Element* e, int ie, AsmList* al
       al->add_triplet(shapeset->get_constrained_edge_index(ie, j, ori, part), dof, 1.0);
   }
 }
-
-
-void HcurlSpace::get_bubble_assembly_list(Element* e, AsmList* al)
-{
-  ElementData* ed = &edata[e->id];
-  if (!ed->n) return;
-
-  int* indices = shapeset->get_bubble_indices(ed->order);
-  for (int i = 0, dof = ed->bdof; i < ed->n; i++, dof += stride)
-    al->add_triplet(*indices++, dof, 1.0);
-}
-
 
 //// BC stuff //////////////////////////////////////////////////////////////////////////////////////
 

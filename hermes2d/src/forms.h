@@ -87,8 +87,9 @@ inline Ord exp(const Ord &a) { return Ord(3 * a.get_order()); }
 template<typename T>
 class Func
 {
+  const int num_gip; ///< A number of integration points used by this intance.
 public:
-  int nc;					// number of components
+  const int nc;	///< A number of components. Currently accepted values are 1 (H1, L2 space) and 2 (Hcurl, Hdiv space).
   T *val;					// function values. If orders differ for a diffrent
                                                 // direction, this returns max(h_order, v_order).
   T *dx, *dy; 					// derivatives
@@ -102,8 +103,49 @@ public:
 
   T *curl;					 // components of curl
 
-  Func()
-  {
+  /// Constructor.
+  /** \param[in] num_gip A number of integration points.
+   *  \param[in] num_comps A number of components. */
+  explicit Func(int num_gip, int num_comps) : num_gip(num_gip), nc(num_comps) {
+    val = val0 = val1 = NULL;
+    dx = dx0 = dx1 = NULL;
+    dy = dy0 = dy1 = NULL;
+    curl = NULL;
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+    laplace = NULL;
+#endif
+  };
+
+/// Subtract arrays stored in a given attribute from the same array in provided function.
+#define H2D_SUBTRACT_IF_NOT_NULL(__ATTRIB, __OTHER_FUNC) { if (__ATTRIB != NULL) { \
+  assert_msg(__OTHER_FUNC.__ATTRIB != NULL, "Unable to subtract a function expansion " #__ATTRIB " is NULL in the other function."); \
+  for(int i = 0; i < num_gip; i++) __ATTRIB[i] -= __OTHER_FUNC.__ATTRIB[i]; } }
+
+  /// Calculate this -= func for each function expations and each integration point.
+  /** \param[in] func A function which is subtracted from *this. A number of integratio points and a number of component has to match. */
+  void subtract(const Func<T>& func) {
+    assert_msg(num_gip == func.num_gip, "Unable to subtract a function due to a different number of integration points (this: %d, other: %d)", num_gip, func.num_gip);
+    assert_msg(nc == func.nc, "Unable to subtract a function due to a different number of components (this: %d, other: %d)", nc, func.nc);
+    H2D_SUBTRACT_IF_NOT_NULL(val, func)
+    H2D_SUBTRACT_IF_NOT_NULL(dx, func)
+    H2D_SUBTRACT_IF_NOT_NULL(dy, func)
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+    H2D_SUBTRACT_IF_NOT_NULL(laplace, func)
+#endif
+    if (nc > 1) {
+      H2D_SUBTRACT_IF_NOT_NULL(val0, func)
+      H2D_SUBTRACT_IF_NOT_NULL(val1, func)
+      H2D_SUBTRACT_IF_NOT_NULL(dx0, func)
+      H2D_SUBTRACT_IF_NOT_NULL(dx1, func)
+      H2D_SUBTRACT_IF_NOT_NULL(dy0, func)
+      H2D_SUBTRACT_IF_NOT_NULL(dy1, func)
+      H2D_SUBTRACT_IF_NOT_NULL(curl, func)
+    }
+  };
+#undef H2D_SUBTRACT_IF_NOT_NULL
+
+  void free_ord() {
+    delete val;
     val = val0 = val1 = NULL;
     dx = dx0 = dx1 = NULL;
     dy = dy0 = dy1 = NULL;
@@ -112,21 +154,19 @@ public:
     laplace = NULL;
 #endif
   }
-
-  void free_ord()  {  delete val;  }
   void free_fn()
   {
-    delete [] val;
-    delete [] dx;
-    delete [] dy;
+    delete [] val; val = NULL;
+    delete [] dx; dx = NULL;
+    delete [] dy; dy = NULL;
 #ifdef H2D_SECOND_DERIVATIVES_ENABLED
-    delete [] laplace;
+    delete [] laplace; laplace = NULL;
 #endif
 
-    delete [] val0; delete [] val1;
-    delete [] dx0;  delete [] dx1;
-    delete [] dy0;  delete [] dy1;
-    delete [] curl;
+    delete [] val0; delete [] val1; val0 = val1 = NULL;
+    delete [] dx0;  delete [] dx1; dx0 = dx1 = NULL;
+    delete [] dy0;  delete [] dy1; dy0 = dy1 = NULL;
+    delete [] curl; curl = NULL;
   }
 };
 

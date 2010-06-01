@@ -9,6 +9,7 @@ INCLUDEPATH += src \
         src/compat
 SOURCES += src/compat/fmemopen.cpp \
         src/compat/c99_functions.cpp \
+        src/common.cpp \
         src/hash.cpp \
         src/mesh.cpp \
         src/regul.cpp \
@@ -41,16 +42,17 @@ SOURCES += src/compat/fmemopen.cpp \
         src/norm.cpp \
         src/refinement_type.cpp \
         src/element_to_refine.cpp \
-        src/ref_selectors/selector.cpp \
+        src/ref_selectors/hcurl_proj_based_selector.cpp \
+        src/ref_selectors/h1_proj_based_selector.cpp \
+        src/ref_selectors/l2_proj_based_selector.cpp \
         src/ref_selectors/optimum_selector.cpp \
+        src/ref_selectors/order_permutator.cpp \
         src/ref_selectors/proj_based_selector.cpp \
-        src/ref_selectors/h1_uniform_hp.cpp \
-        src/ref_selectors/h1_nonuniform_hp.cpp \
-        src/adapt_h1.cpp \
-        src/adapt_ortho_h1.cpp \
-        src/adapt_ortho_hcurl.cpp \
-        src/adapt_ortho_l2.cpp \
-        src/common.cpp \
+        src/ref_selectors/selector.cpp \
+        src/adapt.cpp \
+        src/h1_adapt.cpp \
+        src/l2_adapt.cpp \
+        src/hcurl_adapt.cpp \
         src/common_time_period.cpp \
         src/matrix.cpp \
         src/hermes2d.cpp \
@@ -79,3 +81,5 @@ SOURCES += src/compat/fmemopen.cpp \
         src/views/view.cpp \
         src/views/view_data.cpp \
         src/views/view_support.cpp
+
+HEADERS = += src/common.h

@@ -80,7 +80,7 @@ Func<Ord>* init_fn_ord(const int order)
 {
   Ord *d = new Ord(order);
 
-	Func<Ord>* f = new Func<Ord>;
+	Func<Ord>* f = new Func<Ord>(1, 2);
 	f->val = d;
 	f->dx = f->dy = d;
 #ifdef H2D_SECOND_DERIVATIVES_ENABLED
@@ -96,14 +96,14 @@ Func<Ord>* init_fn_ord(const int order)
 // Transformation of shape functions using reference mapping
 Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 {
-  Func<double>* u = new Func<double>;
-	u->nc = fu->get_num_components();
+	int nc = fu->get_num_components();
   int space_type = fu->get_type();
   Quad2D* quad = fu->get_quad_2d();
-  if (u->nc == 1) fu->set_quad_order(order, H2D_FN_ALL);
+  if (nc == 1) fu->set_quad_order(order, H2D_FN_ALL);
   else fu->set_quad_order(order);
   double3* pt = quad->get_points(order);
   int np = quad->get_num_points(order);
+  Func<double>* u = new Func<double>(np, nc);
 
   // H1 space
   if (space_type == 0)
@@ -196,12 +196,12 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 // Preparation of mesh-functions
 Func<scalar>* init_fn(MeshFunction *fu, RefMap *rm, const int order)
 {
-  Func<scalar>* u = new Func<scalar>;
-  u->nc = fu->get_num_components();
+  int nc = fu->get_num_components();
   Quad2D* quad = fu->get_quad_2d();
   fu->set_quad_order(order);
   double3* pt = quad->get_points(order);
   int np = quad->get_num_points(order);
+  Func<scalar>* u = new Func<scalar>(np, nc);
 
   if (u->nc == 1)
   {

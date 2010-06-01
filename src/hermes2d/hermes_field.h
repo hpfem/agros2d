@@ -128,14 +128,14 @@ protected:
     virtual void calculateVariable(int i) = 0;
 };
 
-// convert enums
-RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivityType);
-
 // read mesh
-Mesh *readMesh(const QString &fileName);
+Mesh *readMeshFromFile(const QString &fileName);
+void writeMeshFromFile(const QString &fileName, Mesh *mesh);
 
 // solve
-QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *));
+QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
+                                          void (*cbSpace)(Tuple<Space *>),
+                                          void (*cbWeakForm)(WeakForm *, Tuple<Solution *>));
 
 // custom forms **************************************************************************************************************************
 

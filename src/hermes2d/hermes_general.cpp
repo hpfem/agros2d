@@ -36,7 +36,7 @@ struct GeneralLabel
 GeneralEdge *generalEdge;
 GeneralLabel *generalLabel;
 
-int general_bc_types(int marker)
+BCType general_bc_types(int marker)
 {
     switch (generalEdge[marker].type)
     {
@@ -90,13 +90,13 @@ Scalar general_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
         return generalLabel[marker].rightside * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-void callbackGeneralSpace(QList<H1Space *> *space)
+void callbackGeneralSpace(Tuple<Space *> space)
 {
-    space->at(0)->set_bc_types(general_bc_types);
-    space->at(0)->set_bc_values(general_bc_values);
+    space.at(0)->set_bc_types(general_bc_types);
+    space.at(0)->set_essential_bc_values(general_bc_values);
 }
 
-void callbackGeneralWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+void callbackGeneralWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
     wf->add_biform(0, 0, callback(general_bilinear_form));
     wf->add_liform(0, callback(general_linear_form));
@@ -324,7 +324,9 @@ QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolv
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackGeneralSpace, callbackGeneralWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  callbackGeneralSpace,
+                                                                  callbackGeneralWeakForm);
 
     delete [] generalEdge;
     delete [] generalLabel;

@@ -15,5 +15,10 @@ Changes in Agros2D
 ----------------------
 
 * zoom to mouse
-* expressions chart window
+* expressions in chart window
 * nicer vectors view
+
+1.1.0.347 (12.05.2010)
+----------------------
+  * 3d model view
+  * global Python script

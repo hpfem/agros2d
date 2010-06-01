@@ -83,9 +83,9 @@ void SolutionArray::save(QDomDocument *doc, QDomElement *element)
     eleSolution.appendChild(textSolution);
     eleOrder.appendChild(textOrder);
 
-    element->setAttribute("time", time);
-    element->setAttribute("adaptivesteps", adaptiveSteps);
     element->setAttribute("adaptiveerror", adaptiveError);
+    element->setAttribute("adaptivesteps", adaptiveSteps);
+    element->setAttribute("time", time);
     element->appendChild(eleSolution);
     element->appendChild(eleOrder);
 
@@ -198,7 +198,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             emit message(tr("mesh files was deleted"), false, 4);
 
             // load mesh
-            Mesh *mesh = readMesh(tempProblemFileName() + ".mesh");
+            Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
 
             // check that all boundary edges have a marker assigned
             for (int i = 0; i < mesh->get_max_node_id(); i++)
@@ -218,7 +218,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                 }
             }
 
-            Util::scene()->sceneSolution()->setMesh(mesh);
+            Util::scene()->sceneSolution()->setMeshInitial(mesh);
         }
         else
         {

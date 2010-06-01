@@ -73,7 +73,7 @@ LinSystem::LinSystem(WeakForm* wf, Solver* solver)
 {
   this->wf = wf;
   this->solver = solver;
-  slv_ctx = solver ? solver->new_context(false) : NULL;
+  this->slv_ctx = solver ? solver->new_context(false) : slv_ctx;
 
   Ap = Ai = NULL;
   Ax = RHS = Dir = Vec = NULL;

@@ -27,6 +27,15 @@
 #define H2D_CHECK_INDEX     assert(index >= 0 && index <= max_index[mode])
 #define H2D_CHECK_COMPONENT assert(component >= 0 && component < num_components)
 
+/// Index of a function expansion. Used to selected a value in Shapeset::get_value().
+enum FunctionExpansionIndex {
+  H2D_FEI_VALUE = 0, ///< Index of a function value f.
+  H2D_FEI_DX = 1, ///< Index of df/dx.
+  H2D_FEI_DY = 2, ///< Index of df/dy.
+  H2D_FEI_DXX = 3, ///< Index of df/dxdx.
+  H2D_FEI_DYY = 4, ///< Index of df/dydy.
+  H2D_FEI_DXY = 5 ///< Index of df/dxdy.
+};
 
 /// \brief Defines a set of shape functions.
 ///
@@ -108,7 +117,10 @@ public:
   {
     H2D_CHECK_ORDER(H2D_GET_H_ORDER(order));
     H2D_CHECK_ORDER(H2D_GET_V_ORDER(order));
-    return bubble_indices[mode][order];
+    int index = order;
+    if (mode == H2D_MODE_QUAD) //tables of bubble indices are transposed
+      index = H2D_MAKE_QUAD_ORDER(H2D_GET_V_ORDER(order), H2D_GET_H_ORDER(order));
+    return bubble_indices[mode][index];
   }
 
   /// Returns the number of bubble functions for an element of the given order.
@@ -148,7 +160,15 @@ public:
     if (index >= 0)
     {
       H2D_CHECK_INDEX; H2D_CHECK_COMPONENT;
-      return shape_table[n][mode][component][index](x, y);
+      Shapeset::shape_fn_t** shape_expansion = shape_table[n][mode];
+      if (shape_expansion == NULL) { // requested exansion (f, df/dx, df/dy, ddf/dxdx, ...) is not defined
+        static int warned_mode = -1, warned_index = -1, warned_n = 1; //just to keep the number of warnings low: warn just once about a given combinations of n, mode, and index.
+        warn_if(warned_mode != mode || warned_index != index || warned_n != n, "Requested undefined expansion %d (mode: %d) of a shape %d, returning 0", n, mode, index);
+        warned_mode = mode; warned_index = index; warned_n = n;
+        return 0;
+      }
+      else
+        return shape_expansion[component][index](x, y);
     }
     else
       return get_constrained_value(n, index, x, y, component);
@@ -207,11 +227,6 @@ protected:
   double get_constrained_value(int n, int index, double x, double y, int component);
 
 };
-
-
-/// Creates a new shapeset. Internal. ("Shapeset factory")
-//Shapeset* hermes2d_create_shapeset(int id);
-
 
 // TODO : promyslet moznost ulozeni shapesetu jako tabulky monomialnich koeficientu
 // - mozna efektivnejsi nez stavajici kod

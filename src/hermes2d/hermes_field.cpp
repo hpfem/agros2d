@@ -28,6 +28,9 @@
 #include "hermes_flow.h"
 
 #include "scene.h"
+#include "h2d_reader.h"
+
+// #include <InpMtx.h>
 
 bool isPlanar;
 AnalysisType analysisType;
@@ -60,21 +63,7 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     }
 }
 
-// convert enums
-RefinementSelectors::AllowedCandidates allowedCandidates(AdaptivityType adaptivityType)
-{
-    switch (adaptivityType)
-    {
-    case AdaptivityType_H:
-        return RefinementSelectors::H2DRS_CAND_H_ONLY;
-    case AdaptivityType_P:
-        return RefinementSelectors::H2DRS_CAND_P_ONLY;
-    case AdaptivityType_HP:
-        return RefinementSelectors::H2DRS_CAND_HP;
-    }
-}
-
-Mesh *readMesh(const QString &fileName)
+Mesh *readMeshFromFile(const QString &fileName)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -91,39 +80,69 @@ Mesh *readMesh(const QString &fileName)
     return mesh;
 }
 
-SolutionArray *solutionArray(Solution *sln, H1Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0)
+void writeMeshFromFile(const QString &fileName, Mesh *mesh)
 {
-    SolutionArray *slnArray = new SolutionArray();
-    slnArray->order = new Orderizer();
-    if (space) slnArray->order->process_solution(space);
-    slnArray->sln = new Solution();
-    if (sln) slnArray->sln->copy(sln);
-    slnArray->adaptiveError = adaptiveError;
-    slnArray->adaptiveSteps = adaptiveSteps;
-    slnArray->time = time;
+    // save locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
 
-    return slnArray;
+    H2DReader meshloader;
+    meshloader.save(fileName.toStdString().c_str(), mesh);
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
 }
 
-void solveSystem(LinSystem *sys, QList<Solution *> *slnArray)
+SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0)
+{
+    SolutionArray *solution = new SolutionArray();
+    solution->order = new Orderizer();
+    if (space) solution->order->process_solution(space);
+    solution->sln = new Solution();
+    if (sln) solution->sln->copy(sln);
+    solution->adaptiveError = adaptiveError;
+    solution->adaptiveSteps = adaptiveSteps;
+    solution->time = time;
+
+    return solution;
+}
+
+void solveSystem(LinSystem *sys,
+                 Tuple<Solution *> solution)
 {
     int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
+
+
+    /*
+    // spooles
+    int *Ap;
+    int *Ai;
+    double *Ax;
+    int size;
+
+    sys->get_matrix(Ap, Ai, Ax, size);
+
+    InpMtx *A = InpMtx_new();
+    InpMtx_init(A, INPMTX_BY_ROWS, SPOOLES_REAL, size, size);
+    */
 
     switch (numberOfSolution)
     {
     case 1:
-        sys->solve(numberOfSolution, slnArray->at(0));
+        sys->solve(numberOfSolution, solution.at(0));
         break;
     case 2:
-        sys->solve(numberOfSolution, slnArray->at(0), slnArray->at(1));
+        sys->solve(numberOfSolution, solution.at(0), solution.at(1));
         break;
     case 3:
-        sys->solve(numberOfSolution, slnArray->at(0), slnArray->at(1), slnArray->at(2));
+        sys->solve(numberOfSolution, solution.at(0), solution.at(1), solution.at(2));
         break;
     }
 }
 
-QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, void (*cbSpace)(QList<H1Space *> *),  void (*cbWeakForm)(WeakForm *, QList<Solution *> *))
+QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
+                                          void (*cbSpace)(Tuple<Space *>),
+                                          void (*cbWeakForm)(WeakForm *, Tuple<Solution *>))
 {
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -142,7 +161,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
     QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
 
     // load the mesh file
-    Mesh *mesh = readMesh(tempProblemFileName() + ".mesh");
+    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
     // refine mesh
     for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
         mesh->refine_all_elements(0);
@@ -151,31 +170,31 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
     H1Shapeset shapeset;
 
     // create shapeset cache
-    QList<PrecalcShapeset *> *pss = new QList<PrecalcShapeset *>();
+    Tuple<PrecalcShapeset *> pss;
     // create an H1 space
-    QList<H1Space *> *space = new QList<H1Space *>();
+    Tuple<Space *> space;
     // create hermes solution array
-    QList<Solution *> *slnArray = new QList<Solution *>();
+    Tuple<Solution *> solution;
     // create reference solution
-    QList<Solution *> *rslnArray = new QList<Solution *>();
+    Tuple<Solution *> solutionReference;
 
     for (int i = 0; i < numberOfSolution; i++)
     {
         // cache
-        pss->append(new PrecalcShapeset(&shapeset));
+        pss.push_back(new PrecalcShapeset(&shapeset));
 
         // space
-        space->append(new H1Space(mesh, &shapeset));
+        space.push_back(new H1Space(mesh, &shapeset));
         // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
-            space->at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder, j);
+            space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder, j);
 
         // solution agros array
-        slnArray->append(new Solution());
+        solution.push_back(new Solution());
 
         // reference solution
         if ((adaptivityType != AdaptivityType_None))
-            rslnArray->append(new Solution());
+            solutionReference.push_back(new Solution());
     }
 
     // callback space
@@ -186,15 +205,15 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
         for (int i = 0; i < numberOfSolution; i++)
         {
             // constant initial solution
-            slnArray->at(i)->set_const(mesh, initialCondition);
-            solutionArrayList->append(solutionArray(slnArray->at(i)));
+            solution.at(i)->set_const(mesh, initialCondition);
+            solutionArrayList->append(solutionArray(solution.at(i)));
         }
     }
 
     // initialize the weak formulation
     WeakForm wf(numberOfSolution);
     // callback weakform
-    cbWeakForm(&wf, slnArray);
+    cbWeakForm(&wf, solution);
 
     // initialize the linear solver
     UmfpackSolver umfpack;
@@ -204,17 +223,16 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
     switch (adaptivityType)
     {
     case AdaptivityType_H:
-        selector = new RefinementSelectors::H1OnlyH();
+        selector = new RefinementSelectors::HOnlySelector();
         break;
     case AdaptivityType_P:
-        selector = new RefinementSelectors::H1OnlyP(H2DRS_DEFAULT_ORDER);
+        selector = new RefinementSelectors::POnlySelector(H2DRS_DEFAULT_ORDER, 1, 1);
         break;
     case AdaptivityType_HP:
-        selector = new RefinementSelectors::H1UniformHP(Util::config()->isoOnly,
-                                                           allowedCandidates(adaptivityType),
-                                                           Util::config()->convExp,
-                                                           H2DRS_DEFAULT_ORDER,
-                                                           &shapeset);
+        selector = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_HP_ANISO,
+                                                                Util::config()->convExp,
+                                                                H2DRS_DEFAULT_ORDER,
+                                                                &shapeset);
         break;
     }
 
@@ -224,20 +242,20 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
     {
     case 1:
         {
-            sys.set_spaces(numberOfSolution, space->at(0));
-            sys.set_pss(numberOfSolution, pss->at(0));
+            sys.set_spaces(numberOfSolution, space.at(0));
+            sys.set_pss(numberOfSolution, pss.at(0));
             break;
         }
     case 2:
         {
-            sys.set_spaces(numberOfSolution, space->at(0), space->at(1));
-            sys.set_pss(numberOfSolution, pss->at(0), pss->at(1));
+            sys.set_spaces(numberOfSolution, space.at(0), space.at(1));
+            sys.set_pss(numberOfSolution, pss.at(0), pss.at(1));
             break;
         }
     case 3:
         {
-            sys.set_spaces(numberOfSolution, space->at(0), space->at(1), space->at(2));
-            sys.set_pss(numberOfSolution, pss->at(0),  pss->at(1), pss->at(2));
+            sys.set_spaces(numberOfSolution, space.at(0), space.at(1), space.at(2));
+            sys.set_pss(numberOfSolution, pss.at(0),  pss.at(1), pss.at(2));
             break;
         }
     }
@@ -258,7 +276,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
         // assign dofs
         int ndofs = 0;
         for (int j = 0; j < numberOfSolution; j++)
-            ndofs += space->at(j)->assign_dofs(ndofs);
+            ndofs += space.at(j)->assign_dofs(ndofs);
 
         sys.assemble();
         if (sys.get_num_dofs() == 0)
@@ -267,7 +285,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
             isError = true;
             break;
         }
-        solveSystem(&sys, slnArray);
+        solveSystem(&sys, solution);
 
         // calculate errors and adapt the solution
         if (adaptivityType != AdaptivityType_None)
@@ -275,50 +293,47 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
             RefSystem rs(&sys);
             rs.assemble();
 
-            H1AdaptHP *hp;
+            // adaptivity
+            H1Adapt hp(space);
             switch (numberOfSolution)
             {
             case 1:
                 {
-                    rs.solve(numberOfSolution, rslnArray->at(0));
-                    hp = new H1AdaptHP(numberOfSolution, space->at(0));
-                    error = hp->calc_error_n(numberOfSolution, slnArray->at(0), rslnArray->at(0)) * 100;
+                    rs.solve(numberOfSolution, solutionReference.at(0));
                 }
                 break;
             case 2:
                 {
-                    rs.solve(numberOfSolution, rslnArray->at(0), rslnArray->at(1));
-                    hp = new H1AdaptHP(numberOfSolution, space->at(0), space->at(1));
-                    error = hp->calc_error_n(numberOfSolution, slnArray->at(0), slnArray->at(1), rslnArray->at(0), rslnArray->at(1)) * 100;
+                    rs.solve(numberOfSolution, solutionReference.at(0), solutionReference.at(1));
                 }
                 break;
             case 3:
                 {
-                    rs.solve(numberOfSolution, rslnArray->at(0), rslnArray->at(1), rslnArray->at(2));
-                    hp = new H1AdaptHP(numberOfSolution, space->at(0), space->at(1), space->at(2));
-                    error = hp->calc_error_n(numberOfSolution, slnArray->at(0), slnArray->at(1), rslnArray->at(2), rslnArray->at(0), rslnArray->at(1), rslnArray->at(2)) * 100;
+                    rs.solve(numberOfSolution, solutionReference.at(0), solutionReference.at(1), solutionReference.at(2));
                 }
                 break;
             }
+
+            hp.set_solutions(solution, solutionReference);
+            error = hp.calc_error(H2D_TOTAL_ERROR_REL | H2D_ELEMENT_ERROR_ABS) * 100;
 
             // emit signal
             progressItemSolve->emitMessage(QObject::tr("relative error: %1 %").
                                            arg(error, 0, 'f', 5), false, 1);
             if (progressItemSolve->isCanceled())
             {
-                delete hp;
                 isError = true;
                 break;
             }
 
             if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP)
             {
-                delete hp;
                 break;
             }
-            if (i != adaptivitysteps-1) hp->adapt(Util::config()->threshold, Util::config()->strategy,
-                                                  selector,
-                                                  Util::config()->meshRegularity);
+            if (i != adaptivitysteps-1) hp.adapt(selector,
+                                                 Util::config()->threshold,
+                                                 Util::config()->strategy,
+                                                 Util::config()->meshRegularity);
         }
     }
 
@@ -339,13 +354,13 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
             {
                 // transient
                 sys.assemble(true);
-                solveSystem(&sys, slnArray);
+                solveSystem(&sys, solution);
             }
             else if (n > 0)
             {
                 int ndofs = 0;
                 for (int i = 0; i < numberOfSolution; i++)
-                    ndofs += space->at(i)->assign_dofs(ndofs);
+                    ndofs += space.at(i)->assign_dofs(ndofs);
 
                 sys.assemble();
             }
@@ -353,7 +368,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
             // output
             for (int i = 0; i < numberOfSolution; i++)
             {
-                solutionArrayList->append(solutionArray(slnArray->at(i), space->at(i), error, i-1, (n+1)*timeStep));
+                solutionArrayList->append(solutionArray(solution.at(i), space.at(i), error, i-1, (n+1)*timeStep));
             }
 
             if (analysisType == AnalysisType_Transient)
@@ -372,28 +387,24 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve, 
     delete mesh;
 
     // delete pss
-    for (int i = 0; i < pss->count(); i++)
-        delete pss->at(i);
-    pss->clear();
-    delete pss;
+    for (int i = 0; i < pss.size(); i++)
+        delete pss.at(i);
+    pss.clear();
 
     // delete space
-    for (int i = 0; i < space->count(); i++)
-        delete space->at(i);
-    space->clear();
-    delete space;
+    for (int i = 0; i < space.size(); i++)
+        delete space.at(i);
+    space.clear();
 
     // delete last solution
-    for (int i = 0; i < slnArray->count(); i++)
-        delete slnArray->at(i);
-    slnArray->clear();
-    delete slnArray;
+    for (int i = 0; i < solution.size(); i++)
+        delete solution.at(i);
+    solution.clear();
 
     // delete reference solution
-    for (int i = 0; i < rslnArray->count(); i++)
-        delete rslnArray->at(i);
-    rslnArray->clear();
-    delete rslnArray;
+    for (int i = 0; i < solutionReference.size(); i++)
+        delete solutionReference.at(i);
+    solutionReference.clear();
 
     if (isError)
     {
@@ -437,7 +448,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
 {
     Quad2D* quad = quads[cur_quad];
     int np = quad->get_num_points(order);
-    node = new_node(H2D_FN_VAL, np);
+    node = new_node(H2D_FN_DEFAULT, np);
 
     if (sln[0])
     {

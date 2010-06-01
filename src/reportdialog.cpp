@@ -183,8 +183,8 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Geometry.Labels]", htmlGeometryLabels(), Qt::CaseSensitive);
 
     // solver
-    destination.replace("[Solver.Nodes]", (Util::scene()->sceneSolution()->isMeshed()) ? QString::number(Util::scene()->sceneSolution()->mesh()->get_num_nodes()) : "", Qt::CaseSensitive);
-    destination.replace("[Solver.Elements]", (Util::scene()->sceneSolution()->isMeshed()) ? QString::number(Util::scene()->sceneSolution()->mesh()->get_num_active_elements()) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.Nodes]", (Util::scene()->sceneSolution()->isMeshed()) ? QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()) : "", Qt::CaseSensitive);
+    destination.replace("[Solver.Elements]", (Util::scene()->sceneSolution()->isMeshed()) ? QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) : "", Qt::CaseSensitive);
     destination.replace("[Solver.DOFs]", (Util::scene()->sceneSolution()->isSolved()) ? QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) : "", Qt::CaseSensitive);
     QTime time;
     if (Util::scene()->sceneSolution()->isSolved())

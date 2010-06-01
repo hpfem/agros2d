@@ -7,12 +7,12 @@ QT += opengl \
 CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
-DEFINES += VERSION_MINOR=0
-DEFINES += VERSION_SUB=3
-DEFINES += VERSION_GIT=348
+DEFINES += VERSION_MINOR=1
+DEFINES += VERSION_SUB=0
+DEFINES += VERSION_GIT=363
 DEFINES += VERSION_YEAR=2010
-DEFINES += VERSION_MONTH=04
-DEFINES += VERSION_DAY=05
+DEFINES += VERSION_MONTH=05
+DEFINES += VERSION_DAY=12
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -124,6 +124,8 @@ linux-g++ {
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../hermes2d/src
+    INCLUDEPATH += /usr/include/mpi
+    INCLUDEPATH += /usr/include/spooles
     LIBS += -L../hermes2d/lib
     LIBS += -lhermes2d
     LIBS += -lumfpack
@@ -139,7 +141,9 @@ win32-g++ {
     INCLUDEPATH += c:/qt/mingw/include
     INCLUDEPATH += c:/Python26/include
     INCLUDEPATH += ../hermes2d/src
+    INCLUDEPATH += ../../qwt-5.2.1/src
     LIBS += -L../hermes2d/lib
+    LIBS += -L../../qwt-5.2.1/lib
     LIBS += -lhermes2d
     LIBS += -lumfpack
     LIBS += -lamd

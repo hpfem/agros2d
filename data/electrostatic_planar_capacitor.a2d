@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="5" frequency="0" numberofrefinements="1" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="10" polynomialorder="1" problemtype="planar" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic Planar Capacitor" initialcondition="0">
+        <problem adaptivitytolerance="5" frequency="0" numberofrefinements="0" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="10" polynomialorder="1" problemtype="planar" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic Planar Capacitor" initialcondition="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>

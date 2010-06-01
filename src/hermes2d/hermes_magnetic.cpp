@@ -43,7 +43,7 @@ struct MagneticLabel
 MagneticEdge *magneticEdge;
 MagneticLabel *magneticLabel;
 
-int magnetic_bc_types(int marker)
+BCType magnetic_bc_types(int marker)
 {
     switch (magneticEdge[marker].type)
     {
@@ -159,30 +159,30 @@ Scalar magnetic_linear_form_imag(int n, double *wt, Func<Real> *v, Geom<Real> *e
         return magneticLabel[e->marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
 }
 
-void callbackMagneticSpace(QList<H1Space *> *space)
+void callbackMagneticSpace(Tuple<Space *> space)
 {
-    if (space->count() == 1)
+    if (space.size() == 1)
     {
-        space->at(0)->set_bc_types(magnetic_bc_types);
-        space->at(0)->set_bc_values(magnetic_bc_values_real);
+        space.at(0)->set_bc_types(magnetic_bc_types);
+        space.at(0)->set_essential_bc_values(magnetic_bc_values_real);
     }
     else
     {
-        space->at(0)->set_bc_types(magnetic_bc_types);
-        space->at(0)->set_bc_values(magnetic_bc_values_real);
+        space.at(0)->set_bc_types(magnetic_bc_types);
+        space.at(0)->set_essential_bc_values(magnetic_bc_values_real);
 
-        space->at(1)->set_bc_types(magnetic_bc_types);
-        space->at(1)->set_bc_values(magnetic_bc_values_imag);
+        space.at(1)->set_bc_types(magnetic_bc_types);
+        space.at(1)->set_essential_bc_values(magnetic_bc_values_imag);
     }
 }
 
-void callbackMagneticWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+void callbackMagneticWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    if (slnArray->count() == 1)
+    if (slnArray.size() == 1)
     {
         wf->add_biform(0, 0, callback(magnetic_bilinear_form_real_real));
         if (analysisType == AnalysisType_Transient)
-            wf->add_liform(0, callback(magnetic_linear_form_real), H2D_ANY, 1, slnArray->at(0));
+            wf->add_liform(0, callback(magnetic_linear_form_real), H2D_ANY, 1, slnArray.at(0));
         else
             wf->add_liform(0, callback(magnetic_linear_form_real));
         wf->add_liform_surf(0, callback(magnetic_linear_form_surf_real));
@@ -866,7 +866,9 @@ QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSol
             magneticLabel[i].velocity_angular = labelMagneticMarker->velocity_angular.number;        }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackMagneticSpace, callbackMagneticWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  callbackMagneticSpace,
+                                                                  callbackMagneticWeakForm);
 
     delete [] magneticEdge;
     delete [] magneticLabel;
@@ -2230,13 +2232,15 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                                                         marker->current_density_real.number +
                                                         - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                          (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
+                                                        + ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ?
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number : 0.0)
                                                         ))
                                                     + sqr(dudy1[i] * (
                                                         marker->current_density_real.number +
                                                         - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                          (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])
-                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number
+                                                        + ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ?
+                                                        - marker->conductivity.number * (value1[i] - value2[i]) / Util::scene()->problemInfo()->timeStep.number : 0.0)
                                                         )));
                         }
 

@@ -38,7 +38,7 @@ struct FlowLabel
 FlowEdge *flowEdge;
 FlowLabel *flowLabel;
 
-int flow_bc_types(int marker)
+BCType flow_bc_types(int marker)
 {
     switch (flowEdge[marker].type)
     {
@@ -124,36 +124,36 @@ Scalar bilinear_form_unsym_1_2(int n, double *wt, Func<Real> *p, Func<Real> *v, 
     return - int_u_dvdy<Real, Scalar>(n, wt, p, v);
 }
 
-void callbackFlowSpace(QList<H1Space *> *space)
+void callbackFlowSpace(Tuple<Space *> space)
 {
-    space->at(0)->set_bc_types(flow_bc_types);
-    space->at(0)->set_bc_values(flow_bc_values_x);
+    space.at(0)->set_bc_types(flow_bc_types);
+    space.at(0)->set_essential_bc_values(flow_bc_values_x);
 
-    space->at(1)->set_bc_types(flow_bc_types);
-    space->at(1)->set_bc_values(flow_bc_values_y);
+    space.at(1)->set_bc_types(flow_bc_types);
+    space.at(1)->set_essential_bc_values(flow_bc_values_y);
 
-    space->at(2)->set_bc_types(flow_bc_types);
-    space->at(2)->set_bc_values(flow_bc_values_pressure);
+    space.at(2)->set_bc_types(flow_bc_types);
+    space.at(2)->set_essential_bc_values(flow_bc_values_pressure);
 }
 
-void callbackFlowWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+void callbackFlowWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
     wf->add_biform(0, 0, callback(bilinear_form_sym_0_0_1_1), H2D_SYM, H2D_ANY);
     if (analysisType == AnalysisType_Transient)
-        wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM, H2D_ANY, 2, slnArray->at(0), slnArray->at(1));
+        wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM, H2D_ANY, 2, slnArray.at(0), slnArray.at(1));
     else
         wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM);
     wf->add_biform(1, 1, callback(bilinear_form_sym_0_0_1_1), H2D_SYM);
     if (analysisType == AnalysisType_Transient)
-        wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM, H2D_ANY, 2, slnArray->at(0), slnArray->at(1));
+        wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM, H2D_ANY, 2, slnArray.at(0), slnArray.at(1));
     else
         wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM);
     wf->add_biform(0, 2, callback(bilinear_form_unsym_0_2), H2D_ANTISYM);
     wf->add_biform(1, 2, callback(bilinear_form_unsym_1_2), H2D_ANTISYM);
     if (analysisType == AnalysisType_Transient)
     {
-        wf->add_liform(0, callback(linear_form), H2D_ANY, 1, slnArray->at(0));
-        wf->add_liform(1, callback(linear_form), H2D_ANY, 1, slnArray->at(1));
+        wf->add_liform(0, callback(linear_form), H2D_ANY, 1, slnArray.at(0));
+        wf->add_liform(1, callback(linear_form), H2D_ANY, 1, slnArray.at(1));
     }
     else
     {

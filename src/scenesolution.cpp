@@ -24,7 +24,7 @@ SceneSolution::SceneSolution()
     m_timeStep = -1;
     m_isSolving = false;
 
-    m_mesh = NULL;
+    m_meshInitial = NULL;
     m_solutionArrayList = NULL;
     m_slnContourView = NULL;
     m_slnScalarView = NULL;
@@ -47,10 +47,10 @@ void SceneSolution::clear()
     }
 
     // mesh
-    if (m_mesh)
+    if (m_meshInitial)
     {
-        delete m_mesh;
-        m_mesh = NULL;
+        delete m_meshInitial;
+        m_meshInitial = NULL;
     }
 
     // countour
@@ -119,7 +119,7 @@ void SceneSolution::solve(SolverMode solverMode)
     m_isSolving = false;
 }
 
-void SceneSolution::loadMesh(QDomElement *element)
+void SceneSolution::loadMeshInitial(QDomElement *element)
 {
     QDomText text = element->childNodes().at(0).toText();
 
@@ -129,26 +129,18 @@ void SceneSolution::loadMesh(QDomElement *element)
     content.append(text.nodeValue());
     writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
-    Mesh *mesh = readMesh(tempProblemFileName() + ".mesh");
+    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
 
-    setMesh(mesh);
+    setMeshInitial(mesh);
 }
 
-void SceneSolution::saveMesh(QDomDocument *doc, QDomElement *element)
+void SceneSolution::saveMeshInitial(QDomDocument *doc, QDomElement *element)
 {
     if (isMeshed())
     {
         QString fileName = tempProblemFileName() + ".mesh";
 
-        // save locale
-        char *plocale = setlocale (LC_NUMERIC, "");
-        setlocale (LC_NUMERIC, "C");
-
-        H2DReader meshloader;
-        meshloader.save(fileName.toStdString().c_str(), m_mesh);
-
-        // set system locale
-        setlocale(LC_NUMERIC, plocale);
+        writeMeshFromFile(fileName, m_meshInitial);
 
         // read content
         QDomText text = doc->createTextNode(readFileContentByteArray(fileName).toBase64());
@@ -168,7 +160,7 @@ void SceneSolution::loadSolution(QDomElement *element)
         SolutionArray *solutionArray = new SolutionArray();
         solutionArray->order = new Orderizer();
         solutionArray->sln = new Solution();
-        solutionArray->sln->set_const(Util::scene()->sceneSolution()->mesh(), Util::scene()->problemInfo()->initialCondition.number);
+        solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number);
         solutionArray->adaptiveError = 0.0;
         solutionArray->adaptiveSteps = 0.0;
         solutionArray->time = 0.0;
@@ -275,7 +267,7 @@ int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &
 
 int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
 {
-    for (int i = 0; i < mesh->get_num_elements(); i++)
+    for (int i = 0; i < mesh->get_num_active_elements(); i++)
     {
         bool inTriangle = true;
         

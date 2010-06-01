@@ -40,7 +40,7 @@ struct HeatLabel
 HeatEdge *heatEdge;
 HeatLabel *heatLabel;
 
-int heat_bc_types(int marker)
+BCType heat_bc_types(int marker)
 {
     switch (heatEdge[marker].type)
     {
@@ -123,17 +123,17 @@ Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData
         + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
-void callbackHeatSpace(QList<H1Space *> *space)
+void callbackHeatSpace(Tuple<Space *> space)
 {
-    space->at(0)->set_bc_types(heat_bc_types);
-    space->at(0)->set_bc_values(heat_bc_values);
+    space.at(0)->set_bc_types(heat_bc_types);
+    space.at(0)->set_essential_bc_values(heat_bc_values);
 }
 
-void callbackHeatWeakForm(WeakForm *wf, QList<Solution *> *slnArray)
+void callbackHeatWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
     wf->add_biform(0, 0, callback(heat_bilinear_form));
     if (analysisType == AnalysisType_Transient)
-        wf->add_liform(0, callback(heat_linear_form), H2D_ANY, 1, slnArray->at(0));
+        wf->add_liform(0, callback(heat_linear_form), H2D_ANY, 1, slnArray.at(0));
     else
         wf->add_liform(0, callback(heat_linear_form));
     wf->add_biform_surf(0, 0, callback(heat_bilinear_form_surf));

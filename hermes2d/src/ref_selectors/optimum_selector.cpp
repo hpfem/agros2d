@@ -5,14 +5,16 @@
 #include "../element_to_refine.h"
 #include "optimum_selector.h"
 
+#define H2DST_ANY H2DST_VERTEX | H2DST_HORIZ_EDGE | H2DST_VERT_EDGE | H2DST_TRI_EDGE | H2DST_BUBBLE ///< Any type of shape. Used just for masky
+
 namespace RefinementSelectors {
 
-  std::ostream &operator<<(std::ostream &stream, const OptimumSelector::Cand& cand) {
+  H2D_API std::ostream &operator<<(std::ostream &stream, const OptimumSelector::Cand& cand) {
     stream.precision(2);
     stream << "split:" << get_refin_str(cand.split);
     stream << " err:" << std::scientific << cand.error << " dofs:" << cand.dofs << " ";
 
-    int num_sons = cand.get_num_sons();
+    int num_sons = cand.get_num_elems();
     stream << "[";
     for(int i = 0; i < num_sons; i++) {
       if (i > 0)
@@ -23,59 +25,210 @@ namespace RefinementSelectors {
     return stream;
   }
 
-  OptimumSelector::OrderPermutator::OrderPermutator(int start_quad_order, int end_quad_order, bool uniform, int* tgt_quad_order)
-    : start_order_h(H2D_GET_H_ORDER(start_quad_order)), start_order_v(H2D_GET_V_ORDER(start_quad_order))
-    , end_order_h(H2D_GET_H_ORDER(end_quad_order)), end_order_v(H2D_GET_V_ORDER(end_quad_order))
-    , uniform(uniform), tgt_quad_order(tgt_quad_order) {
-    assert_msg(!uniform || start_order_h == start_order_v, "Uniform orders requested but start orders (H:%d, V:%d) are not uniform", order_h, order_v);
-    assert_msg(start_order_h <= end_order_h && start_order_v <= end_order_v, "End orders (H:%d, V:%d) are below start orders (H:%d, V:%d)", end_order_h, end_order_v, start_order_h, start_order_v);
-    reset();
-  }
-
-  bool OptimumSelector::OrderPermutator::next() {
-    if (order_h >= end_order_h && order_v >= end_order_v)
-      return false;
-    else {
-      if (uniform) {
-        order_h++; order_v++;
-      }
-      else {
-        order_h++;
-        if (order_h > end_order_h) {
-          order_h = start_order_h;
-          order_v++;
-        }
-      }
-      if (tgt_quad_order != NULL)
-        *tgt_quad_order = H2D_MAKE_QUAD_ORDER(order_h, order_v);
-      return true;
+  H2D_API const char* get_cand_list_str(const CandList cand_list) {
+    switch(cand_list) {
+      case H2D_P_ISO: return "P_ISO";
+      case H2D_P_ANISO: return "P_ANISO";
+      case H2D_H_ISO: return "H_ISO";
+      case H2D_H_ANISO: return "H_ANISO";
+      case H2D_HP_ISO: return "HP_ISO";
+      case H2D_HP_ANISO_H: return "HP_ANISO_H";
+      case H2D_HP_ANISO_P: return "HP_ANISO_P";
+      case H2D_HP_ANISO: return "HP_ANISO";
+      default: error("Invalid adapt type %d.", cand_list); return false;
     }
   }
 
-  void OptimumSelector::OrderPermutator::reset() {
-    order_h = start_order_h;
-    order_v = start_order_v;
-    if (tgt_quad_order != NULL)
-      *tgt_quad_order = H2D_MAKE_QUAD_ORDER(order_h, order_v);
+  H2D_API bool is_hp(const CandList cand_list) {
+    switch(cand_list) {
+      case H2D_P_ISO:
+      case H2D_P_ANISO:
+      case H2D_H_ISO:
+      case H2D_H_ANISO: return false; break;
+      case H2D_HP_ISO:
+      case H2D_HP_ANISO_H:
+      case H2D_HP_ANISO_P:
+      case H2D_HP_ANISO: return true; break;
+      default: error("Invalid adapt type %d.", cand_list); return false;
+    }
   }
 
-  OptimumSelector::OptimumSelector(bool iso_only, AllowedCandidates cands_allowed, double conv_exp, int max_order, Shapeset* shapeset)
-    : Selector(max_order), iso_only(iso_only), cands_allowed(cands_allowed)
-    , conv_exp(conv_exp), shapeset(shapeset) {
-    assert_msg(shapeset != NULL, "Shapeset is NULL");
+  H2D_API bool is_p_aniso(const CandList cand_list) {
+    switch(cand_list) {
+      case H2D_P_ISO: return false;
+      case H2D_P_ANISO: return true;
+      case H2D_H_ISO: return false;
+      case H2D_H_ANISO: return false;
+      case H2D_HP_ISO: return false;
+      case H2D_HP_ANISO_H: return false;
+      case H2D_HP_ANISO_P: return true;
+      case H2D_HP_ANISO: return true;
+      default: error("Invalid adapt type %d.", cand_list); return false;
+    }
   }
 
-  void OptimumSelector::set_current_order_range(Element* element) {
-    current_max_order = this->max_order;
-    if (current_max_order == H2DRS_DEFAULT_ORDER)
-      current_max_order = (20 - element->iro_cache)/2 - 1; // default
+  OptimumSelector::OptimumSelector(CandList cand_list, double conv_exp, int max_order, Shapeset* shapeset, const Range<int>& vertex_order, const Range<int>& edge_bubble_order)
+    : Selector(max_order), cand_list(cand_list)
+    , conv_exp(conv_exp), shapeset(shapeset)
+    , opt_symmetric_mesh(true), opt_apply_exp_dof(false) {
+    error_if(shapeset == NULL, "Shapeset is NULL.");
+
+    //build shape indices
+    build_shape_indices(H2D_MODE_TRIANGLE, vertex_order, edge_bubble_order);
+    build_shape_indices(H2D_MODE_QUAD, vertex_order, edge_bubble_order);
+  }
+
+  void OptimumSelector::add_bubble_shape_index(int order_h, int order_v, std::map<int, bool>& used_shape_index, std::vector<ShapeInx>& indices) {
+    int quad_order = H2D_MAKE_QUAD_ORDER(order_h, order_v);
+    const int num_bubbles = shapeset->get_num_bubbles(quad_order);
+    int* bubble_inxs = shapeset->get_bubble_indices(quad_order);
+    for(int j = 0; j < num_bubbles; j++) {
+      int inx_bubble = bubble_inxs[j];
+      if (used_shape_index.find(inx_bubble) == used_shape_index.end()) {
+        used_shape_index[inx_bubble] = true;
+        indices.push_back(ShapeInx(order_h, order_v, inx_bubble, H2DST_BUBBLE));
+      }
+    }
+  }
+
+  void OptimumSelector::build_shape_indices(const int mode, const Range<int>& vertex_order, const Range<int>& edge_bubble_order) {
+    std::vector<ShapeInx> &indices = shape_indices[mode];
+    int* next_order = this->next_order_shape[mode];
+    int& max_shape_inx = this->max_shape_inx[mode];
+    int num_edges = (mode == H2D_MODE_QUAD) ? 4 : 3;
+    shapeset->set_mode(mode);
+    bool &has_vertex = has_vertex_shape[mode];
+    bool &has_edge = has_edge_shape[mode];
+    bool &has_bubble = has_bubble_shape[mode];
+
+    //cleanup
+    indices.clear();
+    indices.reserve((H2DRS_MAX_ORDER+1) * (H2DRS_MAX_ORDER+1));
+    has_vertex = has_edge = has_bubble = false;
+
+    //get total range of orders
+    Range<int> order_range = Range<int>::make_envelope(vertex_order, edge_bubble_order);
+
+    //prepare array of used shape indices
+    std::map<int, bool> used_shape_index;
+
+    //for all orders
+    max_shape_inx = 0;
+    int examined_shape = 0;
+    for(int i = order_range.lower(); i <= order_range.upper(); i++) {
+      //vertex functions
+      if (vertex_order.is_in_closed(i)) {
+        for (int i = 0; i < num_edges; i++) {
+          int inx = shapeset->get_vertex_index(i);
+          if (inx >= 0) {
+            used_shape_index[inx] = true;
+            indices.push_back(ShapeInx(1, 1, inx, H2DST_VERTEX));
+            has_vertex = true;
+          }
+        }
+      }
+
+      //edge functions
+      if (edge_bubble_order.is_in_closed(i)) {
+        //edge functions
+        if (mode == H2D_MODE_QUAD) {
+          for (int j = 0; j < num_edges; j++) {
+            int inx = shapeset->get_edge_index(j, 0, i);
+            if (inx >= 0) {
+              used_shape_index[inx] = true;
+              if ((j&1) == 0) //horizontal edge
+                indices.push_back(ShapeInx(i, 0, inx, H2DST_HORIZ_EDGE));
+              else //vertical edge
+                indices.push_back(ShapeInx(0, i, inx, H2DST_VERT_EDGE));
+              has_edge = true;
+            }
+          }
+        }
+        else {
+          for (int j = 0; j < num_edges; j++) {
+            int inx = shapeset->get_edge_index(j, 0, i);
+            if (inx >= 0) {
+              used_shape_index[inx] = true;
+              indices.push_back(ShapeInx(i, i, inx, H2DST_TRI_EDGE));
+              has_edge = true;
+            }
+          }
+        }
+
+        //bubble functions
+        if (mode == H2D_MODE_QUAD) {
+          //NOTE: shapeset returns a set of all possible bubble functions and it is not possible to identify which is the smallest
+          // order of an element which contains this function, e.g., in a case of a Hcurl and an element of an order 1/1, it returns
+          // a list that contains a function of poly-order 2/0. Also, order of indices is not given.
+          int order = i;
+          unsigned num_indices_prev = indices.size();
+          for(int order_other = edge_bubble_order.lower(); order_other <= order; order_other++) {
+            add_bubble_shape_index(order, order_other, used_shape_index, indices);
+            add_bubble_shape_index(order_other, order, used_shape_index, indices);
+          }
+
+          //check if indices were added
+          if (num_indices_prev < indices.size())
+            has_bubble = true;
+        }
+        else { //triangles
+          int order = i;
+          int num_bubbles = shapeset->get_num_bubbles(order);
+          int* bubble_inxs = shapeset->get_bubble_indices(order);
+          for(int j = 0; j < num_bubbles; j++) {
+            int inx_bubble = bubble_inxs[j];
+            if (used_shape_index.find(inx_bubble) == used_shape_index.end()) {
+              used_shape_index[inx_bubble] = true;
+              indices.push_back(ShapeInx(order, order, inx_bubble, H2DST_BUBBLE));
+              has_bubble = true;
+            }
+          }
+        }
+
+        //store index of the next order
+        next_order[i] = (int)indices.size();
+
+        //update maximum
+        while(examined_shape < next_order[i]) {
+          max_shape_inx = std::max(max_shape_inx, indices[examined_shape].inx);
+          examined_shape++;
+        }
+      }
+    }
+  }
+
+  int OptimumSelector::calc_num_shapes(int mode, int order_h, int order_v, int allowed_type_mask) {
+    //test whether the evaluation is necessary
+    bool full_eval = false;
+    if ((allowed_type_mask & H2DST_VERTEX) != 0)
+      full_eval |= has_vertex_shape[mode];
+    if ((allowed_type_mask & (H2DST_HORIZ_EDGE | H2DST_VERT_EDGE | H2DST_TRI_EDGE)) != 0)
+      full_eval |= has_edge_shape[mode];
+    if ((allowed_type_mask & H2DST_BUBBLE) != 0)
+      full_eval |= has_bubble_shape[mode];
+
+    //evaluate
+    if (full_eval) {
+      std::vector<ShapeInx>& shapes = shape_indices[mode];
+      int num = 0;
+      std::vector<ShapeInx>::const_iterator shape = shapes.begin();
+      while (shape != shapes.end()) {
+        if (((int)shape->type & allowed_type_mask) != 0) {
+          if ((order_h == H2DRS_ORDER_ANY || shape->order_h <= order_h) && (order_v == H2DRS_ORDER_ANY || shape->order_v <= order_v))
+            num++;
+        }
+        shape++;
+      }
+      return num;
+    }
     else
-      current_max_order = std::min(current_max_order, (20 - element->iro_cache)/2 - 1); // user specified
-    current_min_order = 1;
+      return 0;
   }
 
-  void OptimumSelector::append_candidates_split(const int start_quad_order, const int last_quad_order, const int split, bool uniform) {
+  void OptimumSelector::append_candidates_split(const int start_quad_order, const int last_quad_order, const int split, bool iso_p) {
     //check whether end orders are not lower than start orders
+    if (last_quad_order < 0 || start_quad_order < 0)
+      return;
     if (H2D_GET_H_ORDER(start_quad_order) > H2D_GET_H_ORDER(last_quad_order) || H2D_GET_V_ORDER(start_quad_order) > H2D_GET_V_ORDER(last_quad_order))
       return;
 
@@ -87,7 +240,7 @@ namespace RefinementSelectors {
     OrderPermutator quad_perms[H2D_MAX_ELEMENT_SONS];
     for(int i = 0; i < num_sons; i++) {
       quad_orders[i] = start_quad_order;
-      quad_perms[i] = OrderPermutator(start_quad_order, last_quad_order, uniform, &quad_orders[i]);
+      quad_perms[i] = OrderPermutator(start_quad_order, last_quad_order, iso_p, &quad_orders[i]);
     }
     for(int i = num_sons; i < H2D_MAX_ELEMENT_SONS; i++)
       quad_orders[i] = 0;
@@ -124,148 +277,164 @@ namespace RefinementSelectors {
     if (candidates.capacity() < H2DRS_ASSUMED_MAX_CANDS)
       candidates.reserve(H2DRS_ASSUMED_MAX_CANDS);
 
-    if (cands_allowed == H2DRS_CAND_H_ONLY) {
-      int quad_orders[H2D_MAX_ELEMENT_SONS] = { quad_order, 0, 0, 0};
-      candidates.push_back(Cand(H2D_REFINEMENT_P, quad_orders));
-      quad_orders[0] = quad_orders[1] = quad_orders[2] = quad_orders[3] = quad_order;
-      candidates.push_back(Cand(H2D_REFINEMENT_H, quad_orders));
-      if (!tri && (e->iro_cache < 8) && !iso_only) {
-        quad_orders[2] = quad_orders[3] = 0;
-        candidates.push_back(Cand(H2D_REFINEMENT_ANISO_V, quad_orders));
-        candidates.push_back(Cand(H2D_REFINEMENT_ANISO_H, quad_orders));
-      }
+    //generate all P-candidates (start from intention of generating all possible candidates and restrict it according to the given adapt-type)
+    bool iso_p = false;
+    int start_quad_order = quad_order;
+    int last_quad_order = H2D_MAKE_QUAD_ORDER(std::min(max_p_order_h, order_h+H2DRS_MAX_ORDER_INC), std::min(max_p_order_v, order_v+H2DRS_MAX_ORDER_INC));
+    switch(cand_list) {
+      case H2D_H_ISO:
+      case H2D_H_ANISO:
+        last_quad_order = start_quad_order; break; //no P-candidates except the original candidate
+
+      case H2D_P_ISO:
+      case H2D_HP_ISO:
+      case H2D_HP_ANISO_H:
+        iso_p = true; break; //iso change of orders
     }
-    else {
-      //prepare P-candidates
-      int last_quad_order = H2D_MAKE_QUAD_ORDER(std::min(max_p_order_h, order_h+2), std::min(max_p_order_v, order_v+2));
-      append_candidates_split(quad_order, last_quad_order, H2D_REFINEMENT_P, tri || iso_only);
+    append_candidates_split(quad_order, last_quad_order, H2D_REFINEMENT_P, tri || iso_p);
 
-      if (cands_allowed == H2DRS_CAND_HP) {
-        //prepare HP-candidates
-        int start_order_h = std::max(current_min_order, (order_h+1) / 2), start_order_v = std::max(current_min_order, (order_v+1) / 2);
-        int start_quad_order = H2D_MAKE_QUAD_ORDER(start_order_h, start_order_v);
-        last_quad_order = H2D_MAKE_QUAD_ORDER(std::min(max_ha_order_h, std::min(start_order_h + 3, order_h)), std::min(max_ha_order_v, std::min(start_order_v + 3, order_v)));
-        append_candidates_split(start_quad_order, last_quad_order, H2D_REFINEMENT_H, tri || iso_only);
+    //generate all H-candidates
+    iso_p = false;
+    int start_order_h = std::max(current_min_order, (order_h+1) / 2), start_order_v = std::max(current_min_order, (order_v+1) / 2);
+    start_quad_order = H2D_MAKE_QUAD_ORDER(start_order_h, start_order_v);
+    last_quad_order = H2D_MAKE_QUAD_ORDER(std::min(max_ha_order_h, std::min(start_order_h + H2DRS_MAX_ORDER_INC, order_h)), std::min(max_ha_order_v, std::min(start_order_v + H2DRS_MAX_ORDER_INC, order_v)));
+    switch(cand_list) {
+      case H2D_H_ISO:
+      case H2D_H_ANISO:
+        last_quad_order = start_quad_order = quad_order; break; //no only one candidate will be created
 
-        //prepare ANISO-candidates
-        if (!tri && !iso_only && (e->iro_cache < 8)) {
-          //horizontal
-          start_quad_order = H2D_MAKE_QUAD_ORDER(order_h, std::max(current_min_order, (order_v+1) / 2));
-          last_quad_order = H2D_MAKE_QUAD_ORDER(order_h, std::min(max_ha_order_v, H2D_GET_V_ORDER(start_quad_order)+1));
-          append_candidates_split(start_quad_order, last_quad_order, H2D_REFINEMENT_ANISO_H, false);
+      case H2D_P_ISO:
+      case H2D_P_ANISO:
+        last_quad_order = -1; break; //no H-candidate will be generated
 
-          //vertical
-          start_quad_order = H2D_MAKE_QUAD_ORDER(std::max(current_min_order, (order_h+1) / 2), order_v);
-          last_quad_order = H2D_MAKE_QUAD_ORDER(std::min(max_ha_order_h, H2D_GET_H_ORDER(start_quad_order)+1), order_v);
-          append_candidates_split(start_quad_order, last_quad_order, H2D_REFINEMENT_ANISO_V, false);
-        }
+      case H2D_HP_ISO:
+      case H2D_HP_ANISO_H:
+        iso_p = true; break; //iso change of orders
+    }
+    append_candidates_split(start_quad_order, last_quad_order, H2D_REFINEMENT_H, tri || iso_p);
+
+    //generate all ANISO-candidates
+    if (!tri && e->iro_cache < 8 /** \todo Find and why is iro_cache compared with the number 8. What does the number 8 mean? */
+      && (cand_list == H2D_H_ANISO || cand_list == H2D_HP_ANISO_H || cand_list == H2D_HP_ANISO)) {
+      iso_p = false;
+      int start_quad_order_hz = H2D_MAKE_QUAD_ORDER(order_h, std::max(current_min_order, (order_v+1) / 2));
+      int last_quad_order_hz = H2D_MAKE_QUAD_ORDER(std::min(max_ha_order_h, order_h+H2DRS_MAX_ORDER_INC), std::min(order_v, H2D_GET_V_ORDER(start_quad_order)+H2DRS_MAX_ORDER_INC));
+      int start_quad_order_vt = H2D_MAKE_QUAD_ORDER(std::max(current_min_order, (order_h+1) / 2), order_v);
+      int last_quad_order_vt = H2D_MAKE_QUAD_ORDER(std::min(order_h, H2D_GET_H_ORDER(start_quad_order)+H2DRS_MAX_ORDER_INC), std::min(max_ha_order_v, order_v+H2DRS_MAX_ORDER_INC));
+      switch(cand_list) {
+        case H2D_H_ANISO:
+          last_quad_order_hz = start_quad_order_hz = quad_order;
+          last_quad_order_vt = start_quad_order_vt = quad_order;
+          break; //only one candidate will be created
+
+        case H2D_HP_ANISO_H:
+          iso_p = true; break; //iso change of orders
       }
+      if (iso_p) { //make orders uniform: take mininmum order since nonuniformity is caused by different handling of orders along directions
+        int order = std::min(H2D_GET_H_ORDER(start_quad_order_hz), H2D_GET_V_ORDER(start_quad_order_hz));
+        start_quad_order_hz = H2D_MAKE_QUAD_ORDER(order, order);
+        order = std::min(H2D_GET_H_ORDER(start_quad_order_vt), H2D_GET_V_ORDER(start_quad_order_vt));
+        start_quad_order_vt = H2D_MAKE_QUAD_ORDER(order, order);
+
+        order = std::min(H2D_GET_H_ORDER(last_quad_order_hz), H2D_GET_V_ORDER(last_quad_order_hz));
+        last_quad_order_hz = H2D_MAKE_QUAD_ORDER(order, order);
+        order = std::min(H2D_GET_H_ORDER(last_quad_order_vt), H2D_GET_V_ORDER(last_quad_order_vt));
+        last_quad_order_vt = H2D_MAKE_QUAD_ORDER(order, order);
+      }
+      append_candidates_split(start_quad_order_hz, last_quad_order_hz, H2D_REFINEMENT_ANISO_H, iso_p);
+      append_candidates_split(start_quad_order_vt, last_quad_order_vt, H2D_REFINEMENT_ANISO_V, iso_p);
     }
   }
 
-  void OptimumSelector::calc_cands_max_order(int* max_quad_order_h, int* max_quad_order_p, int* max_quad_order_aniso) const {
-    int order_h_cand_h = 0, order_v_cand_h = 0;
-    int order_h_cand_p = 0, order_v_cand_p = 0;
-    int order_h_cand_aniso = 0, order_v_cand_aniso = 0;
-
+  void OptimumSelector::update_cands_info(CandsInfo& info_h, CandsInfo& info_p, CandsInfo& info_aniso) const {
     std::vector<Cand>::const_iterator cand = candidates.begin();
     while (cand != candidates.end()) {
-      int* order_h = NULL, * order_v = NULL;
-      if (cand->split == H2D_REFINEMENT_H) { order_h = &order_h_cand_h; order_v = &order_v_cand_h; }
-      else if (cand->split == H2D_REFINEMENT_P) { order_h = &order_h_cand_p; order_v = &order_v_cand_p; }
-      else if (cand->split == H2D_REFINEMENT_ANISO_H || cand->split == H2D_REFINEMENT_ANISO_V) { order_h = &order_h_cand_aniso; order_v = &order_v_cand_aniso; }
-      else { error("Invalid candidate type: %d", cand->split); };
-      const int num_sons = cand->get_num_sons();
-      for(int i = 0; i < num_sons; i++) {
-        *order_h = std::max(*order_h, H2D_GET_H_ORDER(cand->p[i]));
-        *order_v = std::max(*order_v, H2D_GET_V_ORDER(cand->p[i]));
+      CandsInfo* info = NULL;
+      if (cand->split == H2D_REFINEMENT_H) info = &info_h;
+      else if (cand->split == H2D_REFINEMENT_P) info = &info_p;
+      else if (cand->split == H2D_REFINEMENT_ANISO_H || cand->split == H2D_REFINEMENT_ANISO_V) info = &info_aniso;
+      else { error("Invalid candidate type: %d.", cand->split); };
+
+      //evaluate elements of candidates
+      const int num_elems = cand->get_num_elems();
+      for(int i = 0; i < num_elems; i++) {
+        int elem_order_h = H2D_GET_H_ORDER(cand->p[i]), elem_order_v = H2D_GET_V_ORDER(cand->p[i]);
+        if (elem_order_h != elem_order_v)
+          info->uniform_orders = false;
+        if (info->min_quad_order < 0 || info->max_quad_order < 0)
+          info->min_quad_order = info->max_quad_order = H2D_MAKE_QUAD_ORDER(elem_order_h, elem_order_v);
+        else {
+          info->min_quad_order = H2D_MAKE_QUAD_ORDER(std::min(H2D_GET_H_ORDER(info->min_quad_order), elem_order_h), std::min(H2D_GET_V_ORDER(info->min_quad_order), elem_order_v));
+          info->max_quad_order = H2D_MAKE_QUAD_ORDER(std::max(H2D_GET_H_ORDER(info->max_quad_order), elem_order_h), std::max(H2D_GET_V_ORDER(info->max_quad_order), elem_order_v));
+        }
       }
+
+      //next candidate
       cand++;
     }
-
-    //encode
-    *max_quad_order_h = H2D_MAKE_QUAD_ORDER(order_h_cand_h, order_v_cand_h);
-    *max_quad_order_p = H2D_MAKE_QUAD_ORDER(order_h_cand_p, order_v_cand_p);
-    *max_quad_order_aniso = H2D_MAKE_QUAD_ORDER(order_h_cand_aniso, order_v_cand_aniso);
   }
 
   void OptimumSelector::evaluate_cands_dof(Element* e, Solution* rsln) {
     bool tri = e->is_triangle();
-#   define get_dof_bubble(__order_h, __order_v) ((__order_h - 1) * (__order_v - 1))
+
     for (unsigned i = 0; i < candidates.size(); i++) {
       Cand& c = candidates[i];
       if (tri) { //triangle
         switch(c.split) {
         case H2D_REFINEMENT_H:
-          c.dofs = 6; //order 1
-          for (int j = 0; j < 4; j++)
           {
-            int order = H2D_GET_H_ORDER(c.p[j]);
-            c.dofs += (order-2)*(order-1)/2;
-            if (j < 3) c.dofs += std::min(order, H2D_GET_H_ORDER(c.p[3]))-1 + 2*(order-1);
+            const int central = 3; //central triangle
+            c.dofs = 0;
+            for(int j = 0; j < H2D_MAX_ELEMENT_SONS; j++) {
+              c.dofs += calc_num_shapes(H2D_MODE_TRIANGLE, H2D_GET_H_ORDER(c.p[j]), H2DRS_ORDER_ANY, H2DST_ANY);
+              if (j != central)
+                c.dofs -= calc_num_shapes(H2D_MODE_TRIANGLE, std::min(H2D_GET_H_ORDER(c.p[j]), H2D_GET_H_ORDER(c.p[central])), H2DRS_ORDER_ANY, H2DST_TRI_EDGE) / 3; //shared edge: since triangle has three edges which are identified by a single order this will find 3 x different edge of a given order
+            }
+            if (has_vertex_shape[H2D_MODE_TRIANGLE])
+              c.dofs -= 3*3; //every vertex functions of vertices which create the middle triangle is added 3-times
           }
           break;
 
         case H2D_REFINEMENT_P:
-          {
-            int order = H2D_GET_H_ORDER(c.p[0]);
-            c.dofs  = (order+1)*(order+2)/2;
-          }
+          c.dofs = calc_num_shapes(H2D_MODE_TRIANGLE, H2D_GET_H_ORDER(c.p[0]), H2DRS_ORDER_ANY, H2DST_ANY);
           break;
 
         default:
-          error("Unknown split type \"%d\" at candidate %d", c.split, i);
+          error("Unknown split type \"%d\" at candidate %d (element #%d)", c.split, i, e->id);
         }
       }
       else { //quad
         switch(c.split) {
         case H2D_REFINEMENT_H:
-          c.dofs = 9; //vertex
-          for (int j = 0; j < H2D_MAX_ELEMENT_SONS; j++)
-          {
-            int prev_j = j > 0 ? j-1 : H2D_MAX_ELEMENT_SONS-1; //neighbour
-            int order_h = H2D_GET_H_ORDER(c.p[j]), order_v = H2D_GET_V_ORDER(c.p[j]);
-            if ((j&1) == 0) { //shared edge is horizontal
-              c.dofs += std::min(H2D_GET_H_ORDER(c.p[prev_j]), order_h)-1 + order_h-1; //the minimum order rule
-              c.dofs += order_v-1; //the other edge will be added while processing of the next sons because it is shared
-            }
-            else { //shared edge is vertical
-              c.dofs += std::min(H2D_GET_V_ORDER(c.p[prev_j]), order_v)-1 + order_v-1; //the minimum order rule
-              c.dofs += order_h-1; //the other edge will be added while processing of the next sons because it is shared
-            }
-            c.dofs += get_dof_bubble(order_h, order_v); //bubble
+          c.dofs = 0;
+          for(int j = 0; j < H2D_MAX_ELEMENT_SONS; j++)
+            c.dofs += calc_num_shapes(H2D_MODE_QUAD, H2D_GET_H_ORDER(c.p[j]), H2D_GET_V_ORDER(c.p[j]), H2DST_ANY);
+          for(int j = 0; j < 2; j++) { //shared edge functions
+            c.dofs -= calc_num_shapes(H2D_MODE_QUAD, H2DRS_ORDER_ANY, std::min(H2D_GET_V_ORDER(c.p[2*j]), H2D_GET_V_ORDER(c.p[2*j + 1])), H2DST_VERT_EDGE) / 2; //shared vertical edge functions: every edge is twice there
+            c.dofs -= calc_num_shapes(H2D_MODE_QUAD, std::min(H2D_GET_H_ORDER(c.p[j]), H2D_GET_H_ORDER(c.p[j^3])), H2DRS_ORDER_ANY, H2DST_HORIZ_EDGE) / 2; //shared horizontal edge functions: every edge is twice there
           }
+          if (has_vertex_shape[H2D_MODE_QUAD])
+            c.dofs -= 4 + 3; //edge vertex + central vertex
           break;
 
         case H2D_REFINEMENT_ANISO_H:
+          c.dofs = calc_num_shapes(H2D_MODE_QUAD, H2D_GET_H_ORDER(c.p[0]), H2D_GET_V_ORDER(c.p[0]), H2DST_ANY);
+          c.dofs += calc_num_shapes(H2D_MODE_QUAD, H2D_GET_H_ORDER(c.p[1]), H2D_GET_V_ORDER(c.p[1]), H2DST_ANY);
+          c.dofs -= calc_num_shapes(H2D_MODE_QUAD, std::min(H2D_GET_H_ORDER(c.p[0]), H2D_GET_H_ORDER(c.p[1])), H2DRS_ORDER_ANY, H2DST_HORIZ_EDGE) / 2; //shared edge functions
+          if (has_vertex_shape[H2D_MODE_QUAD])
+            c.dofs -= 2; //shared vertex functions
+          break;
+
         case H2D_REFINEMENT_ANISO_V:
-          {
-            int order_major[2], order_minor[2];
-            if (c.split == H2D_REFINEMENT_ANISO_H) {
-              order_major[0] = H2D_GET_H_ORDER(c.p[0]); order_major[1] = H2D_GET_H_ORDER(c.p[1]);
-              order_minor[0] = H2D_GET_V_ORDER(c.p[0]); order_minor[1] = H2D_GET_V_ORDER(c.p[1]);
-            }
-            else {
-              order_major[0] = H2D_GET_V_ORDER(c.p[0]); order_major[1] = H2D_GET_V_ORDER(c.p[1]);
-              order_minor[0] = H2D_GET_H_ORDER(c.p[0]); order_minor[1] = H2D_GET_H_ORDER(c.p[1]);
-            }
-            c.dofs = 6; //vertex
-            c.dofs += 2 * (order_minor[0]-1 + order_minor[1]-1); //minor direction edge
-            int order_shared_edge = std::min(order_major[0], order_major[1]); //the minimum order rule
-            c.dofs += order_major[0]-1 + order_shared_edge-1 + order_major[1]-1; //major direction edge
-            c.dofs += get_dof_bubble(order_major[0], order_minor[0]); //bubble
-            c.dofs += get_dof_bubble(order_major[1], order_minor[1]); //bubble
-          }
+          c.dofs = calc_num_shapes(H2D_MODE_QUAD, H2D_GET_H_ORDER(c.p[0]), H2D_GET_V_ORDER(c.p[0]), H2DST_ANY);
+          c.dofs += calc_num_shapes(H2D_MODE_QUAD, H2D_GET_H_ORDER(c.p[1]), H2D_GET_V_ORDER(c.p[1]), H2DST_ANY);
+          c.dofs -= calc_num_shapes(H2D_MODE_QUAD, H2DRS_ORDER_ANY, std::min(H2D_GET_V_ORDER(c.p[0]), H2D_GET_V_ORDER(c.p[1])), H2DST_VERT_EDGE) / 2; //shared edge functions
+          if (has_vertex_shape[H2D_MODE_QUAD])
+            c.dofs -= 2; //shared vertex functions
           break;
 
         case H2D_REFINEMENT_P:
-          {
-            int order_h = H2D_GET_H_ORDER(c.p[0]);
-            int order_v = H2D_GET_V_ORDER(c.p[0]);
-            c.dofs = 4; //vertex
-            c.dofs += 2 * (order_h-1 + order_v-1); //edge
-            c.dofs += (order_h-1) * (order_v-1); //bubble
-          }
+          c.dofs = calc_num_shapes(H2D_MODE_QUAD, H2D_GET_H_ORDER(c.p[0]), H2D_GET_V_ORDER(c.p[0]), H2DST_ANY);
           break;
 
         default:
@@ -278,27 +447,67 @@ namespace RefinementSelectors {
   void OptimumSelector::evaluate_candidates(Element* e, Solution* rsln, double* avg_error, double* dev_error) {
     evaluate_cands_error(e, rsln, avg_error, dev_error);
     evaluate_cands_dof(e, rsln);
+    evaluate_cands_score(e);
+  }
+
+  void OptimumSelector::evaluate_cands_score(Element* e) {
+    //calculate score of candidates
+    Cand& unrefined = candidates[0];
+    const int num_cands = (int)candidates.size();
+    unrefined.score = 0;
+    const double unrefined_dofs_exp = pow(unrefined.dofs, conv_exp);
+    for (int i = 1; i < num_cands; i++) {
+      Cand& cand = candidates[i];
+      if (cand.error < unrefined.error && cand.dofs > unrefined.dofs) {
+        double delta_dof_exp = pow(cand.dofs - unrefined.dofs, conv_exp);
+	if (opt_apply_exp_dof)
+	  delta_dof_exp = pow(cand.dofs, conv_exp) - unrefined_dofs_exp;
+        candidates[i].score = (log10(unrefined.error) - log10(cand.error)) / delta_dof_exp;
+      }
+      else
+        candidates[i].score = 0;
+    }
+  }
+
+  bool OptimumSelector::compare_cand_score(const Cand& a, const Cand& b) {
+    return a.score > b.score;
   }
 
   void OptimumSelector::select_best_candidate(Element* e, const double avg_error, const double dev_error, int* selected_cand, int* selected_h_cand) {
     // select an above-average candidate with the steepest error decrease
-    int imax = 0, h_imax = 0;
-    double score, maxscore = 0.0, h_maxscore = 0.0;
 
-    Cand& unrefined = candidates[0];
-    for (unsigned i = 1; i < candidates.size(); i++)
-    {
-      Cand& cand = candidates[i];
+    //sort according to the score
+    const int num_cands = (int)candidates.size();
+    if (num_cands > 2)
+      std::sort(candidates.begin()+1, candidates.end(), compare_cand_score);
 
-      if ((log10(cand.error) < (avg_error + dev_error)) && (cand.dofs > unrefined.dofs))
-      {
-        score = (log10(unrefined.error) - log10(cand.error)) / pow(cand.dofs - unrefined.dofs, conv_exp);
+    //select best candidate
+    int imax = 1, h_imax = 1;
+    if (opt_symmetric_mesh) { //prefer symmetric mesh
+      //find first valid score that diffres from the next scores
+      while ((imax+1) < num_cands && std::abs(candidates[imax].score - candidates[imax+1].score) < H2DRS_SCORE_DIFF_ZERO) {
+        //find the first candidate with a different score
+        Cand& cand_current = candidates[imax];
+        int imax_end = imax + 2;
+        while (imax_end < num_cands && std::abs(cand_current.score - candidates[imax_end].score) < H2DRS_SCORE_DIFF_ZERO)
+          imax_end++;
 
-        if (score > maxscore) { maxscore = score; imax = i; }
-        if ((cand.split == 0) && (score > h_maxscore)) { h_maxscore = score; h_imax = i; }
+        imax = imax_end;
       }
+
+      //find valid H-refinement candidate
+      h_imax = imax;
+      while (h_imax < num_cands && candidates[h_imax].split != H2D_REFINEMENT_H)
+        h_imax++;
     }
 
+    //make sure the result is valid: index is valid, selected candidate has a valid score
+    if (imax >= num_cands || candidates[imax].score == 0)
+      imax = 0;
+    if (h_imax >= num_cands || candidates[h_imax].score == 0)
+      h_imax = 0;
+
+    //report result
     *selected_cand = imax;
     *selected_h_cand = h_imax;
   }
@@ -313,8 +522,7 @@ namespace RefinementSelectors {
     }
 
     //check validity
-    assert_msg(!iso_only || order_h == order_v, "Iso_only requested but order (%d, %d) of element %d does not match", order_h, order_v);
-    assert_msg(std::max(order_h, order_v) <= H2DRS_MAX_ORDER, "Given order (%d, %d) exceedes the maximum supported order %d", order_h, order_v, H2DRS_MAX_ORDER);
+    assert_msg(std::max(order_h, order_v) <= H2DRS_MAX_ORDER, "Given order (%d, %d) exceedes the maximum supported order %d.", order_h, order_v, H2DRS_MAX_ORDER);
 
     //set shapeset mode
     if (element->is_triangle())
@@ -373,7 +581,7 @@ namespace RefinementSelectors {
       return true;
   }
 
-  void OptimumSelector::update_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders) {
+  void OptimumSelector::generate_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders) {
     assert_msg(refinement != H2D_REFINEMENT_P, "P-candidate not supported for updating shared orders");
     const int num_sons = get_refin_sons(refinement);
     if (suggested_quad_orders != NULL) {
@@ -383,7 +591,7 @@ namespace RefinementSelectors {
     else {
       //calculate new quad_orders
       int quad_order = orig_quad_order;
-      if (cands_allowed != H2DRS_CAND_H_ONLY) {
+      if (cand_list != H2D_H_ISO && cand_list != H2D_H_ANISO) { //H_ISO and H_ANISO has to keep given order
         int order_h = H2D_GET_H_ORDER(quad_order), order_v = H2D_GET_V_ORDER(quad_order);
         switch(refinement) {
           case H2D_REFINEMENT_H:
@@ -410,4 +618,13 @@ namespace RefinementSelectors {
       tgt_quad_orders[i] = 0;
 #endif
   }
+
+  void OptimumSelector::set_option(const SelOption option, bool enable) {
+    switch(option) {
+    case H2D_PREFER_SYMMETRIC_MESH: opt_symmetric_mesh = enable; break;
+    case H2D_APPLY_CONV_EXP_DOF: opt_apply_exp_dof = enable; break;
+    default: error("Unknown option %d.", (int)option);
+    }
+  }
+
 }

@@ -24,11 +24,12 @@
 
 
 // Possible return values for bc_type_callback():
-enum
+enum BCType
 {
-  BC_ESSENTIAL, ///< Essential (Dirichlet) BC
-  BC_NATURAL,   ///< Natural (Neumann, Newton) BC
-  BC_NONE       ///< Do-nothing BC
+  BC_ESSENTIAL, ///< Essential (Dirichlet) BC.
+  BC_NATURAL,   ///< Natural (Neumann, Newton) BC.
+  BC_NONE       ///< Hermes will not attempt to evaluate any boundary
+                ///< integrals on this part of the boundary.
 };
 
 
@@ -47,7 +48,7 @@ enum
 ///         of the boundary. The callback is set by the function set_bc_types().
 ///
 ///         On Dirichlet edges the Space class calls another callback, set by either of the two
-///         functions set_bc_values(). The obtained scalar values are projected onto the available
+///         functions set_essential_bc_values(). The obtained scalar values are projected onto the available
 ///         edge shape functions on each edge. This way the Dirichlet lift is obtained, which
 ///         matches as closely as possible the user-defined boundary data. Two kinds of value
 ///         callback functions are defined: the first provides the absolute coordinates on the edge
@@ -107,14 +108,14 @@ public:
   virtual void free();
 
   /// Sets the BC types callback function.
-  void set_bc_types(int (*bc_type_callback)(int marker));
+  void set_bc_types(BCType (*bc_type_callback)(int marker));
   /// Sets the BC values callback function, which takes absolute boundary coordinates.
-  void set_bc_values(scalar (*bc_value_callback_by_coord)(int marker, double x, double y));
+  void set_essential_bc_values(scalar (*bc_value_callback_by_coord)(int ess_bdy_marker, double x, double y));
   /// Sets the BC values callback function, which takes parametric edge position.
-  void set_bc_values(scalar (*bc_value_callback_by_edge)(EdgePos* ep)); // for EdgePos, see mesh.h
+  void set_essential_bc_values(scalar (*bc_value_callback_by_edge)(EdgePos* ep)); // for EdgePos, see mesh.h
 
   /// Sets element polynomial order.
-  void set_element_order(int id, int order);
+  virtual void set_element_order(int id, int order);
   /// Returns element polynomial order.
   int  get_element_order(int id) const;
   /// Sets the same polynomial order for all elements in the mesh.
@@ -165,6 +166,8 @@ public:
   void get_edge_assembly_list(Element* e, int edge, AsmList* al);
 
 protected:
+  static const int H2D_UNASSIGNED_DOF = -2; ///< DOF which was not assigned yet.
+  static const int H2D_CONSTRAINED_DOF = -1; ///< DOF which is constrained.
 
   Mesh* mesh;
   Shapeset* shapeset;
@@ -190,7 +193,7 @@ protected:
         scalar* edge_bc_proj;
         scalar* vertex_bc_coef;
       };
-      int n; // # of dofs
+      int n; ///< Number of dofs. Temporarily used during assignment of DOFs to indicate nodes which were not processed yet.
     };
     struct // constrained vertex node
     {
@@ -217,7 +220,7 @@ public:
   ElementData* edata; ///< element data table
   int esize;
 
-protected: //DEBUG
+protected: //debugging support
   virtual int get_edge_order_internal(Node* en);
 
   /// \brief Updates internal node and element tables.
@@ -232,13 +235,14 @@ protected: //DEBUG
   void H2D_CHECK_ORDER(int order);
   void copy_orders_recurrent(Element* e, int order);
 
+  virtual void reset_dof_assignment(); ///< Resets assignment of DOF to an unassigned state.
   virtual void assign_vertex_dofs() = 0;
   virtual void assign_edge_dofs() = 0;
   virtual void assign_bubble_dofs() = 0;
 
   virtual void get_vertex_assembly_list(Element* e, int iv, AsmList* al) = 0;
   virtual void get_edge_assembly_list_internal(Element* e, int ie, AsmList* al) = 0;
-  virtual void get_bubble_assembly_list(Element* e, AsmList* al) = 0;
+  virtual void get_bubble_assembly_list(Element* e, AsmList* al);
 
   double** proj_mat;
   double*  chol_p;
@@ -266,8 +270,8 @@ protected: //DEBUG
 
 public:
 
-  int (*bc_type_callback)(int);
-  scalar (*bc_value_callback_by_coord)(int marker, double x, double y);
+  BCType (*bc_type_callback)(int);
+  scalar (*bc_value_callback_by_coord)(int ess_bdy_marker, double x, double y);
   scalar (*bc_value_callback_by_edge)(EdgePos* ep);
 
   /// Internal. Used by LinSystem to detect changes in the space.

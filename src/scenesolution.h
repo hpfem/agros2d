@@ -46,14 +46,14 @@ public:
     SceneSolution();
 
     void clear();
-    void loadMesh(QDomElement *element);
-    void saveMesh(QDomDocument *doc, QDomElement *element);
+    void loadMeshInitial(QDomElement *element);
+    void saveMeshInitial(QDomDocument *doc, QDomElement *element);
     void loadSolution(QDomElement *element);
     void saveSolution(QDomDocument *doc, QDomElement *element);
 
     void solve(SolverMode solverMode);
-    inline Mesh *mesh() { return m_mesh; }
-    inline void setMesh(Mesh *mesh) { if (m_mesh) { delete m_mesh; } m_mesh = mesh; }
+    inline Mesh *meshInitial() { return m_meshInitial; }
+    inline void setMeshInitial(Mesh *meshInitial) { if (m_meshInitial) { delete m_meshInitial; } m_meshInitial = meshInitial; }
     Solution *sln(int i = -1);
     void setSolutionArrayList(QList<SolutionArray *> *solutionArrayList);
     inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; }
@@ -63,7 +63,7 @@ public:
     double time();
 
     bool isSolved() { return (m_timeStep != -1); }
-    bool isMeshed() { return m_mesh; }
+    bool isMeshed() { return m_meshInitial; }
     bool isSolving() { return m_isSolving; }
 
     // contour
@@ -128,7 +128,7 @@ private:
     ViewScalarFilter *m_slnVectorYView; // vector view solution - y
     Vectorizer m_vecVectorView; // vectorizer for vector view
 
-    Mesh *m_mesh; // linearizer only for mesh (on empty solution)
+    Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
 
     Vectorizer m_vec;
 };

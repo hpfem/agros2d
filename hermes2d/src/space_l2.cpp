@@ -15,7 +15,7 @@
 
 #include "common.h"
 #include "space_l2.h"
-#include "matrix.h"
+#include "matrix_old.h"
 #include "quad_all.h"
 
 
@@ -64,22 +64,9 @@ void L2Space::assign_bubble_dofs()
     shapeset->set_mode(e->get_mode());
     ElementData* ed = &edata[e->id];
     ed->bdof = next_dof;
-    ed->n = shapeset->get_num_bubbles(ed->order);
+    ed->n = shapeset->get_num_bubbles(ed->order); //FIXME: this function might return invalid value because retrieved bubble functions for non-uniform orders might be invalid for the given order.
     next_dof += ed->n * stride;
   }
-}
-
-
-//// assembly lists ////////////////////////////////////////////////////////////////////////////////
-
-void L2Space::get_bubble_assembly_list(Element* e, AsmList* al)
-{
-  ElementData* ed = &edata[e->id];
-  if (!ed->n) return;
-
-  int* indices = shapeset->get_bubble_indices(ed->order);
-  for (int i = 0, dof = ed->bdof; i < ed->n; i++, dof += stride)
-    al->add_triplet(*indices++, dof, 1.0);
 }
 
 

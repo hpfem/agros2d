@@ -62,8 +62,8 @@ protected:
 	EpetraVector &rhs;
 	Precond *pc;
 
-	int max_iters;					/// maximum number of iterations
-	double tolerance;				/// convergence tolerance
+    int max_iters;					/// maximum number of iterations
+    double tolerance;				/// convergence tolerance
 };
 
 #endif
