@@ -310,7 +310,11 @@ bool ProgressItemMesh::writeToTriangle()
     int nodesCount = 0;
     for (int i = 0; i<Util::scene()->nodes.count(); i++)
     {
-        outNodes += QString("%1  %2  %3  %4\n").arg(i).arg(Util::scene()->nodes[i]->point.x, 0, 'f', 10).arg(Util::scene()->nodes[i]->point.y, 0, 'f', 10).arg(0);
+        outNodes += QString("%1  %2  %3  %4\n").
+                    arg(i).
+                    arg(Util::scene()->nodes[i]->point.x, 0, 'f', 10).
+                    arg(Util::scene()->nodes[i]->point.y, 0, 'f', 10).
+                    arg(0);
         nodesCount++;
     }
 
@@ -322,7 +326,11 @@ bool ProgressItemMesh::writeToTriangle()
         if (Util::scene()->edges[i]->angle == 0)
         {
             // line
-            outEdges += QString("%1  %2  %3  %4\n").arg(edgesCount).arg(Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeStart)).arg(Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeEnd)).arg(i+1);
+            outEdges += QString("%1  %2  %3  %4\n").
+                        arg(edgesCount).
+                        arg(Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeStart)).
+                        arg(Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeEnd)).
+                        arg(i+1);
             edgesCount++;
         }
         else
@@ -331,17 +339,20 @@ bool ProgressItemMesh::writeToTriangle()
             // add pseudo nodes
             Point center = Util::scene()->edges[i]->center();
             double radius = Util::scene()->edges[i]->radius();
-            double startAngle = atan2(center.y - Util::scene()->edges[i]->nodeStart->point.y, center.x - Util::scene()->edges[i]->nodeStart->point.x) / M_PI*180 - 180;
+            double startAngle = atan2(center.y - Util::scene()->edges[i]->nodeStart->point.y,
+                                      center.x - Util::scene()->edges[i]->nodeStart->point.x) - M_PI;
             int segments = Util::scene()->edges[i]->angle/5.0 + 1;
             if (segments < Util::config()->angleSegmentsCount) segments = Util::config()->angleSegmentsCount; // minimum segments
 
-            double theta = Util::scene()->edges[i]->angle / float(segments - 1);
+            double theta = deg2rad(Util::scene()->edges[i]->angle) / double(segments);
 
             int nodeStartIndex = 0;
             int nodeEndIndex = 0;
             for (int j = 0; j < segments; j++)
             {
-                double arc = (startAngle + j*theta)/180.0*M_PI;
+                // avoid problem with rounding
+                double arc = startAngle + j*theta;
+
                 double x = radius * cos(arc);
                 double y = radius * sin(arc);
 
@@ -351,16 +362,24 @@ bool ProgressItemMesh::writeToTriangle()
                     nodeStartIndex = Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeStart);
                     nodeEndIndex = nodesCount;
                 }
-                if (j == segments-1)
+                if (j == segments - 1)
                 {
                     nodeEndIndex = Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeEnd);
                 }
                 if ((j > 0) && (j < segments))
                 {
-                    outNodes += QString("%1  %2  %3  %4\n").arg(nodesCount).arg(center.x + x, 0, 'f', 10).arg(center.y + y, 0, 'f', 10).arg(0);
+                    outNodes += QString("%1  %2  %3  %4\n").
+                                arg(nodesCount).
+                                arg(center.x + x, 0, 'f', 10).
+                                arg(center.y + y, 0, 'f', 10).
+                                arg(0);
                     nodesCount++;
                 }
-                outEdges += QString("%1  %2  %3  %4\n").arg(edgesCount).arg(nodeStartIndex).arg(nodeEndIndex).arg(i+1);
+                outEdges += QString("%1  %2  %3  %4\n").
+                            arg(edgesCount).
+                            arg(nodeStartIndex).
+                            arg(nodeEndIndex).
+                            arg(i+1);
                 edgesCount++;
                 nodeStartIndex = nodeEndIndex;
             }
@@ -373,7 +392,10 @@ bool ProgressItemMesh::writeToTriangle()
     QString outHoles = QString("%1\n").arg(holesCount);
     for (int i = 0; i<Util::scene()->labels.count(); i++)
         if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
-            outHoles += QString("%1  %2  %3\n").arg(i).arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).arg(Util::scene()->labels[i]->point.y, 0, 'f', 10);
+            outHoles += QString("%1  %2  %3\n").
+                        arg(i).
+                        arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
+                        arg(Util::scene()->labels[i]->point.y, 0, 'f', 10);
 
     // labels
     QString outLabels;
@@ -392,12 +414,15 @@ bool ProgressItemMesh::writeToTriangle()
         }
     }
 
-    outNodes.insert(0, QString("%1 2 0 1\n").arg(nodesCount)); // + additional Util::scene()->nodes
+    outNodes.insert(0, QString("%1 2 0 1\n").
+                    arg(nodesCount)); // + additional Util::scene()->nodes
     out << outNodes;
-    outEdges.insert(0, QString("%1 1\n").arg(edgesCount)); // + additional edges
+    outEdges.insert(0, QString("%1 1\n").
+                    arg(edgesCount)); // + additional edges
     out << outEdges;
     out << outHoles;
-    outLabels.insert(0, QString("%1 1\n").arg(labelsCount)); // - holes
+    outLabels.insert(0, QString("%1 1\n").
+                     arg(labelsCount)); // - holes
     out << outLabels;
 
     file.waitForBytesWritten(0);

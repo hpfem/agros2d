@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "1.0.1.336"
-#define AppDate "2010-03-23"
+#define AppVersion "1.1.0.365"
+#define AppDate "2010-06-01"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -28,8 +28,8 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 [Languages]
 
 [Files]
-Source: release\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
-Source: images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
+Source: src\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
+Source: src\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: src-remote\release\Agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
 Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
 Source: install\win32\ffmpeg.exe; DestDir: {app}; DestName: ffmpeg.exe
@@ -75,6 +75,7 @@ Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http:/
 Type: files; Name: {app}\Agros2D.url
 
 [Code]
+
 
 
 

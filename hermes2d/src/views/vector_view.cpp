@@ -111,7 +111,7 @@ void VectorView::plot_arrow(double x, double y, double xval, double yval, double
     glEnd();
 
     glTranslated(x,y,0.0);
-    glRotated(atan2(-yval,xval) * 180.0/M_PI, 0.0, 0.0, 1.0);
+    glRotated(atan2(-yval, xval) * 180.0/M_PI, 0.0, 0.0, 1.0);
 
     glBegin(GL_TRIANGLES);
     glVertex2d(length + 3 * width,  0.0);

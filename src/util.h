@@ -31,15 +31,16 @@
 #include <typeinfo>
 #include <iostream>
 #include <stdlib.h>
-#include <math.h>
+#include <cmath>
 #include <locale.h>
 
-const double EPS_ZERO = 1e-10;
-const double EPS0 = 8.854e-12;
-const double MU0 = 4*M_PI*1e-7;
-const int NDOF_STOP = 40000;
+#define EPS_ZERO 1e-10
+#define EPS0 8.854e-12
+#define MU0 4*M_PI*1e-7
+#define NDOF_STOP 40000
+#define CONST_DOUBLE 1e100
 
-const double CONST_DOUBLE = 1e100;
+#define deg2rad(degrees) (degrees*M_PI/180)
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;
