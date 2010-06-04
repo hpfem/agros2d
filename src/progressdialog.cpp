@@ -350,7 +350,6 @@ bool ProgressItemMesh::writeToTriangle()
             int nodeEndIndex = 0;
             for (int j = 0; j < segments; j++)
             {
-                // avoid problem with rounding
                 double arc = startAngle + j*theta;
 
                 double x = radius * cos(arc);
