@@ -112,20 +112,6 @@ void solveSystem(LinSystem *sys,
 {
     int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
 
-
-    /*
-    // spooles
-    int *Ap;
-    int *Ai;
-    double *Ax;
-    int size;
-
-    sys->get_matrix(Ap, Ai, Ax, size);
-
-    InpMtx *A = InpMtx_new();
-    InpMtx_init(A, INPMTX_BY_ROWS, SPOOLES_REAL, size, size);
-    */
-
     switch (numberOfSolution)
     {
     case 1:
@@ -270,8 +256,8 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     bool isError = false;
 
     // solution
-    int adaptivitysteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-    for (int i = 0; i<adaptivitysteps; i++)
+    int actualAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
+    for (int i = 0; i<actualAdaptivitySteps; i++)
     {
         // assign dofs
         int ndofs = 0;
@@ -330,10 +316,10 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             {
                 break;
             }
-            if (i != adaptivitysteps-1) hp.adapt(selector,
-                                                 Util::config()->threshold,
-                                                 Util::config()->strategy,
-                                                 Util::config()->meshRegularity);
+            if (i != actualAdaptivitySteps-1) hp.adapt(selector,
+                                                       Util::config()->threshold,
+                                                       Util::config()->strategy,
+                                                       Util::config()->meshRegularity);
         }
     }
 
@@ -368,7 +354,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             // output
             for (int i = 0; i < numberOfSolution; i++)
             {
-                solutionArrayList->append(solutionArray(solution.at(i), space.at(i), error, i-1, (n+1)*timeStep));
+                solutionArrayList->append(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
             }
 
             if (analysisType == AnalysisType_Transient)

@@ -850,7 +850,7 @@ void SceneView::paintSolutionMesh()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->sln()->get_mesh()->get_num_active_elements(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->sln()->get_mesh()->get_num_elements(); i++)
     {
         Element *element = m_scene->sceneSolution()->sln()->get_mesh()->get_element_fast(i);
         if (element->is_triangle())

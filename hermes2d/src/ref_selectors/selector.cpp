@@ -23,8 +23,8 @@ namespace RefinementSelectors {
 
   POnlySelector::POnlySelector(int max_order, int order_h_inc, int order_v_inc)
   : Selector(max_order), order_h_inc(order_h_inc), order_v_inc(order_v_inc) {
-    error_if(order_h_inc >= 0, "Horizontal increase has to be greater or equal to zero.");
-    error_if(order_v_inc >= 0, "Vertical increase has to be greater or equal to zero.");
+    error_if(order_h_inc < 0, "Horizontal increase has to be greater or equal to zero.");
+    error_if(order_v_inc < 0, "Vertical increase has to be greater or equal to zero.");
   }
 
   bool POnlySelector::select_refinement(Element* element, int quad_order, Solution* rsln, ElementToRefine& refinement) {

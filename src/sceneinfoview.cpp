@@ -207,7 +207,7 @@ void SceneInfoView::doInvalidated()
             QTreeWidgetItem *itemSolverSolvedElements = new QTreeWidgetItem(itemSolvedMeshNode);
             itemSolverSolvedElements->setText(0, tr("Elements: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_mesh()->get_num_active_elements()));
 
-            if (Util::scene()->sceneSolution()->adaptiveSteps() > 0)
+            if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
             {
                 QTreeWidgetItem *adaptivityNode = new QTreeWidgetItem(problemInfoSolverNode);
                 adaptivityNode->setText(0, tr("Adaptivity"));

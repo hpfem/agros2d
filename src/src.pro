@@ -9,10 +9,10 @@ QT += opengl \
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=1
 DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=365
+DEFINES += VERSION_GIT=367
 DEFINES += VERSION_YEAR=2010
 DEFINES += VERSION_MONTH=06
-DEFINES += VERSION_DAY=01
+DEFINES += VERSION_DAY=07
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -124,8 +124,6 @@ linux-g++ {
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../hermes2d/src
-    INCLUDEPATH += /usr/include/mpi
-    INCLUDEPATH += /usr/include/spooles
     LIBS += -L../hermes2d/lib
     LIBS += -lhermes2d
     LIBS += -lumfpack
