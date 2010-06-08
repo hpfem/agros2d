@@ -256,8 +256,9 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     bool isError = false;
 
     // solution
-    int actualAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-    for (int i = 0; i<actualAdaptivitySteps; i++)
+    int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
+    int actualAdaptivitySteps = -1;
+    for (int i = 0; i<maxAdaptivitySteps; i++)
     {
         // assign dofs
         int ndofs = 0;
@@ -316,10 +317,11 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             {
                 break;
             }
-            if (i != actualAdaptivitySteps-1) hp.adapt(selector,
-                                                       Util::config()->threshold,
-                                                       Util::config()->strategy,
-                                                       Util::config()->meshRegularity);
+            if (i != maxAdaptivitySteps-1) hp.adapt(selector,
+                                                    Util::config()->threshold,
+                                                    Util::config()->strategy,
+                                                    Util::config()->meshRegularity);
+            actualAdaptivitySteps = i+1;
         }
     }
 
