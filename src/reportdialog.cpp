@@ -161,14 +161,17 @@ QString ReportDialog::replaceTemplates(const QString &source)
     destination.replace("[Problem.AdaptivitySteps]", (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None) ? QString::number(Util::scene()->problemInfo()->adaptivitySteps) : "", Qt::CaseSensitive);
     destination.replace("[Problem.AdaptivityTolerance]", (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None) ? QString::number(Util::scene()->problemInfo()->adaptivityTolerance) : "", Qt::CaseSensitive);
 
-    destination.replace("[Problem.Frequency]", (Util::scene()->problemInfo()->hermes()->hasHarmonic()) ? QString::number(Util::scene()->problemInfo()->frequency) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.Frequency]", (Util::scene()->problemInfo()->hermes()->hasHarmonic()) ? QString::number(Util::scene()->problemInfo()->frequency) : "n/a", Qt::CaseSensitive);
     destination.replace("[Problem.AnalysisType]", analysisTypeString(Util::scene()->problemInfo()->analysisType), Qt::CaseSensitive);
-    destination.replace("[Problem.TimeStep]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->timeStep.number) : "", Qt::CaseSensitive);
-    destination.replace("[Problem.TimeTotal]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->timeTotal.number) : "", Qt::CaseSensitive);
-    destination.replace("[Problem.InititalCondition]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->initialCondition.number) : "", Qt::CaseSensitive);
+    destination.replace("[Problem.TimeStep]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->timeStep.number) : "n/a", Qt::CaseSensitive);
+    destination.replace("[Problem.TimeTotal]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->timeTotal.number) : "n/a", Qt::CaseSensitive);
+    destination.replace("[Problem.InititalCondition]", (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) ? QString::number(Util::scene()->problemInfo()->initialCondition.number) : "n/a", Qt::CaseSensitive);
 
     // script
     destination.replace("[Script]", createPythonFromModel(), Qt::CaseSensitive);
+
+    // startup script
+    destination.replace("[StartupScript]", Util::scene()->problemInfo()->scriptStartup, Qt::CaseSensitive);
 
     // description
     destination.replace("[Description]", Util::scene()->problemInfo()->description, Qt::CaseSensitive);

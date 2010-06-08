@@ -2507,7 +2507,10 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                         {
                             SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->edgeMarkers[0], 0);
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
-                            if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point, edge->nodeEnd->point, edge->marker->name, edge->angle));
+                            if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
+                                                                                                      edge->nodeEnd->point,
+                                                                                                      edge->marker->name,
+                                                                                                      edge->angle));
                         }
 
                         m_nodeLast->isSelected = false;
@@ -2522,7 +2525,10 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             {
                 SceneLabel *label = new SceneLabel(p, m_scene->labelMarkers[0], 0, 0);
                 SceneLabel *labelAdded = m_scene->addLabel(label);
-                if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point, label->marker->name, label->area, label->polynomialOrder));
+                if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
+                                                                                             label->marker->name,
+                                                                                             label->area,
+                                                                                             label->polynomialOrder));
                 updateGL();
             }
         }

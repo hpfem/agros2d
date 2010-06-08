@@ -344,9 +344,15 @@ void DSceneEdge::fillComboBox()
     cmbNodeEnd->clear();
     for (int i = 0; i<Util::scene()->nodes.count(); i++)
     {
-        cmbNodeStart->addItem(QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2),
+        cmbNodeStart->addItem(QString("%1 - [%2; %3]").
+                              arg(i).
+                              arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).
+                              arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2),
                               Util::scene()->nodes[i]->variant());
-        cmbNodeEnd->addItem(QString("[%1; %2]").arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2),
+        cmbNodeEnd->addItem(QString("%1 - [%2; %3]").
+                            arg(i).
+                            arg(Util::scene()->nodes[i]->point.x, 0, 'e', 2).
+                            arg(Util::scene()->nodes[i]->point.y, 0, 'e', 2),
                             Util::scene()->nodes[i]->variant());
     }
 
@@ -780,7 +786,10 @@ void SceneEdgeCommandAdd::redo()
 {
     SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(m_markerName);
     if (edgeMarker == NULL) edgeMarker = Util::scene()->edgeMarkers[0];
-    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)), Util::scene()->addNode(new SceneNode(m_pointEnd)), edgeMarker, m_angle));
+    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
+                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
+                                         edgeMarker,
+                                         m_angle));
 }
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent) : QUndoCommand(parent)
@@ -795,7 +804,10 @@ void SceneEdgeCommandRemove::undo()
 {
     SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(m_markerName);
     if (edgeMarker == NULL) edgeMarker = Util::scene()->edgeMarkers[0];
-    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)), Util::scene()->addNode(new SceneNode(m_pointEnd)), edgeMarker, m_angle));
+    Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
+                                         Util::scene()->addNode(new SceneNode(m_pointEnd)),
+                                         edgeMarker,
+                                         m_angle));
 }
 
 void SceneEdgeCommandRemove::redo()

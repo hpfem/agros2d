@@ -732,6 +732,7 @@ DSceneLabelCurrentMarker::~DSceneLabelCurrentMarker()
 void DSceneLabelCurrentMarker::createContent()
 {
     txtConductivity = new SLineEditValue(this);
+    txtConductivity->setMinimumSharp(0.0);
     connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     layout->addWidget(new QLabel(tr("Conductivity (S/m):")), 1, 0);

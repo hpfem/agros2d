@@ -286,7 +286,7 @@ void MainWindow::createMenus()
     mnuFile->addAction(actExit);
 #endif
 
-    mnuEdit = menuBar()->addMenu(tr("&Edit"));
+    mnuEdit = menuBar()->addMenu(tr("E&dit"));
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();

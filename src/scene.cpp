@@ -259,7 +259,6 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     {
         if ((((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) ||
              ((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart))) &&
-            (fabs(edgeCheck->angle-edge->angle - edge->angle) < EPS_ZERO) &&
             (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
         {
             delete edge;
@@ -850,7 +849,12 @@ void Scene::doNewEdge()
     SceneEdge *edge = new SceneEdge(nodes[0], nodes[1], edgeMarkers[0], 0);
     if (edge->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
-        addEdge(edge);
+        SceneEdge *edgeAdded = addEdge(edge);
+        if (edgeAdded == edge)
+            m_undoStack->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
+                                                                         edge->nodeEnd->point,
+                                                                         edge->marker->name,
+                                                                         edge->angle));
     }
     else
         delete edge;
@@ -862,7 +866,10 @@ void Scene::doNewLabel(const Point &point)
     if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
         SceneLabel *labelAdded = addLabel(label);
-        if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point, label->marker->name, label->area, label->polynomialOrder));
+        if (labelAdded == label) m_undoStack->push(new SceneLabelCommandAdd(label->point,
+                                                                            label->marker->name,
+                                                                            label->area,
+                                                                            label->polynomialOrder));
     }
     else
         delete label;
