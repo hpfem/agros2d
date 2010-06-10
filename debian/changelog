@@ -1,3 +1,9 @@
+agros2d (1.1-0ubuntu9) lucid; urgency=low
+
+  * fixes
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 09 Jun 2010 22:50:00 +0200
+
 agros2d (1.1-0ubuntu8) lucid; urgency=low
 
   * added 3d model view
