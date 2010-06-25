@@ -268,7 +268,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         sys.assemble();
         if (sys.get_num_dofs() == 0)
         {
-            progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero."), true);
+            progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
             isError = true;
             break;
         }
@@ -305,7 +305,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             error = hp.calc_error(H2D_TOTAL_ERROR_REL | H2D_ELEMENT_ERROR_ABS) * 100;
 
             // emit signal
-            progressItemSolve->emitMessage(QObject::tr("relative error: %1 %").
+            progressItemSolve->emitMessage(QObject::tr("Relative error: %1 %").
                                            arg(error, 0, 'f', 5), false, 1);
             if (progressItemSolve->isCanceled())
             {
@@ -360,7 +360,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             }
 
             if (analysisType == AnalysisType_Transient)
-                progressItemSolve->emitMessage(QObject::tr("time step: %1/%2").
+                progressItemSolve->emitMessage(QObject::tr("Time step: %1/%2").
                                                arg(n+1).
                                                arg(timesteps), false, n+2);
             if (progressItemSolve->isCanceled())

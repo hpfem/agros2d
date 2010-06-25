@@ -14,7 +14,7 @@ First install the following free packages:
 
 Install the following packages:
 
-$ sudo apt-get install libqt4-dev qt4-dev-tools libsuitesparse-dev libqwt5-qt4-dev triangle-bin ffmpeg
+$ sudo apt-get install libqt4-dev qt4-dev-tools python-dev libjudy-dev libsuitesparse-dev libqwt5-qt4-dev libssl-dev cython triangle-bin ffmpeg
 
 Hermes2D is not available in debian repositories yet and so you have to compile it from source. You can also do this through dpkg-buildpackage.
 

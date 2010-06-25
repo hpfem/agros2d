@@ -126,7 +126,7 @@ bool ProgressItemMesh::run()
     // create triangle files
     if (writeToTriangle())
     {
-        emit message(tr("poly file was created"), false, 1);
+        emit message(tr("Poly file was created"), false, 1);
 
         // exec triangle
         QProcess processTriangle;
@@ -146,7 +146,7 @@ bool ProgressItemMesh::run()
 
         if (!processTriangle.waitForStarted())
         {
-            emit message(tr("could not start Triangle"), true, 0);
+            emit message(tr("Could not start Triangle"), true, 0);
             processTriangle.kill();
 
             return !m_isError;
@@ -173,12 +173,12 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
-        emit message(tr("mesh files was created."), false, 2);
+        emit message(tr("Mesh files was created"), false, 2);
 
         // convert triangle mesh to hermes mesh
         if (triangleToHermes2D())
         {
-            emit message(tr("mesh was converted to Hermes2D mesh file"), false, 3);
+            emit message(tr("Mesh was converted to Hermes2D mesh file"), false, 3);
 
             // copy triangle files
             if ((!Util::config()->deleteHermes2DMeshFile) && (!Util::scene()->problemInfo()->fileName.isEmpty()))
@@ -195,7 +195,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".ele");
             QFile::remove(tempProblemFileName() + ".triangle.out");
             QFile::remove(tempProblemFileName() + ".triangle.err");
-            emit message(tr("mesh files was deleted"), false, 4);
+            emit message(tr("Mesh files was deleted"), false, 4);
 
             // load mesh
             Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
@@ -209,7 +209,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                     {
                         if (node->ref < 2 && node->marker == 0)
                         {
-                            emit message(tr("boundary edge does not have a boundary marker"), true, 0);
+                            emit message(tr("Boundary edge does not have a boundary marker"), true, 0);
 
                             delete mesh;
                             return;
@@ -237,12 +237,12 @@ bool ProgressItemMesh::writeToTriangle()
     // basic check
     if (Util::scene()->nodes.count() < 3)
     {
-        emit message(tr("invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes.count()), true, 0);
+        emit message(tr("Invalid number of nodes (%1 < 3)").arg(Util::scene()->nodes.count()), true, 0);
         return false;
     }
     if (Util::scene()->edges.count() < 3)
     {
-        emit message(tr("invalid number of edges (%1 < 3)").arg(Util::scene()->edges.count()), true, 0);
+        emit message(tr("Invalid number of edges (%1 < 3)").arg(Util::scene()->edges.count()), true, 0);
         return false;
     }
     else
@@ -255,13 +255,13 @@ bool ProgressItemMesh::writeToTriangle()
 
         if (count == 0)
         {
-            emit message(tr("at least one boundary condition has to be assigned"), true, 0);
+            emit message(tr("At least one boundary condition has to be assigned"), true, 0);
             return false;
         }
     }
     if (Util::scene()->labels.count() < 1)
     {
-        emit message(tr("invalid number of labels (%1 < 1)").arg(Util::scene()->labels.count()), true, 0);
+        emit message(tr("Invalid number of labels (%1 < 1)").arg(Util::scene()->labels.count()), true, 0);
         return false;
     }
     else
@@ -274,18 +274,18 @@ bool ProgressItemMesh::writeToTriangle()
 
         if (count == 0)
         {
-            emit message(tr("at least one material has to be assigned."), true, 0);
+            emit message(tr("At least one material has to be assigned"), true, 0);
             return false;
         }
     }
     if (Util::scene()->edgeMarkers.count() < 2) // + none marker
     {
-        emit message(tr("invalid number of boundary conditions (%1 < 1).").arg(Util::scene()->edgeMarkers.count()), true, 0);
+        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->edgeMarkers.count()), true, 0);
         return false;
     }
     if (Util::scene()->labelMarkers.count() < 2) // + none marker
     {
-        emit message(tr("invalid number of materials (%1 < 1).").arg(Util::scene()->labelMarkers.count()), true, 0);
+        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->labelMarkers.count()), true, 0);
         return false;
     }
 
@@ -299,7 +299,7 @@ bool ProgressItemMesh::writeToTriangle()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        emit message(tr("could not create triangle poly mesh file (%1).").arg(file.errorString()), true, 0);
+        emit message(tr("Could not create Triangle poly mesh file (%1)").arg(file.errorString()), true, 0);
         return false;
     }
     QTextStream out(&file);
@@ -445,7 +445,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     QFile fileMesh(tempProblemFileName() + ".mesh");
     if (!fileMesh.open(QIODevice::WriteOnly))
     {
-        emit message(tr("could not create hermes2d mesh file"), true, 0);
+        emit message(tr("Could not create Hermes2D mesh file"), true, 0);
         return false;
     }
     QTextStream outMesh(&fileMesh);
@@ -453,7 +453,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        emit message(tr("could not read triangle node file"), true, 0);
+        emit message(tr("Could not read Triangle node file"), true, 0);
         return false;
     }
     QTextStream inNode(&fileNode);
@@ -461,7 +461,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     QFile fileEdge(tempProblemFileName() + ".edge");
     if (!fileEdge.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        emit message(tr("could not read triangle edge file."), true, 0);
+        emit message(tr("Could not read Triangle edge file"), true, 0);
         return false;
     }
     QTextStream inEdge(&fileEdge);
@@ -469,7 +469,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     QFile fileEle(tempProblemFileName() + ".ele");
     if (!fileEle.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        emit message(tr("could not read triangle ele file."), true, 0);
+        emit message(tr("Could not read Triangle ele file"), true, 0);
         return false;
     }
     QTextStream inEle(&fileEle);
@@ -509,7 +509,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     outEdges += "\n} \n\n";
     if (count < 1)
     {
-        emit message(tr("invalid number of edge markers."), true, 0);
+        emit message(tr("Invalid number of edge markers"), true, 0);
         return false;
     }
 
@@ -525,7 +525,7 @@ bool ProgressItemMesh::triangleToHermes2D()
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
         if (marker == 0)
         {
-            emit message(tr("some areas have no label marker."), true, 0);
+            emit message(tr("Some areas have no label marker"), true, 0);
             return false;
         }
         // triangle returns zero region number for areas without marker, markers must start from 1
@@ -536,7 +536,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     outElements += "\n} \n\n";
     if (count < 1)
     {
-        emit message(tr("invalid number of label markers."), true, 0);
+        emit message(tr("Invalid number of label markers"), true, 0);
         return false;
     }
 
@@ -585,7 +585,7 @@ void ProgressItemSolve::solve()
     QTime time;
     time.start();
 
-    emit message(tr("solver was started: %1 (%2, %3)").
+    emit message(tr("Solver was started: %1 (%2, %3)").
                  arg(physicFieldString(Util::scene()->problemInfo()->physicField())).
                  arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
                  arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
@@ -594,12 +594,12 @@ void ProgressItemSolve::solve()
 
     if (!solutionArrayList->isEmpty())
     {
-        emit message(tr("problem was solved"), false, 2);
+        emit message(tr("Problem was solved"), false, 2);
         Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());
     }
     else
     {
-        emit message(tr("problem was not solved"), true, 0);
+        emit message(tr("Problem was not solved"), true, 0);
         Util::scene()->sceneSolution()->setTimeElapsed(0);
     }
 
@@ -637,7 +637,7 @@ void ProgressItemProcessView::process()
     if (sceneView()->sceneViewSettings().showContours == 1)
     {
         step++;
-        emit message(tr("processing countour view cache"), false, step);
+        emit message(tr("Processing countour view cache"), false, step);
         Util::scene()->sceneSolution()->processRangeContour();
     }
     if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
@@ -645,13 +645,13 @@ void ProgressItemProcessView::process()
         sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
     {
         step++;
-        emit message(tr("processing scalar view cache"), false, step);
+        emit message(tr("Processing scalar view cache"), false, step);
         Util::scene()->sceneSolution()->processRangeScalar();
     }
     if (sceneView()->sceneViewSettings().showVectors == 1)
     {
         step++;
-        emit message(tr("processing vector view cache"), false, step);
+        emit message(tr("Processing vector view cache"), false, step);
         Util::scene()->sceneSolution()->processRangeVector();
     }
 }
