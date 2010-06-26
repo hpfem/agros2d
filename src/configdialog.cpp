@@ -210,9 +210,6 @@ void ConfigDialog::save()
     Util::config()->scalarView3DAngle = txtView3DAngle->value();
     Util::config()->scalarView3DBackground = chkView3DBackground->isChecked();
 
-    // save
-    Util::config()->save();
-
     // adaptivity
     Util::config()->isoOnly = chkIsoOnly->isChecked();
     Util::config()->convExp = txtConvExp->value();
@@ -226,6 +223,9 @@ void ConfigDialog::save()
 
     // global script
     Util::config()->globalScript = txtGlobalScript->toPlainText();
+
+    // save
+    Util::config()->save();
 }
 
 void ConfigDialog::createControls()
