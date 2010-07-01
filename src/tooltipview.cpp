@@ -21,7 +21,6 @@
 
 TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
 {
-    setMinimumSize(160, 160);
     setObjectName("TooltipView");
 
     webView = new QWebView(this);
@@ -30,6 +29,7 @@ TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
     webView->setAcceptDrops(false);
 
     setWidget(webView);
+    setMinimumSize(160, 160);
 }
 
 void TooltipView::loadTooltip(const QString &html)

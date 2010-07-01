@@ -23,12 +23,11 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("options"));
     setWindowTitle(tr("Options"));
-    
+
     createControls();
 
-    load();    
+    load();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }

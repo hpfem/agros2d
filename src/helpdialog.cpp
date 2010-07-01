@@ -35,20 +35,19 @@ HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
-    resize(900, 600);
-
+    setMinimumSize(sizeHint());
     QSettings settings;
     restoreGeometry(settings.value("HelpDialog/Geometry", saveGeometry()).toByteArray());
-    splitter->restoreGeometry(settings.value("HelpDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
-    splitter->restoreState(settings.value("HelpDialog/SplitterState", splitter->saveState()).toByteArray());  
+    //splitter->restoreGeometry(settings.value("HelpDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
+    //splitter->restoreState(settings.value("HelpDialog/SplitterState", splitter->saveState()).toByteArray());
 }
 
 HelpDialog::~HelpDialog()
 {
     QSettings settings;
-    settings.setValue("HelpDialog/Geometry", saveGeometry());
-    settings.setValue("HelpDialog/SplitterGeometry", splitter->saveGeometry());
-    settings.setValue("HelpDialog/SplitterState", splitter->saveState());
+    settings.setValue("HelpDialog/Geometry", HelpDialog::saveGeometry());
+    //settings.setValue("HelpDialog/SplitterGeometry", splitter->saveGeometry());
+    //settings.setValue("HelpDialog/SplitterState", splitter->saveState());
 }
 
 void HelpDialog::createControls()
@@ -78,7 +77,6 @@ void HelpDialog::createControls()
 
     // tab
     QTabWidget *tabLeft = new QTabWidget(this);
-    tabLeft->setMinimumWidth(250);
     tabLeft->addTab(helpEngine->contentWidget(), icon(""), tr("Content"));
     tabLeft->addTab(widIndex, icon(""), tr("Index"));
     tabLeft->setMinimumWidth(150);
@@ -369,12 +367,7 @@ int HelpViewer::zoom() const
 void HelpViewer::home()
 {
     QString homepage = helpEngine->customValue(QLatin1String("HomePage"),
-                                               QLatin1String("")).toString();
-
-    if (homepage.isEmpty()) {
-        homepage = helpEngine->customValue(QLatin1String("DefaultHomePage"),
-                                           QLatin1String("about:blank")).toString();
-    }
+                                               QLatin1String("about:blank")).toString();
 
     setSource(homepage);
 }
@@ -1084,15 +1077,6 @@ TopicChooser::TopicChooser(QWidget *parent) : QDialog(parent)
     setWindowTitle(tr("Topic browser"));
 
     createControls();
-
-    resize(350, 200);
-    setMinimumSize(size());
-    setMaximumSize(size());
-}
-
-TopicChooser::~TopicChooser()
-{
-    delete lstView;
 }
 
 void TopicChooser::createControls()

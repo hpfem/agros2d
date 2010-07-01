@@ -81,7 +81,7 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     trvWidget->setMouseTracking(true);
     trvWidget->setColumnCount(3);
-    trvWidget->setColumnWidth(0, settings.value("LocalPointValueView/TreeViewColumn0", 180).value<int>());
+    trvWidget->setColumnWidth(0, settings.value("LocalPointValueView/TreeViewColumn0", 150).value<int>());
     trvWidget->setColumnWidth(1, settings.value("LocalPointValueView/TreeViewColumn1", 80).value<int>());
     trvWidget->setIndentation(12);
 
@@ -223,7 +223,6 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
 
     setLayout(layout);
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }

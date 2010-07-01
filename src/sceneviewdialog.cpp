@@ -30,7 +30,6 @@ SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialo
     
     load();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }

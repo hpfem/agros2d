@@ -28,8 +28,8 @@ SceneBasicSelectDialog::SceneBasicSelectDialog(SceneView *sceneView, QWidget *pa
 
     createControls();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 void SceneBasicSelectDialog::createControls()

@@ -206,7 +206,7 @@ Chart::Chart(QWidget *parent) : QwtPlot(parent)
     setMargin(5);
     setTitle("");
     setCanvasBackground(QColor(Qt::white));
-    setMinimumSize(700, 450);
+    setMinimumSize(420, 260);
 
     // legend
     /*
