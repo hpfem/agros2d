@@ -29,13 +29,19 @@ ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(pare
     setWindowIcon(icon("browser"));
     setWindowTitle(tr("Report"));
     setWindowFlags(Qt::Window);
-    setMinimumSize(400, 400);
 
     createControls();
+
+    resize(sizeHint());
+    QSettings settings;
+    restoreGeometry(settings.value("ReportDialog/Geometry", saveGeometry()).toByteArray());
 }
 
 ReportDialog::~ReportDialog()
 {
+    QSettings settings;
+    settings.setValue("ReportDialog/Geometry", saveGeometry());
+
     delete btnClose;
     delete btnOpenInExternalBrowser;
     delete btnPrint;
@@ -65,6 +71,8 @@ void ReportDialog::createControls()
     layout->addWidget(view);
     // layout->addStretch();
     layout->addLayout(layoutButtonFile);
+
+    view->setMinimumSize(420, 260);
 
     setLayout(layout);
 }

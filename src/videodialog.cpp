@@ -42,7 +42,6 @@ VideoDialog::VideoDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent
 
     createControls();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }

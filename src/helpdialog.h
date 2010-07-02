@@ -210,7 +210,6 @@ class TopicChooser : public QDialog
 
 public:
     TopicChooser(QWidget *parent = 0);
-    ~TopicChooser();
 
 signals:
     void linkActivated(const QUrl &link);

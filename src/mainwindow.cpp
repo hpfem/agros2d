@@ -21,10 +21,6 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    QSettings settings;
-    restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
-    recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
-
     createScriptEngine();
     createScene();
 
@@ -54,6 +50,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(chartDialog, SIGNAL(setChartLine(Point,Point)), sceneView, SLOT(doSetChartLine(Point,Point)));
 
+    QSettings settings;
+    restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
+    recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
 
     Util::scene()->clear();

@@ -197,7 +197,6 @@ DSceneNode::DSceneNode(SceneNode *node, QWidget *parent, bool isNew) : DSceneBas
 
     load();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }    
@@ -290,7 +289,6 @@ DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBas
 
     load();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }
@@ -466,7 +464,6 @@ DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew) : DScen
 
     load();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }

@@ -154,7 +154,6 @@ void DSceneEdgeMarker::setSize()
     setWindowIcon(icon("scene-edgemarker"));
     setWindowTitle(tr("Boundary condition"));
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }
@@ -214,7 +213,6 @@ void DSceneLabelMarker::setSize()
     setWindowIcon(icon("scene-labelmarker"));
     setWindowTitle(tr("Material"));
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }

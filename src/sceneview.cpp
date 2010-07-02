@@ -106,7 +106,6 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
 
     doDefaultValues();
 
-    setMinimumSize(400, 400);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -120,6 +119,8 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
 #ifdef Q_WS_MAC
     setFont(QFont("Monaco", 12));
 #endif
+
+    setMinimumSize(400, 400);
 }
 
 SceneView::~SceneView()

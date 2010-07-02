@@ -30,7 +30,6 @@ ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidge
 
     load();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
 }

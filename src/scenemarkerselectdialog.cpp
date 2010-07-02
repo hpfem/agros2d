@@ -28,8 +28,8 @@ SceneMarkerSelectDialog::SceneMarkerSelectDialog(SceneView *sceneView, QWidget *
 
     createControls();
 
-    resize(sizeHint());
     setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 void SceneMarkerSelectDialog::createControls()

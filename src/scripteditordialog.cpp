@@ -258,10 +258,6 @@ void ScriptEditorWidget::createControls()
 
 ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
 {
-    QSettings settings;
-    restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
-    recentFiles = settings.value("ScriptEditorDialog/RecentFiles").value<QStringList>();
-
     setWindowIcon(icon("script"));
 
     // search dialog
@@ -276,12 +272,15 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
 
     connect(actRunPython, SIGNAL(triggered()), this, SLOT(doRunPython()));
 
-    restoreState(settings.value("ScriptEditorDialog/State", saveState()).toByteArray());
-
-    setMinimumSize(600, 400);
-
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
+
+    setMinimumSize(400, 400);
+    resize(sizeHint());
+    QSettings settings;
+    restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
+    recentFiles = settings.value("ScriptEditorDialog/RecentFiles").value<QStringList>();
+    restoreState(settings.value("ScriptEditorDialog/State", saveState()).toByteArray());
 }
 
 ScriptEditorDialog::~ScriptEditorDialog()
@@ -291,7 +290,7 @@ ScriptEditorDialog::~ScriptEditorDialog()
     settings.setValue("ScriptEditorDialog/State", saveState());
     settings.setValue("ScriptEditorDialog/RecentFiles", recentFiles);
 
-    delete pythonEngine;    
+    delete pythonEngine;
 }
 
 void ScriptEditorDialog::showDialog()
@@ -405,7 +404,7 @@ void ScriptEditorDialog::createControls()
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addAction(actFileClose);
     mnuFile->addSeparator();
-   mnuFile->addAction(actFilePrint);
+    mnuFile->addAction(actFilePrint);
     mnuFile->addSeparator();
     mnuFile->addAction(actExit);
 

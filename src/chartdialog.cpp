@@ -21,16 +21,15 @@
 
 ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 {
-    QSettings settings;
-    restoreGeometry(settings.value("ChartDialog/Geometry", saveGeometry()).toByteArray());
-    
     setWindowIcon(icon("chart"));
     setWindowFlags(Qt::Window);
     setWindowTitle(tr("Chart"));
 
     createControls();
 
-    // load
+    resize(sizeHint());
+    QSettings settings;
+    restoreGeometry(settings.value("ChartDialog/Geometry", saveGeometry()).toByteArray());
     txtStartX->setValue(settings.value("ChartDialog/StartX", "0").toString());
     txtEndX->setValue(settings.value("ChartDialog/EndX", "0").toString());
     txtStartY->setValue(settings.value("ChartDialog/StartY", "0").toString());
@@ -39,15 +38,12 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
     radAxisX->setChecked(settings.value("ChartDialog/AxisX", false).toBool());
     radAxisY->setChecked(settings.value("ChartDialog/AxisY", false).toBool());
     txtAxisPoints->setValue(settings.value("ChartDialog/AxisPoints", 200).toInt());
-
-    setMinimumSize(sizeHint());
 }
 
 ChartDialog::~ChartDialog()
 {
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
-
     settings.setValue("ChartDialog/StartX", txtStartX->value().text);
     settings.setValue("ChartDialog/EndX", txtEndX->value().text);
     settings.setValue("ChartDialog/StartY", txtStartY->value().text);

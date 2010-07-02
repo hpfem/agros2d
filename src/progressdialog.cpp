@@ -661,8 +661,6 @@ void ProgressItemProcessView::process()
 ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowModality(Qt::ApplicationModal);
-    setMinimumSize(420, 260);
-    setMaximumSize(minimumSize());
     setModal(true);
 
     setWindowIcon(icon("run"));
@@ -671,15 +669,12 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
     createControls();
     clear();
 
-    // QSettings settings;
-    // restoreGeometry(settings.value("ProgressDialog/Geometry", saveGeometry()).toByteArray());
+    setMinimumSize(420, 260);
+    setMaximumSize(minimumSize());
 }
 
 ProgressDialog::~ProgressDialog()
 {
-    // QSettings settings;
-    // settings.setValue("ProgressDialog/Geometry", saveGeometry());
-
     clear();
 }
 

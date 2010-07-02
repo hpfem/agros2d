@@ -27,7 +27,6 @@
 #include "sceneinfoview.h"
 #include "terminalview.h"
 #include "tooltipview.h"
-#include "helpdialog.h"
 #include "chartdialog.h"
 #include "configdialog.h"
 #include "scripteditordialog.h"
