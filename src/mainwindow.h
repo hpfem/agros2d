@@ -55,6 +55,7 @@ private slots:
     void doDocumentClose();
     void doDocumentImportDXF();
     void doDocumentExportDXF();
+    void doDocumentExportMeshFile();
     void doDocumentSaveImage();
 
     void doSceneMouseMoved(const QPointF &position);
@@ -118,6 +119,7 @@ private:
     QAction *actDocumentClose;
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;
+    QAction *actDocumentExportMeshFile;
     QAction *actDocumentSaveImage;
     QAction *actExit;
     QActionGroup *actDocumentOpenRecentGroup;

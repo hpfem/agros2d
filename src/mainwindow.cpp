@@ -154,6 +154,10 @@ void MainWindow::createActions()
     actDocumentExportDXF->setStatusTip(tr("Export AutoCAD DXF"));
     connect(actDocumentExportDXF, SIGNAL(triggered()), this, SLOT(doDocumentExportDXF()));
 
+    actDocumentExportMeshFile = new QAction(tr("Export mesh file"), this);
+    actDocumentExportMeshFile->setStatusTip(tr("Export Hermes2D mesh file"));
+    connect(actDocumentExportMeshFile, SIGNAL(triggered()), this, SLOT(doDocumentExportMeshFile()));
+
     actDocumentSaveImage = new QAction(tr("Export image..."), this);
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
@@ -278,6 +282,8 @@ void MainWindow::createMenus()
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentImportDXF);
     mnuFile->addAction(actDocumentExportDXF);
+    mnuFile->addSeparator();
+    mnuFile->addAction(actDocumentExportMeshFile);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSaveImage);
 #ifndef Q_WS_MAC
@@ -916,4 +922,41 @@ void MainWindow::doAbout()
                 arg(QApplication::applicationVersion()));
 
     QMessageBox::about(this, tr("About Agros2D"), str);
+}
+
+void MainWindow::doDocumentExportMeshFile()
+{
+    // generate mesh file
+    bool commutator = Util::config()->deleteHermes2DMeshFile;
+    if (commutator)
+        Util::config()->deleteHermes2DMeshFile = !commutator;
+
+    Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
+    if (Util::scene()->sceneSolution()->isMeshed())
+    {
+        sceneView->actSceneModeLabel->trigger();
+        sceneView->sceneViewSettings().showInitialMesh = true;
+        sceneView->doInvalidated();
+    }
+
+    Util::config()->deleteHermes2DMeshFile = commutator;
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), "data", tr("Mesh files (*.mesh)"));
+    fileName.remove(".mesh");
+
+    // move mesh file
+    if (!Util::scene()->problemInfo()->fileName.isEmpty())
+    {
+        QString sourceFileName = Util::scene()->problemInfo()->fileName;
+        sourceFileName.replace("a2d", "mesh");
+        QFile::copy(sourceFileName, fileName + ".mesh");
+        QFile::remove(sourceFileName);
+    }
+    else
+    {
+        QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
+        QFile::remove(tempProblemFileName() + ".mesh");
+    }
+
+    doInvalidated();
 }
