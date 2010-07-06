@@ -34,15 +34,10 @@ ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(pare
 
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
-    QSettings settings;
-    restoreGeometry(settings.value("ReportDialog/Geometry", saveGeometry()).toByteArray());
 }
 
 ReportDialog::~ReportDialog()
 {
-    QSettings settings;
-    settings.setValue("ReportDialog/Geometry", saveGeometry());
-
     delete btnShowReport;
     //delete btnPrint;
     delete btnClose;
