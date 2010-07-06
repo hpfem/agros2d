@@ -1,138 +1,70 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="copyright" content="hp-FEM group UWB" />
-  <link href="./default.css" rel="stylesheet" type="text/css" media="screen" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="copyright" content="hp-FEM group UWB" />
+	<link href="./default.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
-<h1>[Problem.Name]</h1>
+[Report.Label]
 
-<h3>Description</h3>
+[Description.Label]
 [Description]
 
-<h3>Problem information</h3>
-<table>
-	<tr>
-		<td>Name:</td>
-		<td>[Problem.Name]</td>
-	</tr>
-	<tr>
-		<td>Filename:</td>
-		<td>[Problem.FileName]</td>
-	</tr>
-	<tr>
-		<td>Date:</td>
-		<td>[Problem.Date]</td>
-	</tr>
-	<tr>
-		<td>Problem type:</td>
-		<td>[Problem.ProblemType]</td>
-	</tr>
-	<tr>
-		<td>Physic field:</td>
-		<td>[Problem.PhysicField]</td>
-	</tr>
-	<tr>
-		<td>Analysis type:</td>
-		<td>[Problem.AnalysisType]</td>
-	</tr>
-	<tr>
-		<td>Number of refinements:</td>
-		<td>[Problem.NumberOfRefinements]</td>
-	</tr>
-	<tr>
-		<td>Polynomial order:</td>
-		<td>[Problem.PolynomialOrder]</td>
-	</tr>
-	<tr>
-		<td>Adaptivity:</td>
-		<td>[Problem.AdaptivityType]</td>
-	</tr>
-	<tr>
-		<td>Adaptivity steps:</td>
-		<td>[Problem.AdaptivitySteps]</td>
-	</tr>
-	<tr>
-		<td>Adaptivity tolerance:</td>
-		<td>[Problem.AdaptivityTolerance]</td>
-	</tr>
-	<tr>
-		<td>Frequency:</td>
-		<td>[Problem.Frequency]</td>
-	</tr>
-	<tr>
-		<td>Time step:</td>
-		<td>[Problem.TimeStep]</td>
-	</tr>
-	<tr>
-		<td>Total time:</td>
-		<td>[Problem.TimeTotal]</td>
-	</tr>
-	<tr>
-		<td>Initital condition:</td>
-		<td>[Problem.InititalCondition]</td>
-	</tr>
-</table>
+[ProblemInformation.Label]
+[ProblemInformation.Name]
+[ProblemInformation.Date]
+[ProblemInformation.FileName]
+[ProblemInformation.ProblemType]
+[ProblemInformation.PhysicField]
+[ProblemInformation.AnalysisType]
+[ProblemInformation.NumberOfRefinements]
+[ProblemInformation.PolynomialOrder]
+[ProblemInformation.AdaptivityType]
+[ProblemInformation.AdaptivitySteps]
+[ProblemInformation.AdaptivityTolerance]
+[ProblemInformation.Frequency]
+[ProblemInformation.TimeStep]
+[ProblemInformation.TimeTotal]
+[ProblemInformation.InititalCondition]
 
-<h3>Startup Script</h3>
-<pre>[StartupScript]</pre>
+[StartupScript.Label]
+[StartupScript]
 
-<h3>Physical properties</h3>
-<h4>Materials</h4>
+[PhysicalProperties.Label]
+[Materials.Label]
 [Materials]
 
-<h4>Boundary conditions</h4>
+[Boundaries.Label]
 [Boundaries]
 
-<h3>Geometry</h3>
+[Geometry.Label]
 [Figure.Geometry]
 
-<h4>Nodes</h4>
+[Geometry.Nodes.Label]
 [Geometry.Nodes]
 
-<h4>Edges</h4>
+[Geometry.Edges.Label]
 [Geometry.Edges]
 
-<h4>Labels</h4>
+[Geometry.Labels.Label]
 [Geometry.Labels]
 
-<h3>Mesh and solution</h3>
-
-<h4>Solver information</h4>
-<table>
-	<tr>
-		<td>Nodes:</td>
-		<td>[Solver.Nodes]</td>
-	</tr>
-	<tr>
-		<td>Elements:</td>
-		<td>[Solver.Elements]</td>
-	</tr>
-	<tr>
-		<td>DOFs:</td>
-		<td>[Solver.DOFs]</td>
-	</tr>
-	<tr>
-		<td>Elapsed time:</td>
-		<td>[Solver.TimeElapsed]</td>
-	</tr>
-	<tr>
-		<td>Adaptive error:</td>
-		<td>[Solver.AdaptiveError]</td>
-	</tr>
-	<tr>
-		<td>Adaptive steps:</td>
-		<td>[Solver.AdaptiveSteps]</td>
-	</tr>
-</table>
+[MeshAndSolver.Label]
+[Solver.Label]
+[Solver.Nodes]
+[Solver.Elements]
+[Solver.DOFs]
+[Solver.TimeElapsed]
+[Solver.AdaptiveError]
+[Solver.AdaptiveSteps]
 
 [Figure.Mesh]
-[Figure.ScalarView]
 [Figure.Order]
+[Figure.ScalarView]
 
-<h3>Script</h3>
-<pre>[Script]</pre>
+[Script.Label]
+[Script]
 
 <p class="footer">Computed by Agros2D (<a href="http://hpfem.org/agros2d">http://hpfem.org/agros2d</a>)</p>
 </body>
