@@ -50,36 +50,69 @@ void ReportDialog::createControls()
     chkStartupScript = new QCheckBox(tr("Startup script"));
     chkPhysicalProperties = new QCheckBox(tr("Physical properties"));
     chkGeometry = new QCheckBox(tr("Geometry"));
+    connect(chkGeometry, SIGNAL(clicked()), this, SLOT(reconfigureControls()));
     chkMeshAndSolution = new QCheckBox(tr("Mesh and solution"));
+    connect(chkMeshAndSolution, SIGNAL(clicked()), this, SLOT(reconfigureControls()));
     chkScript = new QCheckBox(tr("Script"));
 
-    QVBoxLayout *layoutBasicProperties = new QVBoxLayout();
-    layoutBasicProperties->addWidget(new QLabel(tr("Basic properties")));
-    layoutBasicProperties->addWidget(chkDescription);
-    layoutBasicProperties->addWidget(chkProblemInformation);
-    layoutBasicProperties->addWidget(chkStartupScript);
-    layoutBasicProperties->addWidget(chkPhysicalProperties);
-    layoutBasicProperties->addWidget(chkGeometry);
-    layoutBasicProperties->addWidget(chkMeshAndSolution);
-    layoutBasicProperties->addWidget(chkScript);
+    chkFigureGeometry = new QCheckBox(tr("Geometry"));
+    chkFigureMesh = new QCheckBox(tr("Mesh"));
+    chkFigureOrder = new QCheckBox(tr("Order"));
+    chkFigureScalarView = new QCheckBox(tr("Scalar view"));
+    chkShowGrid = new QCheckBox(tr("Show grid"));
+    //chkShowRulers = new QCheckBox(tr("Show rulers"));
+
+    txtStyleSheet = new SLineEditDouble();
 
     btnShowReport = new QPushButton(tr("Show report"));
     connect(btnShowReport, SIGNAL(clicked()), this, SLOT(doShowReport()));
 
-    //btnPrint = new QPushButton(tr("Print"));
-    //connect(btnPrint, SIGNAL(clicked()), this, SLOT(doPrint()));
-
     btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
+    QVBoxLayout *layoutSections = new QVBoxLayout();
+    layoutSections->addWidget(new QLabel(tr("Sections")));
+    layoutSections->addWidget(chkDescription);
+    layoutSections->addWidget(chkProblemInformation);
+    layoutSections->addWidget(chkStartupScript);
+    layoutSections->addWidget(chkPhysicalProperties);
+    layoutSections->addWidget(chkGeometry);
+    layoutSections->addWidget(chkMeshAndSolution);
+    layoutSections->addWidget(chkScript);
+
+    QVBoxLayout *layoutFigures = new QVBoxLayout();
+    layoutFigures->addWidget(new QLabel(tr("Figures")));
+    layoutFigures->addWidget(chkFigureGeometry);
+    layoutFigures->addWidget(chkFigureMesh);
+    layoutFigures->addWidget(chkFigureOrder);
+    layoutFigures->addWidget(chkFigureScalarView);
+    layoutFigures->addWidget(chkShowGrid);
+    //layoutFigures->addWidget(chkShowRulers);
+    layoutFigures->addStretch();
+
+    QGridLayout *layoutBasicProperties = new QGridLayout();
+    layoutBasicProperties->addLayout(layoutSections, 0, 0);
+    layoutBasicProperties->addLayout(layoutFigures, 0, 1);
+
+    QGridLayout *layoutAdditionalProperties = new QGridLayout();
+    layoutAdditionalProperties->addWidget(new QLabel(tr("Style sheet")), 0, 0);
+    layoutAdditionalProperties->addWidget(txtStyleSheet, 0, 1);
+
     QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch();
     layoutButtons->addWidget(btnShowReport);
-    //layoutButtonFile->addWidget(btnPrint);
     layoutButtons->addWidget(btnClose);
 
+    QGroupBox *grpBasicProperties = new QGroupBox(tr("Basic properties"));
+    grpBasicProperties->setLayout(layoutBasicProperties);
+
+    QGroupBox *grpAdditionalProperties = new QGroupBox(tr("Additional properties"));
+    grpAdditionalProperties->setLayout(layoutAdditionalProperties);
+
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutBasicProperties);
+    layout->addWidget(grpBasicProperties);
+    layout->addStretch();
+    layout->addWidget(grpAdditionalProperties);
+    layout->addStretch();
     layout->addLayout(layoutButtons);
 
     setLayout(layout);
@@ -91,42 +124,45 @@ void ReportDialog::defaultValues()
     chkPhysicalProperties->setChecked(true);
     chkGeometry->setChecked(true);
     chkScript->setChecked(true);
+
+    chkFigureGeometry->setChecked(true);
+    chkShowGrid->setChecked(true);
+    //chkShowRulers->setChecked(false);
+    //chkShowRulers->setEnabled(false);
+
+    txtStyleSheet->setText("./default.css");
 }
 
-void ReportDialog::load()
+void ReportDialog::setControls()
 {
-    if (Util::scene()->problemInfo()->description.isEmpty())
-    {
-        chkDescription->setDisabled(true);
-        chkDescription->setChecked(false);
-    }
-    else
-    {
-        chkDescription->setDisabled(false);
-        chkDescription->setChecked(true);
-    }
+    chkDescription->setDisabled(Util::scene()->problemInfo()->description.isEmpty());
+    chkDescription->setChecked(!Util::scene()->problemInfo()->description.isEmpty());
+    chkStartupScript->setDisabled(Util::scene()->problemInfo()->scriptStartup.isEmpty());
+    chkStartupScript->setChecked(!Util::scene()->problemInfo()->scriptStartup.isEmpty());
 
-    if (Util::scene()->problemInfo()->scriptStartup.isEmpty())
-    {
-        chkStartupScript->setDisabled(true);
-        chkStartupScript->setChecked(false);
-    }
-    else
-    {
-        chkStartupScript->setDisabled(false);
-        chkStartupScript->setChecked(true);
-    }
+    chkMeshAndSolution->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+    chkMeshAndSolution->setChecked(Util::scene()->sceneSolution()->isSolved());
+    chkFigureMesh->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+    chkFigureMesh->setChecked(Util::scene()->sceneSolution()->isSolved());
+    chkFigureOrder->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+    chkFigureOrder->setChecked(Util::scene()->sceneSolution()->isSolved());
+    chkFigureScalarView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+    chkFigureScalarView->setChecked(Util::scene()->sceneSolution()->isSolved());
+}
 
-    if (Util::scene()->sceneSolution()->isSolved())
-    {
-        chkMeshAndSolution->setDisabled(false);
-        chkMeshAndSolution->setChecked(true);
-    }
-    else
-    {
-        chkMeshAndSolution->setDisabled(true);
-        chkMeshAndSolution->setChecked(false);
-    }
+void ReportDialog::reconfigureControls()
+{
+    chkFigureGeometry->setChecked(chkGeometry->isChecked());
+    chkFigureGeometry->setEnabled(chkGeometry->isChecked());
+    chkFigureMesh->setChecked(chkMeshAndSolution->isChecked());
+    chkFigureMesh->setEnabled(chkMeshAndSolution->isChecked());
+    chkFigureOrder->setChecked(chkMeshAndSolution->isChecked());
+    chkFigureOrder->setEnabled(chkMeshAndSolution->isChecked());
+    chkFigureScalarView->setChecked(chkMeshAndSolution->isChecked());
+    chkFigureScalarView->setEnabled(chkMeshAndSolution->isChecked());
+
+    chkShowGrid->setChecked(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
+    chkShowGrid->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
 }
 
 void ReportDialog::doClose()
@@ -142,15 +178,6 @@ void ReportDialog::doShowReport()
     QDesktopServices::openUrl(tempProblemDir() + "/report/index.html");
 }
 
-//void ReportDialog::doPrint()
-//{
-//    QPrintDialog printDialog(this);
-//    if (printDialog.exec() == QDialog::Accepted)
-//    {
-//        view->print(printDialog.printer());
-//    }
-//}
-
 void ReportDialog::showDialog()
 {
     QDir(tempProblemDir()).mkdir("report");
@@ -164,7 +191,7 @@ void ReportDialog::showDialog()
     if (!fileTemplateOK || !fileStyleOK)
         QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Report template could not be copied."));
 
-    load();
+    setControls();
 
     show();
     activateWindow();
@@ -173,7 +200,10 @@ void ReportDialog::showDialog()
 
 void ReportDialog::generateFigures()
 {
-    m_sceneView->saveImagesForReport(tempProblemDir() + "/report", 600, 400);
+    //bool showRulers = chkShowRulers->isChecked();
+    bool showRulers = true;
+    bool showGrid = chkShowGrid->isChecked();
+    m_sceneView->saveImagesForReport(tempProblemDir() + "/report", showRulers, showGrid, 600, 400);
 }
 
 void ReportDialog::generateIndex()
@@ -400,10 +430,28 @@ QString ReportDialog::replaceTemplates(const QString &source)
     }
 
     // figures
-    destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", "Geometry"), Qt::CaseSensitive);
-    destination.replace("[Figure.Mesh]", htmlFigure("mesh.png", "Mesh"), Qt::CaseSensitive);
-    destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", "ScalarView: " + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable())), Qt::CaseSensitive);
-    destination.replace("[Figure.Order]", htmlFigure("order.png", "Polynomial order"), Qt::CaseSensitive);
+    if (chkFigureGeometry->isChecked())
+        destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", "Geometry"), Qt::CaseSensitive);
+    else
+        destination.remove("[Figure.Geometry]", Qt::CaseSensitive);
+
+    if (chkFigureMesh->isChecked())
+        destination.replace("[Figure.Mesh]", htmlFigure("mesh.png", "Mesh"), Qt::CaseSensitive);
+    else
+        destination.remove("[Figure.Mesh]", Qt::CaseSensitive);
+
+    if (chkFigureOrder->isChecked())
+            destination.replace("[Figure.Order]", htmlFigure("order.png", "Polynomial order"), Qt::CaseSensitive);
+    else
+        destination.remove("[Figure.Order]", Qt::CaseSensitive);
+
+    if (chkFigureScalarView->isChecked())
+        destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", "ScalarView: " + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable())), Qt::CaseSensitive);
+    else
+        destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
+
+    // stylesheet
+    destination.replace("[StyleSheet]", txtStyleSheet->text(), Qt::CaseSensitive);
 
     return destination;
 }

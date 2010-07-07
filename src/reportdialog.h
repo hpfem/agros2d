@@ -37,8 +37,8 @@ private:
     SceneView *m_sceneView;
 
     void createControls();
-    void load();
     void defaultValues();
+    void setControls();
     void generateFigures();
     void generateIndex();
 
@@ -50,8 +50,16 @@ private:
     QCheckBox *chkMeshAndSolution;
     QCheckBox *chkScript;
 
+    QCheckBox *chkFigureGeometry;
+    QCheckBox *chkFigureMesh;
+    QCheckBox *chkFigureOrder;
+    QCheckBox *chkFigureScalarView;
+    QCheckBox *chkShowGrid;
+    //QCheckBox *chkShowRulers;
+
+    QLineEdit *txtStyleSheet;
+
     QPushButton *btnShowReport;
-    //QPushButton *btnPrint;
     QPushButton *btnClose;
 
     QString replaceTemplates(const QString &source);
@@ -63,8 +71,9 @@ private:
     QString htmlGeometryLabels();
 
 private slots:
+    void reconfigureControls();
+
     void doShowReport();
-    //void doPrint();
     void doClose();
 };
 

@@ -3420,7 +3420,7 @@ ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
     return ErrorResult();
 }
 
-void SceneView::saveImagesForReport(const QString &path, int w, int h)
+void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool showGrid, int w, int h)
 {
     // store sceneview settings
     SceneViewSettings sceneViewSettingsCopy = m_sceneViewSettings;
@@ -3433,25 +3433,25 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
     // remove old files
     QFile::remove(path + "/geometry.png");
     QFile::remove(path + "/mesh.png");
-    QFile::remove(path + "/scalarview.png");
     QFile::remove(path + "/order.png");
+    QFile::remove(path + "/scalarview.png");
 
     doZoomBestFit();
 
-    m_sceneViewSettings.showContours = false;
     m_sceneViewSettings.showGeometry = true;
-    m_sceneViewSettings.showGrid = true;
-    m_sceneViewSettings.showInitialMesh = false;
-    // m_sceneViewSettings.showRulers = true;
-    m_sceneViewSettings.showSolutionMesh = false;
+    m_sceneViewSettings.showContours = false;
     m_sceneViewSettings.showVectors = false;
+    m_sceneViewSettings.showInitialMesh = false;
+    m_sceneViewSettings.showSolutionMesh = false;
+
+    //m_sceneViewSettings.showRulers = showRulers;
+    m_sceneViewSettings.showGrid = showGrid;
 
     // geometry
     actSceneModeLabel->trigger();
     ErrorResult resultGeometry = saveImageToFile(path + "/geometry.png", w, h);
     if (resultGeometry.isError())
         resultGeometry.showDialog();
-    // m_sceneViewSettings.showRulers = false;
 
     // mesh
     if (m_scene->sceneSolution()->isMeshed())
@@ -3482,6 +3482,13 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
         m_sceneViewSettings.showSolutionMesh = false;
     }
 
+    // order
+    m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
+    updateGL();
+    ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
+    if (resultOrder.isError())
+        resultOrder.showDialog();
+
     if (m_scene->sceneSolution()->isSolved())
     {
         actSceneModePostprocessor->trigger();
@@ -3503,13 +3510,6 @@ void SceneView::saveImagesForReport(const QString &path, int w, int h)
         ErrorResult resultScalarView = saveImageToFile(path + "/scalarview.png", w, h);
         if (resultScalarView.isError())
             resultScalarView.showDialog();
-
-        // order
-        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
-        updateGL();
-        ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
-        if (resultOrder.isError())
-            resultOrder.showDialog();
     }
 
     // restore sceneview settings
