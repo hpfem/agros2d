@@ -1861,6 +1861,18 @@
         <source>About Agros2D</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Export mesh file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export Hermes2D mesh file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mesh files (*.mesh)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ProblemDialog</name>
@@ -2819,15 +2831,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open in external viewer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2836,6 +2840,82 @@
     </message>
     <message>
         <source>Report template could not be copied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Problem information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Startup script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Physical properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mesh and solution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mesh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalar view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show grid in figures</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Figures</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style sheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Template style could not be copied.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
