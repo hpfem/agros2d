@@ -1,18 +1,25 @@
 body {
 	font-family: verdana, helvetica, arial, sans-serif;
-	font-size: 100%;
-	background-color: #F8F8F8;
 	color: #000;
-	margin: 10px;
+	background-color: #F8F8F8;
+	padding: 1em;
 }
 
-p,ol,ul {
-	text-align: left;
+h1, h2, h3, h4 {
+	font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+	font-weight: normal;
 }
 
-strong {
-	font-weight: bold;
-	color: #808080;
+h3, h4 {
+	margin-left: 0.5em;
+}
+
+h2 {
+	border-bottom: 0.1em solid #CCC;
+}
+
+h4 {
+	font-style: italic;
 }
 
 a {
@@ -21,44 +28,29 @@ a {
 }
 
 a:hover {
-	text-decoration: underline;
 	color: #2582A4;
+	text-decoration: underline;
 }
 
-h1, h2, h3, h4, h5 {
-	font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
-	font-weight: normal;
-	padding-top: 3px;
-	padding-bottom: 2px;
-	margin-top: 5px;
-	margin-bottom: 3px;
+p, table, img, pre, div {
+	margin-left: 1em;
+	margin-right: 1em;
 }
 
-h1 { 
-	font-size: 200%; 
+table {
+	background-color: #F5F5F5;
+	border-collapse: collapse;
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
 }
 
-h2 {
-	border-bottom: 1px solid #ccc;
-	font-size: 140%; 
-	padding-top: 3px;
-	padding-bottom: 4px;
+table th, td {
+	border: 0.1em solid #DDDDEE;
+	padding: 0.25em;
 }
 
-h3 { 
-	font-size: 120%; 
-	padding-top: 1px;
-	padding-bottom: 1px;
-}
-
-h4 { 
-	font-size: 100%; 
-	padding-top: 1px;
-	padding-bottom: 1px;
-}
-
-p.footer {
-	margin: 0px;
+table th {
+	font-weight: bold;
 	text-align: left;
 }
 
@@ -66,41 +58,13 @@ img {
 	border: none;
 }
 
-img.logo {
-	float: right; 
-	margin-left: 15px; 
-	margin-bottom: 10px;
-}
-
 pre {
-	padding: 5px;
 	background-color: #F5F5F5;
-	color: #000000;
-	border: 1px solid #ac9;
-	border-left: none;
-	border-right: none;
+	border: 0.1em solid #AC9;
+	padding: 0.25em;
 }
 
-table {
-	font-size: 13px;
-	border-collapse: collapse;
-}
-
-table TH {
-	background-color: #F5F5F5;
-	font-weight: bold;
-	text-align: left;
-	padding: 2px 5px;
-	border: 1px solid #DDDDEE;
-}
-
-table TD {
-	background-color: #F5F5F5;
-	padding: 2px 5px;
-	border: 1px solid #DDDDEE;
-}
-
-#figure div {
-	padding-top: 3px;
-	padding-bottom: 8px;
+#footer {
+	margin-left: 0;
+	font-style: italic;
 }

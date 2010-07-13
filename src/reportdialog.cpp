@@ -59,7 +59,7 @@ void ReportDialog::createControls()
     chkFigureMesh = new QCheckBox(tr("Mesh"));
     chkFigureOrder = new QCheckBox(tr("Order"));
     chkFigureScalarView = new QCheckBox(tr("Scalar view"));
-    chkShowGrid = new QCheckBox(tr("Show grid"));
+    chkShowGrid = new QCheckBox(tr("Show grid in figures"));
 
     txtTemplate = new SLineEditDouble();
     txtStyleSheet = new SLineEditDouble();
@@ -86,18 +86,21 @@ void ReportDialog::createControls()
     layoutFigures->addWidget(chkFigureMesh);
     layoutFigures->addWidget(chkFigureOrder);
     layoutFigures->addWidget(chkFigureScalarView);
-    layoutFigures->addWidget(chkShowGrid);
     layoutFigures->addStretch();
 
     QGridLayout *layoutBasicProperties = new QGridLayout();
     layoutBasicProperties->addLayout(layoutSections, 0, 0);
     layoutBasicProperties->addLayout(layoutFigures, 0, 1);
 
-    QGridLayout *layoutAdditionalProperties = new QGridLayout();
-    layoutAdditionalProperties->addWidget(new QLabel(tr("Template")), 0, 0);
-    layoutAdditionalProperties->addWidget(txtTemplate, 0, 1);
-    layoutAdditionalProperties->addWidget(new QLabel(tr("Style sheet")), 1, 0);
-    layoutAdditionalProperties->addWidget(txtStyleSheet, 1, 1);
+    QGridLayout *layoutTemplate = new QGridLayout();
+    layoutTemplate->addWidget(new QLabel(tr("Template")), 0, 0);
+    layoutTemplate->addWidget(txtTemplate, 0, 1);
+    layoutTemplate->addWidget(new QLabel(tr("Style sheet")), 1, 0);
+    layoutTemplate->addWidget(txtStyleSheet, 1, 1);
+
+    QVBoxLayout *layoutAdditionalProperties = new QVBoxLayout();
+    layoutAdditionalProperties->addLayout(layoutTemplate);
+    layoutAdditionalProperties->addWidget(chkShowGrid);
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addWidget(btnShowReport);
@@ -165,20 +168,6 @@ void ReportDialog::resetControls()
     chkShowGrid->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
 }
 
-void ReportDialog::doClose()
-{
-    hide();
-}
-
-void ReportDialog::doShowReport()
-{
-    prepareTemplate();
-    generateIndex();
-    generateFigures();
-
-    QDesktopServices::openUrl(tempProblemDir() + "/report/report.html");
-}
-
 void ReportDialog::showDialog()
 {
     setControls();
@@ -187,7 +176,12 @@ void ReportDialog::showDialog()
     raise();
 }
 
-void ReportDialog::prepareTemplate()
+void ReportDialog::doClose()
+{
+    hide();
+}
+
+void ReportDialog::doShowReport()
 {
     QDir(tempProblemDir()).mkdir("report");
 
@@ -197,8 +191,17 @@ void ReportDialog::prepareTemplate()
                                       QString("%1/report/template.html").arg(tempProblemDir()));
     bool fileStyleOK = QFile::copy(QString("%1/" + txtStyleSheet->text()).arg(datadir()),
                                       QString("%1/report/style.css").arg(tempProblemDir()));
-    if (!fileTemplateOK || !fileStyleOK)
+    if (!fileTemplateOK)
         QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Report template could not be copied."));
+    else if (!fileStyleOK)
+        QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Template style could not be copied."));
+    else
+    {
+        generateIndex();
+        generateFigures();
+
+        QDesktopServices::openUrl(tempProblemDir() + "/report/report.html");
+    }
 }
 
 void ReportDialog::generateIndex()
@@ -237,6 +240,9 @@ QString ReportDialog::replaceTemplates(const QString &source)
 {
     QString destination = source;
 
+    // stylesheet
+    destination.replace("[StyleSheet]", "./style.css", Qt::CaseSensitive);
+
     // problem name
     destination.replace("[Report.Label]", "<h1>" + Util::scene()->problemInfo()->name + "</h1>", Qt::CaseSensitive);
 
@@ -258,7 +264,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.replace("[ProblemInformation.Label]", "<h2>Problem Information</h2>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.Name]", "<table><tr><td>Name:</td><td>" + Util::scene()->problemInfo()->name + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.Date]", "<tr><td>Date:</td><td>" + Util::scene()->problemInfo()->date.toString("dd.MM.yyyy") + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.FileName]", "<tr><td>Filename:</td><td>" + QFileInfo(Util::scene()->problemInfo()->fileName).completeBaseName() + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.FileName]", "<tr><td>Filename:</td><td>" + QFileInfo(Util::scene()->problemInfo()->fileName).fileName() + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.ProblemType]", "<tr><td>Problem type:</td><td>" + problemTypeString(Util::scene()->problemInfo()->problemType) + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.PhysicField]", "<tr><td>Physic field:</td><td>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</td></tr>", Qt::CaseSensitive);
         destination.replace("[ProblemInformation.AnalysisType]", "<tr><td>Analysis type:</td><td>" + analysisTypeString(Util::scene()->problemInfo()->analysisType) + "</td></tr>", Qt::CaseSensitive);
@@ -305,13 +311,16 @@ QString ReportDialog::replaceTemplates(const QString &source)
     else
     {
         // remove empty tags
-        QString tag [9] = {"[ProblemInformation.Label]", "[ProblemInformation.Name]",
-                           "[ProblemInformation.Date]", "[ProblemInformation.Filename]",
+        QString tag [16] = {"[ProblemInformation.Label]", "[ProblemInformation.Name]",
+                           "[ProblemInformation.Date]", "[ProblemInformation.FileName]",
                            "[ProblemInformation.ProblemType]", "[ProblemInformation.PhysicField]",
                            "[ProblemInformation.AnalysisType]", "[ProblemInformation.NumberOfRefinements]",
-                           "[ProblemInformation.PolynomialOrder]"};
+                           "[ProblemInformation.PolynomialOrder]", "[ProblemInformation.AdaptivityType]",
+                           "[ProblemInformation.AdaptivitySteps]", "[ProblemInformation.AdaptivityTolerance]",
+                           "[ProblemInformation.Frequency]", "[ProblemInformation.TimeStep]",
+                           "[ProblemInformation.TimeTotal]", "[ProblemInformation.InititalCondition]"};
 
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 16; i++)
         {
             destination.remove(tag[i].toUtf8(), Qt::CaseSensitive);
         }
@@ -422,7 +431,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // script
     if (chkScript->isChecked())
     {
-        destination.replace("[Script.Label]", "<h3>Script</h3>", Qt::CaseSensitive);
+        destination.replace("[Script.Label]", "<h2>Script</h2>", Qt::CaseSensitive);
         destination.replace("[Script]", "<pre>" + createPythonFromModel() + "</pre>", Qt::CaseSensitive);
     }
     else
@@ -452,8 +461,8 @@ QString ReportDialog::replaceTemplates(const QString &source)
     else
         destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
 
-    // stylesheet
-    destination.replace("[StyleSheet]", "./style.css", Qt::CaseSensitive);
+    // footer
+    destination.replace("[Report.Footer]", "<p id=\"footer\">Computed by Agros2D (<a href=\"http://hpfem.org/agros2d\">http://hpfem.org/agros2d</a>)</p>");
 
     return destination;
 }
@@ -580,7 +589,7 @@ QString ReportDialog::htmlFigure(const QString &fileName, const QString &caption
     if (QFile::exists(tempProblemDir() + "/report/" + fileName))
     {
         out += "\n";
-        out += QString("<div id=\"figure\"><img src=\"%1\" tag=\"Geometry\" /><div>Figure: %2</div></div>").
+        out += QString("<img src=\"%1\"><p>Figure: %2</p>").
                 arg(fileName).
                 arg(caption);
         out += "\n";

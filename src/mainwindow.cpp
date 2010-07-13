@@ -937,26 +937,24 @@ void MainWindow::doDocumentExportMeshFile()
         sceneView->actSceneModeLabel->trigger();
         sceneView->sceneViewSettings().showInitialMesh = true;
         sceneView->doInvalidated();
-    }
 
-    Util::config()->deleteHermes2DMeshFile = commutator;
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), "data", tr("Mesh files (*.mesh)"));
+        fileName.remove(".mesh");
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), "data", tr("Mesh files (*.mesh)"));
-    fileName.remove(".mesh");
+        // move mesh file
+        if (!Util::scene()->problemInfo()->fileName.isEmpty())
+        {
+            QString sourceFileName = Util::scene()->problemInfo()->fileName;
+            sourceFileName.replace("a2d", "mesh");
+            QFile::copy(sourceFileName, fileName + ".mesh");
+            QFile::remove(sourceFileName);
+        }
 
-    // move mesh file
-    if (!Util::scene()->problemInfo()->fileName.isEmpty())
-    {
-        QString sourceFileName = Util::scene()->problemInfo()->fileName;
-        sourceFileName.replace("a2d", "mesh");
-        QFile::copy(sourceFileName, fileName + ".mesh");
-        QFile::remove(sourceFileName);
-    }
-    else
-    {
         QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
         QFile::remove(tempProblemFileName() + ".mesh");
     }
+
+    Util::config()->deleteHermes2DMeshFile = commutator;
 
     doInvalidated();
 }

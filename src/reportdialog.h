@@ -40,7 +40,6 @@ private:
     void defaultValues();
     void setControls();
 
-    void prepareTemplate();
     void generateIndex();
     void generateFigures();
 
