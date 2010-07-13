@@ -31,6 +31,7 @@ ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(pare
 
     createControls();
     defaultValues();
+    setControls();
 
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
@@ -39,7 +40,6 @@ ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(pare
 ReportDialog::~ReportDialog()
 {
     delete btnShowReport;
-    //delete btnPrint;
     delete btnClose;
 }
 
@@ -50,9 +50,9 @@ void ReportDialog::createControls()
     chkStartupScript = new QCheckBox(tr("Startup script"));
     chkPhysicalProperties = new QCheckBox(tr("Physical properties"));
     chkGeometry = new QCheckBox(tr("Geometry"));
-    connect(chkGeometry, SIGNAL(clicked()), this, SLOT(reconfigureControls()));
+    connect(chkGeometry, SIGNAL(clicked()), this, SLOT(resetControls()));
     chkMeshAndSolution = new QCheckBox(tr("Mesh and solution"));
-    connect(chkMeshAndSolution, SIGNAL(clicked()), this, SLOT(reconfigureControls()));
+    connect(chkMeshAndSolution, SIGNAL(clicked()), this, SLOT(resetControls()));
     chkScript = new QCheckBox(tr("Script"));
 
     chkFigureGeometry = new QCheckBox(tr("Geometry"));
@@ -60,8 +60,8 @@ void ReportDialog::createControls()
     chkFigureOrder = new QCheckBox(tr("Order"));
     chkFigureScalarView = new QCheckBox(tr("Scalar view"));
     chkShowGrid = new QCheckBox(tr("Show grid"));
-    //chkShowRulers = new QCheckBox(tr("Show rulers"));
 
+    txtTemplate = new SLineEditDouble();
     txtStyleSheet = new SLineEditDouble();
 
     btnShowReport = new QPushButton(tr("Show report"));
@@ -87,7 +87,6 @@ void ReportDialog::createControls()
     layoutFigures->addWidget(chkFigureOrder);
     layoutFigures->addWidget(chkFigureScalarView);
     layoutFigures->addWidget(chkShowGrid);
-    //layoutFigures->addWidget(chkShowRulers);
     layoutFigures->addStretch();
 
     QGridLayout *layoutBasicProperties = new QGridLayout();
@@ -95,8 +94,10 @@ void ReportDialog::createControls()
     layoutBasicProperties->addLayout(layoutFigures, 0, 1);
 
     QGridLayout *layoutAdditionalProperties = new QGridLayout();
-    layoutAdditionalProperties->addWidget(new QLabel(tr("Style sheet")), 0, 0);
-    layoutAdditionalProperties->addWidget(txtStyleSheet, 0, 1);
+    layoutAdditionalProperties->addWidget(new QLabel(tr("Template")), 0, 0);
+    layoutAdditionalProperties->addWidget(txtTemplate, 0, 1);
+    layoutAdditionalProperties->addWidget(new QLabel(tr("Style sheet")), 1, 0);
+    layoutAdditionalProperties->addWidget(txtStyleSheet, 1, 1);
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addWidget(btnShowReport);
@@ -127,10 +128,9 @@ void ReportDialog::defaultValues()
 
     chkFigureGeometry->setChecked(true);
     chkShowGrid->setChecked(true);
-    //chkShowRulers->setChecked(false);
-    //chkShowRulers->setEnabled(false);
 
-    txtStyleSheet->setText("./default.css");
+    txtTemplate->setText("doc/report/default.html");
+    txtStyleSheet->setText("doc/report/default.css");
 }
 
 void ReportDialog::setControls()
@@ -150,7 +150,7 @@ void ReportDialog::setControls()
     chkFigureScalarView->setChecked(Util::scene()->sceneSolution()->isSolved());
 }
 
-void ReportDialog::reconfigureControls()
+void ReportDialog::resetControls()
 {
     chkFigureGeometry->setChecked(chkGeometry->isChecked());
     chkFigureGeometry->setEnabled(chkGeometry->isChecked());
@@ -172,44 +172,39 @@ void ReportDialog::doClose()
 
 void ReportDialog::doShowReport()
 {
-    generateFigures();
+    prepareTemplate();
     generateIndex();
+    generateFigures();
 
-    QDesktopServices::openUrl(tempProblemDir() + "/report/index.html");
+    QDesktopServices::openUrl(tempProblemDir() + "/report/report.html");
 }
 
 void ReportDialog::showDialog()
 {
-    QDir(tempProblemDir()).mkdir("report");
-
-    QFile::remove(QString("%1/report/template.html").arg(tempProblemDir()));
-    QFile::remove(QString("%1/report/default.css").arg(tempProblemDir()));
-    bool fileTemplateOK = QFile::copy(QString("%1/doc/report/template/template.html").arg(datadir()),
-                                      QString("%1/report/template.html").arg(tempProblemDir()));
-    bool fileStyleOK = QFile::copy(QString("%1/doc/report/template/default.css").arg(datadir()),
-                                      QString("%1/report/default.css").arg(tempProblemDir()));
-    if (!fileTemplateOK || !fileStyleOK)
-        QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Report template could not be copied."));
-
     setControls();
-
     show();
     activateWindow();
     raise();
 }
 
-void ReportDialog::generateFigures()
+void ReportDialog::prepareTemplate()
 {
-    //bool showRulers = chkShowRulers->isChecked();
-    bool showRulers = true;
-    bool showGrid = chkShowGrid->isChecked();
-    m_sceneView->saveImagesForReport(tempProblemDir() + "/report", showRulers, showGrid, 600, 400);
+    QDir(tempProblemDir()).mkdir("report");
+
+    QFile::remove(QString("%1/report/template.html").arg(tempProblemDir()));
+    QFile::remove(QString("%1/report/style.css").arg(tempProblemDir()));
+    bool fileTemplateOK = QFile::copy(QString("%1/" + txtTemplate->text()).arg(datadir()),
+                                      QString("%1/report/template.html").arg(tempProblemDir()));
+    bool fileStyleOK = QFile::copy(QString("%1/" + txtStyleSheet->text()).arg(datadir()),
+                                      QString("%1/report/style.css").arg(tempProblemDir()));
+    if (!fileTemplateOK || !fileStyleOK)
+        QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Report template could not be copied."));
 }
 
 void ReportDialog::generateIndex()
 {
     QString fileNameTemplate = tempProblemDir() + "/report/template.html";
-    QString fileNameIndex = tempProblemDir() + "/report/index.html";
+    QString fileNameIndex = tempProblemDir() + "/report/report.html";
 
     QString content;
 
@@ -229,6 +224,13 @@ void ReportDialog::generateIndex()
         fileIndex.flush();
         fileIndex.close();
     }
+}
+
+void ReportDialog::generateFigures()
+{
+    bool showRulers = true;
+    bool showGrid = chkShowGrid->isChecked();
+    m_sceneView->saveImagesForReport(tempProblemDir() + "/report", showRulers, showGrid, 600, 400);
 }
 
 QString ReportDialog::replaceTemplates(const QString &source)
@@ -451,7 +453,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
 
     // stylesheet
-    destination.replace("[StyleSheet]", txtStyleSheet->text(), Qt::CaseSensitive);
+    destination.replace("[StyleSheet]", "./style.css", Qt::CaseSensitive);
 
     return destination;
 }

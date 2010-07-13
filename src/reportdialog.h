@@ -39,8 +39,10 @@ private:
     void createControls();
     void defaultValues();
     void setControls();
-    void generateFigures();
+
+    void prepareTemplate();
     void generateIndex();
+    void generateFigures();
 
     QCheckBox *chkDescription;
     QCheckBox *chkProblemInformation;
@@ -55,8 +57,8 @@ private:
     QCheckBox *chkFigureOrder;
     QCheckBox *chkFigureScalarView;
     QCheckBox *chkShowGrid;
-    //QCheckBox *chkShowRulers;
 
+    QLineEdit *txtTemplate;
     QLineEdit *txtStyleSheet;
 
     QPushButton *btnShowReport;
@@ -71,10 +73,9 @@ private:
     QString htmlGeometryLabels();
 
 private slots:
-    void reconfigureControls();
-
-    void doShowReport();
+    void resetControls();
     void doClose();
+    void doShowReport();
 };
 
 #endif // REPORTDIALOG_H
