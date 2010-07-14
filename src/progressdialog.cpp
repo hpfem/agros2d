@@ -675,6 +675,7 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
 
 ProgressDialog::~ProgressDialog()
 {
+    saveProgressMessages();
     clear();
 }
 
@@ -835,4 +836,14 @@ void ProgressDialog::close()
 {
     cancel();
     accept();
+}
+
+void ProgressDialog::saveProgressMessages()
+{
+    QFile file(tempProblemDir() + "/messages.log");
+    if (file.open(QIODevice::Append | QIODevice::Text))
+    {
+        QTextStream messages(&file);
+        messages << QDateTime(QDateTime::currentDateTime()).toString("dd.MM.yyyy hh:mm") + "\x20" << Util::scene()->problemInfo()->name + "\n" << lstMessage->toPlainText();
+    }
 }
