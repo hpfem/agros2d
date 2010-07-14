@@ -103,6 +103,7 @@ void ReportDialog::createControls()
     layoutAdditionalProperties->addWidget(chkShowGrid);
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
+    layoutButtons->addStretch();
     layoutButtons->addWidget(btnShowReport);
     layoutButtons->addWidget(btnClose);
 

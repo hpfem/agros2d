@@ -11,7 +11,7 @@
         <file>images/document-save-as.png</file>
         <file>images/document-properties.png</file>
         <file>images/document-open-recent.png</file>
-        <file>images/edit-copy.png</file>                              
+        <file>images/edit-copy.png</file>
         <file>images/edit-copy-windows.png</file>
         <file>images/edit-cut.png</file>
         <file>images/edit-cut-windows.png</file>
@@ -79,5 +79,6 @@
         <file>images/equations/magnetic_transient.png</file>
         <file>images/equations/flow_steadystate.png</file>
         <file>images/equations/flow_transient.png</file>
+        <file>images/log.png</file>
     </qresource>
 </RCC>

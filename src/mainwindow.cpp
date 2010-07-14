@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     scriptEditorDialog = new ScriptEditorDialog(this);
     reportDialog = new ReportDialog(sceneView, this);
     videoDialog = new VideoDialog(sceneView, this);
+    logDialog = new LogDialog(this);
 
     createActions();
     createViews();
@@ -259,6 +260,10 @@ void MainWindow::createActions()
     actReport = new QAction(icon("report"), tr("&Report..."), this);
     actReport->setStatusTip(tr("Problem html report"));
     connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
+
+    actProgressLog = new QAction(icon("log"), tr("&Progress log"), this);
+    actProgressLog->setStatusTip(tr("Progress log"));
+    connect(actProgressLog, SIGNAL(triggered()), this, SLOT(doProgressLog()));
 }
 
 void MainWindow::createMenus()
@@ -338,6 +343,8 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actCreateMesh);
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(Util::scene()->actClearSolution);
+    mnuProblem->addSeparator();
+    mnuProblem->addAction(actProgressLog);
     mnuProblem->addSeparator();
     mnuProblem->addAction(Util::scene()->actProblemProperties);
 
@@ -957,4 +964,9 @@ void MainWindow::doDocumentExportMeshFile()
     Util::config()->deleteHermes2DMeshFile = commutator;
 
     doInvalidated();
+}
+
+void MainWindow::doProgressLog()
+{
+    logDialog->showDialog();
 }

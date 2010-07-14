@@ -32,6 +32,7 @@
 #include "scripteditordialog.h"
 #include "reportdialog.h"
 #include "videodialog.h"
+#include "logdialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -62,6 +63,7 @@ private slots:
 
     void doCreateMesh();
     void doSolve();
+    void doProgressLog();
 
     void doChart();
     void doScriptEditor();
@@ -131,6 +133,7 @@ private:
     QAction *actOptions;
     QAction *actCreateMesh;
     QAction *actSolve;
+    QAction *actProgressLog;
     QAction *actChart;
     QAction *actFullScreen;
 
@@ -168,6 +171,7 @@ private:
     ScriptEditorDialog *scriptEditorDialog;
     ReportDialog *reportDialog;
     VideoDialog *videoDialog;
+    LogDialog *logDialog;
 
     void setRecentFiles();
 

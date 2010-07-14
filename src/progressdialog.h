@@ -149,7 +149,7 @@ private:
     int progressSteps();
     int currentProgressStep();
     void clear();
-    void saveProgressMessages();
+    void saveProgressLog();
 
 private slots:
     void finished();

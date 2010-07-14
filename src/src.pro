@@ -18,7 +18,6 @@ DEFINES += VERSION_DAY=02
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
 linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
-
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/en_US.ts
 CONFIG += help
@@ -72,7 +71,8 @@ SOURCES += util.cpp \
     terminalview.cpp \
     scenemarkerselectdialog.cpp \
     tooltipview.cpp \
-    scenebasicselectdialog.cpp
+    scenebasicselectdialog.cpp \
+    logdialog.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -111,7 +111,8 @@ HEADERS += util.h \
     terminalview.h \
     scenemarkerselectdialog.h \
     tooltipview.h \
-    scenebasicselectdialog.h
+    scenebasicselectdialog.h \
+    logdialog.h
 INCLUDEPATH += . \
     dxflib
 OTHER_FILES += python/agros2d.pyx \
