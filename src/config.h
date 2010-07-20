@@ -36,6 +36,7 @@ public:
     PhysicField defaultPhysicField;
 
     bool checkVersion;
+    bool showConvergenceChart;
     bool lineEditValueShowResult;
     bool saveProblemWithSolution;
 

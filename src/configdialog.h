@@ -76,6 +76,9 @@ private:
     // check version
     QCheckBox *chkCheckVersion;
 
+    // show convergence chart
+    QCheckBox *chkShowConvergenceChart;
+
     // general view
     QCheckBox *chkZoomToMouse;
 

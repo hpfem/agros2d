@@ -48,6 +48,9 @@ void ConfigDialog::load()
     // check version
     chkCheckVersion->setChecked(Util::config()->checkVersion);
 
+    // show convergence chart
+    chkShowConvergenceChart->setChecked(Util::config()->showConvergenceChart);
+
     // show result in line edit value widget
     chkLineEditValueShowResult->setChecked(Util::config()->lineEditValueShowResult);
 
@@ -146,6 +149,9 @@ void ConfigDialog::save()
 
     // check version
     Util::config()->checkVersion = chkCheckVersion->isChecked();
+
+    // show convergence chart
+    Util::config()->showConvergenceChart = chkShowConvergenceChart->isChecked();
 
     // show result in line edit value widget
     Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
@@ -342,6 +348,7 @@ QWidget *ConfigDialog::createMainWidget()
 
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
     chkCheckVersion = new QCheckBox(tr("Check new version during startup."));
+    chkShowConvergenceChart = new QCheckBox(tr("Show convergence chart after solving"));
 
     QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
     layoutClearCommandHistory->addWidget(cmdClearCommandHistory);    
@@ -350,6 +357,7 @@ QWidget *ConfigDialog::createMainWidget()
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkLineEditValueShowResult);
     layoutOther->addWidget(chkCheckVersion);
+    layoutOther->addWidget(chkShowConvergenceChart);
     layoutOther->addLayout(layoutClearCommandHistory);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));

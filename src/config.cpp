@@ -40,6 +40,7 @@ void Config::load()
     if (defaultPhysicField == PhysicField_Undefined) defaultPhysicField = PhysicField_Electrostatic;
 
     checkVersion = settings.value("General/CheckVersion", true).toBool();
+    showConvergenceChart = settings.value("General/ShowConvergenceChart", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
     saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
 
@@ -126,6 +127,7 @@ void Config::save()
     settings.setValue("General/DefaultPhysicField", defaultPhysicField);
 
     settings.setValue("General/CheckVersion", checkVersion);
+    settings.setValue("General/ShowConvergenceChart", showConvergenceChart);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
     settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
 

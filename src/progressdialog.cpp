@@ -669,7 +669,7 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
     createControls();
     clear();
 
-    setMinimumSize(420, 260);
+    setMinimumSize(520, 360);
     setMaximumSize(minimumSize());
 }
 
@@ -692,13 +692,13 @@ void ProgressDialog::clear()
 
 void ProgressDialog::createControls()
 {
-    lblMessage = new QLabel("", this);
-    progressBar = new QProgressBar(this);
+    QTabWidget *tabType = new QTabWidget();
+    tabType->addTab(createControlsProgress(), icon(""), tr("Progress"));
+    tabType->addTab(createControlsConvergenceChart(), icon(""), tr("Convergence chart"));
 
-    lstMessage = new QTextEdit(this);
-    lstMessage->setReadOnly(true);
+    if (Util::scene()->problemInfo()->adaptivityType > 2)
+        tabType->widget(1)->setDisabled(true);
 
-    // cancel button
     btnCancel = new QPushButton(tr("Cance&l"));
     btnCancel->setDefault(true);
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -713,13 +713,44 @@ void ProgressDialog::createControls()
     buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(lblMessage);
-    layout->addWidget(progressBar);
-    layout->addWidget(lstMessage);
-    layout->addStretch();
+    layout->addWidget(tabType);
     layout->addWidget(buttonBox);
 
     setLayout(layout);
+}
+
+QWidget *ProgressDialog::createControlsProgress()
+{
+    lblMessage = new QLabel("", this);
+    progressBar = new QProgressBar(this);
+
+    lstMessage = new QTextEdit(this);
+    lstMessage->setReadOnly(true);
+
+    QVBoxLayout *layoutProgress = new QVBoxLayout();
+    layoutProgress->addWidget(lblMessage);
+    layoutProgress->addWidget(progressBar);
+    layoutProgress->addWidget(lstMessage);
+
+    QWidget *widProgress = new QWidget();
+    widProgress->setLayout(layoutProgress);
+
+    return widProgress;
+}
+
+QWidget *ProgressDialog::createControlsConvergenceChart()
+{
+    chart = new Chart(this);
+    //chart->setMinimumSize(220, 160);
+
+    QVBoxLayout *layoutConvergenceChart = new QVBoxLayout();
+    layoutConvergenceChart->addWidget(chart);
+
+    QWidget *widConvergenceChart = new QWidget();
+    widConvergenceChart->setLayout(layoutConvergenceChart);
+
+    return widConvergenceChart;
+
 }
 
 int ProgressDialog::progressSteps()
@@ -784,8 +815,15 @@ void ProgressDialog::start()
     }
 
     // successfull run
-    clear();
-    close();
+    if (!Util::config()->showConvergenceChart || Util::scene()->problemInfo()->adaptivityType > 2)
+    {
+        clear();
+        close();
+    }
+    else
+    {
+        // swith to convergence chart tab
+    }
 }
 
 void ProgressDialog::showMessage(const QString &msg, bool isError, int position)

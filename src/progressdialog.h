@@ -23,6 +23,7 @@
 #include <QDomDocument>
 
 #include "util.h"
+#include "gui.h"
 
 class Solution;
 class Linearizer;
@@ -139,13 +140,20 @@ private:
     QList<ProgressItem *> m_progressItem;
     ProgressItem *m_currentProgressItem;
 
+    QTabWidget *tabType;
+
     QLabel *lblMessage;
     QProgressBar *progressBar;
     QTextEdit *lstMessage;
     QPushButton *btnCancel;
     QPushButton *btnClose;
 
+    Chart *chart;
+
     void createControls();
+    QWidget *createControlsProgress();
+    QWidget *createControlsConvergenceChart();
+
     int progressSteps();
     int currentProgressStep();
     void clear();
