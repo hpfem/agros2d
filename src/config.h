@@ -37,6 +37,8 @@ public:
 
     bool checkVersion;
     bool showConvergenceChart;
+    bool enabledApplicationLog;
+    bool enabledProgressLog;
     bool lineEditValueShowResult;
     bool saveProblemWithSolution;
 

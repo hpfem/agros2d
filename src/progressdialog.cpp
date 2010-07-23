@@ -675,7 +675,9 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
 
 ProgressDialog::~ProgressDialog()
 {
-    saveProgressLog();
+    if (Util::config()->enabledProgressLog)
+        saveProgressLog();
+
     clear();
 }
 

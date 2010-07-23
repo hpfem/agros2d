@@ -51,6 +51,10 @@ void ConfigDialog::load()
     // show convergence chart
     chkShowConvergenceChart->setChecked(Util::config()->showConvergenceChart);
 
+    // logs
+    chkEnabledApplicationLog->setChecked(Util::config()->enabledApplicationLog);
+    chkEnabledProgressLog->setChecked(Util::config()->enabledProgressLog);
+
     // show result in line edit value widget
     chkLineEditValueShowResult->setChecked(Util::config()->lineEditValueShowResult);
 
@@ -152,6 +156,10 @@ void ConfigDialog::save()
 
     // show convergence chart
     Util::config()->showConvergenceChart = chkShowConvergenceChart->isChecked();
+
+    // logs
+    Util::config()->enabledApplicationLog = chkEnabledApplicationLog->isChecked();
+    Util::config()->enabledProgressLog = chkEnabledProgressLog->isChecked();
 
     // show result in line edit value widget
     Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
@@ -349,6 +357,8 @@ QWidget *ConfigDialog::createMainWidget()
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
     chkCheckVersion = new QCheckBox(tr("Check new version during startup."));
     chkShowConvergenceChart = new QCheckBox(tr("Show convergence chart after solving"));
+    chkEnabledApplicationLog = new QCheckBox(tr("Enabled application log"));
+    chkEnabledProgressLog = new QCheckBox(tr("Enabled progress log"));
 
     QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
     layoutClearCommandHistory->addWidget(cmdClearCommandHistory);    
@@ -358,6 +368,8 @@ QWidget *ConfigDialog::createMainWidget()
     layoutOther->addWidget(chkLineEditValueShowResult);
     layoutOther->addWidget(chkCheckVersion);
     layoutOther->addWidget(chkShowConvergenceChart);
+    layoutOther->addWidget(chkEnabledApplicationLog);
+    layoutOther->addWidget(chkEnabledProgressLog);
     layoutOther->addLayout(layoutClearCommandHistory);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));

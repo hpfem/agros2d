@@ -874,8 +874,7 @@ void logOutput(QtMsgType type, const char *msg)
     // string
     fprintf(stderr, "%s\n", str.toStdString().c_str());
 
-    QSettings settings;
-    if (settings.value("General/EnableLogFile", false).value<bool>())
+    if (Util::config()->enabledApplicationLog)
     {
         QFile file(QApplication::applicationDirPath() + "/agros2d.log");
 

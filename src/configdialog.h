@@ -79,6 +79,10 @@ private:
     // show convergence chart
     QCheckBox *chkShowConvergenceChart;
 
+    // logs
+    QCheckBox *chkEnabledApplicationLog;
+    QCheckBox *chkEnabledProgressLog;
+
     // general view
     QCheckBox *chkZoomToMouse;
 
