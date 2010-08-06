@@ -544,6 +544,18 @@
         <source>Command history was cleared succesfully.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show convergence chart after solving</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enabled application log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enabled progress log</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DSceneEdge</name>
@@ -1480,6 +1492,29 @@
     </message>
 </context>
 <context>
+    <name>LogDialog</name>
+    <message>
+        <source>Log dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No messages...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Log files (*.log)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <source>&amp;New...</source>
@@ -1873,6 +1908,22 @@
         <source>Mesh files (*.mesh)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Progress &amp;log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show progress log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application &amp;log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show application log</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ProblemDialog</name>
@@ -1989,6 +2040,14 @@
     </message>
     <message>
         <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Progress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convergence chart</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
