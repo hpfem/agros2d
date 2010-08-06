@@ -262,8 +262,12 @@ void MainWindow::createActions()
     connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 
     actProgressLog = new QAction(icon("log"), tr("&Progress log"), this);
-    actProgressLog->setStatusTip(tr("Progress log"));
+    actProgressLog->setStatusTip(tr("Show progress log"));
     connect(actProgressLog, SIGNAL(triggered()), this, SLOT(doProgressLog()));
+
+    actApplicationLog = new QAction(icon("log"), tr("&Application log"), this);
+    actApplicationLog->setStatusTip(tr("Show application log"));
+    connect(actApplicationLog, SIGNAL(triggered()), this, SLOT(doApplicationLog()));
 }
 
 void MainWindow::createMenus()
@@ -357,6 +361,8 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actApplicationLog);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
@@ -882,6 +888,9 @@ void MainWindow::doInvalidated()
     lblProblemType->setText(tr("Problem Type: %1").arg(problemTypeString(Util::scene()->problemInfo()->problemType)));
     lblPhysicField->setText(tr("Physic Field: %1").arg(physicFieldString(Util::scene()->problemInfo()->physicField())));
     lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
+
+    //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
+    //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
 }
 
 void MainWindow::doHelp()
@@ -968,5 +977,10 @@ void MainWindow::doDocumentExportMeshFile()
 
 void MainWindow::doProgressLog()
 {
-    logDialog->showDialog();
+    logDialog->loadProgressLog();
+}
+
+void MainWindow::doApplicationLog()
+{
+    logDialog->loadApplicationLog();
 }

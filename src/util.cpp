@@ -866,7 +866,7 @@ void logOutput(QtMsgType type, const char *msg)
         break;
     }
 
-    QString str = QString("%1  %2: %3").
+    QString str = QString("%1 %2: %3").
                   arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz")).
                   arg(msgType).
                   arg(msg);

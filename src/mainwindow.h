@@ -73,6 +73,7 @@ private slots:
     void doReport();
     void doCreateVideo();
     void doFullScreen();
+    void doApplicationLog();
 
     void doCut();
     void doCopy();
@@ -142,6 +143,7 @@ private:
     QAction *actScriptEditorRunCommand;
     QAction *actReport;
     QAction *actCreateVideo;
+    QAction *actApplicationLog;
 
     QAction *actHelp;
     QAction *actHelpShortCut;

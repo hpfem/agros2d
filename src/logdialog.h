@@ -31,10 +31,11 @@ public:
     ~LogDialog();
 
     void showDialog();
+    void loadProgressLog();
+    void loadApplicationLog();
 
 private:
     void createControls();
-    void loadProgressLog();
 
     QTextEdit *lstMessages;
     QPushButton *btnSaveLog;

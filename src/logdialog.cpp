@@ -66,8 +66,6 @@ void LogDialog::createControls()
 
 void LogDialog::showDialog()
 {
-    loadProgressLog();
-
     show();
     activateWindow();
     raise();
@@ -75,6 +73,8 @@ void LogDialog::showDialog()
 
 void LogDialog::loadProgressLog()
 {
+    showDialog();
+
     lstMessages->clear();
 
     QFile file(tempProblemDir() + "/messages.log");
@@ -86,11 +86,11 @@ void LogDialog::loadProgressLog()
             QTextStream messages(&file);
             while (!messages.atEnd())
             {
+                lstMessages->setTextColor(QColor(Qt::black));
+
                 message = messages.readLine();
                 if (message[1].isNumber())
                     lstMessages->setTextColor(QColor(Qt::gray));
-                else
-                    lstMessages->setTextColor(QColor(Qt::black));
 
                 lstMessages->insertPlainText(message + "\n");
             }
@@ -105,6 +105,43 @@ void LogDialog::loadProgressLog()
     }
 }
 
+void LogDialog::loadApplicationLog()
+{
+    showDialog();
+
+    lstMessages->clear();
+
+    QFile file(QApplication::applicationDirPath() + "/agros2d.log");
+    if (file.exists())
+    {
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QString message;
+            QTextStream messages(&file);
+            while (!messages.atEnd())
+            {
+                lstMessages->setTextColor(QColor(Qt::black));
+
+                message = messages.readLine();
+
+                if (message.contains("Warning"))
+                    lstMessages->setTextColor(QColor(Qt::yellow));
+
+                if (message.contains("Critical") || message.contains("Fatal"))
+                    lstMessages->setTextColor(QColor(Qt::red));
+
+                lstMessages->insertPlainText(message + "\n");
+            }
+        }
+        btnSaveLog->setEnabled(true);
+    }
+    else
+    {
+        lstMessages->setTextColor(QColor(Qt::gray));
+        lstMessages->insertPlainText(tr("No messages..."));
+        btnSaveLog->setEnabled(false);
+    }
+}
 
 void LogDialog::doClose()
 {

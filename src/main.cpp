@@ -84,13 +84,15 @@ int main(int argc, char *argv[])
     QStringList args = QCoreApplication::arguments();
     if (args.count() == 2)
     {
-        if ((args[1] == "--help") || (args[1] == "/help"))
+        if (args.contains( "--help") || args.contains("/help"))
         {
             qWarning() << "agros2d [fileName (*.a2d; *.py) | -run fileName (*.py) | --help]";
             a.exit(0);
             return 0;
         }
     }
+
+    qDebug() << "Application start";
 
     MainWindow w;
     w.show();
