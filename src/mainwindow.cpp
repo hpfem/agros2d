@@ -261,11 +261,11 @@ void MainWindow::createActions()
     actReport->setStatusTip(tr("Problem html report"));
     connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 
-    actProgressLog = new QAction(icon("log"), tr("&Progress log"), this);
+    actProgressLog = new QAction(icon("log"), tr("Progress &log"), this);
     actProgressLog->setStatusTip(tr("Show progress log"));
     connect(actProgressLog, SIGNAL(triggered()), this, SLOT(doProgressLog()));
 
-    actApplicationLog = new QAction(icon("log"), tr("&Application log"), this);
+    actApplicationLog = new QAction(icon("log"), tr("Application &log"), this);
     actApplicationLog->setStatusTip(tr("Show application log"));
     connect(actApplicationLog, SIGNAL(triggered()), this, SLOT(doApplicationLog()));
 }
@@ -962,11 +962,15 @@ void MainWindow::doDocumentExportMeshFile()
         {
             QString sourceFileName = Util::scene()->problemInfo()->fileName;
             sourceFileName.replace("a2d", "mesh");
-            QFile::copy(sourceFileName, fileName + ".mesh");
+            if (!fileName.isEmpty())
+                QFile::copy(sourceFileName, fileName + ".mesh");
+
             QFile::remove(sourceFileName);
         }
 
-        QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
+        if (!fileName.isEmpty())
+            QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
+
         QFile::remove(tempProblemFileName() + ".mesh");
     }
 

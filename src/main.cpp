@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    qDebug() << "Application start";
+    qDebug() << "Agros2D starting";
 
     MainWindow w;
     w.show();

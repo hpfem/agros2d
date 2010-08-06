@@ -22,7 +22,7 @@
 LogDialog::LogDialog(QWidget *parent) : QDialog(parent)
 {
     setWindowIcon(icon("log"));
-    setWindowTitle(tr("Progress log"));
+    setWindowTitle(tr("Log dialog"));
     setWindowFlags(Qt::Window);
 
     createControls();
@@ -153,7 +153,7 @@ void LogDialog::doSaveLog()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save log"), "data", tr("Log files (*.log)"));
 
     QFile file(fileName);
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text) || !fileName.isEmpty())
     {
         QTextStream messages(&file);
         messages << lstMessages->toPlainText();
