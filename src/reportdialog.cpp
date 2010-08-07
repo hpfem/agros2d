@@ -62,8 +62,8 @@ void ReportDialog::createControls()
     chkFigureMesh = new QCheckBox(tr("Mesh"));
     chkFigureOrder = new QCheckBox(tr("Order"));
     chkFigureScalarView = new QCheckBox(tr("Scalar view"));
-    chkShowGrid = new QCheckBox(tr("Show grid in figures"));
-    chkShowRulers = new QCheckBox(tr("Show rulers in figures"));
+    chkShowGrid = new QCheckBox(tr("Show grid"));
+    chkShowRulers = new QCheckBox(tr("Show rulers"));
 
     txtTemplate = new QLineEdit();
     connect(txtTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
@@ -87,7 +87,6 @@ void ReportDialog::createControls()
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QVBoxLayout *layoutSections = new QVBoxLayout();
-    layoutSections->addWidget(new QLabel(tr("Sections")));
     layoutSections->addWidget(chkDescription);
     layoutSections->addWidget(chkProblemInformation);
     layoutSections->addWidget(chkStartupScript);
@@ -96,17 +95,17 @@ void ReportDialog::createControls()
     layoutSections->addWidget(chkMeshAndSolution);
     layoutSections->addWidget(chkScript);
 
-    QVBoxLayout *layoutFigure = new QVBoxLayout();
-    layoutFigure->addWidget(new QLabel(tr("Figures")));
-    layoutFigure->addWidget(chkFigureGeometry);
-    layoutFigure->addWidget(chkFigureMesh);
-    layoutFigure->addWidget(chkFigureOrder);
-    layoutFigure->addWidget(chkFigureScalarView);
-    layoutFigure->addStretch();
+    QVBoxLayout *layoutFigures = new QVBoxLayout();
+    layoutFigures->addWidget(chkFigureGeometry);
+    layoutFigures->addWidget(chkFigureMesh);
+    layoutFigures->addWidget(chkFigureOrder);
+    layoutFigures->addWidget(chkFigureScalarView);
+    layoutFigures->addWidget(new QLabel());
+    layoutFigures->addWidget(chkShowGrid);
+    layoutFigures->addWidget(chkShowRulers);
 
-    QGridLayout *layoutBasicProperties = new QGridLayout();
-    layoutBasicProperties->addLayout(layoutSections, 0, 0);
-    layoutBasicProperties->addLayout(layoutFigure, 0, 1);
+    QGridLayout *layoutSection = new QGridLayout();
+    layoutSection->addLayout(layoutSections, 0, 0);
 
     QGridLayout *layoutTemplate = new QGridLayout();
     layoutTemplate->addWidget(new QLabel(tr("Template")), 0, 0);
@@ -119,8 +118,12 @@ void ReportDialog::createControls()
     layoutFigureSize->addWidget(txtFigureWidth, 0, 1);
     layoutFigureSize->addWidget(new QLabel(tr("Height")), 1, 0);
     layoutFigureSize->addWidget(txtFigureHeight, 1, 1);
-    layoutFigureSize->addWidget(chkShowGrid, 2, 0, 1, 2);
-    layoutFigureSize->addWidget(chkShowRulers, 3, 0, 1, 2);
+    layoutFigureSize->setRowStretch(2, 1);
+
+    QHBoxLayout *layoutFigure = new QHBoxLayout();
+    layoutFigure->addLayout(layoutFigures);
+    layoutFigure->addLayout(layoutFigureSize);
+    layoutFigure->addStretch();
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
@@ -128,21 +131,20 @@ void ReportDialog::createControls()
     layoutButtons->addWidget(btnDefault);
     layoutButtons->addWidget(btnClose);
 
-    QGroupBox *grpBasicProperties = new QGroupBox(tr("Basic properties"));
-    grpBasicProperties->setLayout(layoutBasicProperties);
+    QGroupBox *grpBasicProperties = new QGroupBox(tr("Sections"));
+    grpBasicProperties->setLayout(layoutSection);
+
+    QGroupBox *grpFigure = new QGroupBox(tr("Figures properties"));
+    grpFigure->setLayout(layoutFigure);
 
     QGroupBox *grpAdditionalProperties = new QGroupBox(tr("Additional properties"));
     grpAdditionalProperties->setLayout(layoutTemplate);
 
-    QGroupBox *grpFigure = new QGroupBox(tr("Figures properties"));
-    grpFigure->setLayout(layoutFigureSize);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpBasicProperties);
-    layout->addWidget(grpFigure);
-    layout->addWidget(grpAdditionalProperties);
-    layout->addStretch();
-    layout->addLayout(layoutButtons);
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(grpBasicProperties, 0, 0);
+    layout->addWidget(grpFigure, 0, 1);
+    layout->addWidget(grpAdditionalProperties, 1, 0, 1, 2);
+    layout->addLayout(layoutButtons, 2, 0, 2, 2);
 
     setLayout(layout);
 }
