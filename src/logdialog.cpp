@@ -111,7 +111,8 @@ void LogDialog::loadApplicationLog()
 
     lstMessages->clear();
 
-    QFile file(QApplication::applicationDirPath() + "/agros2d.log");
+    QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+    QFile file(location + "/app.log");
     if (file.exists())
     {
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))

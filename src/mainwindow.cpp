@@ -321,6 +321,9 @@ void MainWindow::createMenus()
     mnuView->addAction(actFullScreen);
     mnuView->addSeparator();
     mnuView->addAction(sceneView->actSceneViewProperties);
+    mnuView->addSeparator();
+    mnuView->addAction(actApplicationLog);
+    mnuView->addAction(actProgressLog);
 
     mnuProblem = menuBar()->addMenu(tr("&Problem"));
     mnuProblem->addAction(sceneView->actSceneModeNode);
@@ -348,8 +351,6 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(Util::scene()->actClearSolution);
     mnuProblem->addSeparator();
-    mnuProblem->addAction(actProgressLog);
-    mnuProblem->addSeparator();
     mnuProblem->addAction(Util::scene()->actProblemProperties);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
@@ -361,8 +362,6 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
-    mnuTools->addSeparator();
-    mnuTools->addAction(actApplicationLog);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);

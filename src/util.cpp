@@ -876,7 +876,10 @@ void logOutput(QtMsgType type, const char *msg)
 
     if (Util::config()->enabledApplicationLog)
     {
-        QFile file(QApplication::applicationDirPath() + "/agros2d.log");
+        QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+        QDir("/").mkpath(location);
+
+        QFile file(location + "/app.log");
 
         if (file.open(QIODevice::Append | QIODevice::Text))
         {
