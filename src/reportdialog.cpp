@@ -35,12 +35,15 @@ ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(pare
 
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
+
+    QSettings settings;
+    restoreGeometry(settings.value("ReportDialog/Geometry", saveGeometry()).toByteArray());
 }
 
 ReportDialog::~ReportDialog()
 {
-    delete btnShowReport;
-    delete btnClose;
+    QSettings settings;
+    settings.setValue("ReportDialog/Geometry", saveGeometry());
 }
 
 void ReportDialog::createControls()
@@ -60,9 +63,22 @@ void ReportDialog::createControls()
     chkFigureOrder = new QCheckBox(tr("Order"));
     chkFigureScalarView = new QCheckBox(tr("Scalar view"));
     chkShowGrid = new QCheckBox(tr("Show grid in figures"));
+    chkShowRulers = new QCheckBox(tr("Show rulers in figures"));
 
-    txtTemplate = new SLineEditDouble();
-    txtStyleSheet = new SLineEditDouble();
+    txtTemplate = new QLineEdit();
+    connect(txtTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
+    txtStyleSheet = new QLineEdit();
+    connect(txtStyleSheet, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
+
+    txtFigureWidth = new SLineEditValue();
+    txtFigureWidth->setValue(Value("600"));
+    txtFigureWidth->setMinimum(200);
+    txtFigureHeight = new SLineEditValue();
+    txtFigureHeight->setValue(Value("400"));
+    txtFigureHeight->setMinimum(200);
+
+    btnDefault = new QPushButton(tr("Default"));
+    connect(btnDefault, SIGNAL(clicked()), this, SLOT(defaultValues()));
 
     btnShowReport = new QPushButton(tr("Show report"));
     connect(btnShowReport, SIGNAL(clicked()), this, SLOT(doShowReport()));
@@ -80,17 +96,17 @@ void ReportDialog::createControls()
     layoutSections->addWidget(chkMeshAndSolution);
     layoutSections->addWidget(chkScript);
 
-    QVBoxLayout *layoutFigures = new QVBoxLayout();
-    layoutFigures->addWidget(new QLabel(tr("Figures")));
-    layoutFigures->addWidget(chkFigureGeometry);
-    layoutFigures->addWidget(chkFigureMesh);
-    layoutFigures->addWidget(chkFigureOrder);
-    layoutFigures->addWidget(chkFigureScalarView);
-    layoutFigures->addStretch();
+    QVBoxLayout *layoutFigure = new QVBoxLayout();
+    layoutFigure->addWidget(new QLabel(tr("Figures")));
+    layoutFigure->addWidget(chkFigureGeometry);
+    layoutFigure->addWidget(chkFigureMesh);
+    layoutFigure->addWidget(chkFigureOrder);
+    layoutFigure->addWidget(chkFigureScalarView);
+    layoutFigure->addStretch();
 
     QGridLayout *layoutBasicProperties = new QGridLayout();
     layoutBasicProperties->addLayout(layoutSections, 0, 0);
-    layoutBasicProperties->addLayout(layoutFigures, 0, 1);
+    layoutBasicProperties->addLayout(layoutFigure, 0, 1);
 
     QGridLayout *layoutTemplate = new QGridLayout();
     layoutTemplate->addWidget(new QLabel(tr("Template")), 0, 0);
@@ -98,29 +114,59 @@ void ReportDialog::createControls()
     layoutTemplate->addWidget(new QLabel(tr("Style sheet")), 1, 0);
     layoutTemplate->addWidget(txtStyleSheet, 1, 1);
 
-    QVBoxLayout *layoutAdditionalProperties = new QVBoxLayout();
-    layoutAdditionalProperties->addLayout(layoutTemplate);
-    layoutAdditionalProperties->addWidget(chkShowGrid);
+    QGridLayout *layoutFigureSize = new QGridLayout();
+    layoutFigureSize->addWidget(new QLabel(tr("Width")), 0, 0);
+    layoutFigureSize->addWidget(txtFigureWidth, 0, 1);
+    layoutFigureSize->addWidget(new QLabel(tr("Height")), 1, 0);
+    layoutFigureSize->addWidget(txtFigureHeight, 1, 1);
+    layoutFigureSize->addWidget(chkShowGrid, 2, 0, 1, 2);
+    layoutFigureSize->addWidget(chkShowRulers, 3, 0, 1, 2);
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
     layoutButtons->addWidget(btnShowReport);
+    layoutButtons->addWidget(btnDefault);
     layoutButtons->addWidget(btnClose);
 
     QGroupBox *grpBasicProperties = new QGroupBox(tr("Basic properties"));
     grpBasicProperties->setLayout(layoutBasicProperties);
 
     QGroupBox *grpAdditionalProperties = new QGroupBox(tr("Additional properties"));
-    grpAdditionalProperties->setLayout(layoutAdditionalProperties);
+    grpAdditionalProperties->setLayout(layoutTemplate);
+
+    QGroupBox *grpFigure = new QGroupBox(tr("Figures properties"));
+    grpFigure->setLayout(layoutFigureSize);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpBasicProperties);
-    layout->addStretch();
+    layout->addWidget(grpFigure);
     layout->addWidget(grpAdditionalProperties);
     layout->addStretch();
     layout->addLayout(layoutButtons);
 
     setLayout(layout);
+}
+
+bool ReportDialog::checkPaths()
+{
+    bool templateExists = QFile::exists(QString(txtTemplate->text()));
+    bool styleSheetExists = QFile::exists(QString(txtStyleSheet->text()));
+
+    QPalette paletteTemplate = txtTemplate->palette();
+    if (templateExists)
+        paletteTemplate.setColor(QPalette::Text, QPalette().color(QPalette::Text));
+    else
+        paletteTemplate.setColor(QPalette::Text, QColor(Qt::red));
+    txtTemplate->setPalette(paletteTemplate);
+
+    QPalette paletteStyleSheet = txtStyleSheet->palette();
+    if (styleSheetExists)
+        paletteStyleSheet.setColor(QPalette::Text, QPalette().color(QPalette::Text));
+    else
+        paletteStyleSheet.setColor(QPalette::Text, QColor(Qt::red));
+    txtStyleSheet->setPalette(paletteStyleSheet);
+
+    btnShowReport->setEnabled(templateExists && styleSheetExists);
 }
 
 void ReportDialog::defaultValues()
@@ -132,9 +178,15 @@ void ReportDialog::defaultValues()
 
     chkFigureGeometry->setChecked(true);
     chkShowGrid->setChecked(true);
+    chkShowRulers->setChecked(true);
 
-    txtTemplate->setText("doc/report/default.html");
-    txtStyleSheet->setText("doc/report/default.css");
+    txtFigureWidth->setValue(Value("600"));
+    txtFigureHeight->setValue(Value("400"));
+
+    txtTemplate->setText(QString("%1/doc/report/default.html").arg(datadir()));
+    txtStyleSheet->setText(QString("%1/doc/report/default.css").arg(datadir()));
+
+    checkPaths();
 }
 
 void ReportDialog::setControls()
@@ -167,6 +219,8 @@ void ReportDialog::resetControls()
 
     chkShowGrid->setChecked(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
     chkShowGrid->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
+    chkShowRulers->setChecked(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
+    chkShowRulers->setEnabled(chkGeometry->isChecked() || chkMeshAndSolution->isChecked());
 }
 
 void ReportDialog::showDialog()
@@ -188,18 +242,18 @@ void ReportDialog::doShowReport()
 
     QFile::remove(QString("%1/report/template.html").arg(tempProblemDir()));
     QFile::remove(QString("%1/report/style.css").arg(tempProblemDir()));
-    bool fileTemplateOK = QFile::copy(QString("%1/" + txtTemplate->text()).arg(datadir()),
+    bool fileTemplateOK = QFile::copy(QString(txtTemplate->text()),
                                       QString("%1/report/template.html").arg(tempProblemDir()));
-    bool fileStyleOK = QFile::copy(QString("%1/" + txtStyleSheet->text()).arg(datadir()),
+    bool fileStyleOK = QFile::copy(QString(txtStyleSheet->text()),
                                       QString("%1/report/style.css").arg(tempProblemDir()));
     if (!fileTemplateOK)
-        QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Report template could not be copied."));
+        QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("Report template could not be copied."));
     else if (!fileStyleOK)
-        QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Template style could not be copied."));
+        QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("Template style could not be copied."));
     else
     {
-        generateIndex();
         generateFigures();
+        generateIndex();
 
         QDesktopServices::openUrl(tempProblemDir() + "/report/report.html");
     }
@@ -232,9 +286,13 @@ void ReportDialog::generateIndex()
 
 void ReportDialog::generateFigures()
 {
-    bool showRulers = true;
+    bool showRulers = chkShowRulers->isChecked();
     bool showGrid = chkShowGrid->isChecked();
-    m_sceneView->saveImagesForReport(tempProblemDir() + "/report", showRulers, showGrid, 600, 400);
+    m_sceneView->saveImagesForReport(tempProblemDir() + "/report",
+                                     showRulers,
+                                     showGrid,
+                                     txtFigureWidth->value().number,
+                                     txtFigureHeight->value().number);
 }
 
 QString ReportDialog::replaceTemplates(const QString &source)
@@ -441,6 +499,9 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.remove("[Script]", Qt::CaseSensitive);
     }
 
+    // footer
+    destination.replace("[Report.Footer]", "<p id=\"footer\">Computed by Agros2D (<a href=\"http://hpfem.org/agros2d\">http://hpfem.org/agros2d</a>)</p>");
+
     // figures
     if (chkFigureGeometry->isChecked())
         destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", "Geometry"), Qt::CaseSensitive);
@@ -461,9 +522,6 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", "ScalarView: " + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable())), Qt::CaseSensitive);
     else
         destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
-
-    // footer
-    destination.replace("[Report.Footer]", "<p id=\"footer\">Computed by Agros2D (<a href=\"http://hpfem.org/agros2d\">http://hpfem.org/agros2d</a>)</p>");
 
     return destination;
 }

@@ -37,7 +37,6 @@ private:
     SceneView *m_sceneView;
 
     void createControls();
-    void defaultValues();
     void setControls();
 
     void generateIndex();
@@ -56,11 +55,16 @@ private:
     QCheckBox *chkFigureOrder;
     QCheckBox *chkFigureScalarView;
     QCheckBox *chkShowGrid;
+    QCheckBox *chkShowRulers;
 
     QLineEdit *txtTemplate;
     QLineEdit *txtStyleSheet;
 
+    SLineEditValue *txtFigureWidth;
+    SLineEditValue *txtFigureHeight;
+
     QPushButton *btnShowReport;
+    QPushButton *btnDefault;
     QPushButton *btnClose;
 
     QString replaceTemplates(const QString &source);
@@ -73,6 +77,9 @@ private:
 
 private slots:
     void resetControls();
+    void defaultValues();
+    bool checkPaths();
+
     void doClose();
     void doShowReport();
 };

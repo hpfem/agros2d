@@ -3430,6 +3430,9 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
     Point offset3dCopy = m_offset3d;
     Point3 rotation3dCopy = m_rotation3d;
 
+    bool showRulersCopy = Util::config()->showRulers;
+    bool showGridCopy = m_sceneViewSettings.showGrid;
+
     // remove old files
     QFile::remove(path + "/geometry.png");
     QFile::remove(path + "/mesh.png");
@@ -3444,7 +3447,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
     m_sceneViewSettings.showInitialMesh = false;
     m_sceneViewSettings.showSolutionMesh = false;
 
-    //m_sceneViewSettings.showRulers = showRulers;
+    Util::config()->showRulers = showRulers;
     m_sceneViewSettings.showGrid = showGrid;
 
     // geometry
@@ -3519,6 +3522,9 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
     m_offset2d = offset2dCopy;
     m_offset3d = offset3dCopy;
     m_rotation3d = rotation3dCopy;
+
+    Util::config()->showRulers = showRulersCopy;
+    m_sceneViewSettings.showGrid = showGridCopy;
 
     if (m_sceneMode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
     if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();
