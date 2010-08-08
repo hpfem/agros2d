@@ -68,6 +68,7 @@ public:
 
 signals:
     void message(const QString &message, bool isError, int position);
+    void changed();
 
 protected slots:
     void showMessage(const QString &msg, bool isError, int position);
@@ -93,13 +94,18 @@ class ProgressItemSolve : public ProgressItem
 {
     Q_OBJECT
 
-private slots:
-    void solve();
-
 public:
     ProgressItemSolve();
 
     bool run();
+    inline void addAdaptivityError(double error) { m_adaptivityError.append(error); emit changed(); }
+    inline QList<double> adaptivityError() { return m_adaptivityError; }
+
+private slots:
+    void solve();
+
+private:
+    QList<double> m_adaptivityError;
 };
 
 class ProgressItemProcessView : public ProgressItem
@@ -141,6 +147,8 @@ private:
     ProgressItem *m_currentProgressItem;
 
     QTabWidget *tabType;
+    QWidget *controlsProgress;
+    QWidget *controlsConvergenceChart;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;
@@ -149,6 +157,8 @@ private:
     QPushButton *btnClose;
 
     Chart *chart;
+    QwtPlotCurve *curveError;
+    QwtPlotCurve *curveErrorMax;
 
     void createControls();
     QWidget *createControlsProgress();
@@ -164,6 +174,8 @@ private slots:
     void start();
     void cancel();
     void close();
+
+    void itemChanged();
 };
 
 #endif //SCENEHERMES_H

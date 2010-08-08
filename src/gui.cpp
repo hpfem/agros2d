@@ -202,6 +202,7 @@ void SLineEditValue::focusInEvent(QFocusEvent *event)
 Chart::Chart(QWidget *parent) : QwtPlot(parent)
 {
     //  chart style
+    clear();
     setAutoReplot(false);
     setMargin(5);
     setTitle("");

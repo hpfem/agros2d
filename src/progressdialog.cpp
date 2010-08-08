@@ -403,13 +403,13 @@ bool ProgressItemMesh::writeToTriangle()
     {
         if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) > 0)
         {
-           outLabels += QString("%1  %2  %3  %4  %5\n").
-                        arg(labelsCount).
-                        arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
-                        arg(Util::scene()->labels[i]->point.y, 0, 'f', 10).
-                        arg(i + 1). // triangle returns zero region number for areas without marker, markers must start from 1
-                        arg(Util::scene()->labels[i]->area);
-           labelsCount++;
+            outLabels += QString("%1  %2  %3  %4  %5\n").
+                         arg(labelsCount).
+                         arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
+                         arg(Util::scene()->labels[i]->point.y, 0, 'f', 10).
+                         arg(i + 1). // triangle returns zero region number for areas without marker, markers must start from 1
+                         arg(Util::scene()->labels[i]->area);
+            labelsCount++;
         }
     }
 
@@ -576,10 +576,12 @@ bool ProgressItemSolve::run()
 
 void ProgressItemSolve::solve()
 {
+    m_adaptivityError.clear();
+
     qDebug() << "ProgressItemSolve::solve()";
 
     if (!QFile::exists(tempProblemFileName() + ".mesh"))
-      return;
+        return;
 
     // benchmark
     QTime time;
@@ -694,11 +696,15 @@ void ProgressDialog::clear()
 
 void ProgressDialog::createControls()
 {
-    QTabWidget *tabType = new QTabWidget();
-    tabType->addTab(createControlsProgress(), icon(""), tr("Progress"));
-    tabType->addTab(createControlsConvergenceChart(), icon(""), tr("Convergence chart"));
 
-    if (Util::scene()->problemInfo()->adaptivityType > 2)
+    controlsProgress = createControlsProgress();
+    controlsConvergenceChart = createControlsConvergenceChart();
+
+    tabType = new QTabWidget();
+    tabType->addTab(controlsProgress, icon(""), tr("Progress"));
+    tabType->addTab(controlsConvergenceChart, icon(""), tr("Convergence chart"));
+
+    if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
         tabType->widget(1)->setDisabled(true);
 
     btnCancel = new QPushButton(tr("Cance&l"));
@@ -723,9 +729,8 @@ void ProgressDialog::createControls()
 
 QWidget *ProgressDialog::createControlsProgress()
 {
-    lblMessage = new QLabel("", this);
     progressBar = new QProgressBar(this);
-
+    lblMessage = new QLabel("", this);
     lstMessage = new QTextEdit(this);
     lstMessage->setReadOnly(true);
 
@@ -743,7 +748,40 @@ QWidget *ProgressDialog::createControlsProgress()
 QWidget *ProgressDialog::createControlsConvergenceChart()
 {
     chart = new Chart(this);
-    //chart->setMinimumSize(220, 160);
+
+    // curves
+    curveError = new QwtPlotCurve();
+    curveError->setRenderHint(QwtPlotItem::RenderAntialiased);
+    curveError->setPen(QPen(Qt::blue));
+    curveError->setCurveAttribute(QwtPlotCurve::Inverted);
+    curveError->setYAxis(QwtPlot::yLeft);
+    curveError->setTitle(tr("current error"));
+    curveError->attach(chart);
+
+    // curves
+    curveErrorMax = new QwtPlotCurve();
+    curveErrorMax->setRenderHint(QwtPlotItem::RenderAntialiased);
+    curveErrorMax->setPen(QPen(Qt::red));
+    curveErrorMax->setCurveAttribute(QwtPlotCurve::Inverted);
+    curveErrorMax->setYAxis(QwtPlot::yLeft);
+    curveErrorMax->setTitle(tr("max. error"));
+    curveErrorMax->attach(chart);
+
+    // labels
+    QwtText textLeft(tr("Error (%)"));
+    textLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chart->setAxisTitle(QwtPlot::yLeft, textLeft);
+
+    QwtText textBottom(tr("Steps (-)"));
+    textBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chart->setAxisTitle(QwtPlot::xBottom, textBottom);
+
+    // legend
+    /*
+    QwtLegend *legend = new QwtLegend();
+    legend->setFrameStyle(QFrame::Box | QFrame::Sunken);
+    chart->insertLegend(legend, QwtPlot::BottomLegend);
+    */
 
     QVBoxLayout *layoutConvergenceChart = new QVBoxLayout();
     layoutConvergenceChart->addWidget(chart);
@@ -781,7 +819,7 @@ int ProgressDialog::currentProgressStep()
 void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
 {
     m_progressItem.append(progressItem);
-
+    connect(progressItem, SIGNAL(changed()), this, SLOT(itemChanged()));
     connect(progressItem, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
     connect(this, SIGNAL(cancelProgressItem()), progressItem, SLOT(cancelProgressItem()));
 }
@@ -817,14 +855,17 @@ void ProgressDialog::start()
     }
 
     // successfull run
-    if (!Util::config()->showConvergenceChart || Util::scene()->problemInfo()->adaptivityType > 2)
+    if (!Util::config()->showConvergenceChart ||
+        Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None ||
+        curveError->dataSize() == 0)
     {
         clear();
         close();
     }
     else
     {
-        // swith to convergence chart tab
+        btnCancel->setEnabled(false);
+        // tabType->setCurrentWidget(controlsConvergenceChart);
     }
 }
 
@@ -857,6 +898,53 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
     // update
     QApplication::processEvents();
     lstMessage->update();
+}
+
+void ProgressDialog::itemChanged()
+{
+    if (m_progressItem.count() == 0)
+        return;
+
+    if (ProgressItemSolve *itemSolve = dynamic_cast<ProgressItemSolve *>(m_currentProgressItem))
+    {
+        // error
+        int count = itemSolve->adaptivityError().count();
+
+        double *xvalError = new double[count];
+        double *yvalError = new double[count];
+
+        for (int i = 0; i<count; i++)
+        {
+            xvalError[i] = i+1;
+            yvalError[i] = itemSolve->adaptivityError().at(i);
+        }
+
+        // max error
+        double *xvalErrorMax = new double[2];
+        double *yvalErrorMax = new double[2];
+        xvalErrorMax[0] = 1;
+        xvalErrorMax[1] = count;
+        yvalErrorMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
+        yvalErrorMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
+
+        // plot
+        bool doReplot = chart->autoReplot();
+        chart->setAutoReplot(false);
+
+        curveError->setData(xvalError, yvalError, count);
+        curveErrorMax->setData(xvalErrorMax, yvalErrorMax, 2);
+
+        chart->setAutoReplot(doReplot);
+        chart->replot();
+
+        // save image
+        chart->saveImage(tempProblemDir() + "/adaptivity_error.png");
+
+        delete[] xvalError;
+        delete[] yvalError;
+        delete[] xvalErrorMax;
+        delete[] yvalErrorMax;
+    }
 }
 
 void ProgressDialog::finished()
