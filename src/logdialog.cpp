@@ -52,8 +52,16 @@ void LogDialog::createControls()
     btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
+    btnShowAdaptivityErrorChart = new QPushButton(tr("Adapt. error"));
+    connect(btnShowAdaptivityErrorChart, SIGNAL(clicked()), this, SLOT(doShowAdaptivityErrorChart()));
+
+    btnShowAdaptivityDOFChart = new QPushButton(tr("Adapt. DOFs"));
+    connect(btnShowAdaptivityDOFChart, SIGNAL(clicked()), this, SLOT(doShowAdaptivityDOFChart()));
+
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
+    layoutButtons->addWidget(btnShowAdaptivityErrorChart);
+    layoutButtons->addWidget(btnShowAdaptivityDOFChart);
     layoutButtons->addWidget(btnSaveLog);
     layoutButtons->addWidget(btnClose);
 
@@ -96,12 +104,18 @@ void LogDialog::loadProgressLog()
             }
         }
         btnSaveLog->setEnabled(true);
+
+        btnShowAdaptivityErrorChart->setEnabled(QFile::exists(tempProblemDir() + "/adaptivity_error.png"));
+        btnShowAdaptivityDOFChart->setEnabled(QFile::exists(tempProblemDir() + "/adaptivity_dof.png"));
     }
     else
     {
         lstMessages->setTextColor(QColor(Qt::gray));
         lstMessages->insertPlainText(tr("No messages..."));
         btnSaveLog->setEnabled(false);
+
+        btnShowAdaptivityErrorChart->setEnabled(false);
+        btnShowAdaptivityDOFChart->setEnabled(false);
     }
 }
 
@@ -126,7 +140,7 @@ void LogDialog::loadApplicationLog()
                 message = messages.readLine();
 
                 if (message.contains("Warning"))
-                    lstMessages->setTextColor(QColor(Qt::yellow));
+                    lstMessages->setTextColor(QColor(Qt::blue));
 
                 if (message.contains("Critical") || message.contains("Fatal"))
                     lstMessages->setTextColor(QColor(Qt::red));
@@ -159,4 +173,40 @@ void LogDialog::doSaveLog()
         QTextStream messages(&file);
         messages << lstMessages->toPlainText();
     }
+}
+
+void showPicture(const QString &fileName)
+{
+    if (QFile::exists(fileName))
+    {
+        // load
+        QLabel *imageLabel = new QLabel();
+        QImage image(fileName);
+        imageLabel->setPixmap(QPixmap::fromImage(image));
+
+        QScrollArea *scrollArea = new QScrollArea();
+        scrollArea->setBackgroundRole(QPalette::Dark);
+        scrollArea->setWidget(imageLabel);
+
+        QVBoxLayout *layout = new QVBoxLayout();
+        layout->addWidget(scrollArea);
+
+        QDialog *dialog = new QDialog(QApplication::activeWindow());
+        dialog->setLayout(layout);
+        dialog->setMinimumSize(dialog->sizeHint());
+        dialog->setMaximumSize(dialog->sizeHint());
+        dialog->exec();
+
+        delete dialog;
+    }
+}
+
+void LogDialog::doShowAdaptivityErrorChart()
+{
+    showPicture(tempProblemDir() + "/adaptivity_error.png");
+}
+
+void LogDialog::doShowAdaptivityDOFChart()
+{
+    showPicture(tempProblemDir() + "/adaptivity_dof.png");
 }

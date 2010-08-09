@@ -308,7 +308,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             progressItemSolve->emitMessage(QObject::tr("Relative error: %1 %").
                                            arg(error, 0, 'f', 5), false, 1);
             // add error to the list
-            progressItemSolve->addAdaptivityError(error);
+            progressItemSolve->addAdaptivityError(error, sys.get_num_dofs());
 
             if (progressItemSolve->isCanceled())
             {

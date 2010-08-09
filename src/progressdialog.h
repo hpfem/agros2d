@@ -98,14 +98,17 @@ public:
     ProgressItemSolve();
 
     bool run();
-    inline void addAdaptivityError(double error) { m_adaptivityError.append(error); emit changed(); }
+    inline void addAdaptivityError(double error, int dof) { m_adaptivityError.append(error); m_adaptivityDOF.append(dof); emit changed(); }
     inline QList<double> adaptivityError() { return m_adaptivityError; }
+    inline QList<int> adaptivityDOF() { return m_adaptivityDOF; }
+
 
 private slots:
     void solve();
 
 private:
     QList<double> m_adaptivityError;
+    QList<int> m_adaptivityDOF;
 };
 
 class ProgressItemProcessView : public ProgressItem
@@ -148,7 +151,8 @@ private:
 
     QTabWidget *tabType;
     QWidget *controlsProgress;
-    QWidget *controlsConvergenceChart;
+    QWidget *controlsConvergenceErrorChart;
+    QWidget *controlsConvergenceDOFChart;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;
@@ -156,13 +160,16 @@ private:
     QPushButton *btnCancel;
     QPushButton *btnClose;
 
-    Chart *chart;
+    Chart *chartError;
+    Chart *chartDOF;
     QwtPlotCurve *curveError;
     QwtPlotCurve *curveErrorMax;
+    QwtPlotCurve *curveDOF;
 
     void createControls();
     QWidget *createControlsProgress();
-    QWidget *createControlsConvergenceChart();
+    QWidget *createControlsConvergenceErrorChart();
+    QWidget *createControlsConvergenceDOFChart();
 
     int progressSteps();
     int currentProgressStep();

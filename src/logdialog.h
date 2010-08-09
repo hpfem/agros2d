@@ -40,10 +40,14 @@ private:
     QTextEdit *lstMessages;
     QPushButton *btnSaveLog;
     QPushButton *btnClose;
+    QPushButton *btnShowAdaptivityErrorChart;
+    QPushButton *btnShowAdaptivityDOFChart;
 
 private slots:
     void doSaveLog();
     void doClose();
+    void doShowAdaptivityErrorChart();
+    void doShowAdaptivityDOFChart();
 };
 
 #endif // LOGDIALOG_H

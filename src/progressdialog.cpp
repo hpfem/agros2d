@@ -671,6 +671,9 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
     createControls();
     clear();
 
+    QFile::remove(tempProblemDir() + "/adaptivity_error.png");
+    QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
+
     setMinimumSize(520, 360);
     setMaximumSize(minimumSize());
 }
@@ -696,13 +699,14 @@ void ProgressDialog::clear()
 
 void ProgressDialog::createControls()
 {
-
     controlsProgress = createControlsProgress();
-    controlsConvergenceChart = createControlsConvergenceChart();
+    controlsConvergenceErrorChart = createControlsConvergenceErrorChart();
+    controlsConvergenceDOFChart = createControlsConvergenceDOFChart();
 
     tabType = new QTabWidget();
     tabType->addTab(controlsProgress, icon(""), tr("Progress"));
-    tabType->addTab(controlsConvergenceChart, icon(""), tr("Convergence chart"));
+    tabType->addTab(controlsConvergenceErrorChart, icon(""), tr("Adaptivity conv."));
+    tabType->addTab(controlsConvergenceDOFChart, icon(""), tr("Adaptivity DOFs"));
 
     if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
         tabType->widget(1)->setDisabled(true);
@@ -745,9 +749,9 @@ QWidget *ProgressDialog::createControlsProgress()
     return widProgress;
 }
 
-QWidget *ProgressDialog::createControlsConvergenceChart()
+QWidget *ProgressDialog::createControlsConvergenceErrorChart()
 {
-    chart = new Chart(this);
+    chartError = new Chart(this);
 
     // curves
     curveError = new QwtPlotCurve();
@@ -756,7 +760,7 @@ QWidget *ProgressDialog::createControlsConvergenceChart()
     curveError->setCurveAttribute(QwtPlotCurve::Inverted);
     curveError->setYAxis(QwtPlot::yLeft);
     curveError->setTitle(tr("current error"));
-    curveError->attach(chart);
+    curveError->attach(chartError);
 
     // curves
     curveErrorMax = new QwtPlotCurve();
@@ -765,16 +769,16 @@ QWidget *ProgressDialog::createControlsConvergenceChart()
     curveErrorMax->setCurveAttribute(QwtPlotCurve::Inverted);
     curveErrorMax->setYAxis(QwtPlot::yLeft);
     curveErrorMax->setTitle(tr("max. error"));
-    curveErrorMax->attach(chart);
+    curveErrorMax->attach(chartError);
 
     // labels
-    QwtText textLeft(tr("Error (%)"));
-    textLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
-    chart->setAxisTitle(QwtPlot::yLeft, textLeft);
+    QwtText textErrorLeft(tr("Error (%)"));
+    textErrorLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chartError->setAxisTitle(QwtPlot::yLeft, textErrorLeft);
 
-    QwtText textBottom(tr("Steps (-)"));
-    textBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
-    chart->setAxisTitle(QwtPlot::xBottom, textBottom);
+    QwtText textErrorBottom(tr("Steps (-)"));
+    textErrorBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chartError->setAxisTitle(QwtPlot::xBottom, textErrorBottom);
 
     // legend
     /*
@@ -784,13 +788,43 @@ QWidget *ProgressDialog::createControlsConvergenceChart()
     */
 
     QVBoxLayout *layoutConvergenceChart = new QVBoxLayout();
-    layoutConvergenceChart->addWidget(chart);
+    layoutConvergenceChart->addWidget(chartError);
 
     QWidget *widConvergenceChart = new QWidget();
     widConvergenceChart->setLayout(layoutConvergenceChart);
 
     return widConvergenceChart;
+}
 
+QWidget *ProgressDialog::createControlsConvergenceDOFChart()
+{
+    chartDOF = new Chart(this);
+
+    // curves
+    curveDOF = new QwtPlotCurve();
+    curveDOF->setRenderHint(QwtPlotItem::RenderAntialiased);
+    curveDOF->setPen(QPen(Qt::blue));
+    curveDOF->setCurveAttribute(QwtPlotCurve::Inverted);
+    curveDOF->setYAxis(QwtPlot::yLeft);
+    curveDOF->setTitle(tr("current error"));
+    curveDOF->attach(chartDOF);
+
+    // labels
+    QwtText textDOFLeft(tr("DOFs (-)"));
+    textDOFLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chartDOF->setAxisTitle(QwtPlot::yLeft, textDOFLeft);
+
+    QwtText textDOFBottom(tr("Steps (-)"));
+    textDOFBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chartDOF->setAxisTitle(QwtPlot::xBottom, textDOFBottom);
+
+    QVBoxLayout *layoutConvergenceChart = new QVBoxLayout();
+    layoutConvergenceChart->addWidget(chartDOF);
+
+    QWidget *widConvergenceChart = new QWidget();
+    widConvergenceChart->setLayout(layoutConvergenceChart);
+
+    return widConvergenceChart;
 }
 
 int ProgressDialog::progressSteps()
@@ -910,13 +944,15 @@ void ProgressDialog::itemChanged()
         // error
         int count = itemSolve->adaptivityError().count();
 
-        double *xvalError = new double[count];
+        double *xval = new double[count];
         double *yvalError = new double[count];
+        double *yvalDOF = new double[count];
 
         for (int i = 0; i<count; i++)
         {
-            xvalError[i] = i+1;
+            xval[i] = i+1;
             yvalError[i] = itemSolve->adaptivityError().at(i);
+            yvalDOF[i] = itemSolve->adaptivityDOF().at(i);
         }
 
         // max error
@@ -927,23 +963,36 @@ void ProgressDialog::itemChanged()
         yvalErrorMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
         yvalErrorMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
 
-        // plot
-        bool doReplot = chart->autoReplot();
-        chart->setAutoReplot(false);
+        // plot error
+        bool doReplotError = chartError->autoReplot();
+        chartError->setAutoReplot(false);
 
-        curveError->setData(xvalError, yvalError, count);
+        curveError->setData(xval, yvalError, count);
         curveErrorMax->setData(xvalErrorMax, yvalErrorMax, 2);
 
-        chart->setAutoReplot(doReplot);
-        chart->replot();
+        chartError->setAutoReplot(doReplotError);
+        chartError->replot();
 
         // save image
-        chart->saveImage(tempProblemDir() + "/adaptivity_error.png");
+        chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
 
-        delete[] xvalError;
+        // plot dof
+        bool doReplotDOF = chartDOF->autoReplot();
+        chartDOF->setAutoReplot(false);
+
+        chartDOF->setData(xval, yvalDOF, count);
+
+        chartDOF->setAutoReplot(doReplotDOF);
+        chartDOF->replot();
+
+        // save image
+        chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
+
+        delete[] xval;
         delete[] yvalError;
         delete[] xvalErrorMax;
         delete[] yvalErrorMax;
+        delete[] yvalDOF;
     }
 }
 
