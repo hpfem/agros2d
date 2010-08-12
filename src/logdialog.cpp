@@ -156,6 +156,9 @@ void LogDialog::loadApplicationLog()
         lstMessages->insertPlainText(tr("No messages..."));
         btnSaveLog->setEnabled(false);
     }
+
+    btnShowAdaptivityErrorChart->setEnabled(false);
+    btnShowAdaptivityDOFChart->setEnabled(false);
 }
 
 void LogDialog::doClose()
