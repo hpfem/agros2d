@@ -40,7 +40,20 @@
 #define NDOF_STOP 40000
 #define CONST_DOUBLE 1e100
 
-#define deg2rad(degrees) (degrees*M_PI/180)
+#define deg2rad(degrees) (degrees*M_PI/180.0)
+
+const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);
+const QColor COLORGRID = QColor::fromRgb(200, 200, 200);
+const QColor COLORCROSS = QColor::fromRgb(150, 150, 150);
+const QColor COLORNODES = QColor::fromRgb(150, 0, 0);
+const QColor COLOREDGES = QColor::fromRgb(0, 0, 150);
+const QColor COLORLABELS = QColor::fromRgb(0, 150, 0);
+const QColor COLORCONTOURS = QColor::fromRgb(0, 0, 0);
+const QColor COLORVECTORS = QColor::fromRgb(0, 0, 0);
+const QColor COLORINITIALMESH = QColor::fromRgb(250, 202, 119);
+const QColor COLORSOLUTIONMESH = QColor::fromRgb(150, 70, 0);
+const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
+const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
 
 // adaptivity
 const bool ADAPTIVITY_ISOONLY = false;

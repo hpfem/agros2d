@@ -39,6 +39,7 @@ private slots:
     void doPaletteFilter(int state);
     void doClearCommandHistory();
     void doAdvancedDefault();
+    void doColorsDefault();
     void doScalarFieldLog(int state);
 
     void doAccept();

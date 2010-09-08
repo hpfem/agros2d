@@ -597,12 +597,17 @@ QWidget *ConfigDialog::createColorsWidget()
     layoutColors->addWidget(colorHighlighted, 10, 1);
     layoutColors->addWidget(colorSelected, 11, 1);
 
+    // default
+    QPushButton *btnDefault = new QPushButton(tr("Default"));
+    connect(btnDefault, SIGNAL(clicked()), this, SLOT(doColorsDefault()));
+
     QGroupBox *grpColor = new QGroupBox(tr("Colors"));
     grpColor->setLayout(layoutColors);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpColor);
     layout->addStretch();
+    layout->addWidget(btnDefault, 0, Qt::AlignLeft);
 
     colorsWidget->setLayout(layout);
 
@@ -746,6 +751,22 @@ void ConfigDialog::doAdvancedDefault()
     // command argument
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);
     txtArgumentFFmpeg->setText(COMMANDS_FFMPEG);
+}
+
+void ConfigDialog::doColorsDefault()
+{
+    colorBackground->setColor(COLORBACKGROUND);
+    colorGrid->setColor(COLORGRID);
+    colorCross->setColor(COLORCROSS);
+    colorNodes->setColor(COLORNODES);
+    colorEdges->setColor(COLOREDGES);
+    colorLabels->setColor(COLORLABELS);
+    colorContours->setColor(COLORCONTOURS);
+    colorVectors->setColor(COLORVECTORS);
+    colorInitialMesh->setColor(COLORINITIALMESH);
+    colorSolutionMesh->setColor(COLORSOLUTIONMESH);
+    colorHighlighted->setColor(COLORHIGHLIGHTED);
+    colorSelected->setColor(COLORSELECTED);
 }
 
 void ConfigDialog::doScalarFieldLog(int state)
