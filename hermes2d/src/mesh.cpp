@@ -1129,6 +1129,20 @@ void Mesh::convert_quads_to_triangles()
   elements.set_append_only(false);
 
   tmp.copy_converted(this);
+  for (int i = 0; i < tmp.ntopvert; i++)
+  {
+     if (tmp.nodes[i].type == 1)
+     {
+       tmp.nodes[i].y = 0.0;
+     }
+  }
+  char* mesh_tmp = NULL;
+  mkstemp(mesh_tmp);
+  tmp.save(mesh_tmp);
+  Mesh mesh_tmp_for_convert;
+  H2DReader loader_mesh_tmp_for_convert;
+  loader_mesh_tmp_for_convert.load(mesh_tmp, &tmp);
+  remove(mesh_tmp);
   copy(&tmp);
 }
 

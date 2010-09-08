@@ -389,8 +389,6 @@ QWidget *ConfigDialog::createMainWidget()
 
 QWidget *ConfigDialog::createViewWidget()
 {
-    QWidget *viewWidget = new QWidget(this);
-
     // geometry
     txtGeometryAngleSegmentsCount = new QSpinBox(this);
     txtGeometryAngleSegmentsCount->setMinimum(1);
@@ -433,6 +431,15 @@ QWidget *ConfigDialog::createViewWidget()
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
+
+    // layout general
+    QVBoxLayout *layoutGeneral = new QVBoxLayout();
+    layoutGeneral->addWidget(grpGeometry);
+    layoutGeneral->addWidget(grpGrid);
+    layoutGeneral->addStretch();
+
+    QWidget *widgetGeneral = new QWidget(this);
+    widgetGeneral->setLayout(layoutGeneral);
 
     // layout palette
     cmbPalette = new QComboBox();
@@ -524,20 +531,23 @@ QWidget *ConfigDialog::createViewWidget()
     QGroupBox *grpOrder = new QGroupBox(tr("Polynomial order"));
     grpOrder->setLayout(layoutOrder);
 
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpGeometry);
-    layout->addWidget(grpGrid);
-    layout->addWidget(grpContours);
-    layout->addWidget(grpScalarView);
-    layout->addWidget(grpVectorView);
-    layout->addWidget(grpOrder);
-    layout->addWidget(grp3D);
-    layout->addStretch();
+    // layout postprocessor
+    QVBoxLayout *layoutPostprocessor = new QVBoxLayout();
+    layoutPostprocessor->addWidget(grpContours);
+    layoutPostprocessor->addWidget(grpScalarView);
+    layoutPostprocessor->addWidget(grpVectorView);
+    layoutPostprocessor->addWidget(grpOrder);
+    layoutPostprocessor->addWidget(grp3D);
+    layoutPostprocessor->addStretch();
 
-    viewWidget->setLayout(layout);
+    QWidget *widgetPostprocessor = new QWidget(this);
+    widgetPostprocessor->setLayout(layoutPostprocessor);
 
-    return viewWidget;
+    QTabWidget *tabType = new QTabWidget(this);
+    tabType->addTab(widgetGeneral, icon(""), tr("General"));
+    tabType->addTab(widgetPostprocessor, icon(""), tr("Postprocessor"));
+
+    return tabType;
 }
 
 QWidget *ConfigDialog::createColorsWidget()
