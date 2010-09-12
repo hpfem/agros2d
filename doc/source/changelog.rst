@@ -22,3 +22,10 @@ Changes in Agros2D
 ----------------------
   * 3d model view
   * global Python script
+  
+1.2.0.400 (12.09.2010)
+----------------------  
+  * improved config dialog
+  * added log dialog (app log and progress log)
+  * added convergence chart to the progress dialog
+  * improved report dialog
