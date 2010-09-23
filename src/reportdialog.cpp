@@ -143,7 +143,7 @@ void ReportDialog::createControls()
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(grpBasicProperties, 0, 0);
     layout->addWidget(grpFigure, 0, 1);
-    layout->addWidget(grpAdditionalProperties, 1, 0, 1, 2);
+    // layout->addWidget(grpAdditionalProperties, 1, 0, 1, 2);
     layout->addLayout(layoutButtons, 2, 0, 2, 2);
 
     setLayout(layout);
