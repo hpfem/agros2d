@@ -556,6 +556,10 @@
         <source>Enabled progress log</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Postprocessor</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DSceneEdge</name>
@@ -1513,6 +1517,14 @@
         <source>Log files (*.log)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Adapt. error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adapt. DOFs</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -2047,7 +2059,31 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Convergence chart</source>
+        <source>Adaptivity conv.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adaptivity DOFs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>current error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>max. error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error (%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Steps (-)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DOFs (-)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2942,19 +2978,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show grid in figures</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show report</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sections</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Figures</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2966,15 +2994,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Basic properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Additional properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Template style could not be copied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show rulers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Figures properties</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
