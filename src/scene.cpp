@@ -257,9 +257,10 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     // check if edge doesn't exists
     foreach (SceneEdge *edgeCheck, edges)
     {
-        if ((((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) ||
-             ((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart))) &&
-            (fabs(edgeCheck->angle-edge->angle) < EPS_ZERO))
+        if (((((edgeCheck->nodeStart == edge->nodeStart) && (edgeCheck->nodeEnd == edge->nodeEnd)) &&
+              (fabs(edgeCheck->angle - edge->angle) < EPS_ZERO)) ||
+            (((edgeCheck->nodeStart == edge->nodeEnd) && (edgeCheck->nodeEnd == edge->nodeStart))) &&
+             (fabs(edgeCheck->angle + edge->angle) < EPS_ZERO)))
         {
             delete edge;
             return edgeCheck;
