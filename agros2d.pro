@@ -24,9 +24,9 @@ linux-g++ {
         doc/help/Agros2D.qhc
 
     # install report
-    report.path = $${PREFIX}/share/agros2d/doc/report/template
-    report.files = doc/report/template/template.html \
-        doc/report/template/default.css
+    report.path = $${PREFIX}/share/agros2d/doc/report
+    report.files = doc/report/default.html \
+        doc/report/default.css
 
     # install translations
     lang.path = $${PREFIX}/share/agros2d/lang
