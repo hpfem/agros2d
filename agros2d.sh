@@ -61,6 +61,11 @@ case "$1" in
 			cp -r $i $temporaryDirectory/agros2d-$version
 		done
 		
+		rm -f $temporaryDirectory/agros2d-$version/src/build/*
+		rm -f $temporaryDirectory/agros2d-$version/hermes2d/build/*
+		rm -f $temporaryDirectory/agros2d-$version/hermes2d/lib/*
+		rm -f $temporaryDirectory/agros2d-$version/src-remote/build/*
+		
 		cd $temporaryDirectory/agros2d-$version
 		echo "Run 'debuild -S -sa'"
 		echo "Run 'dput ppa:pkarban/ppa *.changes' for upload"

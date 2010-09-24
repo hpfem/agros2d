@@ -1,4 +1,4 @@
-agros2d (1.2-2ubuntu13) karmic lucid maverick; urgency=low
+agros2d (1.2-2ubuntu13) karmic; urgency=low
 
   * fixed addedge from script
   * fixed report template (linux only)
