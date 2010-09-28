@@ -59,7 +59,7 @@
     <message>
         <location filename="../src/gui.cpp" line="262"/>
         <source>Export image to file</source>
-        <translation>Export obrazu do pliku</translation>
+        <translation>Eksport obrazu do pliku</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="262"/>
@@ -88,7 +88,7 @@
     <message>
         <location filename="../src/chartdialog.cpp" line="109"/>
         <source>Export</source>
-        <translation>Export</translation>
+        <translation>Eksport</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="135"/>
@@ -178,7 +178,7 @@
     <message>
         <location filename="../src/chartdialog.cpp" line="484"/>
         <source>Export data to file</source>
-        <translation>Export danych do pliku</translation>
+        <translation>Eksport danych do pliku</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="484"/>
@@ -514,7 +514,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="531"/>
         <source>Polynomial order</source>
-        <translation>Rząd wielomianu</translation>
+        <translation>Stopień wielomianu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="548"/>
@@ -933,7 +933,7 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="509"/>
         <source>Global order is %1.</source>
-        <translation>Globalny rząd %1.</translation>
+        <translation>Globalny stopień %1.</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="520"/>
@@ -943,7 +943,7 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="521"/>
         <source>Polynomial order (-):</source>
-        <translation>Rząd wielomianu (-):</translation>
+        <translation>Stopień wielomianu (-):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="523"/>
@@ -2011,34 +2011,34 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="154"/>
         <source>Export DXF...</source>
-        <translation>Export DXF...</translation>
+        <translation>Eksport DXF...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="155"/>
         <source>Export AutoCAD DXF</source>
-        <translation>Export AutoCAD DXF</translation>
+        <translation>Eksport AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="158"/>
         <location filename="../src/mainwindow.cpp" line="956"/>
         <source>Export mesh file</source>
-        <translation>Export pliku siatki</translation>
+        <translation>Eksport pliku siatki</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="159"/>
         <source>Export Hermes2D mesh file</source>
-        <translation>Export pliku siatki Hermes2D</translation>
+        <translation>Eksport pliku siatki Hermes2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="162"/>
         <source>Export image...</source>
-        <translation>Export obrazu...</translation>
+        <translation>Eksport obrazu...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="163"/>
         <location filename="../src/mainwindow.cpp" line="738"/>
         <source>Export image to file</source>
-        <translation>Export obrazu do pliku</translation>
+        <translation>Eksport obrazu do pliku</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="166"/>
@@ -2135,7 +2135,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="211"/>
         <source>About &amp;Agros2D</source>
-        <translation>O. &amp;Agros2D</translation>
+        <translation type="unfinished">O &amp;Agros2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="212"/>
@@ -2403,7 +2403,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="727"/>
         <source>Export file</source>
-        <translation>Export pliku</translation>
+        <translation>Eksport pliku</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="738"/>
@@ -2461,102 +2461,102 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="27"/>
         <source>Problem properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry problemu</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="71"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogólne</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="72"/>
         <source>Startup script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrypt początkowy</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="73"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="133"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="136"/>
         <source>Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Data:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="138"/>
         <source>Physic field:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole fizyczne:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="140"/>
         <source>Problem type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ problemu:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="142"/>
         <source>Number of refinements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba zagęszczeń:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="144"/>
         <source>Polynomial order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopień wielomianu:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="146"/>
         <source>Adaptivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptacyjność:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="148"/>
         <source>Adaptivity steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Iteracje adaptacji:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="150"/>
         <source>Adaptivity tolerance (%):</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancja adaptacji (%):</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="153"/>
         <source>Type of analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ analizy:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="155"/>
         <source>Frequency (Hz):</source>
-        <translation type="unfinished"></translation>
+        <translation>Częstotliwość (Hz):</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="157"/>
         <source>Time step (s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok (s)</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="159"/>
         <source>Total time (s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Całkowity czas (s):</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="161"/>
         <source>Initial condition:</source>
-        <translation type="unfinished"></translation>
+        <translation>Warunek początkowy:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="163"/>
         <source>Steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba kroków:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="168"/>
         <source>Equation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Równanie:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="277"/>
@@ -2564,27 +2564,27 @@
         <location filename="../src/problemdialog.cpp" line="293"/>
         <location filename="../src/problemdialog.cpp" line="299"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="277"/>
         <source>Frequency cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Częstotliwość nie może być ujemna.</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="287"/>
         <source>Time step must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok musi być dodatni.</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="293"/>
         <source>Total time must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Całkowity czas musi być dodatni.</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="299"/>
         <source>Time step is greater then total time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok jest dłuższy niż całkowity czas.</translation>
     </message>
 </context>
 <context>
@@ -2592,59 +2592,59 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="669"/>
         <source>Progress...</source>
-        <translation type="unfinished"></translation>
+        <translation>Postęp...</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="707"/>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Postęp</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="708"/>
         <source>Adaptivity conv.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbieżność adapt.</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="709"/>
         <source>Adaptivity DOFs</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba zmienych</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="714"/>
         <source>Cance&amp;l</source>
-        <translation type="unfinished"></translation>
+        <translation>Cofni&amp;j</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="719"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zamknij</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="762"/>
         <location filename="../src/progressdialog.cpp" line="809"/>
         <source>current error</source>
-        <translation type="unfinished"></translation>
+        <translation>aktualny błąd</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="771"/>
         <source>max. error</source>
-        <translation type="unfinished"></translation>
+        <translation>max. błąd</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="775"/>
         <source>Error (%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd (%)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="779"/>
         <location filename="../src/progressdialog.cpp" line="817"/>
         <source>Steps (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kroki (-)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="813"/>
         <source>DOFs (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmienne (-)</translation>
     </message>
 </context>
 <context>
@@ -2652,112 +2652,112 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="118"/>
         <source>Mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="129"/>
         <source>Poly file was created</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik poly został stworzony</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="149"/>
         <source>Could not start Triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można uruchomić Triangle</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="176"/>
         <source>Mesh files was created</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki siatki zostały utworzone</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="181"/>
         <source>Mesh was converted to Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka została zapisana w formacie Hermes2D</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="198"/>
         <source>Mesh files was deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki siatki zostały skasowane</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="212"/>
         <source>Boundary edge does not have a boundary marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Krawędź brzegowa nie ma znacznika brzegu</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="240"/>
         <source>Invalid number of nodes (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędna liczba węzłów (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="245"/>
         <source>Invalid number of edges (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędna liczba krawędzi (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="258"/>
         <source>At least one boundary condition has to be assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>Conajmniej jeden warunek brzegowy musi zostać ustawiony</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="264"/>
         <source>Invalid number of labels (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędna liczba etykiet (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="277"/>
         <source>At least one material has to be assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>Conajmniej jednen materiał musi być przypisany</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="283"/>
         <source>Invalid number of boundary conditions (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędna liczba warunków brzegowych (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="288"/>
         <source>Invalid number of materials (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędna liczba materiałów (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="302"/>
         <source>Could not create Triangle poly mesh file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można stworzyć pliku Triangle poly (%1)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="448"/>
         <source>Could not create Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można stworzyć siatki w pliku Hermes2D</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="456"/>
         <source>Could not read Triangle node file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można otworzyć pliku Triangle node</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="464"/>
         <source>Could not read Triangle edge file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można otworzyć pliku Triangle edge</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="472"/>
         <source>Could not read Triangle ele file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można otworzyć pliku Triangle ele</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="512"/>
         <source>Invalid number of edge markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędna liczba wskaźników krawędzi</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="528"/>
         <source>Some areas have no label marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wszystkie obszary są oznaczone</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="539"/>
         <source>Invalid number of label markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędna liczba znaczników etykiet</translation>
     </message>
 </context>
 <context>
@@ -2765,22 +2765,22 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="615"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Widok</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="642"/>
         <source>Processing countour view cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetwarzanie schowka widoku isolinii</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="650"/>
         <source>Processing scalar view cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetwarzanie schowka widoku skalarów</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="656"/>
         <source>Processing vector view cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetwarzanie schowka widoku wektorów</translation>
     </message>
 </context>
 <context>
@@ -2788,22 +2788,22 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="564"/>
         <source>Solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiązanie</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="590"/>
         <source>Solver was started: %1 (%2, %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Algorytm został uruchomiony: %1 (%2, %3)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="599"/>
         <source>Problem was solved</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem został rozwiązany</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="604"/>
         <source>Problem was not solved</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem nie został rozwiązany</translation>
     </message>
 </context>
 <context>
@@ -2811,43 +2811,43 @@
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="271"/>
         <source>Solver: DOF is zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiązanie: Brak zmiennych</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="308"/>
         <source>Relative error: %1 %</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd względny: %1 %</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="366"/>
         <source>Time step: %1/%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok: %1/%2</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="265"/>
         <location filename="../src/util.cpp" line="666"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd</translation>
     </message>
     <message>
         <location filename="../src/scene.h" line="121"/>
         <source>unnamed</source>
-        <translation type="unfinished"></translation>
+        <translation>bez nazwy</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="65"/>
         <source>Script message</source>
-        <translation type="unfinished"></translation>
+        <translation>Komunikat skryptu</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="71"/>
         <source>Script input</source>
-        <translation type="unfinished"></translation>
+        <translation>Wejście skryptu</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="81"/>
         <source>Problem is not meshed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie została wygenerowana siatka.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="89"/>
@@ -2859,81 +2859,81 @@
         <location filename="../src/scripteditorcommandpython.cpp" line="734"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="828"/>
         <source>Problem is not solved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem nie jest rozwiązany.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="124"/>
         <source>Problem type &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem typu &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="131"/>
         <source>Physic field &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole &apos;%1&apos; nie jest zaimplementowane.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="137"/>
         <source>Number of refinements &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba zagęszczeń &apos;%&apos; jest błędna.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="143"/>
         <source>Polynomial order &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopień wielomianu &apos;%1&apos; jest poza zakresem.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="148"/>
         <source>Adaptivity type &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ adaptacji &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="154"/>
         <source>Adaptivity step &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba kroków adaptacji &apos;%1&apos; jest błędna.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="160"/>
         <source>Adaptivity tolerance &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancja adaptacji &apos;%1&apos; jest błędna.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="168"/>
         <source>The frequency can not be used for this problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Częstotliwość nie występuje dla tego problemu.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="174"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="179"/>
         <source>Analysis type &apos;%1&apos; is not implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza typu &apos;%1&apos; nie jest zaimplementowana</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="185"/>
         <source>Time step must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok musi być dodatni.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="191"/>
         <source>Total time must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Całkowity czas musi być dodatni.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="226"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="256"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="278"/>
         <source>Index &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Numer &apos;%1&apos; jest poza zakresem.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="239"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kąt &apos;%1&apos; jest poza zakresem.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="243"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="270"/>
         <source>Marker &apos;%1&apos; is not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik &apos;%1&apos; nie jest zdefiniowany.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="299"/>
@@ -3123,32 +3123,32 @@
     <message>
         <location filename="../src/util.cpp" line="219"/>
         <source>Current density - total - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - całkowita</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="221"/>
         <source>Current density - total - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - całkowita - uroj</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="223"/>
         <source>Current density - total</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - całkowita</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="225"/>
         <source>Current density - induced transform - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - przesunięcia - rzecz</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="227"/>
         <source>Current density - induced transform - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - przesunięcia - uroj</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="229"/>
         <source>Current density - induced transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - przesunięcia</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="231"/>
@@ -3615,52 +3615,52 @@
     <message>
         <location filename="../src/util.cpp" line="541"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole stałe</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="543"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation>W czasie</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="545"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmoniczna</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="557"/>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>brak</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="559"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="561"/>
         <source>Derivative</source>
-        <translation type="unfinished"></translation>
+        <translation>Pochodna</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="563"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawione napęcie</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="565"/>
         <source>Surface charge density</source>
-        <translation type="unfinished"></translation>
+        <translation>Powierzchniowa gęstość łądunku</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="569"/>
         <source>Surface current density</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu na powierzchni</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="575"/>
         <source>Potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="577"/>
@@ -3901,83 +3901,83 @@
     <message>
         <location filename="../src/scene.cpp" line="152"/>
         <source>New &amp;node...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj &amp;węzeł...</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="153"/>
         <source>Alt+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="154"/>
         <source>New node</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj węzeł</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="157"/>
         <source>New &amp;edge...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj &amp;krawędź...</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="158"/>
         <source>Alt+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+K</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="159"/>
         <source>New edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj krawędź</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="162"/>
         <source>New &amp;label...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj &amp;etykietę...</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="163"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+E</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="164"/>
         <source>New label</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowa etykieta</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="167"/>
         <location filename="../src/scene.cpp" line="168"/>
         <source>Delete selected objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń zaznaczone obiekty</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="171"/>
         <source>New &amp;boundary condition...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj warunek &amp;brzegowy..</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="172"/>
         <source>Alt+B</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+B</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="173"/>
         <source>New boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj warunek brzegowy</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="176"/>
         <source>New &amp;material...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj &amp;materiał...</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="177"/>
         <source>Alt+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+M</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="178"/>
         <source>New material</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj materiał</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="181"/>
@@ -3997,78 +3997,78 @@
     <message>
         <location filename="../src/scene.cpp" line="186"/>
         <source>&amp;Transform</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Przekształcenie</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="187"/>
         <source>Transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekształcenie</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="190"/>
         <location filename="../src/scene.cpp" line="191"/>
         <source>Clear solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń rozwiązanie</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="194"/>
         <source>&amp;Problem properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ustawienia problemu</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="195"/>
         <source>Problem properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia problemu</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="529"/>
         <source>unnamed</source>
-        <translation type="unfinished"></translation>
+        <translation>bez nazwy</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="589"/>
         <source>Delete selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń zaznaczone</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="595"/>
         <source>Remove node</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń węzeł</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="657"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesunięcie</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="722"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="781"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalowanie</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="906"/>
         <source>unnamed function</source>
-        <translation type="unfinished"></translation>
+        <translation>funkcja bez nazwy</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1108"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można otworzyć plik &apos;%1&apos; (%2).</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1124"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik &apos;%1&apos; nie jest w formacie Agros2D.</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1493"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zapisać pliku &apos;%1&apos; (%2).</translation>
     </message>
 </context>
 <context>
@@ -4076,7 +4076,7 @@
     <message>
         <location filename="../src/scenebasicselectdialog.cpp" line="27"/>
         <source>Select edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz krawędź</translation>
     </message>
 </context>
 <context>
@@ -4085,139 +4085,139 @@
         <location filename="../src/sceneinfoview.cpp" line="23"/>
         <location filename="../src/sceneinfoview.cpp" line="97"/>
         <source>Problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="55"/>
         <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ustawienia</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="56"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="59"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Usuń</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="60"/>
         <source>Delete item</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń obiekt</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="101"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogólne</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="106"/>
         <source>Solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiązanie</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="112"/>
         <source>Boundary conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>Warunki brzegowe</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="118"/>
         <source>Materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Materiały</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="124"/>
         <source>Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcje</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="132"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="137"/>
         <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzły</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="142"/>
         <source>Edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Krawędzie</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="147"/>
         <source>Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykiety</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="174"/>
         <source>Name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="177"/>
         <source>Type: </source>
-        <translation type="unfinished"></translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="180"/>
         <source>Field: </source>
-        <translation type="unfinished"></translation>
+        <translation>Pole:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="183"/>
         <source>Analysis: </source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="189"/>
         <source>Initial mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka początkowa</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="193"/>
         <location filename="../src/sceneinfoview.cpp" line="205"/>
         <source>Nodes: </source>
-        <translation type="unfinished"></translation>
+        <translation>Węzły:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="196"/>
         <location filename="../src/sceneinfoview.cpp" line="208"/>
         <source>Elements: </source>
-        <translation type="unfinished"></translation>
+        <translation>Elementy:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="201"/>
         <source>Solved mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka rozwiązania</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="213"/>
         <source>Adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptacja</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="217"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="220"/>
         <source>Steps: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kroki:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="226"/>
         <source>DOFs: </source>
-        <translation type="unfinished"></translation>
+        <translation>Zmienne:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="231"/>
         <source>Time elapsed: </source>
-        <translation type="unfinished"></translation>
+        <translation>Czas:</translation>
     </message>
 </context>
 <context>
@@ -4225,17 +4225,17 @@
     <message>
         <location filename="../src/scenemarkerselectdialog.cpp" line="27"/>
         <source>Select by marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaznacz znacznikiem</translation>
     </message>
     <message>
         <location filename="../src/scenemarkerselectdialog.cpp" line="76"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Powierzchnia</translation>
     </message>
     <message>
         <location filename="../src/scenemarkerselectdialog.cpp" line="77"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Objętość</translation>
     </message>
 </context>
 <context>
@@ -4243,37 +4243,37 @@
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="25"/>
         <source>Transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekształcenie</translation>
     </message>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="79"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kąt:</translation>
     </message>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="95"/>
         <source>Scaling factor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Współ. skalowania:</translation>
     </message>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="102"/>
         <source>Copy objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Skopiuj obiekty</translation>
     </message>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="111"/>
         <source>Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesunięcie</translation>
     </message>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="112"/>
         <source>Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót</translation>
     </message>
     <message>
         <location filename="../src/scenetransformdialog.cpp" line="113"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalowanie</translation>
     </message>
 </context>
 <context>
@@ -4282,144 +4282,144 @@
         <location filename="../src/sceneview.cpp" line="133"/>
         <location filename="../src/sceneview.cpp" line="135"/>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Przybliż</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="138"/>
         <location filename="../src/sceneview.cpp" line="140"/>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Oddal</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="143"/>
         <source>Zoom best fit</source>
-        <translation type="unfinished"></translation>
+        <translation>Dopasuj</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="144"/>
         <source>Best fit</source>
-        <translation type="unfinished"></translation>
+        <translation>Dopasowanie do wielkości okna</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="147"/>
         <location filename="../src/sceneview.cpp" line="148"/>
         <source>Zoom region</source>
-        <translation type="unfinished"></translation>
+        <translation>Dopasuj do zaznaczenia</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="152"/>
         <source>Operate on &amp;nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Operacje na &amp;węzłach</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="154"/>
         <location filename="../src/sceneview.cpp" line="1977"/>
         <source>Operate on nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Operacje na węzłach</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="157"/>
         <source>Operate on &amp;edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Operacje na &amp;krawędziach</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="159"/>
         <location filename="../src/sceneview.cpp" line="1980"/>
         <source>Operate on edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Operacje na krawędziach</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="162"/>
         <source>Operate on &amp;labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Operacje na &amp;etykietach</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="164"/>
         <location filename="../src/sceneview.cpp" line="1983"/>
         <source>Operate on labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Operacje na etykietach</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="167"/>
         <source>&amp;Postprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wyniki</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="169"/>
         <location filename="../src/sceneview.cpp" line="2002"/>
         <source>Postprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyniki</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="188"/>
         <source>Solution mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka rozwiązania</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="191"/>
         <source>Contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Izolinie</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="194"/>
         <source>Vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Wektory</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="205"/>
         <source>Local Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartości w punkcie</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="208"/>
         <source>Surface Integrals</source>
-        <translation type="unfinished"></translation>
+        <translation>Całka powierzchniowa</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="211"/>
         <source>Volume Integrals</source>
-        <translation type="unfinished"></translation>
+        <translation>Całka objętościowa</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="221"/>
         <source>&amp;Scene properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ustawienia widoku</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="226"/>
         <source>Object properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry obiektu</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="230"/>
         <source>&amp;Select region</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wybierz obszar</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="231"/>
         <source>Select region</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz obszar</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="234"/>
         <location filename="../src/sceneview.cpp" line="235"/>
         <source>Select by marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaznacz znacznikiem</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="243"/>
         <source>Set mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb ustawień</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="1996"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Model</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="1999"/>
         <source>Polynomial order</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopień wielomianu</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2763"/>
@@ -4952,7 +4952,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="126"/>
         <source>Surface Integral</source>
-        <translation type="unfinished"></translation>
+        <translation>Całka powierzchniowa</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="148"/>
