@@ -6,52 +6,52 @@
     <message>
         <location filename="../src/helpdialog.cpp" line="480"/>
         <source>Add new page</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj nową stronę</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="486"/>
         <source>Go back</source>
-        <translation type="unfinished"></translation>
+        <translation>Cofnij</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="494"/>
         <source>Go forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Naprzód</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="502"/>
         <source>Go home</source>
-        <translation type="unfinished"></translation>
+        <translation>Na początek</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="735"/>
         <source>Print Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Drukuj dokument</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="848"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>nieznany</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="936"/>
         <source>Add New Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj nową stronę</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="939"/>
         <source>Close This Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknij tą stronę</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="942"/>
         <source>Close Other Pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknij inną stronę</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="947"/>
         <source>Add Bookmark for this Page...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj zakładkę dla tej strony...</translation>
     </message>
 </context>
 <context>
@@ -59,12 +59,12 @@
     <message>
         <location filename="../src/gui.cpp" line="262"/>
         <source>Export image to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export obrazu do pliku</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="262"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -73,117 +73,117 @@
         <location filename="../src/chartdialog.cpp" line="26"/>
         <location filename="../src/chartdialog.cpp" line="264"/>
         <source>Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykres</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="101"/>
         <source>Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Rysuj</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="105"/>
         <source>Save image</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz obraz</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="109"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="135"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Początek</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="145"/>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>Koniec</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="149"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Długość</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="168"/>
         <source>Horizontal axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Oś pozioma</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="182"/>
         <source>Points:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkty:</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="183"/>
         <source>Time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chwila w czasie:</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="185"/>
         <source>Points and time step</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkty i chwila w czasie</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="200"/>
         <source>Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="213"/>
         <source>Variable:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmienna:</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="214"/>
         <source>Component:</source>
-        <translation type="unfinished"></translation>
+        <translation>Składnik:</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="249"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="250"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Czas</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="265"/>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabela</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="322"/>
         <source>Length (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Długość (m)</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="400"/>
         <source>Time (s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Czas (s)</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="456"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalar</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="460"/>
         <source>Magnitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Amplituda</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="484"/>
         <source>Export data to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export danych do pliku</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="484"/>
         <source>CSV files (*.csv);;Matlab/Octave script (*.m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki CSV (*.csv);;Skrypty Matlab/Octave (*.m)</translation>
     </message>
 </context>
 <context>
@@ -193,22 +193,22 @@
         <location filename="../src/util.cpp" line="1024"/>
         <location filename="../src/util.cpp" line="1028"/>
         <source>New version</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowa wersja</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="1009"/>
         <source>File is corrupted or network is disconnected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik jest uszkodzony lub wystąpił problem z siecią.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="1016"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Dostępna jest nowa wersja.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Bieżąca wersja: %1&lt;br/&gt;Nowa wersja: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="1028"/>
         <source>You are using actual version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Używasz aktualnej wersji.</translation>
     </message>
 </context>
 <context>
@@ -216,411 +216,411 @@
     <message>
         <location filename="../src/configdialog.cpp" line="25"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="112"/>
         <source>Width and height of bounding box over vector count.</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość i wysokość ramki do okoła licznika wektorów.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="147"/>
         <source>Language change</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmiana języka</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="148"/>
         <source>Interface language has been changed. You must restart the application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono język interfejsu. Należy zrestartować program.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="267"/>
         <source>Main</source>
-        <translation type="unfinished"></translation>
+        <translation>Główne</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="271"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Widok</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="275"/>
         <location filename="../src/configdialog.cpp" line="604"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolory</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="279"/>
         <source>Python</source>
-        <translation type="unfinished"></translation>
+        <translation>Python</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="283"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaawansowane</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="325"/>
         <source>UI:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wygląd:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="327"/>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>Język:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="329"/>
         <source>Default physic field:</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślny typ problemu:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="332"/>
         <location filename="../src/configdialog.cpp" line="547"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogólne</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="336"/>
         <source>Delete files with initial mesh (Triangle)</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń pliki z orginalną siatką (Triangle)</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="337"/>
         <source>Delete files with solution mesh (Hermes2D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń pliki z siatką rozwiązania (Hermes2D)</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="339"/>
         <source>Save problem with solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz problem razem z rozwiązaniem</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="349"/>
         <source>Solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Obliczenia</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="354"/>
         <source>Clear command history</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść historię poleceń</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="357"/>
         <source>Show value result in line edit input</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż wartość wyniku w linii wejścia</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="358"/>
         <source>Check new version during startup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podczas uruchomienia sprawdź dostępność nowej wersji.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="359"/>
         <source>Show convergence chart after solving</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż wykres zbieżności po rozwiązaniu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="360"/>
         <source>Enabled application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisuj dziennik programu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="361"/>
         <source>Enabled progress log</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisuj dziennik postępów</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="375"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Inne</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="404"/>
         <source>Zoom to mouse pointer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbliżenie na wskaźnik myszy</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="407"/>
         <source>Angle segments count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kąt pomiędzy segmentami</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="409"/>
         <source>Node size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar węzła:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="411"/>
         <source>Edge width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość krawędzi:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="413"/>
         <source>Label size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar etykiety:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="417"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="423"/>
         <source>Show rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż linijki</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="424"/>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Przyciągaj do siatki</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="427"/>
         <source>Grid step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok siatki:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="432"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="446"/>
         <source>Jet</source>
-        <translation type="unfinished"></translation>
+        <translation>Jet</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="447"/>
         <source>Autumn</source>
-        <translation type="unfinished"></translation>
+        <translation>Jesienna</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="448"/>
         <source>Hot</source>
-        <translation type="unfinished"></translation>
+        <translation>Gorąca</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="449"/>
         <source>Copper</source>
-        <translation type="unfinished"></translation>
+        <translation>Miedziana</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="450"/>
         <source>Cool</source>
-        <translation type="unfinished"></translation>
+        <translation>Zimna</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="451"/>
         <source>B/W ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>B/Cz rosnąco</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="452"/>
         <source>B/W descending</source>
-        <translation type="unfinished"></translation>
+        <translation>B-Cz malejąco</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="454"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtr</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="462"/>
         <source>Log. scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala log.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="467"/>
         <source>Palette:</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="470"/>
         <source>Steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kroki:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="473"/>
         <source>Base:</source>
-        <translation type="unfinished"></translation>
+        <translation>Podstawa:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="477"/>
         <source>Scalar view</source>
-        <translation type="unfinished"></translation>
+        <translation>Pola skalarne</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="486"/>
         <source>Contours count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba izolinii:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="489"/>
         <source>Contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Izolinie</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="493"/>
         <source>Proportional</source>
-        <translation type="unfinished"></translation>
+        <translation>Proporcjonalnie</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="494"/>
         <source>Color (b/w)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolor (b-cz)</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="501"/>
         <location filename="../src/configdialog.cpp" line="581"/>
         <source>Vectors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wektory:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="504"/>
         <source>Scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="508"/>
         <source>Vector view</source>
-        <translation type="unfinished"></translation>
+        <translation>Pola wektorowe</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="512"/>
         <source>Ligthing</source>
-        <translation type="unfinished"></translation>
+        <translation>Oświetlenie</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="514"/>
         <source>Gradient background</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradient w tle</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="517"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kąt:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="522"/>
         <source>3D</source>
-        <translation type="unfinished"></translation>
+        <translation>3D</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="526"/>
         <source>Show order label</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż kolejność etykiet</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="531"/>
         <source>Polynomial order</source>
-        <translation type="unfinished"></translation>
+        <translation>Rząd wielomianu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="548"/>
         <source>Postprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetwarzanie wyników</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="574"/>
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tło:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="575"/>
         <source>Grid:</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="576"/>
         <source>Cross:</source>
-        <translation type="unfinished"></translation>
+        <translation>Osie:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="577"/>
         <source>Nodes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzły:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="578"/>
         <source>Edges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Krawędzie:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="579"/>
         <source>Labels:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykiety:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="580"/>
         <source>Contours:</source>
-        <translation type="unfinished"></translation>
+        <translation>Izolinie:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="582"/>
         <source>Initial mesh:</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka początkowa:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="583"/>
         <source>Solution mesh:</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka rozwiązania:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="584"/>
         <source>Highlighted elements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyróżnione elementy:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="585"/>
         <source>Selected elements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaznaczone elementy:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="601"/>
         <location filename="../src/configdialog.cpp" line="680"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="622"/>
         <source>Isotropic refinement</source>
-        <translation type="unfinished"></translation>
+        <translation>Zagęszczanie izotropowe</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="623"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;prawda&lt;/b&gt;&lt;td&gt;&lt;td&gt;izotropowe zagęszczanie&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;fałsz&lt;/b&gt;&lt;td&gt;&lt;td&gt;anizotropowe zagęszczanie&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="628"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of cancidates in hp-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&lt;/b&gt;domyślna wartość to 1.0, parametr ten wpływa&lt;br/&gt;na wybór kandydatów do poprawy sieci typu &apos;hp&apos;</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="630"/>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&lt;/b&gt;ilościowy parament funkcji adapt(...) &lt;br/&gt;, ma inne znaczenie dla różnych strategii adaptacji</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="632"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="633"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="634"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="635"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="641"/>
@@ -708,32 +708,32 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="286"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Krawędź</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="327"/>
         <source>Start point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt początkowy:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="328"/>
         <source>End point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt końcowy:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="329"/>
         <source>Boundary condition:</source>
-        <translation type="unfinished"></translation>
+        <translation>Warunek brzegowy:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="330"/>
         <source>Angle (deg.):</source>
-        <translation type="unfinished"></translation>
+        <translation>Kąt (stopnie):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="331"/>
         <source>Length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Długość:</translation>
     </message>
 </context>
 <context>
@@ -741,12 +741,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="684"/>
         <source>BC type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="686"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość:</translation>
     </message>
 </context>
 <context>
@@ -754,22 +754,22 @@
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="643"/>
         <source>BC Type X:</source>
-        <translation type="unfinished"></translation>
+        <translation>WB typu X:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="645"/>
         <source>BC Type Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>WB typu Y:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="647"/>
         <source>Force X (N):</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła X(N):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="649"/>
         <source>Force Y (N):</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła Y (N):</translation>
     </message>
 </context>
 <context>
@@ -777,12 +777,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="710"/>
         <source>BC type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="712"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość:</translation>
     </message>
 </context>
 <context>
@@ -790,22 +790,22 @@
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="672"/>
         <source>BC Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="674"/>
         <source>Velocity X (m/s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Prędkość X (m/s):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="676"/>
         <source>Velocity Y (m/s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Prędkość Y (m/s):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="678"/>
         <source>Pressure (Pa):</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciśnienie (Pa):</translation>
     </message>
 </context>
 <context>
@@ -813,12 +813,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="605"/>
         <source>BC type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="607"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość:</translation>
     </message>
 </context>
 <context>
@@ -826,27 +826,27 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="862"/>
         <source>BC type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="864"/>
         <source>Temperature (deg.):</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatura (stopnie):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="866"/>
         <source>Heat flux (W/m2):</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumień ciepła (W/m2):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="868"/>
         <source>Heat transfer coef. (W/m2.K):</source>
-        <translation type="unfinished"></translation>
+        <translation>Współ. przenik. cieplnej (W/m2.K):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="870"/>
         <source>External temperature (deg.):</source>
-        <translation type="unfinished"></translation>
+        <translation>Zewnętrzna temperatura (stopnie):</translation>
     </message>
 </context>
 <context>
@@ -854,12 +854,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2576"/>
         <source>BC type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="2578"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość:</translation>
     </message>
 </context>
 <context>
@@ -867,22 +867,22 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="116"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa:</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="144"/>
         <source>Boundary marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik brzegu:</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="144"/>
         <source>Boundary marker name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Istnieje już znacznik brzegu o takiej nazwie.</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="155"/>
         <source>Boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Warunek brzegowy</translation>
     </message>
 </context>
 <context>
@@ -890,37 +890,37 @@
     <message>
         <location filename="../src/scenefunction.cpp" line="137"/>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcja</translation>
     </message>
     <message>
         <location filename="../src/scenefunction.cpp" line="183"/>
         <source>Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykres</translation>
     </message>
     <message>
         <location filename="../src/scenefunction.cpp" line="187"/>
         <source>Save image</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz obraz</translation>
     </message>
     <message>
         <location filename="../src/scenefunction.cpp" line="191"/>
         <source>Start:</source>
-        <translation type="unfinished"></translation>
+        <translation>Początek:</translation>
     </message>
     <message>
         <location filename="../src/scenefunction.cpp" line="193"/>
         <source>End:</source>
-        <translation type="unfinished"></translation>
+        <translation>Koniec:</translation>
     </message>
     <message>
         <location filename="../src/scenefunction.cpp" line="195"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa:</translation>
     </message>
     <message>
         <location filename="../src/scenefunction.cpp" line="197"/>
         <source>Function:</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcja:</translation>
     </message>
 </context>
 <context>
@@ -928,32 +928,32 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="461"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykieta</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="509"/>
         <source>Global order is %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Globalny rząd %1.</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="520"/>
         <source>Triangle area (m):</source>
-        <translation type="unfinished"></translation>
+        <translation>Powierzchnia trójkąta (m):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="521"/>
         <source>Polynomial order (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Rząd wielomianu (-):</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="523"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry siatki</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="529"/>
         <source>Material:</source>
-        <translation type="unfinished"></translation>
+        <translation>Materiał:</translation>
     </message>
 </context>
 <context>
@@ -961,7 +961,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="738"/>
         <source>Conductivity (S/m):</source>
-        <translation type="unfinished"></translation>
+        <translation>Konduktywność (S/m):</translation>
     </message>
 </context>
 <context>
@@ -969,12 +969,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="710"/>
         <source>Young modulus (Pa):</source>
-        <translation type="unfinished"></translation>
+        <translation>Moduł Younga (Pa):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="712"/>
         <source>Poisson number (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba Poissona (-):</translation>
     </message>
 </context>
 <context>
@@ -982,12 +982,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="767"/>
         <source>Permittivity (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Przenikalność (-):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="769"/>
         <source>Charge density (C/m3):</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość ładunku (C/m3):</translation>
     </message>
 </context>
 <context>
@@ -995,12 +995,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="765"/>
         <source>Dynamic viscosity (Pa.s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Lepkość dymaniczna (Pa.s):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="767"/>
         <source>Density (kg/m3):</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość (kg/m3):</translation>
     </message>
 </context>
 <context>
@@ -1008,12 +1008,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="667"/>
         <source>Constant:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stała:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="669"/>
         <source>Rightside:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prawa strona:</translation>
     </message>
 </context>
 <context>
@@ -1021,22 +1021,22 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="994"/>
         <source>Thermal conductivity (W/m.K):</source>
-        <translation type="unfinished"></translation>
+        <translation>Przewodność cieplna (W/m.K):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="996"/>
         <source>Volume heat (J/m3):</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło cieplne (J/m3):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="998"/>
         <source>Density (kg/m3):</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość (kg/m3):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="1000"/>
         <source>Specific heat (J/kg.K):</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło cieplne (J/kg.K):</translation>
     </message>
 </context>
 <context>
@@ -1134,12 +1134,12 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="263"/>
         <source>Edge marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik krawędzi</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="301"/>
         <source>Edge marker:</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik krawędzi:</translation>
     </message>
 </context>
 <context>
@@ -1147,67 +1147,67 @@
     <message>
         <location filename="../src/gui.cpp" line="315"/>
         <source>&amp;Create directory</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Utwórz katalog</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="318"/>
         <source>Create &amp;file</source>
-        <translation type="unfinished"></translation>
+        <translation>Utwórz &amp;plik</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="321"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zmiana nazwy</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="324"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Usuń</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="428"/>
         <source>Create directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Utwórz katalog</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="428"/>
         <location filename="../src/gui.cpp" line="501"/>
         <source>Enter directory name</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj nazwę katalogu</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="442"/>
         <location filename="../src/gui.cpp" line="454"/>
         <source>Create file</source>
-        <translation type="unfinished"></translation>
+        <translation>Utwórz plik</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="442"/>
         <location filename="../src/gui.cpp" line="514"/>
         <source>Enter file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj nazwę pliku</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="501"/>
         <location filename="../src/gui.cpp" line="507"/>
         <source>Rename directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmiana nazwy katalogu</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="507"/>
         <source>Directory could not be renamed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zmienić nazwy katalogu.</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="514"/>
         <location filename="../src/gui.cpp" line="524"/>
         <source>Rename file</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmiana nazwy pliku</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="524"/>
         <source>File could not be renamed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zmienić nazwy pliku.</translation>
     </message>
 </context>
 <context>
@@ -1215,22 +1215,22 @@
     <message>
         <location filename="../src/helpdialog.cpp" line="31"/>
         <source>Help dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Okno pomocy</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="66"/>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtr:</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="80"/>
         <source>Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Treść</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="81"/>
         <source>Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeks</translation>
     </message>
 </context>
 <context>
@@ -1238,7 +1238,7 @@
     <message>
         <location filename="../src/helpdialog.cpp" line="314"/>
         <source>Open Link in New Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz odnośnik w nowej zakładce</translation>
     </message>
 </context>
 <context>
@@ -1246,57 +1246,57 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="113"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="227"/>
         <source>Current field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole prądu</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="231"/>
         <source>Conductivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Przewodność:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="234"/>
         <source>Power losses dens.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość strat mocy:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="234"/>
         <source>W/m3</source>
-        <translation type="unfinished"></translation>
+        <translation>W/m3</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="237"/>
         <source>Potential:</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="241"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole elektryczne</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="250"/>
         <source>Current density</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="264"/>
         <source>Current Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole prądu</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="267"/>
         <source>Current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prąd:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="267"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
 </context>
 <context>
@@ -1305,27 +1305,27 @@
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="175"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="187"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="318"/>
         <source>Elasticity</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprężystość</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="322"/>
         <source>Young modulus:</source>
-        <translation type="unfinished"></translation>
+        <translation>Moduł Younga:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="325"/>
         <source>Poisson ratio:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba Poissona:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="328"/>
         <source>Von Mises stress:</source>
-        <translation type="unfinished"></translation>
+        <translation>Von Mises stress:</translation>
     </message>
 </context>
 <context>
@@ -1333,68 +1333,68 @@
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="117"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="235"/>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="287"/>
         <source>Electrostatic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole elektryczne</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="239"/>
         <source>Permittivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Przenikalność:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="242"/>
         <source>Charge density:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość ładunku:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="245"/>
         <source>Energy density:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość energii:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="248"/>
         <source>Potential:</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="252"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole elektryczne</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="261"/>
         <source>Electric displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukcja elektryczna</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="275"/>
         <source>Electrostatic Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole elektrostatyczne</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="278"/>
         <source>Charge:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ładunek:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="278"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="290"/>
         <source>Energy:</source>
-        <translation type="unfinished"></translation>
+        <translation>Energia:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="290"/>
         <source>J</source>
-        <translation type="unfinished"></translation>
+        <translation>J</translation>
     </message>
 </context>
 <context>
@@ -1402,32 +1402,32 @@
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="184"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="309"/>
         <source>Flow</source>
-        <translation type="unfinished"></translation>
+        <translation>Przepływ</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="313"/>
         <source>Dynamic viscosity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lepkość dymaniczna:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="316"/>
         <source>Density:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="320"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Prędkość</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="328"/>
         <source>Pressure:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciśnienie:</translation>
     </message>
 </context>
 <context>
@@ -1435,32 +1435,32 @@
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="121"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="239"/>
         <source>General field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole uogólnione</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="243"/>
         <source>Constant:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stała:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="246"/>
         <source>Right side:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prawa strona:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="249"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="253"/>
         <source>Gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradient</translation>
     </message>
 </context>
 <context>
@@ -1468,75 +1468,75 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="165"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="308"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="359"/>
         <source>Heat transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Przepływ ciepła</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="312"/>
         <source>Thermal conductivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Przewodność cieplna:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="315"/>
         <source>Volume heat:</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło cieplne:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="318"/>
         <source>Temperature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatura:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="322"/>
         <source>Heat flux</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumień ciepła</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="331"/>
         <source>Temperature gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradient temperatury</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="345"/>
         <source>Heat Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Przepływ ciepła</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="348"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="362"/>
         <source>Temperature avg.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Średnia temp.:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="348"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="349"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="349"/>
         <source>Temperature dif.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Różnica temp.:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="350"/>
         <source>Heat flux:</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumień ciepła:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="350"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="362"/>
         <source>deg.</source>
-        <translation type="unfinished"></translation>
+        <translation>deg.</translation>
     </message>
 </context>
 <context>
@@ -1544,7 +1544,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="249"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="487"/>
@@ -1552,18 +1552,18 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="673"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="691"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole magnetyczne</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="493"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="612"/>
         <source>Permeability:</source>
-        <translation type="unfinished"></translation>
+        <translation>Przenikalność mag.:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="497"/>
         <source>Vector potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał wektorowy</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="500"/>
@@ -1576,7 +1576,7 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="719"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="728"/>
         <source>real:</source>
-        <translation type="unfinished"></translation>
+        <translation>rzecz.:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="501"/>
@@ -1589,7 +1589,7 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="720"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="729"/>
         <source>imag:</source>
-        <translation type="unfinished"></translation>
+        <translation>uroj.:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="502"/>
@@ -1602,194 +1602,194 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="721"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="730"/>
         <source>magnitude:</source>
-        <translation type="unfinished"></translation>
+        <translation>amplituda:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="509"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukcja mag. - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="518"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukcja mag. - uroj.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="530"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole magnetyczne - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="539"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole magnetyczne - uroj.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="548"/>
         <source>Currrent dens. - external</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - zewnętrzna</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="557"/>
         <source>Current density - avg. transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - śr. przesunięcia</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="566"/>
         <source>Current density - velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - prędkość</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="575"/>
         <source>Current density - total</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - całkowita</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="587"/>
         <source>Lorentz force - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła Lorentza - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="596"/>
         <source>Lorentz force - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła Lorentza - uroj.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="604"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="661"/>
         <source>Losses density:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość strat:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="607"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="664"/>
         <source>Energy density:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość energii:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="615"/>
         <source>Conductivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Przewodność:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="618"/>
         <source>Rem. flux dens.:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rem. flux dens.:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="619"/>
         <source>Direction of rem.:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Direction of rem.:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="623"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Prędkość</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="630"/>
         <source>Vector potential:</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał wektorowy:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="634"/>
         <source>Flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukcja mag.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="652"/>
         <source>Current density</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="655"/>
         <source>external:</source>
-        <translation type="unfinished"></translation>
+        <translation>zewnętrzny:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="656"/>
         <source>transform:</source>
-        <translation type="unfinished"></translation>
+        <translation>przesunięcia:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="657"/>
         <source>velocity:</source>
-        <translation type="unfinished"></translation>
+        <translation>przewodnictwa:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="658"/>
         <source>total:</source>
-        <translation type="unfinished"></translation>
+        <translation>całkowity:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="678"/>
         <source>Maxwell force</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła Maxwella</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="698"/>
         <source>External current</source>
-        <translation type="unfinished"></translation>
+        <translation>Zewnętrzny prąd</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="707"/>
         <source>Transform induced current</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukowany prąd przesunięcia</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="716"/>
         <source>Velocity induced current</source>
-        <translation type="unfinished"></translation>
+        <translation>Prąd przewodnictwa</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="725"/>
         <source>Total current</source>
-        <translation type="unfinished"></translation>
+        <translation>Całkowity prąd</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="732"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="751"/>
         <source>Power Losses:</source>
-        <translation type="unfinished"></translation>
+        <translation>Straty mocy:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="732"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="751"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="733"/>
         <source>Energy avg.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Średnia energia:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="733"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="752"/>
         <source>J</source>
-        <translation type="unfinished"></translation>
+        <translation>J</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="737"/>
         <source>Lorentz force avg.</source>
-        <translation type="unfinished"></translation>
+        <translation>Średnia siła Lorentza:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="743"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="761"/>
         <source>Torque:</source>
-        <translation type="unfinished"></translation>
+        <translation>Moment siły:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="743"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="761"/>
         <source>Nm</source>
-        <translation type="unfinished"></translation>
+        <translation>Nm</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="747"/>
         <source>External current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zewnętrzny prąd:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="747"/>
@@ -1797,38 +1797,38 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="749"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="750"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="748"/>
         <source>Transform current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prąd przesunięcia:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="749"/>
         <source>Velocity current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prąd przewodnictwa:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="750"/>
         <source>Total current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Całkowity prąd:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="752"/>
         <source>Energy:</source>
-        <translation type="unfinished"></translation>
+        <translation>Energia:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="755"/>
         <source>Force</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="758"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="759"/>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation>N</translation>
     </message>
 </context>
 <context>
@@ -1836,12 +1836,12 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="336"/>
         <source>Label marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik etykiety</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="374"/>
         <source>Label marker:</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik etykiety:</translation>
     </message>
 </context>
 <context>
@@ -1849,7 +1849,7 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="198"/>
         <source>Local point value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość w punkcie</translation>
     </message>
 </context>
 <context>
@@ -1857,43 +1857,43 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="69"/>
         <source>Local Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartości lokalne</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="89"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykieta</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="89"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="89"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednostki</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="122"/>
         <source>Local point value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość w punkcie</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="126"/>
         <source>Copy value</source>
-        <translation type="unfinished"></translation>
+        <translation>Skopiuj wartość</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="181"/>
         <source>Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="184"/>
         <location filename="../src/localvalueview.cpp" line="185"/>
         <source>m</source>
-        <translation type="unfinished"></translation>
+        <translation>m</translation>
     </message>
 </context>
 <context>
@@ -1901,39 +1901,39 @@
     <message>
         <location filename="../src/logdialog.cpp" line="25"/>
         <source>Log dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Okno dziennika</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="49"/>
         <location filename="../src/logdialog.cpp" line="171"/>
         <source>Save log</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz dziennik</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="52"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknij</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="55"/>
         <source>Adapt. error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd adapt.</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="58"/>
         <source>Adapt. DOFs</source>
-        <translation type="unfinished"></translation>
+        <translation>Ilość zmiennych adapt.</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="114"/>
         <location filename="../src/logdialog.cpp" line="156"/>
         <source>No messages...</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak wiadomości...</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="171"/>
         <source>Log files (*.log)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki dziennika (*.log)</translation>
     </message>
 </context>
 <context>
@@ -1941,519 +1941,519 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="116"/>
         <source>&amp;New...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nowy...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="118"/>
         <source>Create a new file</source>
-        <translation type="unfinished"></translation>
+        <translation>Utwórz nowy plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="121"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Otwórz...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="123"/>
         <source>Open an existing file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz istniejący plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="126"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zapisz</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="128"/>
         <source>Save the file to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz plik na dysk</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="132"/>
         <source>Save with solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz razem z rozwiązaniem</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="133"/>
         <source>Save the file to disk with solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz plik wraz z rozwiązaniem na dysk</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="140"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz &amp;jako...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="142"/>
         <source>Save the file under a new name</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz plik pod nową nazwą</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="145"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zamknij</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="147"/>
         <source>Close the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknij plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="150"/>
         <source>Import DXF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Import DXF...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="151"/>
         <source>Import AutoCAD DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Import AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="154"/>
         <source>Export DXF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export DXF...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="155"/>
         <source>Export AutoCAD DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Export AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="158"/>
         <location filename="../src/mainwindow.cpp" line="956"/>
         <source>Export mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export pliku siatki</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="159"/>
         <source>Export Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export pliku siatki Hermes2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="162"/>
         <source>Export image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export obrazu...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="163"/>
         <location filename="../src/mainwindow.cpp" line="738"/>
         <source>Export image to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export obrazu do pliku</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="166"/>
         <source>Create &amp;video...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tworzenie &amp;wideo...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="167"/>
         <source>Create video</source>
-        <translation type="unfinished"></translation>
+        <translation>Tworzenie wideo</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="170"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>Wy&amp;jście</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="171"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="172"/>
         <source>Exit the application</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjście z programu</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="179"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cofnij</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="181"/>
         <source>Undo operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Cofnij operacje</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="185"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ponów</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="187"/>
         <source>Redo operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponów operacje</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="189"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="191"/>
         <source>Copy image to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj obraz do schowka.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="194"/>
         <location filename="../src/mainwindow.cpp" line="370"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pomoc</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="195"/>
         <source>Show help</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż okno pomocy</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="199"/>
         <source>&amp;Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Skróty klawisz.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="200"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Skróty klawiszowe</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="203"/>
         <source>&amp;Online help</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomoc &amp;online</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="204"/>
         <source>Online help</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomoc online</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="207"/>
         <location filename="../src/mainwindow.cpp" line="208"/>
         <source>Check version</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprawdź wersje</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="211"/>
         <source>About &amp;Agros2D</source>
-        <translation type="unfinished"></translation>
+        <translation>O. &amp;Agros2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="212"/>
         <source>Show the application&apos;s About box</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż okno informacyjne</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="216"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>O &amp;Qt</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="217"/>
         <source>Show the Qt library&apos;s About box</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż okno o bibliotece Qt</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="221"/>
         <source>&amp;Options</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opcje</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="222"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="226"/>
         <source>&amp;Mesh area</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj siatkę</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="227"/>
         <source>Mesh area</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj siatkę</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="230"/>
         <source>&amp;Solve problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiąż problem</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="231"/>
         <source>Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+S</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="232"/>
         <source>Solve problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiąż problem</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="235"/>
         <source>&amp;Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wykres</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="236"/>
         <source>Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykres</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="239"/>
         <source>Fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Pełny ekran</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="240"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="246"/>
         <source>Script &amp;editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor skryptu</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="247"/>
         <source>Script editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor skryptu</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="251"/>
         <source>Run &amp;script...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykonaj skrypt</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="252"/>
         <source>Run script...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykonaj skrypt...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="255"/>
         <source>Run &amp;command...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykonaj &amp;komendę...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="256"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="257"/>
         <source>Run command...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykonaj komendę</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="260"/>
         <source>&amp;Report...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sprawozdanie...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="261"/>
         <source>Problem html report</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprawozdanie w formacie HTML</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="264"/>
         <source>Progress &amp;log</source>
-        <translation type="unfinished"></translation>
+        <translation>Dziennik &amp;postępu</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="265"/>
         <source>Show progress log</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż dziennik postępu</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="268"/>
         <source>Application &amp;log</source>
-        <translation type="unfinished"></translation>
+        <translation>Dziennik &amp;aplikacji</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="269"/>
         <source>Show application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż dziennik aplikacji</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="275"/>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dodaj</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="276"/>
         <source>&amp;Recent files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ostatnie pliki</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="279"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="303"/>
         <source>E&amp;dit</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;dycja</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="315"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Widok</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="328"/>
         <source>&amp;Problem</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Problem</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="356"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Narzędzia</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="387"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="393"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Edycja</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="403"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Widok</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="410"/>
         <source>Problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="427"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="436"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation>Chwilowa</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="438"/>
         <source>Time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chwila czasu:</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="463"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Gotowy</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="521"/>
         <source>Position: [%1; %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Pozycja: [%1; %2]</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="598"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="598"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki Agros2D (*.a2d *.py);;Pliki danych Agros2D (*.a2d);;Skrypty Python (*.py)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="635"/>
         <location filename="../src/mainwindow.cpp" line="639"/>
         <location filename="../src/mainwindow.cpp" line="846"/>
         <source>File open</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="635"/>
         <source>Unknown suffix.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznane rozszerzenie</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="639"/>
         <source>File &apos;%1&apos; is not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="691"/>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="691"/>
         <source>Agros2D files (*.a2d)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki Agros2D (*.a2d)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="717"/>
         <source>Import file</source>
-        <translation type="unfinished"></translation>
+        <translation>Import pliku</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="717"/>
         <location filename="../src/mainwindow.cpp" line="727"/>
         <source>DXF files (*.dxf)</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF files (*.dxf)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="727"/>
         <source>Export file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export pliku</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="738"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG files (*.png)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="825"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz plik</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="825"/>
         <source>Python script (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrypt Python (*.py)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="846"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="887"/>
         <source>Problem Type: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ problemu: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="888"/>
         <source>Physic Field: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fizyka: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="889"/>
         <source>Analysis type: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ analizy: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="919"/>
         <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Bugzilla: &lt;a href=&quot;http://hpfem.org/bugs/buglist.cgi?bug_status=__open__&amp;product=agros2d&quot;&gt;http://hpfem.org/bugs/.../agros2d&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Bugzilla: &lt;a href=&quot;http://hpfem.org/bugs/buglist.cgi?bug_status=__open__&amp;product=agros2d&quot;&gt;http://hpfem.org/bugs/.../agros2d&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="939"/>
         <source>About Agros2D</source>
-        <translation type="unfinished"></translation>
+        <translation>O Agros2D</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="956"/>
         <source>Mesh files (*.mesh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik siatki (*.mesh)</translation>
     </message>
 </context>
 <context>
@@ -2938,187 +2938,187 @@
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="299"/>
         <source>Boundary marker already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Istnieje już taki znacznik brzegu.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="317"/>
         <source>Boundary marker with name &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje znacznik brzegu o nazwie &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="335"/>
         <source>Label marker already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Istnieje już taki znacznik etykiety.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="353"/>
         <source>Label marker with name &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie istnieje znacznik etykiety o nazwie &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="403"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Numer węzła musi się zawierać pomiędzy 0, a &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="442"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="665"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Numer krawędzie musi się zawierać pomiędzy 0, a &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="481"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="713"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Numer etykiety musi się zawierać pomiędzy 0, a &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="586"/>
         <source>Mode &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="606"/>
         <source>Postprocessor mode &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="747"/>
         <source>View type &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ widoku &apos;%1&apos; nie jest zaimplementowany.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="752"/>
         <source>Physic field variable &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole &apos;%1&apos; nie jest zaimplementowane.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="754"/>
         <source>Physic field variable &apos;%1&apos; cannot be used with this field.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole &apos;%1&apos; nie może być użyte w tym przypadku.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="759"/>
         <source>Physic field variable component &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Składowa pola &apos;%1&apos; nie jest zaimplementowana.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="762"/>
         <source>Physic field variable is scalar variable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole jest skalarne.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="831"/>
         <source>Solved problem is not transient.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiązywany problem nie jest zagadnieniem czasowym.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="834"/>
         <source>Time step must be between 0 and %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok czasowy musi być pomiędzy 0, a %1.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="177"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmienna</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="179"/>
         <source>Gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradient</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="181"/>
         <source>Constant</source>
-        <translation type="unfinished"></translation>
+        <translation>Stała</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="184"/>
         <location filename="../src/util.cpp" line="252"/>
         <source>Scalar potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał skalarny</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="186"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole elektryczne</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="188"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukcja elektryczna</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="190"/>
         <location filename="../src/util.cpp" line="241"/>
         <source>Energy density</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość energii</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="192"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Przenikalność</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="195"/>
         <source>Vector potential - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał wektorowy - rzeczywisty</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="197"/>
         <source>Vector potential - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał wektorowy - urojony</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="199"/>
         <location filename="../src/util.cpp" line="567"/>
         <source>Vector potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjał wektorowy</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="201"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukcja mag. - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="203"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukcja mag. - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="205"/>
         <source>Flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Indukcja mag.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="207"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole magnetyczne - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="209"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole magnetyczne - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="211"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole magnetyczne</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="213"/>
         <source>Current density - external - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - zewnętrzna - rzecz.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="215"/>
         <source>Current density - external - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - zewnętrzna - uroj.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="217"/>
         <source>Current density - external</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość prądu - zewnętrzna</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="219"/>
