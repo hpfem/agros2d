@@ -922,6 +922,7 @@ void MainWindow::doAbout()
                    "<p><table>"
                    "<tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a> (main developer)</td></tr>"
                    "<tr><td>&nbsp;</td><td>Frantisek Mach <a href=\"mailto:mach.frantisek@gmail.com\">mach.frantisek@gmail.com</a> (developer, documentation)</td></tr>"
+                   "<tr><td>&nbsp;</td><td>Bartosz Sawicki <a href=\"mailto:sawickib@iem.pw.edu.pl\">sawickib@iem.pw.edu.pl</a> (developer, Polish translation)</td></tr>"
                    "<tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr>"
                    "<tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr>"
                    "<tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr>"
