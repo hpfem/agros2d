@@ -148,6 +148,19 @@ void SceneView::createActions()
     actSceneZoomRegion->setStatusTip(tr("Zoom region"));
     actSceneZoomRegion->setCheckable(true);
 
+    // scene - grid
+    actSceneShowGrid = new QAction(icon("grid"), tr("Show grid"), this);
+    actSceneShowGrid->setStatusTip(tr("Show grid"));
+    connect(actSceneShowGrid, SIGNAL(triggered()), this, SLOT(doShowGrid()));
+
+    actSceneSnapToGrid = new QAction(icon("snap-to-grid"), tr("Snap to grid"), this);
+    actSceneSnapToGrid->setStatusTip(tr("Snap to grid"));
+    connect(actSceneSnapToGrid, SIGNAL(triggered()), this, SLOT(doSnapToGrid()));
+
+    actSceneShowRulers = new QAction(icon("rulers"), tr("Show rulers"), this);
+    actSceneShowRulers->setStatusTip(tr("Show rulers"));
+    connect(actSceneShowRulers, SIGNAL(triggered()), this, SLOT(doShowRulers()));
+
     // scene - operate on items
     actSceneModeNode = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
     actSceneModeNode->setShortcut(Qt::Key_F5);
@@ -2934,6 +2947,23 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
         m_scale2d = 1.95/maxScene;
 
     setZoom(0);
+}
+
+void SceneView::doShowGrid()
+{
+    m_sceneView->sceneViewSettings().showGrid = !m_sceneView->sceneViewSettings().showGrid;
+    doInvalidated();
+}
+
+void SceneView::doSnapToGrid()
+{
+    Util::config()->snapToGrid = !Util::config()->snapToGrid;
+}
+
+void SceneView::doShowRulers()
+{
+    Util::config()->showRulers = !Util::config()->showRulers;
+    doInvalidated();
 }
 
 void SceneView::doSetChartLine(const Point &start, const Point &end)

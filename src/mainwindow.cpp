@@ -440,6 +440,12 @@ void MainWindow::createToolBars()
     cmbTimeStep->setMinimumWidth(1.7*fontMetrics().width("0.00e+00"));
     connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
     tlbTransient->addWidget(cmbTimeStep);
+
+    tlbWorkspace = addToolBar(tr("Workspace"));
+    tlbWorkspace->setObjectName("Workspace");
+    tlbWorkspace->addAction(sceneView->actSceneShowGrid);
+    tlbWorkspace->addAction(sceneView->actSceneSnapToGrid);
+    tlbWorkspace->addAction(sceneView->actSceneShowRulers);
 }
 
 void MainWindow::createStatusBar()
