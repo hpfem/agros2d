@@ -1836,7 +1836,7 @@ void SceneView::paintVectors()
         qDebug() << "SceneView::paintVectors(), min = " << vectorRangeMin << ", max = " << vectorRangeMax;
 
         double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
-        if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
+        // if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
 
         RectPoint rect = m_scene->boundingBox();
         double gs = (rect.width() + rect.height()) / Util::config()->vectorCount;
@@ -1918,7 +1918,7 @@ void SceneView::paintVectors()
                         double value = sqrt(sqr(dx) + sqr(dy));
                         double angle = atan2(dy, dx);
 
-                        if (Util::config()->vectorProportional)
+                        if ((Util::config()->vectorProportional) && (fabs(vectorRangeMin - vectorRangeMax) > 0.0))
                         {
                             dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
                             dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
