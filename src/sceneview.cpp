@@ -1833,6 +1833,11 @@ void SceneView::paintVectors()
         double vectorRangeMin = m_scene->sceneSolution()->vecVectorView().get_min_value();
         double vectorRangeMax = m_scene->sceneSolution()->vecVectorView().get_max_value();
 
+        //Add 20% margin to the range
+        double vectorRange = vectorRangeMax - vectorRangeMin;
+        vectorRangeMin = vectorRangeMin - 0.2*vectorRange;
+        vectorRangeMax = vectorRangeMax + 0.2*vectorRange;
+
         qDebug() << "SceneView::paintVectors(), min = " << vectorRangeMin << ", max = " << vectorRangeMax;
 
         double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
