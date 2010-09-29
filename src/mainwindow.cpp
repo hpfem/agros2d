@@ -918,7 +918,7 @@ void MainWindow::doAbout()
 {
     QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics application based on <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library.<br/><br/>"
                    "Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>"
-                   "Bugzilla: <a href=\"http://hpfem.org/bugs/buglist.cgi?bug_status=__open__&product=agros2d\">http://hpfem.org/bugs/.../agros2d</a><br/><br/><b>Authors:</b>"
+                   "Issues: <a href=\"http://github.com/hpfem/agros2d/issues\">http://github.com/hpfem/agros2d/issues</a><br/><br/><b>Authors:</b>"
                    "<p><table>"
                    "<tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a> (main developer)</td></tr>"
                    "<tr><td>&nbsp;</td><td>Frantisek Mach <a href=\"mailto:mach.frantisek@gmail.com\">mach.frantisek@gmail.com</a> (developer, documentation)</td></tr>"
