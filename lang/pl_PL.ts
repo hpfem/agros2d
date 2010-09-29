@@ -308,7 +308,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="357"/>
         <source>Show value result in line edit input</source>
-        <translation>Pokaż wartość wyniku w linii wejścia</translation>
+        <translation type="unfinished">Pokaż wartość wyniku w linii wejścia</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="358"/>
@@ -1849,7 +1849,7 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="198"/>
         <source>Local point value</source>
-        <translation>Wartość w punkcie</translation>
+        <translation>Wybieranie punktu</translation>
     </message>
 </context>
 <context>
@@ -1857,12 +1857,12 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="69"/>
         <source>Local Values</source>
-        <translation>Wartości lokalne</translation>
+        <translation>Wartość w punkcie</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="89"/>
         <source>Label</source>
-        <translation>Etykieta</translation>
+        <translation>Opis</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="89"/>
@@ -1872,12 +1872,12 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="89"/>
         <source>Unit</source>
-        <translation>Jednostki</translation>
+        <translation>Jedn.</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="122"/>
         <source>Local point value</source>
-        <translation>Wartość w punkcie</translation>
+        <translation>Wybieranie punktu</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="126"/>
@@ -4582,12 +4582,12 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1145"/>
         <source>Goto line</source>
-        <translation type="unfinished"></translation>
+        <translation>Skocz do linii</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1145"/>
         <source>Line number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Numer linii</translation>
     </message>
 </context>
 <context>
@@ -4595,280 +4595,281 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="306"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nowy</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="310"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Otwórz...</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="314"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zapisz</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="318"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz &amp;jako...</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="325"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zamknij</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="329"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Drukuj</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="333"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cofnij</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="336"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ponów</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="339"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wytnij</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="343"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopiuj</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="347"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wklej</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="350"/>
         <source>&amp;Find</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Znajdź</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="354"/>
         <source>Find &amp;next</source>
-        <translation type="unfinished"></translation>
+        <translation>Znajdź &amp;następny</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="358"/>
         <location filename="../src/scripteditordialog.cpp" line="362"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastąp</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="366"/>
         <source>Indent</source>
-        <translation type="unfinished"></translation>
+        <translation>Wcięcie</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="367"/>
         <source>Unindent</source>
-        <translation type="unfinished"></translation>
+        <translation>Bez wcięcia</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="369"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakomentuj</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="371"/>
         <source>Uncomment</source>
-        <translation type="unfinished"></translation>
+        <translation>Odkomentuj</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="372"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="374"/>
         <source>Goto line</source>
-        <translation type="unfinished"></translation>
+        <translation>Przejdź do linii</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="375"/>
         <source>Alt+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+G</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="377"/>
         <source>&amp;Run Python script</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uruchom skrypt Pythona</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="378"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="380"/>
         <source>&amp;Create script from model</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stwórz skrypt z modelu</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="381"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="384"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wyjście</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="385"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="386"/>
         <source>Exit script editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjdź z edytora</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="389"/>
         <location filename="../src/scripteditordialog.cpp" line="436"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pomoc</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="396"/>
         <source>&amp;Recent files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ostatnie pliki</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="398"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Plik</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="411"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Edycja</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="431"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Narzędzia</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="439"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="445"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Edycja</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="454"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="470"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="472"/>
         <source>Path: </source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog:</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="483"/>
         <source>Add new page</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj nową stronę</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="526"/>
         <source>File browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybór pliku</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="541"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Gotowe</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="630"/>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz katalog</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="637"/>
         <location filename="../src/scripteditordialog.cpp" line="898"/>
         <location filename="../src/scripteditordialog.cpp" line="919"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>Bez nazwy</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="647"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz plik</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="647"/>
         <location filename="../src/scripteditordialog.cpp" line="698"/>
         <location filename="../src/scripteditordialog.cpp" line="728"/>
         <source>Python files (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki Pythona (*.py)</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="659"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacje</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="659"/>
         <source>Script is already opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrypt jest już otwarty.</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="698"/>
         <location filename="../src/scripteditordialog.cpp" line="728"/>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz plik</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="720"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zapisać pliku &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="747"/>
         <source>Print Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Drukuj dokument</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="834"/>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikacja</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="834"/>
         <source>The document has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokument został zmieniony. Czy chcesz 
+zapisać zmiany?</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="904"/>
         <source>Script editor - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Edytor skryptu - %1</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="912"/>
         <source>Line: %1, Col: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiersz: %1, Kolumna: %2</translation>
     </message>
 </context>
 <context>
@@ -4876,22 +4877,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="161"/>
         <source>Error: Unable to start the server (agros2d-server): %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: Nie można uruchomić serwera (agros2d-server): %1.</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="222"/>
         <source>Server error: The host was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd serwera: Komputer nie został znaleziony.</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="225"/>
         <source>Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd serwera: Połączenie zostało odrzucone. Sprawdź, czy serwer działa agros2d-client.</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="228"/>
         <source>Server error: The following error occurred: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd serwera: Wystąpił następujący błąd: %1.</translation>
     </message>
 </context>
 <context>
@@ -4899,52 +4900,52 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1334"/>
         <source>Search and replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyszukaj i zastąp</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1340"/>
         <source>Find and replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyszukaj i zastąp</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1347"/>
         <source>Search for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Szukaj:</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1349"/>
         <source>Replace with:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastąp przez:</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1354"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1357"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrażenie regularne</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1360"/>
         <source>Case sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozróżniaj wielkość liter</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1373"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Anuluj</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1409"/>
         <source>Find</source>
-        <translation type="unfinished"></translation>
+        <translation>Znajdź</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1419"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastąp</translation>
     </message>
 </context>
 <context>
@@ -4957,53 +4958,53 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="148"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="148"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="148"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedn.</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="164"/>
         <source>Copy value</source>
-        <translation type="unfinished"></translation>
+        <translation>Skopiuj wartość</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="199"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="202"/>
         <source>Length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Długość:</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="202"/>
         <location filename="../src/surfaceintegralview.cpp" line="203"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="202"/>
         <source>m</source>
-        <translation type="unfinished"></translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="203"/>
         <source>Surface:</source>
-        <translation type="unfinished"></translation>
+        <translation>Powierzchnia:</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="203"/>
         <source>m2</source>
-        <translation type="unfinished"></translation>
+        <translation>m2</translation>
     </message>
 </context>
 <context>
@@ -5011,22 +5012,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/terminalview.cpp" line="69"/>
         <source>Command dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Okno poleceń</translation>
     </message>
     <message>
         <location filename="../src/terminalview.cpp" line="86"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykonaj</translation>
     </message>
     <message>
         <location filename="../src/terminalview.cpp" line="91"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść</translation>
     </message>
     <message>
         <location filename="../src/terminalview.cpp" line="96"/>
         <source>Enter command:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadź polecenie:</translation>
     </message>
 </context>
 <context>
@@ -5034,7 +5035,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/terminalview.cpp" line="191"/>
         <source>Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminal</translation>
     </message>
 </context>
 <context>
@@ -5042,7 +5043,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/tooltipview.cpp" line="22"/>
         <source>Hints</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskazówki</translation>
     </message>
     <message>
         <location filename="../src/tooltipview.cpp" line="45"/>
@@ -5192,58 +5193,58 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="112"/>
         <source>Volume Integral</source>
-        <translation type="unfinished"></translation>
+        <translation>Całka objętościowa</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="134"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="134"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="134"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedn.</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="150"/>
         <source>Copy value</source>
-        <translation type="unfinished"></translation>
+        <translation>Skopiuj wartość</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="186"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="189"/>
         <source>Volume:</source>
-        <translation type="unfinished"></translation>
+        <translation>Objętość:</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="189"/>
         <location filename="../src/volumeintegralview.cpp" line="190"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="189"/>
         <source>m3</source>
-        <translation type="unfinished"></translation>
+        <translation>m3</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="190"/>
         <source>Cross section:</source>
-        <translation type="unfinished"></translation>
+        <translation>Przekrój:</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="190"/>
         <source>m2</source>
-        <translation type="unfinished"></translation>
+        <translation>m2</translation>
     </message>
 </context>
 </TS>
