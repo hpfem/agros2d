@@ -1918,7 +1918,7 @@ void SceneView::paintVectors()
                         double value = sqrt(sqr(dx) + sqr(dy));
                         double angle = atan2(dy, dx);
 
-                        if ((Util::config()->vectorProportional) && (fabs(vectorRangeMin - vectorRangeMax) > 0.0))
+                        if ((Util::config()->vectorProportional) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
                         {
                             dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
                             dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
@@ -1932,7 +1932,7 @@ void SceneView::paintVectors()
                         double dm = sqrt(sqr(dx) + sqr(dy));
 
                         // color
-                        if (Util::config()->vectorColor)
+                        if ((Util::config()->vectorColor) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
                         {
                             double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
                             glColor3f(color, color, color);
