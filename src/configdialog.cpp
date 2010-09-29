@@ -90,6 +90,7 @@ void ConfigDialog::load()
 
     // grid
     txtGridStep->setText(QString::number(Util::config()->gridStep));
+    chkShowGrid->setChecked(Util::config()->showGrid);
     chkSnapToGrid->setChecked(Util::config()->snapToGrid);
     chkRulers->setChecked(Util::config()->showRulers);
 
@@ -194,7 +195,8 @@ void ConfigDialog::save()
     Util::config()->colorHighlighted = colorHighlighted->color();
     Util::config()->colorSelected = colorSelected->color();
 
-    // grid
+    // grid   
+    Util::config()->showGrid = chkShowGrid->isChecked();
     Util::config()->gridStep = txtGridStep->text().toDouble();
     Util::config()->showRulers = chkRulers->isChecked();
     Util::config()->snapToGrid = chkSnapToGrid->isChecked();
@@ -420,14 +422,16 @@ QWidget *ConfigDialog::createViewWidget()
     // layout grid
     txtGridStep = new QLineEdit("0.1");
     txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
+    chkShowGrid = new QCheckBox(tr("Show grid"));
     chkRulers = new QCheckBox(tr("Show rulers"));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
 
     QGridLayout *layoutGrid = new QGridLayout();
     layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
     layoutGrid->addWidget(txtGridStep, 0, 1);
-    layoutGrid->addWidget(chkSnapToGrid, 0, 2);
-    layoutGrid->addWidget(chkRulers, 1, 2);
+    layoutGrid->addWidget(chkShowGrid, 0, 2);
+    layoutGrid->addWidget(chkSnapToGrid, 1, 2);
+    layoutGrid->addWidget(chkRulers, 2, 2);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);

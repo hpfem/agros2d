@@ -74,6 +74,7 @@ void Config::load()
     angleSegmentsCount = settings.value("Geometry/AngleSegmentsCount", 5).toInt();
 
     // grid
+    showGrid = settings.value("SceneViewSettings/ShowGrid", true).toBool();
     gridStep = settings.value("SceneViewSettings/GridStep", 0.05).toDouble();
     // rulers
     showRulers = settings.value("SceneViewSettings/ShowRulers", false).toBool();
@@ -163,6 +164,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/AngleSegmentsCount", angleSegmentsCount);
 
     // grid
+    settings.setValue("SceneViewSettings/ShowGrid", showGrid);
     settings.setValue("SceneViewSettings/GridStep", gridStep);
     // rulers
     settings.setValue("SceneViewSettings/ShowRulers", showRulers);

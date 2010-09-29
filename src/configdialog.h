@@ -109,6 +109,8 @@ private:
 
     // grid
     QLineEdit *txtGridStep;
+    // show grid
+    QCheckBox *chkShowGrid;
     // snap to grid
     QCheckBox *chkSnapToGrid;
     // rulers

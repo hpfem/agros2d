@@ -56,6 +56,7 @@ public:
     bool deleteHermes2DMeshFile;
 
     // grid
+    bool showGrid;
     double gridStep;
     bool snapToGrid;
 

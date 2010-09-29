@@ -41,8 +41,7 @@ private slots:
 private:
     SceneView *m_sceneView;
 
-    // show
-    QCheckBox *chkShowGrid;
+    // show    
     QCheckBox *chkShowGeometry;
     QCheckBox *chkShowInitialMesh;
 

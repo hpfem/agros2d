@@ -42,7 +42,6 @@ int SceneViewDialog::showDialog()
 void SceneViewDialog::load()
 {
     // show
-    chkShowGrid->setChecked(m_sceneView->sceneViewSettings().showGrid);
     chkShowGeometry->setChecked(m_sceneView->sceneViewSettings().showGeometry);
     chkShowInitialMesh->setChecked(m_sceneView->sceneViewSettings().showInitialMesh);
 
@@ -82,7 +81,6 @@ void SceneViewDialog::load()
 void SceneViewDialog::save()
 {
     // show
-    m_sceneView->sceneViewSettings().showGrid = chkShowGrid->isChecked();
     m_sceneView->sceneViewSettings().showGeometry = chkShowGeometry->isChecked();
     m_sceneView->sceneViewSettings().showInitialMesh = chkShowInitialMesh->isChecked();
 
@@ -115,7 +113,6 @@ void SceneViewDialog::save()
 void SceneViewDialog::createControls()
 {
     // layout show
-    chkShowGrid = new QCheckBox(tr("Grid"));
     chkShowGeometry = new QCheckBox(tr("Geometry"));
     chkShowInitialMesh = new QCheckBox(tr("Initial mesh"));
 
@@ -157,7 +154,6 @@ void SceneViewDialog::createControls()
     chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
 
     QVBoxLayout *layoutShow = new QVBoxLayout();
-    layoutShow->addWidget(chkShowGrid);
     layoutShow->addWidget(chkShowGeometry);
     layoutShow->addWidget(chkShowInitialMesh);
     layoutShow->addWidget(chkShowSolutionMesh);
@@ -291,7 +287,6 @@ void SceneViewDialog::setControls()
 {
     // disable controls
     chkShowGeometry->setEnabled(true);
-    chkShowGrid->setEnabled(true);
 
     chkShowInitialMesh->setEnabled(false);
     chkShowSolutionMesh->setEnabled(false);
@@ -346,7 +341,6 @@ void SceneViewDialog::setControls()
             radPostprocessorScalarField->isChecked())
         {
             chkShowGeometry->setEnabled(true);
-            chkShowGrid->setEnabled(true);
             chkShowInitialMesh->setEnabled(true);
             chkShowSolutionMesh->setEnabled(true);
             chkShowContours->setEnabled(cmbScalarFieldVariable->count() > 0);
@@ -357,7 +351,6 @@ void SceneViewDialog::setControls()
         else
         {
             chkShowGeometry->setEnabled(false);
-            chkShowGrid->setEnabled(false);
         }
     }
 }

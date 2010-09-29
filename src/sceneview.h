@@ -46,7 +46,6 @@ class SceneViewSettings
 {
 public:
     bool showGeometry;
-    bool showGrid;
     bool showInitialMesh;
 
     SceneViewPostprocessorShow postprocessorShow;
