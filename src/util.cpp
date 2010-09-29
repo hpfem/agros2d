@@ -110,7 +110,7 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_Magnetic_Velocity, "magnetic_velocity");
 
     physicFieldVariableList.insert(PhysicFieldVariable_Current_Potential, "current_potential");
-    physicFieldVariableList.insert(PhysicFieldVariable_Current_ElectricField, "current_electic_field");
+    physicFieldVariableList.insert(PhysicFieldVariable_Current_ElectricField, "current_electric_field");
     physicFieldVariableList.insert(PhysicFieldVariable_Current_CurrentDensity, "current_current_density");
     physicFieldVariableList.insert(PhysicFieldVariable_Current_Losses, "current_power_losses");
     physicFieldVariableList.insert(PhysicFieldVariable_Current_Conductivity, "current_conductivity");
@@ -251,7 +251,7 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Current_Potential:
         return QObject::tr("Scalar potential");
     case PhysicFieldVariable_Current_ElectricField:
-        return QObject::tr("Electic field");
+        return QObject::tr("Electric field");
     case PhysicFieldVariable_Current_CurrentDensity:
         return QObject::tr("Current density");
     case PhysicFieldVariable_Current_Losses:
