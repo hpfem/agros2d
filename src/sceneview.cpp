@@ -65,7 +65,6 @@ void SceneViewSettings::defaultValues()
 
     // visible objects
     showGeometry = true;
-    showGrid = true;
     showInitialMesh = false;
 
     postprocessorShow = SceneViewPostprocessorShow_ScalarView;
@@ -147,6 +146,25 @@ void SceneView::createActions()
     actSceneZoomRegion = new QAction(icon("zoom-best-fit"), tr("Zoom region"), this);
     actSceneZoomRegion->setStatusTip(tr("Zoom region"));
     actSceneZoomRegion->setCheckable(true);
+
+    // scene - grid
+    actSceneShowGrid = new QAction(icon("grid"), tr("Show grid"), this);
+    actSceneShowGrid->setStatusTip(tr("Show grid"));
+    actSceneShowGrid->setCheckable(true);
+    actSceneShowGrid->setChecked(Util::config()->showGrid);
+    connect(actSceneShowGrid, SIGNAL(triggered()), this, SLOT(doShowGrid()));
+
+    actSceneSnapToGrid = new QAction(icon("snap-to-grid"), tr("Snap to grid"), this);
+    actSceneSnapToGrid->setStatusTip(tr("Snap to grid"));
+    actSceneSnapToGrid->setCheckable(true);
+    actSceneSnapToGrid->setChecked(Util::config()->snapToGrid);
+    connect(actSceneSnapToGrid, SIGNAL(triggered()), this, SLOT(doSnapToGrid()));
+
+    actSceneShowRulers = new QAction(icon("rulers"), tr("Show rulers"), this);
+    actSceneShowRulers->setStatusTip(tr("Show rulers"));
+    actSceneShowRulers->setCheckable(true);
+    actSceneShowRulers->setChecked(Util::config()->showRulers);
+    connect(actSceneShowRulers, SIGNAL(triggered()), this, SLOT(doShowRulers()));
 
     // scene - operate on items
     actSceneModeNode = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
@@ -402,7 +420,7 @@ void SceneView::paintGL()
         glDisable(GL_DEPTH_TEST);
 
         // grid
-        if (m_sceneViewSettings.showGrid) paintGrid();
+        if (Util::config()->showGrid) paintGrid();
 
         // view
         if (m_scene->sceneSolution()->isSolved() && (m_sceneMode == SceneMode_Postprocessor))
@@ -2936,6 +2954,26 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
     setZoom(0);
 }
 
+void SceneView::doShowGrid()
+{
+    Util::config()->showGrid = !Util::config()->showGrid;
+    Util::config()->save();
+    doInvalidated();
+}
+
+void SceneView::doSnapToGrid()
+{
+    Util::config()->snapToGrid = !Util::config()->snapToGrid;
+    Util::config()->save();
+}
+
+void SceneView::doShowRulers()
+{
+    Util::config()->showRulers = !Util::config()->showRulers;
+    Util::config()->save();
+    doInvalidated();
+}
+
 void SceneView::doSetChartLine(const Point &start, const Point &end)
 {
     // set line for chart
@@ -2997,6 +3035,11 @@ void SceneView::doInvalidated()
     actPostprocessorModeLocalPointValue->setEnabled(m_sceneMode == SceneMode_Postprocessor && !is3DMode());
     actPostprocessorModeSurfaceIntegral->setEnabled(m_sceneMode == SceneMode_Postprocessor && !is3DMode());
     actPostprocessorModeVolumeIntegral->setEnabled(m_sceneMode == SceneMode_Postprocessor && !is3DMode());
+
+    actSceneShowGrid->setChecked(Util::config()->showGrid);
+    actSceneSnapToGrid->setChecked(Util::config()->snapToGrid);
+    actSceneSnapToGrid->setEnabled(m_sceneMode != SceneMode_Postprocessor);
+    actSceneShowRulers->setChecked(Util::config()->showRulers);
 
     emit mousePressed();
 
@@ -3436,7 +3479,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
     Point3 rotation3dCopy = m_rotation3d;
 
     bool showRulersCopy = Util::config()->showRulers;
-    bool showGridCopy = m_sceneViewSettings.showGrid;
+    bool showGridCopy = Util::config()->showGrid;
 
     // remove old files
     QFile::remove(path + "/geometry.png");
@@ -3453,7 +3496,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
     m_sceneViewSettings.showSolutionMesh = false;
 
     Util::config()->showRulers = showRulers;
-    m_sceneViewSettings.showGrid = showGrid;
+    Util::config()->showGrid = showGrid;
 
     // geometry
     actSceneModeLabel->trigger();
@@ -3529,7 +3572,7 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
     m_rotation3d = rotation3dCopy;
 
     Util::config()->showRulers = showRulersCopy;
-    m_sceneViewSettings.showGrid = showGridCopy;
+    Util::config()->showGrid = showGridCopy;
 
     if (m_sceneMode == SceneMode_OperateOnNodes) actSceneModeNode->trigger();
     if (m_sceneMode == SceneMode_OperateOnLabels) actSceneModeEdge->isChecked();

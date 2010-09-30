@@ -780,7 +780,7 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
 // showgrid(show = {True, False})
 void pythonShowGrid(bool show)
 {
-    sceneView()->sceneViewSettings().showGrid = show;
+    Util::config()->showGrid = show;
     sceneView()->doInvalidated();
 }
 

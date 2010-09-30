@@ -46,7 +46,6 @@ class SceneViewSettings
 {
 public:
     bool showGeometry;
-    bool showGrid;
     bool showInitialMesh;
 
     SceneViewPostprocessorShow postprocessorShow;
@@ -82,6 +81,9 @@ class SceneView : public QGLWidget
     void doZoomIn();
     void doZoomOut();
     void doZoomRegion(const Point &start, const Point &end);
+    void doShowGrid();
+    void doSnapToGrid();
+    void doShowRulers();
     void doSceneViewProperties();
     void doSceneObjectProperties();
     void doSceneModeSet(QAction *action);
@@ -106,6 +108,10 @@ public:
     QAction *actSceneZoomOut;
     QAction *actSceneZoomBestFit;
     QAction *actSceneZoomRegion;
+
+    QAction *actSceneShowGrid;
+    QAction *actSceneSnapToGrid;
+    QAction *actSceneShowRulers;
 
     QActionGroup *actSceneModeGroup;
     QAction *actSceneModeNode;
