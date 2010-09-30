@@ -3038,6 +3038,7 @@ void SceneView::doInvalidated()
 
     actSceneShowGrid->setChecked(Util::config()->showGrid);
     actSceneSnapToGrid->setChecked(Util::config()->snapToGrid);
+    actSceneSnapToGrid->setEnabled(m_sceneMode != SceneMode_Postprocessor);
     actSceneShowRulers->setChecked(Util::config()->showRulers);
 
     emit mousePressed();
