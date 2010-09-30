@@ -2335,12 +2335,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="436"/>
         <source>Transient</source>
-        <translation>Chwilowa</translation>
+        <translation>Czasowa</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="438"/>
         <source>Time step:</source>
-        <translation>Chwila czasu:</translation>
+        <translation type="unfinished">Czas:</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="463"/>
@@ -3705,12 +3705,12 @@
     <message>
         <location filename="../src/util.cpp" line="615"/>
         <source>Planar</source>
-        <translation type="unfinished"></translation>
+        <translation>Płaski</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="615"/>
         <source>Axisymmetric</source>
-        <translation type="unfinished"></translation>
+        <translation>Osiowosymetryczny</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="623"/>
@@ -4424,22 +4424,22 @@
     <message>
         <location filename="../src/sceneview.cpp" line="2763"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Węzeł&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Numer: %3</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2778"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Krawędź&lt;/h3&gt;Punkty: [%1; %2] - [%3; %4]&lt;br/&gt;Warunek brzegowy: %5&lt;br/&gt;Kąt: %6 stopni.&lt;br/&gt;Numer: %7 %8</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2798"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Etykieta&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Materiał: %3&lt;br/&gt;Rozmiar elementu: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Stopień wielomianu: %5&lt;br/&gt;Numer: %6 %7</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="3418"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obraz nie może być zapisany do pliku &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -4447,134 +4447,134 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="27"/>
         <source>Scene View</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia widoku</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="118"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="119"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="120"/>
         <source>Initial mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Początkowa siatka</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="123"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Pusto</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="124"/>
         <source>Polynomial order</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopień wielomianu</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="125"/>
         <location filename="../src/sceneviewdialog.cpp" line="126"/>
         <source>Scalar view</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole skalarne</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="127"/>
         <source>Scalar view solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole skalarne, bryła</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="141"/>
         <source>2D mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb 2D</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="148"/>
         <source>3D mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb 3D</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="155"/>
         <source>Contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Izolinie</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="156"/>
         <source>Vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Wektory</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="157"/>
         <source>Solution mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka rozwiązania</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="168"/>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="176"/>
         <source>Postprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyniki</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="195"/>
         <location filename="../src/sceneviewdialog.cpp" line="216"/>
         <source>Variable:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmienna:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="198"/>
         <source>Component:</source>
-        <translation type="unfinished"></translation>
+        <translation>Składowa:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="201"/>
         <source>Auto range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakres autom.:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="203"/>
         <source>Minimum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="205"/>
         <source>Maximum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="208"/>
         <source>Scalar field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole skalarne</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="220"/>
         <source>Vector field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole wektorowe</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="228"/>
         <source>Time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Czas:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="232"/>
         <source>Transient analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza w czasie</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="269"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalarne</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="273"/>
         <source>Magnitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Amplituda</translation>
     </message>
 </context>
 <context>
@@ -5071,12 +5071,12 @@ zapisać zmiany?</translation>
     <message>
         <location filename="../src/helpdialog.cpp" line="1077"/>
         <source>Topic browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Przeglądaj tematy</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="1086"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż</translation>
     </message>
 </context>
 <context>
@@ -5084,108 +5084,108 @@ zapisać zmiany?</translation>
     <message>
         <location filename="../src/videodialog.cpp" line="30"/>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Wideo</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="75"/>
         <source>Viewport</source>
-        <translation type="unfinished"></translation>
+        <translation>Animacja</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="76"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="78"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknij</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="129"/>
         <source>Codec:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodek:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="130"/>
         <source>Format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Format:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="131"/>
         <source>FPS:</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="132"/>
         <source>Progress:</source>
-        <translation type="unfinished"></translation>
+        <translation>Postęp:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="135"/>
         <source>Create images</source>
-        <translation type="unfinished"></translation>
+        <translation>Tworzenie obrazów</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="138"/>
         <source>Encode</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakoduj</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="142"/>
         <source>Save ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz ...</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="146"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="187"/>
         <source>From:</source>
-        <translation type="unfinished"></translation>
+        <translation>Początek:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="189"/>
         <source>To:</source>
-        <translation type="unfinished"></translation>
+        <translation>Koniec:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="191"/>
         <source>Delay:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opóźnienie:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="193"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Czas:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="195"/>
         <source>Time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Suwak czasu:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="198"/>
         <location filename="../src/videodialog.cpp" line="222"/>
         <source>Animate</source>
-        <translation type="unfinished"></translation>
+        <translation>Odtwórz</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="226"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Zatrzymaj</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="303"/>
         <source>Save video to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz wideo do pliku</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="345"/>
         <source>FFmpeg error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd FFmpeg</translation>
     </message>
 </context>
 <context>
