@@ -101,7 +101,6 @@ private:
     QMenu *mnuEdit;
     QMenu *mnuView;
     QMenu *mnuProblem;
-    QMenu *mnuAdd;
     QMenu *mnuTools;
     QMenu *mnuHelp;
 
