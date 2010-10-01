@@ -257,7 +257,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="285"/>
         <source>Advanced</source>
-        <translation>Zaawansowane</translation>
+        <translation>Zaawans.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="327"/>
@@ -605,7 +605,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="634"/>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
-        <translation>&lt;b&gt;&lt;/b&gt;ilościowy parament funkcji adapt(...) &lt;br/&gt;, ma inne znaczenie dla różnych strategii adaptacji</translation>
+        <translation>&lt;b&gt;&lt;/b&gt;ilościowy parament funkcji adapt(...), ma inne znaczenie dla różnych strategii adaptacji</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="636"/>
@@ -625,42 +625,42 @@
     <message>
         <location filename="../src/configdialog.cpp" line="639"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
+        <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj elementy dopóki suma poprawionych nie przekroczy &lt;b&gt;progu&lt;/b&gt;.&lt;br/&gt; Jeżeli wiele elementów ma podobny błąd, poprawiaj je wszystkie, aby utrzymać spójność siatki.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj wszystkie elementy, &lt;br/&gt; których błąd jest większy niż &lt;b&gt;próg&lt;/b&gt; pomnożony przez maksymalny błąd.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj wszystkie elementy, &lt;br/&gt;których błąd jest większy niż &lt;b&gt;próg&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="645"/>
         <source>arbitrary level hang. nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>dowolny poziom węzłów wiszących</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="646"/>
         <source>at most one-level hang. nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>węzły wiszące conajwyżej 1 poziomu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="647"/>
         <source>at most two-level hang. nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>węzły wiszące conajwyżej 2 poziomu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="648"/>
         <source>at most three-level hang. nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>węzły wiszące conajwyżej 3 poziomu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="649"/>
         <source>at most four-level hang. nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>węzły wiszące conajwyżej 4 poziomu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="650"/>
         <source>at most five-level hang. nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>węzły wiszące conajwyżej 5 poziomu</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="655"/>
         <source>Conv. exp.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbieżność:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="658"/>
@@ -675,7 +675,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="664"/>
         <source>Mesh regularity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiszące węzły:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="667"/>
@@ -2301,7 +2301,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="933"/>
         <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Bartosz Sawicki &lt;a href=&quot;mailto:sawickib@iem.pw.edu.pl&quot;&gt;sawickib@iem.pw.edu.pl&lt;/a&gt; (developer, Polish translation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Strona internetowa: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Uwagi: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (główny programista)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (programista, dokumentacja)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Bartosz Sawicki &lt;a href=&quot;mailto:sawickib@iem.pw.edu.pl&quot;&gt;sawickib@iem.pw.edu.pl&lt;/a&gt; (programista, polskie tłumaczenie)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="275"/>
@@ -3710,12 +3710,12 @@
     <message>
         <location filename="../src/util.cpp" line="583"/>
         <source>Outlet</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpływ</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="585"/>
         <source>Wall</source>
-        <translation type="unfinished"></translation>
+        <translation>Ściana</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="601"/>
