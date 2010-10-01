@@ -368,7 +368,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="425"/>
         <source>Show grid</source>
-        <translation type="unfinished">Pokaż siatkę</translation>
+        <translation>Pokaż kratkę</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="426"/>
@@ -1307,12 +1307,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="279"/>
         <source>Power Losses:</source>
-        <translation type="unfinished">Straty mocy:</translation>
+        <translation>Straty mocy:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="279"/>
         <source>W</source>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -1628,7 +1628,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="518"/>
         <source>Flux density - imag</source>
-        <translation>Indukcja mag. - uroj.</translation>
+        <translation>Indukcja mag. - uroj</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="530"/>
@@ -2291,7 +2291,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="319"/>
         <source>&amp;Show</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pokaż</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="338"/>
@@ -2371,7 +2371,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="449"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Widok</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="474"/>
@@ -4340,19 +4340,19 @@
         <location filename="../src/sceneview.cpp" line="151"/>
         <location filename="../src/sceneview.cpp" line="152"/>
         <source>Show grid</source>
-        <translation type="unfinished">Pokaż siatkę</translation>
+        <translation>Pokaż kratkę</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="157"/>
         <location filename="../src/sceneview.cpp" line="158"/>
         <source>Snap to grid</source>
-        <translation type="unfinished">Przyciągaj do siatki</translation>
+        <translation>Przyciągaj do kratki</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="163"/>
         <location filename="../src/sceneview.cpp" line="164"/>
         <source>Show rulers</source>
-        <translation type="unfinished">Pokaż linijki</translation>
+        <translation>Pokaż linijki</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="170"/>
