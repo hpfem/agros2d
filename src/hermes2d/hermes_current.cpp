@@ -269,7 +269,14 @@ void HermesCurrent::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceInte
 
 void HermesCurrent::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)
 {
+    VolumeIntegralValueCurrent *volumeIntegralValueCurrent = dynamic_cast<VolumeIntegralValueCurrent *>(volumeIntegralValue);
 
+    // harmonic
+    QTreeWidgetItem *currentNode = new QTreeWidgetItem(trvWidget);
+    currentNode->setText(0, tr("Current field"));
+    currentNode->setExpanded(true);
+
+    addTreeWidgetItemValue(currentNode, tr("Power Losses:"), QString("%1").arg(volumeIntegralValueCurrent->powerLosses, 0, 'e', 3), tr("W"));
 }
 
 ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
@@ -480,7 +487,7 @@ QStringList SurfaceIntegralValueCurrent::variables()
 
 VolumeIntegralValueCurrent::VolumeIntegralValueCurrent() : VolumeIntegralValue()
 {
-    losses = 0.0;
+    powerLosses = 0.0;
 
     calculate();
 }
@@ -497,7 +504,7 @@ void VolumeIntegralValueCurrent::calculateVariables(int i)
     {
         h1_integrate_expression(2 * M_PI * x[i] * marker->conductivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
     }
-    losses += result;
+    powerLosses += result;
 }
 
 void VolumeIntegralValueCurrent::initSolutions()
@@ -511,7 +518,7 @@ QStringList VolumeIntegralValueCurrent::variables()
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
             QString("%1").arg(crossSection, 0, 'e', 5) <<
-            QString("%1").arg(losses, 0, 'e', 5);
+            QString("%1").arg(powerLosses, 0, 'e', 5);
     return QStringList(row);
 }
 
