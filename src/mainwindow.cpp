@@ -271,8 +271,7 @@ void MainWindow::createActions()
 }
 
 void MainWindow::createMenus()
-{
-    mnuAdd = new QMenu(tr("&Add"), this);
+{    
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
     setRecentFiles();
 
@@ -317,6 +316,11 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneView->actSceneZoomRegion);
     mnuView->addAction(sceneView->actSceneZoomIn);
     mnuView->addAction(sceneView->actSceneZoomOut);
+    QMenu *mnuShow = new QMenu(tr("&Show"), this);
+    mnuView->addMenu(mnuShow);
+    mnuShow->addAction(sceneView->actSceneShowGrid);
+    mnuShow->addAction(sceneView->actSceneSnapToGrid);
+    mnuShow->addAction(sceneView->actSceneShowRulers);
     mnuView->addSeparator();
     mnuView->addAction(actFullScreen);
     mnuView->addSeparator();
@@ -331,6 +335,7 @@ void MainWindow::createMenus()
     mnuProblem->addAction(sceneView->actSceneModeLabel);
     mnuProblem->addAction(sceneView->actSceneModePostprocessor);
     mnuProblem->addSeparator();
+    QMenu *mnuAdd = new QMenu(tr("&Add"), this);
     mnuProblem->addMenu(mnuAdd);
     mnuAdd->addAction(Util::scene()->actNewNode);
     mnuAdd->addAction(Util::scene()->actNewEdge);
