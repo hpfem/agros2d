@@ -123,7 +123,7 @@ protected:
     void initSolutions();
 
 public:
-    double losses;
+    double powerLosses;
 
     VolumeIntegralValueCurrent();
 
