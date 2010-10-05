@@ -236,7 +236,7 @@ void SceneView::createActions()
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
 
     // scene properties
-    actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Scene properties"), this);
+    actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Postprocessor properties"), this);
     actSceneViewProperties->setShortcut(Qt::Key_F12);
     connect(actSceneViewProperties, SIGNAL(triggered()), this, SLOT(doSceneViewProperties()));
 

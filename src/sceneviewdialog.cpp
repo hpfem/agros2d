@@ -24,7 +24,7 @@ SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialo
     m_sceneView = sceneView;
        
     setWindowIcon(icon("scene-properties"));
-    setWindowTitle(tr("Scene View"));
+    setWindowTitle(tr("Postprocessor properties"));
 
     createControls();
     
