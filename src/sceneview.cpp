@@ -1970,6 +1970,19 @@ void SceneView::paintVectors()
                         glVertex2d(point.x + dm/5.0 * cos(angle - M_PI_2), point.y + dm/5.0 * sin(angle - M_PI_2));
                         glVertex2d(point.x + dm/5.0 * cos(angle + M_PI_2), point.y + dm/5.0 * sin(angle + M_PI_2));
                         glVertex2d(point.x + dm     * cos(angle),          point.y + dm     * sin(angle));
+
+                        // Shaft for an arrow
+                        double v1x = point.x + dm/15.0 * cos(angle + M_PI_2);
+                        double v1y = point.y + dm/15.0 * sin(angle + M_PI_2);
+                        double v2x = point.x + dm/15.0 * cos(angle - M_PI_2);
+                        double v2y = point.y + dm/15.0 * sin(angle - M_PI_2);
+                        double v3x = v1x - dm * cos(angle);
+                        double v3y = v1y - dm * sin(angle);
+                        double v4x = v2x - dm * cos(angle);
+                        double v4y = v2y - dm * sin(angle);
+                        glVertex2d(v1x,v1y); glVertex2d(v2x,v2y); glVertex2d(v3x,v3y);
+                        glVertex2d(v4x,v4y); glVertex2d(v3x,v3y); glVertex2d(v2x,v2y);
+
                     }
                 }
             }
