@@ -4431,7 +4431,7 @@
     <message>
         <location filename="../src/sceneview.cpp" line="239"/>
         <source>&amp;Postprocessor properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlanie &amp;wyników</translation>
     </message>
     <message>
         <source>&amp;Scene properties</source>
@@ -4507,7 +4507,7 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="27"/>
         <source>Postprocessor properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlanie wyników</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="116"/>
