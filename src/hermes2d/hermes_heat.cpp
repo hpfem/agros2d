@@ -242,7 +242,7 @@ QStringList HermesHeat::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesHeat::newEdgeMarker()
 {
-    return new SceneEdgeHeatMarker("new boundary",
+    return new SceneEdgeHeatMarker(tr("new boundary"),
                                    PhysicFieldBC_Heat_Temperature,
                                    Value("0"));
 }
@@ -273,7 +273,7 @@ SceneEdgeMarker *HermesHeat::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneLabelMarker *HermesHeat::newLabelMarker()
 {
-    return new SceneLabelHeatMarker("new material",
+    return new SceneLabelHeatMarker(tr("new material"),
                                     Value("0"),
                                     Value("385"),
                                     Value("0"),

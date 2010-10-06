@@ -180,7 +180,7 @@ QStringList HermesElectrostatic::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesElectrostatic::newEdgeMarker()
 {
-    return new SceneEdgeElectrostaticMarker("new boundary",
+    return new SceneEdgeElectrostaticMarker(tr("new boundary"),
                                             PhysicFieldBC_Electrostatic_Potential,
                                             Value("0"));
 }
@@ -204,7 +204,7 @@ SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(PyObject *self, PyObject *ar
 
 SceneLabelMarker *HermesElectrostatic::newLabelMarker()
 {
-    return new SceneLabelElectrostaticMarker("new material",
+    return new SceneLabelElectrostaticMarker(tr("new material"),
                                              Value("0"),
                                              Value("1"));
 }

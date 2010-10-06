@@ -335,7 +335,7 @@ QStringList HermesMagnetic::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesMagnetic::newEdgeMarker()
 {    
-    return new SceneEdgeMagneticMarker("new boundary",
+    return new SceneEdgeMagneticMarker(tr("new boundary"),
                                        PhysicFieldBC_Magnetic_VectorPotential,
                                        Value("0"),
                                        Value("0"));
@@ -362,7 +362,7 @@ SceneEdgeMarker *HermesMagnetic::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneLabelMarker *HermesMagnetic::newLabelMarker()
 {
-    return new SceneLabelMagneticMarker("new material",
+    return new SceneLabelMagneticMarker(tr("new material"),
                                         Value("0"),
                                         Value("0"),
                                         Value("1"),
