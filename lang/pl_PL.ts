@@ -283,7 +283,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="338"/>
         <source>Delete files with initial mesh (Triangle)</source>
-        <translation>Usuń pliki z orginalną siatką (Triangle)</translation>
+        <translation>Usuń pliki z oryginalną siatką (Triangle)</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="339"/>
@@ -378,17 +378,17 @@
     <message>
         <location filename="../src/configdialog.cpp" line="427"/>
         <source>Snap to grid</source>
-        <translation>Przyciągaj do siatki</translation>
+        <translation>Przyciągaj do kratki</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="430"/>
         <source>Grid step:</source>
-        <translation>Krok siatki:</translation>
+        <translation>Rozmiar kratki:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="436"/>
         <source>Grid</source>
-        <translation>Siatka</translation>
+        <translation>Kratka</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="450"/>
@@ -514,7 +514,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="530"/>
         <source>Show order label</source>
-        <translation>Pokaż kolejność etykiet</translation>
+        <translation>Pokaż etykiety</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="535"/>
@@ -524,7 +524,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="552"/>
         <source>Postprocessor</source>
-        <translation>Przetwarzanie wyników</translation>
+        <translation>Wyniki</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="578"/>
@@ -534,7 +534,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="579"/>
         <source>Grid:</source>
-        <translation>Siatka:</translation>
+        <translation>Kratka:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="580"/>
@@ -2541,7 +2541,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="146"/>
         <source>Adaptivity:</source>
-        <translation>Adaptacyjność:</translation>
+        <translation>Adaptacja:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="148"/>
@@ -3615,12 +3615,12 @@
     <message>
         <location filename="../src/util.cpp" line="519"/>
         <source>Electrostatic</source>
-        <translation>Elektrostatyczny</translation>
+        <translation>Elektrostatyka</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="521"/>
         <source>Magnetic</source>
-        <translation>Magnetostatyczny</translation>
+        <translation>Magnetostatyka</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="523"/>
