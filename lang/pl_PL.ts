@@ -1254,6 +1254,16 @@
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="177"/>
+        <source>new boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="201"/>
+        <source>new material</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="227"/>
         <location filename="../src/hermes2d/hermes_current.cpp" line="276"/>
         <source>Current field</source>
@@ -1324,6 +1334,16 @@
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="261"/>
+        <source>new boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="290"/>
+        <source>new material</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="318"/>
         <source>Elasticity</source>
         <translation>Sprężystość</translation>
@@ -1350,6 +1370,16 @@
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="117"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="183"/>
+        <source>new boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="207"/>
+        <source>new material</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="235"/>
@@ -1421,6 +1451,16 @@
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="252"/>
+        <source>new boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="281"/>
+        <source>new material</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="309"/>
         <source>Flow</source>
         <translation>Przepływ</translation>
@@ -1454,6 +1494,16 @@
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="187"/>
+        <source>new boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="211"/>
+        <source>new material</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="239"/>
         <source>General field</source>
         <translation>Pole uogólnione</translation>
@@ -1485,6 +1535,16 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="165"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="245"/>
+        <source>new boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="276"/>
+        <source>new material</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="308"/>
@@ -1561,6 +1621,16 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="249"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="338"/>
+        <source>new boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="365"/>
+        <source>new material</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="487"/>
@@ -4361,7 +4431,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="172"/>
-        <location filename="../src/sceneview.cpp" line="2013"/>
+        <location filename="../src/sceneview.cpp" line="2018"/>
         <source>Operate on nodes</source>
         <translation>Operacje na węzłach</translation>
     </message>
@@ -4372,7 +4442,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="177"/>
-        <location filename="../src/sceneview.cpp" line="2016"/>
+        <location filename="../src/sceneview.cpp" line="2021"/>
         <source>Operate on edges</source>
         <translation>Operacje na krawędziach</translation>
     </message>
@@ -4383,7 +4453,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="182"/>
-        <location filename="../src/sceneview.cpp" line="2019"/>
+        <location filename="../src/sceneview.cpp" line="2024"/>
         <source>Operate on labels</source>
         <translation>Operacje na etykietach</translation>
     </message>
@@ -4394,7 +4464,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="187"/>
-        <location filename="../src/sceneview.cpp" line="2038"/>
+        <location filename="../src/sceneview.cpp" line="2043"/>
         <source>Postprocessor</source>
         <translation>Wyniki</translation>
     </message>
@@ -4464,32 +4534,32 @@
         <translation>Tryb ustawień</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2032"/>
+        <location filename="../src/sceneview.cpp" line="2037"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2035"/>
+        <location filename="../src/sceneview.cpp" line="2040"/>
         <source>Polynomial order</source>
         <translation>Stopień wielomianu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2799"/>
+        <location filename="../src/sceneview.cpp" line="2804"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Węzeł&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Numer: %3</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2814"/>
+        <location filename="../src/sceneview.cpp" line="2819"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation>&lt;h3&gt;Krawędź&lt;/h3&gt;Punkty: [%1; %2] - [%3; %4]&lt;br/&gt;Warunek brzegowy: %5&lt;br/&gt;Kąt: %6 stopni.&lt;br/&gt;Numer: %7 %8</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2834"/>
+        <location filename="../src/sceneview.cpp" line="2839"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation>&lt;h3&gt;Etykieta&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Materiał: %3&lt;br/&gt;Rozmiar elementu: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Stopień wielomianu: %5&lt;br/&gt;Numer: %6 %7</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3479"/>
+        <location filename="../src/sceneview.cpp" line="3484"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obraz nie może być zapisany do pliku &apos;%1&apos;.</translation>
     </message>
