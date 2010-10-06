@@ -4185,22 +4185,22 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="174"/>
         <source>Name: </source>
-        <translation>Nazwa:</translation>
+        <translation>Nazwa: </translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="177"/>
         <source>Type: </source>
-        <translation>Typ:</translation>
+        <translation>Typ: </translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="180"/>
         <source>Field: </source>
-        <translation>Pole:</translation>
+        <translation>Pole: </translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="183"/>
         <source>Analysis: </source>
-        <translation>Analiza:</translation>
+        <translation>Analiza: </translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="189"/>
@@ -4211,7 +4211,7 @@
         <location filename="../src/sceneinfoview.cpp" line="193"/>
         <location filename="../src/sceneinfoview.cpp" line="205"/>
         <source>Nodes: </source>
-        <translation>Węzły:</translation>
+        <translation>Węzły: </translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="196"/>
@@ -4232,22 +4232,22 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="217"/>
         <source>Error: </source>
-        <translation>Błąd:</translation>
+        <translation>Błąd: </translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="220"/>
         <source>Steps: </source>
-        <translation>Kroki:</translation>
+        <translation>Kroki: </translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="226"/>
         <source>DOFs: </source>
-        <translation>Zmienne:</translation>
+        <translation>Zmienne: </translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="231"/>
         <source>Time elapsed: </source>
-        <translation>Czas:</translation>
+        <translation>Czas: </translation>
     </message>
 </context>
 <context>
@@ -4361,7 +4361,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="172"/>
-        <location filename="../src/sceneview.cpp" line="2000"/>
+        <location filename="../src/sceneview.cpp" line="2013"/>
         <source>Operate on nodes</source>
         <translation>Operacje na węzłach</translation>
     </message>
@@ -4372,7 +4372,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="177"/>
-        <location filename="../src/sceneview.cpp" line="2003"/>
+        <location filename="../src/sceneview.cpp" line="2016"/>
         <source>Operate on edges</source>
         <translation>Operacje na krawędziach</translation>
     </message>
@@ -4383,7 +4383,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="182"/>
-        <location filename="../src/sceneview.cpp" line="2006"/>
+        <location filename="../src/sceneview.cpp" line="2019"/>
         <source>Operate on labels</source>
         <translation>Operacje na etykietach</translation>
     </message>
@@ -4394,7 +4394,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="187"/>
-        <location filename="../src/sceneview.cpp" line="2025"/>
+        <location filename="../src/sceneview.cpp" line="2038"/>
         <source>Postprocessor</source>
         <translation>Wyniki</translation>
     </message>
@@ -4430,8 +4430,12 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="239"/>
+        <source>&amp;Postprocessor properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Scene properties</source>
-        <translation>&amp;Ustawienia widoku</translation>
+        <translation type="obsolete">&amp;Ustawienia widoku</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="244"/>
@@ -4460,32 +4464,32 @@
         <translation>Tryb ustawień</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2019"/>
+        <location filename="../src/sceneview.cpp" line="2032"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2022"/>
+        <location filename="../src/sceneview.cpp" line="2035"/>
         <source>Polynomial order</source>
         <translation>Stopień wielomianu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2786"/>
+        <location filename="../src/sceneview.cpp" line="2799"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Węzeł&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Numer: %3</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2801"/>
+        <location filename="../src/sceneview.cpp" line="2814"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation>&lt;h3&gt;Krawędź&lt;/h3&gt;Punkty: [%1; %2] - [%3; %4]&lt;br/&gt;Warunek brzegowy: %5&lt;br/&gt;Kąt: %6 stopni.&lt;br/&gt;Numer: %7 %8</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2821"/>
+        <location filename="../src/sceneview.cpp" line="2834"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation>&lt;h3&gt;Etykieta&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Materiał: %3&lt;br/&gt;Rozmiar elementu: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Stopień wielomianu: %5&lt;br/&gt;Numer: %6 %7</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3466"/>
+        <location filename="../src/sceneview.cpp" line="3479"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obraz nie może być zapisany do pliku &apos;%1&apos;.</translation>
     </message>
@@ -4493,13 +4497,17 @@
 <context>
     <name>SceneViewDialog</name>
     <message>
-        <location filename="../src/sceneviewdialog.cpp" line="27"/>
         <source>Scene View</source>
-        <translation>Ustawienia widoku</translation>
+        <translation type="obsolete">Ustawienia widoku</translation>
     </message>
     <message>
         <source>Grid</source>
         <translation type="obsolete">Siatka</translation>
+    </message>
+    <message>
+        <location filename="../src/sceneviewdialog.cpp" line="27"/>
+        <source>Postprocessor properties</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="116"/>
@@ -5105,23 +5113,23 @@ zapisać zmiany?</translation>
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl + lewy klawisz myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;dodanie nowego punktu&lt;/td&gt;
+		&lt;td&gt;Dodanie nowego punktu&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl+N&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;dodanie punktu poprzez podanie współrzędnych&lt;/td&gt;
+		&lt;td&gt;Dodanie punktu poprzez podanie współrzędnych&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl+Shift+N&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;dodanie punktu przez współrzędne (wstawione współrzędne kursora)&lt;/td&gt;
+		&lt;td&gt;Dodanie punktu przez współrzędne (wstawione współrzędne kursora)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift + lewy klawisz myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;przesuwanie modelu (ten sam efekt można osiągnąć przy pomocy środkowego klawisza myszy, a także klawiszy ze strzałkami)&lt;/td&gt;
+		&lt;td&gt;Przesuwanie modelu (ten sam efekt można osiągnąć przy pomocy środkowego klawisza myszy, a także klawiszy ze strzałkami)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Kółko myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;powiększanie/pomniejszanie&lt;/td&gt;
+		&lt;td&gt;Powiększanie/pomniejszanie&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
@@ -5139,20 +5147,20 @@ zapisać zmiany?</translation>
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl + lewy klawisz myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;dodanie nowej krawędzi przez zaznaczenie dwóch węzłów&lt;/td&gt;
+		&lt;td&gt;Dodanie nowej krawędzi przez zaznaczenie dwóch węzłów&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Spacja&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;otwarcie okna ustawień dla wybranej krawędzi (ten sam efekt osiągniemy &lt;b&gt;podwójnym kliknięciem&lt;/b&gt;)&lt;/td&gt;
+		&lt;td&gt;Otwarcie okna ustawień dla wybranej krawędzi (ten sam efekt osiągniemy &lt;b&gt;podwójnym kliknięciem&lt;/b&gt;)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+lewy klawisz myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;przesuwanie modelu (ten sam efekt osiągniemy przy pomocy środkowego klawisza myszy, a także klawiszy ze strzałkami)&lt;/td&gt;
+		&lt;td&gt;Przesuwanie modelu (ten sam efekt osiągniemy przy pomocy środkowego klawisza myszy, a także klawiszy ze strzałkami)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Kółko myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;powiększanie/pomniejszanie&lt;/td&gt;
+		&lt;td&gt;Powiększanie/pomniejszanie&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
@@ -5170,23 +5178,23 @@ zapisać zmiany?</translation>
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl + lewy klawisz myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;dodanie nowej etykiety materiału&lt;/td&gt;
+		&lt;td&gt;Dodanie nowej etykiety materiału&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl+L&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;dodanie nowej etykiety poprzez okno współrzędnych&lt;/td&gt;
+		&lt;td&gt;Dodanie nowej etykiety poprzez okno współrzędnych&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Spacja&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;otwiera okno paramentrów dla wybranej krawędzi (ten sam efekt osiągniemy &lt;b&gt;podwójnym kliknięciem&lt;/b&gt;)&lt;/td&gt;
+		&lt;td&gt;Otwiera okno paramentrów dla wybranej krawędzi (ten sam efekt osiągniemy &lt;b&gt;podwójnym kliknięciem&lt;/b&gt;)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+lewy klawisz myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;przesuwanie modelu (ten sam efekt osiągniemy przy pomocy środkowego klawisza myszy, a także klawiszy ze strzałkami)&lt;/td&gt;
+		&lt;td&gt;Przesuwanie modelu (ten sam efekt osiągniemy przy pomocy środkowego klawisza myszy, a także klawiszy ze strzałkami)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Kółko myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;powiększanie/pomniejszanie&lt;/td&gt;
+		&lt;td&gt;Powiększanie/pomniejszanie&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
@@ -5204,14 +5212,14 @@ zapisać zmiany?</translation>
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;F12&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;otwiera okno z ustawieniami widoku&lt;/td&gt;
+		&lt;td&gt;Otwiera okno z ustawieniami widoku&lt;/td&gt;
 	&lt;/tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+lewy klawisz myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;przesuwanie modelu (ten sam efekt osiągniemy przy pomocy środkowego klawisza myszy, a także klawiszy ze strzałkami)&lt;/td&gt;
+		&lt;td&gt;Przesuwanie modelu (ten sam efekt osiągniemy przy pomocy środkowego klawisza myszy, a także klawiszy ze strzałkami)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Kółko myszy&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;powiększanie/pomniejszanie&lt;/td&gt;
+		&lt;td&gt;Powiększanie/pomniejszanie&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;/td&gt;

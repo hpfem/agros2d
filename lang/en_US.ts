@@ -369,7 +369,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="425"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="426"/>
@@ -525,7 +525,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="552"/>
         <source>Postprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="578"/>
@@ -1308,12 +1308,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="279"/>
         <source>Power Losses:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="279"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1934,12 +1934,12 @@
     <message>
         <location filename="../src/logdialog.cpp" line="55"/>
         <source>Adapt. error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="58"/>
         <source>Adapt. DOFs</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="114"/>
@@ -2206,7 +2206,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="319"/>
         <source>&amp;Show</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="432"/>
@@ -2216,7 +2216,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="449"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="901"/>
@@ -2256,7 +2256,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="933"/>
         <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Bartosz Sawicki &lt;a href=&quot;mailto:sawickib@iem.pw.edu.pl&quot;&gt;sawickib@iem.pw.edu.pl&lt;/a&gt; (developer, Polish translation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="954"/>
@@ -2629,39 +2629,39 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="708"/>
         <source>Adaptivity conv.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="709"/>
         <source>Adaptivity DOFs</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="762"/>
         <location filename="../src/progressdialog.cpp" line="809"/>
         <source>current error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="771"/>
         <source>max. error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="775"/>
         <source>Error (%)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="779"/>
         <location filename="../src/progressdialog.cpp" line="817"/>
         <source>Steps (-)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="813"/>
         <source>DOFs (-)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="714"/>
@@ -3781,17 +3781,17 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="65"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="66"/>
         <source>Show rulers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="80"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="86"/>
@@ -3852,7 +3852,7 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="137"/>
         <source>Figures properties</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="83"/>
@@ -3862,12 +3862,12 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="117"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="119"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="134"/>
@@ -4333,19 +4333,19 @@
         <location filename="../src/sceneview.cpp" line="151"/>
         <location filename="../src/sceneview.cpp" line="152"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="157"/>
         <location filename="../src/sceneview.cpp" line="158"/>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="163"/>
         <location filename="../src/sceneview.cpp" line="164"/>
         <source>Show rulers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="170"/>
@@ -4354,7 +4354,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="172"/>
-        <location filename="../src/sceneview.cpp" line="2000"/>
+        <location filename="../src/sceneview.cpp" line="2013"/>
         <source>Operate on nodes</source>
         <translation></translation>
     </message>
@@ -4365,7 +4365,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="177"/>
-        <location filename="../src/sceneview.cpp" line="2003"/>
+        <location filename="../src/sceneview.cpp" line="2016"/>
         <source>Operate on edges</source>
         <translation></translation>
     </message>
@@ -4381,7 +4381,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="187"/>
-        <location filename="../src/sceneview.cpp" line="2025"/>
+        <location filename="../src/sceneview.cpp" line="2038"/>
         <source>Postprocessor</source>
         <translation></translation>
     </message>
@@ -4411,11 +4411,6 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="239"/>
-        <source>&amp;Scene properties</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/sceneview.cpp" line="244"/>
         <source>Object properties</source>
         <translation></translation>
@@ -4437,32 +4432,32 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2019"/>
+        <location filename="../src/sceneview.cpp" line="2032"/>
         <source>Model</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2022"/>
+        <location filename="../src/sceneview.cpp" line="2035"/>
         <source>Polynomial order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2786"/>
+        <location filename="../src/sceneview.cpp" line="2799"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2801"/>
+        <location filename="../src/sceneview.cpp" line="2814"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2821"/>
+        <location filename="../src/sceneview.cpp" line="2834"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3466"/>
+        <location filename="../src/sceneview.cpp" line="3479"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation></translation>
     </message>
@@ -4472,24 +4467,24 @@
         <translation></translation>
     </message>
     <message>
+        <location filename="../src/sceneview.cpp" line="239"/>
+        <source>&amp;Postprocessor properties</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../src/sceneview.cpp" line="249"/>
         <source>Select region</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="182"/>
-        <location filename="../src/sceneview.cpp" line="2006"/>
+        <location filename="../src/sceneview.cpp" line="2019"/>
         <source>Operate on labels</source>
         <translation></translation>
     </message>
 </context>
 <context>
     <name>SceneViewDialog</name>
-    <message>
-        <location filename="../src/sceneviewdialog.cpp" line="27"/>
-        <source>Scene View</source>
-        <translation></translation>
-    </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="116"/>
         <source>Geometry</source>
@@ -4544,6 +4539,11 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="117"/>
         <source>Initial mesh</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/sceneviewdialog.cpp" line="27"/>
+        <source>Postprocessor properties</source>
         <translation></translation>
     </message>
     <message>
@@ -5093,19 +5093,19 @@ Do you want to save your changes?</source>
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;add node directly by mouse&lt;/td&gt;
+		&lt;td&gt;Add node directly by mouse&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl+N&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;add node by coordinates (open dialog)&lt;/td&gt;
+		&lt;td&gt;Add node by coordinates (open dialog)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl+Shift+N&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;add node by coordinates (in the dialog will be used the actual coordinates of the mouse cursor)&lt;/td&gt;
+		&lt;td&gt;Add node by coordinates (in the dialog will be used the actual coordinates of the mouse cursor)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+		&lt;td&gt;Pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
@@ -5127,16 +5127,16 @@ Do you want to save your changes?</source>
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;add edge directly by mouse&lt;/td&gt;
+		&lt;td&gt;Add edge directly by mouse&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;open dialog for setting of selected edge&lt;/td&gt;
+		&lt;td&gt;Open dialog for setting of selected edge&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+		&lt;td&gt;Pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
@@ -5158,19 +5158,19 @@ Do you want to save your changes?</source>
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;add label directly by mouse&lt;/td&gt;
+		&lt;td&gt;Add label directly by mouse&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl+L&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;add label using coordinates (open dialog)&lt;/td&gt;
+		&lt;td&gt;Add label using coordinates (open dialog)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;open dialog for setting of selected label&lt;/td&gt;
+		&lt;td&gt;Open dialog for setting of selected label&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+		&lt;td&gt;Pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
@@ -5192,11 +5192,11 @@ Do you want to save your changes?</source>
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;F12&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;open dialog for setting scene properties&lt;/td&gt;
+		&lt;td&gt;Open dialog for setting scene properties&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+		&lt;td&gt;Pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
