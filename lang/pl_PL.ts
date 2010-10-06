@@ -3675,17 +3675,17 @@
     <message>
         <location filename="../src/util.cpp" line="563"/>
         <source>Fixed voltage</source>
-        <translation>Ustawione napęcie</translation>
+        <translation>Zadane napięcie</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="565"/>
         <source>Surface charge density</source>
-        <translation>Powierzchniowa gęstość łądunku</translation>
+        <translation>Zadana gęstość ładunku</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="569"/>
         <source>Surface current density</source>
-        <translation>Gęstość prądu na powierzchni</translation>
+        <translation>Zadana gęstość prądu na powierzchni</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="575"/>
