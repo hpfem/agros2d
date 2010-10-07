@@ -685,7 +685,13 @@ void setLanguage(const QString &locale)
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 
     QTranslator *translator = new QTranslator();
-    translator->load(datadir() + "/lang/" + locale + ".qm");
+    if (QFile::exists(datadir() + "/lang/" + locale + ".qm"))
+        translator->load(datadir() + "/lang/" + locale + ".qm");
+    else if (QFile::exists(datadir() + "/lang/en_US.qm"))
+        translator->load(datadir() + "/lang/en_US.qm");
+    else
+        qDebug() << "Language file not found.";
+
     QApplication::installTranslator(translator);
 }
 
