@@ -929,6 +929,30 @@ void Scene::doProblemProperties()
     ProblemDialog problemDialog(m_problemInfo, false, QApplication::activeWindow());
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
+        // FIXME - add QList of variables
+        QComboBox *cmbScalarFieldVariable = new QComboBox();
+        Util::scene()->problemInfo()->hermes()->fillComboBoxScalarVariable(cmbScalarFieldVariable);
+        QComboBox *cmbVectorFieldVariable = new QComboBox();
+        Util::scene()->problemInfo()->hermes()->fillComboBoxVectorVariable(cmbVectorFieldVariable);
+
+        // determines whether the selected field exists
+        if (cmbScalarFieldVariable->findData(sceneView()->sceneViewSettings().contourPhysicFieldVariable) == -1)
+            sceneView()->sceneViewSettings().contourPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable();
+
+        if (cmbScalarFieldVariable->findData(sceneView()->sceneViewSettings().scalarPhysicFieldVariable) == -1)
+        {
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable();
+            sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp = Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
+            sceneView()->sceneViewSettings().scalarRangeAuto = true;
+        }
+
+        if (cmbVectorFieldVariable->findData(sceneView()->sceneViewSettings().vectorPhysicFieldVariable) == -1)
+            sceneView()->sceneViewSettings().vectorPhysicFieldVariable = Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable();
+
+        delete cmbScalarFieldVariable;
+        delete cmbVectorFieldVariable;
+
+
         emit invalidated();
     }
 }
