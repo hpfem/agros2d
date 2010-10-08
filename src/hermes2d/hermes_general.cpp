@@ -184,7 +184,7 @@ QStringList HermesGeneral::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesGeneral::newEdgeMarker()
 {
-    return new SceneEdgeGeneralMarker("new boundary",
+    return new SceneEdgeGeneralMarker(tr("new boundary"),
                                       PhysicFieldBC_General_Value,
                                       Value("0"));
 }
@@ -208,7 +208,7 @@ SceneEdgeMarker *HermesGeneral::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneLabelMarker *HermesGeneral::newLabelMarker()
 {
-    return new SceneLabelGeneralMarker("new material",
+    return new SceneLabelGeneralMarker(tr("new material"),
                                        Value("0"),
                                        Value("1"));
 }

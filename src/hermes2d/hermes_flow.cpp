@@ -249,7 +249,7 @@ QStringList HermesFlow::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesFlow::newEdgeMarker()
 {
-    return new SceneEdgeFlowMarker("new boundary",
+    return new SceneEdgeFlowMarker(tr("new boundary"),
                                    PhysicFieldBC_Flow_Pressure,
                                    Value("0"),
                                    Value("0"),
@@ -278,7 +278,7 @@ SceneEdgeMarker *HermesFlow::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneLabelMarker *HermesFlow::newLabelMarker()
 {
-    return new SceneLabelFlowMarker("new material",
+    return new SceneLabelFlowMarker(tr("new material"),
                                     Value("8.9e-4"),
                                     Value("1000"));
 }

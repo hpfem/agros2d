@@ -258,7 +258,7 @@ QStringList HermesElasticity::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesElasticity::newEdgeMarker()
 {
-    return new SceneEdgeElasticityMarker("new boundary",
+    return new SceneEdgeElasticityMarker(tr("new boundary"),
                                          PhysicFieldBC_Elasticity_Free,
                                          PhysicFieldBC_Elasticity_Free,
                                          Value("0"),
@@ -287,7 +287,7 @@ SceneEdgeMarker *HermesElasticity::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneLabelMarker *HermesElasticity::newLabelMarker()
 {
-    return new SceneLabelElasticityMarker("new material",
+    return new SceneLabelElasticityMarker(tr("new material"),
                                           Value("2e11"),
                                           Value("0.33"));
 }

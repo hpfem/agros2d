@@ -174,7 +174,7 @@ QStringList HermesCurrent::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesCurrent::newEdgeMarker()
 {
-    return new SceneEdgeCurrentMarker("new boundary",
+    return new SceneEdgeCurrentMarker(tr("new boundary"),
                                       PhysicFieldBC_Current_Potential,
                                       Value("0"));
 }
@@ -198,7 +198,7 @@ SceneEdgeMarker *HermesCurrent::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneLabelMarker *HermesCurrent::newLabelMarker()
 {
-    return new SceneLabelCurrentMarker("new material",
+    return new SceneLabelCurrentMarker(tr("new material"),
                                        Value("57e6"));
 }
 

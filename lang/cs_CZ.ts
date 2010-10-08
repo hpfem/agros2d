@@ -1255,6 +1255,16 @@
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="177"/>
+        <source>new boundary</source>
+        <translation>nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="201"/>
+        <source>new material</source>
+        <translation>nový materiál</translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="227"/>
         <location filename="../src/hermes2d/hermes_current.cpp" line="276"/>
         <source>Current field</source>
@@ -1325,6 +1335,16 @@
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="261"/>
+        <source>new boundary</source>
+        <translation>nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="290"/>
+        <source>new material</source>
+        <translation>nový materiál</translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="318"/>
         <source>Elasticity</source>
         <translation>Elasticita</translation>
@@ -1351,6 +1371,16 @@
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="117"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="183"/>
+        <source>new boundary</source>
+        <translation>nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="207"/>
+        <source>new material</source>
+        <translation>nový materiál</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="235"/>
@@ -1422,6 +1452,16 @@
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="252"/>
+        <source>new boundary</source>
+        <translation>nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="281"/>
+        <source>new material</source>
+        <translation>nový materiál</translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="309"/>
         <source>Flow</source>
         <translation>Tok</translation>
@@ -1455,6 +1495,16 @@
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="187"/>
+        <source>new boundary</source>
+        <translation>nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="211"/>
+        <source>new material</source>
+        <translation>nový materiál</translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="239"/>
         <source>General field</source>
         <translation>Obecné pole</translation>
@@ -1486,6 +1536,16 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="165"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="245"/>
+        <source>new boundary</source>
+        <translation>nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="276"/>
+        <source>new material</source>
+        <translation>nový materiál</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="308"/>
@@ -1562,6 +1622,16 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="249"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="338"/>
+        <source>new boundary</source>
+        <translation>nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="365"/>
+        <source>new material</source>
+        <translation>nový materiál</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="487"/>
@@ -4375,7 +4445,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="172"/>
-        <location filename="../src/sceneview.cpp" line="2013"/>
+        <location filename="../src/sceneview.cpp" line="2018"/>
         <source>Operate on nodes</source>
         <translation>Práce s uzly</translation>
     </message>
@@ -4386,7 +4456,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="177"/>
-        <location filename="../src/sceneview.cpp" line="2016"/>
+        <location filename="../src/sceneview.cpp" line="2021"/>
         <source>Operate on edges</source>
         <translation>Práce s hranami</translation>
     </message>
@@ -4402,7 +4472,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="187"/>
-        <location filename="../src/sceneview.cpp" line="2038"/>
+        <location filename="../src/sceneview.cpp" line="2043"/>
         <source>Postprocessor</source>
         <translation>Postprocesor</translation>
     </message>
@@ -4452,7 +4522,7 @@
         <translation>Vybrat podle značky</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2032"/>
+        <location filename="../src/sceneview.cpp" line="2037"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
@@ -4467,27 +4537,27 @@
         <translation>&amp;Vlastnosti postprocesoru</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2035"/>
+        <location filename="../src/sceneview.cpp" line="2040"/>
         <source>Polynomial order</source>
         <translation>Řád polynomu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2799"/>
+        <location filename="../src/sceneview.cpp" line="2804"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Uzel&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Index: %3</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2814"/>
+        <location filename="../src/sceneview.cpp" line="2819"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation>&lt;h3&gt;Hrana&lt;/h3&gt;Body: [%1; %2] - [%3; %4]&lt;br/&gt;Hraniční podmínka: %5&lt;br/&gt;Úhel: %6 st.&lt;br/&gt;Index: %7 %8</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2834"/>
+        <location filename="../src/sceneview.cpp" line="2839"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation>&lt;h3&gt;Značka oblasti&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Materiál: %3&lt;br/&gt;Obsah elementu: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Řád polynomu: %5&lt;br/&gt;Index: %6 %7</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3479"/>
+        <location filename="../src/sceneview.cpp" line="3484"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obrázek nelze uložit do souboru s názvem &apos;%1&apos;.</translation>
     </message>
@@ -4503,7 +4573,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="182"/>
-        <location filename="../src/sceneview.cpp" line="2019"/>
+        <location filename="../src/sceneview.cpp" line="2024"/>
         <source>Operate on labels</source>
         <translation>Práce se značkami oblastí</translation>
     </message>
