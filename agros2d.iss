@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "1.1.1.376"
-#define AppDate "2010-07-02"
+#define AppVersion "1.2.1.443"
+#define AppDate "2010-10-08"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -42,8 +42,8 @@ Source: data\scripts\test\*.py; DestDir: {app}/data/scripts/test
 Source: lang\*.qm; DestDir: {app}/lang
 Source: doc\help\Agros2D.qhc; DestDir: {app}/doc/help
 Source: doc\help\Agros2D.qch; DestDir: {app}/doc/help
-Source: doc\report\template\default.css; DestDir: {app}/doc/report/template
-Source: doc\report\template\template.html; DestDir: {app}/doc/report/template
+Source: doc\report\default.css; DestDir: {app}/doc/report
+Source: doc\report\default.html; DestDir: {app}/doc/report
 Source: install\win32\*.dll; DestDir: {app}
 Source: install\win32\lib\*.pyc; DestDir: {app}
 Source: install\win32\sqldrivers\*.dll; DestDir: {app}/sqldrivers

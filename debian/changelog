@@ -1,4 +1,11 @@
-agros2d (1.2-2ubuntu13) karmic; urgency=low
+agros2d (1.2-3ubuntu14) lucid; urgency=low
+
+  * added Polish translation
+  * small fixes
+
+ -- Pavel Karban <pkarban@gmail.com>  Thu, 8 Oct 2010 12:40:00 +0200
+
+agros2d (1.2-2ubuntu13) lucid; urgency=low
 
   * fixed addedge from script
   * fixed report template (linux only)
