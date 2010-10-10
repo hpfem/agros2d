@@ -29,3 +29,9 @@ Changes in Agros2D
   * added log dialog (app log and progress log)
   * added convergence chart to the progress dialog
   * improved report dialog
+  
+1.2.1.443 (08.10.2010)
+----------------------  
+  * added Polish translation
+  * pretty vectors
+  * small fixes
