@@ -22,6 +22,8 @@
 
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit)
 {
+    logMessage(QString("addTreeWidgetItemValue()"));
+
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
     item->setText(0, name);
     item->setText(1, text);
@@ -32,6 +34,8 @@ void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const 
 
 void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
+    logMessage(QString("fillComboBoxScalarVariable()"));
+
     // store variable
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
 
@@ -46,6 +50,8 @@ void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 
 void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 {
+    logMessage(QString("fillComboBoxVectorVariable()"));
+
     // store variable
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toInt();
 
@@ -60,6 +66,8 @@ void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
 
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 {
+    logMessage(QString("fillComboBoxTimeStep()"));
+
     cmbFieldVariable->blockSignals(true);
 
     // store variable
@@ -88,6 +96,8 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
 SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 {
+    logMessage(QString("SLineEditValue::SLineEditValue()"));
+
     m_minimum = -CONST_DOUBLE;
     m_minimumSharp = -CONST_DOUBLE;
     m_maximum =  CONST_DOUBLE;
@@ -114,29 +124,39 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 
 void SLineEditValue::setNumber(double value)
 {
+    logMessage(QString("SLineEditValue::setNumber()"));
+
     txtLineEdit->setText(QString::number(value));
     evaluate();
 }
 
 double SLineEditValue::number()
 {
+    logMessage(QString("SLineEditValue::number()"));
+
     if (evaluate())
         return m_number;
 }
 
 void SLineEditValue::setValue(Value value)
 {
+   logMessage(QString("SLineEditValue::setValue()"));
+
    txtLineEdit->setText(value.text);
    evaluate();
 }
 
 Value SLineEditValue::value()
 {
+    logMessage(QString("SLineEditValue::value()"));
+
     return Value(txtLineEdit->text());
 }
 
 bool SLineEditValue::evaluate(bool quiet)
 {
+    logMessage(QString("SLineEditValue::evaluate()"));
+
     bool isOk = false;
 
     Value val = value();
@@ -185,6 +205,8 @@ bool SLineEditValue::evaluate(bool quiet)
 
 void SLineEditValue::setLabel(const QString &text, QColor color, bool isVisible)
 {
+    logMessage(QString("SLineEditValue::setLabel()"));
+
     lblValue->setText(text);
     QPalette palette = lblValue->palette();
     palette.setColor(QPalette::WindowText, color);
@@ -194,6 +216,8 @@ void SLineEditValue::setLabel(const QString &text, QColor color, bool isVisible)
 
 void SLineEditValue::focusInEvent(QFocusEvent *event)
 {
+    logMessage(QString("SLineEditValue::focusInEvent()"));
+
     txtLineEdit->setFocus(event->reason());
 }
 
@@ -201,6 +225,8 @@ void SLineEditValue::focusInEvent(QFocusEvent *event)
 
 Chart::Chart(QWidget *parent) : QwtPlot(parent)
 {
+    logMessage(QString("Chart::Chart()"));
+
     //  chart style
     clear();
     setAutoReplot(false);
@@ -251,11 +277,15 @@ Chart::Chart(QWidget *parent) : QwtPlot(parent)
 
 Chart::~Chart()
 {
+    logMessage(QString("Chart::~Chart()"));
+
     delete m_curve;
 }
 
 void Chart::saveImage(const QString &fileName)
 {
+    logMessage(QString("Chart::saveImage()"));
+
     QString fileNameTemp;
     if (fileName.isEmpty())
     {
@@ -278,6 +308,8 @@ void Chart::saveImage(const QString &fileName)
 
 QImage Chart::image() const
 {
+    logMessage(QString("Chart::image()"));
+
     QPixmap pixmap(width(), height());
     pixmap.fill(Qt::white); // Qt::transparent
 
@@ -294,6 +326,8 @@ QImage Chart::image() const
 
 void Chart::setData(double *xval, double *yval, int count)
 {
+    logMessage(QString("Chart::setData()"));
+
     const bool doReplot = autoReplot();
     setAutoReplot(false);
 
@@ -308,6 +342,8 @@ void Chart::setData(double *xval, double *yval, int count)
 
 FileBrowser::FileBrowser(QWidget *parent) : QListWidget(parent)
 {
+    logMessage(QString("FileBrowser::FileBrowser()"));
+
     setNameFilter("");
     setDir(QDir::currentPath());
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -339,16 +375,22 @@ FileBrowser::FileBrowser(QWidget *parent) : QListWidget(parent)
 
 void FileBrowser::setNameFilter(const QString &nameFilter)
 {
+    logMessage(QString("FileBrowser::setNameFilter()"));
+
     m_nameFilter = nameFilter;
 }
 
 QString FileBrowser::basePath()
 {
+    logMessage(QString("FileBrowser::basePath()"));
+
     return QString(m_basePath);
 }
 
 void FileBrowser::setDir(const QString &path)
 {
+    logMessage(QString("FileBrowser::setDir()"));
+
     clear();
 
     QDir dir(path, m_nameFilter, QDir::DirsFirst);
@@ -381,16 +423,20 @@ void FileBrowser::setDir(const QString &path)
 
 void FileBrowser::refresh()
 {
+    logMessage(QString("FileBrowser::refresh()"));
+
     setDir(m_basePath);
 }
 
 void FileBrowser::doFileItemActivated(QListWidgetItem *item)
 {
-
+    logMessage(QString("FileBrowser::doFileItemActivated()"));
 }
 
 void FileBrowser::doFileItemDoubleClick(QListWidgetItem *item)
 {
+    logMessage(QString("FileBrowser::doFileItemDoubleClick()"));
+
     QString path = m_basePath + QDir::separator() + item->text();
     QDir dir(path);
     if (dir.exists())
@@ -406,6 +452,8 @@ void FileBrowser::doFileItemDoubleClick(QListWidgetItem *item)
 
 void FileBrowser::doContextMenu(const QPoint &point)
 {
+    logMessage(QString("FileBrowser::doContextMenu()"));
+
     actDelete->setEnabled(false);
     actRename->setEnabled(false);
 
@@ -423,6 +471,8 @@ void FileBrowser::doContextMenu(const QPoint &point)
 
 void FileBrowser::createDir(const QString &dirName)
 {
+    logMessage(QString("FileBrowser::createDir()"));
+
     QString str;
     if (dirName.isEmpty())
        str = QInputDialog::getText(QApplication::activeWindow(), tr("Create directory"), tr("Enter directory name"));
@@ -437,6 +487,8 @@ void FileBrowser::createDir(const QString &dirName)
 
 void FileBrowser::createFile(const QString &fileName)
 {
+    logMessage(QString("FileBrowser::createFile()"));
+
     QString str;
     if (fileName.isEmpty())
        str = QInputDialog::getText(QApplication::activeWindow(), tr("Create file"), tr("Enter file name"));
@@ -464,6 +516,8 @@ void FileBrowser::createFile(const QString &fileName)
 
 void FileBrowser::deleteDir(const QString &dirName)
 {
+    logMessage(QString("FileBrowser::deleteDir()"));
+
     QDir dir(dirName);
     if (dir.exists())
     {
@@ -474,6 +528,8 @@ void FileBrowser::deleteDir(const QString &dirName)
 
 void FileBrowser::deleteFile(const QString &fileName)
 {
+    logMessage(QString("FileBrowser::deleteFile()"));
+
     if (QFile::exists(fileName))
     {
         QFile::remove(fileName);
@@ -483,6 +539,8 @@ void FileBrowser::deleteFile(const QString &fileName)
 
 void FileBrowser::deleteObject(const QString &name)
 {
+    logMessage(QString("FileBrowser::deleteObject()"));
+
     QString str;
     if (name.isEmpty())
         str = m_basePath + QDir::separator() + currentItem()->text();
@@ -498,6 +556,8 @@ void FileBrowser::deleteObject(const QString &name)
 
 void FileBrowser::renameDir(const QString &dirName)
 {
+    logMessage(QString("FileBrowser::renameDir()"));
+
     QString str = QInputDialog::getText(QApplication::activeWindow(), tr("Rename directory"), tr("Enter directory name"),
                                         QLineEdit::Normal, QDir(dirName).dirName());
 
@@ -511,6 +571,8 @@ void FileBrowser::renameDir(const QString &dirName)
 
 void FileBrowser::renameFile(const QString &fileName)
 {
+    logMessage(QString("FileBrowser::renameFile()"));
+
     QString str = QInputDialog::getText(QApplication::activeWindow(), tr("Rename file"), tr("Enter file name"),
                                         QLineEdit::Normal, QFileInfo(fileName).baseName());
 
@@ -528,6 +590,8 @@ void FileBrowser::renameFile(const QString &fileName)
 
 void FileBrowser::renameObject(const QString &name)
 {
+    logMessage(QString("FileBrowser::renameObject()"));
+
     QString str;
     if (name.isEmpty())
         str = m_basePath + QDir::separator() + currentItem()->text();

@@ -71,6 +71,8 @@ using namespace std;
 // enable log file
 void logOutput(QtMsgType type, const char *msg);
 
+void logMessage(const QString &msg);
+
 // set gui style
 void setGUIStyle(const QString &styleName);
 

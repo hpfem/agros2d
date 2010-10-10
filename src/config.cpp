@@ -21,16 +21,22 @@
 
 Config::Config()
 {
+    logMessage(QString("Config::Config()"));
+
     load();
 }
 
 Config::~Config()
 {
+    logMessage(QString("Config::~Config()"));
+
     save();
 }
 
 void Config::load()
 {
+    logMessage(QString("Config::load()"));
+
     QSettings settings;
 
     // general
@@ -41,7 +47,7 @@ void Config::load()
 
     checkVersion = settings.value("General/CheckVersion", true).toBool();
     showConvergenceChart = settings.value("General/ShowConvergenceChart", true).toBool();
-    enabledApplicationLog = settings.value("General/EnabledApplicationLog", false).toBool();
+    enabledApplicationLog = settings.value("General/EnabledApplicationLog", true).toBool();
     enabledProgressLog = settings.value("General/EnabledProgressLog", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
     saveProblemWithSolution = settings.value("Solver/SaveProblemWithSolution", false).toBool();
@@ -122,6 +128,8 @@ void Config::load()
 
 void Config::save()
 {
+    logMessage(QString("Config::Save()"));
+
     QSettings settings;
 
     // general

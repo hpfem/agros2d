@@ -21,6 +21,8 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    logMessage(QString("MainWindow::MainWindow()"));
+
     createScriptEngine();
     createScene();
 
@@ -97,6 +99,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 MainWindow::~MainWindow()
 {
+    logMessage(QString("MainWindow::~MainWindow()"));
+
     QSettings settings;
     settings.setValue("MainWindow/Geometry", saveGeometry());
     settings.setValue("MainWindow/State", saveState());
@@ -108,11 +112,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::open(const QString &fileName)
 {
+    logMessage(QString("MainWindow::open()"));
+
     doDocumentOpen(fileName);
 }
 
 void MainWindow::createActions()
 {
+    logMessage(QString("MainWindow::createActions()"));
+
     actDocumentNew = new QAction(icon("document-new"), tr("&New..."), this);
     actDocumentNew->setShortcuts(QKeySequence::New);
     actDocumentNew->setStatusTip(tr("Create a new file"));
@@ -271,7 +279,9 @@ void MainWindow::createActions()
 }
 
 void MainWindow::createMenus()
-{    
+{
+    logMessage(QString("MainWindow::createMenus()"));
+
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
     setRecentFiles();
 
@@ -389,6 +399,8 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
+    logMessage(QString("MainWindow::createToolBars()"));
+
     tlbFile = addToolBar(tr("File"));
     tlbFile->setObjectName("File");
     tlbFile->addAction(actDocumentNew);
@@ -455,6 +467,8 @@ void MainWindow::createToolBars()
 
 void MainWindow::createStatusBar()
 {
+    logMessage(QString("MainWindow::createStatusBar()"));
+
     lblMessage = new QLabel(statusBar());
     // lblMessage->setStyleSheet("QLabel {border-left: 1px solid gray;}");
 
@@ -482,6 +496,8 @@ void MainWindow::createStatusBar()
 
 void MainWindow::createScene()
 {
+    logMessage(QString("MainWindow::createScene()"));
+
     QHBoxLayout *layout = new QHBoxLayout;
     
     sceneView = new SceneView(this);
@@ -495,6 +511,8 @@ void MainWindow::createScene()
 
 void MainWindow::createViews()
 {
+    logMessage(QString("MainWindow::createViews()"));
+
     sceneInfoView = new SceneInfoView(sceneView, this);
     sceneInfoView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, sceneInfoView);
@@ -529,11 +547,15 @@ void MainWindow::createViews()
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
 {
+    logMessage(QString("MainWindow::doSceneMouseMoved()"));
+
     lblPosition->setText(tr("Position: [%1; %2]").arg(position.x(), 8, 'f', 5).arg(position.y(), 8, 'f', 5));
 }
 
 void MainWindow::setRecentFiles()
 {
+    logMessage(QString("MainWindow::setRecentFiles()"));
+
     // recent files
     if (Util::scene()->problemInfo()->fileName != "")
     {
@@ -557,16 +579,22 @@ void MainWindow::setRecentFiles()
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
+    logMessage(QString("MainWindow::dragEnterEvent()"));
+
     event->acceptProposedAction();
 }
 
 void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
 {
+    logMessage(QString("MainWindow::dragLeacceEvent()"));
+
     event->accept();
 }
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
+    logMessage(QString("MainWindow::dropEvent()"));
+
     if (event->mimeData()->hasUrls())
     {
         QString fileName = QUrl(event->mimeData()->urls().at(0)).toLocalFile().trimmed();
@@ -581,6 +609,8 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::doDocumentNew()
 {
+    logMessage(QString("MainWindow::doDocumentNew()"));
+
     ProblemInfo *problemInfo = new ProblemInfo();
     ProblemDialog problemDialog(problemInfo, true, this);
     if (problemDialog.showDialog() == QDialog::Accepted)
@@ -600,6 +630,8 @@ void MainWindow::doDocumentNew()
 
 void MainWindow::doDocumentOpen(const QString &fileName)
 {
+    logMessage(QString("MainWindow::doDocumentOpen()"));
+
     QString fileNameDocument;
     if (fileName.isEmpty())
     {
@@ -653,6 +685,8 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
 void MainWindow::doDocumentOpenRecent(QAction *action)
 {
+    logMessage(QString("MainWindow::doDocumentOpenRecent()"));
+
     QString fileName = action->text();
     if (QFile::exists(fileName))
     {
@@ -671,6 +705,8 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
 
 void MainWindow::doDocumentSave()
 {
+    logMessage(QString("MainWindow::doDocumentSave()"));
+
     if (QFile::exists(Util::scene()->problemInfo()->fileName))
     {
         ErrorResult result = Util::scene()->writeToFile(Util::scene()->problemInfo()->fileName);
@@ -683,6 +719,8 @@ void MainWindow::doDocumentSave()
 
 void MainWindow::doDocumentSaveWithSolution()
 {
+    logMessage(QString("MainWindow::doDocumentSaveWithSolution()"));
+
     QSettings settings;
 
     // save state
@@ -696,6 +734,8 @@ void MainWindow::doDocumentSaveWithSolution()
 
 void MainWindow::doDocumentSaveAs()
 {
+    logMessage(QString("MainWindow::doDocumentSaveAs()"));
+
     QSettings settings;
     QString dir = settings.value("General/LastDataDir", "data").toString();
 
@@ -715,6 +755,8 @@ void MainWindow::doDocumentSaveAs()
 
 void MainWindow::doDocumentClose()
 {
+    logMessage(QString("MainWindow::doDocumentClose()"));
+
     Util::scene()->clear();
     sceneView->doDefaultValues();
     Util::scene()->refresh();
@@ -724,7 +766,9 @@ void MainWindow::doDocumentClose()
 }
 
 void MainWindow::doDocumentImportDXF()
-{    
+{
+    logMessage(QString("MainWindow::doDocumentImportDXF()"));
+
     QString fileName = QFileDialog::getOpenFileName(this, tr("Import file"), "data", tr("DXF files (*.dxf)"));
     if (!fileName.isEmpty())
     {
@@ -735,6 +779,8 @@ void MainWindow::doDocumentImportDXF()
 
 void MainWindow::doDocumentExportDXF()
 {
+    logMessage(QString("MainWindow::doDocumentExportDXF()"));
+
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export file"), "data", tr("DXF files (*.dxf)"));
     if (!fileName.isEmpty())
     {
@@ -746,6 +792,8 @@ void MainWindow::doDocumentExportDXF()
 
 void MainWindow::doDocumentSaveImage()
 {
+    logMessage(QString("MainWindow::doDocumentSaveImage()"));
+
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", tr("PNG files (*.png)"));
     if (!fileName.isEmpty())
     {
@@ -760,11 +808,15 @@ void MainWindow::doDocumentSaveImage()
 
 void MainWindow::doCreateVideo()
 {
+    logMessage(QString("MainWindow::doCreateVideo()"));
+
     videoDialog->showDialog();
 }
 
 void MainWindow::doCreateMesh()
 {
+    logMessage(QString("MainWindow::doCreateMesh()"));
+
     // create mesh
     Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
     if (Util::scene()->sceneSolution()->isMeshed())
@@ -779,6 +831,8 @@ void MainWindow::doCreateMesh()
 
 void MainWindow::doFullScreen()
 {
+    logMessage(QString("MainWindow::doFullScreen()"));
+
     if (isFullScreen())
         showNormal();
     else
@@ -787,6 +841,8 @@ void MainWindow::doFullScreen()
 
 void MainWindow::doSolve()
 {
+    logMessage(QString("MainWindow::doSolve()"));
+
     // solve problem
     Util::scene()->sceneSolution()->solve(SolverMode_MeshAndSolve);
     if (Util::scene()->sceneSolution()->isSolved())
@@ -805,6 +861,8 @@ void MainWindow::doSolve()
 
 void MainWindow::doOptions()
 {
+    logMessage(QString("MainWindow::doOptions()"));
+
     ConfigDialog configDialog(this);
     if (configDialog.exec())
     {
@@ -817,21 +875,29 @@ void MainWindow::doOptions()
 
 void MainWindow::doReport()
 {
+    logMessage(QString("MainWindow::doReport()"));
+
     reportDialog->showDialog();
 }
 
 void MainWindow::doChart()
 {
+    logMessage(QString("MainWindow::doChart()"));
+
     chartDialog->showDialog();
 }
 
 void MainWindow::doScriptEditor()
 {
+    logMessage(QString("MainWindow::doScriptEditor()"));
+
     scriptEditorDialog->showDialog();
 }
 
 void MainWindow::doScriptEditorRunScript(const QString &fileName)
 {
+    logMessage(QString("MainWindow::doScriptEditorRunScript()"));
+
     QString fileNameScript;
     if (fileName.isEmpty())
     {
@@ -863,16 +929,21 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
 void MainWindow::doScriptEditorRunCommand()
 {
+    logMessage(QString("MainWindow::doScriptEditorRunCommand()"));
+
     terminalView->show();
     terminalView->activateWindow();
 }
 
 void MainWindow::doCut()
 {
+    logMessage(QString("MainWindow::doCut()"));
 }
 
 void MainWindow::doCopy()
 {
+    logMessage(QString("MainWindow::doCopy()"));
+
     // copy image to clipboard
     QPixmap pixmap = sceneView->renderScenePixmap();
     QApplication::clipboard()->setImage(pixmap.toImage());
@@ -880,16 +951,21 @@ void MainWindow::doCopy()
 
 void MainWindow::doPaste()
 {
+    logMessage(QString("MainWindow::doPaste()"));
 }
 
 void MainWindow::doTimeStepChanged(int index)
 {
+    logMessage(QString("MainWindow::doTimeStepChanged()"));
+
     if (cmbTimeStep->currentIndex() != -1)
         Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
 }
 
 void MainWindow::doInvalidated()
-{    
+{
+    logMessage(QString("MainWindow::doInvalidated()"));
+
 #ifdef BETA
     actDocumentSaveWithSolution->setEnabled(Util::scene()->sceneSolution()->isSolved());
 #endif
@@ -907,29 +983,39 @@ void MainWindow::doInvalidated()
 }
 
 void MainWindow::doHelp()
-{    
+{
+    logMessage(QString("MainWindow::doHelp()"));
+
     Util::helpDialog()->showPage("index.html");
     Util::helpDialog()->show();
 }
 
 void MainWindow::doHelpShortCut()
 {
+    logMessage(QString("MainWindow::doHelpShortCut()"));
+
     Util::helpDialog()->showPage("getting_started/basic_control.html#shortcut-keys");
     Util::helpDialog()->show();
 }
 
 void MainWindow::doOnlineHelp()
 {
+    logMessage(QString("MainWindow::doOnlineHelp()"));
+
     QDesktopServices::openUrl(QUrl("http://hpfem.org/agros2d/help"));
 }
 
 void MainWindow::doCheckVersion()
 {
+    logMessage(QString("MainWindow::doCheckVersion()"));
+
     checkForNewVersion();
 }
 
 void MainWindow::doAbout()
 {
+    logMessage(QString("MainWindow::doAbout()"));
+
     QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics application based on <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library.<br/><br/>"
                    "Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>"
                    "Issues: <a href=\"http://github.com/hpfem/agros2d/issues\">http://github.com/hpfem/agros2d/issues</a><br/><br/><b>Authors:</b>"
@@ -956,6 +1042,8 @@ void MainWindow::doAbout()
 
 void MainWindow::doDocumentExportMeshFile()
 {
+    logMessage(QString("MainWindow::doDocumentExportMeshFile()"));
+
     // generate mesh file
     bool commutator = Util::config()->deleteHermes2DMeshFile;
     if (commutator)
@@ -995,10 +1083,14 @@ void MainWindow::doDocumentExportMeshFile()
 
 void MainWindow::doProgressLog()
 {
+    logMessage(QString("MainWindow::doProgressLog()"));
+
     logDialog->loadProgressLog();
 }
 
 void MainWindow::doApplicationLog()
 {
+    logMessage(QString("MainWindow::doApplicationLog()"));
+
     logDialog->loadApplicationLog();
 }

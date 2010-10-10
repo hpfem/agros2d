@@ -21,11 +21,15 @@
 
 DxfFilter::DxfFilter(Scene *scene)
 {
+    logMessage(QString("DxfFilter::DxfFilter()"));
+
     this->m_scene = scene;
 }
 
 void DxfFilter::addLine(const DL_LineData &l)
 {
+    logMessage(QString("DxfFilter::addLine()"));
+
     // start node
     SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(l.x1, l.y1)));
     // end node
@@ -37,6 +41,8 @@ void DxfFilter::addLine(const DL_LineData &l)
 
 void DxfFilter::addArc(const DL_ArcData& a)
 {
+    logMessage(QString("DxfFilter::addArc()"));
+
     double angle1 = a.angle1;
     double angle2 = a.angle2;
     
@@ -56,6 +62,8 @@ void DxfFilter::addArc(const DL_ArcData& a)
 
 void DxfFilter::addCircle(const DL_CircleData& c)
 {
+    logMessage(QString("DxfFilter::addCircle()"));
+
     // nodes
     SceneNode *node1 = m_scene->addNode(new SceneNode(Point(c.cx + c.radius, c.cy)));
     SceneNode *node2 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy + c.radius)));
@@ -76,6 +84,8 @@ Util *Util::m_singleton = NULL;
 
 Util::Util()
 {
+    logMessage(QString("Util::Util()"));
+
     m_scene = new Scene();
     m_helpDialog = new HelpDialog(QApplication::activeWindow());
 
@@ -100,6 +110,8 @@ Util::Util()
 
 Util::~Util()
 {
+    logMessage(QString("Util::~Util()"));
+
     delete m_scene;
     delete m_helpDialog;
     delete m_completer;
@@ -108,6 +120,8 @@ Util::~Util()
 
 Util *Util::singleton()
 {
+    logMessage(QString("Util *Util::singleton()"));
+
     if (!m_singleton)
     {
         static QMutex mutex;
@@ -126,6 +140,8 @@ Util *Util::singleton()
 
 Scene::Scene()
 {
+    logMessage(QString("Scene::Scene()"));
+
     createActions();
 
     m_problemInfo = new ProblemInfo();
@@ -140,6 +156,8 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+    logMessage(QString("Scene::~Scene()"));
+
     clear();
 
     delete m_sceneSolution;
@@ -148,6 +166,8 @@ Scene::~Scene()
 
 void Scene::createActions()
 {
+    logMessage(QString("Scene::createActions()"));
+
     // scene - add items
     actNewNode = new QAction(icon("scene-node"), tr("New &node..."), this);
     actNewNode->setShortcut(tr("Alt+N"));
@@ -198,6 +218,8 @@ void Scene::createActions()
 
 SceneNode *Scene::addNode(SceneNode *node)
 {
+    logMessage(QString("SceneNode *Scene::addNode()"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -218,6 +240,8 @@ SceneNode *Scene::addNode(SceneNode *node)
 
 void Scene::removeNode(SceneNode *node)
 {
+    logMessage(QString("Scene::removeNode()"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -239,6 +263,8 @@ void Scene::removeNode(SceneNode *node)
 
 SceneNode *Scene::getNode(const Point &point)
 {
+    logMessage(QString("SceneNode *Scene::getNode()"));
+
     foreach (SceneNode *nodeCheck, nodes)
     {
         if (nodeCheck->point == point)
@@ -251,6 +277,8 @@ SceneNode *Scene::getNode(const Point &point)
 
 SceneEdge *Scene::addEdge(SceneEdge *edge)
 {
+    logMessage(QString("SceneEdge *Scene::addEdge"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -275,6 +303,8 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
 
 void Scene::removeEdge(SceneEdge *edge)
 {
+    logMessage(QString("Scene::removeEdge()"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -286,6 +316,8 @@ void Scene::removeEdge(SceneEdge *edge)
 
 SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle)
 {
+    logMessage(QString("SceneEdge *Scene::getEdge()"));
+
     foreach (SceneEdge *edgeCheck, edges)
     {
         if (((edgeCheck->nodeStart->point == pointStart) && (edgeCheck->nodeEnd->point == pointEnd)) && (edgeCheck->angle == angle))
@@ -297,6 +329,8 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
 
 void Scene::setEdgeEdgeMarker(SceneEdgeMarker *edgeMarker)
 {
+    logMessage(QString("setEdgeEdgeMarker()"));
+
     for (int i = 0; i<edges.count(); i++)
     {
         if (edges[i]->isSelected)
@@ -307,6 +341,8 @@ void Scene::setEdgeEdgeMarker(SceneEdgeMarker *edgeMarker)
 
 SceneLabel *Scene::addLabel(SceneLabel *label)
 {
+    logMessage(QString("SceneLabel *Scene::addLabel"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -328,6 +364,8 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
 
 void Scene::removeLabel(SceneLabel *label)
 {
+    logMessage(QString("Scene::removeLabel()"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -339,6 +377,8 @@ void Scene::removeLabel(SceneLabel *label)
 
 SceneLabel *Scene::getLabel(const Point &point)
 {
+    logMessage(QString("SceneLabel *Scene::getLabel()"));
+
     foreach (SceneLabel *labelCheck, labels)
     {
         if (labelCheck->point == point)
@@ -349,6 +389,8 @@ SceneLabel *Scene::getLabel(const Point &point)
 
 void Scene::setLabelLabelMarker(SceneLabelMarker *labelMarker)
 {
+    logMessage(QString("Scene::setLabelLabelMarker()"));
+
     for (int i = 0; i<labels.count(); i++)
     {
         if (labels[i]->isSelected)
@@ -359,12 +401,16 @@ void Scene::setLabelLabelMarker(SceneLabelMarker *labelMarker)
 
 void Scene::addEdgeMarker(SceneEdgeMarker *edgeMarker)
 {
+    logMessage(QString("Scene::addEdgeMarker()"));
+
     edgeMarkers.append(edgeMarker);
     if (!scriptIsRunning()) emit invalidated();
 }
 
 void Scene::removeEdgeMarker(SceneEdgeMarker *edgeMarker)
 {
+    logMessage(QString("Scene::removeEdgeMarker()"));
+
     // set none marker
     foreach (SceneEdge *edge, edges)
     {
@@ -379,6 +425,8 @@ void Scene::removeEdgeMarker(SceneEdgeMarker *edgeMarker)
 
 SceneEdgeMarker *Scene::getEdgeMarker(const QString &name)
 {
+    logMessage(QString("SceneEdgeMarker *Scene::getEdgeMarker()"));
+
     for (int i = 0; i<edgeMarkers.count(); i++)
     {
         if (edgeMarkers[i]->name == name)
@@ -389,6 +437,8 @@ SceneEdgeMarker *Scene::getEdgeMarker(const QString &name)
 
 bool Scene::setEdgeMarker(const QString &name, SceneEdgeMarker *edgeMarker)
 {
+    logMessage(QString("Scene::setEdgeMarker()"));
+
     for (int i = 1; i<edgeMarkers.count(); i++)
     {
         if (edgeMarkers[i]->name == name)
@@ -415,12 +465,16 @@ bool Scene::setEdgeMarker(const QString &name, SceneEdgeMarker *edgeMarker)
 
 void Scene::addLabelMarker(SceneLabelMarker *labelMarker)
 {
+    logMessage(QString("Scene::addLabelMarker()"));
+
     this->labelMarkers.append(labelMarker);
     if (!scriptIsRunning()) emit invalidated();
 }
 
 bool Scene::setLabelMarker(const QString &name, SceneLabelMarker *labelMarker)
 {
+    logMessage(QString("Scene::setLabelMarker()"));
+
     for (int i = 1; i<labelMarkers.count(); i++)
     {
         if (labelMarkers[i]->name == name)
@@ -447,6 +501,8 @@ bool Scene::setLabelMarker(const QString &name, SceneLabelMarker *labelMarker)
 
 SceneLabelMarker *Scene::getLabelMarker(const QString &name)
 {
+    logMessage(QString("Scene::SceneLabelMarker *Scene::getLabelMarker()"));
+
     for (int i = 0; i<labelMarkers.count(); i++)
     {
         if (labelMarkers[i]->name == name)
@@ -457,6 +513,8 @@ SceneLabelMarker *Scene::getLabelMarker(const QString &name)
 
 void Scene::removeLabelMarker(SceneLabelMarker *labelMarker)
 {
+    logMessage(QString("Scene::removeLabelMarker()"));
+
     // set none marker
     foreach (SceneLabel *label, labels)
     {
@@ -471,6 +529,8 @@ void Scene::removeLabelMarker(SceneLabelMarker *labelMarker)
 
 SceneFunction *Scene::addFunction(SceneFunction *function)
 {
+    logMessage(QString("SceneFunction *Scene::addFunction()"));
+
     // check if function doesn't exists
     foreach (SceneFunction *functionCheck, functions)
     {
@@ -486,6 +546,8 @@ SceneFunction *Scene::addFunction(SceneFunction *function)
 
 void Scene::removeFunction(SceneFunction *function)
 {
+    logMessage(QString("Scene::removeFunction()"));
+
     functions.removeOne(function);
     delete function;
 
@@ -494,6 +556,8 @@ void Scene::removeFunction(SceneFunction *function)
 
 void Scene::clear()
 {
+    logMessage(QString("Scene::clear()"));
+
     blockSignals(true);
 
     m_undoStack->clear();
@@ -532,6 +596,8 @@ void Scene::clear()
 
 RectPoint Scene::boundingBox()
 {
+    logMessage(QString("RectPoint Scene::boundingBox()"));
+
     Point min( CONST_DOUBLE,  CONST_DOUBLE);
     Point max(-CONST_DOUBLE, -CONST_DOUBLE);
 
@@ -553,6 +619,8 @@ RectPoint Scene::boundingBox()
 
 void Scene::selectNone()
 {
+    logMessage(QString("Scene::selectNone()"));
+
     foreach (SceneNode *node, nodes)
         node->isSelected = false;
 
@@ -565,6 +633,8 @@ void Scene::selectNone()
 
 void Scene::selectAll(SceneMode sceneMode)
 {
+    logMessage(QString("Scene::selectAll()"));
+
     selectNone();
 
     switch (sceneMode)
@@ -586,6 +656,8 @@ void Scene::selectAll(SceneMode sceneMode)
 
 void Scene::deleteSelected()
 {
+    logMessage(QString("Scene::deleteSelected()"));
+
     m_undoStack->beginMacro(tr("Delete selected"));
 
     foreach (SceneNode *node, nodes)
@@ -624,6 +696,8 @@ void Scene::deleteSelected()
 
 int Scene::selectedCount()
 {
+    logMessage(QString("Scene::selectedCount()"));
+
     int count = 0;
     foreach (SceneNode *node, nodes)
         if (node->isSelected) count++;
@@ -639,6 +713,8 @@ int Scene::selectedCount()
 
 void Scene::highlightNone()
 {
+    logMessage(QString("Scene::highlightNone()"));
+
     foreach (SceneNode *node, nodes)
         node->isHighlighted = false;
 
@@ -651,6 +727,8 @@ void Scene::highlightNone()
 
 void Scene::transformTranslate(const Point &point, bool copy)
 {
+    logMessage(QString("Scene::transformTranslate()"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -716,6 +794,8 @@ void Scene::transformTranslate(const Point &point, bool copy)
 
 void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
+    logMessage(QString("Scene::transformRotate()"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -775,6 +855,8 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
 
 void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 {
+    logMessage(QString("Scene::transformScale()"));
+
     // clear solution
     m_sceneSolution->clear();
 
@@ -828,6 +910,8 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 
 void Scene::doInvalidated()
 {
+    logMessage(QString("Scene::doInvalidated()"));
+
     actNewEdge->setEnabled((nodes.count() >= 2) && (edgeMarkers.count() >= 1));
     actNewLabel->setEnabled(labelMarkers.count() >= 1);
     actClearSolution->setEnabled(m_sceneSolution->isSolved());    
@@ -835,6 +919,8 @@ void Scene::doInvalidated()
 
 void Scene::doNewNode(const Point &point)
 {
+    logMessage(QString("Scene::doNewNode()"));
+
     SceneNode *node = new SceneNode(point);
     if (node->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
@@ -847,6 +933,8 @@ void Scene::doNewNode(const Point &point)
 
 void Scene::doNewEdge()
 {
+    logMessage(QString("Scene::doNewEdge()"));
+
     SceneEdge *edge = new SceneEdge(nodes[0], nodes[1], edgeMarkers[0], 0);
     if (edge->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
@@ -863,6 +951,8 @@ void Scene::doNewEdge()
 
 void Scene::doNewLabel(const Point &point)
 {
+    logMessage(QString("Scene::doNewLabel()"));
+
     SceneLabel *label = new SceneLabel(point, labelMarkers[0], 0.0, 0);
     if (label->showDialog(QApplication::activeWindow(), true) == QDialog::Accepted)
     {
@@ -878,11 +968,15 @@ void Scene::doNewLabel(const Point &point)
 
 void Scene::doDeleteSelected()
 {
+    logMessage(QString("doDeleteSelected()"));
+
     deleteSelected();
 }
 
 void Scene::doNewEdgeMarker()
 {
+    logMessage(QString("Scene::doNewEdgeMarker()"));
+
     SceneEdgeMarker *marker = Util::scene()->problemInfo()->hermes()->newEdgeMarker();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
@@ -893,6 +987,8 @@ void Scene::doNewEdgeMarker()
 
 void Scene::doNewLabelMarker()
 {
+    logMessage(QString("Scene::doNewLabelMarker()"));
+
     SceneLabelMarker *marker = Util::scene()->problemInfo()->hermes()->newLabelMarker();
 
     if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
@@ -903,6 +999,8 @@ void Scene::doNewLabelMarker()
 
 void Scene::doNewFunction()
 {
+    logMessage(QString("Scene::doNewFunction()"));
+
     SceneFunction *function = new SceneFunction(tr("unnamed function"), "x", Value("0"), Value("10"));
     if (function->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
     {
@@ -914,18 +1012,24 @@ void Scene::doNewFunction()
 
 void Scene::doTransform()
 {
+    logMessage(QString("Scene::doTransform()"));
+
     SceneTransformDialog sceneTransformDialog(QApplication::activeWindow());
     sceneTransformDialog.exec();
 }
 
 void Scene::doClearSolution()
 {
+    logMessage(QString("Scene::doClearSolution()"));
+
     m_sceneSolution->clear();
     emit invalidated();
 }
 
 void Scene::doProblemProperties()
 {
+    logMessage(QString("Scene::doProblemProperties()"));
+
     ProblemDialog problemDialog(m_problemInfo, false, QApplication::activeWindow());
     if (problemDialog.showDialog() == QDialog::Accepted)
     {
@@ -959,6 +1063,8 @@ void Scene::doProblemProperties()
 
 void Scene::writeToDxf(const QString &fileName)
 {
+    logMessage(QString("Scene::writeToDxf()"));
+
     RectPoint box = boundingBox();
 
     // save current locale
@@ -1095,6 +1201,8 @@ void Scene::writeToDxf(const QString &fileName)
 
 void Scene::readFromDxf(const QString &fileName)
 {
+    logMessage(QString("Scene::readFromDxf()"));
+
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
@@ -1122,6 +1230,8 @@ void Scene::readFromDxf(const QString &fileName)
 
 ErrorResult Scene::readFromFile(const QString &fileName)
 {
+    logMessage(QString("Scene::readFromFile()"));
+
     QSettings settings;
     QFileInfo fileInfo(fileName);
     settings.setValue("General/LastDataDir", fileInfo.absolutePath());
@@ -1328,6 +1438,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
 ErrorResult Scene::writeToFile(const QString &fileName)
 {
+    logMessage(QString("Scene::writeToFile()"));
+
     QSettings settings;
 
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())

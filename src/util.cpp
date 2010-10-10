@@ -52,6 +52,8 @@ AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { retu
 
 void initLists()
 {
+    logMessage(QString("initLists()"));
+
     analysisTypeList.insert(AnalysisType_Undefined, "");
     analysisTypeList.insert(AnalysisType_SteadyState, "steadystate");
     analysisTypeList.insert(AnalysisType_Transient, "transient");
@@ -171,6 +173,8 @@ void initLists()
 
 QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
 {
+    logMessage(QString("physicFieldVariableString()"));
+
     switch (physicFieldVariable)
     {
     case PhysicFieldVariable_Variable:
@@ -287,6 +291,8 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
 
 QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)
 {
+    logMessage(QString("physicFieldVariableShortcutString()"));
+
     switch (physicFieldVariable)
     {
     case PhysicFieldVariable_Variable:
@@ -403,6 +409,8 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
 
 QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
 {
+    logMessage(QString("physicFieldVariableUnitsString()"));
+
     switch (physicFieldVariable)
     {
     case PhysicFieldVariable_Variable:
@@ -511,6 +519,8 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
 
 QString physicFieldString(PhysicField physicField)
 {
+    logMessage(QString("physicFieldString()"));
+
     switch (physicField)
     {
     case PhysicField_General:
@@ -535,6 +545,8 @@ QString physicFieldString(PhysicField physicField)
 
 QString analysisTypeString(AnalysisType analysisType)
 {
+    logMessage(QString("analysisTypeString()"));
+
     switch (analysisType)
     {
     case AnalysisType_SteadyState:
@@ -551,6 +563,8 @@ QString analysisTypeString(AnalysisType analysisType)
 
 QString physicFieldBCString(PhysicFieldBC physicFieldBC)
 {
+    logMessage(QString("physicFieldBCString()"));
+
     switch (physicFieldBC)
     {
     case PhysicFieldBC_None:
@@ -595,6 +609,8 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
 
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp)
 {
+    logMessage(QString("physicFieldVariableCompString()"));
+
     switch (physicFieldVariableComp)
     {
     case PhysicFieldVariableComp_Scalar:
@@ -612,11 +628,15 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
 
 QString problemTypeString(ProblemType problemType)
 {
+    logMessage(QString("problemTypeString()"));
+
     return ((problemType == ProblemType_Planar) ? QObject::tr("Planar") : QObject::tr("Axisymmetric"));
 }
 
 QString adaptivityTypeString(AdaptivityType adaptivityType)
 {
+    logMessage(QString("adaptivityTypeString()"));
+
     switch (adaptivityType)
     {
     case AdaptivityType_None:
@@ -635,6 +655,8 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
 
 void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 {
+    logMessage(QString("fillComboBoxPhysicField()"));
+
     cmbPhysicField->clear();
     cmbPhysicField->addItem(physicFieldString(PhysicField_General), PhysicField_General);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Electrostatic), PhysicField_Electrostatic);
@@ -654,6 +676,8 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 
 bool Value::evaluate(bool quiet)
 {
+    logMessage(QString("Value::evaluate()"));
+
     ExpressionResult expressionResult;
     expressionResult = runPythonExpression(text);
     if (expressionResult.error.isEmpty())
@@ -670,6 +694,8 @@ bool Value::evaluate(bool quiet)
 
 void setGUIStyle(const QString &styleName)
 {
+    logMessage(QString("setGUIStyle()"));
+
     QStyle *style = QStyleFactory::create(styleName);
 
     QApplication::setStyle(style);
@@ -681,6 +707,8 @@ void setGUIStyle(const QString &styleName)
 
 void setLanguage(const QString &locale)
 {
+    logMessage(QString("setLanguage()"));
+
     // non latin-1 chars
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 
@@ -697,6 +725,8 @@ void setLanguage(const QString &locale)
 
 QStringList availableLanguages()
 {
+    logMessage(QString("availableLanguages()"));
+
     QDir dir;
     dir.setPath(datadir() + "/lang");
 
@@ -713,6 +743,8 @@ QStringList availableLanguages()
 
 QIcon icon(const QString &name)
 {
+    logMessage(QString("icon()"));
+
     QString fileName;
 
 #ifdef Q_WS_WIN
@@ -758,6 +790,8 @@ QIcon icon(const QString &name)
 
 QString datadir()
 {
+    logMessage(QString("datadir()"));
+
     // windows and local installation
     if (QFile::exists(QApplication::applicationDirPath() + "/functions.py"))
         return QApplication::applicationDirPath();
@@ -772,6 +806,8 @@ QString datadir()
 
 QString tempProblemDir()
 {
+    logMessage(QString("tempProblemDir()"));
+
     QDir(QDir::temp().absolutePath()).mkpath("agros2d/" + QString::number(QApplication::applicationPid()));
 
     return QString("%1/agros2d/%2").arg(QDir::temp().absolutePath()).arg(QApplication::applicationPid());
@@ -779,11 +815,15 @@ QString tempProblemDir()
 
 QString tempProblemFileName()
 {
+    logMessage(QString("tempProblemFileName()"));
+
     return tempProblemDir() + "/temp";
 }
 
 QTime milisecondsToTime(int ms)
 {
+    logMessage(QString("milisecondsToTime()"));
+
     // store the current ms remaining
     int tmp_ms = ms;
 
@@ -813,6 +853,8 @@ QTime milisecondsToTime(int ms)
 
 bool removeDirectory(const QDir &dir)
 {
+    logMessage(QString("removeDirectory()"));
+
     bool error = false;
 
     if (dir.exists())
@@ -846,6 +888,8 @@ bool removeDirectory(const QDir &dir)
 
 void msleep(unsigned long msecs)
 {
+    logMessage(QString("msleep()"));
+
     QWaitCondition w;
     QMutex sleepMutex;
     sleepMutex.lock();
@@ -902,6 +946,8 @@ void logOutput(QtMsgType type, const char *msg)
 
 QString readFileContent(const QString &fileName)
 {
+    logMessage(QString("readFileContent()"));
+
     QString content;
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -916,6 +962,8 @@ QString readFileContent(const QString &fileName)
 
 void writeStringContent(const QString &fileName, QString *content)
 {
+    logMessage(QString("writeStringContent()"));
+
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly))
     {
@@ -929,6 +977,8 @@ void writeStringContent(const QString &fileName, QString *content)
 
 QByteArray readFileContentByteArray(const QString &fileName)
 {
+    logMessage(QString("eadFileContentByteArray()"));
+
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly))
     {
@@ -941,6 +991,8 @@ QByteArray readFileContentByteArray(const QString &fileName)
 
 void writeStringContentByteArray(const QString &fileName, QByteArray content)
 {
+    logMessage(QString("writeStringContentByteArray()"));
+
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly))
     {
@@ -954,6 +1006,8 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content)
 CheckVersion *checkVersion = NULL;
 void checkForNewVersion(bool quiet)
 {
+    logMessage(QString("checkForNewVersion()"));
+
     // download version
     QUrl url("http://hpfem.org/agros2d/download/version.xml");
     if (checkVersion == NULL)
@@ -964,6 +1018,8 @@ void checkForNewVersion(bool quiet)
 
 CheckVersion::CheckVersion(QUrl url) : QObject()
 {
+    logMessage(QString("CheckVersion::CheckVersion()"));
+
     m_url = url;
 
     m_manager = new QNetworkAccessManager(this);
@@ -972,11 +1028,15 @@ CheckVersion::CheckVersion(QUrl url) : QObject()
 
 CheckVersion::~CheckVersion()
 {
+    logMessage(QString("CheckVersion::~CheckVersion()"));
+
     delete m_manager;
 }
 
 void CheckVersion::run(bool quiet)
 {
+    logMessage(QString("CheckVersion::run()"));
+
     m_quiet = quiet;
     m_networkReply = m_manager->get(QNetworkRequest(m_url));
 
@@ -986,6 +1046,8 @@ void CheckVersion::run(bool quiet)
 
 void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 {
+    logMessage(QString("CheckVersion::downloadFinished()"));
+
     QString text = networkReply->readAll();
 
     if (!text.isEmpty())
@@ -1038,10 +1100,19 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 
 void CheckVersion::showProgress(qint64 dl, qint64 all)
 {
+    logMessage(QString("CheckVersion::showProgress()"));
+
     // qDebug() << QString("\rDownloaded %1 bytes of %2).").arg(dl).arg(all);
 }
 
 void CheckVersion::handleError(QNetworkReply::NetworkError error)
 {
+    logMessage(QString("CheckVersion::handleError()"));
+
     qDebug() << "An error ocurred (code #" << error << ").";
+}
+
+void logMessage(const QString &msg)
+{
+   qDebug() << msg;
 }
