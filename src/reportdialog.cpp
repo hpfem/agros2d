@@ -23,6 +23,8 @@
 
 ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
+    logMessage("ReportDialog::ReportDialog()");
+
     m_sceneView = sceneView;
 
     setWindowIcon(icon("browser"));
@@ -42,12 +44,16 @@ ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(pare
 
 ReportDialog::~ReportDialog()
 {
+    logMessage("ReportDialog::~ReportDialog()");
+
     QSettings settings;
     settings.setValue("ReportDialog/Geometry", saveGeometry());
 }
 
 void ReportDialog::createControls()
 {
+    logMessage("ReportDialog::createControls()");
+
     chkDescription = new QCheckBox(tr("Description"));
     chkProblemInformation = new QCheckBox(tr("Problem information"));
     chkStartupScript = new QCheckBox(tr("Startup script"));
@@ -151,6 +157,8 @@ void ReportDialog::createControls()
 
 bool ReportDialog::checkPaths()
 {
+    logMessage("ReportDialog::checkPaths()");
+
     bool templateExists = QFile::exists(QString(txtTemplate->text()));
     bool styleSheetExists = QFile::exists(QString(txtStyleSheet->text()));
 
@@ -173,6 +181,8 @@ bool ReportDialog::checkPaths()
 
 void ReportDialog::defaultValues()
 {
+    logMessage("ReportDialog::defaultValues()");
+
     chkProblemInformation->setChecked(true);
     chkPhysicalProperties->setChecked(true);
     chkGeometry->setChecked(true);
@@ -193,6 +203,8 @@ void ReportDialog::defaultValues()
 
 void ReportDialog::setControls()
 {
+    logMessage("ReportDialog::setControls()");
+
     chkDescription->setDisabled(Util::scene()->problemInfo()->description.isEmpty());
     chkDescription->setChecked(!Util::scene()->problemInfo()->description.isEmpty());
     chkStartupScript->setDisabled(Util::scene()->problemInfo()->scriptStartup.isEmpty());
@@ -210,6 +222,8 @@ void ReportDialog::setControls()
 
 void ReportDialog::resetControls()
 {
+    logMessage("ReportDialog::resetControls()");
+
     chkFigureGeometry->setChecked(chkGeometry->isChecked());
     chkFigureGeometry->setEnabled(chkGeometry->isChecked());
     chkFigureMesh->setChecked(chkMeshAndSolution->isChecked());
@@ -227,6 +241,8 @@ void ReportDialog::resetControls()
 
 void ReportDialog::showDialog()
 {
+    logMessage("ReportDialog::showDialog()");
+
     setControls();
     show();
     activateWindow();
@@ -235,11 +251,15 @@ void ReportDialog::showDialog()
 
 void ReportDialog::doClose()
 {
+    logMessage("ReportDialog::doClose()");
+
     hide();
 }
 
 void ReportDialog::doShowReport()
 {
+    logMessage("ReportDialog::doShowReport()");
+
     QDir(tempProblemDir()).mkdir("report");
 
     QFile::remove(QString("%1/report/template.html").arg(tempProblemDir()));
@@ -263,6 +283,8 @@ void ReportDialog::doShowReport()
 
 void ReportDialog::generateIndex()
 {
+    logMessage("ReportDialog::generateIndex()");
+
     QString fileNameTemplate = tempProblemDir() + "/report/template.html";
     QString fileNameIndex = tempProblemDir() + "/report/report.html";
 
@@ -288,6 +310,8 @@ void ReportDialog::generateIndex()
 
 void ReportDialog::generateFigures()
 {
+    logMessage("ReportDialog::generateFigures()");
+
     bool showRulers = chkShowRulers->isChecked();
     bool showGrid = chkShowGrid->isChecked();
     m_sceneView->saveImagesForReport(tempProblemDir() + "/report",
@@ -299,6 +323,8 @@ void ReportDialog::generateFigures()
 
 QString ReportDialog::replaceTemplates(const QString &source)
 {
+    logMessage("ReportDialog::()replaceTemplates");
+
     QString destination = source;
 
     // stylesheet
@@ -530,6 +556,8 @@ QString ReportDialog::replaceTemplates(const QString &source)
 
 QString ReportDialog::htmlMaterials()
 {
+    logMessage("ReportDialog::htmlMaterials()");
+
     QString out;
 
     out  = "\n";
@@ -554,6 +582,8 @@ QString ReportDialog::htmlMaterials()
 
 QString ReportDialog::htmlBoundaries()
 {
+    logMessage("ReportDialog::htmlBoundaries()");
+
     QString out;
 
     out  = "\n";
@@ -578,6 +608,8 @@ QString ReportDialog::htmlBoundaries()
 
 QString ReportDialog::htmlGeometryNodes()
 {
+    logMessage("ReportDialog::htmlGeometryNodes()");
+
     QString out;
 
     out  = "\n";
@@ -597,6 +629,8 @@ QString ReportDialog::htmlGeometryNodes()
 
 QString ReportDialog::htmlGeometryEdges()
 {
+    logMessage("ReportDialog::htmlGeometryEdges()");
+
     QString out;
 
     out  = "\n";
@@ -622,6 +656,8 @@ QString ReportDialog::htmlGeometryEdges()
 
 QString ReportDialog::htmlGeometryLabels()
 {
+    logMessage("ReportDialog::htmlGeometryLabels()");
+
     QString out;
 
     out  = "\n";
@@ -645,6 +681,8 @@ QString ReportDialog::htmlGeometryLabels()
 
 QString ReportDialog::htmlFigure(const QString &fileName, const QString &caption)
 {
+    logMessage("ReportDialog::htmlFigure()");
+
     QString out;
 
     if (QFile::exists(tempProblemDir() + "/report/" + fileName))

@@ -21,6 +21,8 @@
 
 TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
 {
+    logMessage("TooltipView::TooltipView()");
+
     setObjectName("TooltipView");
 
     webView = new QWebView(this);
@@ -34,11 +36,15 @@ TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
 
 void TooltipView::loadTooltip(const QString &html)
 {
+    logMessage("TooltipView::loadTooltip()");
+
     webView->setHtml(html);
 }
 
 void TooltipView::loadTooltip(SceneMode sceneMode)
 {
+    logMessage("TooltipView::loadTooltip()");
+
     switch (sceneMode)
     {
     case SceneMode_OperateOnNodes:

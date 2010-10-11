@@ -21,6 +21,8 @@
 
 LogDialog::LogDialog(QWidget *parent) : QDialog(parent)
 {
+    logMessage("LogDialog::LogDialog()");
+
     setWindowIcon(icon("log"));
     setWindowTitle(tr("Log dialog"));
     setWindowFlags(Qt::Window);
@@ -34,6 +36,8 @@ LogDialog::LogDialog(QWidget *parent) : QDialog(parent)
 
 LogDialog::~LogDialog()
 {
+    logMessage("LogDialog::~LogDialog()");
+
     QSettings settings;
     settings.setValue("LogDialog/Geometry", saveGeometry());
 
@@ -43,6 +47,8 @@ LogDialog::~LogDialog()
 
 void LogDialog::createControls()
 {
+    logMessage("LogDialog::createControls()");
+
     lstMessages = new QTextEdit(this);
     lstMessages->setReadOnly(true);
 
@@ -74,6 +80,8 @@ void LogDialog::createControls()
 
 void LogDialog::showDialog()
 {
+    logMessage("LogDialog::showDialog()");
+
     show();
     activateWindow();
     raise();
@@ -81,6 +89,8 @@ void LogDialog::showDialog()
 
 void LogDialog::loadProgressLog()
 {
+    logMessage("LogDialog::loadProgressLog()");
+
     showDialog();
 
     lstMessages->clear();
@@ -121,6 +131,8 @@ void LogDialog::loadProgressLog()
 
 void LogDialog::loadApplicationLog()
 {
+    logMessage("LogDialog::loadApplicationLog()");
+
     showDialog();
 
     lstMessages->clear();
@@ -163,11 +175,15 @@ void LogDialog::loadApplicationLog()
 
 void LogDialog::doClose()
 {
+    logMessage("LogDialog::doClose()");
+
     hide();
 }
 
 void LogDialog::doSaveLog()
 {
+    logMessage("LogDialog::doSaveLog()");
+
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save log"), "data", tr("Log files (*.log)"));
 
     QFile file(fileName);
@@ -180,6 +196,8 @@ void LogDialog::doSaveLog()
 
 void showPicture(const QString &fileName)
 {
+    logMessage("showPicture()");
+
     if (QFile::exists(fileName))
     {
         // load
@@ -206,10 +224,14 @@ void showPicture(const QString &fileName)
 
 void LogDialog::doShowAdaptivityErrorChart()
 {
+    logMessage("LogDialog::doShowAdaptivityErrorChart()");
+
     showPicture(tempProblemDir() + "/adaptivity_error.png");
 }
 
 void LogDialog::doShowAdaptivityDOFChart()
 {
+    logMessage("LogDialog::doShowAdaptivityDOFChart()");
+
     showPicture(tempProblemDir() + "/adaptivity_dof.png");
 }

@@ -21,6 +21,8 @@
 
 ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent) : QDialog(parent)
 {
+    logMessage("ProblemDialog::ProblemDialog()");
+
     m_isNewProblem = isNewProblem;
     m_problemInfo = problemInfo;
 
@@ -36,6 +38,8 @@ ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidge
 
 ProblemDialog::~ProblemDialog()
 {
+    logMessage("ProblemDialog::~ProblemDialog()");
+
     delete txtName;
     delete cmbProblemType;
     if (m_isNewProblem) delete cmbPhysicField;
@@ -61,11 +65,15 @@ ProblemDialog::~ProblemDialog()
 
 int ProblemDialog::showDialog()
 {
+    logMessage("ProblemDialog::showDialog()");
+
     return exec();
 }
 
 void ProblemDialog::createControls()
 {
+    logMessage("ProblemDialog::createControls()");
+
     // tab
     QTabWidget *tabType = new QTabWidget();
     tabType->addTab(createControlsGeneral(), icon(""), tr("General"));
@@ -87,6 +95,8 @@ void ProblemDialog::createControls()
 
 QWidget *ProblemDialog::createControlsGeneral()
 {
+    logMessage("*ProblemDialog::createControlsGeneral()");
+
     // equations
     lblEquationPixmap = new QLabel("");
     lblEquationPixmap->setMinimumHeight(50);
@@ -184,6 +194,8 @@ QWidget *ProblemDialog::createControlsGeneral()
 
 QWidget *ProblemDialog::createControlsStartupScript()
 {
+    logMessage("ProblemDialog::createControlsStartupScript()");
+
     txtStartupScript = new ScriptEditor(this);
 
     QVBoxLayout *layoutStartup = new QVBoxLayout();
@@ -197,6 +209,8 @@ QWidget *ProblemDialog::createControlsStartupScript()
 
 QWidget *ProblemDialog::createControlsDescription()
 {
+    logMessage("ProblemDialog::createControlsDescription()");
+
     txtDescription = new QTextEdit(this);
     txtDescription->setAcceptRichText(false);
 
@@ -211,6 +225,8 @@ QWidget *ProblemDialog::createControlsDescription()
 
 void ProblemDialog::fillComboBox()
 {
+    logMessage("ProblemDialog::fillComboBox()");
+
     cmbProblemType->clear();
     cmbProblemType->addItem(problemTypeString(ProblemType_Planar), ProblemType_Planar);
     cmbProblemType->addItem(problemTypeString(ProblemType_Axisymmetric), ProblemType_Axisymmetric);
@@ -227,6 +243,8 @@ void ProblemDialog::fillComboBox()
 
 void ProblemDialog::load()
 {
+    logMessage("ProblemDialog::load()");
+
     // main
     if (!m_isNewProblem) cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(m_problemInfo->physicField()));
     txtName->setText(m_problemInfo->name);
@@ -257,6 +275,8 @@ void ProblemDialog::load()
 
 bool ProblemDialog::save()
 {
+    logMessage("ProblemDialog::save()");
+
     if (!txtStartupScript->toPlainText().isEmpty())
     {
         ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
@@ -332,16 +352,22 @@ bool ProblemDialog::save()
 
 void ProblemDialog::doAccept()
 {
+    logMessage("ProblemDialog::doAccept()");
+
     if (save()) accept();
 }
 
 void ProblemDialog::doReject()
 {
+    logMessage("ProblemDialog::doReject()");
+
     reject();
 }
 
 void ProblemDialog::doPhysicFieldChanged(int index)
 {
+    logMessage("ProblemDialog::doPhysicFieldChanged()");
+
     HermesField *hermesField = hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt());
 
     // analysis type
@@ -361,12 +387,16 @@ void ProblemDialog::doPhysicFieldChanged(int index)
 
 void ProblemDialog::doAdaptivityChanged(int index)
 {
+    logMessage("ProblemDialog::doAdaptivityChanged()");
+
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void ProblemDialog::doAnalysisTypeChanged(int index)
 {
+    logMessage("ProblemDialog::doAnalysisTypeChanged()");
+
     txtTransientTimeStep->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
     txtTransientTimeTotal->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
     txtTransientInitialCondition->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() == AnalysisType_Transient);
@@ -378,6 +408,8 @@ void ProblemDialog::doAnalysisTypeChanged(int index)
 
 void ProblemDialog::doTransientChanged()
 {
+    logMessage("ProblemDialog::doTransientChanged()");
+
     if (txtTransientTimeStep->evaluate(true) &&
         txtTransientTimeTotal->evaluate(true))
     {
@@ -386,7 +418,9 @@ void ProblemDialog::doTransientChanged()
 }
 
 void ProblemDialog::doShowEquation()
-{    
+{
+    logMessage("ProblemDialog::doShowEquation()");
+
     QPixmap pixmap;
     pixmap.load(QString(":/images/equations/%1_%2.png")
                 .arg(physicFieldToStringKey((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))

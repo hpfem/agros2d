@@ -22,12 +22,16 @@
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {
+    logMessage("SurfaceIntegralValue::SurfaceIntegralValue()");
+
     length = 0.0;
     surface = 0.0;    
 }
 
 void SurfaceIntegralValue::calculate()
 {
+    logMessage("SurfaceIntegralValue::calculate()");
+
     if (!Util::scene()->sceneSolution()->isSolved())
         return;
 
@@ -125,6 +129,8 @@ void SurfaceIntegralValue::calculate()
 
 SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget(tr("Surface Integral"), parent)
 {
+    logMessage("SurfaceIntegralValueView::SurfaceIntegralValueView()");
+
     QSettings settings;
 
     setMinimumWidth(280);
@@ -153,6 +159,8 @@ SurfaceIntegralValueView::SurfaceIntegralValueView(QWidget *parent): QDockWidget
 
 SurfaceIntegralValueView::~SurfaceIntegralValueView()
 {
+    logMessage("SurfaceIntegralValueView::~SurfaceIntegralValueView()");
+
     QSettings settings;
     settings.setValue("SurfaceIntegralValueView/TreeViewColumn0", trvWidget->columnWidth(0));
     settings.setValue("SurfaceIntegralValueView/TreeViewColumn1", trvWidget->columnWidth(1));
@@ -160,6 +168,8 @@ SurfaceIntegralValueView::~SurfaceIntegralValueView()
 
 void SurfaceIntegralValueView::createActions()
 {
+    logMessage("SurfaceIntegralValueView::createActions()");
+
     // copy value
     actCopy = new QAction(icon(""), tr("Copy value"), this);
     connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopyValue()));
@@ -167,12 +177,16 @@ void SurfaceIntegralValueView::createActions()
 
 void SurfaceIntegralValueView::createMenu()
 {
+    logMessage("SurfaceIntegralValueView::createMenu()");
+
     mnuInfo = new QMenu(this);
     mnuInfo->addAction(actCopy);
 }
 
 void SurfaceIntegralValueView::doCopyValue()
 {
+    logMessage("SurfaceIntegralValueView::doCopyValue()");
+
     QTreeWidgetItem *item = trvWidget->currentItem();
     if (item)
         QApplication::clipboard()->setText(item->text(1));
@@ -180,6 +194,8 @@ void SurfaceIntegralValueView::doCopyValue()
 
 void SurfaceIntegralValueView::doContextMenu(const QPoint &pos)
 {
+    logMessage("SurfaceIntegralValueView::doContextMenu()");
+
     QTreeWidgetItem *item = trvWidget->itemAt(pos);
     if (item)
         if (!item->text(1).isEmpty())
@@ -191,6 +207,8 @@ void SurfaceIntegralValueView::doContextMenu(const QPoint &pos)
 
 void SurfaceIntegralValueView::doShowSurfaceIntegral()
 {
+    logMessage("SurfaceIntegralValueView::doShowSurfaceIntegral()");
+
     SurfaceIntegralValue *surfaceIntegralValue = Util::scene()->problemInfo()->hermes()->surfaceIntegralValue();
     trvWidget->clear();
 

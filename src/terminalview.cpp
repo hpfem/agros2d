@@ -21,6 +21,8 @@
 
 TerminalLineEdit::TerminalLineEdit(QWidget *parent) : QLineEdit(parent)
 {
+    logMessage("TerminalLineEdit::TerminalLineEdit()");
+
     m_model = dynamic_cast<QStringListModel *>(Util::completer()->model());
     m_index = -1;
 
@@ -29,6 +31,8 @@ TerminalLineEdit::TerminalLineEdit(QWidget *parent) : QLineEdit(parent)
 
 void TerminalLineEdit::keyPressEvent(QKeyEvent *event)
 {
+    logMessage("TerminalLineEdit::keyPressEvent()");
+
     if (event->key() == Qt::Key_Up)
     {
         m_index++;
@@ -59,6 +63,8 @@ void TerminalLineEdit::keyPressEvent(QKeyEvent *event)
 
 void TerminalLineEdit::doClear()
 {
+    logMessage("TerminalLineEdit::doClear()");
+
     m_index = -1;
 }
 
@@ -66,6 +72,8 @@ void TerminalLineEdit::doClear()
 
 Terminal::Terminal(QWidget *parent) : QWidget(parent)
 {
+    logMessage("Terminal::Terminal()");
+
     setWindowTitle(tr("Command dialog"));
     setWindowIcon(icon("run"));
 
@@ -112,18 +120,24 @@ Terminal::Terminal(QWidget *parent) : QWidget(parent)
 
 Terminal::~Terminal()
 {
+    logMessage("Terminal::~Terminal()");
+
     delete txtCommand;
     delete txtOutput;
 }
 
 void Terminal::focusInEvent(QFocusEvent *event)
 {
+    logMessage("Terminal::focusInEvent()");
+
     txtCommand->setFocus(event->reason());
     QWidget::focusInEvent(event);
 }
 
 void Terminal::doExecute()
 {
+    logMessage("Terminal::doExecute()");
+
     if (!txtCommand->text().isEmpty())
     {
         QSettings settings;
@@ -152,11 +166,15 @@ void Terminal::doExecute()
 
 void Terminal::doCommandTextChanged(const QString &str)
 {
+    logMessage("Terminal::doCommandTextChanged()");
+
     btnExecute->setEnabled(!str.isEmpty());
 }
 
 void Terminal::doWriteResult(ScriptResult result)
 {
+    logMessage("Terminal::doWriteResult()");
+
     QColor color = Qt::blue;
     if (result.isError)
         color = (Qt::red);
@@ -166,6 +184,8 @@ void Terminal::doWriteResult(ScriptResult result)
 
 void Terminal::doPrintStdout(const QString &message, QColor color)
 {
+    logMessage("Terminal::doPrintStdout()");
+
     if (!message.trimmed().isEmpty())
     {
         // format
@@ -190,6 +210,8 @@ void Terminal::doPrintStdout(const QString &message, QColor color)
 
 TerminalView::TerminalView(QWidget *parent) : QDockWidget(tr("Terminal"), parent)
 {
+    logMessage("TerminalView::TerminalView()");
+
     setMinimumWidth(280);
     setObjectName("TerminalView");
 
@@ -202,11 +224,15 @@ TerminalView::TerminalView(QWidget *parent) : QDockWidget(tr("Terminal"), parent
 
 void TerminalView::focusInEvent(QFocusEvent *event)
 {
+    logMessage("TerminalView::focusInEvent()");
+
     m_terminal->setFocus(event->reason());
 }
 
 void TerminalView::doVisibilityChanged(bool)
 {
+    logMessage("TerminalView::doVisibilityChanged()");
+
     if (isVisible())
         m_terminal->setFocus();
 }

@@ -21,6 +21,8 @@
 
 SceneMarkerSelectDialog::SceneMarkerSelectDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
+    logMessage("SceneMarkerSelectDialog::SceneMarkerSelectDialog()");
+
     m_sceneView = sceneView;
 
     setWindowIcon(icon(""));
@@ -34,6 +36,8 @@ SceneMarkerSelectDialog::SceneMarkerSelectDialog(SceneView *sceneView, QWidget *
 
 void SceneMarkerSelectDialog::createControls()
 {
+    logMessage("SceneMarkerSelectDialog::createControls()");
+
     // surface
     lstSurface = new QListWidget(this);
     for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
@@ -86,6 +90,8 @@ void SceneMarkerSelectDialog::createControls()
 
 void SceneMarkerSelectDialog::doAccept()
 {
+    logMessage("SceneMarkerSelectDialog::doAccept()");
+
     if (tabWidget->currentWidget() == widSurface)
     {
         Util::scene()->selectNone();
@@ -129,5 +135,7 @@ void SceneMarkerSelectDialog::doAccept()
 
 void SceneMarkerSelectDialog::doReject()
 {
+    logMessage("SceneMarkerSelectDialog::doReject()");
+
     reject();
 }

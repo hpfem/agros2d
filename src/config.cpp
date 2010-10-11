@@ -21,21 +21,21 @@
 
 Config::Config()
 {
-    logMessage(QString("Config::Config()"));
+    logMessage("Config::Config()");
 
     load();
 }
 
 Config::~Config()
 {
-    logMessage(QString("Config::~Config()"));
+    logMessage("Config::~Config()");
 
     save();
 }
 
 void Config::load()
 {
-    logMessage(QString("Config::load()"));
+    logMessage("Config::load()");
 
     QSettings settings;
 
@@ -128,7 +128,7 @@ void Config::load()
 
 void Config::save()
 {
-    logMessage(QString("Config::Save()"));
+    logMessage("Config::Save()");
 
     QSettings settings;
 

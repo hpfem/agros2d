@@ -22,6 +22,8 @@
 
 LocalPointValue::LocalPointValue(Point &point)
 {
+    logMessage("LocalPointValue::LocalPointValue()");
+
     this->point = point;
 
     PointValue val = pointValue(Util::scene()->sceneSolution()->sln(), point);
@@ -33,6 +35,8 @@ LocalPointValue::LocalPointValue(Point &point)
 
 PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
 {
+    logMessage("LocalPointValue::pointValue()");
+
     double tmpValue;
     Point tmpDerivative;
     SceneLabelMarker *tmpLabelMarker = NULL;
@@ -68,6 +72,8 @@ PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
 
 LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local Values"), parent)
 {
+    logMessage("LocalPointValueView::LocalPointValueView()");
+
     QSettings settings;
     
     setMinimumWidth(280);
@@ -111,6 +117,8 @@ LocalPointValueView::LocalPointValueView(QWidget *parent): QDockWidget(tr("Local
 
 LocalPointValueView::~LocalPointValueView()
 {
+    logMessage("LocalPointValueView::~LocalPointValueView()");
+
     QSettings settings;
     settings.setValue("LocalPointValueView/TreeViewColumn0", trvWidget->columnWidth(0));
     settings.setValue("LocalPointValueView/TreeViewColumn1", trvWidget->columnWidth(1));
@@ -118,6 +126,8 @@ LocalPointValueView::~LocalPointValueView()
 
 void LocalPointValueView::createActions()
 {
+    logMessage("LocalPointValueView::createActions()");
+
     // point
     actPoint = new QAction(icon("scene-node"), tr("Local point value"), this);
     connect(actPoint, SIGNAL(triggered()), this, SLOT(doPoint()));
@@ -129,6 +139,8 @@ void LocalPointValueView::createActions()
 
 void LocalPointValueView::createMenu()
 {
+    logMessage("LocalPointValueView::createMenu()");
+
     mnuInfo = new QMenu(this);
     mnuInfo->addAction(actPoint);
     mnuInfo->addAction(actCopy);
@@ -136,6 +148,8 @@ void LocalPointValueView::createMenu()
 
 void LocalPointValueView::doPoint()
 {
+    logMessage("LocalPointValueView::doPoint()");
+
     LocalPointValueDialog localPointValueDialog(point);
     if (localPointValueDialog.exec() == QDialog::Accepted)
     {
@@ -145,6 +159,8 @@ void LocalPointValueView::doPoint()
 
 void LocalPointValueView::doContextMenu(const QPoint &pos)
 {
+    logMessage("LocalPointValueView::doContextMenu()");
+
     actCopy->setEnabled(false);
     QTreeWidgetItem *item = trvWidget->itemAt(pos);
     if (item)
@@ -159,6 +175,8 @@ void LocalPointValueView::doContextMenu(const QPoint &pos)
 
 void LocalPointValueView::doShowPoint(const Point &point)
 {
+    logMessage("LocalPointValueView::doShowPoint()");
+
     // store point
     this->point = point;
     doShowPoint();
@@ -166,6 +184,8 @@ void LocalPointValueView::doShowPoint(const Point &point)
 
 void LocalPointValueView::doCopyValue()
 {
+    logMessage("LocalPointValueView::doCopyValue()");
+
     QTreeWidgetItem *item = trvWidget->currentItem();
     if (item)
         if (!item->text(1).isEmpty())
@@ -174,6 +194,8 @@ void LocalPointValueView::doCopyValue()
 
 void LocalPointValueView::doShowPoint()
 {
+    logMessage("LocalPointValueView::doShowPoint()");
+
     trvWidget->clear();
 
     // point
@@ -194,6 +216,8 @@ void LocalPointValueView::doShowPoint()
 
 LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDialog(parent)
 {
+    logMessage("LocalPointValueDialog::LocalPointValueDialog()");
+
     setWindowIcon(icon("scene-node"));
     setWindowTitle(tr("Local point value"));
 
@@ -229,16 +253,22 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
 
 LocalPointValueDialog::~LocalPointValueDialog()
 {
+    logMessage("LocalPointValueDialog::~LocalPointValueDialog()");
+
     delete txtPointX;
     delete txtPointY;
 }
 
 Point LocalPointValueDialog::point()
 {
+    logMessage("LocalPointValueDialog::point()");
+
     return Point(txtPointX->value().number, txtPointY->value().number);
 }
 
 void LocalPointValueDialog::evaluated(bool isError)
 {
+    logMessage("LocalPointValueDialog::evaluated()");
+
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }

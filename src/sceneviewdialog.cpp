@@ -21,6 +21,8 @@
 
 SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
+    logMessage("SceneViewDialog::SceneViewDialog()");
+
     m_sceneView = sceneView;
        
     setWindowIcon(icon("scene-properties"));
@@ -36,11 +38,15 @@ SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialo
 
 int SceneViewDialog::showDialog()
 {
+    logMessage("SceneViewDialog::showDialog()");
+
     return exec();
 }
 
 void SceneViewDialog::load()
 {
+    logMessage("SceneViewDialog::load()");
+
     // show
     chkShowGeometry->setChecked(m_sceneView->sceneViewSettings().showGeometry);
     chkShowInitialMesh->setChecked(m_sceneView->sceneViewSettings().showInitialMesh);
@@ -80,6 +86,8 @@ void SceneViewDialog::load()
 
 void SceneViewDialog::save()
 {
+    logMessage("SceneViewDialog::save()");
+
     // show
     m_sceneView->sceneViewSettings().showGeometry = chkShowGeometry->isChecked();
     m_sceneView->sceneViewSettings().showInitialMesh = chkShowInitialMesh->isChecked();
@@ -112,6 +120,8 @@ void SceneViewDialog::save()
 
 void SceneViewDialog::createControls()
 {
+    logMessage("SceneViewDialog::createControls()");
+
     // layout show
     chkShowGeometry = new QCheckBox(tr("Geometry"));
     chkShowInitialMesh = new QCheckBox(tr("Initial mesh"));
@@ -256,6 +266,8 @@ void SceneViewDialog::createControls()
 
 void SceneViewDialog::doScalarFieldVariable(int index)
 {
+    logMessage("SceneViewDialog::doScalarFieldVariable()");
+
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbScalarFieldVariableComp->itemData(cmbScalarFieldVariableComp->currentIndex()).toInt();
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbScalarFieldVariable->itemData(index).toInt();
 
@@ -279,12 +291,16 @@ void SceneViewDialog::doScalarFieldVariable(int index)
 
 void SceneViewDialog::doScalarFieldRangeAuto(int state)
 {
+    logMessage("SceneViewDialog::doScalarFieldRangeAuto()");
+
     txtScalarFieldRangeMin->setEnabled(!chkScalarFieldRangeAuto->isChecked());
     txtScalarFieldRangeMax->setEnabled(!chkScalarFieldRangeAuto->isChecked());       
 }
 
 void SceneViewDialog::setControls()
 {
+    logMessage("SceneViewDialog::setControls()");
+
     // disable controls
     chkShowGeometry->setEnabled(true);
 
@@ -357,11 +373,15 @@ void SceneViewDialog::setControls()
 
 void SceneViewDialog::buttonClicked(QAbstractButton *button)
 {
+    logMessage("SceneViewDialog::buttonClicked()");
+
     setControls();
 }
 
 void SceneViewDialog::doAccept()
 {
+    logMessage("SceneViewDialog::doAccept()");
+
     save();
 
     accept();
@@ -369,5 +389,7 @@ void SceneViewDialog::doAccept()
 
 void SceneViewDialog::doReject()
 {
+    logMessage("SceneViewDialog::doReject()");
+
     reject();
 }

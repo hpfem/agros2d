@@ -22,6 +22,8 @@
 
 SceneFunction::SceneFunction(const QString &name, const QString &function, Value start, Value end)
 {
+    logMessage("SceneFunction::SceneFunction()");
+
     this->name = name;
     this->function = function;
     this->start = start;
@@ -35,12 +37,16 @@ SceneFunction::SceneFunction(const QString &name, const QString &function, Value
 
 SceneFunction::~SceneFunction()
 {
+    logMessage("SceneFunction::~SceneFunction()");
+
     if (m_valuesX) delete m_valuesX;
     if (m_valuesY) delete m_valuesY;
 }
 
 QString SceneFunction::script()
 {
+    logMessage("SceneFunction::script()");
+
     return QString("addfunction(\"%1\", \"%2\", %3, %4)").
             arg(name).
             arg(function).
@@ -50,6 +56,8 @@ QString SceneFunction::script()
 
 QVariant SceneFunction::variant()
 {
+    logMessage("SceneFunction::variant()");
+
     QVariant v;
     v.setValue(this);
     return v;
@@ -57,6 +65,8 @@ QVariant SceneFunction::variant()
 
 double SceneFunction::evaluate(double number, bool fromTable) throw (const QString &)
 {
+    logMessage("SceneFunction::evaluate()");
+
     if (fromTable)
     {
         if (number < start.number)
@@ -86,6 +96,8 @@ double SceneFunction::evaluate(double number, bool fromTable) throw (const QStri
 
 bool SceneFunction::evaluateValues() throw (const QString &)
 {
+    logMessage("SceneFunction::evaluateValues()");
+
     if (!start.evaluate(true)) return false;
     if (!end.evaluate(true)) return false;
 
@@ -123,6 +135,8 @@ bool SceneFunction::evaluateValues() throw (const QString &)
 
 int SceneFunction::showDialog(QWidget *parent)
 {
+    logMessage("SceneFunction::showDialog()");
+
     DSceneFunction *dialog = new DSceneFunction(this, parent);
     return dialog->exec();
 }
@@ -131,6 +145,8 @@ int SceneFunction::showDialog(QWidget *parent)
 
 DSceneFunction::DSceneFunction(SceneFunction *sceneFunction, QWidget *parent) : QDialog(parent)
 {
+    logMessage("DSceneFunction::DSceneFunction()");
+
     m_sceneFunction = sceneFunction;
 
     setWindowIcon(icon("scene-function"));
@@ -145,6 +161,8 @@ DSceneFunction::DSceneFunction(SceneFunction *sceneFunction, QWidget *parent) : 
 
 DSceneFunction::~DSceneFunction()
 {
+    logMessage("DSceneFunction::~DSceneFunction()");
+
     delete txtName;
     delete txtFunction;
     delete txtStart;
@@ -153,6 +171,8 @@ DSceneFunction::~DSceneFunction()
 
 void DSceneFunction::createControls()
 {
+    logMessage("DSceneFunction::createControls()");
+
     // chart
     chart = new Chart(this);
     // axis labels
@@ -215,11 +235,15 @@ void DSceneFunction::createControls()
 
 void DSceneFunction::doSaveImage()
 {
+    logMessage("DSceneFunction::doSaveImage()");
+
     chart->saveImage();
 }
 
 void DSceneFunction::doPlot()
 {
+    logMessage("DSceneFunction::doPlot()");
+
     // evaluate
     try
     {
@@ -242,6 +266,8 @@ void DSceneFunction::doPlot()
 
 void DSceneFunction::load()
 {
+    logMessage("DSceneFunction::load()");
+
     txtName->setText(m_sceneFunction->name);
     txtFunction->setText(m_sceneFunction->function);
     txtStart->setValue(m_sceneFunction->start);
@@ -250,6 +276,8 @@ void DSceneFunction::load()
 
 bool DSceneFunction::save()
 {
+    logMessage("DSceneFunction::save()");
+
     m_sceneFunction->name = txtName->text();
     m_sceneFunction->function = txtFunction->text();
     m_sceneFunction->start = txtStart->value();
@@ -260,6 +288,8 @@ bool DSceneFunction::save()
 
 void DSceneFunction::doAccept()
 {
+    logMessage("DSceneFunction::doAccept()");
+
     if (save())
     {       
         accept();
@@ -268,5 +298,7 @@ void DSceneFunction::doAccept()
 
 void DSceneFunction::doReject()
 {
+    logMessage("DSceneFunction::doReject()");
+
     reject();
 }

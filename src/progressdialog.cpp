@@ -23,6 +23,8 @@
 
 SolutionArray::SolutionArray()
 {
+    logMessage("SolutionArray::SolutionArray()");
+
     sln = NULL;
     order = NULL;
 
@@ -33,12 +35,16 @@ SolutionArray::SolutionArray()
 
 SolutionArray::~SolutionArray()
 {
+    logMessage("SolutionArray::~SolutionArray()");
+
     if (sln) { delete sln; sln = NULL; }
     if (order) { delete order; order = NULL; }
 }
 
 void SolutionArray::load(QDomElement *element)
 {
+    logMessage("SolutionArray::load()");
+
     QString fileNameSolution = tempProblemFileName() + ".sln";
     QString fileNameOrder = tempProblemFileName() + ".ord";
 
@@ -67,6 +73,8 @@ void SolutionArray::load(QDomElement *element)
 
 void SolutionArray::save(QDomDocument *doc, QDomElement *element)
 {
+    logMessage("SolutionArray::save()");
+
     // solution
     QString fileNameSolution = tempProblemFileName() + ".sln";
     sln->save(fileNameSolution.toStdString().c_str(), false);
@@ -98,6 +106,8 @@ void SolutionArray::save(QDomDocument *doc, QDomElement *element)
 
 ProgressItem::ProgressItem()
 {
+    logMessage("ProgressItem::ProgressItem()");
+
     m_name = "";
     m_steps = 0;
     m_isError = false;
@@ -108,6 +118,8 @@ ProgressItem::ProgressItem()
 
 void ProgressItem::showMessage(const QString &msg, bool isError, int position)
 {
+    logMessage("ProgressItem::()");
+
     m_isError = isError;
 }
 
@@ -115,12 +127,16 @@ void ProgressItem::showMessage(const QString &msg, bool isError, int position)
 
 ProgressItemMesh::ProgressItemMesh() : ProgressItem()
 {
+    logMessage("ProgressItemMesh::ProgressItemMesh()");
+
     m_name = tr("Mesh");
     m_steps = 4;
 }
 
 bool ProgressItemMesh::run()
 {
+    logMessage("ProgressItemMesh::run()");
+
     QFile::remove(tempProblemFileName() + ".mesh");
 
     // create triangle files
@@ -171,6 +187,8 @@ bool ProgressItemMesh::run()
 
 void ProgressItemMesh::meshTriangleCreated(int exitCode)
 {
+    logMessage("ProgressItemMesh::meshTriangleCreated()");
+
     if (exitCode == 0)
     {
         emit message(tr("Mesh files was created"), false, 2);
@@ -234,6 +252,8 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
 
 bool ProgressItemMesh::writeToTriangle()
 {
+    logMessage("ProgressItemMesh::writeToTriangle()");
+
     // basic check
     if (Util::scene()->nodes.count() < 3)
     {
@@ -435,6 +455,8 @@ bool ProgressItemMesh::writeToTriangle()
 
 bool ProgressItemMesh::triangleToHermes2D()
 {
+    logMessage("ProgressItemMesh::triangleToHermes2D()");
+
     int i, n, k, count, marker, node_1, node_2, node_3;
     double x, y;
 
@@ -561,6 +583,8 @@ bool ProgressItemMesh::triangleToHermes2D()
 
 ProgressItemSolve::ProgressItemSolve() : ProgressItem()
 {
+    logMessage("ProgressItemSolve::ProgressItemSolve()");
+
     m_name = tr("Solver");
     m_steps = 1;
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
@@ -569,6 +593,8 @@ ProgressItemSolve::ProgressItemSolve() : ProgressItem()
 
 bool ProgressItemSolve::run()
 {
+    logMessage("ProgressItemSolve::()");
+
     solve();
 
     return !m_isError;
@@ -576,6 +602,8 @@ bool ProgressItemSolve::run()
 
 void ProgressItemSolve::solve()
 {
+    logMessage("ProgressItemSolve::solve()");
+
     m_adaptivityError.clear();
 
     qDebug() << "ProgressItemSolve::solve()";
@@ -612,6 +640,8 @@ void ProgressItemSolve::solve()
 
 ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
 {
+    logMessage("ProgressItemProcessView::ProgressItemProcessView()");
+
     m_name = tr("View");
 
     m_steps = 0;
@@ -627,6 +657,8 @@ ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
 
 bool ProgressItemProcessView::run()
 {
+    logMessage("ProgressItemProcessView::run()");
+
     process();
 
     return !m_isError;
@@ -634,6 +666,8 @@ bool ProgressItemProcessView::run()
 
 void ProgressItemProcessView::process()
 {
+    logMessage("ProgressItemProcessView::process()");
+
     int step = 0;
 
     if (sceneView()->sceneViewSettings().showContours == 1)
@@ -662,6 +696,8 @@ void ProgressItemProcessView::process()
 
 ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
 {
+    logMessage("ProgressDialog::ProgressDialog()");
+
     setWindowModality(Qt::ApplicationModal);
     setModal(true);
 
@@ -680,6 +716,8 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
 
 ProgressDialog::~ProgressDialog()
 {
+    logMessage("ProgressDialog::~ProgressDialog()");
+
     if (Util::config()->enabledProgressLog)
         saveProgressLog();
 
@@ -688,6 +726,8 @@ ProgressDialog::~ProgressDialog()
 
 void ProgressDialog::clear()
 {
+    logMessage("ProgressDialog::clear()");
+
     // delete progress items
     for (int i = 0; i < m_progressItem.count(); i++)
         delete m_progressItem.at(i);
@@ -699,6 +739,8 @@ void ProgressDialog::clear()
 
 void ProgressDialog::createControls()
 {
+    logMessage("ProgressDialog::createControls()");
+
     controlsProgress = createControlsProgress();
     controlsConvergenceErrorChart = createControlsConvergenceErrorChart();
     controlsConvergenceDOFChart = createControlsConvergenceDOFChart();
@@ -733,6 +775,8 @@ void ProgressDialog::createControls()
 
 QWidget *ProgressDialog::createControlsProgress()
 {
+    logMessage("*ProgressDialog::createControlsProgress()");
+
     progressBar = new QProgressBar(this);
     lblMessage = new QLabel("", this);
     lstMessage = new QTextEdit(this);
@@ -751,6 +795,8 @@ QWidget *ProgressDialog::createControlsProgress()
 
 QWidget *ProgressDialog::createControlsConvergenceErrorChart()
 {
+    logMessage("*ProgressDialog::createControlsConvergenceErrorChart()");
+
     chartError = new Chart(this);
 
     // curves
@@ -798,6 +844,8 @@ QWidget *ProgressDialog::createControlsConvergenceErrorChart()
 
 QWidget *ProgressDialog::createControlsConvergenceDOFChart()
 {
+    logMessage("*ProgressDialog::createControlsConvergenceDOFChart()");
+
     chartDOF = new Chart(this);
 
     // curves
@@ -829,6 +877,8 @@ QWidget *ProgressDialog::createControlsConvergenceDOFChart()
 
 int ProgressDialog::progressSteps()
 {
+    logMessage("ProgressDialog::progressSteps()");
+
     int steps = 0;
     for (int i = 0; i < m_progressItem.count(); i++)
         steps += m_progressItem.at(i)->steps();
@@ -838,6 +888,8 @@ int ProgressDialog::progressSteps()
 
 int ProgressDialog::currentProgressStep()
 {
+    logMessage("ProgressDialog::currentProgressStep()");
+
     int steps = 0;
     for (int i = 0; i < m_progressItem.count(); i++)
     {
@@ -852,6 +904,8 @@ int ProgressDialog::currentProgressStep()
 
 void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
 {
+    logMessage("ProgressDialog::appendProgressItem()");
+
     m_progressItem.append(progressItem);
     connect(progressItem, SIGNAL(changed()), this, SLOT(itemChanged()));
     connect(progressItem, SIGNAL(message(QString, bool, int)), this, SLOT(showMessage(QString, bool, int)));
@@ -860,6 +914,8 @@ void ProgressDialog::appendProgressItem(ProgressItem *progressItem)
 
 bool ProgressDialog::run(bool showViewProgress)
 {
+    logMessage("ProgressDialog::run()");
+
     m_showViewProgress = showViewProgress;
     QTimer::singleShot(0, this, SLOT(start()));
 
@@ -868,6 +924,8 @@ bool ProgressDialog::run(bool showViewProgress)
 
 void ProgressDialog::start()
 {
+    logMessage("ProgressDialog::start()");
+
     lstMessage->clear();
 
     progressBar->setRange(0, progressSteps());
@@ -905,6 +963,8 @@ void ProgressDialog::start()
 
 void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
 {
+    logMessage("ProgressDialog::showMessage()");
+
     btnCancel->setEnabled(!isError);
 
     if (isError)
@@ -936,6 +996,8 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
 
 void ProgressDialog::itemChanged()
 {
+    logMessage("ProgressDialog::itemChanged()");
+
     if (m_progressItem.count() == 0)
         return;
 
@@ -998,12 +1060,16 @@ void ProgressDialog::itemChanged()
 
 void ProgressDialog::finished()
 {
+    logMessage("ProgressDialog::finished()");
+
     btnClose->setEnabled(true);
     btnCancel->setEnabled(false);
 }
 
 void ProgressDialog::cancel()
 {
+    logMessage("ProgressDialog::cancel()");
+
     emit cancelProgressItem();
     finished();
     QApplication::processEvents();
@@ -1011,12 +1077,16 @@ void ProgressDialog::cancel()
 
 void ProgressDialog::close()
 {
+    logMessage("ProgressDialog::close()");
+
     cancel();
     accept();
 }
 
 void ProgressDialog::saveProgressLog()
 {
+    logMessage("ProgressDialog::saveProgressLog()");
+
     QFile file(tempProblemDir() + "/messages.log");
     if (file.open(QIODevice::Append | QIODevice::Text))
     {

@@ -22,6 +22,8 @@
 
 SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
 {
+    logMessage("SceneInfoView::SceneInfoView()");
+
     this->m_sceneView = sceneView;
 
     setMinimumWidth(160);
@@ -48,10 +50,14 @@ SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget
 
 SceneInfoView::~SceneInfoView()
 {
+    logMessage("SceneInfoView::~SceneInfoView()");
+
 }
 
 void SceneInfoView::createActions()
 {
+    logMessage("SceneInfoView::createActions()");
+
     actProperties = new QAction(icon("scene-properties"), tr("&Properties"), this);
     actProperties->setStatusTip(tr("Properties"));
     connect(actProperties, SIGNAL(triggered()), this, SLOT(doProperties()));
@@ -63,6 +69,8 @@ void SceneInfoView::createActions()
 
 void SceneInfoView::createMenu()
 {
+    logMessage("SceneInfoView::createMenu()");
+
     mnuInfo = new QMenu(this);
 
     mnuInfo->addAction(Util::scene()->actNewNode);
@@ -83,6 +91,8 @@ void SceneInfoView::createMenu()
 
 void SceneInfoView::createTreeView()
 {
+    logMessage("SceneInfoView::createTreeView()");
+
     trvWidget = new QTreeWidget(this);
     trvWidget->setHeaderHidden(true);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -150,6 +160,8 @@ void SceneInfoView::createTreeView()
 
 void SceneInfoView::keyPressEvent(QKeyEvent *event)
 {
+    logMessage("SceneInfoView::keyPressEvent()");
+
     switch (event->key()) {
     case Qt::Key_Delete:
         doDelete();
@@ -161,6 +173,8 @@ void SceneInfoView::keyPressEvent(QKeyEvent *event)
 
 void SceneInfoView::doInvalidated()
 {
+    logMessage("SceneInfoView::doInvalidated()");
+
     // script speed improvement
     if (scriptIsRunning()) return;
 
@@ -331,6 +345,8 @@ void SceneInfoView::doInvalidated()
 
 void SceneInfoView::clearNodes()
 {
+    logMessage("SceneInfoView::clearNodes()");
+
     blockSignals(true);
 
     // problem info general
@@ -400,6 +416,8 @@ void SceneInfoView::clearNodes()
 
 void SceneInfoView::doContextMenu(const QPoint &pos)
 {
+    logMessage("SceneInfoView::doContextMenu()");
+
     QTreeWidgetItem *item = trvWidget->itemAt(pos);
     doItemSelected(item, 0);
 
@@ -409,6 +427,8 @@ void SceneInfoView::doContextMenu(const QPoint &pos)
 
 void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
 {
+    logMessage("SceneInfoView::doItemSelected()");
+
     actProperties->setEnabled(false);
     actDelete->setEnabled(false);
 
@@ -480,10 +500,15 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
 
 void SceneInfoView::doItemDoubleClicked(QTreeWidgetItem *item, int role)
 {
+    logMessage("SceneInfoView::doItemDoubleClicked()");
+
     doProperties();
 }
 
-void SceneInfoView::doProperties() {
+void SceneInfoView::doProperties()
+{
+    logMessage("SceneInfoView::doProperties()");
+
     if (trvWidget->currentItem() != NULL) {
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
@@ -529,6 +554,8 @@ void SceneInfoView::doProperties() {
 
 void SceneInfoView::doDelete()
 {
+    logMessage("SceneInfoView::doDelete()");
+
     if (trvWidget->currentItem() != NULL)
     {
         // scene objects

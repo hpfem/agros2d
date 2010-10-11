@@ -25,11 +25,15 @@ static SceneView *m_sceneView = NULL;;
 
 SceneView *sceneView()
 {
+    logMessage("*sceneView::()");
+
     return m_sceneView;
 }
 
 static inline double* computeNormal(double p0x, double p0y, double p0z, double p1x, double p1y, double p1z, double p2x, double p2y, double p2z)
 {
+    logMessage("computeNormal()");
+
     double ax = (p1x - p0x);
     double ay = (p1y - p0y);
     double az = (p1z - p0z);
@@ -55,11 +59,15 @@ static inline double* computeNormal(double p0x, double p0y, double p0z, double p
 
 SceneViewSettings::SceneViewSettings()
 {
+    logMessage("SceneViewSettings::SceneViewSettings()");
+
     defaultValues();
 }
 
 void SceneViewSettings::defaultValues()
 {
+    logMessage("SceneViewSettings::defaultValues()");
+
     scalarRangeMin =  CONST_DOUBLE;
     scalarRangeMax = -CONST_DOUBLE;
 
@@ -86,6 +94,8 @@ void SceneViewSettings::defaultValues()
 
 SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
+    logMessage("SceneView::SceneView()");
+
     m_sceneView = this;
     m_mainWindow = (QMainWindow *) parent;
     m_scene = Util::scene();
@@ -124,10 +134,14 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
 
 SceneView::~SceneView()
 {
+    logMessage("SceneView::~SceneView()");
+
 }
 
 void SceneView::createActions()
 {
+    logMessage("SceneView::createActions()");
+
     // scene - zoom
     actSceneZoomIn = new QAction(icon("zoom-in"), tr("Zoom in"), this);
     actSceneZoomIn->setShortcut(QKeySequence::ZoomIn);
@@ -256,6 +270,8 @@ void SceneView::createActions()
 
 void SceneView::createMenu()
 {
+    logMessage("SceneView::createMenu()");
+
     mnuInfo = new QMenu(this);
 
     QMenu *mnuModeGroup = new QMenu(tr("Set mode"), this);
@@ -283,7 +299,9 @@ void SceneView::createMenu()
 
 void SceneView::initializeGL()
 {
-    glShadeModel(GL_SMOOTH);    
+    logMessage("SceneView::initializeGL()");
+
+    glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE);
 
     clearGLLists();
@@ -291,6 +309,8 @@ void SceneView::initializeGL()
 
 void SceneView::resizeGL(int w, int h)
 {
+    logMessage("SceneView::resizeGL()");
+
     setupViewport(w, h);
 
     if (Util::scene()->sceneSolution()->isSolved() && m_sceneMode == SceneMode_Postprocessor)
@@ -303,6 +323,8 @@ void SceneView::resizeGL(int w, int h)
 
 void SceneView::loadProjection2d(bool setScene)
 {
+    logMessage("SceneView::loadProjection2d()");
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -321,6 +343,8 @@ void SceneView::loadProjection2d(bool setScene)
 
 void SceneView::loadProjection3d(bool setScene)
 {
+    logMessage("SceneView::loadProjection3d()");
+
     int fov = 50.0;
     double znear = 0.001;
     double zfar = 100.0;
@@ -374,11 +398,15 @@ void SceneView::loadProjection3d(bool setScene)
 
 void SceneView::setupViewport(int w, int h)
 {
+    logMessage("SceneView::setupViewport()");
+
     glViewport(0, 0, w, h);
 }
 
 QPixmap SceneView::renderScenePixmap(int w, int h, bool useContext)
 {
+    logMessage("SceneView::renderScenePixmap()");
+
     QPixmap pixmap = renderPixmap(w, h, useContext);
 
     resizeGL(contextWidth(), contextHeight());
@@ -388,6 +416,8 @@ QPixmap SceneView::renderScenePixmap(int w, int h, bool useContext)
 
 void SceneView::paintGL()
 {
+    logMessage("SceneView::paintGL()");
+
     glClearColor(Util::config()->colorBackground.redF(),
                  Util::config()->colorBackground.greenF(),
                  Util::config()->colorBackground.blueF(), 0);
@@ -462,6 +492,8 @@ void SceneView::paintGL()
 
 void SceneView::clearGLLists()
 {
+    logMessage("SceneView::clearGLLists()");
+
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
     if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
     if (m_listScalarField != -1) glDeleteLists(m_listScalarField, 1);
@@ -483,6 +515,8 @@ void SceneView::clearGLLists()
 
 void SceneView::paintBackground()
 {
+    logMessage("SceneView::paintBackground()");
+
     // background
     glPushMatrix();
     glLoadIdentity();
@@ -520,6 +554,8 @@ void SceneView::paintBackground()
 
 void SceneView::paintGrid()
 {
+    logMessage("SceneView::paintGrid()");
+
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
@@ -618,6 +654,8 @@ void SceneView::paintGrid()
 
 void SceneView::paintRulers()
 {
+    logMessage("SceneView::paintRulers()");
+
     loadProjection2d(true);
 
     Point cornerMin = position(Point(0, 0));
@@ -666,6 +704,8 @@ void SceneView::paintRulers()
 
 void SceneView::paintGeometry()
 {
+    logMessage("SceneView::paintGeometry()");
+
     loadProjection2d(true);
 
     // edges
@@ -828,6 +868,8 @@ void SceneView::paintGeometry()
 
 void SceneView::paintInitialMesh()
 {
+    logMessage("SceneView::paintInitialMesh()");
+
     if (!m_scene->sceneSolution()->isMeshed()) return;
 
     loadProjection2d(true);
@@ -856,6 +898,8 @@ void SceneView::paintInitialMesh()
 
 void SceneView::paintSolutionMesh()
 {
+    logMessage("SceneView::paintSolutionMesh()");
+
     if (!m_isSolutionPrepared) return;
 
     loadProjection2d(true);
@@ -884,6 +928,8 @@ void SceneView::paintSolutionMesh()
 
 void SceneView::paintOrder()
 {
+    logMessage("SceneView::paintOrder()");
+
     if (!m_isSolutionPrepared) return;
 
     loadProjection2d(true);
@@ -971,6 +1017,8 @@ void SceneView::paintOrder()
 
 void SceneView::paintOrderColorBar()
 {
+    logMessage("SceneView::paintOrderColorBar()");
+
     if (!m_isSolutionPrepared) return;
 
     // order scalar view
@@ -1044,6 +1092,8 @@ void SceneView::paintOrderColorBar()
 
 void SceneView::paintScalarFieldColorBar(double min, double max)
 {
+    logMessage("SceneView::paintScalarFieldColorBar()");
+
     loadProjection2d();
 
     glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
@@ -1146,6 +1196,8 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
 
 void SceneView::paintScalarField()
 {
+    logMessage("SceneView::paintScalarField()");
+
     if (!m_isSolutionPrepared) return;
 
     loadProjection2d(true);
@@ -1231,6 +1283,8 @@ void SceneView::paintScalarField()
 
 void SceneView::paintScalarField3D()
 {
+    logMessage("SceneView::paintScalarField3D()");
+
     if (!m_isSolutionPrepared) return;
 
     loadProjection3d(true);
@@ -1394,6 +1448,8 @@ void SceneView::paintScalarField3D()
 
 void SceneView::paintScalarField3DSolid()
 {
+    logMessage("SceneView::paintScalarField3DSolid()");
+
     if (!m_isSolutionPrepared) return;
 
     loadProjection3d(true);
@@ -1726,6 +1782,8 @@ void SceneView::paintScalarField3DSolid()
 
 void SceneView::paintContours()
 {
+    logMessage("SceneView::paintContours()");
+
     if (!m_isSolutionPrepared) return;
 
     loadProjection2d(true);
@@ -1792,6 +1850,8 @@ void SceneView::paintContours()
 
 void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
 {
+    logMessage("SceneView::paintContoursTri()");
+
     // sort the vertices by their value, keep track of the permutation sign
     int i, idx[3], perm = 0;
     memcpy(idx, tri, sizeof(idx));
@@ -1839,6 +1899,8 @@ void SceneView::paintContoursTri(double3* vert, int3* tri, double step)
 
 void SceneView::paintVectors()
 {
+    logMessage("SceneView::paintVectors()");
+
     if (!m_isSolutionPrepared) return;
 
     loadProjection2d(true);
@@ -2010,6 +2072,8 @@ void SceneView::paintVectors()
 
 void SceneView::paintSceneModeLabel()
 {
+    logMessage("SceneView::paintSceneModeLabel()");
+
     QString text = "";
 
     switch (m_sceneMode)
@@ -2076,6 +2140,8 @@ void SceneView::paintSceneModeLabel()
 
 void SceneView::paintZoomRegion()
 {
+    logMessage("SceneView::paintZoomRegion()");
+
     loadProjection2d(true);
 
     // zoom or select region
@@ -2093,6 +2159,8 @@ void SceneView::paintZoomRegion()
 
 void SceneView::paintSnapToGrid()
 {
+    logMessage("SceneView::paintSnapToGrid()");
+
     if (m_snapToGrid)
     {
         loadProjection2d(true);
@@ -2115,6 +2183,8 @@ void SceneView::paintSnapToGrid()
 
 void SceneView::paintChartLine()
 {
+    logMessage("SceneView::paintChartLine()");
+
     loadProjection2d(true);
 
     glColor3f(Util::config()->colorSelected.redF(),
@@ -2130,6 +2200,8 @@ void SceneView::paintChartLine()
 
 const float* SceneView::paletteColor(double x)
 {
+    logMessage("SceneView::paletteColor()");
+
     switch (Util::config()->paletteType)
     {
     case Palette_Jet:
@@ -2196,6 +2268,8 @@ const float* SceneView::paletteColor(double x)
 
 void SceneView::paletteCreate()
 {
+    logMessage("SceneView::paletteCreate()");
+
     int i;
     unsigned char palette[256][3];
     for (i = 0; i < Util::config()->paletteSteps; i++)
@@ -2216,6 +2290,8 @@ void SceneView::paletteCreate()
 
 void SceneView::paletteFilter()
 {
+    logMessage("SceneView::paletteFilter()");
+
     int palFilter = Util::config()->paletteFilter ? GL_LINEAR : GL_NEAREST;
     glBindTexture(GL_TEXTURE_1D, 1);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, palFilter);
@@ -2225,6 +2301,8 @@ void SceneView::paletteFilter()
 
 void SceneView::paletteUpdateTexAdjust()
 {
+    logMessage("SceneView::paletteUpdateTexAdjust()");
+
     if (Util::config()->paletteFilter)
     {
         m_texScale = (double) (Util::config()->paletteSteps-1) / 256.0;
@@ -2239,6 +2317,8 @@ void SceneView::paletteUpdateTexAdjust()
 
 void SceneView::initLighting()
 {
+    logMessage("SceneView::initLighting()");
+
     if (Util::config()->scalarView3DLighting || m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model)
     {
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -2307,6 +2387,8 @@ void SceneView::initLighting()
 
 void SceneView::keyPressEvent(QKeyEvent *event)
 {
+    logMessage("SceneView::keyPressEvent()");
+
     if (is3DMode())
     {
 
@@ -2421,6 +2503,8 @@ void SceneView::keyPressEvent(QKeyEvent *event)
 
 void SceneView::keyReleaseEvent(QKeyEvent *event)
 {
+    logMessage("SceneView::keyReleaseEvent()");
+
     if (is3DMode())
     {
 
@@ -2437,6 +2521,8 @@ void SceneView::keyReleaseEvent(QKeyEvent *event)
 
 void SceneView::mousePressEvent(QMouseEvent *event)
 {
+    logMessage("SceneView::mousePressEvent()");
+
     m_lastPos = event->pos();
 
     if (is3DMode())
@@ -2615,6 +2701,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
 
 void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
 {
+    logMessage("SceneView::mouseDoubleClickEvent()");
+
     if (is3DMode())
     {
 
@@ -2686,6 +2774,8 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
 
 void SceneView::mouseReleaseEvent(QMouseEvent *event)
 {
+    logMessage("SceneView::mouseReleaseEvent()");
+
     setCursor(Qt::ArrowCursor);
 
     if (is3DMode())
@@ -2720,6 +2810,8 @@ void SceneView::mouseReleaseEvent(QMouseEvent *event)
 
 void SceneView::mouseMoveEvent(QMouseEvent *event)
 {
+    logMessage("SceneView::mouseMoveEvent()");
+
     int dx = event->x() - m_lastPos.x();
     int dy = event->y() - m_lastPos.y();
 
@@ -2883,6 +2975,8 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 
 void SceneView::wheelEvent(QWheelEvent *event)
 {
+    logMessage("SceneView::wheelEvent()");
+
     if (is3DMode())
     {
         setZoom(event->delta()/150.0);
@@ -2917,6 +3011,8 @@ void SceneView::wheelEvent(QWheelEvent *event)
 
 void SceneView::contextMenuEvent(QContextMenuEvent *event)
 {
+    logMessage("SceneView::contextMenuEvent()");
+
     actSceneObjectProperties->setEnabled(false);
 
     // set boundary context menu
@@ -2933,6 +3029,8 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
 
 void SceneView::closeEvent(QCloseEvent *event)
 {
+    logMessage("SceneView::closeEvent()");
+
     event->ignore();
 }
 
@@ -2940,22 +3038,30 @@ void SceneView::closeEvent(QCloseEvent *event)
 
 void SceneView::doZoomBestFit()
 {
+    logMessage("SceneView::doZoomBestFit()");
+
     RectPoint rect = m_scene->boundingBox();
     doZoomRegion(rect.start, rect.end);
 }
 
 void SceneView::doZoomIn()
 {
+    logMessage("SceneView::doZoomIn()");
+
     setZoom(1.2);
 }
 
 void SceneView::doZoomOut()
 {
+    logMessage("SceneView::doZoomOut()");
+
     setZoom(-1/1.2);
 }
 
 void SceneView::doZoomRegion(const Point &start, const Point &end)
 {
+    logMessage("SceneView::doZoomRegion()");
+
     if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO) return;
 
     m_offset2d.x = (start.x+end.x)/2.0;
@@ -2974,6 +3080,8 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
 
 void SceneView::doShowGrid()
 {
+    logMessage("SceneView::doShowGrid()");
+
     Util::config()->showGrid = !Util::config()->showGrid;
     Util::config()->save();
     doInvalidated();
@@ -2981,12 +3089,16 @@ void SceneView::doShowGrid()
 
 void SceneView::doSnapToGrid()
 {
+    logMessage("SceneView::doSnapToGrid()");
+
     Util::config()->snapToGrid = !Util::config()->snapToGrid;
     Util::config()->save();
 }
 
 void SceneView::doShowRulers()
 {
+    logMessage("SceneView::doShowRulers()");
+
     Util::config()->showRulers = !Util::config()->showRulers;
     Util::config()->save();
     doInvalidated();
@@ -2994,6 +3106,8 @@ void SceneView::doShowRulers()
 
 void SceneView::doSetChartLine(const Point &start, const Point &end)
 {
+    logMessage("SceneView::doSetChartLine()");
+
     // set line for chart
     m_chartLine.start = start;
     m_chartLine.end = end;
@@ -3003,6 +3117,8 @@ void SceneView::doSetChartLine(const Point &start, const Point &end)
 
 void SceneView::doDefaultValues()
 {
+    logMessage("SceneView::doDefaultValues()");
+
     m_snapToGrid = false;
     m_region = false;
     m_isSolutionPrepared = false;
@@ -3029,12 +3145,16 @@ void SceneView::doDefaultValues()
 
 void SceneView::solved()
 {
+    logMessage("SceneView::solved()");
+
     actSceneModePostprocessor->trigger();
     m_sceneViewSettings.showInitialMesh = false;
 }
 
 void SceneView::doInvalidated()
 {
+    logMessage("SceneView::doInvalidated()");
+
     resizeGL(width(), height());
 
     if (!m_scene->sceneSolution()->isSolved())
@@ -3067,7 +3187,7 @@ void SceneView::doInvalidated()
 
 void SceneView::timeStepChanged(bool showViewProgress)
 {
-    qDebug() << "SceneView::timeStepChanged()";
+    logMessage("SceneView::timeStepChanged()");
 
     if (!Util::scene()->sceneSolution()->isSolving())
     {
@@ -3092,24 +3212,32 @@ void SceneView::timeStepChanged(bool showViewProgress)
 
 void SceneView::refresh()
 {
+    logMessage("SceneView::refresh()");
+
     paintGL();
     updateGL();
 }
 
 void SceneView::doMaterialGroup(QAction *action)
 {
+    logMessage("SceneView::doMaterialGroup()");
+
     if (SceneLabelMarker *labelMarker = action->data().value<SceneLabelMarker *>())
         m_scene->setLabelLabelMarker(labelMarker);
 }
 
 void SceneView::doBoundaryGroup(QAction *action)
 {
+    logMessage("SceneView::doBoundaryGroup()");
+
     if (SceneEdgeMarker *edgeMarker = action->data().value<SceneEdgeMarker *>())
         m_scene->setEdgeEdgeMarker(edgeMarker);
 }
 
 void SceneView::doShowGroup(QAction *action)
 {
+    logMessage("SceneView::doShowGroup()");
+
     m_sceneViewSettings.showContours = actShowContours->isChecked();
     m_sceneViewSettings.showVectors = actShowVectors->isChecked();
     m_sceneViewSettings.showSolutionMesh = actShowSolutionMesh->isChecked();
@@ -3119,12 +3247,16 @@ void SceneView::doShowGroup(QAction *action)
 
 void SceneView::doPostprocessorModeGroup(QAction *action)
 {
+    logMessage("SceneView::doPostprocessorModeGroup()");
+
     m_scene->selectNone();
     updateGL();
 }
 
 void SceneView::doSceneViewProperties()
 {
+    logMessage("SceneView::doSceneViewProperties()");
+
     SceneViewPostprocessorShow postprocessorShow = m_sceneViewSettings.postprocessorShow;
 
     SceneViewDialog sceneViewDialog(this, this);
@@ -3152,6 +3284,8 @@ void SceneView::doSceneViewProperties()
 
 void SceneView::doSceneObjectProperties()
 {
+    logMessage("SceneView::doSceneObjectProperties()");
+
     if (m_sceneMode == SceneMode_OperateOnEdges)
     {
         if (m_scene->selectedCount() > 1)
@@ -3190,6 +3324,8 @@ void SceneView::doSceneObjectProperties()
 
 void SceneView::doSceneModeSet(QAction *action)
 {
+    logMessage("SceneView::doSceneModeSet()");
+
     actSceneModePostprocessor->setEnabled(m_scene->sceneSolution()->isSolved());
 
     if (actSceneModeNode->isChecked()) m_sceneMode = SceneMode_OperateOnNodes;
@@ -3220,23 +3356,29 @@ void SceneView::doSceneModeSet(QAction *action)
 
 void SceneView::doSelectMarker()
 {
+    logMessage("SceneView::doSelectMarker()");
+
     SceneMarkerSelectDialog sceneMarkerSelectDialog(this, QApplication::activeWindow());
     sceneMarkerSelectDialog.exec();
 }
 
 void SceneView::doSelectBasic()
 {
+    logMessage("SceneView::doSelectBasic()");
+
     SceneBasicSelectDialog sceneBasicSelectDialog(this, QApplication::activeWindow());
     sceneBasicSelectDialog.exec();
 }
 
 void SceneView::processedRangeContour()
 {
-
+    logMessage("SceneView::processedRangeContour()");
 }
 
 void SceneView::processedRangeScalar()
 {
+    logMessage("SceneView::processedRangeScalar()");
+
     paletteFilter();
     paletteUpdateTexAdjust();
     paletteCreate();
@@ -3250,10 +3392,13 @@ void SceneView::processedRangeScalar()
 
 void SceneView::processedRangeVector()
 {
+    logMessage("SceneView::processedRangeVector()");
 }
 
 void SceneView::setZoom(double power)
 {
+    logMessage("SceneView::setZoom()");
+
     if (is3DMode())
     {
         m_scale3d = m_scale3d * pow(1.2, power);
@@ -3271,6 +3416,8 @@ void SceneView::setZoom(double power)
 
 void SceneView::selectRegion(const Point &start, const Point &end)
 {
+    logMessage("SceneView::selectRegion()");
+
     m_scene->selectNone();
 
     switch (m_sceneMode)
@@ -3296,6 +3443,8 @@ void SceneView::selectRegion(const Point &start, const Point &end)
 
 SceneNode *SceneView::findClosestNode(const Point &point)
 {
+    logMessage("*SceneView::findClosestNode()");
+
     SceneNode *nodeClosest = NULL;
 
     double distance = CONST_DOUBLE;
@@ -3314,6 +3463,8 @@ SceneNode *SceneView::findClosestNode(const Point &point)
 
 SceneEdge *SceneView::findClosestEdge(const Point &point)
 {
+    logMessage("*SceneView::findClosestEdge()");
+
     SceneEdge *edgeClosest = NULL;
 
     double distance = CONST_DOUBLE;
@@ -3332,6 +3483,8 @@ SceneEdge *SceneView::findClosestEdge(const Point &point)
 
 SceneLabel *SceneView::findClosestLabel(const Point &point)
 {
+    logMessage("*SceneView::findClosestLabel()");
+
     SceneLabel *labelClosest = NULL;
 
     double distance = CONST_DOUBLE;
@@ -3350,6 +3503,8 @@ SceneLabel *SceneView::findClosestLabel(const Point &point)
 
 void SceneView::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments)
 {
+    logMessage("SceneView::drawArc()");
+
     double theta = arcAngle / double(segments - 1);
 
     glBegin(GL_LINE_STRIP);
@@ -3367,6 +3522,8 @@ void SceneView::drawArc(const Point &point, double r, double startAngle, double 
 
 void SceneView::drawBlend(Point start, Point end, double red, double green, double blue, double alpha)
 {
+    logMessage("SceneView::drawBlend()");
+
     // store color
     double color[4];
     glGetDoublev(GL_CURRENT_COLOR, color);
@@ -3395,6 +3552,8 @@ void SceneView::drawBlend(Point start, Point end, double red, double green, doub
 
 void SceneView::renderTextPos(double x, double y, double z, const QString &str, bool blend)
 {
+    logMessage("SceneView::renderTextPos()");
+
     if (blend)
     {
         Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale2d*aspect(),
@@ -3413,6 +3572,8 @@ void SceneView::renderTextPos(double x, double y, double z, const QString &str, 
 
 void SceneView::paintPostprocessorSelectedVolume()
 {
+    logMessage("SceneView::paintPostprocessorSelectedVolume()");
+
     if (!m_scene->sceneSolution()->isMeshed()) return;
 
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -3448,6 +3609,8 @@ void SceneView::paintPostprocessorSelectedVolume()
 
 void SceneView::paintPostprocessorSelectedSurface()
 {
+    logMessage("SceneView::paintPostprocessorSelectedSurface()");
+
     // edges
     foreach (SceneEdge *edge, m_scene->edges) {
         glColor3d(Util::config()->colorSelected.redF(), Util::config()->colorSelected.greenF(), Util::config()->colorSelected.blueF());
@@ -3477,6 +3640,8 @@ void SceneView::paintPostprocessorSelectedSurface()
 
 ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
 {
+    logMessage("SceneView::saveImageToFile()");
+
     QPixmap pixmap = renderScenePixmap(w, h);
     if (pixmap.save(fileName, "PNG"))
         resizeGL(width(), height());
@@ -3488,6 +3653,8 @@ ErrorResult SceneView::saveImageToFile(const QString &fileName, int w, int h)
 
 void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool showGrid, int w, int h)
 {
+    logMessage("SceneView::saveImagesForReport()");
+
     // store sceneview settings
     SceneViewSettings sceneViewSettingsCopy = m_sceneViewSettings;
     SceneMode sceneModeCopy = m_sceneMode;

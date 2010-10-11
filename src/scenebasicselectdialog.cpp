@@ -21,6 +21,8 @@
 
 SceneBasicSelectDialog::SceneBasicSelectDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
+    logMessage("SceneBasicSelectDialog::SceneBasicSelectDialog()");
+
     m_sceneView = sceneView;
 
     setWindowIcon(icon(""));
@@ -34,6 +36,8 @@ SceneBasicSelectDialog::SceneBasicSelectDialog(SceneView *sceneView, QWidget *pa
 
 void SceneBasicSelectDialog::createControls()
 {
+    logMessage("SceneBasicSelectDialog::createControls()");
+
     // edge
     lstEdges = new QListWidget(this);
     for (int i = 1; i < Util::scene()->edges.count(); i++)
@@ -71,6 +75,8 @@ void SceneBasicSelectDialog::createControls()
 
 void SceneBasicSelectDialog::doAccept()
 {
+    logMessage("SceneBasicSelectDialog::doAccept()");
+
     Util::scene()->selectNone();
     for (int i = 0; i < lstEdges->count(); i++)
     {
@@ -82,6 +88,8 @@ void SceneBasicSelectDialog::doAccept()
 
 void SceneBasicSelectDialog::doReject()
 {
+    logMessage("SceneBasicSelectDialog::doReject()");
+
     reject();
 }
 

@@ -22,12 +22,16 @@
 
 VolumeIntegralValue::VolumeIntegralValue()
 {
+    logMessage("VolumeIntegralValue::VolumeIntegralValue()");
+
     crossSection = 0;
     volume = 0;
 }
 
 void VolumeIntegralValue::calculate()
 {
+    logMessage("VolumeIntegralValue::calculate()");
+
     if (!Util::scene()->sceneSolution()->isSolved())
         return;
 
@@ -111,6 +115,8 @@ void VolumeIntegralValue::calculate()
 
 VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(tr("Volume Integral"), parent)
 {
+    logMessage("VolumeIntegralValue::VolumeIntegralValueView()");
+
     QSettings settings;
 
     setMinimumWidth(280);
@@ -139,6 +145,8 @@ VolumeIntegralValueView::VolumeIntegralValueView(QWidget *parent): QDockWidget(t
 
 VolumeIntegralValueView::~VolumeIntegralValueView()
 {
+    logMessage("VolumeIntegralValue::~VolumeIntegralValueView()");
+
     QSettings settings;
     settings.setValue("VolumeIntegralValueView/TreeViewColumn0", trvWidget->columnWidth(0));
     settings.setValue("VolumeIntegralValueView/TreeViewColumn1", trvWidget->columnWidth(1));
@@ -146,6 +154,8 @@ VolumeIntegralValueView::~VolumeIntegralValueView()
 
 void VolumeIntegralValueView::createActions()
 {
+    logMessage("VolumeIntegralValue::createActions()");
+
     // copy value
     actCopy = new QAction(icon(""), tr("Copy value"), this);
     connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopyValue()));
@@ -153,12 +163,16 @@ void VolumeIntegralValueView::createActions()
 
 void VolumeIntegralValueView::createMenu()
 {
+    logMessage("VolumeIntegralValue::createMenu()");
+
     mnuInfo = new QMenu(this);
     mnuInfo->addAction(actCopy);
 }
 
 void VolumeIntegralValueView::doCopyValue()
 {
+    logMessage("VolumeIntegralValue::doCopyValue()");
+
     QTreeWidgetItem *item = trvWidget->currentItem();
     if (item)
         QApplication::clipboard()->setText(item->text(1));
@@ -166,6 +180,8 @@ void VolumeIntegralValueView::doCopyValue()
 
 void VolumeIntegralValueView::doContextMenu(const QPoint &pos)
 {
+    logMessage("VolumeIntegralValue::doContextMenu()");
+
     QTreeWidgetItem *item = trvWidget->itemAt(pos);
     if (item)
         if (!item->text(1).isEmpty())
@@ -177,6 +193,8 @@ void VolumeIntegralValueView::doContextMenu(const QPoint &pos)
 
 void VolumeIntegralValueView::doShowVolumeIntegral()
 {
+    logMessage("VolumeIntegralValue::doShowVolumeIntegral()");
+
     VolumeIntegralValue *volumeIntegralValue = Util::scene()->problemInfo()->hermes()->volumeIntegralValue();
 
     trvWidget->clear();

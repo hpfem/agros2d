@@ -22,12 +22,16 @@
 
 SceneBasic::SceneBasic()
 {
+    logMessage("SceneBasic::SceneBasic()");
+
     isSelected = false;
     isHighlighted = false;
 }
 
 QVariant SceneBasic::variant()
 {
+    logMessage("SceneBasic::variant()");
+
     QVariant v;
     v.setValue(this);
     return v;
@@ -37,15 +41,21 @@ QVariant SceneBasic::variant()
 
 SceneNode::SceneNode(const Point &point) : SceneBasic()
 {
+    logMessage("SceneNode::SceneNode()");
+
     this->point = point;
 }
 double SceneNode::distance(const Point &point)
 {
+    logMessage("SceneNode::distance()");
+
     return (this->point - point).magnitude();
 }
 
 int SceneNode::showDialog(QWidget *parent, bool isNew)
 {
+    logMessage("SceneNode::showDialog()");
+
     DSceneNode *dialog = new DSceneNode(this, parent, isNew);
     return dialog->exec();
 }
@@ -54,6 +64,8 @@ int SceneNode::showDialog(QWidget *parent, bool isNew)
 
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *marker, double angle) : SceneBasic()
 {
+    logMessage("SceneEdge::SceneEdge()");
+
     this->nodeStart = nodeStart;
     this->nodeEnd = nodeEnd;
     this->marker = marker;
@@ -62,6 +74,8 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *
 
 Point SceneEdge::center()
 {
+    logMessage("SceneEdge::center()");
+
     double distance = (nodeEnd->point - nodeStart->point).magnitude();
     Point t = (nodeEnd->point - nodeStart->point) / distance;
     double R = distance / (2.0*sin(angle/180.0*M_PI / 2.0));
@@ -74,11 +88,15 @@ Point SceneEdge::center()
 
 double SceneEdge::radius()
 {
+    logMessage("SceneEdge::radius()");
+
     return (center() - nodeStart->point).magnitude();
 }
 
 double SceneEdge::distance(const Point &point)
 {
+    logMessage("SceneEdge::distance()");
+
     if (angle == 0)
     {
         double t = ((point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y)) /
@@ -116,6 +134,8 @@ double SceneEdge::distance(const Point &point)
 
 int SceneEdge::showDialog(QWidget *parent, bool isNew)
 {
+    logMessage("SceneEdge::showDialog()");
+
     DSceneEdge *dialog = new DSceneEdge(this, parent, isNew);
     return dialog->exec();
 }
@@ -124,6 +144,8 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
 
 SceneLabel::SceneLabel(const Point &point, SceneLabelMarker *marker, double area, int polynomialOrder) : SceneBasic()
 {
+    logMessage("SceneLabel::SceneLabel()");
+
     this->point = point;
     this->marker = marker;
     this->area = area;
@@ -132,11 +154,15 @@ SceneLabel::SceneLabel(const Point &point, SceneLabelMarker *marker, double area
 
 double SceneLabel::distance(const Point &point)
 {
+    logMessage("SceneLabel::distance()");
+
     return (this->point - point).magnitude();
 }
 
 int SceneLabel::showDialog(QWidget *parent, bool isNew)
 {
+    logMessage("SceneLabel::showDialog()");
+
     DSceneLabel *dialog = new DSceneLabel(this, parent, isNew);
     return dialog->exec();
 }
@@ -145,17 +171,23 @@ int SceneLabel::showDialog(QWidget *parent, bool isNew)
 
 DSceneBasic::DSceneBasic(QWidget *parent, bool isNew) : QDialog(parent)
 {
+    logMessage("DSceneBasic::DSceneBasic()");
+
     this->isNew = isNew;
     layout = new QVBoxLayout();
 }
 
 DSceneBasic::~DSceneBasic()
 {
+    logMessage("DSceneBasic::~DSceneBasic()");
+
     delete layout;
 }
 
 void DSceneBasic::createControls()
 {
+    logMessage("DSceneBasic::createControls()");
+
     // dialog buttons
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
@@ -170,17 +202,23 @@ void DSceneBasic::createControls()
 
 void DSceneBasic::doAccept()
 {
+    logMessage("DSceneBasic::doAccept()");
+
     if (save())
         accept();
 }
 
 void DSceneBasic::doReject()
 {
+    logMessage("DSceneBasic::doReject()");
+
     reject();
 }
 
 void DSceneBasic::evaluated(bool isError)
 {
+    logMessage("DSceneBasic::evaluated()");
+
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
@@ -188,6 +226,8 @@ void DSceneBasic::evaluated(bool isError)
 
 DSceneNode::DSceneNode(SceneNode *node, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
 {
+    logMessage("DSceneNode::DSceneNode()");
+
     m_object = node;
 
     setWindowIcon(icon("scene-node"));
@@ -203,12 +243,16 @@ DSceneNode::DSceneNode(SceneNode *node, QWidget *parent, bool isNew) : DSceneBas
 
 DSceneNode::~DSceneNode()
 {
+    logMessage("DSceneNode::~DSceneNode()");
+
     delete txtPointX;
     delete txtPointY;
 }
 
 QLayout* DSceneNode::createContent()
 {
+    logMessage("DSceneNode::createContent()");
+
     txtPointX = new SLineEditValue();
     txtPointY = new SLineEditValue();
     connect(txtPointX, SIGNAL(editingFinished()), this, SLOT(doEditingFinished()));
@@ -229,6 +273,8 @@ QLayout* DSceneNode::createContent()
 
 bool DSceneNode::load()
 {
+    logMessage("DSceneNode::load()");
+
     SceneNode *sceneNode = dynamic_cast<SceneNode *>(m_object);
 
     txtPointX->setNumber(sceneNode->point.x);
@@ -241,6 +287,8 @@ bool DSceneNode::load()
 
 bool DSceneNode::save()
 {
+    logMessage("DSceneNode::save()");
+
     if (!txtPointX->evaluate(false)) return false;
     if (!txtPointY->evaluate(false)) return false;
 
@@ -270,6 +318,8 @@ bool DSceneNode::save()
 
 void DSceneNode::doEditingFinished()
 {
+    logMessage("DSceneNode::doEditingFinished()");
+
     lblDistance->setText(QString("%1 m").arg(sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number()))));
     lblAngle->setText(QString("%1 deg.").arg(
             (sqrt(sqr(txtPointX->number()) + sqr(txtPointY->number())) > EPS_ZERO)
@@ -280,6 +330,8 @@ void DSceneNode::doEditingFinished()
 
 DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
 {
+    logMessage("DSceneEdge::DSceneEdge()");
+
     m_object = edge;
 
     setWindowIcon(icon("scene-edge"));
@@ -295,6 +347,8 @@ DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBas
 
 DSceneEdge::~DSceneEdge()
 {
+    logMessage("DSceneEdge::~DSceneEdge()");
+
     delete cmbNodeStart;
     delete cmbNodeEnd;
     delete cmbMarker;
@@ -304,6 +358,8 @@ DSceneEdge::~DSceneEdge()
 
 QLayout* DSceneEdge::createContent()
 {
+    logMessage("*DSceneEdge::createContent()");
+
     cmbNodeStart = new QComboBox();
     cmbNodeEnd = new QComboBox();
     connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
@@ -337,6 +393,8 @@ QLayout* DSceneEdge::createContent()
 
 void DSceneEdge::fillComboBox()
 {
+    logMessage("DSceneEdge::fillComboBox()");
+
     // start and end nodes
     cmbNodeStart->clear();
     cmbNodeEnd->clear();
@@ -364,6 +422,8 @@ void DSceneEdge::fillComboBox()
 
 bool DSceneEdge::load()
 {
+    logMessage("DSceneEdge::load()");
+
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
     cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
@@ -378,6 +438,8 @@ bool DSceneEdge::load()
 
 bool DSceneEdge::save()
 {
+    logMessage("DSceneEdge::save()");
+
     if (!txtAngle->evaluate(false)) return false;
 
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
@@ -417,11 +479,15 @@ bool DSceneEdge::save()
 
 void DSceneEdge::doMarkerChanged(int index)
 {
+    logMessage("DSceneEdge::doMarkerChanged()");
+
     btnMarker->setEnabled(cmbMarker->currentIndex() > 0);
 }
 
 void DSceneEdge::doMarkerClicked()
 {
+    logMessage("DSceneEdge::doMarkerClicked()");
+
     SceneEdgeMarker *marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
@@ -432,6 +498,8 @@ void DSceneEdge::doMarkerClicked()
 
 void DSceneEdge::doNodeChanged()
 {
+    logMessage("DSceneEdge::doNodeChanged()");
+
     SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
     SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
 
@@ -455,6 +523,8 @@ void DSceneEdge::doNodeChanged()
 
 DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
 {
+    logMessage("DSceneLabel::DSceneLabel()");
+
     m_object = label;
 
     setWindowIcon(icon("scene-label"));
@@ -470,6 +540,8 @@ DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew) : DScen
 
 DSceneLabel::~DSceneLabel()
 {
+    logMessage("DSceneLabel::~DSceneLabel()");
+
     delete txtPointX;
     delete txtPointY;
     delete cmbMarker;
@@ -479,6 +551,8 @@ DSceneLabel::~DSceneLabel()
 
 QLayout* DSceneLabel::createContent()
 {
+    logMessage("DSceneLabel::createContent()");
+
     txtPointX = new SLineEditValue();
     txtPointY = new SLineEditValue();
     connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -536,6 +610,8 @@ QLayout* DSceneLabel::createContent()
 
 void DSceneLabel::fillComboBox()
 {
+    logMessage("DSceneLabel::fillComboBox()");
+
     // markers
     cmbMarker->clear();
     for (int i = 0; i<Util::scene()->labelMarkers.count(); i++)
@@ -546,6 +622,8 @@ void DSceneLabel::fillComboBox()
 
 bool DSceneLabel::load()
 {
+    logMessage("DSceneLabel::load()");
+
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
     txtPointX->setNumber(sceneLabel->point.x);
@@ -563,6 +641,8 @@ bool DSceneLabel::load()
 
 bool DSceneLabel::save()
 {
+    logMessage("DSceneLabel::save()");
+
     if (!txtPointX->evaluate(false)) return false;
     if (!txtPointY->evaluate(false)) return false;
     if (!txtArea->evaluate(false)) return false;
@@ -605,11 +685,15 @@ bool DSceneLabel::save()
 
 void DSceneLabel::doMarkerChanged(int index)
 {
+    logMessage("DSceneLabel::doMarkerChanged()");
+
     btnMarker->setEnabled(cmbMarker->currentIndex() > 0);
 }
 
 void DSceneLabel::doMarkerClicked()
 {
+    logMessage("DSceneLabel::doMarkerClicked()");
+
     SceneLabelMarker *marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
@@ -620,11 +704,15 @@ void DSceneLabel::doMarkerClicked()
 
 void DSceneLabel::doPolynomialOrder(int state)
 {
+    logMessage("DSceneLabel::()doPolynomialOrder");
+
     txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 }
 
 void DSceneLabel::doArea(int state)
 {
+    logMessage("DSceneLabel::()doArea");
+
     txtArea->setEnabled(chkArea->isChecked());
 }
 
@@ -634,11 +722,15 @@ void DSceneLabel::doArea(int state)
 
 SceneNodeCommandAdd::SceneNodeCommandAdd(const Point &point, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneNodeCommandAdd::SceneNodeCommandAdd()");
+
     m_point = point;
 }
 
 void SceneNodeCommandAdd::undo()
 {
+    logMessage("SceneNodeCommandAdd::undo()");
+
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {
@@ -648,21 +740,29 @@ void SceneNodeCommandAdd::undo()
 
 void SceneNodeCommandAdd::redo()
 {
+    logMessage("SceneNodeCommandAdd::redo()");
+
     Util::scene()->addNode(new SceneNode(m_point));
 }
 
 SceneNodeCommandRemove::SceneNodeCommandRemove(const Point &point, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneNodeCommandRemove::SceneNodeCommandRemove()");
+
     m_point = point;
 }
 
 void SceneNodeCommandRemove::undo()
 {
+    logMessage("SceneNodeCommandRemove::undo()");
+
     Util::scene()->addNode(new SceneNode(m_point));
 }
 
 void SceneNodeCommandRemove::redo()
 {
+    logMessage("SceneNodeCommandRemove::redo()");
+
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {
@@ -672,12 +772,16 @@ void SceneNodeCommandRemove::redo()
 
 SceneNodeCommandEdit::SceneNodeCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneNodeCommandEdit::SceneNodeCommandEdit()");
+
     m_point = point;
     m_pointNew = pointNew;
 }
 
 void SceneNodeCommandEdit::undo()
 {
+    logMessage("SceneNodeCommandEdit::undo()");
+
     SceneNode *node = Util::scene()->getNode(m_pointNew);
     if (node)
     {
@@ -688,6 +792,8 @@ void SceneNodeCommandEdit::undo()
 
 void SceneNodeCommandEdit::redo()
 {
+    logMessage("SceneNodeCommandEdit:redo:()");
+
     SceneNode *node = Util::scene()->getNode(m_point);
     if (node)
     {
@@ -700,6 +806,8 @@ void SceneNodeCommandEdit::redo()
 
 SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneLabelCommandAdd::SceneLabelCommandAdd()");
+
     m_point = point;
     m_markerName = markerName;
     m_area = area;
@@ -708,11 +816,15 @@ SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QString &ma
 
 void SceneLabelCommandAdd::undo()
 {
+    logMessage("SceneLabelCommandAdd::undo()");
+
     Util::scene()->removeLabel(Util::scene()->getLabel(m_point));
 }
 
 void SceneLabelCommandAdd::redo()
 {
+    logMessage("SceneLabelCommandAdd::redo()");
+
     SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(m_markerName);
     if (labelMarker == NULL) labelMarker = Util::scene()->labelMarkers[0];
     Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area, m_polynomialOrder));
@@ -720,6 +832,8 @@ void SceneLabelCommandAdd::redo()
 
 SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneLabelCommandRemove::SceneLabelCommandRemove()");
+
     m_point = point;
     m_markerName = markerName;
     m_area = area;
@@ -728,6 +842,8 @@ SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QStri
 
 void SceneLabelCommandRemove::undo()
 {
+    logMessage("SceneLabelCommandRemove::undo()");
+
     SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(m_markerName);
     if (labelMarker == NULL) labelMarker = Util::scene()->labelMarkers[0];
     Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area, m_polynomialOrder));
@@ -735,17 +851,23 @@ void SceneLabelCommandRemove::undo()
 
 void SceneLabelCommandRemove::redo()
 {
+    logMessage("SceneLabelCommandRemove::redo()");
+
     Util::scene()->removeLabel(Util::scene()->getLabel(m_point));
 }
 
 SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneLabelCommandEdit::SceneLabelCommandEdit()");
+
     m_point = point;
     m_pointNew = pointNew;
 }
 
 void SceneLabelCommandEdit::undo()
 {
+    logMessage("SceneLabelCommandEdit::undo()");
+
     SceneLabel *label = Util::scene()->getLabel(m_pointNew);
     if (label)
     {
@@ -756,6 +878,8 @@ void SceneLabelCommandEdit::undo()
 
 void SceneLabelCommandEdit::redo()
 {
+    logMessage("SceneLabelCommandEdit::redo()");
+
     SceneLabel *label = Util::scene()->getLabel(m_point);
     if (label)
     {
@@ -768,6 +892,8 @@ void SceneLabelCommandEdit::redo()
 
 SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneEdgeCommandAdd::SceneEdgeCommandAdd()");
+
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markerName = markerName;
@@ -776,11 +902,15 @@ SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &p
 
 void SceneEdgeCommandAdd::undo()
 {
+    logMessage("SceneEdgeCommandAdd::undo()");
+
     Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
 }
 
 void SceneEdgeCommandAdd::redo()
 {
+    logMessage("SceneEdgeCommandAdd::redo()");
+
     SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(m_markerName);
     if (edgeMarker == NULL) edgeMarker = Util::scene()->edgeMarkers[0];
     Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
@@ -791,6 +921,8 @@ void SceneEdgeCommandAdd::redo()
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneEdgeCommandRemove::SceneEdgeCommandRemove()");
+
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markerName = markerName;
@@ -799,6 +931,8 @@ SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Po
 
 void SceneEdgeCommandRemove::undo()
 {
+    logMessage("SceneEdgeCommandRemove::undo()");
+
     SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(m_markerName);
     if (edgeMarker == NULL) edgeMarker = Util::scene()->edgeMarkers[0];
     Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
@@ -809,11 +943,15 @@ void SceneEdgeCommandRemove::undo()
 
 void SceneEdgeCommandRemove::redo()
 {
+    logMessage("SceneEdgeCommandRemove::redo()");
+
     Util::scene()->removeEdge(Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew, double angle, double angleNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
+    logMessage("SceneEdgeCommandEdit::SceneEdgeCommandEdit()");
+
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_pointStartNew = pointStartNew;
@@ -824,6 +962,8 @@ SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point 
 
 void SceneEdgeCommandEdit::undo()
 {
+    logMessage("SceneEdgeCommandEdit::undo()");
+
     SceneEdge *edge = Util::scene()->getEdge(m_pointStartNew, m_pointEndNew, m_angleNew);
     if (edge)
     {
@@ -836,6 +976,8 @@ void SceneEdgeCommandEdit::undo()
 
 void SceneEdgeCommandEdit::redo()
 {
+    logMessage("SceneEdgeCommandEdit::redo()");
+
     SceneEdge *edge = Util::scene()->getEdge(m_pointStart, m_pointEnd, m_angle);
     if (edge)
     {

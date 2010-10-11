@@ -21,6 +21,8 @@
 
 ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 {
+    logMessage("ChartDialog::ChartDialog()");
+
     setWindowIcon(icon("chart"));
     setWindowFlags(Qt::Window);
     setWindowTitle(tr("Chart"));
@@ -42,6 +44,8 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 
 ChartDialog::~ChartDialog()
 {
+    logMessage("ChartDialog::~ChartDialog()");
+
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
     settings.setValue("ChartDialog/StartX", txtStartX->value().text);
@@ -56,6 +60,8 @@ ChartDialog::~ChartDialog()
 
 void ChartDialog::showDialog()
 {
+    logMessage("ChartDialog::showDialog()");
+
     fillComboBoxScalarVariable(cmbFieldVariable);
     fillComboBoxTimeStep(cmbTimeStep);
 
@@ -87,11 +93,15 @@ void ChartDialog::showDialog()
 
 void ChartDialog::hideEvent(QHideEvent *event)
 {
+    logMessage("ChartDialog::hideEvent()");
+
     doChartLine();
 }
 
 void ChartDialog::createControls()
 {
+    logMessage("ChartDialog::createControls()");
+
     chart = new Chart(this);
     
     // controls
@@ -286,6 +296,8 @@ void ChartDialog::createControls()
 
 void ChartDialog::plotGeometry()
 {
+    logMessage("ChartDialog::plotGeometry()");
+
     if (!txtStartX->evaluate()) return;
     if (!txtStartY->evaluate()) return;
     if (!txtEndX->evaluate()) return;
@@ -363,6 +375,8 @@ void ChartDialog::plotGeometry()
 
 void ChartDialog::plotTime()
 {
+    logMessage("ChartDialog::plotTime()");
+
     if (!txtPointX->evaluate()) return;
     if (!txtPointY->evaluate()) return;
 
@@ -437,6 +451,8 @@ void ChartDialog::plotTime()
 
 void ChartDialog::doPlot()
 {
+    logMessage("ChartDialog::doPlot()");
+
     if (!Util::scene()->sceneSolution()->isSolved()) return;
 
     if (tabAnalysisType->currentWidget() == widGeometry)
@@ -448,6 +464,8 @@ void ChartDialog::doPlot()
 
 void ChartDialog::doFieldVariable(int index)
 {
+    logMessage("ChartDialog::doFieldVariable()");
+
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(index).toInt();
     
     cmbFieldVariableComp->clear();
@@ -470,16 +488,22 @@ void ChartDialog::doFieldVariable(int index)
 
 void ChartDialog::doFieldVariableComp(int index)
 {
+    logMessage("ChartDialog::doFieldVariableComp()");
+
     if (isVisible()) doPlot();
 }
 
 void ChartDialog::doSaveImage()
 {
+    logMessage("ChartDialog::doSaveImage()");
+
     chart->saveImage();
 }
 
 void ChartDialog::doExportData()
 {
+    logMessage("ChartDialog::doExportData()");
+
     QString selectedFilter;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), "data", tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
     if (!fileName.isEmpty())
@@ -543,12 +567,16 @@ void ChartDialog::doExportData()
 
 void ChartDialog::doMoved(const QPoint &pos)
 {
+    logMessage("ChartDialog::doMoved()");
+
     QString info;
     info.sprintf("x=%g, y=%g", chart->invTransform(QwtPlot::xBottom, pos.x()), chart->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
 void ChartDialog::doChartLine()
 {
+    logMessage("ChartDialog::doChartLine()");
+
     if (isVisible())
     {
         if (tabAnalysisType->currentWidget() == widGeometry)
@@ -576,6 +604,8 @@ void ChartDialog::doChartLine()
 
 void ChartDialog::doTimeStepChanged(int index)
 {
+    logMessage("ChartDialog::doTimeStepChanged()");
+
     if (cmbTimeStep->currentIndex() != -1)
     {
         Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex());

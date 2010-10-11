@@ -21,6 +21,8 @@
 
 SceneSolution::SceneSolution()
 {
+    logMessage("SceneSolution::SceneSolution()");
+
     m_timeStep = -1;
     m_isSolving = false;
 
@@ -34,6 +36,8 @@ SceneSolution::SceneSolution()
 
 void SceneSolution::clear()
 {
+    logMessage("SceneSolution::clear()");
+
     m_timeStep = -1;
 
     // solution array
@@ -82,6 +86,8 @@ void SceneSolution::clear()
 
 void SceneSolution::solve(SolverMode solverMode)
 {
+    logMessage("SceneSolution::solve()");
+
     if (isSolving()) return;
 
     // clear problem
@@ -121,6 +127,8 @@ void SceneSolution::solve(SolverMode solverMode)
 
 void SceneSolution::loadMeshInitial(QDomElement *element)
 {
+    logMessage("SceneSolution::loadMeshInitial()");
+
     QDomText text = element->childNodes().at(0).toText();
 
     // write content (saved mesh)
@@ -136,6 +144,8 @@ void SceneSolution::loadMeshInitial(QDomElement *element)
 
 void SceneSolution::saveMeshInitial(QDomDocument *doc, QDomElement *element)
 {
+    logMessage("SceneSolution::saveMeshInitial()");
+
     if (isMeshed())
     {
         QString fileName = tempProblemFileName() + ".mesh";
@@ -150,6 +160,8 @@ void SceneSolution::saveMeshInitial(QDomDocument *doc, QDomElement *element)
 
 void SceneSolution::loadSolution(QDomElement *element)
 {
+    logMessage("SceneSolution::loadSolution()");
+
     QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
 
     // constant solution cannot be saved
@@ -186,6 +198,8 @@ void SceneSolution::loadSolution(QDomElement *element)
 
 void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
 {
+    logMessage("SceneSolution::saveSolution()");
+
     if (isSolved())
     {
         // constant solution cannot be saved
@@ -202,6 +216,8 @@ void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
 
 Solution *SceneSolution::sln(int i)
 {
+    logMessage("SceneSolution::sln()");
+
     int currentTimeStep = i;
     if (isSolved() && currentTimeStep < timeStepCount() * Util::scene()->problemInfo()->hermes()->numberOfSolution())
     {
@@ -217,22 +233,30 @@ Solution *SceneSolution::sln(int i)
 
 Orderizer &SceneSolution::ordView()
 {
+    logMessage("SceneSolution::ordView()");
+
     if (isSolved())
         return *m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->order;
 }
 
 double SceneSolution::adaptiveError()
 {
+    logMessage("SceneSolution::adaptiveError()");
+
     return (isSolved()) ? m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveError : 100.0;
 }
 
 int SceneSolution::adaptiveSteps()
 {
+    logMessage("SceneSolution::adaptiveSteps()");
+
     return (isSolved()) ? m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveSteps : 0.0;
 }
 
 int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &point)
 {
+    logMessage("SceneSolution::findTriangleInVectorizer()");
+
     double4* vecVert = vec.get_vertices();
     int3* vecTris = vec.get_triangles();
 
@@ -267,6 +291,8 @@ int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &
 
 int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
 {
+    logMessage("SceneSolution::findTriangleInMesh()");
+
     for (int i = 0; i < mesh->get_num_active_elements(); i++)
     {
         bool inTriangle = true;
@@ -299,6 +325,8 @@ int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
 
 void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayList)
 {
+    logMessage("SceneSolution::setSolutionArrayList()");
+
     if (m_solutionArrayList)
     {
         for (int i = 0; i < m_solutionArrayList->count(); i++)
@@ -315,6 +343,8 @@ void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayLi
 
 void SceneSolution::setTimeStep(int timeStep, bool showViewProgress)
 {
+    logMessage("SceneSolution::setTimeStep()");
+
     qDebug() << "SceneSolution::setTimeStep";
 
     m_timeStep = timeStep;
@@ -328,11 +358,15 @@ void SceneSolution::setTimeStep(int timeStep, bool showViewProgress)
 
 int SceneSolution::timeStepCount()
 {
+    logMessage("SceneSolution::timeStepCount()");
+
     return (m_solutionArrayList) ? m_solutionArrayList->count() / Util::scene()->problemInfo()->hermes()->numberOfSolution() : 0;
 }
 
 double SceneSolution::time()
 {
+    logMessage("SceneSolution::time()");
+
     if (isSolved())
     {
         if (m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->sln)
@@ -343,6 +377,8 @@ double SceneSolution::time()
 
 void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
 {
+    logMessage("SceneSolution::setSlnContourView()");
+
     if (m_slnContourView)
     {
         delete m_slnContourView;
@@ -355,6 +391,8 @@ void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
 
 void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
 {
+    logMessage("SceneSolution::setSlnScalarView()");
+
     if (m_slnScalarView)
     {
         delete m_slnScalarView;
@@ -404,6 +442,8 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
 
 void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScalarFilter *slnVectorYView)
 {
+    logMessage("SceneSolution::setSlnVectorView()");
+
     if (m_slnVectorXView)
     {
         delete m_slnVectorXView;
@@ -423,6 +463,8 @@ void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScala
 
 void SceneSolution::processRangeContour()
 {
+    logMessage("SceneSolution::processRangeContour()");
+
     if (isSolved())
     {
         ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
@@ -434,6 +476,8 @@ void SceneSolution::processRangeContour()
 
 void SceneSolution::processRangeScalar()
 {
+    logMessage("SceneSolution::processRangeScalar()");
+
     if (isSolved())
     {
         ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().scalarPhysicFieldVariable,
@@ -445,6 +489,8 @@ void SceneSolution::processRangeScalar()
 
 void SceneSolution::processRangeVector()
 {
+    logMessage("SceneSolution::processRangeVector()");
+
     if (isSolved())
     {
         ViewScalarFilter *viewVectorXFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().vectorPhysicFieldVariable,
