@@ -1256,12 +1256,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="177"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy warunek</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="201"/>
         <source>new material</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy materiał</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="227"/>
@@ -1336,12 +1336,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="261"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy warunek</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="290"/>
         <source>new material</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy materiał</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="318"/>
@@ -1374,12 +1374,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="183"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy warunek</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="207"/>
         <source>new material</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy materiał</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="235"/>
@@ -1453,12 +1453,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="252"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy warunek</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="281"/>
         <source>new material</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy materiał</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="309"/>
@@ -1496,12 +1496,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="187"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy warunek</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="211"/>
         <source>new material</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy materiał</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_general.cpp" line="239"/>
@@ -1539,12 +1539,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="245"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy warunek</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="276"/>
         <source>new material</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy materiał</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="308"/>
@@ -1625,12 +1625,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="338"/>
         <source>new boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy warunek</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="365"/>
         <source>new material</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy materiał</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="487"/>
