@@ -106,16 +106,21 @@ void LogDialog::loadProgressLog()
         {
             QString message;
             QTextStream messages(&file);
+
+            lstMessages->setUpdatesEnabled(false);
+
             while (!messages.atEnd())
             {
-                lstMessages->setTextColor(QColor(Qt::black));
-
                 message = messages.readLine();
                 if (message[1].isNumber())
                     lstMessages->setTextColor(QColor(Qt::gray));
+                else
+                    lstMessages->setTextColor(QColor(Qt::black));
 
                 lstMessages->insertPlainText(message + "\n");
             }
+
+            lstMessages->setUpdatesEnabled(true);
         }
         btnSaveLog->setEnabled(true);
 
@@ -151,20 +156,24 @@ void LogDialog::loadApplicationLog()
         {
             QString message;
             QTextStream messages(&file);
+
+            lstMessages->setUpdatesEnabled(false);
+
             while (!messages.atEnd())
             {
-                lstMessages->setTextColor(QColor(Qt::black));
-
                 message = messages.readLine();
 
                 if (message.contains("Warning"))
                     lstMessages->setTextColor(QColor(Qt::blue));
-
-                if (message.contains("Critical") || message.contains("Fatal"))
+                else if (message.contains("Critical") || message.contains("Fatal"))
                     lstMessages->setTextColor(QColor(Qt::red));
+                else
+                    lstMessages->setTextColor(QColor(Qt::black));
 
-                lstMessages->insertPlainText(message + "\n");
+                lstMessages->append(message);
             }
+
+            lstMessages->setUpdatesEnabled(true);
         }
         btnSaveLog->setEnabled(true);
     }
