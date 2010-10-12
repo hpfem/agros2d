@@ -358,7 +358,7 @@ DSceneEdge::~DSceneEdge()
 
 QLayout* DSceneEdge::createContent()
 {
-    logMessage("*DSceneEdge::createContent()");
+    logMessage("DSceneEdge::createContent()");
 
     cmbNodeStart = new QComboBox();
     cmbNodeEnd = new QComboBox();

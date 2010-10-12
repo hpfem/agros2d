@@ -24,6 +24,8 @@ static PythonEngine *pythonEngine = NULL;
 
 void createScriptEngine()
 {
+    logMessage("createScriptEngine()");
+
     if (pythonEngine == NULL)
     {
         pythonEngine = new PythonEngine();
@@ -31,17 +33,23 @@ void createScriptEngine()
 }
 
 ScriptResult runPythonScript(const QString &script, const QString &fileName)
-{   
+{
+    logMessage("runPythonScript()");
+
     return pythonEngine->runPythonScript(script, fileName);
 }
 
 ExpressionResult runPythonExpression(const QString &expression)
 {
+    logMessage("runPythonExpression()");
+
     return pythonEngine->runPythonExpression(expression);
 }
 
 bool scriptIsRunning()
 {
+    logMessage("scriptIsRunning()");
+
     if (pythonEngine)
         return pythonEngine->isRunning();
     else
@@ -50,21 +58,29 @@ bool scriptIsRunning()
 
 void connectTerminal(Terminal *terminal)
 {
+    logMessage("connectTerminal()");
+
     QObject::connect(pythonEngine, SIGNAL(printStdout(QString)), terminal, SLOT(doPrintStdout(QString)));
 }
 
 void disconnectTerminal(Terminal *terminal)
 {
+    logMessage("disconnectTerminal()");
+
     QObject::disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminal, SLOT(doPrintStdout(QString)));
 }
 
 PythonEngine *currentPythonEngine()
 {
+    logMessage("currentPythonEngine()");
+
     return pythonEngine;
 }
 
 QString createPythonFromModel()
 {
+    logMessage("createPythonFromModel()");
+
     QString str;
 
     // model
@@ -153,6 +169,8 @@ QString createPythonFromModel()
 
 ScriptEngineRemote::ScriptEngineRemote()
 {
+    logMessage("ScriptEngineRemote::ScriptEngineRemote()");
+
     // server
     m_server = new QLocalServer();
     QLocalServer::removeServer("agros2d-server");
@@ -167,12 +185,16 @@ ScriptEngineRemote::ScriptEngineRemote()
 
 ScriptEngineRemote::~ScriptEngineRemote()
 {
+    logMessage("ScriptEngineRemote::~ScriptEngineRemote()");
+
     delete m_server;
     delete m_client_socket;
 }
 
 void ScriptEngineRemote::connected()
 {
+    logMessage("ScriptEngineRemote::connected()");
+
     command = "";
 
     m_server_socket = m_server->nextPendingConnection();
@@ -182,12 +204,16 @@ void ScriptEngineRemote::connected()
 
 void ScriptEngineRemote::readCommand()
 {
+    logMessage("ScriptEngineRemote::readCommand()");
+
     QTextStream in(m_server_socket);
     command = in.readAll();
 }
 
 void ScriptEngineRemote::disconnected()
 {
+    logMessage("ScriptEngineRemote::disconnected()");
+
     m_server_socket->deleteLater();
 
     ScriptResult result;
@@ -217,6 +243,8 @@ void ScriptEngineRemote::disconnected()
 
 void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError)
 {
+    logMessage("ScriptEngineRemote::displayError()");
+
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
         qWarning() << tr("Server error: The host was not found.");
@@ -233,6 +261,8 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
 
 ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
 {
+    logMessage("ScriptEditorWidget::ScriptEditorWidget()");
+
     file = "";
 
     txtEditor = new ScriptEditor(this);
@@ -242,11 +272,15 @@ ScriptEditorWidget::ScriptEditorWidget(QWidget *parent) : QWidget(parent)
 
 ScriptEditorWidget::~ScriptEditorWidget()
 {
+    logMessage("ScriptEditorWidget::~ScriptEditorWidget()");
+
     delete txtEditor;
 }
 
 void ScriptEditorWidget::createControls()
 {
+    logMessage("ScriptEditorWidget::createControls()");
+
     // contents
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(txtEditor);
@@ -258,6 +292,8 @@ void ScriptEditorWidget::createControls()
 
 ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
 {
+    logMessage("ScriptEditorDialog::ScriptEditorDialog()");
+
     setWindowIcon(icon("script"));
 
     // search dialog
@@ -285,6 +321,8 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
 
 ScriptEditorDialog::~ScriptEditorDialog()
 {
+    logMessage("ScriptEditorDialog::~ScriptEditorDialog()");
+
     QSettings settings;
     settings.setValue("ScriptEditorDialog/Geometry", saveGeometry());
     settings.setValue("ScriptEditorDialog/State", saveState());
@@ -295,6 +333,8 @@ ScriptEditorDialog::~ScriptEditorDialog()
 
 void ScriptEditorDialog::showDialog()
 {
+    logMessage("ScriptEditorDialog::showDialog()");
+
     show();
     activateWindow();
     raise();
@@ -303,6 +343,8 @@ void ScriptEditorDialog::showDialog()
 
 void ScriptEditorDialog::createActions()
 {
+    logMessage("ScriptEditorDialog::createActions()");
+
     actFileNew = new QAction(icon("document-new"), tr("&New"), this);
     actFileNew->setShortcuts(QKeySequence::AddTab);
     connect(actFileNew, SIGNAL(triggered()), this, SLOT(doFileNew()));
@@ -393,6 +435,8 @@ void ScriptEditorDialog::createActions()
 
 void ScriptEditorDialog::createControls()
 {
+    logMessage("ScriptEditorDialog::createControls()");
+
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
 
     mnuFile = menuBar()->addMenu(tr("&File"));
@@ -507,6 +551,8 @@ void ScriptEditorDialog::createControls()
 
 void ScriptEditorDialog::createViews()
 {
+    logMessage("ScriptEditorDialog::createViews()");
+
     QSettings settings;
 
     // file browser
@@ -536,6 +582,8 @@ void ScriptEditorDialog::createViews()
 
 void ScriptEditorDialog::createStatusBar()
 {
+    logMessage("ScriptEditorDialog::createStatusBar()");
+
     lblCurrentPosition = new QLabel(statusBar());
 
     statusBar()->showMessage(tr("Ready"));
@@ -544,6 +592,8 @@ void ScriptEditorDialog::createStatusBar()
 
 void ScriptEditorDialog::doRunPython()
 {
+    logMessage("ScriptEditorDialog::doRunPython()");
+
     if (!scriptEditorWidget()->file.isEmpty())
         filBrowser->setDir(QFileInfo(scriptEditorWidget()->file).absolutePath());
 
@@ -605,11 +655,15 @@ void ScriptEditorDialog::doRunPython()
 
 void ScriptEditorDialog::doCreatePythonFromModel()
 {
+    logMessage("ScriptEditorDialog::doCreatePythonFromModel()");
+
     txtEditor->setPlainText(createPythonFromModel());
 }
 
 void ScriptEditorDialog::doFileItemDoubleClick(const QString &path)
 {
+    logMessage("ScriptEditorDialog::doFileItemDoubleClick()");
+
     QFileInfo fileInfo(path);
 
     QSettings settings;
@@ -626,6 +680,8 @@ void ScriptEditorDialog::doFileItemDoubleClick(const QString &path)
 
 void ScriptEditorDialog::doPathChangeDir()
 {
+    logMessage("ScriptEditorDialog::doPathChangeDir()");
+
     QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
     QString directory = QFileDialog::getExistingDirectory(this, tr("Select directory"), filBrowser->basePath(), options);
     if (!directory.isEmpty())
@@ -634,6 +690,8 @@ void ScriptEditorDialog::doPathChangeDir()
 
 void ScriptEditorDialog::doFileNew()
 {
+    logMessage("ScriptEditorDialog::doFileNew()");
+
     tabWidget->addTab(new ScriptEditorWidget(this), tr("Untitled"));
     tabWidget->setCurrentIndex(tabWidget->count()-1);
     doCurrentPageChanged(tabWidget->count()-1);
@@ -641,6 +699,8 @@ void ScriptEditorDialog::doFileNew()
 
 void ScriptEditorDialog::doFileOpen(const QString &file)
 {
+    logMessage("ScriptEditorDialog::doFileOpen()");
+
     // open dialog
     QString fileName = file;
     if (fileName.isEmpty())
@@ -683,6 +743,8 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
 
 void ScriptEditorDialog::doFileOpenRecent(QAction *action)
 {
+    logMessage("ScriptEditorDialog::doFileOpenRecent()");
+
     QString fileName = action->text();
     if (QFile::exists(fileName))
     {
@@ -693,6 +755,8 @@ void ScriptEditorDialog::doFileOpenRecent(QAction *action)
 
 void ScriptEditorDialog::doFileSave()
 {
+    logMessage("ScriptEditorDialog::doFileSave()");
+
     // save dialog
     if (scriptEditorWidget()->file.isEmpty())
         scriptEditorWidget()->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
@@ -725,6 +789,8 @@ void ScriptEditorDialog::doFileSave()
 
 void ScriptEditorDialog::doFileSaveAs()
 {
+    logMessage("ScriptEditorDialog::doFileSaveAs()");
+
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
     if (!fileName.isEmpty())
     {
@@ -735,11 +801,15 @@ void ScriptEditorDialog::doFileSaveAs()
 
 void ScriptEditorDialog::doFileClose()
 {
+    logMessage("ScriptEditorDialog::doFileClose()");
+
     doCloseTab(tabWidget->currentIndex());
 }
 
 void ScriptEditorDialog::doFilePrint()
 {
+    logMessage("ScriptEditorDialog::doFilePrint()");
+
     QPrinter printer(QPrinter::HighResolution);
 
     QPrintDialog printDialog(&printer, this);
@@ -753,6 +823,8 @@ void ScriptEditorDialog::doFilePrint()
 
 void ScriptEditorDialog::doFind()
 {
+    logMessage("ScriptEditorDialog::doFind()");
+
     if (searchDialog->showDialogFind() == QDialog::Accepted)
     {
         doFindNext(true);
@@ -762,6 +834,8 @@ void ScriptEditorDialog::doFind()
 
 void ScriptEditorDialog::doFindNext(bool fromBegining)
 {
+    logMessage("ScriptEditorDialog::doFindNext()");
+
     if (!searchDialog->searchString().isEmpty())
     {
         QString search = searchDialog->searchString();
@@ -796,6 +870,8 @@ void ScriptEditorDialog::doFindNext(bool fromBegining)
 
 void ScriptEditorDialog::doReplace()
 {
+    logMessage("ScriptEditorDialog::doReplace()");
+
     if (searchDialog->showDialogReplace() == QDialog::Accepted)
     {
         if (!searchDialog->searchString().isEmpty())
@@ -817,17 +893,23 @@ void ScriptEditorDialog::doReplace()
 
 void ScriptEditorDialog::doDataChanged()
 {
+    logMessage("ScriptEditorDialog::doDataChanged()");
+
     actPaste->setEnabled(!QApplication::clipboard()->text().isEmpty());
 }
 
 void ScriptEditorDialog::doHelp()
 {
+    logMessage("ScriptEditorDialog::doHelp()");
+
     Util::helpDialog()->showPage("scripting/scripting.html");
     Util::helpDialog()->show();
 }
 
 void ScriptEditorDialog::doCloseTab(int index)
 {
+    logMessage("ScriptEditorDialog::doCloseTab()");
+
     if (txtEditor->document()->isModified())
     {
         QMessageBox::StandardButton ret;
@@ -848,6 +930,8 @@ void ScriptEditorDialog::doCloseTab(int index)
 
 void ScriptEditorDialog::doCurrentPageChanged(int index)
 {
+    logMessage("ScriptEditorDialog::doCurrentPageChanged()");
+
     txtEditor = scriptEditorWidget()->txtEditor;
 
     actCut->disconnect();
@@ -908,6 +992,8 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
 
 void ScriptEditorDialog::doCursorPositionChanged()
 {
+    logMessage("ScriptEditorDialog::doCursorPositionChanged()");
+
     QTextCursor cur(txtEditor->textCursor());
     lblCurrentPosition->setText(tr("Line: %1, Col: %2").arg(cur.blockNumber()+1)
                                                        .arg(cur.columnNumber()+1));
@@ -915,6 +1001,8 @@ void ScriptEditorDialog::doCursorPositionChanged()
 
 void ScriptEditorDialog::doCurrentDocumentChanged(bool changed)
 {
+    logMessage("ScriptEditorDialog::doCurrentDocumentChanged()");
+
     // modified
     QString fileName = tr("Untitled");
     if (!scriptEditorWidget()->file.isEmpty())
@@ -931,6 +1019,8 @@ void ScriptEditorDialog::doCurrentDocumentChanged(bool changed)
 
 void ScriptEditorDialog::setRecentFiles()
 {
+    logMessage("ScriptEditorDialog::setRecentFiles()");
+
     if (!tabWidget) return;
 
      // recent files
@@ -958,6 +1048,8 @@ void ScriptEditorDialog::setRecentFiles()
 
 ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
+    logMessage("ScriptEditor::ScriptEditor()");
+
     lineNumberArea = new ScriptEditorLineNumberArea(this);
 
 #ifndef Q_WS_MAC
@@ -980,11 +1072,15 @@ ScriptEditor::ScriptEditor(QWidget *parent) : QPlainTextEdit(parent)
 
 ScriptEditor::~ScriptEditor()
 {
+    logMessage("ScriptEditor::~ScriptEditor()");
+
     delete lineNumberArea;
 }
 
 int ScriptEditor::lineNumberAreaWidth()
 {
+    logMessage("ScriptEditor::lineNumberAreaWidth()");
+
     int digits = 1;
     int max = qMax(1, blockCount());
     while (max >= 10) {
@@ -999,6 +1095,8 @@ int ScriptEditor::lineNumberAreaWidth()
 
 void ScriptEditor::resizeEvent(QResizeEvent *e)
 {
+    logMessage("ScriptEditor::resizeEvent()");
+
     QPlainTextEdit::resizeEvent(e);
 
     QRect cr = contentsRect();
@@ -1007,6 +1105,8 @@ void ScriptEditor::resizeEvent(QResizeEvent *e)
 
 void ScriptEditor::keyPressEvent(QKeyEvent *event)
 {
+    logMessage("ScriptEditor::keyPressEvent()");
+
     if (event->key() == Qt::Key_Tab)
     {
         if (textCursor().hasSelection())
@@ -1030,11 +1130,15 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
 
 void ScriptEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
+    logMessage("ScriptEditor::updateLineNumberAreaWidth()");
+
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 
 void ScriptEditor::updateLineNumberArea(const QRect &rect, int dy)
 {
+    logMessage("ScriptEditor::updateLineNumberArea()");
+
     if (dy)
         lineNumberArea->scroll(0, dy);
     else
@@ -1046,6 +1150,8 @@ void ScriptEditor::updateLineNumberArea(const QRect &rect, int dy)
 
 void ScriptEditor::indentSelection()
 {
+    logMessage("ScriptEditor::indentSelection()");
+
     QTextCursor cursor = textCursor();
     if (cursor.hasSelection())
     {
@@ -1067,6 +1173,8 @@ void ScriptEditor::indentSelection()
 
 void ScriptEditor::unindentSelection()
 {
+    logMessage("ScriptEditor::unindentSelection()");
+
     QTextCursor cursor = textCursor();
     if (cursor.hasSelection())
     {
@@ -1092,6 +1200,8 @@ void ScriptEditor::unindentSelection()
 
 void ScriptEditor::commentSelection()
 {
+    logMessage("ScriptEditor::commentSelection()");
+
     QTextCursor cursor = textCursor();
     if (cursor.hasSelection())
     {
@@ -1113,6 +1223,8 @@ void ScriptEditor::commentSelection()
 
 void ScriptEditor::uncommentSelection()
 {
+    logMessage("ScriptEditor::uncommentSelection()");
+
     QTextCursor cursor = textCursor();
     if (cursor.hasSelection())
     {
@@ -1138,6 +1250,8 @@ void ScriptEditor::uncommentSelection()
 
 void ScriptEditor::gotoLine(int line, bool isError)
 {
+    logMessage("ScriptEditor::gotoLine()");
+
     // use dialog when (line == -1)
     if (line == -1)
     {
@@ -1162,6 +1276,8 @@ void ScriptEditor::gotoLine(int line, bool isError)
 
 void ScriptEditor::highlightCurrentLine(bool isError)
 {
+    logMessage("ScriptEditor::highlightCurrentLine()");
+
     QList<QTextEdit::ExtraSelection> selections;
 
     if (!isReadOnly())
@@ -1187,6 +1303,8 @@ void ScriptEditor::highlightCurrentLine(bool isError)
 
 void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
+    logMessage("ScriptEditor::lineNumberAreaPaintEvent()");
+
     QPainter painter(lineNumberArea);
     painter.fillRect(event->rect(), Qt::lightGray);
 
@@ -1214,6 +1332,8 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
 void ScriptEditor::matchParentheses(char left, char right)
 {
+    logMessage("ScriptEditor::matchParentheses()");
+
     TextBlockData *data = static_cast<TextBlockData *>(textCursor().block().userData());
 
     if (data)
@@ -1242,6 +1362,8 @@ void ScriptEditor::matchParentheses(char left, char right)
 
 bool ScriptEditor::matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int i, int numLeftParentheses)
 {
+    logMessage("ScriptEditor::matchLeftParenthesis()");
+
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
     QVector<ParenthesisInfo *> infos = data->parentheses();
 
@@ -1276,6 +1398,8 @@ bool ScriptEditor::matchLeftParenthesis(char left, char right, QTextBlock curren
 
 bool ScriptEditor::matchRightParenthesis(char left, char right, QTextBlock currentBlock, int i, int numRightParentheses)
 {
+    logMessage("ScriptEditor::matchRightParenthesis()");
+
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
     QVector<ParenthesisInfo *> parentheses = data->parentheses();
 
@@ -1308,6 +1432,8 @@ bool ScriptEditor::matchRightParenthesis(char left, char right, QTextBlock curre
 
 void ScriptEditor::createParenthesisSelection(int pos)
 {
+    logMessage("ScriptEditor::createParenthesisSelection()");
+
     QList<QTextEdit::ExtraSelection> selections = extraSelections();
 
     QTextEdit::ExtraSelection selection;
@@ -1330,6 +1456,8 @@ void ScriptEditor::createParenthesisSelection(int pos)
 
 SearchDialog::SearchDialog(QWidget *parent): QDialog(parent)
 {
+    logMessage("SearchDialog::SearchDialog()");
+
     // Title
     setWindowTitle(tr("Search and replace"));
     setWindowIcon(icon("edit-find"));
@@ -1392,6 +1520,8 @@ SearchDialog::SearchDialog(QWidget *parent): QDialog(parent)
 
 SearchDialog::~SearchDialog()
 {
+    logMessage("SearchDialog::~SearchDialog()");
+
     delete txtFind;
     delete txtReplace;
 
@@ -1404,6 +1534,8 @@ SearchDialog::~SearchDialog()
 
 int SearchDialog::showDialogFind()
 {
+    logMessage("SearchDialog::showDialogFind()");
+
     txtFind->setFocus();
     txtReplace->setEnabled(false);
     btnConfirm->setText(tr("Find"));
@@ -1414,6 +1546,8 @@ int SearchDialog::showDialogFind()
 
 int SearchDialog::showDialogReplace()
 {
+    logMessage("SearchDialog::showDialogReplace()");
+
     txtFind->setFocus();
     txtReplace->setEnabled(true);
     btnConfirm->setText(tr("Replace"));

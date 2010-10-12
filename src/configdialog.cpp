@@ -319,7 +319,7 @@ void ConfigDialog::createControls()
 
 QWidget *ConfigDialog::createMainWidget()
 {
-    logMessage("*ConfigDialog::createMainWidget()");
+    logMessage("ConfigDialog::createMainWidget()");
 
     QWidget *mainWidget = new QWidget(this);
 
@@ -401,7 +401,7 @@ QWidget *ConfigDialog::createMainWidget()
 
 QWidget *ConfigDialog::createViewWidget()
 {
-    logMessage("*ConfigDialog::createViewWidget()");
+    logMessage("ConfigDialog::createViewWidget()");
 
     // geometry
     txtGeometryAngleSegmentsCount = new QSpinBox(this);
@@ -568,7 +568,7 @@ QWidget *ConfigDialog::createViewWidget()
 
 QWidget *ConfigDialog::createColorsWidget()
 {
-    logMessage("*ConfigDialog::createColorsWidget()");
+    logMessage("ConfigDialog::createColorsWidget()");
 
     QWidget *colorsWidget = new QWidget(this);
 
@@ -634,7 +634,7 @@ QWidget *ConfigDialog::createColorsWidget()
 
 QWidget *ConfigDialog::createAdvancedWidget()
 {
-    logMessage("*ConfigDialog::createAdvancedWidget()");
+    logMessage("ConfigDialog::createAdvancedWidget()");
 
     QWidget *viewWidget = new QWidget(this);
 
@@ -714,7 +714,7 @@ QWidget *ConfigDialog::createAdvancedWidget()
 
 QWidget *ConfigDialog::createGlobalScriptWidget()
 {
-    logMessage("*ConfigDialog::createGlobalScriptWidget()");
+    logMessage("ConfigDialog::createGlobalScriptWidget()");
 
     QWidget *viewWidget = new QWidget(this);
 

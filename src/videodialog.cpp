@@ -99,7 +99,7 @@ void VideoDialog::createControls()
 
 QWidget *VideoDialog::createControlsFile()
 {
-    logMessage("*VideoDialog::createControlsFile()");
+    logMessage("VideoDialog::createControlsFile()");
 
     QSettings settings;
     QString codec = settings.value("VideoDialog/Codec", "msmpeg4v2").value<QString>();
@@ -176,7 +176,7 @@ QWidget *VideoDialog::createControlsFile()
 
 QWidget *VideoDialog::createControlsViewport()
 {
-    logMessage("*VideoDialog::createControlsViewport()");
+    logMessage("VideoDialog::createControlsViewport()");
 
     // viewport
     lblAnimateTime = new QLabel("0.0");

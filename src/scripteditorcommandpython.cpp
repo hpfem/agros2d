@@ -48,26 +48,34 @@ const int count = 100; \
                                                   )) \
                              // FIX ********************************************************************************************************************************************************************
 
-                             static PyObject *pythonVersion(PyObject *self, PyObject *args)
+static PyObject *pythonVersion(PyObject *self, PyObject *args)
 {
+    logMessage("pythonVersion()");
+
     return Py_BuildValue("s", QApplication::applicationVersion().toStdString());
 }
 
 // version()
 char *pythonVersion()
 {
+    logMessage("pythonVersion()");
+
     return const_cast<char*>(QApplication::applicationVersion().toStdString().c_str());
 }
 
 // message(string)
 void pythonMessage(char *str)
 {
+    logMessage("pythonMessage()");
+
     QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
 }
 
 // variable = input(string)
 char *pythonInput(char *str)
 {
+    logMessage("pythonInput()");
+
     QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString(str));
     return const_cast<char*>(text.toStdString().c_str());
 }
@@ -75,6 +83,8 @@ char *pythonInput(char *str)
 // meshfilename()
 char *pythonMeshFileName()
 {
+    logMessage("pythonMeshFileName()");
+
     if (Util::scene()->sceneSolution()->isMeshed())
         return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
     else
@@ -83,6 +93,8 @@ char *pythonMeshFileName()
 
 Solution *pythonSolutionObject()
 {
+    logMessage("pythonSolutionObject()");
+
     if (Util::scene()->sceneSolution()->isSolved())
         return Util::scene()->sceneSolution()->sln();
     else
@@ -92,6 +104,8 @@ Solution *pythonSolutionObject()
 // solutionfilename()
 char *pythonSolutionFileName()
 {
+    logMessage("pythonSolutionFileName()");
+
     if (Util::scene()->sceneSolution()->isSolved())
     {
         char *fileName = const_cast<char*>(QString(tempProblemFileName() + ".sln").toStdString().c_str());
@@ -105,6 +119,8 @@ char *pythonSolutionFileName()
 // quit()
 void pythonQuit()
 {
+    logMessage("pythonQuit()");
+
     QApplication::exit(0);
 }
 
@@ -115,6 +131,8 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
                        double frequency,
                        char *analysistype, double timestep, double totaltime, double initialcondition)
 {
+    logMessage("pythonNewDocument()");
+
     Util::scene()->clear();
     Util::scene()->problemInfo()->name = QString(name);
 
@@ -201,6 +219,8 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 // opendocument(filename)
 void pythonOpenDocument(char *str)
 {
+    logMessage("pythonOpenDocument()");
+
     ErrorResult result = Util::scene()->readFromFile(QString(str));
     if (result.isError())
         throw invalid_argument(result.message().toStdString());
@@ -209,6 +229,8 @@ void pythonOpenDocument(char *str)
 // savedocument(filename)
 void pythonSaveDocument(char *str)
 {
+    logMessage("pythonSaveDocument()");
+
     ErrorResult result = Util::scene()->writeToFile(QString(str));
     if (result.isError())
         throw invalid_argument(result.message().toStdString());
@@ -217,11 +239,15 @@ void pythonSaveDocument(char *str)
 // addnode(x, y)
 void pythonAddNode(double x, double y)
 {
+    logMessage("pythonAddNode()");
+
     Util::scene()->addNode(new SceneNode(Point(x, y)));
 }
 
 void pythonDeleteNode(int index)
 {
+    logMessage("pythonDeleteNode()");
+
     if (index < 0 || index >= Util::scene()->nodes.count())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
     Util::scene()->removeNode(Util::scene()->nodes[index]);
@@ -229,12 +255,16 @@ void pythonDeleteNode(int index)
 
 void pythonDeleteNodePoint(double x, double y)
 {
+    logMessage("pythonDeleteNodePoint()");
+
     Util::scene()->removeNode(Util::scene()->getNode(Point(x, y)));
 }
 
 // addedge(x1, y1, x2, y2, angle = 0, marker = "none")
 void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker)
 {
+    logMessage("pythonAddEdge()");
+
     if (angle > 180.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
@@ -252,6 +282,8 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
 
 void pythonDeleteEdge(int index)
 {
+    logMessage("pythonDeleteEdge()");
+
     if (index < 0 || index >= Util::scene()->edges.count())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
     Util::scene()->removeEdge(Util::scene()->edges[index]);
@@ -259,12 +291,16 @@ void pythonDeleteEdge(int index)
 
 void pythonDeleteEdgePoint(double x1, double y1, double x2, double y2, double angle)
 {
+    logMessage("pythonDeleteEdgePoint()");
+
     Util::scene()->removeEdge(Util::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
 }
 
 // addlabel(x, y, area = 0, marker = "none", polynomialorder = 0)
 void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *marker)
 {
+    logMessage("pythonAddLabel()");
+
     SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(QString(marker));
     if (!labelMarker)
         throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
@@ -274,6 +310,8 @@ void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *
 
 void pythonDeleteLabel(int index)
 {
+    logMessage("pythonDeleteLabel()");
+
     if (index < 0 || index >= Util::scene()->labels.count())
         throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
     Util::scene()->removeLabel(Util::scene()->labels[index]);
@@ -281,12 +319,16 @@ void pythonDeleteLabel(int index)
 
 void pythonDeleteLabelPoint(double x, double y)
 {
+    logMessage("pythonDeleteLabelPoint()");
+
     Util::scene()->removeLabel(Util::scene()->getLabel(Point(x, y)));
 }
 
 // addboundary(name, type, value, ...)
 static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
 {
+    logMessage("pythonAddBoundary()");
+
     SceneEdgeMarker *marker = Util::scene()->problemInfo()->hermes()->newEdgeMarker(self, args);
     if (marker)
     {
@@ -304,6 +346,8 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
 // modifyBoundary(name, type, value, ...)
 static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 {
+    logMessage("pythonModifyBoundary()");
+
     SceneEdgeMarker *markerNew = Util::scene()->problemInfo()->hermes()->newEdgeMarker(self, args);
     SceneEdgeMarker *markerOld = Util::scene()->getEdgeMarker(markerNew->name);
     if (markerOld)
@@ -323,6 +367,8 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 // addmaterial(name, type, value, ...)
 static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
 {
+    logMessage("pythonAddMaterial()");
+
     SceneLabelMarker *marker = Util::scene()->problemInfo()->hermes()->newLabelMarker(self, args);
     if (marker)
     {
@@ -340,6 +386,8 @@ static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
 // modifymaterial(name, type, value, ...)
 static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 {
+    logMessage("pythonModifyMaterial()");
+
     SceneLabelMarker *markerNew = Util::scene()->problemInfo()->hermes()->newLabelMarker(self, args);
     SceneLabelMarker *markerOld = Util::scene()->getLabelMarker(markerNew->name);
     if (markerOld)
@@ -359,12 +407,16 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 // selectnone()
 void pythonSelectNone()
 {
+    logMessage("pythonSelectNone()");
+
     Util::scene()->selectNone();
 }
 
 // selectall()
 void pythonSelectAll()
 {
+    logMessage("pythonSelectAll()");
+
     if (sceneView()->sceneMode() == SceneMode_Postprocessor)
     {
         // select volume integral area
@@ -385,6 +437,8 @@ void pythonSelectAll()
 // selectnode(index, ...)
 static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
 {
+    logMessage("pythonSelectNode()");
+
     python_int_array()
     {
         sceneView()->actSceneModeEdge->trigger();
@@ -413,6 +467,8 @@ static PyObject *pythonSelectNode(PyObject *self, PyObject *args)
 // selectnodepoint(x, y)
 void pythonSelectNodePoint(double x, double y)
 {
+    logMessage("pythonSelectNodePoint()");
+
     SceneNode *node = sceneView()->findClosestNode(Point(x, y));
     if (node)
     {
@@ -424,6 +480,8 @@ void pythonSelectNodePoint(double x, double y)
 // selectedge(index, ...)
 static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
 {
+    logMessage("pythonSelectEdge()");
+
     python_int_array()
     {
         sceneView()->actSceneModeEdge->trigger();
@@ -452,6 +510,8 @@ static PyObject *pythonSelectEdge(PyObject *self, PyObject *args)
 // selectedgepoint(x, y)
 void pythonSelectEdgePoint(double x, double y)
 {
+    logMessage("pythonSelectEdgePoint()");
+
     SceneEdge *edge = sceneView()->findClosestEdge(Point(x, y));
     if (edge)
     {
@@ -463,6 +523,8 @@ void pythonSelectEdgePoint(double x, double y)
 // selectlabel(index, ...)
 static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
 {
+    logMessage("pythonSelectLabel()");
+
     python_int_array()
     {
         sceneView()->actSceneModeLabel->trigger();
@@ -491,6 +553,8 @@ static PyObject *pythonSelectLabel(PyObject *self, PyObject *args)
 // selectlabelpoint(x, y)
 void pythonSelectLabelPoint(double x, double y)
 {
+    logMessage("pythonSelectLabelPoint()");
+
     SceneLabel *label = sceneView()->findClosestLabel(Point(x, y));
     if (label)
     {
@@ -502,6 +566,8 @@ void pythonSelectLabelPoint(double x, double y)
 // rotateselection(x, y, angle, copy = {True, False})
 void pythonRotateSelection(double x, double y, double angle, bool copy)
 {
+    logMessage("pythonRotateSelection()");
+
     Util::scene()->transformRotate(Point(x, y), angle, copy);
     sceneView()->doInvalidated();
 }
@@ -509,6 +575,8 @@ void pythonRotateSelection(double x, double y, double angle, bool copy)
 // scaleselection(x, y, scale, copy = {True, False})
 void pythonScaleSelection(double x, double y, double scale, bool copy)
 {
+    logMessage("pythonScaleSelection()");
+
     Util::scene()->transformScale(Point(x, y), scale, copy);
     sceneView()->doInvalidated();
 }
@@ -516,6 +584,8 @@ void pythonScaleSelection(double x, double y, double scale, bool copy)
 // moveselection(dx, dy, copy = {True, False})
 void pythonMoveSelection(double dx, double dy, bool copy)
 {
+    logMessage("pythonMoveSelection()");
+
     Util::scene()->transformTranslate(Point(dx, dy), copy);
     sceneView()->doInvalidated();
 }
@@ -523,12 +593,16 @@ void pythonMoveSelection(double dx, double dy, bool copy)
 // deleteselection()
 void pythonDeleteSelection()
 {
+    logMessage("pythonDeleteSelection()");
+
     Util::scene()->deleteSelected();
 }
 
 // mesh()
 void pythonMesh()
 {
+    logMessage("pythonMesh()");
+
     Util::scene()->sceneSolution()->solve(SolverMode_Mesh);
     Util::scene()->refresh();
 }
@@ -536,6 +610,8 @@ void pythonMesh()
 // solve()
 void pythonSolve()
 {
+    logMessage("pythonSolve()");
+
     Util::scene()->sceneSolution()->solve(SolverMode_MeshAndSolve);
     if (Util::scene()->sceneSolution()->isSolved())
     {
@@ -547,30 +623,40 @@ void pythonSolve()
 // zoombestfit()
 void pythonZoomBestFit()
 {
+    logMessage("pythonZoomBestFit()");
+
     sceneView()->doZoomBestFit();
 }
 
 // zoomin()
 void pythonZoomIn()
 {
+    logMessage("pythonZoomIn()");
+
     sceneView()->doZoomIn();
 }
 
 // zoomout()
 void pythonZoomOut()
 {
+    logMessage("pythonZoomOut()");
+
     sceneView()->doZoomOut();
 }
 
 // zoomregion(x1, y1, x2, y2)
 void pythonZoomRegion(double x1, double y1, double x2, double y2)
 {
+    logMessage("pythonZoomRegion()");
+
     sceneView()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 // mode(mode = {"node", "edge", "label", "postprocessor"})
 void pythonMode(char *str)
 {
+    logMessage("pythonMode()");
+
     if (QString(str) == "node")
         sceneView()->actSceneModeNode->trigger();
     else if (QString(str) == "edge")
@@ -591,6 +677,8 @@ void pythonMode(char *str)
 // postprocessormode(mode = {"point", "surface", "volume"})
 void pythonPostprocessorMode(char *str)
 {
+    logMessage("pythonPostprocessorMode()");
+
     if (Util::scene()->sceneSolution()->isSolved())
         sceneView()->actSceneModePostprocessor->trigger();
     else
@@ -611,6 +699,8 @@ void pythonPostprocessorMode(char *str)
 // result = pointresult(x, y)
 static PyObject *pythonPointResult(PyObject *self, PyObject *args)
 {
+    logMessage("pythonPointResult()");
+
     if (Util::scene()->sceneSolution()->isSolved())
     {
         sceneView()->actSceneModePostprocessor->trigger();
@@ -643,6 +733,8 @@ static PyObject *pythonPointResult(PyObject *self, PyObject *args)
 // result = surfaceintegral(index, ...)
 static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
 {
+    logMessage("pythonSurfaceIntegral()");
+
     if (Util::scene()->sceneSolution()->isSolved())
     {
         // set mode
@@ -691,6 +783,8 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
 // result = volumeintegral(index, ...)
 static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
 {
+    logMessage("pythonVolumeIntegral()");
+
     if (Util::scene()->sceneSolution()->isSolved())
     {
         // set mode
@@ -739,6 +833,8 @@ static PyObject *pythonVolumeIntegral(PyObject *self, PyObject *args)
 // showscalar(type = { "none", "scalar", "scalar3d", "order" }, variable, component, rangemin, rangemax)
 void pythonShowScalar(char *type, char *variable, char *component, int rangemin, int rangemax)
 {
+    logMessage("pythonShowScalar()");
+
     // type
     SceneViewPostprocessorShow postprocessorShow = sceneViewPostprocessorShowFromStringKey(QString(type));
     if (postprocessorShow != SceneViewPostprocessorShow_Undefined)
@@ -780,6 +876,8 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
 // showgrid(show = {True, False})
 void pythonShowGrid(bool show)
 {
+    logMessage("pythonShowGrid()");
+
     Util::config()->showGrid = show;
     sceneView()->doInvalidated();
 }
@@ -787,6 +885,8 @@ void pythonShowGrid(bool show)
 // showgeometry(show = {True, False})
 void pythonShowGeometry(bool show)
 {
+    logMessage("pythonShowGeometry()");
+
     sceneView()->sceneViewSettings().showGeometry = show;
     sceneView()->doInvalidated();
 }
@@ -794,6 +894,8 @@ void pythonShowGeometry(bool show)
 // showinitialmesh(show = {True, False})
 void pythonShowInitialMesh(bool show)
 {
+    logMessage("pythonShowInitialMesh()");
+
     sceneView()->sceneViewSettings().showInitialMesh = show;
     sceneView()->doInvalidated();
 }
@@ -801,6 +903,8 @@ void pythonShowInitialMesh(bool show)
 // showsolutionmesh(show = {True, False})
 void pythonShowSolutionMesh(bool show)
 {
+    logMessage("pythonShowSolutionMesh()");
+
     sceneView()->sceneViewSettings().showSolutionMesh = show;
     sceneView()->doInvalidated();
 }
@@ -808,6 +912,8 @@ void pythonShowSolutionMesh(bool show)
 // showcontours(show = {True, False})
 void pythonShowContours(bool show)
 {
+    logMessage("pythonShowContours()");
+
     sceneView()->sceneViewSettings().showContours = show;
     sceneView()->doInvalidated();
 }
@@ -815,6 +921,8 @@ void pythonShowContours(bool show)
 // showvectors(show = {True, False})
 void pythonShowVectors(bool show)
 {
+    logMessage("pythonShowVectors()");
+
     sceneView()->sceneViewSettings().showVectors = show;
     sceneView()->doInvalidated();
 }
@@ -822,6 +930,8 @@ void pythonShowVectors(bool show)
 // settimestep(level)
 void pythonSetTimeStep(int timestep)
 {
+    logMessage("pythonSetTimeStep()");
+
     if (Util::scene()->sceneSolution()->isSolved())
         sceneView()->actSceneModePostprocessor->trigger();
     else
@@ -839,12 +949,16 @@ void pythonSetTimeStep(int timestep)
 // timestepcount()
 int pythonTimeStepCount()
 {
+    logMessage("pythonTimeStepCount()");
+
     return Util::scene()->sceneSolution()->timeStepCount();
 }
 
 // saveimage(filename)
 void pythonSaveImage(char *str, int w, int h)
 {
+    logMessage("pythonSaveImage()");
+
     ErrorResult result = sceneView()->saveImageToFile(QString(str), w, h);
     if (result.isError())
         throw invalid_argument(result.message().toStdString());
@@ -853,6 +967,8 @@ void pythonSaveImage(char *str, int w, int h)
 // print stdout
 PyObject* pythonCaptureStdout(PyObject* self, PyObject* pArgs)
 {
+    logMessage("pythonCaptureStdout()");
+
     char *str = NULL;
     if (PyArg_ParseTuple(pArgs, "s", &str))
     {
@@ -882,6 +998,8 @@ static PyMethodDef pythonMethods[] =
 
 PythonEngine::PythonEngine()
 {
+    logMessage("PythonEngine::PythonEngine()");
+
     m_isRunning = false;
     m_stdOut = "";
 
@@ -911,6 +1029,8 @@ PythonEngine::PythonEngine()
 
 PythonEngine::~PythonEngine()
 {
+    logMessage("PythonEngine::~PythonEngine()");
+
     // finalize and garbage python
     Py_DECREF(m_dict);
 
@@ -920,17 +1040,23 @@ PythonEngine::~PythonEngine()
 
 void PythonEngine::showMessage(const QString &message)
 {
+    logMessage("PythonEngine::showMessage()");
+
     emit printStdout(message);
 }
 
 void PythonEngine::doPrintStdout(const QString &message)
 {
+    logMessage("PythonEngine::doPrintStdout()");
+
     m_stdOut.append(message);
     QApplication::processEvents();
 }
 
 void PythonEngine::runPythonHeader()
 {
+    logMessage("PythonEngine::runPythonHeader()");
+
     // global script
     if (!Util::config()->globalScript.isEmpty())
         PyRun_String(Util::config()->globalScript.toStdString().c_str(), Py_file_input, m_dict, m_dict);
@@ -942,6 +1068,8 @@ void PythonEngine::runPythonHeader()
 
 ScriptResult PythonEngine::runPythonScript(const QString &script, const QString &fileName)
 {
+    logMessage("PythonEngine::runPythonScript()");
+
     m_isRunning = true;
     m_stdOut = "";
 
@@ -1011,6 +1139,8 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
 
 ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
 {
+    logMessage("PythonEngine::runPythonExpression()");
+
     runPythonHeader();
 
     QString exp = "result = " + expression;
@@ -1056,6 +1186,8 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
 
 ScriptResult PythonEngine::parseError()
 {   
+    logMessage("PythonEngine::parseError()");
+
     // error
     ScriptResult error;
     error.isError = true;

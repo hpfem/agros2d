@@ -29,6 +29,8 @@
 #include <QHash>
 #include <QTextCharFormat>
 
+#include "util.h"
+
 class QTextDocument;
 
 struct ParenthesisInfo

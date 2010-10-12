@@ -95,7 +95,7 @@ void ProblemDialog::createControls()
 
 QWidget *ProblemDialog::createControlsGeneral()
 {
-    logMessage("*ProblemDialog::createControlsGeneral()");
+    logMessage("ProblemDialog::createControlsGeneral()");
 
     // equations
     lblEquationPixmap = new QLabel("");

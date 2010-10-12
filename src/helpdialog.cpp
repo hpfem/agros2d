@@ -259,7 +259,7 @@ HelpPage::HelpPage(CentralWidget *central, QHelpEngine *engine, QObject *parent)
 
 QWebPage *HelpPage::createWindow(QWebPage::WebWindowType)
 {
-    logMessage("*HelpPage::createWindow()");
+    logMessage("HelpPage::createWindow()");
 
     return centralWidget->newEmptyTab()->page();
 }
@@ -615,7 +615,7 @@ CentralWidget::~CentralWidget()
 
 CentralWidget *CentralWidget::instance()
 {
-    logMessage("*CentralWidget::instance()");
+    logMessage("CentralWidget::instance()");
 
     return staticCentralWidget;
 }
@@ -958,7 +958,7 @@ void CentralWidget::setSourceInNewTab(const QUrl &url, int zoom)
 
 HelpViewer *CentralWidget::newEmptyTab()
 {
-    logMessage("*CentralWidget::newEmptyTab()");
+    logMessage("CentralWidget::newEmptyTab()");
 
     HelpViewer* viewer = new HelpViewer(helpEngine, this, this);
     viewer->installEventFilter(this);
@@ -987,14 +987,14 @@ void CentralWidget::connectSignals()
 
 HelpViewer *CentralWidget::helpViewerAtIndex(int index) const
 {
-    logMessage("*CentralWidget::helpViewerAtIndex()");
+    logMessage("CentralWidget::helpViewerAtIndex()");
 
     return qobject_cast<HelpViewer*>(tabWidget->widget(index));
 }
 
 HelpViewer *CentralWidget::currentHelpViewer() const
 {
-    logMessage("*CentralWidget::currentHelpViewer()");
+    logMessage("CentralWidget::currentHelpViewer()");
 
     return qobject_cast<HelpViewer*>(tabWidget->currentWidget());
 }

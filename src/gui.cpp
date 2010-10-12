@@ -140,10 +140,10 @@ double SLineEditValue::number()
 
 void SLineEditValue::setValue(Value value)
 {
-   logMessage("SLineEditValue::setValue()");
+    logMessage("SLineEditValue::setValue()");
 
-   txtLineEdit->setText(value.text);
-   evaluate();
+    txtLineEdit->setText(value.text);
+    evaluate();
 }
 
 Value SLineEditValue::value()

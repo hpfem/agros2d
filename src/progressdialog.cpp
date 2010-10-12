@@ -775,7 +775,7 @@ void ProgressDialog::createControls()
 
 QWidget *ProgressDialog::createControlsProgress()
 {
-    logMessage("*ProgressDialog::createControlsProgress()");
+    logMessage("ProgressDialog::createControlsProgress()");
 
     progressBar = new QProgressBar(this);
     lblMessage = new QLabel("", this);
@@ -795,7 +795,7 @@ QWidget *ProgressDialog::createControlsProgress()
 
 QWidget *ProgressDialog::createControlsConvergenceErrorChart()
 {
-    logMessage("*ProgressDialog::createControlsConvergenceErrorChart()");
+    logMessage("ProgressDialog::createControlsConvergenceErrorChart()");
 
     chartError = new Chart(this);
 
@@ -844,7 +844,7 @@ QWidget *ProgressDialog::createControlsConvergenceErrorChart()
 
 QWidget *ProgressDialog::createControlsConvergenceDOFChart()
 {
-    logMessage("*ProgressDialog::createControlsConvergenceDOFChart()");
+    logMessage("ProgressDialog::createControlsConvergenceDOFChart()");
 
     chartDOF = new Chart(this);
 

@@ -25,7 +25,7 @@ static SceneView *m_sceneView = NULL;;
 
 SceneView *sceneView()
 {
-    logMessage("*sceneView::()");
+    logMessage("sceneView::()");
 
     return m_sceneView;
 }
@@ -3443,7 +3443,7 @@ void SceneView::selectRegion(const Point &start, const Point &end)
 
 SceneNode *SceneView::findClosestNode(const Point &point)
 {
-    logMessage("*SceneView::findClosestNode()");
+    logMessage("SceneView::findClosestNode()");
 
     SceneNode *nodeClosest = NULL;
 
@@ -3463,7 +3463,7 @@ SceneNode *SceneView::findClosestNode(const Point &point)
 
 SceneEdge *SceneView::findClosestEdge(const Point &point)
 {
-    logMessage("*SceneView::findClosestEdge()");
+    logMessage("SceneView::findClosestEdge()");
 
     SceneEdge *edgeClosest = NULL;
 
@@ -3483,7 +3483,7 @@ SceneEdge *SceneView::findClosestEdge(const Point &point)
 
 SceneLabel *SceneView::findClosestLabel(const Point &point)
 {
-    logMessage("*SceneView::findClosestLabel()");
+    logMessage("SceneView::findClosestLabel()");
 
     SceneLabel *labelClosest = NULL;
 
