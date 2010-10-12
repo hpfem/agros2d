@@ -120,8 +120,6 @@ Util::~Util()
 
 Util *Util::singleton()
 {
-    logMessage("Util *Util::singleton()");
-
     if (!m_singleton)
     {
         static QMutex mutex;
@@ -277,7 +275,7 @@ SceneNode *Scene::getNode(const Point &point)
 
 SceneEdge *Scene::addEdge(SceneEdge *edge)
 {
-    logMessage("SceneEdge *Scene::addEdge"));
+    logMessage("SceneEdge *Scene::addEdge");
 
     // clear solution
     m_sceneSolution->clear();
@@ -341,7 +339,7 @@ void Scene::setEdgeEdgeMarker(SceneEdgeMarker *edgeMarker)
 
 SceneLabel *Scene::addLabel(SceneLabel *label)
 {
-    logMessage("SceneLabel *Scene::addLabel"));
+    logMessage("SceneLabel *Scene::addLabel");
 
     // clear solution
     m_sceneSolution->clear();

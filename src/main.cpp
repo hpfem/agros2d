@@ -10,6 +10,15 @@
 
 int main(int argc, char *argv[])
 {
+    // start application
+    QString str = QString("\n\n%1: Agros2D").
+                  arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz"));
+
+    QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+    QDir("/").mkpath(location);
+    appendToFile(location, str);
+
+    // register message handler
     qInstallMsgHandler(logOutput);
 
     QApplication a(argc, argv);
@@ -30,6 +39,22 @@ int main(int argc, char *argv[])
     // don't show icons in menu
     a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
 #endif
+
+    // parameters
+    QStringList args = QCoreApplication::arguments();
+    if (args.count() == 2)
+    {
+        if (args.contains( "--help") || args.contains("/help"))
+        {
+            qWarning() << "agros2d [fileName (*.a2d; *.py) | -run fileName (*.py) | --help | --verbose]";
+            exit(0);
+            return 0;
+        }
+        if (args.contains( "--verbose"))
+        {
+            setVerbose(true);
+        }
+    }
 
     QSettings settings;
 
@@ -79,20 +104,6 @@ int main(int argc, char *argv[])
     // language
     QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
     setLanguage(locale);
-
-    // parameters
-    QStringList args = QCoreApplication::arguments();
-    if (args.count() == 2)
-    {
-        if (args.contains( "--help") || args.contains("/help"))
-        {
-            qWarning() << "agros2d [fileName (*.a2d; *.py) | -run fileName (*.py) | --help]";
-            a.exit(0);
-            return 0;
-        }
-    }
-
-    qDebug() << "Agros2D starting";
 
     MainWindow w;
     w.show();

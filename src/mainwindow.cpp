@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QStringList args = QCoreApplication::arguments();
     if (args.count() > 1)
     {
-        if (args.count() == 2)
+        if ((args.count() == 2) && !args.contains("--verbose"))
         {
             open(args[1]);
         }

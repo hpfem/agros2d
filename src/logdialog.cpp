@@ -55,8 +55,11 @@ void LogDialog::createControls()
     btnSaveLog = new QPushButton(tr("Save log"));
     connect(btnSaveLog, SIGNAL(clicked()), this, SLOT(doSaveLog()));
 
+    btnDeleteLog = new QPushButton(tr("Delete"));
+    connect(btnDeleteLog, SIGNAL(clicked()), this, SLOT(doDeleteLog()));
+
     btnClose = new QPushButton(tr("Close"));
-    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose())); 
 
     btnShowAdaptivityErrorChart = new QPushButton(tr("Adapt. error"));
     connect(btnShowAdaptivityErrorChart, SIGNAL(clicked()), this, SLOT(doShowAdaptivityErrorChart()));
@@ -69,6 +72,7 @@ void LogDialog::createControls()
     layoutButtons->addWidget(btnShowAdaptivityErrorChart);
     layoutButtons->addWidget(btnShowAdaptivityDOFChart);
     layoutButtons->addWidget(btnSaveLog);
+    layoutButtons->addWidget(btnDeleteLog);
     layoutButtons->addWidget(btnClose);
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -127,6 +131,8 @@ void LogDialog::loadProgressLog()
         btnShowAdaptivityErrorChart->setEnabled(false);
         btnShowAdaptivityDOFChart->setEnabled(false);
     }
+
+    btnDeleteLog->setEnabled(false);
 }
 
 void LogDialog::loadApplicationLog()
@@ -171,6 +177,7 @@ void LogDialog::loadApplicationLog()
 
     btnShowAdaptivityErrorChart->setEnabled(false);
     btnShowAdaptivityDOFChart->setEnabled(false);
+    btnDeleteLog->setEnabled(true);
 }
 
 void LogDialog::doClose()
@@ -191,6 +198,19 @@ void LogDialog::doSaveLog()
     {
         QTextStream messages(&file);
         messages << lstMessages->toPlainText();
+    }
+}
+
+void LogDialog::doDeleteLog()
+{
+    logMessage("LogDialog::doDeleteLog()");
+
+    if (QMessageBox::question(this, tr("Delete"), tr("Are you sure that you want to permanently delete the application logfile?"), tr("&Yes"), tr("&No")) == 0)
+    {
+        QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+        QFile::remove(location + "/app.log");
+
+        lstMessages->clear();
     }
 }
 

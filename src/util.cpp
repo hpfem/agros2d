@@ -21,6 +21,8 @@
 #include "scene.h"
 #include "scripteditordialog.h"
 
+bool verbose = false;
+
 static QHash<PhysicField, QString> physicFieldList;
 static QHash<PhysicFieldVariable, QString> physicFieldVariableList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
@@ -743,8 +745,6 @@ QStringList availableLanguages()
 
 QIcon icon(const QString &name)
 {
-    logMessage("icon()");
-
     QString fileName;
 
 #ifdef Q_WS_WIN
@@ -897,7 +897,13 @@ void msleep(unsigned long msecs)
     sleepMutex.unlock();
 }
 
-void logOutput(QtMsgType type, const char *msg)
+// verbose
+void setVerbose(bool verb)
+{
+    verbose = verb;
+}
+
+QString formatLogMessage(QtMsgType type, const QString &msg)
 {
     QString msgType = "";
 
@@ -921,6 +927,26 @@ void logOutput(QtMsgType type, const char *msg)
                   arg(msgType).
                   arg(msg);
 
+    return str;
+}
+
+void appendToFile(const QString &fileName, const QString &str)
+{
+    QFile file(fileName);
+
+    if (file.open(QIODevice::Append | QIODevice::Text))
+    {
+        QTextStream outFile(&file);
+        outFile << str << endl;
+
+        file.close();
+    }
+}
+
+void logOutput(QtMsgType type, const char *msg)
+{
+    QString str = formatLogMessage(type, msg);
+
     // string
     fprintf(stderr, "%s\n", str.toStdString().c_str());
 
@@ -929,19 +955,22 @@ void logOutput(QtMsgType type, const char *msg)
         QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
         QDir("/").mkpath(location);
 
-        QFile file(location + "/app.log");
-
-        if (file.open(QIODevice::Append | QIODevice::Text))
-        {
-            QTextStream outFile(&file);
-            outFile << str << endl;
-
-            file.close();
-        }
+        appendToFile(location + "/app.log", str);
     }
 
     if (type == QtFatalMsg)
         abort();
+}
+
+void logMessage(const QString &msg)
+{
+    if (verbose)
+    {
+        QString location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+        QDir("/").mkpath(location);
+
+        appendToFile(location + "/app.log", formatLogMessage(QtDebugMsg, msg));
+    }
 }
 
 QString readFileContent(const QString &fileName)
@@ -1110,9 +1139,4 @@ void CheckVersion::handleError(QNetworkReply::NetworkError error)
     logMessage("CheckVersion::handleError()");
 
     qDebug() << "An error ocurred (code #" << error << ").";
-}
-
-void logMessage(const QString &msg)
-{
-   qDebug() << msg;
 }

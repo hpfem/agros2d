@@ -39,12 +39,14 @@ private:
 
     QTextEdit *lstMessages;
     QPushButton *btnSaveLog;
+    QPushButton *btnDeleteLog;
     QPushButton *btnClose;
     QPushButton *btnShowAdaptivityErrorChart;
     QPushButton *btnShowAdaptivityDOFChart;
 
 private slots:
     void doSaveLog();
+    void doDeleteLog();
     void doClose();
     void doShowAdaptivityErrorChart();
     void doShowAdaptivityDOFChart();

@@ -68,9 +68,11 @@ const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 
 
 using namespace std;
 
-// enable log file
-void logOutput(QtMsgType type, const char *msg);
+// verbose
+void setVerbose(bool verb);
 
+// log file
+void logOutput(QtMsgType type, const char *msg);
 void logMessage(const QString &msg);
 
 // set gui style
@@ -106,9 +108,6 @@ bool removeDirectory(const QDir &dir);
 // sleep function
 void msleep(unsigned long msecs);
 
-// log to file
-void log(const QString &message);
-
 // read file content
 QByteArray readFileContentByteArray(const QString &fileName);
 QString readFileContent(const QString &fileName);
@@ -116,6 +115,9 @@ QString readFileContent(const QString &fileName);
 // write content into the file
 void writeStringContent(const QString &fileName, QString *content);
 void writeStringContentByteArray(const QString &fileName, QByteArray content);
+
+// append to the file
+void appendToFile(const QString &fileName, const QString &str);
 
 // fill physic field combo box
 void fillComboBoxPhysicField(QComboBox *cmbPhysicField);
