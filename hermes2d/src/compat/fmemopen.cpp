@@ -1,6 +1,6 @@
 #include "../common.h"
 
-#ifndef HAVE_FMEMOPEN
+//#ifndef HAVE_FMEMOPEN
 
 /* OS X, Cygwin and MSVC don't have the fmemopen() function, so we provide our own, which just
  * saves the buffer to a file and then returns its file handle
@@ -25,4 +25,4 @@ FILE *fmemopen (void *buf, size_t size, const char *opentype)
   return f;
 }
 
-#endif
+//#endif

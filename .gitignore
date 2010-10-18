@@ -31,3 +31,6 @@ data/data
 doc/doxygen
 *.ans
 *.user
+*.exe
+pthreadGC2.dll
+mingwm10.dll
