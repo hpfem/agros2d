@@ -253,15 +253,15 @@ void __hermes2d_fread(void* ptr, size_t size, size_t nitems, FILE* stream, const
 class Hermes2DLogoMessage {
 public:
   Hermes2DLogoMessage() {
-    printf("\n-------------------------------------------------\n");
-    printf("          This application uses Hermes2D\n");
-    printf("       Hermes2D is a C++ library for rapid \n");
-    printf(" prototyping of adaptive FEM and hp-FEM solvers\n");
-    printf("      developed by the hp-FEM group at UNR\n");
-    printf("     and distributed under the GPL license.\n");
-    printf("    For more details visit http://hpfem.org/.\n");
-    printf("-------------------------------------------------\n");
-    fflush(stdout);
+      printf("\n-------------------------------------------------\n");
+      printf("         This application uses Hermes2D.\n");
+      printf("       Hermes2D is a C++ library for rapid \n");
+      printf("  development of adaptive FEM and hp-FEM solvers\n");
+      printf("      developed by the hp-FEM group at UNR\n");
+      printf("     and distributed under the GPL license.\n");
+      printf("    For more details visit http://hpfem.org/.\n");
+      printf("-------------------------------------------------\n");
+      fflush(stdout);
   }
 };
 Hermes2DLogoMessage hermes2d_logo_message;
