@@ -285,6 +285,37 @@ SceneEdgeMarker *HermesElasticity::newEdgeMarker(PyObject *self, PyObject *args)
     return Util::scene()->edgeMarkers[0];
 }
 
+SceneEdgeMarker *HermesElasticity::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double valuex, valuey;
+    char *name, *typex, *typey;
+    if (PyArg_ParseTuple(args, "sssdd", &name, &typex, &typey, &valuex, &valuey))
+    {
+        if (SceneEdgeElasticityMarker *marker = dynamic_cast<SceneEdgeElasticityMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(typex) && physicFieldBCFromStringKey(typey))
+            {
+                marker->typeX = physicFieldBCFromStringKey(typex);
+                marker->typeY = physicFieldBCFromStringKey(typey);
+                marker->forceX = Value(QString::number(valuex));
+                marker->forceY = Value(QString::number(valuey));
+            }
+            else
+            {
+                if (!PyErr_Occurred)
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' or '%2' is not supported.").arg(typex, typey).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+}
+
 SceneLabelMarker *HermesElasticity::newLabelMarker()
 {
     return new SceneLabelElasticityMarker(tr("new material"),

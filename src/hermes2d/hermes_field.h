@@ -83,6 +83,7 @@ public:
     virtual SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args) = 0;
     virtual SceneLabelMarker *newLabelMarker() = 0;
     virtual SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args) = 0;
+    virtual SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args) = 0;
 
     virtual QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve) = 0;
 

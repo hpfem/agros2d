@@ -334,7 +334,7 @@ QStringList HermesMagnetic::volumeIntegralValueHeader()
 }
 
 SceneEdgeMarker *HermesMagnetic::newEdgeMarker()
-{    
+{
     return new SceneEdgeMagneticMarker(tr("new boundary"),
                                        PhysicFieldBC_Magnetic_VectorPotential,
                                        Value("0"),
@@ -358,6 +358,36 @@ SceneEdgeMarker *HermesMagnetic::newEdgeMarker(PyObject *self, PyObject *args)
     }
 
     return NULL;
+}
+
+SceneEdgeMarker *HermesMagnetic::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        if (SceneEdgeMagneticMarker *marker = dynamic_cast<SceneEdgeMagneticMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+            {
+                marker->type = physicFieldBCFromStringKey(type);
+                marker->value_imag = Value(QString::number(value));
+                marker->value_real = Value(QString::number(value));
+            }
+            else
+            {
+                if (!PyErr_Occurred)
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
 }
 
 SceneLabelMarker *HermesMagnetic::newLabelMarker()
@@ -1394,7 +1424,7 @@ QStringList SurfaceIntegralValueMagnetic::variables()
 // ****************************************************************************************************************
 
 VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue()
-{  
+{
     currentReal = 0;
     currentImag = 0;
     currentInducedTransformReal = 0;
@@ -1740,7 +1770,7 @@ void VolumeIntegralValueMagnetic::initSolutions()
 }
 
 QStringList VolumeIntegralValueMagnetic::variables()
-{ 
+{
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
             QString("%1").arg(crossSection, 0, 'e', 5) <<
@@ -2120,7 +2150,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
 
                     );
         }
-        break;    
+        break;
     case PhysicFieldVariable_Magnetic_PowerLosses:
         {
             SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);

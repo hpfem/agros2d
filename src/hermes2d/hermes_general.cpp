@@ -206,6 +206,35 @@ SceneEdgeMarker *HermesGeneral::newEdgeMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
+SceneEdgeMarker *HermesGeneral::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        if (SceneEdgeGeneralMarker *marker = dynamic_cast<SceneEdgeGeneralMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+            {
+                marker->type = physicFieldBCFromStringKey(type);
+                marker->value = Value(QString::number(value));
+            }
+            else
+            {
+                if (!PyErr_Occurred)
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+}
+
 SceneLabelMarker *HermesGeneral::newLabelMarker()
 {
     return new SceneLabelGeneralMarker(tr("new material"),
@@ -260,7 +289,7 @@ void HermesGeneral::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loca
 
 void HermesGeneral::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
 {
-    SurfaceIntegralValueGeneral *surfaceIntegralValueGeneral = dynamic_cast<SurfaceIntegralValueGeneral *>(surfaceIntegralValue);    
+    SurfaceIntegralValueGeneral *surfaceIntegralValueGeneral = dynamic_cast<SurfaceIntegralValueGeneral *>(surfaceIntegralValue);
 }
 
 void HermesGeneral::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue)

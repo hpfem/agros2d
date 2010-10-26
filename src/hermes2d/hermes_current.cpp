@@ -124,7 +124,7 @@ void HermesCurrent::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeM
 }
 
 void HermesCurrent::readLabelMarkerFromDomElement(QDomElement *element)
-{    
+{
     Util::scene()-> addLabelMarker(new SceneLabelCurrentMarker(element->attribute("name"),
                                                                Value(element->attribute("conductivity", "0"))));
 }
@@ -194,6 +194,35 @@ SceneEdgeMarker *HermesCurrent::newEdgeMarker(PyObject *self, PyObject *args)
     }
 
     return NULL;
+}
+
+SceneEdgeMarker *HermesCurrent::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        if (SceneEdgeCurrentMarker *marker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+            {
+                marker->type = physicFieldBCFromStringKey(type);
+                marker->value = Value(QString::number(value));
+            }
+            else
+            {
+                if (!PyErr_Occurred)
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
 }
 
 SceneLabelMarker *HermesCurrent::newLabelMarker()
