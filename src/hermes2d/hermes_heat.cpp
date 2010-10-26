@@ -271,6 +271,42 @@ SceneEdgeMarker *HermesHeat::newEdgeMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
+SceneEdgeMarker *HermesHeat::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double value, h, externaltemperature;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd|dd", &name, &type, &value, &h, &externaltemperature))
+    {
+        if (SceneEdgeHeatMarker *marker = dynamic_cast<SceneEdgeHeatMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+                marker->type = physicFieldBCFromStringKey(type);
+            else
+            {
+                if (!PyErr_Occurred)
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+
+            if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Heat_Temperature)
+                marker->temperature = Value(QString::number(value));
+
+            if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Heat_Flux)
+            {
+                marker->heatFlux = Value(QString::number(value));
+                marker->h = Value(QString::number(h));
+                marker->externalTemperature = Value(QString::number(externaltemperature));
+            }
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+}
+
 SceneLabelMarker *HermesHeat::newLabelMarker()
 {
     return new SceneLabelHeatMarker(tr("new material"),

@@ -202,6 +202,35 @@ SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(PyObject *self, PyObject *ar
     return NULL;
 }
 
+SceneEdgeMarker *HermesElectrostatic::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        if (SceneEdgeElectrostaticMarker *marker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+            {
+                marker->type = physicFieldBCFromStringKey(type);
+                marker->value = Value(QString::number(value));
+            }
+            else
+            {
+                if (!PyErr_Occurred)
+                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+}
+
 SceneLabelMarker *HermesElectrostatic::newLabelMarker()
 {
     return new SceneLabelElectrostaticMarker(tr("new material"),

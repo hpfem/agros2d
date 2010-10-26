@@ -1,4 +1,4 @@
-// This file is part of Agros2D.
+ // This file is part of Agros2D.
 //
 // Agros2D is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -348,20 +348,7 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyBoundary()");
 
-    SceneEdgeMarker *markerNew = Util::scene()->problemInfo()->hermes()->newEdgeMarker(self, args);
-    SceneEdgeMarker *markerOld = Util::scene()->getEdgeMarker(markerNew->name);
-    if (markerOld)
-    {
-        Util::scene()->setEdgeMarker(markerNew->name, markerNew);
-        Py_RETURN_NONE;
-    }
-    else
-    {
-        if (!PyErr_Occurred)
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(markerNew->name).toStdString().c_str());
-        delete markerNew;
-        return NULL;
-    }
+    Util::scene()->problemInfo()->hermes()->modifyEdgeMarker(self, args);
 }
 
 // addmaterial(name, type, value, ...)
@@ -743,7 +730,7 @@ static PyObject *pythonSurfaceIntegral(PyObject *self, PyObject *args)
         Util::scene()->selectNone();
 
         python_int_array()
-        {            
+        {
             for (int i = 0; i < count; i++)
             {
                 if (index[i] == INT_MIN)
@@ -1185,7 +1172,7 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
 }
 
 ScriptResult PythonEngine::parseError()
-{   
+{
     logMessage("PythonEngine::parseError()");
 
     // error
