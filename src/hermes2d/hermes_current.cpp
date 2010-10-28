@@ -247,6 +247,25 @@ SceneLabelMarker *HermesCurrent::newLabelMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
+SceneLabelMarker *HermesCurrent::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double conductivity;
+    char *name;
+    if (PyArg_ParseTuple(args, "sd", &name, &conductivity))
+    {
+        if (SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->getLabelMarker(name)))
+            marker->conductivity = Value(QString::number(conductivity));
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
 void HermesCurrent::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
 {
     LocalPointValueCurrent *localPointValueCurrent = dynamic_cast<LocalPointValueCurrent *>(localPointValue);

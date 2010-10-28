@@ -375,20 +375,7 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyMaterial()");
 
-    SceneLabelMarker *markerNew = Util::scene()->problemInfo()->hermes()->newLabelMarker(self, args);
-    SceneLabelMarker *markerOld = Util::scene()->getLabelMarker(markerNew->name);
-    if (markerOld)
-    {
-        Util::scene()->setLabelMarker(markerNew->name, markerNew);
-        Py_RETURN_NONE;
-    }
-    else
-    {
-        if (!PyErr_Occurred)
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(markerNew->name).toStdString().c_str());
-        delete markerNew;
-        return NULL;
-    }
+    Util::scene()->problemInfo()->hermes()->modifyLabelMarker(self, args);
 }
 
 // selectnone()

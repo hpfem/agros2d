@@ -331,6 +331,28 @@ SceneLabelMarker *HermesFlow::newLabelMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
+SceneLabelMarker *HermesFlow::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double dynamic_viscosity, density;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &dynamic_viscosity, &density))
+    {
+        if (SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->dynamic_viscosity = Value(QString::number(dynamic_viscosity));
+            marker->density = Value(QString::number(density));
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
 void HermesFlow::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
 {
     LocalPointValueFlow *localPointValueFlow = dynamic_cast<LocalPointValueFlow *>(localPointValue);

@@ -318,18 +318,42 @@ SceneLabelMarker *HermesHeat::newLabelMarker()
 
 SceneLabelMarker *HermesHeat::newLabelMarker(PyObject *self, PyObject *args)
 {
-    double heat_volume, thermal_conductivity, density, specific_heat;
+    double volume_heat, thermal_conductivity, density, specific_heat;
     char *name;
-    if (PyArg_ParseTuple(args, "sdddd", &name, &heat_volume, &thermal_conductivity, &density, &specific_heat))
+    if (PyArg_ParseTuple(args, "sdddd", &name, &volume_heat, &thermal_conductivity, &density, &specific_heat))
     {
         // check name
         if (Util::scene()->getLabelMarker(name)) return NULL;
 
         return new SceneLabelHeatMarker(name,
-                                        Value(QString::number(heat_volume)),
+                                        Value(QString::number(volume_heat)),
                                         Value(QString::number(thermal_conductivity)),
                                         Value(QString::number(density)),
                                         Value(QString::number(specific_heat)));
+    }
+
+    return NULL;
+}
+
+SceneLabelMarker *HermesHeat::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double volume_heat, thermal_conductivity, density, specific_heat;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdddd", &name, &volume_heat, &thermal_conductivity, &density, &specific_heat))
+    {
+        if (SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->volume_heat = Value(QString::number(volume_heat));
+            marker->thermal_conductivity = Value(QString::number(thermal_conductivity));
+            marker->density = Value(QString::number(density));
+            marker->specific_heat = Value(QString::number(specific_heat));
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
     }
 
     return NULL;

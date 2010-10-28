@@ -259,6 +259,28 @@ SceneLabelMarker *HermesGeneral::newLabelMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
+SceneLabelMarker *HermesGeneral::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double rightside, constant;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &rightside, &constant))
+    {
+        if (SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->rightside = Value(QString::number(rightside));
+            marker->constant = Value(QString::number(constant));
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
 void HermesGeneral::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
 {
     LocalPointValueGeneral *localPointValueGeneral = dynamic_cast<LocalPointValueGeneral *>(localPointValue);

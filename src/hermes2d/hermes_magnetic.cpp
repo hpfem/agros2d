@@ -428,6 +428,35 @@ SceneLabelMarker *HermesMagnetic::newLabelMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
+SceneLabelMarker *HermesMagnetic::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double current_density_real, current_density_imag, permeability, conductivity, remanence, remanence_angle, velocity_x, velocity_y, velocity_angular;
+    char *name;
+    if (PyArg_ParseTuple(args, "sddddddddd", &name, &current_density_real, &current_density_imag, &permeability, &conductivity, &remanence, &remanence_angle, &velocity_x, &velocity_y, &velocity_angular))
+    {
+        if (SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->current_density_real = Value(QString::number(current_density_real));
+            marker->current_density_imag = Value(QString::number(current_density_imag));
+            marker->permeability = Value(QString::number(permeability));
+            marker->conductivity = Value(QString::number(conductivity));
+            marker->remanence = Value(QString::number(remanence));
+            marker->remanence_angle = Value(QString::number(remanence_angle));
+            marker->velocity_x = Value(QString::number(velocity_x));
+            marker->velocity_y = Value(QString::number(velocity_y));
+            marker->velocity_angular = Value(QString::number(velocity_angular));
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
 void HermesMagnetic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
     // harmonic

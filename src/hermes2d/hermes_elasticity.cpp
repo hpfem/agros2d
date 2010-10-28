@@ -325,16 +325,38 @@ SceneLabelMarker *HermesElasticity::newLabelMarker()
 
 SceneLabelMarker *HermesElasticity::newLabelMarker(PyObject *self, PyObject *args)
 {
-    double young_modulus, poisson_ration;
+    double young_modulus, poisson_ratio;
     char *name;
-    if (PyArg_ParseTuple(args, "sdd", &name, &young_modulus, &poisson_ration))
+    if (PyArg_ParseTuple(args, "sdd", &name, &young_modulus, &poisson_ratio))
     {
         // check name
         if (Util::scene()->getLabelMarker(name)) return NULL;
 
         return new SceneLabelElasticityMarker(name,
                                               Value(QString::number(young_modulus)),
-                                              Value(QString::number(poisson_ration)));
+                                              Value(QString::number(poisson_ratio)));
+    }
+
+    return NULL;
+}
+
+SceneLabelMarker *HermesElasticity::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double young_modulus, poisson_ratio;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &young_modulus, &poisson_ratio))
+    {
+        if (SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->young_modulus = Value(QString::number(young_modulus));
+            marker->poisson_ratio = Value(QString::number(poisson_ratio));
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
     }
 
     return NULL;

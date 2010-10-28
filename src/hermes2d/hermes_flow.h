@@ -59,9 +59,10 @@ public:
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
+    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
     SceneLabelMarker *newLabelMarker();
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
+    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve);
 

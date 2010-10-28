@@ -255,6 +255,28 @@ SceneLabelMarker *HermesElectrostatic::newLabelMarker(PyObject *self, PyObject *
     return NULL;
 }
 
+SceneLabelMarker *HermesElectrostatic::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double charge_density, permittivity;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &charge_density, &permittivity))
+    {
+        if (SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->charge_density = Value(QString::number(charge_density));
+            marker->permittivity = Value(QString::number(permittivity));
+        }
+        else
+        {
+            if (!PyErr_Occurred)
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
 void HermesElectrostatic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue)
 {
     LocalPointValueElectrostatic *localPointValueElectrostatic = dynamic_cast<LocalPointValueElectrostatic *>(localPointValue);
