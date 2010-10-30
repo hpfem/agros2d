@@ -63,6 +63,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneView->actSceneModeNode->trigger();
     sceneView->doZoomBestFit();
 
+    // set recent files
+    setRecentFiles();
+
     // run server
     new ScriptEngineRemote();
 
@@ -283,7 +286,6 @@ void MainWindow::createMenus()
     logMessage("MainWindow::createMenus()");
 
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
-    setRecentFiles();
 
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
