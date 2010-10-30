@@ -263,6 +263,7 @@ private:
     void paintZoomRegion();
     void paintSnapToGrid();
     void paintChartLine();
+    void paintEdgeLine();
 
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
