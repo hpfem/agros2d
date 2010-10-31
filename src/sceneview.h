@@ -139,6 +139,8 @@ public:
     void saveImagesForReport(const QString &path, bool showRulers, bool showGrid, int w = 0, int h = 0);
     QPixmap renderScenePixmap(int w = 0, int h = 0, bool useContext = false);
 
+    void loadBackgroundImage(const QString &fileName, float x = 0, float y = 0, float w = 1.0, float h = 1.0);
+
     void processRangeContour();
     void processRangeScalar();
     void processRangeVector();
@@ -219,6 +221,11 @@ private:
     // solution is prepared for paint (after solve)
     bool m_isSolutionPrepared;
 
+    // background image
+    QImage m_backgroundImage;
+    int m_backgroundTexture;
+    QRectF m_backgroundPosition;
+
     QMenu *mnuInfo;
 
     QActionGroup *actMaterialGroup;
@@ -241,6 +248,7 @@ private:
 
     void initLighting();
 
+    void paintBackgroundPixmap(); // pixmap background
     void paintBackground(); // gradient background
     void paintGrid(); // paint grid
     void paintRulers(); // paint rulers

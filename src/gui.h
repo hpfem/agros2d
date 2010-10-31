@@ -160,4 +160,38 @@ private:
     QMenu *mnuContext;
 };
 
+class ImageLoaderDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    ImageLoaderDialog(QWidget *parent = 0);
+    ~ImageLoaderDialog();
+
+    inline QString fileName() { return m_fileName; }
+    inline QRectF position() { return m_position; }
+
+public slots:
+
+private slots:
+    void doAccept();
+    void doReject();
+    void doLoadFile(const QString &fileName);
+    void doLoadFile();
+    void doRemoveFile();
+
+private:
+    QString m_fileName;
+    QRectF m_position;
+    QLabel *lblImage;
+    QLabel *lblImageFileName;
+
+    SLineEditDouble *txtX;
+    SLineEditDouble *txtY;
+    SLineEditDouble *txtWidth;
+    SLineEditDouble *txtHeight;
+
+    void createControls();
+};
+
 #endif // GUI_H

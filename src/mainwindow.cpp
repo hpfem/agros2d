@@ -178,6 +178,10 @@ void MainWindow::createActions()
     actCreateVideo->setStatusTip(tr("Create video"));
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
 
+    actLoadBackground = new QAction(tr("Load background..."), this);
+    actLoadBackground->setStatusTip(tr("Load background imag"));
+    connect(actLoadBackground, SIGNAL(triggered()), this, SLOT(doLoadBackground()));
+
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
     actExit->setStatusTip(tr("Exit the application"));
@@ -303,9 +307,10 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentImportDXF);
     mnuFile->addAction(actDocumentExportDXF);
     mnuFile->addSeparator();
-    mnuFile->addAction(actDocumentExportMeshFile);
-    mnuFile->addSeparator();
+    mnuFile->addAction(actDocumentExportMeshFile);    
     mnuFile->addAction(actDocumentSaveImage);
+    mnuFile->addSeparator();
+    mnuFile->addAction(actLoadBackground);
 #ifndef Q_WS_MAC
     mnuFile->addSeparator();
     mnuFile->addAction(actExit);
@@ -1095,4 +1100,20 @@ void MainWindow::doApplicationLog()
     logMessage("MainWindow::doApplicationLog()");
 
     logDialog->loadApplicationLog();
+}
+
+void MainWindow::doLoadBackground()
+{
+    logMessage("MainWindow::doLoadBackground()");
+
+    ImageLoaderDialog imageLoaderDialog;
+    if (imageLoaderDialog.exec() == QDialog::Accepted)
+    {
+        sceneView->loadBackgroundImage(imageLoaderDialog.fileName(),
+                                       imageLoaderDialog.position().x(),
+                                       imageLoaderDialog.position().y(),
+                                       imageLoaderDialog.position().width(),
+                                       imageLoaderDialog.position().height());
+        sceneView->refresh();
+    }
 }

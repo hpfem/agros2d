@@ -449,6 +449,10 @@ void SceneView::paintGL()
     {
         glDisable(GL_DEPTH_TEST);
 
+        // background
+        // if (Util::config()->showGrid)
+        paintBackgroundPixmap();
+
         // grid
         if (Util::config()->showGrid) paintGrid();
 
@@ -551,6 +555,35 @@ void SceneView::paintBackground()
     glDisable(GL_POLYGON_OFFSET_FILL);
 
     glPopMatrix();
+}
+
+void SceneView::paintBackgroundPixmap()
+{
+    logMessage("SceneView::paintBackgroundPixmap()");
+
+    if (m_backgroundTexture != -1)
+    {
+        loadProjection2d(true);
+
+        glEnable(GL_TEXTURE_2D);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
+
+        glColor3d(1.0, 1.0, 1.0);
+
+        glBegin(GL_QUADS);
+        glTexCoord2d(0.0, 0.0); glVertex2d(m_backgroundPosition.x(), m_backgroundPosition.y());
+        glTexCoord2d(1.0, 0.0); glVertex2d(m_backgroundPosition.x() + m_backgroundPosition.width(), m_backgroundPosition.y());
+        glTexCoord2d(1.0, 1.0); glVertex2d(m_backgroundPosition.x() + m_backgroundPosition.width(), m_backgroundPosition.y() + m_backgroundPosition.height());
+        glTexCoord2d(0.0, 1.0); glVertex2d(m_backgroundPosition.x(), m_backgroundPosition.y() + m_backgroundPosition.height());
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+    }
 }
 
 void SceneView::paintGrid()
@@ -3176,6 +3209,9 @@ void SceneView::doDefaultValues()
 
     m_nodeLast = NULL;
 
+    deleteTexture(m_backgroundTexture);
+    m_backgroundTexture = -1;
+
     doInvalidated();
     doZoomBestFit();
 
@@ -3674,6 +3710,25 @@ void SceneView::paintPostprocessorSelectedSurface()
             }
         }
         glLineWidth(1.0);
+    }
+}
+
+void SceneView::loadBackgroundImage(const QString &fileName, float x, float y, float w, float h)
+{
+    logMessage("SceneView::loadBackgroundImage()");
+
+    // delete texture
+    if (m_backgroundTexture != -1)
+    {
+        deleteTexture(m_backgroundTexture);
+        m_backgroundTexture = -1;
+    }
+
+    if (QFile::exists(fileName))
+    {
+        m_backgroundImage.load(fileName);
+        m_backgroundTexture = bindTexture(m_backgroundImage, GL_TEXTURE_2D, GL_RGBA);
+        m_backgroundPosition = QRectF(x, y, w, h);
     }
 }
 
