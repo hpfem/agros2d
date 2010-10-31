@@ -208,18 +208,17 @@ SceneEdgeMarker *HermesCurrent::modifyEdgeMarker(PyObject *self, PyObject *args)
             {
                 marker->type = physicFieldBCFromStringKey(type);
                 marker->value = Value(QString::number(value));
+                return marker;
             }
             else
             {
-                if (!PyErr_Occurred)
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
                 return NULL;
             }
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }
@@ -254,11 +253,13 @@ SceneLabelMarker *HermesCurrent::modifyLabelMarker(PyObject *self, PyObject *arg
     if (PyArg_ParseTuple(args, "sd", &name, &conductivity))
     {
         if (SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->getLabelMarker(name)))
+        {
             marker->conductivity = Value(QString::number(conductivity));
+            return marker;
+        }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }

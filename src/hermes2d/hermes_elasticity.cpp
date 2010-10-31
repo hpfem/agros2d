@@ -299,21 +299,22 @@ SceneEdgeMarker *HermesElasticity::modifyEdgeMarker(PyObject *self, PyObject *ar
                 marker->typeY = physicFieldBCFromStringKey(typey);
                 marker->forceX = Value(QString::number(valuex));
                 marker->forceY = Value(QString::number(valuey));
+                return marker;
             }
             else
             {
-                if (!PyErr_Occurred)
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' or '%2' is not supported.").arg(typex, typey).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' or '%2' is not supported.").arg(typex, typey).toStdString().c_str());
                 return NULL;
             }
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }
+
+    return NULL;
 }
 
 SceneLabelMarker *HermesElasticity::newLabelMarker()
@@ -350,11 +351,11 @@ SceneLabelMarker *HermesElasticity::modifyLabelMarker(PyObject *self, PyObject *
         {
             marker->young_modulus = Value(QString::number(young_modulus));
             marker->poisson_ratio = Value(QString::number(poisson_ratio));
+            return marker;
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }

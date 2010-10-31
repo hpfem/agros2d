@@ -337,8 +337,7 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
     }
     else
     {
-        if (!PyErr_Occurred)
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker already exists.").toStdString().c_str());
+        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker already exists.").toStdString().c_str());
         return NULL;
     }
 }
@@ -348,7 +347,10 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyBoundary()");
 
-    Util::scene()->problemInfo()->hermes()->modifyEdgeMarker(self, args);
+    if (Util::scene()->problemInfo()->hermes()->modifyEdgeMarker(self,args))
+        Py_RETURN_NONE;
+    else
+        return NULL;
 }
 
 // addmaterial(name, type, value, ...)
@@ -364,8 +366,7 @@ static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
     }
     else
     {
-        if (!PyErr_Occurred)
-            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker already exists.").toStdString().c_str());
+        PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker already exists.").toStdString().c_str());
         return NULL;
     }
 }
@@ -375,7 +376,10 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyMaterial()");
 
-    Util::scene()->problemInfo()->hermes()->modifyLabelMarker(self, args);
+    if (Util::scene()->problemInfo()->hermes()->modifyLabelMarker(self, args))
+        Py_RETURN_NONE;
+    else
+        return NULL;
 }
 
 // selectnone()

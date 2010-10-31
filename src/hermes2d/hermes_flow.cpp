@@ -290,21 +290,22 @@ SceneEdgeMarker *HermesFlow::modifyEdgeMarker(PyObject *self, PyObject *args)
                 marker->velocityX = Value(QString::number(valuex));
                 marker->velocityY = Value(QString::number(valuey));
                 marker->pressure = Value(QString::number(press));
+                return marker;
             }
             else
             {
-                if (!PyErr_Occurred)
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
                 return NULL;
             }
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }
+
+    return NULL;
 }
 
 SceneLabelMarker *HermesFlow::newLabelMarker()
@@ -341,11 +342,11 @@ SceneLabelMarker *HermesFlow::modifyLabelMarker(PyObject *self, PyObject *args)
         {
             marker->dynamic_viscosity = Value(QString::number(dynamic_viscosity));
             marker->density = Value(QString::number(density));
+            return marker;
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }
