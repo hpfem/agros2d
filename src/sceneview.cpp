@@ -441,7 +441,7 @@ void SceneView::paintGL()
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid) paintScalarField3DSolid();
 
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-                m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+                    m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
                 paintScalarFieldColorBar(m_sceneViewSettings.scalarRangeMin, m_sceneViewSettings.scalarRangeMax);
         }
     }
@@ -484,6 +484,7 @@ void SceneView::paintGL()
 
         paintZoomRegion();
         paintSnapToGrid();
+        paintEdgeLine();
         paintChartLine();
     }
 
@@ -575,7 +576,7 @@ void SceneView::paintGrid()
         glBegin(GL_LINES);
 
         if ((((cornerMax.x-cornerMin.x)/Util::config()->gridStep + (cornerMin.y-cornerMax.y)/Util::config()->gridStep) < 200) &&
-             ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
+                ((cornerMax.x-cornerMin.x)/Util::config()->gridStep > 0) && ((cornerMin.y-cornerMax.y)/Util::config()->gridStep > 0))
         {
             // vertical lines
             for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
@@ -1179,8 +1180,8 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
 
     // variable
     QString str = QString("%1 (%2)").
-                  arg(physicFieldVariableShortcutString(m_sceneViewSettings.scalarPhysicFieldVariable)).
-                  arg(physicFieldVariableUnitsString(m_sceneViewSettings.scalarPhysicFieldVariable));
+            arg(physicFieldVariableShortcutString(m_sceneViewSettings.scalarPhysicFieldVariable)).
+            arg(physicFieldVariableUnitsString(m_sceneViewSettings.scalarPhysicFieldVariable));
 
     renderText(scaleLeft + scaleSize.x / 2.0 - fontMetrics().width(str) / 2.0,
                scaleBorder.y + scaleSize.y - 20.0,
@@ -1985,7 +1986,7 @@ void SceneView::paintVectors()
                             p = 0;
 
                         double z = (vecVert[vecTris[i][p]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
-                                   (vecVert[vecTris[i][p]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
+                                (vecVert[vecTris[i][p]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
 
                         if (z < 0)
                         {
@@ -2198,6 +2199,41 @@ void SceneView::paintChartLine()
     glEnd();
 }
 
+void SceneView::paintEdgeLine()
+{
+    logMessage("SceneView::paintEdgeLine()");
+
+    if (m_nodeLast)
+    {
+        if (m_nodeLast->isSelected)
+        {
+            loadProjection2d(true);
+
+            Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+
+            glEnable(GL_LINE_STIPPLE);
+            glLineStipple(1, 0x8FFF);
+
+            glColor3f(Util::config()->colorEdges.redF(),
+                      Util::config()->colorEdges.greenF(),
+                      Util::config()->colorEdges.blueF());
+            glLineWidth(Util::config()->edgeWidth);
+
+            glBegin(GL_LINES);
+            glVertex2d(m_nodeLast->point.x, m_nodeLast->point.y);
+            glVertex2d(p.x, p.y);
+            glEnd();
+
+            glDisable(GL_LINE_STIPPLE);
+            glLineWidth(1.0);
+        }
+    }
+    else
+    {
+        return;
+    }
+}
+
 const float* SceneView::paletteColor(double x)
 {
     logMessage("SceneView::paletteColor()");
@@ -2205,63 +2241,63 @@ const float* SceneView::paletteColor(double x)
     switch (Util::config()->paletteType)
     {
     case Palette_Jet:
-        {
-            if (x < 0.0) x = 0.0;
-            else if (x > 1.0) x = 1.0;
-            x *= numPalEntries;
-            int n = (int) x;
-            return paletteDataJet[n];
-        }
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataJet[n];
+    }
         break;
     case Palette_Autumn:
-        {
-            if (x < 0.0) x = 0.0;
-            else if (x > 1.0) x = 1.0;
-            x *= numPalEntries;
-            int n = (int) x;
-            return paletteDataAutumn[n];
-        }
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataAutumn[n];
+    }
         break;
     case Palette_Copper:
-        {
-            if (x < 0.0) x = 0.0;
-            else if (x > 1.0) x = 1.0;
-            x *= numPalEntries;
-            int n = (int) x;
-            return paletteDataCopper[n];
-        }
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataCopper[n];
+    }
         break;
     case Palette_Hot:
-        {
-            if (x < 0.0) x = 0.0;
-            else if (x > 1.0) x = 1.0;
-            x *= numPalEntries;
-            int n = (int) x;
-            return paletteDataHot[n];
-        }
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataHot[n];
+    }
         break;
     case Palette_Cool:
-        {
-            if (x < 0.0) x = 0.0;
-            else if (x > 1.0) x = 1.0;
-            x *= numPalEntries;
-            int n = (int) x;
-            return paletteDataCool[n];
-        }
+    {
+        if (x < 0.0) x = 0.0;
+        else if (x > 1.0) x = 1.0;
+        x *= numPalEntries;
+        int n = (int) x;
+        return paletteDataCool[n];
+    }
         break;
     case Palette_BWAsc:
-        {
-            static float color[3];
-            color[0] = color[1] = color[2] = x;
-            return color;
-        }
+    {
+        static float color[3];
+        color[0] = color[1] = color[2] = x;
+        return color;
+    }
         break;
     case Palette_BWDesc:
-        {
-            static float color[3];
-            color[0] = color[1] = color[2] = 1.0 - x;
-            return color;
-        }
+    {
+        static float color[3];
+        color[0] = color[1] = color[2] = 1.0 - x;
+        return color;
+    }
         break;
     }
 }
@@ -2347,9 +2383,9 @@ void SceneView::initLighting()
 
         glShadeModel(GL_SMOOTH);
         glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-        #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
-            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-        #endif
+#if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
+        glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+#endif
 
         /*
         float light_specular[] = {  0.1f, 0.1f, 0.1f, 1.0f };
@@ -2403,55 +2439,56 @@ void SceneView::keyPressEvent(QKeyEvent *event)
         switch (event->key())
         {
         case Qt::Key_Up:
-            {
-                m_offset2d.y += step;
-                refresh();
-            }
+        {
+            m_offset2d.y += step;
+            refresh();
+        }
             break;
         case Qt::Key_Down:
-            {
-                m_offset2d.y -= step;
-                refresh();
-            }
+        {
+            m_offset2d.y -= step;
+            refresh();
+        }
             break;
         case Qt::Key_Left:
-            {
-                m_offset2d.x -= step;
-                refresh();
-            }
+        {
+            m_offset2d.x -= step;
+            refresh();
+        }
             break;
         case Qt::Key_Right:
-            {
-                m_offset2d.x += step;
-                refresh();
-            }
+        {
+            m_offset2d.x += step;
+            refresh();
+        }
             break;
         case Qt::Key_Plus:
-            {
-                doZoomIn();
-            }
+        {
+            doZoomIn();
+        }
             break;
         case Qt::Key_Minus:
-            {
-                doZoomOut();
-            }
+        {
+            doZoomOut();
+        }
             break;
         case Qt::Key_Delete:
-            {
-                m_scene->deleteSelected();
-            }
+        {
+            m_scene->deleteSelected();
+        }
             break;
         case Qt::Key_Space:
-            {
-                doSceneObjectProperties();
-            }
+        {
+            doSceneObjectProperties();
+        }
             break;
         case Qt::Key_Escape:
-            {
-                m_scene->selectNone();
-                emit mousePressed();
-                refresh();
-            }
+        {
+            m_nodeLast = NULL;
+            m_scene->selectNone();
+            emit mousePressed();
+            refresh();
+        }
             break;
         default:
             QGLWidget::keyPressEvent(event);
@@ -2558,8 +2595,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             }
 
             if ((m_sceneMode == SceneMode_Postprocessor) &&
-                !(m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-                  m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
+                    !(m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+                      m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid))
             {
                 // local point value
                 if (actPostprocessorModeLocalPointValue->isChecked())
@@ -2592,7 +2629,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             }
         }
 
-        // add node edge or label by mouse click
+        // add node, edge or label by mouse click
         if (event->modifiers() & Qt::ControlModifier)
         {
             // add node directly by mouse click
@@ -2918,7 +2955,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(m_scene->edges.indexOf(edge)).
                                arg(edge->marker->html()));
                     updateGL();
-                }
+                }                
             }
             if (m_sceneMode == SceneMode_OperateOnLabels)
             {
@@ -2987,7 +3024,7 @@ void SceneView::wheelEvent(QWheelEvent *event)
         {
             Point posMouse;
             posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale2d*aspect(),
-                            -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale2d);
+                             -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale2d);
 
             m_offset2d.x += posMouse.x;
             m_offset2d.y += posMouse.y;
@@ -2995,7 +3032,7 @@ void SceneView::wheelEvent(QWheelEvent *event)
             m_scale2d = m_scale2d * pow(1.2, event->delta()/150.0);
 
             posMouse = Point((2.0/contextWidth()*(event->pos().x() - contextWidth()/2.0))/m_scale2d*aspect(),
-                            -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale2d);
+                             -(2.0/contextHeight()*(event->pos().y() - contextHeight()/2.0))/m_scale2d);
 
             m_offset2d.x -= posMouse.x;
             m_offset2d.y -= posMouse.y;
@@ -3136,6 +3173,8 @@ void SceneView::doDefaultValues()
     m_chartLine.end = Point();
 
     m_sceneViewSettings.defaultValues();
+
+    m_nodeLast = NULL;
 
     doInvalidated();
     doZoomBestFit();
@@ -3335,13 +3374,13 @@ void SceneView::doSceneModeSet(QAction *action)
 
     m_scene->highlightNone();
     m_scene->selectNone();
+    m_nodeLast = NULL;
 
     switch (m_sceneMode)
     {
     case SceneMode_OperateOnNodes:
         break;
     case SceneMode_OperateOnEdges:
-        m_nodeLast = NULL;
         break;
     case SceneMode_OperateOnLabels:
         break;
@@ -3430,7 +3469,7 @@ void SceneView::selectRegion(const Point &start, const Point &end)
     case SceneMode_OperateOnEdges:
         foreach (SceneEdge *edge, m_scene->edges)
             if (edge->nodeStart->point.x >= start.x && edge->nodeStart->point.x <= end.x && edge->nodeStart->point.y >= start.y && edge->nodeStart->point.y <= end.y &&
-                edge->nodeEnd->point.x >= start.x && edge->nodeEnd->point.x <= end.x && edge->nodeEnd->point.y >= start.y && edge->nodeEnd->point.y <= end.y)
+                    edge->nodeEnd->point.x >= start.x && edge->nodeEnd->point.x <= end.x && edge->nodeEnd->point.y >= start.y && edge->nodeEnd->point.y <= end.y)
                 edge->isSelected = true;
         break;
     case SceneMode_OperateOnLabels:
