@@ -202,6 +202,36 @@ SceneEdgeMarker *HermesElectrostatic::newEdgeMarker(PyObject *self, PyObject *ar
     return NULL;
 }
 
+SceneEdgeMarker *HermesElectrostatic::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double value;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    {
+        if (SceneEdgeElectrostaticMarker *marker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+            {
+                marker->type = physicFieldBCFromStringKey(type);
+                marker->value = Value(QString::number(value));
+                return marker;
+            }
+            else
+            {
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
 SceneLabelMarker *HermesElectrostatic::newLabelMarker()
 {
     return new SceneLabelElectrostaticMarker(tr("new material"),
@@ -221,6 +251,28 @@ SceneLabelMarker *HermesElectrostatic::newLabelMarker(PyObject *self, PyObject *
         return new SceneLabelElectrostaticMarker(name,
                                                  Value(QString::number(charge_density)),
                                                  Value(QString::number(permittivity)));
+    }
+
+    return NULL;
+}
+
+SceneLabelMarker *HermesElectrostatic::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double charge_density, permittivity;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &charge_density, &permittivity))
+    {
+        if (SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->charge_density = Value(QString::number(charge_density));
+            marker->permittivity = Value(QString::number(permittivity));
+            return marker;
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
     }
 
     return NULL;

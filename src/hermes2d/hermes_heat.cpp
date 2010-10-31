@@ -271,6 +271,46 @@ SceneEdgeMarker *HermesHeat::newEdgeMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
+SceneEdgeMarker *HermesHeat::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double value, h, externaltemperature;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "ssd|dd", &name, &type, &value, &h, &externaltemperature))
+    {
+        if (SceneEdgeHeatMarker *marker = dynamic_cast<SceneEdgeHeatMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+            {
+                marker->type = physicFieldBCFromStringKey(type);
+                return marker;
+            }
+            else
+            {
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+
+            if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Heat_Temperature)
+                marker->temperature = Value(QString::number(value));
+
+            if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Heat_Flux)
+            {
+                marker->heatFlux = Value(QString::number(value));
+                marker->h = Value(QString::number(h));
+                marker->externalTemperature = Value(QString::number(externaltemperature));
+                return marker;
+            }
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
 SceneLabelMarker *HermesHeat::newLabelMarker()
 {
     return new SceneLabelHeatMarker(tr("new material"),
@@ -282,18 +322,42 @@ SceneLabelMarker *HermesHeat::newLabelMarker()
 
 SceneLabelMarker *HermesHeat::newLabelMarker(PyObject *self, PyObject *args)
 {
-    double heat_volume, thermal_conductivity, density, specific_heat;
+    double volume_heat, thermal_conductivity, density, specific_heat;
     char *name;
-    if (PyArg_ParseTuple(args, "sdddd", &name, &heat_volume, &thermal_conductivity, &density, &specific_heat))
+    if (PyArg_ParseTuple(args, "sdddd", &name, &volume_heat, &thermal_conductivity, &density, &specific_heat))
     {
         // check name
         if (Util::scene()->getLabelMarker(name)) return NULL;
 
         return new SceneLabelHeatMarker(name,
-                                        Value(QString::number(heat_volume)),
+                                        Value(QString::number(volume_heat)),
                                         Value(QString::number(thermal_conductivity)),
                                         Value(QString::number(density)),
                                         Value(QString::number(specific_heat)));
+    }
+
+    return NULL;
+}
+
+SceneLabelMarker *HermesHeat::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double volume_heat, thermal_conductivity, density, specific_heat;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdddd", &name, &volume_heat, &thermal_conductivity, &density, &specific_heat))
+    {
+        if (SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->volume_heat = Value(QString::number(volume_heat));
+            marker->thermal_conductivity = Value(QString::number(thermal_conductivity));
+            marker->density = Value(QString::number(density));
+            marker->specific_heat = Value(QString::number(specific_heat));
+            return marker;
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
     }
 
     return NULL;

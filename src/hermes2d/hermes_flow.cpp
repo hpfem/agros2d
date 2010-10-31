@@ -276,6 +276,38 @@ SceneEdgeMarker *HermesFlow::newEdgeMarker(PyObject *self, PyObject *args)
     return Util::scene()->edgeMarkers[0];
 }
 
+SceneEdgeMarker *HermesFlow::modifyEdgeMarker(PyObject *self, PyObject *args)
+{
+    double valuex, valuey, press;
+    char *name, *type;
+    if (PyArg_ParseTuple(args, "sssdd", &name, &type, &valuex, &valuey, &press))
+    {
+        if (SceneEdgeFlowMarker *marker = dynamic_cast<SceneEdgeFlowMarker *>(Util::scene()->getEdgeMarker(name)))
+        {
+            if (physicFieldBCFromStringKey(type))
+            {
+                marker->type = physicFieldBCFromStringKey(type);
+                marker->velocityX = Value(QString::number(valuex));
+                marker->velocityY = Value(QString::number(valuey));
+                marker->pressure = Value(QString::number(press));
+                return marker;
+            }
+            else
+            {
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                return NULL;
+            }
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
 SceneLabelMarker *HermesFlow::newLabelMarker()
 {
     return new SceneLabelFlowMarker(tr("new material"),
@@ -295,6 +327,28 @@ SceneLabelMarker *HermesFlow::newLabelMarker(PyObject *self, PyObject *args)
         return new SceneLabelFlowMarker(name,
                                         Value(QString::number(dynamic_viscosity)),
                                         Value(QString::number(density)));
+    }
+
+    return NULL;
+}
+
+SceneLabelMarker *HermesFlow::modifyLabelMarker(PyObject *self, PyObject *args)
+{
+    double dynamic_viscosity, density;
+    char *name;
+    if (PyArg_ParseTuple(args, "sdd", &name, &dynamic_viscosity, &density))
+    {
+        if (SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(Util::scene()->getLabelMarker(name)))
+        {
+            marker->dynamic_viscosity = Value(QString::number(dynamic_viscosity));
+            marker->density = Value(QString::number(density));
+            return marker;
+        }
+        else
+        {
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            return NULL;
+        }
     }
 
     return NULL;
@@ -442,7 +496,7 @@ LocalPointValueFlow::LocalPointValueFlow(Point &point) : LocalPointValue(point)
             SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
 
             dynamic_viscosity = marker->dynamic_viscosity.number;
-            density = marker->density.number;           
+            density = marker->density.number;
         }
     }
 }
