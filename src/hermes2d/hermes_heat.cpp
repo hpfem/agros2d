@@ -280,11 +280,13 @@ SceneEdgeMarker *HermesHeat::modifyEdgeMarker(PyObject *self, PyObject *args)
         if (SceneEdgeHeatMarker *marker = dynamic_cast<SceneEdgeHeatMarker *>(Util::scene()->getEdgeMarker(name)))
         {
             if (physicFieldBCFromStringKey(type))
+            {
                 marker->type = physicFieldBCFromStringKey(type);
+                return marker;
+            }
             else
             {
-                if (!PyErr_Occurred)
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
                 return NULL;
             }
 
@@ -296,15 +298,17 @@ SceneEdgeMarker *HermesHeat::modifyEdgeMarker(PyObject *self, PyObject *args)
                 marker->heatFlux = Value(QString::number(value));
                 marker->h = Value(QString::number(h));
                 marker->externalTemperature = Value(QString::number(externaltemperature));
+                return marker;
             }
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }
+
+    return NULL;
 }
 
 SceneLabelMarker *HermesHeat::newLabelMarker()
@@ -347,11 +351,11 @@ SceneLabelMarker *HermesHeat::modifyLabelMarker(PyObject *self, PyObject *args)
             marker->thermal_conductivity = Value(QString::number(thermal_conductivity));
             marker->density = Value(QString::number(density));
             marker->specific_heat = Value(QString::number(specific_heat));
+            return marker;
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }

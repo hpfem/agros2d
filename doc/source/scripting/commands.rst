@@ -243,11 +243,11 @@ Materials and Boundaries Commands
    - Electrostatic field
       addmaterial(name, charge_density, permittivity)
    - Magnetic field
-      addmaterial(name, current_density, permeability, density, specificheat)
+      addmaterial(name, current_density_real, current_density_imag, permeability, conductivity, remanence, remanence_angle, velocity_x, velocity_y, velocity_angular)
    - Current field
       addmaterial(name, conductivity)
    - Heat transfer
-      addmaterial(name, volume_heat, thermal_conductivity)
+      addmaterial(name, volume_heat, thermal_conductivity, density, specific_heat)
 
 .. index:: modifymaterial()
 

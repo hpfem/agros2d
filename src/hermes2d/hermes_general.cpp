@@ -218,21 +218,22 @@ SceneEdgeMarker *HermesGeneral::modifyEdgeMarker(PyObject *self, PyObject *args)
             {
                 marker->type = physicFieldBCFromStringKey(type);
                 marker->value = Value(QString::number(value));
+                return marker;
             }
             else
             {
-                if (!PyErr_Occurred)
-                    PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
+                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
                 return NULL;
             }
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }
+
+    return NULL;
 }
 
 SceneLabelMarker *HermesGeneral::newLabelMarker()
@@ -269,11 +270,11 @@ SceneLabelMarker *HermesGeneral::modifyLabelMarker(PyObject *self, PyObject *arg
         {
             marker->rightside = Value(QString::number(rightside));
             marker->constant = Value(QString::number(constant));
+            return marker;
         }
         else
         {
-            if (!PyErr_Occurred)
-                PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
+            PyErr_SetString(PyExc_RuntimeError, QObject::tr("Label marker with name '%1' doesn't exists.").arg(name).toStdString().c_str());
             return NULL;
         }
     }
