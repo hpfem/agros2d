@@ -749,6 +749,7 @@ void ProgressDialog::createControls()
     tabType->addTab(controlsProgress, icon(""), tr("Progress"));
     tabType->addTab(controlsConvergenceErrorChart, icon(""), tr("Adaptivity conv."));
     tabType->addTab(controlsConvergenceDOFChart, icon(""), tr("Adaptivity DOFs"));
+    connect(tabType, SIGNAL(currentChanged(int)), this, SLOT(resetControls(int)));
 
     if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
         tabType->widget(1)->setDisabled(true);
@@ -762,9 +763,14 @@ void ProgressDialog::createControls()
     btnClose->setDefault(true);
     connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
 
+    btnSaveImage = new QPushButton(tr("&Save image"));
+    btnSaveImage->setDisabled(true);;
+    connect(btnSaveImage, SIGNAL(clicked()), this, SLOT(saveImage()));
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
     buttonBox->addButton(btnClose, QDialogButtonBox::RejectRole);
     buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
+    buttonBox->addButton(btnSaveImage, QDialogButtonBox::RejectRole);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tabType);
@@ -873,6 +879,14 @@ QWidget *ProgressDialog::createControlsConvergenceDOFChart()
     widConvergenceChart->setLayout(layoutConvergenceChart);
 
     return widConvergenceChart;
+}
+
+void ProgressDialog::resetControls(int currentTab)
+{
+    if (tabType->currentIndex() == 0)
+        btnSaveImage->setDisabled(true);
+    else
+        btnSaveImage->setEnabled(true);
 }
 
 int ProgressDialog::progressSteps()
@@ -1092,5 +1106,17 @@ void ProgressDialog::saveProgressLog()
     {
         QTextStream messages(&file);
         messages << QDateTime(QDateTime::currentDateTime()).toString("dd.MM.yyyy hh:mm") + ",\x20" << Util::scene()->problemInfo()->name + "\n" << lstMessage->toPlainText() + "\n";
+    }
+}
+
+void ProgressDialog::saveImage()
+{
+    if (tabType->currentIndex() == 1)
+    {
+        chartError->saveImage();
+    }
+    else if (tabType->currentIndex() == 2)
+    {
+        chartDOF->saveImage();
     }
 }
