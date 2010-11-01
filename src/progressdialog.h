@@ -159,6 +159,7 @@ private:
     QTextEdit *lstMessage;
     QPushButton *btnCancel;
     QPushButton *btnClose;
+    QPushButton *btnSaveImage;
 
     Chart *chartError;
     Chart *chartDOF;
@@ -166,14 +167,14 @@ private:
     QwtPlotCurve *curveErrorMax;
     QwtPlotCurve *curveDOF;
 
-    void createControls();
     QWidget *createControlsProgress();
     QWidget *createControlsConvergenceErrorChart();
     QWidget *createControlsConvergenceDOFChart();
 
+    void createControls();
+    void clear();
     int progressSteps();
     int currentProgressStep();
-    void clear();
     void saveProgressLog();
 
 private slots:
@@ -181,6 +182,8 @@ private slots:
     void start();
     void cancel();
     void close();
+    void resetControls(int currentTab);
+    void saveImage();
 
     void itemChanged();
 };
