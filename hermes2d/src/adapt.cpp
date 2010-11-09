@@ -646,6 +646,8 @@ double Adapt::calc_error(unsigned int error_flags) {
   }
   trav.finish();
 
+  if (errors_squared_abs_sum < 1e-16) return 0.0;
+
   //make the error relative
   if ((error_flags & H2D_ELEMENT_ERROR_MASK) == H2D_ELEMENT_ERROR_REL) {
     errors_squared_sum = 0.0;
