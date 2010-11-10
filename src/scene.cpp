@@ -19,6 +19,36 @@
 
 #include "scene.h"
 
+void ProblemInfo::clear()
+{
+    problemType = ProblemType_Planar;
+    analysisType = AnalysisType_SteadyState;
+
+    // hermes object
+    if (m_hermes) delete m_hermes;
+    m_hermes = new HermesGeneral();
+    //m_hermes = hermesFieldFactory(Util::config()->defaultPhysicField);
+
+    name = QObject::tr("unnamed");
+    date = QDate::currentDate();
+    fileName = "";
+    scriptStartup = "";
+    description = "";
+    numberOfRefinements = 1;
+    polynomialOrder = 2;
+    adaptivityType = AdaptivityType_None;
+    adaptivitySteps = 0;
+    adaptivityTolerance = 1.0;
+
+    // harmonic
+    frequency = 0.0;
+
+    // transient
+    timeStep = Value("1.0", false);
+    timeTotal = Value("1.0", false);
+    initialCondition = Value("0.0", false);
+}
+
 DxfFilter::DxfFilter(Scene *scene)
 {
     logMessage("DxfFilter::DxfFilter()");
@@ -34,7 +64,7 @@ void DxfFilter::addLine(const DL_LineData &l)
     SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(l.x1, l.y1)));
     // end node
     SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(l.x2, l.y2)));
-    
+
     // edge
     m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, m_scene->edgeMarkers[0], 0));
 }
@@ -45,17 +75,17 @@ void DxfFilter::addArc(const DL_ArcData& a)
 
     double angle1 = a.angle1;
     double angle2 = a.angle2;
-    
+
     while (angle1 < 0.0) angle1 += 360.0;
     while (angle1 >= 360.0) angle1 -= 360.0;
     while (angle2 < 0.0) angle2 += 360.0;
-    while (angle2 >= 360.0) angle2 -= 360.0;    
-    
+    while (angle2 >= 360.0) angle2 -= 360.0;
+
     // start node
     SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle1/180*M_PI), a.cy + a.radius*sin(angle1/180*M_PI))));
     // end node
     SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle2/180*M_PI), a.cy + a.radius*sin(angle2/180*M_PI))));
-    
+
     // edge
     m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, m_scene->edgeMarkers[0], (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1));
 }
@@ -912,7 +942,7 @@ void Scene::doInvalidated()
 
     actNewEdge->setEnabled((nodes.count() >= 2) && (edgeMarkers.count() >= 1));
     actNewLabel->setEnabled(labelMarkers.count() >= 1);
-    actClearSolution->setEnabled(m_sceneSolution->isSolved());    
+    actClearSolution->setEnabled(m_sceneSolution->isSolved());
 }
 
 void Scene::doNewNode(const Point &point)
@@ -1467,7 +1497,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("id", 0);
     // name
     eleProblem.setAttribute("name", m_problemInfo->name);
-    // problem type                                                                          
+    // problem type
     eleProblem.toElement().setAttribute("problemtype", problemTypeToStringKey(m_problemInfo->problemType));
     // analysis type
     eleProblem.setAttribute("analysistype", analysisTypeToStringKey(m_problemInfo->analysisType));
