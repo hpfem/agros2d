@@ -74,7 +74,7 @@ class HelpDialog;
 class Config;
 
 class ProblemInfo
-{    
+{
 public:
     QString name;
     QDate date;
@@ -97,7 +97,7 @@ public:
     Value timeStep;
     Value timeTotal;
     Value initialCondition;
-          
+
     ProblemInfo()
     {
         m_hermes = NULL;
@@ -108,36 +108,9 @@ public:
     {
         if (m_hermes) delete m_hermes;
     }
-    
-    void clear()
-    {
-        problemType = ProblemType_Planar;
-        analysisType = AnalysisType_SteadyState;
 
-        // hermes object
-        if (m_hermes) delete m_hermes;
-        m_hermes = new HermesGeneral();
-        
-        name = QObject::tr("unnamed");
-        date = QDate::currentDate();
-        fileName = "";
-        scriptStartup = "";
-        description = "";
-        numberOfRefinements = 1;
-        polynomialOrder = 2;
-        adaptivityType = AdaptivityType_None;
-        adaptivitySteps = 0;
-        adaptivityTolerance = 1.0;
-        
-        // harmonic
-        frequency = 0.0;
-        
-        // transient
-        timeStep = Value("1.0", false);
-        timeTotal = Value("1.0", false);
-        initialCondition = Value("0.0", false);
-    }
-    
+    void clear();
+
     inline void setHermes(HermesField *hermes) { if (m_hermes) delete m_hermes; m_hermes = hermes; }
     inline HermesField *hermes() { return m_hermes; }
 
@@ -152,7 +125,7 @@ class DxfFilter : public DL_CreationAdapter
 {
 public:
     DxfFilter(Scene *scene);
-    
+
     void addArc(const DL_ArcData& a);
     void addLine(const DL_LineData& l);
     void addCircle(const DL_CircleData& c);
@@ -163,7 +136,7 @@ private:
 class Scene : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void doNewNode(const Point &point = Point());
     void doNewEdge();
@@ -172,24 +145,24 @@ public slots:
     void doNewEdgeMarker();
     void doNewLabelMarker();
     void doNewFunction();
-    void doTransform();    
+    void doTransform();
     void doClearSolution();
     void doProblemProperties();
-    
+
 signals:
     void invalidated();
     void defaultValues();
     void fileNameChanged(const QString &fileName);
-    
+
 public:
     QList<SceneNode *> nodes;
     QList<SceneEdge *> edges;
     QList<SceneLabel *> labels;
     QList<SceneFunction *> functions;
-    
+
     QList<SceneEdgeMarker *> edgeMarkers;
     QList<SceneLabelMarker *> labelMarkers;
-    
+
     QAction *actNewNode;
     QAction *actNewEdge;
     QAction *actNewLabel;
@@ -200,74 +173,74 @@ public:
     QAction *actProblemProperties;
     QAction *actClearSolution;
     QAction *actTransform;
-    
+
     Scene();
     ~Scene();
-    
+
     SceneNode *addNode(SceneNode *node);
     void removeNode(SceneNode *node);
     SceneNode *getNode(const Point &point);
-    
+
     SceneEdge *addEdge(SceneEdge *edge);
     void removeEdge(SceneEdge *edge);
     SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd, double angle);
-    
+
     SceneLabel *addLabel(SceneLabel *label);
     void removeLabel(SceneLabel *label);
     SceneLabel *getLabel(const Point &point);
-    
+
     void addEdgeMarker(SceneEdgeMarker *edgeMarker);
     void removeEdgeMarker(SceneEdgeMarker *edgeMarker);
     void setEdgeEdgeMarker(SceneEdgeMarker *edgeMarker); // set edge marker to selected edges
     SceneEdgeMarker *getEdgeMarker(const QString &name);
     bool setEdgeMarker(const QString &name, SceneEdgeMarker *edgeMarker);
-    
+
     void addLabelMarker(SceneLabelMarker *labelMarker);
     void removeLabelMarker(SceneLabelMarker *labelMarker);
     void setLabelLabelMarker(SceneLabelMarker *labelMarker); // set label marker to selected labels
     SceneLabelMarker *getLabelMarker(const QString &name);
     bool setLabelMarker(const QString &name, SceneLabelMarker *labelMarker);
-    
+
     SceneFunction *addFunction(SceneFunction *function);
     void removeFunction(SceneFunction *function);
-    
+
     void clear();
-    
+
     RectPoint boundingBox();
-    
+
     void selectNone();
     void selectAll(SceneMode sceneMode);
     int selectedCount();
     void highlightNone();
     void deleteSelected();
-    
+
     void transformTranslate(const Point &point, bool copy);
     void transformRotate(const Point &point, double angle, bool copy);
     void transformScale(const Point &point, double scaleFactor, bool copy);
-    
+
     inline ProblemInfo *problemInfo() { return m_problemInfo; }
     inline void setProblemInfo(ProblemInfo *problemInfo) { delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
-    
+
     inline void refresh() { emit invalidated(); }
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
-    
+
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
-    
+
     inline QUndoStack *undoStack() { return m_undoStack; }
-    
-private:    
+
+private:
     QUndoStack *m_undoStack;
     ProblemInfo *m_problemInfo;
-    
+
     // scene solution
     SceneSolution *m_sceneSolution;
-    
+
     void createActions();
-    
-private slots:    
+
+private slots:
     void doInvalidated();
 };
 
@@ -287,10 +260,10 @@ protected:
     Util(const Util &);
     Util & operator = (const Util &);
     ~Util();
-    
+
 private:
     static Util *m_singleton;
-    
+
     Scene *m_scene;
     HelpDialog *m_helpDialog;
     QCompleter *m_completer;

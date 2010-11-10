@@ -232,7 +232,7 @@ void ProblemDialog::fillComboBox()
     cmbProblemType->addItem(problemTypeString(ProblemType_Axisymmetric), ProblemType_Axisymmetric);
 
     fillComboBoxPhysicField(cmbPhysicField);
-    cmbPhysicField->setEnabled(m_isNewProblem);
+    //cmbPhysicField->setEnabled(m_isNewProblem);
 
     cmbAdaptivityType->clear();
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_None), AdaptivityType_None);
@@ -277,17 +277,42 @@ bool ProblemDialog::save()
 {
     logMessage("ProblemDialog::save()");
 
-    if (!txtStartupScript->toPlainText().isEmpty())
+    // physical field type
+    if (Util::scene()->problemInfo()->physicField() != ((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
     {
-        ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
-        if (scriptResult.isError)
+        if (Util::scene()->edgeMarkers.count() != 1 || Util::scene()->labelMarkers.count() != 1)
         {
-            QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
-            return false;
+            if (QMessageBox::question(this, tr("Change physical field type"), tr("Are you sure change physical field type?"), tr("&Yes"), tr("&No")) == 1)
+                return false;
+        }
+
+        if (Util::scene()->sceneSolution()->isSolved())
+            Util::scene()->doClearSolution();
+
+        m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
+
+        for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
+        {
+            SceneEdgeMarker *markerOld = Util::scene()->edgeMarkers[1];
+            QString name = markerOld->name;
+            Util::scene()->removeEdgeMarker(markerOld);
+
+            SceneEdgeMarker *markerNew = Util::scene()->problemInfo()->hermes()->newEdgeMarker();
+            markerNew->name = name;
+            Util::scene()->addEdgeMarker(markerNew);
+        }
+
+        for (int i = 1; i < Util::scene()->labelMarkers.count(); i++)
+        {
+            SceneLabelMarker *markerOld = Util::scene()->labelMarkers[1];
+            QString name = markerOld->name;
+            Util::scene()->removeLabelMarker(markerOld);
+
+            SceneLabelMarker *markerNew = Util::scene()->problemInfo()->hermes()->newLabelMarker();
+            markerNew->name = name;
+            Util::scene()->addLabelMarker(markerNew);
         }
     }
-
-    if (this->m_isNewProblem) m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
     // check values
     if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
@@ -298,7 +323,6 @@ bool ProblemDialog::save()
             return false;
         }
     }
-
     if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Transient)
     {
         txtTransientTimeStep->evaluate(false);
@@ -321,8 +345,18 @@ bool ProblemDialog::save()
         }
     }
 
-    Util::scene()->sceneSolution()->clear();
+    // run and check startup script
+    if (!txtStartupScript->toPlainText().isEmpty())
+    {
+        ScriptResult scriptResult = runPythonScript(txtStartupScript->toPlainText());
+        if (scriptResult.isError)
+        {
+            QMessageBox::critical(QApplication::activeWindow(), QObject::tr("Error"), scriptResult.text);
+            return false;
+        }
+    }
 
+    // safe properties
     m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
     m_problemInfo->name = txtName->text();
     m_problemInfo->date = dtmDate->date();
@@ -332,19 +366,14 @@ bool ProblemDialog::save()
     m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
 
-    // harmonic magnetic
     m_problemInfo->frequency = txtFrequency->value();
 
-    // transient
     m_problemInfo->analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
     m_problemInfo->timeStep = txtTransientTimeStep->value();
     m_problemInfo->timeTotal = txtTransientTimeTotal->value();
     m_problemInfo->initialCondition = txtTransientInitialCondition->value();
 
-    // description
     m_problemInfo->description = txtDescription->toPlainText();
-
-    // startup script
     m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
 
     return true;
