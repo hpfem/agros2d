@@ -491,6 +491,32 @@ bool Scene::setEdgeMarker(const QString &name, SceneEdgeMarker *edgeMarker)
     return false;
 }
 
+void Scene::replaceEdgeMarker(SceneEdgeMarker *edgeMarker)
+{
+    // store original name
+    QString name = edgeMarker->name;
+
+    // add new marker
+    SceneEdgeMarker *markerNew = Util::scene()->problemInfo()->hermes()->newEdgeMarker();
+    Util::scene()->addEdgeMarker(markerNew);
+
+    // set edges to the new marker
+    for (int i = 0; i < Util::scene()->edges.count(); i++)
+    {
+        SceneEdge *edge = Util::scene()->edges[i];
+        if (edge->marker == edgeMarker)
+        {
+            edge->marker = markerNew;
+        }
+    }
+
+    // remove old marker
+    Util::scene()->removeEdgeMarker(edgeMarker);
+
+    // set original name
+    markerNew->name = name;
+}
+
 void Scene::addLabelMarker(SceneLabelMarker *labelMarker)
 {
     logMessage("Scene::addLabelMarker()");
@@ -555,35 +581,16 @@ void Scene::removeLabelMarker(SceneLabelMarker *labelMarker)
     emit invalidated();
 }
 
-void Scene::replaceEdgeMarker(SceneEdgeMarker *edgeMarker)
-{
-    QString name = edgeMarker->name;
-    edgeMarker->name = "*" + edgeMarker->name;
-
-    SceneEdgeMarker *markerNew = Util::scene()->problemInfo()->hermes()->newEdgeMarker();
-    markerNew->name = name;
-    Util::scene()->addEdgeMarker(markerNew);
-
-    for (int i = 0; i < Util::scene()->edges.count(); i++)
-    {
-        SceneEdge *edge = Util::scene()->edges[i];
-        if (edge->marker == edgeMarker)
-        {
-            edge->marker = markerNew;
-        }
-    }
-
-    Util::scene()->removeEdgeMarker(edgeMarker);
-}
-
 void Scene::replaceLabelMarker(SceneLabelMarker *labelMarker)
 {
+    // store original name
     QString name = labelMarker->name;
-    labelMarker->name = "*" + labelMarker->name;
 
+    // add new marker
     SceneLabelMarker *markerNew = Util::scene()->problemInfo()->hermes()->newLabelMarker();
-    markerNew->name = name;
+    Util::scene()->addLabelMarker(markerNew);
 
+    // set labels to the new marker
     for (int i = 0; i < Util::scene()->labels.count(); i++)
     {
         SceneLabel *label = Util::scene()->labels[i];
@@ -593,8 +600,11 @@ void Scene::replaceLabelMarker(SceneLabelMarker *labelMarker)
         }
     }
 
-    Util::scene()->addLabelMarker(markerNew);
+    // remove old marker
     Util::scene()->removeLabelMarker(labelMarker);
+
+    // set original name
+    markerNew->name = name;
 }
 
 SceneFunction *Scene::addFunction(SceneFunction *function)

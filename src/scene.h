@@ -194,14 +194,13 @@ public:
     void setEdgeEdgeMarker(SceneEdgeMarker *edgeMarker); // set edge marker to selected edges
     SceneEdgeMarker *getEdgeMarker(const QString &name);
     bool setEdgeMarker(const QString &name, SceneEdgeMarker *edgeMarker);
+    void replaceEdgeMarker(SceneEdgeMarker *edgeMarker);
 
     void addLabelMarker(SceneLabelMarker *labelMarker);
     void removeLabelMarker(SceneLabelMarker *labelMarker);
     void setLabelLabelMarker(SceneLabelMarker *labelMarker); // set label marker to selected labels
     SceneLabelMarker *getLabelMarker(const QString &name);
     bool setLabelMarker(const QString &name, SceneLabelMarker *labelMarker);
-
-    void replaceEdgeMarker(SceneEdgeMarker *edgeMarker);
     void replaceLabelMarker(SceneLabelMarker *labelMarker);
 
     SceneFunction *addFunction(SceneFunction *function);
