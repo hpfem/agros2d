@@ -293,24 +293,12 @@ bool ProblemDialog::save()
 
         for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
         {
-            SceneEdgeMarker *markerOld = Util::scene()->edgeMarkers[1];
-            QString name = markerOld->name;
-            Util::scene()->removeEdgeMarker(markerOld);
-
-            SceneEdgeMarker *markerNew = Util::scene()->problemInfo()->hermes()->newEdgeMarker();
-            markerNew->name = name;
-            Util::scene()->addEdgeMarker(markerNew);
+            Util::scene()->replaceEdgeMarker(Util::scene()->edgeMarkers[1]);
         }
 
         for (int i = 1; i < Util::scene()->labelMarkers.count(); i++)
         {
-            SceneLabelMarker *markerOld = Util::scene()->labelMarkers[1];
-            QString name = markerOld->name;
-            Util::scene()->removeLabelMarker(markerOld);
-
-            SceneLabelMarker *markerNew = Util::scene()->problemInfo()->hermes()->newLabelMarker();
-            markerNew->name = name;
-            Util::scene()->addLabelMarker(markerNew);
+            Util::scene()->replaceLabelMarker(Util::scene()->labelMarkers[1]);
         }
     }
 

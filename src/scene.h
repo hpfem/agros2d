@@ -201,6 +201,9 @@ public:
     SceneLabelMarker *getLabelMarker(const QString &name);
     bool setLabelMarker(const QString &name, SceneLabelMarker *labelMarker);
 
+    void replaceEdgeMarker(SceneEdgeMarker *edgeMarker);
+    void replaceLabelMarker(SceneLabelMarker *labelMarker);
+
     SceneFunction *addFunction(SceneFunction *function);
     void removeFunction(SceneFunction *function);
 

@@ -555,6 +555,48 @@ void Scene::removeLabelMarker(SceneLabelMarker *labelMarker)
     emit invalidated();
 }
 
+void Scene::replaceEdgeMarker(SceneEdgeMarker *edgeMarker)
+{
+    QString name = edgeMarker->name;
+    edgeMarker->name = "*" + edgeMarker->name;
+
+    SceneEdgeMarker *markerNew = Util::scene()->problemInfo()->hermes()->newEdgeMarker();
+    markerNew->name = name;
+    Util::scene()->addEdgeMarker(markerNew);
+
+    for (int i = 0; i < Util::scene()->edges.count(); i++)
+    {
+        SceneEdge *edge = Util::scene()->edges[i];
+        if (edge->marker == edgeMarker)
+        {
+            edge->marker = markerNew;
+        }
+    }
+
+    Util::scene()->removeEdgeMarker(edgeMarker);
+}
+
+void Scene::replaceLabelMarker(SceneLabelMarker *labelMarker)
+{
+    QString name = labelMarker->name;
+    labelMarker->name = "*" + labelMarker->name;
+
+    SceneLabelMarker *markerNew = Util::scene()->problemInfo()->hermes()->newLabelMarker();
+    markerNew->name = name;
+
+    for (int i = 0; i < Util::scene()->labels.count(); i++)
+    {
+        SceneLabel *label = Util::scene()->labels[i];
+        if (label->marker == labelMarker)
+        {
+            label->marker = markerNew;
+        }
+    }
+
+    Util::scene()->addLabelMarker(markerNew);
+    Util::scene()->removeLabelMarker(labelMarker);
+}
+
 SceneFunction *Scene::addFunction(SceneFunction *function)
 {
     logMessage("SceneFunction *Scene::addFunction()");
