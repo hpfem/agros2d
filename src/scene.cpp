@@ -26,8 +26,11 @@ void ProblemInfo::clear()
 
     // hermes object
     if (m_hermes) delete m_hermes;
-    m_hermes = new HermesGeneral();
-    //m_hermes = hermesFieldFactory(Util::config()->defaultPhysicField);
+
+    // read default field (Util::config() is not set)
+    QSettings settings;
+    PhysicField defaultPhysicField = (PhysicField) settings.value("General/DefaultPhysicField", PhysicField_Electrostatic).toInt();
+    m_hermes = hermesFieldFactory(defaultPhysicField);
 
     name = QObject::tr("unnamed");
     date = QDate::currentDate();
