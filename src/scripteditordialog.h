@@ -67,7 +67,7 @@ private slots:
     void displayError(QLocalSocket::LocalSocketError socketError);
 
 private:
-    QString command;    
+    QString command;
 
     QLocalServer *m_server;
     QLocalSocket *m_server_socket;
@@ -79,7 +79,7 @@ class ScriptEditorWidget : public QWidget
     Q_OBJECT
 public:
     QString file;
-    ScriptEditor *txtEditor;   
+    ScriptEditor *txtEditor;
 
     ScriptEditorWidget(QWidget *parent);
     ~ScriptEditorWidget();
@@ -96,6 +96,8 @@ public:
     ~ScriptEditorDialog();
 
     void showDialog();
+    void closeTabs();
+    bool isScriptModified();
 
 public slots:
     void doFileNew();
@@ -183,7 +185,6 @@ private slots:
     void doCurrentDocumentChanged(bool changed);
     void doCurrentPageChanged(int index);
     void doCursorPositionChanged();
-
 };
 
 class ScriptEditor : public QPlainTextEdit
@@ -217,7 +218,7 @@ private slots:
     void matchParentheses(char left, char right);
 
 private:
-    QWidget *lineNumberArea;    
+    QWidget *lineNumberArea;
 
     bool matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int index, int numRightParentheses);
     bool matchRightParenthesis(char left, char right, QTextBlock currentBlock, int index, int numLeftParentheses);

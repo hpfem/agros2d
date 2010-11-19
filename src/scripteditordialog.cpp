@@ -629,7 +629,7 @@ void ScriptEditorDialog::doRunPython()
             doFileSave();
 
         result = runPythonScript(txtEditor->toPlainText(),
-                                 QFileInfo(scriptEditorWidget()->file).absoluteFilePath());  
+                                 QFileInfo(scriptEditorWidget()->file).absoluteFilePath());
     }
 
     if (result.isError)
@@ -910,13 +910,24 @@ void ScriptEditorDialog::doCloseTab(int index)
 {
     logMessage("ScriptEditorDialog::doCloseTab()");
 
-    if (txtEditor->document()->isModified())
+    tabWidget->setCurrentIndex(index);
+
+    QString fileName = tr("Untitled");
+    if (!scriptEditorWidget()->file.isEmpty())
+    {
+        QFileInfo fileInfo(scriptEditorWidget()->file);
+        fileName = fileInfo.completeBaseName();
+    }
+
+    while (txtEditor->document()->isModified())
     {
         QMessageBox::StandardButton ret;
-        ret = QMessageBox::warning(this, tr("Application"), tr("The document has been modified.\nDo you want to save your changes?"),
+        ret = QMessageBox::warning(this, tr("Application"), tr("File '%1' has been modified.\nDo you want to save your changes?").arg(fileName),
                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         if (ret == QMessageBox::Save)
             doFileSave();
+        else if (ret == QMessageBox::Discard)
+            break;
         else if (ret == QMessageBox::Cancel)
             return;
     }
@@ -925,6 +936,7 @@ void ScriptEditorDialog::doCloseTab(int index)
     {
         doFileNew();
     }
+
     tabWidget->removeTab(index);
 }
 
@@ -985,7 +997,7 @@ void ScriptEditorDialog::doCurrentPageChanged(int index)
         QFileInfo fileInfo(scriptEditorWidget()->file);
         fileName = fileInfo.completeBaseName();
     }
-    setWindowTitle(tr("Script editor - %1").arg(fileName));    
+    setWindowTitle(tr("Script editor - %1").arg(fileName));
 
     txtEditor->setFocus();
 }
@@ -1042,6 +1054,17 @@ void ScriptEditorDialog::setRecentFiles()
         actFileOpenRecentGroup->addAction(actMenuRecentItem);
         mnuRecentFiles->addAction(actMenuRecentItem);
     }
+}
+
+void ScriptEditorDialog::closeTabs()
+{
+    for (int i = tabWidget->count()-1; i >= 0 ; i--)
+        doCloseTab(i);
+}
+
+bool ScriptEditorDialog::isScriptModified()
+{
+    return txtEditor->document()->isModified();
 }
 
 // ******************************************************************************************************
