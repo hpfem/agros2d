@@ -179,7 +179,7 @@ void MainWindow::createActions()
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
 
     actLoadBackground = new QAction(tr("Load background..."), this);
-    actLoadBackground->setStatusTip(tr("Load background imag"));
+    actLoadBackground->setStatusTip(tr("Load background image"));
     connect(actLoadBackground, SIGNAL(triggered()), this, SLOT(doLoadBackground()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
