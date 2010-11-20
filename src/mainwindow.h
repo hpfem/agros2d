@@ -93,6 +93,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
+    void closeEvent(QCloseEvent *event);
 
 private:
     QStringList recentFiles;
@@ -114,7 +115,7 @@ private:
     QToolBar *tlbWorkspace;
 
     QAction *actDocumentNew;
-    QAction *actDocumentOpen;   
+    QAction *actDocumentOpen;
     QAction *actDocumentSave;
     #ifdef BETA
     QAction *actDocumentSaveWithSolution;

@@ -128,17 +128,17 @@ void MainWindow::createActions()
     actDocumentNew->setShortcuts(QKeySequence::New);
     actDocumentNew->setStatusTip(tr("Create a new file"));
     connect(actDocumentNew, SIGNAL(triggered()), this, SLOT(doDocumentNew()));
-    
+
     actDocumentOpen = new QAction(icon("document-open"), tr("&Open..."), this);
     actDocumentOpen->setShortcuts(QKeySequence::Open);
     actDocumentOpen->setStatusTip(tr("Open an existing file"));
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(doDocumentOpen()));
-    
+
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
     actDocumentSave->setStatusTip(tr("Save the file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
-    
+
 #ifdef BETA
     actDocumentSaveWithSolution = new QAction(icon(""), tr("Save with solution"), this);
     actDocumentSaveWithSolution->setStatusTip(tr("Save the file to disk with solution"));
@@ -152,7 +152,7 @@ void MainWindow::createActions()
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
     actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
-    
+
     actDocumentClose = new QAction(tr("&Close"), this);
     actDocumentClose->setShortcuts(QKeySequence::Close);
     actDocumentClose->setStatusTip(tr("Close the file"));
@@ -179,7 +179,7 @@ void MainWindow::createActions()
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
 
     actLoadBackground = new QAction(tr("Load background..."), this);
-    actLoadBackground->setStatusTip(tr("Load background imag"));
+    actLoadBackground->setStatusTip(tr("Load background image"));
     connect(actLoadBackground, SIGNAL(triggered()), this, SLOT(doLoadBackground()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
@@ -307,7 +307,7 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentImportDXF);
     mnuFile->addAction(actDocumentExportDXF);
     mnuFile->addSeparator();
-    mnuFile->addAction(actDocumentExportMeshFile);    
+    mnuFile->addAction(actDocumentExportMeshFile);
     mnuFile->addAction(actDocumentSaveImage);
     mnuFile->addSeparator();
     mnuFile->addAction(actLoadBackground);
@@ -506,14 +506,14 @@ void MainWindow::createScene()
     logMessage("MainWindow::createScene()");
 
     QHBoxLayout *layout = new QHBoxLayout;
-    
+
     sceneView = new SceneView(this);
     layout->addWidget(sceneView);
-    
+
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
-    
-    setCentralWidget(widget);    
+
+    setCentralWidget(widget);
 }
 
 void MainWindow::createViews()
@@ -523,7 +523,7 @@ void MainWindow::createViews()
     sceneInfoView = new SceneInfoView(sceneView, this);
     sceneInfoView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, sceneInfoView);
-    
+
     localPointValueView = new LocalPointValueView(this);
     localPointValueView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::RightDockWidgetArea, localPointValueView);
@@ -763,6 +763,19 @@ void MainWindow::doDocumentSaveAs()
 void MainWindow::doDocumentClose()
 {
     logMessage("MainWindow::doDocumentClose()");
+
+    while (!Util::scene()->undoStack()->isClean())
+    {
+        QMessageBox::StandardButton ret;
+        ret = QMessageBox::warning(this, tr("Application"), tr("Problem has been modified.\nDo you want to save your changes?"),
+                                   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save)
+            doDocumentSave();
+        else if (ret == QMessageBox::Discard)
+            break;
+        else if (ret == QMessageBox::Cancel)
+            return;
+    }
 
     Util::scene()->clear();
     sceneView->doDefaultValues();
@@ -1115,5 +1128,23 @@ void MainWindow::doLoadBackground()
                                        imageLoaderDialog.position().width(),
                                        imageLoaderDialog.position().height());
         sceneView->refresh();
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+ {
+    logMessage("MainWindow::closeEvent()");
+
+    if (!Util::scene()->undoStack()->isClean())
+        doDocumentClose();
+
+    scriptEditorDialog->closeTabs();
+
+    if (Util::scene()->undoStack()->isClean() && !scriptEditorDialog->isScriptModified())
+        event->accept();
+    else
+    {
+        event->ignore();
+        if (scriptEditorDialog->isScriptModified()) scriptEditorDialog->show();
     }
 }

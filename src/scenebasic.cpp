@@ -116,7 +116,7 @@ double SceneEdge::distance(const Point &point)
         double R = radius();
         double distance = (point - c).magnitude();
 
-        // point and radius are similar        
+        // point and radius are similar
         if (distance < EPS_ZERO) return R;
 
         Point t = (point - c) / distance;
@@ -239,7 +239,7 @@ DSceneNode::DSceneNode(SceneNode *node, QWidget *parent, bool isNew) : DSceneBas
 
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
-}    
+}
 
 DSceneNode::~DSceneNode()
 {
@@ -299,7 +299,7 @@ bool DSceneNode::save()
     // check if node doesn't exists
     if (Util::scene()->getNode(point) && ((sceneNode->point != point) || isNew))
     {
-        QMessageBox::warning(this, "Node", "Node already exists.");
+        QMessageBox::warning(this, tr("Node"), tr("Node already exists."));
         return false;
     }
 
