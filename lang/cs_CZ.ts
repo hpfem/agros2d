@@ -2523,7 +2523,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="319"/>
         <source>E&amp;dit</source>
-        <translation>E&amp;dit</translation>
+        <translation>&amp;Upravit</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="349"/>

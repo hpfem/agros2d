@@ -280,10 +280,13 @@ bool ProblemDialog::save()
     // physical field type
     if (Util::scene()->problemInfo()->physicField() != ((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
     {
-        if (!this->m_isNewProblem || Util::scene()->edgeMarkers.count() != 1 || Util::scene()->labelMarkers.count() != 1)
+        if (!this->m_isNewProblem)
         {
-            if (QMessageBox::question(this, tr("Change physical field type"), tr("Are you sure change physical field type?"), tr("&Yes"), tr("&No")) == 1)
-                return false;
+            if (Util::scene()->edgeMarkers.count() != 1 || Util::scene()->labelMarkers.count() != 1)
+            {
+                if (QMessageBox::question(this, tr("Change physical field type"), tr("Are you sure change physical field type?"), tr("&Yes"), tr("&No")) == 1)
+                    return false;
+            }
         }
 
         if (Util::scene()->sceneSolution()->isSolved())
