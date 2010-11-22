@@ -764,6 +764,8 @@ void MainWindow::doDocumentClose()
 {
     logMessage("MainWindow::doDocumentClose()");
 
+    // WILL BE FIXED
+    /*
     while (!Util::scene()->undoStack()->isClean())
     {
         QMessageBox::StandardButton ret;
@@ -776,6 +778,7 @@ void MainWindow::doDocumentClose()
         else if (ret == QMessageBox::Cancel)
             return;
     }
+    */
 
     Util::scene()->clear();
     sceneView->doDefaultValues();
@@ -1133,12 +1136,12 @@ void MainWindow::doLoadBackground()
 
 void MainWindow::closeEvent(QCloseEvent *event)
  {
+    // WILL BE FIXED
+    /*
     logMessage("MainWindow::closeEvent()");
 
     if (!Util::scene()->undoStack()->isClean())
         doDocumentClose();
-
-    scriptEditorDialog->closeTabs();
 
     if (Util::scene()->undoStack()->isClean() && !scriptEditorDialog->isScriptModified())
         event->accept();
@@ -1146,5 +1149,19 @@ void MainWindow::closeEvent(QCloseEvent *event)
     {
         event->ignore();
         if (scriptEditorDialog->isScriptModified()) scriptEditorDialog->show();
+    }
+    */
+
+    // check script editor
+    scriptEditorDialog->closeTabs();
+
+    if (!scriptEditorDialog->isScriptModified())
+        event->accept();
+    else
+    {
+        event->ignore();
+        // show script editor
+        if (scriptEditorDialog->isScriptModified())
+            scriptEditorDialog->show();
     }
 }
