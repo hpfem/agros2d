@@ -743,13 +743,20 @@ QStringList availableLanguages()
     QDir dir;
     dir.setPath(datadir() + "/lang");
 
+    // add all translations
     QStringList filters;
     filters << "*.qm";
     dir.setNameFilters(filters);
     dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
 
+    // remove extension
     QStringList list = dir.entryList();
     list.replaceInStrings(".qm", "");
+
+    // remove system translations
+    foreach (QString str, list)
+        if (str.startsWith("qt_"))
+            list.removeOne(str);
 
     return list;
 }
@@ -934,9 +941,9 @@ QString formatLogMessage(QtMsgType type, const QString &msg)
     }
 
     QString str = QString("%1 %2: %3").
-                  arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz")).
-                  arg(msgType).
-                  arg(msg);
+            arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz")).
+            arg(msgType).
+            arg(msg);
 
     return str;
 }
