@@ -89,6 +89,8 @@ public:
     double young_modulus;
     double poisson_ratio;
     double von_mises_stress;
+    double forceX;
+    double forceY;
 
     LocalPointValueElasticity(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
@@ -149,8 +151,10 @@ class SceneLabelElasticityMarker : public SceneLabelMarker
 public:
     Value young_modulus;
     Value poisson_ratio;
+    Value forceX;
+    Value forceY;
 
-    SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio);
+    SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY);
 
     // Lame constant
     inline double lambda() { return (young_modulus.number * poisson_ratio.number) / ((1.0 + poisson_ratio.number) * (1.0 - 2.0*poisson_ratio.number)); }
@@ -167,7 +171,6 @@ class DSceneEdgeElasticityMarker : public DSceneEdgeMarker
 
 public:
     DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker *edgeEdgeElasticityMarker, QWidget *parent);
-    ~DSceneEdgeElasticityMarker();
 
 protected:
     void createContent();
@@ -188,7 +191,6 @@ class DSceneLabelElasticityMarker : public DSceneLabelMarker
 
 public:
     DSceneLabelElasticityMarker(QWidget *parent, SceneLabelElasticityMarker *labelElasticityMarker);
-    ~DSceneLabelElasticityMarker();
 
 protected:
     void createContent();
@@ -199,6 +201,8 @@ protected:
 private:
     SLineEditValue *txtYoungModulus;
     SLineEditValue *txtPoissonNumber;
+    SLineEditValue *txtForceX;
+    SLineEditValue *txtForceY;
 };
 
 #endif // HERMES_ELASTICITY_H
