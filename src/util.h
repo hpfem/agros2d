@@ -434,6 +434,7 @@ enum PhysicFieldVariable
     PhysicFieldVariable_Heat_Flux,
     PhysicFieldVariable_Heat_Conductivity,
     PhysicFieldVariable_Elasticity_VonMisesStress,
+    PhysicFieldVariable_Elasticity_Displacement,
     PhysicFieldVariable_Flow_Velocity,
     PhysicFieldVariable_Flow_VelocityX,
     PhysicFieldVariable_Flow_VelocityY,

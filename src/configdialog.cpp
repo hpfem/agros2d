@@ -125,6 +125,11 @@ void ConfigDialog::load()
     txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
     chkView3DBackground->setChecked(Util::config()->scalarView3DBackground);
 
+    // deform shape
+    chkDeformScalar->setChecked(Util::config()->deformScalar);
+    chkDeformContour->setChecked(Util::config()->deformContour);
+    chkDeformVector->setChecked(Util::config()->deformVector);
+
     // adaptivity
     chkIsoOnly->setChecked(Util::config()->isoOnly);
     txtConvExp->setValue(Util::config()->convExp);
@@ -230,6 +235,11 @@ void ConfigDialog::save()
     Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
     Util::config()->scalarView3DAngle = txtView3DAngle->value();
     Util::config()->scalarView3DBackground = chkView3DBackground->isChecked();
+
+    // deform shape
+    Util::config()->deformScalar = chkDeformScalar->isChecked();
+    Util::config()->deformContour = chkDeformContour->isChecked();
+    Util::config()->deformVector = chkDeformVector->isChecked();
 
     // adaptivity
     Util::config()->isoOnly = chkIsoOnly->isChecked();
@@ -538,6 +548,19 @@ QWidget *ConfigDialog::createViewWidget()
     QGroupBox *grp3D = new QGroupBox(tr("3D"));
     grp3D->setLayout(layout3D);
 
+    // layout deform shape
+    chkDeformScalar = new QCheckBox(tr("Scalar field"), this);
+    chkDeformContour = new QCheckBox(tr("Contours"), this);
+    chkDeformVector = new QCheckBox(tr("Vector field"), this);
+
+    QGridLayout *layoutDeformShape = new QGridLayout();
+    layoutDeformShape->addWidget(chkDeformScalar, 0, 0);
+    layoutDeformShape->addWidget(chkDeformContour, 0, 1);
+    layoutDeformShape->addWidget(chkDeformVector, 0, 2);
+
+    QGroupBox *grpDeformShape = new QGroupBox(tr("Deform shape"));
+    grpDeformShape->setLayout(layoutDeformShape);
+
     // layout order
     chkOrderLabel = new QCheckBox(tr("Show order label"), this);
 
@@ -554,6 +577,7 @@ QWidget *ConfigDialog::createViewWidget()
     layoutPostprocessor->addWidget(grpVectorView);
     layoutPostprocessor->addWidget(grpOrder);
     layoutPostprocessor->addWidget(grp3D);
+    layoutPostprocessor->addWidget(grpDeformShape);
     layoutPostprocessor->addStretch();
 
     QWidget *widgetPostprocessor = new QWidget(this);

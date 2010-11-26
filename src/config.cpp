@@ -106,6 +106,11 @@ void Config::load()
     // order view
     orderLabel = settings.value("SceneViewSettings/OrderLabel", false).toBool();
 
+    // deformations
+    deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
+    deformContour = settings.value("SceneViewSettings/DeformContour", true).toBool();
+    deformVector = settings.value("SceneViewSettings/DeformVector", true).toBool();
+
     // 3d
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
     scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
@@ -197,6 +202,11 @@ void Config::save()
 
     // order view
     settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
+
+    // deformations
+    settings.setValue("SceneViewSettings/DeformScalar", deformScalar);
+    settings.setValue("SceneViewSettings/DeformContour", deformContour);
+    settings.setValue("SceneViewSettings/DeformVector", deformVector);
 
     // 3d
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);

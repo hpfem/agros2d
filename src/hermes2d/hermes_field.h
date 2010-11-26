@@ -101,6 +101,9 @@ public:
     virtual void showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralValue *volumeIntegralValue) = 0;
 
     virtual ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
+
+    virtual inline void deformShape(double3* linVert, int count) {}
+    virtual inline void deformShape(double4* linVert, int count) {}
 };
 
 HermesField *hermesFieldFactory(PhysicField physicField);

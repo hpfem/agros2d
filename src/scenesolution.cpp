@@ -387,6 +387,10 @@ void SceneSolution::setSlnContourView(ViewScalarFilter *slnScalarView)
     
     m_slnContourView = slnScalarView;
     m_linContourView.process_solution(m_slnContourView);
+
+    // deformed shape
+    if (Util::config()->deformContour)
+        Util::scene()->problemInfo()->hermes()->deformShape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
 }
 
 void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
@@ -403,41 +407,8 @@ void SceneSolution::setSlnScalarView(ViewScalarFilter *slnScalarView)
     m_linScalarView.process_solution(m_slnScalarView, H2D_FN_VAL_0);
 
     // deformed shape
-    if (Util::scene()->problemInfo()->physicField() == PhysicField_Elasticity)
-    {
-        double3* linVert = m_linScalarView.get_vertices();
-
-        double min =  CONST_DOUBLE;
-        double max = -CONST_DOUBLE;
-        for (int i = 0; i < m_linScalarView.get_num_vertices(); i++)
-        {
-            double x = linVert[i][0];
-            double y = linVert[i][1];
-
-            double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
-            double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
-
-            double dm = sqrt(sqr(dx) + sqr(dy));
-
-            if (dm < min) min = dm;
-            if (dm > max) max = dm;
-        }
-
-        RectPoint rect = Util::scene()->boundingBox();
-        double k = qMax(rect.width(), rect.height()) / qMax(min, max) / 15.0;
-
-        for (int i = 0; i < m_linScalarView.get_num_vertices(); i++)
-        {
-            double x = linVert[i][0];
-            double y = linVert[i][1];
-
-            double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
-            double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
-
-            linVert[i][0] += k*dx;
-            linVert[i][1] += k*dy;
-        }
-    }
+    if (Util::config()->deformScalar)
+        Util::scene()->problemInfo()->hermes()->deformShape(m_linScalarView.get_vertices(), m_linScalarView.get_num_vertices());
 }
 
 void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScalarFilter *slnVectorYView)
@@ -459,6 +430,10 @@ void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScala
     m_slnVectorYView = slnVectorYView;
     
     m_vecVectorView.process_solution(m_slnVectorXView, H2D_FN_VAL_0, m_slnVectorYView, H2D_FN_VAL_0, H2D_EPS_LOW);
+
+    // deformed shape
+    if (Util::config()->deformVector)
+        Util::scene()->problemInfo()->hermes()->deformShape(m_vecVectorView.get_vertices(), m_vecVectorView.get_num_vertices());
 }
 
 void SceneSolution::processRangeContour()
@@ -467,8 +442,14 @@ void SceneSolution::processRangeContour()
 
     if (isSolved())
     {
-        ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
-                                                                                                      PhysicFieldVariableComp_Scalar);
+        ViewScalarFilter *viewScalarFilter;
+        if (isPhysicFieldVariableScalar(sceneView()->sceneViewSettings().contourPhysicFieldVariable))
+            viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
+                                                                                                          PhysicFieldVariableComp_Scalar);
+        else
+            viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().contourPhysicFieldVariable,
+                                                                                                          PhysicFieldVariableComp_Magnitude);
+
         setSlnContourView(viewScalarFilter);
         emit processedRangeContour();
     }

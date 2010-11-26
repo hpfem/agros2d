@@ -140,6 +140,11 @@ private:
     SLineEditDouble *txtView3DAngle;
     QCheckBox *chkView3DBackground;
 
+    // deform shape
+    QCheckBox *chkDeformScalar;
+    QCheckBox *chkDeformContour;
+    QCheckBox *chkDeformVector;
+
     // advanced
     QCheckBox *chkIsoOnly;
     QLabel *lblIsoOnly;

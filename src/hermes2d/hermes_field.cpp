@@ -63,6 +63,8 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     }
 }
 
+
+
 Mesh *readMeshFromFile(const QString &fileName)
 {
     // save locale
@@ -157,6 +159,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     // create shapeset cache
     Tuple<PrecalcShapeset *> pss;
+
     // create an H1 space
     Tuple<Space *> space;
     // create hermes solution array
@@ -171,6 +174,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
         // space
         space.push_back(new H1Space(mesh, &shapeset));
+
         // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
             space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder, j);

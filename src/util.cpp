@@ -125,6 +125,7 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_Heat_Conductivity, "heat_conductivity");
 
     physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_VonMisesStress, "elasticity_von_mises_stress");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_Displacement, "elasticity_displacement");
 
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_Velocity, "flow_velocity");
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_VelocityX, "flow_velocity_x");
@@ -276,6 +277,8 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
 
     case PhysicFieldVariable_Elasticity_VonMisesStress:
         return QObject::tr("Von Mises stress");
+    case PhysicFieldVariable_Elasticity_Displacement:
+        return QObject::tr("Displacement");
 
     case PhysicFieldVariable_Flow_Velocity:
         return QObject::tr("Velocity");
@@ -394,6 +397,8 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
 
     case PhysicFieldVariable_Elasticity_VonMisesStress:
         return QObject::tr("E");
+    case PhysicFieldVariable_Elasticity_Displacement:
+        return QObject::tr("d");
 
     case PhysicFieldVariable_Flow_Velocity:
         return QObject::tr("v");
@@ -505,6 +510,8 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("W/m.K");
     case PhysicFieldVariable_Elasticity_VonMisesStress:
         return QObject::tr("Pa");
+    case PhysicFieldVariable_Elasticity_Displacement:
+        return QObject::tr("m");
     case PhysicFieldVariable_Flow_Velocity:
         return QObject::tr("m/s");
     case PhysicFieldVariable_Flow_VelocityX:

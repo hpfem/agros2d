@@ -110,37 +110,111 @@ scalar elasticity_bc_values_y(int marker, double x, double y)
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_bilinear_form_0_0(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_matrix_form_linear_x_x(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return (elasticityLabel[e->marker].lambda() + 2*elasticityLabel[e->marker].mu()) * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
-            elasticityLabel[e->marker].mu() * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
+    if (isPlanar)
+        return (elasticityLabel[e->marker].lambda() + 2*elasticityLabel[e->marker].mu()) * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
+                elasticityLabel[e->marker].mu() * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
+    else
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dx[i] * v->dx[i] +
+                                                                                1/e->x[i] * u->val[i] * v->dx[i] +
+                                                                                u->dx[i] * 1/e->x[i] * v->val[i] +
+                                                                                1/e->x[i] * u->val[i] * 1/e->x[i] * v->val[i]) +
+                               e->x[i] * elasticityLabel[e->marker].mu() * (2 * u->dx[i] * v->dx[i] +
+                                                                            2 * 1/sqr(e->x[i]) * u->val[i] * v->val[i] +
+                                                                            u->dy[i] * v->dy[i]));
+        return result;
+    }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_bilinear_form_0_1(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_matrix_form_linear_x_y(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return elasticityLabel[e->marker].lambda() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
-            elasticityLabel[e->marker].mu() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
+    if (isPlanar)
+        return elasticityLabel[e->marker].lambda() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
+                elasticityLabel[e->marker].mu() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
+    else
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dy[i] * v->dx[i] +
+                                                                                u->dy[i] * 1/e->x[i] * v->val[i]) +
+                               e->x[i] * elasticityLabel[e->marker].mu() * u->dx[i] * v->dy[i]);
+        return result;
+    }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_bilinear_form_1_0(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_matrix_form_linear_y_x(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return  elasticityLabel[e->marker].mu() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
-            elasticityLabel[e->marker].lambda() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
+    if (isPlanar)
+        return  elasticityLabel[e->marker].mu() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
+                elasticityLabel[e->marker].lambda() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
+    else
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].mu() * u->dy[i] * v->dx[i] +
+                               e->x[i] * elasticityLabel[e->marker].lambda() * (u->dx[i] * v->dy[i] +
+                                                                                1/e->x[i] * u->val[i] * v->dy[i]));
+        return result;
+    }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_bilinear_form_1_1(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_matrix_form_linear_y_y(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return   elasticityLabel[e->marker].mu() * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
-            (elasticityLabel[e->marker].lambda() + 2*elasticityLabel[e->marker].mu()) * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
+    if (isPlanar)
+        return   elasticityLabel[e->marker].mu() * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
+                (elasticityLabel[e->marker].lambda() + 2*elasticityLabel[e->marker].mu()) * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
+    else
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].mu() * (u->dx[i] * v->dx[i] +
+                                                                            2 * u->dy[i] * v->dy[i]) +
+                               e->x[i] * elasticityLabel[e->marker].lambda() * (u->dy[i] * v->dy[i]));
+        return result;
+    }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_vector_form_x(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return elasticityEdge[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
+    if (isPlanar)
+        return elasticityLabel[e->marker].forceX * int_v<Real, Scalar>(n, wt, v);
+    else
+        return elasticityLabel[e->marker].forceX * int_x_v<Real, Scalar>(n, wt, v, e);
+}
+
+template<typename Real, typename Scalar>
+Scalar elasticity_vector_form_y(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return elasticityLabel[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
+    else
+        return elasticityLabel[e->marker].forceY * int_x_v<Real, Scalar>(n, wt, v, e);
+}
+
+template<typename Real, typename Scalar>
+Scalar elasticity_vector_form_x_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return elasticityEdge[e->marker].forceX * int_v<Real, Scalar>(n, wt, v);
+    else
+        return elasticityEdge[e->marker].forceX * int_x_v<Real, Scalar>(n, wt, v, e);
+}
+
+template<typename Real, typename Scalar>
+Scalar elasticity_vector_form_y_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return elasticityEdge[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
+    else
+        return elasticityEdge[e->marker].forceY * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
 
@@ -155,11 +229,22 @@ void callbackElasticitySpace(Tuple<Space *> space)
 
 void callbackElasticityWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    wf->add_biform(0, 0, callback(elasticity_bilinear_form_0_0), H2D_SYM);
-    wf->add_biform(0, 1, callback(elasticity_bilinear_form_0_1), H2D_SYM);
-    // wf->add_biform(1, 0, callback(elasticity_bilinear_form_1_0), H2D_SYM);
-    wf->add_biform(1, 1, callback(elasticity_bilinear_form_1_1), H2D_SYM);
-    wf->add_liform_surf(1, callback(elasticity_linear_form_surf));
+    wf->add_biform(0, 0, callback(elasticity_matrix_form_linear_x_x), H2D_SYM);
+    if (isPlanar)
+    {
+        wf->add_biform(0, 1, callback(elasticity_matrix_form_linear_x_y), H2D_SYM);
+        // wf->add_biform(1, 0, callback(elasticity_matrix_form_linear_1_0), H2D_SYM);
+    }
+    else
+    {
+        wf->add_biform(0, 1, callback(elasticity_matrix_form_linear_x_y), H2D_SYM);
+        wf->add_biform(1, 0, callback(elasticity_matrix_form_linear_y_x), H2D_SYM);
+    }
+    wf->add_biform(1, 1, callback(elasticity_matrix_form_linear_y_y), H2D_SYM);
+    wf->add_liform(0, callback(elasticity_vector_form_x));
+    wf->add_liform(1, callback(elasticity_vector_form_y));
+    wf->add_liform_surf(0, callback(elasticity_vector_form_x_surf));
+    wf->add_liform_surf(1, callback(elasticity_vector_form_y_surf));
 }
 
 // *******************************************************************************************************
@@ -388,9 +473,6 @@ void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *l
     // Poisson ratio
     addTreeWidgetItemValue(elasticityNode, tr("Poisson ratio:"), QString("%1").arg(localPointValueElasticity->poisson_ratio, 0, 'f', 3), "");
 
-    // Von Mises stress
-    addTreeWidgetItemValue(elasticityNode, tr("Von Mises stress:"), QString("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
-
     // Volumetric force
     QTreeWidgetItem *itemVolumetricForce = new QTreeWidgetItem(elasticityNode);
     itemVolumetricForce->setText(0, tr("Volumetric force"));
@@ -398,6 +480,18 @@ void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *l
 
     addTreeWidgetItemValue(itemVolumetricForce, "f" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->forceX, 0, 'e', 3), "N/m3");
     addTreeWidgetItemValue(itemVolumetricForce, "f" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->forceY, 0, 'e', 3), "N/m3");
+
+    // Von Mises stress
+    // addTreeWidgetItemValue(elasticityNode, tr("Von Mises stress:"), QString("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
+
+    // Displacement
+    QTreeWidgetItem *itemDisplacement = new QTreeWidgetItem(elasticityNode);
+    itemDisplacement->setText(0, tr("Displacement"));
+    itemDisplacement->setExpanded(true);
+
+    addTreeWidgetItemValue(itemDisplacement, "D" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->d.x, 0, 'e', 3), "m");
+    addTreeWidgetItemValue(itemDisplacement, "D" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->d.y, 0, 'e', 3), "m");
+    addTreeWidgetItemValue(itemDisplacement, "D:", QString("%1").arg(localPointValueElasticity->d.magnitude(), 0, 'e', 3), "m");
 }
 
 void HermesElasticity::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -419,6 +513,51 @@ ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariable physicF
                                           sln2,
                                           physicFieldVariable,
                                           physicFieldVariableComp);
+}
+
+template <class T>
+void deformShapeTemplate(T linVert, int count)
+{
+    double min =  CONST_DOUBLE;
+    double max = -CONST_DOUBLE;
+    for (int i = 0; i < count; i++)
+    {
+        double x = linVert[i][0];
+        double y = linVert[i][1];
+
+        double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
+        double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
+
+        double dm = sqrt(sqr(dx) + sqr(dy));
+
+        if (dm < min) min = dm;
+        if (dm > max) max = dm;
+    }
+
+    RectPoint rect = Util::scene()->boundingBox();
+    double k = qMax(rect.width(), rect.height()) / qMax(min, max) / 15.0;
+
+    for (int i = 0; i < count; i++)
+    {
+        double x = linVert[i][0];
+        double y = linVert[i][1];
+
+        double dx = Util::scene()->sceneSolution()->sln(0)->get_pt_value(x, y);
+        double dy = Util::scene()->sceneSolution()->sln(1)->get_pt_value(x, y);
+
+        linVert[i][0] += k*dx;
+        linVert[i][1] += k*dy;
+    }
+}
+
+void HermesElasticity::deformShape(double3* linVert, int count)
+{
+    deformShapeTemplate<double3 *>(linVert, count);
+}
+
+void HermesElasticity::deformShape(double4* linVert, int count)
+{
+    deformShapeTemplate<double4 *>(linVert, count);
 }
 
 QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemSolve)
@@ -497,7 +636,7 @@ LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointV
         if (labelMarker)
         {
             // Von Mises stress
-            von_mises_stress = value;
+            von_mises_stress = 0.0;
 
             SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
 
@@ -506,6 +645,15 @@ LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointV
 
             forceX = marker->forceX.number;
             forceY = marker->forceY.number;
+
+            Solution *sln_x = Util::scene()->sceneSolution()->sln(0);
+            Solution *sln_y = Util::scene()->sceneSolution()->sln(1);
+
+            PointValue value_x = pointValue(sln_x, point);
+            PointValue value_y = pointValue(sln_y, point);
+
+            d.x = value_x.value;
+            d.y = value_y.value;
         }
     }
 }
@@ -515,9 +663,25 @@ double LocalPointValueElasticity::variableValue(PhysicFieldVariable physicFieldV
     switch (physicFieldVariable)
     {
     case PhysicFieldVariable_Elasticity_VonMisesStress:
+    {
+        return von_mises_stress;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_Displacement:
+    {
+        switch (physicFieldVariableComp)
         {
-            return von_mises_stress;
+        case PhysicFieldVariableComp_X:
+            return d.x;
+            break;
+        case PhysicFieldVariableComp_Y:
+            return d.y;
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+            return d.magnitude();
+            break;
         }
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueHeat::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
@@ -550,7 +714,7 @@ QStringList SurfaceIntegralValueElasticity::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
-            QString("%1").arg(surface, 0, 'e', 5);
+           QString("%1").arg(surface, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -576,7 +740,7 @@ QStringList VolumeIntegralValueElasticity::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-            QString("%1").arg(crossSection, 0, 'e', 5);
+           QString("%1").arg(crossSection, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -587,20 +751,42 @@ void ViewScalarFilterElasticity::calculateVariable(int i)
     switch (m_physicFieldVariable)
     {
     case PhysicFieldVariable_Elasticity_VonMisesStress:
+    {
+        SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
+
+        // stress tensor
+        double tz = marker->lambda() * (dudx1[i] + dudy2[i]);
+        double tx = tz + 2*marker->mu() * dudx1[i];
+        double ty = tz + 2*marker->mu() * dudy2[i];
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+            tz += 2*marker->mu() * value1[i] / x[i];
+        double txy = marker->mu() * (dudy1[i] + dudx2[i]);
+
+        // Von Mises stress
+        node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_Displacement:
+    {
+        switch (m_physicFieldVariableComp)
         {
-            SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
-
-            // stress tensor
-            double tz = marker->lambda() * (dudx1[i] + dudy2[i]);
-            double tx = tz + 2*marker->mu() * dudx1[i];
-            double ty = tz + 2*marker->mu() * dudy2[i];
-            if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-                tz += 2*marker->mu() * value1[i] / x[i];
-            double txy = marker->mu() * (dudy1[i] + dudx2[i]);
-
-            // Von Mises stress
-            node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
+        case PhysicFieldVariableComp_X:
+        {
+            node->values[0][0][i] = value1[i];
         }
+            break;
+        case PhysicFieldVariableComp_Y:
+        {
+            node->values[0][0][i] = value2[i];
+        }
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+        {
+            node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i]));
+        }
+            break;
+        }
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterElasticity::calculateVariable()" << endl;

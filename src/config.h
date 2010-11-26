@@ -76,6 +76,11 @@ public:
     // order view
     bool orderLabel;
 
+    // deformations
+    bool deformScalar;
+    bool deformContour;
+    bool deformVector;
+
     // 3d
     bool scalarView3DLighting;
     double scalarView3DAngle;
