@@ -237,8 +237,8 @@ void callbackElasticityWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
     }
     else
     {
-        wf->add_biform(0, 1, callback(elasticity_matrix_form_linear_x_y), H2D_SYM);
-        wf->add_biform(1, 0, callback(elasticity_matrix_form_linear_y_x), H2D_SYM);
+        wf->add_biform(0, 1, callback(elasticity_matrix_form_linear_x_y), H2D_UNSYM);
+        wf->add_biform(1, 0, callback(elasticity_matrix_form_linear_y_x), H2D_UNSYM);
     }
     wf->add_biform(1, 1, callback(elasticity_matrix_form_linear_y_y), H2D_SYM);
     wf->add_liform(0, callback(elasticity_vector_form_x));
