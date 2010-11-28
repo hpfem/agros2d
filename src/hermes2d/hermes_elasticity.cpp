@@ -249,6 +249,22 @@ void callbackElasticityWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 
 // *******************************************************************************************************
 
+void HermesElasticity::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
+{
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_VonMisesStress), PhysicFieldVariable_Elasticity_VonMisesStress);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_Displacement), PhysicFieldVariable_Elasticity_Displacement);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressX), PhysicFieldVariable_Elasticity_StressX);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressY), PhysicFieldVariable_Elasticity_StressY);
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressZ), PhysicFieldVariable_Elasticity_StressZ);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressXY), PhysicFieldVariable_Elasticity_StressXY);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainX), PhysicFieldVariable_Elasticity_StrainX);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainY), PhysicFieldVariable_Elasticity_StrainY);
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainZ), PhysicFieldVariable_Elasticity_StrainZ);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainXY), PhysicFieldVariable_Elasticity_StrainXY);
+}
+
 void HermesElasticity::readEdgeMarkerFromDomElement(QDomElement *element)
 {
     PhysicFieldBC typeX = physicFieldBCFromStringKey(element->attribute("typex"));
@@ -492,6 +508,28 @@ void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *l
     addTreeWidgetItemValue(itemDisplacement, "D" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->d.x, 0, 'e', 3), "m");
     addTreeWidgetItemValue(itemDisplacement, "D" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->d.y, 0, 'e', 3), "m");
     addTreeWidgetItemValue(itemDisplacement, "D:", QString("%1").arg(localPointValueElasticity->d.magnitude(), 0, 'e', 3), "m");
+
+    // Stresses
+    QTreeWidgetItem *itemStresses = new QTreeWidgetItem(elasticityNode);
+    itemStresses->setText(0, tr("Stresses"));
+    itemStresses->setExpanded(true);
+
+    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_x, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_y, 0, 'e', 3), "Pa");
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+        addTreeWidgetItemValue(itemStresses, "sa:", QString("%1").arg(localPointValueElasticity->stress_z, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemStresses, "t" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_xy, 0, 'e', 3), "Pa");
+
+    // Strains
+    QTreeWidgetItem *itemStrains = new QTreeWidgetItem(elasticityNode);
+    itemStrains->setText(0, tr("Strains"));
+    itemStrains->setExpanded(true);
+
+    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_x, 0, 'e', 3), "");
+    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_y, 0, 'e', 3), "");
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+        addTreeWidgetItemValue(itemStrains, "ea:", QString("%1").arg(localPointValueElasticity->strain_z, 0, 'e', 3), "");
+    addTreeWidgetItemValue(itemStrains, "g" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_xy, 0, 'e', 3), "");
 }
 
 void HermesElasticity::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -654,6 +692,24 @@ LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointV
 
             d.x = value_x.value;
             d.y = value_y.value;
+
+            strain_x = value_x.derivative.x;
+            strain_y = value_y.derivative.y;
+            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                strain_z = 0.0;
+            else
+                strain_z = (point.x > 0) ? value_x.value / point.x : 0.0;
+
+            strain_xy = value_x.derivative.y + value_y.derivative.x;
+
+            stress_x = young_modulus * value_x.derivative.x;
+            stress_y = young_modulus * value_y.derivative.y;
+            if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+                stress_z = 0.0;
+            else
+                stress_z = (point.x > 0) ? young_modulus * value_x.value / point.x : 0.0;
+
+            stress_xy = young_modulus * (value_x.derivative.y + value_y.derivative.x);
         }
     }
 }
@@ -665,6 +721,46 @@ double LocalPointValueElasticity::variableValue(PhysicFieldVariable physicFieldV
     case PhysicFieldVariable_Elasticity_VonMisesStress:
     {
         return von_mises_stress;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StrainX:
+    {
+        return strain_x;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StrainY:
+    {
+        return strain_y;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StrainZ:
+    {
+        return strain_z;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StrainXY:
+    {
+        return strain_xy;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StressX:
+    {
+        return stress_x;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StressY:
+    {
+        return stress_y;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StressZ:
+    {
+        return stress_z;
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StressXY:
+    {
+        return stress_xy;
     }
         break;
     case PhysicFieldVariable_Elasticity_Displacement:
@@ -764,6 +860,60 @@ void ViewScalarFilterElasticity::calculateVariable(int i)
 
         // Von Mises stress
         node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StrainX:
+    {
+        node->values[0][0][i] = dudx1[i];
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StrainY:
+    {
+        node->values[0][0][i] = dudy2[i];
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StrainZ:
+    {
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+            node->values[0][0][i] = 0.0;
+        else
+            node->values[0][0][i] = value1[i] / x[i];
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StrainXY:
+    {
+        node->values[0][0][i] = dudy1[i] + dudx2[i];
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StressX:
+    {
+        SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
+
+        node->values[0][0][i] = marker->young_modulus.number * dudx1[i];
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StressY:
+    {
+        SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
+
+        node->values[0][0][i] = marker->young_modulus.number * dudy2[i];
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StressZ:
+    {
+        SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
+
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+            node->values[0][0][i] = 0.0;
+        else
+            node->values[0][0][i] = marker->young_modulus.number * value1[i] / x[i];
+    }
+        break;
+    case PhysicFieldVariable_Elasticity_StressXY:
+    {
+        SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
+
+        node->values[0][0][i] = marker->young_modulus.number * (dudy1[i] + dudx2[i]);
     }
         break;
     case PhysicFieldVariable_Elasticity_Displacement:

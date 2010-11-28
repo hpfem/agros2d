@@ -126,6 +126,14 @@ void initLists()
 
     physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_VonMisesStress, "elasticity_von_mises_stress");
     physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_Displacement, "elasticity_displacement");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainX, "strain_x");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainY, "strain_y");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainZ, "strain_z");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainXY, "strain_xy");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressX, "stress_x");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressY, "stress_y");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressZ, "stress_z");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressXY, "stress_xy");
 
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_Velocity, "flow_velocity");
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_VelocityX, "flow_velocity_x");
@@ -279,6 +287,22 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Von Mises stress");
     case PhysicFieldVariable_Elasticity_Displacement:
         return QObject::tr("Displacement");
+    case PhysicFieldVariable_Elasticity_StrainX:
+        return QObject::tr("Strain X");
+    case PhysicFieldVariable_Elasticity_StrainY:
+        return QObject::tr("Strain Y");
+    case PhysicFieldVariable_Elasticity_StrainZ:
+        return QObject::tr("Strain Z");
+    case PhysicFieldVariable_Elasticity_StrainXY:
+        return QObject::tr("Strain XY");
+    case PhysicFieldVariable_Elasticity_StressX:
+        return QObject::tr("Stress X");
+    case PhysicFieldVariable_Elasticity_StressY:
+        return QObject::tr("Stress Y");
+    case PhysicFieldVariable_Elasticity_StressZ:
+        return QObject::tr("Stress Z");
+    case PhysicFieldVariable_Elasticity_StressXY:
+        return QObject::tr("Stress XY");
 
     case PhysicFieldVariable_Flow_Velocity:
         return QObject::tr("Velocity");
@@ -399,6 +423,22 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("E");
     case PhysicFieldVariable_Elasticity_Displacement:
         return QObject::tr("d");
+    case PhysicFieldVariable_Elasticity_StrainX:
+        return QObject::tr("ex");
+    case PhysicFieldVariable_Elasticity_StrainY:
+        return QObject::tr("ey");
+    case PhysicFieldVariable_Elasticity_StrainZ:
+        return QObject::tr("ez");
+    case PhysicFieldVariable_Elasticity_StrainXY:
+        return QObject::tr("gxy");
+    case PhysicFieldVariable_Elasticity_StressX:
+        return QObject::tr("sx");
+    case PhysicFieldVariable_Elasticity_StressY:
+        return QObject::tr("sy");
+    case PhysicFieldVariable_Elasticity_StressZ:
+        return QObject::tr("sz");
+    case PhysicFieldVariable_Elasticity_StressXY:
+        return QObject::tr("txy");
 
     case PhysicFieldVariable_Flow_Velocity:
         return QObject::tr("v");
@@ -512,6 +552,22 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Pa");
     case PhysicFieldVariable_Elasticity_Displacement:
         return QObject::tr("m");
+    case PhysicFieldVariable_Elasticity_StrainX:
+        return QObject::tr("-");
+    case PhysicFieldVariable_Elasticity_StrainY:
+        return QObject::tr("-");
+    case PhysicFieldVariable_Elasticity_StrainZ:
+        return QObject::tr("-");
+    case PhysicFieldVariable_Elasticity_StrainXY:
+        return QObject::tr("-");
+    case PhysicFieldVariable_Elasticity_StressX:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Elasticity_StressY:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Elasticity_StressZ:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Elasticity_StressXY:
+        return QObject::tr("Pa");
     case PhysicFieldVariable_Flow_Velocity:
         return QObject::tr("m/s");
     case PhysicFieldVariable_Flow_VelocityX:
@@ -535,15 +591,15 @@ QString physicFieldString(PhysicField physicField)
     case PhysicField_General:
         return QObject::tr("General");
     case PhysicField_Electrostatic:
-        return QObject::tr("Electrostatic");
+        return QObject::tr("Electrostatic field");
     case PhysicField_Magnetic:
-        return QObject::tr("Magnetic");
+        return QObject::tr("Magnetic field");
     case PhysicField_Current:
         return QObject::tr("Current field");
     case PhysicField_Heat:
         return QObject::tr("Heat transfer");
     case PhysicField_Elasticity:
-        return QObject::tr("Elasticity");
+        return QObject::tr("Structural mechanics");
     case PhysicField_Flow:
         return QObject::tr("Incompressible flow");
     default:
@@ -672,8 +728,8 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->addItem(physicFieldString(PhysicField_Magnetic), PhysicField_Magnetic);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Current), PhysicField_Current);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
-#ifdef BETA
     cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
+#ifdef BETA
     cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
 #endif
 

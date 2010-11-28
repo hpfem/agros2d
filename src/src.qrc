@@ -79,9 +79,11 @@
         <file>images/equations/magnetic_transient.png</file>
         <file>images/equations/flow_steadystate.png</file>
         <file>images/equations/flow_transient.png</file>
+        <file>images/equations/elasticity_steadystate.png</file>
         <file>images/log.png</file>
         <file>images/grid.png</file>
         <file>images/snap-to-grid.png</file>
         <file>images/rulers.png</file>
+        <file>images/equations/elasticity_steadystate.png</file>
     </qresource>
 </RCC>

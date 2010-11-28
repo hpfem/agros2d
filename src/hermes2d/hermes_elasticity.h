@@ -50,7 +50,15 @@ public:
     inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Elasticity_Fixed ||
                                                                           physicFieldBC == PhysicFieldBC_Elasticity_Free); }
     inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Elasticity_VonMisesStress ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_Displacement); }
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_Displacement ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainZ ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainXY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressZ ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressXY); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -66,11 +74,7 @@ public:
     inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
     inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Elasticity_Displacement; }
 
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_VonMisesStress), PhysicFieldVariable_Elasticity_VonMisesStress);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_Displacement), PhysicFieldVariable_Elasticity_Displacement);
-    }
+    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
@@ -96,6 +100,14 @@ public:
     double forceX;
     double forceY;
     Point d;
+    double strain_x;
+    double strain_y;
+    double strain_z;
+    double strain_xy;
+    double stress_x;
+    double stress_y;
+    double stress_z;
+    double stress_xy;
 
     LocalPointValueElasticity(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
