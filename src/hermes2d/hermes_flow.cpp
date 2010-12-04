@@ -632,7 +632,7 @@ SceneEdgeFlowMarker::SceneEdgeFlowMarker(const QString &name, PhysicFieldBC type
 
 QString SceneEdgeFlowMarker::script()
 {
-    return QString("addEdge(\"%1\", \"%2\", %3, %4, %5)").
+    return QString("addboundary(\"%1\", \"%2\", %3, %4, %5)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
             arg(velocityX.text).

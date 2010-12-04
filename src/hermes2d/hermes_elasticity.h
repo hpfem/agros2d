@@ -51,13 +51,13 @@ public:
                                                                           physicFieldBC == PhysicFieldBC_Elasticity_Free); }
     inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Elasticity_VonMisesStress ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Elasticity_Displacement ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainY ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainZ ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainXX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainYY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StrainZZ ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Elasticity_StrainXY ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressX ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressY ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressZ ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressXX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressYY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Elasticity_StressZZ ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Elasticity_StressXY); }
 
     SceneEdgeMarker *newEdgeMarker();
@@ -97,8 +97,12 @@ public:
     double young_modulus;
     double poisson_ratio;
     double von_mises_stress;
+    double tresca_stress;
     double forceX;
     double forceY;
+    double alpha;
+    double temp;
+    double temp_ref;
     Point d;
     double strain_x;
     double strain_y;
@@ -170,8 +174,12 @@ public:
     Value poisson_ratio;
     Value forceX;
     Value forceY;
+    Value alpha;
+    Value temp;
+    Value temp_ref;
 
-    SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY);
+    SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY,
+                               Value alpha, Value temp, Value temp_ref);
 
     // Lame constant
     inline double lambda() { return (young_modulus.number * poisson_ratio.number) / ((1.0 + poisson_ratio.number) * (1.0 - 2.0*poisson_ratio.number)); }
@@ -220,6 +228,9 @@ private:
     SLineEditValue *txtPoissonNumber;
     SLineEditValue *txtForceX;
     SLineEditValue *txtForceY;
+    SLineEditValue *txtAlpha;
+    SLineEditValue *txtTemp;
+    SLineEditValue *txtTempRef;
 };
 
 #endif // HERMES_ELASTICITY_H

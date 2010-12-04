@@ -35,6 +35,9 @@ struct ElasticityLabel
     double poisson_ratio;
     double forceX;
     double forceY;
+    double alpha;
+    double temp;
+    double temp_ref;
 
     // Lame constant
     inline double lambda() { return (young_modulus * poisson_ratio) / ((1.0 + poisson_ratio) * (1.0 - 2.0*poisson_ratio)); }
@@ -120,9 +123,9 @@ Scalar elasticity_matrix_form_linear_x_x(int n, double *wt, Func<Real> *u, Func<
         Scalar result = 0;
         for (int i = 0; i < n; i++)
             result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dx[i] * v->dx[i] +
-                                                                                1/e->x[i] * u->val[i] * v->dx[i] +
-                                                                                u->dx[i] * 1/e->x[i] * v->val[i] +
-                                                                                1/e->x[i] * u->val[i] * 1/e->x[i] * v->val[i]) +
+                                                                                u->val[i]/e->x[i] * v->dx[i] +
+                                                                                u->dx[i] * v->val[i]/e->x[i] +
+                                                                                1/sqr(e->x[i]) * u->val[i] * v->val[i]) +
                                e->x[i] * elasticityLabel[e->marker].mu() * (2 * u->dx[i] * v->dx[i] +
                                                                             2 * 1/sqr(e->x[i]) * u->val[i] * v->val[i] +
                                                                             u->dy[i] * v->dy[i]));
@@ -141,7 +144,7 @@ Scalar elasticity_matrix_form_linear_x_y(int n, double *wt, Func<Real> *u, Func<
         Scalar result = 0;
         for (int i = 0; i < n; i++)
             result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dy[i] * v->dx[i] +
-                                                                                u->dy[i] * 1/e->x[i] * v->val[i]) +
+                                                                                u->dy[i] * v->val[i]/e->x[i]) +
                                e->x[i] * elasticityLabel[e->marker].mu() * u->dx[i] * v->dy[i]);
         return result;
     }
@@ -157,9 +160,9 @@ Scalar elasticity_matrix_form_linear_y_x(int n, double *wt, Func<Real> *u, Func<
     {
         Scalar result = 0;
         for (int i = 0; i < n; i++)
-            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].mu() * u->dy[i] * v->dx[i] +
-                               e->x[i] * elasticityLabel[e->marker].lambda() * (u->dx[i] * v->dy[i] +
-                                                                                1/e->x[i] * u->val[i] * v->dy[i]));
+            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dx[i] * v->dy[i] +
+                                                                                u->val[i]/e->x[i] * v->dy[i]) +
+                               e->x[i] * elasticityLabel[e->marker].mu() * u->dy[i] * v->dx[i]);
         return result;
     }
 }
@@ -174,9 +177,9 @@ Scalar elasticity_matrix_form_linear_y_y(int n, double *wt, Func<Real> *u, Func<
     {
         Scalar result = 0;
         for (int i = 0; i < n; i++)
-            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].mu() * (u->dx[i] * v->dx[i] +
-                                                                            2 * u->dy[i] * v->dy[i]) +
-                               e->x[i] * elasticityLabel[e->marker].lambda() * (u->dy[i] * v->dy[i]));
+            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dy[i] * v->dy[i]) +
+                               e->x[i] * elasticityLabel[e->marker].mu() * (u->dx[i] * v->dx[i] +
+                                                                            2 * u->dy[i] * v->dy[i]));
         return result;
     }
 }
@@ -185,18 +188,46 @@ template<typename Real, typename Scalar>
 Scalar elasticity_vector_form_x(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return elasticityLabel[e->marker].forceX * int_v<Real, Scalar>(n, wt, v);
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * ((elasticityLabel[e->marker].forceX * v->val[i]) +
+                               ((3 * elasticityLabel[e->marker].lambda() + 2 * elasticityLabel[e->marker].mu()) *
+                                elasticityLabel[e->marker].alpha * (elasticityLabel[e->marker].temp - elasticityLabel[e->marker].temp_ref) * v->dx[i]));
+        return result;
+    }
     else
-        return elasticityLabel[e->marker].forceX * int_x_v<Real, Scalar>(n, wt, v, e);
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * (e->x[i] * (elasticityLabel[e->marker].forceX * v->val[i]) +
+                               ((3 * elasticityLabel[e->marker].lambda() + 2 * elasticityLabel[e->marker].mu()) *
+                                elasticityLabel[e->marker].alpha * (elasticityLabel[e->marker].temp - elasticityLabel[e->marker].temp_ref) * v->dx[i]));
+        return result;
+    }
 }
 
 template<typename Real, typename Scalar>
 Scalar elasticity_vector_form_y(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return elasticityLabel[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * ((elasticityLabel[e->marker].forceY * v->val[i]) +
+                               ((3 * elasticityLabel[e->marker].lambda() + 2 * elasticityLabel[e->marker].mu()) *
+                                elasticityLabel[e->marker].alpha * (elasticityLabel[e->marker].temp - elasticityLabel[e->marker].temp_ref) * v->dy[i]));
+        return result;
+    }
     else
-        return elasticityLabel[e->marker].forceY * int_x_v<Real, Scalar>(n, wt, v, e);
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * e->x[i] * ((elasticityLabel[e->marker].forceY * v->val[i]) +
+                                         ((3 * elasticityLabel[e->marker].lambda() + 2 * elasticityLabel[e->marker].mu()) *
+                                          elasticityLabel[e->marker].alpha * (elasticityLabel[e->marker].temp - elasticityLabel[e->marker].temp_ref) * v->dy[i]));
+        return result;
+    }
 }
 
 template<typename Real, typename Scalar>
@@ -229,18 +260,9 @@ void callbackElasticitySpace(Tuple<Space *> space)
 
 void callbackElasticityWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    wf->add_biform(0, 0, callback(elasticity_matrix_form_linear_x_x), H2D_SYM);
-    if (isPlanar)
-    {
-        wf->add_biform(0, 1, callback(elasticity_matrix_form_linear_x_y), H2D_SYM);
-        // wf->add_biform(1, 0, callback(elasticity_matrix_form_linear_1_0), H2D_SYM);
-    }
-    else
-    {
-        wf->add_biform(0, 1, callback(elasticity_matrix_form_linear_x_y), H2D_UNSYM);
-        wf->add_biform(1, 0, callback(elasticity_matrix_form_linear_y_x), H2D_UNSYM);
-    }
-    wf->add_biform(1, 1, callback(elasticity_matrix_form_linear_y_y), H2D_SYM);
+    wf->add_biform(0, 0, callback(elasticity_matrix_form_linear_x_x));
+    wf->add_biform(0, 1, callback(elasticity_matrix_form_linear_x_y), H2D_SYM);
+    wf->add_biform(1, 1, callback(elasticity_matrix_form_linear_y_y));
     wf->add_liform(0, callback(elasticity_vector_form_x));
     wf->add_liform(1, callback(elasticity_vector_form_y));
     wf->add_liform_surf(0, callback(elasticity_vector_form_x_surf));
@@ -251,17 +273,16 @@ void callbackElasticityWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 
 void HermesElasticity::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_VonMisesStress), PhysicFieldVariable_Elasticity_VonMisesStress);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_Displacement), PhysicFieldVariable_Elasticity_Displacement);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressX), PhysicFieldVariable_Elasticity_StressX);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressY), PhysicFieldVariable_Elasticity_StressY);
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressZ), PhysicFieldVariable_Elasticity_StressZ);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_VonMisesStress), PhysicFieldVariable_Elasticity_VonMisesStress);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressXX), PhysicFieldVariable_Elasticity_StressXX);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressYY), PhysicFieldVariable_Elasticity_StressYY);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressZZ), PhysicFieldVariable_Elasticity_StressZZ);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StressXY), PhysicFieldVariable_Elasticity_StressXY);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainX), PhysicFieldVariable_Elasticity_StrainX);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainY), PhysicFieldVariable_Elasticity_StrainY);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainXX), PhysicFieldVariable_Elasticity_StrainXX);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainYY), PhysicFieldVariable_Elasticity_StrainYY);
     if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainZ), PhysicFieldVariable_Elasticity_StrainZ);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainZZ), PhysicFieldVariable_Elasticity_StrainZZ);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Elasticity_StrainXY), PhysicFieldVariable_Elasticity_StrainXY);
 }
 
@@ -314,7 +335,10 @@ void HermesElasticity::readLabelMarkerFromDomElement(QDomElement *element)
                                                                  Value(element->attribute("young_modulus")),
                                                                  Value(element->attribute("poisson_ratio")),
                                                                  Value(element->attribute("forcex", "0")),
-                                                                 Value(element->attribute("forcey", "0"))));
+                                                                 Value(element->attribute("forcey", "0")),
+                                                                 Value(element->attribute("alpha", "0")),
+                                                                 Value(element->attribute("temp", "0")),
+                                                                 Value(element->attribute("temp_ref", "0"))));
 }
 
 void HermesElasticity::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
@@ -325,6 +349,9 @@ void HermesElasticity::writeLabelMarkerToDomElement(QDomElement *element, SceneL
     element->setAttribute("poisson_ratio", labelElasticityMarker->poisson_ratio.text);
     element->setAttribute("forcex", labelElasticityMarker->forceX.text);
     element->setAttribute("forcey", labelElasticityMarker->forceY.text);
+    element->setAttribute("alpha", labelElasticityMarker->alpha.text);
+    element->setAttribute("temp", labelElasticityMarker->temp.text);
+    element->setAttribute("temp_ref", labelElasticityMarker->temp_ref.text);
 }
 
 LocalPointValue *HermesElasticity::localPointValue(Point point)
@@ -335,7 +362,9 @@ LocalPointValue *HermesElasticity::localPointValue(Point point)
 QStringList HermesElasticity::localPointValueHeader()
 {
     QStringList headers;
-    headers << "X" << "Y" << "Von Misses stress";
+    headers << "X" << "Y" << "mises" << "tresca" << "u" << "v" << "disp"
+            << "sxx" << "syy" << "szz" << "sxy"
+            << "exx" << "eyy" << "ezz" << "exy";
     return QStringList(headers);
 }
 
@@ -430,14 +459,17 @@ SceneLabelMarker *HermesElasticity::newLabelMarker()
                                           Value("2e11"),
                                           Value("0.33"),
                                           Value("0"),
+                                          Value("0"),
+                                          Value("0"),
+                                          Value("0"),
                                           Value("0"));
 }
 
 SceneLabelMarker *HermesElasticity::newLabelMarker(PyObject *self, PyObject *args)
 {
-    double young_modulus, poisson_ratio, forcex, forcey;
+    double young_modulus, poisson_ratio, forcex, forcey, alpha, temp, temp_ref;
     char *name;
-    if (PyArg_ParseTuple(args, "sdd", &name, &young_modulus, &poisson_ratio, &forcex, &forcey))
+    if (PyArg_ParseTuple(args, "sddddddd", &name, &young_modulus, &poisson_ratio, &forcex, &forcey, &alpha, &temp, &temp_ref))
     {
         // check name
         if (Util::scene()->getLabelMarker(name)) return NULL;
@@ -446,7 +478,10 @@ SceneLabelMarker *HermesElasticity::newLabelMarker(PyObject *self, PyObject *arg
                                               Value(QString::number(young_modulus)),
                                               Value(QString::number(poisson_ratio)),
                                               Value(QString::number(forcex)),
-                                              Value(QString::number(forcey)));
+                                              Value(QString::number(forcey)),
+                                              Value(QString::number(alpha)),
+                                              Value(QString::number(temp)),
+                                              Value(QString::number(temp_ref)));
     }
 
     return NULL;
@@ -454,14 +489,19 @@ SceneLabelMarker *HermesElasticity::newLabelMarker(PyObject *self, PyObject *arg
 
 SceneLabelMarker *HermesElasticity::modifyLabelMarker(PyObject *self, PyObject *args)
 {
-    double young_modulus, poisson_ratio;
+    double young_modulus, poisson_ratio, forcex, forcey, alpha, temp, temp_ref;
     char *name;
-    if (PyArg_ParseTuple(args, "sdd", &name, &young_modulus, &poisson_ratio))
+    if (PyArg_ParseTuple(args, "sddddddd", &name, &young_modulus, &poisson_ratio, &forcex, &forcey, &alpha, &temp, &temp_ref))
     {
         if (SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(Util::scene()->getLabelMarker(name)))
         {
             marker->young_modulus = Value(QString::number(young_modulus));
             marker->poisson_ratio = Value(QString::number(poisson_ratio));
+            marker->forceX = Value(QString::number(forcex));
+            marker->forceY = Value(QString::number(forcey));
+            marker->alpha = Value(QString::number(alpha));
+            marker->temp = Value(QString::number(temp));
+            marker->temp_ref = Value(QString::number(temp_ref));
             return marker;
         }
         else
@@ -497,8 +537,18 @@ void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *l
     addTreeWidgetItemValue(itemVolumetricForce, "f" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->forceX, 0, 'e', 3), "N/m3");
     addTreeWidgetItemValue(itemVolumetricForce, "f" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->forceY, 0, 'e', 3), "N/m3");
 
+    // Thermal expansion
+    QTreeWidgetItem *itemThermalExpansion = new QTreeWidgetItem(elasticityNode);
+    itemThermalExpansion->setText(0, tr("Thermal expansion"));
+    itemThermalExpansion->setExpanded(true);
+
+    addTreeWidgetItemValue(itemThermalExpansion, "Thermal exp. coef.:", QString("%1").arg(localPointValueElasticity->alpha, 0, 'e', 3), "1/deg");
+    addTreeWidgetItemValue(itemThermalExpansion, "Temperature:", QString("%1").arg(localPointValueElasticity->temp, 0, 'e', 3), "deg");
+    addTreeWidgetItemValue(itemThermalExpansion, "Ref. temperature:", QString("%1").arg(localPointValueElasticity->temp_ref, 0, 'e', 3), "deg");
+
     // Von Mises stress
-    // addTreeWidgetItemValue(elasticityNode, tr("Von Mises stress:"), QString("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(elasticityNode, tr("Von Mises stress:"), QString("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(elasticityNode, tr("Tresca stress:"), QString("%1").arg(localPointValueElasticity->tresca_stress, 0, 'e', 3), "Pa");
 
     // Displacement
     QTreeWidgetItem *itemDisplacement = new QTreeWidgetItem(elasticityNode);
@@ -514,22 +564,21 @@ void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *l
     itemStresses->setText(0, tr("Stresses"));
     itemStresses->setExpanded(true);
 
-    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_x, 0, 'e', 3), "Pa");
-    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_y, 0, 'e', 3), "Pa");
-    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-        addTreeWidgetItemValue(itemStresses, "sa:", QString("%1").arg(localPointValueElasticity->stress_z, 0, 'e', 3), "Pa");
-    addTreeWidgetItemValue(itemStresses, "t" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_xy, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_x, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelY().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_y, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelZ().toLower() + Util::scene()->problemInfo()->labelZ().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_z, 0, 'e', 3), "Pa");
+    addTreeWidgetItemValue(itemStresses, "s" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->stress_xy, 0, 'e', 3), "Pa");
 
     // Strains
     QTreeWidgetItem *itemStrains = new QTreeWidgetItem(elasticityNode);
     itemStrains->setText(0, tr("Strains"));
     itemStrains->setExpanded(true);
 
-    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_x, 0, 'e', 3), "");
-    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_y, 0, 'e', 3), "");
+    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_x, 0, 'e', 3), "");
+    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelY().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_y, 0, 'e', 3), "");
     if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
-        addTreeWidgetItemValue(itemStrains, "ea:", QString("%1").arg(localPointValueElasticity->strain_z, 0, 'e', 3), "");
-    addTreeWidgetItemValue(itemStrains, "g" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_xy, 0, 'e', 3), "");
+        addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelZ().toLower() + Util::scene()->problemInfo()->labelZ().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_z, 0, 'e', 3), "");
+    addTreeWidgetItemValue(itemStrains, "e" + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueElasticity->strain_xy, 0, 'e', 3), "");
 }
 
 void HermesElasticity::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -646,10 +695,17 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
             if (!labelElasticityMarker->forceX.evaluate()) return NULL;
             if (!labelElasticityMarker->forceY.evaluate()) return NULL;
 
+            if (!labelElasticityMarker->alpha.evaluate()) return NULL;
+            if (!labelElasticityMarker->temp.evaluate()) return NULL;
+            if (!labelElasticityMarker->temp_ref.evaluate()) return NULL;
+
             elasticityLabel[i].young_modulus = labelElasticityMarker->young_modulus.number;
             elasticityLabel[i].poisson_ratio = labelElasticityMarker->poisson_ratio.number;
             elasticityLabel[i].forceX = labelElasticityMarker->forceX.number;
             elasticityLabel[i].forceY = labelElasticityMarker->forceY.number;
+            elasticityLabel[i].alpha = labelElasticityMarker->alpha.number;
+            elasticityLabel[i].temp = labelElasticityMarker->temp.number;
+            elasticityLabel[i].temp_ref = labelElasticityMarker->temp_ref.number;
         }
     }
 
@@ -667,15 +723,29 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
 
 LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointValue(point)
 {
-    von_mises_stress = 0;
+    young_modulus = 0.0;
+    poisson_ratio = 0.0;
+    von_mises_stress = 0.0;
+    tresca_stress = 0.0;
+    forceX = 0.0;
+    forceY = 0.0;
+    alpha = 0.0;
+    temp = 0.0;
+    temp_ref = 0.0;
+    d = Point();
+    strain_x = 0.0;
+    strain_y = 0.0;
+    strain_z = 0.0;
+    strain_xy = 0.0;
+    stress_x = 0.0;
+    stress_y = 0.0;
+    stress_z = 0.0;
+    stress_xy = 0.0;
 
     if (Util::scene()->sceneSolution()->isSolved())
     {
         if (labelMarker)
         {
-            // Von Mises stress
-            von_mises_stress = 0.0;
-
             SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
 
             young_modulus = marker->young_modulus.number;
@@ -683,6 +753,10 @@ LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointV
 
             forceX = marker->forceX.number;
             forceY = marker->forceY.number;
+
+            alpha = marker->alpha.number;
+            temp = marker->temp.number;
+            temp_ref = marker->temp_ref.number;
 
             Solution *sln_x = Util::scene()->sceneSolution()->sln(0);
             Solution *sln_y = Util::scene()->sceneSolution()->sln(1);
@@ -700,16 +774,24 @@ LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointV
             else
                 strain_z = (point.x > 0) ? value_x.value / point.x : 0.0;
 
-            strain_xy = value_x.derivative.y + value_y.derivative.x;
+            strain_xy = 0.5 * (value_x.derivative.y + value_y.derivative.x);
 
-            stress_x = young_modulus * value_x.derivative.x;
-            stress_y = young_modulus * value_y.derivative.y;
+            // elastic constant
+            double D = young_modulus / ((1 + poisson_ratio) * (1 - 2 * poisson_ratio));
+            double eps_th = (1 + poisson_ratio) * alpha * (temp - temp_ref);
+
+            stress_x = D * ((1 - poisson_ratio) * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + poisson_ratio * (strain_z));
+            stress_y = D * (poisson_ratio * (strain_x - eps_th) + (1 - poisson_ratio) * (strain_y - eps_th) + poisson_ratio * (strain_z));
             if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-                stress_z = 0.0;
+                stress_z = D * (poisson_ratio * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + (1 - poisson_ratio) * (strain_z)) - young_modulus/1e6;
             else
-                stress_z = (point.x > 0) ? young_modulus * value_x.value / point.x : 0.0;
+                stress_z = D * (poisson_ratio * (strain_x - eps_th) + poisson_ratio * (strain_y - eps_th) + (1 - poisson_ratio) * (strain_z));
 
-            stress_xy = young_modulus * (value_x.derivative.y + value_y.derivative.x);
+            stress_xy = D * (1 - 2 * poisson_ratio) / 2 * (value_x.derivative.y + value_y.derivative.x);
+
+            von_mises_stress = sqrt(0.5 * (sqr(stress_x - stress_y) + sqr(stress_y - stress_z) + sqr(stress_z - stress_x) + 6*sqr(stress_xy)));
+
+            tresca_stress = stress_x - stress_z;
         }
     }
 }
@@ -723,17 +805,17 @@ double LocalPointValueElasticity::variableValue(PhysicFieldVariable physicFieldV
         return von_mises_stress;
     }
         break;
-    case PhysicFieldVariable_Elasticity_StrainX:
+    case PhysicFieldVariable_Elasticity_StrainXX:
     {
         return strain_x;
     }
         break;
-    case PhysicFieldVariable_Elasticity_StrainY:
+    case PhysicFieldVariable_Elasticity_StrainYY:
     {
         return strain_y;
     }
         break;
-    case PhysicFieldVariable_Elasticity_StrainZ:
+    case PhysicFieldVariable_Elasticity_StrainZZ:
     {
         return strain_z;
     }
@@ -743,17 +825,17 @@ double LocalPointValueElasticity::variableValue(PhysicFieldVariable physicFieldV
         return strain_xy;
     }
         break;
-    case PhysicFieldVariable_Elasticity_StressX:
+    case PhysicFieldVariable_Elasticity_StressXX:
     {
         return stress_x;
     }
         break;
-    case PhysicFieldVariable_Elasticity_StressY:
+    case PhysicFieldVariable_Elasticity_StressYY:
     {
         return stress_y;
     }
         break;
-    case PhysicFieldVariable_Elasticity_StressZ:
+    case PhysicFieldVariable_Elasticity_StressZZ:
     {
         return stress_z;
     }
@@ -789,7 +871,21 @@ double LocalPointValueElasticity::variableValue(PhysicFieldVariable physicFieldV
 QStringList LocalPointValueElasticity::variables()
 {
     QStringList row;
-    row << QString("%1").arg(von_mises_stress, 0, 'e', 5);
+    row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
+           QString("%1").arg(point.y, 0, 'e', 5) <<
+           QString("%1").arg(von_mises_stress, 0, 'e', 5) <<
+           QString("%1").arg(tresca_stress, 0, 'e', 5) <<
+           QString("%1").arg(d.x, 0, 'e', 5) <<
+           QString("%1").arg(d.y, 0, 'e', 5) <<
+           QString("%1").arg(d.magnitude(), 0, 'e', 5) <<
+           QString("%1").arg(stress_x, 0, 'e', 5) <<
+           QString("%1").arg(stress_y, 0, 'e', 5) <<
+           QString("%1").arg(stress_z, 0, 'e', 5) <<
+           QString("%1").arg(stress_xy, 0, 'e', 5) <<
+           QString("%1").arg(strain_x, 0, 'e', 5) <<
+           QString("%1").arg(strain_y, 0, 'e', 5) <<
+           QString("%1").arg(strain_z, 0, 'e', 5) <<
+           QString("%1").arg(strain_xy, 0, 'e', 5);
 
     return QStringList(row);
 }
@@ -862,17 +958,17 @@ void ViewScalarFilterElasticity::calculateVariable(int i)
         node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
     }
         break;
-    case PhysicFieldVariable_Elasticity_StrainX:
+    case PhysicFieldVariable_Elasticity_StrainXX:
     {
         node->values[0][0][i] = dudx1[i];
     }
         break;
-    case PhysicFieldVariable_Elasticity_StrainY:
+    case PhysicFieldVariable_Elasticity_StrainYY:
     {
         node->values[0][0][i] = dudy2[i];
     }
         break;
-    case PhysicFieldVariable_Elasticity_StrainZ:
+    case PhysicFieldVariable_Elasticity_StrainZZ:
     {
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             node->values[0][0][i] = 0.0;
@@ -882,38 +978,72 @@ void ViewScalarFilterElasticity::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Elasticity_StrainXY:
     {
-        node->values[0][0][i] = dudy1[i] + dudx2[i];
+        node->values[0][0][i] = 0.5 * (dudy1[i] + dudx2[i]);
     }
         break;
-    case PhysicFieldVariable_Elasticity_StressX:
+    case PhysicFieldVariable_Elasticity_StressXX:
     {
         SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
 
-        node->values[0][0][i] = marker->young_modulus.number * dudx1[i];
+        // elastic constant
+        double D = marker->young_modulus.number / ((1 + marker->poisson_ratio.number) * (1 - 2 * marker->poisson_ratio.number));
+        double eps_th = (1 + marker->poisson_ratio.number) * marker->alpha.number * (marker->temp.number - marker->temp_ref.number);
+
+        double strain_x = dudx1[i];
+        double strain_y = dudy2[i];
+        double strain_z = 0.0;
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+            strain_z = value1[i] / x[i];
+
+        node->values[0][0][i] = D * ((1 - marker->poisson_ratio.number) * (strain_x - eps_th) + marker->poisson_ratio.number * (strain_y - eps_th) + marker->poisson_ratio.number * (strain_z));
+
     }
         break;
-    case PhysicFieldVariable_Elasticity_StressY:
+    case PhysicFieldVariable_Elasticity_StressYY:
     {
         SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
 
-        node->values[0][0][i] = marker->young_modulus.number * dudy2[i];
+        // elastic constant
+        double D = marker->young_modulus.number / ((1 + marker->poisson_ratio.number) * (1 - 2 * marker->poisson_ratio.number));
+        double eps_th = (1 + marker->poisson_ratio.number) * marker->alpha.number * (marker->temp.number - marker->temp_ref.number);
+
+        double strain_x = dudx1[i];
+        double strain_y = dudy2[i];
+        double strain_z = 0.0;
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+            strain_z = value1[i] / x[i];
+
+        node->values[0][0][i] = (marker->poisson_ratio.number * (strain_x - eps_th) + (1 - marker->poisson_ratio.number) * (strain_y - eps_th) + marker->poisson_ratio.number * (strain_z));
     }
         break;
-    case PhysicFieldVariable_Elasticity_StressZ:
+    case PhysicFieldVariable_Elasticity_StressZZ:
     {
         SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
+
+        // elastic constant
+        double D = marker->young_modulus.number / ((1 + marker->poisson_ratio.number) * (1 - 2 * marker->poisson_ratio.number));
+        double eps_th = (1 + marker->poisson_ratio.number) * marker->alpha.number * (marker->temp.number - marker->temp_ref.number);
+
+        double strain_x = dudx1[i];
+        double strain_y = dudy2[i];
+        double strain_z = 0.0;
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+            strain_z = value1[i] / x[i];
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            node->values[0][0][i] = 0.0;
+            node->values[0][0][i] = D * (marker->poisson_ratio.number * (strain_x - eps_th) + marker->poisson_ratio.number * (strain_y - eps_th) + (1 - marker->poisson_ratio.number) * (strain_z)) - marker->young_modulus.number/1e6;
         else
-            node->values[0][0][i] = marker->young_modulus.number * value1[i] / x[i];
+            node->values[0][0][i] = D * (marker->poisson_ratio.number * (strain_x - eps_th) + marker->poisson_ratio.number * (strain_y - eps_th) + (1 - marker->poisson_ratio.number) * (strain_z));
     }
         break;
     case PhysicFieldVariable_Elasticity_StressXY:
     {
         SceneLabelElasticityMarker *marker = dynamic_cast<SceneLabelElasticityMarker *>(labelMarker);
 
-        node->values[0][0][i] = marker->young_modulus.number * (dudy1[i] + dudx2[i]);
+        // elastic constant
+        double D = marker->young_modulus.number / ((1 + marker->poisson_ratio.number) * (1 - 2 * marker->poisson_ratio.number));
+
+        node->values[0][0][i] = D * (1 - 2 * marker->poisson_ratio.number) / 2 * (dudy1[i] + dudx2[i]);
     }
         break;
     case PhysicFieldVariable_Elasticity_Displacement:
@@ -958,7 +1088,7 @@ SceneEdgeElasticityMarker::SceneEdgeElasticityMarker(const QString &name, Physic
 
 QString SceneEdgeElasticityMarker::script()
 {
-    return QString("addEdge(\"%1\", \"%2\", \"%3\", %4, %5)").
+    return QString("addboundary(\"%1\", \"%2\", \"%3\", %4, %5)").
             arg(name).
             arg(physicFieldBCToStringKey(typeX)).
             arg(physicFieldBCToStringKey(typeY)).
@@ -992,23 +1122,30 @@ int SceneEdgeElasticityMarker::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelElasticityMarker::SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY)
+SceneLabelElasticityMarker::SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY,
+                                                       Value alpha, Value temp, Value temp_ref)
     : SceneLabelMarker(name)
 {
     this->young_modulus = young_modulus;
     this->poisson_ratio = poisson_ratio;
     this->forceX = forceX;
     this->forceY = forceY;
+    this->alpha = alpha;
+    this->temp = temp;
+    this->temp_ref = temp_ref;
 }
 
 QString SceneLabelElasticityMarker::script()
 {
-    return QString("addmaterial(\"%1\", %2, %3)").
+    return QString("addmaterial(\"%1\", %2, %3, %4, %5, %6, %7, %8)").
             arg(name).
             arg(young_modulus.text).
             arg(poisson_ratio.text).
             arg(forceX.text).
-            arg(forceY.text);
+            arg(forceY.text).
+            arg(alpha.text).
+            arg(temp.text).
+            arg(temp_ref.text);
 }
 
 QMap<QString, QString> SceneLabelElasticityMarker::data()
@@ -1018,6 +1155,9 @@ QMap<QString, QString> SceneLabelElasticityMarker::data()
     out["Poisson ratio (-)"] = poisson_ratio.number;
     out["Volumetric force X (N/m3)"] = forceX.number;
     out["Volumetric force Y (N/m3)"] = forceX.number;
+    out["Thermal exp. coef. (1/deg)"] = alpha.number;
+    out["Volumetric force Y (deg)"] = temp.number;
+    out["Volumetric force Y (deg)"] = temp_ref.number;
     return QMap<QString, QString>(out);
 }
 
@@ -1116,15 +1256,33 @@ void DSceneLabelElasticityMarker::createContent()
     txtPoissonNumber = new SLineEditValue(this);
     txtForceX = new SLineEditValue(this);
     txtForceY = new SLineEditValue(this);
+    txtAlpha = new SLineEditValue(this);
+    txtTemp = new SLineEditValue(this);
+    txtTempRef = new SLineEditValue(this);
+
+    // forces
+    QFormLayout *layoutForces = new QFormLayout();
+    layoutForces->addRow(tr("Force X (N):"), txtForceX);
+    layoutForces->addRow(tr("Force Y (N):"), txtForceY);
+
+    QGroupBox *grpForces = new QGroupBox(tr("Volumetric forces"), this);
+    grpForces->setLayout(layoutForces);
+
+    // thermal expansion
+    QFormLayout *layoutThermalExpansion = new QFormLayout();
+    layoutThermalExpansion->addRow(tr("Thermal exp. coef. (1/deg):"), txtAlpha);
+    layoutThermalExpansion->addRow(tr("Temperature (deg):"), txtTemp);
+    layoutThermalExpansion->addRow(tr("Ref. temperature (deg):"), txtTempRef);
+
+    QGroupBox *grpThermalExpansion = new QGroupBox(tr("Thermal expansion"), this);
+    grpThermalExpansion->setLayout(layoutThermalExpansion);
 
     layout->addWidget(new QLabel(tr("Young modulus (Pa):")), 1, 0);
     layout->addWidget(txtYoungModulus, 1, 1);
     layout->addWidget(new QLabel(tr("Poisson number (-):")), 2, 0);
     layout->addWidget(txtPoissonNumber, 2, 1);
-    layout->addWidget(new QLabel(tr("Volumetric force X (N):")), 3, 0);
-    layout->addWidget(txtForceX, 3, 1);
-    layout->addWidget(new QLabel(tr("Volumetric force Y (N):")), 4, 0);
-    layout->addWidget(txtForceY, 4, 1);
+    layout->addWidget(grpForces, 3, 0, 1, 2);
+    layout->addWidget(grpThermalExpansion, 4, 0, 1, 2);
 }
 
 void DSceneLabelElasticityMarker::load()
@@ -1138,6 +1296,10 @@ void DSceneLabelElasticityMarker::load()
 
     txtForceX->setValue(labelElasticityMarker->forceX);
     txtForceY->setValue(labelElasticityMarker->forceY);
+
+    txtAlpha->setValue(labelElasticityMarker->alpha);
+    txtTemp->setValue(labelElasticityMarker->temp);
+    txtTempRef->setValue(labelElasticityMarker->temp_ref);
 }
 
 bool DSceneLabelElasticityMarker::save()
@@ -1157,14 +1319,29 @@ bool DSceneLabelElasticityMarker::save()
         return false;
 
     if (txtForceX->evaluate())
-         labelElasticityMarker->forceX = txtForceX->value();
+        labelElasticityMarker->forceX = txtForceX->value();
     else
-         return false;
+        return false;
 
     if (txtForceY->evaluate())
-         labelElasticityMarker->forceY = txtForceY->value();
+        labelElasticityMarker->forceY = txtForceY->value();
     else
-         return false;
+        return false;
+
+    if (txtForceY->evaluate())
+        labelElasticityMarker->alpha = txtAlpha->value();
+    else
+        return false;
+
+    if (txtForceY->evaluate())
+        labelElasticityMarker->temp = txtTemp->value();
+    else
+        return false;
+
+    if (txtForceY->evaluate())
+        labelElasticityMarker->temp_ref = txtTempRef->value();
+    else
+        return false;
 
     return true;
 }

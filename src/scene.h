@@ -116,6 +116,7 @@ public:
 
     inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
     inline QString labelY() { return ((problemType == ProblemType_Planar) ? "Y" : "Z");  }
+    inline QString labelZ() { return ((problemType == ProblemType_Planar) ? "Z" : "a");  }
 
 private:
     HermesField *m_hermes;

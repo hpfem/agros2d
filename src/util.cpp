@@ -126,13 +126,13 @@ void initLists()
 
     physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_VonMisesStress, "elasticity_von_mises_stress");
     physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_Displacement, "elasticity_displacement");
-    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainX, "strain_x");
-    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainY, "strain_y");
-    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainZ, "strain_z");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainXX, "strain_xx");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainYY, "strain_yy");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainZZ, "strain_zz");
     physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StrainXY, "strain_xy");
-    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressX, "stress_x");
-    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressY, "stress_y");
-    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressZ, "stress_z");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressXX, "stress_xx");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressYY, "stress_yy");
+    physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressZZ, "stress_zz");
     physicFieldVariableList.insert(PhysicFieldVariable_Elasticity_StressXY, "stress_xy");
 
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_Velocity, "flow_velocity");
@@ -287,29 +287,29 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Von Mises stress");
     case PhysicFieldVariable_Elasticity_Displacement:
         return QObject::tr("Displacement");
-    case PhysicFieldVariable_Elasticity_StrainX:
-        return QObject::tr("Strain X");
-    case PhysicFieldVariable_Elasticity_StrainY:
-        return QObject::tr("Strain Y");
-    case PhysicFieldVariable_Elasticity_StrainZ:
-        return QObject::tr("Strain Z");
+    case PhysicFieldVariable_Elasticity_StrainXX:
+        return QObject::tr("Normal strain ") + Util::scene()->problemInfo()->labelX() + Util::scene()->problemInfo()->labelX();
+    case PhysicFieldVariable_Elasticity_StrainYY:
+        return QObject::tr("Normal strain ") + Util::scene()->problemInfo()->labelY() + Util::scene()->problemInfo()->labelY();
+    case PhysicFieldVariable_Elasticity_StrainZZ:
+        return QObject::tr("Normal strain ") + Util::scene()->problemInfo()->labelZ() + Util::scene()->problemInfo()->labelZ();
     case PhysicFieldVariable_Elasticity_StrainXY:
-        return QObject::tr("Strain XY");
-    case PhysicFieldVariable_Elasticity_StressX:
-        return QObject::tr("Stress X");
-    case PhysicFieldVariable_Elasticity_StressY:
-        return QObject::tr("Stress Y");
-    case PhysicFieldVariable_Elasticity_StressZ:
-        return QObject::tr("Stress Z");
+        return QObject::tr("Shear strain ") + Util::scene()->problemInfo()->labelX() + Util::scene()->problemInfo()->labelY();
+    case PhysicFieldVariable_Elasticity_StressXX:
+        return QObject::tr("Normal stress ") + Util::scene()->problemInfo()->labelX() + Util::scene()->problemInfo()->labelX();
+    case PhysicFieldVariable_Elasticity_StressYY:
+        return QObject::tr("Normal stress ") + Util::scene()->problemInfo()->labelY() + Util::scene()->problemInfo()->labelY();
+    case PhysicFieldVariable_Elasticity_StressZZ:
+        return QObject::tr("Normal stress ") + Util::scene()->problemInfo()->labelZ() + Util::scene()->problemInfo()->labelZ();
     case PhysicFieldVariable_Elasticity_StressXY:
-        return QObject::tr("Stress XY");
+        return QObject::tr("Shear stress ") + Util::scene()->problemInfo()->labelX() + Util::scene()->problemInfo()->labelY();
 
     case PhysicFieldVariable_Flow_Velocity:
         return QObject::tr("Velocity");
     case PhysicFieldVariable_Flow_VelocityX:
-        return QObject::tr("Velocity X");
+        return QObject::tr("Velocity ") + Util::scene()->problemInfo()->labelX();
     case PhysicFieldVariable_Flow_VelocityY:
-        return QObject::tr("Velocity Y");
+        return QObject::tr("Velocity ") + Util::scene()->problemInfo()->labelY();
     case PhysicFieldVariable_Flow_Pressure:
         return QObject::tr("Pressure");
     default:
@@ -423,29 +423,29 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("E");
     case PhysicFieldVariable_Elasticity_Displacement:
         return QObject::tr("d");
-    case PhysicFieldVariable_Elasticity_StrainX:
-        return QObject::tr("ex");
-    case PhysicFieldVariable_Elasticity_StrainY:
-        return QObject::tr("ey");
-    case PhysicFieldVariable_Elasticity_StrainZ:
-        return QObject::tr("ez");
+    case PhysicFieldVariable_Elasticity_StrainXX:
+        return QObject::tr("e") + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelX().toLower();
+    case PhysicFieldVariable_Elasticity_StrainYY:
+        return QObject::tr("e") + Util::scene()->problemInfo()->labelY().toLower() + Util::scene()->problemInfo()->labelY().toLower();
+    case PhysicFieldVariable_Elasticity_StrainZZ:
+        return QObject::tr("e") + Util::scene()->problemInfo()->labelZ().toLower() + Util::scene()->problemInfo()->labelZ().toLower();
     case PhysicFieldVariable_Elasticity_StrainXY:
-        return QObject::tr("gxy");
-    case PhysicFieldVariable_Elasticity_StressX:
-        return QObject::tr("sx");
-    case PhysicFieldVariable_Elasticity_StressY:
-        return QObject::tr("sy");
-    case PhysicFieldVariable_Elasticity_StressZ:
-        return QObject::tr("sz");
+        return QObject::tr("e") + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower();
+    case PhysicFieldVariable_Elasticity_StressXX:
+        return QObject::tr("s") + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelX().toLower();
+    case PhysicFieldVariable_Elasticity_StressYY:
+        return QObject::tr("s") + Util::scene()->problemInfo()->labelY().toLower() + Util::scene()->problemInfo()->labelY().toLower();
+    case PhysicFieldVariable_Elasticity_StressZZ:
+        return QObject::tr("s") + Util::scene()->problemInfo()->labelZ().toLower() + Util::scene()->problemInfo()->labelZ().toLower();
     case PhysicFieldVariable_Elasticity_StressXY:
-        return QObject::tr("txy");
+        return QObject::tr("s") + Util::scene()->problemInfo()->labelX().toLower() + Util::scene()->problemInfo()->labelY().toLower();
 
     case PhysicFieldVariable_Flow_Velocity:
         return QObject::tr("v");
     case PhysicFieldVariable_Flow_VelocityX:
-        return QObject::tr("vx");
+        return QObject::tr("v") + Util::scene()->problemInfo()->labelX().toLower();
     case PhysicFieldVariable_Flow_VelocityY:
-        return QObject::tr("vy");
+        return QObject::tr("v") + Util::scene()->problemInfo()->labelY().toLower();
     case PhysicFieldVariable_Flow_Pressure:
         return QObject::tr("p");
     default:
@@ -552,19 +552,19 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Pa");
     case PhysicFieldVariable_Elasticity_Displacement:
         return QObject::tr("m");
-    case PhysicFieldVariable_Elasticity_StrainX:
+    case PhysicFieldVariable_Elasticity_StrainXX:
         return QObject::tr("-");
-    case PhysicFieldVariable_Elasticity_StrainY:
+    case PhysicFieldVariable_Elasticity_StrainYY:
         return QObject::tr("-");
-    case PhysicFieldVariable_Elasticity_StrainZ:
+    case PhysicFieldVariable_Elasticity_StrainZZ:
         return QObject::tr("-");
     case PhysicFieldVariable_Elasticity_StrainXY:
         return QObject::tr("-");
-    case PhysicFieldVariable_Elasticity_StressX:
+    case PhysicFieldVariable_Elasticity_StressXX:
         return QObject::tr("Pa");
-    case PhysicFieldVariable_Elasticity_StressY:
+    case PhysicFieldVariable_Elasticity_StressYY:
         return QObject::tr("Pa");
-    case PhysicFieldVariable_Elasticity_StressZ:
+    case PhysicFieldVariable_Elasticity_StressZZ:
         return QObject::tr("Pa");
     case PhysicFieldVariable_Elasticity_StressXY:
         return QObject::tr("Pa");

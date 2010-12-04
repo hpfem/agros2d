@@ -435,13 +435,13 @@ enum PhysicFieldVariable
     PhysicFieldVariable_Heat_Conductivity,
     PhysicFieldVariable_Elasticity_VonMisesStress,
     PhysicFieldVariable_Elasticity_Displacement,
-    PhysicFieldVariable_Elasticity_StrainX,
-    PhysicFieldVariable_Elasticity_StrainY,
-    PhysicFieldVariable_Elasticity_StrainZ,
+    PhysicFieldVariable_Elasticity_StrainXX,
+    PhysicFieldVariable_Elasticity_StrainYY,
+    PhysicFieldVariable_Elasticity_StrainZZ,
     PhysicFieldVariable_Elasticity_StrainXY,
-    PhysicFieldVariable_Elasticity_StressX,
-    PhysicFieldVariable_Elasticity_StressY,
-    PhysicFieldVariable_Elasticity_StressZ,
+    PhysicFieldVariable_Elasticity_StressXX,
+    PhysicFieldVariable_Elasticity_StressYY,
+    PhysicFieldVariable_Elasticity_StressZZ,
     PhysicFieldVariable_Elasticity_StressXY,
     PhysicFieldVariable_Flow_Velocity,
     PhysicFieldVariable_Flow_VelocityX,
@@ -513,13 +513,13 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Current_Losses:
 
     case PhysicFieldVariable_Elasticity_VonMisesStress:
-    case PhysicFieldVariable_Elasticity_StrainX:
-    case PhysicFieldVariable_Elasticity_StrainY:
-    case PhysicFieldVariable_Elasticity_StrainZ:
+    case PhysicFieldVariable_Elasticity_StrainXX:
+    case PhysicFieldVariable_Elasticity_StrainYY:
+    case PhysicFieldVariable_Elasticity_StrainZZ:
     case PhysicFieldVariable_Elasticity_StrainXY:
-    case PhysicFieldVariable_Elasticity_StressX:
-    case PhysicFieldVariable_Elasticity_StressY:
-    case PhysicFieldVariable_Elasticity_StressZ:
+    case PhysicFieldVariable_Elasticity_StressXX:
+    case PhysicFieldVariable_Elasticity_StressYY:
+    case PhysicFieldVariable_Elasticity_StressZZ:
     case PhysicFieldVariable_Elasticity_StressXY:
 
     case PhysicFieldVariable_Flow_Velocity:
