@@ -460,7 +460,7 @@ SceneLabelMarker *HermesElasticity::newLabelMarker()
                                           Value("0.33"),
                                           Value("0"),
                                           Value("0"),
-                                          Value("0"),
+                                          Value("1.2e-5"),
                                           Value("0"),
                                           Value("0"));
 }
