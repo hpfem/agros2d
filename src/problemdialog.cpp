@@ -304,6 +304,10 @@ bool ProblemDialog::save()
             Util::scene()->replaceLabelMarker(Util::scene()->labelMarkers[1]);
         }
     }
+    else
+    {
+        m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
+    }
 
     // check values
     if (cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt() == AnalysisType_Harmonic)
