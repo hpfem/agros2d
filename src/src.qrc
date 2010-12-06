@@ -84,6 +84,5 @@
         <file>images/grid.png</file>
         <file>images/snap-to-grid.png</file>
         <file>images/rulers.png</file>
-        <file>images/equations/elasticity_steadystate.png</file>
     </qresource>
 </RCC>
