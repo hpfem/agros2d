@@ -59,7 +59,7 @@ void LogDialog::createControls()
     connect(btnDeleteLog, SIGNAL(clicked()), this, SLOT(doDeleteLog()));
 
     btnClose = new QPushButton(tr("Close"));
-    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose())); 
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     btnShowAdaptivityErrorChart = new QPushButton(tr("Adapt. error"));
     connect(btnShowAdaptivityErrorChart, SIGNAL(clicked()), this, SLOT(doShowAdaptivityErrorChart()));
@@ -102,26 +102,11 @@ void LogDialog::loadProgressLog()
     QFile file(tempProblemDir() + "/messages.log");
     if (file.exists())
     {
+        lstMessages->setTextColor(QColor(Qt::black));
+
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            QString message;
-            QTextStream messages(&file);
+            lstMessages->append(file.readAll());
 
-            lstMessages->setUpdatesEnabled(false);
-
-            while (!messages.atEnd())
-            {
-                message = messages.readLine();
-                if (message[1].isNumber())
-                    lstMessages->setTextColor(QColor(Qt::gray));
-                else
-                    lstMessages->setTextColor(QColor(Qt::black));
-
-                lstMessages->insertPlainText(message + "\n");
-            }
-
-            lstMessages->setUpdatesEnabled(true);
-        }
         btnSaveLog->setEnabled(true);
 
         btnShowAdaptivityErrorChart->setEnabled(QFile::exists(tempProblemDir() + "/adaptivity_error.png"));
@@ -152,29 +137,11 @@ void LogDialog::loadApplicationLog()
     QFile file(location + "/app.log");
     if (file.exists())
     {
+        lstMessages->setTextColor(QColor(Qt::black));
+
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            QString message;
-            QTextStream messages(&file);
+            lstMessages->append(file.readAll());
 
-            lstMessages->setUpdatesEnabled(false);
-
-            while (!messages.atEnd())
-            {
-                message = messages.readLine();
-
-                if (message.contains("Warning"))
-                    lstMessages->setTextColor(QColor(Qt::blue));
-                else if (message.contains("Critical") || message.contains("Fatal"))
-                    lstMessages->setTextColor(QColor(Qt::red));
-                else
-                    lstMessages->setTextColor(QColor(Qt::black));
-
-                lstMessages->append(message);
-            }
-
-            lstMessages->setUpdatesEnabled(true);
-        }
         btnSaveLog->setEnabled(true);
     }
     else
