@@ -105,7 +105,10 @@ void LogDialog::loadProgressLog()
         lstMessages->setTextColor(QColor(Qt::black));
 
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-            lstMessages->append(file.readAll());
+        {
+            lstMessages->setPlainText(file.readAll());
+            lstMessages->moveCursor(QTextCursor::End);
+        }
 
         btnSaveLog->setEnabled(true);
 
@@ -140,7 +143,10 @@ void LogDialog::loadApplicationLog()
         lstMessages->setTextColor(QColor(Qt::black));
 
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-            lstMessages->append(file.readAll());
+        {
+            lstMessages->setPlainText(file.readAll());
+            lstMessages->moveCursor(QTextCursor::End);
+        }
 
         btnSaveLog->setEnabled(true);
     }
