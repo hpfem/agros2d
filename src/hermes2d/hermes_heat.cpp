@@ -373,21 +373,21 @@ void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPo
     heatNode->setExpanded(true);
 
     // Thermal Conductivity
-    addTreeWidgetItemValue(heatNode, tr("Thermal conductivity:"), QString("%1").arg(localPointValueHeat->thermal_conductivity, 0, 'f', 2), "W/m.K");
+    addTreeWidgetItemValue(heatNode, tr("Thermal conductivity:"), QString("%1").arg(localPointValueHeat->thermal_conductivity, 0, 'f', 2), tr("W/m.K"));
 
     // Volume Heat
-    addTreeWidgetItemValue(heatNode, tr("Volume heat:"), QString("%1").arg(localPointValueHeat->volume_heat, 0, 'e', 3), "W/m3");
+    addTreeWidgetItemValue(heatNode, tr("Volume heat:"), QString("%1").arg(localPointValueHeat->volume_heat, 0, 'e', 3), tr("W/m3"));
 
     // Temperature
-    addTreeWidgetItemValue(heatNode, tr("Temperature:"), QString("%1").arg(localPointValueHeat->temperature, 0, 'f', 2), "deg.");
+    addTreeWidgetItemValue(heatNode, tr("Temperature:"), QString("%1").arg(localPointValueHeat->temperature, 0, 'f', 2), tr("deg."));
 
     // Heat Flux
     QTreeWidgetItem *itemHeatFlux = new QTreeWidgetItem(heatNode);
     itemHeatFlux->setText(0, tr("Heat flux"));
     itemHeatFlux->setExpanded(true);
 
-    addTreeWidgetItemValue(itemHeatFlux, "F" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), "W/m2");
-    addTreeWidgetItemValue(itemHeatFlux, "F" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), "W/m2");
+    addTreeWidgetItemValue(itemHeatFlux, "F" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->F.x, 0, 'e', 3), tr("W/m2"));
+    addTreeWidgetItemValue(itemHeatFlux, "F" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->F.y, 0, 'e', 3), tr("W/m2"));
     addTreeWidgetItemValue(itemHeatFlux, "F:", QString("%1").arg(localPointValueHeat->F.magnitude(), 0, 'e', 3), "W/m2");
 
     // Temperature Gradient
@@ -395,9 +395,9 @@ void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPo
     itemTemperatureGradient->setText(0, tr("Temperature gradient"));
     itemTemperatureGradient->setExpanded(true);
 
-    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), "K/m");
-    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), "K/m");
-    addTreeWidgetItemValue(itemTemperatureGradient, "G:", QString("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "K/m");
+    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), tr("deg./m"));
+    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), tr("deg./m"));
+    addTreeWidgetItemValue(itemTemperatureGradient, "G:", QString("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "deg./m");
 }
 
 void HermesHeat::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -409,8 +409,8 @@ void HermesHeat::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegra
     heatNode->setText(0, tr("Heat Transfer"));
     heatNode->setExpanded(true);
 
-    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("C"));
-    addTreeWidgetItemValue(heatNode, tr("Temperature dif.:"), QString("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("C"));
+    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
+    addTreeWidgetItemValue(heatNode, tr("Temperature dif.:"), QString("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("deg."));
     addTreeWidgetItemValue(heatNode, tr("Heat flux:"), QString("%1").arg(surfaceIntegralValueHeat->heatFlux, 0, 'e', 3), tr("W"));
 }
 
