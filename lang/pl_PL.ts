@@ -1137,7 +1137,7 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="302"/>
         <source>Node already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Istnieje już taki węzeł.</translation>
     </message>
 </context>
 <context>
@@ -1928,27 +1928,27 @@
     <message>
         <location filename="../src/gui.cpp" line="615"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Obraz</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="654"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="658"/>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik:</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="702"/>
         <source>Open file</source>
-        <translation type="unfinished">Otwórz plik</translation>
+        <translation>Otwórz plik</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="702"/>
         <source>Images (*.png *.bmp *.jpg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrazy (*.png *.bmp *.jpg)</translation>
     </message>
 </context>
 <context>
@@ -2033,7 +2033,7 @@
         <location filename="../src/logdialog.cpp" line="58"/>
         <location filename="../src/logdialog.cpp" line="217"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Skasuj</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="61"/>
@@ -2064,17 +2064,17 @@
     <message>
         <location filename="../src/logdialog.cpp" line="217"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chcesz całkowicie skasować dziennik aplikacji?</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="217"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tak</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="217"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nie</translation>
     </message>
 </context>
 <context>
@@ -2194,7 +2194,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="181"/>
         <source>Load background...</source>
-        <translation type="unfinished"></translation>
+        <translation>Obraz w tle...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="185"/>
@@ -2431,13 +2431,14 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="770"/>
         <source>Application</source>
-        <translation type="unfinished">Aplikacja</translation>
+        <translation>Aplikacja</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="770"/>
         <source>Problem has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem został zmieniony.
+Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1039"/>
@@ -2452,7 +2453,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="182"/>
         <source>Load background image</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj obraz w tło</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="294"/>
@@ -2477,7 +2478,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="378"/>
         <source>&amp;Tools</source>
-        <translation>&amp;Narzędzia</translation>
+        <translation>N&amp;arzędzia</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="411"/>
@@ -2737,22 +2738,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/problemdialog.cpp" line="285"/>
         <source>Change physical field type</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmiana fizyki</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="285"/>
         <source>Are you sure change physical field type?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz zmienić typ fizyki problemu?</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="285"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tak</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="285"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nie</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="310"/>
@@ -2818,7 +2819,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/progressdialog.cpp" line="766"/>
         <source>&amp;Save image</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zapisz obraz</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="814"/>
@@ -3149,7 +3150,7 @@ Do you want to save your changes?</source>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="289"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="380"/>
         <source>Boundary type &apos;%1&apos; is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brzeg typu &apos;%1&apos; nie jest obsługiwany.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="221"/>
@@ -3973,7 +3974,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="306"/>
         <source>Boundary type &apos;%1&apos; or &apos;%2&apos; is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brzegi typu &apos;%1&apos; i &apos;%3&apos; nie są obsługiwane.</translation>
     </message>
 </context>
 <context>
@@ -4134,7 +4135,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scene.cpp" line="201"/>
         <source>Alt+N</source>
-        <translation>Alt+W</translation>
+        <translation>Alt+N</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="202"/>
@@ -4149,7 +4150,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scene.cpp" line="206"/>
         <source>Alt+E</source>
-        <translation>Alt+K</translation>
+        <translation>Alt+E</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="207"/>
@@ -4164,7 +4165,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scene.cpp" line="211"/>
         <source>Alt+L</source>
-        <translation>Alt+E</translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="212"/>
@@ -5112,7 +5113,7 @@ Do you want to save your changes?</source>
         <location filename="../src/scripteditordialog.cpp" line="925"/>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik &apos;%1&apos; został zmieniony. Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <source>The document has been modified.
@@ -5320,7 +5321,7 @@ zapisać zmiany?</translation>
 		&lt;td&gt;Dodanie nowego punktu&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Alt+N&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Dodanie punktu poprzez podanie współrzędnych&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
