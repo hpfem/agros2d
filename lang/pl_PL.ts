@@ -515,17 +515,17 @@
     <message>
         <location filename="../src/configdialog.cpp" line="552"/>
         <source>Scalar field</source>
-        <translation type="unfinished">Pole skalarne</translation>
+        <translation>Pole skalarne</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="554"/>
         <source>Vector field</source>
-        <translation type="unfinished">Pole wektorowe</translation>
+        <translation>Pole wektorowe</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="561"/>
         <source>Deform shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Deformacja</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="565"/>
@@ -990,37 +990,37 @@
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1265"/>
         <source>Force X (N):</source>
-        <translation type="unfinished">Siła X(N):</translation>
+        <translation>Siła X (N):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1266"/>
         <source>Force Y (N):</source>
-        <translation type="unfinished">Siła Y (N):</translation>
+        <translation>Siła Y (N):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1268"/>
         <source>Volumetric forces</source>
-        <translation type="unfinished"></translation>
+        <translation>Siły w objętości</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1273"/>
         <source>Thermal exp. coef. (1/deg):</source>
-        <translation type="unfinished"></translation>
+        <translation>Wsp. rozsz. ciepl. (1/K):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1274"/>
         <source>Temperature (deg):</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatura (K):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1275"/>
         <source>Ref. temperature (deg):</source>
-        <translation type="unfinished"></translation>
+        <translation>Temp. odniesienia (K):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1277"/>
         <source>Thermal expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozszerzalność cieplna</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1280"/>
@@ -1418,12 +1418,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="534"/>
         <source>Volumetric force</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła w objętości</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="542"/>
         <source>Thermal expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozszerzalność cieplna</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="550"/>
@@ -1433,22 +1433,22 @@
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="551"/>
         <source>Tresca stress:</source>
-        <translation type="unfinished"></translation>
+        <translation>Naprężenie Tresca:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="555"/>
         <source>Displacement</source>
-        <translation type="unfinished">Indukcja elektryczna</translation>
+        <translation>Przesunięcie</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="564"/>
         <source>Stresses</source>
-        <translation type="unfinished"></translation>
+        <translation>Naprężenia</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="574"/>
         <source>Strains</source>
-        <translation type="unfinished"></translation>
+        <translation>Odkształcenia</translation>
     </message>
 </context>
 <context>
@@ -1647,7 +1647,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="376"/>
         <source>W/m.K</source>
-        <translation type="unfinished">W/m.K</translation>
+        <translation>W/m.K</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="379"/>
@@ -1657,7 +1657,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="379"/>
         <source>W/m3</source>
-        <translation type="unfinished">W/m3</translation>
+        <translation>W/m3</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="382"/>
@@ -1673,7 +1673,7 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="389"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="390"/>
         <source>W/m2</source>
-        <translation type="unfinished">W/m2</translation>
+        <translation>W/m2</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="395"/>
@@ -1684,7 +1684,7 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="398"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="399"/>
         <source>deg./m</source>
-        <translation type="unfinished"></translation>
+        <translation>deg./m</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="409"/>
@@ -3574,30 +3574,30 @@ Czy chcesz zapisać zmiany?</translation>
         <location filename="../src/util.cpp" line="293"/>
         <location filename="../src/util.cpp" line="295"/>
         <source>Normal strain </source>
-        <translation type="unfinished"></translation>
+        <translation>Odkształcenie normalne</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="297"/>
         <source>Shear strain </source>
-        <translation type="unfinished"></translation>
+        <translation>Odkształcenie ścinające </translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="299"/>
         <location filename="../src/util.cpp" line="301"/>
         <location filename="../src/util.cpp" line="303"/>
         <source>Normal stress </source>
-        <translation type="unfinished"></translation>
+        <translation>Naprężenie normalne</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="305"/>
         <source>Shear stress </source>
-        <translation type="unfinished"></translation>
+        <translation>Naprężenie ścinające</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="310"/>
         <location filename="../src/util.cpp" line="312"/>
         <source>Velocity </source>
-        <translation type="unfinished"></translation>
+        <translation>Prędkość</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="314"/>
@@ -3819,7 +3819,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/util.cpp" line="425"/>
         <source>d</source>
-        <translation type="unfinished"></translation>
+        <translation>d</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="427"/>
@@ -3827,7 +3827,7 @@ Czy chcesz zapisać zmiany?</translation>
         <location filename="../src/util.cpp" line="431"/>
         <location filename="../src/util.cpp" line="433"/>
         <source>e</source>
-        <translation type="unfinished"></translation>
+        <translation>e</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="435"/>
@@ -3835,17 +3835,17 @@ Czy chcesz zapisać zmiany?</translation>
         <location filename="../src/util.cpp" line="439"/>
         <location filename="../src/util.cpp" line="441"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="594"/>
         <source>Electrostatic field</source>
-        <translation type="unfinished">Pole elektryczne</translation>
+        <translation>Pole elektrostatyczne</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="602"/>
         <source>Structural mechanics</source>
-        <translation type="unfinished"></translation>
+        <translation>Mechanika konstrukcji</translation>
     </message>
     <message>
         <source>vx</source>
@@ -3976,7 +3976,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/util.cpp" line="554"/>
         <source>m</source>
-        <translation type="unfinished">m</translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="592"/>
@@ -4834,7 +4834,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/sceneview.cpp" line="277"/>
         <source>Set mode</source>
-        <translation>Tryb ustawień</translation>
+        <translation>Zmiana trybu</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2135"/>
