@@ -666,13 +666,13 @@ void ImageLoaderDialog::createControls()
     txtHeight = new SLineEditDouble(1.0);
 
     QGridLayout *layoutPosition = new QGridLayout();
-    layoutPosition->addWidget(new QLabel("X:"), 0, 0);
+    layoutPosition->addWidget(new QLabel(tr("X:")), 0, 0);
     layoutPosition->addWidget(txtX, 0, 1);
-    layoutPosition->addWidget(new QLabel("Y:"), 1, 0);
+    layoutPosition->addWidget(new QLabel(tr("Y:")), 1, 0);
     layoutPosition->addWidget(txtY, 1, 1);
-    layoutPosition->addWidget(new QLabel("Width:"), 0, 2);
+    layoutPosition->addWidget(new QLabel(tr("Width:")), 0, 2);
     layoutPosition->addWidget(txtWidth, 0, 3);
-    layoutPosition->addWidget(new QLabel("Height:"), 1, 2);
+    layoutPosition->addWidget(new QLabel(tr("Height:")), 1, 2);
     layoutPosition->addWidget(txtHeight, 1, 3);
 
     // dialog buttons
