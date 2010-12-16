@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="pl_PL">
+<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>CentralWidget</name>
     <message>
@@ -2045,6 +2046,26 @@
         <translation>Plik:</translation>
     </message>
     <message>
+        <location filename="../src/gui.cpp" line="669"/>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui.cpp" line="671"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui.cpp" line="673"/>
+        <source>Width:</source>
+        <translation>Szerokość:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui.cpp" line="675"/>
+        <source>Height:</source>
+        <translation>Wysokość:</translation>
+    </message>
+    <message>
         <location filename="../src/gui.cpp" line="702"/>
         <source>Open file</source>
         <translation>Otwórz plik</translation>
@@ -2129,13 +2150,13 @@
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="55"/>
-        <location filename="../src/logdialog.cpp" line="203"/>
+        <location filename="../src/logdialog.cpp" line="176"/>
         <source>Save log</source>
         <translation>Zapisz dziennik</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="58"/>
-        <location filename="../src/logdialog.cpp" line="217"/>
+        <location filename="../src/logdialog.cpp" line="190"/>
         <source>Delete</source>
         <translation>Skasuj</translation>
     </message>
@@ -2155,28 +2176,28 @@
         <translation>Ilość zmiennych adapt.</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="133"/>
-        <location filename="../src/logdialog.cpp" line="183"/>
+        <location filename="../src/logdialog.cpp" line="121"/>
+        <location filename="../src/logdialog.cpp" line="156"/>
         <source>No messages...</source>
         <translation>Brak wiadomości...</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="203"/>
+        <location filename="../src/logdialog.cpp" line="176"/>
         <source>Log files (*.log)</source>
         <translation>Pliki dziennika (*.log)</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="217"/>
+        <location filename="../src/logdialog.cpp" line="190"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
         <translation>Czy chcesz całkowicie skasować dziennik aplikacji?</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="217"/>
+        <location filename="../src/logdialog.cpp" line="190"/>
         <source>&amp;Yes</source>
         <translation>&amp;Tak</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="217"/>
+        <location filename="../src/logdialog.cpp" line="190"/>
         <source>&amp;No</source>
         <translation>&amp;Nie</translation>
     </message>
@@ -2534,13 +2555,12 @@
     </message>
     <message>
         <source>Application</source>
-        <translation>Aplikacja</translation>
+        <translation type="obsolete">Aplikacja</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="770"/>
         <source>Problem has been modified.
 Do you want to save your changes?</source>
-        <translation>Problem został zmieniony.
+        <translation type="obsolete">Problem został zmieniony.
 Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
@@ -2859,30 +2879,30 @@ Czy chcesz zapisać zmiany?</translation>
         <translation>&amp;Nie</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="313"/>
-        <location filename="../src/problemdialog.cpp" line="322"/>
-        <location filename="../src/problemdialog.cpp" line="328"/>
-        <location filename="../src/problemdialog.cpp" line="334"/>
+        <location filename="../src/problemdialog.cpp" line="317"/>
+        <location filename="../src/problemdialog.cpp" line="326"/>
+        <location filename="../src/problemdialog.cpp" line="332"/>
+        <location filename="../src/problemdialog.cpp" line="338"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="313"/>
+        <location filename="../src/problemdialog.cpp" line="317"/>
         <source>Frequency cannot be negative.</source>
         <translation>Częstotliwość nie może być ujemna.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="322"/>
+        <location filename="../src/problemdialog.cpp" line="326"/>
         <source>Time step must be positive.</source>
         <translation>Krok musi być dodatni.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="328"/>
+        <location filename="../src/problemdialog.cpp" line="332"/>
         <source>Total time must be positive.</source>
         <translation>Całkowity czas musi być dodatni.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="334"/>
+        <location filename="../src/problemdialog.cpp" line="338"/>
         <source>Time step is greater then total time.</source>
         <translation>Krok jest dłuższy niż całkowity czas.</translation>
     </message>
@@ -3129,7 +3149,7 @@ Czy chcesz zapisać zmiany?</translation>
         <translation>Krok: %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="345"/>
+        <location filename="../src/problemdialog.cpp" line="349"/>
         <location filename="../src/util.cpp" line="755"/>
         <source>Error</source>
         <translation>Błąd</translation>

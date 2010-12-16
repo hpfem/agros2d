@@ -2042,6 +2042,26 @@
         <translation>Název souboru:</translation>
     </message>
     <message>
+        <location filename="../src/gui.cpp" line="669"/>
+        <source>X:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui.cpp" line="671"/>
+        <source>Y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui.cpp" line="673"/>
+        <source>Width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui.cpp" line="675"/>
+        <source>Height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/gui.cpp" line="702"/>
         <source>Open file</source>
         <translation>Otevřít soubor</translation>
@@ -2126,13 +2146,13 @@
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="55"/>
-        <location filename="../src/logdialog.cpp" line="203"/>
+        <location filename="../src/logdialog.cpp" line="176"/>
         <source>Save log</source>
         <translation>Uložit záznam</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="58"/>
-        <location filename="../src/logdialog.cpp" line="217"/>
+        <location filename="../src/logdialog.cpp" line="190"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
@@ -2152,28 +2172,28 @@
         <translation>Adapt. DOFs</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="133"/>
-        <location filename="../src/logdialog.cpp" line="183"/>
+        <location filename="../src/logdialog.cpp" line="121"/>
+        <location filename="../src/logdialog.cpp" line="156"/>
         <source>No messages...</source>
         <translation>Žádné zprávy...</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="203"/>
+        <location filename="../src/logdialog.cpp" line="176"/>
         <source>Log files (*.log)</source>
         <translation>Soubory záznamů (*.log)</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="217"/>
+        <location filename="../src/logdialog.cpp" line="190"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
         <translation>Jste si jisti, že chcete trvale odstranit záznam aplikace?</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="217"/>
+        <location filename="../src/logdialog.cpp" line="190"/>
         <source>&amp;Yes</source>
         <translation>&amp;Ano</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="217"/>
+        <location filename="../src/logdialog.cpp" line="190"/>
         <source>&amp;No</source>
         <translation>&amp;Ne</translation>
     </message>
@@ -2825,30 +2845,30 @@ Do you want to save your changes?</source>
         <translation>&amp;Ne</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="313"/>
-        <location filename="../src/problemdialog.cpp" line="322"/>
-        <location filename="../src/problemdialog.cpp" line="328"/>
-        <location filename="../src/problemdialog.cpp" line="334"/>
+        <location filename="../src/problemdialog.cpp" line="317"/>
+        <location filename="../src/problemdialog.cpp" line="326"/>
+        <location filename="../src/problemdialog.cpp" line="332"/>
+        <location filename="../src/problemdialog.cpp" line="338"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="313"/>
+        <location filename="../src/problemdialog.cpp" line="317"/>
         <source>Frequency cannot be negative.</source>
         <translation>Frekvence nesmí být záporná.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="322"/>
+        <location filename="../src/problemdialog.cpp" line="326"/>
         <source>Time step must be positive.</source>
         <translation>Časový krok musí být kladný.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="328"/>
+        <location filename="../src/problemdialog.cpp" line="332"/>
         <source>Total time must be positive.</source>
         <translation>Celkový čas musí být kladný.</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="334"/>
+        <location filename="../src/problemdialog.cpp" line="338"/>
         <source>Time step is greater then total time.</source>
         <translation>Časový krok je delší než celkový čas.</translation>
     </message>
@@ -3184,7 +3204,7 @@ Do you want to save your changes?</source>
         <translation>Vodivost</translation>
     </message>
     <message>
-        <location filename="../src/problemdialog.cpp" line="345"/>
+        <location filename="../src/problemdialog.cpp" line="349"/>
         <location filename="../src/util.cpp" line="755"/>
         <source>Error</source>
         <translation>Chyba</translation>
