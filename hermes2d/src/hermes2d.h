@@ -18,10 +18,30 @@
 #ifndef __HERMES_2D_H
 #define __HERMES_2D_H
 
-#include "common.h"
+// hermes_common
+// solvers
+#include "../hermes_common/solver/amesos.h"
+#include "../hermes_common/solver/aztecoo.h"
+#include "../hermes_common/solver/epetra.h"
+#include "../hermes_common/solver/mumps.h"
+#include "../hermes_common/solver/nox.h"
+#include "../hermes_common/solver/pardiso.h"
+#include "../hermes_common/solver/petsc.h"
+#include "../hermes_common/solver/umfpack_solver.h"
+#include "../hermes_common/solver/superlu.h"
+
+// preconditioners
+#include "../hermes_common/solver/precond.h"
+#include "../hermes_common/solver/precond_ifpack.h"
+#include "../hermes_common/solver/precond_ml.h"
+
+// boundary conditions
+#include "../hermes_common/bctypes.h"
+
+#include "h2d_common.h"
+#include "hermes_logging.h"
 
 #include "range.h"
-#include "tuple.h"
 #include "limit_order.h"
 
 #include "mesh.h"
@@ -29,38 +49,24 @@
 #include "h2d_reader.h"
 #include "exodusii.h"
 
-#include "space_h1.h"
-#include "space_hcurl.h"
-#include "space_l2.h"
-#include "space_hdiv.h"
+#include "space/space_h1.h"
+#include "space/space_hcurl.h"
+#include "space/space_l2.h"
+#include "space/space_hdiv.h"
 
 #include "quad_all.h"
-#include "shapeset_h1_all.h"
-#include "shapeset_hc_all.h"
-#include "shapeset_hd_all.h"
-#include "shapeset_l2_all.h"
+#include "shapeset/shapeset_h1_all.h"
+#include "shapeset/shapeset_hc_all.h"
+#include "shapeset/shapeset_hd_all.h"
+#include "shapeset/shapeset_l2_all.h"
 
 #include "refmap.h"
 #include "traverse.h"
 #include "trans.h"
 
 #include "weakform.h"
-#include "linsystem.h"
-#include "feproblem.h"
-#include "nonlinsystem.h"
-#include "refsystem.h"
-#include "refsystem2.h"
+#include "discrete_problem.h"
 #include "forms.h"
-
-#include "itersolver.h"
-#include "solver_epetra.h"
-#include "solver_aztecoo.h"
-#include "solver_nox.h"
-
-// preconditioners
-#include "precond.h"
-#include "precond_ifpack.h"
-#include "precond_ml.h"
 
 #include "integrals_h1.h"
 #include "integrals_hcurl.h"
@@ -91,14 +97,11 @@
 #include "ref_selectors/h1_proj_based_selector.h"
 #include "ref_selectors/hcurl_proj_based_selector.h"
 
-#include "adapt.h"
-#include "l2_adapt.h"
-#include "h1_adapt.h"
-#include "hcurl_adapt.h"
+#include "adapt/adapt.h"
+#include "neighbor.h"
+#include "ogprojection.h"
 
-void hermes2d_initialize(int* argc = NULL, char* argv[] = NULL);
-void hermes2d_finalize(bool force_quit = false);
-
+#include "numerical_flux.h"
 /**
 
 \mainpage
@@ -175,7 +178,7 @@ Shapeset is a base class for all shapesets, both scalar (H1) and vector-valued (
 the interface (basically it is just a bunch of tables) and the functionality for constrained shape
 functions.
 
-The actual shapesets are H1ShapesetOrtho, H1ShapesetBeuchler, HcurlShapesetLegendre and
+The actual shapesets are H1ShapesetOrtho, H1ShapesetJacobi, HcurlShapesetLegendre and
 HcurlShapesetGradLeg. The other ("eigen") shapesets are experimental and not recommended for normal
 use.
 
@@ -285,6 +288,8 @@ Relevant files: view.h
 
 
 */
+
+
 
 
 #endif

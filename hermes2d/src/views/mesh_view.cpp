@@ -22,25 +22,43 @@
 #ifndef NOGLUT
 
 #include <GL/freeglut.h>
-#include "../common.h"
+#include "../h2d_common.h"
 #include "mesh_view.h"
 
 
 //// MeshView //////////////////////////////////////////////////////////////////////////////////////
 
-MeshView::MeshView(const char* title, int x, int y, int width, int height)
-        : View(title, x, y, width, height)
+MeshView::MeshView(const char* title, WinGeom* wg)
+        : View(title, wg)
 {
   nodes = elems = NULL;
   b_scale = false;
   b_ids = false;
   b_markers = true;
+  b_elem_mrk = false;
 }
+
+MeshView::MeshView(char* title, WinGeom* wg)
+        : View(title, wg)
+{
+  nodes = elems = NULL;
+  b_scale = false;
+  b_ids = false;
+  b_markers = true;
+  b_elem_mrk = false;
+}
+
+
+
+
+
 
 
 void MeshView::show(Mesh* mesh)
 {
   Solution sln;
+  if (mesh == NULL) error("mesh == NULL in MeshView::show().");
+  if (mesh->get_max_element_id() == 0) error("Attempt to visualize empty mesh in MeshView::show().");
   sln.set_zero(mesh);
   lin.process_solution(&sln);
   lin.lock_data();
@@ -118,7 +136,8 @@ void MeshView::on_display()
     int mrk = b_markers ? edges[i][2] : 0;
 
     if (!edges[i][2] &&
-        (tvert[edges[i][0]][1] == tvert[edges[i][1]][1] && tvert[edges[i][0]][0] < tvert[edges[i][1]][0] ||
+        ((tvert[edges[i][0]][1] == tvert[edges[i][1]][1] &&
+          tvert[edges[i][0]][0] < tvert[edges[i][1]][0]) ||
          tvert[edges[i][0]][1] < tvert[edges[i][1]][1])) continue;
 
     float* color = get_marker_color(mrk);
@@ -142,8 +161,7 @@ void MeshView::on_display()
   }
   glLineWidth(1.0);
 
-  // draw element ids
-  if (b_ids)
+  if (b_ids)  // draw element ids
   {
     glColor3f(0, 0, 0);
     for (i = 0; i < ne; i++)
@@ -151,6 +169,17 @@ void MeshView::on_display()
       if (elems[i].id < 0) continue;
       char text[20];
       sprintf(text, "#%d", elems[i].id);
+      draw_text(transform_x(elems[i].x), transform_y(elems[i].y), text, 0);
+    }
+  } 
+  else if (b_elem_mrk)  // draw element markers
+  {
+    glColor3f(0, 0, 0);
+    for (i = 0; i < ne; i++)
+    {
+      if (elems[i].id < 0) continue;
+      char text[20];
+      sprintf(text, "%d", elems[i].type);
       draw_text(transform_x(elems[i].x), transform_y(elems[i].y), text, 0);
     }
   }
@@ -174,11 +203,18 @@ void MeshView::on_key_down(unsigned char key, int x, int y)
       refresh();
       break;
 
-    case 'm':
+    case 'i':
+      if (b_elem_mrk) b_elem_mrk = false;
       b_ids = !b_ids;
       refresh();
       break;
-
+      
+    case 'm':
+      if (b_ids) b_ids = false;
+      b_elem_mrk = !b_elem_mrk;
+      refresh();
+      break;
+      
     default:
       View::on_key_down(key, x, y);
       break;
@@ -233,7 +269,8 @@ const char* MeshView::get_help_text() const
   "  C - center image\n"
   "  H - render high-quality frame\n"
   "  B - toggle boundary markers\n"
-  "  M - toggle element IDs\n"
+  "  I - toggle element IDs\n"
+  "  M - toggle element markers\n"
   "  S - save screenshot\n"
   "  F1 - this help\n"
   "  Esc, Q - quit";

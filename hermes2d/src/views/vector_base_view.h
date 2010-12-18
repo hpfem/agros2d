@@ -27,14 +27,23 @@
 // you can define NOGLUT to turn off all OpenGL stuff in Hermes2D
 #ifndef NOGLUT
 
-class H2D_API VectorBaseView : public VectorView
+class HERMES_API VectorBaseView : public VectorView
 {
 public:
 
-  VectorBaseView(const char* title = "BaseView", DEFAULT_WINDOW_POS)
-    : VectorView(title, x, y, width, height) { pss = NULL; sln = NULL; lines = false; }
+  VectorBaseView(const char* title = "BaseView", WinGeom* wg = NULL)
+		: VectorView(title, wg) { pss = NULL; sln = NULL; lines = false; basic_title.assign(title); }
+
+	VectorBaseView(char* title, WinGeom* wg = NULL)
+    : VectorView(title, wg) { pss = NULL; sln = NULL; lines = false; basic_title.assign(title); }
 
   void show(Space* space);
+
+  virtual void set_title(const char* t) { 
+    if (basic_title.length() == 0) 
+      basic_title.assign(t); 
+    View::set_title(t);
+  }
 
   virtual ~VectorBaseView() { free(); }
 
@@ -44,8 +53,10 @@ protected:
   PrecalcShapeset* pss;
   Solution* sln;
 
-  int ndofs, component;
+  int ndof, component;
   int base_index;
+
+  std::string basic_title;
 
   void free();
   void update_solution();
@@ -58,10 +69,10 @@ protected:
 
 #else // NOGLUT
 
-class H2D_API VectorBaseView : public VectorView
+class HERMES_API VectorBaseView : public VectorView
 {
 public:
-  VectorBaseView(const char* title = "BaseView", DEFAULT_WINDOW_POS) {}
+  VectorBaseView(char* title = "BaseView", WinGeom* wg = NULL) {}
   virtual ~VectorBaseView() {}
   void show(Space* space)
      { verbose("VectorBaseView: Hermes2D compiled without OpenGL support, skipping visualization."); }

@@ -351,7 +351,7 @@ void SceneSolution::setTimeStep(int timeStep, bool showViewProgress)
     if (!isSolved()) return;
 
     if (Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable() != PhysicFieldVariable_Undefined)
-        m_vec.process_solution(sln(), H2D_FN_DX_0, sln(), H2D_FN_DY_0, H2D_EPS_NORMAL);
+        m_vec.process_solution(sln(), H2D_FN_DX_0, sln(), H2D_FN_DY_0, HERMES_EPS_NORMAL);
 
     emit timeStepChanged(showViewProgress);
 }
@@ -429,7 +429,7 @@ void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScala
     m_slnVectorXView = slnVectorXView;
     m_slnVectorYView = slnVectorYView;
     
-    m_vecVectorView.process_solution(m_slnVectorXView, H2D_FN_VAL_0, m_slnVectorYView, H2D_FN_VAL_0, H2D_EPS_LOW);
+    m_vecVectorView.process_solution(m_slnVectorXView, H2D_FN_VAL_0, m_slnVectorYView, H2D_FN_VAL_0, HERMES_EPS_LOW);
 
     // deformed shape
     if (Util::config()->deformVector)

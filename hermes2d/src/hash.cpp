@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "mesh.h"
 #include "hash.h"
 
@@ -118,7 +118,7 @@ void HashTable::free()
 void HashTable::dump_hash_stat()
 {
   if (ncollisions > 2*nqueries)
-    warn("Hashtable: nqueries=%d ncollisions=%d\a", nqueries, ncollisions);
+    warn("Hashtable: nqueries=%d ncollisions=%d", nqueries, ncollisions);
 }
 
 

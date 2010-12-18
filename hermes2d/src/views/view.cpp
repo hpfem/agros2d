@@ -22,25 +22,20 @@
 # include <sys/time.h>
 #endif
 
-#include "../common.h"
+#include "../h2d_common.h"
 #include "view_support.h"
 #include "view.h"
 #include "../solution.h"
 
 ///////////////// private constants /////////////////
-#define H2DV_WAIT_CLOSE_MSG "close all views to continue"
-#define H2DV_WAIT_KEYPRESS_MSG "press spacebar to continue"
+#define HERMES_WAIT_CLOSE_MSG "close all views to continue"
+#define HERMES_WAIT_KEYPRESS_MSG "press spacebar to continue"
 
 ///////////////// static variables /////////////////
 int View::screenshot_no = 1;
 
 ///////////////// methods /////////////////
-View::View(const char* title, int x, int y, int width, int height)
-  : gl_pallete_tex_id(0)
-  , title(title), output_id(-1), output_x(x), output_y(y), output_width(width), output_height(height)
-  , vertices_min_x(0), vertices_max_x(0), vertices_min_y(0), vertices_max_y(0)
-  , view_not_reset(true)
-{
+void View::init() {
   jitter_x = jitter_y = 0.0;
   dragging = scaling = false;
   hq_frame = false;
@@ -68,6 +63,68 @@ View::View(const char* title, int x, int y, int width, int height)
   memset(rendering_frames, 0, FPS_FRAME_SIZE * sizeof(double));
 }
 
+/*
+View::View(const char* title, int x, int y, int width, int height)
+  : gl_pallete_tex_id(0)
+  , title(title), output_id(-1), output_x(x), output_y(y), output_width(width), output_height(height)
+  , vertices_min_x(0), vertices_max_x(0), vertices_min_y(0), vertices_max_y(0)
+  , view_not_reset(true)
+{
+  init();
+}
+*/
+
+View::View(const char* title, WinGeom* wg) :
+    view_not_reset(true),
+    vertices_min_x(0),
+    vertices_max_x(0),
+    vertices_min_y(0),
+    vertices_max_y(0),
+    title(title),
+    output_id(-1),
+    gl_pallete_tex_id(0)
+{
+  if (wg == NULL) {
+    output_x = H2D_DEFAULT_X_POS;
+    output_y = H2D_DEFAULT_Y_POS;
+    output_width = H2D_DEFAULT_WIDTH;
+    output_height = H2D_DEFAULT_HEIGHT;
+  }
+  else {
+    output_x = wg->x;
+    output_y = wg->y;
+    output_width = wg->width;
+    output_height = wg->height;
+  }
+
+  init();
+}
+
+View::View(char* title, WinGeom* wg) :
+    view_not_reset(true),
+    vertices_min_x(0),
+    vertices_max_x(0),
+    vertices_min_y(0),
+    vertices_max_y(0),
+    title(title),
+    output_id(-1),
+    gl_pallete_tex_id(0)
+{
+  if (wg == NULL) {
+    output_x = H2D_DEFAULT_X_POS;
+    output_y = H2D_DEFAULT_Y_POS;
+    output_width = H2D_DEFAULT_WIDTH;
+    output_height = H2D_DEFAULT_HEIGHT;
+  }
+  else {
+    output_x = wg->x;
+    output_y = wg->y;
+    output_width = wg->width;
+    output_height = wg->height;
+  }
+
+  init();
+}
 
 View::~View()
 {
@@ -96,7 +153,7 @@ void View::close()
 
 void View::wait(const char* text)
 {
-  wait(H2DV_WAIT_CLOSE, text);
+  wait(HERMES_WAIT_CLOSE, text);
 }
 
 void View::wait(ViewWaitEvent wait_event, const char* text) {
@@ -107,8 +164,8 @@ void View::wait(ViewWaitEvent wait_event, const char* text) {
     str << text;
   else {
     switch(wait_event) {
-      case H2DV_WAIT_CLOSE: str << H2DV_WAIT_CLOSE_MSG; break;
-      case H2DV_WAIT_KEYPRESS: str << H2DV_WAIT_KEYPRESS_MSG; break;
+      case HERMES_WAIT_CLOSE: str << HERMES_WAIT_CLOSE_MSG; break;
+      case HERMES_WAIT_KEYPRESS: str << HERMES_WAIT_KEYPRESS_MSG; break;
       default: error("Unknown wait event"); break;
     }
   }
@@ -116,8 +173,8 @@ void View::wait(ViewWaitEvent wait_event, const char* text) {
 
   //do something
   switch(wait_event) {
-    case H2DV_WAIT_CLOSE: wait_for_all_views_close(str.str().c_str()); break;
-    case H2DV_WAIT_KEYPRESS: wait_for_any_key(str.str().c_str()); break;
+    case HERMES_WAIT_CLOSE: wait_for_all_views_close(str.str().c_str()); break;
+    case HERMES_WAIT_KEYPRESS: wait_for_any_key(str.str().c_str()); break;
     default: error("Unknown wait event"); break;
   }
 }
@@ -276,8 +333,8 @@ void View::set_ortho_projection(bool no_jitter)
 
 void View::set_3d_projection(int fov, double znear, double zfar)
 {
-  double right = znear * tan((double) fov / 2.0 / 180.0 * M_PI);
-  double top = (double) output_height / output_width * right;
+  double top = znear * tan((double) fov / 2.0 / 180.0 * M_PI);
+  double right = (double) output_width / output_height * top;
   double left = -right;
   double bottom = -top;
 	double offsx = (right - left) / output_width * jitter_x;
@@ -321,7 +378,8 @@ void View::draw_fps()
   glDisable(GL_BLEND);
   glColor3f(1.0f, 0.0f, 0.0f);
   glRasterPos2i(output_width - (width_px + edge_thickness), edge_thickness + height_px);
-  glutBitmapString(font, buffer);
+  // If the following line is uncommented, timing information is printed into the image.
+  //glutBitmapString(font, buffer);
 }
 
 void View::on_reshape(int width, int height)
@@ -477,7 +535,7 @@ void View::on_special_key(int key, int x, int y)
 void View::wait_for_keypress(const char* text)
 {
   warn("Function View::wait_for_keypress deprecated: use View::wait instead");
-  View::wait(H2DV_WAIT_KEYPRESS, text);
+  View::wait(HERMES_WAIT_KEYPRESS, text);
 }
 
 void View::wait_for_close()
@@ -488,12 +546,29 @@ void View::wait_for_close()
   view_sync.leave();
 }
 
+// These two includes are needed for the wait_for_draw() function below:
+//#include <csignal>
+#include "Teuchos_stacktrace.hpp"
+
 void View::wait_for_draw()
 {
+  // For some reason, this function removes the signal handlers. So we just
+  // remember them and restore them. Unfortunately, this doesn't work for some
+  // reason:
+  //sighandler_t old_segv, old_abrt;
+  //old_segv = signal(SIGSEGV, SIG_DFL);
+  //old_abrt = signal(SIGABRT, SIG_DFL);
+
   view_sync.enter();
   if (output_id >= 0 && !frame_ready)
     view_sync.wait_drawing_fisnihed();
   view_sync.leave();
+
+  // Restore the old signal handlers -- doesn't work for some reason:
+  //signal(SIGSEGV, old_segv);
+  //signal(SIGABRT, old_abrt);
+  // So we just restore it by calling the original handler:
+  Teuchos::print_stack_on_segfault();
 }
 
 double View::get_tick_count()
@@ -513,10 +588,18 @@ double View::get_tick_count()
 void View::set_title(const char* title)
 {
   bool do_set_title = true;
+  
+  // Always set the title property.
+  this->title = title;
+  
   view_sync.enter();
   if (output_id < 0)
+    // If the window does not exist, do nothing else and wait until it is created.
     do_set_title = false;
+  
   view_sync.leave();
+  
+  // If the window already exists, show the new title in its header.
   if (do_set_title)
     set_view_title(output_id, title);
 }
@@ -637,6 +720,10 @@ void View::update_tex_adjust()
 
 void View::set_min_max_range(double min, double max)
 {
+  if (max < min) {
+    std::swap(min, max);
+    warn("Upper bound set below the lower bound: reversing to (%f,%f).", min, max);
+  }
   view_sync.enter();
   range_min = min;
   range_max = max;
@@ -835,7 +922,7 @@ void View::save_screenshot_internal(const char *file_name)
 
   fclose(file);
   free((void*) pixels);
-  info("Image \"%s\" saved.", file_name);
+  printf("Image \"%s\" saved.\n", file_name);
 }
 
 

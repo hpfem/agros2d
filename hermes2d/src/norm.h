@@ -19,24 +19,45 @@
 #include "solution.h"
 #include "refmap.h"
 
-extern H2D_API double calc_error(double (*fn)(MeshFunction*, MeshFunction*, RefMap*, RefMap*), MeshFunction* sln1, MeshFunction* sln2);
-extern H2D_API double calc_norm(double (*fn)(MeshFunction*, RefMap*), MeshFunction* sln);
+// Error calculation in Hermes, useful for non-adaptive computations.
+extern HERMES_API double calc_rel_error(MeshFunction* sln1, MeshFunction* sln2, int norm_type); // Note: coarse mesh sln has to be first, then                                                                                                        // ref_sln (because the abs. error is divided 
+                                                                                                // by the norm of the latter).
+extern HERMES_API double calc_abs_error(MeshFunction* sln1, MeshFunction* sln2, int norm_type);
+extern HERMES_API double calc_norm(MeshFunction* sln, int norm_type);
 
+// Function calculating errors between solutions in right and left vectors, returning all necessary parameters
+// returns correct parameters only if the return value is true
+// coarse mesh sln has to be first, then ref_sln
+HERMES_API bool calc_errors(Hermes::Tuple<Solution* > left, Hermes::Tuple<Solution *> right, 
+                            Hermes::Tuple<double> & err_abs, Hermes::Tuple<double> & norm_vals, 
+                            double & err_abs_total, double & norm_total, double & err_rel_total, 
+                            Hermes::Tuple<ProjNormType> norms = Hermes::Tuple<ProjNormType>());
 
-extern H2D_API double l2_error(MeshFunction* sln1, MeshFunction* sln2);
-extern H2D_API double l2_norm(MeshFunction* sln);
+// Helper functions
+extern HERMES_API double calc_abs_error(double (*fn)(MeshFunction*, MeshFunction*, RefMap*, RefMap*), MeshFunction* sln1, MeshFunction* sln2);
+extern HERMES_API double calc_norm(double (*fn)(MeshFunction*, RefMap*), MeshFunction* sln);
 
-extern H2D_API double h1_error(MeshFunction* sln1, MeshFunction* sln2);
-extern H2D_API double h1_norm(MeshFunction* sln);
+extern HERMES_API double error_fn_l2(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv);
+extern HERMES_API double norm_fn_l2(MeshFunction* sln, RefMap* ru);
+//extern HERMES_API double l2_error(MeshFunction* sln1, MeshFunction* sln2);
+//extern HERMES_API double l2_norm(MeshFunction* sln);
 
-#ifdef H2D_COMPLEX
+extern HERMES_API double error_fn_h1(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv);
+extern HERMES_API double norm_fn_h1(MeshFunction* sln, RefMap* ru);
+//extern HERMES_API double h1_error(MeshFunction* sln1, MeshFunction* sln2);
+//extern HERMES_API double h1_norm(MeshFunction* sln);
 
-extern H2D_API double hcurl_error(MeshFunction* sln1, MeshFunction* sln2);
-extern H2D_API double hcurl_norm(MeshFunction* sln);
+extern HERMES_API double error_fn_hc(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv);
+extern HERMES_API double norm_fn_hc(MeshFunction* sln, RefMap* ru);
+//extern HERMES_API double hcurl_error(MeshFunction* sln1, MeshFunction* sln2);
+//extern HERMES_API double hcurl_norm(MeshFunction* sln);
 
-extern H2D_API double hcurl_l2error(MeshFunction* sln1, MeshFunction* sln2);
-extern H2D_API double hcurl_l2norm(MeshFunction* sln);
+extern HERMES_API double error_fn_hcl2(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv);
+extern HERMES_API double norm_fn_hcl2(MeshFunction* sln, RefMap* ru);
+extern HERMES_API double hcurl_l2error(MeshFunction* sln1, MeshFunction* sln2);
+extern HERMES_API double hcurl_l2norm(MeshFunction* sln);
 
-#endif
+extern HERMES_API double error_fn_hdiv(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv);
+extern HERMES_API double norm_fn_hdiv(MeshFunction* sln, RefMap* ru);
 
 #endif

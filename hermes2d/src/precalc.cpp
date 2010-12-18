@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "quad.h"
 #include "precalc.h"
 
@@ -22,6 +22,7 @@
 PrecalcShapeset::PrecalcShapeset(Shapeset* shapeset)
                : RealFunction()
 {
+  assert_msg(shapeset != NULL, "Shapeset cannot be NULL.");
   this->shapeset = shapeset;
   master_pss = NULL;
   num_components = shapeset->get_num_components();
@@ -138,13 +139,14 @@ void PrecalcShapeset::precalculate(int order, int mask)
   {
     for (k = 0; k < 6; k++)
     {
-      if (newmask & idx2mask[k][j])
+      if (newmask & idx2mask[k][j]) {
         if (oldmask & idx2mask[k][j])
           memcpy(node->values[j][k], cur_node->values[j][k], np * sizeof(double));
         else
           for (i = 0; i < np; i++)
             node->values[j][k][i] = shapeset->get_value(k, index, ctm->m[0] * pt[i][0] + ctm->t[0],
                                                                   ctm->m[1] * pt[i][1] + ctm->t[1], j);
+      }
     }
   }
 
@@ -179,7 +181,7 @@ void PrecalcShapeset::dump_info(int quad, const char* filename)
   void** sub = (void**) JudyLFirst(tables, &key, NULL);
   while (sub != NULL)
   {
-    if ((key & 7) == quad)
+    if ((key & 7) == (unsigned) quad)
     {
       fprintf(f, "PRIMARY TABLE, mode=%ld, index=%ld\n", (key >> 3) & 1, max_index[mode] - (key >> 4));
       unsigned long idx = 0;

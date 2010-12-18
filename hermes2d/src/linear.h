@@ -16,13 +16,13 @@
 #ifndef __H2D_LINEAR_H
 #define __H2D_LINEAR_H
 
-#include "common.h"
+#include "h2d_common.h"
 #include "solution.h"
 
 
-const double H2D_EPS_LOW    = 0.0014;
-const double H2D_EPS_NORMAL = 0.0008;
-const double H2D_EPS_HIGH   = 0.0003;
+const double HERMES_EPS_LOW    = 0.0014;
+const double HERMES_EPS_NORMAL = 0.0008;
+const double HERMES_EPS_HIGH   = 0.0003;
 
 
 /// Linearizer is a utility class which converts a higher-order FEM solution defined on
@@ -33,7 +33,7 @@ const double H2D_EPS_HIGH   = 0.0003;
 /// solution (e.g., gradients or in Hcurl) by inserting double vertices where necessary.
 /// Linearizer also serves as a container for the resulting linearized mesh.
 ///
-class H2D_API Linearizer // (implemented in linear1.cpp)
+class HERMES_API Linearizer // (implemented in linear1.cpp)
 {
 public:
 
@@ -41,7 +41,7 @@ public:
   ~Linearizer();
 
   void process_solution(MeshFunction* sln, int item = H2D_FN_VAL_0,
-                        double eps = H2D_EPS_NORMAL, double max_abs = -1.0,
+                        double eps = HERMES_EPS_NORMAL, double max_abs = -1.0,
                         MeshFunction* xdisp = NULL, MeshFunction* ydisp = NULL,
                         double dmult = 1.0);
 
@@ -151,7 +151,7 @@ protected:
 /// Like the Linearizer, but generates a triangular mesh showing polynomial
 /// orders in a space, hence the funky name.
 ///
-class H2D_API Orderizer : public Linearizer // (implemented in linear2.cpp)
+class HERMES_API Orderizer : public Linearizer // (implemented in linear2.cpp)
 {
 public:
 
@@ -184,7 +184,7 @@ protected:
 /// resulting mesh is not attempted. The class can handle different meshes in
 /// both X and Y components.
 ///
-class H2D_API Vectorizer : public Linearizer // (implemented in linear3.cpp)
+class HERMES_API Vectorizer : public Linearizer // (implemented in linear3.cpp)
 {
 public:
 

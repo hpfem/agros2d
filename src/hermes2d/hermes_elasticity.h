@@ -143,10 +143,8 @@ public:
 class ViewScalarFilterElasticity : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterElasticity(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {}
-    ViewScalarFilterElasticity(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {}
+    ViewScalarFilterElasticity(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {}
 
 protected:
     void calculateVariable(int i);

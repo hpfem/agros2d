@@ -175,10 +175,8 @@ public:
 class ViewScalarFilterMagnetic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterMagnetic(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {};
-    ViewScalarFilterMagnetic(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {};
+    ViewScalarFilterMagnetic(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:
     void calculateVariable(int i);

@@ -55,12 +55,12 @@ scalar general_bc_values(int marker, double x, double y)
 }
 
 template<typename Real, typename Scalar>
-Scalar general_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar general_vector_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     double derivative = 0.0;
 
-    if (generalEdge[e->marker].type == PhysicFieldBC_General_Derivative)
-        derivative = generalEdge[e->marker].value;
+    if (generalEdge[e->edge_marker].type == PhysicFieldBC_General_Derivative)
+        derivative = generalEdge[e->edge_marker].value;
 
     if (isPlanar)
         return derivative * int_v<Real, Scalar>(n, wt, v);
@@ -69,9 +69,9 @@ Scalar general_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e,
 }
 
 template<typename Real, typename Scalar>
-Scalar general_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar general_matrix_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = e->marker;
+    int marker = e->elem_marker;
 
     if (isPlanar)
         return generalLabel[marker].constant * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
@@ -80,9 +80,9 @@ Scalar general_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Ge
 }
 
 template<typename Real, typename Scalar>
-Scalar general_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar general_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    int marker = e->marker;
+    int marker = e->elem_marker;
 
     if (isPlanar)
         return generalLabel[marker].rightside * int_v<Real, Scalar>(n, wt, v);
@@ -90,17 +90,11 @@ Scalar general_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtD
         return generalLabel[marker].rightside * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-void callbackGeneralSpace(Tuple<Space *> space)
-{
-    space.at(0)->set_bc_types(general_bc_types);
-    space.at(0)->set_essential_bc_values(general_bc_values);
-}
-
 void callbackGeneralWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    wf->add_biform(0, 0, callback(general_bilinear_form));
-    wf->add_liform(0, callback(general_linear_form));
-    wf->add_liform_surf(0, callback(general_linear_form_surf));
+    wf->add_matrix_form(0, 0, callback(general_matrix_form));
+    wf->add_vector_form(0, callback(general_vector_form));
+    wf->add_vector_form_surf(0, callback(general_vector_form_surf));
 }
 
 // **************************************************************************************************************************
@@ -334,6 +328,9 @@ ViewScalarFilter *HermesGeneral::viewScalarFilter(PhysicFieldVariable physicFiel
 QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
+    BCTypes bcTypes;
+    BCValues bcValues;
+
     generalEdge = new GeneralEdge[Util::scene()->edges.count()+1];
     generalEdge[0].type = PhysicFieldBC_None;
     generalEdge[0].value = 0;
@@ -353,6 +350,20 @@ QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolv
 
             generalEdge[i+1].type = edgeGeneralMarker->type;
             generalEdge[i+1].value = edgeGeneralMarker->value.number;
+
+            switch (edgeGeneralMarker->type)
+            {
+            case PhysicFieldBC_None:
+                bcTypes.add_bc_none(i+1);
+                break;
+            case PhysicFieldBC_General_Value:
+                bcTypes.add_bc_dirichlet(i+1);
+                bcValues.add_const(i+1, edgeGeneralMarker->value.number);
+                break;
+            case PhysicFieldBC_General_Derivative:
+                bcTypes.add_bc_newton(i+1);
+                break;
+            }
         }
     }
 
@@ -377,7 +388,8 @@ QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolv
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  callbackGeneralSpace,
+                                                                  Tuple<BCTypes *>(&bcTypes),
+                                                                  Tuple<BCValues *>(&bcValues),
                                                                   callbackGeneralWeakForm);
 
     delete [] generalEdge;

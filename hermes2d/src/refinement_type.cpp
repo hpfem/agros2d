@@ -1,7 +1,14 @@
-#include "common.h"
+#include "h2d_common.h"
 #include "refinement_type.h"
 
-int get_refin_sons(const int refin_type) {
+HERMES_API bool is_refin_aniso(const int refin_type) {
+  if (refin_type == H2D_REFINEMENT_ANISO_H || refin_type == H2D_REFINEMENT_ANISO_V)
+    return true;
+  else
+    return false;
+}
+
+HERMES_API int get_refin_sons(const int refin_type) {
   switch(refin_type) {
     case H2D_REFINEMENT_P: return 1; break;
     case H2D_REFINEMENT_H: return 4; break;
@@ -11,7 +18,7 @@ int get_refin_sons(const int refin_type) {
   }
 }
 
-const std::string get_refin_str(const int refin_type) {
+HERMES_API const std::string get_refin_str(const int refin_type) {
   switch(refin_type) {
     case H2D_REFINEMENT_P: return "P"; break;
     case H2D_REFINEMENT_H: return "H"; break;

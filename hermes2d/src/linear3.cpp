@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "linear.h"
 #include "refmap.h"
 #include "traverse.h"
@@ -359,6 +359,10 @@ void Vectorizer::find_min_max()
 
 void Vectorizer::process_solution(MeshFunction* xsln, int xitem, MeshFunction* ysln, int yitem, double eps)
 {
+  // sanity check
+  if (xsln == NULL || ysln == NULL) error("One of the solutions is NULL in Vectorizer:process_solution().");
+
+
   lock_data();
   TimePeriod cpu_time;
 
@@ -372,6 +376,10 @@ void Vectorizer::process_solution(MeshFunction* xsln, int xitem, MeshFunction* y
   del_slot = -1;
 
   Mesh* meshes[2] = { xsln->get_mesh(), ysln->get_mesh() };
+  if (meshes[0] == NULL || meshes[1] == NULL) {
+    error("One of the meshes is NULL in Vectorizer:process_solution().");
+  }
+
   Transformable* fns[2] = { xsln, ysln };
   Traverse trav;
 
@@ -524,13 +532,13 @@ void Vectorizer::save_data(const char* filename)
 
   if (fwrite("H2DV\001\000\000\000", 1, 8, f) != 8 ||
       fwrite(&nv, sizeof(int), 1, f) != 1 ||
-      fwrite(verts, sizeof(double4), nv, f) != nv ||
+      fwrite(verts, sizeof(double4), nv, f) != (unsigned) nv ||
       fwrite(&nt, sizeof(int), 1, f) != 1 ||
-      fwrite(tris, sizeof(int3), nt, f) != nt ||
+      fwrite(tris, sizeof(int3), nt, f) != (unsigned) nt ||
       fwrite(&ne, sizeof(int), 1, f) != 1 ||
-      fwrite(edges, sizeof(int3), ne, f) != ne ||
+      fwrite(edges, sizeof(int3), ne, f) != (unsigned) ne ||
       fwrite(&nd, sizeof(int), 1, f) != 1 ||
-      fwrite(dashes, sizeof(int2), nd, f) != nd)
+      fwrite(dashes, sizeof(int2), nd, f) != (unsigned) nd)
   {
     error("Error writing data to %s", filename);
   }
@@ -559,7 +567,7 @@ void Vectorizer::load_data(const char* filename)
     if (fread(&n, sizeof(int), 1, f) != 1) \
       error("Error reading the number of " what " from %s", filename); \
     lin_init_array(array, type, c, n); \
-    if (fread(array, sizeof(type), n, f) != n) \
+    if (fread(array, sizeof(type), n, f) != (unsigned) n) \
       error("Error reading " what " from %s", filename);
 
   read_array(verts, double4, nv, cv, "vertices");

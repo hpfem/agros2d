@@ -13,61 +13,54 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "filter.h"
 #include "traverse.h"
 
 
 //// Filter ////////////////////////////////////////////////////////////////////////////////////////
-
-Filter::Filter(MeshFunction* sln1) : MeshFunction()
+Filter::Filter(Hermes::Tuple<MeshFunction*> solutions) : MeshFunction()
 {
-  num = 1;
-  sln[0] = sln1;
-  init();
+	this->num = solutions.size();
+	if(num > 10)
+		error("Attempt to create an instance of Filter with more than 10 MeshFunctions."); 
+	for(int i = 0; i < this->num; i++)
+		this->sln[i] = solutions.at(i);
+  this->init();
 }
 
-Filter::Filter(MeshFunction* sln1, MeshFunction* sln2) : MeshFunction()
+void Filter::init(Hermes::Tuple<MeshFunction*> solutions)
 {
-  num = 2;
-  sln[0] = sln1;  sln[1] = sln2;
-  init();
-}
-
-Filter::Filter(MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3) : MeshFunction()
-{
-  num = 3;
-  sln[0] = sln1;  sln[1] = sln2;  sln[2] = sln3;
-  init();
-}
-
-Filter::Filter(MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3, MeshFunction* sln4) : MeshFunction()
-{
-  num = 4;
-  sln[0] = sln1;  sln[1] = sln2;  sln[2] = sln3;  sln[3] = sln4;
-  init();
+	this->num = solutions.size();
+	if(num > 10)
+		error("Attempt to create an instance of Filter with more than 10 MeshFunctions."); 
+	for(int i = 0; i < this->num; i++)
+		this->sln[i] = solutions.at(i);
+  this->init();
 }
 
 
 void Filter::init()
 {
-  // create the array sln_nodup, which is the array sln with duplicities removed
-  /*sln_nodup[0] = sln[0]; nnd = 1;
-  if (num > 1 && sln[1] != sln[0]) sln_nodup[nnd++] = sln[1];
-  if (num > 2 && sln[2] != sln[0] && sln[2] != sln[1]) sln_nodup[nnd++] = sln[2];*/
-
   // construct the union mesh, if necessary
-  Mesh* meshes[4] = {              sln[0]->get_mesh(),
-                      (num >= 2) ? sln[1]->get_mesh() : NULL,
-                      (num >= 3) ? sln[2]->get_mesh() : NULL,
-                      (num >= 4) ? sln[3]->get_mesh() : NULL };
-
+  Mesh* meshes[10];
+	for(int i = 0; i < this->num; i++)
+		meshes[i] = this->sln[i]->get_mesh();
   mesh = meshes[0];
   unimesh = false;
 
-  for (int i = 1; i < num; i++)
+  for (int i = 1; i < num; i++) 
+	{
+    if (meshes[i] == NULL) {
+      warn("You may be initializing a Filter with Solution that is missing a Mesh.");
+      error("this->meshes[%d] is NULL in Filter::init().", i);
+    }
     if (meshes[i]->get_seq() != mesh->get_seq())
-      { unimesh = true; break; }
+    {
+			unimesh = true; 
+			break; 
+		}
+  }
 
   if (unimesh)
   {
@@ -136,7 +129,7 @@ void Filter::set_active_element(Element* e)
 
 void Filter::free()
 {
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < num; i++)
     if (tables[i] != NULL)
       free_sub_tables(&(tables[i]));
 }
@@ -184,49 +177,27 @@ void Filter::pop_transform()
 
 //// SimpleFilter //////////////////////////////////////////////////////////////////////////////////
 
-SimpleFilter::SimpleFilter(void (*filter_fn)(int n, scalar* val1, scalar* result),
-                           MeshFunction* sln1, int item1)
-            : Filter(sln1)
+SimpleFilter::SimpleFilter(void (*filter_fn)(int n, Hermes::Tuple<scalar*> values, scalar* result),
+		Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items) : filter_fn(filter_fn)
 {
-  item[0] = item1;
-  filter_fn_1 = filter_fn;
-  init_components();
-}
+	this->num = solutions.size();
+	if(num > 10)
+		error("Attempt to create an instance of Filter with more than 10 MeshFunctions."); 
+	if(items.size() != (unsigned) num)
+		if(items.size() > 0)
+			error("Attempt to create an instance of SimpleFilter with different supplied number of MeshFunctions than the number of types of data used from them.");
 
-SimpleFilter::SimpleFilter(void (*filter_fn)(int n, scalar* val1, scalar* val2, scalar* result),
-                           MeshFunction* sln1, MeshFunction* sln2, int item1, int item2)
-            : Filter(sln1, sln2)
-{
-  item[0] = item1;
-  item[1] = item2;
-  filter_fn_2 = filter_fn;
-  init_components();
+	for(int i = 0; i < this->num; i++)
+	{
+		this->sln[i] = solutions.at(i);
+		if(items.size() > 0)
+			this->item[i] = items.at(i);
+		else
+			this->item[i] =	H2D_FN_VAL;
+	}
+	this->init();
+	init_components();
 }
-
-SimpleFilter::SimpleFilter(void (*filter_fn)(int n, scalar* val1, scalar* val2, scalar* val3, scalar* result),
-                           MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3, int item1, int item2, int item3)
-            : Filter(sln1, sln2, sln3)
-{
-  item[0] = item1;
-  item[1] = item2;
-  item[2] = item3;
-  filter_fn_3 = filter_fn;
-  init_components();
-}
-
-SimpleFilter::SimpleFilter(void (*filter_fn)(int n, scalar* val1, scalar* val2, scalar* val3, scalar* val4, scalar* result),
-                           MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3, MeshFunction* sln4,
-                           int item1, int item2, int item3, int item4)
-            : Filter(sln1, sln2, sln3, sln4)
-{
-  item[0] = item1;
-  item[1] = item2;
-  item[2] = item3;
-  item[3] = item4;
-  filter_fn_4 = filter_fn;
-  init_components();
-}
-
 
 void SimpleFilter::init_components()
 {
@@ -257,7 +228,7 @@ void SimpleFilter::precalculate(int order, int mask)
   for (int j = 0; j < num_components; j++)
   {
     // obtain corresponding tables
-    scalar* tab[4];
+    scalar* tab[10];
     for (int i = 0; i < num; i++)
     {
       int a = 0, b = 0, mask = item[i];
@@ -267,15 +238,12 @@ void SimpleFilter::precalculate(int order, int mask)
       if (tab[i] == NULL) error("Value of 'item%d' is incorrect in filter definition.", i+1);
     }
 
+		Hermes::Tuple<scalar*> values;
+		for(int i = 0; i < this->num; i++)
+			values.push_back(tab[i]);
+
     // apply the filter
-    switch (num)
-    {
-      case 1: filter_fn_1(np, tab[0], node->values[j][0]); break;
-      case 2: filter_fn_2(np, tab[0], tab[1], node->values[j][0]); break;
-      case 3: filter_fn_3(np, tab[0], tab[1], tab[2], node->values[j][0]); break;
-      case 4: filter_fn_4(np, tab[0], tab[1], tab[2], tab[3], node->values[j][0]); break;
-      default: assert(0);
-    }
+		filter_fn(np, values, node->values[j][0]);
   }
 
   // remove the old node and attach the new one
@@ -286,54 +254,28 @@ scalar SimpleFilter::get_pt_value(double x, double y, int it)
 {
   if (it & (H2D_FN_DX | H2D_FN_DY | H2D_FN_DXX | H2D_FN_DYY | H2D_FN_DXY))
     error("Filter not defined for derivatives.");
-  scalar val[4];
+  scalar val[10];
   for (int i = 0; i < num; i++)
     val[i] = sln[i]->get_pt_value(x, y, item[i]);
 
   scalar result;
+	Hermes::Tuple<scalar*> values;
+	for(int i = 0; i < this->num; i++)
+		values.push_back(&val[i]);
+	
+	// apply the filter
+	filter_fn(1, values, &result);
 
-  switch (num)
-  {
-    case 1: filter_fn_1(1, &val[0], &result); break;
-    case 2: filter_fn_2(1, &val[0], &val[1], &result); break;
-    case 3: filter_fn_3(1, &val[0], &val[1], &val[2], &result); break;
-    case 4: filter_fn_4(1, &val[0], &val[1], &val[2], &val[3], &result); break;
-    default: assert(0);
-  }
-
-  return result;
+	return result;
 }
 
 //// DXDYFilter ////////////////////////////////////////////////////////////////////////////////////
 
-DXDYFilter::DXDYFilter(filter_fn_1_t fn, MeshFunction* sln1)
-          : Filter(sln1)
-{
-  filter_fn_1 = fn;
-  init_components();
-}
 
-DXDYFilter::DXDYFilter(filter_fn_2_t fn, MeshFunction* sln1, MeshFunction* sln2)
-          : Filter(sln1, sln2)
+DXDYFilter::DXDYFilter(filter_fn_ filter_fn, Hermes::Tuple<MeshFunction*> solutions) : Filter(solutions), filter_fn(filter_fn)
 {
-  filter_fn_2 = fn;
-  init_components();
+	init_components();
 }
-
-DXDYFilter::DXDYFilter(filter_fn_3_t fn, MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3)
-          : Filter(sln1, sln2, sln3)
-{
-  filter_fn_3 = fn;
-  init_components();
-}
-
-DXDYFilter::DXDYFilter(filter_fn_4_t fn, MeshFunction* sln1, MeshFunction* sln2, MeshFunction* sln3, MeshFunction* sln4)
-          : Filter(sln1, sln2, sln3, sln4)
-{
-  filter_fn_4 = fn;
-  init_components();
-}
-
 
 void DXDYFilter::init_components()
 {
@@ -343,6 +285,12 @@ void DXDYFilter::init_components()
       error("Filter: Solutions do not have the same number of components!");
 }
 
+void DXDYFilter::init(filter_fn_ filter_fn, Hermes::Tuple<MeshFunction*> solutions) 
+{
+  Filter::init(solutions);
+  this->filter_fn = filter_fn;
+  init_components();
+}
 
 void DXDYFilter::precalculate(int order, int mask)
 {
@@ -357,36 +305,27 @@ void DXDYFilter::precalculate(int order, int mask)
   for (int j = 0; j < num_components; j++)
   {
     // obtain solution tables
-    scalar *val[4], *dx[4], *dy[4];
+    scalar *val[10], *dx[10], *dy[10];
     for (int i = 0; i < num; i++)
     {
       val[i] = sln[i]->get_fn_values(j);
       dx[i]  = sln[i]->get_dx_values(j);
       dy[i]  = sln[i]->get_dy_values(j);
     }
+		
+		Hermes::Tuple<scalar *> values_tuple;
+		Hermes::Tuple<scalar *> dx_tuple;
+		Hermes::Tuple<scalar *> dy_tuple;
+		
+		for(int i = 0; i < this->num; i++)
+		{
+			values_tuple.push_back(val[i]);
+			dx_tuple.push_back(dx[i]);
+			dy_tuple.push_back(dy[i]);
+		}
 
     // apply the filter
-    switch (num)
-    {
-      case 1:
-        filter_fn_1(np, val[0], dx[0], dy[0],
-                    node->values[j][0], node->values[j][1], node->values[j][2]);
-        break;
-      case 2:
-        filter_fn_2(np, val[0], dx[0], dy[0], val[1], dx[1], dy[1],
-                    node->values[j][0], node->values[j][1], node->values[j][2]);
-        break;
-      case 3:
-        filter_fn_3(np, val[0], dx[0], dy[0], val[1], dx[1], dy[1], val[2], dx[2], dy[2],
-                    node->values[j][0], node->values[j][1], node->values[j][2]);
-        break;
-      case 4:
-        filter_fn_4(np, val[0], dx[0], dy[0], val[1], dx[1], dy[1], val[2], dx[2], dy[2], val[3], dx[3], dy[3],
-                    node->values[j][0], node->values[j][1], node->values[j][2]);
-        break;
-      default:
-        assert(0);
-    }
+    filter_fn(np, values_tuple, dx_tuple, dy_tuple, node->values[j][0], node->values[j][1], node->values[j][2]);
   }
 
   // remove the old node and attach the new one
@@ -396,114 +335,140 @@ void DXDYFilter::precalculate(int order, int mask)
 
 //// predefined simple filters /////////////////////////////////////////////////////////////////////
 
-static void magnitude_fn_2(int n, scalar* v1, scalar* v2, scalar* result)
+static void magnitude_fn(int n, Hermes::Tuple<scalar*> values, scalar* result)
 {
   for (int i = 0; i < n; i++)
-    result[i] = sqrt(sqr(v1[i]) + sqr(v2[i]));
-}
+	{
+		result[i] = 0;
+		for(unsigned int j = 0; j < values.size(); j++)
+			result[i] += sqr(values.at(j)[i]);
+		result[i] = sqrt(result[i]);
+	}
+};
 
-MagFilter::MagFilter(MeshFunction* sln1, MeshFunction* sln2, int item1, int item2)
-         : SimpleFilter(magnitude_fn_2, sln1, sln2, item1, item2) {}
+MagFilter::MagFilter(Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items) : SimpleFilter(magnitude_fn, solutions, items)
+{
+};
 
 MagFilter::MagFilter(MeshFunction* sln1, int item1)
-         : SimpleFilter(magnitude_fn_2, sln1, sln1, item1 & H2D_FN_COMPONENT_0, item1 & H2D_FN_COMPONENT_1)
+         : SimpleFilter(magnitude_fn, Hermes::Tuple<MeshFunction*>(sln1, sln1), Hermes::Tuple<int>(item1 & H2D_FN_COMPONENT_0, item1 & H2D_FN_COMPONENT_1))
 {
   if (sln1->get_num_components() < 2)
     error("The single-argument constructor is intended for vector-valued solutions.");
-}
+};
 
 
-static void difference_fn_2(int n, scalar* v1, scalar* v2, scalar* result)
+static void difference_fn_2(int n, Hermes::Tuple<scalar*> values, scalar* result)
 {
   for (int i = 0; i < n; i++)
-    result[i] = v1[i] - v2[i];
-}
+		result[i] = values.at(0)[i] - values.at(1)[i];
+};
 
-DiffFilter::DiffFilter(MeshFunction* sln1, MeshFunction* sln2, int item1, int item2)
-          : SimpleFilter(difference_fn_2, sln1, sln2, item1, item2) {}
+DiffFilter::DiffFilter(Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items)
+          : SimpleFilter(difference_fn_2, solutions, items) {}
 
 
-static void sum_fn_2(int n, scalar* v1, scalar* v2, scalar* result)
+static void sum_fn(int n, Hermes::Tuple<scalar*> values, scalar* result)
 {
   for (int i = 0; i < n; i++)
-    result[i] = v1[i] + v2[i];
-}
+		for (unsigned int j = 0; j < values.size(); j++)
+			result[i] += values.at(j)[i];
+};
 
-SumFilter::SumFilter(MeshFunction* sln1, MeshFunction* sln2, int item1, int item2)
-          : SimpleFilter(sum_fn_2, sln1, sln2, item1, item2) {}
+SumFilter::SumFilter(Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items) : SimpleFilter(sum_fn, solutions, items) {}
 
 
-static void square_fn_1(int n, scalar* v1, scalar* result)
+static void square_fn_1(int n, Hermes::Tuple<scalar*> v1, scalar* result)
 {
 #ifdef H2D_COMPLEX
   for (int i = 0; i < n; i++)
-    result[i] = std::norm(v1[i]);
+		result[i] = std::norm(v1.at(0)[i]);
 #else
   for (int i = 0; i < n; i++)
-    result[i] = sqr(v1[i]);
+    result[i] = sqr(v1.at(0)[i]);
 #endif
-}
+};
 
-SquareFilter::SquareFilter(MeshFunction* sln1, int item1)
-          : SimpleFilter(square_fn_1, sln1, item1) {}
+SquareFilter::SquareFilter(Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items)
+          : SimpleFilter(square_fn_1, solutions, items) 
+{
+	if (solutions.size() > 1)
+    error("SquareFilter only supports one MeshFunction.");
+};
 
 
-static void real_part_fn_1(int n, scalar* v1, scalar* result)
+static void real_part_fn_1(int n, Hermes::Tuple<scalar*> v1, scalar* result)
 {
 #ifndef H2D_COMPLEX
-  memcpy(result, v1, sizeof(scalar) * n);
+  memcpy(result, v1.at(0), sizeof(scalar) * n);
 #else
   for (int i = 0; i < n; i++)
-    result[i] = v1[i].real();
+    result[i] = v1.at(0)[i].real();
 #endif
-}
+};
 
-RealFilter::RealFilter(MeshFunction* sln1, int item1)
-          : SimpleFilter(real_part_fn_1, sln1, item1) {}
+RealFilter::RealFilter(Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items)
+          : SimpleFilter(real_part_fn_1, solutions, items) 
+{
+	if (solutions.size() > 1)
+		error("RealFilter only supports one MeshFunction.");
+};
 
 
-static void imag_part_fn_1(int n, scalar* v1, scalar* result)
+static void imag_part_fn_1(int n, Hermes::Tuple<scalar*> v1, scalar* result)
 {
 #ifndef H2D_COMPLEX
   memset(result, 0, sizeof(scalar) * n);
 #else
   for (int i = 0; i < n; i++)
-    result[i] = v1[i].imag();
+    result[i] = v1.at(0)[i].imag();
 #endif
-}
+};
 
-ImagFilter::ImagFilter(MeshFunction* sln1, int item1)
-          : SimpleFilter(imag_part_fn_1, sln1, item1) {}
+ImagFilter::ImagFilter(Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items)
+          : SimpleFilter(imag_part_fn_1, solutions, items) 
+{
+	if (solutions.size() > 1)
+		error("RealFilter only supports one MeshFunction.");
+};
 
 
-static void abs_fn_1(int n, scalar* v1, scalar* result)
+static void abs_fn_1(int n,  Hermes::Tuple<scalar*> v1, scalar* result)
 {
 #ifndef H2D_COMPLEX
   for (int i = 0; i < n; i++)
-    result[i] = fabs(v1[i]);
+    result[i] = fabs(v1.at(0)[i]);
 #else
   for (int i = 0; i < n; i++)
-    result[i] = sqrt(sqr(v1[i].real()) + sqr(v1[i].imag()));
+		result[i] = sqrt(sqr(v1.at(0)[i].real()) + sqr(v1.at(0)[i].imag()));
 #endif
-}
+};
 
-AbsFilter::AbsFilter(MeshFunction* sln1, int item1)
-          : SimpleFilter(abs_fn_1, sln1, item1) {}
+AbsFilter::AbsFilter(Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items)
+          : SimpleFilter(abs_fn_1, solutions, items) 
+{
+		if (solutions.size() > 1)
+		error("RealFilter only supports one MeshFunction.");
+};
 
 
-static void angle_fn_1(int n, scalar* v1, scalar* result)
+static void angle_fn_1(int n, Hermes::Tuple<scalar*> v1, scalar* result)
 {
 #ifndef H2D_COMPLEX
   for (int i = 0; i < n; i++)
     result[i] = 0.0;
 #else
   for (int i = 0; i < n; i++)
-    result[i] = atan2( v1[i].imag(), v1[i].real() );
+    result[i] = atan2( v1.at(0)[i].imag(), v1.at(0)[i].real() );
 #endif
-}
+};
 
-AngleFilter::AngleFilter(MeshFunction* sln1, int item1)
-  : SimpleFilter(angle_fn_1, sln1, item1) {}
+AngleFilter::AngleFilter(Hermes::Tuple<MeshFunction*> solutions, Hermes::Tuple<int> items)
+  : SimpleFilter(angle_fn_1, solutions, items) 
+{
+	if (solutions.size() > 1)
+		error("RealFilter only supports one MeshFunction.");
+};
 
 
 //// VonMisesFilter ////////////////////////////////////////////////////////////////////////////////
@@ -553,9 +518,9 @@ void VonMisesFilter::precalculate(int order, int mask)
 }
 
 
-VonMisesFilter::VonMisesFilter(MeshFunction* sln1, MeshFunction* sln2, double lambda, double mu,
+VonMisesFilter::VonMisesFilter(Hermes::Tuple<MeshFunction*> solutions, double lambda, double mu,
                                int cyl, int item1, int item2)
-       : Filter(sln1, sln2)
+       : Filter(solutions)
 {
   this->mu = mu;
   this->lambda = lambda;
@@ -609,13 +574,13 @@ void LinearFilter::precalculate(int order, int mask)
 
 
 LinearFilter::LinearFilter(MeshFunction* old)
-          : Filter(old)
+          : Filter(Hermes::Tuple<MeshFunction*>(old))
  {
    init_components();
  }
 
 LinearFilter::LinearFilter(MeshFunction* older, MeshFunction* old, double tau_frac)
-          : Filter(older, old)
+          : Filter(Hermes::Tuple<MeshFunction*>(older, old))
  {
    this->tau_frac = tau_frac;
    init_components();

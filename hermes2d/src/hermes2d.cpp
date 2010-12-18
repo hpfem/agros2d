@@ -13,19 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "hermes2d.h"
 
 
-void hermes2d_initialize(int* argc, char* argv[])
-{
-  warn("Calling deprecated function.");
-}
 
-
-void hermes2d_finalize(bool force_quit)
-{
-  warn("Calling deprecated function.");
-  //free_ortho_base();
-  // TODO: free matrices in curved.cpp
-}

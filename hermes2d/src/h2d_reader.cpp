@@ -160,12 +160,12 @@ void H2DReader::load_old(const char* filename, Mesh *mesh)
   this->load_stream(f, mesh);
 }
 
-void H2DReader::load_str(char* mesh_str, Mesh *mesh)
+void H2DReader::load_str(const char* mesh_str, Mesh *mesh)
 {
   // open the mesh file
-  FILE* f = fmemopen(mesh_str, strlen(mesh_str), "r");
+  FILE* f = fmemopen((char*)mesh_str, strlen(mesh_str), "r");
   if (f == NULL) error("Could not create the read buffer");
-  this->load_stream(f, mesh);
+  this->load_internal(f, mesh, "");
 }
 
 /*
@@ -340,11 +340,11 @@ void H2DReader::load_stream(FILE *f, Mesh *mesh)
   }
   mesh->ninitial = mesh->elements.get_num_items();
 
-  // update refmap coefs of curvilinear elements
+  // update refmap coeffs of curvilinear elements
   Element* e;
   for_all_elements(e, mesh)
     if (e->cm != NULL)
-      e->cm->update_refmap_coefs(e);
+      e->cm->update_refmap_coeffs(e);
 
   fclose(f);
   mesh->seq = g_mesh_seq++;
@@ -360,19 +360,19 @@ Nurbs* H2DReader::load_nurbs(Mesh *mesh, MItem* curve, int id, Node** en, int &p
   int i;
   Nurbs* nurbs = new Nurbs;
 
-  if (curve == NULL || curve->n < 0 || curve->n != 3 && curve->n != 5)
+  if (curve == NULL || curve->n < 0 || (curve->n != 3 && curve->n != 5))
     error("Invalid curve #%d.", id);
   bool circle = (curve->n == 3);
   nurbs->arc = circle;
 
   // read the end point indices
   MItem* edge = curve->list;
-  if (edge->n >= 0 || !H2D_IS_INT(edge->val))
+  if (edge->n >= 0 || !HERMES_IS_INT(edge->val))
     error("Curve #%d: invalid edge definition.", id);
   p1 = (int) edge->val;
   edge = edge->next;
 
-  if (edge->n >= 0 || !H2D_IS_INT(edge->val))
+  if (edge->n >= 0 || !HERMES_IS_INT(edge->val))
     error("Curve #%d: invalid edge definition.", id);
   p2 = (int) edge->val;
   edge = edge->next;
@@ -386,7 +386,7 @@ Nurbs* H2DReader::load_nurbs(Mesh *mesh, MItem* curve, int id, Node** en, int &p
   nurbs->degree = 2;
   if (!circle)
   {
-    if (deg == NULL || deg->n >= 0 || !H2D_IS_INT(deg->val) || deg->val < 0 || deg->val == 1)
+    if (deg == NULL || deg->n >= 0 || !HERMES_IS_INT(deg->val) || deg->val < 0 || deg->val == 1)
       error("Curve #%d: invalid degee.", id);
     nurbs->degree = (int) deg->val;
   }
@@ -439,7 +439,7 @@ Nurbs* H2DReader::load_nurbs(Mesh *mesh, MItem* curve, int id, Node** en, int &p
 
   // get the number of knot vector points
   inner = 0;
-  MItem* knot;
+  MItem* knot=pts;
   if (!circle && knot != NULL)
   {
     knot = pts->next;
@@ -479,7 +479,15 @@ bool H2DReader::load(const char *filename, Mesh *mesh)
 
   // open the mesh file
   FILE* f = fopen(filename, "r");
-  if (f == NULL) error("Could not open the mesh file %s", filename);
+  return this->load_internal(f, mesh, filename);
+}
+
+
+bool H2DReader::load_internal(FILE *f, Mesh *mesh, const char *filename)
+{
+  int i, j, k, n;
+  Node* en;
+  bool debug = false;
 
   mesh->free();
 
@@ -646,11 +654,11 @@ bool H2DReader::load(const char *filename, Mesh *mesh)
     }
   }
 
-  // update refmap coefs of curvilinear elements
+  // update refmap coeffs of curvilinear elements
   Element* e;
   for_all_elements(e, mesh)
     if (e->cm != NULL)
-      e->cm->update_refmap_coefs(e);
+      e->cm->update_refmap_coeffs(e);
 
   //// refinements /////////////////////////////////////////////////////////////
 
@@ -724,7 +732,7 @@ void H2DReader::save_nurbs(Mesh *mesh, FILE* f, int p1, int p2, Nurbs* nurbs)
                  nurbs->pt[i][0], nurbs->pt[i][1], nurbs->pt[i][2],
                  i < nurbs->np-2 ? "," : "");
 
-    fprintf(f, "}, { ", nurbs->nk - 2*(nurbs->degree+1));
+    fprintf(f, "}, { ");
     int max = nurbs->nk - (nurbs->degree+1);
     for (int i = nurbs->degree+1; i < max; i++)
       fprintf(f, "%.16g%s", nurbs->kv[i], i < max-1 ? "," : "");

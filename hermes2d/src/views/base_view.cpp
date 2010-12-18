@@ -23,17 +23,26 @@
 #ifndef NOGLUT
 
 #include <GL/freeglut.h>
-#include "../common.h"
+#include "../h2d_common.h"
 #include "base_view.h"
 
-BaseView::BaseView(const char* title, int x, int y, int width, int height)
-        : ScalarView(title, x, y, width, height)
+BaseView::BaseView(const char* title, WinGeom* wg)
+        : ScalarView((char*) title, wg)
 {
   pss = NULL;
   sln = NULL;
   show_edges = true;
+  basic_title.assign(title);
 }
 
+BaseView::BaseView(char* title, WinGeom* wg)
+        : ScalarView(title, wg)
+{
+  pss = NULL;
+  sln = NULL;
+  show_edges = true;
+  basic_title.assign(title);
+}
 
 void BaseView::show(Space* space, double eps, int item)
 {
@@ -41,7 +50,7 @@ void BaseView::show(Space* space, double eps, int item)
   // todo: copy space
   pss = new PrecalcShapeset(space->get_shapeset());
   sln = new Solution();
-  ndofs = space->get_num_dofs();
+  ndof = Space::get_num_dofs(space);
   base_index = 0;
   this->space = space;
   this->eps = eps;
@@ -59,32 +68,32 @@ void BaseView::free()
 
 void BaseView::update_solution()
 {
-  scalar* vec = new scalar[ndofs];
-  memset(vec, 0, sizeof(scalar) * ndofs);
+  scalar* coeffs = new scalar[ndof];
+  memset(coeffs, 0, sizeof(scalar) * ndof);
   if (base_index >= 0)
   {
-    if (base_index < ndofs) vec[base_index] = 1.0;
-    sln->set_fe_solution(space, pss, vec, 0.0);
+    if (base_index < ndof) coeffs[base_index] = 1.0;
+    Solution::vector_to_solution(coeffs, space, sln, pss, false);
   }
   else
   {
-    sln->set_fe_solution(space, pss, vec, 1.0);
+    Solution::vector_to_solution(coeffs, space, sln, pss, true);
   }
 
   ScalarView::show(sln, eps, item);
   update_title();
+  
+  delete [] coeffs;
 }
-
 
 void BaseView::update_title()
 {
   std::stringstream str;
-  str << title << " - dof = " << base_index;
+  str << basic_title << " - dof = " << base_index;
   if (base_index < 0)
     str << " (Dirichlet lift)";
-  set_title(str.str().c_str());
+  View::set_title(str.str().c_str());
 }
-
 
 void BaseView::on_special_key(int key, int x, int y)
 {
@@ -96,7 +105,7 @@ void BaseView::on_special_key(int key, int x, int y)
       break;
 
     case GLUT_KEY_RIGHT:
-      if (base_index < ndofs-1) base_index++;
+      if (base_index < ndof-1) base_index++;
       update_solution();
       break;
 

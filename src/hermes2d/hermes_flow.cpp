@@ -90,14 +90,14 @@ scalar flow_bc_values_pressure(int marker, double x, double y)
 }
 
 template<typename Real, typename Scalar>
-Scalar bilinear_form_sym_0_0_1_1(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar bilinear_form_sym_0_0_1_1(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return flowLabel[e->marker].dynamic_viscosity / flowLabel[e->marker].density * (int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) +
+    return flowLabel[e->elem_marker].dynamic_viscosity / flowLabel[e->elem_marker].density * (int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) +
             ((analysisType == AnalysisType_Transient) ? int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0));
 }
 
 template<typename Real, typename Scalar>
-Scalar bilinear_form_unsym_0_0_1_1(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar bilinear_form_unsym_0_0_1_1(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     Func<Scalar>* xvel_prev = ext->fn[0];
     Func<Scalar>* yvel_prev = ext->fn[1];
@@ -105,7 +105,7 @@ Scalar bilinear_form_unsym_0_0_1_1(int n, double *wt, Func<Real> *u, Func<Real> 
 }
 
 template<typename Real, typename Scalar>
-Scalar linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar linear_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     // this form is used with both velocity components
     Func<Scalar>* vel_prev = ext->fn[0];
@@ -124,42 +124,32 @@ Scalar bilinear_form_unsym_1_2(int n, double *wt, Func<Real> *p, Func<Real> *v, 
     return - int_u_dvdy<Real, Scalar>(n, wt, p, v);
 }
 
-void callbackFlowSpace(Tuple<Space *> space)
-{
-    space.at(0)->set_bc_types(flow_bc_types);
-    space.at(0)->set_essential_bc_values(flow_bc_values_x);
-
-    space.at(1)->set_bc_types(flow_bc_types);
-    space.at(1)->set_essential_bc_values(flow_bc_values_y);
-
-    space.at(2)->set_bc_types(flow_bc_types);
-    space.at(2)->set_essential_bc_values(flow_bc_values_pressure);
-}
-
 void callbackFlowWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    wf->add_biform(0, 0, callback(bilinear_form_sym_0_0_1_1), H2D_SYM, H2D_ANY);
+    /*
+    wf->add_matrix_form(0, 0, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
     if (analysisType == AnalysisType_Transient)
-        wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM, H2D_ANY, 2, slnArray.at(0), slnArray.at(1));
+        wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM, HERMES_ANY, slnArray);
     else
-        wf->add_biform(0, 0, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM);
-    wf->add_biform(1, 1, callback(bilinear_form_sym_0_0_1_1), H2D_SYM);
+        wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM);
+    wf->add_matrix_form(1, 1, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
     if (analysisType == AnalysisType_Transient)
-        wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM, H2D_ANY, 2, slnArray.at(0), slnArray.at(1));
+        wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM, slnArray);
     else
-        wf->add_biform(1, 1, callback(bilinear_form_unsym_0_0_1_1), H2D_UNSYM);
-    wf->add_biform(0, 2, callback(bilinear_form_unsym_0_2), H2D_ANTISYM);
-    wf->add_biform(1, 2, callback(bilinear_form_unsym_1_2), H2D_ANTISYM);
+        wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM);
+    wf->add_matrix_form(0, 2, callback(bilinear_form_unsym_0_2), HERMES_ANTISYM);
+    wf->add_matrix_form(1, 2, callback(bilinear_form_unsym_1_2), HERMES_ANTISYM);
     if (analysisType == AnalysisType_Transient)
     {
-        wf->add_liform(0, callback(linear_form), H2D_ANY, 1, slnArray.at(0));
-        wf->add_liform(1, callback(linear_form), H2D_ANY, 1, slnArray.at(1));
+        wf->add_vector_form(0, callback(linear_form), slnArray);
+        wf->add_vector_form(1, callback(linear_form), slnArray);
     }
     else
     {
-        wf->add_liform(0, callback(linear_form));
-        wf->add_liform(1, callback(linear_form));
+        wf->add_vector_form(0, callback(linear_form));
+        wf->add_vector_form(1, callback(linear_form));
     }
+    */
 }
 
 // *******************************************************************************************************
@@ -398,7 +388,7 @@ ViewScalarFilter *HermesFlow::viewScalarFilter(PhysicFieldVariable physicFieldVa
     Solution *slnY = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
     Solution *slnPress = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 2);
 
-    return new ViewScalarFilterFlow(slnX, slnY, slnPress,
+    return new ViewScalarFilterFlow(Tuple<MeshFunction *>(slnX, slnY, slnPress),
                                     physicFieldVariable,
                                     physicFieldVariableComp);
 }
@@ -414,6 +404,9 @@ QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
     }
 
     // edge markers
+    BCTypes bcTypes;
+    BCValues bcValues;
+
     flowEdge = new FlowEdge[Util::scene()->edges.count()+1];
     flowEdge[0].type = PhysicFieldBC_None;
     flowEdge[0].velocityX = 0;
@@ -462,7 +455,10 @@ QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackFlowSpace, callbackFlowWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  Tuple<BCTypes *>(&bcTypes),
+                                                                  Tuple<BCValues *>(&bcValues),
+                                                                  callbackFlowWeakForm);
 
     delete [] flowEdge;
     delete [] flowLabel;

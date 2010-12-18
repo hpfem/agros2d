@@ -13,20 +13,112 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "norm.h"
-#include "linsystem.h"
+#include "limit_order.h"
 #include "refmap.h"
 #include "integrals_h1.h"
 #include "traverse.h"
-#include "feproblem.h"
+#include "discrete_problem.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// Calculates the absolute error between sln1 and sln2 using function fn
-double calc_error(double (*fn)(MeshFunction*, MeshFunction*, RefMap*, RefMap*), MeshFunction* sln1, MeshFunction* sln2)
+double calc_abs_error(MeshFunction* sln1, MeshFunction* sln2, int norm_type)
 {
+  double error;
+  switch (norm_type) {
+  case HERMES_L2_NORM: 
+    error = calc_abs_error(error_fn_l2, sln1, sln2);
+    break;
+  case HERMES_H1_NORM: 
+    error = calc_abs_error(error_fn_h1, sln1, sln2);
+    break;
+  case HERMES_HCURL_NORM: 
+    error = calc_abs_error(error_fn_hc, sln1, sln2);
+    break;
+  case HERMES_HDIV_NORM: 
+    error = calc_abs_error(error_fn_hdiv, sln1, sln2);
+    break;
+  default: error("Unknown norm in calc_error().");
+  }
+
+  return error;
+}
+
+double calc_norm(MeshFunction* ref_sln, int norm_type)
+{
+  double norm;
+  switch (norm_type) {
+  case HERMES_L2_NORM: 
+    norm = calc_norm(norm_fn_l2, ref_sln);
+    break;
+  case HERMES_H1_NORM: 
+    norm = calc_norm(norm_fn_h1, ref_sln);
+    break;
+  case HERMES_HCURL_NORM: 
+    norm = calc_norm(norm_fn_hc, ref_sln);
+    break;
+  case HERMES_HDIV_NORM: 
+    norm = calc_norm(norm_fn_hdiv, ref_sln);
+    break;
+  default: error("Unknown norm in calc_norm().");
+  }
+
+  return norm;
+}
+
+bool calc_errors(Hermes::Tuple<Solution* > left, Hermes::Tuple<Solution *> right, Hermes::Tuple<double> & err_abs, Hermes::Tuple<double> & norm_vals, 
+                 double & err_abs_total, double & norm_total, double & err_rel_total, Hermes::Tuple<ProjNormType> norms)
+{
+  bool default_norms = false;
+  // Checks.
+  if(left.size() != right.size())
+    return false;
+  if (norms != Hermes::Tuple<ProjNormType>())
+  {
+    if(left.size() != norms.size())
+      return false;
+  }
+  else
+    default_norms = true;
+  
+  // Zero the resulting Tuples.
+  err_abs.clear();
+  norm_vals.clear();
+
+  // Zero the sums.
+  err_abs_total = 0;
+  norm_total = 0;
+  err_rel_total = 0;
+  
+  // Calculation.
+  for(unsigned int i = 0; i < left.size(); i++)
+  {
+    err_abs.push_back(calc_abs_error(left[i], right[i], default_norms ? HERMES_H1_NORM : norms[i]));
+    norm_vals.push_back(calc_norm(right[i], default_norms ? HERMES_H1_NORM : norms[i]));
+    err_abs_total += err_abs[i] * err_abs[i];
+    norm_total += norm_vals[i] * norm_vals[i];
+  }
+
+  err_abs_total = sqrt(err_abs_total);
+  norm_total = sqrt(norm_total);
+  err_rel_total = err_abs_total / norm_total * 100.;
+  
+  // Everything went well, return appropriate flag.
+  return true;
+}
+
+
+/// Calculates the absolute error between sln1 and sln2 using function fn
+double calc_abs_error(double (*fn)(MeshFunction*, MeshFunction*, RefMap*, RefMap*), MeshFunction* sln1, 
+                      MeshFunction* sln2)
+{
+  // sanity checks
+  if (fn == NULL) error("error norm function is NULL in calc_abs_error().");
+  if (sln1 == NULL) error("sln1 is NULL in calc_abs_error().");
+  if (sln2 == NULL) error("sln2 is NULL in calc_abs_error().");
+
   Quad2D* quad = &g_quad_2d_std;
   sln1->set_quad_2d(quad);
   sln2->set_quad_2d(quad);
@@ -75,6 +167,14 @@ double calc_norm(double (*fn)(MeshFunction*, RefMap*), MeshFunction* sln)
   return sqrt(norm);
 }
 
+double calc_rel_error(MeshFunction* sln, MeshFunction* ref_sln, int norm_type)
+{
+  double error = calc_abs_error(sln, ref_sln, norm_type);
+  double norm = calc_norm(ref_sln, norm_type);
+  
+  return error/norm;
+}
+
 
 //// H1 space //////////////////////////////////////////////////////////////////////////////////////
 
@@ -120,20 +220,6 @@ double norm_fn_h1(MeshFunction* sln, RefMap* ru)
   return result;
 }
 
-
-double h1_error(MeshFunction* sln1, MeshFunction* sln2)
-{
-  double error = calc_error(error_fn_h1, sln1, sln2);
-  double norm = calc_norm(norm_fn_h1, sln2);
-  return error/norm;
-}
-
-double h1_norm(MeshFunction* sln)
-{
-  return calc_norm(norm_fn_h1, sln);
-}
-
-
 // function used to calculate error in L2 norm
 double error_fn_l2(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv)
 {
@@ -172,23 +258,7 @@ double norm_fn_l2(MeshFunction* sln, RefMap* ru)
   return result;
 }
 
-
-double l2_error(MeshFunction* sln1, MeshFunction* sln2)
-{
-  double error = calc_error(error_fn_l2, sln1, sln2);
-  double norm = calc_norm(norm_fn_l2, sln2);
-  return error/norm;
-}
-
-double l2_norm(MeshFunction* sln)
-{
-  return calc_norm(norm_fn_l2, sln);
-}
-
-
 //// Hcurl space ///////////////////////////////////////////////////////////////////////////////////
-
-#ifdef H2D_COMPLEX
 
 // function used to calculate error in Hcurl norm
 double error_fn_hc(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv)
@@ -232,22 +302,6 @@ double norm_fn_hc(MeshFunction* sln, RefMap* ru)
   return result;
 }
 
-
-double hcurl_error(MeshFunction* sln1, MeshFunction* sln2)
-{
-  double error = calc_error(error_fn_hc, sln1, sln2);
-  double norm = calc_norm(norm_fn_hc, sln2);
-  return error / norm;
-}
-
-
-double hcurl_norm(MeshFunction* sln)
-{
-  return calc_norm(norm_fn_hc, sln);
-}
-
-
-
 // function used to calculate error in Hcurl norm
 double error_fn_hcl2(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv)
 {
@@ -290,7 +344,7 @@ double norm_fn_hcl2(MeshFunction* sln, RefMap* ru)
 
 double hcurl_l2error(MeshFunction* sln1, MeshFunction* sln2)
 {
-  double error = calc_error(error_fn_hcl2, sln1, sln2);
+  double error = calc_abs_error(error_fn_hcl2, sln1, sln2);
   double norm = calc_norm(norm_fn_hcl2, sln2);
   return error / norm;
 }
@@ -300,5 +354,53 @@ double hcurl_l2norm(MeshFunction* sln)
 {
   return calc_norm(norm_fn_hcl2, sln);
 }
+//// Hdiv space ///////////////////////////////////////////////////////////////////////////////////
 
-#endif
+// function used to calculate error in Hcurl norm
+double error_fn_hdiv(MeshFunction* sln1, MeshFunction* sln2, RefMap* ru, RefMap* rv)
+{
+  error("error_fn_hdiv() not implemented yet.");
+
+  // Hcurl code
+  Quad2D* quad = sln1->get_quad_2d();
+
+  int o = 2 * std::max(sln1->get_fn_order(), sln2->get_fn_order()) + 2 + ru->get_inv_ref_order();
+  limit_order_nowarn(o);
+
+  sln1->set_quad_order(o);
+  sln2->set_quad_order(o);
+
+
+  scalar *uval0 = sln1->get_fn_values(0), *uval1 = sln1->get_fn_values(1);
+  scalar *udx1  = sln1->get_dx_values(1), *udy0  = sln1->get_dy_values(0);
+  scalar *vval0 = sln2->get_fn_values(0), *vval1 = sln2->get_fn_values(1);
+  scalar *vdx1  = sln2->get_dx_values(1), *vdy0  = sln2->get_dy_values(0);
+
+  double result = 0.0;
+  h1_integrate_expression(sqr(uval0[i] - vval0[i]) + sqr(uval1[i] - vval1[i]) +
+                          sqr((udx1[i] - udy0[i]) - (vdx1[i] - vdy0[i])));
+  return result;
+}
+
+
+// function used to calculate Hcurl norm
+double norm_fn_hdiv(MeshFunction* sln, RefMap* ru)
+{
+  error("norm_fn_hdiv() not implemented yet.");
+
+  // Hcurl code
+  Quad2D* quad = sln->get_quad_2d();
+
+  int o = 2 * sln->get_fn_order() + 2 + ru->get_inv_ref_order();
+  limit_order_nowarn(o);
+
+  sln->set_quad_order(o);
+
+  scalar *uval0 = sln->get_fn_values(0), *uval1 = sln->get_fn_values(1);
+  scalar *udx1  = sln->get_dx_values(1), *udy0  = sln->get_dy_values(0);
+
+  double result = 0.0;
+  h1_integrate_expression(sqr(uval0[i]) + sqr(uval1[i]) + sqr(udx1[i] - udy0[i]));
+  return result;
+}
+

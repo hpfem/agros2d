@@ -22,7 +22,7 @@
 #ifndef __H2D_BASE_VIEW_H
 #define __H2D_BASE_VIEW_H
 
-#include "../common.h"
+#include "../h2d_common.h"
 #include "scalar_view.h"
 
 // you can define NOGLUT to turn off all OpenGL stuff in Hermes2D
@@ -33,13 +33,14 @@
 /// BaseView is a debugging tool for the visualization of the basis functions
 /// of a given space.
 ///
-class H2D_API BaseView : public ScalarView
+class HERMES_API BaseView : public ScalarView
 {
 public:
 
-  BaseView(const char* title = "BaseView", DEFAULT_WINDOW_POS);
+  BaseView(const char* title = "BaseView", WinGeom* wg = NULL);
+  BaseView(char* title, WinGeom* wg = NULL);
 
-  void show(Space* space, double eps = H2D_EPS_LOW, int item = H2D_FN_VAL_0);
+  void show(Space* space, double eps = HERMES_EPS_LOW, int item = H2D_FN_VAL_0);
 
   virtual ~BaseView() { free(); }
 
@@ -50,8 +51,10 @@ protected:
   Solution* sln;
 
   double eps;
-  int ndofs, item;
+  int ndof, item;
   int base_index;
+
+  std::string basic_title;
 
   void free();
   void update_solution();
@@ -64,12 +67,13 @@ protected:
 
 #else // NOGLUT
 
-class H2D_API BaseView : public ScalarView
+class HERMES_API BaseView : public ScalarView
 {
 public:
-  BaseView(const char* title = "BaseView", DEFAULT_WINDOW_POS) {}
+  BaseView(const char* title = "BaseView", WinGeom* wg = NULL) {};
+  BaseView(char* title, WinGeom* wg = NULL) {};
   virtual ~BaseView() {}
-  void show(Space* space, double eps = H2D_EPS_LOW, int item = H2D_FN_VAL_0)
+  void show(Space* space, double eps = HERMES_EPS_LOW, int item = H2D_FN_VAL_0)
      { verbose("BaseView: Hermes2D compiled without OpenGL support, skipping visualization."); }
 };
 

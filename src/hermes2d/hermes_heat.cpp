@@ -40,37 +40,13 @@ struct HeatLabel
 HeatEdge *heatEdge;
 HeatLabel *heatLabel;
 
-BCType heat_bc_types(int marker)
-{
-    switch (heatEdge[marker].type)
-    {
-    case PhysicFieldBC_None:
-        return BC_NONE;
-    case PhysicFieldBC_Heat_Temperature:
-        return BC_ESSENTIAL;
-    case PhysicFieldBC_Heat_Flux:
-        return BC_NATURAL;
-    }
-}
-
-scalar heat_bc_values(int marker, double x, double y)
-{
-    switch (heatEdge[marker].type)
-    {
-    case PhysicFieldBC_Heat_Temperature:
-        return heatEdge[marker].temperature;
-    case PhysicFieldBC_Heat_Flux:
-        return heatEdge[marker].heatFlux;
-    }
-}
-
 template<typename Real, typename Scalar>
-Scalar heat_bilinear_form_surf(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar heat_matrix_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     double h = 0.0;
 
-    if (heatEdge[e->marker].type == PhysicFieldBC_Heat_Flux)
-        h = heatEdge[e->marker].h;
+    if (heatEdge[e->edge_marker].type == PhysicFieldBC_Heat_Flux)
+        h = heatEdge[e->edge_marker].h;
 
     if (isPlanar)
         return h * int_u_v<Real, Scalar>(n, wt, u, v);
@@ -79,20 +55,20 @@ Scalar heat_bilinear_form_surf(int n, double *wt, Func<Real> *u, Func<Real> *v, 
 }
 
 template<typename Real, typename Scalar>
-Scalar heat_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar heat_vector_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (heatEdge[e->marker].type == PhysicFieldBC_None)
+    if (heatEdge[e->edge_marker].type == PhysicFieldBC_None)
         return 0.0;
 
     double q = 0.0;
     double h = 0.0;
     double Text = 0.0;
 
-    if (heatEdge[e->marker].type == PhysicFieldBC_Heat_Flux)
+    if (heatEdge[e->edge_marker].type == PhysicFieldBC_Heat_Flux)
     {
-        q = heatEdge[e->marker].heatFlux;
-        h = heatEdge[e->marker].h;
-        Text = heatEdge[e->marker].externalTemperature;
+        q = heatEdge[e->edge_marker].heatFlux;
+        h = heatEdge[e->edge_marker].h;
+        Text = heatEdge[e->edge_marker].externalTemperature;
     }
 
     if (isPlanar)
@@ -102,42 +78,36 @@ Scalar heat_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, Ex
 }
 
 template<typename Real, typename Scalar>
-Scalar heat_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar heat_matrix_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return heatLabel[e->marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
+        return heatLabel[e->elem_marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
+        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
     else
-        return heatLabel[e->marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
-                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep : 0.0);
+        return heatLabel[e->elem_marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
+                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
-Scalar heat_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar heat_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return heatLabel[e->marker].volume_heat * int_v<Real, Scalar>(n, wt, v)
-        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
+        return heatLabel[e->elem_marker].volume_heat * int_v<Real, Scalar>(n, wt, v)
+        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
     else
-        return heatLabel[e->marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
-        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->marker].density * heatLabel[e->marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
-}
-
-void callbackHeatSpace(Tuple<Space *> space)
-{
-    space.at(0)->set_bc_types(heat_bc_types);
-    space.at(0)->set_essential_bc_values(heat_bc_values);
+        return heatLabel[e->elem_marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
+        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
 void callbackHeatWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    wf->add_biform(0, 0, callback(heat_bilinear_form));
+    wf->add_matrix_form(0, 0, callback(heat_matrix_form));
     if (analysisType == AnalysisType_Transient)
-        wf->add_liform(0, callback(heat_linear_form), H2D_ANY, 1, slnArray.at(0));
+        wf->add_vector_form(0, callback(heat_vector_form), HERMES_ANY, slnArray.at(0));
     else
-        wf->add_liform(0, callback(heat_linear_form));
-    wf->add_biform_surf(0, 0, callback(heat_bilinear_form_surf));
-    wf->add_liform_surf(0, callback(heat_linear_form_surf));
+        wf->add_vector_form(0, callback(heat_vector_form));
+    wf->add_matrix_form_surf(0, 0, callback(heat_matrix_form_surf));
+    wf->add_vector_form_surf(0, callback(heat_vector_form_surf));
 }
 
 // *******************************************************************************************************
@@ -445,6 +415,9 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
     }
 
     // edge markers
+    BCTypes bcTypes;
+    BCValues bcValues;
+
     heatEdge = new HeatEdge[Util::scene()->edges.count()+1];
     heatEdge[0].type = PhysicFieldBC_None;
     heatEdge[0].temperature = 0;
@@ -463,12 +436,20 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
             heatEdge[i+1].type = edgeHeatMarker->type;
             switch (edgeHeatMarker->type)
             {
+            case PhysicFieldBC_None:
+                {
+                    bcTypes.add_bc_none(i+1);
+                }
+                break;
             case PhysicFieldBC_Heat_Temperature:
                 {
                     // evaluate script
                     if (!edgeHeatMarker->temperature.evaluate()) return NULL;
 
                     heatEdge[i+1].temperature = edgeHeatMarker->temperature.number;
+
+                    bcTypes.add_bc_dirichlet(i+1);
+                    bcValues.add_const(i+1, edgeHeatMarker->temperature.number);
                 }
                 break;
             case PhysicFieldBC_Heat_Flux:
@@ -481,6 +462,8 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
                     heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.number;
                     heatEdge[i+1].h = edgeHeatMarker->h.number;
                     heatEdge[i+1].externalTemperature = edgeHeatMarker->externalTemperature.number;
+
+                    bcTypes.add_bc_newton(i+1);
                 }
                 break;
             }
@@ -511,7 +494,10 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve, callbackHeatSpace, callbackHeatWeakForm);
+    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  Tuple<BCTypes *>(&bcTypes),
+                                                                  Tuple<BCValues *>(&bcValues),
+                                                                  callbackHeatWeakForm);
 
     delete [] heatEdge;
     delete [] heatLabel;

@@ -16,8 +16,8 @@
 #ifndef __H2D_REFINEMENT_PROJ_BASED_SELECTOR_H
 #define __H2D_REFINEMENT_PROJ_BASED_SELECTOR_H
 
-#include "../tuple.h"
-#include "../matrix_old.h"
+#include "../h2d_common.h"
+#include "../../../hermes_common/matrix.h"
 #include "optimum_selector.h"
 
 namespace RefinementSelectors {
@@ -45,7 +45,7 @@ namespace RefinementSelectors {
    *  - evaluate_rhs_subdomain()
    *  - evaluate_error_squared_subdomain()
    */
-  class H2D_API ProjBasedSelector : public OptimumSelector {
+  class HERMES_API ProjBasedSelector : public OptimumSelector {
   public: //API
     /// Destructor
     virtual ~ProjBasedSelector();
@@ -214,7 +214,7 @@ namespace RefinementSelectors {
     typedef double** ProjMatrixCache[H2DRS_MAX_ORDER+2][H2DRS_MAX_ORDER+2];
 
     /// An array of projection matrices.
-    /** The first index is the mode (see the enum ElementMode). The second and the third index
+    /** The first index is the mode (see the enum ElementMode2D). The second and the third index
      *  is the horizontal and the vertical order respectively.
      *
      *  All matrices are square dense matrices and they have to be created through the function new_matrix().
@@ -258,7 +258,7 @@ namespace RefinementSelectors {
     /** An element of a candidate may span over multiple sub-domains. All integration uses the reference domain.
      *
      *  Modify this method in order to add ortho-adaptivity.
-     *  \param[in] mode A mode (enum ElementMode).
+     *  \param[in] mode A mode (enum ElementMode2D).
      *  \param[in] gip_points Integration points in the reference domain.
      *  \param[in] num_gip_points A number of integration points.
      *  \param[in] num_sub A number of subdomains.

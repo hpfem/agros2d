@@ -35,31 +35,13 @@ struct CurrentLabel
 CurrentEdge *currentEdge;
 CurrentLabel *currentLabel;
 
-BCType current_bc_types(int marker)
-{
-    switch (currentEdge[marker].type)
-    {
-    case PhysicFieldBC_None:
-        return BC_NONE;
-    case PhysicFieldBC_Current_Potential:
-        return BC_ESSENTIAL;
-    case PhysicFieldBC_Current_InwardCurrentFlow:
-        return BC_NATURAL;
-    }
-}
-
-scalar current_bc_values(int marker, double x, double y)
-{
-    return currentEdge[marker].value;
-}
-
 template<typename Real, typename Scalar>
-Scalar current_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar current_vector_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     double J = 0.0;
 
-    if (currentEdge[e->marker].type == PhysicFieldBC_Current_InwardCurrentFlow)
-        J = currentEdge[e->marker].value;
+    if (currentEdge[e->edge_marker].type == PhysicFieldBC_Current_InwardCurrentFlow)
+        J = currentEdge[e->edge_marker].value;
 
     if (isPlanar)
         return J * int_v<Real, Scalar>(n, wt, v);
@@ -68,31 +50,25 @@ Scalar current_linear_form_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e,
 }
 
 template<typename Real, typename Scalar>
-Scalar current_bilinear_form(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar current_matrix_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return currentLabel[e->marker].conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
+        return currentLabel[e->elem_marker].conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
     else
-        return currentLabel[e->marker].conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
+        return currentLabel[e->elem_marker].conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
 }
 
 template<typename Real, typename Scalar>
-Scalar current_linear_form(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar current_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     return 0.0;
 }
 
-void callbackCurrentSpace(Tuple<Space *> space)
-{
-    space.at(0)->set_bc_types(current_bc_types);
-    space.at(0)->set_essential_bc_values(current_bc_values);
-}
-
 void callbackCurrentWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    wf->add_biform(0, 0, callback(current_bilinear_form));
-    wf->add_liform(0, callback(current_linear_form));
-    wf->add_liform_surf(0, callback(current_linear_form_surf));
+    wf->add_matrix_form(0, 0, callback(current_matrix_form));
+    wf->add_vector_form(0, callback(current_vector_form));
+    wf->add_vector_form_surf(0, callback(current_vector_form_surf));
 }
 
 // *******************************************************************************************************
@@ -339,6 +315,9 @@ ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariable physicFiel
 QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
+    BCTypes bcTypes;
+    BCValues bcValues;
+
     currentEdge = new CurrentEdge[Util::scene()->edges.count()+1];
     currentEdge[0].type = PhysicFieldBC_None;
     currentEdge[0].value = 0;
@@ -358,6 +337,20 @@ QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolv
 
             currentEdge[i+1].type = edgeCurrentMarker->type;
             currentEdge[i+1].value = edgeCurrentMarker->value.number;
+
+            switch (edgeCurrentMarker->type)
+            {
+            case PhysicFieldBC_None:
+                bcTypes.add_bc_none(i+1);
+                break;
+            case PhysicFieldBC_Current_Potential:
+                bcTypes.add_bc_dirichlet(i+1);
+                bcValues.add_const(i+1, edgeCurrentMarker->value.number);
+                break;
+            case PhysicFieldBC_Current_InwardCurrentFlow:
+                bcTypes.add_bc_neumann(i+1);
+                break;
+            }
         }
     }
 
@@ -380,7 +373,8 @@ QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolv
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  callbackCurrentSpace,
+                                                                  Tuple<BCTypes *>(&bcTypes),
+                                                                  Tuple<BCValues *>(&bcValues),
                                                                   callbackCurrentWeakForm);
 
     delete [] currentEdge;

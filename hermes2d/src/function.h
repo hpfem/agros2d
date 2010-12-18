@@ -16,10 +16,13 @@
 #ifndef __H2D_FUNCTION_H
 #define __H2D_FUNCTION_H
 
-#include "common.h"
+#include "h2d_common.h"
 #include "transform.h"
 #include "quad_all.h"
 
+// Type for exact functions
+typedef scalar(*ExactFunction)(double x, double y, scalar& dx, scalar& dy);
+typedef scalar2&(*ExactFunction2)(double x, double y, scalar2& dx, scalar2& dy);
 
 // Precalculation masks
 enum
@@ -100,10 +103,16 @@ public:
 
   /// \brief Returns the polynomial degree of the function being represented by the class.
   int get_fn_order() const { return order; }
+  
+  /// \brief Returns the polynomial degree of the function at given edge. To be overriden in derived classes.
+  /// \param edge [in] Edge at which the order should be evaluated. (0-3)
+  virtual int get_edge_fn_order(int edge) { return order; }
 
   /// \brief Returns the number of components of the function being represented by the class.
   int get_num_components() const { return num_components; }
 
+  /// Checks whether the function is ready to use.
+  bool initialized() {return nodes != NULL;};
 
   /// Activates an integration rule of the specified order. Subsequent calls to
   /// get_values(), get_dx_values() etc. will be returning function values at these points.

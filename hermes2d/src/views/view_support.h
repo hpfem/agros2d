@@ -27,7 +27,7 @@
 #ifndef NOGLUT
 
 /* types */
-class H2D_API ViewMonitor ///< A monitor used to synchronize thread in views.
+class HERMES_API ViewMonitor ///< A monitor used to synchronize thread in views.
 {
 protected:
   pthread_mutexattr_t mutex_attr; ///< Mutext attributes.
@@ -55,8 +55,13 @@ public:
 extern ViewMonitor view_sync; ///< synchronization between all views. Used to access OpenGL and signal a window close event and a keypress event.
 
 /* exported functions */
-class View;
-extern int add_view(View* view, int x, int y, int width, int height, const char* title); ///< Adds a view.
+class View; 
+bool HERMES_API init_glut(); ///Initialize GLUT.
+bool HERMES_API shutdown_glut(); ///Shutdown GLUT.
+extern "C" 
+{
+  int add_view(View* view, int x, int y, int width, int height, const char* title); ///< Adds a view.
+}
 extern void set_view_title(int view_id, const char* title); ///< Sets title of a view.
 extern void refresh_view(int view_id); ///< Forces redisplay of a view.
 extern void remove_view(int view_id); ///< Removes a view.

@@ -132,12 +132,8 @@ public:
 class ViewScalarFilterFlow : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterFlow(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {}
-    ViewScalarFilterFlow(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {}
-    ViewScalarFilterFlow(MeshFunction *sln1, MeshFunction *sln2, MeshFunction *sln3, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, sln2, sln3, physicFieldVariable, physicFieldVariableComp) {}
+    ViewScalarFilterFlow(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {}
 
 protected:
     void calculateVariable(int i);

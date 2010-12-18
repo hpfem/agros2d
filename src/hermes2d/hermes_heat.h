@@ -140,10 +140,8 @@ public:
 class ViewScalarFilterHeat : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterHeat(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, physicFieldVariable, physicFieldVariableComp) {};
-    ViewScalarFilterHeat(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
-            ViewScalarFilter(sln1, sln2, physicFieldVariable, physicFieldVariableComp) {};
+    ViewScalarFilterHeat(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+            ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:
     void calculateVariable(int i);

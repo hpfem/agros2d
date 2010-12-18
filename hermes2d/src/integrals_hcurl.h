@@ -16,8 +16,6 @@
 #ifndef __H2D_INTEGRALS_HCURL_H
 #define __H2D_INTEGRALS_HCURL_H
 
-#ifdef H2D_COMPLEX
-
 //// new volume integrals //////////////////////////////////////////////////////////////////////////////
 
 template<typename Real, typename Scalar>
@@ -52,7 +50,7 @@ Scalar int_F_e_f(int n, double *wt, double (*F)(int marker, Real x, Real y), Fun
 {
   Scalar result = 0;
   for (int i = 0; i < n; i++)
-    result += wt[i] * (*F)(e->marker, e->x[i], e->y[i]) * (u->val0[i] * conj(v->val0[i]) + u->val1[i] * conj(v->val1[i]));
+    result += wt[i] * (*F)(e->elem_marker, e->x[i], e->y[i]) * (u->val0[i] * conj(v->val0[i]) + u->val1[i] * conj(v->val1[i]));
   return result;
 }
 
@@ -69,7 +67,7 @@ Scalar int_e_tau_f_tau(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Rea
 //// error calculation for adaptivity  //////////////////////////////////////////////////////////////////////////////
 
 template<typename Real, typename Scalar>
-Scalar hcurl_form(int n, double *wt, Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar hcurl_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
   Scalar result = 0;
   for (int i = 0; i < n; i++)
@@ -77,8 +75,6 @@ Scalar hcurl_form(int n, double *wt, Func<Scalar> *u, Func<Scalar> *v, Geom<Real
                        u->val0[i] * conj(v->val0[i]) + u->val1[i] * conj(v->val1[i]));
   return result;
 }
-
-#endif
 
 #endif
 

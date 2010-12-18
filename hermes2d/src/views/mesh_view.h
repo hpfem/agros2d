@@ -32,11 +32,12 @@
 /// MeshView is a debugging tool for displaying meshes together with its element
 /// id numbers, boundary markers etc.
 ///
-class H2D_API MeshView : public View
+class HERMES_API MeshView : public View
 {
 public:
 
-  MeshView(const char* title = "MeshView", DEFAULT_WINDOW_POS);
+  MeshView(const char* title = "MeshView", WinGeom* wg = NULL);
+  MeshView(char* title, WinGeom* wg = NULL);
   virtual ~MeshView();
 
   void show(Mesh* mesh);
@@ -45,7 +46,7 @@ protected:
 
   Linearizer lin;
 
-  bool b_ids, b_markers;
+  bool b_ids, b_markers, b_elem_mrk;
 
   struct ObjInfo
   {
@@ -68,10 +69,10 @@ protected:
 
 #else // NOGLUT
 
-class H2D_API MeshView : public View
+class HERMES_API MeshView : public View
 {
 public:
-  MeshView(const char* title = "MeshView", DEFAULT_WINDOW_POS) {}
+  MeshView(const char* title = "MeshView", WinGeom* wg = NULL) {}
   virtual ~MeshView() {}
   void show(Mesh* mesh)
      { verbose("MeshView: Hermes2D compiled without OpenGL support, skipping visualization."); }

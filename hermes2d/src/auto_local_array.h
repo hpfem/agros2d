@@ -20,10 +20,10 @@ class AutoLocalArray
 protected:
   T* arr;
 public:
-  const int length;
-  const int size;
+  const size_t length;
+  const size_t size;
 
-  AutoLocalArray(T* arr, int length) : arr(arr), length(length), size(length*sizeof(T)) {};
+  AutoLocalArray(T* arr, size_t length) : arr(arr), length(length), size(length*sizeof(T)) {};
   inline T * operator*() { return arr; };
   inline T & operator[](const int inx) { return arr[inx]; };
 
@@ -38,7 +38,7 @@ template<class T>
 class AutoLocalClassArray : public AutoLocalArray<T>
 {
 public:
-  AutoLocalClassArray(T* arr, int length) : AutoLocalArray<T>(arr, length) {};
+  AutoLocalClassArray(T* arr, size_t length) : AutoLocalArray<T>(arr, length) {};
   virtual ~AutoLocalClassArray() { delete[] this->arr; this->arr = NULL; }
 };
 

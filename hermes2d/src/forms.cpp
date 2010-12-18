@@ -14,6 +14,17 @@
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "forms.h"
+/*
+const char* ERR_UNDEFINED_NEIGHBORING_ELEMENTS = "Neighboring elements are not defined and so are not function traces on their interface. "
+                                                 "Did you forget setting HERMES_ANY_INNER_EDGE in add_matrix/vector_form?";
+*/
+// Explicit template specializations are needed here, general template<T> T DiscontinuousFunc<T>::zero = T(0) doesn't work.
+template<> Ord DiscontinuousFunc<Ord>::zero = Ord(0);
+template<> double DiscontinuousFunc<double>::zero = 0.0;
+#if defined(H3D_COMPLEX) || defined(H2D_COMPLEX)
+  #include <complex>
+  template<> std::complex<double> DiscontinuousFunc<std::complex<double> >::zero = std::complex<double>(0);
+#endif
 
 // Integration order for coordinates, normals and tangents is one
 Geom<Ord>* init_geom_ord()
@@ -34,7 +45,9 @@ Geom<Ord>* init_geom_ord()
 	e->x = x; e->y = y;
 	e->nx = nx; e->ny = ny;
 	e->tx = tx; e->ty = ty;
-        e->diam = diam;
+    e->diam = diam;
+    e->edge_marker = -8888;
+    e->elem_marker = -9999;
 	return e;
 }
 
@@ -43,23 +56,26 @@ Geom<double>* init_geom_vol(RefMap *rm, const int order)
 {
     Geom<double>* e = new Geom<double>;
     //e->element = rm->get_active_element();
-    e->diam = (rm->get_active_element())->get_diameter();
+    e->diam = rm->get_active_element()->get_diameter();
     e->id = rm->get_active_element()->id;
-    e->marker = rm->get_active_element()->marker;
+    e->elem_marker = rm->get_active_element()->marker;
     e->x = rm->get_phys_x(order);
     e->y = rm->get_phys_y(order);
     return e;
 }
 
 // Initialize edge marker, coordinates, tangent and normals
-Geom<double>* init_geom_surf(RefMap *rm, EdgePos* ep, const int order)
+Geom<double>* init_geom_surf(RefMap *rm, SurfPos* surf_pos, const int order)
 {
-	Geom<double>* e = new Geom<double>;
-  e->marker = ep->marker;
-	e->x = rm->get_phys_x(order);
-	e->y = rm->get_phys_y(order);
-	double3 *tan;
-  tan = rm->get_tangent(ep->edge);
+  Geom<double>* e = new Geom<double>;
+  e->edge_marker = surf_pos->marker;
+  e->elem_marker = rm->get_active_element()->marker;
+  e->diam = rm->get_active_element()->get_diameter();
+  e->id = rm->get_active_element()->en[surf_pos->surf_num]->id;
+  e->x = rm->get_phys_x(order);
+  e->y = rm->get_phys_y(order);
+  double3 *tan;
+  tan = rm->get_tangent(surf_pos->surf_num, order);
 
   Quad2D* quad = rm->get_quad_2d();
   int np = quad->get_num_points(order);
@@ -72,6 +88,7 @@ Geom<double>* init_geom_surf(RefMap *rm, EdgePos* ep, const int order)
     e->tx[i] = tan[i][0];  e->ty[i] =   tan[i][1];
     e->nx[i] = tan[i][1];  e->ny[i] = - tan[i][0];
   }
+    e->orientation = rm->get_active_element()->get_edge_orientation(surf_pos->surf_num);
 	return e;
 }
 
@@ -105,8 +122,8 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
   int np = quad->get_num_points(order);
   Func<double>* u = new Func<double>(np, nc);
 
-  // H1 space
-  if (space_type == 0)
+  // H1 or L2 space.
+  if (space_type == 0 || space_type == 3)
   {
 		u->val = new double [np];
 		u->dx  = new double [np];
@@ -147,7 +164,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 #endif
 		}
 	}
-  // Hcurl space
+  // Hcurl space.
 	else if (space_type == 1)
   {
     u->val0 = new double [np];
@@ -166,7 +183,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
       u->curl[i] = ((*m)[0][0] * (*m)[1][1] - (*m)[1][0] * (*m)[0][1]) * (dx1[i] - dy0[i]);
     }
 	}
-  // Hdiv space
+  // Hdiv space.
   else if (space_type == 2)
   {
     u->val0 = new double [np];
@@ -181,12 +198,6 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
       u->val1[i] = (- fn0[i] * (*m)[0][1] + fn1[i] * (*m)[0][0]);
     }
   }
-  // L2 space
-  else if (space_type == 3)
-  {
-    u->val = new double [np];
-    memcpy(u->val, fu->get_fn_values(), np * sizeof(double));
-  }
   else
     error("Wrong space type - space has to be either H1, Hcurl, Hdiv or L2");
 
@@ -196,6 +207,10 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 // Preparation of mesh-functions
 Func<scalar>* init_fn(MeshFunction *fu, RefMap *rm, const int order)
 {
+  // sanity checks
+  if (fu == NULL) error("NULL MeshFunction in Func<scalar>*::init_fn().");
+  if (fu->get_mesh() == NULL) error("Uninitialized MeshFunction used.");
+
   int nc = fu->get_num_components();
   Quad2D* quad = fu->get_quad_2d();
   fu->set_quad_order(order);

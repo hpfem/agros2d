@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "mesh_lexer.h"
 #include "mesh_parser.h"
 
@@ -73,7 +73,7 @@ static void* new_block(int size)
 static void free_mem()
 {
   // dump all blocks at once - no need to walk through the linked lists etc.
-  for (int i = 0; i < pages.size(); i++)
+  for (unsigned int i = 0; i < pages.size(); i++)
     free(pages[i]);
 }
 
@@ -240,6 +240,7 @@ static double eval_fn(MSymbol* sym)
     return ((double (*)(double, double)) sym->built_in)(args[0], args[1]);
 
   error("Internal error.");
+  return 0.0;
 }
 
 
@@ -285,8 +286,10 @@ static double factor()
       return sym->data->val;
     }
   }
-  else
+  else {
     serror("syntax error: '%s'", token->text);
+    return 0.0;
+  }
 }
 
 
@@ -465,7 +468,7 @@ bool mesh_parser_get_ints(MItem* list, int n, ...)
   MItem* it = list->list;
   va_list ap; va_start(ap, n);
   for (int i = 0; i < n; i++, it = it->next) {
-    if (it->n >= 0 || !H2D_IS_INT(it->val)) return false;
+    if (it->n >= 0 || !HERMES_IS_INT(it->val)) return false;
     *(va_arg(ap, int*)) = (int) it->val;
   }
   va_end(ap);

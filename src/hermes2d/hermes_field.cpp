@@ -30,8 +30,6 @@
 #include "scene.h"
 #include "h2d_reader.h"
 
-// #include <InpMtx.h>
-
 bool isPlanar;
 AnalysisType analysisType;
 double frequency;
@@ -109,27 +107,9 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
     return solution;
 }
 
-void solveSystem(LinSystem *sys,
-                 Tuple<Solution *> solution)
-{
-    int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
-
-    switch (numberOfSolution)
-    {
-    case 1:
-        sys->solve(numberOfSolution, solution.at(0));
-        break;
-    case 2:
-        sys->solve(numberOfSolution, solution.at(0), solution.at(1));
-        break;
-    case 3:
-        sys->solve(numberOfSolution, solution.at(0), solution.at(1), solution.at(2));
-        break;
-    }
-}
-
 QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                          void (*cbSpace)(Tuple<Space *>),
+                                          Tuple<BCTypes *> bcTypes,
+                                          Tuple<BCValues *> bcValues,
                                           void (*cbWeakForm)(WeakForm *, Tuple<Solution *>))
 {
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
@@ -145,6 +125,8 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     analysisType = Util::scene()->problemInfo()->analysisType;
     frequency = Util::scene()->problemInfo()->frequency;
 
+    bool isLinear = true;
+
     // solution agros array
     QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
 
@@ -153,12 +135,6 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     // refine mesh
     for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
         mesh->refine_all_elements(0);
-
-    // initialize the shapeset
-    H1Shapeset shapeset;
-
-    // create shapeset cache
-    Tuple<PrecalcShapeset *> pss;
 
     // create an H1 space
     Tuple<Space *> space;
@@ -169,11 +145,8 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     for (int i = 0; i < numberOfSolution; i++)
     {
-        // cache
-        pss.push_back(new PrecalcShapeset(&shapeset));
-
         // space
-        space.push_back(new H1Space(mesh, &shapeset));
+        space.push_back(new H1Space(mesh, bcTypes[i], bcValues[i], polynomialOrder));
 
         // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
@@ -186,9 +159,6 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         if ((adaptivityType != AdaptivityType_None))
             solutionReference.push_back(new Solution());
     }
-
-    // callback space
-    cbSpace(space);
 
     if (analysisType == AnalysisType_Transient)
     {
@@ -205,9 +175,6 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     // callback weakform
     cbWeakForm(&wf, solution);
 
-    // initialize the linear solver
-    UmfpackSolver umfpack;
-
     // prepare selector
     RefinementSelectors::Selector *selector = NULL;
     switch (adaptivityType)
@@ -221,33 +188,8 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     case AdaptivityType_HP:
         selector = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_HP_ANISO,
                                                                 Util::config()->convExp,
-                                                                H2DRS_DEFAULT_ORDER,
-                                                                &shapeset);
+                                                                H2DRS_DEFAULT_ORDER);
         break;
-    }
-
-    // initialize the linear system
-    LinSystem sys(&wf, &umfpack);
-    switch (numberOfSolution)
-    {
-    case 1:
-        {
-            sys.set_spaces(numberOfSolution, space.at(0));
-            sys.set_pss(numberOfSolution, pss.at(0));
-            break;
-        }
-    case 2:
-        {
-            sys.set_spaces(numberOfSolution, space.at(0), space.at(1));
-            sys.set_pss(numberOfSolution, pss.at(0), pss.at(1));
-            break;
-        }
-    case 3:
-        {
-            sys.set_spaces(numberOfSolution, space.at(0), space.at(1), space.at(2));
-            sys.set_pss(numberOfSolution, pss.at(0),  pss.at(1), pss.at(2));
-            break;
-        }
     }
 
     // assemble the stiffness matrix and solve the system
@@ -259,60 +201,70 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     // error marker
     bool isError = false;
 
+    MatrixSolverType matrixSolver = SOLVER_UMFPACK;
+
     // solution
     int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
     int actualAdaptivitySteps = -1;
     for (int i = 0; i<maxAdaptivitySteps; i++)
     {
-        // assign dofs
-        int ndofs = 0;
-        for (int j = 0; j < numberOfSolution; j++)
-            ndofs += space.at(j)->assign_dofs(ndofs);
+        // set up the solver, matrix, and rhs according to the solver selection.
+        SparseMatrix *matrix = create_matrix(matrixSolver);
+        Vector *rhs = create_vector(matrixSolver);
+        Solver *solver = create_linear_solver(matrixSolver, matrix, rhs);
 
-        sys.assemble();
-        if (sys.get_num_dofs() == 0)
+        if (adaptivityType == AdaptivityType_None)
         {
-            progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
-            isError = true;
-            break;
-        }
-        solveSystem(&sys, solution);
+            DiscreteProblem dp(&wf, space, isLinear);
+            dp.assemble(matrix, rhs, false);
 
-        // calculate errors and adapt the solution
-        if (adaptivityType != AdaptivityType_None)
-        {
-            RefSystem rs(&sys);
-            rs.assemble();
-
-            // adaptivity
-            H1Adapt hp(space);
-            switch (numberOfSolution)
+            if (dp.get_num_dofs() == 0)
             {
-            case 1:
-                {
-                    rs.solve(numberOfSolution, solutionReference.at(0));
-                }
-                break;
-            case 2:
-                {
-                    rs.solve(numberOfSolution, solutionReference.at(0), solutionReference.at(1));
-                }
-                break;
-            case 3:
-                {
-                    rs.solve(numberOfSolution, solutionReference.at(0), solutionReference.at(1), solutionReference.at(2));
-                }
+                progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
+                isError = true;
                 break;
             }
 
-            hp.set_solutions(solution, solutionReference);
-            error = hp.calc_error(H2D_TOTAL_ERROR_REL | H2D_ELEMENT_ERROR_ABS) * 100;
+            if(solver->solve())
+                Solution::vector_to_solutions(solver->get_solution(), space, solution);
+            else
+                error ("Matrix solver failed.\n");
+        }
+        else
+        {           
+            // construct globally refined reference mesh and setup reference space.
+            Tuple<Space *> *spaceReference = construct_refined_spaces(space);
+
+            // assemble reference problem.
+            DiscreteProblem dp(&wf, *spaceReference, isLinear);
+            dp.assemble(matrix, rhs);
+
+            if (dp.get_num_dofs() == 0)
+            {
+                progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
+                isError = true;
+                break;
+            }
+
+            if(solver->solve())
+                Solution::vector_to_solutions(solver->get_solution(), *spaceReference, solutionReference);
+            else
+                error ("Matrix solver failed.\n");
+
+            // project the fine mesh solution onto the coarse mesh.
+            OGProjection::project_global(space, solutionReference, solution, matrixSolver);
+
+            // Calculate element errors and total error estimate.
+            Adapt* adaptivity = new Adapt(space, HERMES_H1_NORM);
+            bool solutionsForAdapt = true;
+            double error = adaptivity->calc_err_est(solution, solutionReference, solutionsForAdapt,
+                                                    HERMES_TOTAL_ERROR_REL | HERMES_ELEMENT_ERROR_REL) * 100;
 
             // emit signal
             progressItemSolve->emitMessage(QObject::tr("Relative error: %1 %").
                                            arg(error, 0, 'f', 5), false, 1);
             // add error to the list
-            progressItemSolve->addAdaptivityError(error, sys.get_num_dofs());
+            progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(*spaceReference));
 
             if (progressItemSolve->isCanceled())
             {
@@ -320,44 +272,72 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 break;
             }
 
-            if (error < adaptivityTolerance || sys.get_num_dofs() >= NDOF_STOP)
+            if (error < adaptivityTolerance || dp.get_num_dofs() >= NDOF_STOP)
             {
                 break;
             }
-            if (i != maxAdaptivitySteps-1) hp.adapt(selector,
-                                                    Util::config()->threshold,
-                                                    Util::config()->strategy,
-                                                    Util::config()->meshRegularity);
+            if (i != maxAdaptivitySteps-1) adaptivity->adapt(selector,
+                                                             Util::config()->threshold,
+                                                             Util::config()->strategy,
+                                                             Util::config()->meshRegularity);
             actualAdaptivitySteps = i+1;
+
+            delete adaptivity;
+            // if (done == false)
+            // delete spaceRef->get_mesh();
+            delete spaceReference;
         }
+
+        // clean up.
+        delete solver;
+        delete matrix;
+        delete rhs;
     }
 
     // delete selector
     if (selector) delete selector;
 
-
     // timesteps
     if (!isError)
     {
+        SparseMatrix *matrix = NULL;
+        Vector *rhs = NULL;
+        Solver *solver = NULL;
+
+        // allocate dp for transient solution
+        DiscreteProblem *dp = NULL;
+        if (analysisType == AnalysisType_Transient)
+        {
+            // set up the solver, matrix, and rhs according to the solver selection.
+            matrix = create_matrix(matrixSolver);
+            rhs = create_vector(matrixSolver);
+            solver = create_linear_solver(matrixSolver, matrix, rhs);
+
+            dp = new DiscreteProblem(&wf, space, isLinear);
+        }
+
         int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
         for (int n = 0; n<timesteps; n++)
         {
             // set actual time
             actualTime = (n+1)*timeStep;
 
+            // transient
             if (timesteps > 1)
             {
-                // transient
-                sys.assemble(true);
-                solveSystem(&sys, solution);
-            }
-            else if (n > 0)
-            {
-                int ndofs = 0;
-                for (int i = 0; i < numberOfSolution; i++)
-                    ndofs += space.at(i)->assign_dofs(ndofs);
+                dp->assemble(matrix, rhs, (n > 0));
 
-                sys.assemble();
+                if (dp->get_num_dofs() == 0)
+                {
+                    progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
+                    isError = true;
+                    break;
+                }
+
+                if (solver->solve())
+                    Solution::vector_to_solutions(solver->get_solution(), space, solution);
+                else
+                    error ("Matrix solver failed.\n");
             }
 
             // output
@@ -376,15 +356,16 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 break;
             }
         }
+
+        // clean up
+        if (solver) delete solver;
+        if (matrix) delete matrix;
+        if (rhs) delete rhs;
+        if (dp) delete dp;
     }
 
     // delete mesh
     delete mesh;
-
-    // delete pss
-    for (int i = 0; i < pss.size(); i++)
-        delete pss.at(i);
-    pss.clear();
 
     // delete space
     for (int i = 0; i < space.size(); i++)
@@ -413,22 +394,8 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
 // *********************************************************************************************************************************************
 
-ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-    : Filter(sln1)
-{
-    m_physicFieldVariable = physicFieldVariable;
-    m_physicFieldVariableComp = physicFieldVariableComp;
-}
-
-ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-    : Filter(sln1, sln2)
-{
-    m_physicFieldVariable = physicFieldVariable;
-    m_physicFieldVariableComp = physicFieldVariableComp;
-}
-
-ViewScalarFilter::ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, MeshFunction *sln3, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
-    : Filter(sln1, sln2, sln3)
+ViewScalarFilter::ViewScalarFilter(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+    : Filter(sln)
 {
     m_physicFieldVariable = physicFieldVariable;
     m_physicFieldVariableComp = physicFieldVariableComp;

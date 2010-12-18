@@ -22,7 +22,7 @@
 #ifndef NOGLUT
 
 #include <GL/freeglut.h>
-#include "../common.h"
+#include "../h2d_common.h"
 #include "vector_base_view.h"
 
 void VectorBaseView::show(Space* space)
@@ -31,7 +31,7 @@ void VectorBaseView::show(Space* space)
   pss = new PrecalcShapeset(space->get_shapeset());
   sln = new Solution();
   this->space = space;
-  ndofs = space->get_num_dofs();
+  ndof = Space::get_num_dofs(space);
   base_index = 0;
   update_solution();
 }
@@ -46,24 +46,26 @@ void VectorBaseView::free()
 
 void VectorBaseView::update_solution()
 {
-  scalar* vec = new scalar[ndofs + 1];
-  memset(vec, 0, sizeof(scalar) * (ndofs + 1));
-  if (base_index >= -1 && base_index < ndofs)
-    vec[base_index + 1] = 1.0;
-  sln->set_fe_solution(space, pss, vec);
+  scalar* coeffs = new scalar[ndof + 1];
+  memset(coeffs, 0, sizeof(scalar) * (ndof + 1));
+  if (base_index >= -1 && base_index < ndof)
+    coeffs[base_index + 1] = 1.0;
+  Solution::vector_to_solution(coeffs, space, sln, pss); 
 
   VectorView::show(sln,  sln, 0.001, H2D_FN_VAL_0, H2D_FN_VAL_1);
   update_title();
+  
+  delete [] coeffs;
 }
 
 
 void VectorBaseView::update_title()
 {
   std::stringstream str;
-  str << title << " - dof = " << base_index;
+  str << basic_title << " - dof = " << base_index;
   if (base_index < 0)
     str << " (Dirichlet lift)";
-  set_title(str.str().c_str());
+  View::set_title(str.str().c_str());
 }
 
 
@@ -77,7 +79,7 @@ void VectorBaseView::on_special_key(int key, int x, int y)
       break;
 
     case GLUT_KEY_RIGHT:
-      if (base_index < ndofs-1) base_index++;
+      if (base_index < ndof-1) base_index++;
       update_solution();
       break;
 

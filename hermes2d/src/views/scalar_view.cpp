@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <cmath>
 #include <list>
-#include "../common.h"
+#include "../h2d_common.h"
 #include "scalar_view.h"
 
 #define GL_BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -38,13 +38,11 @@ using namespace std;
 
 //// ScalarView ////////////////////////////////////////////////////////////////////////////////////
 
-ScalarView::ScalarView(const char* title, int x, int y, int width, int height)
-           : View(title, x, y, width, height)
-           , show_element_info(false), element_id_widget(0)
-           , vertex_nodes(0), node_pixel_radius(10), pointed_vertex_node(NULL), pointed_node_widget(0), selected_node_widget(0), node_widget_vert_cnt(32), allow_node_selection(false)
-#ifdef ENABLE_VIEWER_GUI
-           , tw_wnd_id(TW_WND_ID_NONE), tw_setup_bar(NULL)
-#endif
+const int ScalarView::fovy = 50;
+const double ScalarView::znear = 0.05;
+const double ScalarView::zfar = 10;
+
+void ScalarView::init()
 {
   pmode = mode3d = false;
   normals = NULL;
@@ -56,11 +54,53 @@ ScalarView::ScalarView(const char* title, int x, int y, int width, int height)
   cont_color[0] = 0.0f; cont_color[1] = 0.0f; cont_color[2] = 0.0f;
 
   show_edges = true;
+  show_aabb = false;
   edges_color[0] = 0.5f; edges_color[1] = 0.4f; edges_color[2] = 0.4f;
 
   show_values = true;
   lin_updated = false;
   gl_coord_buffer = 0; gl_index_buffer = 0; gl_edge_inx_buffer = 0;
+
+  do_zoom_to_fit = true;
+  is_constant = false;
+}
+
+#ifndef _MSC_VER
+ScalarView::ScalarView(const char* title, WinGeom* wg) :
+    View(title, wg),
+    vertex_nodes(0),
+    pointed_vertex_node(NULL),
+    allow_node_selection(false),
+    pointed_node_widget(0),
+    selected_node_widget(0),
+    node_pixel_radius(10),
+    node_widget_vert_cnt(32),
+    element_id_widget(0),
+    show_element_info(false)
+#ifdef ENABLE_VIEWER_GUI
+           , tw_wnd_id(TW_WND_ID_NONE), tw_setup_bar(NULL)
+#endif
+{
+  init();
+}
+#endif
+
+ScalarView::ScalarView(char* title, WinGeom* wg) :
+    View(title, wg),
+    vertex_nodes(0),
+    pointed_vertex_node(NULL),
+    allow_node_selection(false),
+    pointed_node_widget(0),
+    selected_node_widget(0),
+    node_pixel_radius(10),
+    node_widget_vert_cnt(32),
+    element_id_widget(0),
+    show_element_info(false)
+#ifdef ENABLE_VIEWER_GUI
+           , tw_wnd_id(TW_WND_ID_NONE), tw_setup_bar(NULL)
+#endif
+{
+  init();
 }
 
 ScalarView::~ScalarView()
@@ -146,7 +186,7 @@ void ScalarView::create_setup_bar()
 
   TwBar* tw_bar = TwNewBar("View setup");
 
-  //contours
+  // Contours.
   TwAddVarRW(tw_bar, "contours", TW_TYPE_BOOLCPP, &contours, " group=Contour2D label='Show contours'");
   sprintf(buffer, " group=Contour2D label='Begin' step=%g", CONT_CHANGE);
   TwAddVarRW(tw_bar, "cont_orig", TW_TYPE_DOUBLE, &cont_orig, buffer);
@@ -154,14 +194,15 @@ void ScalarView::create_setup_bar()
   TwAddVarRW(tw_bar, "cont_step", TW_TYPE_DOUBLE, &cont_step, buffer);
   TwAddVarRW(tw_bar, "cont_color", TW_TYPE_COLOR3F, &cont_color, " group=Contour2D label='Color'");
 
-  //mesh
+  // Mesh.
   TwAddVarRW(tw_bar, "show_values", TW_TYPE_BOOLCPP, &show_values, " group=Elements2D label='Show Value'");
   TwAddVarRW(tw_bar, "show_edges", TW_TYPE_BOOLCPP, &show_edges, " group=Elements2D label='Show Edges'");
+  TwAddVarRW(tw_bar, "show_aabb", TW_TYPE_BOOLCPP, &show_aabb, " group=Elements2D label='Show Bounding box'");
   TwAddVarRW(tw_bar, "show_element_info", TW_TYPE_BOOLCPP, &show_element_info, " group=Elements2D label='Show ID'");
   TwAddVarRW(tw_bar, "allow_node_selection", TW_TYPE_BOOLCPP, &allow_node_selection, " group=Elements2D label='Allow Node Sel.'");
   TwAddVarRW(tw_bar, "edges_color", TW_TYPE_COLOR3F, &edges_color, " group=Elements2D label='Edge color'");
 
-  //help
+  // Help.
   const char* help_text = get_help_text();
   TwSetParam(tw_bar, NULL, "help", TW_PARAM_CSTRING, 1, help_text);
 
@@ -179,19 +220,40 @@ void ScalarView::show(MeshFunction* sln, double eps, int item,
   lin.process_solution(sln, item, eps, max_abs, xdisp, ydisp, dmult);
   update_mesh_info();
 
-  //initialize mesh nodes for displaying and selection
+  // Initialize mesh nodes for displaying and selection.
   init_vertex_nodes(sln->get_mesh());
 
-  //initialize element info
+  // Initialize element info.
   init_element_info(sln->get_mesh());
 
   lin.unlock_data();
 
   create();
   update_layout();
-  reset_view(false);
-  refresh();
   wait_for_draw();
+  // FIXME: find out why this has to be called after wait_for_draw in order for the view to be reset initially.
+  reset_view(false); // setting true here makes the view always reset after calling 'show'; particularly in the adaptivity process,
+                     // it would disallow the observation of the process from a manually set viewpoint.
+  refresh();
+
+  verbose("Showing data in view \"%s\"", title.c_str());
+  verbose(" Used value range [%g; %g]", range_min, range_max);
+  verbose(" Value range of data: [%g, %g]", lin.get_min_value(), lin.get_max_value());
+}
+
+void ScalarView::show_linearizer_data(double eps, int item)
+{
+  double max_abs = range_auto ? -1.0 : std::max(fabs(range_min), fabs(range_max));
+  
+  update_mesh_info();
+
+  create();
+  update_layout();
+  wait_for_draw();
+  // FIXME: find out why this has to be called after wait_for_draw in order for the view to be reset initially.
+  reset_view(false); // setting true here makes the view always reset after calling 'show'; particularly in the adaptivity process,
+                     // it would disallow the observation of the process from a manually set viewpoint.
+  refresh();
 
   verbose("Showing data in view \"%s\"", title.c_str());
   verbose(" Used value range [%g; %g]", range_min, range_max);
@@ -199,7 +261,7 @@ void ScalarView::show(MeshFunction* sln, double eps, int item,
 }
 
 void ScalarView::update_mesh_info() {
-  //calculate normals if necessary
+  // Calculate normals if necessary.
   if (mode3d)
     calculate_normals(lin.get_vertices(), lin.get_num_vertices(), lin.get_triangles(), lin.get_num_triangles());
   else {
@@ -207,22 +269,41 @@ void ScalarView::update_mesh_info() {
     normals = NULL;
   }
 
-  //update range
-  if (range_auto) {
-    range_min = lin.get_min_value();
-    range_max = lin.get_max_value();
+  // Get a range of vertex values (or use the range set by the user).
+  double vert_min = lin.get_min_value();
+  double vert_max = lin.get_max_value();
+  // Special case: constant function; offset the lower limit of range so that the domain is drawn under the
+  // function and also the scale is drawn correctly.
+  if ((vert_max - vert_min) < 1e-8) {
+    is_constant = true;
+    vert_min -= 0.5;
   }
 
-  //calculate AABB
+  if (range_auto) {
+    range_min = vert_min;
+    range_max = vert_max;
+  }
+
+  if (fabs(range_max - range_min) < 1e-8)
+    value_irange = 1.0;
+  else
+    value_irange = 1.0 / (range_max - range_min);
+
+  // Calculate the axes-aligned bounding box in the xy-plane.
   lin.calc_vertices_aabb(&vertices_min_x, &vertices_max_x, &vertices_min_y, &vertices_max_y);
 
-  //calculate average value
-  vertices_avg_value = 0.0;
+  // Calculate average value.
+  value_range_avg = 0.0;
   double3* verts = lin.get_vertices();
   const int num_verts = lin.get_num_vertices();
   for(int i = 0; i < num_verts; i++)
-    vertices_avg_value += verts[i][2];
-  vertices_avg_value /= num_verts;
+    if (verts[i][2] > range_max)
+      value_range_avg += range_max;
+    else if (verts[i][2] < range_min)
+      value_range_avg += range_min;
+    else
+      value_range_avg += verts[i][2];
+  value_range_avg /= num_verts;
 
   lin_updated = true;
 }
@@ -623,7 +704,7 @@ void ScalarView::draw_tri_contours(double3* vert, int3* tri)
   }
 }
 
-void ScalarView::prepare_gl_geometry(const double value_min, const double value_irange)
+void ScalarView::prepare_gl_geometry()
 {
   if (lin_updated)
   {
@@ -697,7 +778,7 @@ void ScalarView::prepare_gl_geometry(const double value_min, const double value_
       if (gl_verts == NULL)
           throw std::runtime_error("unable to map coord buffer: " + glGetError());
       for(int i = 0; i < vert_cnt; i++)
-        gl_verts[i] = GLVertex2((float)verts[i][0], (float)verts[i][1], (float)((verts[i][2] - value_min) * value_irange));
+        gl_verts[i] = GLVertex2((float)verts[i][0], (float)verts[i][1], (float)((verts[i][2] - range_min) * value_irange));
       glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 
       //allocate edge indices
@@ -723,7 +804,7 @@ void ScalarView::prepare_gl_geometry(const double value_min, const double value_
   }
 }
 
-void ScalarView::draw_values_2d(const double value_min, const double value_irange)
+void ScalarView::draw_values_2d()
 {
   assert_msg(gl_pallete_tex_id != 0, "Palette GL texture ID is zero, palette not set");
 
@@ -758,11 +839,11 @@ void ScalarView::draw_values_2d(const double value_min, const double value_irang
 
       if (finite(vert_a[2]) && finite(vert_b[2]) && finite(vert_c[2]))
       {
-        glTexCoord1d((vert_a[2] - value_min) * value_irange);
+        glTexCoord1d((vert_a[2] - range_min) * value_irange);
         glVertex2d(vert_a[0], vert_a[1]);
-        glTexCoord1d((vert_b[2] - value_min) * value_irange);
+        glTexCoord1d((vert_b[2] - range_min) * value_irange);
         glVertex2d(vert_b[0], vert_b[1]);
-        glTexCoord1d((vert_c[2] - value_min) * value_irange);
+        glTexCoord1d((vert_c[2] - range_min) * value_irange);
         glVertex2d(vert_c[0], vert_c[1]);
       }
     }
@@ -902,6 +983,52 @@ void ScalarView::draw_edges(DrawSingleEdgeCallback draw_single_edge, void* param
   }
 }
 
+
+#define V0    vertices_min_x - xctr, range_min - yctr, -(vertices_min_y - zctr)
+#define V1    vertices_max_x - xctr, range_min - yctr, -(vertices_min_y - zctr)
+#define V2    vertices_max_x - xctr, range_min - yctr, -(vertices_max_y - zctr)
+#define V3    vertices_min_x - xctr, range_min - yctr, -(vertices_max_y - zctr)
+#define V4    vertices_min_x - xctr, range_max - yctr, -(vertices_min_y - zctr)
+#define V5    vertices_max_x - xctr, range_max - yctr, -(vertices_min_y - zctr)
+#define V6    vertices_max_x - xctr, range_max - yctr, -(vertices_max_y - zctr)
+#define V7    vertices_min_x - xctr, range_max - yctr, -(vertices_max_y - zctr)
+void ScalarView::draw_aabb()
+{
+  // Axis-aligned bounding box of the model.
+  GLdouble aabb[] =
+  {
+    V0,V1,V2,V3,    // bottom
+    V0,V1,V5,V4,    // front
+    V0,V3,V7,V4,    // left
+    V1,V2,V6,V5,    // right
+    V2,V3,V7,V6,    // back
+    V4,V5,V6,V7     // top
+  };
+
+  // Set the edge color.
+  glColor3fv(edges_color);
+
+  // Make the cube wire frame.
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+  // Scale the box appropriately.
+  glPushMatrix();
+  glScaled(xzscale, yscale, xzscale);
+
+  // Activate and specify pointer to vertex array.
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glVertexPointer(3, GL_DOUBLE, 0, aabb);
+
+  // Draw the box (glDrawElements would be better, but do not work for me).
+  glDrawArrays(GL_QUADS, 0, 24);
+
+  // Deactivate vertex arrays after drawing.
+  glDisableClientState(GL_VERTEX_ARRAY);
+
+  // Recover the original model/view matrix
+  glPopMatrix();
+}
+
 void ScalarView::on_display()
 {
   int i, j;
@@ -912,17 +1039,10 @@ void ScalarView::on_display()
   int3* tris = lin.get_triangles();
   int3* edges = lin.get_edges();
 
-  // get a range of values
-  double value_min = range_min, value_max = range_max;
-  if (range_auto) { value_min = lin.get_min_value(); value_max = lin.get_max_value(); }
-  double value_irange = 1.0 / (value_max - value_min);
-  // special case: constant solution
-  if ((value_max - value_min) < 1e-8) { value_irange = 1.0; range_min -= 0.5; }
-
   glPolygonMode(GL_FRONT_AND_BACK, pmode ? GL_LINE : GL_FILL);
 
   //prepare vertices
-  prepare_gl_geometry(value_min, value_irange);
+  prepare_gl_geometry();
 
   if (!mode3d)
   {
@@ -943,7 +1063,7 @@ void ScalarView::on_display()
 
     // draw all triangles
     if (show_values)
-      draw_values_2d(value_min, value_irange);
+      draw_values_2d();
 
     // draw contours
     glDisable(GL_TEXTURE_1D);
@@ -977,26 +1097,31 @@ void ScalarView::on_display()
   }
   else
   {
-    set_3d_projection(50, 0.05, 10.0);
+    set_3d_projection(fovy, znear, zfar);
 
     glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    //set camera transforamtion
+    // Set camera transforamtion.
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // initialize light and material
+    // Initialize light and material.
     init_lighting();
 
+    if (do_zoom_to_fit) {
+      // If the user presses 'c' to center the view automatically, calculate how far to move
+      // the visualized model away from the viewer so that it is completely visible in current window.
+      ztrans = calculate_ztrans_to_fit_view();
+      do_zoom_to_fit = false;
+    }
 
+    // Set model transformation.
     glTranslated(xtrans, ytrans, ztrans);
-
-    // set model transforamtion
     glRotated(xrot, 1, 0, 0);
     glRotated(yrot, 0, 1, 0);
 
-    // draw the surface
+    // Draw the surface.
     glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, gl_pallete_tex_id);
@@ -1011,7 +1136,7 @@ void ScalarView::on_display()
       for (j = 0; j < 3; j++)
       {
         glNormal3d(normals[tris[i][j]][0] * normal_xzscale, normals[tris[i][j]][2] * normal_yscale, -normals[tris[i][j]][1] * normal_xzscale);
-        glTexCoord2d((vert[tris[i][j]][2] - value_min) * value_irange * tex_scale + tex_shift, 0.0);
+        glTexCoord2d((vert[tris[i][j]][2] - range_min) * value_irange * tex_scale + tex_shift, 0.0);
         glVertex3d((vert[tris[i][j]][0] - xctr) * xzscale,
                    (vert[tris[i][j]][2] - yctr) * yscale,
                    -(vert[tris[i][j]][1] - zctr) * xzscale);
@@ -1020,7 +1145,7 @@ void ScalarView::on_display()
     glEnd();
     glDisable(GL_POLYGON_OFFSET_FILL);
 
-    // draw edges
+    // Draw edges.
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_1D);
     if (show_edges)
@@ -1039,27 +1164,32 @@ void ScalarView::on_display()
       glEnd();
     }
 
-    // draw boundary edges
-    glColor3fv(edges_color);
-    glBegin(GL_LINES);
-    for (i = 0; i < lin.get_num_edges(); i++)
-    {
-      double y_coord = (lin.get_min_value() - yctr) * yscale;
-      int3& edge = edges[i];
-      if (edge[2])
+    // Draw the whole bounding box or only the boundary edges.
+    if (show_aabb)
+      draw_aabb();
+    else {
+      glColor3fv(edges_color);
+      glBegin(GL_LINES);
+      for (i = 0; i < lin.get_num_edges(); i++)
       {
-        glVertex3d((vert[edge[0]][0] - xctr) * xzscale, y_coord,
-                  -(vert[edge[0]][1] - zctr) * xzscale);
-        glVertex3d((vert[edge[1]][0] - xctr) * xzscale, y_coord,
-                  -(vert[edge[1]][1] - zctr) * xzscale);
+        // Outline of the domain boundary at the bottom of the plot or at the bottom user-defined limit
+        double y_coord = (range_min - yctr) * yscale;
+        int3& edge = edges[i];
+        if (edge[2])
+        {
+          glVertex3d((vert[edge[0]][0] - xctr) * xzscale, y_coord,
+                    -(vert[edge[0]][1] - zctr) * xzscale);
+          glVertex3d((vert[edge[1]][0] - xctr) * xzscale, y_coord,
+                    -(vert[edge[1]][1] - zctr) * xzscale);
+        }
       }
+      glEnd();
     }
-    glEnd();
   }
 
   lin.unlock_data();
 
-  //draw TW
+  // Draw TW.
 #ifdef ENABLE_VIEWER_GUI
   if (tw_wnd_id != TW_WND_ID_NONE)
   {
@@ -1112,19 +1242,147 @@ void ScalarView::calculate_normals(double3* vert, int num_verts, int3* tris, int
 
 void ScalarView::update_layout() {
   View::update_layout();
+  // (x,y,-z) coordinates (in the eye coordinate system) of the point that lies at the center of solution domain
+  // and vertically at the position of the average value of all vertices. This point will be the origin for all
+  // drawing and also the initial position of the camera.
   xctr = (vertices_max_x + vertices_min_x) / 2.0;
+  yctr = value_range_avg;
   zctr = (vertices_max_y + vertices_min_y) / 2.0;
-  yctr = vertices_avg_value;
 }
 
 void ScalarView::reset_view(bool force_reset) {
-  if (force_reset || view_not_reset) { //reset 3d view
+  if (force_reset || view_not_reset) { // Reset 3d view.
     xrot = 40.0; yrot = 0.0;
-    xtrans = ytrans = 0.0; ztrans = -3.0;
-    xzscale = 1.8 / std::max(vertices_max_x - vertices_min_y, vertices_max_y - vertices_min_y);
-    yscale = xzscale;
+    xtrans = ytrans = ztrans = 0.0;
+    // Ensure that the model (before applying any transformations) may be translated along the view axis completely
+    // into the viewing volume, and that it is not too flat (so that considerable amount of detail is visible).
+    // Later on, we will determine the translation distance so that the model occupies as much of the view space as possible.
+
+    // Set scaling into the (-1,1) range on the x- and z- axes
+    double max_radial = std::max(vertices_max_x - vertices_min_x, vertices_max_y - vertices_min_y);
+    xzscale = 2.0 / max_radial;
+
+    // Determine the largest y-axis distance of the function surface from the line of sight
+    double max_axial = std::max(range_max - yctr, fabs(range_min - yctr));
+
+    // We use the same scaling for the y-axis as for the x- and z- axes if after this scaling,
+    //  1. the model could be translated so that it lies completely below the top clipping plane of the viewing frustum and
+    //     its farthest (away from the camera) corner is at least 1 unit before the far clipping plane (to allow some zooming out),
+    //  2. the model's bounding box's part above (or below, whichever is bigger) the average function value (yctr) has dimensions
+    //     (-1,1)x(0,height)x(-1,1), where height > 0.1.
+    // If this is not true, the model is either too tall or too flat and will be subject to different scaling
+    // along the y-axis, such that it would fit to the viewing frustum at one third of its depth (i.e. at one third of
+    // the total available zooming range).
+    // TODO: allow the user to decide whether he always wants equal axes scaling or prefers actually seeing something sensible...
+    double tan_fovy_half = tan((double) fovy / 2.0 / 180.0 * M_PI);
+    double max_allowed_height = (zfar-3)*tan_fovy_half;
+    if (max_axial * xzscale > max_allowed_height || (max_axial * xzscale < 0.1 && !is_constant) )
+      yscale = (znear + zfar) / 3.0 * tan_fovy_half * value_irange;
+    else
+      yscale = xzscale;
+
+    do_zoom_to_fit = true;
   }
-  View::reset_view(force_reset); //reset 2d view
+  View::reset_view(force_reset); // Reset 2d view.
+}
+
+
+// This function calculates the distance that the model (3D plot of the solution over the whole solution domain) must be
+// translated along the z-axis of the eye coordinate system, so that it fills the actual viewport without being clipped.
+// The only case when the model will be clipped is when the user defines his own vertical range limits - unfortunately,
+// the values beyond these limits are now still included in the displayed model, so the user may e.g. zoom-out to see them
+// - try the benchmark 'screen' for instance...
+// The algorithm essentially performs zooming without changing the field of view of the perspective projection and works as follows:
+//  1. Apply all transformations to the bounding box of the model at the origin.
+//  2. Compute the distance (along z-axis) from the origin to the center of perspective projection of the point with the
+//      biggest vertical (y-axis) distance from the origin.
+//  3. Compute the distance (along z-axis) from the origin to the center of perspective projection of the point with the
+//      biggest horizontal (x-axis) distance from the origin.
+//  4. Take the bigger of the two distances and reverse sign (since we will translate the model, not the camera)
+double ScalarView::calculate_ztrans_to_fit_view()
+{
+  // Axis-aligned bounding box of the model (homogeneous coordinates in the model space), divided into the bottom and top base.
+  GLdouble aabb[2][16] =
+  {
+    {
+      V0, 1,
+      V1, 1,
+      V2, 1,
+      V3, 1
+    },
+    {
+      V4, 1,
+      V5, 1,
+      V6, 1,
+      V7, 1
+    }
+  };
+  GLdouble aabb_base[16];
+
+  // Tangents of the half of the vertical and horizontal field of view angles.
+  double tan_fovy_half = tan((double) fovy / 2.0 / 180.0 * M_PI);
+  double tan_fovx_half = tan_fovy_half * (double) output_width / output_height;
+
+  // The viewpoint z-coordinate we are looking for.
+  double optimal_viewpoint_pos = 0.0;
+
+  // We will change the model transformation matrix, so save the current one.
+  glPushMatrix();
+
+  // Create the model transformation matrix with the default z-translation.
+  glLoadIdentity();
+  glTranslated(xtrans, ytrans, ztrans);
+  glRotated(xrot, 1, 0, 0);
+  glRotated(yrot, 0, 1, 0);
+  glScaled(xzscale, yscale, xzscale);
+
+  // As far as I know, OpenGL can only perform 4x4 matrix multiplication, so we find the 8 transformed bounding box corners by
+  // first multiplying the transformation matrix with a matrix having as its 4 columns the coordinates of the bottom base corners
+  // and then with a matrix created from the top base corners.
+  for (int i = 0; i < 2; i++) {
+    glPushMatrix();
+    glMultMatrixd(aabb[i]);
+    glGetDoublev( GL_MODELVIEW_MATRIX, aabb_base );
+    glPopMatrix();
+
+    // Go through the transformed corners and find the biggest distance of its perspective projection center to the origin.
+    GLdouble *coord_ptr = &aabb_base[0];
+    for (int j = 0; j < 4; j++) {
+      double perspective_center_to_origin_dist = fabs(coord_ptr[0]) / tan_fovx_half + coord_ptr[2];
+      if (perspective_center_to_origin_dist > optimal_viewpoint_pos)
+        optimal_viewpoint_pos = perspective_center_to_origin_dist;
+
+      perspective_center_to_origin_dist = fabs(coord_ptr[1]) / tan_fovy_half + coord_ptr[2];
+      if (perspective_center_to_origin_dist > optimal_viewpoint_pos)
+        optimal_viewpoint_pos = perspective_center_to_origin_dist;
+
+      coord_ptr += 4;
+    }
+  }
+
+  // Restore the original model transformation matrix.
+  glPopMatrix();
+
+  return -optimal_viewpoint_pos;
+}
+
+void ScalarView::set_vertical_scaling(double sc)
+{
+  if (mode3d)
+    yscale *= sc;
+  else if (contours)
+    cont_step *= sc;
+  refresh();
+}
+
+void ScalarView::set_min_max_range(double min, double max)
+{
+  // TODO: allow settin min = max, in which case draw the corresponding contour.
+  if (fabs(max-min) < 1e-8) {
+    warn("Range (%f,%f) is too narrow: adjusted to (%f,%f)", min, max, min-0.5, max);
+    min -= 0.5;
+  }
+  View::set_min_max_range(min, max);
 }
 
 void ScalarView::init_lighting()
@@ -1194,6 +1452,12 @@ void ScalarView::on_key_down(unsigned char key, int x, int y)
       case 'i':
         show_element_info = !show_element_info;
         if (!mode3d)
+          refresh();
+        break;
+
+      case 'b':
+        show_aabb = !show_aabb;
+        if (mode3d)
           refresh();
         break;
 
@@ -1494,6 +1758,7 @@ const char* ScalarView::get_help_text() const
   "  H - render high-quality frame\n"
   "  K - toggle contours\n"
   "  M - toggle mesh\n"
+  "  B - toggle bounding box\n"
   "  I - toggle element IDs (2d only)\n"
   "  P - cycle palettes\n"
   "  S - save screenshot\n"

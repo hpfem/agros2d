@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "graph.h"
 
 
@@ -110,7 +110,7 @@ void SimpleGraph::save(const char* filename)
   FILE* f = fopen(filename, "w");
   if (f == NULL) error("Error writing to %s.", filename);
 
-  for (int i = 0; i < rows.size(); i++)
+  for (unsigned int i = 0; i < rows.size(); i++)
   {
     int rsize = rows[i].data.size();
     for (int j = 0; j < rsize; j++)
@@ -225,6 +225,12 @@ static void get_style_types(std::string line, std::string mark, std::string col,
   else ct = -1;
 }
 
+void GnuplotGraph::set_legend_pos(const char* posspec)
+{
+  // todo: check that input string is admissible for gnuplot 'set key' command
+  legend_pos = posspec;
+  if (legend_pos.length() && !legend) legend = true;
+}
 
 void GnuplotGraph::save(const char* filename)
 {
@@ -235,7 +241,7 @@ void GnuplotGraph::save(const char* filename)
   FILE* f = fopen(filename, "w");
   if (f == NULL) error("Error writing to %s", filename);
 
-  fprintf(f, "set terminal postscript eps enhanced\n");
+  fprintf(f, "%s", terminal_str.c_str());
 
   int len = strlen(filename);
   AUTOLA_OR(char, outname, len + 10);
@@ -265,6 +271,7 @@ void GnuplotGraph::save(const char* filename)
   if (title.length()) fprintf(f, "set title '%s'\n", title.c_str());
   if (xname.length()) fprintf(f, "set xlabel '%s'\n", xname.c_str());
   if (yname.length()) fprintf(f, "set ylabel '%s'\n", yname.c_str());
+  if (legend && legend_pos.length()) fprintf(f, "set key %s\n", legend_pos.c_str());
 
   fprintf(f, "plot");
   for (unsigned int i = 0; i < rows.size(); i++)
@@ -273,11 +280,16 @@ void GnuplotGraph::save(const char* filename)
     get_style_types(rows[i].line, rows[i].marker, rows[i].color, lt, pt, ct);
 
     if (lt == 0)
-      fprintf(f, " '-' w p pointtype %d title '%s' ", pt, rows[i].name.c_str());
+      fprintf(f, " '-' w p pointtype %d", pt);
     else if (ct < 0)
-      fprintf(f, " '-' w lp linetype %d pointtype %d title '%s' ", lt, pt, rows[i].name.c_str());
+      fprintf(f, " '-' w lp linewidth %g linetype %d pointtype %d", this->lw, lt, pt);
     else
-      fprintf(f, " '-' w lp linecolor %d linetype %d pointtype %d title '%s' ", ct, lt, pt, rows[i].name.c_str());
+      fprintf(f, " '-' w lp linewidth %g linecolor %d linetype %d pointtype %d", this->lw, ct, lt, pt);
+
+    if (legend)
+      fprintf(f, " title '%s' ", rows[i].name.c_str());
+    else
+      fprintf(f, " notitle ");
 
     if (i < rows.size() - 1) fprintf(f, ", ");
   }
@@ -296,3 +308,12 @@ void GnuplotGraph::save(const char* filename)
 
   verbose("Graph saved. Process the file '%s' with gnuplot.", filename);
 }
+
+PNGGraph::PNGGraph( const char* title, const char* x_axis_name, const char* y_axis_name, const double lines_width,
+                    double plot_width, double plot_height )
+{
+  std::stringstream sstm;
+  sstm << "set terminal png font arial 12 size " << plot_width << "," << plot_height << " crop enhanced\n";
+  GnuplotGraph(title, x_axis_name, y_axis_name, lines_width, sstm.str());
+}
+

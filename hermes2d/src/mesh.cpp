@@ -13,9 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "common.h"
+#include "h2d_common.h"
 #include "mesh.h"
 #include "h2d_reader.h"
+
 
 //// nodes, element ////////////////////////////////////////////////////////////////////////////////
 
@@ -248,6 +249,8 @@ Element* Mesh::create_triangle(int marker, Node* v0, Node* v1, Node* v2, CurvMap
   e->nvert = 3;
   e->iro_cache = -1;
   e->cm = cm;
+  e->parent = NULL;
+  e->visited = false;
 
   // set vertex and edge node pointers
   e->vn[0] = v0;
@@ -274,6 +277,8 @@ Element* Mesh::create_quad(int marker, Node* v0, Node* v1, Node* v2, Node* v3, C
   e->nvert = 4;
   e->iro_cache = -1;
   e->cm = cm;
+  e->parent = NULL;
+  e->visited = false;
 
   // set vertex and edge node pointers
   e->vn[0] = v0;
@@ -358,7 +363,7 @@ void Mesh::refine_triangle(Element* e)
   // update coefficients of curved reference mapping
   for (int i = 0; i < 4; i++)
     if (sons[i]->is_curved())
-      sons[i]->cm->update_refmap_coefs(sons[i]);
+      sons[i]->cm->update_refmap_coeffs(sons[i]);
 
   // deactivate this element and unregister from its nodes
   e->active = 0;
@@ -376,6 +381,11 @@ void Mesh::refine_triangle(Element* e)
   sons[3]->vn[0]->bnd = bnd[1];
   sons[3]->vn[1]->bnd = bnd[2];
   sons[3]->vn[2]->bnd = bnd[0];
+
+  //set pointers to parent element for sons
+  for(int i = 0; i < 4; i++)
+	  if(sons[i] != NULL)
+		  sons[i]->parent = e;
 
   // copy son pointers (could not have been done earlier because of the union)
   memcpy(e->sons, sons, 4 * sizeof(Element*));
@@ -513,13 +523,18 @@ void Mesh::refine_quad(Element* e, int refinement)
   // update coefficients of curved reference mapping
   for (i = 0; i < 4; i++)
     if (sons[i] != NULL && sons[i]->cm != NULL)
-      sons[i]->cm->update_refmap_coefs(sons[i]);
+      sons[i]->cm->update_refmap_coeffs(sons[i]);
 
   // optimization: iro never gets worse
   if (e->iro_cache == 0)
     for (i = 0; i < 4; i++)
       if (sons[i] != NULL)
         sons[i]->iro_cache = 0;
+
+  //set pointers to parent element for sons
+  for(int i = 0; i < 4; i++)
+	  if(sons[i] != NULL)
+		  sons[i]->parent = e;
 
   // copy son pointers (could not have been done earlier because of the union)
   memcpy(e->sons, sons, sizeof(sons));
@@ -709,7 +724,7 @@ void Mesh::unrefine_all_elements(bool keep_initial_refinements)
   }
 
   // unrefine the found elements
-  for (int i = 0; i < list.size(); i++)
+  for (unsigned int i = 0; i < list.size(); i++)
     unrefine_element(list[i]);
 }
 
@@ -838,6 +853,7 @@ void check_quad(int i, Node *&v0, Node *&v1, Node *&v2, Node *&v3)
 void Mesh::create(int nv, double2* verts, int nt, int4* tris,
                   int nq, int5* quads, int nm, int3* mark)
 {
+  //printf("Calling Mesh::free() in Mesh::create().\n");
   free();
 
   // initialize hash table
@@ -893,6 +909,7 @@ void Mesh::copy(const Mesh* mesh)
 {
   int i;
 
+  //printf("Calling Mesh::free() in Mesh::copy().\n");
   free();
 
   // copy nodes and elements
@@ -927,6 +944,10 @@ void Mesh::copy(const Mesh* mesh)
       if (!e->cm->toplevel)
         e->cm->parent = &elements[e->cm->parent->id];
     }
+
+    //update parent pointer
+    if(e->parent != NULL)
+      e->parent = &elements[e->parent->id];
   }
 
   // update element pointers in edge nodes
@@ -958,6 +979,7 @@ Node* Mesh::get_base_edge_node(Element* base, int edge)
 
 void Mesh::copy_base(Mesh* mesh)
 {
+  //printf("Calling Mesh::free() in Mesh::copy_base().\n");
   free();
   HashTable::init();
 
@@ -1006,6 +1028,7 @@ void Mesh::copy_base(Mesh* mesh)
 
 void Mesh::free()
 {
+  //printf("Inside Mesh::free().\n");
   Element* e;
   for_all_elements(e, this)
     if (e->cm != NULL)
@@ -1020,6 +1043,7 @@ void Mesh::free()
 
 void Mesh::copy_converted(Mesh* mesh)
 {
+  //printf("Calling Mesh::free() in Mesh::copy_converted().\n");
   free();
   HashTable::copy(mesh);
  // clear refernce for all nodes
@@ -1071,6 +1095,8 @@ void Mesh::copy_converted(Mesh* mesh)
       enew->nvert = 4;
       enew->iro_cache = -1;
       enew->cm = e->cm;
+      enew->parent = NULL;
+      enew->visited = false;
 
       // set vertex and edge node pointers
       enew->vn[0] = v0;
@@ -1105,6 +1131,7 @@ void Mesh::copy_converted(Mesh* mesh)
 
 void Mesh::convert_triangles_to_quads()
 {
+    /*
   Element* e;
   Mesh tmp;
 
@@ -1114,12 +1141,28 @@ void Mesh::convert_triangles_to_quads()
   elements.set_append_only(false);
 
   tmp.copy_converted(this);
+  for (int i = 0; i < tmp.ntopvert; i++)
+  {
+     if (tmp.nodes[i].type == 1)
+     {
+       tmp.nodes[i].y = 0.0;
+     }
+  }
+  char* mesh_tmp = NULL;
+  mesh_tmp = tmpnam(NULL);
+  tmp.save(mesh_tmp);
+  Mesh mesh_tmp_for_convert;
+  H2DReader loader_mesh_tmp_for_convert;
+  loader_mesh_tmp_for_convert.load(mesh_tmp, &tmp);
+  remove(mesh_tmp);
   copy(&tmp);
+  */
 }
 
 ////convert a quad element into two triangle elements///////
 void Mesh::convert_quads_to_triangles()
 {
+  /*
   Element* e;
   Mesh tmp;
 
@@ -1137,15 +1180,14 @@ void Mesh::convert_quads_to_triangles()
      }
   }
   char* mesh_tmp = NULL;
-  tmp.copy_converted(this);
-  copy(&tmp);
-  //mkstemp(mesh_tmp);
+  mesh_tmp = tmpnam(NULL);
   tmp.save(mesh_tmp);
   Mesh mesh_tmp_for_convert;
   H2DReader loader_mesh_tmp_for_convert;
   loader_mesh_tmp_for_convert.load(mesh_tmp, &tmp);
   remove(mesh_tmp);
   copy(&tmp);
+  */
 }
 
 void Mesh::refine_triangle_to_quads(Element* e)
@@ -1365,7 +1407,7 @@ void Mesh::refine_triangle_to_quads(Element* e)
   {
     if (sons[i]->is_curved())
     {
-      sons[i]->cm->update_refmap_coefs(sons[i]);
+      sons[i]->cm->update_refmap_coeffs(sons[i]);
     }
   }
   nactive += 3;
@@ -1382,6 +1424,11 @@ void Mesh::refine_triangle_to_quads(Element* e)
   sons[2]->en[0]->bnd = bnd[1];  sons[2]->en[0]->marker = mrk[1];
   sons[2]->en[1]->bnd = bnd[2];  sons[2]->en[1]->marker = mrk[2];
   sons[2]->vn[2]->bnd = bnd[2];
+
+  //set pointers to parent element for sons
+  for(int i = 0; i < 4; i++)
+	  if(sons[i] != NULL)
+		  sons[i]->parent = e;
 
   // copy son pointers (could not have been done earlier because of the union)
   memcpy(e->sons, sons, 4 * sizeof(Element*));
@@ -1552,7 +1599,7 @@ void Mesh::refine_quad_to_triangles(Element* e)
   {
     if (sons[i]->is_curved())
     {
-      sons[i]->cm->update_refmap_coefs(sons[i]);
+      sons[i]->cm->update_refmap_coeffs(sons[i]);
     }
   }
   nactive += 2;
@@ -1578,6 +1625,11 @@ void Mesh::refine_quad_to_triangles(Element* e)
     sons[1]->en[1]->bnd = bnd[0];  sons[1]->en[1]->marker = mrk[0];
     sons[1]->vn[2]->bnd = bnd[0];
   }
+
+  //set pointers to parent element for sons
+  for(int i = 0; i < 4; i++)
+	  if(sons[i] != NULL)
+		  sons[i]->parent = e;
 
   // copy son pointers (could not have been done earlier because of the union)
   memcpy(e->sons, sons, 4 * sizeof(Element*));
@@ -1649,10 +1701,10 @@ void Mesh::save_raw(FILE* f)
   assert(sizeof(int) == 4);
   assert(sizeof(double) == 8);
 
-  hermes2d_fwrite("H2DM\001\000\000\000", 1, 8, f);
+  hermes_fwrite("H2DM\001\000\000\000", 1, 8, f);
 
   #define output(n, type) \
-    hermes2d_fwrite(&(n), sizeof(type), 1, f)
+    hermes_fwrite(&(n), sizeof(type), 1, f)
 
   output(nbase, int);
   output(ntopvert, int);
@@ -1737,15 +1789,16 @@ void Mesh::load_raw(FILE* f)
 
   // check header
   struct { char magic[4]; int ver; } hdr;
-  hermes2d_fread(&hdr, sizeof(hdr), 1, f);
+  hermes_fread(&hdr, sizeof(hdr), 1, f);
   if (hdr.magic[0] != 'H' || hdr.magic[1] != '2' || hdr.magic[2] != 'D' || hdr.magic[3] != 'M')
     error("Not a Hermes2D raw mesh file.");
   if (hdr.ver > 1)
     error("Unsupported file version.");
 
   #define input(n, type) \
-    hermes2d_fread(&(n), sizeof(type), 1, f)
+    hermes_fread(&(n), sizeof(type), 1, f)
 
+  //printf("Calling Mesh::free() in Mesh::load_raw().\n");
   free();
 
   input(nbase, int);

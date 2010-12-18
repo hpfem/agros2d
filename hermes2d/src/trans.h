@@ -16,14 +16,14 @@
 #ifndef __H2D_TRANS_H
 #define __H2D_TRANS_H
 
-#include "common.h"
+#include "h2d_common.h"
 #include "mesh.h"
-#include "shapeset.h"
-#include "shapeset_h1_all.h"
+#include "shapeset/shapeset.h"
+#include "shapeset/shapeset_h1_all.h"
 #include "quad.h"
 #include "quad_all.h"
 
-double2 *transform(Element *e);
-void element_polygonal_boundary(Element *e, double2 **tp, int *n);
+extern HERMES_API double2 *transform(Element *e);
+extern HERMES_API void element_polygonal_boundary(Element *e, double2 **tp, int *n);
 
 #endif

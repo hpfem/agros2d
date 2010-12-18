@@ -22,9 +22,9 @@
 ///  to a file by calling save().
 ///
 ///  Please note that this is a base class that cannot be instantiated.
-///  Use MatlabGraph or GnuplotGraph instead.
+///  Use MatlabGraph, GnuplotGraph or SimpleGraph instead.
 ///
-class H2D_API Graph
+class HERMES_API Graph
 {
 public:
 
@@ -67,15 +67,15 @@ protected:
     std::vector<Values> data;
   };
 
-  H2D_API_USED_STL_VECTOR(Row);
+  HERMES_API_USED_STL_VECTOR(Row);
   std::vector<Row> rows;
 
 };
 
 
-///  Outputs just two numbers per row
+///  Outputs just two numbers per row.
 ///
-class H2D_API SimpleGraph : public Graph
+class HERMES_API SimpleGraph : public Graph
 {
 public:
 
@@ -89,7 +89,7 @@ public:
 
 ///  Outputs a MATLAB graph.
 ///
-class H2D_API MatlabGraph : public Graph
+class HERMES_API MatlabGraph : public Graph
 {
 public:
 
@@ -101,18 +101,53 @@ public:
 };
 
 
-///  Outputs a GNUPLOT graph.
+///  Basic class for outputting a graph via GNUPLOT.
 ///
-class H2D_API GnuplotGraph : public Graph
+
+static const char* default_terminal = "set terminal postscript eps enhanced\n";
+
+class HERMES_API GnuplotGraph : public Graph
 {
 public:
-
-  GnuplotGraph(const char* title = NULL, const char* x_axis_name = NULL, const char* y_axis_name = NULL)
-       : Graph(title, x_axis_name, y_axis_name) {}
+ 
+  GnuplotGraph(const char* title = NULL, const char* x_axis_name = NULL, const
+          char* y_axis_name = NULL, double lines_width = 1.0, const
+          std::string& terminal_str = default_terminal) :
+      Graph(title, x_axis_name, y_axis_name),
+      legend_pos(),
+      terminal_str(terminal_str),
+      lw(lines_width) {
+  }
 
   virtual void save(const char* filename);
 
+  /// Set legend position (see documentation to gnuplot for possible strings).
+  /// When a non-empty string is used, "legend" is automatically set to true.
+  void set_legend_pos(const char* posspec);
+
+protected:
+  /// Legend position.
+  /// Initially empty (may be changed by calling "set_legend_pos") -- "legend == true" with empty "legend_pos"
+  /// means that the default gnuplot setting will be used.
+  std::string legend_pos;
+  
+  /// Terminal string.
+  /// Specifies GnuPlot output type.
+  std::string terminal_str;
+  
+  /// Line width.
+  /// Specifies relative width of plot lines.
+  double lw;
 };
 
+///  Outputs a graph into a .PNG file via GNUPLOT.
+///
+class HERMES_API PNGGraph : public GnuplotGraph
+{
+public:
+    
+  PNGGraph(const char* title = NULL, const char* x_axis_name = NULL, const char* y_axis_name = NULL,
+            double lines_width = 1.0, double plot_width = 800, double plot_height = 600);
+};
 
 #endif

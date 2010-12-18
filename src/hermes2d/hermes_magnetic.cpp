@@ -43,36 +43,13 @@ struct MagneticLabel
 MagneticEdge *magneticEdge;
 MagneticLabel *magneticLabel;
 
-BCType magnetic_bc_types(int marker)
-{
-    switch (magneticEdge[marker].type)
-    {
-    case PhysicFieldBC_None:
-        return BC_NONE;
-    case PhysicFieldBC_Magnetic_VectorPotential:
-        return BC_ESSENTIAL;
-    case PhysicFieldBC_Magnetic_SurfaceCurrent:
-        return BC_NATURAL;
-    }
-}
-
-scalar magnetic_bc_values_real(int marker, double x, double y)
-{
-    return magneticEdge[marker].value_real;
-}
-
-scalar magnetic_bc_values_imag(int marker, double x, double y)
-{
-    return magneticEdge[marker].value_imag;
-}
-
 template<typename Real, typename Scalar>
-Scalar magnetic_linear_form_surf_real(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar magnetic_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     double K = 0.0;
 
-    if (magneticEdge[e->marker].type == PhysicFieldBC_Magnetic_SurfaceCurrent)
-        K = magneticEdge[e->marker].value_real;
+    if (magneticEdge[e->edge_marker].type == PhysicFieldBC_Magnetic_SurfaceCurrent)
+        K = magneticEdge[e->edge_marker].value_real;
 
     if (isPlanar)
         return K * int_v<Real, Scalar>(n, wt, v);
@@ -81,12 +58,12 @@ Scalar magnetic_linear_form_surf_real(int n, double *wt, Func<Real> *v, Geom<Rea
 }
 
 template<typename Real, typename Scalar>
-Scalar magnetic_linear_form_surf_imag(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar magnetic_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     double K = 0.0;
 
-    if (magneticEdge[e->marker].type == PhysicFieldBC_Magnetic_SurfaceCurrent)
-        K = magneticEdge[e->marker].value_imag;
+    if (magneticEdge[e->edge_marker].type == PhysicFieldBC_Magnetic_SurfaceCurrent)
+        K = magneticEdge[e->edge_marker].value_imag;
 
     if (isPlanar)
         return K * int_v<Real, Scalar>(n, wt, v);
@@ -95,70 +72,71 @@ Scalar magnetic_linear_form_surf_imag(int n, double *wt, Func<Real> *v, Geom<Rea
 }
 
 template<typename Real, typename Scalar>
-Scalar magnetic_bilinear_form_real_real(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar magnetic_matrix_form_real_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return 1.0 / (magneticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
-               magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
-               ((analysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
+        return 1.0 / (magneticLabel[e->elem_marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
+               magneticLabel[e->elem_marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->elem_marker].velocity_x, magneticLabel[e->elem_marker].velocity_y, magneticLabel[e->elem_marker].velocity_angular) +
+               ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
 
     else
-        return 1.0 / (magneticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
-                magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular) +
-                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
+        return 1.0 / (magneticLabel[e->elem_marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
+                magneticLabel[e->elem_marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->elem_marker].velocity_x, magneticLabel[e->elem_marker].velocity_y, magneticLabel[e->elem_marker].velocity_angular) +
+                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
 }
 
 template<typename Real, typename Scalar>
-Scalar magnetic_bilinear_form_real_imag(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar magnetic_matrix_form_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return - 2 * M_PI * frequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+        return - 2 * M_PI * frequency * magneticLabel[e->elem_marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return - 2 * M_PI * frequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+        return - 2 * M_PI * frequency * magneticLabel[e->elem_marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
-Scalar magnetic_bilinear_form_imag_real(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar magnetic_matrix_form_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return + 2 * M_PI * frequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+        return + 2 * M_PI * frequency * magneticLabel[e->elem_marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return + 2 * M_PI * frequency * magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
+        return + 2 * M_PI * frequency * magneticLabel[e->elem_marker].conductivity * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
-Scalar magnetic_bilinear_form_imag_imag(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar magnetic_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return 1.0 / (magneticLabel[e->marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
-               magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular);
+        return 1.0 / (magneticLabel[e->elem_marker].permeability * MU0) * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) -
+               magneticLabel[e->elem_marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->elem_marker].velocity_x, magneticLabel[e->elem_marker].velocity_y, magneticLabel[e->elem_marker].velocity_angular);
     else
-        return 1.0 / (magneticLabel[e->marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
-               magneticLabel[e->marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->marker].velocity_x, magneticLabel[e->marker].velocity_y, magneticLabel[e->marker].velocity_angular);
+        return 1.0 / (magneticLabel[e->elem_marker].permeability * MU0) * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)) -
+               magneticLabel[e->elem_marker].conductivity * int_velocity<Real, Scalar>(n, wt, u, v, e, magneticLabel[e->elem_marker].velocity_x, magneticLabel[e->elem_marker].velocity_y, magneticLabel[e->elem_marker].velocity_angular);
 }
 
 template<typename Real, typename Scalar>
-Scalar magnetic_linear_form_real(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar magnetic_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return magneticLabel[e->marker].current_density_real * int_v<Real, Scalar>(n, wt, v) +
-               magneticLabel[e->marker].remanence / (magneticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->marker].remanence_angle) +
-                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
+        return magneticLabel[e->elem_marker].current_density_real * int_v<Real, Scalar>(n, wt, v) +
+               magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->elem_marker].remanence_angle) +
+                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
     else
-        return (magneticLabel[e->marker].current_density_real * int_v<Real, Scalar>(n, wt, v) -
-                magneticLabel[e->marker].remanence / (magneticLabel[e->marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->marker].remanence_angle) +
-                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0));
+        return (magneticLabel[e->elem_marker].current_density_real * int_v<Real, Scalar>(n, wt, v) -
+                magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability * MU0) * int_magnet<Real, Scalar>(n, wt, v, magneticLabel[e->elem_marker].remanence_angle) +
+                ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0));
 }
 
 template<typename Real, typename Scalar>
-Scalar magnetic_linear_form_imag(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar magnetic_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return magneticLabel[e->marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
+        return magneticLabel[e->elem_marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
     else
-        return magneticLabel[e->marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
+        return magneticLabel[e->elem_marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
 }
 
+/*
 void callbackMagneticSpace(Tuple<Space *> space)
 {
     if (space.size() == 1)
@@ -175,28 +153,29 @@ void callbackMagneticSpace(Tuple<Space *> space)
         space.at(1)->set_essential_bc_values(magnetic_bc_values_imag);
     }
 }
+*/
 
 void callbackMagneticWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
     if (slnArray.size() == 1)
     {
-        wf->add_biform(0, 0, callback(magnetic_bilinear_form_real_real));
+        wf->add_matrix_form(0, 0, callback(magnetic_matrix_form_real_real));
         if (analysisType == AnalysisType_Transient)
-            wf->add_liform(0, callback(magnetic_linear_form_real), H2D_ANY, 1, slnArray.at(0));
+            wf->add_vector_form(0, callback(magnetic_vector_form_real), HERMES_ANY, slnArray.at(0));
         else
-            wf->add_liform(0, callback(magnetic_linear_form_real));
-        wf->add_liform_surf(0, callback(magnetic_linear_form_surf_real));
+            wf->add_vector_form(0, callback(magnetic_vector_form_real));
+        wf->add_vector_form_surf(0, callback(magnetic_vector_form_surf_real));
     }
     else
     {
-        wf->add_biform(0, 0, callback(magnetic_bilinear_form_real_real));
-        wf->add_biform(0, 1, callback(magnetic_bilinear_form_real_imag));
-        wf->add_biform(1, 0, callback(magnetic_bilinear_form_imag_real));
-        wf->add_biform(1, 1, callback(magnetic_bilinear_form_imag_imag));
-        wf->add_liform(0, callback(magnetic_linear_form_real));
-        wf->add_liform(1, callback(magnetic_linear_form_imag));
-        wf->add_liform_surf(0, callback(magnetic_linear_form_surf_real));
-        wf->add_liform_surf(1, callback(magnetic_linear_form_surf_imag));
+        wf->add_matrix_form(0, 0, callback(magnetic_matrix_form_real_real));
+        wf->add_matrix_form(0, 1, callback(magnetic_matrix_form_real_imag));
+        wf->add_matrix_form(1, 0, callback(magnetic_matrix_form_imag_real));
+        wf->add_matrix_form(1, 1, callback(magnetic_matrix_form_imag_imag));
+        wf->add_vector_form(0, callback(magnetic_vector_form_real));
+        wf->add_vector_form(1, callback(magnetic_vector_form_imag));
+        wf->add_vector_form_surf(0, callback(magnetic_vector_form_surf_real));
+        wf->add_vector_form_surf(1, callback(magnetic_vector_form_surf_imag));
     }
 }
 
@@ -828,7 +807,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
 
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState)
     {
-        return new ViewScalarFilterMagnetic(sln1,
+        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
@@ -836,8 +815,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
     {
         Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
-        return new ViewScalarFilterMagnetic(sln1,
-                                            sln2,
+        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1, sln2),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
@@ -849,8 +827,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
         else
             sln2 = sln1;
 
-        return new ViewScalarFilterMagnetic(sln1,
-                                            sln2,
+        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1, sln2),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
@@ -867,6 +844,9 @@ QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSol
     }
 
     // edge markers
+    BCTypes bcTypesReal, bcTypesImag;
+    BCValues bcValuesReal, bcValuesImag;
+
     magneticEdge = new MagneticEdge[Util::scene()->edges.count()+1];
     magneticEdge[0].type = PhysicFieldBC_None;
     magneticEdge[0].value_real = 0.0;
@@ -890,6 +870,24 @@ QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSol
             magneticEdge[i+1].type = edgeMagneticMarker->type;
             magneticEdge[i+1].value_real = edgeMagneticMarker->value_real.number;
             magneticEdge[i+1].value_imag = edgeMagneticMarker->value_imag.number;
+
+            switch (edgeMagneticMarker->type)
+            {
+            case PhysicFieldBC_None:
+                bcTypesReal.add_bc_none(i+1);
+                bcTypesImag.add_bc_none(i+1);
+                break;
+            case PhysicFieldBC_Magnetic_VectorPotential:
+                bcTypesReal.add_bc_dirichlet(i+1);
+                bcTypesImag.add_bc_dirichlet(i+1);
+                bcValuesReal.add_const(i+1, edgeMagneticMarker->value_real.number);
+                bcValuesImag.add_const(i+1, edgeMagneticMarker->value_imag.number);
+                break;
+            case PhysicFieldBC_Magnetic_SurfaceCurrent:
+                bcTypesReal.add_bc_neumann(i+1);
+                bcTypesImag.add_bc_neumann(i+1);
+                break;
+            }
         }
     }
 
@@ -927,7 +925,8 @@ QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSol
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  callbackMagneticSpace,
+                                                                  Tuple<BCTypes *>(&bcTypesReal, &bcTypesImag),
+                                                                  Tuple<BCValues *>(&bcValuesReal, &bcValuesImag),
                                                                   callbackMagneticWeakForm);
 
     delete [] magneticEdge;

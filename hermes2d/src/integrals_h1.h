@@ -16,6 +16,8 @@
 #ifndef __H2D_INTEGRALS_H1_H
 #define __H2D_INTEGRALS_H1_H
 
+#include "limit_order.h"
+#include "weakform.h"
 
 //// the following integrals can be used in both volume and surface forms //////////////////////////////////////////////////////////////////////////////
 
@@ -139,7 +141,7 @@ Scalar int_w_nabla_u_v(int n, double *wt, Func<Real> *w1, Func<Real> *w2, Func<R
 //// error calculation for adaptivity  //////////////////////////////////////////////////////////////////////////////
 
 template<typename Real, typename Scalar>
-Scalar h1_form(int n, double *wt, Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar h1_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
   Scalar result = 0;
   for (int i = 0; i < n; i++)
@@ -148,7 +150,16 @@ Scalar h1_form(int n, double *wt, Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *
 }
 
 template<typename Real, typename Scalar>
-Scalar l2_form(int n, double *wt, Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar h1_semi_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+  Scalar result = 0;
+  for (int i = 0; i < n; i++)
+    result += wt[i] * (u->dx[i] * conj(v->dx[i]) + u->dy[i] * conj(v->dy[i]));
+  return result;
+}
+
+template<typename Real, typename Scalar>
+Scalar l2_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
   Scalar result = 0;
   for (int i = 0; i < n; i++)

@@ -17,8 +17,9 @@
 #define __H2D_SOLUTION_H
 
 #include "function.h"
-#include "space.h"
+#include "space/space.h"
 #include "refmap.h"
+#include "../../hermes_common/matrix.h"
 
 class PrecalcShapeset;
 
@@ -32,15 +33,21 @@ class PrecalcShapeset;
 ///
 /// (This is an abstract class and cannot be instantiated.)
 ///
-class H2D_API MeshFunction : public ScalarFunction
+class HERMES_API MeshFunction : public ScalarFunction
 {
 public:
 
   MeshFunction();
+  MeshFunction(Mesh *mesh);
   virtual ~MeshFunction();
+
+  virtual void init() {};
+  virtual void reinit() {free(); init();};
 
   virtual void set_quad_2d(Quad2D* quad_2d);
   virtual void set_active_element(Element* e);
+  
+  virtual int get_edge_fn_order(int edge) { return ScalarFunction::get_edge_fn_order(edge); }
 
   Mesh*   get_mesh() const { return mesh; }
   RefMap* get_refmap() { update_refmap(); return refmap; }
@@ -77,11 +84,16 @@ public:
 ///
 /// TODO: write how to obtain solution values, maybe include inherited methods from Function as comments.
 ///
-class H2D_API Solution : public MeshFunction
+class HERMES_API Solution : public MeshFunction
 {
 public:
 
+  void init();
   Solution();
+  Solution(Mesh *mesh);
+  Solution(Mesh *mesh, ExactFunction exactfn);
+  Solution (Space* s, Vector* coeff_vec);
+  Solution (Space* s, scalar* coeff_vec);
   virtual ~Solution();
   virtual void free();
 
@@ -89,8 +101,10 @@ public:
   Solution& operator = (Solution& sln) { assign(&sln); return *this; }
   void copy(const Solution* sln);
 
-  void set_exact(Mesh* mesh, scalar   (*exactfn)(double x, double y, scalar& dx , scalar& dy));
-  void set_exact(Mesh* mesh, scalar2& (*exactfn)(double x, double y, scalar2& dx, scalar2& dy));
+  int* get_element_orders() { return this->elem_orders;}
+
+  void set_exact(Mesh* mesh, ExactFunction exactfn);
+  void set_exact(Mesh* mesh, ExactFunction2 exactfn);
 
   void set_const(Mesh* mesh, scalar c);
   void set_const(Mesh* mesh, scalar c0, scalar c1); // two-component (Hcurl) const
@@ -98,8 +112,11 @@ public:
   void set_zero(Mesh* mesh);
   void set_zero_2(Mesh* mesh); // two-component (Hcurl) zero
 
+  virtual int get_edge_fn_order(int edge) { return MeshFunction::get_edge_fn_order(edge); }
+  int get_edge_fn_order(int edge, Space* space, Element* e = NULL);
+  
   /// Sets solution equal to Dirichlet lift only, solution vector = 0
-  void set_dirichlet_lift(Space* space, PrecalcShapeset* pss);
+  void set_dirichlet_lift(Space* space, PrecalcShapeset* pss = NULL);
 
   /// Enables or disables transformation of the solution derivatives (H1 case)
   /// or values (vector (Hcurl) case). This means H2D_FN_DX_0 and H2D_FN_DY_0 or
@@ -144,21 +161,34 @@ public:
   /// Multiplies the function represented by this class by the given coefficient.
   void multiply(scalar coef);
 
+  /// Returns the solution type.
+  int get_type() const { return type; };
+
 
 public:
-
-  /// Internal. Used by LinSystem::solve(). Should not be called directly
-  virtual void set_fe_solution(Space* space, PrecalcShapeset* pss, scalar* vec, double dir = 1.0);
-
   /// Internal.
   virtual void set_active_element(Element* e);
 
+  typedef enum { HERMES_UNDEF = -1, HERMES_SLN, HERMES_EXACT, HERMES_CONST } solution_type;
 
-protected:
-
-  enum { SLN, EXACT, CNST, UNDEF } type;
+  /// Passes solution components calculated from solution vector as Solutions.
+  static void vector_to_solutions(scalar* solution_vector, Hermes::Tuple<Space *> spaces, Hermes::Tuple<Solution *> solutions, Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
+  static void vector_to_solution(scalar* solution_vector, Space* space, Solution* solution, bool add_dir_lift = true);
+  static void vector_to_solutions(Vector* vec, Hermes::Tuple<Space *> spaces, Hermes::Tuple<Solution*> solutions, Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
+  static void vector_to_solution(Vector* vec, Space* space, Solution* solution, bool add_dir_lift = true);
+  static void vector_to_solutions(scalar* solution_vector, Hermes::Tuple<Space *> spaces, Hermes::Tuple<Solution *> solutions, Hermes::Tuple<PrecalcShapeset *> pss, Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
+  static void vector_to_solution(scalar* solution_vector, Space* space, Solution* solution, PrecalcShapeset* pss, bool add_dir_lift = true);
 
   bool own_mesh;
+protected:
+
+  /// Converts a coefficient vector into a Solution.
+  virtual void set_coeff_vector(Space* space, Vector* vec, bool add_dir_lift);
+  virtual void set_coeff_vector(Space* space, PrecalcShapeset* pss, scalar* coeffs, bool add_dir_lift);
+  virtual void set_coeff_vector(Space* space, scalar* coeffs, bool add_dir_lift);
+
+  solution_type type;
+
   bool transform;
 
   void* tables[4][4];   ///< precalculated tables for last four used elements
@@ -174,8 +204,8 @@ protected:
   int space_type;
   void transform_values(int order, Node* node, int newmask, int oldmask, int np);
 
-  scalar   (*exactfn1)(double x, double y, scalar& dx,  scalar& dy);
-  scalar2& (*exactfn2)(double x, double y, scalar2& dx, scalar2& dy);
+  ExactFunction exactfn1;
+  ExactFunction2 exactfn2;
   scalar   cnst[2];
   scalar   exact_mult;
 
@@ -193,7 +223,7 @@ protected:
 };
 
 
-/// \brief Represents and exact solution of a PDE.
+/// \brief Represents an exact solution of a PDE.
 ///
 /// ExactSolution represents an arbitrary user-specified function defined on a domain (mesh),
 /// typically an exact solution to a PDE. This can be used to compare an approximate solution
@@ -202,20 +232,20 @@ protected:
 /// Please note that the same functionality can be obtained by using Solution::set_exact().
 /// This class is provided merely for convenience.
 ///
-class H2D_API ExactSolution : public Solution
+class HERMES_API ExactSolution : public Solution
 {
 public:
 
-  ExactSolution(Mesh* mesh, scalar   (*exactfn)(double x, double y, scalar& dx , scalar& dy))
+  ExactSolution(Mesh* mesh, ExactFunction exactfn)
     { set_exact(mesh, exactfn); }
 
-  ExactSolution(Mesh* mesh, scalar2& (*exactfn)(double x, double y, scalar2& dx, scalar2& dy))
+  ExactSolution(Mesh* mesh, ExactFunction2 exactfn)
     { set_exact(mesh, exactfn); }
 
-  int update(Mesh* mesh, scalar   (*exactfn)(double x, double y, scalar& dx , scalar& dy))
+  int update(Mesh* mesh, ExactFunction exactfn)
     { set_exact(mesh, exactfn);  return 1; }
 
-  int update(Mesh* mesh, scalar2& (*exactfn)(double x, double y, scalar2& dx, scalar2& dy))
+  int update(Mesh* mesh, ExactFunction2 exactfn)
     { set_exact(mesh, exactfn);  return 1; }
 
 };

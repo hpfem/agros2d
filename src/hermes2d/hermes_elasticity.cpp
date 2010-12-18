@@ -48,85 +48,21 @@ ElasticityEdge *elasticityEdge;
 ElasticityLabel *elasticityLabel;
 bool elasticityPlanar;
 
-BCType elasticity_bc_types_x(int marker)
-{
-    switch (elasticityEdge[marker].typeX)
-    {
-    case PhysicFieldBC_None:
-        return BC_NONE;
-        break;
-    case PhysicFieldBC_Elasticity_Fixed:
-        return BC_ESSENTIAL;
-        break;
-    case PhysicFieldBC_Elasticity_Free:
-        return BC_NATURAL;
-        break;
-    }
-}
-
-BCType elasticity_bc_types_y(int marker)
-{
-    switch (elasticityEdge[marker].typeY)
-    {
-    case PhysicFieldBC_None:
-        return BC_NONE;
-        break;
-    case PhysicFieldBC_Elasticity_Fixed:
-        return BC_ESSENTIAL;
-        break;
-    case PhysicFieldBC_Elasticity_Free:
-        return BC_NATURAL;
-        break;
-    }
-}
-
-scalar elasticity_bc_values_x(int marker, double x, double y)
-{
-    switch (elasticityEdge[marker].typeX)
-    {
-    case PhysicFieldBC_None:
-        return 0;
-        break;
-    case PhysicFieldBC_Elasticity_Fixed:
-        return 0;
-        break;
-    case PhysicFieldBC_Elasticity_Free:
-        return elasticityEdge[marker].forceX;
-        break;
-    }
-}
-
-scalar elasticity_bc_values_y(int marker, double x, double y)
-{
-    switch (elasticityEdge[marker].typeY)
-    {
-    case PhysicFieldBC_None:
-        return 0;
-        break;
-    case PhysicFieldBC_Elasticity_Fixed:
-        return 0;
-        break;
-    case PhysicFieldBC_Elasticity_Free:
-        return elasticityEdge[marker].forceY;
-        break;
-    }
-}
-
 template<typename Real, typename Scalar>
-Scalar elasticity_matrix_form_linear_x_x(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_matrix_form_linear_x_x(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return (elasticityLabel[e->marker].lambda() + 2*elasticityLabel[e->marker].mu()) * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
-                elasticityLabel[e->marker].mu() * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
+        return (elasticityLabel[e->elem_marker].lambda() + 2*elasticityLabel[e->elem_marker].mu()) * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
+                elasticityLabel[e->elem_marker].mu() * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
     else
     {
         Scalar result = 0;
         for (int i = 0; i < n; i++)
-            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dx[i] * v->dx[i] +
+            result += wt[i] * (e->x[i] * elasticityLabel[e->elem_marker].lambda() * (u->dx[i] * v->dx[i] +
                                                                                 u->val[i]/e->x[i] * v->dx[i] +
                                                                                 u->dx[i] * v->val[i]/e->x[i] +
                                                                                 1/sqr(e->x[i]) * u->val[i] * v->val[i]) +
-                               e->x[i] * elasticityLabel[e->marker].mu() * (2 * u->dx[i] * v->dx[i] +
+                               e->x[i] * elasticityLabel[e->elem_marker].mu() * (2 * u->dx[i] * v->dx[i] +
                                                                             2 * 1/sqr(e->x[i]) * u->val[i] * v->val[i] +
                                                                             u->dy[i] * v->dy[i]));
         return result;
@@ -134,139 +70,129 @@ Scalar elasticity_matrix_form_linear_x_x(int n, double *wt, Func<Real> *u, Func<
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_matrix_form_linear_x_y(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_matrix_form_linear_x_y(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return elasticityLabel[e->marker].lambda() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
-                elasticityLabel[e->marker].mu() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
+        return elasticityLabel[e->elem_marker].lambda() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
+                elasticityLabel[e->elem_marker].mu() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
     else
     {
         Scalar result = 0;
         for (int i = 0; i < n; i++)
-            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dy[i] * v->dx[i] +
+            result += wt[i] * (e->x[i] * elasticityLabel[e->elem_marker].lambda() * (u->dy[i] * v->dx[i] +
                                                                                 u->dy[i] * v->val[i]/e->x[i]) +
-                               e->x[i] * elasticityLabel[e->marker].mu() * u->dx[i] * v->dy[i]);
+                               e->x[i] * elasticityLabel[e->elem_marker].mu() * u->dx[i] * v->dy[i]);
         return result;
     }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_matrix_form_linear_y_x(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_matrix_form_linear_y_x(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return  elasticityLabel[e->marker].mu() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
-                elasticityLabel[e->marker].lambda() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
+        return  elasticityLabel[e->elem_marker].mu() * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
+                elasticityLabel[e->elem_marker].lambda() * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
     else
     {
         Scalar result = 0;
         for (int i = 0; i < n; i++)
-            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dx[i] * v->dy[i] +
+            result += wt[i] * (e->x[i] * elasticityLabel[e->elem_marker].lambda() * (u->dx[i] * v->dy[i] +
                                                                                 u->val[i]/e->x[i] * v->dy[i]) +
-                               e->x[i] * elasticityLabel[e->marker].mu() * u->dy[i] * v->dx[i]);
+                               e->x[i] * elasticityLabel[e->elem_marker].mu() * u->dy[i] * v->dx[i]);
         return result;
     }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_matrix_form_linear_y_y(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_matrix_form_linear_y_y(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return   elasticityLabel[e->marker].mu() * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
-                (elasticityLabel[e->marker].lambda() + 2*elasticityLabel[e->marker].mu()) * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
+        return   elasticityLabel[e->elem_marker].mu() * int_dudx_dvdx<Real, Scalar>(n, wt, u, v) +
+                (elasticityLabel[e->elem_marker].lambda() + 2*elasticityLabel[e->elem_marker].mu()) * int_dudy_dvdy<Real, Scalar>(n, wt, u, v);
     else
     {
         Scalar result = 0;
         for (int i = 0; i < n; i++)
-            result += wt[i] * (e->x[i] * elasticityLabel[e->marker].lambda() * (u->dy[i] * v->dy[i]) +
-                               e->x[i] * elasticityLabel[e->marker].mu() * (u->dx[i] * v->dx[i] +
+            result += wt[i] * (e->x[i] * elasticityLabel[e->elem_marker].lambda() * (u->dy[i] * v->dy[i]) +
+                               e->x[i] * elasticityLabel[e->elem_marker].mu() * (u->dx[i] * v->dx[i] +
                                                                             2 * u->dy[i] * v->dy[i]));
         return result;
     }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_vector_form_x(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_vector_form_x(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
     {
         Scalar result = 0;
         for (int i = 0; i < n; i++)
-            result += wt[i] * ((elasticityLabel[e->marker].forceX * v->val[i]) +
-                               ((3 * elasticityLabel[e->marker].lambda() + 2 * elasticityLabel[e->marker].mu()) *
-                                elasticityLabel[e->marker].alpha * (elasticityLabel[e->marker].temp - elasticityLabel[e->marker].temp_ref) * v->dx[i]));
+            result += wt[i] * ((elasticityLabel[e->elem_marker].forceX * v->val[i]) +
+                               ((3 * elasticityLabel[e->elem_marker].lambda() + 2 * elasticityLabel[e->elem_marker].mu()) *
+                                elasticityLabel[e->elem_marker].alpha * (elasticityLabel[e->elem_marker].temp - elasticityLabel[e->elem_marker].temp_ref) * v->dx[i]));
         return result;
     }
     else
     {
         Scalar result = 0;
         for (int i = 0; i < n; i++)
-            result += wt[i] * (e->x[i] * (elasticityLabel[e->marker].forceX * v->val[i]) +
-                               ((3 * elasticityLabel[e->marker].lambda() + 2 * elasticityLabel[e->marker].mu()) *
-                                elasticityLabel[e->marker].alpha * (elasticityLabel[e->marker].temp - elasticityLabel[e->marker].temp_ref) * v->dx[i]));
-        return result;
-    }
-}
-
-template<typename Real, typename Scalar>
-Scalar elasticity_vector_form_y(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-    {
-        Scalar result = 0;
-        for (int i = 0; i < n; i++)
-            result += wt[i] * ((elasticityLabel[e->marker].forceY * v->val[i]) +
-                               ((3 * elasticityLabel[e->marker].lambda() + 2 * elasticityLabel[e->marker].mu()) *
-                                elasticityLabel[e->marker].alpha * (elasticityLabel[e->marker].temp - elasticityLabel[e->marker].temp_ref) * v->dy[i]));
-        return result;
-    }
-    else
-    {
-        Scalar result = 0;
-        for (int i = 0; i < n; i++)
-            result += wt[i] * e->x[i] * ((elasticityLabel[e->marker].forceY * v->val[i]) +
-                                         ((3 * elasticityLabel[e->marker].lambda() + 2 * elasticityLabel[e->marker].mu()) *
-                                          elasticityLabel[e->marker].alpha * (elasticityLabel[e->marker].temp - elasticityLabel[e->marker].temp_ref) * v->dy[i]));
+            result += wt[i] * (e->x[i] * (elasticityLabel[e->elem_marker].forceX * v->val[i]) +
+                               ((3 * elasticityLabel[e->elem_marker].lambda() + 2 * elasticityLabel[e->elem_marker].mu()) *
+                                elasticityLabel[e->elem_marker].alpha * (elasticityLabel[e->elem_marker].temp - elasticityLabel[e->elem_marker].temp_ref) * v->dx[i]));
         return result;
     }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_vector_form_x_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_vector_form_y(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return elasticityEdge[e->marker].forceX * int_v<Real, Scalar>(n, wt, v);
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * ((elasticityLabel[e->elem_marker].forceY * v->val[i]) +
+                               ((3 * elasticityLabel[e->elem_marker].lambda() + 2 * elasticityLabel[e->elem_marker].mu()) *
+                                elasticityLabel[e->elem_marker].alpha * (elasticityLabel[e->elem_marker].temp - elasticityLabel[e->elem_marker].temp_ref) * v->dy[i]));
+        return result;
+    }
     else
-        return elasticityEdge[e->marker].forceX * int_x_v<Real, Scalar>(n, wt, v, e);
+    {
+        Scalar result = 0;
+        for (int i = 0; i < n; i++)
+            result += wt[i] * e->x[i] * ((elasticityLabel[e->elem_marker].forceY * v->val[i]) +
+                                         ((3 * elasticityLabel[e->elem_marker].lambda() + 2 * elasticityLabel[e->elem_marker].mu()) *
+                                          elasticityLabel[e->elem_marker].alpha * (elasticityLabel[e->elem_marker].temp - elasticityLabel[e->elem_marker].temp_ref) * v->dy[i]));
+        return result;
+    }
 }
 
 template<typename Real, typename Scalar>
-Scalar elasticity_vector_form_y_surf(int n, double *wt, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar elasticity_vector_form_x_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return elasticityEdge[e->marker].forceY * int_v<Real, Scalar>(n, wt, v);
+        return elasticityEdge[e->edge_marker].forceX * int_v<Real, Scalar>(n, wt, v);
     else
-        return elasticityEdge[e->marker].forceY * int_x_v<Real, Scalar>(n, wt, v, e);
+        return elasticityEdge[e->edge_marker].forceX * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-
-void callbackElasticitySpace(Tuple<Space *> space)
+template<typename Real, typename Scalar>
+Scalar elasticity_vector_form_y_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    space.at(0)->set_bc_types(elasticity_bc_types_x);
-    space.at(0)->set_essential_bc_values(elasticity_bc_values_x);
-
-    space.at(1)->set_bc_types(elasticity_bc_types_y);
-    space.at(1)->set_essential_bc_values(elasticity_bc_values_y);
+    if (isPlanar)
+        return elasticityEdge[e->edge_marker].forceY * int_v<Real, Scalar>(n, wt, v);
+    else
+        return elasticityEdge[e->edge_marker].forceY * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
 void callbackElasticityWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    wf->add_biform(0, 0, callback(elasticity_matrix_form_linear_x_x));
-    wf->add_biform(0, 1, callback(elasticity_matrix_form_linear_x_y), H2D_SYM);
-    wf->add_biform(1, 1, callback(elasticity_matrix_form_linear_y_y));
-    wf->add_liform(0, callback(elasticity_vector_form_x));
-    wf->add_liform(1, callback(elasticity_vector_form_y));
-    wf->add_liform_surf(0, callback(elasticity_vector_form_x_surf));
-    wf->add_liform_surf(1, callback(elasticity_vector_form_y_surf));
+    wf->add_matrix_form(0, 0, callback(elasticity_matrix_form_linear_x_x));
+    wf->add_matrix_form(0, 1, callback(elasticity_matrix_form_linear_x_y), HERMES_SYM);
+    wf->add_matrix_form(1, 1, callback(elasticity_matrix_form_linear_y_y));
+    wf->add_vector_form(0, callback(elasticity_vector_form_x));
+    wf->add_vector_form(1, callback(elasticity_vector_form_y));
+    wf->add_vector_form_surf(0, callback(elasticity_vector_form_x_surf));
+    wf->add_vector_form_surf(1, callback(elasticity_vector_form_y_surf));
 }
 
 // *******************************************************************************************************
@@ -596,8 +522,7 @@ ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariable physicF
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
     Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
 
-    return new ViewScalarFilterElasticity(sln1,
-                                          sln2,
+    return new ViewScalarFilterElasticity(Tuple<MeshFunction *>(sln1, sln2),
                                           physicFieldVariable,
                                           physicFieldVariableComp);
 }
@@ -650,6 +575,9 @@ void HermesElasticity::deformShape(double4* linVert, int count)
 QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
+    BCTypes bcTypesX, bcTypesY;
+    BCValues bcValuesX, bcValuesY;
+
     elasticityEdge = new ElasticityEdge[Util::scene()->edges.count()+1];
     elasticityEdge[0].typeX = PhysicFieldBC_None;
     elasticityEdge[0].typeY = PhysicFieldBC_None;
@@ -675,6 +603,34 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
 
             elasticityEdge[i+1].forceX = edgeElasticityMarker->forceX.number;
             elasticityEdge[i+1].forceY = edgeElasticityMarker->forceY.number;
+
+            switch (edgeElasticityMarker->typeX)
+            {
+            case PhysicFieldBC_None:
+                bcTypesX.add_bc_none(i+1);
+                break;
+            case PhysicFieldBC_Elasticity_Fixed:
+                bcTypesX.add_bc_dirichlet(i+1);
+                bcValuesX.add_const(i+1, 0.0);
+                break;
+            case PhysicFieldBC_Elasticity_Free:
+                bcTypesX.add_bc_neumann(i+1);
+                break;
+            }
+
+            switch (edgeElasticityMarker->typeY)
+            {
+            case PhysicFieldBC_None:
+                bcTypesY.add_bc_none(i+1);
+                break;
+            case PhysicFieldBC_Elasticity_Fixed:
+                bcTypesY.add_bc_dirichlet(i+1);
+                bcValuesY.add_const(i+1, 0.0);
+                break;
+            case PhysicFieldBC_Elasticity_Free:
+                bcTypesY.add_bc_neumann(i+1);
+                break;
+            }
         }
     }
 
@@ -710,7 +666,8 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  callbackElasticitySpace,
+                                                                  Tuple<BCTypes *>(&bcTypesX, &bcTypesY),
+                                                                  Tuple<BCValues *>(&bcValuesX, &bcValuesY),
                                                                   callbackElasticityWeakForm);
 
     delete [] elasticityEdge;

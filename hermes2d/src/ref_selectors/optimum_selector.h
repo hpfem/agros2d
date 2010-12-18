@@ -55,22 +55,22 @@ namespace RefinementSelectors {
   /** Used for debugging and output purposes.
    *  \param cand_list A predefined list of candidates.
    *  \return A string representation of the enum value. */
-  extern H2D_API const char* get_cand_list_str(const CandList cand_list);
+  extern HERMES_API const char* get_cand_list_str(const CandList cand_list);
 
   /// Returns true if a predefined candidate list may contain candidates that are HP. \ingroup g_selectors
   /** \param cand_list A predefined list of candidates.
    *  \return True if a predefined candidate list may contain candidates that are HP. */
-  extern H2D_API bool is_hp(const CandList cand_list);
+  extern HERMES_API bool is_hp(const CandList cand_list);
 
   /// Returns true if a predefined candidate list may contain candidates with an anisotropic change of orders. \ingroup g_selectors
   /** \param cand_list A predefined list of candidates.
    *  \return True if a predefined candidate list may contain candidates with an anisotropic change of orders. */
-  extern H2D_API bool is_p_aniso(const CandList cand_list);
+  extern HERMES_API bool is_p_aniso(const CandList cand_list);
 
   /// A selector that chooses an optimal candidates based on a score. \ingroup g_selectors
   /** This is a base class for all selectors that chooses an candidate based on some
    *  evaluated criteria. Currently, the criteria is based on an error change per DOF. */
-  class H2D_API OptimumSelector : public Selector {
+  class HERMES_API OptimumSelector : public Selector {
   protected: //options
     bool opt_symmetric_mesh; ///< True if ::H2D_PREFER_SYMMETRIC_MESH is set. True by default.
     bool opt_apply_exp_dof; ///< True if ::H2D_APPLY_CONV_EXP_DOF is set. False by default.
@@ -97,7 +97,7 @@ namespace RefinementSelectors {
       /** \param[in] split A refinement, see the enum RefinementTypes.
        *  \param[in] order_elems Encoded orders for all element of candidate. If triangle, a vertical order has to be equal to the horizontal one. Unused elements of the array can be ignored. */
       Cand(const int split, const int order_elems[4])
-        : split(split), dofs(-1), score(0) {
+        : dofs(-1), split(split), score(0) {
           p[0] = order_elems[0];
           p[1] = order_elems[1];
           p[2] = order_elems[2];
@@ -111,7 +111,7 @@ namespace RefinementSelectors {
        *  \param[in] order_elem2 Encoded order of the third element of the candidate, if any. If triangle, a vertical order has to be equal to the horizontal one.
        *  \param[in] order_elem3 Encoded order of the fourth element of the candidate, if any. If triangle, a vertical order has to be equal to the horizontal one. */
       Cand(const int split, const int order_elem0, const int order_elem1 = 0, const int order_elem2 = 0, const int order_elem3 = 0)
-        : split(split), dofs(-1), score(0) {
+        : dofs(-1), split(split), score(0) {
           p[0] = order_elem0;
           p[1] = order_elem1;
           p[2] = order_elem2;
@@ -134,7 +134,7 @@ namespace RefinementSelectors {
         }
       }
 
-      friend H2D_API std::ostream& operator<<(std::ostream& stream, const Cand& cand);
+      friend HERMES_API std::ostream& operator<<(std::ostream& stream, const Cand& cand);
     };
 
     /// Returns a vector of the last generated candidates.
@@ -279,12 +279,12 @@ namespace RefinementSelectors {
 
     Shapeset *shapeset; ///< A shapeset used to calculate error.
 
-    std::vector<ShapeInx> shape_indices[H2D_NUM_MODES]; ///< Shape indices. The first index is a mode (ElementMode).
-    int max_shape_inx[H2D_NUM_MODES]; ///< A maximum index of a shape function. The first index is a mode (ElementMode).
-    int next_order_shape[H2D_NUM_MODES][H2DRS_MAX_ORDER+1]; ///< An index to the array OptimumSelector::shape_indices of a shape function of the next uniform order. The first index is a mode (ElementMode), the second index is an order.
-    bool has_vertex_shape[H2D_NUM_MODES]; ///< True if the shapeset OptimumSelector::shapeset contains vertex functions. The index is a mode (ElementMode).
-    bool has_edge_shape[H2D_NUM_MODES]; ///< True if the shapeset OptimumSelector::shapeset contains edge functions. The index is a mode (ElementMode).
-    bool has_bubble_shape[H2D_NUM_MODES]; ///< True if the shapeset OptimumSelector::shapeset contains bubble functions. The index is a mode (ElementMode).
+    std::vector<ShapeInx> shape_indices[H2D_NUM_MODES]; ///< Shape indices. The first index is a mode (ElementMode2D).
+    int max_shape_inx[H2D_NUM_MODES]; ///< A maximum index of a shape function. The first index is a mode (ElementMode2D).
+    int next_order_shape[H2D_NUM_MODES][H2DRS_MAX_ORDER+1]; ///< An index to the array OptimumSelector::shape_indices of a shape function of the next uniform order. The first index is a mode (ElementMode2D), the second index is an order.
+    bool has_vertex_shape[H2D_NUM_MODES]; ///< True if the shapeset OptimumSelector::shapeset contains vertex functions. The index is a mode (ElementMode2D).
+    bool has_edge_shape[H2D_NUM_MODES]; ///< True if the shapeset OptimumSelector::shapeset contains edge functions. The index is a mode (ElementMode2D).
+    bool has_bubble_shape[H2D_NUM_MODES]; ///< True if the shapeset OptimumSelector::shapeset contains bubble functions. The index is a mode (ElementMode2D).
 
     /// Adds an index (or indices) of a bubble function of a given order if the shape index was not used yet.
     /** This function adds indices of bubble functions that were not added yet on a quadrilateral.
@@ -301,13 +301,13 @@ namespace RefinementSelectors {
     /// Builds shape index table OptimumSelector::shape_indices.
     /** The method fills the array OptimumSelector::shape_indices for a given mode.
      *  The method is called by the constructor.
-     *  \param[in] mode A mode (ElementMode).
+     *  \param[in] mode A mode (ElementMode2D).
      *  \param[in] vertex_order A range of orders in which to search for vertex functions.
      *  \param[in] edge_bubble_order A range of order in which to search for edge and bubble functions. */
     void build_shape_indices(const int mode, const Range<int>& vertex_order, const Range<int>& edge_bubble_order);
 
     /// Returns a number of shapes that may be contained in an element of a given order.
-    /** \param[in] mode A mode (ElementMode).
+    /** \param[in] mode A mode (ElementMode2D).
      *  \param[in] order_h A horizontal order of the element. If ::H2DRS_ORDER_ANY, any order is allowed.
      *  \param[in] order_v A horizontal order of the element. If ::H2DRS_ORDER_ANY, any order is allowed.
      *  \param[in] allowed_type_mask A combination of flags specifying which orders are allowed. Flags are defined in the enum ShapeType.
@@ -338,7 +338,7 @@ namespace RefinementSelectors {
   };
 
   /// Operator. Flushes contents of a candidate to a string stream. Useful for debug messages. \ingroup g_selectors
-  extern H2D_API std::ostream& operator<<(std::ostream& stream, const OptimumSelector::Cand& cand);
+  extern HERMES_API std::ostream& operator<<(std::ostream& stream, const OptimumSelector::Cand& cand);
 }
 
 #endif

@@ -114,7 +114,8 @@ HEADERS += util.h \
     scenebasicselectdialog.h \
     logdialog.h
 INCLUDEPATH += . \
-    dxflib
+    dxflib \
+    ../hermes_common
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml

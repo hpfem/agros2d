@@ -24,7 +24,7 @@
 
 #include "util.h"
 #include "hermes2d.h"
-#include "solver_umfpack.h"
+#include "../hermes_common/solver/umfpack_solver.h"
 
 #include "localvalueview.h"
 #include "surfaceintegralview.h"
@@ -32,6 +32,8 @@
 
 #include "scenemarker.h"
 #include "progressdialog.h"
+
+using namespace Hermes;
 
 extern bool isPlanar;
 extern AnalysisType analysisType;
@@ -111,9 +113,7 @@ HermesField *hermesFieldFactory(PhysicField physicField);
 class ViewScalarFilter : public Filter
 {
 public:
-    ViewScalarFilter(MeshFunction *sln1, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
-    ViewScalarFilter(MeshFunction *sln1, MeshFunction *sln2, MeshFunction *sln3, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 
     double get_pt_value(double x, double y, int item = H2D_FN_VAL);
 
@@ -139,7 +139,8 @@ void writeMeshFromFile(const QString &fileName, Mesh *mesh);
 
 // solve
 QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                          void (*cbSpace)(Tuple<Space *>),
+                                          Tuple<BCTypes *> bcTypes,
+                                          Tuple<BCValues *> bcValues,
                                           void (*cbWeakForm)(WeakForm *, Tuple<Solution *>));
 
 // custom forms **************************************************************************************************************************

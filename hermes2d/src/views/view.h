@@ -22,18 +22,35 @@
 #ifndef __H2D_VIEW_H
 #define __H2D_VIEW_H
 
-#include "../common.h"
+#include "../h2d_common.h"
 #include "../linear.h"
 
 // Constants
-#define DEFAULT_WINDOW_POS  int x = -1, int y = -1, int width = 1000, int height = 800 ///< Default size and window position.
+#define H2D_DEFAULT_X_POS -1
+#define H2D_DEFAULT_Y_POS -1
+#define H2D_DEFAULT_WIDTH 600
+#define H2D_DEFAULT_HEIGHT 400
 #define H2DV_SCALE_LOG_BASE 1.005 ///< Base of the scale coefficient. Scale = base^{mouse move}.
 
 /// Wait events.
 enum ViewWaitEvent {
-  H2DV_WAIT_CLOSE, ///< Wait for all windows to close.
-  H2DV_WAIT_KEYPRESS, ///< Wait for any unprocessed keypress to happen.
+  HERMES_WAIT_CLOSE, ///< Wait for all windows to close.
+  HERMES_WAIT_KEYPRESS, ///< Wait for any unprocessed keypress to happen.
 };
+
+struct WinGeom {
+  int x;
+  int y;
+  int width;
+  int height;
+
+  WinGeom(int x, int y, int width, int height) {
+    this->x = x;
+    this->y = y;
+    this->width = width;
+    this->height = height;
+  };
+}; 
 
 /// View palette type.
 enum ViewPaletteType {
@@ -56,11 +73,14 @@ enum ViewPaletteType {
 /// to provide zooming and panning capabilities for use by the descendant
 /// classes, etc.
 ///
-class H2D_API View
+class HERMES_API View
 {
 public:
 
-  View(const char* title, int x, int y, int width, int height);
+  void init();
+  //View(const char* title, int x, int y, int width, int height);
+  View(const char* title, WinGeom* wg = NULL);
+  View(char* title, WinGeom* wg = NULL);
   virtual ~View();
 
   int  create();
@@ -96,7 +116,7 @@ public:
   void wait_for_draw();
 
   static void wait(const char* text); ///< Closes all views at once.
-  static void wait(ViewWaitEvent wait_event = H2DV_WAIT_CLOSE, const char* text = NULL); ///< Waits for an event.
+  static void wait(ViewWaitEvent wait_event = HERMES_WAIT_CLOSE, const char* text = NULL); ///< Waits for an event.
 
 protected: //FPS measurement
 #define FPS_FRAME_SIZE 5
@@ -213,11 +233,12 @@ protected: //internal functions
 
 #else // NOGLUT
 
-class H2D_API View
+class HERMES_API View
 {
 public:
   View() {}
   View(const char* title, int x, int y, int width, int height) {}
+  View(const char* title, int win_geom[4]) {}
   ~View() {}
   int  create() { return 0; }
   void close() {}
@@ -239,7 +260,7 @@ public:
   void wait_for_close() {}
   void wait_for_draw() {}
   static void wait(const char* text) {}
-  static void wait(ViewWaitEvent wait_event = H2DV_WAIT_CLOSE, const char* text = NULL) {}
+  static void wait(ViewWaitEvent wait_event = HERMES_WAIT_CLOSE, const char* text = NULL) {}
 };
 
 #endif // NOGLUT

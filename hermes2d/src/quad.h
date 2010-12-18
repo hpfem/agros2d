@@ -16,13 +16,15 @@
 #ifndef __H2D_QUAD_H
 #define __H2D_QUAD_H
 
-#include "common.h"
+#include "h2d_common.h"
 #include "config.h"
 
-/* Indices of values in the quadrature vector of a type double3. */
-#define H2D_GIP2D_X 0
-#define H2D_GIP2D_Y 1
-#define H2D_GIP2D_W 2
+/// Indices of values in the value returned by Quad2D::get_points().
+enum GIP2DIndices {
+  H2D_GIP2D_X = 0, ///< X-axis coordinate.
+  H2D_GIP2D_Y = 1, ///< Y-axis coordinate.
+  H2D_GIP2D_W = 2  ///< A weight.
+};
 
 #define H2D_GIP1D_X 0
 #define H2D_GIP1D_W 1
@@ -33,11 +35,12 @@
   // debug
   //const int g_max_quad = 30;
   const int g_max_quad = 24;
+  const int g_max_tri = 20;
 #endif
 
 /// Quad1D is a base class for all 1D quadrature points.
 ///
-class H2D_API Quad1D
+class HERMES_API Quad1D
 {
 public:
 
@@ -62,7 +65,7 @@ protected:
 
 /// Quad2D is a base class for all 2D quadrature points on triangles and quads.
 ///
-class H2D_API Quad2D
+class HERMES_API Quad2D
 {
 public:
 
@@ -71,7 +74,8 @@ public:
 
   int get_num_points(int order)  const { return np[mode][order]; };
   double3* get_points(int order) const { assert(order < num_tables[mode]); return tables[mode][order]; }
-  int get_edge_points(int edge)  const { return max_order[mode]+1 + edge; }
+  int get_edge_points(int edge)  const { return max_order[mode]+1 + (3*(1-mode) + 4*mode)*max_order[mode] + edge; }
+  int get_edge_points(int edge, int order) {return  max_order[mode]+1 + (3*(1-mode) + 4*mode)*order + edge;}
 
   int get_max_order() const { return max_order[mode]; }
   int get_safe_max_order() const { return safe_max_order[mode]; }

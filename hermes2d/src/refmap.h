@@ -16,7 +16,7 @@
 #ifndef __H2D_REFMAP_H
 #define __H2D_REFMAP_H
 
-#include "common.h"
+#include "h2d_common.h"
 #include "precalc.h"
 #include "quad_all.h"
 
@@ -31,7 +31,7 @@ struct Element;
 /// the calculation of integration points positions in the physical domain and
 /// the calculation of edge tangents in 1D integration points.
 ///
-class H2D_API RefMap : public Transformable
+class HERMES_API RefMap : public Transformable
 {
 public:
 
@@ -108,13 +108,27 @@ public:
     if (cur_node->phys_y[order] == NULL) calc_phys_y(order);
     return cur_node->phys_y[order];
   }
-
+    
   /// Returns the triples [x,y,norm] of the tangent to the specified (possibly
   /// curved) edge at the 1D integration points along the edge. The maximum
-  /// 1D quadrature rule is always used.
-  double3* get_tangent(int edge)
+  /// 1D quadrature rule is used by default, but the user may specify his own
+  /// order. In this case, the edge pseudo-order is expected (as returned by 
+  /// Quad2D::get_edge_points).
+  double3* get_tangent(int edge, int order = -1)
   {
-    if (cur_node->tan[edge] == NULL) calc_tangent(edge);
+    if(quad_2d == NULL)
+      error("2d quadrature wasn't set.");
+    if (order == -1)
+      order = quad_2d->get_edge_points(edge);
+  
+    // NOTE: Order-based caching of geometric data is already employed in DiscreteProblem.
+    if(cur_node->tan[edge] != NULL)
+    {
+      delete[] cur_node->tan[edge];
+      cur_node->tan[edge] = NULL;
+    }
+    calc_tangent(edge, order);
+    
     return cur_node->tan[edge];
   }
 
@@ -139,7 +153,7 @@ public:
   {
     this->sub_idx = sub_idx;
     stack[top] = *ctm;
-    ctm = stack+top;
+    this->ctm = stack+top;
     update_cur_node();
     if (is_const) calc_const_inv_ref_map();
   }
@@ -156,7 +170,7 @@ protected:
   double const_jacobian;
   double2x2 const_inv_ref_map;
 
-  static const int H2D_MAX_TABLES = g_max_quad + 1 + 4;
+  static const int H2D_MAX_TABLES = g_max_quad+1 + 4 * g_max_quad + 4;
 
   struct Node
   {
@@ -192,7 +206,7 @@ protected:
 
   void calc_phys_x(int order);
   void calc_phys_y(int order);
-  void calc_tangent(int edge);
+  void calc_tangent(int edge, int eo);
 
   /// Finds the necessary quadrature degree needed to integrate the inverse reference mapping
   /// matrix alone. This is added to the total integration order in weak form itegrals.
@@ -207,8 +221,8 @@ protected:
 
   int indices[70];
   int nc;
-  double2* coefs;
-  double2  lin_coefs[4];
+  double2* coeffs;
+  double2  lin_coeffs[4];
 
 };
 

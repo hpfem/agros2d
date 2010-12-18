@@ -16,14 +16,26 @@
 #ifndef NOGLUT
 
 #include <GL/freeglut.h>
-#include "../common.h"
+#include "../h2d_common.h"
 #include "vector_view.h"
 
 
 //// VectorView /////////////////////////////////////////////////////////////////////////////////////
 
-VectorView::VectorView(const char* title, int x, int y, int width, int height)
-          : View(title, x, y, width, height)
+VectorView::VectorView(const char* title, WinGeom* wg)
+          : View(title, wg)
+{
+  gx = gy = 0.0;
+  gs = 20.0;
+  hexa = true;
+  mode = 0;
+  lines = false;
+  pmode = false;
+  length_coef = 1.0;
+}
+
+VectorView::VectorView(char* title, WinGeom* wg)
+          : View(title, wg)
 {
   gx = gy = 0.0;
   gs = 20.0;
@@ -45,7 +57,7 @@ void VectorView::show(MeshFunction* vsln, double eps)
 void VectorView::show(MeshFunction* xsln, MeshFunction* ysln, double eps)
 {
   if (xsln == ysln)
-    error("Identical solutions passed to the two-argument version of show(). This is most likely a mistake.");
+    error("Identical solutions passed to the two-argument version of show(). Most likely this is a mistake.");
   show(xsln, ysln, eps, H2D_FN_VAL_0, H2D_FN_VAL_0);
 }
 
@@ -111,7 +123,7 @@ void VectorView::plot_arrow(double x, double y, double xval, double yval, double
     glEnd();
 
     glTranslated(x,y,0.0);
-    glRotated(atan2(-yval, xval) * 180.0/M_PI, 0.0, 0.0, 1.0);
+    glRotated(atan2(-yval,xval) * 180.0/M_PI, 0.0, 0.0, 1.0);
 
     glBegin(GL_TRIANGLES);
     glVertex2d(length + 3 * width,  0.0);
@@ -295,11 +307,12 @@ void VectorView::on_display()
       bool shift = hexa && (s & 1);
 
       // if there are two points with min y-coordinate, switch to the next segment
-      if ((tvert[l1][1] == tvert[l2][1]) || (tvert[r1][1] == tvert[r2][1]))
+      if ((tvert[l1][1] == tvert[l2][1]) || (tvert[r1][1] == tvert[r2][1])) {
         if (tvert[l1][1] == tvert[l2][1])
           {l1 = l2; l2 = r2;}
         else if (tvert[r1][1] == tvert[r2][1])
           {r1 = r2; r2 = l2;}
+      }
 
       // slope of the left and right segment
       ml = (tvert[l1][0] - tvert[l2][0])/(tvert[l1][1] - tvert[l2][1]);

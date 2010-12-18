@@ -16,7 +16,7 @@
 #ifndef __H2D_MESH_H
 #define __H2D_MESH_H
 
-#include "common.h"
+#include "h2d_common.h"
 #include "curved.h"
 
 struct Element;
@@ -33,7 +33,7 @@ struct MItem;
 ///      <li> H2D_TYPE_EDGE   -- edge node. Only stores edge marker and two element pointers.
 /// </ol>
 ///
-struct H2D_API Node
+struct HERMES_API Node
 {
   int id;          ///< node id number
   unsigned ref:29; ///< the number of elements using the node
@@ -86,7 +86,7 @@ struct H2D_API Node
 /// If an element has curved edges, the member 'cm' points to an associated CurvMap structure,
 /// otherwise it is NULL.
 ///
-struct H2D_API Element
+struct HERMES_API Element
 {
   int id;            ///< element id number
   unsigned nvert:30; ///< number of vertices (3 or 4)
@@ -95,6 +95,9 @@ struct H2D_API Element
   int marker;        ///< element marker
   int userdata;     ///< arbitrary user-defined data
   int iro_cache;     ///< increase in integration order, see RefMap::calc_inv_ref_order()
+  Element* parent;   ///< pointer to the parent element for the current son
+  bool visited;      ///< true if the element has been visited during assembling
+
 
   Node* vn[4];   ///< vertex node pointers
   union
@@ -109,6 +112,7 @@ struct H2D_API Element
   bool is_quad() const { return nvert == 4; }
   bool is_curved() const { return cm != NULL; }
   int  get_mode() const { return is_triangle() ? H2D_MODE_TRIANGLE : H2D_MODE_QUAD; }
+  int get_num_surf() {return nvert; }
 
   // helper functions to obtain the index of the next or previous vertex/edge
   int next_vert(int i) const { return (i < (int)nvert-1) ? i+1 : 0; }
@@ -130,6 +134,11 @@ struct H2D_API Element
   /// length of the longer diagonal for quads. Ignores element curvature.
   double get_diameter() const;
 
+  // returns the edge orientation. This works for the unconstrained edges.
+  int get_edge_orientation(int ie) {
+      return (this->vn[ie]->id < this->vn[this->next_vert(ie)]->id) ? 0 : 1;
+  }
+
   void ref_all_nodes();
   void unref_all_nodes(HashTable* ht);
 };
@@ -142,12 +151,16 @@ struct H2D_API Element
 ///
 ///
 ///
-class H2D_API Mesh : public HashTable
+class HERMES_API Mesh : public HashTable
 {
 public:
 
   Mesh();
-  ~Mesh() { free(); dump_hash_stat(); }
+  ~Mesh() { 
+    //printf("Calling Mesh::free() in ~Mesh().\n");
+    free(); 
+    dump_hash_stat(); 
+  }
   /// Creates a copy of another mesh.
   void copy(const Mesh* mesh);
   /// Copies the coarsest elements of another mesh.
@@ -180,13 +193,25 @@ public:
   Element* get_element(int id) const;
 
   /// Returns the total number of elements stored.
-  int get_num_elements() const { return elements.get_num_items(); }
+  int get_num_elements() const { 
+    if (this == NULL) error("this == NULL in Mesh::get_num_elements()."); 
+    return elements.get_num_items(); 
+  }
   /// Returns the number of coarse mesh elements.
-  int get_num_base_elements() const { return nbase; }
+  int get_num_base_elements() const { 
+    if (this == NULL) error("this == NULL in Mesh::get_num_base_elements()."); 
+    return nbase; 
+  }
   /// Returns the current number of active elements in the mesh.
-  int get_num_active_elements() const { return nactive; }
+  int get_num_active_elements() const { 
+    if (this == NULL) error("this == NULL in Mesh::get_num_active_elements()."); 
+    return nactive; 
+  }
   /// Returns the maximum node id number plus one.
-  int get_max_element_id() const { return elements.get_size(); }
+  int get_max_element_id() const { 
+    if (this == NULL) error("this == NULL in Mesh::get_max_element_id()."); 
+    return elements.get_size(); 
+  }
 
   /// Refines an element.
   /// \param id [in] Element id number.
@@ -256,14 +281,18 @@ public:
   /// For internal use.
   Element* get_element_fast(int id) const { return &(elements[id]);}
   /// Refines all triangle elements to quads.
-  /// It can refine a triangle element into three quadrilateral,
+  /// It can refine a triangle element into three quadrilaterals.
+  /// Note: this function creates a base mesh -- it can only be 
+  /// used before any other mesh refinement function is called.
   void convert_triangles_to_quads();
   /// Refines all quad elements to triangles.
-  /// It can refine a quadrilateral element into two triangles.
+  /// It refines a quadrilateral element into two triangles.
+  /// Note: this function creates a base mesh -- it can only be 
+  /// used before any other mesh refinement function is called.
   void convert_quads_to_triangles();
 
 protected:
-  H2D_API_USED_TEMPLATE(Array<Element>);
+  HERMES_API_USED_TEMPLATE(Array<Element>);
   Array<Element> elements;
   int nbase, ntopvert;
   int nactive, ninitial;
@@ -330,22 +359,6 @@ protected:
         for (int _id = 0, _max = (mesh)->get_max_node_id(); _id < _max; _id++) \
           if (((n) = (mesh)->get_node(_id))->used) \
             if ((n)->type)
-
-/// \brief Determines the position on an edge.
-/// \details Used for the retrieval of boundary condition values.
-///
-struct EdgePos
-{
-  int v1, v2; ///< edge endpoint vertex id numbers
-  int marker; ///< edge marker
-  int edge;   ///< element edge number (0..3 for triangles, 0..4 for quads)
-  double t;   ///< position between v1 and v2 in the range [0..1]
-
-  double lo, hi; ///< for internal use
-  Element* base; ///< for internal use
-  Space *space, *space_u, *space_v; ///< for internal use
-};
-
 
 const int TOP_LEVEL_REF = 123456;
 
