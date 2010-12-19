@@ -50,6 +50,9 @@ void ProblemInfo::clear()
     timeStep = Value("1.0", false);
     timeTotal = Value("1.0", false);
     initialCondition = Value("0.0", false);
+
+    // matrix solver
+    matrixSolver = SOLVER_UMFPACK;
 }
 
 DxfFilter::DxfFilter(Scene *scene)
@@ -1357,7 +1360,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // problem type                                                                                                                                                                                                                             `
     m_problemInfo->problemType = problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
     // analysis type
-    m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype", analysisTypeToStringKey(AnalysisType_SteadyState)));
+    m_problemInfo->analysisType = analysisTypeFromStringKey(eleProblem.toElement().attribute("analysistype",
+                                                                                             analysisTypeToStringKey(AnalysisType_SteadyState)));
     // physic field
     m_problemInfo->setHermes(hermesFieldFactory(physicFieldFromStringKey(eleProblem.toElement().attribute("type"))));
     // number of refinements
@@ -1376,6 +1380,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->timeStep.text = eleProblem.toElement().attribute("timestep", "1");
     m_problemInfo->timeTotal.text = eleProblem.toElement().attribute("timetotal", "1");
     m_problemInfo->initialCondition.text = eleProblem.toElement().attribute("initialcondition", "0");
+
+    // matrix solver
+    m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",
+                                                                                                 matrixSolverTypeToStringKey(SOLVER_UMFPACK)));
 
     // startup script
     QDomNode eleScriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
@@ -1572,6 +1580,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text);
     eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text);
     eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text);
+
+    // matrix solver
+    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver));
 
     // startup script
     QDomElement eleScriptStartup = doc.createElement("scriptstartup");

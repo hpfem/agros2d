@@ -201,7 +201,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     // error marker
     bool isError = false;
 
-    MatrixSolverType matrixSolver = SOLVER_UMFPACK;
+    MatrixSolverType matrixSolver = Util::scene()->problemInfo()->matrixSolver;
 
     // solution
     int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;

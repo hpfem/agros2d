@@ -195,6 +195,9 @@ void SceneInfoView::doInvalidated()
     // analysis
     QTreeWidgetItem *itemAnalysisType = new QTreeWidgetItem(problemInfoGeneralNode);
     itemAnalysisType->setText(0, tr("Analysis: ") + analysisTypeString(Util::scene()->problemInfo()->analysisType));
+    // solver
+    QTreeWidgetItem *itemSolverMatrixSolver = new QTreeWidgetItem(problemInfoGeneralNode);
+    itemSolverMatrixSolver->setText(0, tr("Solver: ") + matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver));
 
     // solver
     if (Util::scene()->sceneSolution()->isMeshed())
@@ -239,7 +242,7 @@ void SceneInfoView::doInvalidated()
                 QTreeWidgetItem *itemSolverDOFs = new QTreeWidgetItem(problemInfoSolverNode);
                 itemSolverDOFs->setText(0, tr("DOFs: ") + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()));
             }
-            
+                        
             QTime time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
             QTreeWidgetItem *itemSolverTimeElapsed = new QTreeWidgetItem(problemInfoSolverNode);
             itemSolverTimeElapsed->setText(0, tr("Time elapsed: ") + time.toString("mm:ss.zzz"));

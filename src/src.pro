@@ -129,6 +129,7 @@ linux-g++ {
     LIBS += -L../hermes2d/lib
     LIBS += -lhermes2d
     LIBS += -lumfpack
+    LIBS += -ldmumps_seq
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lJudy

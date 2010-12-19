@@ -615,10 +615,12 @@ void ProgressItemSolve::solve()
     QTime time;
     time.start();
 
-    emit message(tr("Solver was started: %1 (%2, %3)").
+    emit message(tr("Problem analysis: %1 (%2, %3)").
                  arg(physicFieldString(Util::scene()->problemInfo()->physicField())).
                  arg(problemTypeString(Util::scene()->problemInfo()->problemType)).
                  arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)), false, 1);
+
+    emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
 
     QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo()->hermes()->solve(this);
 

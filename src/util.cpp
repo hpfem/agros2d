@@ -30,6 +30,7 @@ static QHash<PhysicFieldBC, QString> physicFieldBCList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
+static QHash<MatrixSolverType, QString> matrixSolverTypeList;
 
 QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
 AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
@@ -51,6 +52,9 @@ SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
+MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
 void initLists()
 {
@@ -180,6 +184,15 @@ void initLists()
     adaptivityTypeList.insert(AdaptivityType_H, "h-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_P, "p-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_HP, "hp-adaptivity");
+
+    // MatrixSolverType
+    matrixSolverTypeList.insert(SOLVER_UMFPACK, "umfpack");
+    matrixSolverTypeList.insert(SOLVER_PETSC, "petsc");
+    matrixSolverTypeList.insert(SOLVER_MUMPS, "mumps");
+    matrixSolverTypeList.insert(SOLVER_PARDISO, "pardiso");
+    matrixSolverTypeList.insert(SOLVER_SUPERLU, "superlu");
+    matrixSolverTypeList.insert(SOLVER_AMESOS, "trilinos_amesos");
+    matrixSolverTypeList.insert(SOLVER_AZTECOO, "trilinos_aztecoo");
 }
 
 QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
@@ -714,6 +727,32 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
         return QObject::tr("hp-adaptivity");
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
+        throw;
+    }
+}
+
+QString matrixSolverTypeString(MatrixSolverType matrixSolverType)
+{
+    logMessage("matrixSolverTypeString()");
+
+    switch (matrixSolverType)
+    {
+    case SOLVER_UMFPACK:
+        return QObject::tr("UMFPACK");
+    case SOLVER_PETSC:
+        return QObject::tr("PETSc");
+    case SOLVER_MUMPS:
+        return QObject::tr("MUMPS");
+    case SOLVER_PARDISO:
+        return QObject::tr("Pardiso");
+    case SOLVER_SUPERLU:
+        return QObject::tr("SuperLU");
+    case SOLVER_AMESOS:
+        return QObject::tr("Trilinos/Amesos");
+    case SOLVER_AZTECOO:
+        return QObject::tr("Trilinos/AztecOO");
+    default:
+        std::cerr << "Matrix solver type '" + QString::number(matrixSolverType).toStdString() + "' is not implemented. matrixSolverTypeString(MatrixSolverType matrixSolverType)" << endl;
         throw;
     }
 }

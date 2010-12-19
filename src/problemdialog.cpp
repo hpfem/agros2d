@@ -119,6 +119,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEditDouble(1);
+    cmbMatrixSolver = new QComboBox();
 
     // harmonic
     txtFrequency = new SLineEditDouble();
@@ -159,19 +160,21 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutProblemTable->addWidget(txtAdaptivitySteps, 8, 1);
     layoutProblemTable->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
     layoutProblemTable->addWidget(txtAdaptivityTolerance, 9, 1);
-    // right
-    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 2, 2);
-    layoutProblemTable->addWidget(cmbAnalysisType, 2, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 3, 2);
-    layoutProblemTable->addWidget(txtFrequency, 3, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Time step (s):")), 4, 2);
-    layoutProblemTable->addWidget(txtTransientTimeStep, 4, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Total time (s):")), 5, 2);
-    layoutProblemTable->addWidget(txtTransientTimeTotal, 5, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Initial condition:")), 6, 2);
-    layoutProblemTable->addWidget(txtTransientInitialCondition, 6, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Steps:")), 7, 2);
-    layoutProblemTable->addWidget(lblTransientSteps, 7, 3);
+    // right    
+    layoutProblemTable->addWidget(new QLabel(tr("Linear solver:")), 2, 2);
+    layoutProblemTable->addWidget(cmbMatrixSolver, 2, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
+    layoutProblemTable->addWidget(cmbAnalysisType, 3, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 4, 2);
+    layoutProblemTable->addWidget(txtFrequency, 4, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Time step (s):")), 5, 2);
+    layoutProblemTable->addWidget(txtTransientTimeStep, 5, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Total time (s):")), 6, 2);
+    layoutProblemTable->addWidget(txtTransientTimeTotal, 6, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Initial condition:")), 7, 2);
+    layoutProblemTable->addWidget(txtTransientInitialCondition, 7, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Steps:")), 8, 2);
+    layoutProblemTable->addWidget(lblTransientSteps, 8, 3);
 
     // equation
     QHBoxLayout *layoutEquation = new QHBoxLayout();
@@ -239,6 +242,10 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_H), AdaptivityType_H);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_P), AdaptivityType_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
+
+    cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_UMFPACK), SOLVER_UMFPACK);
+    cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_MUMPS), SOLVER_MUMPS);
+    // cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_SUPERLU), SOLVER_SUPERLU);
 }
 
 void ProblemDialog::load()
@@ -262,6 +269,9 @@ void ProblemDialog::load()
     txtTransientTimeStep->setValue(m_problemInfo->timeStep);
     txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
+
+    // matrix solver
+    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
 
     // startup
     txtStartupScript->setPlainText(m_problemInfo->scriptStartup);
@@ -351,7 +361,7 @@ bool ProblemDialog::save()
         }
     }
 
-    // safe properties
+    // save properties
     m_problemInfo->problemType = (ProblemType) cmbProblemType->itemData(cmbProblemType->currentIndex()).toInt();
     m_problemInfo->name = txtName->text();
     m_problemInfo->date = dtmDate->date();
@@ -370,6 +380,9 @@ bool ProblemDialog::save()
 
     m_problemInfo->description = txtDescription->toPlainText();
     m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
+
+    // matrix solver
+    m_problemInfo->matrixSolver = (MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
 
     return true;
 }
@@ -435,7 +448,7 @@ void ProblemDialog::doTransientChanged()
     logMessage("ProblemDialog::doTransientChanged()");
 
     if (txtTransientTimeStep->evaluate(true) &&
-        txtTransientTimeTotal->evaluate(true))
+            txtTransientTimeTotal->evaluate(true))
     {
         lblTransientSteps->setText(QString("%1").arg(floor(txtTransientTimeTotal->number()/txtTransientTimeStep->number())));
     }

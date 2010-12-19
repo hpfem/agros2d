@@ -98,6 +98,9 @@ public:
     Value timeTotal;
     Value initialCondition;
 
+    // matrix solver
+    MatrixSolverType matrixSolver;
+
     ProblemInfo()
     {
         m_hermes = NULL;

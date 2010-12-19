@@ -5,7 +5,7 @@ OBJECTS_DIR = build
 CONFIG = += staticlib
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
-# DEFINES += WITH_MUMPS
+DEFINES += WITH_MUMPS
 
 INCLUDEPATH += src \
         src/compat \
@@ -116,4 +116,5 @@ HEADERS = += src/common.h
 linux-g++ {
     INCLUDEPATH += /usr/include/suitesparse
     LIBS += -lumfpack
+    LIBS += -ldmumps_seq
 }

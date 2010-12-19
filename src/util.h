@@ -34,6 +34,8 @@
 #include <cmath>
 #include <locale.h>
 
+#include <common.h>
+
 #define EPS_ZERO 1e-10
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
@@ -581,6 +583,7 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
+QString matrixSolverTypeString(MatrixSolverType matrixSolverType);
 
 // keys
 void initLists();
@@ -608,5 +611,8 @@ SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+
+QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType);
+MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
 
 #endif // UTIL_H
