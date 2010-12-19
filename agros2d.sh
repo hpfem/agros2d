@@ -6,9 +6,9 @@ webPath="./doc/web"
 latexPath="./doc/latex"
 langPath="./lang"
 temporaryDirectory="./tmp"
-debianizedFiles="./data ./debian ./doc ./lang ./src ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
+debianizedFiles="./data ./debian ./doc ./lang ./src ./hermes_common ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
 
-version="1.2"
+version="1.5"
 
 case "$1" in
 	help )

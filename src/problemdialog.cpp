@@ -244,7 +244,9 @@ void ProblemDialog::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_UMFPACK), SOLVER_UMFPACK);
+#ifdef WITH_MUMPS
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_MUMPS), SOLVER_MUMPS);
+#endif
     // cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_SUPERLU), SOLVER_SUPERLU);
 }
 

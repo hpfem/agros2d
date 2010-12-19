@@ -5,7 +5,6 @@ OBJECTS_DIR = build
 CONFIG = += staticlib
 DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
-DEFINES += WITH_MUMPS
 
 INCLUDEPATH += src \
         src/compat \
@@ -46,7 +45,6 @@ SOURCES +=  ../hermes_common/callstack.cpp \
             src/refmap.cpp \
             src/trans.cpp \
             src/weakform.cpp \
-            # src/weakform_parser.cpp \
             src/discrete_problem.cpp \
             src/filter.cpp \
             src/hash.cpp \
@@ -114,6 +112,8 @@ SOURCES +=  ../hermes_common/callstack.cpp \
 HEADERS = += src/common.h
 
 linux-g++ {
+    DEFINES += WITH_MUMPS
+
     INCLUDEPATH += /usr/include/suitesparse
     LIBS += -lumfpack
     LIBS += -ldmumps_seq
