@@ -120,6 +120,8 @@ OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml
 linux-g++ { 
+    DEFINES += WITH_MUMPS
+
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/qwt-qt4
