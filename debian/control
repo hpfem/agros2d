@@ -2,13 +2,13 @@ Source: agros2d
 Section: science
 Priority: extra
 Maintainer: Pavel Karban <pkarban@gmail.com>
-Build-Depends: debhelper (>= 7), qt4-dev-tools (>= 4.5.0), libqt4-dev (>= 4.5.0), libqt4-opengl-dev (>= 4.5.0), libsuitesparse-dev (>= 3.2.0), libqwt5-qt4-dev (>= 5.1.0), libjudy-dev (>= 1.0.5), python2.6-dev (>= 2.6.0), libssl-dev (>= 0.9.8), libmumps-seq-dev (>=4.9.2)
+Build-Depends: debhelper (>= 7), qt4-dev-tools (>= 4.5.0), libqt4-dev (>= 4.5.0), libqt4-opengl-dev (>= 4.5.0), libsuitesparse-dev (>= 3.2.0), libqwt5-qt4-dev (>= 5.1.0), libjudy-dev (>= 1.0.5), python2.6-dev (>= 2.6.0), libssl-dev (>= 0.9.8), libmumps-seq-dev (>=4.9.2), libqtwebkit4, libqtwebkit-dev (>=2.0.0)
 Standards-Version: 3.8.0
 Homepage: http://hpfem.org/agros2d
 
 Package: agros2d
 Architecture: any
-Depends: ${shlibs:Depends}, triangle-bin (>= 1.6), ffmpeg (>= 0.5), libamd2.2.0 (>= 3.4.0), libumfpack5.4.0 (>= 3.4.0), libblas3gf (>= 1.2), libqwt5-qt4 (>= 5.1.0), libqt4-sql (>= 4.5.0), libmumps-seq-4.9.2 (>=4.9.2)
+Depends: ${shlibs:Depends}, triangle-bin (>= 1.6), ffmpeg (>= 0.5), libamd2.2.0 (>= 3.4.0), libumfpack5.4.0 (>= 3.4.0), libblas3gf (>= 1.2), libqwt5-qt4 (>= 5.1.0), libqt4-sql (>= 4.5.0), libmumps-seq-4.9.2 (>=4.9.2), libqtwebkit4 (>=2.0.0)
 Description: hp-FEM multiphysics application based on Hermes2D library
  Agros2D is a multiplatform C++ application for the solution of two-dimensional 
  problems described by partial differential equations (PDE), based on the Hermes2D library. 
@@ -19,3 +19,4 @@ Description: hp-FEM multiphysics application based on Hermes2D library
   - Electric current fields
   - Magnetic fields (steady state, harmonic and transient analysis)
   - Heat transfer (steady state and transient analysis) 
+  - Structrural mechanics

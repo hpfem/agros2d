@@ -1,4 +1,4 @@
-agros2d (1.5-1ubuntu15) maverick; urgency=low
+agros2d (1.5-1ubuntu17) maverick; urgency=low
 
   * added structural mechanics
   * added more linear solvers

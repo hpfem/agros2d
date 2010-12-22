@@ -183,7 +183,9 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         selector = new RefinementSelectors::HOnlySelector();
         break;
     case AdaptivityType_P:
-        selector = new RefinementSelectors::POnlySelector(H2DRS_DEFAULT_ORDER, 1, 1);
+        selector = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_P_ANISO,
+                                                                Util::config()->convExp,
+                                                                H2DRS_DEFAULT_ORDER);
         break;
     case AdaptivityType_HP:
         selector = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_HP_ANISO,
@@ -215,15 +217,15 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
         if (adaptivityType == AdaptivityType_None)
         {
-            DiscreteProblem dp(&wf, space, isLinear);
-            dp.assemble(matrix, rhs, false);
-
-            if (dp.get_num_dofs() == 0)
+            if (Space::get_num_dofs(space) == 0)
             {
                 progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
                 isError = true;
                 break;
             }
+
+            DiscreteProblem dp(&wf, space, isLinear);
+            dp.assemble(matrix, rhs, false);
 
             if(solver->solve())
                 Solution::vector_to_solutions(solver->get_solution(), space, solution);
@@ -235,16 +237,17 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             // construct globally refined reference mesh and setup reference space.
             Tuple<Space *> *spaceReference = construct_refined_spaces(space);
 
-            // assemble reference problem.
-            DiscreteProblem dp(&wf, *spaceReference, isLinear);
-            dp.assemble(matrix, rhs);
-
-            if (dp.get_num_dofs() == 0)
+            if (Space::get_num_dofs(*spaceReference) == 0)
             {
                 progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
                 isError = true;
                 break;
             }
+
+            // assemble reference problem.
+            DiscreteProblem dp(&wf, *spaceReference, isLinear);
+            dp.assemble(matrix, rhs);
+
 
             if(solver->solve())
                 Solution::vector_to_solutions(solver->get_solution(), *spaceReference, solutionReference);
@@ -272,7 +275,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 break;
             }
 
-            if (error < adaptivityTolerance || dp.get_num_dofs() >= NDOF_STOP)
+            if (error < adaptivityTolerance || Space::get_num_dofs(space) >= NDOF_STOP)
             {
                 break;
             }
@@ -284,7 +287,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
             delete adaptivity;
             // if (done == false)
-            // delete spaceRef->get_mesh();
+            // delete spaceReference->get_mesh();
             delete spaceReference;
         }
 
@@ -327,7 +330,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             {
                 dp->assemble(matrix, rhs, (n > 0));
 
-                if (dp->get_num_dofs() == 0)
+                if (Space::get_num_dofs(space) == 0)
                 {
                     progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
                     isError = true;
