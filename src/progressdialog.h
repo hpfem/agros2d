@@ -160,6 +160,7 @@ private:
     QPushButton *btnCancel;
     QPushButton *btnClose;
     QPushButton *btnSaveImage;
+    QPushButton *btnSaveData;
 
     Chart *chartError;
     Chart *chartDOF;
@@ -184,6 +185,7 @@ private slots:
     void close();
     void resetControls(int currentTab);
     void saveImage();
+    void saveData();
 
     void itemChanged();
 };

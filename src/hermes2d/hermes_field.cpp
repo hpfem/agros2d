@@ -193,9 +193,11 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                                                 H2DRS_DEFAULT_ORDER);
         break;
     }
+    // emit message
+    if (adaptivityType != AdaptivityType_None)
+        progressItemSolve->emitMessage(QObject::tr("Adaptivity type: %1").arg(adaptivityTypeString(adaptivityType)), false);
 
-    // assemble the stiffness matrix and solve the system
-    double error;
+    double error = 0.0;
 
     // set actual time
     actualTime = 0;
@@ -219,7 +221,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         {
             if (Space::get_num_dofs(space) == 0)
             {
-                progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
+                progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
                 isError = true;
                 break;
             }
@@ -239,7 +241,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
             if (Space::get_num_dofs(*spaceReference) == 0)
             {
-                progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
+                progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
                 isError = true;
                 break;
             }
@@ -247,7 +249,6 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             // assemble reference problem.
             DiscreteProblem dp(&wf, *spaceReference, isLinear);
             dp.assemble(matrix, rhs);
-
 
             if(solver->solve())
                 Solution::vector_to_solutions(solver->get_solution(), *spaceReference, solutionReference);
@@ -260,14 +261,17 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             // Calculate element errors and total error estimate.
             Adapt* adaptivity = new Adapt(space, HERMES_H1_NORM);
             bool solutionsForAdapt = true;
-            double error = adaptivity->calc_err_est(solution, solutionReference, solutionsForAdapt,
-                                                    HERMES_TOTAL_ERROR_REL | HERMES_ELEMENT_ERROR_REL) * 100;
+            error = adaptivity->calc_err_est(solution, solutionReference, solutionsForAdapt,
+                                             HERMES_TOTAL_ERROR_REL | HERMES_ELEMENT_ERROR_REL) * 100;
 
             // emit signal
-            progressItemSolve->emitMessage(QObject::tr("Relative error: %1 %").
-                                           arg(error, 0, 'f', 5), false, 1);
+            progressItemSolve->emitMessage(QObject::tr("Relative error: %1%\t(step: %2/%3, DOFs: %4)").
+                                           arg(error, 0, 'f', 3).
+                                           arg(i + 1).
+                                           arg(maxAdaptivitySteps).
+                                           arg(Space::get_num_dofs(space)), false, 1);
             // add error to the list
-            progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(*spaceReference));
+            progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
 
             if (progressItemSolve->isCanceled())
             {
@@ -332,7 +336,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
                 if (Space::get_num_dofs(space) == 0)
                 {
-                    progressItemSolve->emitMessage(QObject::tr("Solver: DOF is zero"), true);
+                    progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
                     isError = true;
                     break;
                 }

@@ -331,10 +331,10 @@ bool ProgressItemMesh::writeToTriangle()
     for (int i = 0; i<Util::scene()->nodes.count(); i++)
     {
         outNodes += QString("%1  %2  %3  %4\n").
-                    arg(i).
-                    arg(Util::scene()->nodes[i]->point.x, 0, 'f', 10).
-                    arg(Util::scene()->nodes[i]->point.y, 0, 'f', 10).
-                    arg(0);
+                arg(i).
+                arg(Util::scene()->nodes[i]->point.x, 0, 'f', 10).
+                arg(Util::scene()->nodes[i]->point.y, 0, 'f', 10).
+                arg(0);
         nodesCount++;
     }
 
@@ -347,10 +347,10 @@ bool ProgressItemMesh::writeToTriangle()
         {
             // line
             outEdges += QString("%1  %2  %3  %4\n").
-                        arg(edgesCount).
-                        arg(Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeStart)).
-                        arg(Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeEnd)).
-                        arg(i+1);
+                    arg(edgesCount).
+                    arg(Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeStart)).
+                    arg(Util::scene()->nodes.indexOf(Util::scene()->edges[i]->nodeEnd)).
+                    arg(i+1);
             edgesCount++;
         }
         else
@@ -388,17 +388,17 @@ bool ProgressItemMesh::writeToTriangle()
                 if ((j > 0) && (j < segments))
                 {
                     outNodes += QString("%1  %2  %3  %4\n").
-                                arg(nodesCount).
-                                arg(center.x + x, 0, 'f', 10).
-                                arg(center.y + y, 0, 'f', 10).
-                                arg(0);
+                            arg(nodesCount).
+                            arg(center.x + x, 0, 'f', 10).
+                            arg(center.y + y, 0, 'f', 10).
+                            arg(0);
                     nodesCount++;
                 }
                 outEdges += QString("%1  %2  %3  %4\n").
-                            arg(edgesCount).
-                            arg(nodeStartIndex).
-                            arg(nodeEndIndex).
-                            arg(i+1);
+                        arg(edgesCount).
+                        arg(nodeStartIndex).
+                        arg(nodeEndIndex).
+                        arg(i+1);
                 edgesCount++;
                 nodeStartIndex = nodeEndIndex;
             }
@@ -412,9 +412,9 @@ bool ProgressItemMesh::writeToTriangle()
     for (int i = 0; i<Util::scene()->labels.count(); i++)
         if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
             outHoles += QString("%1  %2  %3\n").
-                        arg(i).
-                        arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
-                        arg(Util::scene()->labels[i]->point.y, 0, 'f', 10);
+                    arg(i).
+                    arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
+                    arg(Util::scene()->labels[i]->point.y, 0, 'f', 10);
 
     // labels
     QString outLabels;
@@ -424,11 +424,11 @@ bool ProgressItemMesh::writeToTriangle()
         if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) > 0)
         {
             outLabels += QString("%1  %2  %3  %4  %5\n").
-                         arg(labelsCount).
-                         arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
-                         arg(Util::scene()->labels[i]->point.y, 0, 'f', 10).
-                         arg(i + 1). // triangle returns zero region number for areas without marker, markers must start from 1
-                         arg(Util::scene()->labels[i]->area);
+                    arg(labelsCount).
+                    arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
+                    arg(Util::scene()->labels[i]->point.y, 0, 'f', 10).
+                    arg(i + 1). // triangle returns zero region number for areas without marker, markers must start from 1
+                    arg(Util::scene()->labels[i]->area);
             labelsCount++;
         }
     }
@@ -650,8 +650,8 @@ ProgressItemProcessView::ProgressItemProcessView() : ProgressItem()
     if (sceneView()->sceneViewSettings().showContours == 1)
         m_steps += 1;
     if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
-        sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-        sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
         m_steps += 1;
     if (sceneView()->sceneViewSettings().showVectors == 1)
         m_steps += 1;
@@ -679,8 +679,8 @@ void ProgressItemProcessView::process()
         Util::scene()->sceneSolution()->processRangeContour();
     }
     if (sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView ||
-        sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-        sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+            sceneView()->sceneViewSettings().postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid)
     {
         step++;
         emit message(tr("Processing scalar view cache"), false, step);
@@ -769,10 +769,15 @@ void ProgressDialog::createControls()
     btnSaveImage->setDisabled(true);;
     connect(btnSaveImage, SIGNAL(clicked()), this, SLOT(saveImage()));
 
+    btnSaveData = new QPushButton(tr("Save data"));
+    btnSaveData->setDisabled(true);;
+    connect(btnSaveData, SIGNAL(clicked()), this, SLOT(saveData()));
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
     buttonBox->addButton(btnClose, QDialogButtonBox::RejectRole);
     buttonBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
     buttonBox->addButton(btnSaveImage, QDialogButtonBox::RejectRole);
+    buttonBox->addButton(btnSaveData, QDialogButtonBox::RejectRole);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tabType);
@@ -885,10 +890,8 @@ QWidget *ProgressDialog::createControlsConvergenceDOFChart()
 
 void ProgressDialog::resetControls(int currentTab)
 {
-    if (tabType->currentIndex() == 0)
-        btnSaveImage->setDisabled(true);
-    else
-        btnSaveImage->setEnabled(true);
+    btnSaveImage->setDisabled(tabType->currentIndex() == 0);
+    btnSaveData->setDisabled(tabType->currentIndex() == 0);
 }
 
 int ProgressDialog::progressSteps()
@@ -964,8 +967,8 @@ void ProgressDialog::start()
 
     // successfull run
     if (!Util::config()->showConvergenceChart ||
-        Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None ||
-        curveError->dataSize() == 0)
+            Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None ||
+            curveError->dataSize() == 0)
     {
         clear();
         close();
@@ -994,8 +997,8 @@ void ProgressDialog::showMessage(const QString &msg, bool isError, int position)
     }
 
     QString message = QString("%1: %2\n").
-                      arg(m_currentProgressItem->name()).
-                      arg(msg);
+            arg(m_currentProgressItem->name()).
+            arg(msg);
 
     lstMessage->insertPlainText(message);
 
@@ -1113,12 +1116,46 @@ void ProgressDialog::saveProgressLog()
 
 void ProgressDialog::saveImage()
 {
-    if (tabType->currentIndex() == 1)
+    if (tabType->currentWidget() == controlsConvergenceErrorChart)
     {
         chartError->saveImage();
     }
-    else if (tabType->currentIndex() == 2)
+    else if (tabType->currentWidget() == controlsConvergenceDOFChart)
     {
         chartDOF->saveImage();
     }
+}
+
+void ProgressDialog::saveData()
+{
+    QString selectedFilter;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), "data", tr("CSV files (*.csv)"), &selectedFilter);
+    if (!fileName.isEmpty())
+    {
+        // open file for write
+        if (QFileInfo(fileName).suffix().isEmpty())
+            fileName = fileName + ".csv";
+
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            cerr << "Could not create " + fileName.toStdString() + " file." << endl;
+            return;
+        }
+        QTextStream out(&file);
+
+        if (tabType->currentWidget() == controlsConvergenceErrorChart)
+        {
+            for (int i = 0; i < curveError->data().size(); i++)
+                out << curveError->data().x(i) << ";" << curveError->data().y(i) << endl;
+
+        }
+        else if (tabType->currentWidget() == controlsConvergenceDOFChart)
+        {
+            for (int i = 0; i < curveDOF->data().size(); i++)
+                out << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
+        }
+        file.close();
+    }
+
 }
