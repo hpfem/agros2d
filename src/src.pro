@@ -121,9 +121,11 @@ OTHER_FILES += python/agros2d.pyx \
     version.xml
 linux-g++ { 
     DEFINES += WITH_MUMPS
+    DEFINES += WITH_SUPERLU
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/suitesparse
+    INCLUDEPATH += /usr/include/superlu
     INCLUDEPATH += /usr/include/qwt-qt4
     INCLUDEPATH += /usr/include/python2.6
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
@@ -132,6 +134,7 @@ linux-g++ {
     LIBS += -lhermes2d
     LIBS += -lumfpack
     LIBS += -ldmumps_seq
+    LIBS += -lsuperlu
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lJudy

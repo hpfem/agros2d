@@ -247,7 +247,9 @@ void ProblemDialog::fillComboBox()
 #ifdef WITH_MUMPS
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_MUMPS), SOLVER_MUMPS);
 #endif
-    // cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_SUPERLU), SOLVER_SUPERLU);
+#ifdef WITH_SUPERLU
+    cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_SUPERLU), SOLVER_SUPERLU);
+#endif
 }
 
 void ProblemDialog::load()

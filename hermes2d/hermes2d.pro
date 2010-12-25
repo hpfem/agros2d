@@ -113,8 +113,11 @@ HEADERS = += src/common.h
 
 linux-g++ {
     DEFINES += WITH_MUMPS
+    DEFINES += WITH_SUPERLU
 
     INCLUDEPATH += /usr/include/suitesparse
+    INCLUDEPATH += /usr/include/superlu
     LIBS += -lumfpack
     LIBS += -ldmumps_seq
+    LIBS += -lsuperlu
 }
