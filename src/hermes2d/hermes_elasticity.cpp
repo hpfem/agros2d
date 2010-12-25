@@ -59,12 +59,12 @@ Scalar elasticity_matrix_form_linear_x_x(int n, double *wt, Func<Real> *u_ext[],
         Scalar result = 0;
         for (int i = 0; i < n; i++)
             result += wt[i] * (e->x[i] * elasticityLabel[e->elem_marker].lambda() * (u->dx[i] * v->dx[i] +
-                                                                                u->val[i]/e->x[i] * v->dx[i] +
-                                                                                u->dx[i] * v->val[i]/e->x[i] +
-                                                                                1/sqr(e->x[i]) * u->val[i] * v->val[i]) +
+                                                                                     u->val[i]/e->x[i] * v->dx[i] +
+                                                                                     u->dx[i] * v->val[i]/e->x[i] +
+                                                                                     1/sqr(e->x[i]) * u->val[i] * v->val[i]) +
                                e->x[i] * elasticityLabel[e->elem_marker].mu() * (2 * u->dx[i] * v->dx[i] +
-                                                                            2 * 1/sqr(e->x[i]) * u->val[i] * v->val[i] +
-                                                                            u->dy[i] * v->dy[i]));
+                                                                                 2 * 1/sqr(e->x[i]) * u->val[i] * v->val[i] +
+                                                                                 u->dy[i] * v->dy[i]));
         return result;
     }
 }
@@ -80,7 +80,7 @@ Scalar elasticity_matrix_form_linear_x_y(int n, double *wt, Func<Real> *u_ext[],
         Scalar result = 0;
         for (int i = 0; i < n; i++)
             result += wt[i] * (e->x[i] * elasticityLabel[e->elem_marker].lambda() * (u->dy[i] * v->dx[i] +
-                                                                                u->dy[i] * v->val[i]/e->x[i]) +
+                                                                                     u->dy[i] * v->val[i]/e->x[i]) +
                                e->x[i] * elasticityLabel[e->elem_marker].mu() * u->dx[i] * v->dy[i]);
         return result;
     }
@@ -97,7 +97,7 @@ Scalar elasticity_matrix_form_linear_y_x(int n, double *wt, Func<Real> *u_ext[],
         Scalar result = 0;
         for (int i = 0; i < n; i++)
             result += wt[i] * (e->x[i] * elasticityLabel[e->elem_marker].lambda() * (u->dx[i] * v->dy[i] +
-                                                                                u->val[i]/e->x[i] * v->dy[i]) +
+                                                                                     u->val[i]/e->x[i] * v->dy[i]) +
                                e->x[i] * elasticityLabel[e->elem_marker].mu() * u->dy[i] * v->dx[i]);
         return result;
     }
@@ -115,7 +115,7 @@ Scalar elasticity_matrix_form_linear_y_y(int n, double *wt, Func<Real> *u_ext[],
         for (int i = 0; i < n; i++)
             result += wt[i] * (e->x[i] * elasticityLabel[e->elem_marker].lambda() * (u->dy[i] * v->dy[i]) +
                                e->x[i] * elasticityLabel[e->elem_marker].mu() * (u->dx[i] * v->dx[i] +
-                                                                            2 * u->dy[i] * v->dy[i]));
+                                                                                 2 * u->dy[i] * v->dy[i]));
         return result;
     }
 }
@@ -242,7 +242,9 @@ void HermesElasticity::readEdgeMarkerFromDomElement(QDomElement *element)
         Util::scene()->addEdgeMarker(new SceneEdgeElasticityMarker(element->attribute("name"),
                                                                    typeX, typeY,
                                                                    Value(element->attribute("forcex", "0")),
-                                                                   Value(element->attribute("forcey", "0"))));
+                                                                   Value(element->attribute("forcey", "0")),
+                                                                   Value(element->attribute("displacementx", "0")),
+                                                                   Value(element->attribute("displacementx", "0"))));
 }
 
 void HermesElasticity::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
@@ -324,15 +326,17 @@ SceneEdgeMarker *HermesElasticity::newEdgeMarker()
                                          PhysicFieldBC_Elasticity_Free,
                                          PhysicFieldBC_Elasticity_Free,
                                          Value("0"),
+                                         Value("0"),
+                                         Value("0"),
                                          Value("0"));
 }
 
 SceneEdgeMarker *HermesElasticity::newEdgeMarker(PyObject *self, PyObject *args)
 {
 
-    double valuex, valuey, forcex, forcey;
+    double forcex, forcey, displacementx, displacementy;
     char *name, *typex, *typey;
-    if (PyArg_ParseTuple(args, "sssdd", &name, &typex, &typey, &forcex, &forcey))
+    if (PyArg_ParseTuple(args, "sssdddd", &name, &typex, &typey, &forcex, &forcey, &displacementx, &displacementy))
     {
         // check name
         if (Util::scene()->getEdgeMarker(name)) return NULL;
@@ -341,7 +345,9 @@ SceneEdgeMarker *HermesElasticity::newEdgeMarker(PyObject *self, PyObject *args)
                                              physicFieldBCFromStringKey(typex),
                                              physicFieldBCFromStringKey(typey),
                                              Value(QString::number(forcex)),
-                                             Value(QString::number(forcey)));
+                                             Value(QString::number(forcey)),
+                                             Value(QString::number(displacementx)),
+                                             Value(QString::number(displacementy)));
     }
 
     return Util::scene()->edgeMarkers[0];
@@ -349,9 +355,9 @@ SceneEdgeMarker *HermesElasticity::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneEdgeMarker *HermesElasticity::modifyEdgeMarker(PyObject *self, PyObject *args)
 {
-    double valuex, valuey;
+    double forcex, forcey, displacementx, displacementy;
     char *name, *typex, *typey;
-    if (PyArg_ParseTuple(args, "sssdd", &name, &typex, &typey, &valuex, &valuey))
+    if (PyArg_ParseTuple(args, "sssdddd", &name, &typex, &typey, &forcex, &forcey, &displacementx, &displacementy))
     {
         if (SceneEdgeElasticityMarker *marker = dynamic_cast<SceneEdgeElasticityMarker *>(Util::scene()->getEdgeMarker(name)))
         {
@@ -359,8 +365,10 @@ SceneEdgeMarker *HermesElasticity::modifyEdgeMarker(PyObject *self, PyObject *ar
             {
                 marker->typeX = physicFieldBCFromStringKey(typex);
                 marker->typeY = physicFieldBCFromStringKey(typey);
-                marker->forceX = Value(QString::number(valuex));
-                marker->forceY = Value(QString::number(valuey));
+                marker->forceX = Value(QString::number(forcex));
+                marker->forceY = Value(QString::number(forcey));
+                marker->displacementX = Value(QString::number(displacementx));
+                marker->displacementY = Value(QString::number(displacementy));
                 return marker;
             }
             else
@@ -611,7 +619,7 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
                 break;
             case PhysicFieldBC_Elasticity_Fixed:
                 bcTypesX.add_bc_dirichlet(i+1);
-                bcValuesX.add_const(i+1, 0.0);
+                bcValuesX.add_const(i+1, edgeElasticityMarker->displacementX.number);
                 break;
             case PhysicFieldBC_Elasticity_Free:
                 bcTypesX.add_bc_neumann(i+1);
@@ -625,7 +633,7 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
                 break;
             case PhysicFieldBC_Elasticity_Fixed:
                 bcTypesY.add_bc_dirichlet(i+1);
-                bcValuesY.add_const(i+1, 0.0);
+                bcValuesY.add_const(i+1, edgeElasticityMarker->displacementY.number);
                 break;
             case PhysicFieldBC_Elasticity_Free:
                 bcTypesY.add_bc_neumann(i+1);
@@ -1034,23 +1042,29 @@ void ViewScalarFilterElasticity::calculateVariable(int i)
 
 // *************************************************************************************************************************************
 
-SceneEdgeElasticityMarker::SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY, Value forceX, Value forceY)
+SceneEdgeElasticityMarker::SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX,
+                                                     PhysicFieldBC typeY, Value forceX, Value forceY,
+                                                     Value displacementX, Value displacementY)
     : SceneEdgeMarker(name, typeX)
 {
     this->typeX = typeX;
     this->typeY = typeY;
     this->forceX = forceX;
     this->forceY = forceY;
+    this->displacementX = displacementX;
+    this->displacementY = displacementY;
 }
 
 QString SceneEdgeElasticityMarker::script()
 {
-    return QString("addboundary(\"%1\", \"%2\", \"%3\", %4, %5)").
+    return QString("addboundary(\"%1\", \"%2\", \"%3\", %4, %5, %6, %7)").
             arg(name).
             arg(physicFieldBCToStringKey(typeX)).
             arg(physicFieldBCToStringKey(typeY)).
             arg(forceX.text).
-            arg(forceY.text);
+            arg(forceY.text).
+            arg(displacementX.text).
+            arg(displacementY.text);
 }
 
 QMap<QString, QString> SceneEdgeElasticityMarker::data()
@@ -1058,16 +1072,24 @@ QMap<QString, QString> SceneEdgeElasticityMarker::data()
     QMap<QString, QString> out;
     switch (typeX)
     {
-    case PhysicFieldBC_Elasticity_Fixed:
+    case PhysicFieldBC_Elasticity_Free:
         out["Force X: (N)"] = forceX.number;
         break;
-    }
-    switch (typeY)
-    {
     case PhysicFieldBC_Elasticity_Fixed:
-        out["Force Y: (N)"] = forceY.number;
+        out["Displacement X: (N)"] = displacementX.number;
         break;
     }
+
+    switch (typeY)
+    {
+    case PhysicFieldBC_Elasticity_Free:
+        out["Force Y: (N)"] = forceY.number;
+        break;
+    case PhysicFieldBC_Elasticity_Fixed:
+        out["Displacement Y: (N)"] = displacementY.number;
+        break;
+    }
+
     return QMap<QString, QString>(out);
 }
 
@@ -1139,26 +1161,43 @@ DSceneEdgeElasticityMarker::DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker
 void DSceneEdgeElasticityMarker::createContent()
 {
     cmbTypeX = new QComboBox(this);
-    cmbTypeX->addItem("none", PhysicFieldBC_None);
     cmbTypeX->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Free), PhysicFieldBC_Elasticity_Free);
     cmbTypeX->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Fixed), PhysicFieldBC_Elasticity_Fixed);
+    connect(cmbTypeX, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeXChanged(int)));
 
     cmbTypeY = new QComboBox(this);
-    cmbTypeY->addItem("none", PhysicFieldBC_None);
     cmbTypeY->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Free), PhysicFieldBC_Elasticity_Free);
     cmbTypeY->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Fixed), PhysicFieldBC_Elasticity_Fixed);
+    connect(cmbTypeY, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeYChanged(int)));
 
     txtForceX = new SLineEditValue(this);
     txtForceY = new SLineEditValue(this);
+    txtDisplacementX = new SLineEditValue(this);
+    txtDisplacementY = new SLineEditValue(this);
 
-    layout->addWidget(new QLabel(tr("BC Type X:")), 1, 0);
-    layout->addWidget(cmbTypeX, 1, 1);
-    layout->addWidget(new QLabel(tr("BC Type Y:")), 2, 0);
-    layout->addWidget(cmbTypeY, 2, 1);
-    layout->addWidget(new QLabel(tr("Force X (N):")), 3, 0);
-    layout->addWidget(txtForceX, 3, 1);
-    layout->addWidget(new QLabel(tr("Force Y (N):")), 4, 0);
-    layout->addWidget(txtForceY, 4, 1);
+    doTypeXChanged(cmbTypeX->currentIndex());
+    doTypeYChanged(cmbTypeY->currentIndex());
+
+    // X
+    QFormLayout *layoutX = new QFormLayout();
+    layoutX->addRow(tr("BC Type:"), cmbTypeX);
+    layoutX->addRow(tr("Force (N):"), txtForceX);
+    layoutX->addRow(tr("Displacement (m):"), txtDisplacementX);
+
+    QGroupBox *grpX = new QGroupBox(tr("Direction %1").arg(Util::scene()->problemInfo()->labelX()), this);
+    grpX->setLayout(layoutX);
+
+    // X
+    QFormLayout *layoutY = new QFormLayout();
+    layoutY->addRow(tr("BC Type:"), cmbTypeY);
+    layoutY->addRow(tr("Force (N):"), txtForceY);
+    layoutY->addRow(tr("Displacement (m):"), txtDisplacementY);
+
+    QGroupBox *grpY = new QGroupBox(tr("Direction %1").arg(Util::scene()->problemInfo()->labelY()), this);
+    grpY->setLayout(layoutY);
+
+    layout->addWidget(grpX, 1, 0, 1, 2);
+    layout->addWidget(grpY, 2, 0, 1, 2);
 }
 
 void DSceneEdgeElasticityMarker::load()
@@ -1172,6 +1211,9 @@ void DSceneEdgeElasticityMarker::load()
 
     txtForceX->setValue(edgeElasticityMarker->forceX);
     txtForceY->setValue(edgeElasticityMarker->forceY);
+
+    txtDisplacementX->setValue(edgeElasticityMarker->displacementX);
+    txtDisplacementY->setValue(edgeElasticityMarker->displacementY);
 }
 
 bool DSceneEdgeElasticityMarker::save() {
@@ -1192,7 +1234,57 @@ bool DSceneEdgeElasticityMarker::save() {
     else
         return false;
 
+    if (txtDisplacementX->evaluate())
+        edgeElasticityMarker->displacementX = txtDisplacementX->value();
+    else
+        return false;
+
+    if (txtDisplacementY->evaluate())
+        edgeElasticityMarker->displacementY = txtDisplacementY->value();
+    else
+        return false;
+
     return true;
+}
+
+void DSceneEdgeElasticityMarker::doTypeXChanged(int index)
+{
+    txtForceX->setEnabled(false);
+    txtDisplacementX->setEnabled(false);
+
+    switch ((PhysicFieldBC) cmbTypeX->itemData(index).toInt())
+    {
+    case PhysicFieldBC_Elasticity_Fixed:
+        {
+            txtDisplacementX->setEnabled(true);
+        }
+        break;
+    case PhysicFieldBC_Elasticity_Free:
+        {
+            txtForceX->setEnabled(true);
+        }
+        break;
+    }
+}
+
+void DSceneEdgeElasticityMarker::doTypeYChanged(int index)
+{
+    txtForceY->setEnabled(false);
+    txtDisplacementY->setEnabled(false);
+
+    switch ((PhysicFieldBC) cmbTypeY->itemData(index).toInt())
+    {
+    case PhysicFieldBC_Elasticity_Fixed:
+        {
+            txtDisplacementY->setEnabled(true);
+        }
+        break;
+    case PhysicFieldBC_Elasticity_Free:
+        {
+            txtForceY->setEnabled(true);
+        }
+        break;
+    }
 }
 
 // *************************************************************************************************************************************
@@ -1285,20 +1377,21 @@ bool DSceneLabelElasticityMarker::save()
     else
         return false;
 
-    if (txtForceY->evaluate())
+    if (txtAlpha->evaluate())
         labelElasticityMarker->alpha = txtAlpha->value();
     else
         return false;
 
-    if (txtForceY->evaluate())
+    if (txtTemp->evaluate())
         labelElasticityMarker->temp = txtTemp->value();
     else
         return false;
 
-    if (txtForceY->evaluate())
+    if (txtTempRef->evaluate())
         labelElasticityMarker->temp_ref = txtTempRef->value();
     else
         return false;
+
 
     return true;
 }

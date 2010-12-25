@@ -2,9 +2,9 @@
 newdocument("Elasticity - axisymmetric", "axisymmetric", "elasticity", 3, 3, "disabled", 1, 1, 0, "steadystate", 1.0, 1.0, 0.0)
 
 # boundaries
-addboundary("Fixed", "elasticity_fixed", "elasticity_fixed", 0, 0)
-addboundary("Free", "elasticity_free", "elasticity_free", 0, 0)
-addboundary("Load", "elasticity_free", "elasticity_free", 0, -10000)
+addboundary("Fixed", "elasticity_fixed", "elasticity_fixed", 0, 0, 0, 0)
+addboundary("Free", "elasticity_free", "elasticity_free", 0, 0, 0, 0)
+addboundary("Load", "elasticity_free", "elasticity_free", 0, -10000, 0, 0)
 
 # materials
 addmaterial("Material 1", 2e+11, 0.33, 0, 0, 1e-7, 30, 30)

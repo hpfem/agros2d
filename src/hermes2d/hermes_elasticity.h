@@ -157,10 +157,13 @@ public:
     PhysicFieldBC typeY;
     Value forceX;
     Value forceY;
+    Value displacementX;
+    Value displacementY;
 
     QString script();
     QMap<QString, QString> data();
-    SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY, Value forceX, Value forceY);
+    SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY,
+                              Value forceX, Value forceY, Value displacementX, Value displacementY);
 
     int showDialog(QWidget *parent);
 };
@@ -206,6 +209,12 @@ private:
     QComboBox *cmbTypeY;
     SLineEditValue *txtForceX;
     SLineEditValue *txtForceY;
+    SLineEditValue *txtDisplacementX;
+    SLineEditValue *txtDisplacementY;
+
+private slots:
+    void doTypeXChanged(int index);
+    void doTypeYChanged(int index);
 };
 
 class DSceneLabelElasticityMarker : public DSceneLabelMarker

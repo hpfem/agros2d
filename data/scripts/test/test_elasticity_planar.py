@@ -2,9 +2,9 @@
 newdocument("Elasticity - planar", "planar", "elasticity", 3, 3, "disabled", 1, 1, 0, "steadystate", 1.0, 1.0, 0.0)
 
 # boundaries
-addboundary("Fixed", "elasticity_fixed", "elasticity_fixed", 0, 0)
-addboundary("Free", "elasticity_free", "elasticity_free", 0, 0)
-addboundary("Load", "elasticity_free", "elasticity_free", 0, -1.2e4)
+addboundary("Fixed", "elasticity_fixed", "elasticity_fixed", 0, 0, 0, 0)
+addboundary("Free", "elasticity_free", "elasticity_free", 0, 0, 0, 0)
+addboundary("Load", "elasticity_free", "elasticity_free", 0, -1.2e4, 0, 0)
 
 # materials
 addmaterial("Material 1", 2e11, 0.33, -1e6, 0, 1e-7, 30, 20)
