@@ -1,12 +1,12 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="15" frequency="0" numberofrefinements="0" adaptivitytype="hp-adaptivity" analysistype="steadystate" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic Axisymmetric Sparkgap" initialcondition="0">
+        <problem adaptivitytolerance="5" frequency="0" numberofrefinements="1" adaptivitytype="hp-adaptivity" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="10" polynomialorder="1" problemtype="axisymmetric" timetotal="0" type="electrostatic" timestep="0" id="0" name="Electrostatic Axisymmetric Sparkgap" initialcondition="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
-                <edge type="electrostatic_potential" value="1000" id="1" name="Source"/>
+                <edge type="electrostatic_potential" value="1000" id="1" name="Voltage"/>
                 <edge type="electrostatic_potential" value="0" id="2" name="Ground"/>
-                <edge type="electrostatic_surface_charge_density" value="0" id="3" name="Border"/>
+                <edge type="electrostatic_surface_charge_density" value="0" id="3" name="Neumann"/>
             </edges>
             <labels>
                 <label charge_density="0" id="1" name="Air" permittivity="1"/>
@@ -18,24 +18,30 @@
             <node x="0" y="0.5" id="0"/>
             <node x="0.2" y="1" id="1"/>
             <node x="0" y="1" id="2"/>
-            <node x="0" y="-0.25" id="3"/>
-            <node x="0" y="0.25" id="4"/>
-            <node x="0" y="-1" id="5"/>
-            <node x="0" y="2" id="6"/>
-            <node x="1.5" y="0.5" id="7"/>
+            <node x="0" y="0.25" id="3"/>
+            <node x="0" y="-1" id="4"/>
+            <node x="0" y="2" id="5"/>
+            <node x="2" y="2" id="6"/>
+            <node x="2" y="-1" id="7"/>
+            <node x="0" y="0.15" id="8"/>
+            <node x="0.5" y="0.25" id="9"/>
+            <node x="0.5" y="0.15" id="10"/>
         </nodes>
         <edges>
-            <edge end="2" marker="3" id="0" start="6" angle="0"/>
+            <edge end="2" marker="3" id="0" start="5" angle="0"/>
             <edge end="1" marker="1" id="1" start="2" angle="0"/>
             <edge end="0" marker="1" id="2" start="1" angle="0"/>
-            <edge end="4" marker="3" id="3" start="0" angle="0"/>
-            <edge end="5" marker="3" id="4" start="3" angle="0"/>
-            <edge end="4" marker="2" id="5" start="3" angle="180"/>
-            <edge end="7" marker="3" id="6" start="5" angle="90"/>
-            <edge end="6" marker="3" id="7" start="7" angle="90"/>
+            <edge end="3" marker="3" id="3" start="0" angle="0"/>
+            <edge end="6" marker="3" id="4" start="5" angle="0"/>
+            <edge end="7" marker="3" id="5" start="6" angle="0"/>
+            <edge end="4" marker="3" id="6" start="7" angle="0"/>
+            <edge end="9" marker="2" id="7" start="3" angle="0"/>
+            <edge end="10" marker="2" id="8" start="9" angle="0"/>
+            <edge end="8" marker="2" id="9" start="10" angle="0"/>
+            <edge end="4" marker="3" id="10" start="8" angle="0"/>
         </edges>
         <labels>
-            <label x="0.879551" y="0.764057" marker="1" id="0" area="0.01"/>
+            <label x="0.879551" y="0.764057" polynomialorder="0" marker="1" id="0" area="0.05"/>
         </labels>
     </geometry>
     <functions/>

@@ -1061,7 +1061,7 @@ void ProgressDialog::itemChanged()
         bool doReplotDOF = chartDOF->autoReplot();
         chartDOF->setAutoReplot(false);
 
-        chartDOF->setData(xval, yvalDOF, count);
+        curveDOF->setData(xval, yvalDOF, count);
 
         chartDOF->setAutoReplot(doReplotDOF);
         chartDOF->replot();
