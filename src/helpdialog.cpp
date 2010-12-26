@@ -92,7 +92,8 @@ void HelpDialog::createControls()
     splitter->insertWidget(1, centralWidget);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->addWidget(splitter);
+    // layout->addWidget(splitter);
+    layout->addWidget(centralWidget);
 
     connect(helpEngine->contentWidget(), SIGNAL(linkActivated(const QUrl &)), centralWidget, SLOT(setSource(const QUrl &)));
     connect(helpEngine->indexWidget(), SIGNAL(linkActivated(const QUrl &, const QString &)), centralWidget, SLOT(setSource(const QUrl &)));
@@ -102,14 +103,15 @@ void HelpDialog::createControls()
     QHelpContentModel *contentModel = qobject_cast<QHelpContentModel*>(helpEngine->contentWidget()->model());
     connect(contentModel, SIGNAL(contentsCreated()), this, SLOT(doExpandTOC()));
 
-    showPage("glossary.html");
+    showPage("index.html");
 }
 
 void HelpDialog::showPage(const QString &str)
 {
     logMessage("HelpDialog::showPage()");
 
-    centralWidget->setSource(QUrl("qthelp://" + path + str));
+    // centralWidget->setSource(QUrl("qthelp://" + path + str));
+    centralWidget->setSource(datadir() + "/doc/web/" + str);
 }
 
 void HelpDialog::doExpandTOC()
@@ -360,9 +362,14 @@ HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *central, QWidget *par
     setAcceptDrops(false);
 }
 
+#include <stdio.h>
+
 void HelpViewer::setSource(const QUrl &url)
 {
     logMessage("HelpViewer::setSource()");
+
+    // printf("%s\n", url.toString().toStdString().c_str());
+    // qDebug() << url.toString();
 
     if ((!url.isEmpty()) && (this->url().toString() == url.toString()))
         return;
@@ -409,7 +416,8 @@ void HelpViewer::home()
     QString homepage = helpEngine->customValue(QLatin1String("HomePage"),
                                                QLatin1String("about:blank")).toString();
 
-    setSource(homepage);
+    // setSource(homepage);
+    setSource(datadir() + "/doc/web/index.html");
 }
 
 void HelpViewer::keyPressEvent(QKeyEvent *e)

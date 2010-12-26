@@ -6,7 +6,7 @@ webPath="./doc/web"
 latexPath="./doc/latex"
 langPath="./lang"
 temporaryDirectory="./tmp"
-debianizedFiles="./data ./debian ./doc ./lang ./src ./hermes_common ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
+debianizedFiles="./data ./debian ./lang ./src ./hermes_common ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
 
 version="1.5"
 
@@ -61,14 +61,23 @@ case "$1" in
 			cp -r $i $temporaryDirectory/agros2d-$version
 		done
 		
+		# web page
+		mkdir $temporaryDirectory/agros2d-$version/doc
+		cp -r $webPath $temporaryDirectory/agros2d-$version/doc
+		
+		rm -f $temporaryDirectory/agros2d-$version/src/Doxyfile
+		rm -f $temporaryDirectory/agros2d-$version/src/Makefile
 		rm -f $temporaryDirectory/agros2d-$version/src/build/*
 		rm -f $temporaryDirectory/agros2d-$version/hermes2d/build/*
 		rm -f $temporaryDirectory/agros2d-$version/hermes2d/lib/*
 		rm -f $temporaryDirectory/agros2d-$version/src-remote/build/*
+		rm -f $temporaryDirectory/agros2d-$version/src-remote/agros2d-remote
+		rm -f $temporaryDirectory/agros2d-$version/data/data/*
+		rmdir $temporaryDirectory/agros2d-$version/data/data
 		
 		cd $temporaryDirectory/agros2d-$version
 		echo "Run 'debuild -S -sa'"
-		echo "Run 'dput ppa:pkarban/ppa *.changes' for upload"
+		echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload"
 		;;
 	* )
 		echo "Usage: agros2d.sh\n  [help - build and generate help]\n  [help.build-web - build online help]\n  [help.build-latex - build latex documentation]\n  [lang - release language files]\n  [lang.update - update language files]\n  [lang.update-noobsolete - update language files without obsolete translations]\n  [comp - compile]\n  [pack.build-binary - build binary package]\n  [pack.build-source - build source package]"

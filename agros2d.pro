@@ -19,9 +19,11 @@ linux-g++ {
     script.files = data/script/*.py
 
     # install help
-    help.path = $${PREFIX}/share/agros2d/doc/help
-    help.files = doc/help/Agros2D.qch \
-        doc/help/Agros2D.qhc
+    #help.path = $${PREFIX}/share/agros2d/doc/help
+    #help.files = doc/help/Agros2D.qch \
+    #    doc/help/Agros2D.qhc
+    help.path = $${PREFIX}/share/agros2d/doc/web
+    help.files = doc/web/*
 
     # install report
     report.path = $${PREFIX}/share/agros2d/doc/report
