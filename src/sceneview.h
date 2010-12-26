@@ -251,6 +251,7 @@ private:
     void paintBackgroundPixmap(); // pixmap background
     void paintBackground(); // gradient background
     void paintGrid(); // paint grid
+    void paintAxes();  // paint axes
     void paintRulers(); // paint rulers
     void paintGeometry(); // paint nodes, edges and labels
     void paintInitialMesh();

@@ -98,6 +98,9 @@ void ConfigDialog::load()
     chkSnapToGrid->setChecked(Util::config()->snapToGrid);
     chkRulers->setChecked(Util::config()->showRulers);
 
+    // axes
+    chkShowAxes->setChecked(Util::config()->showAxes);
+
     // contours
     txtContoursCount->setValue(Util::config()->contoursCount);
 
@@ -211,6 +214,9 @@ void ConfigDialog::save()
     Util::config()->gridStep = txtGridStep->text().toDouble();
     Util::config()->showRulers = chkRulers->isChecked();
     Util::config()->snapToGrid = chkSnapToGrid->isChecked();
+
+    // axes
+    Util::config()->showAxes = chkShowAxes->isChecked();
 
     // contours
     Util::config()->contoursCount = txtContoursCount->value();
@@ -447,6 +453,7 @@ QWidget *ConfigDialog::createViewWidget()
     chkShowGrid = new QCheckBox(tr("Show grid"));
     chkRulers = new QCheckBox(tr("Show rulers"));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
+    chkShowAxes = new QCheckBox(tr("Show axes"));
 
     QGridLayout *layoutGrid = new QGridLayout();
     layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
@@ -454,6 +461,7 @@ QWidget *ConfigDialog::createViewWidget()
     layoutGrid->addWidget(chkShowGrid, 0, 2);
     layoutGrid->addWidget(chkSnapToGrid, 1, 2);
     layoutGrid->addWidget(chkRulers, 2, 2);
+    layoutGrid->addWidget(chkShowAxes, 3, 2);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);

@@ -116,6 +116,9 @@ private:
     // rulers
     QCheckBox *chkRulers;
 
+    // axes
+    QCheckBox *chkShowAxes;
+
     // contours
     QSpinBox *txtContoursCount;
 

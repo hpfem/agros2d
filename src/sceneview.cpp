@@ -486,6 +486,9 @@ void SceneView::paintGL()
         // rulers
         if (Util::config()->showRulers) paintRulers();
 
+        // axes
+        if (Util::config()->showAxes) paintAxes();
+
         paintZoomRegion();
         paintSnapToGrid();
         paintEdgeLine();
@@ -693,6 +696,57 @@ void SceneView::paintGrid()
     glVertex2d(((m_scene->problemInfo()->problemType == ProblemType_Axisymmetric) ? 0 : cornerMin.x), 0);
     glVertex2d(cornerMax.x, 0);
     glEnd();
+}
+
+void SceneView::paintAxes()
+{
+    logMessage("SceneView::paintGrid()");
+
+    loadProjection2d();
+
+    glScaled(2.0 / contextWidth(), 2.0 / contextHeight(), 1.0);
+    glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
+
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glColor3f(Util::config()->colorCross.redF(),
+              Util::config()->colorCross.greenF(),
+              Util::config()->colorCross.blueF());
+
+    // x-axis
+    glBegin(GL_QUADS);
+    glVertex2d(10, 10);
+    glVertex2d(26, 10);
+    glVertex2d(26, 12);
+    glVertex2d(10, 12);
+    glEnd();
+
+    glBegin(GL_TRIANGLES);
+    glVertex2d(26, 6);
+    glVertex2d(26, 16);
+    glVertex2d(45, 11);
+    glEnd();
+
+    renderText(48, height() - 12 + fontMetrics().height() / 3, Util::scene()->problemInfo()->labelX());
+
+    // y-axis
+    glBegin(GL_QUADS);
+    glVertex2d(10, 10);
+    glVertex2d(10, 26);
+    glVertex2d(12, 26);
+    glVertex2d(12, 10);
+    glEnd();
+
+    glBegin(GL_TRIANGLES);
+    glVertex2d(6, 26);
+    glVertex2d(16, 26);
+    glVertex2d(11, 45);
+    glEnd();
+
+    renderText(12 - fontMetrics().width(Util::scene()->problemInfo()->labelY()) / 2, height() - 48, Util::scene()->problemInfo()->labelY());
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
 void SceneView::paintRulers()

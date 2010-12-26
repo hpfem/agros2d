@@ -60,6 +60,9 @@ public:
     double gridStep;
     bool snapToGrid;
 
+    // axes
+    bool showAxes;
+
     // contour
     int contoursCount;
 

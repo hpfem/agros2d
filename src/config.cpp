@@ -87,6 +87,9 @@ void Config::load()
     // snap to grid
     snapToGrid = settings.value("SceneViewSettings/SnapToGrid", false).toBool();
 
+    // axes
+    showAxes = settings.value("SceneViewSettings/ShowAxes", true).toBool();
+
     // countour
     contoursCount = settings.value("SceneViewSettings/ContoursCount", 15).toInt();
 
@@ -183,6 +186,9 @@ void Config::save()
     settings.setValue("SceneViewSettings/ShowRulers", showRulers);
     // snap to grid
     settings.setValue("SceneViewSettings/SnapToGrid", snapToGrid);
+
+    // axes
+    settings.setValue("SceneViewSettings/ShowAxes", showAxes);
 
     // countour
     settings.setValue("SceneViewSettings/ContoursCount", contoursCount);
