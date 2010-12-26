@@ -671,6 +671,15 @@ void SceneView::paintGrid()
         glDisable(GL_LINE_STIPPLE);
     }
 
+    if (m_scene->problemInfo()->problemType == ProblemType_Axisymmetric)
+    {
+        drawBlend(cornerMin,
+                  Point(0, cornerMax.y),
+                  Util::config()->colorGrid.redF(),
+                  Util::config()->colorGrid.greenF(),
+                  Util::config()->colorGrid.blueF(), 0.25);
+    }
+
     // axes
     glColor3f(Util::config()->colorCross.redF(),
               Util::config()->colorCross.greenF(),
@@ -681,7 +690,7 @@ void SceneView::paintGrid()
     glVertex2d(0, cornerMin.y);
     glVertex2d(0, cornerMax.y);
     // x axis
-    glVertex2d(cornerMin.x, 0);
+    glVertex2d(((m_scene->problemInfo()->problemType == ProblemType_Axisymmetric) ? 0 : cornerMin.x), 0);
     glVertex2d(cornerMax.x, 0);
     glEnd();
 }
@@ -2683,10 +2692,20 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     pointNode = p;
                 }
 
-                SceneNode *node = new SceneNode(pointNode);
-                SceneNode *nodeAdded = m_scene->addNode(node);
-                if (nodeAdded == node) m_scene->undoStack()->push(new SceneNodeCommandAdd(node->point));
-                updateGL();
+                // coordinates must be greater then or equal to 0 (axisymmetric case)
+                if ((Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric) &&
+                        (pointNode.x < 0))
+                {
+                    QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
+
+                }
+                else
+                {
+                    SceneNode *node = new SceneNode(pointNode);
+                    SceneNode *nodeAdded = m_scene->addNode(node);
+                    if (nodeAdded == node) m_scene->undoStack()->push(new SceneNodeCommandAdd(node->point));
+                    updateGL();
+                }
             }
             if (m_sceneMode == SceneMode_OperateOnEdges)
             {
@@ -2721,13 +2740,23 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             // add label directly by mouse click
             if (m_sceneMode == SceneMode_OperateOnLabels)
             {
-                SceneLabel *label = new SceneLabel(p, m_scene->labelMarkers[0], 0, 0);
-                SceneLabel *labelAdded = m_scene->addLabel(label);
-                if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
-                                                                                             label->marker->name,
-                                                                                             label->area,
-                                                                                             label->polynomialOrder));
-                updateGL();
+                // coordinates must be greater then or equal to 0 (axisymmetric case)
+                if ((Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric) &&
+                        (p.x < 0))
+                {
+                    QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
+
+                }
+                else
+                {
+                    SceneLabel *label = new SceneLabel(p, m_scene->labelMarkers[0], 0, 0);
+                    SceneLabel *labelAdded = m_scene->addLabel(label);
+                    if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
+                                                                                                 label->marker->name,
+                                                                                                 label->area,
+                                                                                                 label->polynomialOrder));
+                    updateGL();
+                }
             }
         }
 

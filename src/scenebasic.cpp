@@ -262,6 +262,10 @@ QLayout* DSceneNode::createContent()
     lblDistance = new QLabel();
     lblAngle = new QLabel();
 
+    // coordinates must be greater then or equal to 0 (axisymmetric case)
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+        txtPointX->setMinimum(0.0);
+
     QFormLayout *layout = new QFormLayout();
     layout->addRow(Util::scene()->problemInfo()->labelX() + " (m):", txtPointX);
     layout->addRow(Util::scene()->problemInfo()->labelY() + " (m):", txtPointY);
@@ -567,6 +571,10 @@ QLayout* DSceneLabel::createContent()
     txtPolynomialOrder = new QSpinBox(this);
     txtPolynomialOrder->setMinimum(0);
     txtPolynomialOrder->setMaximum(10);
+
+    // coordinates must be greater then or equal to 0 (axisymmetric case)
+    if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+        txtPointX->setMinimum(0.0);
 
     // marker
     QHBoxLayout *layoutMarker = new QHBoxLayout();
