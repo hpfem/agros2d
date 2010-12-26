@@ -35,3 +35,12 @@ Changes in Agros2D
   * added Polish translation
   * pretty vectors
   * small fixes
+  
+1.5.0.XXX (26.12.2010)
+----------------------  
+  * added structural mechanics
+  * added more linear solvers (mumps, umfpack, superlu)
+  * added coordinate axes
+  * fixed help dialog
+  * logmessage viewer
+  * improved preprocessor
