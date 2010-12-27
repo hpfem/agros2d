@@ -77,7 +77,7 @@ void Config::load()
     nodeSize = settings.value("SceneViewSettings/NodeSize", 6.0).toDouble();
     edgeWidth = settings.value("SceneViewSettings/EdgeWidth", 2.0).toDouble();
     labelSize = settings.value("SceneViewSettings/LabelSize", 6.0).toDouble();
-    angleSegmentsCount = settings.value("Geometry/AngleSegmentsCount", 5).toInt();
+    angleSegmentsCount = settings.value("SceneViewSettings/AngleSegmentsCount", 3).toInt();
 
     // grid
     showGrid = settings.value("SceneViewSettings/ShowGrid", true).toBool();

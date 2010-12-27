@@ -502,6 +502,8 @@ void SceneView::clearGLLists()
 {
     logMessage("SceneView::clearGLLists()");
 
+    if (m_listInitialMesh != -1) glDeleteLists(m_listInitialMesh, 1);
+    if (m_listSolutionMesh != -1) glDeleteLists(m_listSolutionMesh, 1);
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
     if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
     if (m_listScalarField != -1) glDeleteLists(m_listScalarField, 1);
@@ -510,6 +512,8 @@ void SceneView::clearGLLists()
     if (m_listOrder != -1) glDeleteLists(m_listOrder, 1);
     if (m_listModel != -1) glDeleteLists(m_listModel, 1);
 
+    m_listInitialMesh = -1;
+    m_listSolutionMesh = -1;
     m_listContours = -1;
     m_listVectors = -1;
     m_listScalarField = -1;
@@ -971,7 +975,12 @@ void SceneView::paintInitialMesh()
 
     loadProjection2d(true);
 
-    // draw initial mesh    
+    m_scene->sceneSolution()->linInitialMeshView().lock_data();
+
+    double3* linVert = m_scene->sceneSolution()->linInitialMeshView().get_vertices();
+    int3* linEdges = m_scene->sceneSolution()->linInitialMeshView().get_edges();
+
+    // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(Util::config()->colorInitialMesh.redF(),
               Util::config()->colorInitialMesh.greenF(),
@@ -979,18 +988,15 @@ void SceneView::paintInitialMesh()
     glLineWidth(1.3);
 
     // triangles
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
+    glBegin(GL_LINES);
+    for (int i = 0; i < m_scene->sceneSolution()->linInitialMeshView().get_num_edges(); i++)
     {
-        Element *element = m_scene->sceneSolution()->meshInitial()->get_element_fast(i);
-        if (element->is_triangle())
-        {
-            glVertex2d(element->vn[0]->x, element->vn[0]->y);
-            glVertex2d(element->vn[1]->x, element->vn[1]->y);
-            glVertex2d(element->vn[2]->x, element->vn[2]->y);
-        }
+        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
+        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
     }
     glEnd();
+
+    m_scene->sceneSolution()->linInitialMeshView().unlock_data();
 }
 
 void SceneView::paintSolutionMesh()
@@ -1001,26 +1007,29 @@ void SceneView::paintSolutionMesh()
 
     loadProjection2d(true);
 
-    // draw solution mesh
+    m_scene->sceneSolution()->linSolutionMeshView().lock_data();
+
+    double3* linVert = m_scene->sceneSolution()->linSolutionMeshView().get_vertices();
+    int3* linEdges = m_scene->sceneSolution()->linSolutionMeshView().get_edges();
+
+    // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(Util::config()->colorSolutionMesh.redF(),
               Util::config()->colorSolutionMesh.greenF(),
               Util::config()->colorSolutionMesh.blueF());
-    glLineWidth(1.0);
+    glLineWidth(1.3);
 
     // triangles
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->sln()->get_mesh()->get_num_elements(); i++)
+    glBegin(GL_LINES);
+    for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_edges(); i++)
     {
-        Element *element = m_scene->sceneSolution()->sln()->get_mesh()->get_element_fast(i);
-        if (element->is_triangle())
-        {
-            glVertex2d(element->vn[0]->x, element->vn[0]->y);
-            glVertex2d(element->vn[1]->x, element->vn[1]->y);
-            glVertex2d(element->vn[2]->x, element->vn[2]->y);
-        }
+        glVertex2d(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]);
+        glVertex2d(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]);
     }
     glEnd();
+
+    m_scene->sceneSolution()->linSolutionMeshView().unlock_data();
+
 }
 
 void SceneView::paintOrder()
@@ -1477,21 +1486,25 @@ void SceneView::paintScalarField3D()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
+        m_scene->sceneSolution()->linInitialMeshView().lock_data();
+
+        double3* linVertMesh = m_scene->sceneSolution()->linInitialMeshView().get_vertices();
+        int3* linTrisMesh = m_scene->sceneSolution()->linInitialMeshView().get_triangles();
+
+        // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
+        for (int i = 0; i < m_scene->sceneSolution()->linInitialMeshView().get_num_triangles(); i++)
         {
-            Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
-            if (element->is_triangle())
-            {
-                glVertex3d(element->vn[0]->x, element->vn[0]->y, 0.0);
-                glVertex3d(element->vn[1]->x, element->vn[1]->y, 0.0);
-                glVertex3d(element->vn[2]->x, element->vn[2]->y, 0.0);
-            }
+            glVertex2d(linVertMesh[linTrisMesh[i][0]][0], linVertMesh[linTrisMesh[i][0]][1]);
+            glVertex2d(linVertMesh[linTrisMesh[i][1]][0], linVertMesh[linTrisMesh[i][1]][1]);
+            glVertex2d(linVertMesh[linTrisMesh[i][2]][0], linVertMesh[linTrisMesh[i][2]][1]);
         }
         glEnd();
 
-        glDisable(GL_POLYGON_OFFSET_FILL);
+        m_scene->sceneSolution()->linSolutionMeshView().unlock_data();
+
         glDisable(GL_BLEND);
+        glDisable(GL_POLYGON_OFFSET_FILL);
 
         // geometry - edges
         foreach (SceneEdge *edge, m_scene->edges)
@@ -3528,6 +3541,11 @@ void SceneView::doSelectBasic()
     sceneBasicSelectDialog.exec();
 }
 
+void SceneView::processedSolutionMesh()
+{
+    logMessage("SceneView::processedSolutionMesh()");
+}
+
 void SceneView::processedRangeContour()
 {
     logMessage("SceneView::processedRangeContour()");
@@ -3763,6 +3781,47 @@ void SceneView::paintPostprocessorSelectedVolume()
 
     glDisable(GL_BLEND);
     glDisable(GL_POLYGON_OFFSET_FILL);
+
+    // how to get marker from linearizer?
+    /*
+    logMessage("SceneView::paintPostprocessorSelectedVolume()");
+
+    if (!m_scene->sceneSolution()->isMeshed()) return;
+
+    m_scene->sceneSolution()->linInitialMeshView().lock_data();
+
+    double3* linVert = m_scene->sceneSolution()->linInitialMeshView().get_vertices();
+    int3* linTris = m_scene->sceneSolution()->linInitialMeshView().get_triangles();
+
+    // draw initial mesh
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4d(Util::config()->colorSelected.redF(),
+              Util::config()->colorSelected.greenF(),
+              Util::config()->colorSelected.blueF(),
+              0.5);
+
+    // triangles
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < m_scene->sceneSolution()->linInitialMeshView().get_num_triangles(); i++)
+    {
+        if (m_scene->labels[element->marker]->isSelected)
+        {
+            glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
+            glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);
+            glVertex2d(linVert[linTris[i][2]][0], linVert[linTris[i][2]][1]);
+        }
+    }
+    glEnd();
+
+    glDisable(GL_BLEND);
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
+    m_scene->sceneSolution()->linSolutionMeshView().unlock_data();
+    */
 }
 
 void SceneView::paintPostprocessorSelectedSurface()

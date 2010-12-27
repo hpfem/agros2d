@@ -421,8 +421,8 @@ QWidget *ConfigDialog::createViewWidget()
 
     // geometry
     txtGeometryAngleSegmentsCount = new QSpinBox(this);
-    txtGeometryAngleSegmentsCount->setMinimum(1);
-    txtGeometryAngleSegmentsCount->setMaximum(100);
+    txtGeometryAngleSegmentsCount->setMinimum(3);
+    txtGeometryAngleSegmentsCount->setMaximum(20);
     txtGeometryAngleSegmentsCount->setMaximumWidth(60);
     txtGeometryNodeSize = new SLineEditDouble();
     txtGeometryNodeSize->setMaximumWidth(60);

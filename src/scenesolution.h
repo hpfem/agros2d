@@ -66,6 +66,10 @@ public:
     bool isMeshed() { return m_meshInitial; }
     bool isSolving() { return m_isSolving; }
 
+    // mesh
+    inline Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
+    inline Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
+
     // contour
     inline ViewScalarFilter *slnContourView() { return m_slnContourView; }
     void setSlnContourView(ViewScalarFilter *slnScalarView);
@@ -94,6 +98,7 @@ public:
     int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point);
 
     // process
+    void processSolutionMesh();
     void processRangeContour();
     void processRangeScalar();
     void processRangeVector();
@@ -103,6 +108,7 @@ signals:
     void meshed();
     void solved();
 
+    void processedSolutionMesh();
     void processedRangeContour();
     void processedRangeScalar();
     void processedRangeVector();
@@ -114,6 +120,10 @@ private:
     // general solution array
     QList<SolutionArray *> *m_solutionArrayList;
     int m_timeStep;
+
+    // mesh
+    Linearizer m_linInitialMeshView;
+    Linearizer m_linSolutionMeshView;
 
     // contour
     ViewScalarFilter *m_slnContourView; // scalar view solution

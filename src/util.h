@@ -43,6 +43,7 @@
 #define CONST_DOUBLE 1e100
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
+#define rad2deg(radians) (radians*180.0/M_PI)
 
 const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);
 const QColor COLORGRID = QColor::fromRgb(200, 200, 200);

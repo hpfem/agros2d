@@ -21,6 +21,42 @@
 #include "scene.h"
 #include "sceneview.h"
 
+struct TriangleEdge
+{
+    TriangleEdge()
+    {
+        this->node_1 = -1;
+        this->node_2 = -1;
+        this->marker = -1;
+    }
+
+    TriangleEdge(int node_1, int node_2, int marker)
+    {
+        this->node_1 = node_1;
+        this->node_2 = node_2;
+        this->marker = marker;
+    }
+
+    int node_1, node_2, marker;
+};
+
+/*
+struct NodeTriangle
+{
+    NodeTriangle(int n, double x, double y, int marker)
+    {
+        this->n = n;
+        this->x = x;
+        this->y = n;
+        this->marker = marker;
+    }
+
+    int n;
+    double x, y;
+    int marker;
+};
+*/
+
 SolutionArray::SolutionArray()
 {
     logMessage("SolutionArray::SolutionArray()");
@@ -361,9 +397,8 @@ bool ProgressItemMesh::writeToTriangle()
             double radius = Util::scene()->edges[i]->radius();
             double startAngle = atan2(center.y - Util::scene()->edges[i]->nodeStart->point.y,
                                       center.x - Util::scene()->edges[i]->nodeStart->point.x) - M_PI;
-            int segments = Util::scene()->edges[i]->angle/5.0 + 1;
-            if (segments < Util::config()->angleSegmentsCount) segments = Util::config()->angleSegmentsCount; // minimum segments
 
+            int segments = Util::scene()->edges[i]->segments();
             double theta = deg2rad(Util::scene()->edges[i]->angle) / double(segments);
 
             int nodeStartIndex = 0;
@@ -410,11 +445,15 @@ bool ProgressItemMesh::writeToTriangle()
     for (int i = 0; i<Util::scene()->labels.count(); i++) if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0) holesCount++;
     QString outHoles = QString("%1\n").arg(holesCount);
     for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
         if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
+        {
             outHoles += QString("%1  %2  %3\n").
                     arg(i).
                     arg(Util::scene()->labels[i]->point.x, 0, 'f', 10).
                     arg(Util::scene()->labels[i]->point.y, 0, 'f', 10);
+        }
+    }
 
     // labels
     QString outLabels;
@@ -457,8 +496,7 @@ bool ProgressItemMesh::triangleToHermes2D()
 {
     logMessage("ProgressItemMesh::triangleToHermes2D()");
 
-    int i, n, k, count, marker, node_1, node_2, node_3;
-    double x, y;
+    int n, k;
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -496,54 +534,147 @@ bool ProgressItemMesh::triangleToHermes2D()
     }
     QTextStream inEle(&fileEle);
 
-    // nodes
-    QString outNodes;
-    outNodes += "vertices = \n";
-    outNodes += "{ \n";
+    // triangle nodes
     sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
+    Point nodeList[k];
     for (int i = 0; i<k; i++)
     {
-        sscanf(inNode.readLine().toStdString().c_str(), "%i   %lf %lf %i", &n, &x, &y, &marker);
-        outNodes += QString("\t{ %1,  %2 }, \n").arg(x, 0, 'f', 10).arg(y, 0, 'f', 10);
-    }
-    outNodes.truncate(outNodes.length()-3);
-    outNodes += "\n} \n\n";
+        int marker;
+        double x, y;
 
-    // edges and curves
+        sscanf(inNode.readLine().toStdString().c_str(), "%i   %lf %lf %i", &n, &x, &y, &marker);
+        nodeList[i] = Point(x, y);
+    }
+    int nodeCount = k;
+
+    // triangle edges
+    sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
+    TriangleEdge edgeList[k];
+    for (int i = 0; i<k; i++)
+    {
+        int node_1, node_2, marker;
+
+        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
+        edgeList[i] = TriangleEdge(node_1, node_2, marker);
+    }
+    int edgeCount = k;
+
+    // edges
     QString outEdges;
     outEdges += "boundaries = \n";
     outEdges += "{ \n";
-    sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
-    count = 0;
-    for (int i = 0; i<k; i++)
+    int countEdges = 0;
+    for (int i = 0; i<edgeCount; i++)
     {
-        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node_1, &node_2, &marker);
-        if (marker != 0)
+        if (edgeList[i].marker != 0)
         {
-            if (Util::scene()->edges[marker-1]->marker->type != PhysicFieldBC_None)
+            if (Util::scene()->edges[edgeList[i].marker-1]->marker->type != PhysicFieldBC_None)
             {
-                count++;
-                outEdges += QString("\t{ %1, %2, %3 }, \n").arg(node_1).arg(node_2).arg(abs(marker));
+                countEdges++;
+                outEdges += QString("\t{ %1, %2, %3 }, \n").
+                        arg(edgeList[i].node_1).
+                        arg(edgeList[i].node_2).
+                        arg(abs(edgeList[i].marker));
             }
         }
     }
     outEdges.truncate(outEdges.length()-3);
     outEdges += "\n} \n\n";
-    if (count < 1)
+
+    if (countEdges < 1)
     {
         emit message(tr("Invalid number of edge markers"), true, 0);
         return false;
     }
+
+    // curves
+    QString outCurves;
+    outCurves += "curves = \n";
+    outCurves += "{ \n";
+    int countCurves = 0;
+    for (int i = 0; i<edgeCount; i++)
+    {
+        if (edgeList[i].marker != 0)
+        {
+            // curve
+            if (Util::scene()->edges[edgeList[i].marker-1]->angle > 0.0)
+            {
+                countCurves++;
+                int segments = Util::scene()->edges[edgeList[i].marker-1]->segments();
+
+                // subdivision angle and chord
+                double theta = deg2rad(Util::scene()->edges[edgeList[i].marker-1]->angle) / double(segments);
+                double chord = 2 * Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(theta / 2.0);
+
+                // length of short chord
+                double chordShort = (nodeList[edgeList[i].node_2] - nodeList[edgeList[i].node_1]).magnitude();
+
+                // direction
+                Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
+                int direction = (((nodeList[edgeList[i].node_1].x-center.x)*(nodeList[edgeList[i].node_2].y-center.y) -
+                                  (nodeList[edgeList[i].node_1].y-center.y)*(nodeList[edgeList[i].node_2].x-center.x)) > 0) ? 1 : -1;
+
+                double angle = direction * theta * chordShort / chord;
+
+                outCurves += QString("\t{ %1, %2, %3 }, \n").
+                        arg(edgeList[i].node_1).
+                        arg(edgeList[i].node_2).
+                        arg(rad2deg(angle));
+            }
+        }
+    }
+    outCurves.truncate(outCurves.length()-3);
+    outCurves += "\n} \n\n";
+
+    // move nodes (arcs)
+    for (int i = 0; i<edgeCount; i++)
+    {
+        if (edgeList[i].marker != 0)
+        {
+            // curve
+            if (Util::scene()->edges[edgeList[i].marker-1]->angle > 0.0)
+            {
+                // angle
+                Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
+                double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node_1].y,
+                                           center.x - nodeList[edgeList[i].node_1].x) - M_PI;
+
+                double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node_2].y,
+                                           center.x - nodeList[edgeList[i].node_2].x) - M_PI;
+
+                nodeList[edgeList[i].node_1].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle1);
+                nodeList[edgeList[i].node_1].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle1);
+
+                nodeList[edgeList[i].node_2].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle2);
+                nodeList[edgeList[i].node_2].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle2);
+            }
+        }
+    }
+
+    // nodes
+    QString outNodes;
+    outNodes += "vertices = \n";
+    outNodes += "{ \n";
+    for (int i = 0; i<nodeCount; i++)
+    {
+        outNodes += QString("\t{ %1,  %2 }, \n").
+                arg(nodeList[i].x, 0, 'f', 10).
+                arg(nodeList[i].y, 0, 'f', 10);
+    }
+    outNodes.truncate(outNodes.length()-3);
+    outNodes += "\n} \n\n";
 
     // elements
     QString outElements;
     outElements += "elements = \n";
     outElements += "{ \n";
     sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
-    count = 0;
+    int countElements = 0;
     for (int i = 0; i<k; i++)
     {
-        count++;
+        int node_1, node_2, node_3, marker;
+
+        countElements++;
         sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i", &n, &node_1, &node_2, &node_3, &marker);
         if (marker == 0)
         {
@@ -552,11 +683,15 @@ bool ProgressItemMesh::triangleToHermes2D()
         }
         // triangle returns zero region number for areas without marker, markers must start from 1
         marker--;
-        outElements += QString("\t{ %1, %2, %3, %4  }, \n").arg(node_1).arg(node_2).arg(node_3).arg(abs(marker));
+        outElements += QString("\t{ %1, %2, %3, %4  }, \n").
+                arg(node_1).
+                arg(node_2).
+                arg(node_3).
+                arg(abs(marker));
     }
     outElements.truncate(outElements.length()-3);
     outElements += "\n} \n\n";
-    if (count < 1)
+    if (countElements < 1)
     {
         emit message(tr("Invalid number of label markers"), true, 0);
         return false;
@@ -565,6 +700,8 @@ bool ProgressItemMesh::triangleToHermes2D()
     outMesh << outNodes;
     outMesh << outElements;
     outMesh << outEdges;
+    if (countCurves > 0)
+        outMesh << outCurves;
 
     fileNode.close();
     fileEdge.close();
@@ -672,7 +809,13 @@ void ProgressItemProcessView::process()
 
     int step = 0;
 
-    if (sceneView()->sceneViewSettings().showContours == 1)
+    if (sceneView()->sceneViewSettings().showSolutionMesh)
+    {
+        step++;
+        emit message(tr("Processing solution mesh cache"), false, step);
+        Util::scene()->sceneSolution()->processSolutionMesh();
+    }
+    if (sceneView()->sceneViewSettings().showContours)
     {
         step++;
         emit message(tr("Processing countour view cache"), false, step);
@@ -686,7 +829,7 @@ void ProgressItemProcessView::process()
         emit message(tr("Processing scalar view cache"), false, step);
         Util::scene()->sceneSolution()->processRangeScalar();
     }
-    if (sceneView()->sceneViewSettings().showVectors == 1)
+    if (sceneView()->sceneViewSettings().showVectors)
     {
         step++;
         emit message(tr("Processing vector view cache"), false, step);

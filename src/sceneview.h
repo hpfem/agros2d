@@ -96,9 +96,10 @@ class SceneView : public QGLWidget
     void doSetChartLine(const Point &start, const Point &end);
     void timeStepChanged(bool showViewProgress = false);
 
-    void processedRangeVector();
-    void processedRangeScalar();
+    void processedSolutionMesh();
     void processedRangeContour();
+    void processedRangeScalar();
+    void processedRangeVector();
 
 public:
     SceneView(QWidget *parent = 0);
@@ -204,6 +205,8 @@ private:
     double m_texScale, m_texShift;
 
     // gl lists
+    int m_listInitialMesh;
+    int m_listSolutionMesh;
     int m_listContours;
     int m_listVectors;
     int m_listScalarField;

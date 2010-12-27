@@ -132,6 +132,16 @@ double SceneEdge::distance(const Point &point)
     }
 }
 
+int SceneEdge::segments()
+{
+    double division = 40.0;
+    int segments = angle/division + 1;
+    if (segments < Util::config()->angleSegmentsCount)
+        segments = Util::config()->angleSegmentsCount; // minimum segments
+
+    return segments;
+}
+
 int SceneEdge::showDialog(QWidget *parent, bool isNew)
 {
     logMessage("SceneEdge::showDialog()");
