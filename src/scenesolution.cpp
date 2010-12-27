@@ -115,6 +115,13 @@ void SceneSolution::solve(SolverMode solverMode)
         emit solved();
     }
 
+    if (isMeshed())
+    {
+        Solution tsln;
+        tsln.set_zero(m_meshInitial);
+        m_linInitialMeshView.process_solution(&tsln);
+    }
+
     // delete temp file
     if (Util::scene()->problemInfo()->fileName == tempProblemFileName() + ".a2d")
     {
@@ -434,6 +441,20 @@ void SceneSolution::setSlnVectorView(ViewScalarFilter *slnVectorXView, ViewScala
     // deformed shape
     if (Util::config()->deformVector)
         Util::scene()->problemInfo()->hermes()->deformShape(m_vecVectorView.get_vertices(), m_vecVectorView.get_num_vertices());
+}
+
+void SceneSolution::processSolutionMesh()
+{
+    logMessage("SceneSolution::processSolutionMesh()");
+
+    if (isSolved())
+    {
+        Solution tsln;
+        tsln.set_zero(sln()->get_mesh());
+        m_linSolutionMeshView.process_solution(&tsln);
+
+        emit processedSolutionMesh();
+    }
 }
 
 void SceneSolution::processRangeContour()
