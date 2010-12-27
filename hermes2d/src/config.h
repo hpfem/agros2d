@@ -8,7 +8,7 @@
 #define HAVE_VASPRINTF
 #define HAVE_CXXABI
 
-#define WITH_UMFPACK
+/* #define WITH_UMFPACK */
 /* #undef WITH_PARDISO */
 /* #undef WITH_MUMPS */
 /* #undef WITH_SUPERLU */
