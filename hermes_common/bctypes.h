@@ -45,12 +45,32 @@ public:
     return;
   };
 
+  // A wrapper utilizing the Mesh::MarkersConversion class.
+  void add_bc_dirichlet(Hermes::Tuple<std::string> markers)
+  {
+    unsigned int n = markers.size();
+    if (n <= 0) error("BCTypes::add_bc_dirichlet() expects at least one marker.");
+    for (unsigned int i = 0; i < n; i++)
+      this->markers_dirichlet_string_temp.push_back(markers[i]);
+    return;
+  }
+
   void add_bc_neumann(Hermes::Tuple<int> markers) 
   {
     unsigned int n = markers.size();
     if (n <= 0) error("BCTypes::add_bc_neumann() expects at least one marker.");
     for (unsigned int i = 0; i < n; i++)
         this->markers_neumann.push_back(markers[i]);
+    return;
+  };
+
+  // A wrapper utilizing the Mesh::MarkersConversion class.
+  void add_bc_neumann(Hermes::Tuple<std::string> markers) 
+  {
+    unsigned int n = markers.size();
+    if (n <= 0) error("BCTypes::add_bc_dirichlet() expects at least one marker.");
+    for (unsigned int i = 0; i < n; i++)
+      this->markers_neumann_string_temp.push_back(markers[i]);
     return;
   };
 
@@ -62,11 +82,31 @@ public:
     return;
   };
 
+  // A wrapper utilizing the Mesh::MarkersConversion class.
+  void add_bc_newton(Hermes::Tuple<std::string> markers) 
+  {
+    unsigned int n = markers.size();
+    if (n <= 0) error("BCTypes::add_bc_dirichlet() expects at least one marker.");
+    for (unsigned int i = 0; i < n; i++)
+      this->markers_newton_string_temp.push_back(markers[i]);
+    return;
+  };
+
   void add_bc_none(Hermes::Tuple<int> markers) 
   {
     unsigned int n = markers.size();
     if (n <= 0) error("BCTypes::add_bc_none() expects at least one marker.");
     for (unsigned int i = 0; i < n; i++) this->markers_none.push_back(markers[i]);    
+    return;
+  };
+
+  // A wrapper utilizing the Mesh::MarkersConversion class.
+  void add_bc_none(Hermes::Tuple<std::string> markers) 
+  {
+    unsigned int n = markers.size();
+    if (n <= 0) error("BCTypes::add_bc_dirichlet() expects at least one marker.");
+    for (unsigned int i = 0; i < n; i++)
+      this->markers_none_string_temp.push_back(markers[i]);
     return;
   };
 
@@ -211,7 +251,14 @@ public:
     Hermes::Tuple<int> markers_newton;
     Hermes::Tuple<int> markers_dirichlet;
     Hermes::Tuple<int> markers_none;
-  
+
+    // These members are used temporary for storing markers defined by user-supplied strings.
+    Hermes::Tuple<std::string> markers_neumann_string_temp;
+    Hermes::Tuple<std::string> markers_newton_string_temp;
+    Hermes::Tuple<std::string> markers_dirichlet_string_temp;
+    Hermes::Tuple<std::string> markers_none_string_temp;
+
+    friend class Space;
     friend class BCValues;
 };
 

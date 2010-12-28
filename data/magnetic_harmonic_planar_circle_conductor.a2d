@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="5000" numberofrefinements="1" adaptivitytype="disabled" analysistype="harmonic" adaptivitysteps="1" polynomialorder="2" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="Magnetic Harmonic Planar Circle Conductor" initialcondition="0">
+        <problem adaptivitytolerance="1" frequency="5000" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="harmonic" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="Magnetic Harmonic Planar Circle Conductor" initialcondition="0">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
@@ -25,7 +25,7 @@
             <edge end="3" marker="1" id="3" start="0" angle="90"/>
         </edges>
         <labels>
-            <label x="0" y="0" polynomialorder="0" marker="1" id="0" area="1e-07"/>
+            <label x="0" y="0" polynomialorder="0" marker="1" id="0" area="5e-07"/>
         </labels>
     </geometry>
     <functions/>

@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="1" type="magnetic" timestep="1" id="0" name="Magnetic Steadystate Planar Rotating Heating" initialcondition="0">
+        <problem adaptivitytolerance="0" frequency="0" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="1" type="magnetic" timestep="1" id="0" name="Magnetic Steadystate Planar Rotating Heating" initialcondition="0">
             <scriptstartup>Jext = 3e7
 sigma = 33e6
 n = 1500
@@ -58,7 +58,7 @@ omega = 2*pi*f</scriptstartup>
         </edges>
         <labels>
             <label x="0.0899971" y="0.155764" polynomialorder="0" marker="2" id="0" area="0"/>
-            <label x="-0.0184609" y="0.0207686" polynomialorder="4" marker="1" id="1" area="0.0003"/>
+            <label x="-0.0184609" y="0.0207686" polynomialorder="4" marker="1" id="1" area="0.0002"/>
             <label x="0.0576904" y="0.0403833" polynomialorder="0" marker="3" id="2" area="0"/>
             <label x="-0.0588442" y="0.0380757" polynomialorder="0" marker="4" id="3" area="0"/>
         </labels>

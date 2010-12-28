@@ -128,6 +128,7 @@ void MeshView::on_display()
   }
   glEnd();
 
+
   // draw all edges
   glLineStipple(5, 0x5555);
   int3* edges = lin.get_edges();

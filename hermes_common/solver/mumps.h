@@ -41,8 +41,16 @@
   
   #ifdef WITH_MPI
     #include <mpi.h>
+  #else
+    /*
+    typedef int MPI_Comm; // Simple type for MPI communicator
+
+    int MPI_Init(int *pargc, char ***pargv);
+    int MPI_Comm_rank(int  comm, int  *rank);
+    int MPI_Finalize(void);
+    */
   #endif
-  
+
 #else
   #if !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
     typedef scalar mumps_scalar;

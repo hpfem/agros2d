@@ -16,7 +16,7 @@
 #include "forms.h"
 /*
 const char* ERR_UNDEFINED_NEIGHBORING_ELEMENTS = "Neighboring elements are not defined and so are not function traces on their interface. "
-                                                 "Did you forget setting HERMES_ANY_INNER_EDGE in add_matrix/vector_form?";
+                                                 "Did you forget setting H2D_ANY_INNER_EDGE in add_matrix/vector_form?";
 */
 // Explicit template specializations are needed here, general template<T> T DiscontinuousFunc<T>::zero = T(0) doesn't work.
 template<> Ord DiscontinuousFunc<Ord>::zero = Ord(0);

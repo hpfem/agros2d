@@ -19,6 +19,7 @@
 
 #include "function.h"
 #include "solution.h"
+#include <string>
 
 class RefMap;
 class DiscreteProblem;
@@ -82,6 +83,24 @@ public:
   void add_vector_form_surf(vector_form_val_t fn, vector_form_ord_t ord, 
 			int area = HERMES_ANY, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>()); // single equation case
 
+  // Wrapper functions utilizing the MarkersConversion class.
+  void add_matrix_form(int i, int j, matrix_form_val_t fn, matrix_form_ord_t ord, 
+    SymFlag sym, std::string area, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>());
+  void add_matrix_form(matrix_form_val_t fn, matrix_form_ord_t ord, 
+		   SymFlag sym, std::string area, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>()); // single equation case
+  void add_matrix_form_surf(int i, int j, matrix_form_val_t fn, matrix_form_ord_t ord, 
+			std::string area, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>());
+  void add_matrix_form_surf(matrix_form_val_t fn, matrix_form_ord_t ord, 
+    std::string area, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>()); // single equation case
+  void add_vector_form(int i, vector_form_val_t fn, vector_form_ord_t ord, 
+    std::string area, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>());
+  void add_vector_form(vector_form_val_t fn, vector_form_ord_t ord, 
+    std::string area, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>()); // single equation case
+  void add_vector_form_surf(int i, vector_form_val_t fn, vector_form_ord_t ord, 
+    std::string area, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>());
+  void add_vector_form_surf(vector_form_val_t fn, vector_form_ord_t ord, 
+			std::string area, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>()); // single equation case
+
   void set_ext_fns(void* fn, Hermes::Tuple<MeshFunction*>ext = Hermes::Tuple<MeshFunction*>());
 
   /// Returns the number of equations
@@ -118,6 +137,15 @@ protected:
   std::vector<MatrixFormSurf> mfsurf;
   std::vector<VectorFormVol>  vfvol;
   std::vector<VectorFormSurf> vfsurf;
+
+  // These members are used temporary for storing markers defined by user-supplied strings.
+  std::map<std::string, MatrixFormVol>  mfvol_string_temp;
+  std::map<std::string, MatrixFormSurf> mfsurf_string_temp;
+  std::map<std::string, VectorFormVol>  vfvol_string_temp;
+  std::map<std::string, VectorFormSurf> vfsurf_string_temp;
+  
+  // Function which according to the conversion table provided, updates the above members.
+  void update_markers_acc_to_conversion(Mesh::MarkersConversion* markers_conversion);
 
   struct Stage
   {
