@@ -153,9 +153,32 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     // create reference solution
     Tuple<Solution *> solutionReference;
 
+    // projection norms
+    Hermes::Tuple<ProjNormType> projNormType;
+
+    // prepare selector
+    Hermes::Tuple<RefinementSelectors::Selector *> selector;
+
+    RefinementSelectors::Selector *select = NULL;
+    switch (adaptivityType)
+    {
+    case AdaptivityType_H:
+        select = new RefinementSelectors::HOnlySelector();
+        break;
+    case AdaptivityType_P:
+        select = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_P_ANISO,
+                                                                Util::config()->convExp,
+                                                                H2DRS_DEFAULT_ORDER);
+        break;
+    case AdaptivityType_HP:
+        select = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_HP_ANISO,
+                                                                Util::config()->convExp,
+                                                                H2DRS_DEFAULT_ORDER);
+        break;
+    }
+
     for (int i = 0; i < numberOfSolution; i++)
     {
-        // space
         space.push_back(new H1Space(mesh, bcTypes[i], bcValues[i], polynomialOrder));
 
         // set order by element
@@ -165,9 +188,13 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         // solution agros array
         solution.push_back(new Solution());
 
-        // reference solution
-        if ((adaptivityType != AdaptivityType_None))
-            solutionReference.push_back(new Solution());
+        if (adaptivityType != AdaptivityType_None)
+        {
+            // add norm
+            projNormType.push_back(HERMES_H1_NORM);
+            // add refinement selector
+            selector.push_back(select);
+        }
     }
 
     if (analysisType == AnalysisType_Transient)
@@ -185,24 +212,6 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     // callback weakform
     cbWeakForm(&wf, solution);
 
-    // prepare selector
-    RefinementSelectors::Selector *selector = NULL;
-    switch (adaptivityType)
-    {
-    case AdaptivityType_H:
-        selector = new RefinementSelectors::HOnlySelector();
-        break;
-    case AdaptivityType_P:
-        selector = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_P_ANISO,
-                                                                Util::config()->convExp,
-                                                                H2DRS_DEFAULT_ORDER);
-        break;
-    case AdaptivityType_HP:
-        selector = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_HP_ANISO,
-                                                                Util::config()->convExp,
-                                                                H2DRS_DEFAULT_ORDER);
-        break;
-    }
     // emit message
     if (adaptivityType != AdaptivityType_None)
         progressItemSolve->emitMessage(QObject::tr("Adaptivity type: %1").arg(adaptivityTypeString(adaptivityType)), false);
@@ -245,7 +254,13 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 error ("Matrix solver failed.\n");
         }
         else
-        {           
+        {
+            // reference solution            
+            for (int j = 0; j < numberOfSolution; j++)
+            {
+                solutionReference.push_back(new Solution());
+            }
+
             // construct globally refined reference mesh and setup reference space.
             Tuple<Space *> *spaceReference = construct_refined_spaces(space);
 
@@ -269,7 +284,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             OGProjection::project_global(space, solutionReference, solution, matrixSolver);
 
             // Calculate element errors and total error estimate.
-            Adapt* adaptivity = new Adapt(space, HERMES_H1_NORM);
+            Adapt* adaptivity = new Adapt(space, projNormType);
             bool solutionsForAdapt = true;
             error = adaptivity->calc_err_est(solution, solutionReference, solutionsForAdapt,
                                              HERMES_TOTAL_ERROR_REL | HERMES_ELEMENT_ERROR_REL) * 100;
@@ -300,9 +315,19 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             actualAdaptivitySteps = i+1;
 
             delete adaptivity;
-            // if (done == false)
-            // delete spaceReference->get_mesh();
+            // delete reference space
+            for (int i = 0; i < spaceReference->size(); i++)
+            {
+                delete spaceReference->at(i)->get_mesh();
+                delete spaceReference->at(i);
+            }
+            spaceReference->clear();
             delete spaceReference;
+
+            // delete reference solution
+            for (int i = 0; i < solutionReference.size(); i++)
+                delete solutionReference.at(i);
+            solutionReference.clear();
         }
 
         // clean up.
@@ -312,7 +337,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     }
 
     // delete selector
-    if (selector) delete selector;
+    if (select) delete select;
 
     // timesteps
     if (!isError)
@@ -386,18 +411,16 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     // delete space
     for (int i = 0; i < space.size(); i++)
+    {
+        // delete space.at(i)->get_mesh();
         delete space.at(i);
+    }
     space.clear();
 
     // delete last solution
     for (int i = 0; i < solution.size(); i++)
         delete solution.at(i);
     solution.clear();
-
-    // delete reference solution
-    for (int i = 0; i < solutionReference.size(); i++)
-        delete solutionReference.at(i);
-    solutionReference.clear();
 
     if (isError)
     {

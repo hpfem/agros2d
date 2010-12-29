@@ -87,7 +87,7 @@ SOURCES +=  ../hermes_common/callstack.cpp \
             src/shapeset/shapeset_h1_ortho.cpp \
             src/shapeset/shapeset_h1_jacobi.cpp \
             src/shapeset/shapeset_h1_quad.cpp \
-            # src/shapeset/shapeset_l2_legendre.cpp \
+            src/shapeset/shapeset_l2_legendre.cpp \
             # src/shapeset/shapeset_hc_eigen2.cpp \
             # src/shapeset/shapeset_hc_gradleg.cpp \
             # src/shapeset/shapeset_hc_gradeigen.cpp \

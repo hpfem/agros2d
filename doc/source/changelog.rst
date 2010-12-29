@@ -36,7 +36,7 @@ Changes in Agros2D
   * pretty vectors
   * small fixes
   
-1.5.0.XXX (26.12.2010)
+1.5.0.519 (26.12.2010)
 ----------------------  
   * added structural mechanics
   * added more linear solvers (mumps, umfpack, superlu)
@@ -44,3 +44,9 @@ Changes in Agros2D
   * fixed help dialog
   * logmessage viewer
   * improved preprocessor
+  
+1.5.2.523 (29.12.2010)
+----------------------  
+  * added curvilinear elements
+  * added refine towards edge
+
