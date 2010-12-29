@@ -2789,12 +2789,13 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     {
                         if (node != m_nodeLast)
                         {
-                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->edgeMarkers[0], 0);
+                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->edgeMarkers[0], 0, 0);
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
                             if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                                                                       edge->nodeEnd->point,
                                                                                                       edge->marker->name,
-                                                                                                      edge->angle));
+                                                                                                      edge->angle,
+                                                                                                      edge->refineTowardsEdge));
                         }
 
                         m_nodeLast->isSelected = false;

@@ -61,8 +61,6 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     }
 }
 
-
-
 Mesh *readMeshFromFile(const QString &fileName)
 {
     // save locale
@@ -91,6 +89,20 @@ void writeMeshFromFile(const QString &fileName, Mesh *mesh)
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
+}
+
+void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
+{
+    // refine mesh - global
+    if (refineGlobal)
+        for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
+            mesh->refine_all_elements(0);
+
+    // refine mesh - boundary
+    if (refineTowardsEdge)
+        for (int i = 0; i < Util::scene()->edges.count(); i++)
+            if (Util::scene()->edges[i]->refineTowardsEdge > 0)
+                mesh->refine_towards_boundary(i + 1, Util::scene()->edges[i]->refineTowardsEdge);
 }
 
 SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0)
@@ -132,9 +144,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     // load the mesh file
     Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
-    // refine mesh
-    for (int i = 0; i < Util::scene()->problemInfo()->numberOfRefinements; i++)
-        mesh->refine_all_elements(0);
+    refineMesh(mesh, true, true);
 
     // create an H1 space
     Tuple<Space *> space;

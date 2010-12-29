@@ -22,7 +22,6 @@
 
 struct ElectrostaticEdge
 {
-public:
     PhysicFieldBC type;
     double value;
 };

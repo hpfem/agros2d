@@ -78,13 +78,13 @@ public:
     SceneNode *nodeStart;
     SceneNode *nodeEnd;
     double angle;
+    int refineTowardsEdge;
 
-    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *marker, double angle);
+    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *marker, double angle, int refineTowardsEdge);
 
     Point center();
     double radius();
     double distance(const Point &point);
-    inline int direction() { return (((nodeStart->point.x-nodeEnd->point.x)*nodeStart->point.y - (nodeStart->point.y-nodeEnd->point.y)*nodeStart->point.x) > 0) ? 1 : -1; }
     int segments(); // needed by mesh generator
 
     int showDialog(QWidget *parent, bool isNew = false);
@@ -173,7 +173,6 @@ class DSceneEdge : public DSceneBasic
 
 public:
     DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew);
-    ~DSceneEdge();
 
 protected:
     QLayout *createContent();
@@ -188,6 +187,8 @@ private:
     QPushButton *btnMarker;
     SLineEditValue *txtAngle;
     QLabel *lblLength;
+    QCheckBox *chkRefineTowardsEdge;
+    QSpinBox *txtRefineTowardsEdge;
 
     void fillComboBox();
 
@@ -195,6 +196,7 @@ private slots:
     void doMarkerChanged(int index);
     void doMarkerClicked();
     void doNodeChanged();
+    void doRefineTowardsEdge(int state);
 };
 
 // *************************************************************************************************************************************
@@ -205,7 +207,6 @@ class DSceneLabel : public DSceneBasic
 
 public:
     DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew = false);
-    ~DSceneLabel();
 
 protected:
     QLayout *createContent();
@@ -317,7 +318,8 @@ private:
 class SceneEdgeCommandAdd : public QUndoCommand
 {
 public:
-    SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent = 0);
+    SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QString &markerName,
+                        double angle, int refineTowardsEdge, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -326,12 +328,14 @@ private:
     Point m_pointEnd;
     QString m_markerName;
     double m_angle;
+    int m_refineTowardsEdge;
 };
 
 class SceneEdgeCommandRemove : public QUndoCommand
 {
 public:
-    SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName, double angle, QUndoCommand *parent = 0);
+    SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QString &markerName,
+                           double angle, int refineTowardsEdge, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -340,12 +344,14 @@ private:
     Point m_pointEnd;
     QString m_markerName;
     double m_angle;
+    int m_refineTowardsEdge;
 };
 
 class SceneEdgeCommandEdit : public QUndoCommand
 {
 public:
-    SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew, double angle, double angleNew, QUndoCommand *parent = 0);
+    SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
+                         double angle, double angleNew, int refineTowardsEdge, int refineTowardsEdgeNew, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -356,6 +362,8 @@ private:
     Point m_pointEndNew;
     double m_angle;
     double m_angleNew;
+    int m_refineTowardsEdge;
+    int m_refineTowardsEdgeNew;
 };
 
 #endif // SCENEBASIC_H

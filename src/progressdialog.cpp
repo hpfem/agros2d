@@ -272,6 +272,8 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
                 }
             }
 
+            refineMesh(mesh, true, true);
+
             Util::scene()->sceneSolution()->setMeshInitial(mesh);
         }
         else

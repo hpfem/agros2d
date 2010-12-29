@@ -277,7 +277,8 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
     // end node
     SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
 
-    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, edgeMarker, angle));
+    // FIXME 0 -> variable
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, edgeMarker, angle, 0));
 }
 
 void pythonDeleteEdge(int index)

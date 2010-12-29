@@ -137,6 +137,8 @@ protected:
 Mesh *readMeshFromFile(const QString &fileName);
 void writeMeshFromFile(const QString &fileName, Mesh *mesh);
 
+void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
+
 // solve
 QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                           Tuple<BCTypes *> bcTypes,

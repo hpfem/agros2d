@@ -25,17 +25,17 @@
             <node x="1.5" y="0.5" id="7"/>
         </nodes>
         <edges>
-            <edge end="2" marker="3" id="0" start="6" angle="0"/>
-            <edge end="1" marker="1" id="1" start="2" angle="0"/>
-            <edge end="0" marker="1" id="2" start="1" angle="0"/>
-            <edge end="4" marker="3" id="3" start="0" angle="0"/>
-            <edge end="5" marker="3" id="4" start="3" angle="0"/>
-            <edge end="4" marker="2" id="5" start="3" angle="180"/>
-            <edge end="7" marker="3" id="6" start="5" angle="90"/>
-            <edge end="6" marker="3" id="7" start="7" angle="90"/>
+            <edge end="2" refine_towards="0" marker="3" id="0" start="6" angle="0"/>
+            <edge end="1" refine_towards="0" marker="1" id="1" start="2" angle="0"/>
+            <edge end="0" refine_towards="0" marker="1" id="2" start="1" angle="0"/>
+            <edge end="4" refine_towards="0" marker="3" id="3" start="0" angle="0"/>
+            <edge end="5" refine_towards="0" marker="3" id="4" start="3" angle="0"/>
+            <edge end="4" refine_towards="0" marker="2" id="5" start="3" angle="180"/>
+            <edge end="7" refine_towards="0" marker="3" id="6" start="5" angle="90"/>
+            <edge end="6" refine_towards="0" marker="3" id="7" start="7" angle="90"/>
         </edges>
         <labels>
-            <label x="0.879551" y="0.764057" polynomialorder="0" marker="1" id="0" area="0.05"/>
+            <label x="0.879551" y="0.764057" polynomialorder="0" marker="1" id="0" area="0.06"/>
         </labels>
     </geometry>
     <functions/>
