@@ -38,57 +38,6 @@ struct FlowLabel
 FlowEdge *flowEdge;
 FlowLabel *flowLabel;
 
-BCType flow_bc_types(int marker)
-{
-    switch (flowEdge[marker].type)
-    {
-    case PhysicFieldBC_Flow_Wall:
-        return BC_ESSENTIAL;
-    case PhysicFieldBC_Flow_Outlet:
-        return BC_NONE;
-    case PhysicFieldBC_Flow_Velocity:
-        return BC_ESSENTIAL;
-    case PhysicFieldBC_Flow_Pressure:
-        return BC_ESSENTIAL;
-    case PhysicFieldBC_None:
-        return BC_NONE;
-    }
-}
-
-scalar flow_bc_values_x(int marker, double x, double y)
-{
-    switch (flowEdge[marker].type)
-    {
-    case PhysicFieldBC_Flow_Wall:
-        return 0;
-    case PhysicFieldBC_Flow_Velocity:
-        return flowEdge[marker].velocityX;
-    }
-    return 0;
-}
-
-scalar flow_bc_values_y(int marker, double x, double y)
-{
-    switch (flowEdge[marker].type)
-    {
-    case PhysicFieldBC_Flow_Wall:
-        return 0;
-    case PhysicFieldBC_Flow_Velocity:
-        return flowEdge[marker].velocityY;
-    }
-    return 0;
-}
-
-scalar flow_bc_values_pressure(int marker, double x, double y)
-{
-    switch (flowEdge[marker].type)
-    {
-    case PhysicFieldBC_Flow_Pressure:
-        return flowEdge[marker].pressure;
-    }
-    return 0;
-}
-
 template<typename Real, typename Scalar>
 Scalar bilinear_form_sym_0_0_1_1(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
@@ -105,7 +54,7 @@ Scalar bilinear_form_unsym_0_0_1_1(int n, double *wt, Func<Real> *u_ext[], Func<
 }
 
 template<typename Real, typename Scalar>
-Scalar linear_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar linear_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     // this form is used with both velocity components
     Func<Scalar>* vel_prev = ext->fn[0];
@@ -113,43 +62,41 @@ Scalar linear_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<R
 }
 
 template<typename Real, typename Scalar>
-Scalar bilinear_form_unsym_0_2(int n, double *wt, Func<Real> *p, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar bilinear_form_unsym_0_2(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return - int_u_dvdx<Real, Scalar>(n, wt, p, v);
+    return - int_u_dvdx<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
-Scalar bilinear_form_unsym_1_2(int n, double *wt, Func<Real> *p, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar bilinear_form_unsym_1_2(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return - int_u_dvdy<Real, Scalar>(n, wt, p, v);
+    return - int_u_dvdy<Real, Scalar>(n, wt, u, v);
 }
 
 void callbackFlowWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
-    /*
     wf->add_matrix_form(0, 0, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
     if (analysisType == AnalysisType_Transient)
-        wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM, HERMES_ANY, slnArray);
+        ; // wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM, HERMES_ANY, slnArray);
     else
         wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM);
     wf->add_matrix_form(1, 1, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
     if (analysisType == AnalysisType_Transient)
-        wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM, slnArray);
+        ; // wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM, slnArray);
     else
         wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM);
     wf->add_matrix_form(0, 2, callback(bilinear_form_unsym_0_2), HERMES_ANTISYM);
     wf->add_matrix_form(1, 2, callback(bilinear_form_unsym_1_2), HERMES_ANTISYM);
     if (analysisType == AnalysisType_Transient)
     {
-        wf->add_vector_form(0, callback(linear_form), slnArray);
-        wf->add_vector_form(1, callback(linear_form), slnArray);
+        // wf->add_vector_form(0, callback(linear_form), HERMES_ANY, slnArray);
+        // wf->add_vector_form(1, callback(linear_form), HERMES_ANY, slnArray);
     }
     else
     {
         wf->add_vector_form(0, callback(linear_form));
         wf->add_vector_form(1, callback(linear_form));
     }
-    */
 }
 
 // *******************************************************************************************************
@@ -404,8 +351,8 @@ QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
     }
 
     // edge markers
-    BCTypes bcTypes;
-    BCValues bcValues;
+    BCTypes bcTypesX, bcTypesY, bcTypesP;
+    BCValues bcValuesX, bcValuesY, bcValuesP;
 
     flowEdge = new FlowEdge[Util::scene()->edges.count()+1];
     flowEdge[0].type = PhysicFieldBC_None;
@@ -433,6 +380,38 @@ QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
             flowEdge[i+1].velocityX = edgeFlowMarker->velocityX.number;
             flowEdge[i+1].velocityY = edgeFlowMarker->velocityY.number;
             flowEdge[i+1].pressure = edgeFlowMarker->pressure.number;
+
+            switch (edgeFlowMarker->type)
+            {
+            case PhysicFieldBC_None:
+                bcTypesX.add_bc_none(i+1);
+                break;
+            case PhysicFieldBC_Flow_Wall:
+                bcTypesX.add_bc_dirichlet(i+1);
+                bcValuesX.add_const(i+1, 0.0);
+                bcTypesY.add_bc_dirichlet(i+1);
+                bcValuesY.add_const(i+1, 0.0);
+                bcTypesP.add_bc_neumann(i+1);
+                break;
+            case PhysicFieldBC_Flow_Velocity:
+                bcTypesX.add_bc_dirichlet(i+1);
+                bcValuesX.add_const(i+1, edgeFlowMarker->velocityX.number);
+                bcTypesY.add_bc_dirichlet(i+1);
+                bcValuesY.add_const(i+1, edgeFlowMarker->velocityY.number);
+                bcTypesP.add_bc_none(i+1);
+                break;
+            case PhysicFieldBC_Flow_Outlet:
+                bcTypesX.add_bc_none(i+1);
+                bcTypesY.add_bc_none(i+1);
+                bcTypesP.add_bc_none(i+1);
+                break;
+            case PhysicFieldBC_Flow_Pressure:
+                bcTypesX.add_bc_none(i+1);
+                bcTypesY.add_bc_none(i+1);
+                bcTypesP.add_bc_dirichlet(i+1);
+                bcValuesP.add_const(i+1, edgeFlowMarker->pressure.number);
+                break;
+            }
         }
     }
 
@@ -456,8 +435,8 @@ QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypes),
-                                                                  Tuple<BCValues *>(&bcValues),
+                                                                  Tuple<BCTypes *>(&bcTypesX, &bcTypesY, &bcTypesP),
+                                                                  Tuple<BCValues *>(&bcValuesX, &bcValuesY, &bcValuesP),
                                                                   callbackFlowWeakForm);
 
     delete [] flowEdge;
@@ -708,8 +687,7 @@ DSceneEdgeFlowMarker::~DSceneEdgeFlowMarker()
 void DSceneEdgeFlowMarker::createContent()
 {
     cmbType = new QComboBox(this);
-    cmbType->addItem("none", PhysicFieldBC_None);
-    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Flow_Outlet), PhysicFieldBC_Flow_Wall);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_Flow_Wall), PhysicFieldBC_Flow_Wall);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Flow_Outlet), PhysicFieldBC_Flow_Outlet);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Flow_Velocity), PhysicFieldBC_Flow_Velocity);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Flow_Pressure), PhysicFieldBC_Flow_Pressure);

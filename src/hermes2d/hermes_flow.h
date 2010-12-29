@@ -20,7 +20,6 @@
 #ifndef HERMES_FLOW_H
 #define HERMES_FLOW_H
 
-
 #include "util.h"
 #include "hermes_field.h"
 
