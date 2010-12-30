@@ -17,7 +17,7 @@
 
 #include "h2d_common.h"
 #include "weakform.h"
-#include "weakform_lexer.h"
+//#include "weakform_lexer.h"
 //#include "weakform_parser.h"
 
 /*
