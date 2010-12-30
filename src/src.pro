@@ -119,7 +119,7 @@ INCLUDEPATH += . \
 OTHER_FILES += python/agros2d.pyx \
     functions.py \
     version.xml
-linux-g++ { 
+linux-g++ {
     DEFINES += WITH_MUMPS
     DEFINES += WITH_SUPERLU
 
@@ -143,7 +143,7 @@ linux-g++ {
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
     LIBS += -lqwt-qt4
 }
-win32-g++ { 
+win32-g++ {
     INCLUDEPATH += c:/qt/mingw/include
     INCLUDEPATH += c:/Python26/include
     INCLUDEPATH += ../hermes2d/src
@@ -159,7 +159,7 @@ win32-g++ {
     LIBS += -lqwt
     LIBS += -lpython26
 }
-macx-g++ { 
+macx-g++ {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.6

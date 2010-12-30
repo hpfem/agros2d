@@ -10,7 +10,8 @@ INCLUDEPATH += src \
         src/compat \
         ../hermes_common
 
-SOURCES +=  ../hermes_common/callstack.cpp \
+SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
+            ../hermes_common/callstack.cpp \
             ../hermes_common/common.cpp \
             ../hermes_common/common_time_period.cpp \
             ../hermes_common/error.cpp \
