@@ -144,7 +144,7 @@ VolumeIntegralValue *HermesCurrent::volumeIntegralValue()
 QStringList HermesCurrent::volumeIntegralValueHeader()
 {
     QStringList headers;
-    headers << "V" << "S" << "Jx_avg" << "Jy_avg" << "J_avg" << "Ex_avg" << "Ey_avg" << "E_avg" << "Pj";
+    headers << "V" << "S" << "Pj";
     return QStringList(headers);
 }
 
