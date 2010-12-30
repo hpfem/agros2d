@@ -7,20 +7,18 @@ Requirements
 
 First install the following free packages:
 - Hermes2D (http://www.hpfem.org/hermes2d)
-- Nokia Qt 4.5 (http://www.qtsoftware.com/products)
-- Qwt 5.0 (http://qwt.sourceforge.net)
-- Triangle (http://www.cs.cmu.edu/~quake/triangle.html)
+- Nokia Qt (http://www.qtsoftware.com/products)
+- Python (http://www.python.org)
+- dxflib (http://www.ribbonsoft.com/dxflib.html)
+- Qwt (http://qwt.sourceforge.net)
+- Triangle (http://www.cs.cmu.edu/~quake/triangle.html
 - FFmpeg (http://ffmpeg.org)
 
 Install the following packages:
 
-$ sudo apt-get install libqt4-dev qt4-dev-tools python-dev libjudy-dev libsuitesparse-dev libqwt5-qt4-dev libssl-dev cython triangle-bin ffmpeg
+$ sudo apt-get install libqt4-dev libqt4-opengl-dev libqtwebkit-dev qt4-dev-tools qt4-qmake g++ cython libssl-dev libqwt5-qt4-dev triangle-bin python2.6-dev python-sphinx ffmpeg libsuitesparse-dev libjudy-dev libmumps-seq-dev libsuperlu3-dev
 
 Hermes2D is not available in debian repositories yet and so you have to compile it from source. You can also do this through dpkg-buildpackage.
-
-To compile Agros2D, you need qmake and g++:
-
-$ sudo apt-get install qmake g++
 
 Documentation
 =============

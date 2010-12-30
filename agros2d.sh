@@ -12,10 +12,11 @@ version="1.5"
 
 case "$1" in
 	help )
-		if sphinx-build -b qthelp $helpSourcePath $helpPath
-		then
-			qcollectiongenerator $helpPath/Agros2D.qhcp -o $helpPath/Agros2D.qhc
-		fi
+		sphinx-build -b html $helpSourcePath $webPath
+#		if sphinx-build -b qthelp $helpSourcePath $helpPath
+#		then
+#			qcollectiongenerator $helpPath/Agros2D.qhcp -o $helpPath/Agros2D.qhc
+#		fi
 		;;
 	help.build-web )
 		sphinx-build -b html $helpSourcePath $webPath

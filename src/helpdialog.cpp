@@ -37,7 +37,8 @@ HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
 
     createControls();
 
-    setMinimumSize(sizeHint());
+    //setMinimumSize(sizeHint());
+
     QSettings settings;
     restoreGeometry(settings.value("HelpDialog/Geometry", saveGeometry()).toByteArray());
     //splitter->restoreGeometry(settings.value("HelpDialog/SplitterGeometry", splitter->saveGeometry()).toByteArray());
