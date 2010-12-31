@@ -115,10 +115,15 @@ HEADERS = += src/common.h
 linux-g++ {
     DEFINES += WITH_MUMPS
     DEFINES += WITH_SUPERLU
+    DEFINES += HAVE_FMEMOPEN
 
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/superlu
     LIBS += -lumfpack
     LIBS += -ldmumps_seq
     LIBS += -lsuperlu
+}
+
+win32-g++ {
+    DEFINES += WIN32
 }

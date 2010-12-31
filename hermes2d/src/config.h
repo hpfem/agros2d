@@ -1,4 +1,4 @@
-#define HAVE_FMEMOPEN
+/* #define HAVE_FMEMOPEN */
 #define HAVE_LOG2
 /* #undef EXTREME_QUAD */
 
@@ -10,7 +10,7 @@
 
 /* #define WITH_UMFPACK */
 /* #undef WITH_PARDISO */
-/* *#define WITH_MUMPS */
+/* #define WITH_MUMPS */
 /* #define WITH_SUPERLU */
 /* #undef WITH_PETSC */
 /* #undef WITH_HDF5 */

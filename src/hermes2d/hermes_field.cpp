@@ -273,7 +273,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
             // assemble reference problem.
             DiscreteProblem dp(&wf, *spaceReference, isLinear);
-            dp.assemble(matrix, rhs);
+            dp.assemble(matrix, rhs, false);
 
             if(solver->solve())
                 Solution::vector_to_solutions(solver->get_solution(), *spaceReference, solutionReference);
