@@ -54,6 +54,10 @@ public:
 
   virtual scalar get_pt_value(double x, double y, int item = H2D_FN_VAL_0) = 0;
 
+  /// Virtual function handling overflows. Has to be virtual, because
+  /// the necessary iterators in the templated class do not work with GCC.
+  virtual void handle_overflow_idx();
+
 protected:
 
   int mode;
@@ -161,23 +165,34 @@ public:
   /// Multiplies the function represented by this class by the given coefficient.
   void multiply(scalar coef);
 
-  /// Returns the solution type.
-  int get_type() const { return type; };
+  /// Returns solution type.
+  ESolutionType get_type() const { return sln_type; };
+
+  /// Returns space type.
+  ESpaceType get_space_type() const { return space_type; };
+
 
 
 public:
   /// Internal.
   virtual void set_active_element(Element* e);
 
-  typedef enum { HERMES_UNDEF = -1, HERMES_SLN, HERMES_EXACT, HERMES_CONST } solution_type;
-
   /// Passes solution components calculated from solution vector as Solutions.
-  static void vector_to_solutions(scalar* solution_vector, Hermes::Tuple<Space *> spaces, Hermes::Tuple<Solution *> solutions, Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
-  static void vector_to_solution(scalar* solution_vector, Space* space, Solution* solution, bool add_dir_lift = true);
-  static void vector_to_solutions(Vector* vec, Hermes::Tuple<Space *> spaces, Hermes::Tuple<Solution*> solutions, Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
-  static void vector_to_solution(Vector* vec, Space* space, Solution* solution, bool add_dir_lift = true);
-  static void vector_to_solutions(scalar* solution_vector, Hermes::Tuple<Space *> spaces, Hermes::Tuple<Solution *> solutions, Hermes::Tuple<PrecalcShapeset *> pss, Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
-  static void vector_to_solution(scalar* solution_vector, Space* space, Solution* solution, PrecalcShapeset* pss, bool add_dir_lift = true);
+  static void vector_to_solutions(scalar* solution_vector, Hermes::Tuple<Space *> spaces, 
+                                  Hermes::Tuple<Solution *> solutions, 
+                                  Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
+  static void vector_to_solution(scalar* solution_vector, Space* space, Solution* solution, 
+                                 bool add_dir_lift = true);
+  static void vector_to_solutions(Vector* vec, Hermes::Tuple<Space *> spaces, 
+                                  Hermes::Tuple<Solution*> solutions, 
+                                  Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
+  static void vector_to_solution(Vector* vec, Space* space, Solution* solution, 
+                                 bool add_dir_lift = true);
+  static void vector_to_solutions(scalar* solution_vector, Hermes::Tuple<Space *> spaces, 
+                                  Hermes::Tuple<Solution *> solutions, Hermes::Tuple<PrecalcShapeset *> pss, 
+                                  Hermes::Tuple<bool> add_dir_lift = Hermes::Tuple<bool>());
+  static void vector_to_solution(scalar* solution_vector, Space* space, Solution* solution, 
+                                 PrecalcShapeset* pss, bool add_dir_lift = true);
 
   bool own_mesh;
 protected:
@@ -187,11 +202,20 @@ protected:
   virtual void set_coeff_vector(Space* space, PrecalcShapeset* pss, scalar* coeffs, bool add_dir_lift);
   virtual void set_coeff_vector(Space* space, scalar* coeffs, bool add_dir_lift);
 
-  solution_type type;
+  ESolutionType sln_type;
 
   bool transform;
 
-  void* tables[4][4];   ///< precalculated tables for last four used elements
+  /// Precalculated tables for last four used elements.
+  /// There is a 2-layer structure of the precalculated tables.
+  /// The first (the lowest) one is the layer where mapping of integral orders to 
+  /// Function::Node takes place. See function.h for details.
+  /// The second one is the layer with mapping of sub-element transformation to
+  /// a table from the lowest layer.
+  /// The highest layer (in contrast to the PrecalcShapeset class) is represented
+  /// here only by this array.
+  std::map<uint64_t, std::map<unsigned int, Node*>*>* tables[4][4];   
+
   Element* elems[4][4];
   int cur_elem, oldest[4];
 
@@ -201,7 +225,7 @@ protected:
   int num_coefs, num_elems;
   int num_dofs;
 
-  int space_type;
+  ESpaceType space_type;
   void transform_values(int order, Node* node, int newmask, int oldmask, int np);
 
   ExactFunction exactfn1;

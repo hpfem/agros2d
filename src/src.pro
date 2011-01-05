@@ -137,7 +137,6 @@ linux-g++ {
     LIBS += -lsuperlu
     LIBS += -lamd
     LIBS += -lblas
-    LIBS += -lJudy
     LIBS += -lpthread
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
@@ -154,7 +153,6 @@ win32-g++ {
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
-    LIBS += -lJudy
     LIBS += -lpthread
     LIBS += -lqwt
     LIBS += -lpython26
@@ -177,5 +175,4 @@ macx-g++ {
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
-    LIBS += -lJudy
 }

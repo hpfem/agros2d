@@ -41,16 +41,8 @@
   
   #ifdef WITH_MPI
     #include <mpi.h>
-  #else
-    /*
-    typedef int MPI_Comm; // Simple type for MPI communicator
-
-    int MPI_Init(int *pargc, char ***pargv);
-    int MPI_Comm_rank(int  comm, int  *rank);
-    int MPI_Finalize(void);
-    */
   #endif
-
+  
 #else
   #if !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
     typedef scalar mumps_scalar;
@@ -76,6 +68,7 @@ public:
   virtual void add(int m, int n, scalar **mat, int *rows, int *cols);
   virtual bool dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt = DF_MATLAB_SPARSE);
   virtual int get_matrix_size() const;
+  virtual int get_nnz() const;
   virtual double get_fill_in() const;
 
 protected:

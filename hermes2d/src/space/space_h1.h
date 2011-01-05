@@ -67,7 +67,7 @@ public:
 
   virtual Space* dup(Mesh* mesh) const;
 
-  virtual int get_type() const { return 0; }
+  virtual ESpaceType get_type() const { return HERMES_H1_SPACE; }
 
 protected:
 
@@ -107,7 +107,6 @@ protected:
     scalar value;
   };
 
-  HERMES_API_USED_STL_VECTOR(FixedVertex);
   std::vector<FixedVertex> fixed_vertices;
 
   inline bool is_fixed_vertex(int id) const;

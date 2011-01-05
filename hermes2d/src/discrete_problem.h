@@ -40,12 +40,10 @@ class SparseMatrix;
 class Vector;
 class Solver;
 
-/// Instantiated template. It is used to create a clean Windows DLL interface.
-HERMES_API_USED_TEMPLATE(Hermes::Tuple<ProjNormType>);
-HERMES_API_USED_TEMPLATE(Hermes::Tuple<Space*>);
-HERMES_API_USED_TEMPLATE(Hermes::Tuple<MeshFunction*>);
-HERMES_API_USED_TEMPLATE(Hermes::Tuple<Solution*>);
-HERMES_API_USED_TEMPLATE(Hermes::Tuple<PrecalcShapeset*>);
+#define NEWTON_WATCH_RESIDUAL 0x01      // A flag that enables the residual norm
+                                            // as the stop condition in Newton's iteration.
+#define NEWTON_WATCH_INCREMENTS 0x02 // A flag that enables the solution difference norm
+                                            // as the stop condition in Newton's iteration.
 
 
 /// Discrete problem class
@@ -61,6 +59,12 @@ public:
 
   // Get pointer to n-th space.
   Space* get_space(int n) {  return this->spaces[n];  }
+
+  // Get all spaces as a Hermes::Tuple.
+  Hermes::Tuple<Space *> get_spaces() {return this->spaces;}
+
+  // Get the number of spaces.
+  int get_num_spaces() {return this->spaces.size();}
 
   // This is different from H3D.
   PrecalcShapeset* get_pss(int n) {  return this->pss[n];  }
@@ -242,7 +246,15 @@ HERMES_API Space* construct_refined_space(Space* coarse, int order_increase = 1)
 
 HERMES_API double get_l2_norm(Vector* vec); 
 
-HERMES_API bool solve_newton(scalar* coeff_vec, DiscreteProblem* dp, Solver* solver, SparseMatrix* matrix,
-			     Vector* rhs, double NEWTON_TOL, int NEWTON_MAX_ITER, bool verbose);
+// New interface, still in developement
+//HERMES_API bool solve_newton(scalar* coeff_vec, DiscreteProblem* dp, Solver* solver, SparseMatrix* matrix,
+//		     Vector* rhs, double NEWTON_TOL, int NEWTON_MAX_ITER, bool verbose, unsigned int stop_condition = NEWTON_WATCH_RESIDUAL);
 
+HERMES_API bool solve_newton(scalar* coeff_vec, DiscreteProblem* dp, Solver* solver, SparseMatrix* matrix,
+			     Vector* rhs, double NEWTON_TOL, int NEWTON_MAX_ITER, bool verbose = false, 
+                             double damping_coeff = 1.0, double max_allowed_residual_norm = 1e6);
+
+HERMES_API bool solve_picard(WeakForm* wf, Space* space, Solution* sln_prev_iter,
+                             MatrixSolverType matrix_solver, double picard_tol, 
+			     int picard_max_iter, bool verbose);
 #endif

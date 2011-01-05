@@ -10,8 +10,8 @@
 
 /* #define WITH_UMFPACK */
 /* #undef WITH_PARDISO */
-/* #define WITH_MUMPS */
-/* #define WITH_SUPERLU */
+/* #undef WITH_MUMPS */
+/* #undef WITH_SUPERLU */
 /* #undef WITH_PETSC */
 /* #undef WITH_HDF5 */
 /* #undef WITH_EXODUSII */

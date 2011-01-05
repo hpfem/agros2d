@@ -18,8 +18,22 @@
 
 #include "../../hermes_common/common.h"
 
-// H2D-specific includes.
-#include <Judy.h>
+// H2D-specific things.
+#ifdef JU_WIN
+typedef __int8           int8_t;
+typedef __int16          int16_t;
+typedef __int32          int32_t;
+typedef __int64          int64_t;
+
+typedef unsigned __int8  uint8_t;
+typedef unsigned __int16 uint16_t;
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int64 uint64_t;
+
+#else
+#include <inttypes.h>
+#endif
+
 #include "auto_local_array.h"
 //#include "tuple.h"
 
@@ -48,7 +62,7 @@ extern HERMES_API int h2d_make_edge_order(int edge, int encoded_order, int mode)
 
 /* Uncomment this line to disable internal mesh compatibility 
    tests in Traverse:begin(). */ 
-//#define H2D_DISABLE_MULTIMESH_TESTS
+#define H2D_DISABLE_MULTIMESH_TESTS
 
 #endif
 

@@ -1,3 +1,10 @@
+agros2d (1.6-1ubuntu20) maverick; urgency=low
+
+  * curvilinear elements (arcs)
+  * synced with latest hermes (removed judy dependence)
+
+ -- Pavel Karban <pkarban@gmail.com>  Wen, 5 Jan 2011 12:40:00 +0200
+
 agros2d (1.5-2ubuntu19) maverick; urgency=low
 
   * improved structural mechanics
