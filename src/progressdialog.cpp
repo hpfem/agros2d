@@ -591,64 +591,67 @@ bool ProgressItemMesh::triangleToHermes2D()
 
     // curves
     QString outCurves;
-    outCurves += "curves = \n";
-    outCurves += "{ \n";
     int countCurves = 0;
-    for (int i = 0; i<edgeCount; i++)
+    if (Util::config()->curvilinearElements)
     {
-        if (edgeList[i].marker != 0)
+        outCurves += "curves = \n";
+        outCurves += "{ \n";
+        for (int i = 0; i<edgeCount; i++)
         {
-            // curve
-            if (Util::scene()->edges[edgeList[i].marker-1]->angle > 0.0)
+            if (edgeList[i].marker != 0)
             {
-                countCurves++;
-                int segments = Util::scene()->edges[edgeList[i].marker-1]->segments();
+                // curve
+                if (Util::scene()->edges[edgeList[i].marker-1]->angle > 0.0)
+                {
+                    countCurves++;
+                    int segments = Util::scene()->edges[edgeList[i].marker-1]->segments();
 
-                // subdivision angle and chord
-                double theta = deg2rad(Util::scene()->edges[edgeList[i].marker-1]->angle) / double(segments);
-                double chord = 2 * Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(theta / 2.0);
+                    // subdivision angle and chord
+                    double theta = deg2rad(Util::scene()->edges[edgeList[i].marker-1]->angle) / double(segments);
+                    double chord = 2 * Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(theta / 2.0);
 
-                // length of short chord
-                double chordShort = (nodeList[edgeList[i].node_2] - nodeList[edgeList[i].node_1]).magnitude();
+                    // length of short chord
+                    double chordShort = (nodeList[edgeList[i].node_2] - nodeList[edgeList[i].node_1]).magnitude();
 
-                // direction
-                Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
-                int direction = (((nodeList[edgeList[i].node_1].x-center.x)*(nodeList[edgeList[i].node_2].y-center.y) -
-                                  (nodeList[edgeList[i].node_1].y-center.y)*(nodeList[edgeList[i].node_2].x-center.x)) > 0) ? 1 : -1;
+                    // direction
+                    Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
+                    int direction = (((nodeList[edgeList[i].node_1].x-center.x)*(nodeList[edgeList[i].node_2].y-center.y) -
+                                      (nodeList[edgeList[i].node_1].y-center.y)*(nodeList[edgeList[i].node_2].x-center.x)) > 0) ? 1 : -1;
 
-                double angle = direction * theta * chordShort / chord;
+                    double angle = direction * theta * chordShort / chord;
 
-                outCurves += QString("\t{ %1, %2, %3 }, \n").
-                        arg(edgeList[i].node_1).
-                        arg(edgeList[i].node_2).
-                        arg(rad2deg(angle));
+                    outCurves += QString("\t{ %1, %2, %3 }, \n").
+                            arg(edgeList[i].node_1).
+                            arg(edgeList[i].node_2).
+                            arg(rad2deg(angle));
+                }
             }
         }
-    }
-    outCurves.truncate(outCurves.length()-3);
-    outCurves += "\n} \n\n";
+        outCurves.truncate(outCurves.length()-3);
+        outCurves += "\n} \n\n";
 
-    // move nodes (arcs)
-    for (int i = 0; i<edgeCount; i++)
-    {
-        if (edgeList[i].marker != 0)
+        // move nodes (arcs)
+        for (int i = 0; i<edgeCount; i++)
         {
-            // curve
-            if (Util::scene()->edges[edgeList[i].marker-1]->angle > 0.0)
+            if (edgeList[i].marker != 0)
             {
-                // angle
-                Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
-                double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node_1].y,
-                                           center.x - nodeList[edgeList[i].node_1].x) - M_PI;
+                // curve
+                if (Util::scene()->edges[edgeList[i].marker-1]->angle > 0.0)
+                {
+                    // angle
+                    Point center = Util::scene()->edges[edgeList[i].marker-1]->center();
+                    double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node_1].y,
+                                               center.x - nodeList[edgeList[i].node_1].x) - M_PI;
 
-                double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node_2].y,
-                                           center.x - nodeList[edgeList[i].node_2].x) - M_PI;
+                    double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node_2].y,
+                                               center.x - nodeList[edgeList[i].node_2].x) - M_PI;
 
-                nodeList[edgeList[i].node_1].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle1);
-                nodeList[edgeList[i].node_1].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle1);
+                    nodeList[edgeList[i].node_1].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle1);
+                    nodeList[edgeList[i].node_1].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle1);
 
-                nodeList[edgeList[i].node_2].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle2);
-                nodeList[edgeList[i].node_2].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle2);
+                    nodeList[edgeList[i].node_2].x = center.x + Util::scene()->edges[edgeList[i].marker-1]->radius() * cos(pointAngle2);
+                    nodeList[edgeList[i].node_2].y = center.y + Util::scene()->edges[edgeList[i].marker-1]->radius() * sin(pointAngle2);
+                }
             }
         }
     }

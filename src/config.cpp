@@ -78,6 +78,7 @@ void Config::load()
     edgeWidth = settings.value("SceneViewSettings/EdgeWidth", 2.0).toDouble();
     labelSize = settings.value("SceneViewSettings/LabelSize", 6.0).toDouble();
     angleSegmentsCount = settings.value("SceneViewSettings/AngleSegmentsCount", 3).toInt();
+    curvilinearElements = settings.value("SceneViewSettings/CurvilinearElements", true).toBool();
 
     // grid
     showGrid = settings.value("SceneViewSettings/ShowGrid", true).toBool();
@@ -178,6 +179,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/EdgeWidth", edgeWidth);
     settings.setValue("SceneViewSettings/LabelSize", labelSize);
     settings.setValue("SceneViewSettings/AngleSegmentsCount", angleSegmentsCount);
+    settings.setValue("SceneViewSettings/CurvilinearElements", curvilinearElements);
 
     // grid
     settings.setValue("SceneViewSettings/ShowGrid", showGrid);

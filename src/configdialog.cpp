@@ -67,6 +67,7 @@ void ConfigDialog::load()
     txtGeometryNodeSize->setValue(Util::config()->nodeSize);
     txtGeometryEdgeWidth->setValue(Util::config()->edgeWidth);
     txtGeometryLabelSize->setValue(Util::config()->labelSize);
+    chkCurvilinearElements->setChecked(Util::config()->curvilinearElements);
     chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
 
     // delete files
@@ -185,6 +186,7 @@ void ConfigDialog::save()
     Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
     Util::config()->labelSize = txtGeometryLabelSize->value();
     Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
+    Util::config()->curvilinearElements = chkCurvilinearElements->isChecked();
 
     // delete files
     Util::config()->deleteTriangleMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
@@ -421,7 +423,7 @@ QWidget *ConfigDialog::createViewWidget()
 
     // geometry
     txtGeometryAngleSegmentsCount = new QSpinBox(this);
-    txtGeometryAngleSegmentsCount->setMinimum(3);
+    txtGeometryAngleSegmentsCount->setMinimum(2);
     txtGeometryAngleSegmentsCount->setMaximum(20);
     txtGeometryAngleSegmentsCount->setMaximumWidth(60);
     txtGeometryNodeSize = new SLineEditDouble();
@@ -430,8 +432,8 @@ QWidget *ConfigDialog::createViewWidget()
     txtGeometryEdgeWidth->setMaximumWidth(60);
     txtGeometryLabelSize = new SLineEditDouble();
     txtGeometryLabelSize->setMaximumWidth(60);
-
     chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
+    chkCurvilinearElements = new QCheckBox("Curvilinear elements");
 
     QGridLayout *layoutGeometry = new QGridLayout();
     layoutGeometry->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
@@ -443,6 +445,7 @@ QWidget *ConfigDialog::createViewWidget()
     layoutGeometry->addWidget(new QLabel(tr("Label size:")), 1, 2);
     layoutGeometry->addWidget(txtGeometryLabelSize, 1, 3);
     layoutGeometry->addWidget(chkZoomToMouse, 2, 0, 1, 4);
+    layoutGeometry->addWidget(chkCurvilinearElements, 3, 0, 1, 4);
 
     QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
     grpGeometry->setLayout(layoutGeometry);

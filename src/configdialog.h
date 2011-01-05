@@ -92,6 +92,7 @@ private:
     SLineEditDouble *txtGeometryNodeSize;
     SLineEditDouble *txtGeometryEdgeWidth;
     SLineEditDouble *txtGeometryLabelSize;
+    QCheckBox *chkCurvilinearElements;
 
     // colors
     ColorButton *colorBackground;

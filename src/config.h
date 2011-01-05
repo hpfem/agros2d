@@ -47,6 +47,7 @@ public:
     double edgeWidth;
     double labelSize;
     int angleSegmentsCount;
+    bool curvilinearElements;
 
     // zoom
     bool zoomToMouse;
