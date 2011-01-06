@@ -213,7 +213,7 @@ void ConfigDialog::save()
     Util::config()->colorHighlighted = colorHighlighted->color();
     Util::config()->colorSelected = colorSelected->color();
 
-    // grid   
+    // grid
     Util::config()->showGrid = chkShowGrid->isChecked();
     Util::config()->gridStep = txtGridStep->text().toDouble();
     Util::config()->showRulers = chkRulers->isChecked();
@@ -393,7 +393,7 @@ QWidget *ConfigDialog::createMainWidget()
     chkEnabledProgressLog = new QCheckBox(tr("Enabled progress log"));
 
     QHBoxLayout *layoutClearCommandHistory = new QHBoxLayout();
-    layoutClearCommandHistory->addWidget(cmdClearCommandHistory);    
+    layoutClearCommandHistory->addWidget(cmdClearCommandHistory);
     layoutClearCommandHistory->addStretch();
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
@@ -468,7 +468,7 @@ QWidget *ConfigDialog::createViewWidget()
     txtMeshAngleSegmentsCount->setMinimum(2);
     txtMeshAngleSegmentsCount->setMaximum(20);
     // txtMeshAngleSegmentsCount->setMaximumWidth(60);
-    chkMeshCurvilinearElements = new QCheckBox("Curvilinear elements");
+    chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
 
     QGridLayout *layoutMesh = new QGridLayout();
     layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
@@ -863,7 +863,7 @@ ColorButton::ColorButton(QWidget *parent) : QPushButton(parent)
     logMessage("ColorButton::ColorButton()");
 
     setAutoFillBackground(false);
-    setCursor(Qt::PointingHandCursor);    
+    setCursor(Qt::PointingHandCursor);
     connect(this, SIGNAL(clicked()), this, SLOT(doClicked()));
 }
 
