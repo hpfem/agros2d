@@ -63,11 +63,11 @@ void ConfigDialog::load()
     chkLineEditValueShowResult->setChecked(Util::config()->lineEditValueShowResult);
 
     // geometry
-    txtGeometryAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
+    txtMeshAngleSegmentsCount->setValue(Util::config()->angleSegmentsCount);
     txtGeometryNodeSize->setValue(Util::config()->nodeSize);
     txtGeometryEdgeWidth->setValue(Util::config()->edgeWidth);
     txtGeometryLabelSize->setValue(Util::config()->labelSize);
-    chkCurvilinearElements->setChecked(Util::config()->curvilinearElements);
+    chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
     chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
 
     // delete files
@@ -181,12 +181,14 @@ void ConfigDialog::save()
     Util::config()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
 
     // geometry
-    Util::config()->angleSegmentsCount = txtGeometryAngleSegmentsCount->value();
     Util::config()->nodeSize = txtGeometryNodeSize->value();
     Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
     Util::config()->labelSize = txtGeometryLabelSize->value();
     Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
-    Util::config()->curvilinearElements = chkCurvilinearElements->isChecked();
+
+    // mesh
+    Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
+    Util::config()->curvilinearElements = chkMeshCurvilinearElements->isChecked();
 
     // delete files
     Util::config()->deleteTriangleMeshFiles = chkDeleteTriangleMeshFiles->isChecked();
@@ -422,30 +424,20 @@ QWidget *ConfigDialog::createViewWidget()
     logMessage("ConfigDialog::createViewWidget()");
 
     // geometry
-    txtGeometryAngleSegmentsCount = new QSpinBox(this);
-    txtGeometryAngleSegmentsCount->setMinimum(2);
-    txtGeometryAngleSegmentsCount->setMaximum(20);
-    txtGeometryAngleSegmentsCount->setMaximumWidth(60);
     txtGeometryNodeSize = new SLineEditDouble();
-    txtGeometryNodeSize->setMaximumWidth(60);
+    // txtGeometryNodeSize->setMaximumWidth(60);
     txtGeometryEdgeWidth = new SLineEditDouble();
-    txtGeometryEdgeWidth->setMaximumWidth(60);
+    // txtGeometryEdgeWidth->setMaximumWidth(60);
     txtGeometryLabelSize = new SLineEditDouble();
-    txtGeometryLabelSize->setMaximumWidth(60);
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
-    chkCurvilinearElements = new QCheckBox("Curvilinear elements");
+    // txtGeometryLabelSize->setMaximumWidth(60);
 
     QGridLayout *layoutGeometry = new QGridLayout();
-    layoutGeometry->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
-    layoutGeometry->addWidget(txtGeometryAngleSegmentsCount, 0, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 2);
-    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 3);
+    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 0);
+    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 1);
     layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
     layoutGeometry->addWidget(txtGeometryEdgeWidth, 1, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 1, 2);
-    layoutGeometry->addWidget(txtGeometryLabelSize, 1, 3);
-    layoutGeometry->addWidget(chkZoomToMouse, 2, 0, 1, 4);
-    layoutGeometry->addWidget(chkCurvilinearElements, 3, 0, 1, 4);
+    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 2, 0);
+    layoutGeometry->addWidget(txtGeometryLabelSize, 2, 1);
 
     QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
     grpGeometry->setLayout(layoutGeometry);
@@ -457,22 +449,40 @@ QWidget *ConfigDialog::createViewWidget()
     chkRulers = new QCheckBox(tr("Show rulers"));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
     chkShowAxes = new QCheckBox(tr("Show axes"));
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
 
     QGridLayout *layoutGrid = new QGridLayout();
     layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
     layoutGrid->addWidget(txtGridStep, 0, 1);
-    layoutGrid->addWidget(chkShowGrid, 0, 2);
-    layoutGrid->addWidget(chkSnapToGrid, 1, 2);
-    layoutGrid->addWidget(chkRulers, 2, 2);
-    layoutGrid->addWidget(chkShowAxes, 3, 2);
+    layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
+    layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
+    layoutGrid->addWidget(chkRulers, 3, 0, 1, 2);
+    layoutGrid->addWidget(chkShowAxes, 4, 0, 1, 2);
+    layoutGrid->addWidget(chkZoomToMouse, 5, 0, 1, 2);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
+
+    // mesh
+    txtMeshAngleSegmentsCount = new QSpinBox(this);
+    txtMeshAngleSegmentsCount->setMinimum(2);
+    txtMeshAngleSegmentsCount->setMaximum(20);
+    // txtMeshAngleSegmentsCount->setMaximumWidth(60);
+    chkMeshCurvilinearElements = new QCheckBox("Curvilinear elements");
+
+    QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
+    layoutMesh->addWidget(txtMeshAngleSegmentsCount, 0, 1);
+    layoutMesh->addWidget(chkMeshCurvilinearElements, 1, 0, 1, 2);
+
+    QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
+    grpMesh->setLayout(layoutMesh);
 
     // layout general
     QVBoxLayout *layoutGeneral = new QVBoxLayout();
     layoutGeneral->addWidget(grpGeometry);
     layoutGeneral->addWidget(grpGrid);
+    layoutGeneral->addWidget(grpMesh);
     layoutGeneral->addStretch();
 
     QWidget *widgetGeneral = new QWidget(this);

@@ -77,6 +77,8 @@ void Config::load()
     nodeSize = settings.value("SceneViewSettings/NodeSize", 6.0).toDouble();
     edgeWidth = settings.value("SceneViewSettings/EdgeWidth", 2.0).toDouble();
     labelSize = settings.value("SceneViewSettings/LabelSize", 6.0).toDouble();
+
+    // mesh
     angleSegmentsCount = settings.value("SceneViewSettings/AngleSegmentsCount", 3).toInt();
     curvilinearElements = settings.value("SceneViewSettings/CurvilinearElements", true).toBool();
 
@@ -178,6 +180,8 @@ void Config::save()
     settings.setValue("SceneViewSettings/NodeSize", nodeSize);
     settings.setValue("SceneViewSettings/EdgeWidth", edgeWidth);
     settings.setValue("SceneViewSettings/LabelSize", labelSize);
+
+    // mesh
     settings.setValue("SceneViewSettings/AngleSegmentsCount", angleSegmentsCount);
     settings.setValue("SceneViewSettings/CurvilinearElements", curvilinearElements);
 

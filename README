@@ -16,7 +16,7 @@ First install the following free packages:
 
 Install the following packages:
 
-$ sudo apt-get install libqt4-dev libqt4-opengl-dev libqtwebkit-dev qt4-dev-tools qt4-qmake g++ cython libssl-dev libqwt5-qt4-dev triangle-bin python2.6-dev python-sphinx ffmpeg libsuitesparse-dev libjudy-dev libmumps-seq-dev libsuperlu3-dev
+$ sudo apt-get install libqt4-dev libqt4-opengl-dev libqtwebkit-dev qt4-dev-tools qt4-qmake g++ cython libssl-dev libqwt5-qt4-dev triangle-bin python2.6-dev python-sphinx ffmpeg libsuitesparse-dev libmumps-seq-dev libsuperlu3-dev
 
 Hermes2D is not available in debian repositories yet and so you have to compile it from source. You can also do this through dpkg-buildpackage.
 

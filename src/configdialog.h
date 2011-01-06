@@ -88,11 +88,11 @@ private:
     QCheckBox *chkZoomToMouse;
 
     // geometry
-    QSpinBox *txtGeometryAngleSegmentsCount;
+    QSpinBox *txtMeshAngleSegmentsCount;
     SLineEditDouble *txtGeometryNodeSize;
     SLineEditDouble *txtGeometryEdgeWidth;
     SLineEditDouble *txtGeometryLabelSize;
-    QCheckBox *chkCurvilinearElements;
+    QCheckBox *chkMeshCurvilinearElements;
 
     // colors
     ColorButton *colorBackground;

@@ -284,10 +284,13 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             OGProjection::project_global(space, solutionReference, solution, matrixSolver);
 
             // Calculate element errors and total error estimate.
-            Adapt* adaptivity = new Adapt(space, projNormType);
-            bool solutionsForAdapt = true;
-            error = adaptivity->calc_err_est(solution, solutionReference, solutionsForAdapt,
-                                             HERMES_TOTAL_ERROR_REL | HERMES_ELEMENT_ERROR_REL) * 100;
+            Adapt *adaptivity = new Adapt(space, projNormType);
+
+            // Calculate error estimate for each solution component and the total error estimate.
+            Hermes::Tuple<double> err_est_rel;
+            error = adaptivity->calc_err_est(solution,
+                                             solutionReference,
+                                             &err_est_rel) * 100;
 
             // emit signal
             progressItemSolve->emitMessage(QObject::tr("Relative error: %1%\t(step: %2/%3, DOFs: %4)").
