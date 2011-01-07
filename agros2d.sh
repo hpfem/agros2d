@@ -36,11 +36,11 @@ case "$1" in
 	comp )
 		if qmake ./agros2d.pro ; then make ; fi
 		;;
-	pack.build-binary )
+	build-binary )
 		if [ -e ../agros2d_* ] ; then rm ../agros2d_* ; fi
 		dpkg-buildpackage -sgpg -rfakeroot
 		;;
-	pack.build-source )
+	build-source )
 		./agros2d.sh help
 		./agros2d.sh lang
 		
@@ -80,7 +80,14 @@ case "$1" in
 		echo "Run 'debuild -S -sa'"
 		echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload"
 		;;
+	upload )
+		./agros2d.sh build-source
+		cd $temporaryDirectory/agros2d-$version
+		debuild -S -sa
+		echo "Run 'dput ppa:pkarban/agros2dunstable *.changes' for upload unstable"
+		echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload"
+		;;		
 	* )
-		echo "Usage: agros2d.sh\n  [help - build and generate help]\n  [help.build-web - build online help]\n  [help.build-latex - build latex documentation]\n  [lang - release language files]\n  [lang.update - update language files]\n  [lang.update-noobsolete - update language files without obsolete translations]\n  [comp - compile]\n  [pack.build-binary - build binary package]\n  [pack.build-source - build source package]"
+		echo "Usage: agros2d.sh\n  [help - build and generate help]\n  [help.build-web - build online help]\n  [help.build-latex - build latex documentation]\n  [lang - release language files]\n  [lang.update - update language files]\n  [lang.update-noobsolete - update language files without obsolete translations]\n  [comp - compile]\n  [build-binary - build binary package]\n  [build-source - build source package]\n  [upload - prepare package for upload]"
 		;;
 esac

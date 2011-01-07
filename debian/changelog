@@ -1,4 +1,4 @@
-agros2d (1.6-1ubuntu22) maverick; urgency=low
+agros2d (1.6-1ubuntu23) maverick; urgency=low
 
   * curvilinear elements (arcs)
   * synced with latest hermes (removed judy dependence)
