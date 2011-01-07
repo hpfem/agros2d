@@ -50,6 +50,7 @@ private:
     QStackedWidget *pages;
     QWidget *panMain;
     QWidget *panView;
+    QWidget *panSolver;
     QWidget *panColors;
     QWidget *panAdvanced;
     QWidget *panGlobalScriptWidget;
@@ -172,6 +173,7 @@ private:
     void createControls();
     QWidget *createMainWidget();
     QWidget *createViewWidget();
+    QWidget *createSolverWidget();
     QWidget *createColorsWidget();
     QWidget *createAdvancedWidget();
     QWidget *createGlobalScriptWidget();
