@@ -77,14 +77,14 @@ void callbackFlowWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
     if (analysisType == AnalysisType_Transient)
-        ; // wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM, HERMES_ANY, slnArray);
+        ; // wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_NONSYM, HERMES_ANY, slnArray);
     else
-        wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM);
+        wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_NONSYM);
     wf->add_matrix_form(1, 1, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
     if (analysisType == AnalysisType_Transient)
-        ; // wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM, slnArray);
+        ; // wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_NONSYM, slnArray);
     else
-        wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_UNSYM);
+        wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_NONSYM);
     wf->add_matrix_form(0, 2, callback(bilinear_form_unsym_0_2), HERMES_ANTISYM);
     wf->add_matrix_form(1, 2, callback(bilinear_form_unsym_1_2), HERMES_ANTISYM);
     if (analysisType == AnalysisType_Transient)

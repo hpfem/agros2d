@@ -177,6 +177,14 @@ void PetscMatrix::add(int m, int n, scalar v) {
 #endif
 }
 
+/// Add a number to each diagonal entry.
+void PetscMatrix::add_to_diagonal(scalar v) 
+{
+  for (int i=0; i<size; i++) {
+    add(i, i, v);
+  }
+};
+
 void PetscMatrix::add(int m, int n, scalar **mat, int *rows, int *cols) {
   _F_
 #ifdef WITH_PETSC
@@ -207,7 +215,7 @@ int PetscMatrix::get_nnz() const {
 
 double PetscMatrix::get_fill_in() const {
   _F_
-    return (double) nnz / ((double)size*size);
+  return (double) nnz / ((double)size*size);
 }
 
 // PETSc vector //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,6 +288,18 @@ void PetscVector::zero() {
   VecZeroEntries(vec);
 #endif
 }
+
+void PetscVector::change_sign() {
+  _F_
+#ifdef WITH_PETSC
+  scalar y = 0;
+  for (int idx = 0; idx < n; idx++) {
+    VecGetValues(vec, 1, &idx, &y);
+    VecSetValue(vec, idx, (PetscScalar) y, INSERT_VALUES);
+  }
+#endif
+}
+
 
 void PetscVector::set(int idx, scalar y) {
   _F_

@@ -145,7 +145,7 @@ scalar PardisoMatrix::get(int m, int n)
 
 void PardisoMatrix::zero() {
   _F_
-    memset(Ax, 0, sizeof(scalar) * nnz);
+  memset(Ax, 0, sizeof(scalar) * nnz);
 }
 
 void PardisoMatrix::add(int m, int n, scalar v) {
@@ -161,6 +161,14 @@ void PardisoMatrix::add(int m, int n, scalar v) {
     Ax[Ap[m]+pos] += v;
   }
 }
+
+/// Add a number to each diagonal entry.
+void PardisoMatrix::add_to_diagonal(scalar v) 
+{
+  for (int i=0; i<size; i++) {
+    add(i, i, v);
+  }
+};
 
 void PardisoMatrix::add(int m, int n, scalar **mat, int *rows, int *cols) 
 {
@@ -265,6 +273,11 @@ void PardisoVector::zero()
 {
   _F_
   memset(v, 0, size * sizeof(scalar));
+}
+
+void PardisoVector::change_sign() {
+  _F_
+  for (int i = 0; i < size; i++) v[i] *= -1.;
 }
 
 void PardisoVector::free() 

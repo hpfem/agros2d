@@ -148,6 +148,15 @@ void SuperLUMatrix::add(int m, int n, scalar v)
   }
 }
 
+/// Add a number to each diagonal entry.
+void SuperLUMatrix::add_to_diagonal(scalar v) 
+{
+  for (int i=0; i<size; i++) {
+    add(i, i, v);
+  }
+};
+
+
 void SuperLUMatrix::add(int m, int n, scalar **mat, int *rows, int *cols)
 {
   _F_
@@ -250,6 +259,18 @@ void SuperLUVector::zero()
   memset(v, 0, size * sizeof(slu_scalar));
 }
 
+void SuperLUVector::change_sign()
+{
+  _F_
+#if !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+  for (int i = 0; i < size; i++) v[i] *= -1.;
+#else
+  for (int i = 0; i < size; i++) {
+    v[i].r *= -1.;
+    v[i].i *= -1.;
+  }
+#endif
+}
 void SuperLUVector::free()
 {
   _F_
