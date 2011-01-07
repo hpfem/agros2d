@@ -278,6 +278,7 @@ void ConfigDialog::createControls()
 
     panMain = createMainWidget();
     panView = createViewWidget();
+    panSolver = createSolverWidget();
     panColors = createColorsWidget();
     panGlobalScriptWidget = createGlobalScriptWidget();
     panAdvanced = createAdvancedWidget();
@@ -302,6 +303,10 @@ void ConfigDialog::createControls()
     itemView->setTextAlignment(Qt::AlignHCenter);
     itemView->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
+    QListWidgetItem *itemSolver = new QListWidgetItem(icon("options-solver"), tr("Solver"), lstView);
+    itemSolver->setTextAlignment(Qt::AlignHCenter);
+    itemSolver->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
     QListWidgetItem *itemColors = new QListWidgetItem(icon("options-colors"), tr("Colors"), lstView);
     itemColors->setTextAlignment(Qt::AlignHCenter);
     itemColors->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -316,6 +321,7 @@ void ConfigDialog::createControls()
 
     pages->addWidget(panMain);
     pages->addWidget(panView);
+    pages->addWidget(panSolver);
     pages->addWidget(panColors);
     pages->addWidget(panGlobalScriptWidget);
     pages->addWidget(panAdvanced);
@@ -364,23 +370,6 @@ QWidget *ConfigDialog::createMainWidget()
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
 
-    // solver layout
-    chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
-    chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
-#ifdef BETA
-    chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
-#endif
-
-    QVBoxLayout *layoutSolver = new QVBoxLayout();
-    layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
-    layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
-#ifdef BETA
-    layoutSolver->addWidget(chkSaveWithSolution);
-#endif
-
-    QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
-    grpSolver->setLayout(layoutSolver);
-
     // other layout
     cmdClearCommandHistory = new QPushButton(mainWidget);
     cmdClearCommandHistory->setText(tr("Clear command history"));
@@ -410,7 +399,6 @@ QWidget *ConfigDialog::createMainWidget()
     // layout
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpGeneral);
-    layout->addWidget(grpSolver);
     layout->addWidget(grpOther);
     layout->addStretch();
 
@@ -463,26 +451,10 @@ QWidget *ConfigDialog::createViewWidget()
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
 
-    // mesh
-    txtMeshAngleSegmentsCount = new QSpinBox(this);
-    txtMeshAngleSegmentsCount->setMinimum(2);
-    txtMeshAngleSegmentsCount->setMaximum(20);
-    // txtMeshAngleSegmentsCount->setMaximumWidth(60);
-    chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
-
-    QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
-    layoutMesh->addWidget(txtMeshAngleSegmentsCount, 0, 1);
-    layoutMesh->addWidget(chkMeshCurvilinearElements, 1, 0, 1, 2);
-
-    QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
-    grpMesh->setLayout(layoutMesh);
-
     // layout general
     QVBoxLayout *layoutGeneral = new QVBoxLayout();
     layoutGeneral->addWidget(grpGeometry);
     layoutGeneral->addWidget(grpGrid);
-    layoutGeneral->addWidget(grpMesh);
     layoutGeneral->addStretch();
 
     QWidget *widgetGeneral = new QWidget(this);
@@ -609,6 +581,54 @@ QWidget *ConfigDialog::createViewWidget()
     tabType->addTab(widgetPostprocessor, icon(""), tr("Postprocessor"));
 
     return tabType;
+}
+
+QWidget *ConfigDialog::createSolverWidget()
+{
+    logMessage("ConfigDialog::createSolverWidget()");
+
+    QWidget *solverWidget = new QWidget(this);
+
+    // solver
+    chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
+    chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
+#ifdef BETA
+    chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
+#endif
+
+    QVBoxLayout *layoutSolver = new QVBoxLayout();
+    layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
+    layoutSolver->addWidget(chkDeleteHermes2DMeshFile);
+#ifdef BETA
+    layoutSolver->addWidget(chkSaveWithSolution);
+#endif
+
+    QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
+    grpSolver->setLayout(layoutSolver);
+
+    // mesh
+    txtMeshAngleSegmentsCount = new QSpinBox(this);
+    txtMeshAngleSegmentsCount->setMinimum(2);
+    txtMeshAngleSegmentsCount->setMaximum(20);
+    chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
+
+    QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 0, 0);
+    layoutMesh->addWidget(txtMeshAngleSegmentsCount, 0, 1);
+    layoutMesh->addWidget(chkMeshCurvilinearElements, 1, 0, 1, 2);
+
+    QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
+    grpMesh->setLayout(layoutMesh);
+
+    // layout
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(grpSolver);
+    layout->addWidget(grpMesh);
+    layout->addStretch();
+
+    solverWidget->setLayout(layout);
+
+    return solverWidget;
 }
 
 QWidget *ConfigDialog::createColorsWidget()
