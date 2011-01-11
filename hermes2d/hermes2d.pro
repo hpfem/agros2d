@@ -22,6 +22,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             ../hermes_common/Teuchos_stacktrace.hpp \
             ../hermes_common/trace.cpp \
             ../hermes_common/utils.cpp \
+            ../hermes_common/butcher_tables.cpp \
             ../hermes_common/tables.cpp \
             ../hermes_common/solver/amesos.cpp \
             ../hermes_common/solver/aztecoo.cpp \
@@ -66,6 +67,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/norm.cpp \
             src/precalc.cpp \
             src/refinement_type.cpp \
+            src/runge_kutta.cpp \
             src/solution.cpp \
             src/traverse.cpp \
             src/adapt/adapt.cpp \

@@ -17,12 +17,14 @@
 #define HERMES_REPORT_WARN
 
 #include "h2d_common.h"
+#include "integrals_h1.h"
 #include "limit_order.h"
 #include "discrete_problem.h"
 #include "traverse.h"
 #include "space/space.h"
 #include "precalc.h"
 #include "../../hermes_common/matrix.h"
+#include "../../hermes_common/solver/umfpack_solver.h"
 #include "refmap.h"
 #include "solution.h"
 #include "config.h"
@@ -64,7 +66,7 @@ DiscreteProblem::DiscreteProblem(WeakForm* wf, Hermes::Tuple<Space *> spaces,
 {
   _F_
   // Sanity checks.
-  if ( spaces.size() != (unsigned) wf->get_neq()) error("Bad number of spaces in DiscreteProblem.");
+  if (spaces.size() != (unsigned) wf->get_neq()) error("Bad number of spaces in DiscreteProblem.");
   if (spaces.size() > 0) have_spaces = true;
   else error("Zero number of spaces in DiscreteProblem.");
 
@@ -169,7 +171,8 @@ bool DiscreteProblem::is_up_to_date()
 //// matrix creation ///////////////////////////////////////////////////////////////////////////////
 
 // This functions is identical in H2D and H3D.
-void DiscreteProblem::create(SparseMatrix* mat, Vector* rhs, bool rhsonly, Table* block_weights)
+void DiscreteProblem::create(SparseMatrix* mat, Vector* rhs, bool rhsonly, 
+                             bool force_diagonal_blocks, Table* block_weights)
 {
   _F_
 
@@ -209,7 +212,7 @@ void DiscreteProblem::create(SparseMatrix* mat, Vector* rhs, bool rhsonly, Table
 
     AUTOLA_CL(AsmList, al, wf->get_neq());
     AUTOLA_OR(Mesh*, meshes, wf->get_neq());
-    bool **blocks = wf->get_blocks();
+    bool **blocks = wf->get_blocks(force_diagonal_blocks);
 
     // Init multi-mesh traversal.
     for (int i = 0; i < wf->get_neq(); i++) meshes[i] = spaces[i]->get_mesh();
@@ -261,10 +264,16 @@ void DiscreteProblem::create(SparseMatrix* mat, Vector* rhs, bool rhsonly, Table
         // Pre-add into the stiffness matrix.
         for (int m = 0; m < wf->get_neq(); m++) {
           for(int el = 0; el < wf->get_neq(); el++) {
-            // Do not include blocks with zero weight.
-            if (block_weights != NULL) {
-              if (fabs(block_weights->get_A(m, el)) < 1e-12) continue;
-            } 
+
+            // Do not include blocks with zero weight except if 
+            // (force_diagonal_blocks == true && this is a diagonal block).
+            bool is_diagonal_block = (m == el);
+            if (is_diagonal_block == false || force_diagonal_blocks == false) {
+              if (block_weights != NULL) {
+                if (fabs(block_weights->get_A(m, el)) < 1e-12) continue;
+              } 
+            }
+
             for(int ed = 0; ed < num_edges; ed++) {
               for(int neigh = 0; neigh < neighbor_elems_counts[el][ed]; neigh++) {
                 if ((blocks[m][el] || blocks[el][m]) && e[m] != NULL)  {
@@ -274,20 +283,23 @@ void DiscreteProblem::create(SparseMatrix* mat, Vector* rhs, bool rhsonly, Table
                   
                   // pretend assembling of the element stiffness matrix
                   // register nonzero elements
-                  for (int i = 0; i < am->cnt; i++)
-                    if (am->dof[i] >= 0)
-                      for (int j = 0; j < an->cnt; j++)
-                        if (an->dof[j] >= 0)
-                        {
+                  for (int i = 0; i < am->cnt; i++) {
+                    if (am->dof[i] >= 0) {
+                      for (int j = 0; j < an->cnt; j++) {
+                        if (an->dof[j] >= 0) {
                           if(blocks[m][el]) mat->pre_add_ij(am->dof[i], an->dof[j]);
                           if(blocks[el][m]) mat->pre_add_ij(an->dof[j], am->dof[i]);
                         }
+                      }
+                    }
+                  }
                   delete an;
                 }
               }
             }
 	  }
         }
+
         // Deallocation an array of arrays of neighboring elements for every mesh x edge.
         for(int el = 0; el < wf->get_neq(); el++) {
           for(int ed = 0; ed < num_edges; ed++)
@@ -305,20 +317,30 @@ void DiscreteProblem::create(SparseMatrix* mat, Vector* rhs, bool rhsonly, Table
       // Go through all equation-blocks of the local stiffness matrix.
       for (int m = 0; m < wf->get_neq(); m++) {
         for (int n = 0; n < wf->get_neq(); n++) {
-          // Do not include blocks with zero weight.
-          if (block_weights != NULL) {
-            if (fabs(block_weights->get_A(m, n)) < 1e-12) continue;
-          } 
+
+          // Do not include blocks with zero weight except if 
+          // (force_diagonal_blocks == true && this is a diagonal block).
+          bool is_diagonal_block = (m == n);
+          if (is_diagonal_block == false || force_diagonal_blocks == false) {
+            if (block_weights != NULL) {
+              if (fabs(block_weights->get_A(m, n)) < 1e-12) continue;
+            } 
+	  }
+
           if (blocks[m][n] && e[m] != NULL && e[n] != NULL) {
             AsmList *am = &(al[m]);
             AsmList *an = &(al[n]);
 
             // Pretend assembling of the element stiffness matrix.
-            for (int i = 0; i < am->cnt; i++)
-              if (am->dof[i] >= 0)
-                for (int j = 0; j < an->cnt; j++)
-                  if (an->dof[j] >= 0)
+            for (int i = 0; i < am->cnt; i++) {
+              if (am->dof[i] >= 0) {
+                for (int j = 0; j < an->cnt; j++) {
+                  if (an->dof[j] >= 0) {
                     mat->pre_add_ij(am->dof[i], an->dof[j]);
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -348,16 +370,18 @@ void DiscreteProblem::create(SparseMatrix* mat, Vector* rhs, bool rhsonly, Table
 
 // Light version for linear problems.
 // The Table is here for optional weighting of matrix blocks in systems.
-void DiscreteProblem::assemble(SparseMatrix* mat, Vector* rhs, bool rhsonly, Table* block_weights) 
+void DiscreteProblem::assemble(SparseMatrix* mat, Vector* rhs, bool rhsonly, 
+                               bool force_diagonal_blocks, Table* block_weights) 
 {
   _F_
-  assemble(NULL, mat, rhs, rhsonly, block_weights);
+  assemble(NULL, mat, rhs, rhsonly, force_diagonal_blocks, block_weights);
 }
 
 // General assembling function for nonlinear problems. For linear problems use the 
 // light version above.
 // The Table is here for optional weighting of matrix blocks in systems.
-void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs, bool rhsonly, Table* block_weights)
+void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs, bool rhsonly, 
+                               bool force_diagonal_blocks, Table* block_weights)
 {
   /* BEGIN IDENTICAL CODE WITH H3D */
 
@@ -368,17 +392,24 @@ void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs
   {
     if (this->spaces[i] == NULL) error("A space is NULL in assemble().");
   }
- 
-  this->create(mat, rhs, rhsonly, block_weights);
+  if (block_weights != NULL) {
+    if (block_weights->get_size() != this->wf->get_neq())
+      error ("Bad dimension of block scaling table in DiscreteProblem::assemble().");
+  } 
+
+  // Creating matrix sparse structure
+  this->create(mat, rhs, rhsonly, force_diagonal_blocks, block_weights);
 
   // Convert the coefficient vector 'coeff_vec' into solutions Hermes::Tuple 'u_ext'.
   Hermes::Tuple<Solution*> u_ext;
-  for (int i = 0; i < this->wf->get_neq(); i++) 
-  {
-    u_ext.push_back(new Solution(this->spaces[i]->get_mesh()));
-    if (coeff_vec != NULL) Solution::vector_to_solution(coeff_vec, this->spaces[i], u_ext[i]);
-    else u_ext[i]->set_zero(this->spaces[i]->get_mesh());
+  if (coeff_vec != NULL) {
+    for (int i = 0; i < this->wf->get_neq(); i++) 
+    {
+      u_ext.push_back(new Solution(this->spaces[i]->get_mesh()));
+      Solution::vector_to_solution(coeff_vec, this->spaces[i], u_ext[i]);
+    }
   }
+  else for (int i = 0; i < this->wf->get_neq(); i++) u_ext.push_back(NULL);
  
   /* END IDENTICAL CODE WITH H3D */
 
@@ -482,6 +513,7 @@ void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs
         {
           WeakForm::MatrixFormVol* mfv = s->mfvol[ww];
           if (isempty[mfv->i] || isempty[mfv->j]) continue;
+          if (fabs(mfv->scaling_factor) < 1e-12) continue;
           if (mfv->area != HERMES_ANY && !wf->is_in_area(marker, mfv->area)) continue;
           int m = mfv->i;  
           int n = mfv->j;  
@@ -608,6 +640,7 @@ void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs
         {
           WeakForm::VectorFormVol* vfv = s->vfvol[ww];
           if (isempty[vfv->i]) continue;
+          if (fabs(vfv->scaling_factor) < 1e-12) continue;
           if (vfv->area != HERMES_ANY && !wf->is_in_area(marker, vfv->area)) continue;
           int m = vfv->i;  
           fv = spss[m];    // H3D uses fv = test_fn + m;
@@ -663,6 +696,7 @@ void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs
             {
               WeakForm::MatrixFormSurf* mfs = s->mfsurf[ww];
               if (isempty[mfs->i] || isempty[mfs->j]) continue;
+              if (fabs(mfs->scaling_factor) < 1e-12) continue;
               if (mfs->area == H2D_DG_INNER_EDGE) continue;
               if (mfs->area != HERMES_ANY && mfs->area != H2D_DG_BOUNDARY_EDGE && !wf->is_in_area(marker, mfs->area)) continue;
               int m = mfs->i;  
@@ -725,6 +759,7 @@ void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs
             {
               WeakForm::VectorFormSurf* vfs = s->vfsurf[ww];
               if (isempty[vfs->i]) continue;
+              if (fabs(vfs->scaling_factor) < 1e-12) continue;
               if (vfs->area == H2D_DG_INNER_EDGE) continue;
               if (vfs->area != HERMES_ANY && vfs->area != H2D_DG_BOUNDARY_EDGE && !wf->is_in_area(marker, vfs->area)) continue;
               int m = vfs->i;  
@@ -767,6 +802,7 @@ void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs
               WeakForm::MatrixFormSurf* mfs = s->mfsurf[ww];
               
               if (isempty[mfs->i] || isempty[mfs->j]) continue;         
+              if (fabs(mfs->scaling_factor) < 1e-12) continue;
               if (mfs->area != H2D_DG_INNER_EDGE) continue;
               
               int m = mfs->i;    
@@ -864,6 +900,7 @@ void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs
               WeakForm::VectorFormSurf* vfs = s->vfsurf[ww];
               
               if (isempty[vfs->i]) continue;
+              if (fabs(vfs->scaling_factor) < 1e-12) continue;
               if (vfs->area != H2D_DG_INNER_EDGE) continue;
               
               int m = vfs->i;
@@ -949,7 +986,7 @@ void DiscreteProblem::assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Initialize integration order for external functions
-ExtData<Ord>* DiscreteProblem::init_ext_fns_ord(std::vector<MeshFunction *> &ext)
+ExtData<Ord>* DiscreteProblem::init_ext_fns_ord(Hermes::Tuple<MeshFunction *> &ext)
 {
   _F_
   ExtData<Ord>* fake_ext = new ExtData<Ord>;
@@ -963,7 +1000,7 @@ ExtData<Ord>* DiscreteProblem::init_ext_fns_ord(std::vector<MeshFunction *> &ext
 }
 
 // Initialize external functions (obtain values, derivatives,...)
-ExtData<scalar>* DiscreteProblem::init_ext_fns(std::vector<MeshFunction *> &ext, RefMap *rm, const int order)
+ExtData<scalar>* DiscreteProblem::init_ext_fns(Hermes::Tuple<MeshFunction *> &ext, RefMap *rm, const int order)
 {
   _F_
   ExtData<scalar>* ext_data = new ExtData<scalar>;
@@ -980,7 +1017,7 @@ ExtData<scalar>* DiscreteProblem::init_ext_fns(std::vector<MeshFunction *> &ext,
 }
 
 // Initialize integration order on a given edge for external functions
-ExtData<Ord>* DiscreteProblem::init_ext_fns_ord(std::vector<MeshFunction *> &ext, int edge)
+ExtData<Ord>* DiscreteProblem::init_ext_fns_ord(Hermes::Tuple<MeshFunction *> &ext, int edge)
 {
   _F_
   ExtData<Ord>* fake_ext = new ExtData<Ord>;
@@ -995,7 +1032,7 @@ ExtData<Ord>* DiscreteProblem::init_ext_fns_ord(std::vector<MeshFunction *> &ext
 
 // Initialize discontinuous external functions (obtain values, derivatives,... on both sides of the 
 // supplied NeighborSearch's active edge).
-ExtData<scalar>* DiscreteProblem::init_ext_fns(std::vector<MeshFunction *> &ext, NeighborSearch* nbs)
+ExtData<scalar>* DiscreteProblem::init_ext_fns(Hermes::Tuple<MeshFunction *> &ext, NeighborSearch* nbs)
 {  
   Func<scalar>** ext_fns = new Func<scalar>*[ext.size()];
   for(unsigned int j = 0; j < ext.size(); j++)
@@ -1009,7 +1046,7 @@ ExtData<scalar>* DiscreteProblem::init_ext_fns(std::vector<MeshFunction *> &ext,
 }
 
 // Initialize integration order for discontinuous external functions.
-ExtData<Ord>* DiscreteProblem::init_ext_fns_ord(std::vector<MeshFunction *> &ext, NeighborSearch* nbs)
+ExtData<Ord>* DiscreteProblem::init_ext_fns_ord(Hermes::Tuple<MeshFunction *> &ext, NeighborSearch* nbs)
 { 
   Func<Ord>** fake_ext_fns = new Func<Ord>*[ext.size()];
   for (unsigned int j = 0; j < ext.size(); j++)
@@ -1164,6 +1201,7 @@ scalar DiscreteProblem::eval_form(WeakForm::MatrixFormVol *mfv, Hermes::Tuple<So
 
   Func<double>* u = get_fn(fu, ru, order);
   Func<double>* v = get_fn(fv, rv, order);
+
   ExtData<scalar>* ext = init_ext_fns(mfv->ext, rv, order);
   
   scalar res = mfv->fn(np, jwt, prev, u, v, e, ext);
@@ -1173,6 +1211,9 @@ scalar DiscreteProblem::eval_form(WeakForm::MatrixFormVol *mfv, Hermes::Tuple<So
     if (prev[i] != NULL) prev[i]->free_fn(); delete prev[i]; 
   }
   if (ext != NULL) {ext->free(); delete ext;}
+
+  // Scaling.
+  res *= mfv->scaling_factor;
 
   return res;
 }
@@ -1283,6 +1324,9 @@ scalar DiscreteProblem::eval_form(WeakForm::VectorFormVol *vfv, Hermes::Tuple<So
   }
   if (ext != NULL) {ext->free(); delete ext;}
   
+  // Scaling.
+  res *= vfv->scaling_factor;
+
   return res;
 }
 
@@ -1391,6 +1435,9 @@ scalar DiscreteProblem::eval_form(WeakForm::MatrixFormSurf *mfs, Hermes::Tuple<S
   }
   if (ext != NULL) {ext->free(); delete ext;}
   
+  // Scaling.
+  res *= mfs->scaling_factor;
+
   return 0.5 * res; // Edges are parameterized from 0 to 1 while integration weights
                     // are defined in (-1, 1). Thus multiplying with 0.5 to correct
                     // the weights.
@@ -1493,6 +1540,9 @@ scalar DiscreteProblem::eval_form(WeakForm::VectorFormSurf *vfs, Hermes::Tuple<S
   }
   if (ext != NULL) {ext->free(); delete ext;}
   
+  // Scaling.
+  res *= vfs->scaling_factor;
+
   // Clean up.
   return 0.5 * res; // Edges are parameterized from 0 to 1 while integration weights
                     // are defined in (-1, 1). Thus multiplying with 0.5 to correct
@@ -1601,6 +1651,9 @@ scalar DiscreteProblem::eval_dg_form(WeakForm::MatrixFormSurf* mfs, Hermes::Tupl
   delete u;
   delete v;
   
+  // Scaling.
+  res *= mfs->scaling_factor;
+
   return 0.5 * res; // Edges are parameterized from 0 to 1 while integration weights
                     // are defined in (-1, 1). Thus multiplying with 0.5 to correct
                     // the weights.
@@ -1694,6 +1747,8 @@ scalar DiscreteProblem::eval_dg_form(WeakForm::VectorFormSurf* vfs, Hermes::Tupl
   }
   if (ext != NULL) {ext->free(); delete ext;}
 
+  // Scaling.
+  res *= vfs->scaling_factor;
   
   return 0.5 * res; // Edges are parametrized from 0 to 1 while integration weights
                     // are defined in (-1, 1). Thus multiplying with 0.5 to correct

@@ -51,6 +51,7 @@
 #include "error.h"
 //.
 #include "tuple.h"
+#include "tables.h"
 
 #define HERMES  "Hermes"
 
@@ -88,6 +89,24 @@ enum MatrixSolverType
    SOLVER_SUPERLU,
    SOLVER_AMESOS,
    SOLVER_AZTECOO
+};
+
+// Butcher's tables.
+enum ButcherTableType 
+{
+   Explicit_RK_1,             // Explicit Runge-Kutta RK-1, or explicit Euler method.
+   Implicit_RK_1,             // Implicit Runge-Kutta RK-1, or implicit Euler method.
+   Explicit_RK_2,             // Explicit Runge-Kutta RK-2 method.
+   Implicit_Crank_Nicolson_2, // Implicit Crank_Nicolson method.
+   Implicit_SDIRK_2,          // Implicit SDIRK-2 method.
+   Implicit_Lobatto_IIIA_2,   // Implicit Lobatto IIIA-2 method.
+   Implicit_Lobatto_IIIB_2,   // Implicit Lobatto IIIB-2 method.
+   Implicit_Lobatto_IIIC_2,   // Implicit Lobatto IIIB-2 method.
+   Explicit_RK_3,             // Explicit Runge-Kutta RK-3 method.
+   Explicit_RK_4,             // Explicit Runge-Kutta RK-4 method.
+   Implicit_Lobatto_IIIA_4,   // Implicit Lobatto IIIA-4 method.
+   Implicit_Lobatto_IIIB_4,   // Implicit Lobatto IIIB-4 method.
+   Implicit_Lobatto_IIIC_4    // Implicit Lobatto IIIB-4 method.
 };
 
 // Should be in the same order as MatrixSolverTypes above, so that the
@@ -419,6 +438,22 @@ class HERMES_API CommandLineArgs
 /** \param[in] text A text (a cause) of the exception. */
 extern HERMES_API void throw_exception(char *text);
 
+
+/// Int types handling.
+#ifdef JU_WIN
+typedef __int8           int8_t;
+typedef __int16          int16_t;
+typedef __int32          int32_t;
+typedef __int64          int64_t;
+
+typedef unsigned __int8  uint8_t;
+typedef unsigned __int16 uint16_t;
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int64 uint64_t;
+
+#else
+#include <inttypes.h>
+#endif
 
 #endif
 
