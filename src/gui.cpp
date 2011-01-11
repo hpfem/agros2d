@@ -286,10 +286,13 @@ void Chart::saveImage(const QString &fileName)
 {
     logMessage("Chart::saveImage()");
 
+    QSettings settings;
+    QString dir = settings.value("General/LastImageDir").toString();
+
     QString fileNameTemp;
     if (fileName.isEmpty())
     {
-        fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", tr("PNG files (*.png)"));
+        fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, tr("PNG files (*.png)"));
     }
     else
     {
@@ -303,6 +306,8 @@ void Chart::saveImage(const QString &fileName)
 
         QImage imageChart = image();
         imageChart.save(fileNameTemp, "PNG");
+
+        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
 }
 
@@ -699,8 +704,16 @@ void ImageLoaderDialog::doLoadFile()
 {
     logMessage("ImageLoaderDialog::doLoadFile()");
 
+    QSettings settings;
+    QString dir = settings.value("General/LastImageDir").toString();
+
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), m_fileName, tr("Images (*.png *.bmp *.jpg)"));
-    doLoadFile(fileName);
+    if (!fileName.isEmpty())
+    {
+        doLoadFile(fileName);
+        QFileInfo fileInfo(fileName);
+        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+    }
 }
 
 void ImageLoaderDialog::doLoadFile(const QString &fileName)

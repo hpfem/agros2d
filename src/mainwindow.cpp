@@ -639,11 +639,12 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 {
     logMessage("MainWindow::doDocumentOpen()");
 
+    QSettings settings;
     QString fileNameDocument;
+
     if (fileName.isEmpty())
     {
-        QSettings settings;
-        QString dir = settings.value("General/LastDataDir", "data").toString();
+        QString dir = settings.value("General/LastProblemDir", "data").toString();
 
         fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)"));
     }
@@ -664,6 +665,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             if (!result.isError())
             {
                 setRecentFiles();
+                settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
 
                 sceneView->actSceneModeNode->trigger();
                 sceneView->doZoomBestFit();
@@ -744,7 +746,7 @@ void MainWindow::doDocumentSaveAs()
     logMessage("MainWindow::doDocumentSaveAs()");
 
     QSettings settings;
-    QString dir = settings.value("General/LastDataDir", "data").toString();
+    QString dir = settings.value("General/LastProblemDir", "data").toString();
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros2D files (*.a2d)"));
     if (!fileName.isEmpty())
@@ -757,6 +759,7 @@ void MainWindow::doDocumentSaveAs()
             result.showDialog();
 
         setRecentFiles();
+        settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
     }
 }
 
@@ -792,11 +795,17 @@ void MainWindow::doDocumentImportDXF()
 {
     logMessage("MainWindow::doDocumentImportDXF()");
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Import file"), "data", tr("DXF files (*.dxf)"));
+    QSettings settings;
+    QString dir = settings.value("General/LastDXFDir").toString();
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Import file"), dir, tr("DXF files (*.dxf)"));
     if (!fileName.isEmpty())
     {
         Util::scene()->readFromDxf(fileName);
         sceneView->doZoomBestFit();
+
+        QFileInfo fileInfo(fileName);
+        settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
     }
 }
 
@@ -804,12 +813,17 @@ void MainWindow::doDocumentExportDXF()
 {
     logMessage("MainWindow::doDocumentExportDXF()");
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export file"), "data", tr("DXF files (*.dxf)"));
+    QSettings settings;
+    QString dir = settings.value("General/LastDXFDir").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export file"), dir, tr("DXF files (*.dxf)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix().toLower() != "dxf") fileName += ".dxf";
         Util::scene()->writeToDxf(fileName);
+
+        settings.setValue("General/LastDXFDir", fileInfo.absolutePath());
     }
 }
 
@@ -817,7 +831,10 @@ void MainWindow::doDocumentSaveImage()
 {
     logMessage("MainWindow::doDocumentSaveImage()");
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), "data", tr("PNG files (*.png)"));
+    QSettings settings;
+    QString dir = settings.value("General/LastImageDir").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, tr("PNG files (*.png)"));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
@@ -826,6 +843,8 @@ void MainWindow::doDocumentSaveImage()
         ErrorResult result = sceneView->saveImageToFile(fileName);
         if (result.isError())
             result.showDialog();
+
+        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
 }
 
@@ -922,10 +941,14 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
     logMessage("MainWindow::doScriptEditorRunScript()");
 
     QString fileNameScript;
+    QSettings settings;
+
     if (fileName.isEmpty())
     {
+        QString dir = settings.value("General/LastScriptDir").toString();
+
         // open dialog
-        fileNameScript = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Python script (*.py)"));
+        fileNameScript = QFileDialog::getOpenFileName(this, tr("Open File"), dir, tr("Python script (*.py)"));
     }
     else
     {
@@ -942,6 +965,9 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
             terminalView->terminal()->doPrintStdout(result.text + "\n", Qt::red);
 
         disconnectTerminal(terminalView->terminal());
+
+        QFileInfo fileInfo(fileNameScript);
+        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
     else
     {
@@ -1079,8 +1105,12 @@ void MainWindow::doDocumentExportMeshFile()
         sceneView->sceneViewSettings().showInitialMesh = true;
         sceneView->doInvalidated();
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), "data", tr("Mesh files (*.mesh)"));
+        QSettings settings;
+        QString dir = settings.value("General/LastMeshDir").toString();
+
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.mesh)"));
         fileName.remove(".mesh");
+        QFileInfo fileInfo(fileName);
 
         // move mesh file
         if (!Util::scene()->problemInfo()->fileName.isEmpty())
@@ -1088,13 +1118,19 @@ void MainWindow::doDocumentExportMeshFile()
             QString sourceFileName = Util::scene()->problemInfo()->fileName;
             sourceFileName.replace("a2d", "mesh");
             if (!fileName.isEmpty())
+            {
                 QFile::copy(sourceFileName, fileName + ".mesh");
+                settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
+            }
 
             QFile::remove(sourceFileName);
         }
 
         if (!fileName.isEmpty())
+        {
             QFile::copy(tempProblemFileName() + ".mesh", fileName + ".mesh");
+            settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
+        }
 
         QFile::remove(tempProblemFileName() + ".mesh");
     }
