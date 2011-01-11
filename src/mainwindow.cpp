@@ -84,14 +84,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QStringList args = QCoreApplication::arguments();
     if (args.count() > 1)
     {
-        if ((args.count() == 2) && !args.contains("--verbose"))
+        if ((args.count() == 2))
         {
             open(args[1]);
         }
 
+        // FIXME more general (cycle)
         if (args.count() == 3)
         {
-            if ((args[1] == "-run") || (args[1] == "-r"))
+            if ((args[1] == "--run") || (args[1] == "-r") || (args[1] == "/r"))
             {
                 if (QFile::exists(args[2]))
                     runPythonScript(readFileContent(args[2]));
