@@ -17,6 +17,7 @@
 // along with Hermes; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#define HERMES_REPORT_INFO
 
 #include "umfpack_solver.h"
 
@@ -150,11 +151,46 @@ void UMFPackMatrix::add(int m, int n, scalar v) {
     int pos = find_position(Ai + Ap[n], Ap[n + 1] - Ap[n], m);
     // Make sure we are adding to an existing non-zero entry.
     if (pos < 0) {
-      printf("UMFPackMatrix::add(): m = %d, n = %d, value = %g, pos = %d.\n", m, n, v, pos);
+      info("UMFPackMatrix::add(): i = %d, j = %d.", m, n);
       error("Sparse matrix entry not found");
     }
 
     Ax[Ap[n] + pos] += v;
+  }
+}
+
+void UMFPackMatrix::add_umfpack_matrix(UMFPackMatrix* mat) {
+  _F_
+  assert(this->get_size() == mat->get_size());
+  // Create iterators for both matrices. 
+  UMFPackIterator mat_it(mat);
+  UMFPackIterator this_it(this);
+  int mat_i, mat_j;
+  scalar mat_val;
+  int this_i, this_j;
+  scalar this_val;
+
+  bool mat_not_finished = mat_it.init();
+  bool this_not_finished = this_it.init();
+  while(mat_not_finished && this_not_finished) {
+    mat_it.get_current_position(mat_i, mat_j, mat_val);
+    //printf("mat: current position %d %d %g\n", mat_i, mat_j, mat_val);
+    this_it.get_current_position(this_i, this_j, this_val);
+    //printf("this: current position %d %d %g\n", this_i, this_j, this_val);
+    while(mat_i != this_i || mat_j != this_j) {
+      //printf("SHOULD NOT BE HERE\n");
+      this_not_finished = this_it.move_ptr();
+      if (!this_not_finished) {
+        printf("Entry %d %d does not exist in the matrix to which it is contributed.\n", mat_i, mat_j);
+        error("Incompatible matrices in add_umfpack_matrix().");
+      }
+      this_it.get_current_position(this_i, this_j, this_val);
+    }
+    this_it.add_to_current_position(mat_val);
+    mat_not_finished = mat_it.move_ptr();
+    this_not_finished = this_it.move_ptr();
+    if (mat_not_finished && !this_not_finished) 
+      error("Incompatible matrices in add_umfpack_matrix().");
   }
 }
 
@@ -180,7 +216,8 @@ bool UMFPackMatrix::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
   switch (fmt) 
   {
     case DF_MATLAB_SPARSE:
-      fprintf(file, "%% Size: %dx%d\n%% Nonzeros: %d\ntemp = zeros(%d, 3);\ntemp = [\n", size, size, nnz, nnz);
+      fprintf(file, "%% Size: %dx%d\n%% Nonzeros: %d\ntemp = zeros(%d, 3);\ntemp = [\n", 
+              size, size, nnz, nnz);
       for (int j = 0; j < size; j++)
         for (int i = Ap[j]; i < Ap[j + 1]; i++)
           fprintf(file, "%d %d " SCALAR_FMT "\n", Ai[i] + 1, j + 1, SCALAR(Ax[i]));
@@ -488,5 +525,49 @@ void UMFPackLinearSolver::free_factorization_data()
   numeric = NULL;
 #endif
 }
+
+/*** UMFPack matrix iterator ****/
+
+bool UMFPackIterator::init()
+{
+  if (this->size == 0 || this->nnz == 0) return false;
+  this->Ap_pos = 0;
+  this->Ai_pos = 0;
+  return true;
+}
+
+void UMFPackIterator::get_current_position(int& i, int& j, scalar& val)
+{
+  i = Ai[Ai_pos];
+  j = Ap_pos;
+  val = Ax[Ai_pos];
+}
+
+bool UMFPackIterator::move_ptr()
+{
+  if (Ai_pos >= nnz - 1) return false; // It is no longer possible to find next element.
+  if (Ai_pos + 1 >= Ap[Ap_pos + 1]) {
+    Ap_pos++;
+  }
+  Ai_pos++;
+  return true;
+}
+
+void UMFPackIterator::add_to_current_position(scalar val)
+{
+  this->Ax[this->Ai_pos] += val;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 

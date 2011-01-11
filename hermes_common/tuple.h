@@ -59,6 +59,11 @@ public:
       return this->_v.back();
   }
 
+  void copy(const Tuple &other) {
+    int size = other.size();
+    for(int i=0; i<size; i++) push_back(other[i]);
+  }
+
   void reserve(const unsigned int size) {
       this->_v.reserve(size);
   }
@@ -67,9 +72,14 @@ public:
       this->_v.clear();
   }
 
-  unsigned int size() {
+  unsigned int size() const {
       return this->_v.size();
   }
+
+  T& front() {
+      return this->_v.front();
+  }
+
 
   T& operator[](const int index) {
       return this->_v[index];

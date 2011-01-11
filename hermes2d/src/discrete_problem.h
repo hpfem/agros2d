@@ -11,8 +11,10 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Hermes2D. If not, see <http://www.gnu.org/licenses/>.
 
+#define HERMES_REPORT_INFO
+#define HERMES_REPORT_WARN
 
 #ifndef __H2D_FEPROBLEM_H
 #define __H2D_FEPROBLEM_H
@@ -59,7 +61,13 @@ public:
   void free();
 
   // Get pointer to n-th space.
-  Space* get_space(int n) {  return this->spaces[n];  }
+  Space* get_space(int n) { return this->spaces[n]; }
+
+  // Get whether the DiscreteProblem is linear.
+  bool get_is_linear() { return is_linear;};
+
+  // Get the weak forms.
+  WeakForm* get_weak_formulation() { return this->wf;};
 
   // Get all spaces as a Hermes::Tuple.
   Hermes::Tuple<Space *> get_spaces() {return this->spaces;}
@@ -71,18 +79,27 @@ public:
   PrecalcShapeset* get_pss(int n) {  return this->pss[n];  }
 
   // Precalculate matrix sparse structure.
-  // The Table is here for optional weighting of matrix blocks in systems.
-  void create(SparseMatrix* mat, Vector* rhs = NULL, bool rhsonly = false, Table* block_weights = NULL);
+  // If force_diagonal_block == true, then (zero) matrix 
+  // antries are created in diagonal blocks even if corresponding matrix weak 
+  // forms do not exist. This is useful if the matrix is later to be merged with 
+  // a matrix that has nonzeros in these blocks. The Table serves for optional 
+  // weighting of matrix blocks in systems.
+  void create(SparseMatrix* mat, Vector* rhs = NULL, bool rhsonly = false, 
+              bool force_diagonal_blocks = false, Table* block_weights = NULL);
 
   // General assembling procedure for nonlinear problems. coeff_vec is the 
-  // previous Newton vector.
-  // The Table is here for optional weighting of matrix blocks in systems.
-  void assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs = NULL, bool rhsonly = false, Table* block_weights = NULL);
+  // previous Newton vector. If force_diagonal_block == true, then (zero) matrix 
+  // antries are created in diagonal blocks even if corresponding matrix weak 
+  // forms do not exist. This is useful if the matrix is later to be merged with 
+  // a matrix that has nonzeros in these blocks. The Table serves for optional 
+  // weighting of matrix blocks in systems.
+  void assemble(scalar* coeff_vec, SparseMatrix* mat, Vector* rhs = NULL, bool rhsonly = false, 
+                bool force_diagonal_blocks = false, Table* block_weights = NULL);
 
   // Assembling for linear problems. Same as the previous functions, but 
   // does not need the coeff_vector.
-  // The Table is here for optional weighting of matrix blocks in systems.
-  void assemble(SparseMatrix* mat, Vector* rhs = NULL, bool rhsonly = false, Table* block_weights = NULL);
+  void assemble(SparseMatrix* mat, Vector* rhs = NULL, bool rhsonly = false, 
+                bool force_diagonal_blocks = false, Table* block_weights = NULL);
 
   // Get the number of unknowns.
   int get_num_dofs();
@@ -211,11 +228,11 @@ protected:
   PrecalcShapeset** pss;    // This is different from H3D.
   int num_user_pss;         // This is different from H3D.
 
-  ExtData<Ord>* init_ext_fns_ord(std::vector<MeshFunction *> &ext);
-  ExtData<Ord>* init_ext_fns_ord(std::vector<MeshFunction *> &ext, int edge);
-  ExtData<Ord>* init_ext_fns_ord(std::vector<MeshFunction *> &ext, NeighborSearch* nbs);
-  ExtData<scalar>* init_ext_fns(std::vector<MeshFunction *> &ext, RefMap *rm, const int order);
-  ExtData<scalar>* init_ext_fns(std::vector<MeshFunction *> &ext, NeighborSearch* nbs);
+  ExtData<Ord>* init_ext_fns_ord(Hermes::Tuple<MeshFunction *> &ext);
+  ExtData<Ord>* init_ext_fns_ord(Hermes::Tuple<MeshFunction *> &ext, int edge);
+  ExtData<Ord>* init_ext_fns_ord(Hermes::Tuple<MeshFunction *> &ext, NeighborSearch* nbs);
+  ExtData<scalar>* init_ext_fns(Hermes::Tuple<MeshFunction *> &ext, RefMap *rm, const int order);
+  ExtData<scalar>* init_ext_fns(Hermes::Tuple<MeshFunction *> &ext, NeighborSearch* nbs);
   Func<double>* get_fn(PrecalcShapeset *fu, RefMap *rm, const int order);
 
   // Caching transformed values for element
@@ -252,7 +269,8 @@ HERMES_API double get_l2_norm(Vector* vec);
 
 // New interface, still in developement
 //HERMES_API bool solve_newton(scalar* coeff_vec, DiscreteProblem* dp, Solver* solver, SparseMatrix* matrix,
-//		     Vector* rhs, double NEWTON_TOL, int NEWTON_MAX_ITER, bool verbose, unsigned int stop_condition = NEWTON_WATCH_RESIDUAL);
+//		               Vector* rhs, double NEWTON_TOL, int NEWTON_MAX_ITER, bool verbose, 
+//                             unsigned int stop_condition = NEWTON_WATCH_RESIDUAL);
 
 HERMES_API bool solve_newton(scalar* coeff_vec, DiscreteProblem* dp, Solver* solver, SparseMatrix* matrix,
 			     Vector* rhs, double NEWTON_TOL, int NEWTON_MAX_ITER, bool verbose = false, 
@@ -261,4 +279,5 @@ HERMES_API bool solve_newton(scalar* coeff_vec, DiscreteProblem* dp, Solver* sol
 HERMES_API bool solve_picard(WeakForm* wf, Space* space, Solution* sln_prev_iter,
                              MatrixSolverType matrix_solver, double picard_tol, 
 			     int picard_max_iter, bool verbose);
+
 #endif
