@@ -1323,7 +1323,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     QSettings settings;
     QFileInfo fileInfo(fileName);
-    settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+    settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
 
     QDomDocument doc;
     QFile file(fileName);
@@ -1540,7 +1540,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
     {
         QFileInfo fileInfo(fileName);
-        settings.setValue("General/LastDataDir", fileInfo.absoluteFilePath());
+        settings.setValue("General/LastProblemDir", fileInfo.absoluteFilePath());
         m_problemInfo->fileName = fileName;
     }
 

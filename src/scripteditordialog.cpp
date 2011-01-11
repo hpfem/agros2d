@@ -701,13 +701,17 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
 {
     logMessage("ScriptEditorDialog::doFileOpen()");
 
+    QSettings settings;
+    QString dir = settings.value("General/LastScriptDir", "data/scripts").toString();
+
     // open dialog
     QString fileName = file;
     if (fileName.isEmpty())
-        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "data", tr("Python files (*.py)"));
+        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), dir, tr("Python files (*.py)"));
 
     // read text
-    if (!fileName.isEmpty()) {
+    if (!fileName.isEmpty())
+    {
         ScriptEditorWidget *scriptEditor = scriptEditorWidget();
 
         for (int i = 0; i < tabWidget->count(); i++)
@@ -738,6 +742,8 @@ void ScriptEditorDialog::doFileOpen(const QString &file)
         tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.baseName());
 
         doCurrentPageChanged(tabWidget->currentIndex());
+
+        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 
@@ -757,9 +763,12 @@ void ScriptEditorDialog::doFileSave()
 {
     logMessage("ScriptEditorDialog::doFileSave()");
 
+    QSettings settings;
+    QString dir = settings.value("General/LastScriptDir", "data/scripts").toString();
+
     // save dialog
     if (scriptEditorWidget()->file.isEmpty())
-        scriptEditorWidget()->file = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
+        scriptEditorWidget()->file = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
 
     // write text
     if (!scriptEditorWidget()->file.isEmpty())
@@ -784,6 +793,8 @@ void ScriptEditorDialog::doFileSave()
             ErrorResult errorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->file));
             errorResult.showDialog();
         }
+
+        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 
@@ -791,11 +802,16 @@ void ScriptEditorDialog::doFileSaveAs()
 {
     logMessage("ScriptEditorDialog::doFileSaveAs()");
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "data", tr("Python files (*.py)"));
+    QSettings settings;
+    QString dir = settings.value("General/LastScriptDir", "data/scripts").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
     if (!fileName.isEmpty())
     {
         scriptEditorWidget()->file = fileName;
         doFileSave();
+        QFileInfo fileInfo(fileName);
+        settings.setValue("General/LastScriptDir", fileInfo.absolutePath());
     }
 }
 

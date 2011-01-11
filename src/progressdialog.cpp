@@ -1276,12 +1276,19 @@ void ProgressDialog::saveImage()
 
 void ProgressDialog::saveData()
 {
+    logMessage("ProgressDialog::saveData()");
+
+    QSettings settings;
+    QString dir = settings.value("General/LastDataDir").toString();
+
     QString selectedFilter;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), "data", tr("CSV files (*.csv)"), &selectedFilter);
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), dir, tr("CSV files (*.csv)"), &selectedFilter);
     if (!fileName.isEmpty())
     {
+        QFileInfo fileInfo(fileName);
+
         // open file for write
-        if (QFileInfo(fileName).suffix().isEmpty())
+        if (fileInfo.suffix().isEmpty())
             fileName = fileName + ".csv";
 
         QFile file(fileName);
@@ -1303,6 +1310,9 @@ void ProgressDialog::saveData()
             for (int i = 0; i < curveDOF->data().size(); i++)
                 out << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
         }
+
+        settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+
         file.close();
     }
 

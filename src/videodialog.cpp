@@ -192,7 +192,7 @@ QWidget *VideoDialog::createControlsViewport()
     sldAnimate = new QSlider(Qt::Horizontal);
     sldAnimate->setTickPosition(QSlider::TicksBelow);
     connect(sldAnimate, SIGNAL(valueChanged(int)), this, SLOT(doSetTimeStep(int)));
-    
+
     txtAnimateDelay = new SLineEditDouble(0.1);
 
     QGridLayout *layoutControlsViewport = new QGridLayout();
@@ -210,7 +210,7 @@ QWidget *VideoDialog::createControlsViewport()
     btnAnimate = new QPushButton(tr("Animate"));
     connect(btnAnimate, SIGNAL(clicked()), this, SLOT(doAnimate()));
 
-    QHBoxLayout *layoutButtonViewport = new QHBoxLayout();    
+    QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
     layoutButtonViewport->addStretch();
     layoutButtonViewport->addWidget(btnAnimate);
 
@@ -289,7 +289,7 @@ void VideoDialog::doCreateImages()
     logMessage("VideoDialog::doCreateImages()");
 
     progressBar->setMaximum(Util::scene()->sceneSolution()->timeStepCount() - 1);
-    progressBar->setValue(0);   
+    progressBar->setValue(0);
 
     // create directory
     QDir(tempProblemDir()).mkdir("video");
@@ -300,7 +300,7 @@ void VideoDialog::doCreateImages()
         m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
     }
 
-    btnEncodeFFmpeg->setEnabled(true);    
+    btnEncodeFFmpeg->setEnabled(true);
 }
 
 void VideoDialog::doEncodeFFmpeg()
@@ -328,13 +328,18 @@ void VideoDialog::doSaveVideo()
 {
     logMessage("VideoDialog::doSaveVideo()");
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save video to file"), "", QString("%1 (*.%2)").arg(cmbFormat->currentText()).arg(cmbFormat->itemData(cmbFormat->currentIndex()).toString()));
+    QSettings settings;
+    QString dir = settings.value("General/LastVideoDir").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save video to file"), dir, QString("%1 (*.%2)").arg(cmbFormat->currentText()).arg(cmbFormat->itemData(cmbFormat->currentIndex()).toString()));
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix().toLower() != "avi") fileName += ".avi";
         QFile::remove(fileName);
         QFile::copy(outputFile, fileName);
+
+        settings.setValue("General/LastVideoDir", fileInfo.absolutePath());
     }
 }
 

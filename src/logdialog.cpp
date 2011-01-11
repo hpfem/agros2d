@@ -173,13 +173,19 @@ void LogDialog::doSaveLog()
 {
     logMessage("LogDialog::doSaveLog()");
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save log"), "data", tr("Log files (*.log)"));
+    QSettings settings;
+    QString dir = settings.value("General/LastLogDir").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save log"), dir, tr("Log files (*.log)"));
 
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text) || !fileName.isEmpty())
     {
         QTextStream messages(&file);
         messages << lstMessages->toPlainText();
+
+        QFileInfo fileInfo(fileName);
+        settings.setValue("General/LastLogDir", fileInfo.absolutePath());
     }
 }
 

@@ -103,23 +103,23 @@ void ChartDialog::createControls()
     logMessage("ChartDialog::createControls()");
 
     chart = new Chart(this);
-    
+
     // controls
     QWidget *controls = new QWidget(this);
-    
+
     QPushButton *btnPlot = new QPushButton(controls);
     btnPlot->setText(tr("Plot"));
     connect(btnPlot, SIGNAL(clicked()), this, SLOT(doPlot()));
-    
+
     QPushButton *btnSaveImage = new QPushButton(controls);
     btnSaveImage->setText(tr("Save image"));
     connect(btnSaveImage, SIGNAL(clicked()), SLOT(doSaveImage()));
-    
+
     QPushButton *btnExportData = new QPushButton(controls);
     btnExportData->setText(tr("Export"));
     connect(btnExportData, SIGNAL(clicked()), SLOT(doExportData()));
-    
-    // geometry   
+
+    // geometry
     lblStartX = new QLabel("X:");
     lblStartY = new QLabel("Y:");
     lblEndX = new QLabel("X:");
@@ -144,7 +144,7 @@ void ChartDialog::createControls()
 
     QGroupBox *grpStart = new QGroupBox(tr("Start"), this);
     grpStart->setLayout(layoutStart);
-    
+
     // end
     QGridLayout *layoutEnd = new QGridLayout();
     layoutEnd->addWidget(lblEndX, 0, 0);
@@ -154,13 +154,13 @@ void ChartDialog::createControls()
 
     QGroupBox *grpEnd = new QGroupBox(tr("End"), this);
     grpEnd->setLayout(layoutEnd);
-    
+
     // x - axis
     radAxisLength = new QRadioButton(tr("Length"), this);
     radAxisLength->setChecked(true);
     radAxisX = new QRadioButton("X", this);
     radAxisY = new QRadioButton("Y", this);
-    
+
     QButtonGroup *axisGroup = new QButtonGroup(this);
     axisGroup->addButton(radAxisLength);
     axisGroup->addButton(radAxisX);
@@ -168,16 +168,16 @@ void ChartDialog::createControls()
     connect(radAxisLength, SIGNAL(clicked()), this, SLOT(doPlot()));
     connect(radAxisX, SIGNAL(clicked()), this, SLOT(doPlot()));
     connect(radAxisY, SIGNAL(clicked()), this, SLOT(doPlot()));
-    
+
     // axis
     QHBoxLayout *layoutAxis = new QHBoxLayout(this);
     layoutAxis->addWidget(radAxisLength);
     layoutAxis->addWidget(radAxisX);
     layoutAxis->addWidget(radAxisY);
-    
+
     QGroupBox *grpAxis = new QGroupBox(tr("Horizontal axis"), this);
     grpAxis->setLayout(layoutAxis);
-    
+
     // axis points and time step
     txtAxisPoints = new QSpinBox(this);
     txtAxisPoints->setMinimum(2);
@@ -210,34 +210,34 @@ void ChartDialog::createControls()
     QGroupBox *grpTime = new QGroupBox(tr("Point"), this);
     grpTime->setLayout(layoutTime);
 
-    // plot   
+    // plot
     // variable
-    cmbFieldVariable = new QComboBox(this);    
+    cmbFieldVariable = new QComboBox(this);
     connect(cmbFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariable(int)));
     // component
     cmbFieldVariableComp = new QComboBox(this);
     connect(cmbFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariableComp(int)));
     doFieldVariable(cmbFieldVariable->currentIndex());
-    
+
     QFormLayout *layoutVariable = new QFormLayout(this);
     layoutVariable->addRow(tr("Variable:"), cmbFieldVariable);
     layoutVariable->addRow(tr("Component:"), cmbFieldVariableComp);
-    
+
     QWidget *grpVariable = new QWidget(this);
     grpVariable->setLayout(layoutVariable);
-    
+
     // table
     trvTable = new QTableWidget(this);
-    
+
     // button bar
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addWidget(btnPlot);
     layoutButton->addWidget(btnSaveImage);
     layoutButton->addWidget(btnExportData);
-    
+
     QWidget *widButton = new QWidget(this);
     widButton->setLayout(layoutButton);
-    
+
     // controls geometry
     widGeometry = new QWidget(this);
     QVBoxLayout *controlsGeometryLayout = new QVBoxLayout();
@@ -268,17 +268,17 @@ void ChartDialog::createControls()
     controlsLayout->addWidget(grpVariable);
     controlsLayout->addStretch();
     controlsLayout->addWidget(widButton);
-    
+
     // tab data widget
     tabOutput = new QTabWidget(this);
     tabOutput->addTab(chart, icon(""), tr("Chart"));
     tabOutput->addTab(trvTable, icon(""), tr("Table"));
-    
+
     // main layout
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(controls);
     layout->addWidget(tabOutput, 1);
-    
+
     // chart picker
     picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
                                QwtPicker::PointSelection | QwtPicker::DragSelection,
@@ -288,9 +288,9 @@ void ChartDialog::createControls()
     picker->setRubberBand(QwtPicker::CrossRubberBand);
     picker->setTrackerMode(QwtPicker::ActiveOnly);
     picker->setTrackerPen(QColor(Qt::black));
-    
+
     connect(picker, SIGNAL(moved(const QPoint &)), SLOT(doMoved(const QPoint &)));
-    
+
     setLayout(layout);
 }
 
@@ -314,7 +314,7 @@ void ChartDialog::plotGeometry()
     int count = txtAxisPoints->value();
     double *xval = new double[count];
     double *yval = new double[count];
-    
+
     // chart->setTitle(physicFieldVariableString(physicFieldVariable) + " - " + physicFieldVariableCompString(physicFieldVariableComp));
     QwtText text("");
     text.setFont(QFont("Helvetica", 10, QFont::Normal));
@@ -322,14 +322,14 @@ void ChartDialog::plotGeometry()
                  arg(physicFieldVariableString(physicFieldVariable)).
                  arg(physicFieldVariableUnitsString(physicFieldVariable)));
     chart->setAxisTitle(QwtPlot::yLeft, text);
-    
+
     // table
     trvTable->clear();
     trvTable->setRowCount(count);
     QStringList headers = Util::scene()->problemInfo()->hermes()->localPointValueHeader();
     trvTable->setColumnCount(headers.count());
     trvTable->setHorizontalHeaderLabels(headers);
-    
+
     // chart
     if (radAxisLength->isChecked()) text.setText(tr("Length (m)"));
     if (radAxisX->isChecked()) text.setText(Util::scene()->problemInfo()->labelX() + " (m):");
@@ -339,24 +339,24 @@ void ChartDialog::plotGeometry()
     // line
     Point start(txtStartX->value().number, txtStartY->value().number);
     Point end(txtEndX->value().number, txtEndY->value().number);
-    
+
     Point diff((end.x - start.x)/(count-1), (end.y - start.y)/(count-1));
-    
+
     // calculate values
     QStringList row;
     for (int i = 0; i<count; i++)
     {
         Point point(start.x + i*diff.x, start.y + i*diff.y);
         LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
-        
+
         // x value
         if (radAxisLength->isChecked()) xval[i] = sqrt(sqr(i*diff.x) + sqr(i*diff.y));
         if (radAxisX->isChecked()) xval[i] = start.x + i*diff.x;
         if (radAxisY->isChecked()) xval[i] = start.y + i*diff.y;
-        
+
         // y value
         yval[i] = localPointValue->variableValue(physicFieldVariable, physicFieldVariableComp);
-        
+
         // table
         row.clear();
         row << localPointValue->variables();
@@ -366,9 +366,9 @@ void ChartDialog::plotGeometry()
 
         delete localPointValue;
     }
-    
+
     chart->setData(xval, yval, count);
-    
+
     delete[] xval;
     delete[] yval;
 }
@@ -415,7 +415,7 @@ void ChartDialog::plotTime()
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // calculate values
-    QStringList row;    
+    QStringList row;
     for (int i = 0; i<Util::scene()->sceneSolution()->timeStepCount(); i++)
     {
         // change time level
@@ -467,7 +467,7 @@ void ChartDialog::doFieldVariable(int index)
     logMessage("ChartDialog::doFieldVariable()");
 
     PhysicFieldVariable physicFieldVariable = (PhysicFieldVariable) cmbFieldVariable->itemData(index).toInt();
-    
+
     cmbFieldVariableComp->clear();
     if (isPhysicFieldVariableScalar(physicFieldVariable))
     {
@@ -479,7 +479,7 @@ void ChartDialog::doFieldVariable(int index)
         cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelX(), PhysicFieldVariableComp_X);
         cmbFieldVariableComp->addItem(Util::scene()->problemInfo()->labelY(), PhysicFieldVariableComp_Y);
     }
-    
+
     if (cmbFieldVariableComp->currentIndex() == -1)
         cmbFieldVariableComp->setCurrentIndex(0);
 
@@ -504,14 +504,18 @@ void ChartDialog::doExportData()
 {
     logMessage("ChartDialog::doExportData()");
 
+    QSettings settings;
+    QString dir = settings.value("General/LastDataDir").toString();
+
     QString selectedFilter;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), "data", tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), dir, tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
     if (!fileName.isEmpty())
     {
         QString ext = (selectedFilter.contains("CSV")) ? ".csv" : ".m";
+        QFileInfo fileInfo(fileName);
 
         // open file for write
-        if (QFileInfo(fileName).suffix().isEmpty())
+        if (fileInfo.suffix().isEmpty())
             fileName = fileName + ext;
 
         QFile file(fileName);
@@ -524,14 +528,14 @@ void ChartDialog::doExportData()
 
         // export
         // csv
-        if (QFileInfo(fileName).suffix().toLower() == "csv")
+        if (fileInfo.suffix().toLower() == "csv")
         {
             // header
             for (int j = 0; j < trvTable->columnCount(); j++)
                 out << trvTable->horizontalHeaderItem(j)->text() << ";";
             out << endl;
 
-            // items           
+            // items
             for (int i = 0; i < trvTable->rowCount(); i++)
             {
                 for (int j = 0; j < trvTable->columnCount(); j++)
@@ -541,7 +545,7 @@ void ChartDialog::doExportData()
         }
 
         // m-file
-        if (QFileInfo(fileName).suffix().toLower() == "m")
+        if (fileInfo.suffix().toLower() == "m")
         {
             // items
             for (int j = 0; j < trvTable->columnCount(); j++)
@@ -560,6 +564,8 @@ void ChartDialog::doExportData()
             out << "% xlabel('length (m)');" << endl;
             out << "% ylabel('" << trvTable->horizontalHeaderItem(2)->text() << "');" << endl;
         }
+
+        settings.setValue("General/LastDataDir", fileInfo.absolutePath());
 
         file.close();
     }
