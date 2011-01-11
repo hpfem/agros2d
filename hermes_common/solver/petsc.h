@@ -43,6 +43,7 @@ public:
   virtual scalar get(int m, int n);
   virtual void zero();
   virtual void add(int m, int n, scalar v);
+  virtual void add_to_diagonal(scalar v);
   virtual void add(int m, int n, scalar **mat, int *rows, int *cols);
   virtual bool dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt = DF_MATLAB_SPARSE);
   virtual int get_matrix_size() const;
@@ -72,6 +73,7 @@ public:
   virtual scalar get(int idx);
   virtual void extract(scalar *v) const;
   virtual void zero();
+  virtual void change_sign();
   virtual void set(int idx, scalar y);
   virtual void add(int idx, scalar y);
   virtual void add(int n, int *idx, scalar *y);

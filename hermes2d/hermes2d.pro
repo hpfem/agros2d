@@ -22,6 +22,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             ../hermes_common/Teuchos_stacktrace.hpp \
             ../hermes_common/trace.cpp \
             ../hermes_common/utils.cpp \
+            ../hermes_common/tables.cpp \
             ../hermes_common/solver/amesos.cpp \
             ../hermes_common/solver/aztecoo.cpp \
             ../hermes_common/solver/epetra.cpp \
