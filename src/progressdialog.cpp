@@ -1202,9 +1202,6 @@ void ProgressDialog::itemChanged()
         chartError->setAutoReplot(doReplotError);
         chartError->replot();
 
-        // save image
-        chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
-
         // plot dof
         bool doReplotDOF = chartDOF->autoReplot();
         chartDOF->setAutoReplot(false);
@@ -1214,7 +1211,27 @@ void ProgressDialog::itemChanged()
         chartDOF->setAutoReplot(doReplotDOF);
         chartDOF->replot();
 
+        // save data
+        QFile fileErr(tempProblemDir() + "/adaptivity_error.csv");
+        QTextStream outErr(&fileErr);
+        if (fileErr.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            for (int i = 0; i < curveError->data().size(); i++)
+                outErr << curveError->data().x(i) << ";" << curveError->data().y(i) << endl;
+        }
+        fileErr.close();
+
+        QFile fileDOF(tempProblemDir() + "/adaptivity_dof.csv");
+        QTextStream outDOF(&fileDOF);
+        if (fileDOF.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            for (int i = 0; i < curveDOF->data().size(); i++)
+                outDOF << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
+        }
+        fileDOF.close();
+
         // save image
+        chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
         chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
 
         delete[] xval;
@@ -1264,6 +1281,8 @@ void ProgressDialog::saveProgressLog()
 
 void ProgressDialog::saveImage()
 {
+    logMessage("ProgressDialog::saveImage()");
+
     if (tabType->currentWidget() == controlsConvergenceErrorChart)
     {
         chartError->saveImage();

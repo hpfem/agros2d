@@ -35,8 +35,8 @@ public:
     void loadApplicationLog();
 
 private:
-    QString imageFileName;
     QString dataFileName;
+    QString imageFileName;
 
     void createControls();
     void showImage();
@@ -47,6 +47,7 @@ private:
     QPushButton *btnClose;
     QPushButton *btnShowAdaptivityErrorChart;
     QPushButton *btnShowAdaptivityDOFChart;
+    QPushButton *btnSaveData;
     QPushButton *btnSaveImage;
     QPushButton *btnCloseImage;
     QLabel *imageLabel;
@@ -59,6 +60,7 @@ private slots:
     void doClose();
     void doShowAdaptivityErrorChart();
     void doShowAdaptivityDOFChart();
+    void doSaveData();
     void doSaveImage();
     void doCloseImage();
 };

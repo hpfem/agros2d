@@ -217,6 +217,9 @@ void LogDialog::showImage()
         scrollArea->setBackgroundRole(QPalette::Dark);
         scrollArea->setWidget(imageLabel);
 
+        btnSaveData = new QPushButton(tr("Save data"));
+        connect(btnSaveData, SIGNAL(clicked()), this, SLOT(doSaveData()));
+
         btnSaveImage = new QPushButton(tr("Save image"));
         connect(btnSaveImage, SIGNAL(clicked()), this, SLOT(doSaveImage()));
 
@@ -225,6 +228,7 @@ void LogDialog::showImage()
 
         QHBoxLayout *layoutButtons = new QHBoxLayout();
         layoutButtons->addStretch();
+        layoutButtons->addWidget(btnSaveData);
         layoutButtons->addWidget(btnSaveImage);
         layoutButtons->addWidget(btnCloseImage);
 
@@ -244,26 +248,56 @@ void LogDialog::showImage()
     }
 }
 
-void LogDialog::doSaveImage()
+void LogDialog::doSaveData()
 {
-    logMessage("LogDialog::doSaveImage()");
+    logMessage("LogDialog::doSaveData()");
 
     QSettings settings;
-    QString dir = settings.value("General/LastImageDir").toString();
+    QString dir = settings.value("General/LastDataDir").toString();
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save image to file"), dir, tr("PNG files (*.png)"));
+    QString selectedFilter;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), dir, tr("CSV files (*.csv)"), &selectedFilter);
 
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
 
-        if (fileInfo.suffix().toLower() != "png") fileName += ".png";
-        if (QFile::exists(fileName)) QFile::remove(fileName);
-        QFile::copy(imageFileName, fileName);
+        if (fileInfo.suffix().toLower() != "csv")
+            fileName += ".csv";
+        if (QFile::exists(fileName))
+            QFile::remove(fileName);
 
-        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+        if (!QFile::copy(dataFileName, fileName))
+            QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("File '%1' could not be copied..").arg(fileName));
+        else
+            settings.setValue("General/LastDataDir", fileInfo.absolutePath());
     }
 }
+
+void LogDialog::doSaveImage()
+    {
+        logMessage("LogDialog::doSaveImage()");
+
+        QSettings settings;
+        QString dir = settings.value("General/LastImageDir").toString();
+
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save image to file"), dir, tr("PNG files (*.png)"));
+
+        if (!fileName.isEmpty())
+        {
+            QFileInfo fileInfo(fileName);
+
+            if (fileInfo.suffix().toLower() != "png")
+                fileName += ".png";
+            if (QFile::exists(fileName))
+                QFile::remove(fileName);
+
+            if (!QFile::copy(imageFileName, fileName))
+                QMessageBox::critical(QApplication::activeWindow(), tr("Error"), tr("File '%1' could not be copied..").arg(fileName));
+            else
+                settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+        }
+    }
 
 void LogDialog::doCloseImage()
 {
@@ -276,6 +310,7 @@ void LogDialog::doShowAdaptivityErrorChart()
 {
     logMessage("LogDialog::doShowAdaptivityErrorChart()");
 
+    dataFileName = tempProblemDir() + "/adaptivity_error.csv";
     imageFileName = tempProblemDir() + "/adaptivity_error.png";
     showImage();
 }
@@ -284,6 +319,7 @@ void LogDialog::doShowAdaptivityDOFChart()
 {
     logMessage("LogDialog::doShowAdaptivityDOFChart()");
 
+    dataFileName = tempProblemDir() + "/adaptivity_dof.csv";
     imageFileName = tempProblemDir() + "/adaptivity_dof.png";
     showImage();
 }
