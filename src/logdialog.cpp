@@ -106,7 +106,7 @@ void LogDialog::loadProgressLog()
 
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            lstMessages->setPlainText(file.readAll());
+            lstMessages->setPlainText(trUtf8(file.readAll()));
             lstMessages->moveCursor(QTextCursor::End);
         }
 
@@ -144,7 +144,7 @@ void LogDialog::loadApplicationLog()
 
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            lstMessages->setPlainText(file.readAll());
+            lstMessages->setPlainText(trUtf8(file.readAll()));
             lstMessages->moveCursor(QTextCursor::End);
         }
 
@@ -234,6 +234,7 @@ void LogDialog::showImage()
 
 
         imageDialog = new QDialog(QApplication::activeWindow());
+        imageDialog->setWindowTitle("Convergence chart");
         imageDialog->setLayout(layout);
         imageDialog->setMinimumSize(imageDialog->sizeHint());
         imageDialog->setMaximumSize(imageDialog->sizeHint());
