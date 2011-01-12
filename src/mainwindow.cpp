@@ -82,22 +82,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // parameters
     QStringList args = QCoreApplication::arguments();
-    if (args.count() > 1)
+    for (int i = 1; i < args.count(); i++)
     {
-        if ((args.count() == 2))
+        if (args[i] == "--run" || args[i] == "-r" || args[i] == "/r")
         {
-            open(args[1]);
+            QString scriptName = args[++i];
+
+            if (QFile::exists(scriptName))
+                runPythonScript(readFileContent(scriptName));
+            else
+                qWarning() << "Script " << scriptName << "not found.";
+
+            continue;
         }
 
-        // FIXME more general (cycle)
-        if (args.count() == 3)
-        {
-            if ((args[1] == "--run") || (args[1] == "-r") || (args[1] == "/r"))
-            {
-                if (QFile::exists(args[2]))
-                    runPythonScript(readFileContent(args[2]));
-            }
-        }
+        QString fileName = args[i];
+        if (QFile::exists(fileName))
+            open(fileName);
     }
 }
 

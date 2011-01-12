@@ -51,14 +51,11 @@ int main(int argc, char *argv[])
             return 0;
         }
     }
-    if (args.contains("--verbose"))
+    if (args.contains("--verbose") || args.contains("/verbose"))
     {
         setVerbose(true);
+
         args.removeAll("--verbose");
-    }
-    if (args.contains("/verbose"))
-    {
-        setVerbose(true);
         args.removeAll("/verbose");
     }
 
