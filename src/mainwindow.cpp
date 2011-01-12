@@ -84,6 +84,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QStringList args = QCoreApplication::arguments();
     for (int i = 1; i < args.count(); i++)
     {
+        if (args[i] == "--verbose" || args[i] == "/verbose")
+            continue;
+
         if (args[i] == "--run" || args[i] == "-r" || args[i] == "/r")
         {
             QString scriptName = args[++i];
@@ -97,8 +100,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         }
 
         QString fileName = args[i];
-        if (QFile::exists(fileName))
-            open(fileName);
+        open(fileName);
     }
 }
 

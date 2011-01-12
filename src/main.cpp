@@ -54,9 +54,6 @@ int main(int argc, char *argv[])
     if (args.contains("--verbose") || args.contains("/verbose"))
     {
         setVerbose(true);
-
-        args.removeAll("--verbose");
-        args.removeAll("/verbose");
     }
 
     QSettings settings;
