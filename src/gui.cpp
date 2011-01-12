@@ -293,6 +293,10 @@ void Chart::saveImage(const QString &fileName)
     if (fileName.isEmpty())
     {
         fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, tr("PNG files (*.png)"));
+
+        QFileInfo fileInfo(fileNameTemp);
+        if (!fileNameTemp.isEmpty())
+            settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
     else
     {
@@ -306,8 +310,6 @@ void Chart::saveImage(const QString &fileName)
 
         QImage imageChart = image();
         imageChart.save(fileNameTemp, "PNG");
-
-        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
     }
 }
 

@@ -35,7 +35,11 @@ public:
     void loadApplicationLog();
 
 private:
+    QString imageFileName;
+    QString dataFileName;
+
     void createControls();
+    void showImage();
 
     QTextEdit *lstMessages;
     QPushButton *btnSaveLog;
@@ -43,6 +47,11 @@ private:
     QPushButton *btnClose;
     QPushButton *btnShowAdaptivityErrorChart;
     QPushButton *btnShowAdaptivityDOFChart;
+    QPushButton *btnSaveImage;
+    QPushButton *btnCloseImage;
+    QLabel *imageLabel;
+    QScrollArea *scrollArea;
+    QDialog *imageDialog;
 
 private slots:
     void doSaveLog();
@@ -50,6 +59,8 @@ private slots:
     void doClose();
     void doShowAdaptivityErrorChart();
     void doShowAdaptivityDOFChart();
+    void doSaveImage();
+    void doCloseImage();
 };
 
 #endif // LOGDIALOG_H

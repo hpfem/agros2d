@@ -202,44 +202,87 @@ void LogDialog::doDeleteLog()
     }
 }
 
-void showPicture(const QString &fileName)
+void LogDialog::showImage()
 {
     logMessage("showPicture()");
 
-    if (QFile::exists(fileName))
+    if (QFile::exists(imageFileName))
     {
         // load
-        QLabel *imageLabel = new QLabel();
-        QImage image(fileName);
+        imageLabel = new QLabel();
+        QImage image(imageFileName);
         imageLabel->setPixmap(QPixmap::fromImage(image));
 
-        QScrollArea *scrollArea = new QScrollArea();
+        scrollArea = new QScrollArea();
         scrollArea->setBackgroundRole(QPalette::Dark);
         scrollArea->setWidget(imageLabel);
 
+        btnSaveImage = new QPushButton(tr("Save image"));
+        connect(btnSaveImage, SIGNAL(clicked()), this, SLOT(doSaveImage()));
+
+        btnCloseImage = new QPushButton(tr("Close"));
+        connect(btnCloseImage, SIGNAL(clicked()), this, SLOT(doCloseImage()));
+
+        QHBoxLayout *layoutButtons = new QHBoxLayout();
+        layoutButtons->addStretch();
+        layoutButtons->addWidget(btnSaveImage);
+        layoutButtons->addWidget(btnCloseImage);
+
         QVBoxLayout *layout = new QVBoxLayout();
         layout->addWidget(scrollArea);
+        layout->addLayout(layoutButtons);
 
-        QDialog *dialog = new QDialog(QApplication::activeWindow());
-        dialog->setLayout(layout);
-        dialog->setMinimumSize(dialog->sizeHint());
-        dialog->setMaximumSize(dialog->sizeHint());
-        dialog->exec();
 
-        delete dialog;
+        imageDialog = new QDialog(QApplication::activeWindow());
+        imageDialog->setLayout(layout);
+        imageDialog->setMinimumSize(imageDialog->sizeHint());
+        imageDialog->setMaximumSize(imageDialog->sizeHint());
+        imageDialog->exec();
+
+        delete imageDialog;
     }
+}
+
+void LogDialog::doSaveImage()
+{
+    logMessage("LogDialog::doSaveImage()");
+
+    QSettings settings;
+    QString dir = settings.value("General/LastImageDir").toString();
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save image to file"), dir, tr("PNG files (*.png)"));
+
+    if (!fileName.isEmpty())
+    {
+        QFileInfo fileInfo(fileName);
+
+        if (fileInfo.suffix().toLower() != "png") fileName += ".png";
+        if (QFile::exists(fileName)) QFile::remove(fileName);
+        QFile::copy(imageFileName, fileName);
+
+        settings.setValue("General/LastImageDir", fileInfo.absolutePath());
+    }
+}
+
+void LogDialog::doCloseImage()
+{
+    logMessage("LogDialog::doCloseImage()");
+
+    imageDialog->close();
 }
 
 void LogDialog::doShowAdaptivityErrorChart()
 {
     logMessage("LogDialog::doShowAdaptivityErrorChart()");
 
-    showPicture(tempProblemDir() + "/adaptivity_error.png");
+    imageFileName = tempProblemDir() + "/adaptivity_error.png";
+    showImage();
 }
 
 void LogDialog::doShowAdaptivityDOFChart()
 {
     logMessage("LogDialog::doShowAdaptivityDOFChart()");
 
-    showPicture(tempProblemDir() + "/adaptivity_dof.png");
+    imageFileName = tempProblemDir() + "/adaptivity_dof.png";
+    showImage();
 }
