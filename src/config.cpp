@@ -102,6 +102,7 @@ void Config::load()
     paletteSteps = settings.value("SceneViewSettings/PaletteSteps", 30).toInt();
     scalarRangeLog = settings.value("SceneViewSettings/ScalarRangeLog", false).toBool();
     scalarRangeBase = settings.value("SceneViewSettings/ScalarRangeBase", 10).toDouble();
+    scalarDecimalPlace = settings.value("SceneViewSettings/ScalarDecimalPlace", 2).toDouble();
 
     // vector view
     vectorProportional = settings.value("SceneViewSettings/VectorProportional", false).toBool();
@@ -205,6 +206,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/PaletteSteps", paletteSteps);
     settings.setValue("SceneViewSettings/ScalarRangeLog", scalarRangeLog);
     settings.setValue("SceneViewSettings/ScalarRangeBase", scalarRangeBase);
+    settings.setValue("SceneViewSettings/ScalarDecimalPlace", scalarDecimalPlace);
 
     // vector view
     settings.setValue("SceneViewSettings/VectorProportional", vectorProportional);

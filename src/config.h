@@ -70,6 +70,7 @@ public:
     // scalar view
     bool scalarRangeLog;
     double scalarRangeBase;
+    int scalarDecimalPlace;
 
     // vector view
     bool vectorProportional;

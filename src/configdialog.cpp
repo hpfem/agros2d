@@ -113,6 +113,7 @@ void ConfigDialog::load()
     chkScalarFieldRangeLog->setChecked(Util::config()->scalarRangeLog);
     doScalarFieldLog(chkScalarFieldRangeLog->checkState());
     txtScalarFieldRangeBase->setText(QString::number(Util::config()->scalarRangeBase));
+    txtScalarDecimalPlace->setValue(Util::config()->scalarDecimalPlace);
 
     // vector field
     chkVectorProportional->setChecked(Util::config()->vectorProportional);
@@ -231,6 +232,7 @@ void ConfigDialog::save()
     Util::config()->paletteSteps = txtPaletteSteps->value();
     Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
     Util::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
+    Util::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
 
     // vector field
     Util::config()->vectorProportional = chkVectorProportional->isChecked();
@@ -480,6 +482,10 @@ QWidget *ConfigDialog::createViewWidget()
     txtScalarFieldRangeBase = new QLineEdit("10");
     connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
 
+    txtScalarDecimalPlace = new QSpinBox(this);
+    txtScalarDecimalPlace->setMinimum(1);
+    txtScalarDecimalPlace->setMaximum(10);
+
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
     layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 1);
@@ -490,6 +496,9 @@ QWidget *ConfigDialog::createViewWidget()
     layoutScalarField->addWidget(new QLabel(tr("Base:")), 2, 0);
     layoutScalarField->addWidget(txtScalarFieldRangeBase, 2, 1);
     layoutScalarField->addWidget(chkScalarFieldRangeLog, 2, 2);
+
+    layoutScalarField->addWidget(new QLabel(tr("Decimal place:")), 3, 0);
+    layoutScalarField->addWidget(txtScalarDecimalPlace, 3, 1);
 
     QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
     grpScalarView->setLayout(layoutScalarField);

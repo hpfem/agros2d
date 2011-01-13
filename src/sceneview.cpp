@@ -365,7 +365,7 @@ void SceneView::loadProjection3d(bool setScene)
     glLoadIdentity();
 
     if (setScene)
-    {        
+    {
         glScaled(1.0/aspect(), 1.0, 1.0);
 
         // move to origin
@@ -1206,7 +1206,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     glTranslated(-contextWidth() / 2.0, -contextHeight() / 2.0, 0.0);
 
     // dimensions
-    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', 1)) + 3;
+    int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
     Point scaleSize = Point(45.0 + textWidth, contextHeight() - 20.0);
     Point scaleBorder = Point(10.0, 10.0);
@@ -1280,7 +1280,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
         renderText(scaleLeft + 33.0 + ((value >= 0.0) ? fontMetrics().width("-") : 0.0),
                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
                    0.0,
-                   QString::number(value, '+e', 1));
+                   QString::number(value, '+e', Util::config()->scalarDecimalPlace));
     }
 
     // variable
@@ -3085,7 +3085,7 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(m_scene->edges.indexOf(edge)).
                                arg(edge->marker->html()));
                     updateGL();
-                }                
+                }
             }
             if (m_sceneMode == SceneMode_OperateOnLabels)
             {

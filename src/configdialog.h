@@ -130,6 +130,7 @@ private:
     QSpinBox *txtPaletteSteps;
     QCheckBox *chkScalarFieldRangeLog;
     QLineEdit *txtScalarFieldRangeBase;
+    QSpinBox *txtScalarDecimalPlace;
 
     // vector field
     QCheckBox *chkVectorProportional;
