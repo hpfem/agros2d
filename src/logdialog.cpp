@@ -178,6 +178,10 @@ void LogDialog::doSaveLog()
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save log"), dir, tr("Log files (*.log)"));
 
+    QFileInfo fileInfo(fileName);
+    if (fileInfo.suffix().toLower() != "log")
+        fileName += ".log";
+
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text) || !fileName.isEmpty())
     {

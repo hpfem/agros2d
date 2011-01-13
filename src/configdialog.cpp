@@ -377,7 +377,6 @@ QWidget *ConfigDialog::createMainWidget()
 
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
     chkCheckVersion = new QCheckBox(tr("Check new version during startup."));
-    chkShowConvergenceChart = new QCheckBox(tr("Show convergence chart after solving"));
     chkEnabledApplicationLog = new QCheckBox(tr("Enabled application log"));
     chkEnabledProgressLog = new QCheckBox(tr("Enabled progress log"));
 
@@ -388,7 +387,6 @@ QWidget *ConfigDialog::createMainWidget()
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkLineEditValueShowResult);
     layoutOther->addWidget(chkCheckVersion);
-    layoutOther->addWidget(chkShowConvergenceChart);
     layoutOther->addWidget(chkEnabledApplicationLog);
     layoutOther->addWidget(chkEnabledProgressLog);
     layoutOther->addLayout(layoutClearCommandHistory);
@@ -595,6 +593,7 @@ QWidget *ConfigDialog::createSolverWidget()
 #ifdef BETA
     chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
 #endif
+    chkShowConvergenceChart = new QCheckBox(tr("Show convergence chart after solving"));
 
     QVBoxLayout *layoutSolver = new QVBoxLayout();
     layoutSolver->addWidget(chkDeleteTriangleMeshFiles);
@@ -602,6 +601,7 @@ QWidget *ConfigDialog::createSolverWidget()
 #ifdef BETA
     layoutSolver->addWidget(chkSaveWithSolution);
 #endif
+    layoutSolver->addWidget(chkShowConvergenceChart);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);

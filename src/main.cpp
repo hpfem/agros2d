@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     {
         if (args.contains( "--help") || args.contains("/help"))
         {
-            qWarning() << "agros2d [fileName (*.a2d; *.py) | -run fileName (*.py) | --help | --verbose]";
+            cout << "agros2d [fileName (*.a2d; *.py) | -run fileName (*.py) | --help | --verbose]" << endl;
             exit(0);
             return 0;
         }
