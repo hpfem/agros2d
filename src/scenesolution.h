@@ -139,8 +139,6 @@ private:
     Vectorizer m_vecVectorView; // vectorizer for vector view
 
     Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
-
-    Vectorizer m_vec;
 };
 
 #endif // SCENESOLUTION_H

@@ -357,9 +357,6 @@ void SceneSolution::setTimeStep(int timeStep, bool showViewProgress)
     m_timeStep = timeStep;
     if (!isSolved()) return;
 
-    if (Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable() != PhysicFieldVariable_Undefined)
-        m_vec.process_solution(sln(), H2D_FN_DX_0, sln(), H2D_FN_DY_0, HERMES_EPS_NORMAL);
-
     emit timeStepChanged(showViewProgress);
 }
 
