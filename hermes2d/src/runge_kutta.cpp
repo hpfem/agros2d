@@ -258,10 +258,10 @@ bool rk_time_step(double current_time, double time_step, ButcherTable* const bt,
 
     // Assemble the block-diagonal mass matrix M corresponding to the 
     // time derivative term, and the corresponding part of the residual.
-    // stage_dp_left.assemble(stage_coeff_vec, matrix_left, vector_left);
+    stage_dp_left.assemble(stage_coeff_vec, matrix_left, vector_left);
     // debug
-    stage_dp_left.assemble(stage_coeff_vec, matrix_left);
-    matrix_left->multiply(stage_coeff_vec, vector_left);
+    // stage_dp_left.assemble(stage_coeff_vec, matrix_left);
+    // matrix_left->multiply(stage_coeff_vec, vector_left);
 
     // Assemble the block Jacobian matrix of the stationary residual F
     // Diagonal blocks are created even if empty, so that matrix_left 
