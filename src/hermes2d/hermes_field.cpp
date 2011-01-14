@@ -119,6 +119,7 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
     return solution;
 }
 
+
 QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                           Hermes::vector<BCTypes *> bcTypes,
                                           Hermes::vector<BCValues *> bcValues,
@@ -167,13 +168,13 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         break;
     case AdaptivityType_P:
         select = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_P_ANISO,
-                                                                Util::config()->convExp,
-                                                                H2DRS_DEFAULT_ORDER);
+                                                              Util::config()->convExp,
+                                                              H2DRS_DEFAULT_ORDER);
         break;
     case AdaptivityType_HP:
         select = new RefinementSelectors::H1ProjBasedSelector(RefinementSelectors::H2D_HP_ANISO,
-                                                                Util::config()->convExp,
-                                                                H2DRS_DEFAULT_ORDER);
+                                                              Util::config()->convExp,
+                                                              H2DRS_DEFAULT_ORDER);
         break;
     }
 
@@ -191,7 +192,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         if (adaptivityType != AdaptivityType_None)
         {
             // add norm
-            projNormType.push_back(HERMES_H1_NORM);
+            projNormType.push_back(Util::config()->projNormType);
             // add refinement selector
             selector.push_back(select);
         }

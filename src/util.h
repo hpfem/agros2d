@@ -64,9 +64,10 @@ const double ADAPTIVITY_CONVEXP = 1.0;
 const double ADAPTIVITY_THRESHOLD = 0.3;
 const int ADAPTIVITY_STRATEGY = 0;
 const int ADAPTIVITY_MESHREGULARITY = -1;
+const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
 
 // command argument
-const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I -p \"%2\"";
+const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I \"%2\"";
 const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
 
 using namespace std;
@@ -331,8 +332,8 @@ public:
     }
 
 private:
-     ErrorResultType m_type;
-     QString m_message;
+    ErrorResultType m_type;
+    QString m_message;
 };
 
 enum SolverMode
@@ -585,6 +586,26 @@ QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariabl
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
 QString matrixSolverTypeString(MatrixSolverType matrixSolverType);
+
+inline QString errorNormString(ProjNormType projNormType)
+{
+    switch (projNormType)
+    {
+    case HERMES_H1_NORM:
+        return QObject::tr("H1 norm");
+    case HERMES_L2_NORM:
+        return QObject::tr("L2 norm");
+    case HERMES_H1_SEMINORM:
+        return QObject::tr("H1 seminorm");
+    case HERMES_HDIV_NORM:
+        return QObject::tr("Hdiv norm");
+    case HERMES_HCURL_NORM:
+        return QObject::tr("Hcurl norm");
+    default:
+        std::cerr << "Norm '" + QString::number(projNormType).toStdString() + "' is not implemented. QString errorNormString(ProjNormType projNormType)" << endl;
+        throw;
+    }
+}
 
 // keys
 void initLists();

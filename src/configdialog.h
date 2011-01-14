@@ -161,6 +161,7 @@ private:
     QComboBox *cmbStrategy;
     QLabel *lblStrategy;
     QComboBox *cmbMeshRegularity;
+    QComboBox *cmbProjNormType;
 
     QLineEdit *txtArgumentTriangle;
     QLineEdit *txtArgumentFFmpeg;
