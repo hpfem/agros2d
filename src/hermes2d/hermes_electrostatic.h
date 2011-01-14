@@ -136,7 +136,7 @@ public:
 class ViewScalarFilterElectrostatic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterElectrostatic(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:

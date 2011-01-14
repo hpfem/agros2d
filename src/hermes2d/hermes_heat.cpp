@@ -99,7 +99,7 @@ Scalar heat_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, G
         + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
-void callbackHeatWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackHeatWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(heat_matrix_form));
     if (analysisType == AnalysisType_Transient)
@@ -495,8 +495,8 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypes),
-                                                                  Tuple<BCValues *>(&bcValues),
+                                                                  Hermes::vector<BCTypes *>(&bcTypes),
+                                                                  Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackHeatWeakForm);
 
     delete [] heatEdge;

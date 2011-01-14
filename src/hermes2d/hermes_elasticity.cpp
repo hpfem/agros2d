@@ -184,7 +184,7 @@ Scalar elasticity_vector_form_y_surf(int n, double *wt, Func<Real> *u_ext[], Fun
         return elasticityEdge[e->edge_marker].forceY * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-void callbackElasticityWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackElasticityWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(elasticity_matrix_form_linear_x_x));
     wf->add_matrix_form(0, 1, callback(elasticity_matrix_form_linear_x_y), HERMES_SYM);
@@ -530,7 +530,7 @@ ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariable physicF
     Solution *sln1 = Util::scene()->sceneSolution()->sln(0);
     Solution *sln2 = Util::scene()->sceneSolution()->sln(1);
 
-    return new ViewScalarFilterElasticity(Tuple<MeshFunction *>(sln1, sln2),
+    return new ViewScalarFilterElasticity(Hermes::vector<MeshFunction *>(sln1, sln2),
                                           physicFieldVariable,
                                           physicFieldVariableComp);
 }
@@ -674,8 +674,8 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypesX, &bcTypesY),
-                                                                  Tuple<BCValues *>(&bcValuesX, &bcValuesY),
+                                                                  Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY),
+                                                                  Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY),
                                                                   callbackElasticityWeakForm);
 
     delete [] elasticityEdge;

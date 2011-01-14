@@ -28,7 +28,7 @@
 #include "hermes_flow.h"
 
 #include "scene.h"
-#include "h2d_reader.h"
+#include "mesh/h2d_reader.h"
 
 bool isPlanar;
 AnalysisType analysisType;
@@ -120,9 +120,9 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
 }
 
 QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                          Tuple<BCTypes *> bcTypes,
-                                          Tuple<BCValues *> bcValues,
-                                          void (*cbWeakForm)(WeakForm *, Tuple<Solution *>))
+                                          Hermes::vector<BCTypes *> bcTypes,
+                                          Hermes::vector<BCValues *> bcValues,
+                                          void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>))
 {
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -147,17 +147,17 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     refineMesh(mesh, true, true);
 
     // create an H1 space
-    Tuple<Space *> space;
+    Hermes::vector<Space *> space;
     // create hermes solution array
-    Tuple<Solution *> solution;
+    Hermes::vector<Solution *> solution;
     // create reference solution
-    Tuple<Solution *> solutionReference;
+    Hermes::vector<Solution *> solutionReference;
 
     // projection norms
-    Hermes::Tuple<ProjNormType> projNormType;
+    Hermes::vector<ProjNormType> projNormType;
 
     // prepare selector
-    Hermes::Tuple<RefinementSelectors::Selector *> selector;
+    Hermes::vector<RefinementSelectors::Selector *> selector;
 
     RefinementSelectors::Selector *select = NULL;
     switch (adaptivityType)
@@ -262,7 +262,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             }
 
             // construct globally refined reference mesh and setup reference space.
-            Tuple<Space *> *spaceReference = construct_refined_spaces(space);
+            Hermes::vector<Space *> *spaceReference = construct_refined_spaces(space);
 
             if (Space::get_num_dofs(*spaceReference) == 0)
             {
@@ -287,7 +287,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             Adapt *adaptivity = new Adapt(space, projNormType);
 
             // Calculate error estimate for each solution component and the total error estimate.
-            Hermes::Tuple<double> err_est_rel;
+            Hermes::vector<double> err_est_rel;
             error = adaptivity->calc_err_est(solution,
                                              solutionReference,
                                              &err_est_rel) * 100;
@@ -437,7 +437,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
 // *********************************************************************************************************************************************
 
-ViewScalarFilter::ViewScalarFilter(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
+ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
     : Filter(sln)
 {
     m_physicFieldVariable = physicFieldVariable;

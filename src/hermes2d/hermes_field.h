@@ -113,7 +113,7 @@ HermesField *hermesFieldFactory(PhysicField physicField);
 class ViewScalarFilter : public Filter
 {
 public:
-    ViewScalarFilter(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
+    ViewScalarFilter(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 
     double get_pt_value(double x, double y, int item = H2D_FN_VAL);
 
@@ -141,9 +141,9 @@ void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
 
 // solve
 QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                          Tuple<BCTypes *> bcTypes,
-                                          Tuple<BCValues *> bcValues,
-                                          void (*cbWeakForm)(WeakForm *, Tuple<Solution *>));
+                                          Hermes::vector<BCTypes *> bcTypes,
+                                          Hermes::vector<BCValues *> bcValues,
+                                          void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>));
 
 // custom forms **************************************************************************************************************************
 

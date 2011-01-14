@@ -67,7 +67,7 @@ Scalar electrostatic_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Re
         return electrostaticLabel[e->elem_marker].charge_density / EPS0 * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-void callbackElectrostaticWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackElectrostaticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(electrostatic_matrix_form));
     wf->add_vector_form(0, callback(electrostatic_vector_form));
@@ -390,8 +390,8 @@ QList<SolutionArray *> *HermesElectrostatic::solve(ProgressItemSolve *progressIt
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypes),
-                                                                  Tuple<BCValues *>(&bcValues),
+                                                                  Hermes::vector<BCTypes *>(&bcTypes),
+                                                                  Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackElectrostaticWeakForm);
 
     delete [] electrostaticEdge;

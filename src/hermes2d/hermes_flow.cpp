@@ -73,7 +73,7 @@ Scalar bilinear_form_unsym_1_2(int n, double *wt, Func<Real> *u_ext[], Func<Real
     return - int_u_dvdy<Real, Scalar>(n, wt, u, v);
 }
 
-void callbackFlowWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackFlowWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
     if (analysisType == AnalysisType_Transient)
@@ -335,7 +335,7 @@ ViewScalarFilter *HermesFlow::viewScalarFilter(PhysicFieldVariable physicFieldVa
     Solution *slnY = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
     Solution *slnPress = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 2);
 
-    return new ViewScalarFilterFlow(Tuple<MeshFunction *>(slnX, slnY, slnPress),
+    return new ViewScalarFilterFlow(Hermes::vector<MeshFunction *>(slnX, slnY, slnPress),
                                     physicFieldVariable,
                                     physicFieldVariableComp);
 }
@@ -435,8 +435,8 @@ QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypesX, &bcTypesY, &bcTypesP),
-                                                                  Tuple<BCValues *>(&bcValuesX, &bcValuesY, &bcValuesP),
+                                                                  Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY, &bcTypesP),
+                                                                  Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY, &bcValuesP),
                                                                   callbackFlowWeakForm);
 
     delete [] flowEdge;

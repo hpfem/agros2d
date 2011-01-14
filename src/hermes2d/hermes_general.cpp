@@ -90,7 +90,7 @@ Scalar general_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
         return generalLabel[marker].rightside * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-void callbackGeneralWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackGeneralWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(general_matrix_form));
     wf->add_vector_form(0, callback(general_vector_form));
@@ -388,8 +388,8 @@ QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolv
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypes),
-                                                                  Tuple<BCValues *>(&bcValues),
+                                                                  Hermes::vector<BCTypes *>(&bcTypes),
+                                                                  Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackGeneralWeakForm);
 
     delete [] generalEdge;

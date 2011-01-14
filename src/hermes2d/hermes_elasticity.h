@@ -143,7 +143,7 @@ public:
 class ViewScalarFilterElasticity : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterElasticity(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterElasticity(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {}
 
 protected:

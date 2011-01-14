@@ -64,7 +64,7 @@ Scalar current_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
     return 0.0;
 }
 
-void callbackCurrentWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackCurrentWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(current_matrix_form));
     wf->add_vector_form(0, callback(current_vector_form));
@@ -373,8 +373,8 @@ QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolv
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypes),
-                                                                  Tuple<BCValues *>(&bcValues),
+                                                                  Hermes::vector<BCTypes *>(&bcTypes),
+                                                                  Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackCurrentWeakForm);
 
     delete [] currentEdge;

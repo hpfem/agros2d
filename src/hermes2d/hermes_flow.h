@@ -131,7 +131,7 @@ public:
 class ViewScalarFilterFlow : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterFlow(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterFlow(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {}
 
 protected:

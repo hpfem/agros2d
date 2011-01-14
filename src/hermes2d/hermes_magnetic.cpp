@@ -137,7 +137,7 @@ Scalar magnetic_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Re
 }
 
 /*
-void callbackMagneticSpace(Tuple<Space *> space)
+void callbackMagneticSpace(Hermes::vector<Space *> space)
 {
     if (space.size() == 1)
     {
@@ -155,7 +155,7 @@ void callbackMagneticSpace(Tuple<Space *> space)
 }
 */
 
-void callbackMagneticWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackMagneticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     if (slnArray.size() == 1)
     {
@@ -807,7 +807,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
 
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState)
     {
-        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1),
+        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
@@ -815,7 +815,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
     {
         Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
-        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1, sln2),
+        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1, sln2),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
@@ -827,7 +827,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
         else
             sln2 = sln1;
 
-        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1, sln2),
+        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1, sln2),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
@@ -925,8 +925,8 @@ QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSol
     }
 
     QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypesReal, &bcTypesImag),
-                                                                  Tuple<BCValues *>(&bcValuesReal, &bcValuesImag),
+                                                                  Hermes::vector<BCTypes *>(&bcTypesReal, &bcTypesImag),
+                                                                  Hermes::vector<BCValues *>(&bcValuesReal, &bcValuesImag),
                                                                   callbackMagneticWeakForm);
 
     delete [] magneticEdge;
