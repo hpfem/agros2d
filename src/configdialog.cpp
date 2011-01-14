@@ -497,7 +497,7 @@ QWidget *ConfigDialog::createViewWidget()
     layoutScalarField->addWidget(txtScalarFieldRangeBase, 2, 1);
     layoutScalarField->addWidget(chkScalarFieldRangeLog, 2, 2);
 
-    layoutScalarField->addWidget(new QLabel(tr("Decimal place:")), 3, 0);
+    layoutScalarField->addWidget(new QLabel(tr("Number of decimal places:")), 3, 0);
     layoutScalarField->addWidget(txtScalarDecimalPlace, 3, 1);
 
     QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
