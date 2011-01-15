@@ -1794,16 +1794,16 @@ double get_l2_norm(Vector* vec)
 }
 
 // Performs uniform global refinement of a FE space. 
-Hermes::vector<Space *> * construct_refined_spaces(Hermes::vector<Space *> coarse, int order_increase)
+Hermes::vector<Space *> construct_refined_spaces(Hermes::vector<Space *> coarse, int order_increase)
 {
   _F_
-  Hermes::vector<Space *> * ref_spaces = new Hermes::vector<Space *>;
+  Hermes::vector<Space *> ref_spaces;
   for (unsigned int i = 0; i < coarse.size(); i++) 
   {
     Mesh* ref_mesh = new Mesh;
     ref_mesh->copy(coarse[i]->get_mesh());
     ref_mesh->refine_all_elements();
-    ref_spaces->push_back(coarse[i]->dup(ref_mesh, order_increase));
+    ref_spaces.push_back(coarse[i]->dup(ref_mesh, order_increase));
   }
 
   return ref_spaces;

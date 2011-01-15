@@ -262,7 +262,7 @@ protected:
 };
 
 // Create globally refined space.
-HERMES_API Hermes::vector<Space *>* construct_refined_spaces(Hermes::vector<Space *> coarse, int order_increase = 1);
+HERMES_API Hermes::vector<Space *> construct_refined_spaces(Hermes::vector<Space *> coarse, int order_increase = 1);
 HERMES_API Space* construct_refined_space(Space* coarse, int order_increase = 1);
 
 HERMES_API double get_l2_norm(Vector* vec); 

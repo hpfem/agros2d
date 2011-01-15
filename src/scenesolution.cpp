@@ -27,7 +27,6 @@ SceneSolution::SceneSolution()
     m_isSolving = false;
 
     m_meshInitial = NULL;
-    m_solutionArrayList = NULL;
     m_slnContourView = NULL;
     m_slnScalarView = NULL;
     m_slnVectorXView = NULL;
@@ -41,13 +40,11 @@ void SceneSolution::clear()
     m_timeStep = -1;
 
     // solution array
-    if (m_solutionArrayList)
+    if (!m_solutionArrayList.isEmpty())
     {
-        for (int i = 0; i < m_solutionArrayList->count(); i++)
-            delete m_solutionArrayList->at(i);
-        m_solutionArrayList->clear();
-        delete m_solutionArrayList;
-        m_solutionArrayList = NULL;
+        for (int i = 0; i < m_solutionArrayList.count(); i++)
+            delete m_solutionArrayList.at(i);
+        m_solutionArrayList.clear();
     }
 
     // mesh
@@ -169,7 +166,7 @@ void SceneSolution::loadSolution(QDomElement *element)
 {
     logMessage("SceneSolution::loadSolution()");
 
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+    QList<SolutionArray *> solutionArrayList;
 
     // constant solution cannot be saved
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
@@ -184,7 +181,7 @@ void SceneSolution::loadSolution(QDomElement *element)
         solutionArray->adaptiveSteps = 0.0;
         solutionArray->time = 0.0;
 
-        solutionArrayList->append(solutionArray);
+        solutionArrayList.append(solutionArray);
     }
 
     QDomNode n = element->firstChild();
@@ -194,12 +191,12 @@ void SceneSolution::loadSolution(QDomElement *element)
         solutionArray->load(&n.toElement());
 
         // add to the array
-        solutionArrayList->append(solutionArray);
+        solutionArrayList.append(solutionArray);
 
         n = n.nextSibling();
     }
 
-    if (solutionArrayList->count() > 0)
+    if (!solutionArrayList.isEmpty())
         setSolutionArrayList(solutionArrayList);
 }
 
@@ -215,7 +212,7 @@ void SceneSolution::saveSolution(QDomDocument *doc, QDomElement *element)
         for (int i = start; i < timeStepCount(); i++)
         {
             QDomNode eleSolution = doc->createElement("solution");
-            m_solutionArrayList->at(i)->save(doc, &eleSolution.toElement());
+            m_solutionArrayList.at(i)->save(doc, &eleSolution.toElement());
             element->appendChild(eleSolution);
         }
     }
@@ -232,8 +229,8 @@ Solution *SceneSolution::sln(int i)
         if (currentTimeStep == -1)
             currentTimeStep = m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution();
 
-        if (m_solutionArrayList->value(currentTimeStep)->sln)
-            return m_solutionArrayList->value(currentTimeStep)->sln;
+        if (m_solutionArrayList.value(currentTimeStep)->sln)
+            return m_solutionArrayList.value(currentTimeStep)->sln;
     }
     return NULL;
 }
@@ -243,21 +240,21 @@ Orderizer &SceneSolution::ordView()
     logMessage("SceneSolution::ordView()");
 
     if (isSolved())
-        return *m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->order;
+        return *m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->order;
 }
 
 double SceneSolution::adaptiveError()
 {
     logMessage("SceneSolution::adaptiveError()");
 
-    return (isSolved()) ? m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveError : 100.0;
+    return (isSolved()) ? m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveError : 100.0;
 }
 
 int SceneSolution::adaptiveSteps()
 {
     logMessage("SceneSolution::adaptiveSteps()");
 
-    return (isSolved()) ? m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveSteps : 0.0;
+    return (isSolved()) ? m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveSteps : 0.0;
 }
 
 int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &point)
@@ -330,16 +327,15 @@ int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
     return -1;
 }
 
-void SceneSolution::setSolutionArrayList(QList<SolutionArray *> *solutionArrayList)
+void SceneSolution::setSolutionArrayList(QList<SolutionArray *> solutionArrayList)
 {
     logMessage("SceneSolution::setSolutionArrayList()");
 
-    if (m_solutionArrayList)
+    if (!m_solutionArrayList.isEmpty())
     {
-        for (int i = 0; i < m_solutionArrayList->count(); i++)
-            delete m_solutionArrayList->at(i);
-        m_solutionArrayList->clear();
-        delete m_solutionArrayList;
+        for (int i = 0; i < m_solutionArrayList.count(); i++)
+            delete m_solutionArrayList.at(i);
+        m_solutionArrayList.clear();
     }
 
     m_solutionArrayList = solutionArrayList;
@@ -364,7 +360,7 @@ int SceneSolution::timeStepCount()
 {
     logMessage("SceneSolution::timeStepCount()");
 
-    return (m_solutionArrayList) ? m_solutionArrayList->count() / Util::scene()->problemInfo()->hermes()->numberOfSolution() : 0;
+    return (!m_solutionArrayList.isEmpty()) ? m_solutionArrayList.count() / Util::scene()->problemInfo()->hermes()->numberOfSolution() : 0;
 }
 
 double SceneSolution::time()
@@ -373,8 +369,8 @@ double SceneSolution::time()
 
     if (isSolved())
     {
-        if (m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->sln)
-            return m_solutionArrayList->value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->time;
+        if (m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->sln)
+            return m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->time;
     }
     return 0.0;
 }

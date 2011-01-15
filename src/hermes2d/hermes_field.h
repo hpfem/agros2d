@@ -88,7 +88,7 @@ public:
     virtual SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args) = 0;
     virtual SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args) = 0;
 
-    virtual QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve) = 0;
+    virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
 
     virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
     virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;
@@ -140,20 +140,20 @@ void writeMeshFromFile(const QString &fileName, Mesh *mesh);
 void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge);
 
 // solve
-QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                          Hermes::vector<BCTypes *> bcTypes,
-                                          Hermes::vector<BCValues *> bcValues,
-                                          void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>));
+QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
+                                         Hermes::vector<BCTypes *> bcTypes,
+                                         Hermes::vector<BCValues *> bcValues,
+                                         void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>));
 
 // custom forms **************************************************************************************************************************
 
 template<typename Real, typename Scalar>
 Scalar int_x_u_v(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e)
 {
-  Scalar result = 0;
-  for (int i = 0; i < n; i++)
-    result += wt[i] * e->x[i] * (u->val[i] * v->val[i]);
-  return result;
+    Scalar result = 0;
+    for (int i = 0; i < n; i++)
+        result += wt[i] * e->x[i] * (u->val[i] * v->val[i]);
+    return result;
 }
 
 template<typename Real, typename Scalar>
@@ -186,19 +186,19 @@ Scalar int_u_dvdx_over_x(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<R
 template<typename Real, typename Scalar>
 Scalar int_dvdx(int n, double *wt, Func<Real> *v)
 {
-  Scalar result = 0;
-  for (int i = 0; i < n; i++)
-    result += wt[i] * (v->dx[i]);
-  return result;
+    Scalar result = 0;
+    for (int i = 0; i < n; i++)
+        result += wt[i] * (v->dx[i]);
+    return result;
 }
 
 template<typename Real, typename Scalar>
 Scalar int_dvdy(int n, double *wt, Func<Real> *v)
 {
-  Scalar result = 0;
-  for (int i = 0; i < n; i++)
-    result += wt[i] * (v->dy[i]);
-  return result;
+    Scalar result = 0;
+    for (int i = 0; i < n; i++)
+        result += wt[i] * (v->dy[i]);
+    return result;
 }
 
 

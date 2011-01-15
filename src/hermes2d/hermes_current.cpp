@@ -312,7 +312,7 @@ ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariable physicFiel
                                        physicFieldVariableComp);
 }
 
-QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolve)
+QList<SolutionArray *> HermesCurrent::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     BCTypes bcTypes;
@@ -333,7 +333,7 @@ QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolv
             SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeCurrentMarker->value.evaluate()) return NULL;
+            if (!edgeCurrentMarker->value.evaluate()) return QList<SolutionArray *>();
 
             currentEdge[i+1].type = edgeCurrentMarker->type;
             currentEdge[i+1].value = edgeCurrentMarker->value.number;
@@ -366,13 +366,13 @@ QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolv
             SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelCurrentMarker->conductivity.evaluate()) return NULL;
+            if (!labelCurrentMarker->conductivity.evaluate()) return QList<SolutionArray *>();
 
             currentLabel[i].conductivity = labelCurrentMarker->conductivity.number;
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
                                                                   Hermes::vector<BCTypes *>(&bcTypes),
                                                                   Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackCurrentWeakForm);

@@ -120,10 +120,10 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
 }
 
 
-QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                          Hermes::vector<BCTypes *> bcTypes,
-                                          Hermes::vector<BCValues *> bcValues,
-                                          void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>))
+QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
+                                         Hermes::vector<BCTypes *> bcTypes,
+                                         Hermes::vector<BCValues *> bcValues,
+                                         void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>))
 {
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -141,7 +141,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
     bool isLinear = true;
 
     // solution agros array
-    QList<SolutionArray *> *solutionArrayList = new QList<SolutionArray *>();
+    QList<SolutionArray *> solutionArrayList;
 
     // load the mesh file
     Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
@@ -204,7 +204,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         {
             // constant initial solution
             solution.at(i)->set_const(mesh, initialCondition);
-            solutionArrayList->append(solutionArray(solution.at(i)));
+            solutionArrayList.append(solutionArray(solution.at(i)));
         }
     }
 
@@ -250,22 +250,25 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             dp.assemble(matrix, rhs, false);
 
             if(solver->solve())
+            {
                 Solution::vector_to_solutions(solver->get_solution(), space, solution);
+            }
             else
-                error ("Matrix solver failed.\n");
+            {
+                isError = true;
+                progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
+            }
         }
         else
         {
             // reference solution            
             for (int j = 0; j < numberOfSolution; j++)
-            {
                 solutionReference.push_back(new Solution());
-            }
 
             // construct globally refined reference mesh and setup reference space.
-            Hermes::vector<Space *> *spaceReference = construct_refined_spaces(space);
+            Hermes::vector<Space *> spaceReference = construct_refined_spaces(space);
 
-            if (Space::get_num_dofs(*spaceReference) == 0)
+            if (Space::get_num_dofs(spaceReference) == 0)
             {
                 progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
                 isError = true;
@@ -273,34 +276,52 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
             }
 
             // assemble reference problem.
-            DiscreteProblem dp(&wf, *spaceReference, isLinear);
+            DiscreteProblem dp(&wf, spaceReference, isLinear);
             dp.assemble(matrix, rhs, false);
 
-            if(solver->solve())
-                Solution::vector_to_solutions(solver->get_solution(), *spaceReference, solutionReference);
+            if (solver->solve())
+            {
+                Solution::vector_to_solutions(solver->get_solution(), spaceReference, solutionReference);
+            }
             else
-                error ("Matrix solver failed.\n");
+            {
+                isError = true;
+                progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
+            }
 
-            // project the fine mesh solution onto the coarse mesh.
-            OGProjection::project_global(space, solutionReference, solution, matrixSolver);
+            if (!isError)
+            {
+                // project the fine mesh solution onto the coarse mesh.
+                OGProjection::project_global(space, solutionReference, solution, matrixSolver);
 
-            // Calculate element errors and total error estimate.
-            Adapt *adaptivity = new Adapt(space, projNormType);
+                // Calculate element errors and total error estimate.
+                Adapt adaptivity(space, projNormType);
 
-            // Calculate error estimate for each solution component and the total error estimate.
-            Hermes::vector<double> err_est_rel;
-            error = adaptivity->calc_err_est(solution,
-                                             solutionReference,
-                                             &err_est_rel) * 100;
+                // Calculate error estimate for each solution component and the total error estimate.
+                Hermes::vector<double> err_est_rel;
+                error = adaptivity.calc_err_est(solution,
+                                                solutionReference,
+                                                &err_est_rel) * 100;
 
-            // emit signal
-            progressItemSolve->emitMessage(QObject::tr("Relative error: %1%\t(step: %2/%3, DOFs: %4)").
-                                           arg(error, 0, 'f', 3).
-                                           arg(i + 1).
-                                           arg(maxAdaptivitySteps).
-                                           arg(Space::get_num_dofs(space)), false, 1);
-            // add error to the list
-            progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
+                // emit signal
+                progressItemSolve->emitMessage(QObject::tr("Relative error: %1%\t(step: %2/%3, DOFs: %4)").
+                                               arg(error, 0, 'f', 3).
+                                               arg(i + 1).
+                                               arg(maxAdaptivitySteps).
+                                               arg(Space::get_num_dofs(space)), false, 1);
+                // add error to the list
+                progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
+
+                if (error < adaptivityTolerance || Space::get_num_dofs(space) >= NDOF_STOP)
+                {
+                    break;
+                }
+                if (i != maxAdaptivitySteps-1) adaptivity.adapt(selector,
+                                                                Util::config()->threshold,
+                                                                Util::config()->strategy,
+                                                                Util::config()->meshRegularity);
+                actualAdaptivitySteps = i+1;
+            }
 
             if (progressItemSolve->isCanceled())
             {
@@ -308,25 +329,13 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 break;
             }
 
-            if (error < adaptivityTolerance || Space::get_num_dofs(space) >= NDOF_STOP)
-            {
-                break;
-            }
-            if (i != maxAdaptivitySteps-1) adaptivity->adapt(selector,
-                                                             Util::config()->threshold,
-                                                             Util::config()->strategy,
-                                                             Util::config()->meshRegularity);
-            actualAdaptivitySteps = i+1;
-
-            delete adaptivity;
             // delete reference space
-            for (int i = 0; i < spaceReference->size(); i++)
+            for (int i = 0; i < spaceReference.size(); i++)
             {
-                delete spaceReference->at(i)->get_mesh();
-                delete spaceReference->at(i);
+                delete spaceReference.at(i)->get_mesh();
+                delete spaceReference.at(i);
             }
-            spaceReference->clear();
-            delete spaceReference;
+            spaceReference.clear();
 
             // delete reference solution
             for (int i = 0; i < solutionReference.size(); i++)
@@ -342,6 +351,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     // delete selector
     if (select) delete select;
+    selector.clear();
 
     // timesteps
     if (!isError)
@@ -381,15 +391,20 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 }
 
                 if (solver->solve())
+                {
                     Solution::vector_to_solutions(solver->get_solution(), space, solution);
+                }
                 else
-                    error ("Matrix solver failed.\n");
+                {
+                    isError = true;
+                    progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
+                }
             }
 
             // output
             for (int i = 0; i < numberOfSolution; i++)
             {
-                solutionArrayList->append(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
+                solutionArrayList.append(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
             }
 
             if (analysisType == AnalysisType_Transient)
@@ -407,6 +422,7 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
         if (solver) delete solver;
         if (matrix) delete matrix;
         if (rhs) delete rhs;
+
         if (dp) delete dp;
     }
 
@@ -428,9 +444,9 @@ QList<SolutionArray *> *solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     if (isError)
     {
-        for (int i = 0; i < solutionArrayList->count(); i++)
-            delete solutionArrayList->at(i);
-        solutionArrayList->clear();
+        for (int i = 0; i < solutionArrayList.count(); i++)
+            delete solutionArrayList.at(i);
+        solutionArrayList.clear();
     }
 
     return solutionArrayList;

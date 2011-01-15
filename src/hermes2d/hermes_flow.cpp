@@ -340,14 +340,14 @@ ViewScalarFilter *HermesFlow::viewScalarFilter(PhysicFieldVariable physicFieldVa
                                     physicFieldVariableComp);
 }
 
-QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
+QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return NULL;
-        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return NULL;
-        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return NULL;
+        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return QList<SolutionArray *>();
     }
 
     // edge markers
@@ -373,9 +373,9 @@ QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
             SceneEdgeFlowMarker *edgeFlowMarker = dynamic_cast<SceneEdgeFlowMarker *>(Util::scene()->edges[i]->marker);
             flowEdge[i+1].type = edgeFlowMarker->type;
 
-            if (!edgeFlowMarker->velocityX.evaluate()) return NULL;
-            if (!edgeFlowMarker->velocityY.evaluate()) return NULL;
-            if (!edgeFlowMarker->pressure.evaluate()) return NULL;
+            if (!edgeFlowMarker->velocityX.evaluate()) return QList<SolutionArray *>();
+            if (!edgeFlowMarker->velocityY.evaluate()) return QList<SolutionArray *>();
+            if (!edgeFlowMarker->pressure.evaluate()) return QList<SolutionArray *>();
 
             flowEdge[i+1].velocityX = edgeFlowMarker->velocityX.number;
             flowEdge[i+1].velocityY = edgeFlowMarker->velocityY.number;
@@ -426,15 +426,15 @@ QList<SolutionArray *> *HermesFlow::solve(ProgressItemSolve *progressItemSolve)
         {
             SceneLabelFlowMarker *labelFlowMarker = dynamic_cast<SceneLabelFlowMarker *>(Util::scene()->labels[i]->marker);
 
-            if (!labelFlowMarker->dynamic_viscosity.evaluate()) return NULL;
-            if (!labelFlowMarker->density.evaluate()) return NULL;
+            if (!labelFlowMarker->dynamic_viscosity.evaluate()) return QList<SolutionArray *>();
+            if (!labelFlowMarker->density.evaluate()) return QList<SolutionArray *>();
 
             flowLabel[i].dynamic_viscosity = labelFlowMarker->dynamic_viscosity.number;
             flowLabel[i].density = labelFlowMarker->density.number;
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
                                                                   Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY, &bcTypesP),
                                                                   Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY, &bcValuesP),
                                                                   callbackFlowWeakForm);

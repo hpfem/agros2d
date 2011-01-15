@@ -327,7 +327,7 @@ ViewScalarFilter *HermesElectrostatic::viewScalarFilter(PhysicFieldVariable phys
 
 // *******************************************************************************************************************************
 
-QList<SolutionArray *> *HermesElectrostatic::solve(ProgressItemSolve *progressItemSolve)
+QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     BCTypes bcTypes;
@@ -348,7 +348,7 @@ QList<SolutionArray *> *HermesElectrostatic::solve(ProgressItemSolve *progressIt
             SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeElectrostaticMarker->value.evaluate()) return NULL;
+            if (!edgeElectrostaticMarker->value.evaluate()) return QList<SolutionArray *>();
 
             electrostaticEdge[i+1].type = edgeElectrostaticMarker->type;
             electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.number;
@@ -381,15 +381,15 @@ QList<SolutionArray *> *HermesElectrostatic::solve(ProgressItemSolve *progressIt
             SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelElectrostaticMarker->charge_density.evaluate()) return NULL;
-            if (!labelElectrostaticMarker->permittivity.evaluate()) return NULL;
+            if (!labelElectrostaticMarker->charge_density.evaluate()) return QList<SolutionArray *>();
+            if (!labelElectrostaticMarker->permittivity.evaluate()) return QList<SolutionArray *>();
 
             electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.number;
             electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.number;
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
                                                                   Hermes::vector<BCTypes *>(&bcTypes),
                                                                   Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackElectrostaticWeakForm);

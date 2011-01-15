@@ -580,7 +580,7 @@ void HermesElasticity::deformShape(double4* linVert, int count)
     deformShapeTemplate<double4 *>(linVert, count);
 }
 
-QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemSolve)
+QList<SolutionArray *> HermesElasticity::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     BCTypes bcTypesX, bcTypesY;
@@ -606,8 +606,8 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
             elasticityEdge[i+1].typeX = edgeElasticityMarker->typeX;
             elasticityEdge[i+1].typeY = edgeElasticityMarker->typeY;
 
-            if (!edgeElasticityMarker->forceX.evaluate()) return NULL;
-            if (!edgeElasticityMarker->forceY.evaluate()) return NULL;
+            if (!edgeElasticityMarker->forceX.evaluate()) return QList<SolutionArray *>();
+            if (!edgeElasticityMarker->forceY.evaluate()) return QList<SolutionArray *>();
 
             elasticityEdge[i+1].forceX = edgeElasticityMarker->forceX.number;
             elasticityEdge[i+1].forceY = edgeElasticityMarker->forceY.number;
@@ -653,15 +653,15 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
         {
             SceneLabelElasticityMarker *labelElasticityMarker = dynamic_cast<SceneLabelElasticityMarker *>(Util::scene()->labels[i]->marker);
 
-            if (!labelElasticityMarker->young_modulus.evaluate()) return NULL;
-            if (!labelElasticityMarker->poisson_ratio.evaluate()) return NULL;
+            if (!labelElasticityMarker->young_modulus.evaluate()) return QList<SolutionArray *>();
+            if (!labelElasticityMarker->poisson_ratio.evaluate()) return QList<SolutionArray *>();
 
-            if (!labelElasticityMarker->forceX.evaluate()) return NULL;
-            if (!labelElasticityMarker->forceY.evaluate()) return NULL;
+            if (!labelElasticityMarker->forceX.evaluate()) return QList<SolutionArray *>();
+            if (!labelElasticityMarker->forceY.evaluate()) return QList<SolutionArray *>();
 
-            if (!labelElasticityMarker->alpha.evaluate()) return NULL;
-            if (!labelElasticityMarker->temp.evaluate()) return NULL;
-            if (!labelElasticityMarker->temp_ref.evaluate()) return NULL;
+            if (!labelElasticityMarker->alpha.evaluate()) return QList<SolutionArray *>();
+            if (!labelElasticityMarker->temp.evaluate()) return QList<SolutionArray *>();
+            if (!labelElasticityMarker->temp_ref.evaluate()) return QList<SolutionArray *>();
 
             elasticityLabel[i].young_modulus = labelElasticityMarker->young_modulus.number;
             elasticityLabel[i].poisson_ratio = labelElasticityMarker->poisson_ratio.number;
@@ -673,7 +673,7 @@ QList<SolutionArray *> *HermesElasticity::solve(ProgressItemSolve *progressItemS
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
                                                                   Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY),
                                                                   Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY),
                                                                   callbackElasticityWeakForm);

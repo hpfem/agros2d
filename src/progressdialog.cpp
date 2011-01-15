@@ -747,6 +747,7 @@ void ProgressItemSolve::solve()
     logMessage("ProgressItemSolve::solve()");
 
     m_adaptivityError.clear();
+    m_adaptivityDOF.clear();
 
     qDebug() << "ProgressItemSolve::solve()";
 
@@ -764,9 +765,9 @@ void ProgressItemSolve::solve()
 
     emit message(tr("Solver was started: %1 ").arg(matrixSolverTypeString(Util::scene()->problemInfo()->matrixSolver)), false, 1);
 
-    QList<SolutionArray *> *solutionArrayList = Util::scene()->problemInfo()->hermes()->solve(this);
+    QList<SolutionArray *> solutionArrayList = Util::scene()->problemInfo()->hermes()->solve(this);
 
-    if (!solutionArrayList->isEmpty())
+    if (!solutionArrayList.isEmpty())
     {
         emit message(tr("Problem was solved"), false, 2);
         Util::scene()->sceneSolution()->setTimeElapsed(time.elapsed());

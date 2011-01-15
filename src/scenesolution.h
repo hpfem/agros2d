@@ -55,8 +55,8 @@ public:
     inline Mesh *meshInitial() { return m_meshInitial; }
     inline void setMeshInitial(Mesh *meshInitial) { if (m_meshInitial) { delete m_meshInitial; } m_meshInitial = meshInitial; }
     Solution *sln(int i = -1);
-    void setSolutionArrayList(QList<SolutionArray *> *solutionArrayList);
-    inline QList<SolutionArray *> *solutionArrayList() { return m_solutionArrayList; }
+    void setSolutionArrayList(QList<SolutionArray *> solutionArrayList);
+    inline QList<SolutionArray *> solutionArrayList() { return m_solutionArrayList; }
     void setTimeStep(int timeStep, bool showViewProgress = true);
     inline int timeStep() { return m_timeStep; }
     int timeStepCount();
@@ -118,7 +118,7 @@ private:
     bool m_isSolving;
 
     // general solution array
-    QList<SolutionArray *> *m_solutionArrayList;
+    QList<SolutionArray *> m_solutionArrayList;
     int m_timeStep;
 
     // mesh
