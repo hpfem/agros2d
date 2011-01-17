@@ -18,12 +18,12 @@
 
 #include "../../../hermes_common/bctypes.h"
 #include "../../../hermes_common/bcvalues.h"
-#include "../mesh.h"
-#include "../traverse.h"
+#include "../mesh/mesh.h"
+#include "../mesh/traverse.h"
 #include "../shapeset/shapeset.h"
 #include "../asmlist.h"
-#include "../precalc.h"
-#include "../quad_all.h"
+#include "../shapeset/precalc.h"
+#include "../quadrature/quad_all.h"
 
 /// \brief Represents a finite element space over a domain.
 ///
@@ -149,7 +149,7 @@ public:
   /// Copies element orders from another space. 'inc' is an optional order
   /// increase. If the source space has a coarser mesh, the orders are distributed
   /// recursively. This is useful for reference solution spaces.
-  void copy_orders(Space* space, int inc = 0);
+  void copy_orders(const Space* space, int inc = 0);
   /// Internal. Obtains the order of an edge, according to the minimum rule.
   virtual int get_edge_order(Element* e, int edge);
 
@@ -170,8 +170,9 @@ public:
   Mesh* get_mesh() const { return mesh; }
   void set_mesh(Mesh* mesh);
 
-  /// Creates a copy of the space. For internal use (see RefDiscreteProblem).
-  virtual Space* dup(Mesh* mesh) const = 0;
+  /// Creates a copy of the space, increases order of all elements by
+  /// "order_increase".
+  virtual Space* dup(Mesh* mesh, int order_increase = 0) const = 0;
 
   /// Returns true if the space is ready for computation, false otherwise.
   bool is_up_to_date() const {
@@ -183,7 +184,7 @@ public:
 
 public:
 
-  /// Number of degrees of freedom (dimension of the space)
+  /// Number of degrees of freedom (dimension of the space).
   int ndof;
 
   /// Obtains an assembly list for the given element.
@@ -197,10 +198,10 @@ public:
   void update_essential_bc_values();
 
   /// \brief Returns the number of basis functions contained in the spaces.
-  static int get_num_dofs(Hermes::Tuple<Space *> spaces);
+  static int get_num_dofs(Hermes::vector<Space *> spaces);
 
-  /// \brief Assings the degrees of freedom to all Spaces in the Hermes::Tuple.
-  static int assign_dofs(Hermes::Tuple<Space*> spaces);
+  /// \brief Assings the degrees of freedom to all Spaces in the Hermes::vector.
+  static int assign_dofs(Hermes::vector<Space*> spaces);
 
   BCTypes* bc_types;
   BCValues* bc_values;
@@ -236,7 +237,8 @@ protected:
         scalar* edge_bc_proj;
         scalar* vertex_bc_coef;
       };
-      int n; ///< Number of dofs. Temporarily used during assignment of DOFs to indicate nodes which were not processed yet.
+      int n; ///< Number of dofs. Temporarily used during assignment 
+             ///< of DOFs to indicate nodes which were not processed yet.
     };
     struct // constrained vertex node
     {
@@ -328,7 +330,7 @@ public:
 };
 
 // updating time-dependent essential (Dirichlet) boundary conditions
-extern HERMES_API void update_essential_bc_values(Hermes::Tuple<Space*> spaces);  // multiple spaces
+extern HERMES_API void update_essential_bc_values(Hermes::vector<Space*> spaces);  // multiple spaces
 extern HERMES_API void update_essential_bc_values(Space *s);    // one space
 
 class Ord2

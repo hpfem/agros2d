@@ -137,7 +137,7 @@ Scalar magnetic_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Re
 }
 
 /*
-void callbackMagneticSpace(Tuple<Space *> space)
+void callbackMagneticSpace(Hermes::vector<Space *> space)
 {
     if (space.size() == 1)
     {
@@ -155,7 +155,7 @@ void callbackMagneticSpace(Tuple<Space *> space)
 }
 */
 
-void callbackMagneticWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackMagneticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     if (slnArray.size() == 1)
     {
@@ -807,7 +807,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
 
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState)
     {
-        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1),
+        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
@@ -815,7 +815,7 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
     {
         Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
-        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1, sln2),
+        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1, sln2),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
@@ -827,20 +827,20 @@ ViewScalarFilter *HermesMagnetic::viewScalarFilter(PhysicFieldVariable physicFie
         else
             sln2 = sln1;
 
-        return new ViewScalarFilterMagnetic(Tuple<MeshFunction *>(sln1, sln2),
+        return new ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *>(sln1, sln2),
                                             physicFieldVariable,
                                             physicFieldVariableComp);
     }
 }
 
-QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSolve)
+QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return NULL;
-        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return NULL;
-        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return NULL;
+        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return QList<SolutionArray *>();
     }
 
     // edge markers
@@ -864,8 +864,8 @@ QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSol
             SceneEdgeMagneticMarker *edgeMagneticMarker = dynamic_cast<SceneEdgeMagneticMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeMagneticMarker->value_real.evaluate()) return NULL;
-            if (!edgeMagneticMarker->value_imag.evaluate()) return NULL;
+            if (!edgeMagneticMarker->value_real.evaluate()) return QList<SolutionArray *>();
+            if (!edgeMagneticMarker->value_imag.evaluate()) return QList<SolutionArray *>();
 
             magneticEdge[i+1].type = edgeMagneticMarker->type;
             magneticEdge[i+1].value_real = edgeMagneticMarker->value_real.number;
@@ -903,15 +903,15 @@ QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSol
             SceneLabelMagneticMarker *labelMagneticMarker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelMagneticMarker->current_density_real.evaluate()) return NULL;
-            if (!labelMagneticMarker->current_density_imag.evaluate()) return NULL;
-            if (!labelMagneticMarker->permeability.evaluate()) return NULL;
-            if (!labelMagneticMarker->conductivity.evaluate()) return NULL;
-            if (!labelMagneticMarker->remanence.evaluate()) return NULL;
-            if (!labelMagneticMarker->remanence_angle.evaluate()) return NULL;
-            if (!labelMagneticMarker->velocity_x.evaluate()) return NULL;
-            if (!labelMagneticMarker->velocity_y.evaluate()) return NULL;
-            if (!labelMagneticMarker->velocity_angular.evaluate()) return NULL;
+            if (!labelMagneticMarker->current_density_real.evaluate()) return QList<SolutionArray *>();
+            if (!labelMagneticMarker->current_density_imag.evaluate()) return QList<SolutionArray *>();
+            if (!labelMagneticMarker->permeability.evaluate()) return QList<SolutionArray *>();
+            if (!labelMagneticMarker->conductivity.evaluate()) return QList<SolutionArray *>();
+            if (!labelMagneticMarker->remanence.evaluate()) return QList<SolutionArray *>();
+            if (!labelMagneticMarker->remanence_angle.evaluate()) return QList<SolutionArray *>();
+            if (!labelMagneticMarker->velocity_x.evaluate()) return QList<SolutionArray *>();
+            if (!labelMagneticMarker->velocity_y.evaluate()) return QList<SolutionArray *>();
+            if (!labelMagneticMarker->velocity_angular.evaluate()) return QList<SolutionArray *>();
 
             magneticLabel[i].current_density_real = labelMagneticMarker->current_density_real.number;
             magneticLabel[i].current_density_imag = labelMagneticMarker->current_density_imag.number;
@@ -924,9 +924,9 @@ QList<SolutionArray *> *HermesMagnetic::solve(ProgressItemSolve *progressItemSol
             magneticLabel[i].velocity_angular = labelMagneticMarker->velocity_angular.number;        }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypesReal, &bcTypesImag),
-                                                                  Tuple<BCValues *>(&bcValuesReal, &bcValuesImag),
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  Hermes::vector<BCTypes *>(&bcTypesReal, &bcTypesImag),
+                                                                  Hermes::vector<BCValues *>(&bcValuesReal, &bcValuesImag),
                                                                   callbackMagneticWeakForm);
 
     delete [] magneticEdge;

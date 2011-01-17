@@ -62,7 +62,7 @@ public:
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
     SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve);
+    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Electrostatic_Potential; } // PHYSICFIELDVARIABLE_ELECTROSTATIC_POTENTIAL
@@ -136,7 +136,7 @@ public:
 class ViewScalarFilterElectrostatic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterElectrostatic(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterElectrostatic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:

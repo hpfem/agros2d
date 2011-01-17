@@ -3332,6 +3332,7 @@ void SceneView::doInvalidated()
     actSceneZoomRegion->setEnabled(!is3DMode());
 
     m_scene->actDeleteSelected->setEnabled(m_sceneMode != SceneMode_Postprocessor);
+    m_scene->actTransform->setEnabled(m_sceneMode != SceneMode_Postprocessor);
     actSceneViewSelectRegion->setEnabled(m_sceneMode != SceneMode_Postprocessor);
 
     actPostprocessorModeLocalPointValue->setEnabled(m_sceneMode == SceneMode_Postprocessor && !is3DMode());

@@ -82,7 +82,7 @@ public:
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
     SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve);
+    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     PhysicFieldVariable contourPhysicFieldVariable();
     PhysicFieldVariable scalarPhysicFieldVariable();
@@ -175,7 +175,7 @@ public:
 class ViewScalarFilterMagnetic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterMagnetic(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterMagnetic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:

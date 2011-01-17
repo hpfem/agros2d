@@ -64,7 +64,7 @@ Scalar current_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
     return 0.0;
 }
 
-void callbackCurrentWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackCurrentWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(current_matrix_form));
     wf->add_vector_form(0, callback(current_vector_form));
@@ -312,7 +312,7 @@ ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariable physicFiel
                                        physicFieldVariableComp);
 }
 
-QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolve)
+QList<SolutionArray *> HermesCurrent::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     BCTypes bcTypes;
@@ -333,7 +333,7 @@ QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolv
             SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeCurrentMarker->value.evaluate()) return NULL;
+            if (!edgeCurrentMarker->value.evaluate()) return QList<SolutionArray *>();
 
             currentEdge[i+1].type = edgeCurrentMarker->type;
             currentEdge[i+1].value = edgeCurrentMarker->value.number;
@@ -366,15 +366,15 @@ QList<SolutionArray *> *HermesCurrent::solve(ProgressItemSolve *progressItemSolv
             SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelCurrentMarker->conductivity.evaluate()) return NULL;
+            if (!labelCurrentMarker->conductivity.evaluate()) return QList<SolutionArray *>();
 
             currentLabel[i].conductivity = labelCurrentMarker->conductivity.number;
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypes),
-                                                                  Tuple<BCValues *>(&bcValues),
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  Hermes::vector<BCTypes *>(&bcTypes),
+                                                                  Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackCurrentWeakForm);
 
     delete [] currentEdge;

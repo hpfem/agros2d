@@ -80,7 +80,7 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
     {
         for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
         {
-            cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList()->value(i * Util::scene()->problemInfo()->hermes()->numberOfSolution())->time, 'e', 2), i);
+            cmbFieldVariable->addItem(QString::number(Util::scene()->sceneSolution()->solutionArrayList().value(i * Util::scene()->problemInfo()->hermes()->numberOfSolution())->time, 'e', 2), i);
         }
     }
     else

@@ -140,6 +140,7 @@ void Config::load()
     threshold = settings.value("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD).toDouble();
     strategy = settings.value("Adaptivity/Strategy", ADAPTIVITY_STRATEGY).toInt();
     meshRegularity = settings.value("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY).toInt();
+    projNormType = (ProjNormType) settings.value("Adaptivity/ProjNormType", ADAPTIVITY_PROJNORMTYPE).toInt();
 
     // command argument
     commandTriangle = settings.value("Commands/Triangle", COMMANDS_TRIANGLE).toString();
@@ -250,6 +251,7 @@ void Config::save()
     settings.setValue("Adaptivity/Threshold", threshold);
     settings.setValue("Adaptivity/Strategy", strategy);
     settings.setValue("Adaptivity/MeshRegularity", meshRegularity);
+    settings.setValue("Adaptivity/ProjNormType", projNormType);
 
     // command argument
     settings.setValue("Commands/Triangle", commandTriangle);

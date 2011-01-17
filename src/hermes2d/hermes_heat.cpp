@@ -99,7 +99,7 @@ Scalar heat_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, G
         + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
-void callbackHeatWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackHeatWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(heat_matrix_form));
     if (analysisType == AnalysisType_Transient)
@@ -404,14 +404,14 @@ ViewScalarFilter *HermesHeat::viewScalarFilter(PhysicFieldVariable physicFieldVa
                                     physicFieldVariableComp);
 }
 
-QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
+QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
 {
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return NULL;
-        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return NULL;
-        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return NULL;
+        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return QList<SolutionArray *>();
     }
 
     // edge markers
@@ -444,7 +444,7 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
             case PhysicFieldBC_Heat_Temperature:
                 {
                     // evaluate script
-                    if (!edgeHeatMarker->temperature.evaluate()) return NULL;
+                    if (!edgeHeatMarker->temperature.evaluate()) return QList<SolutionArray *>();
 
                     heatEdge[i+1].temperature = edgeHeatMarker->temperature.number;
 
@@ -455,9 +455,9 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
             case PhysicFieldBC_Heat_Flux:
                 {
                     // evaluate script
-                    if (!edgeHeatMarker->heatFlux.evaluate()) return NULL;
-                    if (!edgeHeatMarker->h.evaluate()) return NULL;
-                    if (!edgeHeatMarker->externalTemperature.evaluate()) return NULL;
+                    if (!edgeHeatMarker->heatFlux.evaluate()) return QList<SolutionArray *>();
+                    if (!edgeHeatMarker->h.evaluate()) return QList<SolutionArray *>();
+                    if (!edgeHeatMarker->externalTemperature.evaluate()) return QList<SolutionArray *>();
 
                     heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.number;
                     heatEdge[i+1].h = edgeHeatMarker->h.number;
@@ -482,10 +482,10 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
             SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelHeatMarker->thermal_conductivity.evaluate()) return NULL;
-            if (!labelHeatMarker->volume_heat.evaluate()) return NULL;
-            if (!labelHeatMarker->density.evaluate()) return NULL;
-            if (!labelHeatMarker->specific_heat.evaluate()) return NULL;
+            if (!labelHeatMarker->thermal_conductivity.evaluate()) return QList<SolutionArray *>();
+            if (!labelHeatMarker->volume_heat.evaluate()) return QList<SolutionArray *>();
+            if (!labelHeatMarker->density.evaluate()) return QList<SolutionArray *>();
+            if (!labelHeatMarker->specific_heat.evaluate()) return QList<SolutionArray *>();
 
             heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;
             heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
@@ -494,9 +494,9 @@ QList<SolutionArray *> *HermesHeat::solve(ProgressItemSolve *progressItemSolve)
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypes),
-                                                                  Tuple<BCValues *>(&bcValues),
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  Hermes::vector<BCTypes *>(&bcTypes),
+                                                                  Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackHeatWeakForm);
 
     delete [] heatEdge;

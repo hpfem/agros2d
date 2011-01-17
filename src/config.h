@@ -122,6 +122,7 @@ public:
     double threshold;
     int strategy;
     int meshRegularity;
+    ProjNormType projNormType;
 
     // command argument
     QString commandTriangle;

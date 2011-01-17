@@ -90,7 +90,7 @@ Scalar general_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
         return generalLabel[marker].rightside * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
 
-void callbackGeneralWeakForm(WeakForm *wf, Tuple<Solution *> slnArray)
+void callbackGeneralWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     wf->add_matrix_form(0, 0, callback(general_matrix_form));
     wf->add_vector_form(0, callback(general_vector_form));
@@ -325,7 +325,7 @@ ViewScalarFilter *HermesGeneral::viewScalarFilter(PhysicFieldVariable physicFiel
 
 // *******************************************************************************************************************************
 
-QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolve)
+QList<SolutionArray *> HermesGeneral::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
     BCTypes bcTypes;
@@ -346,7 +346,7 @@ QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolv
             SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(Util::scene()->edges[i]->marker);
 
             // evaluate script
-            if (!edgeGeneralMarker->value.evaluate()) return NULL;
+            if (!edgeGeneralMarker->value.evaluate()) return QList<SolutionArray *>();
 
             generalEdge[i+1].type = edgeGeneralMarker->type;
             generalEdge[i+1].value = edgeGeneralMarker->value.number;
@@ -379,17 +379,17 @@ QList<SolutionArray *> *HermesGeneral::solve(ProgressItemSolve *progressItemSolv
             SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(Util::scene()->labels[i]->marker);
 
             // evaluate script
-            if (!labelGeneralMarker->rightside.evaluate()) return NULL;
-            if (!labelGeneralMarker->constant.evaluate()) return NULL;
+            if (!labelGeneralMarker->rightside.evaluate()) return QList<SolutionArray *>();
+            if (!labelGeneralMarker->constant.evaluate()) return QList<SolutionArray *>();
 
             generalLabel[i].rightside = labelGeneralMarker->rightside.number;
             generalLabel[i].constant = labelGeneralMarker->constant.number;
         }
     }
 
-    QList<SolutionArray *> *solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Tuple<BCTypes *>(&bcTypes),
-                                                                  Tuple<BCValues *>(&bcValues),
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
+                                                                  Hermes::vector<BCTypes *>(&bcTypes),
+                                                                  Hermes::vector<BCValues *>(&bcValues),
                                                                   callbackGeneralWeakForm);
 
     delete [] generalEdge;

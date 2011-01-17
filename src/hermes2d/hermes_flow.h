@@ -63,7 +63,7 @@ public:
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
     SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve);
+    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Flow_Velocity; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Flow_Velocity; }
@@ -131,7 +131,7 @@ public:
 class ViewScalarFilterFlow : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterFlow(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterFlow(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {}
 
 protected:

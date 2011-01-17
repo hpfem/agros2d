@@ -67,7 +67,7 @@ public:
     SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
     SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
 
-    QList<SolutionArray *> *solve(ProgressItemSolve *progressItemSolve);
+    QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Elasticity_Displacement; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Elasticity_VonMisesStress; }
@@ -143,7 +143,7 @@ public:
 class ViewScalarFilterElasticity : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterElasticity(Tuple<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterElasticity(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {}
 
 protected:

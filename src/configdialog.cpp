@@ -144,6 +144,7 @@ void ConfigDialog::load()
     txtThreshold->setValue(Util::config()->threshold);
     cmbStrategy->setCurrentIndex(cmbStrategy->findData(Util::config()->strategy));
     cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Util::config()->meshRegularity));
+    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(Util::config()->projNormType));
 
     // command argument
     txtArgumentTriangle->setText(Util::config()->commandTriangle);
@@ -265,6 +266,7 @@ void ConfigDialog::save()
     Util::config()->threshold = txtThreshold->value();
     Util::config()->strategy = cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt();
     Util::config()->meshRegularity = cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt();
+    Util::config()->projNormType = (ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt();
 
     // command argument
     Util::config()->commandTriangle = txtArgumentTriangle->text();
@@ -522,7 +524,7 @@ QWidget *ConfigDialog::createViewWidget()
     layoutScalarField->addWidget(txtScalarFieldRangeBase, 2, 1);
     layoutScalarField->addWidget(chkScalarFieldRangeLog, 2, 2);
 
-    layoutScalarField->addWidget(new QLabel(tr("Decimal place:")), 3, 0);
+    layoutScalarField->addWidget(new QLabel(tr("Number of decimal places:")), 3, 0);
     layoutScalarField->addWidget(txtScalarDecimalPlace, 3, 1);
 
     QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
@@ -764,6 +766,11 @@ QWidget *ConfigDialog::createAdvancedWidget()
     cmbMeshRegularity->addItem(tr("at most four-level hang. nodes"), 4);
     cmbMeshRegularity->addItem(tr("at most five-level hang. nodes"), 5);
 
+    cmbProjNormType = new QComboBox();
+    cmbProjNormType->addItem(errorNormString(HERMES_H1_NORM), HERMES_H1_NORM);
+    cmbProjNormType->addItem(errorNormString(HERMES_L2_NORM), HERMES_L2_NORM);
+    cmbProjNormType->addItem(errorNormString(HERMES_H1_SEMINORM), HERMES_H1_SEMINORM);
+
     QGridLayout *layoutAdaptivity = new QGridLayout();
     // layoutAdaptivity->addWidget(chkIsoOnly, 0, 0);
     // layoutAdaptivity->addWidget(lblIsoOnly, 1, 0, 1, 2);
@@ -778,6 +785,8 @@ QWidget *ConfigDialog::createAdvancedWidget()
     layoutAdaptivity->addWidget(lblThreshold, 7, 0, 1, 2);
     layoutAdaptivity->addWidget(new QLabel(tr("Mesh regularity:")), 8, 0);
     layoutAdaptivity->addWidget(cmbMeshRegularity, 8, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 9, 0);
+    layoutAdaptivity->addWidget(cmbProjNormType, 9, 1);
 
     QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
@@ -879,6 +888,7 @@ void ConfigDialog::doAdvancedDefault()
     txtThreshold->setValue(ADAPTIVITY_THRESHOLD);
     cmbStrategy->setCurrentIndex(cmbStrategy->findData(ADAPTIVITY_STRATEGY));
     cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(ADAPTIVITY_MESHREGULARITY));
+    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData(ADAPTIVITY_PROJNORMTYPE));
 
     // command argument
     txtArgumentTriangle->setText(COMMANDS_TRIANGLE);

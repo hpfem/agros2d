@@ -48,6 +48,7 @@ public:
   // For backward compatibility.
   H1Space(Mesh* mesh, BCType (*bc_type_callback)(int), 
 	  scalar (*bc_value_callback_by_coord)(int, double, double), int p_init, Shapeset* shapeset = NULL);
+
   // For backward compatibility.
   H1Space(Mesh* mesh, BCType (*bc_type_callback)(int), 
 	  scalar (*bc_value_callback_by_coord)(int, double, double) = NULL, Ord2 p_init = Ord2(1,1),
@@ -65,7 +66,7 @@ public:
   /// boundary) is not suitable.
   void fix_vertex(int id, scalar value = 0.0);
 
-  virtual Space* dup(Mesh* mesh) const;
+  virtual Space* dup(Mesh* mesh, int order_increase = 0) const;
 
   virtual ESpaceType get_type() const { return HERMES_H1_SPACE; }
 

@@ -16,7 +16,7 @@
 #include "../h2d_common.h"
 #include "space_l2.h"
 #include "../../../hermes_common/matrix.h"
-#include "../quad_all.h"
+#include "../quadrature/quad_all.h"
 #include "../shapeset/shapeset_l2_all.h"
 
 void L2Space::init(Shapeset* shapeset, Ord2 p_init)
@@ -131,10 +131,11 @@ L2Space::~L2Space()
 }
 
 
-Space* L2Space::dup(Mesh* mesh) const
+Space* L2Space::dup(Mesh* mesh, int order_increase) const
 {
   L2Space* space = new L2Space(mesh, 0, shapeset);
   space->copy_callbacks(this);
+  space->copy_orders(this, order_increase);
   return space;
 }
 
