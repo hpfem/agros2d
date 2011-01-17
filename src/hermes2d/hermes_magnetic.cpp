@@ -341,17 +341,17 @@ SceneEdgeMarker *HermesMagnetic::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneEdgeMarker *HermesMagnetic::modifyEdgeMarker(PyObject *self, PyObject *args)
 {
-    double value;
+    double value_real, value_imag;
     char *name, *type;
-    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
+    if (PyArg_ParseTuple(args, "ssdd", &name, &type, &value_real, &value_imag))
     {
         if (SceneEdgeMagneticMarker *marker = dynamic_cast<SceneEdgeMagneticMarker *>(Util::scene()->getEdgeMarker(name)))
         {
             if (physicFieldBCFromStringKey(type))
             {
                 marker->type = physicFieldBCFromStringKey(type);
-                marker->value_imag = Value(QString::number(value));
-                marker->value_real = Value(QString::number(value));
+                marker->value_real = Value(QString::number(value_real));
+                marker->value_imag = Value(QString::number(value_imag));
                 return marker;
             }
             else

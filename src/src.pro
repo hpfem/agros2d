@@ -72,7 +72,8 @@ SOURCES += util.cpp \
     scenemarkerselectdialog.cpp \
     tooltipview.cpp \
     scenebasicselectdialog.cpp \
-    logdialog.cpp
+    logdialog.cpp \
+    hermes2d/hermes_rf.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -112,7 +113,8 @@ HEADERS += util.h \
     scenemarkerselectdialog.h \
     tooltipview.h \
     scenebasicselectdialog.h \
-    logdialog.h
+    logdialog.h \
+    hermes2d/hermes_rf.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

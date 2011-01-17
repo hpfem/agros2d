@@ -144,6 +144,18 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_VelocityY, "flow_velocity_y");
     physicFieldVariableList.insert(PhysicFieldVariable_Flow_Pressure, "flow_velocity");
 
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricField, "rf_electric_field");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricFieldReal, "rf_electric_field_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_ElectricFieldImag, "rf_electric_field_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticField, "rf_magnetic_field");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldReal, "rf_magnetic_field_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFieldImag, "rf_magnetic_field_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PowerLosses, "rf_power_losses");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_EnergyDensity, "rf_energy_density");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_Permittivity, "rf_permittivity");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_Permeability, "rf_permeability");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_Conductivity, "rf_conductivity");
+
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Scalar, "scalar");
@@ -170,6 +182,9 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Flow_Pressure, "flow_pressure");
     physicFieldBCList.insert(PhysicFieldBC_Flow_Outlet, "flow_outlet");
     physicFieldBCList.insert(PhysicFieldBC_Flow_Wall, "flow_wall");
+    physicFieldBCList.insert(PhysicFieldBC_RF_ElectricField, "rf_electric_field");
+    physicFieldBCList.insert(PhysicFieldBC_RF_MagneticField, "rf_magnetic_field");
+    physicFieldBCList.insert(PhysicFieldBC_RF_Port, "rf_port");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -325,7 +340,29 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Velocity ") + Util::scene()->problemInfo()->labelY();
     case PhysicFieldVariable_Flow_Pressure:
         return QObject::tr("Pressure");
-    default:
+
+    case PhysicFieldVariable_RF_ElectricField:
+        return QObject::tr("Electric field");
+    case PhysicFieldVariable_RF_ElectricFieldReal:
+        return QObject::tr("Electric field - real");
+    case PhysicFieldVariable_RF_ElectricFieldImag:
+        return QObject::tr("Electric field - imag");
+    case PhysicFieldVariable_RF_MagneticField:
+        return QObject::tr("Magnetic field");
+    case PhysicFieldVariable_RF_MagneticFieldReal:
+        return QObject::tr("Magnetic field - real");
+    case PhysicFieldVariable_RF_MagneticFieldImag:
+        return QObject::tr("Magnetic field - imag");
+    case PhysicFieldVariable_RF_PowerLosses:
+        return QObject::tr("Power losses");
+    case PhysicFieldVariable_RF_EnergyDensity:
+        return QObject::tr("Energy density");
+    case PhysicFieldVariable_RF_Permittivity:
+        return QObject::tr("Permittivity");
+    case PhysicFieldVariable_RF_Permeability:
+        return QObject::tr("Permeability");
+    case PhysicFieldVariable_RF_Conductivity:
+        return QObject::tr("Conductivity");
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
     }
@@ -461,6 +498,29 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("v") + Util::scene()->problemInfo()->labelY().toLower();
     case PhysicFieldVariable_Flow_Pressure:
         return QObject::tr("p");
+
+    case PhysicFieldVariable_RF_ElectricField:
+        return QObject::tr("E");
+    case PhysicFieldVariable_RF_ElectricFieldReal:
+        return QObject::tr("Ere");
+    case PhysicFieldVariable_RF_ElectricFieldImag:
+        return QObject::tr("Eim");
+    case PhysicFieldVariable_RF_MagneticField:
+        return QObject::tr("H");
+    case PhysicFieldVariable_RF_MagneticFieldReal:
+        return QObject::tr("Hre");
+    case PhysicFieldVariable_RF_MagneticFieldImag:
+        return QObject::tr("Him");
+    case PhysicFieldVariable_RF_PowerLosses:
+        return QObject::tr("pj");
+    case PhysicFieldVariable_RF_EnergyDensity:
+        return QObject::tr("w");
+    case PhysicFieldVariable_RF_Permittivity:
+        return QObject::tr("epsr");
+    case PhysicFieldVariable_RF_Permeability:
+        return QObject::tr("mur");
+    case PhysicFieldVariable_RF_Conductivity:
+        return QObject::tr("g");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -589,6 +649,29 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("m/s");
     case PhysicFieldVariable_Flow_Pressure:
         return QObject::tr("Pa");
+
+    case PhysicFieldVariable_RF_ElectricField:
+        return QObject::tr("V/m");
+    case PhysicFieldVariable_RF_ElectricFieldReal:
+        return QObject::tr("V/m");
+    case PhysicFieldVariable_RF_ElectricFieldImag:
+        return QObject::tr("V/m");
+    case PhysicFieldVariable_RF_MagneticField:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFieldReal:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_MagneticFieldImag:
+        return QObject::tr("A/m");
+    case PhysicFieldVariable_RF_PowerLosses:
+        return QObject::tr("W/m3");
+    case PhysicFieldVariable_RF_EnergyDensity:
+        return QObject::tr("J/m3");
+    case PhysicFieldVariable_RF_Permittivity:
+        return QObject::tr("F/m");
+    case PhysicFieldVariable_RF_Permeability:
+        return QObject::tr("H/m");
+    case PhysicFieldVariable_RF_Conductivity:
+        return QObject::tr("S/m");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -615,6 +698,8 @@ QString physicFieldString(PhysicField physicField)
         return QObject::tr("Structural mechanics");
     case PhysicField_Flow:
         return QObject::tr("Incompressible flow");
+    case PhysicField_RF:
+        return QObject::tr("TE Waves");
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
         throw;
@@ -679,6 +764,12 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Velocity");
     case PhysicFieldBC_Flow_Pressure:
         return QObject::tr("Pressure");
+    case PhysicFieldBC_RF_ElectricField:
+        return QObject::tr("Electric field");
+    case PhysicFieldBC_RF_MagneticField:
+        return QObject::tr("Magnetic field");
+    case PhysicFieldBC_RF_Port:
+        return QObject::tr("Port");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
