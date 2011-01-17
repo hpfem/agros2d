@@ -930,6 +930,7 @@ void ConfigDialog::doSceneFont()
         lblSceneFontExample->setFont(sceneFont);
         lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
     }
+}
 
 // *******************************************************************************************************
 

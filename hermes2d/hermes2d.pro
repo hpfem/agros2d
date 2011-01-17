@@ -112,8 +112,8 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             # src/shapeset/shapeset_hc_legendre.cpp \
             # src/shapeset/shapeset_hd_legendre.cpp \
             src/space/space.cpp \
-            src/space/space_hcurl.cpp \
-            src/space/space_hdiv.cpp \
+            #src/space/space_hcurl.cpp \
+            #src/space/space_hdiv.cpp \
             src/space/space_h1.cpp \
             src/space/space_l2.cpp \
             src/shapeset/shapeset.cpp \
@@ -137,7 +137,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/weakform/forms.cpp \
             src/weakform/weakform.cpp
 
-HEADERS = += src/common.h
+HEADERS = += ../hermes_common/src/compat.h
 
 linux-g++ {
     DEFINES += WITH_MUMPS
@@ -153,4 +153,8 @@ linux-g++ {
 
 win32-g++ {
     DEFINES += WIN32
+    LIBS += -lumfpack
+    LIBS += -lamd
+    LIBS += -lblas
+    LIBS += -lpthread
 }
