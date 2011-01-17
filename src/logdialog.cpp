@@ -119,6 +119,7 @@ void LogDialog::loadProgressLog()
 
         btnShowAdaptivityErrorChart->setEnabled(QFile::exists(tempProblemDir() + "/adaptivity_error.png"));
         btnShowAdaptivityDOFChart->setEnabled(QFile::exists(tempProblemDir() + "/adaptivity_dof.png"));
+        btnShowAdaptivityErrorDOFChart->setEnabled(QFile::exists(tempProblemDir() + "/adaptivity_conv.png"));
     }
     else
     {
@@ -128,6 +129,7 @@ void LogDialog::loadProgressLog()
 
         btnShowAdaptivityErrorChart->setEnabled(false);
         btnShowAdaptivityDOFChart->setEnabled(false);
+        btnShowAdaptivityErrorDOFChart->setEnabled(false);
     }
 
     btnDeleteLog->setEnabled(false);
@@ -164,6 +166,7 @@ void LogDialog::loadApplicationLog()
 
     btnShowAdaptivityErrorChart->setEnabled(false);
     btnShowAdaptivityDOFChart->setEnabled(false);
+    btnShowAdaptivityErrorDOFChart->setEnabled(false);
     btnDeleteLog->setEnabled(true);
 }
 
