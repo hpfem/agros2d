@@ -67,10 +67,14 @@ void LogDialog::createControls()
     btnShowAdaptivityDOFChart = new QPushButton(tr("Adapt. DOFs"));
     connect(btnShowAdaptivityDOFChart, SIGNAL(clicked()), this, SLOT(doShowAdaptivityDOFChart()));
 
+    btnShowAdaptivityErrorDOFChart = new QPushButton(tr("Adapt. conv."));
+    connect(btnShowAdaptivityErrorDOFChart, SIGNAL(clicked()), this, SLOT(doShowAdaptivityErrorDOFChart()));
+
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
     layoutButtons->addWidget(btnShowAdaptivityErrorChart);
     layoutButtons->addWidget(btnShowAdaptivityDOFChart);
+    layoutButtons->addWidget(btnShowAdaptivityErrorDOFChart);
     layoutButtons->addWidget(btnSaveLog);
     layoutButtons->addWidget(btnDeleteLog);
     layoutButtons->addWidget(btnClose);
@@ -325,5 +329,14 @@ void LogDialog::doShowAdaptivityDOFChart()
 
     dataFileName = tempProblemDir() + "/adaptivity_dof.csv";
     imageFileName = tempProblemDir() + "/adaptivity_dof.png";
+    showImage();
+}
+
+void LogDialog::doShowAdaptivityErrorDOFChart()
+{
+    logMessage("LogDialog::doShowAdaptivityErrorDOFChart()");
+
+    dataFileName = tempProblemDir() + "/adaptivity_conv.csv";
+    imageFileName = tempProblemDir() + "/adaptivity_conv.png";
     showImage();
 }

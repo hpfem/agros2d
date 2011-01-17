@@ -153,6 +153,7 @@ private:
     QWidget *controlsProgress;
     QWidget *controlsConvergenceErrorChart;
     QWidget *controlsConvergenceDOFChart;
+    QWidget *controlsConvergenceErrorDOFChart;
 
     QLabel *lblMessage;
     QProgressBar *progressBar;
@@ -164,13 +165,17 @@ private:
 
     Chart *chartError;
     Chart *chartDOF;
+    Chart *chartErrorDOF;
     QwtPlotCurve *curveError;
     QwtPlotCurve *curveErrorMax;
     QwtPlotCurve *curveDOF;
+    QwtPlotCurve *curveErrorDOF;
+    QwtPlotCurve *curveErrorDOFMax;
 
     QWidget *createControlsProgress();
     QWidget *createControlsConvergenceErrorChart();
     QWidget *createControlsConvergenceDOFChart();
+    QWidget *createControlsConvergenceErrorDOFChart();
 
     void createControls();
     void clear();

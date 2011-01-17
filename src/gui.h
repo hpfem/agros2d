@@ -32,6 +32,7 @@
 #include <qwt_legend.h>
 #include <qwt_text.h>
 #include <qwt_plot.h>
+#include <qwt_scale_engine.h>
 
 #include "util.h"
 

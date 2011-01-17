@@ -20,6 +20,7 @@
 #include "progressdialog.h"
 #include "scene.h"
 #include "sceneview.h"
+#include <limits.h>
 
 struct TriangleEdge
 {
@@ -860,6 +861,7 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
 
     QFile::remove(tempProblemDir() + "/adaptivity_error.png");
     QFile::remove(tempProblemDir() + "/adaptivity_dof.png");
+    QFile::remove(tempProblemDir() + "/adaptivity_conv.png");
 
     setMinimumSize(520, 360);
     setMaximumSize(minimumSize());
@@ -895,11 +897,13 @@ void ProgressDialog::createControls()
     controlsProgress = createControlsProgress();
     controlsConvergenceErrorChart = createControlsConvergenceErrorChart();
     controlsConvergenceDOFChart = createControlsConvergenceDOFChart();
+    controlsConvergenceErrorDOFChart = createControlsConvergenceErrorDOFChart();
 
     tabType = new QTabWidget();
     tabType->addTab(controlsProgress, icon(""), tr("Progress"));
-    tabType->addTab(controlsConvergenceErrorChart, icon(""), tr("Adaptivity conv."));
-    tabType->addTab(controlsConvergenceDOFChart, icon(""), tr("Adaptivity DOFs"));
+    tabType->addTab(controlsConvergenceErrorChart, icon(""), tr("Adapt. error"));
+    tabType->addTab(controlsConvergenceDOFChart, icon(""), tr("Adapt. DOFs"));
+    tabType->addTab(controlsConvergenceErrorDOFChart, icon(""), tr("Adapt. conv."));
     connect(tabType, SIGNAL(currentChanged(int)), this, SLOT(resetControls(int)));
 
     if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
@@ -1030,6 +1034,57 @@ QWidget *ProgressDialog::createControlsConvergenceDOFChart()
 
     QVBoxLayout *layoutConvergenceChart = new QVBoxLayout();
     layoutConvergenceChart->addWidget(chartDOF);
+
+    QWidget *widConvergenceChart = new QWidget();
+    widConvergenceChart->setLayout(layoutConvergenceChart);
+
+    return widConvergenceChart;
+}
+
+QWidget *ProgressDialog::createControlsConvergenceErrorDOFChart()
+{
+    logMessage("ProgressDialog::createControlsConvergenceErrorDOFChart()");
+
+    chartErrorDOF = new Chart(this);
+//    chartErrorDOF->setAxisScaleEngine(0, new QwtLog10ScaleEngine);
+//    chartErrorDOF->setAxisScaleEngine(2, new QwtLog10ScaleEngine);
+
+    // curves
+    curveErrorDOF = new QwtPlotCurve();
+    curveErrorDOF->setRenderHint(QwtPlotItem::RenderAntialiased);
+    curveErrorDOF->setPen(QPen(Qt::blue));
+    curveErrorDOF->setCurveAttribute(QwtPlotCurve::Inverted);
+    curveErrorDOF->setYAxis(QwtPlot::yLeft);
+    curveErrorDOF->setTitle(tr("conv. chart"));
+    curveErrorDOF->attach(chartErrorDOF);
+
+    // curves
+    curveErrorDOFMax = new QwtPlotCurve();
+    curveErrorDOFMax->setRenderHint(QwtPlotItem::RenderAntialiased);
+    curveErrorDOFMax->setPen(QPen(Qt::red));
+    curveErrorDOFMax->setCurveAttribute(QwtPlotCurve::Inverted);
+    curveErrorDOFMax->setYAxis(QwtPlot::yLeft);
+    curveErrorDOFMax->setTitle(tr("max. error"));
+    curveErrorDOFMax->attach(chartErrorDOF);
+
+    // labels
+    QwtText textErrorDOFLeft(tr("Error (%)"));
+    textErrorDOFLeft.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chartErrorDOF->setAxisTitle(QwtPlot::yLeft, textErrorDOFLeft);
+
+    QwtText textErrorDOFBottom(tr("DOFs (-)"));
+    textErrorDOFBottom.setFont(QFont("Helvetica", 10, QFont::Normal));
+    chartErrorDOF->setAxisTitle(QwtPlot::xBottom, textErrorDOFBottom);
+
+    // legend
+    /*
+    QwtLegend *legend = new QwtLegend();
+    legend->setFrameStyle(QFrame::Box | QFrame::Sunken);
+    chart->insertLegend(legend, QwtPlot::BottomLegend);
+    */
+
+    QVBoxLayout *layoutConvergenceChart = new QVBoxLayout();
+    layoutConvergenceChart->addWidget(chartErrorDOF);
 
     QWidget *widConvergenceChart = new QWidget();
     widConvergenceChart->setLayout(layoutConvergenceChart);
@@ -1178,11 +1233,17 @@ void ProgressDialog::itemChanged()
         double *yvalError = new double[count];
         double *yvalDOF = new double[count];
 
+        double minDOF = numeric_limits<double>::max();
+        double maxDOF = numeric_limits<double>::min();
+
         for (int i = 0; i<count; i++)
         {
             xval[i] = i+1;
             yvalError[i] = itemSolve->adaptivityError().at(i);
             yvalDOF[i] = itemSolve->adaptivityDOF().at(i);
+
+            minDOF = min(minDOF, yvalDOF[i]);
+            maxDOF = max(maxDOF, yvalDOF[i]);
         }
 
         // max error
@@ -1212,6 +1273,24 @@ void ProgressDialog::itemChanged()
         chartDOF->setAutoReplot(doReplotDOF);
         chartDOF->replot();
 
+        // max error
+        double *xvalErrorDOFMax = new double[2];
+        double *yvalErrorDOFMax = new double[2];
+        xvalErrorDOFMax[0] = minDOF;
+        xvalErrorDOFMax[1] = maxDOF;
+        yvalErrorDOFMax[0] = Util::scene()->problemInfo()->adaptivityTolerance;
+        yvalErrorDOFMax[1] = Util::scene()->problemInfo()->adaptivityTolerance;
+
+        // plot conv. chart
+        bool doReplotErrorDOF = chartErrorDOF->autoReplot();
+        chartErrorDOF->setAutoReplot(false);
+
+        curveErrorDOF->setData(yvalDOF, yvalError, count);
+        curveErrorDOFMax->setData(xvalErrorDOFMax, yvalErrorDOFMax, 2);
+
+        chartErrorDOF->setAutoReplot(doReplotErrorDOF);
+        chartErrorDOF->replot();
+
         // save data
         QFile fileErr(tempProblemDir() + "/adaptivity_error.csv");
         QTextStream outErr(&fileErr);
@@ -1231,15 +1310,27 @@ void ProgressDialog::itemChanged()
         }
         fileDOF.close();
 
+        QFile fileErrDOF(tempProblemDir() + "/adaptivity_conv.csv");
+        QTextStream outErrDOF(&fileErrDOF);
+        if (fileErrDOF.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            for (int i = 0; i < curveErrorDOF->data().size(); i++)
+                outErrDOF << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
+        }
+        fileErrDOF.close();
+
         // save image
         chartError->saveImage(tempProblemDir() + "/adaptivity_error.png");
         chartDOF->saveImage(tempProblemDir() + "/adaptivity_dof.png");
+        chartErrorDOF->saveImage(tempProblemDir() + "/adaptivity_conv.png");
 
         delete[] xval;
         delete[] yvalError;
         delete[] xvalErrorMax;
         delete[] yvalErrorMax;
         delete[] yvalDOF;
+        delete[] xvalErrorDOFMax;
+        delete[] yvalErrorDOFMax;
     }
 }
 
@@ -1291,6 +1382,9 @@ void ProgressDialog::saveImage()
     else if (tabType->currentWidget() == controlsConvergenceDOFChart)
     {
         chartDOF->saveImage();
+    }    else if (tabType->currentWidget() == controlsConvergenceErrorDOFChart)
+    {
+        chartErrorDOF->saveImage();
     }
 }
 
@@ -1329,6 +1423,11 @@ void ProgressDialog::saveData()
         {
             for (int i = 0; i < curveDOF->data().size(); i++)
                 out << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
+        }
+        else if (tabType->currentWidget() == controlsConvergenceErrorDOFChart)
+        {
+            for (int i = 0; i < curveErrorDOF->data().size(); i++)
+                out << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
         }
 
         settings.setValue("General/LastDataDir", fileInfo.absolutePath());
