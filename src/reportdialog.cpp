@@ -90,6 +90,7 @@ void ReportDialog::createControls()
     connect(btnShowReport, SIGNAL(clicked()), this, SLOT(doShowReport()));
 
     btnClose = new QPushButton(tr("Close"));
+    btnClose->setDefault(true);
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QVBoxLayout *layoutSections = new QVBoxLayout();

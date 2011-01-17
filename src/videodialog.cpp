@@ -84,6 +84,7 @@ void VideoDialog::createControls()
     tabType->addTab(createControlsFile(), icon(""), tr("File"));
 
     QPushButton *btnClose = new QPushButton(tr("Close"));
+    btnClose->setDefault(true);
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     QHBoxLayout *layoutButton = new QHBoxLayout();

@@ -59,6 +59,7 @@ void LogDialog::createControls()
     connect(btnDeleteLog, SIGNAL(clicked()), this, SLOT(doDeleteLog()));
 
     btnClose = new QPushButton(tr("Close"));
+    btnClose->setDefault(true);
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doClose()));
 
     btnShowAdaptivityErrorChart = new QPushButton(tr("Adapt. error"));

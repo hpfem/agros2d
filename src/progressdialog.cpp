@@ -910,7 +910,6 @@ void ProgressDialog::createControls()
         tabType->widget(1)->setDisabled(true);
 
     btnCancel = new QPushButton(tr("Cance&l"));
-    btnCancel->setDefault(true);
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
     connect(this, SIGNAL(finished(int)), this, SLOT(cancel()));
 
