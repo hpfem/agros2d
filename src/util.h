@@ -363,7 +363,8 @@ enum PhysicField
     PhysicField_Current,
     PhysicField_Heat,
     PhysicField_Elasticity,
-    PhysicField_Flow
+    PhysicField_Flow,
+    PhysicField_RF
 };
 
 enum PhysicFieldVariable
@@ -429,7 +430,18 @@ enum PhysicFieldVariable
     PhysicFieldVariable_Flow_Velocity,
     PhysicFieldVariable_Flow_VelocityX,
     PhysicFieldVariable_Flow_VelocityY,
-    PhysicFieldVariable_Flow_Pressure
+    PhysicFieldVariable_Flow_Pressure,
+    PhysicFieldVariable_RF_ElectricField,
+    PhysicFieldVariable_RF_ElectricFieldReal,
+    PhysicFieldVariable_RF_ElectricFieldImag,
+    PhysicFieldVariable_RF_MagneticField,
+    PhysicFieldVariable_RF_MagneticFieldReal,
+    PhysicFieldVariable_RF_MagneticFieldImag,
+    PhysicFieldVariable_RF_PowerLosses,
+    PhysicFieldVariable_RF_EnergyDensity,
+    PhysicFieldVariable_RF_Permittivity,
+    PhysicFieldVariable_RF_Permeability,
+    PhysicFieldVariable_RF_Conductivity
 };
 
 
@@ -453,6 +465,9 @@ enum PhysicFieldBC
     PhysicFieldBC_Flow_Pressure,
     PhysicFieldBC_Flow_Outlet,
     PhysicFieldBC_Flow_Wall,
+    PhysicFieldBC_RF_ElectricField,
+    PhysicFieldBC_RF_MagneticField,
+    PhysicFieldBC_RF_Port
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
@@ -506,6 +521,18 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Elasticity_StressXY:
 
     case PhysicFieldVariable_Flow_Pressure:
+
+    case PhysicFieldVariable_RF_ElectricField:
+    case PhysicFieldVariable_RF_ElectricFieldReal:
+    case PhysicFieldVariable_RF_ElectricFieldImag:
+    case PhysicFieldVariable_RF_MagneticField:
+    case PhysicFieldVariable_RF_MagneticFieldReal:
+    case PhysicFieldVariable_RF_MagneticFieldImag:
+    case PhysicFieldVariable_RF_PowerLosses:
+    case PhysicFieldVariable_RF_EnergyDensity:
+    case PhysicFieldVariable_RF_Permittivity:
+    case PhysicFieldVariable_RF_Permeability:
+    case PhysicFieldVariable_RF_Conductivity:
         return true;
         break;
     default:

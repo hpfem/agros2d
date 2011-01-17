@@ -26,6 +26,7 @@
 #include "hermes_current.h"
 #include "hermes_elasticity.h"
 #include "hermes_flow.h"
+#include "hermes_rf.h"
 
 #include "progressdialog.h"
 
@@ -55,6 +56,8 @@ HermesField *hermesFieldFactory(PhysicField physicField)
         return new HermesElasticity();
     case PhysicField_Flow:
         return new HermesFlow();
+    case PhysicField_RF:
+        return new HermesRF();
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. hermesObjectFactory()" << endl;
         throw;

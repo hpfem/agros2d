@@ -48,6 +48,7 @@ SOURCES += util.cpp \
     hermes2d/hermes_current.cpp \
     hermes2d/hermes_elasticity.cpp \
     hermes2d/hermes_flow.cpp \
+    hermes2d/hermes_rf.cpp \
     localvalueview.cpp \
     surfaceintegralview.cpp \
     volumeintegralview.cpp \
@@ -92,6 +93,7 @@ HEADERS += util.h \
     hermes2d/hermes_current.h \
     hermes2d/hermes_elasticity.h \
     hermes2d/hermes_flow.h \
+    hermes2d/hermes_rf.h \
     localvalueview.h \
     surfaceintegralview.h \
     volumeintegralview.h \
