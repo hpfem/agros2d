@@ -461,7 +461,6 @@ QWidget *ConfigDialog::createViewWidget()
 
     // scene font
     lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
-    lblSceneFontExample->setAlignment(Qt::AlignCenter);
 
 //    QPalette palette;
 //    palette.setColor(QPalette::Background, QColor(Util::config()->colorBackground.toRgb()));
@@ -471,8 +470,8 @@ QWidget *ConfigDialog::createViewWidget()
     connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
 
     QGridLayout *layoutFont = new QGridLayout();
-    layoutFont->addWidget(lblSceneFontExample, 0, 1, 1, 2);
-    layoutFont->addWidget(btnSceneFont, 1, 2);
+    layoutFont->addWidget(lblSceneFontExample, 0, 1);
+    layoutFont->addWidget(btnSceneFont, 0, 2);
 
     QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
     grpFont->setLayout(layoutFont);
@@ -926,8 +925,11 @@ void ConfigDialog::doSceneFont()
 
     bool ok;
     QFont sceneFont = QFontDialog::getFont(&ok, lblSceneFontExample->font(), this);
-    if (ok) lblSceneFontExample->setFont(sceneFont);
-}
+    if (ok)
+    {
+        lblSceneFontExample->setFont(sceneFont);
+        lblSceneFontExample->setText(QString("%1, %2").arg(lblSceneFontExample->font().family()).arg(lblSceneFontExample->font().pointSize()));
+    }
 
 // *******************************************************************************************************
 
