@@ -75,7 +75,7 @@ public:
 class SceneView : public QGLWidget
 {
     Q_OBJECT
-    
+
     public slots:
     void doZoomBestFit();
     void doZoomIn();
@@ -146,12 +146,14 @@ public:
     void processRangeScalar();
     void processRangeVector();
 
+    void setSceneFont();
+
 signals:
     void mouseMoved(const QPointF &position);
     void mousePressed();
     void mousePressed(const Point &point);
     void sceneModeChanged(SceneMode sceneMode);
-    
+
 protected:
     void initializeGL();
     void resizeGL(int w, int h);
@@ -159,7 +161,7 @@ protected:
     void setupViewport(int w, int h);
 
     void renderTextPos(double x, double y, double z, const QString &str, bool blend = true);
-    
+
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);

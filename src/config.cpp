@@ -78,6 +78,17 @@ void Config::load()
     edgeWidth = settings.value("SceneViewSettings/EdgeWidth", 2.0).toDouble();
     labelSize = settings.value("SceneViewSettings/LabelSize", 6.0).toDouble();
 
+    // font
+#ifdef Q_WS_X11
+    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Monospace", 9)).value<QFont>();
+#endif
+#ifdef Q_WS_WIN
+    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Courier New", 9)).value<QFont>();
+#endif
+#ifdef Q_WS_MAC
+    sceneFont = settings.value("SceneViewSettings/SceneFont", QFont("Monaco", 12)).value<QFont>();
+#endif
+
     // mesh
     angleSegmentsCount = settings.value("SceneViewSettings/AngleSegmentsCount", 3).toInt();
     curvilinearElements = settings.value("SceneViewSettings/CurvilinearElements", true).toBool();
@@ -182,6 +193,9 @@ void Config::save()
     settings.setValue("SceneViewSettings/EdgeWidth", edgeWidth);
     settings.setValue("SceneViewSettings/LabelSize", labelSize);
 
+    // font
+    settings.setValue("SceneViewSettings/SceneFont", sceneFont);
+
     // mesh
     settings.setValue("SceneViewSettings/AngleSegmentsCount", angleSegmentsCount);
     settings.setValue("SceneViewSettings/CurvilinearElements", curvilinearElements);
@@ -189,6 +203,9 @@ void Config::save()
     // grid
     settings.setValue("SceneViewSettings/ShowGrid", showGrid);
     settings.setValue("SceneViewSettings/GridStep", gridStep);
+
+    settings.setValue("SceneViewSettings/SceneFont", sceneFont);
+
     // rulers
     settings.setValue("SceneViewSettings/ShowRulers", showRulers);
     // snap to grid

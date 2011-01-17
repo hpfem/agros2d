@@ -70,6 +70,9 @@ void ConfigDialog::load()
     chkMeshCurvilinearElements->setChecked(Util::config()->curvilinearElements);
     chkZoomToMouse->setChecked(Util::config()->zoomToMouse);
 
+    // scene font
+    lblSceneFontExample->setFont(Util::config()->sceneFont);
+
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(Util::config()->deleteTriangleMeshFiles);
     chkDeleteHermes2DMeshFile->setChecked(Util::config()->deleteHermes2DMeshFile);
@@ -186,6 +189,9 @@ void ConfigDialog::save()
     Util::config()->edgeWidth = txtGeometryEdgeWidth->value();
     Util::config()->labelSize = txtGeometryLabelSize->value();
     Util::config()->zoomToMouse = chkZoomToMouse->isChecked();
+
+    // scene font
+    Util::config()->sceneFont = lblSceneFontExample->font();
 
     // mesh
     Util::config()->angleSegmentsCount = txtMeshAngleSegmentsCount->value();
@@ -451,10 +457,29 @@ QWidget *ConfigDialog::createViewWidget()
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);
 
+    // scene font
+    lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
+    lblSceneFontExample->setAlignment(Qt::AlignCenter);
+
+//    QPalette palette;
+//    palette.setColor(QPalette::Background, QColor(Util::config()->colorBackground.toRgb()));
+//    lblSceneFontExample->setPalette(palette);
+
+    btnSceneFont = new QPushButton(tr("Set font"));
+    connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
+
+    QGridLayout *layoutFont = new QGridLayout();
+    layoutFont->addWidget(lblSceneFontExample, 0, 1, 1, 2);
+    layoutFont->addWidget(btnSceneFont, 1, 2);
+
+    QGroupBox *grpFont = new QGroupBox(tr("Scene font"));
+    grpFont->setLayout(layoutFont);
+
     // layout general
     QVBoxLayout *layoutGeneral = new QVBoxLayout();
     layoutGeneral->addWidget(grpGeometry);
     layoutGeneral->addWidget(grpGrid);
+    layoutGeneral->addWidget(grpFont);
     layoutGeneral->addStretch();
 
     QWidget *widgetGeneral = new QWidget(this);
@@ -883,6 +908,15 @@ void ConfigDialog::doScalarFieldLog(int state)
     logMessage("ConfigDialog::doScalarFieldLog()");
 
     txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
+}
+
+void ConfigDialog::doSceneFont()
+{
+    logMessage("ConfigDialog::doSceneFont()");
+
+    bool ok;
+    QFont sceneFont = QFontDialog::getFont(&ok, lblSceneFontExample->font(), this);
+    if (ok) lblSceneFontExample->setFont(sceneFont);
 }
 
 // *******************************************************************************************************

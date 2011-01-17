@@ -20,6 +20,8 @@
 #ifndef OPTIONSDIALOG_H
 #define OPTIONSDIALOG_H
 
+#include <QFontDialog>
+
 #include "util.h"
 #include "scene.h"
 #include "sceneview.h"
@@ -38,6 +40,7 @@ private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void doPaletteFilter(int state);
     void doClearCommandHistory();
+    void doSceneFont();
     void doAdvancedDefault();
     void doColorsDefault();
     void doScalarFieldLog(int state);
@@ -94,6 +97,10 @@ private:
     SLineEditDouble *txtGeometryEdgeWidth;
     SLineEditDouble *txtGeometryLabelSize;
     QCheckBox *chkMeshCurvilinearElements;
+
+    // scene font
+    QLabel *lblSceneFontExample;
+    QPushButton *btnSceneFont;
 
     // colors
     ColorButton *colorBackground;

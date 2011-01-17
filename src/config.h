@@ -49,6 +49,9 @@ public:
     int angleSegmentsCount;
     bool curvilinearElements;
 
+    // font
+    QFont sceneFont;
+
     // zoom
     bool zoomToMouse;
 

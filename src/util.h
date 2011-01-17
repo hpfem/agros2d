@@ -22,6 +22,7 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QFont>
 #include <QtNetwork>
 
 #include <QtHelp/QHelpEngine>
@@ -152,7 +153,7 @@ public:
 
 private:
     bool m_quiet;
-    QUrl m_url; 
+    QUrl m_url;
     QNetworkAccessManager *m_manager;
     QNetworkReply *m_networkReply;
 

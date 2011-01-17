@@ -119,15 +119,7 @@ SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), 
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
-#ifdef Q_WS_X11
-    setFont(QFont("Monospace", 9));
-#endif
-#ifdef Q_WS_WIN
-    setFont(QFont("Courier New", 9));
-#endif
-#ifdef Q_WS_MAC
-    setFont(QFont("Monaco", 12));
-#endif
+    setSceneFont();
 
     setMinimumSize(400, 400);
 }
@@ -3351,6 +3343,8 @@ void SceneView::doInvalidated()
     actSceneSnapToGrid->setEnabled(m_sceneMode != SceneMode_Postprocessor);
     actSceneShowRulers->setChecked(Util::config()->showRulers);
 
+    setSceneFont();
+
     emit mousePressed();
 
     paintGL();
@@ -4002,4 +3996,11 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
     if (m_sceneMode == SceneMode_Postprocessor) actSceneModePostprocessor->isChecked();
 
     refresh();
+}
+
+void SceneView::setSceneFont()
+{
+    logMessage("SceneView::setSceneFont()");
+
+    setFont(Util::config()->sceneFont);
 }
