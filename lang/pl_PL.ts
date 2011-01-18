@@ -58,12 +58,12 @@
 <context>
     <name>Chart</name>
     <message>
-        <location filename="../src/gui.cpp" line="292"/>
+        <location filename="../src/gui.cpp" line="295"/>
         <source>Export image to file</source>
         <translation>Eksport obrazu do pliku</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="292"/>
+        <location filename="../src/gui.cpp" line="295"/>
         <source>PNG files (*.png)</source>
         <translation>Pliki PNG (*.png)</translation>
     </message>
@@ -177,12 +177,12 @@
         <translation>Amplituda</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="508"/>
+        <location filename="../src/chartdialog.cpp" line="511"/>
         <source>Export data to file</source>
         <translation>Eksport danych do pliku</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="508"/>
+        <location filename="../src/chartdialog.cpp" line="511"/>
         <source>CSV files (*.csv);;Matlab/Octave script (*.m)</source>
         <translation>Pliki CSV (*.csv);;Skrypty Matlab/Octave (*.m)</translation>
     </message>
@@ -220,522 +220,543 @@
         <translation>Opcje</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="121"/>
+        <location filename="../src/configdialog.cpp" line="125"/>
         <source>Width and height of bounding box over vector count.</source>
         <translation>Szerokość i wysokość ramki do okoła licznika wektorów.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="163"/>
+        <location filename="../src/configdialog.cpp" line="168"/>
         <source>Language change</source>
         <translation>Zmiana języka</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="164"/>
+        <location filename="../src/configdialog.cpp" line="169"/>
         <source>Interface language has been changed. You must restart the application.</source>
         <translation>Zmieniono język interfejsu. Należy zrestartować program.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="297"/>
+        <location filename="../src/configdialog.cpp" line="308"/>
         <source>Main</source>
         <translation>Główne</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="301"/>
+        <location filename="../src/configdialog.cpp" line="312"/>
         <source>View</source>
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="305"/>
-        <location filename="../src/configdialog.cpp" line="667"/>
+        <location filename="../src/configdialog.cpp" line="320"/>
+        <location filename="../src/configdialog.cpp" line="722"/>
         <source>Colors</source>
         <translation>Kolory</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="309"/>
+        <location filename="../src/configdialog.cpp" line="324"/>
         <source>Python</source>
         <translation>Python</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="313"/>
+        <location filename="../src/configdialog.cpp" line="328"/>
         <source>Advanced</source>
         <translation>Zaawans.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="357"/>
+        <location filename="../src/configdialog.cpp" line="373"/>
         <source>UI:</source>
         <translation>Wygląd:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="359"/>
+        <location filename="../src/configdialog.cpp" line="375"/>
         <source>Language:</source>
         <translation>Język:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="361"/>
+        <location filename="../src/configdialog.cpp" line="377"/>
         <source>Default physic field:</source>
         <translation>Domyślny typ problemu:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="364"/>
-        <location filename="../src/configdialog.cpp" line="608"/>
+        <location filename="../src/configdialog.cpp" line="380"/>
+        <location filename="../src/configdialog.cpp" line="613"/>
         <source>General</source>
         <translation>Ogólne</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="368"/>
+        <location filename="../src/configdialog.cpp" line="626"/>
         <source>Delete files with initial mesh (Triangle)</source>
         <translation>Usuń pliki z oryginalną siatką (Triangle)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="369"/>
+        <location filename="../src/configdialog.cpp" line="627"/>
         <source>Delete files with solution mesh (Hermes2D)</source>
         <translation>Usuń pliki z siatką rozwiązania (Hermes2D)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="371"/>
+        <location filename="../src/configdialog.cpp" line="629"/>
         <source>Save problem with solution</source>
         <translation>Zapisz problem razem z rozwiązaniem</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="381"/>
+        <location filename="../src/configdialog.cpp" line="316"/>
+        <location filename="../src/configdialog.cpp" line="641"/>
         <source>Solver</source>
         <translation>Obliczenia</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="386"/>
+        <location filename="../src/configdialog.cpp" line="385"/>
         <source>Clear command history</source>
         <translation>Wyczyść historię poleceń</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="389"/>
+        <location filename="../src/configdialog.cpp" line="388"/>
         <source>Show value result in line edit input</source>
         <translation>Pokaż wartość wyniku w linii wejścia</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="390"/>
+        <location filename="../src/configdialog.cpp" line="389"/>
         <source>Check new version during startup.</source>
         <translation>Podczas uruchomienia sprawdź dostępność nowej wersji.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="391"/>
+        <location filename="../src/configdialog.cpp" line="631"/>
         <source>Show convergence chart after solving</source>
         <translation>Pokaż wykres zbieżności po rozwiązaniu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="392"/>
+        <location filename="../src/configdialog.cpp" line="390"/>
         <source>Enabled application log</source>
         <translation>Zapisuj dziennik programu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="393"/>
+        <location filename="../src/configdialog.cpp" line="391"/>
         <source>Enabled progress log</source>
         <translation>Zapisuj dziennik postępów</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="407"/>
+        <location filename="../src/configdialog.cpp" line="404"/>
         <source>Other</source>
         <translation>Inne</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="452"/>
+        <location filename="../src/configdialog.cpp" line="448"/>
         <source>Zoom to mouse pointer</source>
         <translation>Zbliżenie na wskaźnik myszy</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="474"/>
+        <location filename="../src/configdialog.cpp" line="651"/>
         <source>Angle segments count:</source>
         <translation>Kąt pomiędzy segmentami:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="435"/>
+        <location filename="../src/configdialog.cpp" line="431"/>
         <source>Node size:</source>
         <translation>Rozmiar węzła:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="437"/>
+        <location filename="../src/configdialog.cpp" line="433"/>
         <source>Edge width:</source>
         <translation>Szerokość krawędzi:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="439"/>
+        <location filename="../src/configdialog.cpp" line="435"/>
         <source>Label size:</source>
         <translation>Rozmiar etykiety:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="442"/>
+        <location filename="../src/configdialog.cpp" line="438"/>
         <source>Geometry</source>
         <translation>Geometria</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="448"/>
+        <location filename="../src/configdialog.cpp" line="444"/>
         <source>Show grid</source>
         <translation>Pokaż kratkę</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="449"/>
+        <location filename="../src/configdialog.cpp" line="445"/>
         <source>Show rulers</source>
         <translation>Pokaż linijki</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="450"/>
+        <location filename="../src/configdialog.cpp" line="446"/>
         <source>Snap to grid</source>
         <translation>Przyciągaj do kratki</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="451"/>
+        <location filename="../src/configdialog.cpp" line="447"/>
         <source>Show axes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="455"/>
+        <location filename="../src/configdialog.cpp" line="451"/>
         <source>Grid step:</source>
         <translation>Rozmiar kratki:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="463"/>
+        <location filename="../src/configdialog.cpp" line="459"/>
         <source>Grid</source>
         <translation>Kratka</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="471"/>
+        <location filename="../src/configdialog.cpp" line="648"/>
         <source>Curvilinear elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="478"/>
+        <location filename="../src/configdialog.cpp" line="655"/>
         <source>Mesh</source>
         <translation type="unfinished">Siatka</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="493"/>
+        <location filename="../src/configdialog.cpp" line="491"/>
         <source>Jet</source>
         <translation>Jet</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="494"/>
+        <location filename="../src/configdialog.cpp" line="469"/>
+        <source>Set font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog.cpp" line="476"/>
+        <source>Scene font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog.cpp" line="492"/>
         <source>Autumn</source>
         <translation>Jesienna</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="495"/>
+        <location filename="../src/configdialog.cpp" line="493"/>
         <source>Hot</source>
         <translation>Gorąca</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="496"/>
+        <location filename="../src/configdialog.cpp" line="494"/>
         <source>Copper</source>
         <translation>Miedziana</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="497"/>
+        <location filename="../src/configdialog.cpp" line="495"/>
         <source>Cool</source>
         <translation>Zimna</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="498"/>
+        <location filename="../src/configdialog.cpp" line="496"/>
         <source>B/W ascending</source>
         <translation>B/Cz rosnąco</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="499"/>
+        <location filename="../src/configdialog.cpp" line="497"/>
         <source>B/W descending</source>
         <translation>B-Cz malejąco</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="501"/>
+        <location filename="../src/configdialog.cpp" line="499"/>
         <source>Filter</source>
         <translation>Filtr</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="509"/>
+        <location filename="../src/configdialog.cpp" line="507"/>
         <source>Log. scale</source>
         <translation>Skala log.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="514"/>
+        <location filename="../src/configdialog.cpp" line="516"/>
         <source>Palette:</source>
         <translation>Paleta:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="517"/>
+        <location filename="../src/configdialog.cpp" line="519"/>
         <source>Steps:</source>
         <translation>Kroki:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="520"/>
+        <location filename="../src/configdialog.cpp" line="522"/>
         <source>Base:</source>
         <translation>Podstawa:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="524"/>
+        <location filename="../src/configdialog.cpp" line="526"/>
+        <source>Number of decimal places:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog.cpp" line="529"/>
         <source>Scalar view</source>
         <translation>Pola skalarne</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="533"/>
+        <location filename="../src/configdialog.cpp" line="538"/>
         <source>Contours count:</source>
         <translation>Liczba izolinii:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="536"/>
-        <location filename="../src/configdialog.cpp" line="574"/>
+        <location filename="../src/configdialog.cpp" line="541"/>
+        <location filename="../src/configdialog.cpp" line="579"/>
         <source>Contours</source>
         <translation>Izolinie</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="540"/>
+        <location filename="../src/configdialog.cpp" line="545"/>
         <source>Proportional</source>
         <translation>Proporcjonalnie</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="541"/>
+        <location filename="../src/configdialog.cpp" line="546"/>
         <source>Color (b/w)</source>
         <translation>Kolor (b-cz)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="548"/>
-        <location filename="../src/configdialog.cpp" line="644"/>
+        <location filename="../src/configdialog.cpp" line="553"/>
+        <location filename="../src/configdialog.cpp" line="699"/>
         <source>Vectors:</source>
         <translation>Wektory:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="551"/>
+        <location filename="../src/configdialog.cpp" line="556"/>
         <source>Scale:</source>
         <translation>Skala:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="555"/>
+        <location filename="../src/configdialog.cpp" line="560"/>
         <source>Vector view</source>
         <translation>Pola wektorowe</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="559"/>
+        <location filename="../src/configdialog.cpp" line="564"/>
         <source>Ligthing</source>
         <translation>Oświetlenie</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="561"/>
+        <location filename="../src/configdialog.cpp" line="566"/>
         <source>Gradient background</source>
         <translation>Gradient w tle</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="564"/>
+        <location filename="../src/configdialog.cpp" line="569"/>
         <source>Angle:</source>
         <translation>Kąt:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="569"/>
+        <location filename="../src/configdialog.cpp" line="574"/>
         <source>3D</source>
         <translation>3D</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="573"/>
+        <location filename="../src/configdialog.cpp" line="578"/>
         <source>Scalar field</source>
         <translation>Pole skalarne</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="575"/>
+        <location filename="../src/configdialog.cpp" line="580"/>
         <source>Vector field</source>
         <translation>Pole wektorowe</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="582"/>
+        <location filename="../src/configdialog.cpp" line="587"/>
         <source>Deform shape</source>
         <translation>Deformacja</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="586"/>
+        <location filename="../src/configdialog.cpp" line="591"/>
         <source>Show order label</source>
         <translation>Pokaż etykiety</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="591"/>
+        <location filename="../src/configdialog.cpp" line="596"/>
         <source>Polynomial order</source>
         <translation>Stopień wielomianu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="609"/>
+        <location filename="../src/configdialog.cpp" line="614"/>
         <source>Postprocessor</source>
         <translation>Wyniki</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="637"/>
+        <location filename="../src/configdialog.cpp" line="692"/>
         <source>Background:</source>
         <translation>Tło:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="638"/>
+        <location filename="../src/configdialog.cpp" line="693"/>
         <source>Grid:</source>
         <translation>Kratka:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="639"/>
+        <location filename="../src/configdialog.cpp" line="694"/>
         <source>Cross:</source>
         <translation>Osie:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="640"/>
+        <location filename="../src/configdialog.cpp" line="695"/>
         <source>Nodes:</source>
         <translation>Węzły:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="641"/>
+        <location filename="../src/configdialog.cpp" line="696"/>
         <source>Edges:</source>
         <translation>Krawędzie:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="642"/>
+        <location filename="../src/configdialog.cpp" line="697"/>
         <source>Labels:</source>
         <translation>Etykiety:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="643"/>
+        <location filename="../src/configdialog.cpp" line="698"/>
         <source>Contours:</source>
         <translation>Izolinie:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="645"/>
+        <location filename="../src/configdialog.cpp" line="700"/>
         <source>Initial mesh:</source>
         <translation>Siatka początkowa:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="646"/>
+        <location filename="../src/configdialog.cpp" line="701"/>
         <source>Solution mesh:</source>
         <translation>Siatka rozwiązania:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="647"/>
+        <location filename="../src/configdialog.cpp" line="702"/>
         <source>Highlighted elements:</source>
         <translation>Wyróżnione elementy:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="648"/>
+        <location filename="../src/configdialog.cpp" line="703"/>
         <source>Selected elements:</source>
         <translation>Zaznaczone elementy:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="664"/>
-        <location filename="../src/configdialog.cpp" line="745"/>
+        <location filename="../src/configdialog.cpp" line="719"/>
+        <location filename="../src/configdialog.cpp" line="807"/>
         <source>Default</source>
         <translation>Domyślnie</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="687"/>
+        <location filename="../src/configdialog.cpp" line="742"/>
         <source>Isotropic refinement</source>
         <translation>Zagęszczanie izotropowe</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="688"/>
+        <location filename="../src/configdialog.cpp" line="743"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;prawda&lt;/b&gt;&lt;td&gt;&lt;td&gt;izotropowe zagęszczanie&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;fałsz&lt;/b&gt;&lt;td&gt;&lt;td&gt;anizotropowe zagęszczanie&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="693"/>
+        <location filename="../src/configdialog.cpp" line="748"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of cancidates in hp-adaptivity</source>
         <translation>&lt;b&gt;&lt;/b&gt;domyślna wartość to 1.0, parametr ten wpływa&lt;br/&gt;na wybór kandydatów do poprawy sieci typu &apos;hp&apos;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="695"/>
+        <location filename="../src/configdialog.cpp" line="750"/>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
         <translation>&lt;b&gt;&lt;/b&gt;ilościowy parament funkcji adapt(...), ma inne znaczenie dla różnych strategii adaptacji</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="697"/>
+        <location filename="../src/configdialog.cpp" line="752"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="698"/>
+        <location filename="../src/configdialog.cpp" line="753"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="699"/>
+        <location filename="../src/configdialog.cpp" line="754"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="700"/>
+        <location filename="../src/configdialog.cpp" line="755"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj elementy dopóki suma poprawionych nie przekroczy &lt;b&gt;progu&lt;/b&gt;.&lt;br/&gt; Jeżeli wiele elementów ma podobny błąd, poprawiaj je wszystkie, aby utrzymać spójność siatki.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj wszystkie elementy, &lt;br/&gt; których błąd jest większy niż &lt;b&gt;próg&lt;/b&gt; pomnożony przez maksymalny błąd.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;poprawiaj wszystkie elementy, &lt;br/&gt;których błąd jest większy niż &lt;b&gt;próg&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="706"/>
+        <location filename="../src/configdialog.cpp" line="761"/>
         <source>arbitrary level hang. nodes</source>
         <translation>dowolny poziom węzłów wiszących</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="707"/>
+        <location filename="../src/configdialog.cpp" line="762"/>
         <source>at most one-level hang. nodes</source>
         <translation>węzły wiszące conajwyżej 1 poziomu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="708"/>
+        <location filename="../src/configdialog.cpp" line="763"/>
         <source>at most two-level hang. nodes</source>
         <translation>węzły wiszące conajwyżej 2 poziomu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="709"/>
+        <location filename="../src/configdialog.cpp" line="764"/>
         <source>at most three-level hang. nodes</source>
         <translation>węzły wiszące conajwyżej 3 poziomu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="710"/>
+        <location filename="../src/configdialog.cpp" line="765"/>
         <source>at most four-level hang. nodes</source>
         <translation>węzły wiszące conajwyżej 4 poziomu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="711"/>
+        <location filename="../src/configdialog.cpp" line="766"/>
         <source>at most five-level hang. nodes</source>
         <translation>węzły wiszące conajwyżej 5 poziomu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="716"/>
+        <location filename="../src/configdialog.cpp" line="776"/>
         <source>Conv. exp.:</source>
         <translation>Zbieżność:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="719"/>
+        <location filename="../src/configdialog.cpp" line="779"/>
         <source>Strategy:</source>
         <translation>Strategia:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="722"/>
+        <location filename="../src/configdialog.cpp" line="782"/>
         <source>Threshold:</source>
         <translation>Próg:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="725"/>
+        <location filename="../src/configdialog.cpp" line="785"/>
         <source>Mesh regularity:</source>
         <translation>Wiszące węzły:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="728"/>
+        <location filename="../src/configdialog.cpp" line="787"/>
+        <source>Norm:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog.cpp" line="790"/>
         <source>Adaptivity</source>
         <translation>Adaptacja</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="736"/>
+        <location filename="../src/configdialog.cpp" line="798"/>
         <source>Triangle</source>
         <translation>Triangle</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="738"/>
+        <location filename="../src/configdialog.cpp" line="800"/>
         <source>FFmpeg</source>
         <translation>FFmpeg</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="741"/>
+        <location filename="../src/configdialog.cpp" line="803"/>
         <source>Commands</source>
         <translation>Polecenia</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="815"/>
+        <location filename="../src/configdialog.cpp" line="877"/>
         <source>Information</source>
         <translation>Informacja</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="815"/>
+        <location filename="../src/configdialog.cpp" line="877"/>
         <source>Command history was cleared succesfully.</source>
         <translation>Historia poleceń została wyczyszczona.</translation>
     </message>
@@ -860,22 +881,22 @@
 <context>
     <name>DSceneEdgeFlowMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="700"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="720"/>
         <source>BC Type:</source>
         <translation>Typ WB:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="702"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="722"/>
         <source>Velocity X (m/s):</source>
         <translation>Prędkość X (m/s):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="704"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="724"/>
         <source>Velocity Y (m/s):</source>
         <translation>Prędkość Y (m/s):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="706"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="726"/>
         <source>Pressure (Pa):</source>
         <translation>Ciśnienie (Pa):</translation>
     </message>
@@ -1105,12 +1126,12 @@
 <context>
     <name>DSceneLabelFlowMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="793"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="813"/>
         <source>Dynamic viscosity (Pa.s):</source>
         <translation>Lepkość dymaniczna (Pa.s):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="795"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="815"/>
         <source>Density (kg/m3):</source>
         <translation>Gęstość (kg/m3):</translation>
     </message>
@@ -1263,67 +1284,67 @@
 <context>
     <name>FileBrowser</name>
     <message>
-        <location filename="../src/gui.cpp" line="351"/>
+        <location filename="../src/gui.cpp" line="358"/>
         <source>&amp;Create directory</source>
         <translation>&amp;Utwórz katalog</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="354"/>
+        <location filename="../src/gui.cpp" line="361"/>
         <source>Create &amp;file</source>
         <translation>Utwórz &amp;plik</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="357"/>
+        <location filename="../src/gui.cpp" line="364"/>
         <source>&amp;Rename</source>
         <translation>&amp;Zmiana nazwy</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="360"/>
+        <location filename="../src/gui.cpp" line="367"/>
         <source>&amp;Delete</source>
         <translation>&amp;Usuń</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="478"/>
+        <location filename="../src/gui.cpp" line="485"/>
         <source>Create directory</source>
         <translation>Utwórz katalog</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="478"/>
-        <location filename="../src/gui.cpp" line="561"/>
+        <location filename="../src/gui.cpp" line="485"/>
+        <location filename="../src/gui.cpp" line="568"/>
         <source>Enter directory name</source>
         <translation>Podaj nazwę katalogu</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="494"/>
-        <location filename="../src/gui.cpp" line="506"/>
+        <location filename="../src/gui.cpp" line="501"/>
+        <location filename="../src/gui.cpp" line="513"/>
         <source>Create file</source>
         <translation>Utwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="494"/>
-        <location filename="../src/gui.cpp" line="576"/>
+        <location filename="../src/gui.cpp" line="501"/>
+        <location filename="../src/gui.cpp" line="583"/>
         <source>Enter file name</source>
         <translation>Podaj nazwę pliku</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="561"/>
-        <location filename="../src/gui.cpp" line="567"/>
+        <location filename="../src/gui.cpp" line="568"/>
+        <location filename="../src/gui.cpp" line="574"/>
         <source>Rename directory</source>
         <translation>Zmiana nazwy katalogu</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="567"/>
+        <location filename="../src/gui.cpp" line="574"/>
         <source>Directory could not be renamed.</source>
         <translation>Nie można zmienić nazwy katalogu.</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="576"/>
-        <location filename="../src/gui.cpp" line="586"/>
+        <location filename="../src/gui.cpp" line="583"/>
+        <location filename="../src/gui.cpp" line="593"/>
         <source>Rename file</source>
         <translation>Zmiana nazwy pliku</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="586"/>
+        <location filename="../src/gui.cpp" line="593"/>
         <source>File could not be renamed.</source>
         <translation>Nie można zmienić nazwy pliku.</translation>
     </message>
@@ -1589,42 +1610,42 @@
 <context>
     <name>HermesFlow</name>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="121"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="132"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie istnieje brzeg typu &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="189"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="200"/>
         <source>new boundary</source>
         <translation>nowy warunek</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="250"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="261"/>
         <source>new material</source>
         <translation>nowy materiał</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="300"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="311"/>
         <source>Flow</source>
         <translation>Przepływ</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="304"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="315"/>
         <source>Dynamic viscosity:</source>
         <translation>Lepkość dymaniczna:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="307"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="318"/>
         <source>Density:</source>
         <translation>Gęstość:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="311"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="322"/>
         <source>Velocity</source>
         <translation>Prędkość</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="319"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="330"/>
         <source>Pressure:</source>
         <translation>Ciśnienie:</translation>
     </message>
@@ -2086,47 +2107,47 @@
 <context>
     <name>ImageLoaderDialog</name>
     <message>
-        <location filename="../src/gui.cpp" line="615"/>
+        <location filename="../src/gui.cpp" line="622"/>
         <source>Image</source>
         <translation>Obraz</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="654"/>
+        <location filename="../src/gui.cpp" line="661"/>
         <source>Remove</source>
         <translation>Usuń</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="658"/>
+        <location filename="../src/gui.cpp" line="665"/>
         <source>Filename:</source>
         <translation>Plik:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="669"/>
+        <location filename="../src/gui.cpp" line="676"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="671"/>
+        <location filename="../src/gui.cpp" line="678"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="673"/>
+        <location filename="../src/gui.cpp" line="680"/>
         <source>Width:</source>
         <translation>Szerokość:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="675"/>
+        <location filename="../src/gui.cpp" line="682"/>
         <source>Height:</source>
         <translation>Wysokość:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="702"/>
+        <location filename="../src/gui.cpp" line="712"/>
         <source>Open file</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="702"/>
+        <location filename="../src/gui.cpp" line="712"/>
         <source>Images (*.png *.bmp *.jpg)</source>
         <translation>Obrazy (*.png *.bmp *.jpg)</translation>
     </message>
@@ -2205,406 +2226,454 @@
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="55"/>
-        <location filename="../src/logdialog.cpp" line="176"/>
+        <location filename="../src/logdialog.cpp" line="187"/>
         <source>Save log</source>
         <translation>Zapisz dziennik</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="58"/>
-        <location filename="../src/logdialog.cpp" line="190"/>
+        <location filename="../src/logdialog.cpp" line="208"/>
         <source>Delete</source>
         <translation>Skasuj</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="61"/>
+        <location filename="../src/logdialog.cpp" line="238"/>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="64"/>
+        <location filename="../src/logdialog.cpp" line="65"/>
         <source>Adapt. error</source>
         <translation>Błąd adapt.</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="67"/>
+        <location filename="../src/logdialog.cpp" line="68"/>
         <source>Adapt. DOFs</source>
         <translation>Ilość zmiennych adapt.</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="121"/>
-        <location filename="../src/logdialog.cpp" line="156"/>
+        <location filename="../src/logdialog.cpp" line="71"/>
+        <source>Adapt. conv.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="127"/>
+        <location filename="../src/logdialog.cpp" line="163"/>
         <source>No messages...</source>
         <translation>Brak wiadomości...</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="176"/>
+        <location filename="../src/logdialog.cpp" line="187"/>
         <source>Log files (*.log)</source>
         <translation>Pliki dziennika (*.log)</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="190"/>
+        <location filename="../src/logdialog.cpp" line="208"/>
         <source>Are you sure that you want to permanently delete the application logfile?</source>
         <translation>Czy chcesz całkowicie skasować dziennik aplikacji?</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="190"/>
+        <location filename="../src/logdialog.cpp" line="208"/>
         <source>&amp;Yes</source>
         <translation>&amp;Tak</translation>
     </message>
     <message>
-        <location filename="../src/logdialog.cpp" line="190"/>
+        <location filename="../src/logdialog.cpp" line="208"/>
         <source>&amp;No</source>
         <translation>&amp;Nie</translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="232"/>
+        <source>Save data</source>
+        <translation type="unfinished">Zapisz data</translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="235"/>
+        <source>Save image</source>
+        <translation type="unfinished">Zapisz obraz</translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="271"/>
+        <source>Export data to file</source>
+        <translation type="unfinished">Eksport danych do pliku</translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="271"/>
+        <source>CSV files (*.csv)</source>
+        <translation type="unfinished">Pliki CSV (*.csv)</translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="283"/>
+        <location filename="../src/logdialog.cpp" line="308"/>
+        <source>Error</source>
+        <translation type="unfinished">Błąd</translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="283"/>
+        <location filename="../src/logdialog.cpp" line="308"/>
+        <source>File &apos;%1&apos; could not be copied..</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="296"/>
+        <source>Save image to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/logdialog.cpp" line="296"/>
+        <source>PNG files (*.png)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="127"/>
+        <location filename="../src/mainwindow.cpp" line="131"/>
         <source>&amp;New...</source>
         <translation>&amp;Nowy...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="129"/>
+        <location filename="../src/mainwindow.cpp" line="133"/>
         <source>Create a new file</source>
         <translation>Utwórz nowy plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="132"/>
+        <location filename="../src/mainwindow.cpp" line="136"/>
         <source>&amp;Open...</source>
         <translation>&amp;Otwórz...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="134"/>
+        <location filename="../src/mainwindow.cpp" line="138"/>
         <source>Open an existing file</source>
         <translation>Otwórz istniejący plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="137"/>
+        <location filename="../src/mainwindow.cpp" line="141"/>
         <source>&amp;Save</source>
         <translation>&amp;Zapisz</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="139"/>
+        <location filename="../src/mainwindow.cpp" line="143"/>
         <source>Save the file to disk</source>
         <translation>Zapisz plik na dysk</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="143"/>
+        <location filename="../src/mainwindow.cpp" line="147"/>
         <source>Save with solution</source>
         <translation>Zapisz razem z rozwiązaniem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="144"/>
+        <location filename="../src/mainwindow.cpp" line="148"/>
         <source>Save the file to disk with solution</source>
         <translation>Zapisz plik wraz z rozwiązaniem na dysk</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="151"/>
+        <location filename="../src/mainwindow.cpp" line="155"/>
         <source>Save &amp;As...</source>
         <translation>Zapisz &amp;jako...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="153"/>
+        <location filename="../src/mainwindow.cpp" line="157"/>
         <source>Save the file under a new name</source>
         <translation>Zapisz plik pod nową nazwą</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="156"/>
+        <location filename="../src/mainwindow.cpp" line="160"/>
         <source>&amp;Close</source>
         <translation>&amp;Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="158"/>
+        <location filename="../src/mainwindow.cpp" line="162"/>
         <source>Close the file</source>
         <translation>Zamknij plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="161"/>
+        <location filename="../src/mainwindow.cpp" line="165"/>
         <source>Import DXF...</source>
         <translation>Import DXF...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="162"/>
+        <location filename="../src/mainwindow.cpp" line="166"/>
         <source>Import AutoCAD DXF</source>
         <translation>Import AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="165"/>
+        <location filename="../src/mainwindow.cpp" line="169"/>
         <source>Export DXF...</source>
         <translation>Eksport DXF...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="166"/>
+        <location filename="../src/mainwindow.cpp" line="170"/>
         <source>Export AutoCAD DXF</source>
         <translation>Eksport AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="169"/>
-        <location filename="../src/mainwindow.cpp" line="1082"/>
+        <location filename="../src/mainwindow.cpp" line="173"/>
+        <location filename="../src/mainwindow.cpp" line="1115"/>
         <source>Export mesh file</source>
         <translation>Eksport pliku siatki</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="170"/>
+        <location filename="../src/mainwindow.cpp" line="174"/>
         <source>Export Hermes2D mesh file</source>
         <translation>Eksport pliku siatki Hermes2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="173"/>
+        <location filename="../src/mainwindow.cpp" line="177"/>
         <source>Export image...</source>
         <translation>Eksport obrazu...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="174"/>
-        <location filename="../src/mainwindow.cpp" line="820"/>
+        <location filename="../src/mainwindow.cpp" line="178"/>
+        <location filename="../src/mainwindow.cpp" line="841"/>
         <source>Export image to file</source>
         <translation>Eksport obrazu do pliku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="177"/>
+        <location filename="../src/mainwindow.cpp" line="181"/>
         <source>Create &amp;video...</source>
         <translation>Tworzenie &amp;wideo...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="178"/>
+        <location filename="../src/mainwindow.cpp" line="182"/>
         <source>Create video</source>
         <translation>Tworzenie wideo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="181"/>
+        <location filename="../src/mainwindow.cpp" line="185"/>
         <source>Load background...</source>
         <translation>Obraz w tle...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="185"/>
+        <location filename="../src/mainwindow.cpp" line="189"/>
         <source>E&amp;xit</source>
         <translation>Wy&amp;jście</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="186"/>
+        <location filename="../src/mainwindow.cpp" line="190"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="187"/>
+        <location filename="../src/mainwindow.cpp" line="191"/>
         <source>Exit the application</source>
         <translation>Wyjście z programu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="194"/>
+        <location filename="../src/mainwindow.cpp" line="198"/>
         <source>&amp;Undo</source>
         <translation>&amp;Cofnij</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="196"/>
+        <location filename="../src/mainwindow.cpp" line="200"/>
         <source>Undo operation</source>
         <translation>Cofnij operacje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="200"/>
+        <location filename="../src/mainwindow.cpp" line="204"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ponów</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="202"/>
+        <location filename="../src/mainwindow.cpp" line="206"/>
         <source>Redo operation</source>
         <translation>Ponów operacje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="204"/>
+        <location filename="../src/mainwindow.cpp" line="208"/>
         <source>Copy</source>
         <translation>Kopiuj</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="206"/>
+        <location filename="../src/mainwindow.cpp" line="210"/>
         <source>Copy image to clipboard.</source>
         <translation>Kopiuj obraz do schowka.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="209"/>
-        <location filename="../src/mainwindow.cpp" line="392"/>
+        <location filename="../src/mainwindow.cpp" line="213"/>
+        <location filename="../src/mainwindow.cpp" line="396"/>
         <source>&amp;Help</source>
         <translation>&amp;Pomoc</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="210"/>
+        <location filename="../src/mainwindow.cpp" line="214"/>
         <source>Show help</source>
         <translation>Pokaż okno pomocy</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="214"/>
+        <location filename="../src/mainwindow.cpp" line="218"/>
         <source>&amp;Shortcuts</source>
         <translation>&amp;Skróty klawisz.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="215"/>
+        <location filename="../src/mainwindow.cpp" line="219"/>
         <source>Shortcuts</source>
         <translation>Skróty klawiszowe</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="218"/>
+        <location filename="../src/mainwindow.cpp" line="222"/>
         <source>&amp;Online help</source>
         <translation>Pomoc &amp;online</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="219"/>
+        <location filename="../src/mainwindow.cpp" line="223"/>
         <source>Online help</source>
         <translation>Pomoc online</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="222"/>
-        <location filename="../src/mainwindow.cpp" line="223"/>
+        <location filename="../src/mainwindow.cpp" line="226"/>
+        <location filename="../src/mainwindow.cpp" line="227"/>
         <source>Check version</source>
         <translation>Sprawdź wersje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="226"/>
+        <location filename="../src/mainwindow.cpp" line="230"/>
         <source>About &amp;Agros2D</source>
         <translation>O &amp;Agros2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="227"/>
+        <location filename="../src/mainwindow.cpp" line="231"/>
         <source>Show the application&apos;s About box</source>
         <translation>Pokaż okno informacyjne</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="231"/>
+        <location filename="../src/mainwindow.cpp" line="235"/>
         <source>About &amp;Qt</source>
         <translation>O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="232"/>
+        <location filename="../src/mainwindow.cpp" line="236"/>
         <source>Show the Qt library&apos;s About box</source>
         <translation>Pokaż okno o bibliotece Qt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="236"/>
+        <location filename="../src/mainwindow.cpp" line="240"/>
         <source>&amp;Options</source>
         <translation>&amp;Opcje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="237"/>
+        <location filename="../src/mainwindow.cpp" line="241"/>
         <source>Options</source>
         <translation>Opcje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="241"/>
+        <location filename="../src/mainwindow.cpp" line="245"/>
         <source>&amp;Mesh area</source>
         <translation>Generuj siatkę</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="242"/>
+        <location filename="../src/mainwindow.cpp" line="246"/>
         <source>Mesh area</source>
         <translation>Generuj siatkę</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="245"/>
+        <location filename="../src/mainwindow.cpp" line="249"/>
         <source>&amp;Solve problem</source>
         <translation>Rozwiąż problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="246"/>
+        <location filename="../src/mainwindow.cpp" line="250"/>
         <source>Alt+S</source>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="247"/>
+        <location filename="../src/mainwindow.cpp" line="251"/>
         <source>Solve problem</source>
         <translation>Rozwiąż problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="250"/>
+        <location filename="../src/mainwindow.cpp" line="254"/>
         <source>&amp;Chart</source>
         <translation>&amp;Wykres</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="251"/>
+        <location filename="../src/mainwindow.cpp" line="255"/>
         <source>Chart</source>
         <translation>Wykres</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="254"/>
+        <location filename="../src/mainwindow.cpp" line="258"/>
         <source>Fullscreen mode</source>
         <translation>Pełny ekran</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="255"/>
+        <location filename="../src/mainwindow.cpp" line="259"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="261"/>
+        <location filename="../src/mainwindow.cpp" line="265"/>
         <source>Script &amp;editor</source>
         <translation>Edytor skryptu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="262"/>
+        <location filename="../src/mainwindow.cpp" line="266"/>
         <source>Script editor</source>
         <translation>Edytor skryptu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="266"/>
+        <location filename="../src/mainwindow.cpp" line="270"/>
         <source>Run &amp;script...</source>
         <translation>Wykonaj skrypt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="267"/>
+        <location filename="../src/mainwindow.cpp" line="271"/>
         <source>Run script...</source>
         <translation>Wykonaj skrypt...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="270"/>
+        <location filename="../src/mainwindow.cpp" line="274"/>
         <source>Run &amp;command...</source>
         <translation>Wykonaj &amp;komendę...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="271"/>
+        <location filename="../src/mainwindow.cpp" line="275"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="272"/>
+        <location filename="../src/mainwindow.cpp" line="276"/>
         <source>Run command...</source>
         <translation>Wykonaj komendę</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="275"/>
+        <location filename="../src/mainwindow.cpp" line="279"/>
         <source>&amp;Report...</source>
         <translation>&amp;Sprawozdanie...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="276"/>
+        <location filename="../src/mainwindow.cpp" line="280"/>
         <source>Problem html report</source>
         <translation>Sprawozdanie w formacie HTML</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="279"/>
+        <location filename="../src/mainwindow.cpp" line="283"/>
         <source>Progress &amp;log</source>
         <translation>Dziennik &amp;postępu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="280"/>
+        <location filename="../src/mainwindow.cpp" line="284"/>
         <source>Show progress log</source>
         <translation>Pokaż dziennik postępu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="283"/>
+        <location filename="../src/mainwindow.cpp" line="287"/>
         <source>Application &amp;log</source>
         <translation>Dziennik &amp;aplikacji</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="284"/>
+        <location filename="../src/mainwindow.cpp" line="288"/>
         <source>Show application log</source>
         <translation>Pokaż dziennik aplikacji</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="336"/>
+        <location filename="../src/mainwindow.cpp" line="340"/>
         <source>&amp;Show</source>
         <translation>&amp;Pokaż</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="355"/>
+        <location filename="../src/mainwindow.cpp" line="359"/>
         <source>&amp;Add</source>
         <translation>&amp;Dodaj</translation>
     </message>
@@ -2619,180 +2688,180 @@ Do you want to save your changes?</source>
 Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1042"/>
+        <location filename="../src/mainwindow.cpp" line="1072"/>
         <source>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Bartosz Sawicki &lt;a href=&quot;mailto:sawickib@iem.pw.edu.pl&quot;&gt;sawickib@iem.pw.edu.pl&lt;/a&gt; (developer, Polish translation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</source>
         <translation>&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Strona internetowa: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Uwagi: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (główny programista)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (programista, dokumentacja)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Bartosz Sawicki &lt;a href=&quot;mailto:sawickib@iem.pw.edu.pl&quot;&gt;sawickib@iem.pw.edu.pl&lt;/a&gt; (programista, polskie tłumaczenie)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="292"/>
+        <location filename="../src/mainwindow.cpp" line="296"/>
         <source>&amp;Recent files</source>
         <translation>&amp;Ostatnie pliki</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="182"/>
+        <location filename="../src/mainwindow.cpp" line="186"/>
         <source>Load background image</source>
         <translation>Wczytaj obraz w tło</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="294"/>
+        <location filename="../src/mainwindow.cpp" line="298"/>
         <source>&amp;File</source>
         <translation>&amp;Plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="319"/>
+        <location filename="../src/mainwindow.cpp" line="323"/>
         <source>E&amp;dit</source>
         <translation>E&amp;dycja</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="331"/>
+        <location filename="../src/mainwindow.cpp" line="335"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="349"/>
+        <location filename="../src/mainwindow.cpp" line="353"/>
         <source>&amp;Problem</source>
         <translation>&amp;Problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="378"/>
+        <location filename="../src/mainwindow.cpp" line="382"/>
         <source>&amp;Tools</source>
         <translation>N&amp;arzędzia</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="411"/>
+        <location filename="../src/mainwindow.cpp" line="415"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="417"/>
+        <location filename="../src/mainwindow.cpp" line="421"/>
         <source>Edit</source>
         <translation>Edycja</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="427"/>
+        <location filename="../src/mainwindow.cpp" line="431"/>
         <source>View</source>
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="434"/>
+        <location filename="../src/mainwindow.cpp" line="438"/>
         <source>Problem</source>
         <translation>Problem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="451"/>
+        <location filename="../src/mainwindow.cpp" line="455"/>
         <source>Tools</source>
         <translation>Narzędzia</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="460"/>
+        <location filename="../src/mainwindow.cpp" line="464"/>
         <source>Transient</source>
         <translation>Czasowa</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="462"/>
+        <location filename="../src/mainwindow.cpp" line="466"/>
         <source>Time step:</source>
         <translation>Czas:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="468"/>
+        <location filename="../src/mainwindow.cpp" line="472"/>
         <source>Workspace</source>
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="495"/>
+        <location filename="../src/mainwindow.cpp" line="499"/>
         <source>Ready</source>
         <translation>Gotowy</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="559"/>
+        <location filename="../src/mainwindow.cpp" line="563"/>
         <source>Position: [%1; %2]</source>
         <translation>Pozycja: [%1; %2]</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="648"/>
+        <location filename="../src/mainwindow.cpp" line="653"/>
         <source>Open file</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="648"/>
+        <location filename="../src/mainwindow.cpp" line="653"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
         <translation>Pliki Agros2D (*.a2d *.py);;Pliki danych Agros2D (*.a2d);;Skrypty Python (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="685"/>
-        <location filename="../src/mainwindow.cpp" line="689"/>
-        <location filename="../src/mainwindow.cpp" line="949"/>
+        <location filename="../src/mainwindow.cpp" line="691"/>
+        <location filename="../src/mainwindow.cpp" line="695"/>
+        <location filename="../src/mainwindow.cpp" line="979"/>
         <source>File open</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="685"/>
+        <location filename="../src/mainwindow.cpp" line="691"/>
         <source>Unknown suffix.</source>
         <translation>Nieznane rozszerzenie</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="689"/>
+        <location filename="../src/mainwindow.cpp" line="695"/>
         <source>File &apos;%1&apos; is not found.</source>
         <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="749"/>
+        <location filename="../src/mainwindow.cpp" line="755"/>
         <source>Save file</source>
         <translation>Zapisz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="749"/>
+        <location filename="../src/mainwindow.cpp" line="755"/>
         <source>Agros2D files (*.a2d)</source>
         <translation>Pliki Agros2D (*.a2d)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="795"/>
+        <location filename="../src/mainwindow.cpp" line="805"/>
         <source>Import file</source>
         <translation>Import pliku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="795"/>
-        <location filename="../src/mainwindow.cpp" line="807"/>
+        <location filename="../src/mainwindow.cpp" line="805"/>
+        <location filename="../src/mainwindow.cpp" line="823"/>
         <source>DXF files (*.dxf)</source>
         <translation>DXF files (*.dxf)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="807"/>
+        <location filename="../src/mainwindow.cpp" line="823"/>
         <source>Export file</source>
         <translation>Eksport pliku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="820"/>
+        <location filename="../src/mainwindow.cpp" line="841"/>
         <source>PNG files (*.png)</source>
         <translation>PNG files (*.png)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="928"/>
+        <location filename="../src/mainwindow.cpp" line="955"/>
         <source>Open File</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="928"/>
+        <location filename="../src/mainwindow.cpp" line="955"/>
         <source>Python script (*.py)</source>
         <translation>Skrypt Python (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="949"/>
+        <location filename="../src/mainwindow.cpp" line="979"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Nie znaleziono pliku &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1000"/>
+        <location filename="../src/mainwindow.cpp" line="1030"/>
         <source>Problem Type: %1</source>
         <translation>Typ problemu: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1001"/>
+        <location filename="../src/mainwindow.cpp" line="1031"/>
         <source>Physic Field: %1</source>
         <translation>Fizyka: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1002"/>
+        <location filename="../src/mainwindow.cpp" line="1032"/>
         <source>Analysis type: %1</source>
         <translation>Typ analizy: %1</translation>
     </message>
@@ -2801,12 +2870,12 @@ Czy chcesz zapisać zmiany?</translation>
         <translation type="obsolete">&lt;b&gt;Agros2D %1&lt;/b&gt;&lt;br/&gt; &lt;i&gt;hp&lt;/i&gt;-FEM multiphysics application based on &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://hpfem.org/agros2d/&quot;&gt;http://hpfem.org/agros2d/&lt;/a&gt;&lt;br/&gt;Bugzilla: &lt;a href=&quot;http://hpfem.org/bugs/buglist.cgi?bug_status=__open__&amp;product=agros2d&quot;&gt;http://hpfem.org/bugs/.../agros2d&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Agros2D:&lt;/td&gt;&lt;td&gt;Pavel Karban &lt;a href=&quot;mailto:pkarban@gmail.com&quot;&gt;pkarban@gmail.com&lt;/a&gt; (main developer)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Frantisek Mach &lt;a href=&quot;mailto:mach.frantisek@gmail.com&quot;&gt;mach.frantisek@gmail.com&lt;/a&gt; (developer, documentation)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Hermes 2D:&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Pavel Solin &lt;a href=&quot;mailto:solin@unr.edu&quot;&gt;solin@unr.edu&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Jakub Cerveny &lt;a href=&quot;mailto:jakub.cerveny@gmail.com&quot;&gt;jakub.cerveny@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Lenka Dubcova &lt;a href=&quot;mailto:dubcova@gmail.com&quot;&gt;dubcova@gmail.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;Ondrej Certik &lt;a href=&quot;mailto:ondrej@certik.cz&quot;&gt;ondrej@certik.cz&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nokia Qt:&lt;/td&gt;&lt;td&gt;Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qwt:&lt;/td&gt;&lt;td&gt;Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python:&lt;/td&gt;&lt;td&gt;Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dxflib:&lt;/td&gt;&lt;td&gt;Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Triangle:&lt;/td&gt;&lt;td&gt;Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FFmpeg:&lt;/td&gt;&lt;td&gt;FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;br/&gt;&lt;b&gt;License:&lt;/b&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1063"/>
+        <location filename="../src/mainwindow.cpp" line="1093"/>
         <source>About Agros2D</source>
         <translation>O Agros2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1082"/>
+        <location filename="../src/mainwindow.cpp" line="1115"/>
         <source>Mesh files (*.mesh)</source>
         <translation>Plik siatki (*.mesh)</translation>
     </message>
@@ -2970,79 +3039,100 @@ Czy chcesz zapisać zmiany?</translation>
 <context>
     <name>ProgressDialog</name>
     <message>
-        <location filename="../src/progressdialog.cpp" line="855"/>
+        <location filename="../src/progressdialog.cpp" line="857"/>
         <source>Progress...</source>
         <translation>Postęp...</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="899"/>
+        <location filename="../src/progressdialog.cpp" line="903"/>
         <source>Progress</source>
         <translation>Postęp</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="900"/>
         <source>Adaptivity conv.</source>
-        <translation>Zbieżność adapt.</translation>
+        <translation type="obsolete">Zbieżność adapt.</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="901"/>
         <source>Adaptivity DOFs</source>
-        <translation>Liczba zmienych</translation>
+        <translation type="obsolete">Liczba zmienych</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="907"/>
+        <location filename="../src/progressdialog.cpp" line="904"/>
+        <source>Adapt. error</source>
+        <translation type="unfinished">Błąd adapt.</translation>
+    </message>
+    <message>
+        <location filename="../src/progressdialog.cpp" line="905"/>
+        <source>Adapt. DOFs</source>
+        <translation type="unfinished">Ilość zmiennych adapt.</translation>
+    </message>
+    <message>
+        <location filename="../src/progressdialog.cpp" line="906"/>
+        <source>Adapt. conv.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/progressdialog.cpp" line="916"/>
         <source>Cance&amp;l</source>
         <translation>Cofni&amp;j</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="912"/>
+        <location filename="../src/progressdialog.cpp" line="920"/>
         <source>&amp;Close</source>
         <translation>&amp;Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="916"/>
+        <location filename="../src/progressdialog.cpp" line="924"/>
         <source>&amp;Save image</source>
         <translation>&amp;Zapisz obraz</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="920"/>
+        <location filename="../src/progressdialog.cpp" line="928"/>
         <source>Save data</source>
         <translation>Zapisz data</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="969"/>
-        <location filename="../src/progressdialog.cpp" line="1018"/>
+        <location filename="../src/progressdialog.cpp" line="977"/>
+        <location filename="../src/progressdialog.cpp" line="1026"/>
         <source>current error</source>
         <translation>aktualny błąd</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="978"/>
+        <location filename="../src/progressdialog.cpp" line="986"/>
+        <location filename="../src/progressdialog.cpp" line="1070"/>
         <source>max. error</source>
         <translation>max. błąd</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="982"/>
+        <location filename="../src/progressdialog.cpp" line="990"/>
+        <location filename="../src/progressdialog.cpp" line="1074"/>
         <source>Error (%)</source>
         <translation>Błąd (%)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="986"/>
-        <location filename="../src/progressdialog.cpp" line="1026"/>
+        <location filename="../src/progressdialog.cpp" line="994"/>
+        <location filename="../src/progressdialog.cpp" line="1034"/>
         <source>Steps (-)</source>
         <translation>Kroki (-)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1022"/>
+        <location filename="../src/progressdialog.cpp" line="1030"/>
+        <location filename="../src/progressdialog.cpp" line="1078"/>
         <source>DOFs (-)</source>
         <translation>Zmienne (-)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1280"/>
+        <location filename="../src/progressdialog.cpp" line="1061"/>
+        <source>conv. chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/progressdialog.cpp" line="1411"/>
         <source>Export data to file</source>
         <translation>Eksport danych do pliku</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1280"/>
+        <location filename="../src/progressdialog.cpp" line="1411"/>
         <source>CSV files (*.csv)</source>
         <translation>Pliki CSV (*.csv)</translation>
     </message>
@@ -3050,112 +3140,112 @@ Czy chcesz zapisać zmiany?</translation>
 <context>
     <name>ProgressItemMesh</name>
     <message>
-        <location filename="../src/progressdialog.cpp" line="168"/>
+        <location filename="../src/progressdialog.cpp" line="169"/>
         <source>Mesh</source>
         <translation>Siatka</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="181"/>
+        <location filename="../src/progressdialog.cpp" line="182"/>
         <source>Poly file was created</source>
         <translation>Plik poly został stworzony</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="201"/>
+        <location filename="../src/progressdialog.cpp" line="202"/>
         <source>Could not start Triangle</source>
         <translation>Nie można uruchomić Triangle</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="230"/>
+        <location filename="../src/progressdialog.cpp" line="231"/>
         <source>Mesh files was created</source>
         <translation>Pliki siatki zostały utworzone</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="235"/>
+        <location filename="../src/progressdialog.cpp" line="236"/>
         <source>Mesh was converted to Hermes2D mesh file</source>
         <translation>Siatka została zapisana w formacie Hermes2D</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="252"/>
+        <location filename="../src/progressdialog.cpp" line="253"/>
         <source>Mesh files was deleted</source>
         <translation>Pliki siatki zostały skasowane</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="266"/>
+        <location filename="../src/progressdialog.cpp" line="267"/>
         <source>Boundary edge does not have a boundary marker</source>
         <translation>Krawędź brzegowa nie ma znacznika brzegu</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="298"/>
+        <location filename="../src/progressdialog.cpp" line="299"/>
         <source>Invalid number of nodes (%1 &lt; 3)</source>
         <translation>Błędna liczba węzłów (%1 &lt; 3)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="303"/>
+        <location filename="../src/progressdialog.cpp" line="304"/>
         <source>Invalid number of edges (%1 &lt; 3)</source>
         <translation>Błędna liczba krawędzi (%1 &lt; 3)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="316"/>
+        <location filename="../src/progressdialog.cpp" line="317"/>
         <source>At least one boundary condition has to be assigned</source>
         <translation>Conajmniej jeden warunek brzegowy musi zostać ustawiony</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="322"/>
+        <location filename="../src/progressdialog.cpp" line="323"/>
         <source>Invalid number of labels (%1 &lt; 1)</source>
         <translation>Błędna liczba etykiet (%1 &lt; 1)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="335"/>
+        <location filename="../src/progressdialog.cpp" line="336"/>
         <source>At least one material has to be assigned</source>
         <translation>Conajmniej jednen materiał musi być przypisany</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="341"/>
+        <location filename="../src/progressdialog.cpp" line="342"/>
         <source>Invalid number of boundary conditions (%1 &lt; 1)</source>
         <translation>Błędna liczba warunków brzegowych (%1 &lt; 1)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="346"/>
+        <location filename="../src/progressdialog.cpp" line="347"/>
         <source>Invalid number of materials (%1 &lt; 1)</source>
         <translation>Błędna liczba materiałów (%1 &lt; 1)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="360"/>
+        <location filename="../src/progressdialog.cpp" line="361"/>
         <source>Could not create Triangle poly mesh file (%1)</source>
         <translation>Nie można stworzyć pliku Triangle poly (%1)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="510"/>
+        <location filename="../src/progressdialog.cpp" line="511"/>
         <source>Could not create Hermes2D mesh file</source>
         <translation>Nie można stworzyć siatki w pliku Hermes2D</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="518"/>
+        <location filename="../src/progressdialog.cpp" line="519"/>
         <source>Could not read Triangle node file</source>
         <translation>Nie można otworzyć pliku Triangle node</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="526"/>
+        <location filename="../src/progressdialog.cpp" line="527"/>
         <source>Could not read Triangle edge file</source>
         <translation>Nie można otworzyć pliku Triangle edge</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="534"/>
+        <location filename="../src/progressdialog.cpp" line="535"/>
         <source>Could not read Triangle ele file</source>
         <translation>Nie można otworzyć pliku Triangle ele</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="588"/>
+        <location filename="../src/progressdialog.cpp" line="589"/>
         <source>Invalid number of edge markers</source>
         <translation>Błędna liczba wskaźników krawędzi</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="686"/>
+        <location filename="../src/progressdialog.cpp" line="687"/>
         <source>Some areas have no label marker</source>
         <translation>Nie wszystkie obszary są oznaczone</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="701"/>
+        <location filename="../src/progressdialog.cpp" line="702"/>
         <source>Invalid number of label markers</source>
         <translation>Błędna liczba znaczników etykiet</translation>
     </message>
@@ -3163,27 +3253,27 @@ Czy chcesz zapisać zmiany?</translation>
 <context>
     <name>ProgressItemProcessView</name>
     <message>
-        <location filename="../src/progressdialog.cpp" line="789"/>
+        <location filename="../src/progressdialog.cpp" line="791"/>
         <source>View</source>
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="820"/>
+        <location filename="../src/progressdialog.cpp" line="822"/>
         <source>Processing solution mesh cache</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="826"/>
+        <location filename="../src/progressdialog.cpp" line="828"/>
         <source>Processing countour view cache</source>
         <translation>Przetwarzanie schowka widoku isolinii</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="834"/>
+        <location filename="../src/progressdialog.cpp" line="836"/>
         <source>Processing scalar view cache</source>
         <translation>Przetwarzanie schowka widoku skalarów</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="840"/>
+        <location filename="../src/progressdialog.cpp" line="842"/>
         <source>Processing vector view cache</source>
         <translation>Przetwarzanie schowka widoku wektorów</translation>
     </message>
@@ -3191,7 +3281,7 @@ Czy chcesz zapisać zmiany?</translation>
 <context>
     <name>ProgressItemSolve</name>
     <message>
-        <location filename="../src/progressdialog.cpp" line="730"/>
+        <location filename="../src/progressdialog.cpp" line="731"/>
         <source>Solver</source>
         <translation>Rozwiązanie</translation>
     </message>
@@ -3200,22 +3290,22 @@ Czy chcesz zapisać zmiany?</translation>
         <translation type="obsolete">Algorytm został uruchomiony: %1 (%2, %3)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="760"/>
+        <location filename="../src/progressdialog.cpp" line="762"/>
         <source>Problem analysis: %1 (%2, %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="765"/>
+        <location filename="../src/progressdialog.cpp" line="767"/>
         <source>Solver was started: %1 </source>
         <translation>Algorytm został uruchomiony: %1 </translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="771"/>
+        <location filename="../src/progressdialog.cpp" line="773"/>
         <source>Problem was solved</source>
         <translation>Problem został rozwiązany</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="776"/>
+        <location filename="../src/progressdialog.cpp" line="778"/>
         <source>Problem was not solved</source>
         <translation>Problem nie został rozwiązany</translation>
     </message>
@@ -3231,24 +3321,31 @@ Czy chcesz zapisać zmiany?</translation>
         <translation type="obsolete">Błąd względny: %1 %</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="217"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="218"/>
         <source>Adaptivity type: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="243"/>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="269"/>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="377"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="244"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="273"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="388"/>
         <source>DOF is zero</source>
         <translation>Brak zmiennych</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="296"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="259"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="289"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="400"/>
+        <source>Matrix solver failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="307"/>
         <source>Relative error: %1%	(step: %2/%3, DOFs: %4)</source>
         <translation>Błąd względny: %1%	(Iteracje: %2/%3, zmienne: %4)</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="395"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="411"/>
         <source>Time step: %1/%2</source>
         <translation>Krok: %1/%2</translation>
     </message>
@@ -3372,7 +3469,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="191"/>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="196"/>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="234"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="245"/>
         <location filename="../src/hermes2d/hermes_general.cpp" line="219"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="259"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="359"/>
@@ -3383,7 +3480,7 @@ Czy chcesz zapisać zmiany?</translation>
         <location filename="../src/hermes2d/hermes_current.cpp" line="197"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="382"/>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="202"/>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="240"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="251"/>
         <location filename="../src/hermes2d/hermes_general.cpp" line="225"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="276"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="365"/>
@@ -3399,7 +3496,7 @@ Czy chcesz zapisać zmiany?</translation>
         <location filename="../src/hermes2d/hermes_current.cpp" line="238"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="443"/>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="248"/>
-        <location filename="../src/hermes2d/hermes_flow.cpp" line="286"/>
+        <location filename="../src/hermes2d/hermes_flow.cpp" line="297"/>
         <location filename="../src/hermes2d/hermes_general.cpp" line="271"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="328"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="432"/>
@@ -4290,19 +4387,44 @@ Czy chcesz zapisać zmiany?</translation>
         <translation>adaptacja typu hp</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="322"/>
+        <location filename="../src/util.h" line="324"/>
         <source>Information</source>
         <translation>Informacja</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="325"/>
+        <location filename="../src/util.h" line="327"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="328"/>
+        <location filename="../src/util.h" line="330"/>
         <source>Critical</source>
         <translation>Błąd krytyczny</translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="593"/>
+        <source>H1 norm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="595"/>
+        <source>L2 norm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="597"/>
+        <source>H1 seminorm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="599"/>
+        <source>Hdiv norm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.h" line="601"/>
+        <source>Hcurl norm</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="376"/>
@@ -4319,6 +4441,7 @@ Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="57"/>
+        <location filename="../src/reportdialog.cpp" line="340"/>
         <source>Description</source>
         <translation>Opis</translation>
     </message>
@@ -4340,6 +4463,8 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/reportdialog.cpp" line="61"/>
         <location filename="../src/reportdialog.cpp" line="67"/>
+        <location filename="../src/reportdialog.cpp" line="453"/>
+        <location filename="../src/reportdialog.cpp" line="536"/>
         <source>Geometry</source>
         <translation>Geometria</translation>
     </message>
@@ -4350,11 +4475,13 @@ Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="65"/>
+        <location filename="../src/reportdialog.cpp" line="522"/>
         <source>Script</source>
         <translation>Skrypt</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="68"/>
+        <location filename="../src/reportdialog.cpp" line="541"/>
         <source>Mesh</source>
         <translation>Siatka</translation>
     </message>
@@ -4394,55 +4521,240 @@ Czy chcesz zapisać zmiany?</translation>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="117"/>
+        <location filename="../src/reportdialog.cpp" line="118"/>
         <source>Template</source>
         <translation>Szablon</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="119"/>
+        <location filename="../src/reportdialog.cpp" line="120"/>
         <source>Style sheet</source>
         <translation>Arkusz styli</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="123"/>
+        <location filename="../src/reportdialog.cpp" line="124"/>
         <source>Width</source>
         <translation>Szerokość</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="125"/>
+        <location filename="../src/reportdialog.cpp" line="126"/>
         <source>Height</source>
         <translation>Wysokość</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="140"/>
+        <location filename="../src/reportdialog.cpp" line="141"/>
         <source>Sections</source>
         <translation>Sekcje</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="143"/>
+        <location filename="../src/reportdialog.cpp" line="144"/>
         <source>Figures properties</source>
         <translation>Ustawienia grafiki</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="146"/>
+        <location filename="../src/reportdialog.cpp" line="147"/>
         <source>Additional properties</source>
         <translation>Dodatkowe ustawienia</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="272"/>
-        <location filename="../src/reportdialog.cpp" line="274"/>
+        <location filename="../src/reportdialog.cpp" line="273"/>
+        <location filename="../src/reportdialog.cpp" line="275"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="272"/>
+        <location filename="../src/reportdialog.cpp" line="273"/>
         <source>Report template could not be copied.</source>
         <translation>Nie można skopiować szablonu sprawozdania.</translation>
     </message>
     <message>
-        <location filename="../src/reportdialog.cpp" line="274"/>
+        <location filename="../src/reportdialog.cpp" line="275"/>
         <source>Template style could not be copied.</source>
         <translation>Nie można skopiować stylu szablonu.</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="352"/>
+        <source>Problem Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="353"/>
+        <source>Name:</source>
+        <translation type="unfinished">Nazwa:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="354"/>
+        <source>Date:</source>
+        <translation type="unfinished">Data:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="355"/>
+        <source>Filename:</source>
+        <translation type="unfinished">Plik:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="356"/>
+        <source>Problem type:</source>
+        <translation type="unfinished">Typ problemu:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="357"/>
+        <source>Physic field:</source>
+        <translation type="unfinished">Pole fizyczne:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="358"/>
+        <source>Analysis type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="359"/>
+        <source>Number of refinements:</source>
+        <translation type="unfinished">Liczba zagęszczeń:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="360"/>
+        <source>Polynomial order:</source>
+        <translation type="unfinished">Stopień wielomianu:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="364"/>
+        <location filename="../src/reportdialog.cpp" line="382"/>
+        <location filename="../src/reportdialog.cpp" line="383"/>
+        <location filename="../src/reportdialog.cpp" line="384"/>
+        <location filename="../src/reportdialog.cpp" line="385"/>
+        <source>Adaptivity type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="365"/>
+        <source>Adaptivity steps:</source>
+        <translation type="unfinished">Iteracje adaptacji:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="366"/>
+        <source>Adaptivity tolerance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="420"/>
+        <source>Startup Script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="432"/>
+        <source>Physical Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="433"/>
+        <source>Materials</source>
+        <translation type="unfinished">Materiały</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="435"/>
+        <source>Boundaris conditions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="454"/>
+        <source>Nodes</source>
+        <translation type="unfinished">Węzły</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="456"/>
+        <source>Edges</source>
+        <translation type="unfinished">Krawędzie</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="458"/>
+        <source>Labels</source>
+        <translation type="unfinished">Etykiety</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="480"/>
+        <source>Mesh and Solution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="481"/>
+        <source>Solver information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="482"/>
+        <source>Nodes:</source>
+        <translation type="unfinished">Węzły:</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="483"/>
+        <source>Elements:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="484"/>
+        <source>DOFs:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="485"/>
+        <source>Elapsed time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="489"/>
+        <source>Adaptive error:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="490"/>
+        <source>Adaptive steps:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="532"/>
+        <source>Computed by Agros2D (&lt;a href=&quot;http://hpfem.org/agros2d&quot;&gt;http://hpfem.org/agros2d&lt;/a&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="546"/>
+        <source>Polynomial order</source>
+        <translation type="unfinished">Stopień wielomianu</translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="551"/>
+        <source>ScalarView: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="639"/>
+        <source>Start node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="640"/>
+        <source>End node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="641"/>
+        <source>Angle (deg.)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="642"/>
+        <location filename="../src/reportdialog.cpp" line="669"/>
+        <source>Marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="668"/>
+        <source>Array (m)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/reportdialog.cpp" line="692"/>
+        <source>Figure: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4628,7 +4940,7 @@ Czy chcesz zapisać zmiany?</translation>
         <translation>Plik &apos;%1&apos; nie jest w formacie Agros2D.</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1728"/>
+        <location filename="../src/scene.cpp" line="1733"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation>Nie można zapisać pliku &apos;%1&apos; (%2).</translation>
     </message>
@@ -4846,127 +5158,127 @@ Czy chcesz zapisać zmiany?</translation>
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../src/sceneview.cpp" line="146"/>
-        <location filename="../src/sceneview.cpp" line="148"/>
+        <location filename="../src/sceneview.cpp" line="138"/>
+        <location filename="../src/sceneview.cpp" line="140"/>
         <source>Zoom in</source>
         <translation>Przybliż</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="151"/>
-        <location filename="../src/sceneview.cpp" line="153"/>
+        <location filename="../src/sceneview.cpp" line="143"/>
+        <location filename="../src/sceneview.cpp" line="145"/>
         <source>Zoom out</source>
         <translation>Oddal</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="156"/>
+        <location filename="../src/sceneview.cpp" line="148"/>
         <source>Zoom best fit</source>
         <translation>Dopasuj</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="157"/>
+        <location filename="../src/sceneview.cpp" line="149"/>
         <source>Best fit</source>
         <translation>Dopasowanie do wielkości okna</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="160"/>
-        <location filename="../src/sceneview.cpp" line="161"/>
+        <location filename="../src/sceneview.cpp" line="152"/>
+        <location filename="../src/sceneview.cpp" line="153"/>
         <source>Zoom region</source>
         <translation>Dopasuj do zaznaczenia</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="165"/>
-        <location filename="../src/sceneview.cpp" line="166"/>
+        <location filename="../src/sceneview.cpp" line="157"/>
+        <location filename="../src/sceneview.cpp" line="158"/>
         <source>Show grid</source>
         <translation>Pokaż kratkę</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="171"/>
-        <location filename="../src/sceneview.cpp" line="172"/>
+        <location filename="../src/sceneview.cpp" line="163"/>
+        <location filename="../src/sceneview.cpp" line="164"/>
         <source>Snap to grid</source>
         <translation>Przyciągaj do kratki</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="177"/>
-        <location filename="../src/sceneview.cpp" line="178"/>
+        <location filename="../src/sceneview.cpp" line="169"/>
+        <location filename="../src/sceneview.cpp" line="170"/>
         <source>Show rulers</source>
         <translation>Pokaż linijki</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="184"/>
+        <location filename="../src/sceneview.cpp" line="176"/>
         <source>Operate on &amp;nodes</source>
         <translation>Operacje na &amp;węzłach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="186"/>
-        <location filename="../src/sceneview.cpp" line="2192"/>
+        <location filename="../src/sceneview.cpp" line="178"/>
+        <location filename="../src/sceneview.cpp" line="2184"/>
         <source>Operate on nodes</source>
         <translation>Operacje na węzłach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="189"/>
+        <location filename="../src/sceneview.cpp" line="181"/>
         <source>Operate on &amp;edges</source>
         <translation>Operacje na &amp;krawędziach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="191"/>
-        <location filename="../src/sceneview.cpp" line="2195"/>
+        <location filename="../src/sceneview.cpp" line="183"/>
+        <location filename="../src/sceneview.cpp" line="2187"/>
         <source>Operate on edges</source>
         <translation>Operacje na krawędziach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="194"/>
+        <location filename="../src/sceneview.cpp" line="186"/>
         <source>Operate on &amp;labels</source>
         <translation>Operacje na &amp;etykietach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="196"/>
-        <location filename="../src/sceneview.cpp" line="2198"/>
+        <location filename="../src/sceneview.cpp" line="188"/>
+        <location filename="../src/sceneview.cpp" line="2190"/>
         <source>Operate on labels</source>
         <translation>Operacje na etykietach</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="199"/>
+        <location filename="../src/sceneview.cpp" line="191"/>
         <source>&amp;Postprocessor</source>
         <translation>&amp;Wyniki</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="201"/>
-        <location filename="../src/sceneview.cpp" line="2217"/>
+        <location filename="../src/sceneview.cpp" line="193"/>
+        <location filename="../src/sceneview.cpp" line="2209"/>
         <source>Postprocessor</source>
         <translation>Wyniki</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="220"/>
+        <location filename="../src/sceneview.cpp" line="212"/>
         <source>Solution mesh</source>
         <translation>Siatka rozwiązania</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="223"/>
+        <location filename="../src/sceneview.cpp" line="215"/>
         <source>Contours</source>
         <translation>Izolinie</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="226"/>
+        <location filename="../src/sceneview.cpp" line="218"/>
         <source>Vectors</source>
         <translation>Wektory</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="237"/>
+        <location filename="../src/sceneview.cpp" line="229"/>
         <source>Local Values</source>
         <translation>Wartości w punkcie</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="240"/>
+        <location filename="../src/sceneview.cpp" line="232"/>
         <source>Surface Integrals</source>
         <translation>Całka powierzchniowa</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="243"/>
+        <location filename="../src/sceneview.cpp" line="235"/>
         <source>Volume Integrals</source>
         <translation>Całka objętościowa</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="253"/>
+        <location filename="../src/sceneview.cpp" line="245"/>
         <source>&amp;Postprocessor properties</source>
         <translation>Wyświetlanie &amp;wyników</translation>
     </message>
@@ -4975,70 +5287,70 @@ Czy chcesz zapisać zmiany?</translation>
         <translation type="obsolete">&amp;Ustawienia widoku</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="258"/>
+        <location filename="../src/sceneview.cpp" line="250"/>
         <source>Object properties</source>
         <translation>Parametry obiektu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="262"/>
+        <location filename="../src/sceneview.cpp" line="254"/>
         <source>&amp;Select region</source>
         <translation>&amp;Wybierz obszar</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="263"/>
+        <location filename="../src/sceneview.cpp" line="255"/>
         <source>Select region</source>
         <translation>Wybierz obszar</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="266"/>
-        <location filename="../src/sceneview.cpp" line="267"/>
+        <location filename="../src/sceneview.cpp" line="258"/>
+        <location filename="../src/sceneview.cpp" line="259"/>
         <source>Select by marker</source>
         <translation>Zaznacz znacznikiem</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="277"/>
+        <location filename="../src/sceneview.cpp" line="269"/>
         <source>Set mode</source>
         <translation>Zmiana trybu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2211"/>
+        <location filename="../src/sceneview.cpp" line="2203"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2214"/>
+        <location filename="../src/sceneview.cpp" line="2206"/>
         <source>Polynomial order</source>
         <translation>Stopień wielomianu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2766"/>
-        <location filename="../src/sceneview.cpp" line="2815"/>
+        <location filename="../src/sceneview.cpp" line="2758"/>
+        <location filename="../src/sceneview.cpp" line="2807"/>
         <source>Node</source>
         <translation type="unfinished">Węzeł</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2766"/>
-        <location filename="../src/sceneview.cpp" line="2815"/>
+        <location filename="../src/sceneview.cpp" line="2758"/>
+        <location filename="../src/sceneview.cpp" line="2807"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3063"/>
+        <location filename="../src/sceneview.cpp" line="3055"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Węzeł&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Numer: %3</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3078"/>
+        <location filename="../src/sceneview.cpp" line="3070"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation>&lt;h3&gt;Krawędź&lt;/h3&gt;Punkty: [%1; %2] - [%3; %4]&lt;br/&gt;Warunek brzegowy: %5&lt;br/&gt;Kąt: %6 stopni.&lt;br/&gt;Numer: %7 %8</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3098"/>
+        <location filename="../src/sceneview.cpp" line="3090"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation>&lt;h3&gt;Etykieta&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Materiał: %3&lt;br/&gt;Rozmiar elementu: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Stopień wielomianu: %5&lt;br/&gt;Numer: %6 %7</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3886"/>
+        <location filename="../src/sceneview.cpp" line="3881"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obraz nie może być zapisany do pliku &apos;%1&apos;.</translation>
     </message>
@@ -5184,12 +5496,12 @@ Czy chcesz zapisać zmiany?</translation>
 <context>
     <name>ScriptEditor</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1282"/>
+        <location filename="../src/scripteditordialog.cpp" line="1298"/>
         <source>Goto line</source>
         <translation>Skocz do linii</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1282"/>
+        <location filename="../src/scripteditordialog.cpp" line="1298"/>
         <source>Line number:</source>
         <translation>Numer linii</translation>
     </message>
@@ -5410,57 +5722,57 @@ Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="695"/>
-        <location filename="../src/scripteditordialog.cpp" line="915"/>
-        <location filename="../src/scripteditordialog.cpp" line="994"/>
-        <location filename="../src/scripteditordialog.cpp" line="1019"/>
+        <location filename="../src/scripteditordialog.cpp" line="931"/>
+        <location filename="../src/scripteditordialog.cpp" line="1010"/>
+        <location filename="../src/scripteditordialog.cpp" line="1035"/>
         <source>Untitled</source>
         <translation>Bez nazwy</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="707"/>
+        <location filename="../src/scripteditordialog.cpp" line="710"/>
         <source>Open File</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="707"/>
-        <location filename="../src/scripteditordialog.cpp" line="762"/>
-        <location filename="../src/scripteditordialog.cpp" line="794"/>
+        <location filename="../src/scripteditordialog.cpp" line="710"/>
+        <location filename="../src/scripteditordialog.cpp" line="771"/>
+        <location filename="../src/scripteditordialog.cpp" line="808"/>
         <source>Python files (*.py)</source>
         <translation>Pliki Pythona (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="719"/>
+        <location filename="../src/scripteditordialog.cpp" line="723"/>
         <source>Information</source>
         <translation>Informacje</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="719"/>
+        <location filename="../src/scripteditordialog.cpp" line="723"/>
         <source>Script is already opened.</source>
         <translation>Skrypt jest już otwarty.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="762"/>
-        <location filename="../src/scripteditordialog.cpp" line="794"/>
+        <location filename="../src/scripteditordialog.cpp" line="771"/>
+        <location filename="../src/scripteditordialog.cpp" line="808"/>
         <source>Save file</source>
         <translation>Zapisz plik</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="784"/>
+        <location filename="../src/scripteditordialog.cpp" line="793"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
         <translation>Nie można zapisać pliku &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="817"/>
+        <location filename="../src/scripteditordialog.cpp" line="833"/>
         <source>Print Document</source>
         <translation>Drukuj dokument</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="925"/>
+        <location filename="../src/scripteditordialog.cpp" line="941"/>
         <source>Application</source>
         <translation>Aplikacja</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="925"/>
+        <location filename="../src/scripteditordialog.cpp" line="941"/>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
         <translation>Plik &apos;%1&apos; został zmieniony. Czy chcesz zapisać zmiany?</translation>
@@ -5472,12 +5784,12 @@ Do you want to save your changes?</source>
 zapisać zmiany?</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1000"/>
+        <location filename="../src/scripteditordialog.cpp" line="1016"/>
         <source>Script editor - %1</source>
         <translation>Edytor skryptu - %1</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1010"/>
+        <location filename="../src/scripteditordialog.cpp" line="1026"/>
         <source>Line: %1, Col: %2</source>
         <translation>Wiersz: %1, Kolumna: %2</translation>
     </message>
@@ -5508,52 +5820,52 @@ zapisać zmiany?</translation>
 <context>
     <name>SearchDialog</name>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1485"/>
+        <location filename="../src/scripteditordialog.cpp" line="1501"/>
         <source>Search and replace</source>
         <translation>Wyszukaj i zastąp</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1491"/>
+        <location filename="../src/scripteditordialog.cpp" line="1507"/>
         <source>Find and replace</source>
         <translation>Wyszukaj i zastąp</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1498"/>
+        <location filename="../src/scripteditordialog.cpp" line="1514"/>
         <source>Search for:</source>
         <translation>Szukaj:</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1500"/>
+        <location filename="../src/scripteditordialog.cpp" line="1516"/>
         <source>Replace with:</source>
         <translation>Zastąp przez:</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1505"/>
+        <location filename="../src/scripteditordialog.cpp" line="1521"/>
         <source>Options</source>
         <translation>Opcje</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1508"/>
+        <location filename="../src/scripteditordialog.cpp" line="1524"/>
         <source>Regular expression</source>
         <translation>Wyrażenie regularne</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1511"/>
+        <location filename="../src/scripteditordialog.cpp" line="1527"/>
         <source>Case sensitive</source>
         <translation>Rozróżniaj wielkość liter</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1524"/>
+        <location filename="../src/scripteditordialog.cpp" line="1540"/>
         <source>Cancel</source>
         <translation>Anuluj</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1564"/>
+        <location filename="../src/scripteditordialog.cpp" line="1580"/>
         <source>Find</source>
         <translation>Znajdź</translation>
     </message>
     <message>
-        <location filename="../src/scripteditordialog.cpp" line="1576"/>
+        <location filename="../src/scripteditordialog.cpp" line="1592"/>
         <source>Replace</source>
         <translation>Zastąp</translation>
     </message>
@@ -5820,88 +6132,88 @@ zapisać zmiany?</translation>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="139"/>
+        <location filename="../src/videodialog.cpp" line="140"/>
         <source>Codec:</source>
         <translation>Kodek:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="140"/>
+        <location filename="../src/videodialog.cpp" line="141"/>
         <source>Format:</source>
         <translation>Format:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="141"/>
+        <location filename="../src/videodialog.cpp" line="142"/>
         <source>FPS:</source>
         <translation>FPS:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="142"/>
+        <location filename="../src/videodialog.cpp" line="143"/>
         <source>Progress:</source>
         <translation>Postęp:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="145"/>
+        <location filename="../src/videodialog.cpp" line="146"/>
         <source>Create images</source>
         <translation>Tworzenie obrazów</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="148"/>
+        <location filename="../src/videodialog.cpp" line="149"/>
         <source>Encode</source>
         <translation>Zakoduj</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="152"/>
+        <location filename="../src/videodialog.cpp" line="153"/>
         <source>Save ...</source>
         <translation>Zapisz ...</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="156"/>
+        <location filename="../src/videodialog.cpp" line="157"/>
         <source>Open</source>
         <translation>Otwórz</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="199"/>
+        <location filename="../src/videodialog.cpp" line="200"/>
         <source>From:</source>
         <translation>Początek:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="201"/>
+        <location filename="../src/videodialog.cpp" line="202"/>
         <source>To:</source>
         <translation>Koniec:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="203"/>
+        <location filename="../src/videodialog.cpp" line="204"/>
         <source>Delay:</source>
         <translation>Opóźnienie:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="205"/>
+        <location filename="../src/videodialog.cpp" line="206"/>
         <source>Time:</source>
         <translation>Czas:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="207"/>
+        <location filename="../src/videodialog.cpp" line="208"/>
         <source>Time step:</source>
         <translation>Suwak czasu:</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="210"/>
-        <location filename="../src/videodialog.cpp" line="236"/>
+        <location filename="../src/videodialog.cpp" line="211"/>
+        <location filename="../src/videodialog.cpp" line="237"/>
         <source>Animate</source>
         <translation>Odtwórz</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="240"/>
+        <location filename="../src/videodialog.cpp" line="241"/>
         <source>Stop</source>
         <translation>Zatrzymaj</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="331"/>
+        <location filename="../src/videodialog.cpp" line="335"/>
         <source>Save video to file</source>
         <translation>Zapisz wideo do pliku</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="379"/>
+        <location filename="../src/videodialog.cpp" line="385"/>
         <source>FFmpeg error</source>
         <translation>Błąd FFmpeg</translation>
     </message>

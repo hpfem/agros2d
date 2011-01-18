@@ -337,7 +337,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // description
     if (chkDescription->isChecked())
     {
-        destination.replace("[Description.Label]", "<h2>Description</h2>", Qt::CaseSensitive);
+        destination.replace("[Description.Label]", "<h2>" + tr("Description") + "</h2>", Qt::CaseSensitive);
         destination.replace("[Description]", "<p>" + Util::scene()->problemInfo()->description + "</p>", Qt::CaseSensitive);
     }
     else
@@ -349,21 +349,21 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // problem information
     if (chkProblemInformation->isChecked())
     {
-        destination.replace("[ProblemInformation.Label]", "<h2>Problem Information</h2>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.Name]", "<table><tr><td>Name:</td><td>" + Util::scene()->problemInfo()->name + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.Date]", "<tr><td>Date:</td><td>" + Util::scene()->problemInfo()->date.toString("dd.MM.yyyy") + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.FileName]", "<tr><td>Filename:</td><td>" + QFileInfo(Util::scene()->problemInfo()->fileName).fileName() + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.ProblemType]", "<tr><td>Problem type:</td><td>" + problemTypeString(Util::scene()->problemInfo()->problemType) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.PhysicField]", "<tr><td>Physic field:</td><td>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.AnalysisType]", "<tr><td>Analysis type:</td><td>" + analysisTypeString(Util::scene()->problemInfo()->analysisType) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.NumberOfRefinements]", "<tr><td>Number of refinements:</td><td>" + QString::number(Util::scene()->problemInfo()->numberOfRefinements) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[ProblemInformation.PolynomialOrder]", "<tr><td>Polynomial order:</td><td>" + QString::number(Util::scene()->problemInfo()->polynomialOrder) + "</td></tr></table>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.Label]", "<h2>" + tr("Problem Information") + "</h2>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.Name]", "<table><tr><td>" + tr("Name:") + "</td><td>" + Util::scene()->problemInfo()->name + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.Date]", "<tr><td>" + tr("Date:") + "</td><td>" + Util::scene()->problemInfo()->date.toString("dd.MM.yyyy") + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.FileName]", "<tr><td>" + tr("Filename:") + "</td><td>" + QFileInfo(Util::scene()->problemInfo()->fileName).fileName() + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.ProblemType]", "<tr><td>" + tr("Problem type:") + "</td><td>" + problemTypeString(Util::scene()->problemInfo()->problemType) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.PhysicField]", "<tr><td>" + tr("Physic field:") + "</td><td>" + physicFieldString(Util::scene()->problemInfo()->physicField()) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.AnalysisType]", "<tr><td>" + tr("Analysis type:") + "</td><td>" + analysisTypeString(Util::scene()->problemInfo()->analysisType) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.NumberOfRefinements]", "<tr><td>" + tr("Number of refinements:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->numberOfRefinements) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[ProblemInformation.PolynomialOrder]", "<tr><td>" + tr("Polynomial order:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->polynomialOrder) + "</td></tr></table>", Qt::CaseSensitive);
 
         if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None && chkProblemInformation->isChecked())
         {
-            destination.replace("[ProblemInformation.AdaptivityType]", "<table><tr><td>Adaptivity type:</td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.AdaptivitySteps]", "<tr><td>Adaptivity steps:</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivitySteps) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.AdaptivityTolerance]", "<tr><td>Adaptivity tolerance:</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityTolerance) + "</td></tr></table>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.AdaptivityType]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.AdaptivitySteps]", "<tr><td>" + tr("Adaptivity steps:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivitySteps) + "</td></tr>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.AdaptivityTolerance]", "<tr><td>" + tr("Adaptivity tolerance:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityTolerance) + "</td></tr></table>", Qt::CaseSensitive);
         }
         else
         {
@@ -379,10 +379,10 @@ QString ReportDialog::replaceTemplates(const QString &source)
 
         if ((Util::scene()->problemInfo()->hermes()->hasHarmonic() || Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) && chkProblemInformation->isChecked())
         {
-            destination.replace("[ProblemInformation.Frequency]", "<table><tr><td>Adaptivity type:</td><td>" + QString::number(Util::scene()->problemInfo()->frequency) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.TimeStep]", "<tr><td>Adaptivity type:</td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.TimeTotal]", "<tr><td>Adaptivity type:</td><td>" + QString::number(Util::scene()->problemInfo()->timeTotal.number) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.InititalCondition]", "<tr><td>Adaptivity type:</td><td>" + QString::number(Util::scene()->problemInfo()->initialCondition.number) + "</td></tr></table>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.Frequency]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->frequency) + "</td></tr>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.TimeStep]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number) + "</td></tr>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.TimeTotal]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeTotal.number) + "</td></tr>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.InititalCondition]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->initialCondition.number) + "</td></tr></table>", Qt::CaseSensitive);
         }
         else
         {
@@ -417,7 +417,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // startup script
     if (chkStartupScript->isChecked())
     {
-        destination.replace("[StartupScript.Label]", "<h2>Startup Script</h2>", Qt::CaseSensitive);
+        destination.replace("[StartupScript.Label]", "<h2>" + tr("Startup Script") + "</h2>", Qt::CaseSensitive);
         destination.replace("[StartupScript]", "<pre>" + Util::scene()->problemInfo()->scriptStartup + "</pre>", Qt::CaseSensitive);
     }
     else
@@ -429,10 +429,10 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // physical properties
     if (chkPhysicalProperties->isChecked())
     {
-        destination.replace("[PhysicalProperties.Label]", "<h2>Physical Properties</h2>", Qt::CaseSensitive);
-        destination.replace("[Materials.Label]", "<h3>Materials</h3>", Qt::CaseSensitive);
+        destination.replace("[PhysicalProperties.Label]", "<h2>" + tr("Physical Properties") + "</h2>", Qt::CaseSensitive);
+        destination.replace("[Materials.Label]", "<h3>" + tr("Materials") + "</h3>", Qt::CaseSensitive);
         destination.replace("[Materials]", htmlMaterials(), Qt::CaseSensitive);
-        destination.replace("[Boundaries.Label]", "<h3>Boundaris conditions</h3>", Qt::CaseSensitive);
+        destination.replace("[Boundaries.Label]", "<h3>" + tr("Boundaris conditions") + "</h3>", Qt::CaseSensitive);
         destination.replace("[Boundaries]", htmlBoundaries(), Qt::CaseSensitive);
     }
     else
@@ -450,12 +450,12 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // geometry
     if (chkGeometry->isChecked())
     {
-        destination.replace("[Geometry.Label]", "<h2>Geometry</h2>", Qt::CaseSensitive);
-        destination.replace("[Geometry.Nodes.Label]", "<h3>Nodes</h3>", Qt::CaseSensitive);
+        destination.replace("[Geometry.Label]", "<h2>" + tr("Geometry") + "</h2>", Qt::CaseSensitive);
+        destination.replace("[Geometry.Nodes.Label]", "<h3>" + tr("Nodes") + "</h3>", Qt::CaseSensitive);
         destination.replace("[Geometry.Nodes]", htmlGeometryNodes(), Qt::CaseSensitive);
-        destination.replace("[Geometry.Edges.Label]", "<h3>Edges</h3>", Qt::CaseSensitive);
+        destination.replace("[Geometry.Edges.Label]", "<h3>" + tr("Edges") + "</h3>", Qt::CaseSensitive);
         destination.replace("[Geometry.Edges]", htmlGeometryEdges(), Qt::CaseSensitive);
-        destination.replace("[Geometry.Labels.Label]", "<h3>Labels</h3>", Qt::CaseSensitive);
+        destination.replace("[Geometry.Labels.Label]", "<h3>" + tr("Labels") + "</h3>", Qt::CaseSensitive);
         destination.replace("[Geometry.Labels]", htmlGeometryLabels(), Qt::CaseSensitive);
     }
     else
@@ -477,17 +477,17 @@ QString ReportDialog::replaceTemplates(const QString &source)
         QTime time;
         time = milisecondsToTime(Util::scene()->sceneSolution()->timeElapsed());
 
-        destination.replace("[MeshAndSolver.Label]", "<h2>Mesh and Solution</h2>", Qt::CaseSensitive);
-        destination.replace("[Solver.Label]", "<h3>Solver information</h3>", Qt::CaseSensitive);
-        destination.replace("[Solver.Nodes]", "<table><tr><td>Nodes:</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[Solver.Elements]", "<tr><td>Elements:</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[Solver.DOFs]", "<tr><td>DOFs:</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) + "</td></tr>", Qt::CaseSensitive);
-        destination.replace("[Solver.TimeElapsed]", "<tr><td>Elapsed time:</td><td>" + time.toString("mm:ss.zzz") + " s</td></tr></table>", Qt::CaseSensitive);
+        destination.replace("[MeshAndSolver.Label]", "<h2>" + tr("Mesh and Solution") + "</h2>", Qt::CaseSensitive);
+        destination.replace("[Solver.Label]", "<h3>" + tr("Solver information") + "</h3>", Qt::CaseSensitive);
+        destination.replace("[Solver.Nodes]", "<table><tr><td>" + tr("Nodes:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_nodes()) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[Solver.Elements]", "<tr><td>" + tr("Elements:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->meshInitial()->get_num_active_elements()) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[Solver.DOFs]", "<tr><td>" + tr("DOFs:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->sln()->get_num_dofs()) + "</td></tr>", Qt::CaseSensitive);
+        destination.replace("[Solver.TimeElapsed]", "<tr><td>" + tr("Elapsed time:") + "</td><td>" + time.toString("mm:ss.zzz") + " s</td></tr></table>", Qt::CaseSensitive);
 
         if (Util::scene()->problemInfo()->adaptivityType != AdaptivityType_None)
         {
-            destination.replace("[Solver.AdaptiveError]", "<table><tr><td>Adaptive error:</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3)  + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[Solver.AdaptiveSteps]", "<tr><td>Adaptive steps:</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) + "</td></tr></table>", Qt::CaseSensitive);
+            destination.replace("[Solver.AdaptiveError]", "<table><tr><td>" + tr("Adaptive error:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveError(), 'f', 3)  + "</td></tr>", Qt::CaseSensitive);
+            destination.replace("[Solver.AdaptiveSteps]", "<tr><td>" + tr("Adaptive steps:") + "</td><td>" + QString::number(Util::scene()->sceneSolution()->adaptiveSteps()) + "</td></tr></table>", Qt::CaseSensitive);
         }
         else
         {
@@ -519,7 +519,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     // script
     if (chkScript->isChecked())
     {
-        destination.replace("[Script.Label]", "<h2>Script</h2>", Qt::CaseSensitive);
+        destination.replace("[Script.Label]", "<h2>" + tr("Script") + "</h2>", Qt::CaseSensitive);
         destination.replace("[Script]", "<pre>" + createPythonFromModel() + "</pre>", Qt::CaseSensitive);
     }
     else
@@ -529,26 +529,26 @@ QString ReportDialog::replaceTemplates(const QString &source)
     }
 
     // footer
-    destination.replace("[Report.Footer]", "<p id=\"footer\">Computed by Agros2D (<a href=\"http://hpfem.org/agros2d\">http://hpfem.org/agros2d</a>)</p>");
+    destination.replace("[Report.Footer]", "<p id=\"footer\">" + tr("Computed by Agros2D (<a href=\"http://hpfem.org/agros2d\">http://hpfem.org/agros2d</a>)") + "</p>");
 
     // figures
     if (chkFigureGeometry->isChecked())
-        destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", "Geometry"), Qt::CaseSensitive);
+        destination.replace("[Figure.Geometry]", htmlFigure("geometry.png", tr("Geometry")), Qt::CaseSensitive);
     else
         destination.remove("[Figure.Geometry]", Qt::CaseSensitive);
 
     if (chkFigureMesh->isChecked())
-        destination.replace("[Figure.Mesh]", htmlFigure("mesh.png", "Mesh"), Qt::CaseSensitive);
+        destination.replace("[Figure.Mesh]", htmlFigure("mesh.png", tr("Mesh")), Qt::CaseSensitive);
     else
         destination.remove("[Figure.Mesh]", Qt::CaseSensitive);
 
     if (chkFigureOrder->isChecked())
-            destination.replace("[Figure.Order]", htmlFigure("order.png", "Polynomial order"), Qt::CaseSensitive);
+            destination.replace("[Figure.Order]", htmlFigure("order.png", tr("Polynomial order")), Qt::CaseSensitive);
     else
         destination.remove("[Figure.Order]", Qt::CaseSensitive);
 
     if (chkFigureScalarView->isChecked())
-        destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", "ScalarView: " + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable())), Qt::CaseSensitive);
+        destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", tr("ScalarView: ") + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable())), Qt::CaseSensitive);
     else
         destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
 
@@ -636,10 +636,10 @@ QString ReportDialog::htmlGeometryEdges()
 
     out  = "\n";
     out += "<table><tr>";
-    out += "<th colspan=\"2\">Start node</th>";
-    out += "<th colspan=\"2\">End node</th>";
-    out += "<th>Angle (deg.)</th>";
-    out += "<th>Marker</th></tr>";
+    out += "<th colspan=\"2\">" + tr("Start node") + "</th>";
+    out += "<th colspan=\"2\">" + tr("End node") + "</th>";
+    out += "<th>" + tr("Angle (deg.)") + "</th>";
+    out += "<th>" + tr("Marker") + "</th></tr>";
     for (int i = 0; i < Util::scene()->edges.count(); i++)
     {
         out += "<tr><td>" + QString::number(Util::scene()->edges[i]->nodeStart->point.x, 'e', 3) + "</td>";
@@ -665,8 +665,8 @@ QString ReportDialog::htmlGeometryLabels()
     out += "<table><tr>";
     out += "<th>" + Util::scene()->problemInfo()->labelX() + " (m)</th>";
     out += "<th>" + Util::scene()->problemInfo()->labelY() + " (m)</th>";
-    out += "<th>Array (m)</th>";
-    out += "<th>Marker</th></tr>";
+    out += "<th>" + tr("Array (m)") + "</th>";
+    out += "<th>" + tr("Marker") + "</th></tr>";
     for (int i = 0; i < Util::scene()->labels.count(); i++)
     {
         out += "<tr><td>" + QString::number(Util::scene()->labels[i]->point.x, 'e', 3) + "</td>";
@@ -689,7 +689,7 @@ QString ReportDialog::htmlFigure(const QString &fileName, const QString &caption
     if (QFile::exists(tempProblemDir() + "/report/" + fileName))
     {
         out += "\n";
-        out += QString("<img src=\"%1\"><p>Figure: %2</p>").
+        out += QString("<img src=\"%1\"><p>" + tr("Figure: %2") + "</p>").
                 arg(fileName).
                 arg(caption);
         out += "\n";
