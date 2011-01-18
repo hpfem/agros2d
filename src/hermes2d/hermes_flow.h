@@ -67,21 +67,18 @@ public:
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Flow_Velocity; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Flow_Velocity; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Undefined; }
+    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Magnitude; }
+    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_Flow_Velocity; }
 
     void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Flow_Velocity), PhysicFieldVariable_Flow_Velocity);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Flow_VelocityX), PhysicFieldVariable_Flow_VelocityX);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Flow_VelocityY), PhysicFieldVariable_Flow_VelocityY);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Flow_Pressure), PhysicFieldVariable_Flow_Pressure);
     }
 
     void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
     {
-        // FIX ME
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Heat_TemperatureGradient), PhysicFieldVariable_Heat_TemperatureGradient);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Flow_Velocity), PhysicFieldVariable_Flow_Velocity);
     }
 
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);

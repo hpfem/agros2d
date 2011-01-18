@@ -527,9 +527,6 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_Elasticity_StressZZ:
     case PhysicFieldVariable_Elasticity_StressXY:
 
-    case PhysicFieldVariable_Flow_Velocity:
-    case PhysicFieldVariable_Flow_VelocityX:
-    case PhysicFieldVariable_Flow_VelocityY:
     case PhysicFieldVariable_Flow_Pressure:
         return true;
         break;

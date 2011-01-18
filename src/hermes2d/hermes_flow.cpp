@@ -42,7 +42,7 @@ template<typename Real, typename Scalar>
 Scalar bilinear_form_sym_0_0_1_1(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     return flowLabel[e->elem_marker].dynamic_viscosity / flowLabel[e->elem_marker].density * (int_grad_u_grad_v<Real, Scalar>(n, wt, u, v) +
-            ((analysisType == AnalysisType_Transient) ? int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0));
+                                                                                              ((analysisType == AnalysisType_Transient) ? int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0));
 }
 
 template<typename Real, typename Scalar>
@@ -75,6 +75,7 @@ Scalar bilinear_form_unsym_1_2(int n, double *wt, Func<Real> *u_ext[], Func<Real
 
 void callbackFlowWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
+    /*
     wf->add_matrix_form(0, 0, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
     if (analysisType == AnalysisType_Transient)
         ; // wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_NONSYM, HERMES_ANY, slnArray);
@@ -97,6 +98,16 @@ void callbackFlowWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
         wf->add_vector_form(0, callback(linear_form));
         wf->add_vector_form(1, callback(linear_form));
     }
+    */
+
+    wf->add_matrix_form(0, 0, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
+    wf->add_matrix_form(0, 0, callback(bilinear_form_unsym_0_0_1_1), HERMES_NONSYM);
+    wf->add_matrix_form(1, 1, callback(bilinear_form_sym_0_0_1_1), HERMES_SYM);
+    wf->add_matrix_form(1, 1, callback(bilinear_form_unsym_0_0_1_1), HERMES_NONSYM);
+    wf->add_matrix_form(0, 2, callback(bilinear_form_unsym_0_2), HERMES_ANTISYM);
+    wf->add_matrix_form(1, 2, callback(bilinear_form_unsym_1_2), HERMES_ANTISYM);
+    wf->add_vector_form(0, callback(linear_form));
+    wf->add_vector_form(1, callback(linear_form));
 }
 
 // *******************************************************************************************************
@@ -385,13 +396,16 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
             {
             case PhysicFieldBC_None:
                 bcTypesX.add_bc_none(i+1);
+                bcTypesY.add_bc_none(i+1);
+                bcTypesP.add_bc_none(i+1);
                 break;
             case PhysicFieldBC_Flow_Wall:
                 bcTypesX.add_bc_dirichlet(i+1);
                 bcValuesX.add_const(i+1, 0.0);
                 bcTypesY.add_bc_dirichlet(i+1);
                 bcValuesY.add_const(i+1, 0.0);
-                bcTypesP.add_bc_neumann(i+1);
+                // bcTypesP.add_bc_neumann(i+1);
+                bcTypesP.add_bc_none(i+1);
                 break;
             case PhysicFieldBC_Flow_Velocity:
                 bcTypesX.add_bc_dirichlet(i+1);
@@ -435,9 +449,9 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
     }
 
     QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY, &bcTypesP),
-                                                                  Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY, &bcValuesP),
-                                                                  callbackFlowWeakForm);
+                                                                 Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY, &bcTypesP),
+                                                                 Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY, &bcValuesP),
+                                                                 callbackFlowWeakForm);
 
     delete [] flowEdge;
     delete [] flowLabel;
@@ -499,12 +513,12 @@ QStringList LocalPointValueFlow::variables()
 {
     QStringList row;
     row << QString("%1").arg(point.x, 0, 'e', 5) <<
-            QString("%1").arg(point.y, 0, 'e', 5) <<
-            QString("%1").arg(Util::scene()->sceneSolution()->time(), 0, 'e', 5) <<
-            QString("%1").arg(sqrt(sqr(velocity_x) + sqr(velocity_y)), 0, 'e', 5) <<
-            QString("%1").arg(velocity_x, 0, 'e', 5) <<
-            QString("%1").arg(velocity_y, 0, 'e', 5) <<
-            QString("%1").arg(pressure, 0, 'e', 5);
+           QString("%1").arg(point.y, 0, 'e', 5) <<
+           QString("%1").arg(Util::scene()->sceneSolution()->time(), 0, 'e', 5) <<
+           QString("%1").arg(sqrt(sqr(velocity_x) + sqr(velocity_y)), 0, 'e', 5) <<
+           QString("%1").arg(velocity_x, 0, 'e', 5) <<
+           QString("%1").arg(velocity_y, 0, 'e', 5) <<
+           QString("%1").arg(pressure, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -524,7 +538,7 @@ QStringList SurfaceIntegralValueFlow::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
-            QString("%1").arg(surface, 0, 'e', 5);
+           QString("%1").arg(surface, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -550,7 +564,7 @@ QStringList VolumeIntegralValueFlow::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-            QString("%1").arg(crossSection, 0, 'e', 5);
+           QString("%1").arg(crossSection, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -561,32 +575,38 @@ void ViewScalarFilterFlow::calculateVariable(int i)
     switch (m_physicFieldVariable)
     {
     case PhysicFieldVariable_Flow_Velocity:
-        {
-            SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
+    {
+        SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
 
-            node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i]));
-        }
-        break;
-    case PhysicFieldVariable_Flow_VelocityX:
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
-
-            node->values[0][0][i] = value1[i];
+            switch (m_physicFieldVariableComp)
+            {
+            case PhysicFieldVariableComp_X:
+            {
+                node->values[0][0][i] = value1[i];
+            }
+                break;
+            case PhysicFieldVariableComp_Y:
+            {
+                node->values[0][0][i] = value2[i];
+            }
+                break;
+            case PhysicFieldVariableComp_Magnitude:
+            {
+                node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i]));
+            }
+                break;
+            }
         }
-        break;
-    case PhysicFieldVariable_Flow_VelocityY:
-        {
-            SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
-
-            node->values[0][0][i] = value2[i];
-        }
+    }
         break;
     case PhysicFieldVariable_Flow_Pressure:
-        {
-            SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
+    {
+        SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
 
-            node->values[0][0][i] = value3[i];
-        }
+        node->values[0][0][i] = value3[i];
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterFlow::calculateVariable()" << endl;
@@ -754,15 +774,15 @@ void DSceneEdgeFlowMarker::doTypeChanged(int index)
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
     case PhysicFieldBC_Flow_Velocity:
-        {
-            txtVelocityX->setEnabled(true);
-            txtVelocityY->setEnabled(true);
-        }
+    {
+        txtVelocityX->setEnabled(true);
+        txtVelocityY->setEnabled(true);
+    }
         break;
     case PhysicFieldBC_Flow_Pressure:
-        {
-            txtPressure->setEnabled(true);
-        }
+    {
+        txtPressure->setEnabled(true);
+    }
         break;
     }
 }
