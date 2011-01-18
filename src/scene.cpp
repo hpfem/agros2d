@@ -1392,6 +1392,11 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     QDomNode eleScriptStartup = eleProblem.toElement().elementsByTagName("scriptstartup").at(0);
     m_problemInfo->scriptStartup = eleScriptStartup.toElement().text();
 
+    // FIX ME - EOL conversion
+    QPlainTextEdit textEdit;
+    textEdit.setPlainText(m_problemInfo->scriptStartup);
+    m_problemInfo->scriptStartup = textEdit.toPlainText();
+
     // description
     QDomNode eleDescription = eleProblem.toElement().elementsByTagName("description").at(0);
     m_problemInfo->description = eleDescription.toElement().text();
