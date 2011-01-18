@@ -907,7 +907,11 @@ void ProgressDialog::createControls()
     connect(tabType, SIGNAL(currentChanged(int)), this, SLOT(resetControls(int)));
 
     if (Util::scene()->problemInfo()->adaptivityType == AdaptivityType_None)
-        tabType->widget(1)->setDisabled(true);
+    {
+       controlsConvergenceErrorChart->setEnabled(false);
+       controlsConvergenceDOFChart->setEnabled(false);
+       controlsConvergenceErrorDOFChart->setEnabled(false);
+    }
 
     btnCancel = new QPushButton(tr("Cance&l"));
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -1093,8 +1097,14 @@ QWidget *ProgressDialog::createControlsConvergenceErrorDOFChart()
 
 void ProgressDialog::resetControls(int currentTab)
 {
-    btnSaveImage->setDisabled(tabType->currentIndex() == 0);
-    btnSaveData->setDisabled(tabType->currentIndex() == 0);
+    btnSaveImage->setEnabled(false);
+    btnSaveData->setEnabled(false);
+
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        btnSaveImage->setDisabled(tabType->currentIndex() == 0);
+        btnSaveData->setDisabled(tabType->currentIndex() == 0);
+    }
 }
 
 int ProgressDialog::progressSteps()
@@ -1179,6 +1189,8 @@ void ProgressDialog::start()
     else
     {
         btnCancel->setEnabled(false);
+        btnSaveImage->setEnabled(false);
+        btnSaveData->setEnabled(false);
         // tabType->setCurrentWidget(controlsConvergenceChart);
     }
 }
@@ -1381,7 +1393,8 @@ void ProgressDialog::saveImage()
     else if (tabType->currentWidget() == controlsConvergenceDOFChart)
     {
         chartDOF->saveImage();
-    }    else if (tabType->currentWidget() == controlsConvergenceErrorDOFChart)
+    }
+    else if (tabType->currentWidget() == controlsConvergenceErrorDOFChart)
     {
         chartErrorDOF->saveImage();
     }
