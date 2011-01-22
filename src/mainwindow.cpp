@@ -170,7 +170,7 @@ void MainWindow::createActions()
     actDocumentExportDXF->setStatusTip(tr("Export AutoCAD DXF"));
     connect(actDocumentExportDXF, SIGNAL(triggered()), this, SLOT(doDocumentExportDXF()));
 
-    actDocumentExportMeshFile = new QAction(tr("Export mesh file"), this);
+    actDocumentExportMeshFile = new QAction(tr("Export mesh file..."), this);
     actDocumentExportMeshFile->setStatusTip(tr("Export Hermes2D mesh file"));
     connect(actDocumentExportMeshFile, SIGNAL(triggered()), this, SLOT(doDocumentExportMeshFile()));
 
@@ -1123,6 +1123,11 @@ void MainWindow::doDocumentExportMeshFile()
             sourceFileName.replace("a2d", "mesh");
             if (!fileName.isEmpty())
             {
+                // remove existing file
+                if (QFile::exists(fileName + ".mesh"))
+                    QFile::remove(fileName + ".mesh");
+
+                // copy file
                 QFile::copy(sourceFileName, fileName + ".mesh");
                 settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
             }
