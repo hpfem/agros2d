@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "1.6.0.569"
-#define AppDate "2011-01-17"
+#define AppVersion "1.7.0.580"
+#define AppDate "2011-01-22"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -45,9 +45,7 @@ Source: lang\*.qm; DestDir: {app}/lang
 Source: doc\web\*; DestDir: {app}/doc/web; Flags: ignoreversion recursesubdirs 
 Source: doc\report\default.css; DestDir: {app}/doc/report
 Source: doc\report\default.html; DestDir: {app}/doc/report
-Source: install\win32\*.dll; DestDir: {app}
-Source: install\win32\lib\*.pyc; DestDir: {app}
-Source: install\win32\sqldrivers\*.dll; DestDir: {app}/sqldrivers
+Source: ..\agros2d_windows_install\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: {group}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
@@ -76,17 +74,3 @@ Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http:/
 Type: files; Name: {app}\Agros2D.url
 
 [Code]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
