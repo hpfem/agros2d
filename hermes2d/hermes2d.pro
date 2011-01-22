@@ -159,8 +159,13 @@ linux-g++ {
 
 win32-g++ {
     DEFINES += WIN32
+
+    INCLUDEPATH += c:/Python27/include
+    INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
+    LIBS += -Lc:/Python27
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lpthread
+    LIBS += -lpython27
 }

@@ -144,9 +144,10 @@ linux-g++ {
 }
 win32-g++ {
     INCLUDEPATH += c:/qt/mingw/include
-    INCLUDEPATH += c:/Python26/include
+    INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../hermes2d/src
     INCLUDEPATH += ../../qwt-5.2.1/src
+    LIBS += -Lc:/Python27
     LIBS += -L../hermes2d/lib
     LIBS += -L../../qwt-5.2.1/lib
     LIBS += -lhermes2d
@@ -155,7 +156,7 @@ win32-g++ {
     LIBS += -lblas
     LIBS += -lpthread
     LIBS += -lqwt
-    LIBS += -lpython26
+    LIBS += -lpython27
 }
 macx-g++ {
     INCLUDEPATH += /opt/local/include
