@@ -20,7 +20,6 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             ../hermes_common/matrix.cpp \
             ../hermes_common/trace.cpp \
             ../hermes_common/utils.cpp \
-            ../hermes_common/butcher_tables.cpp \
             ../hermes_common/tables.cpp \
             ../hermes_common/solver/amesos.cpp \
             ../hermes_common/solver/aztecoo.cpp \
@@ -33,6 +32,8 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             ../hermes_common/solver/precond_ml.cpp \
             ../hermes_common/solver/superlu.cpp \
             ../hermes_common/solver/umfpack_solver.cpp \
+            ../hermes_common/python/python_api.cpp \
+            ../hermes_common/python/python_engine.cpp \
             ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_any.hpp \
             ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_ConstTypeTraits.hpp \
             ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_Exceptions.hpp \
@@ -67,6 +68,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/ogprojection.cpp \
             src/qsort.cpp \
             src/runge_kutta.cpp \
+            src/boundaryconditions/boundaryconditions.cpp \
             src/adapt/adapt.cpp \
             src/function/filter.cpp \
             src/function/norm.cpp \
@@ -91,6 +93,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/mesh/mesh.cpp \
             src/mesh/mesh_lexer.cpp \
             src/mesh/mesh_parser.cpp \
+            src/mesh/python_reader.cpp \
             src/mesh/refinement_type.cpp \
             src/mesh/refmap.cpp \
             src/mesh/regul.cpp \
@@ -146,9 +149,12 @@ linux-g++ {
 
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/superlu
+    INCLUDEPATH += /usr/include/python2.6
     LIBS += -lumfpack
     LIBS += -ldmumps_seq
     LIBS += -lsuperlu
+    LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
+    LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
 }
 
 win32-g++ {

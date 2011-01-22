@@ -38,7 +38,10 @@
 #include "../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_RCP.hpp"
 
 // boundary conditions
+  // this
 #include "../hermes_common/bctypes.h"
+  // is going to be replaced with this
+#include "boundaryconditions/boundaryconditions.h"
 
 #include "h2d_common.h"
 #include "hermes_logging.h"
@@ -101,6 +104,7 @@
 #include "ref_selectors/hcurl_proj_based_selector.h"
 
 #include "adapt/adapt.h"
+#include "adapt/kelly_type_adapt.h"
 #include "neighbor.h"
 #include "ogprojection.h"
 

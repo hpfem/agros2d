@@ -17,8 +17,8 @@
 // along with Hermes3D; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef _UMFPACK_SOLVER_H_
-#define _UMFPACK_SOLVER_H_
+#ifndef __HERMES_COMMON_UMFPACK_SOLVER_H_
+#define __HERMES_COMMON_UMFPACK_SOLVER_H_
 
 #include "solver.h"
 #include "../matrix.h"
@@ -35,7 +35,12 @@ public:
   virtual void zero();
   virtual void add(int m, int n, scalar v);
   virtual void add_to_diagonal(scalar v);
-  virtual void add_umfpack_matrix(UMFPackMatrix* mat);
+  // TODO: implement this for other matrix types.
+  virtual void add_matrix(UMFPackMatrix* mat);
+  // TODO: implement this for other matrix types.
+  virtual void add_to_diagonal_blocks(int num_stages, UMFPackMatrix* mat);
+  // TODO: implement this for other matrix types.
+  virtual void add_as_block(int i, int j, UMFPackMatrix* mat);
   virtual void add(int m, int n, scalar **mat, int *rows, int *cols);
   virtual bool dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt = DF_MATLAB_SPARSE);
   virtual int get_matrix_size() const;
@@ -142,6 +147,7 @@ public:
   };
   bool init();
   void get_current_position(int& i, int& j, scalar& val);
+  bool move_to_position(int i, int j);
   bool move_ptr();
   void add_to_current_position(scalar val);
 
