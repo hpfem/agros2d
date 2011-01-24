@@ -28,9 +28,9 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 [Languages]
 
 [Files]
-Source: src\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
+Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: src\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
-Source: src-remote\release\Agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
+Source: agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
 Source: functions.py; DestDir: {app}; DestName: functions.py
