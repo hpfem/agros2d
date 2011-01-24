@@ -43,7 +43,7 @@ Source: lang\*.qm; DestDir: {app}/lang
 Source: doc\web\*; DestDir: {app}/doc/web; Flags: ignoreversion recursesubdirs 
 Source: doc\report\default.css; DestDir: {app}/doc/report
 Source: doc\report\default.html; DestDir: {app}/doc/report
-Source: ..\agros2d_windows_install\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
+Source: ..\agros2d_windows_install\runtime\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: {group}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
