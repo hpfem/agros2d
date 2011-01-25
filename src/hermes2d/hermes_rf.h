@@ -30,7 +30,7 @@ public:
     HermesRF() { physicField = PhysicField_RF; }
 
     int numberOfSolution();
-    bool hasHarmonic() { return false; }
+    bool hasHarmonic() { return true; }
     bool hasTransient() { return false; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
@@ -89,32 +89,15 @@ public:
 class LocalPointValueRF : public LocalPointValue
 {
 public:
+    double permittivity;
     double permeability;
     double conductivity;
-    double remanence;
-    double remanence_angle;
-    Point velocity;
 
     double potential_real;
     double potential_imag;
 
-    double current_density_real;
-    double current_density_imag;
-    double current_density_total_real;
-    double current_density_total_imag;
-    double current_density_induced_transform_real;
-    double current_density_induced_transform_imag;
-    double current_density_induced_velocity_real;
-    double current_density_induced_velocity_imag;
-
-    Point H_real;
-    Point H_imag;
-    Point B_real;
-    Point B_imag;
-    Point FL_real;
-    Point FL_imag;
-    double pj;
-    double wm;
+    double electric_field_real;
+    double electric_field_imag;
 
     LocalPointValueRF(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
@@ -141,20 +124,6 @@ protected:
     void initSolutions();
 
 public:
-    double currentReal;
-    double currentImag;
-    double currentInducedTransformReal;
-    double currentInducedTransformImag;
-    double currentInducedVelocityReal;
-    double currentInducedVelocityImag;
-    double currentTotalReal;
-    double currentTotalImag;
-    double forceLorentzX;
-    double forceLorentzY;
-    double powerLosses;
-    double energy;
-    double torque;
-
     VolumeIntegralValueRF();
     QStringList variables();
 };
@@ -191,8 +160,7 @@ public:
     Value permeability;
     Value conductivity;
 
-    SceneLabelRFMarker(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity,
-                             Value remanence, Value remanence_angle, Value velocity_x, Value velocity_y, Value velocity_angular);
+    SceneLabelRFMarker(const QString &name, Value permittivity, Value permeability, Value conductivity);
 
     QString script();
     QMap<QString, QString> data();
@@ -234,15 +202,9 @@ protected:
     bool save();
 
 private:
+    SLineEditValue *txtPermittivity;
     SLineEditValue *txtPermeability;
     SLineEditValue *txtConductivity;
-    SLineEditValue *txtCurrentDensityReal;
-    SLineEditValue *txtCurrentDensityImag;
-    SLineEditValue *txtRemanence;
-    SLineEditValue *txtRemanenceAngle;
-    SLineEditValue *txtVelocityX;
-    SLineEditValue *txtVelocityY;
-    SLineEditValue *txtVelocityAngular;
 };
 
 #endif // RF_H

@@ -74,6 +74,7 @@ void initLists()
     physicFieldList.insert(PhysicField_Elasticity, "elasticity");
     physicFieldList.insert(PhysicField_Magnetic, "magnetic");
     physicFieldList.insert(PhysicField_Flow, "flow");
+    physicFieldList.insert(PhysicField_RF, "rf");
 
     // PHYSICFIELDVARIABLE
     physicFieldVariableList.insert(PhysicFieldVariable_Undefined, "");
@@ -861,6 +862,7 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
 #ifdef BETA
     cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_RF), PhysicField_RF);
 #endif
 
     // default physic field
