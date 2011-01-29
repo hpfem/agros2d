@@ -71,11 +71,15 @@ void LogDialog::createControls()
     btnShowAdaptivityErrorDOFChart = new QPushButton(tr("Adapt. conv."));
     connect(btnShowAdaptivityErrorDOFChart, SIGNAL(clicked()), this, SLOT(doShowAdaptivityErrorDOFChart()));
 
+    btnShowNonlinearityChart = new QPushButton(tr("Adapt. conv."));
+    connect(btnShowNonlinearityChart, SIGNAL(clicked()), this, SLOT(doShowNonlinearityChart()));
+
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
     layoutButtons->addWidget(btnShowAdaptivityErrorChart);
     layoutButtons->addWidget(btnShowAdaptivityDOFChart);
     layoutButtons->addWidget(btnShowAdaptivityErrorDOFChart);
+    layoutButtons->addWidget(btnShowNonlinearityChart);
     layoutButtons->addWidget(btnSaveLog);
     layoutButtons->addWidget(btnDeleteLog);
     layoutButtons->addWidget(btnClose);
@@ -344,3 +348,14 @@ void LogDialog::doShowAdaptivityErrorDOFChart()
     imageFileName = tempProblemDir() + "/adaptivity_conv.png";
     showImage();
 }
+
+void LogDialog::doShowNonlinearityChart()
+{
+    logMessage("LogDialog::doShowNonlinearityChart()");
+
+    dataFileName = tempProblemDir() + "/nonlinearity_error.csv";
+    imageFileName = tempProblemDir() + "/nonlinearity_error.png";
+    showImage();
+}
+
+

@@ -103,10 +103,10 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 {
     logMessage("SLineEditValue::SLineEditValue()");
 
-    m_minimum = -CONST_DOUBLE;
-    m_minimumSharp = -CONST_DOUBLE;
-    m_maximum =  CONST_DOUBLE;
-    m_maximumSharp =  CONST_DOUBLE;
+    m_minimum = numeric_limits<double>::min();
+    m_minimumSharp = numeric_limits<double>::min();
+    m_maximum = numeric_limits<double>::max();
+    m_maximumSharp = numeric_limits<double>::max();
 
     // create controls
     txtLineEdit = new QLineEdit(this);

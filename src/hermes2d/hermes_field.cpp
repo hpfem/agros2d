@@ -32,6 +32,7 @@
 #include "mesh/h2d_reader.h"
 
 bool isPlanar;
+bool isLinear;
 AnalysisType analysisType;
 double frequency;
 double actualTime;
@@ -106,6 +107,26 @@ void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
                 mesh->refine_towards_boundary(i + 1, Util::scene()->edges[i]->refineTowardsEdge);
 }
 
+bool solveLinear(DiscreteProblem *dp,
+                 Hermes::vector<Space *> space,
+                 Hermes::vector<Solution *> solution,
+                 Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly,
+                 ProgressItemSolve *progressItemSolve)
+{
+    dp->assemble(matrix, rhs, rhsOnly);
+
+    if(solver->solve())
+    {
+        Solution::vector_to_solutions(solver->get_solution(), space, solution);
+        return true;
+    }
+    else
+    {
+        progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
+        return false;
+    }
+}
+
 SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0)
 {
     SolutionArray *solution = new SolutionArray();
@@ -136,10 +157,13 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     timeStep = Util::scene()->problemInfo()->timeStep.number;
     isPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
+    isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear);
     analysisType = Util::scene()->problemInfo()->analysisType;
     frequency = Util::scene()->problemInfo()->frequency;
 
-    bool isLinear = true;
+    LinearityType linearityType = Util::scene()->problemInfo()->linearityType;
+    double linearityNonlinearTolerance = Util::scene()->problemInfo()->linearityNonlinearTolerance;
+    int linearityNonlinearSteps = Util::scene()->problemInfo()->linearityNonlinearSteps;
 
     // solution agros array
     QList<SolutionArray *> solutionArrayList;
@@ -160,6 +184,9 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     // prepare selector
     Hermes::vector<RefinementSelectors::Selector *> selector;
+
+    // error marker
+    bool isError = false;
 
     RefinementSelectors::Selector *select = NULL;
     switch (adaptivityType)
@@ -199,234 +226,248 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
         }
     }
 
-    if (analysisType == AnalysisType_Transient)
+    // check for DOFs
+    if (Space::get_num_dofs(space) == 0)
     {
-        for (int i = 0; i < numberOfSolution; i++)
-        {
-            // constant initial solution
-            solution.at(i)->set_const(mesh, initialCondition);
-            solutionArrayList.append(solutionArray(solution.at(i)));
-        }
+        progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
     }
-
-    // initialize the weak formulation
-    WeakForm wf(numberOfSolution);
-    // callback weakform
-    cbWeakForm(&wf, solution);
-
-    // emit message
-    if (adaptivityType != AdaptivityType_None)
-        progressItemSolve->emitMessage(QObject::tr("Adaptivity type: %1").arg(adaptivityTypeString(adaptivityType)), false);
-
-    double error = 0.0;
-
-    // set actual time
-    actualTime = 0;
-
-    // error marker
-    bool isError = false;
-
-    MatrixSolverType matrixSolver = Util::scene()->problemInfo()->matrixSolver;
-
-    // solution
-    int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
-    int actualAdaptivitySteps = -1;
-    for (int i = 0; i<maxAdaptivitySteps; i++)
+    else
     {
-        // set up the solver, matrix, and rhs according to the solver selection.
-        SparseMatrix *matrix = create_matrix(matrixSolver);
-        Vector *rhs = create_vector(matrixSolver);
-        Solver *solver = create_linear_solver(matrixSolver, matrix, rhs);
-
-        if (adaptivityType == AdaptivityType_None)
-        {
-            if (Space::get_num_dofs(space) == 0)
-            {
-                progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
-                isError = true;
-                break;
-            }
-
-            DiscreteProblem dp(&wf, space, isLinear);
-            dp.assemble(matrix, rhs, false);
-
-            if(solver->solve())
-            {
-                Solution::vector_to_solutions(solver->get_solution(), space, solution);
-            }
-            else
-            {
-                isError = true;
-                progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
-            }
-        }
-        else
-        {
-            // reference solution            
-            for (int j = 0; j < numberOfSolution; j++)
-                solutionReference.push_back(new Solution());
-
-            // construct globally refined reference mesh and setup reference space.
-            Hermes::vector<Space *> spaceReference = construct_refined_spaces(space);
-
-            if (Space::get_num_dofs(spaceReference) == 0)
-            {
-                progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
-                isError = true;
-                break;
-            }
-
-            // assemble reference problem.
-            DiscreteProblem dp(&wf, spaceReference, isLinear);
-            dp.assemble(matrix, rhs, false);
-
-            if (solver->solve())
-            {
-                Solution::vector_to_solutions(solver->get_solution(), spaceReference, solutionReference);
-            }
-            else
-            {
-                isError = true;
-                progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
-            }
-
-            if (!isError)
-            {
-                // project the fine mesh solution onto the coarse mesh.
-                OGProjection::project_global(space, solutionReference, solution, matrixSolver);
-
-                // Calculate element errors and total error estimate.
-                Adapt adaptivity(space, projNormType);
-
-                // Calculate error estimate for each solution component and the total error estimate.
-                Hermes::vector<double> err_est_rel;
-                error = adaptivity.calc_err_est(solution,
-                                                solutionReference,
-                                                &err_est_rel) * 100;
-
-                // emit signal
-                progressItemSolve->emitMessage(QObject::tr("Relative error: %1%\t(step: %2/%3, DOFs: %4)").
-                                               arg(error, 0, 'f', 3).
-                                               arg(i + 1).
-                                               arg(maxAdaptivitySteps).
-                                               arg(Space::get_num_dofs(space)), false, 1);
-                // add error to the list
-                progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
-
-                if (error < adaptivityTolerance || Space::get_num_dofs(space) >= NDOF_STOP)
-                {
-                    break;
-                }
-                if (i != maxAdaptivitySteps-1) adaptivity.adapt(selector,
-                                                                Util::config()->threshold,
-                                                                Util::config()->strategy,
-                                                                Util::config()->meshRegularity);
-                actualAdaptivitySteps = i+1;
-            }
-
-            if (progressItemSolve->isCanceled())
-            {
-                isError = true;
-                break;
-            }
-
-            // delete reference space
-            for (int i = 0; i < spaceReference.size(); i++)
-            {
-                delete spaceReference.at(i)->get_mesh();
-                delete spaceReference.at(i);
-            }
-            spaceReference.clear();
-
-            // delete reference solution
-            for (int i = 0; i < solutionReference.size(); i++)
-                delete solutionReference.at(i);
-            solutionReference.clear();
-        }
-
-        // clean up.
-        delete solver;
-        delete matrix;
-        delete rhs;
-    }
-
-    // delete selector
-    if (select) delete select;
-    selector.clear();
-
-    // timesteps
-    if (!isError)
-    {
-        SparseMatrix *matrix = NULL;
-        Vector *rhs = NULL;
-        Solver *solver = NULL;
-
-        // allocate dp for transient solution
-        DiscreteProblem *dp = NULL;
+        // transient
         if (analysisType == AnalysisType_Transient)
         {
-            // set up the solver, matrix, and rhs according to the solver selection.
-            matrix = create_matrix(matrixSolver);
-            rhs = create_vector(matrixSolver);
-            solver = create_linear_solver(matrixSolver, matrix, rhs);
-
-            dp = new DiscreteProblem(&wf, space, isLinear);
+            for (int i = 0; i < numberOfSolution; i++)
+            {
+                // constant initial solution
+                solution.at(i)->set_const(mesh, initialCondition);
+                solutionArrayList.append(solutionArray(solution.at(i)));
+            }
         }
 
-        int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
-        for (int n = 0; n<timesteps; n++)
+        // initialize the weak formulation
+        WeakForm wf(numberOfSolution);
+        // callback weakform
+        cbWeakForm(&wf, solution);
+
+        // emit message
+        if (adaptivityType != AdaptivityType_None)
+            progressItemSolve->emitMessage(QObject::tr("Adaptivity type: %1").arg(adaptivityTypeString(adaptivityType)), false);
+
+        double error = 0.0;
+
+        // set actual time
+        actualTime = 0;
+
+        MatrixSolverType matrixSolver = Util::scene()->problemInfo()->matrixSolver;
+
+        // solution
+        int maxAdaptivitySteps = (adaptivityType == AdaptivityType_None) ? 1 : adaptivitySteps;
+        int actualAdaptivitySteps = -1;
+        for (int i = 0; i<maxAdaptivitySteps; i++)
         {
-            // set actual time
-            actualTime = (n+1)*timeStep;
+            // set up the solver, matrix, and rhs according to the solver selection.
+            SparseMatrix *matrix = create_matrix(matrixSolver);
+            Vector *rhs = create_vector(matrixSolver);
+            Solver *solver = create_linear_solver(matrixSolver, matrix, rhs);
 
-            // transient
-            if (timesteps > 1)
+            if (adaptivityType == AdaptivityType_None)
             {
-                dp->assemble(matrix, rhs, (n > 0));
-
-                if (Space::get_num_dofs(space) == 0)
+                if (linearityType == LinearityType_Linear)
                 {
-                    progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
-                    isError = true;
-                    break;
-                }
-
-                if (solver->solve())
-                {
-                    Solution::vector_to_solutions(solver->get_solution(), space, solution);
+                    DiscreteProblem dp(&wf, space, true);
+                    isError = !solveLinear(&dp, space, solution,
+                                           solver, matrix, rhs, false, progressItemSolve);
                 }
                 else
                 {
+                    // first step - linear solution
+                    for (int i = 0; i < numberOfSolution; i++)
+                        solution.at(i)->set_const(mesh, 0.0);
+
+                    DiscreteProblem dpLin(&wf, space, true);
+                    isError = !solveLinear(&dpLin, space, solution,
+                                           solver, matrix, rhs, false, progressItemSolve);
+
+                    // next steps - Picard
+                    DiscreteProblem dpNonlin(&wf, space, true);
+
+                    // create Picard solution
+                    Hermes::vector<Solution *> solutionPicard;
+                    for (int i = 0; i < numberOfSolution; i++)
+                        solutionPicard.push_back(new Solution());
+
+                    // perform the Picard's iteration
+                    for (int i = 0; i < linearityNonlinearSteps; i++)
+                    {
+                        isError = !solveLinear(&dpNonlin, space, solutionPicard,
+                                               solver, matrix, rhs, false, progressItemSolve);
+
+                        ProjNormType projNormTypeTMP = HERMES_H1_NORM;
+                        // ProjNormType projNormTypeTMP = HERMES_L2_NORM;
+                        // calc error
+                        double error = 0.0;
+                        for (int i = 0; i < numberOfSolution; i++)
+                            error += calc_rel_error(solution.at(i), solutionPicard.at(i), projNormTypeTMP) * 100.0;
+
+                        // emit signal
+                        progressItemSolve->emitMessage(QObject::tr("Picard’s method rel. error: %1%\t(step: %2/%3)").
+                                                       arg(error, 0, 'f', 5).
+                                                       arg(i + 1).
+                                                       arg(linearityNonlinearSteps), false, 1);
+
+                        // add error to the list
+                        progressItemSolve->addNonlinearityError(error);
+
+                        if (error < linearityNonlinearTolerance)
+                        {
+                            // FIXME - clean up
+                            break;
+                        }
+
+                        // copy solution
+                        for (int i = 0; i < numberOfSolution; i++)
+                            solution.at(i)->copy(solutionPicard.at(i));
+                    }
+
+                    for (int i = 0; i < solutionPicard.size(); i++)
+                        delete solutionPicard.at(i);
+                    solutionPicard.clear();
+                }
+            }
+            else
+            {
+                // reference solution
+                for (int j = 0; j < numberOfSolution; j++)
+                    solutionReference.push_back(new Solution());
+
+                // construct globally refined reference mesh and setup reference space.
+                Hermes::vector<Space *> spaceReference = construct_refined_spaces(space);
+
+                // assemble reference problem.
+                DiscreteProblem dpLin(&wf, spaceReference, true);
+                dpLin.assemble(matrix, rhs, false);
+                isError = !solveLinear(&dpLin, spaceReference, solutionReference,
+                                       solver, matrix, rhs, false, progressItemSolve);
+
+                if (!isError)
+                {
+                    // project the fine mesh solution onto the coarse mesh.
+                    OGProjection::project_global(space, solutionReference, solution, matrixSolver);
+
+                    // Calculate element errors and total error estimate.
+                    Adapt adaptivity(space, projNormType);
+
+                    // Calculate error estimate for each solution component and the total error estimate.
+                    Hermes::vector<double> err_est_rel;
+                    error = adaptivity.calc_err_est(solution,
+                                                    solutionReference,
+                                                    &err_est_rel) * 100;
+
+                    // emit signal
+                    progressItemSolve->emitMessage(QObject::tr("Relative error: %1%\t(step: %2/%3, DOFs: %4)").
+                                                   arg(error, 0, 'f', 3).
+                                                   arg(i + 1).
+                                                   arg(maxAdaptivitySteps).
+                                                   arg(Space::get_num_dofs(space)), false, 1);
+                    // add error to the list
+                    progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
+
+                    if (error < adaptivityTolerance || Space::get_num_dofs(space) >= NDOF_STOP)
+                    {
+                        break;
+                    }
+                    if (i != maxAdaptivitySteps-1) adaptivity.adapt(selector,
+                                                                    Util::config()->threshold,
+                                                                    Util::config()->strategy,
+                                                                    Util::config()->meshRegularity);
+                    actualAdaptivitySteps = i+1;
+                }
+
+                if (progressItemSolve->isCanceled())
+                {
                     isError = true;
-                    progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
+                    break;
+                }
+
+                // delete reference space
+                for (int i = 0; i < spaceReference.size(); i++)
+                {
+                    delete spaceReference.at(i)->get_mesh();
+                    delete spaceReference.at(i);
+                }
+                spaceReference.clear();
+
+                // delete reference solution
+                for (int i = 0; i < solutionReference.size(); i++)
+                    delete solutionReference.at(i);
+                solutionReference.clear();
+            }
+
+            // clean up.
+            delete solver;
+            delete matrix;
+            delete rhs;
+        }
+
+        // delete selector
+        if (select) delete select;
+        selector.clear();
+
+        // timesteps
+        if (!isError)
+        {
+            SparseMatrix *matrix = NULL;
+            Vector *rhs = NULL;
+            Solver *solver = NULL;
+
+            // allocate dp for transient solution
+            DiscreteProblem *dp = NULL;
+            if (analysisType == AnalysisType_Transient)
+            {
+                // set up the solver, matrix, and rhs according to the solver selection.
+                matrix = create_matrix(matrixSolver);
+                rhs = create_vector(matrixSolver);
+                solver = create_linear_solver(matrixSolver, matrix, rhs);
+
+                dp = new DiscreteProblem(&wf, space, true);
+            }
+
+            int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
+            for (int n = 0; n<timesteps; n++)
+            {
+                // set actual time
+                actualTime = (n+1)*timeStep;
+
+                // transient
+                if (timesteps > 1)
+                    isError = !solveLinear(dp, space, solution,
+                                           solver, matrix, rhs, (n > 0), progressItemSolve);
+
+                // output
+                for (int i = 0; i < numberOfSolution; i++)
+                {
+                    solutionArrayList.append(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
+                }
+
+                if (analysisType == AnalysisType_Transient)
+                    progressItemSolve->emitMessage(QObject::tr("Transient ime step: %1/%2").
+                                                   arg(n+1).
+                                                   arg(timesteps), false, n+2);
+                if (progressItemSolve->isCanceled())
+                {
+                    isError = true;
+                    break;
                 }
             }
 
-            // output
-            for (int i = 0; i < numberOfSolution; i++)
-            {
-                solutionArrayList.append(solutionArray(solution.at(i), space.at(i), error, actualAdaptivitySteps, (n+1)*timeStep));
-            }
+            // clean up
+            if (solver) delete solver;
+            if (matrix) delete matrix;
+            if (rhs) delete rhs;
 
-            if (analysisType == AnalysisType_Transient)
-                progressItemSolve->emitMessage(QObject::tr("Time step: %1/%2").
-                                               arg(n+1).
-                                               arg(timesteps), false, n+2);
-            if (progressItemSolve->isCanceled())
-            {
-                isError = true;
-                break;
-            }
+            if (dp) delete dp;
         }
-
-        // clean up
-        if (solver) delete solver;
-        if (matrix) delete matrix;
-        if (rhs) delete rhs;
-
-        if (dp) delete dp;
     }
-
     // delete mesh
     delete mesh;
 

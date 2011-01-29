@@ -48,6 +48,7 @@ private:
     QPushButton *btnShowAdaptivityErrorChart;
     QPushButton *btnShowAdaptivityDOFChart;
     QPushButton *btnShowAdaptivityErrorDOFChart;
+    QPushButton *btnShowNonlinearityChart;
     QPushButton *btnSaveData;
     QPushButton *btnSaveImage;
     QPushButton *btnCloseImage;
@@ -62,6 +63,7 @@ private slots:
     void doShowAdaptivityErrorChart();
     void doShowAdaptivityDOFChart();
     void doShowAdaptivityErrorDOFChart();
+    void doShowNonlinearityChart();
     void doSaveData();
     void doSaveImage();
     void doCloseImage();

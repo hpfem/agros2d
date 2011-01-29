@@ -80,6 +80,11 @@ void ProblemInfo::clear()
 
     // matrix solver
     matrixSolver = SOLVER_UMFPACK;
+
+    // linearity
+    linearityType = LinearityType_Linear;
+    linearityNonlinearTolerance = 1e-3;
+    linearityNonlinearSteps = 10;
 }
 
 DxfFilter::DxfFilter(Scene *scene)
@@ -676,8 +681,8 @@ RectPoint Scene::boundingBox()
 {
     logMessage("RectPoint Scene::boundingBox()");
 
-    Point min( CONST_DOUBLE,  CONST_DOUBLE);
-    Point max(-CONST_DOUBLE, -CONST_DOUBLE);
+    Point min( numeric_limits<double>::max(), numeric_limits<double>::max());
+    Point max( numeric_limits<double>::min(), numeric_limits<double>::min());
 
     foreach (SceneNode *node, nodes) {
         if (node->point.x<min.x) min.x = node->point.x;
@@ -1362,6 +1367,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->timeTotal.text = eleProblem.toElement().attribute("timetotal", "1");
     m_problemInfo->initialCondition.text = eleProblem.toElement().attribute("initialcondition", "0");
 
+    // linearity
+    m_problemInfo->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
+                                                                                               linearityTypeToStringKey(LinearityType_Linear)));
+    m_problemInfo->linearityNonlinearSteps = eleProblem.toElement().attribute("linearitysteps", "10").toInt();
+    m_problemInfo->linearityNonlinearTolerance = eleProblem.toElement().attribute("linearitytolerance", "1e-3").toDouble();
+
     // matrix solver
     m_problemInfo->matrixSolver = matrixSolverTypeFromStringKey(eleProblem.toElement().attribute("matrix_solver",
                                                                                                  matrixSolverTypeToStringKey(SOLVER_UMFPACK)));
@@ -1556,6 +1567,10 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text);
     eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text);
     eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text);
+    // linearity
+    eleProblem.setAttribute("linearity", linearityTypeToStringKey(m_problemInfo->linearityType));
+    eleProblem.setAttribute("linearitysteps", m_problemInfo->linearityNonlinearSteps);
+    eleProblem.setAttribute("linearitytolerance", m_problemInfo->linearityNonlinearTolerance);
 
     // matrix solver
     eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(m_problemInfo->matrixSolver));

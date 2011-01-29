@@ -21,6 +21,7 @@
 #define HERMES_FIELD_H
 
 #include "util.h"
+#include "datatable.h"
 #include "hermes2d.h"
 
 #include "scene.h"
@@ -33,6 +34,7 @@
 #include "volumeintegralview.h"
 
 extern bool isPlanar;
+extern bool isLinear;
 extern AnalysisType analysisType;
 extern double frequency;
 extern double actualTime;

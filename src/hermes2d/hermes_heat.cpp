@@ -33,7 +33,7 @@ struct HeatEdge
 
 struct HeatLabel
 {
-    double thermal_conductivity;
+    DataTable thermal_conductivity;
     double volume_heat;
     double density;
     double specific_heat;
@@ -50,10 +50,18 @@ Scalar heat_matrix_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> 
     if (heatEdge[e->edge_marker].type == PhysicFieldBC_Heat_Flux)
         h = heatEdge[e->edge_marker].h;
 
+    Scalar result = 0;
     if (isPlanar)
-        return h * int_u_v<Real, Scalar>(n, wt, u, v);
+    {
+        for (int i = 0; i < n; i++)
+            result += wt[i] * h * (u->val[i] * v->val[i]);
+    }
     else
-        return h * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
+    {
+        for (int i = 0; i < n; i++)
+        result += h * 2 * M_PI * wt[i] * e->x[i] * (u->val[i] * v->val[i]);
+    }
+    return result;
 }
 
 template<typename Real, typename Scalar>
@@ -73,21 +81,44 @@ Scalar heat_vector_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> 
         Text = heatEdge[e->edge_marker].externalTemperature;
     }
 
+    Scalar result = 0;
     if (isPlanar)
-        return (q + Text * h) * int_v<Real, Scalar>(n, wt, v);
+    {
+        for (int i = 0; i < n; i++)
+            result += (q + Text * h) * wt[i] * (v->val[i]);
+    }
     else
-        return (q + Text * h) * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
+    {
+        for (int i = 0; i < n; i++)
+        result += h * (q + Text * h) * 2 * M_PI * wt[i] * e->x[i] * (v->val[i]);
+    }
+    return result;
 }
 
 template<typename Real, typename Scalar>
 Scalar heat_matrix_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
+    Scalar result = 0.0;
     if (isPlanar)
-        return heatLabel[e->elem_marker].thermal_conductivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep : 0.0);
+        for (int i = 0; i < n; i++)
+        {
+            result += ((e->elem_marker == -9119) ? 1.0 : heatLabel[e->elem_marker].thermal_conductivity.value((isLinear) ? 0.0 : ext->fn[0]->val[i]))
+                    * wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
+
+            if (analysisType == AnalysisType_Transient)
+                result += heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * wt[i] * (u->val[i] * v->val[i]) / timeStep;
+        }
     else
-        return heatLabel[e->elem_marker].thermal_conductivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
-                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep : 0.0);
+        for (int i = 0; i < n; i++)
+        {
+            result += ((e->elem_marker == -9119) ? 1.0 : heatLabel[e->elem_marker].thermal_conductivity.value((isLinear) ? 0.0 : ext->fn[0]->val[i]))
+                    * 2 * M_PI * wt[i] * e->x[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
+
+            if (analysisType == AnalysisType_Transient)
+                result += heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * wt[i] * e->x[i] * (u->val[i] * v->val[i]) / timeStep;
+        }
+
+    return result;
 }
 
 template<typename Real, typename Scalar>
@@ -95,19 +126,24 @@ Scalar heat_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, G
 {
     if (isPlanar)
         return heatLabel[e->elem_marker].volume_heat * int_v<Real, Scalar>(n, wt, v)
-        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
+                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
     else
         return heatLabel[e->elem_marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
-        + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
+                + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
 void callbackHeatWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
-    wf->add_matrix_form(0, 0, callback(heat_matrix_form));
+    if (Util::scene()->problemInfo()->linearityType == LinearityType_Linear)
+        wf->add_matrix_form(0, 0, callback(heat_matrix_form));
+    else
+        wf->add_matrix_form(0, 0, callback(heat_matrix_form), HERMES_NONSYM, HERMES_ANY, slnArray.at(0));
+
     if (analysisType == AnalysisType_Transient)
         wf->add_vector_form(0, callback(heat_vector_form), HERMES_ANY, slnArray.at(0));
     else
         wf->add_vector_form(0, callback(heat_vector_form));
+
     wf->add_matrix_form_surf(0, 0, callback(heat_matrix_form_surf));
     wf->add_vector_form_surf(0, callback(heat_vector_form_surf));
 }
@@ -439,34 +475,34 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
             switch (edgeHeatMarker->type)
             {
             case PhysicFieldBC_None:
-                {
-                    bcTypes.add_bc_none(i+1);
-                }
+            {
+                bcTypes.add_bc_none(i+1);
+            }
                 break;
             case PhysicFieldBC_Heat_Temperature:
-                {
-                    // evaluate script
-                    if (!edgeHeatMarker->temperature.evaluate()) return QList<SolutionArray *>();
+            {
+                // evaluate script
+                if (!edgeHeatMarker->temperature.evaluate()) return QList<SolutionArray *>();
 
-                    heatEdge[i+1].temperature = edgeHeatMarker->temperature.number;
+                heatEdge[i+1].temperature = edgeHeatMarker->temperature.number;
 
-                    bcTypes.add_bc_dirichlet(i+1);
-                    bcValues.add_const(i+1, edgeHeatMarker->temperature.number);
-                }
+                bcTypes.add_bc_dirichlet(i+1);
+                bcValues.add_const(i+1, edgeHeatMarker->temperature.number);
+            }
                 break;
             case PhysicFieldBC_Heat_Flux:
-                {
-                    // evaluate script
-                    if (!edgeHeatMarker->heatFlux.evaluate()) return QList<SolutionArray *>();
-                    if (!edgeHeatMarker->h.evaluate()) return QList<SolutionArray *>();
-                    if (!edgeHeatMarker->externalTemperature.evaluate()) return QList<SolutionArray *>();
+            {
+                // evaluate script
+                if (!edgeHeatMarker->heatFlux.evaluate()) return QList<SolutionArray *>();
+                if (!edgeHeatMarker->h.evaluate()) return QList<SolutionArray *>();
+                if (!edgeHeatMarker->externalTemperature.evaluate()) return QList<SolutionArray *>();
 
-                    heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.number;
-                    heatEdge[i+1].h = edgeHeatMarker->h.number;
-                    heatEdge[i+1].externalTemperature = edgeHeatMarker->externalTemperature.number;
+                heatEdge[i+1].heatFlux = edgeHeatMarker->heatFlux.number;
+                heatEdge[i+1].h = edgeHeatMarker->h.number;
+                heatEdge[i+1].externalTemperature = edgeHeatMarker->externalTemperature.number;
 
-                    bcTypes.add_bc_newton(i+1);
-                }
+                bcTypes.add_bc_newton(i+1);
+            }
                 break;
             }
         }
@@ -489,7 +525,17 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
             if (!labelHeatMarker->density.evaluate()) return QList<SolutionArray *>();
             if (!labelHeatMarker->specific_heat.evaluate()) return QList<SolutionArray *>();
 
-            heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;
+            // heatLabel[i].thermal_conductivity.add(0.0, labelHeatMarker->thermal_conductivity.number);
+            if (i == 0)
+            {
+                heatLabel[i].thermal_conductivity.add(0.0, labelHeatMarker->thermal_conductivity.number);
+            }
+            else
+            {
+                double temp_thermal_conductivity[] = { 0, 100, 200, 300, 400, 500, 600, 2000 };
+                double data_thermal_conductivity[] = { 54, 49.4, 46.9, 43.9, 40.2, 37.2, 33.5, 23.0 };
+                heatLabel[i].thermal_conductivity.add(temp_thermal_conductivity, data_thermal_conductivity, 8);
+            }
             heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
             heatLabel[i].density = labelHeatMarker->density.number;
             heatLabel[i].specific_heat = labelHeatMarker->specific_heat.number;
@@ -497,9 +543,9 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
     }
 
     QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Hermes::vector<BCTypes *>(&bcTypes),
-                                                                  Hermes::vector<BCValues *>(&bcValues),
-                                                                  callbackHeatWeakForm);
+                                                                 Hermes::vector<BCTypes *>(&bcTypes),
+                                                                 Hermes::vector<BCValues *>(&bcValues),
+                                                                 callbackHeatWeakForm);
 
     delete [] heatEdge;
     delete [] heatLabel;
@@ -544,46 +590,46 @@ double LocalPointValueHeat::variableValue(PhysicFieldVariable physicFieldVariabl
     switch (physicFieldVariable)
     {
     case PhysicFieldVariable_Heat_Temperature:
-        {
-            return temperature;
-        }
+    {
+        return temperature;
+    }
         break;
     case PhysicFieldVariable_Heat_TemperatureGradient:
+    {
+        switch (physicFieldVariableComp)
         {
-            switch (physicFieldVariableComp)
-            {
-            case PhysicFieldVariableComp_X:
-                return G.x;
-                break;
-            case PhysicFieldVariableComp_Y:
-                return G.y;
-                break;
-            case PhysicFieldVariableComp_Magnitude:
-                return G.magnitude();
-                break;
-            }
+        case PhysicFieldVariableComp_X:
+            return G.x;
+            break;
+        case PhysicFieldVariableComp_Y:
+            return G.y;
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+            return G.magnitude();
+            break;
         }
+    }
         break;
     case PhysicFieldVariable_Heat_Flux:
+    {
+        switch (physicFieldVariableComp)
         {
-            switch (physicFieldVariableComp)
-            {
-            case PhysicFieldVariableComp_X:
-                return F.x;
-                break;
-            case PhysicFieldVariableComp_Y:
-                return F.y;
-                break;
-            case PhysicFieldVariableComp_Magnitude:
-                return F.magnitude();
-                break;
-            }
+        case PhysicFieldVariableComp_X:
+            return F.x;
+            break;
+        case PhysicFieldVariableComp_Y:
+            return F.y;
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+            return F.magnitude();
+            break;
         }
+    }
         break;
     case PhysicFieldVariable_Heat_Conductivity:
-        {
-            return thermal_conductivity;
-        }
+    {
+        return thermal_conductivity;
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueHeat::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
@@ -596,16 +642,16 @@ QStringList LocalPointValueHeat::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
-            QString("%1").arg(point.y, 0, 'e', 5) <<
-            QString("%1").arg(Util::scene()->sceneSolution()->time(), 0, 'e', 5) <<
-            QString("%1").arg(temperature, 0, 'e', 5) <<
-            QString("%1").arg(G.x, 0, 'e', 5) <<
-            QString("%1").arg(G.y, 0, 'e', 5) <<
-            QString("%1").arg(G.magnitude(), 0, 'e', 5) <<
-            QString("%1").arg(F.x, 0, 'e', 5) <<
-            QString("%1").arg(F.y, 0, 'e', 5) <<
-            QString("%1").arg(F.magnitude(), 0, 'e', 5) <<
-            QString("%1").arg(thermal_conductivity, 0, 'f', 3);
+           QString("%1").arg(point.y, 0, 'e', 5) <<
+           QString("%1").arg(Util::scene()->sceneSolution()->time(), 0, 'e', 5) <<
+           QString("%1").arg(temperature, 0, 'e', 5) <<
+           QString("%1").arg(G.x, 0, 'e', 5) <<
+           QString("%1").arg(G.y, 0, 'e', 5) <<
+           QString("%1").arg(G.magnitude(), 0, 'e', 5) <<
+           QString("%1").arg(F.x, 0, 'e', 5) <<
+           QString("%1").arg(F.y, 0, 'e', 5) <<
+           QString("%1").arg(F.magnitude(), 0, 'e', 5) <<
+           QString("%1").arg(thermal_conductivity, 0, 'f', 3);
 
     return QStringList(row);
 }
@@ -655,10 +701,10 @@ QStringList SurfaceIntegralValueHeat::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
-            QString("%1").arg(surface, 0, 'e', 5) <<
-            QString("%1").arg(averageTemperature, 0, 'e', 5) <<
-            QString("%1").arg(temperatureDifference, 0, 'e', 5) <<
-            QString("%1").arg(heatFlux, 0, 'e', 5);
+           QString("%1").arg(surface, 0, 'e', 5) <<
+           QString("%1").arg(averageTemperature, 0, 'e', 5) <<
+           QString("%1").arg(temperatureDifference, 0, 'e', 5) <<
+           QString("%1").arg(heatFlux, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -702,8 +748,8 @@ QStringList VolumeIntegralValueHeat::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-            QString("%1").arg(crossSection, 0, 'e', 5) <<
-            QString("%1").arg(averageTemperature, 0, 'e', 5);
+           QString("%1").arg(crossSection, 0, 'e', 5) <<
+           QString("%1").arg(averageTemperature, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -714,60 +760,60 @@ void ViewScalarFilterHeat::calculateVariable(int i)
     switch (m_physicFieldVariable)
     {
     case PhysicFieldVariable_Heat_Temperature:
-        {
-            node->values[0][0][i] = value1[i];
-        }
+    {
+        node->values[0][0][i] = value1[i];
+    }
         break;
     case PhysicFieldVariable_Heat_TemperatureGradient:
+    {
+        switch (m_physicFieldVariableComp)
         {
-            switch (m_physicFieldVariableComp)
-            {
-            case PhysicFieldVariableComp_X:
-                {
-                    node->values[0][0][i] = - dudx1[i];
-                }
-                break;
-            case PhysicFieldVariableComp_Y:
-                {
-                    node->values[0][0][i] = - dudy1[i];
-                }
-                break;
-            case PhysicFieldVariableComp_Magnitude:
-                {
-                    node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
-                }
-                break;
-            }
+        case PhysicFieldVariableComp_X:
+        {
+            node->values[0][0][i] = - dudx1[i];
         }
+            break;
+        case PhysicFieldVariableComp_Y:
+        {
+            node->values[0][0][i] = - dudy1[i];
+        }
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+        {
+            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+        }
+            break;
+        }
+    }
         break;
     case PhysicFieldVariable_Heat_Flux:
+    {
+        SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
+        switch (m_physicFieldVariableComp)
         {
-            SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
-            switch (m_physicFieldVariableComp)
-            {
-            case PhysicFieldVariableComp_X:
-                {
-                    node->values[0][0][i] = - marker->thermal_conductivity.number * dudx1[i];
-                }
-                break;
-            case PhysicFieldVariableComp_Y:
-                {
-                    node->values[0][0][i] = - marker->thermal_conductivity.number * dudy1[i];
-                }
-                break;
-            case PhysicFieldVariableComp_Magnitude:
-                {
-                    node->values[0][0][i] =  marker->thermal_conductivity.number * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
-                }
-                break;
-            }
+        case PhysicFieldVariableComp_X:
+        {
+            node->values[0][0][i] = - marker->thermal_conductivity.number * dudx1[i];
         }
+            break;
+        case PhysicFieldVariableComp_Y:
+        {
+            node->values[0][0][i] = - marker->thermal_conductivity.number * dudy1[i];
+        }
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+        {
+            node->values[0][0][i] =  marker->thermal_conductivity.number * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+        }
+            break;
+        }
+    }
         break;
     case PhysicFieldVariable_Heat_Conductivity:
-        {
-            SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
-            node->values[0][0][i] = marker->thermal_conductivity.number;
-        }
+    {
+        SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
+        node->values[0][0][i] = marker->thermal_conductivity.number;
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterHeat::calculateVariable()" << endl;
@@ -933,16 +979,16 @@ void DSceneEdgeHeatMarker::load()
     switch (edgeHeatMarker->type)
     {
     case PhysicFieldBC_Heat_Temperature:
-        {
-            txtTemperature->setValue(edgeHeatMarker->temperature);
-        }
+    {
+        txtTemperature->setValue(edgeHeatMarker->temperature);
+    }
         break;
     case PhysicFieldBC_Heat_Flux:
-        {
-            txtHeatFlux->setValue(edgeHeatMarker->heatFlux);
-            txtHeatTransferCoefficient->setValue(edgeHeatMarker->h);
-            txtExternalTemperature->setValue(edgeHeatMarker->externalTemperature);
-        }
+    {
+        txtHeatFlux->setValue(edgeHeatMarker->heatFlux);
+        txtHeatTransferCoefficient->setValue(edgeHeatMarker->h);
+        txtExternalTemperature->setValue(edgeHeatMarker->externalTemperature);
+    }
         break;
     }
 }
@@ -956,28 +1002,28 @@ bool DSceneEdgeHeatMarker::save() {
     switch (edgeHeatMarker->type)
     {
     case PhysicFieldBC_Heat_Temperature:
-        {
-            if (txtTemperature->evaluate())
-                edgeHeatMarker->temperature  = txtTemperature->value();
-            else
-                return false;
-        }
+    {
+        if (txtTemperature->evaluate())
+            edgeHeatMarker->temperature  = txtTemperature->value();
+        else
+            return false;
+    }
         break;
     case PhysicFieldBC_Heat_Flux:
-        {
-            if (txtHeatFlux->evaluate())
-                edgeHeatMarker->heatFlux  = txtHeatFlux->value();
-            else
-                return false;
-            if (txtHeatTransferCoefficient->evaluate())
-                edgeHeatMarker->h  = txtHeatTransferCoefficient->value();
-            else
-                return false;
-            if (txtExternalTemperature->evaluate())
-                edgeHeatMarker->externalTemperature  = txtExternalTemperature->value();
-            else
-                return false;
-        }
+    {
+        if (txtHeatFlux->evaluate())
+            edgeHeatMarker->heatFlux  = txtHeatFlux->value();
+        else
+            return false;
+        if (txtHeatTransferCoefficient->evaluate())
+            edgeHeatMarker->h  = txtHeatTransferCoefficient->value();
+        else
+            return false;
+        if (txtExternalTemperature->evaluate())
+            edgeHeatMarker->externalTemperature  = txtExternalTemperature->value();
+        else
+            return false;
+    }
         break;
     }
 
@@ -994,16 +1040,16 @@ void DSceneEdgeHeatMarker::doTypeChanged(int index)
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
     case PhysicFieldBC_Heat_Temperature:
-        {
-            txtTemperature->setEnabled(true);
-        }
+    {
+        txtTemperature->setEnabled(true);
+    }
         break;
     case PhysicFieldBC_Heat_Flux:
-        {
-            txtHeatFlux->setEnabled(true);
-            txtHeatTransferCoefficient->setEnabled(true);
-            txtExternalTemperature->setEnabled(true);
-        }
+    {
+        txtHeatFlux->setEnabled(true);
+        txtHeatTransferCoefficient->setEnabled(true);
+        txtExternalTemperature->setEnabled(true);
+    }
         break;
     }
 }

@@ -124,6 +124,11 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEditDouble(1);
     cmbMatrixSolver = new QComboBox();
+    cmbLinearityType = new QComboBox();
+    txtLinearityNonlinearitySteps = new QSpinBox(this);
+    txtLinearityNonlinearitySteps->setMinimum(1);
+    txtLinearityNonlinearitySteps->setMaximum(100);
+    txtLinearityNonlinearityTolerance = new SLineEditDouble(1);
 
     // harmonic
     txtFrequency = new SLineEditDouble();
@@ -141,6 +146,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     connect(cmbPhysicField, SIGNAL(currentIndexChanged(int)), this, SLOT(doPhysicFieldChanged(int)));
     connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
+    connect(cmbLinearityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doLinearityTypeChanged(int)));
     fillComboBox();
 
     QGridLayout *layoutProblemTable = new QGridLayout();
@@ -165,20 +171,26 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutProblemTable->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
     layoutProblemTable->addWidget(txtAdaptivityTolerance, 9, 1);
     // right    
-    layoutProblemTable->addWidget(new QLabel(tr("Linear solver:")), 2, 2);
-    layoutProblemTable->addWidget(cmbMatrixSolver, 2, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
-    layoutProblemTable->addWidget(cmbAnalysisType, 3, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 4, 2);
-    layoutProblemTable->addWidget(txtFrequency, 4, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Time step (s):")), 5, 2);
-    layoutProblemTable->addWidget(txtTransientTimeStep, 5, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Total time (s):")), 6, 2);
-    layoutProblemTable->addWidget(txtTransientTimeTotal, 6, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Initial condition:")), 7, 2);
-    layoutProblemTable->addWidget(txtTransientInitialCondition, 7, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Steps:")), 8, 2);
-    layoutProblemTable->addWidget(lblTransientSteps, 8, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Linearity:")), 2, 2);
+    layoutProblemTable->addWidget(cmbLinearityType, 2, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Nonlin. tolereance:")), 3, 2);
+    layoutProblemTable->addWidget(txtLinearityNonlinearityTolerance, 3, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Nonlin. steps:")), 4, 2);
+    layoutProblemTable->addWidget(txtLinearityNonlinearitySteps, 4, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Linear solver:")), 5, 2);
+    layoutProblemTable->addWidget(cmbMatrixSolver, 5, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 6, 2);
+    layoutProblemTable->addWidget(cmbAnalysisType, 6, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 7, 2);
+    layoutProblemTable->addWidget(txtFrequency, 7, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Time step (s):")), 8, 2);
+    layoutProblemTable->addWidget(txtTransientTimeStep, 8, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Total time (s):")), 9, 2);
+    layoutProblemTable->addWidget(txtTransientTimeTotal, 9, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Initial condition:")), 10, 2);
+    layoutProblemTable->addWidget(txtTransientInitialCondition, 10, 3);
+    layoutProblemTable->addWidget(new QLabel(tr("Steps:")), 11, 2);
+    layoutProblemTable->addWidget(lblTransientSteps, 11, 3);
 
     // equation
     QHBoxLayout *layoutEquation = new QHBoxLayout();
@@ -254,6 +266,8 @@ void ProblemDialog::fillComboBox()
 #ifdef WITH_SUPERLU
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_SUPERLU), SOLVER_SUPERLU);
 #endif
+    cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
+    cmbLinearityType->addItem(linearityTypeString(LinearityType_Nonlinear), LinearityType_Nonlinear);
 }
 
 void ProblemDialog::load()
@@ -277,6 +291,10 @@ void ProblemDialog::load()
     txtTransientTimeStep->setValue(m_problemInfo->timeStep);
     txtTransientTimeTotal->setValue(m_problemInfo->timeTotal);
     txtTransientInitialCondition->setValue(m_problemInfo->initialCondition);
+
+    cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_problemInfo->linearityType));
+    txtLinearityNonlinearitySteps->setValue(m_problemInfo->linearityNonlinearSteps);
+    txtLinearityNonlinearityTolerance->setValue(m_problemInfo->linearityNonlinearTolerance);
 
     // matrix solver
     cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_problemInfo->matrixSolver));
@@ -389,6 +407,10 @@ bool ProblemDialog::save()
     m_problemInfo->description = txtDescription->toPlainText();
     m_problemInfo->scriptStartup = txtStartupScript->toPlainText();
 
+    m_problemInfo->linearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
+    m_problemInfo->linearityNonlinearSteps = txtLinearityNonlinearitySteps->value();
+    m_problemInfo->linearityNonlinearTolerance = txtLinearityNonlinearityTolerance->value();
+
     // matrix solver
     m_problemInfo->matrixSolver = (MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt();
 
@@ -436,6 +458,14 @@ void ProblemDialog::doAdaptivityChanged(int index)
 
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+}
+
+void ProblemDialog::doLinearityTypeChanged(int index)
+{
+    logMessage("ProblemDialog::doLinearityTypeChanged()");
+
+    txtLinearityNonlinearitySteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    txtLinearityNonlinearityTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 }
 
 void ProblemDialog::doAnalysisTypeChanged(int index)

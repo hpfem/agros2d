@@ -74,8 +74,8 @@ void SceneViewSettings::defaultValues()
 {
     logMessage("SceneViewSettings::defaultValues()");
 
-    scalarRangeMin =  CONST_DOUBLE;
-    scalarRangeMax = -CONST_DOUBLE;
+    scalarRangeMin = numeric_limits<double>::max();
+    scalarRangeMax = numeric_limits<double>::min();
 
     // visible objects
     showGeometry = true;
@@ -1907,8 +1907,8 @@ void SceneView::paintContours()
         int3* tris = m_scene->sceneSolution()->linContourView().get_triangles();
 
         // transform variable
-        double rangeMin =  CONST_DOUBLE;
-        double rangeMax = -CONST_DOUBLE;
+        double rangeMin = numeric_limits<double>::max();
+        double rangeMax = numeric_limits<double>::min();
 
         double3* vert = new double3[m_scene->sceneSolution()->linContourView().get_num_vertices()];
         for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_vertices(); i++)
@@ -3642,7 +3642,7 @@ SceneNode *SceneView::findClosestNode(const Point &point)
 
     SceneNode *nodeClosest = NULL;
 
-    double distance = CONST_DOUBLE;
+    double distance = numeric_limits<double>::max();
     foreach (SceneNode *node, m_scene->nodes)
     {
         double nodeDistance = node->distance(point);
@@ -3662,7 +3662,7 @@ SceneEdge *SceneView::findClosestEdge(const Point &point)
 
     SceneEdge *edgeClosest = NULL;
 
-    double distance = CONST_DOUBLE;
+    double distance = numeric_limits<double>::max();
     foreach (SceneEdge *edge, m_scene->edges)
     {
         double edgeDistance = edge->distance(point);
@@ -3682,7 +3682,7 @@ SceneLabel *SceneView::findClosestLabel(const Point &point)
 
     SceneLabel *labelClosest = NULL;
 
-    double distance = CONST_DOUBLE;
+    double distance = numeric_limits<double>::max();
     foreach (SceneLabel *label, m_scene->labels)
     {
         double labelDistance = label->distance(point);

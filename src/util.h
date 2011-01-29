@@ -41,11 +41,11 @@
 #include <stdlib.h>
 #include <common.h>
 
-#define EPS_ZERO 1e-10
-#define EPS0 8.854e-12
-#define MU0 4*M_PI*1e-7
-#define NDOF_STOP 40000
-#define CONST_DOUBLE 1e100
+const double EPS_ZERO = 1e-10;
+const double EPS0 = 8.854e-12;
+const double MU0 = 4*M_PI*1e-7;
+const double SIGMA = 5.6704e-8;
+const double NDOF_STOP = 40000;
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
 #define rad2deg(radians) (radians*180.0/M_PI)
@@ -371,6 +371,13 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
+enum LinearityType
+{
+    LinearityType_Undefined,
+    LinearityType_Linear,
+    LinearityType_Nonlinear
+};
+
 enum PhysicFieldVariableComp
 {
     PhysicFieldVariableComp_Undefined,
@@ -595,6 +602,7 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);
+QString linearityTypeString(LinearityType linearityType);
 QString matrixSolverTypeString(MatrixSolverType matrixSolverType);
 
 inline QString errorNormString(ProjNormType projNormType)
@@ -643,6 +651,9 @@ SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString
 
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+
+QString linearityTypeToStringKey(LinearityType linearityType);
+LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
 QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType);
 MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
