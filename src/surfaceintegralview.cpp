@@ -18,7 +18,11 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "surfaceintegralview.h"
+
+#include "gui.h"
 #include "scene.h"
+
+#include "hermes2d.h"
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {

@@ -27,7 +27,7 @@ struct HermesFlow : public HermesField
 {
     Q_OBJECT
 public:
-    HermesFlow() { physicField = PhysicField_Flow; }
+    HermesFlow() { m_physicField = PhysicField_Flow; }
 
     inline int numberOfSolution() { return 3; }
     bool hasHarmonic() { return false; }

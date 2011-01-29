@@ -21,10 +21,9 @@
 #define SCENEBASIC_H
 
 #include "util.h"
-#include "gui.h"
-#include "scenemarker.h"
 
 class SLineEditDouble;
+class SLineEditValue;
 
 struct Point;
 

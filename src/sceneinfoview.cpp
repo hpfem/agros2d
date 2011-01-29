@@ -18,6 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "sceneinfoview.h"
+
+#include "scene.h"
+#include "sceneview.h"
 #include "scripteditordialog.h"
 
 SceneInfoView::SceneInfoView(SceneView *sceneView, QWidget *parent): QDockWidget(tr("Problem"), parent)
@@ -80,10 +83,6 @@ void SceneInfoView::createMenu()
     mnuInfo->addAction(Util::scene()->actNewEdgeMarker);
     mnuInfo->addAction(Util::scene()->actNewLabelMarker);
     mnuInfo->addSeparator();
-    #ifdef BETA
-    mnuInfo->addAction(Util::scene()->actNewFunction);
-    mnuInfo->addSeparator();
-    #endif
     mnuInfo->addAction(actDelete);
     mnuInfo->addSeparator();
     mnuInfo->addAction(actProperties);
@@ -276,18 +275,6 @@ void SceneInfoView::doInvalidated()
         listMaterials.append(item);
     }
     materialsNode->addChildren(listMaterials);
-
-    #ifdef BETA
-    // functions
-    for (int i = 0; i<Util::scene()->functions.count(); i++)
-    {
-        QTreeWidgetItem *item = new QTreeWidgetItem(functionsNode);
-
-        item->setText(0, Util::scene()->functions[i]->name);
-        item->setIcon(0, icon("scene-function"));
-        item->setData(0, Qt::UserRole, Util::scene()->functions[i]->variant());
-    }
-    #endif
 
     // geometry
     // nodes
@@ -491,13 +478,6 @@ void SceneInfoView::doItemSelected(QTreeWidgetItem *item, int role)
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
         }
-
-        // function
-        if (SceneFunction *objectFunction = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneFunction *>())
-        {
-            actProperties->setEnabled(true);
-            actDelete->setEnabled(true);
-        }
     }
 }
 
@@ -542,16 +522,6 @@ void SceneInfoView::doProperties()
                 doInvalidated();
             }
         }
-
-        // function
-        if (SceneFunction *objectFunction = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneFunction *>())
-        {
-            if (objectFunction->showDialog(this) == QDialog::Accepted)
-            {
-                m_sceneView->refresh();
-                doInvalidated();
-            }
-        }
     }
 }
 
@@ -589,12 +559,6 @@ void SceneInfoView::doDelete()
         if (SceneLabelMarker *objectLabelMarker = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneLabelMarker *>())
         {
             Util::scene()->removeLabelMarker(objectLabelMarker);
-        }
-
-        // function
-        if (SceneFunction *objectFunction = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneFunction *>())
-        {
-            Util::scene()->removeFunction(objectFunction);
         }
 
         m_sceneView->refresh();

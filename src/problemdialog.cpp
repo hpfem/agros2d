@@ -19,6 +19,10 @@
 
 #include "problemdialog.h"
 
+#include "gui.h"
+#include "scene.h"
+#include "scripteditordialog.h"
+
 ProblemDialog::ProblemDialog(ProblemInfo *problemInfo, bool isNewProblem, QWidget *parent) : QDialog(parent)
 {
     logMessage("ProblemDialog::ProblemDialog()");

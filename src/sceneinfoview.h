@@ -20,8 +20,9 @@
 #ifndef SCENEINFOVIEW_H
 #define SCENEINFOVIEW_H
 
-#include "scene.h"
-#include "sceneview.h"
+#include "util.h"
+
+class SceneView;
 
 class SceneInfoView : public QDockWidget
 {

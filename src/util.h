@@ -24,6 +24,8 @@
 #include <QtGui>
 #include <QFont>
 #include <QtNetwork>
+#include <QWebView>
+#include <QDomDocument>
 
 #include <QtHelp/QHelpEngine>
 
@@ -31,10 +33,12 @@
 
 #include <typeinfo>
 #include <iostream>
-#include <stdlib.h>
 #include <cmath>
-#include <locale.h>
+#include <limits>
+#include <vector>
 
+#include <locale.h>
+#include <stdlib.h>
 #include <common.h>
 
 #define EPS_ZERO 1e-10

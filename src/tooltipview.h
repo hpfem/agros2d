@@ -22,8 +22,6 @@
 
 #include "util.h"
 
-#include <QWebView>
-
 class TooltipView : public QDockWidget
 {
     Q_OBJECT

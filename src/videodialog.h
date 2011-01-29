@@ -21,8 +21,10 @@
 #define VIDEODIALOG_H
 
 #include "util.h"
-#include "gui.h"
-#include "sceneview.h"
+
+class SLineEditDouble;
+
+class SceneView;
 
 class VideoDialog : public QDialog
 {

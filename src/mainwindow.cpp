@@ -19,6 +19,23 @@
 
 #include "mainwindow.h"
 
+#include "gui.h"
+
+#include "scene.h"
+#include "scenebasic.h"
+#include "sceneview.h"
+#include "sceneinfoview.h"
+#include "terminalview.h"
+#include "tooltipview.h"
+#include "chartdialog.h"
+#include "configdialog.h"
+#include "scripteditordialog.h"
+#include "reportdialog.h"
+#include "videodialog.h"
+#include "logdialog.h"
+#include "helpdialog.h"
+#include "problemdialog.h"
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     logMessage("MainWindow::MainWindow()");

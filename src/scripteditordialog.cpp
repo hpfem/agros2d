@@ -18,7 +18,19 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scripteditordialog.h"
+
+#include <QCompleter>
+
+#include "scene.h"
+#include "sceneview.h"
+#include "scenemarker.h"
+#include "scripteditorhighlighter.h"
+#include "terminalview.h"
+
 #include "scripteditorcommandpython.h"
+#include "helpdialog.h"
+
+#include "gui.h"
 
 static PythonEngine *pythonEngine = NULL;
 

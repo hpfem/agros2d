@@ -20,13 +20,7 @@
 #ifndef SCRIPTEDITORDIALOG_H
 #define SCRIPTEDITORDIALOG_H
 
-#include <QCompleter>
-
-#include "scene.h"
-#include "sceneview.h"
-#include "scenemarker.h"
-#include "scripteditorhighlighter.h"
-#include "terminalview.h"
+#include "util.h"
 
 class PythonEngine;
 
@@ -40,6 +34,9 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 
+class ScriptResult;
+class ExpressionResult;
+
 void createScriptEngine();
 PythonEngine *currentPythonEngine();
 void connectTerminal(Terminal *terminal);
@@ -49,7 +46,6 @@ bool scriptIsRunning();
 QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
 ExpressionResult runPythonExpression(const QString &expression);
-
 
 class ScriptEngineRemote : QObject
 {

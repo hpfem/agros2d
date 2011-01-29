@@ -19,6 +19,10 @@
 
 #include "scenebasicselectdialog.h"
 
+#include "gui.h"
+#include "scene.h"
+#include "sceneview.h"
+
 SceneBasicSelectDialog::SceneBasicSelectDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
     logMessage("SceneBasicSelectDialog::SceneBasicSelectDialog()");

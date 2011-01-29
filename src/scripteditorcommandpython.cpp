@@ -24,6 +24,7 @@
 
 #include "util.h"
 #include "scene.h"
+#include "sceneview.h"
 #include "scenemarker.h"
 #include "scripteditordialog.h"
 

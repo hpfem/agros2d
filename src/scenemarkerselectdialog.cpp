@@ -19,6 +19,10 @@
 
 #include "scenemarkerselectdialog.h"
 
+#include "gui.h"
+#include "scene.h"
+#include "sceneview.h"
+
 SceneMarkerSelectDialog::SceneMarkerSelectDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
     logMessage("SceneMarkerSelectDialog::SceneMarkerSelectDialog()");

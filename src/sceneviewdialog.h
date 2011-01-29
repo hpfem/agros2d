@@ -21,7 +21,6 @@
 #define SCENEVIEWDIALOG_H
 
 #include "util.h"
-#include "sceneview.h"
 
 class SceneView;
 

@@ -19,6 +19,9 @@
 
 #include "localvalueview.h"
 #include "scene.h"
+#include "gui.h"
+#include "scenemarker.h"
+#include "hermes2d.h"
 
 LocalPointValue::LocalPointValue(Point &point)
 {

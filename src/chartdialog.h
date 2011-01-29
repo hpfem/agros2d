@@ -20,12 +20,13 @@
 #ifndef CHARTDIALOG_H
 #define CHARTDIALOG_H
 
-#include "scene.h"
 #include "util.h"
-#include "gui.h"
-#include "localvalueview.h"
 
 class Chart;
+class SLineEditDouble;
+class SLineEditValue;
+
+class QwtPlotPicker;
 
 class ChartDialog : public QDialog
 {

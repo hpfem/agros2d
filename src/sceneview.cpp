@@ -17,16 +17,22 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "sceneview_data.h"
 #include "sceneview.h"
+#include "sceneview_data.h"
+
+#include "scene.h"
+#include "scenemarkerselectdialog.h"
+#include "scenebasicselectdialog.h"
+
+#include "sceneviewdialog.h"
+#include "scenebasic.h"
+#include "progressdialog.h"
 
 // scene view
 static SceneView *m_sceneView = NULL;;
 
 SceneView *sceneView()
 {
-    logMessage("sceneView::()");
-
     return m_sceneView;
 }
 

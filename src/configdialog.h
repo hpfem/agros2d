@@ -20,15 +20,14 @@
 #ifndef OPTIONSDIALOG_H
 #define OPTIONSDIALOG_H
 
-#include <QFontDialog>
-
 #include "util.h"
-#include "scene.h"
-#include "sceneview.h"
-
-class ColorButton;
 
 struct SceneViewSettings;
+class ScriptEditor;
+
+class ColorButton;
+class SLineEditDouble;
+class SLineEditValue;
 
 class ConfigDialog : public QDialog
 {

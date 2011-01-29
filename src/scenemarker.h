@@ -21,7 +21,6 @@
 #define SCENEMARKER_H
 
 #include "util.h"
-#include "gui.h"
 
 class SLineEditDouble;
 class SLineEditValue;

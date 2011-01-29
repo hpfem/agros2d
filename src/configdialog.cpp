@@ -19,6 +19,12 @@
 
 #include "configdialog.h"
 
+#include "gui.h"
+
+#include "scene.h"
+#include "sceneview.h"
+#include "scripteditordialog.h"
+
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("ConfigDialog::ConfigDialog()");

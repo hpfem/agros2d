@@ -21,7 +21,8 @@
 #define TERMINALVIEW_H
 
 #include "util.h"
-#include "scripteditordialog.h"
+
+class TerminalLineEdit;
 
 class TerminalLineEdit : public QLineEdit
 {

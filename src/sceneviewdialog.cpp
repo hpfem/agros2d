@@ -19,6 +19,11 @@
 
 #include "sceneviewdialog.h"
 
+#include "gui.h"
+
+#include "scene.h"
+#include "sceneview.h"
+
 SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
 {
     logMessage("SceneViewDialog::SceneViewDialog()");

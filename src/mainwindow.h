@@ -21,18 +21,21 @@
 #define MAINWINDOW_H
 
 #include "util.h"
-#include "scene.h"
-#include "scenebasic.h"
-#include "sceneview.h"
-#include "sceneinfoview.h"
-#include "terminalview.h"
-#include "tooltipview.h"
-#include "chartdialog.h"
-#include "configdialog.h"
-#include "scripteditordialog.h"
-#include "reportdialog.h"
-#include "videodialog.h"
-#include "logdialog.h"
+
+class SceneView;
+class SceneInfoView;
+class LocalPointValueView;
+class VolumeIntegralValueView;
+class SurfaceIntegralValueView;
+class TerminalView;
+class TooltipView;
+
+class HelpDialog;
+class ChartDialog;
+class ScriptEditorDialog;
+class ReportDialog;
+class VideoDialog;
+class LogDialog;
 
 class MainWindow : public QMainWindow
 {

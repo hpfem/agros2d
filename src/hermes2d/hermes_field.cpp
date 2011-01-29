@@ -27,7 +27,8 @@
 #include "hermes_elasticity.h"
 #include "hermes_flow.h"
 
-#include "scene.h"
+#include "progressdialog.h"
+
 #include "mesh/h2d_reader.h"
 
 bool isPlanar;

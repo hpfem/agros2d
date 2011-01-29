@@ -27,7 +27,7 @@ struct HermesCurrent : public HermesField
 {
     Q_OBJECT
 public:
-    HermesCurrent() { physicField = PhysicField_Current; }
+    HermesCurrent() { m_physicField = PhysicField_Current; }
 
     inline int numberOfSolution() { return 1; }
     bool hasHarmonic() { return false; }

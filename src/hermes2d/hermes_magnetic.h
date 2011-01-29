@@ -27,7 +27,7 @@ struct HermesMagnetic : public HermesField
 {
     Q_OBJECT
 public:
-    HermesMagnetic() { physicField = PhysicField_Magnetic; }
+    HermesMagnetic() { m_physicField = PhysicField_Magnetic; }
 
     int numberOfSolution();
     bool hasHarmonic() { return true; }

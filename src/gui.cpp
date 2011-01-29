@@ -18,7 +18,12 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "gui.h"
+
 #include "scene.h"
+#include "scenesolution.h"
+#include "progressdialog.h"
+
+#include "hermes2d/hermes_field.h"
 
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit)
 {

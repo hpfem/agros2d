@@ -19,6 +19,11 @@
 
 #include "scenesolution.h"
 
+#include "scene.h"
+#include "scenemarker.h"
+#include "sceneview.h"
+#include "progressdialog.h"
+
 SceneSolution::SceneSolution()
 {
     logMessage("SceneSolution::SceneSolution()");

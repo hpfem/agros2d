@@ -19,6 +19,9 @@
 
 #include "terminalview.h"
 
+#include "scene.h"
+#include "scripteditordialog.h"
+
 TerminalLineEdit::TerminalLineEdit(QWidget *parent) : QLineEdit(parent)
 {
     logMessage("TerminalLineEdit::TerminalLineEdit()");

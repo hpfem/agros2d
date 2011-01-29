@@ -22,8 +22,6 @@
 
 #include "util.h"
 #include "hermes2d.h"
-#include "scene.h"
-#include "scenemarker.h"
 
 class Scene;
 class SceneLabelMarker;
@@ -31,12 +29,6 @@ class SceneLabelMarker;
 class ViewScalarFilter;
 
 struct SolutionArray;
-
-class Solution;
-class Linearizer;
-class Vectorizer;
-class Orderizer;
-class Mesh;
 
 class SceneSolution : public QObject
 {

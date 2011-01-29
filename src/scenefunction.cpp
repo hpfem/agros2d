@@ -18,6 +18,8 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scenefunction.h"
+
+#include "gui.h"
 #include "scripteditordialog.h"
 
 SceneFunction::SceneFunction(const QString &name, const QString &function, Value start, Value end)

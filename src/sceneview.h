@@ -23,13 +23,9 @@
 #include <QGLWidget>
 
 #include "util.h"
-#include "scene.h"
-
-#include "sceneviewdialog.h"
-#include "scenebasic.h"
-#include "progressdialog.h"
 
 class Scene;
+class SceneView;
 
 class SceneNode;
 class SceneEdge;

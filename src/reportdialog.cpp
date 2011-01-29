@@ -18,7 +18,11 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "reportdialog.h"
+
+#include "gui.h"
+
 #include "scene.h"
+#include "sceneview.h"
 #include "scripteditordialog.h"
 
 ReportDialog::ReportDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)

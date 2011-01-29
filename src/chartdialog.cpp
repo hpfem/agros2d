@@ -19,6 +19,10 @@
 
 #include "chartdialog.h"
 
+#include "gui.h"
+#include "scene.h"
+#include "localvalueview.h"
+
 ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("ChartDialog::ChartDialog()");
