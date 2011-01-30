@@ -21,34 +21,33 @@
 #define SCENEFUNCTION_H
 
 #include "util.h"
+#include "datatable.h"
 
 class SLineEdit;
-class SLineEditValue;
+class SLineEditDouble;
 class SLineEditValue;
 
 struct Point;
 class Chart;
-class SceneFunction;
+class DataFunction;
 
-Q_DECLARE_METATYPE(SceneFunction *);
+Q_DECLARE_METATYPE(DataFunction *);
 
-class SceneFunction
+class DataFunction
 {
 public:
-    QString name;
     QString function;
-    Value start;
-    Value end;
+    double start;
+    double end;
 
-    SceneFunction(const QString &name, const QString &function, Value start, Value end);
-    ~SceneFunction();
+    DataFunction(const QString &function = "array([0, 1], [0, 1])", double start = 0.0, double end = 0.0);
+    ~DataFunction();
 
     int showDialog(QWidget *parent);
 
     double evaluate(double number, bool fromTable = false) throw (const QString &);
     bool evaluateValues() throw (const QString &);
 
-    QString script();
     QVariant variant();
 
     inline int count() { return m_count; }
@@ -64,24 +63,27 @@ private:
 
 // ************************************************************************************************************************
 
-class DSceneFunction: public QDialog
+class DDataFunction: public QDialog
 {
     Q_OBJECT
 
 public:
-    SceneFunction *m_sceneFunction;
+    DataFunction *m_sceneFunction;
 
-    DSceneFunction(SceneFunction *sceneFunction, QWidget *parent = 0);
-    ~DSceneFunction();
+    DDataFunction(DataFunction *sceneFunction, QWidget *parent = 0);
 
 private:
     Chart *chart;
 
-    QLineEdit *txtName;
     QLineEdit *txtFunction;
     QLabel *lblError;
-    SLineEditValue *txtStart;
-    SLineEditValue *txtEnd;
+    SLineEditDouble *txtStart;
+    SLineEditDouble *txtEnd;
+
+    QPushButton *btnOk;
+    QPushButton *btnClose;
+    QPushButton *btnPlot;
+    QPushButton *btnSaveImage;
 
     void createControls();
     void load();
@@ -93,6 +95,44 @@ private slots:
 
     void doSaveImage();
     void doPlot();
+};
+
+
+// ************************************************************************************************************************
+
+class DataTableDialog: public QDialog
+{
+    Q_OBJECT
+
+public:
+    DataTableDialog(QWidget *parent = 0);
+    ~DataTableDialog();
+
+    DataTable *table();
+    void setTable(const DataTable *table);
+
+private:
+    DataTable *m_table;
+    Chart *chart;
+
+    QPlainTextEdit *lstX;
+    QPlainTextEdit *lstY;
+
+    QPushButton *btnOk;
+    QPushButton *btnClose;
+    QPushButton *btnPlot;
+
+    void createControls();
+    void load();
+    bool save();
+
+    void parseTable();
+
+private slots:
+    void doAccept();
+    void doReject();
+
+    void doPlot();   
 };
 
 #endif // SCENEFUNCTION_H

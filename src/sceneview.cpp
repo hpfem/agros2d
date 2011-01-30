@@ -75,7 +75,7 @@ void SceneViewSettings::defaultValues()
     logMessage("SceneViewSettings::defaultValues()");
 
     scalarRangeMin = numeric_limits<double>::max();
-    scalarRangeMax = numeric_limits<double>::min();
+    scalarRangeMax = -numeric_limits<double>::max();
 
     // visible objects
     showGeometry = true;
@@ -1908,7 +1908,7 @@ void SceneView::paintContours()
 
         // transform variable
         double rangeMin = numeric_limits<double>::max();
-        double rangeMax = numeric_limits<double>::min();
+        double rangeMax = -numeric_limits<double>::max();
 
         double3* vert = new double3[m_scene->sceneSolution()->linContourView().get_num_vertices()];
         for (int i = 0; i < m_scene->sceneSolution()->linContourView().get_num_vertices(); i++)

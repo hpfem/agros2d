@@ -53,7 +53,6 @@ SOURCES += util.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenebasic.cpp \
-    scenefunction.cpp \
     sceneinfoview.cpp \
     sceneview.cpp \
     progressdialog.cpp \
@@ -74,7 +73,8 @@ SOURCES += util.cpp \
     tooltipview.cpp \
     scenebasicselectdialog.cpp \
     logdialog.cpp \
-    datatable.cpp
+    datatable.cpp \
+    datafunction.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -96,7 +96,6 @@ HEADERS += util.h \
     scenebasic.h \
     sceneinfoview.h \
     scenemarker.h \
-    scenefunction.h \
     sceneview_data.h \
     sceneview.h \
     progressdialog.h \
@@ -115,7 +114,8 @@ HEADERS += util.h \
     tooltipview.h \
     scenebasicselectdialog.h \
     logdialog.h \
-    datatable.h
+    datatable.h \
+    datafunction.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

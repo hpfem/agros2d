@@ -38,13 +38,16 @@ class DataTable
 public:
     DataTable();
     DataTable(double key, double value);
+    DataTable(double *keys, double *values, int count);
     ~DataTable();
 
     void clear();
     void remove(double key);
 
     void add(double key, double value);
-    void add(double *key, double *value, int count);
+    void add(double *keys, double *values, int count);
+    void get(double *keys, double *values, double *derivatives);
+    DataTable *copy() const;
 
     int size();
     double min_key();

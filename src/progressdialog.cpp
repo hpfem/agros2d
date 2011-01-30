@@ -1302,7 +1302,7 @@ void ProgressDialog::itemChanged()
             double *yvalDOF = new double[countAdaptivityError];
 
             double minDOF = numeric_limits<double>::max();
-            double maxDOF = numeric_limits<double>::min();
+            double maxDOF = -numeric_limits<double>::max();
 
             for (int i = 0; i<countAdaptivityError; i++)
             {

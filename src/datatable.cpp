@@ -28,6 +28,11 @@ DataTable::DataTable(double key, double value) : m_data(NULL)
     add(key, value);
 }
 
+DataTable::DataTable(double *keys, double *values, int count) : m_data(NULL)
+{
+    add(keys, values, count);
+}
+
 DataTable::~DataTable()
 {
     clear();
@@ -36,7 +41,7 @@ DataTable::~DataTable()
 void DataTable::clear()
 {
     DataTableRow *data = m_data;
-    while (data != NULL)
+    while (data)
     {
         DataTableRow *tmp = data;
 
@@ -45,6 +50,8 @@ void DataTable::clear()
 
         delete tmp;
     }
+
+    m_data = NULL;
 }
 
 void DataTable::remove(double key)
@@ -52,7 +59,7 @@ void DataTable::remove(double key)
     DataTableRow *previous = NULL;
     DataTableRow *data = m_data;
 
-    while (data != NULL)
+    while (data)
     {
         if (fabs(key - data->key) < EPS_ZERO)
         {
@@ -87,7 +94,7 @@ void DataTable::add(double key, double value)
         return;
     }
 
-    while (data != NULL)
+    while (data)
     {
         // key already exists -> replace value
         if (fabs(key - data->key) < EPS_ZERO)
@@ -129,11 +136,47 @@ void DataTable::add(double key, double value)
     }
 }
 
-void DataTable::add(double *key, double *value, int count)
+void DataTable::get(double *keys, double *values, double *derivatives)
+{
+    DataTableRow *data = m_data;
+    int i = 0;
+    while (data)
+    {
+        DataTableRow *tmp = data;
+
+        keys[i] = tmp->key;
+        values[i] = tmp->value;
+        derivatives[i] = 0.0;
+
+        // next row
+        data = data->next;
+        i++;
+    }
+}
+
+DataTable *DataTable::copy() const
+{
+    DataTable *table = new DataTable();
+
+    DataTableRow *data = m_data;
+    while (data)
+    {
+        DataTableRow *tmp = data;
+
+        table->add(tmp->key, tmp->value);
+
+        // next row
+        data = data->next;
+    }
+
+    return table;
+}
+
+void DataTable::add(double *keys, double *values, int count)
 {
     for (int i = 0; i<count; i++)
     {
-        add(key[i], value[i]);
+        add(keys[i], values[i]);
     }
 }
 
@@ -142,7 +185,7 @@ int DataTable::size()
     int size = 0;
 
     DataTableRow *data = m_data;
-    while (data != NULL)
+    while (data)
     {
         size++;
 
@@ -166,7 +209,7 @@ double DataTable::max_key()
     double max = 0.0;
 
     DataTableRow *data = m_data;
-    while (data != NULL)
+    while (data)
     {
         max = data->key;
 
@@ -190,7 +233,7 @@ double DataTable::max_value()
     double max = 0.0;
 
     DataTableRow *data = m_data;
-    while (data != NULL)
+    while (data)
     {
         max = data->value;
 
@@ -213,7 +256,7 @@ double DataTable::value(double key)
     if (key <= data->key)
         return data->value;
 
-    while (data != NULL)
+    while (data)
     {
         // key > last value
         if (!data->next && key >= data->key)
@@ -254,7 +297,7 @@ double DataTable::derivative(double key)
     if (key <= data->key)
         return (data->next->value - data->value) / (data->next->key - data->key);
 
-    while (data != NULL)
+    while (data)
     {
         // key > last value
         if (!data->next && key >= data->key)
@@ -284,7 +327,7 @@ Ord DataTable::derivative(Ord key)
 void DataTable::print()
 {
     DataTableRow *data = m_data;
-    while (data != NULL)
+    while (data)
     {
         printf("%.14g\t%.14g", data->key, data->value);
 

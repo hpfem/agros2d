@@ -542,7 +542,7 @@ template <class T>
 void deformShapeTemplate(T linVert, int count)
 {
     double min = numeric_limits<double>::max();
-    double max = numeric_limits<double>::min();
+    double max = -numeric_limits<double>::max();
     for (int i = 0; i < count; i++)
     {
         double x = linVert[i][0];

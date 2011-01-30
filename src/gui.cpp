@@ -103,8 +103,8 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 {
     logMessage("SLineEditValue::SLineEditValue()");
 
-    m_minimum = numeric_limits<double>::min();
-    m_minimumSharp = numeric_limits<double>::min();
+    m_minimum = -numeric_limits<double>::max();
+    m_minimumSharp = -numeric_limits<double>::max();
     m_maximum = numeric_limits<double>::max();
     m_maximumSharp = numeric_limits<double>::max();
 
