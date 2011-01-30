@@ -18,10 +18,12 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "gui.h"
+#include "datatable.h"
 
 #include "scene.h"
 #include "scenesolution.h"
 #include "progressdialog.h"
+#include "datatabledialog.h"
 
 #include "hermes2d/hermes_field.h"
 
@@ -99,7 +101,7 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
 // ***********************************************************************************************************
 
-SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
+SLineEditValue::SLineEditValue(QWidget *parent, bool nonlin) : QWidget(parent)
 {
     logMessage("SLineEditValue::SLineEditValue()");
 
@@ -108,6 +110,19 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
     m_maximum = numeric_limits<double>::max();
     m_maximumSharp = numeric_limits<double>::max();
 
+    m_linear = nonlin;
+    m_table = new DataTable();
+
+    createControls();
+}
+
+SLineEditValue::~SLineEditValue()
+{
+    delete m_table;
+}
+
+void SLineEditValue::createControls()
+{
     // create controls
     txtLineEdit = new QLineEdit(this);
     txtLineEdit->setToolTip(tr("This textedit allows using variables."));
@@ -116,15 +131,48 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
     connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
 
     lblValue = new QLabel(this);
+    lblInfo = new QLabel(tr("nonlinear material"));
+
+    btnDataTableDelete = new QPushButton(tr("X"));
+    btnDataTableDelete->setMaximumSize(btnDataTableDelete->sizeHint());
+    connect(btnDataTableDelete, SIGNAL(clicked()), this, SLOT(doOpenDataTableDelete()));
+    btnDataTableDialog = new QPushButton(tr("..."));
+    btnDataTableDialog->setMaximumSize(btnDataTableDialog->sizeHint());
+    connect(btnDataTableDialog, SIGNAL(clicked()), this, SLOT(doOpenDataTableDialog()));
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->addWidget(txtLineEdit, 1);
     layout->addWidget(lblValue, 0, Qt::AlignRight);
+    layout->addWidget(lblInfo);
+    layout->addWidget(btnDataTableDelete);
+    layout->addWidget(btnDataTableDialog);
 
     setLayout(layout);
 
     evaluate();
+}
+
+void SLineEditValue::setLayoutValue()
+{
+    txtLineEdit->setVisible(false);
+    lblValue->setVisible(false);
+    lblInfo->setVisible(false);
+    btnDataTableDelete->setVisible(false);
+    btnDataTableDialog->setVisible(false);
+
+    if ((m_linear) || (!m_linear && m_table->size() == 0))
+    {
+        txtLineEdit->setVisible(true);
+        lblValue->setVisible(true);
+    }
+    if (!m_linear && m_table->size() > 0)
+    {
+        lblInfo->setVisible(true);
+        btnDataTableDelete->setVisible(true);
+    }
+    if (!m_linear)
+        btnDataTableDialog->setVisible(true);
 }
 
 void SLineEditValue::setNumber(double value)
@@ -145,22 +193,24 @@ double SLineEditValue::number()
 
 void SLineEditValue::setValue(Value value)
 {
-    logMessage("SLineEditValue::setValue()");
-
     txtLineEdit->setText(value.text);
+
+    delete m_table;
+    m_table = value.table->copy();
+
     evaluate();
 }
 
 Value SLineEditValue::value()
 {
-    logMessage("SLineEditValue::value()");
-
-    return Value(txtLineEdit->text());
+    return Value(txtLineEdit->text(), m_table->copy());
 }
 
 bool SLineEditValue::evaluate(bool quiet)
 {
     logMessage("SLineEditValue::evaluate()");
+
+    setLayoutValue();
 
     bool isOk = false;
 
@@ -216,7 +266,7 @@ void SLineEditValue::setLabel(const QString &text, QColor color, bool isVisible)
     QPalette palette = lblValue->palette();
     palette.setColor(QPalette::WindowText, color);
     lblValue->setPalette(palette);
-    lblValue->setVisible(isVisible);
+    lblValue->setVisible(((m_linear) || (!m_linear && m_table->size() == 0)) && isVisible);
 }
 
 void SLineEditValue::focusInEvent(QFocusEvent *event)
@@ -224,6 +274,24 @@ void SLineEditValue::focusInEvent(QFocusEvent *event)
     logMessage("SLineEditValue::focusInEvent()");
 
     txtLineEdit->setFocus(event->reason());
+}
+
+void SLineEditValue::doOpenDataTableDelete()
+{
+    m_table->clear();
+    evaluate();
+}
+
+void SLineEditValue::doOpenDataTableDialog()
+{
+    DataTableDialog dataTableDialog(this);
+    dataTableDialog.setTable(m_table);
+    if (dataTableDialog.exec() == QDialog::Accepted)
+    {
+        m_table = dataTableDialog.table();
+    }
+
+    evaluate();
 }
 
 // ****************************************************************************************************************

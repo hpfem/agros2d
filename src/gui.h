@@ -36,6 +36,9 @@
 
 #include "util.h"
 
+class DataTable;
+class Value;
+
 void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
 void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable);
@@ -60,7 +63,8 @@ class SLineEditValue : public QWidget
 {
     Q_OBJECT
 public:
-    SLineEditValue(QWidget *parent = 0);
+    SLineEditValue(QWidget *parent = 0, bool linear = true);
+    ~SLineEditValue();
 
     double number();
     void setNumber(double number);
@@ -81,19 +85,32 @@ signals:
     void evaluated(bool isError);
 
 protected:
-    void focusInEvent(QFocusEvent *event);
-
-private:
     double m_minimum;
     double m_minimumSharp;
     double m_maximum;
     double m_maximumSharp;
     double m_number;
 
+    bool m_linear;
+    DataTable *m_table;
+
+    QPushButton *btnDataTableDelete;
+    QPushButton *btnDataTableDialog;
+
     QLineEdit *txtLineEdit;
     QLabel *lblValue;
+    QLabel *lblInfo;
+
+    void focusInEvent(QFocusEvent *event);
+
+    void createControls();
+    void setLayoutValue();
 
     void setLabel(const QString &text, QColor color, bool isVisible);
+
+private slots:
+    void doOpenDataTableDelete();
+    void doOpenDataTableDialog();
 };
 
 // ****************************************************************************************************

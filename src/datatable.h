@@ -49,7 +49,10 @@ public:
     void get(double *keys, double *values, double *derivatives);
     DataTable *copy() const;
 
+    inline DataTableRow *data() { return m_data; }
+
     int size();
+
     double min_key();
     double max_key();
     double min_value();

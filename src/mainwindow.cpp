@@ -35,8 +35,7 @@
 #include "logdialog.h"
 #include "helpdialog.h"
 #include "problemdialog.h"
-
-#include "datafunction.h"
+#include "datatabledialog.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {

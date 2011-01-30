@@ -19,17 +19,20 @@
 
 #include "datatable.h"
 
-DataTable::DataTable() : m_data(NULL)
+DataTable::DataTable()
 {
+    m_data = NULL;
 }
 
-DataTable::DataTable(double key, double value) : m_data(NULL)
+DataTable::DataTable(double key, double value)
 {
+    m_data = NULL;
     add(key, value);
 }
 
-DataTable::DataTable(double *keys, double *values, int count) : m_data(NULL)
+DataTable::DataTable(double *keys, double *values, int count)
 {
+    m_data = NULL;
     add(keys, values, count);
 }
 

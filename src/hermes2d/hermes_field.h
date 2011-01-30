@@ -40,6 +40,8 @@ extern double frequency;
 extern double actualTime;
 extern double timeStep;
 
+class SLineEditValueNonlin;
+
 class SceneEdgeMarker;
 class SceneLabelMarker;
 class SceneViewSettings;

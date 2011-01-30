@@ -74,6 +74,7 @@ SOURCES += util.cpp \
     scenebasicselectdialog.cpp \
     logdialog.cpp \
     datatable.cpp \
+    datatabledialog.cpp \
     datafunction.cpp
 HEADERS += util.h \
     scene.h \
@@ -115,6 +116,7 @@ HEADERS += util.h \
     scenebasicselectdialog.h \
     logdialog.h \
     datatable.h \
+    datatabledialog.h \
     datafunction.h
 INCLUDEPATH += . \
     dxflib \

@@ -28,6 +28,7 @@
 #include "hermes_flow.h"
 
 #include "progressdialog.h"
+#include "datatabledialog.h"
 
 #include "mesh/h2d_reader.h"
 

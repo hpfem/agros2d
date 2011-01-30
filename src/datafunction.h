@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef SCENEFUNCTION_H
-#define SCENEFUNCTION_H
+#ifndef DATAFUNCTION_H
+#define DATAFUNCTION_H
 
 #include "util.h"
 #include "datatable.h"
@@ -97,42 +97,4 @@ private slots:
     void doPlot();
 };
 
-
-// ************************************************************************************************************************
-
-class DataTableDialog: public QDialog
-{
-    Q_OBJECT
-
-public:
-    DataTableDialog(QWidget *parent = 0);
-    ~DataTableDialog();
-
-    DataTable *table();
-    void setTable(const DataTable *table);
-
-private:
-    DataTable *m_table;
-    Chart *chart;
-
-    QPlainTextEdit *lstX;
-    QPlainTextEdit *lstY;
-
-    QPushButton *btnOk;
-    QPushButton *btnClose;
-    QPushButton *btnPlot;
-
-    void createControls();
-    void load();
-    bool save();
-
-    void parseTable();
-
-private slots:
-    void doAccept();
-    void doReject();
-
-    void doPlot();   
-};
-
-#endif // SCENEFUNCTION_H
+#endif // DATAFUNCTION_H

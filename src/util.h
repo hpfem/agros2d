@@ -75,6 +75,9 @@ const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
 const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I \"%2\"";
 const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
 
+class DataTable;
+class Ord;
+
 using namespace std;
 
 // verbose
@@ -173,8 +176,15 @@ struct Value
     QString text;
     double number;
 
-    Value() { text = "0"; number = 0;}
-    inline Value(const QString &value, bool evaluateExpression = true) { text = value; if (evaluateExpression) evaluate(true); }
+    DataTable *table;
+
+    Value();
+    Value(const QString &value, DataTable *table);
+    Value(const QString &value, bool evaluateExpression = true);
+    ~Value();
+
+    double value(double key = 0.0);
+    Ord value(Ord ord);
 
     bool evaluate(bool quiet = false);
 };
