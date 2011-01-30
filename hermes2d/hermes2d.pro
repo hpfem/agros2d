@@ -119,7 +119,6 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             #src/space/space_hdiv.cpp \
             src/space/space_h1.cpp \
             src/space/space_l2.cpp \
-            src/shapeset/shapeset.cpp \
             src/ref_selectors/hcurl_proj_based_selector.cpp \
             src/ref_selectors/h1_proj_based_selector.cpp \
             src/ref_selectors/l2_proj_based_selector.cpp \
