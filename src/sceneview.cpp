@@ -1066,7 +1066,7 @@ void SceneView::paintOrder()
         for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
-            glColor3d(paletteOrder[color][0], paletteOrder[color][1], paletteOrder[color][2]);
+            glColor3d(paletteColorOrder(color)[0], paletteColorOrder(color)[1], paletteColorOrder(color)[2]);
 
             glVertex2d(vert[tris[i][0]][0], vert[tris[i][0]][1]);
             glVertex2d(vert[tris[i][1]][0], vert[tris[i][1]][1]);
@@ -1172,7 +1172,7 @@ void SceneView::paintOrderColorBar()
         glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
         glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
 
-        glColor3d(paletteOrder[i][0], paletteOrder[i][1], paletteOrder[i][2]);
+        glColor3d(paletteColorOrder(i)[0], paletteColorOrder(i)[1], paletteColorOrder(i)[2]);
         glVertex2d(scaleLeft + 12,                                     scaleBorder.y + 12 + (i-1)*(2 * textHeight));
         glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 12 + (i-1)*(2 * textHeight));
         glVertex2d(scaleLeft + 10 + 3 * textWidth - 2 - scaleBorder.x, scaleBorder.y + 10 + (i  )*(2 * textHeight) - textHeight / 2.0);
@@ -2406,6 +2406,23 @@ const float* SceneView::paletteColor(double x)
         return color;
     }
         break;
+    }
+}
+
+const float* SceneView::paletteColorOrder(int n)
+{
+    logMessage("SceneView::paletteColorOrder()");
+
+    switch (Util::config()->orderPaletteOrderType)
+    {
+    case PaletteOrder_Hermes:
+        return paletteOrderHermes[n];
+    case PaletteOrder_Jet:
+        return paletteOrderJet[n];
+    case PaletteOrder_BWAsc:
+        return paletteOrderBWAsc[n];
+    case PaletteOrder_BWDesc:
+        return paletteOrderBWDesc[n];
     }
 }
 

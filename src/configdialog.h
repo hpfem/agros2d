@@ -146,6 +146,7 @@ private:
 
     // order view
     QCheckBox *chkOrderLabel;
+    QComboBox *cmbOrderPaletteOrder;
 
     // 3d
     QCheckBox *chkView3DLighting;

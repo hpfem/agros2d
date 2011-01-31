@@ -566,6 +566,14 @@ enum PaletteType
     Palette_BWDesc
 };
 
+enum PaletteOrderType
+{
+    PaletteOrder_Hermes,
+    PaletteOrder_Jet,
+    PaletteOrder_BWAsc,
+    PaletteOrder_BWDesc
+};
+
 enum SceneViewPostprocessorShow
 {
     SceneViewPostprocessorShow_Undefined,

@@ -243,6 +243,7 @@ private:
 
     // palette
     const float *paletteColor(double x);
+    const float *paletteColorOrder(int n);
     void paletteCreate();
     void paletteFilter();
     void paletteUpdateTexAdjust();

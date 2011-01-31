@@ -133,6 +133,7 @@ void ConfigDialog::load()
 
     // order view
     chkOrderLabel->setChecked(Util::config()->orderLabel);
+    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Util::config()->orderPaletteOrderType));
 
     // 3d
     chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
@@ -255,6 +256,7 @@ void ConfigDialog::save()
 
     // order view
     Util::config()->orderLabel = chkOrderLabel->isChecked();
+    Util::config()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
 
     // 3d
     Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
@@ -595,9 +597,17 @@ QWidget *ConfigDialog::createViewWidget()
 
     // layout order
     chkOrderLabel = new QCheckBox(tr("Show order label"), this);
+    // layout order palette
+    cmbOrderPaletteOrder = new QComboBox();
+    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
+    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
+    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
+    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
-    QHBoxLayout *layoutOrder = new QHBoxLayout();
-    layoutOrder->addWidget(chkOrderLabel);
+    QGridLayout *layoutOrder = new QGridLayout();
+    layoutOrder->addWidget(chkOrderLabel, 0, 0, 1, 2);
+    layoutOrder->addWidget(new QLabel(tr("Palette:")), 1, 0);
+    layoutOrder->addWidget(cmbOrderPaletteOrder, 1, 1);
 
     QGroupBox *grpOrder = new QGroupBox(tr("Polynomial order"));
     grpOrder->setLayout(layoutOrder);
