@@ -517,7 +517,7 @@ void ScriptEditorDialog::createControls()
     QLineEdit *txtPath = new QLineEdit(this);
     txtPath->setReadOnly(true);
 
-    QPushButton *btnPath = new QPushButton("...");
+    QPushButton *btnPath = new QPushButton(icon("three-dots"), "");
     btnPath->setMaximumSize(btnPath->sizeHint());
 
     connect(btnPath, SIGNAL(clicked()), this, SLOT(doPathChangeDir()));

@@ -85,5 +85,7 @@
         <file>images/snap-to-grid.png</file>
         <file>images/rulers.png</file>
         <file>images/options-solver.png</file>
+        <file>images/three-dots.png</file>
+        <file>images/remove-item.png</file>
     </qresource>
 </RCC>

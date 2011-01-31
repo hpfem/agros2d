@@ -659,18 +659,18 @@ void ImageLoaderDialog::createControls()
 
     lblImageFileName = new QLabel();
 
-    QPushButton *btnLoadImage = new QPushButton("...");
+    QPushButton *btnLoadImage = new QPushButton(icon("three-dots"), "");
     btnLoadImage->setMaximumSize(btnLoadImage->sizeHint());
     connect(btnLoadImage, SIGNAL(clicked()), this, SLOT(doLoadFile()));
 
-    QPushButton *btnRemoveImage = new QPushButton(tr("Remove"));
+    QPushButton *btnRemoveImage = new QPushButton(icon("remove-item"), "");
     connect(btnRemoveImage, SIGNAL(clicked()), this, SLOT(doRemoveFile()));
 
     QHBoxLayout *layoutFileName = new QHBoxLayout();
     layoutFileName->addWidget(new QLabel(tr("Filename:")));
     layoutFileName->addWidget(lblImageFileName, 1);
-    layoutFileName->addWidget(btnLoadImage);
     layoutFileName->addWidget(btnRemoveImage);
+    layoutFileName->addWidget(btnLoadImage);
 
     txtX = new SLineEditDouble(0.0);
     txtY = new SLineEditDouble(0.0);
