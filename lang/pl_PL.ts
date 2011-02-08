@@ -571,7 +571,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="602"/>
         <source>Hermes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hermes</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="612"/>
@@ -2430,7 +2430,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="190"/>
         <source>Export mesh file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export siatki...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="194"/>
@@ -2963,7 +2963,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/problemdialog.cpp" line="168"/>
         <source>Linear solver:</source>
-        <translation>Solwer liniowy:</translation>
+        <translation>Obliczenia: </translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="170"/>
@@ -3273,7 +3273,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/progressdialog.cpp" line="823"/>
         <source>Processing solution mesh cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetwarzanie siatki rozwiązania</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="829"/>
@@ -3296,7 +3296,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/progressdialog.cpp" line="732"/>
         <source>Solver</source>
-        <translation>Rozwiązanie</translation>
+        <translation>Obliczenia</translation>
     </message>
     <message>
         <source>Solver was started: %1 (%2, %3)</source>
@@ -3305,7 +3305,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/progressdialog.cpp" line="763"/>
         <source>Problem analysis: %1 (%2, %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza problemu: %1 (%2. %3)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="768"/>
@@ -3336,7 +3336,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="219"/>
         <source>Adaptivity type: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ adaptacji: %1</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="245"/>
@@ -3350,7 +3350,7 @@ Czy chcesz zapisać zmiany?</translation>
         <location filename="../src/hermes2d/hermes_field.cpp" line="290"/>
         <location filename="../src/hermes2d/hermes_field.cpp" line="401"/>
         <source>Matrix solver failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd obliczeń.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="308"/>
@@ -4417,27 +4417,27 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/util.h" line="605"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Norma H1</translation>
     </message>
     <message>
         <location filename="../src/util.h" line="607"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Norma L2</translation>
     </message>
     <message>
         <location filename="../src/util.h" line="609"/>
         <source>H1 seminorm</source>
-        <translation type="unfinished"></translation>
+        <translation>Seminorma H1</translation>
     </message>
     <message>
         <location filename="../src/util.h" line="611"/>
         <source>Hdiv norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Norma Hdiv</translation>
     </message>
     <message>
         <location filename="../src/util.h" line="613"/>
         <source>Hcurl norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Norma Hcurl</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="379"/>
@@ -4587,47 +4587,47 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/reportdialog.cpp" line="356"/>
         <source>Problem Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacje o problemie</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="357"/>
         <source>Name:</source>
-        <translation type="unfinished">Nazwa:</translation>
+        <translation>Nazwa:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="358"/>
         <source>Date:</source>
-        <translation type="unfinished">Data:</translation>
+        <translation>Data:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="359"/>
         <source>Filename:</source>
-        <translation type="unfinished">Plik:</translation>
+        <translation>Plik:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="360"/>
         <source>Problem type:</source>
-        <translation type="unfinished">Typ problemu:</translation>
+        <translation>Typ problemu:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="361"/>
         <source>Physic field:</source>
-        <translation type="unfinished">Pole fizyczne:</translation>
+        <translation>Pole fizyczne:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="362"/>
         <source>Analysis type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ analizy:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="363"/>
         <source>Number of refinements:</source>
-        <translation type="unfinished">Liczba zagęszczeń:</translation>
+        <translation>Liczba zagęszczeń:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="364"/>
         <source>Polynomial order:</source>
-        <translation type="unfinished">Stopień wielomianu:</translation>
+        <translation>Stopień wielomianu:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="368"/>
@@ -4636,138 +4636,138 @@ Czy chcesz zapisać zmiany?</translation>
         <location filename="../src/reportdialog.cpp" line="388"/>
         <location filename="../src/reportdialog.cpp" line="389"/>
         <source>Adaptivity type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ adaptacji:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="369"/>
         <source>Adaptivity steps:</source>
-        <translation type="unfinished">Iteracje adaptacji:</translation>
+        <translation>Iteracje adaptacji:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="370"/>
         <source>Adaptivity tolerance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancja adaptacji:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="424"/>
         <source>Startup Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrypt początkowy</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="436"/>
         <source>Physical Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości fizyczne</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="437"/>
         <source>Materials</source>
-        <translation type="unfinished">Materiały</translation>
+        <translation>Materiały</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="439"/>
         <source>Boundaris conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>Warunki brzegowe</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="458"/>
         <source>Nodes</source>
-        <translation type="unfinished">Węzły</translation>
+        <translation>Węzły</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="460"/>
         <source>Edges</source>
-        <translation type="unfinished">Krawędzie</translation>
+        <translation>Krawędzie</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="462"/>
         <source>Labels</source>
-        <translation type="unfinished">Etykiety</translation>
+        <translation>Etykiety</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="484"/>
         <source>Mesh and Solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka i rozwiązanie</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="485"/>
         <source>Solver information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacje o solwerze</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="486"/>
         <source>Nodes:</source>
-        <translation type="unfinished">Węzły:</translation>
+        <translation>Węzły:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="487"/>
         <source>Elements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementy:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="488"/>
         <source>DOFs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba zmiennych:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="489"/>
         <source>Elapsed time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Czas obliczeń:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="493"/>
         <source>Adaptive error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd adaptacyjny:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="494"/>
         <source>Adaptive steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kroki adaptacji:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="536"/>
         <source>Computed by Agros2D (&lt;a href=&quot;http://hpfem.org/agros2d&quot;&gt;http://hpfem.org/agros2d&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiązane przez Agros2D (&lt;a href=&quot;http://hpfem.org/agros2d&quot;&gt;http://hpfem.org/agros2d&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="550"/>
         <source>Polynomial order</source>
-        <translation type="unfinished">Stopień wielomianu</translation>
+        <translation>Stopień wielomianu</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="555"/>
         <source>ScalarView: </source>
-        <translation type="unfinished"></translation>
+        <translation>Pole skalarne:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="643"/>
         <source>Start node</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzeł początkowy</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="644"/>
         <source>End node</source>
-        <translation type="unfinished"></translation>
+        <translation>Węzeł końcowy</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="645"/>
         <source>Angle (deg.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kąt (stopnie)</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="646"/>
         <location filename="../src/reportdialog.cpp" line="673"/>
         <source>Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="672"/>
         <source>Array (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar (m)</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="696"/>
         <source>Figure: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Rysunek: %2</translation>
     </message>
 </context>
 <context>
@@ -5058,7 +5058,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="199"/>
         <source>Solver: </source>
-        <translation>Rozwiązanie:</translation>
+        <translation type="unfinished">Obliczenia:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="205"/>
@@ -5335,13 +5335,13 @@ Czy chcesz zapisać zmiany?</translation>
         <location filename="../src/sceneview.cpp" line="2781"/>
         <location filename="../src/sceneview.cpp" line="2830"/>
         <source>Node</source>
-        <translation type="unfinished">Węzeł</translation>
+        <translation>Węzeł</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2781"/>
         <location filename="../src/sceneview.cpp" line="2830"/>
         <source>Radial component must be greater then or equal to zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Współrzędna radialna musi być większa lub równa od zera.</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="3078"/>
