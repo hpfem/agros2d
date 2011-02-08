@@ -385,7 +385,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="447"/>
         <source>Show axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż osie</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="451"/>
@@ -400,12 +400,12 @@
     <message>
         <location filename="../src/configdialog.cpp" line="648"/>
         <source>Curvilinear elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementy krzywoliniowe</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="655"/>
         <source>Mesh</source>
-        <translation type="unfinished">Siatka</translation>
+        <translation>Siatka</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="491"/>
@@ -415,12 +415,12 @@
     <message>
         <location filename="../src/configdialog.cpp" line="469"/>
         <source>Set font</source>
-        <translation type="unfinished"></translation>
+        <translation>Czcionka</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="476"/>
         <source>Scene font</source>
-        <translation type="unfinished"></translation>
+        <translation>Czcionka widoku</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="492"/>
@@ -480,7 +480,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="526"/>
         <source>Number of decimal places:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba miejsc po przecinku:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="529"/>
@@ -728,7 +728,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="787"/>
         <source>Norm:</source>
-        <translation type="unfinished"></translation>
+        <translation>Norma:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="790"/>
@@ -781,17 +781,17 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="393"/>
         <source>Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Współrzędne</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="412"/>
         <source>Refine towards edge:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zagęść przy krawędzi:</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="414"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished">Parametry siatki</translation>
+        <translation>Parametry siatki</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="419"/>
@@ -844,25 +844,25 @@
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1183"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1192"/>
         <source>BC Type:</source>
-        <translation type="unfinished">Typ WB:</translation>
+        <translation>Typ WB:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1184"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1193"/>
         <source>Force (N):</source>
-        <translation type="unfinished"></translation>
+        <translation>Siła (N):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1185"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1194"/>
         <source>Displacement (m):</source>
-        <translation type="unfinished"></translation>
+        <translation>Odkształcenie (m):</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1187"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1196"/>
         <source>Direction %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kierunek %1</translation>
     </message>
 </context>
 <context>
@@ -1026,7 +1026,7 @@
     <message>
         <location filename="../src/scenebasic.cpp" line="618"/>
         <source>Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Współrzędne</translation>
     </message>
     <message>
         <location filename="../src/scenebasic.cpp" line="633"/>
@@ -2255,7 +2255,7 @@
     <message>
         <location filename="../src/logdialog.cpp" line="71"/>
         <source>Adapt. conv.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbieżność zagęsz.</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="127"/>
@@ -2286,44 +2286,44 @@
     <message>
         <location filename="../src/logdialog.cpp" line="232"/>
         <source>Save data</source>
-        <translation type="unfinished">Zapisz data</translation>
+        <translation>Zapisz dane</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="235"/>
         <source>Save image</source>
-        <translation type="unfinished">Zapisz obraz</translation>
+        <translation>Zapisz obraz</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="271"/>
         <source>Export data to file</source>
-        <translation type="unfinished">Eksport danych do pliku</translation>
+        <translation>Eksport danych do pliku</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="271"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished">Pliki CSV (*.csv)</translation>
+        <translation>Pliki CSV (*.csv)</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="283"/>
         <location filename="../src/logdialog.cpp" line="308"/>
         <source>Error</source>
-        <translation type="unfinished">Błąd</translation>
+        <translation>Błąd</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="283"/>
         <location filename="../src/logdialog.cpp" line="308"/>
         <source>File &apos;%1&apos; could not be copied..</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik &apos;%1&apos; nie może być skopiowany.</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="296"/>
         <source>Save image to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz obraz do pliku</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="296"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -2950,7 +2950,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/problemdialog.cpp" line="164"/>
         <source>Linear solver:</source>
-        <translation>Rozwiązanie:</translation>
+        <translation>Solwer liniowy:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="166"/>
@@ -3059,17 +3059,17 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/progressdialog.cpp" line="904"/>
         <source>Adapt. error</source>
-        <translation type="unfinished">Błąd adapt.</translation>
+        <translation>Błąd adapt.</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="905"/>
         <source>Adapt. DOFs</source>
-        <translation type="unfinished">Ilość zmiennych adapt.</translation>
+        <translation>Ilość zmiennych adapt.</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="906"/>
         <source>Adapt. conv.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbieżność zagęsz.</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="916"/>
@@ -3124,7 +3124,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/progressdialog.cpp" line="1061"/>
         <source>conv. chart</source>
-        <translation type="unfinished"></translation>
+        <translation>wykres zbieżności</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="1411"/>
