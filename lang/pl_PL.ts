@@ -4691,7 +4691,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/reportdialog.cpp" line="485"/>
         <source>Solver information</source>
-        <translation>Informacje o solwerze</translation>
+        <translation>Informacje o obliczeniach</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="486"/>
@@ -5058,7 +5058,7 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="199"/>
         <source>Solver: </source>
-        <translation type="unfinished">Obliczenia:</translation>
+        <translation>Obliczenia:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="205"/>
