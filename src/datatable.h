@@ -61,8 +61,13 @@ public:
     double value(double key);
     Ord value(Ord key);
 
-    double derivative(double key);
-    Ord derivative(Ord key);
+    double dydx(double key);
+    Ord dydx(Ord key);
+    double dxdy(double key);
+    Ord dxdy(Ord key);
+
+    std::string to_string();
+    void from_string(const std::string &str);
 
     void print();
     void save(const char *filename, double start, double end, int count);

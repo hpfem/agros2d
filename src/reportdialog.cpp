@@ -322,8 +322,8 @@ void ReportDialog::generateFigures()
     m_sceneView->saveImagesForReport(tempProblemDir() + "/report",
                                      showRulers,
                                      showGrid,
-                                     txtFigureWidth->value().number,
-                                     txtFigureHeight->value().number);
+                                     txtFigureWidth->value().number(),
+                                     txtFigureHeight->value().number());
 }
 
 QString ReportDialog::replaceTemplates(const QString &source)
@@ -384,9 +384,9 @@ QString ReportDialog::replaceTemplates(const QString &source)
         if ((Util::scene()->problemInfo()->hermes()->hasHarmonic() || Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) && chkProblemInformation->isChecked())
         {
             destination.replace("[ProblemInformation.Frequency]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->frequency) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.TimeStep]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.TimeTotal]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeTotal.number) + "</td></tr>", Qt::CaseSensitive);
-            destination.replace("[ProblemInformation.InititalCondition]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->initialCondition.number) + "</td></tr></table>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.TimeStep]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeStep.number()) + "</td></tr>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.TimeTotal]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->timeTotal.number()) + "</td></tr>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.InititalCondition]", "<tr><td>" + tr("Adaptivity type:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->initialCondition.number()) + "</td></tr></table>", Qt::CaseSensitive);
         }
         else
         {

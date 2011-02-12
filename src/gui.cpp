@@ -133,10 +133,10 @@ void SLineEditValue::createControls()
     lblValue = new QLabel(this);
     lblInfo = new QLabel(tr("nonlinear material"));
 
-    btnDataTableDelete = new QPushButton(tr("X"));
+    btnDataTableDelete = new QPushButton(icon("remove-item"), "");
     btnDataTableDelete->setMaximumSize(btnDataTableDelete->sizeHint());
     connect(btnDataTableDelete, SIGNAL(clicked()), this, SLOT(doOpenDataTableDelete()));
-    btnDataTableDialog = new QPushButton(tr("..."));
+    btnDataTableDialog = new QPushButton(icon("three-dots"), "");
     btnDataTableDialog->setMaximumSize(btnDataTableDialog->sizeHint());
     connect(btnDataTableDialog, SIGNAL(clicked()), this, SLOT(doOpenDataTableDialog()));
 
@@ -144,12 +144,13 @@ void SLineEditValue::createControls()
     layout->setMargin(0);
     layout->addWidget(txtLineEdit, 1);
     layout->addWidget(lblValue, 0, Qt::AlignRight);
-    layout->addWidget(lblInfo);
+    layout->addWidget(lblInfo, 1);
     layout->addWidget(btnDataTableDelete);
     layout->addWidget(btnDataTableDialog);
 
     setLayout(layout);
 
+    setLayoutValue();
     evaluate();
 }
 
@@ -193,11 +194,12 @@ double SLineEditValue::number()
 
 void SLineEditValue::setValue(Value value)
 {
-    txtLineEdit->setText(value.text);
+    txtLineEdit->setText(value.text());
 
     delete m_table;
     m_table = value.table->copy();
 
+    setLayoutValue();
     evaluate();
 }
 
@@ -210,40 +212,49 @@ bool SLineEditValue::evaluate(bool quiet)
 {
     logMessage("SLineEditValue::evaluate()");
 
-    setLayoutValue();
-
     bool isOk = false;
 
-    Value val = value();
-    if (val.evaluate(quiet))
+    if (m_linear || m_table->size() == 0)
     {
-        if (val.number <= m_minimumSharp)
+        // value
+        Value val(txtLineEdit->text());
+        if (val.evaluate(quiet))
         {
-            setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
-        }
-        else if (val.number >= m_maximumSharp)
-        {
-            setLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
-        }
-        else if (val.number < m_minimum)
-        {
-            setLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
-        }
-        else if (val.number > m_maximum)
-        {
-            setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
+            if (val.number() <= m_minimumSharp)
+            {
+                setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
+            }
+            else if (val.number() >= m_maximumSharp)
+            {
+                setLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
+            }
+            else if (val.number() < m_minimum)
+            {
+                setLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
+            }
+            else if (val.number() > m_maximum)
+            {
+                setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
+            }
+            else
+            {
+                setLabel(QString("%1").arg(val.number(), 0, 'g', 3),
+                         QApplication::palette().color(QPalette::WindowText),
+                         Util::config()->lineEditValueShowResult);
+                m_number = val.number();
+                isOk = true;
+            }
         }
         else
         {
-            m_number = val.number;
-            setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), Util::config()->lineEditValueShowResult);
-            isOk = true;
+            setLabel(tr("error"), QColor(Qt::red), true);
+            setFocus();
         }
     }
     else
     {
-        setLabel(tr("error"), QColor(Qt::red), true);
-        setFocus();
+        // table
+        isOk = true;
     }
 
     if (isOk)
@@ -273,12 +284,15 @@ void SLineEditValue::focusInEvent(QFocusEvent *event)
 {
     logMessage("SLineEditValue::focusInEvent()");
 
-    txtLineEdit->setFocus(event->reason());
+    if (txtLineEdit->isVisible())
+        txtLineEdit->setFocus(event->reason());
 }
 
 void SLineEditValue::doOpenDataTableDelete()
 {
     m_table->clear();
+
+    setLayoutValue();
     evaluate();
 }
 
@@ -291,6 +305,7 @@ void SLineEditValue::doOpenDataTableDialog()
         m_table = dataTableDialog.table();
     }
 
+    setLayoutValue();
     evaluate();
 }
 

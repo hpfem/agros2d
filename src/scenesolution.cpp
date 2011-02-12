@@ -181,7 +181,8 @@ void SceneSolution::loadSolution(QDomElement *element)
         SolutionArray *solutionArray = new SolutionArray();
         solutionArray->order = new Orderizer();
         solutionArray->sln = new Solution();
-        solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(), Util::scene()->problemInfo()->initialCondition.number);
+        solutionArray->sln->set_const(Util::scene()->sceneSolution()->meshInitial(),
+                                      Util::scene()->problemInfo()->initialCondition.number());
         solutionArray->adaptiveError = 0.0;
         solutionArray->adaptiveSteps = 0.0;
         solutionArray->time = 0.0;

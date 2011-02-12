@@ -108,9 +108,9 @@ QString createPythonFromModel()
            arg(Util::scene()->problemInfo()->adaptivityTolerance).
            arg(Util::scene()->problemInfo()->frequency).
            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
-           arg(Util::scene()->problemInfo()->timeStep.text).
-           arg(Util::scene()->problemInfo()->timeTotal.text).
-           arg(Util::scene()->problemInfo()->initialCondition.text)
+           arg(Util::scene()->problemInfo()->timeStep.text()).
+           arg(Util::scene()->problemInfo()->timeTotal.text()).
+           arg(Util::scene()->problemInfo()->initialCondition.text())
            + "\n";
     str += "\n";
 

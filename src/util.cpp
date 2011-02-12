@@ -205,7 +205,8 @@ void initLists()
     // LinearityType
     linearityTypeList.insert(LinearityType_Undefined, "");
     linearityTypeList.insert(LinearityType_Linear, "linear");
-    linearityTypeList.insert(LinearityType_Nonlinear, "nonlinear");
+    linearityTypeList.insert(LinearityType_Picard, "picard");
+    linearityTypeList.insert(LinearityType_Newton, "newton");
 }
 
 QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
@@ -752,8 +753,10 @@ QString linearityTypeString(LinearityType linearityType)
     {
     case LinearityType_Linear:
         return QObject::tr("Linear");
-    case LinearityType_Nonlinear:
-        return QObject::tr("Nonlinear");
+    case LinearityType_Picard:
+        return QObject::tr("Picard’s method");
+    case LinearityType_Newton:
+        return QObject::tr("Newton’s method");
     default:
         std::cerr << "Linearity type '" + QString::number(linearityType).toStdString() + "' is not implemented. linearityTypeString(LinearityType linearityType)" << endl;
         throw;
@@ -807,23 +810,30 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
         cmbPhysicField->setCurrentIndex(0);
 }
 
+// ***************************************************************************************************************************
+
 Value::Value()
 {
-    this->text = "0";
-    this->number = 0;
+    this->m_isLinear = -1;
+    this->m_isEvaluated = false;
+    setText("0");
     this->table = new DataTable();
 }
 
 Value::Value(const QString &value, DataTable *table)
 {
-    this->text = value;
+    this->m_isLinear = -1;
+    this->m_isEvaluated = false;
+    setText(value.isEmpty() ? "0" : value);
     this->table = table;
 }
 
-Value::Value(const QString &value, bool evaluateExpression)
+Value::Value(const QString &str, bool evaluateExpression)
 {
-    this->text = value;
-    this->table = new DataTable();
+    this->m_isLinear = -1;
+    this->m_isEvaluated = false;
+
+    fromString(str);
 
     if (evaluateExpression)
         evaluate(true); 
@@ -835,10 +845,21 @@ Value::~Value()
     // delete table;
 }
 
+double Value::number()
+{
+    if (!m_isEvaluated)
+        evaluate(true);
+
+    return m_number;
+}
+
 double Value::value(double key)
 {
-    if (table->size() == 0)
-        return number;
+    // if (m_isLinear == -1)
+    m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+
+    if (m_isLinear || table->size() == 0)
+        return number();
     else
         return table->value(key);
 }
@@ -848,15 +869,77 @@ Ord Value::value(Ord key)
     return 1.0;
 }
 
+double Value::dydx(double key)
+{
+    // if (m_isLinear == -1)
+    m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+
+    if (m_isLinear || table->size() == 0)
+        return 0.0;
+    else
+        return table->dydx(key);
+}
+
+Ord Value::dydx(Ord key)
+{
+    return 1.0;
+}
+
+double Value::dxdy(double key)
+{
+    // if (m_isLinear == -1)
+    m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
+
+    if (m_isLinear || table->size() == 0)
+        return 0.0;
+    else
+        return table->dxdy(key);
+}
+
+Ord Value::dxdy(Ord key)
+{
+    return 1.0;
+}
+
+QString Value::toString()
+{
+    if (table->size() == 0)
+        return m_text;
+    else
+        return m_text + "|" + QString::fromStdString(table->to_string());
+}
+
+void Value::fromString(const QString &str)
+{
+    table = new DataTable();
+
+    if (str.contains("|"))
+    {
+        // string and table
+        QStringList lst = str.split("|");
+        this->setText(lst.at(0));
+
+        table->from_string((lst.at(1) + "|" + lst.at(2)).toStdString());
+    }
+    else
+    {
+        // just string
+        this->setText(str);
+    }
+}
+
 bool Value::evaluate(bool quiet)
 {
     logMessage("Value::evaluate()");
 
+    m_isEvaluated = false;
+
     ExpressionResult expressionResult;
-    expressionResult = runPythonExpression(text);
+    expressionResult = runPythonExpression(m_text);
     if (expressionResult.error.isEmpty())
     {
-        number = expressionResult.value;
+        m_number = expressionResult.value;
+        m_isEvaluated = true;
     }
     else
     {
@@ -865,6 +948,8 @@ bool Value::evaluate(bool quiet)
     }
     return expressionResult.error.isEmpty();
 }
+
+// ***************************************************************************************************************************
 
 void setGUIStyle(const QString &styleName)
 {

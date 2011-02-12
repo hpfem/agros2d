@@ -171,11 +171,9 @@ private slots:
     void handleError(QNetworkReply::NetworkError error);
 };
 
-struct Value
+class Value
 {
-    QString text;
-    double number;
-
+public:
     DataTable *table;
 
     Value();
@@ -185,8 +183,25 @@ struct Value
 
     double value(double key = 0.0);
     Ord value(Ord ord);
+    double dydx(double key = 0.0);
+    Ord dydx(Ord ord);
+    double dxdy(double key = 0.0);
+    Ord dxdy(Ord ord);
+
+    QString toString();
+    void fromString(const QString &str);
+
+    inline void setText(const QString &str) { m_isEvaluated = false; m_text = str; }
+    inline QString text() { return m_text; }
+
+    double number();
 
     bool evaluate(bool quiet = false);
+private:
+    int m_isLinear;
+    bool m_isEvaluated;
+    QString m_text;
+    double m_number;
 };
 
 struct Point
@@ -385,7 +400,8 @@ enum LinearityType
 {
     LinearityType_Undefined,
     LinearityType_Linear,
-    LinearityType_Nonlinear
+    LinearityType_Picard,
+    LinearityType_Newton
 };
 
 enum PhysicFieldVariableComp

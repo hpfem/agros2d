@@ -713,7 +713,7 @@ bool DSceneLabel::save()
     }
 
     // area
-    if (txtArea->value().number < 0)
+    if (txtArea->value().number() < 0)
     {
         QMessageBox::warning(this, "Label", "Area must be positive or zero.");
         txtArea->setFocus();

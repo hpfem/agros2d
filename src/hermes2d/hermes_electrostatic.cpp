@@ -101,7 +101,7 @@ void HermesElectrostatic::writeEdgeMarkerToDomElement(QDomElement *element, Scen
     SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(marker);
 
     element->setAttribute("type", physicFieldBCToStringKey(edgeElectrostaticMarker->type));
-    element->setAttribute("value", edgeElectrostaticMarker->value.text);
+    element->setAttribute("value", edgeElectrostaticMarker->value.text());
 }
 
 void HermesElectrostatic::readLabelMarkerFromDomElement(QDomElement *element)
@@ -115,8 +115,8 @@ void HermesElectrostatic::writeLabelMarkerToDomElement(QDomElement *element, Sce
 {
     SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(marker);
 
-    element->setAttribute("charge_density", labelElectrostaticMarker->charge_density.text);
-    element->setAttribute("permittivity", labelElectrostaticMarker->permittivity.text);
+    element->setAttribute("charge_density", labelElectrostaticMarker->charge_density.text());
+    element->setAttribute("permittivity", labelElectrostaticMarker->permittivity.text());
 }
 
 LocalPointValue *HermesElectrostatic::localPointValue(Point point)
@@ -353,7 +353,7 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
             if (!edgeElectrostaticMarker->value.evaluate()) return QList<SolutionArray *>();
 
             electrostaticEdge[i+1].type = edgeElectrostaticMarker->type;
-            electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.number;
+            electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.number();
 
             switch (edgeElectrostaticMarker->type)
             {
@@ -362,7 +362,7 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
                 break;
             case PhysicFieldBC_Electrostatic_Potential:
                 bcTypes.add_bc_dirichlet(i+1);
-                bcValues.add_const(i+1, edgeElectrostaticMarker->value.number);
+                bcValues.add_const(i+1, edgeElectrostaticMarker->value.number());
                 break;
             case PhysicFieldBC_Electrostatic_SurfaceCharge:
                 bcTypes.add_bc_neumann(i+1);
@@ -386,15 +386,16 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
             if (!labelElectrostaticMarker->charge_density.evaluate()) return QList<SolutionArray *>();
             if (!labelElectrostaticMarker->permittivity.evaluate()) return QList<SolutionArray *>();
 
-            electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.number;
-            electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.number;
+            electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.number();
+            electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.number();
         }
     }
 
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Hermes::vector<BCTypes *>(&bcTypes),
-                                                                  Hermes::vector<BCValues *>(&bcValues),
-                                                                  callbackElectrostaticWeakForm);
+    SolutionAgros solutionAgros(progressItemSolve);
+
+    QList<SolutionArray *> solutionArrayList = solutionAgros.solveSolutioArray(Hermes::vector<BCTypes *>(&bcTypes),
+                                                                               Hermes::vector<BCValues *>(&bcValues),
+                                                                               callbackElectrostaticWeakForm);
 
     delete [] electrostaticEdge;
     delete [] electrostaticLabel;
@@ -426,11 +427,11 @@ LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point) : Local
 
             SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
 
-            charge_density = marker->charge_density.number;
-            permittivity = marker->permittivity.number;
+            charge_density = marker->charge_density.number();
+            permittivity = marker->permittivity.number();
 
             // electric displacement
-            D = E * (marker->permittivity.number * EPS0);
+            D = E * (marker->permittivity.number() * EPS0);
 
             // energy density
             we = 0.5 * E.magnitude() * D.magnitude();
@@ -531,9 +532,9 @@ void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
     {
         SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[e->marker]->marker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-            surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number() * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
-            surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
+            surfaceCharge += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number() * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
     }
 }
 
@@ -561,11 +562,11 @@ void VolumeIntegralValueElectrostatic::calculateVariables(int i)
     SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[e->marker]->marker);
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
     {
-        h1_integrate_expression(0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
+        h1_integrate_expression(0.5 * EPS0 * marker->permittivity.number() * (sqr(dudx1[i]) + sqr(dudy1[i])));
     }
     else
     {
-        h1_integrate_expression(2 * M_PI * x[i] * 0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
+        h1_integrate_expression(2 * M_PI * x[i] * 0.5 * EPS0 * marker->permittivity.number() * (sqr(dudx1[i]) + sqr(dudy1[i])));
     }
     energy += result;
 }
@@ -626,17 +627,17 @@ void ViewScalarFilterElectrostatic::calculateVariable(int i)
         {
         case PhysicFieldVariableComp_X:
         {
-            node->values[0][0][i] = - EPS0 * marker->permittivity.number * dudx1[i];
+            node->values[0][0][i] = - EPS0 * marker->permittivity.number() * dudx1[i];
         }
             break;
         case PhysicFieldVariableComp_Y:
         {
-            node->values[0][0][i] = - EPS0 * marker->permittivity.number * dudy1[i];
+            node->values[0][0][i] = - EPS0 * marker->permittivity.number() * dudy1[i];
         }
             break;
         case PhysicFieldVariableComp_Magnitude:
         {
-            node->values[0][0][i] = EPS0 * marker->permittivity.number * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+            node->values[0][0][i] = EPS0 * marker->permittivity.number() * sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
         }
             break;
         }
@@ -645,13 +646,13 @@ void ViewScalarFilterElectrostatic::calculateVariable(int i)
     case PhysicFieldVariable_Electrostatic_EnergyDensity:
     {
         SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
-        node->values[0][0][i] = 0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i]));
+        node->values[0][0][i] = 0.5 * EPS0 * marker->permittivity.number() * (sqr(dudx1[i]) + sqr(dudy1[i]));
     }
         break;
     case PhysicFieldVariable_Electrostatic_Permittivity:
     {
         SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
-        node->values[0][0][i] = marker->permittivity.number;
+        node->values[0][0][i] = marker->permittivity.number();
     }
         break;
     default:
@@ -674,7 +675,7 @@ QString SceneEdgeElectrostaticMarker::script()
     return QString("addboundary(\"%1\", \"%2\", %3)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
-            arg(value.text);
+            arg(value.text());
 }
 
 QMap<QString, QString> SceneEdgeElectrostaticMarker::data()
@@ -683,10 +684,10 @@ QMap<QString, QString> SceneEdgeElectrostaticMarker::data()
     switch (type)
     {
     case PhysicFieldBC_Electrostatic_Potential:
-        out["Potential (V)"] = value.text;
+        out["Potential (V)"] = value.text();
         break;
     case PhysicFieldBC_Electrostatic_SurfaceCharge:
-        out["Surface charge density (C/m3)"] = value.text;
+        out["Surface charge density (C/m3)"] = value.text();
         break;
     }
     return QMap<QString, QString>(out);
@@ -711,15 +712,15 @@ QString SceneLabelElectrostaticMarker::script()
 {
     return QString("addmaterial(\"%1\", %2, %3)").
             arg(name).
-            arg(charge_density.text).
-            arg(permittivity.text);
+            arg(charge_density.text()).
+            arg(permittivity.text());
 }
 
 QMap<QString, QString> SceneLabelElectrostaticMarker::data()
 {
     QMap<QString, QString> out;
-    out["Charge density (C/m3)"] = charge_density.text;
-    out["Permittivity (-)"] = permittivity.text;
+    out["Charge density (C/m3)"] = charge_density.text();
+    out["Permittivity (-)"] = permittivity.text();
     return QMap<QString, QString>(out);
 }
 

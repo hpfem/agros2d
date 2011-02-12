@@ -267,7 +267,8 @@ void ProblemDialog::fillComboBox()
     cmbMatrixSolver->addItem(matrixSolverTypeString(SOLVER_SUPERLU), SOLVER_SUPERLU);
 #endif
     cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
-    cmbLinearityType->addItem(linearityTypeString(LinearityType_Nonlinear), LinearityType_Nonlinear);
+    cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
+    cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
 }
 
 void ProblemDialog::load()

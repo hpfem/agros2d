@@ -1363,9 +1363,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
 
     // transient
-    m_problemInfo->timeStep.text = eleProblem.toElement().attribute("timestep", "1");
-    m_problemInfo->timeTotal.text = eleProblem.toElement().attribute("timetotal", "1");
-    m_problemInfo->initialCondition.text = eleProblem.toElement().attribute("initialcondition", "0");
+    m_problemInfo->timeStep.setText(eleProblem.toElement().attribute("timestep", "1"));
+    m_problemInfo->timeTotal.setText(eleProblem.toElement().attribute("timetotal", "1"));
+    m_problemInfo->initialCondition.setText(eleProblem.toElement().attribute("initialcondition", "0"));
 
     // linearity
     m_problemInfo->linearityType = linearityTypeFromStringKey(eleProblem.toElement().attribute("linearity",
@@ -1564,9 +1564,9 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
     // transient
-    eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text);
-    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text);
-    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text);
+    eleProblem.setAttribute("timestep", m_problemInfo->timeStep.text());
+    eleProblem.setAttribute("timetotal", m_problemInfo->timeTotal.text());
+    eleProblem.setAttribute("initialcondition", m_problemInfo->initialCondition.text());
     // linearity
     eleProblem.setAttribute("linearity", linearityTypeToStringKey(m_problemInfo->linearityType));
     eleProblem.setAttribute("linearitysteps", m_problemInfo->linearityNonlinearSteps);

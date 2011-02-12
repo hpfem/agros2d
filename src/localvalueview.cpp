@@ -52,7 +52,7 @@ PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
             if ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) &&
                 Util::scene()->sceneSolution()->timeStep() == 0)
                 // const solution at first time step
-                tmpValue = Util::scene()->problemInfo()->initialCondition.number;
+                tmpValue = Util::scene()->problemInfo()->initialCondition.number();
             else                
                 tmpValue = sln->get_pt_value(point.x, point.y, H2D_FN_VAL_0);
 
@@ -263,7 +263,7 @@ Point LocalPointValueDialog::point()
 {
     logMessage("LocalPointValueDialog::point()");
 
-    return Point(txtPointX->value().number, txtPointY->value().number);
+    return Point(txtPointX->value().number(), txtPointY->value().number());
 }
 
 void LocalPointValueDialog::evaluated(bool isError)

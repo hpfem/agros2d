@@ -142,9 +142,9 @@ void HermesFlow::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMark
     SceneEdgeFlowMarker *edgeFlowMarker = dynamic_cast<SceneEdgeFlowMarker *>(marker);
 
     element->setAttribute("type", physicFieldBCToStringKey(edgeFlowMarker->type));
-    element->setAttribute("velocityx", edgeFlowMarker->velocityX.text);
-    element->setAttribute("velocityy", edgeFlowMarker->velocityY.text);
-    element->setAttribute("pressure", edgeFlowMarker->pressure.text);
+    element->setAttribute("velocityx", edgeFlowMarker->velocityX.text());
+    element->setAttribute("velocityy", edgeFlowMarker->velocityY.text());
+    element->setAttribute("pressure", edgeFlowMarker->pressure.text());
 }
 
 void HermesFlow::readLabelMarkerFromDomElement(QDomElement *element)
@@ -158,8 +158,8 @@ void HermesFlow::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMa
 {
     SceneLabelFlowMarker *labelFlowMarker = dynamic_cast<SceneLabelFlowMarker *>(marker);
 
-    element->setAttribute("dynamic_viscosity", labelFlowMarker->dynamic_viscosity.text);
-    element->setAttribute("density", labelFlowMarker->density.text);
+    element->setAttribute("dynamic_viscosity", labelFlowMarker->dynamic_viscosity.text());
+    element->setAttribute("density", labelFlowMarker->density.text());
 }
 
 LocalPointValue *HermesFlow::localPointValue(Point point)
@@ -391,9 +391,9 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
             if (!edgeFlowMarker->velocityY.evaluate()) return QList<SolutionArray *>();
             if (!edgeFlowMarker->pressure.evaluate()) return QList<SolutionArray *>();
 
-            flowEdge[i+1].velocityX = edgeFlowMarker->velocityX.number;
-            flowEdge[i+1].velocityY = edgeFlowMarker->velocityY.number;
-            flowEdge[i+1].pressure = edgeFlowMarker->pressure.number;
+            flowEdge[i+1].velocityX = edgeFlowMarker->velocityX.number();
+            flowEdge[i+1].velocityY = edgeFlowMarker->velocityY.number();
+            flowEdge[i+1].pressure = edgeFlowMarker->pressure.number();
 
             switch (edgeFlowMarker->type)
             {
@@ -412,9 +412,9 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
                 break;
             case PhysicFieldBC_Flow_Velocity:
                 bcTypesX.add_bc_dirichlet(i+1);
-                bcValuesX.add_const(i+1, edgeFlowMarker->velocityX.number);
+                bcValuesX.add_const(i+1, edgeFlowMarker->velocityX.number());
                 bcTypesY.add_bc_dirichlet(i+1);
-                bcValuesY.add_const(i+1, edgeFlowMarker->velocityY.number);
+                bcValuesY.add_const(i+1, edgeFlowMarker->velocityY.number());
                 bcTypesP.add_bc_none(i+1);
                 break;
             case PhysicFieldBC_Flow_Outlet:
@@ -426,7 +426,7 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
                 bcTypesX.add_bc_none(i+1);
                 bcTypesY.add_bc_none(i+1);
                 bcTypesP.add_bc_dirichlet(i+1);
-                bcValuesP.add_const(i+1, edgeFlowMarker->pressure.number);
+                bcValuesP.add_const(i+1, edgeFlowMarker->pressure.number());
                 break;
             }
         }
@@ -446,15 +446,16 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
             if (!labelFlowMarker->dynamic_viscosity.evaluate()) return QList<SolutionArray *>();
             if (!labelFlowMarker->density.evaluate()) return QList<SolutionArray *>();
 
-            flowLabel[i].dynamic_viscosity = labelFlowMarker->dynamic_viscosity.number;
-            flowLabel[i].density = labelFlowMarker->density.number;
+            flowLabel[i].dynamic_viscosity = labelFlowMarker->dynamic_viscosity.number();
+            flowLabel[i].density = labelFlowMarker->density.number();
         }
     }
 
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                 Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY, &bcTypesP),
-                                                                 Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY, &bcValuesP),
-                                                                 callbackFlowWeakForm);
+    SolutionAgros solutionAgros(progressItemSolve);
+
+    QList<SolutionArray *> solutionArrayList = solutionAgros.solveSolutioArray(Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY, &bcTypesP),
+                                                                               Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY, &bcValuesP),
+                                                                               callbackFlowWeakForm);
 
     delete [] flowEdge;
     delete [] flowLabel;
@@ -487,8 +488,8 @@ LocalPointValueFlow::LocalPointValueFlow(Point &point) : LocalPointValue(point)
 
             SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
 
-            dynamic_viscosity = marker->dynamic_viscosity.number;
-            density = marker->density.number;
+            dynamic_viscosity = marker->dynamic_viscosity.number();
+            density = marker->density.number();
         }
     }
 }
@@ -633,9 +634,9 @@ QString SceneEdgeFlowMarker::script()
     return QString("addboundary(\"%1\", \"%2\", %3, %4, %5)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
-            arg(velocityX.text).
-            arg(velocityY.text).
-            arg(pressure.text);
+            arg(velocityX.text()).
+            arg(velocityY.text()).
+            arg(pressure.text());
 }
 
 QMap<QString, QString> SceneEdgeFlowMarker::data()
@@ -644,7 +645,7 @@ QMap<QString, QString> SceneEdgeFlowMarker::data()
     switch (type)
     {
     case PhysicFieldBC_Flow_Velocity:
-        out["Velocity: (m/s)"] = sqrt(sqr(velocityX.number) + sqr(velocityY.number));
+        out["Velocity: (m/s)"] = sqrt(sqr(velocityX.number()) + sqr(velocityY.number()));
         break;
     }
     return QMap<QString, QString>(out);
@@ -669,15 +670,15 @@ QString SceneLabelFlowMarker::script()
 {
     return QString("addmaterial(\"%1\", %2, %3)").
             arg(name).
-            arg(dynamic_viscosity.text).
-            arg(density.text);
+            arg(dynamic_viscosity.text()).
+            arg(density.text());
 }
 
 QMap<QString, QString> SceneLabelFlowMarker::data()
 {
     QMap<QString, QString> out;
-    out["Dynamic_viscosity (Pa.s)"] = dynamic_viscosity.number;
-    out["Density (kg/m3)"] = density.number;
+    out["Dynamic_viscosity (Pa.s)"] = dynamic_viscosity.number();
+    out["Density (kg/m3)"] = density.number();
     return QMap<QString, QString>(out);
 }
 

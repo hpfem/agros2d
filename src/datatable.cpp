@@ -149,7 +149,7 @@ void DataTable::get(double *keys, double *values, double *derivatives)
 
         keys[i] = tmp->key;
         values[i] = tmp->value;
-        derivatives[i] = 0.0;
+        derivatives[i] = dydx(tmp->key);
 
         // next row
         data = data->next;
@@ -287,7 +287,7 @@ Ord DataTable::value(Ord key)
     return 1.0;
 }
 
-double DataTable::derivative(double key)
+double DataTable::dydx(double key)
 {
     DataTableRow *previous = NULL;
     DataTableRow *data = m_data;
@@ -322,9 +322,83 @@ double DataTable::derivative(double key)
     }
 }
 
-Ord DataTable::derivative(Ord key)
+Ord DataTable::dydx(Ord key)
 {
     return 1.0;
+}
+
+double DataTable::dxdy(double key)
+{
+    return 1.0 / dydx(key);
+}
+
+Ord DataTable::dxdy(Ord key)
+{
+    return 1.0;
+}
+
+std::string DataTable::to_string()
+{
+    std::string str_key;
+    std::string str_value;
+
+    DataTableRow *data = m_data;
+    while (data)
+    {
+        std::ostringstream o_key;
+        std::ostringstream o_value;
+
+        o_key << data->key;
+        str_key += o_key.str();
+        o_value << data->value;
+        str_value += o_value.str();
+
+        // next row
+        data = data->next;
+
+        // separator
+        if (data)
+        {
+            str_key += ",";
+            str_value += ",";
+        }
+    }
+
+    return (str_key + "|" + str_value);
+}
+
+void DataTable::from_string(const std::string &str)
+{
+    std::string::const_iterator pos = std::find(str.begin(), str.end(), '|');
+
+    std::string str_keys(str.begin(), pos);
+    std::string str_values(pos + 1, str.end());
+
+    double number;
+
+    // keys
+    std::istringstream i_keys(str_keys);
+    std::vector<double> keys_double;
+    while (i_keys >> number)
+    {
+        keys_double.push_back(number);
+        if (i_keys.peek() == ',')
+            i_keys.ignore();
+    }
+
+    // values
+    std::istringstream i_values(str_values);
+    std::vector<double> values_double;
+    while (i_values >> number)
+    {
+        values_double.push_back(number);
+        if (i_values.peek() == ',')
+            i_values.ignore();
+    }
+
+    // add to the array
+    for (int i = 0; i < keys_double.size(); i++)
+        add(keys_double[i], values_double[i]);
 }
 
 void DataTable::print()
@@ -346,7 +420,7 @@ void DataTable::save(const char *filename, double start, double end, int count)
 
     for (double val = start; val <= end; val += (end - start) / (count-1))
     {
-        fprintf(f, "%.14g\t%.14g\t%.14g\n", val, value(val), derivative(val));
+        fprintf(f, "%.14g\t%.14g\t%.14g\n", val, value(val), dydx(val));
     }
 
     fclose(f);
@@ -408,11 +482,11 @@ void test()
     _assert(fabs(table.value(30) - 40.0) < EPS_ZERO);
     _assert(fabs(table.value(50) - 20.0) < EPS_ZERO);
 
-    _assert(fabs(table.derivative(-20) - -0.4) < EPS_ZERO);
-    _assert(fabs(table.derivative(12) - 0.0) < EPS_ZERO);
-    _assert(fabs(table.derivative(32) - -6.0) < EPS_ZERO);
-    _assert(fabs(table.derivative(30) - -2.0/3.0) < EPS_ZERO);
-    _assert(fabs(table.derivative(50) - 2.0) < EPS_ZERO);
+    _assert(fabs(table.dydx(-20) - -0.4) < EPS_ZERO);
+    _assert(fabs(table.dydx(12) - 0.0) < EPS_ZERO);
+    _assert(fabs(table.dydx(32) - -6.0) < EPS_ZERO);
+    _assert(fabs(table.dydx(30) - -2.0/3.0) < EPS_ZERO);
+    _assert(fabs(table.dydx(50) - 2.0) < EPS_ZERO);
 
     // min and max
     _assert(fabs(table.min_key() - -10.0) < EPS_ZERO);

@@ -108,69 +108,38 @@ void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
                 mesh->refine_towards_boundary(i + 1, Util::scene()->edges[i]->refineTowardsEdge);
 }
 
-bool solveLinear(DiscreteProblem *dp,
-                 Hermes::vector<Space *> space,
-                 Hermes::vector<Solution *> solution,
-                 Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly,
-                 ProgressItemSolve *progressItemSolve)
+SolutionAgros::SolutionAgros(ProgressItemSolve *progressItemSolve)
 {
-    dp->assemble(matrix, rhs, rhsOnly);
+    polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
+    adaptivityType = Util::scene()->problemInfo()->adaptivityType;
+    adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
+    adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+    numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
+    timeTotal = Util::scene()->problemInfo()->timeTotal.number();
+    initialCondition = Util::scene()->problemInfo()->initialCondition.number();
 
-    if(solver->solve())
-    {
-        Solution::vector_to_solutions(solver->get_solution(), space, solution);
-        return true;
-    }
-    else
-    {
-        progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
-        return false;
-    }
-}
+    linearityType = Util::scene()->problemInfo()->linearityType;
+    linearityNonlinearTolerance = Util::scene()->problemInfo()->linearityNonlinearTolerance;
+    linearityNonlinearSteps = Util::scene()->problemInfo()->linearityNonlinearSteps;
 
-SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0)
-{
-    SolutionArray *solution = new SolutionArray();
-    solution->order = new Orderizer();
-    if (space) solution->order->process_solution(space);
-    solution->sln = new Solution();
-    if (sln) solution->sln->copy(sln);
-    solution->adaptiveError = adaptiveError;
-    solution->adaptiveSteps = adaptiveSteps;
-    solution->time = time;
-
-    return solution;
-}
-
-
-QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                         Hermes::vector<BCTypes *> bcTypes,
-                                         Hermes::vector<BCValues *> bcValues,
-                                         void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>))
-{
-    int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
-    AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
-    int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
-    double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
-    int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
-    double timeTotal = Util::scene()->problemInfo()->timeTotal.number;
-    double initialCondition = Util::scene()->problemInfo()->initialCondition.number;
-
-    timeStep = Util::scene()->problemInfo()->timeStep.number;
+    timeStep = Util::scene()->problemInfo()->timeStep.number();
     isPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
     isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear);
     analysisType = Util::scene()->problemInfo()->analysisType;
     frequency = Util::scene()->problemInfo()->frequency;
 
-    LinearityType linearityType = Util::scene()->problemInfo()->linearityType;
-    double linearityNonlinearTolerance = Util::scene()->problemInfo()->linearityNonlinearTolerance;
-    int linearityNonlinearSteps = Util::scene()->problemInfo()->linearityNonlinearSteps;
+    m_progressItemSolve = progressItemSolve;
+}
 
+QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<BCTypes *> bcTypes,
+                                                        Hermes::vector<BCValues *> bcValues,
+                                                        void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>))
+{
     // solution agros array
     QList<SolutionArray *> solutionArrayList;
 
     // load the mesh file
-    Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
+    mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
     refineMesh(mesh, true, true);
 
     // create an H1 space
@@ -230,18 +199,25 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     // check for DOFs
     if (Space::get_num_dofs(space) == 0)
     {
-        progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
+        m_progressItemSolve->emitMessage(QObject::tr("DOF is zero"), true);
     }
     else
     {
-        // transient
-        if (analysisType == AnalysisType_Transient)
+        for (int i = 0; i < numberOfSolution; i++)
         {
-            for (int i = 0; i < numberOfSolution; i++)
+            // transient
+            if (analysisType == AnalysisType_Transient)
             {
                 // constant initial solution
                 solution.at(i)->set_const(mesh, initialCondition);
                 solutionArrayList.append(solutionArray(solution.at(i)));
+            }
+
+            // nonlinear
+            if ((linearityType != LinearityType_Linear)
+                    && (analysisType != AnalysisType_Transient))
+            {
+                solution.at(i)->set_const(mesh, 0.0);
             }
         }
 
@@ -252,7 +228,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
         // emit message
         if (adaptivityType != AdaptivityType_None)
-            progressItemSolve->emitMessage(QObject::tr("Adaptivity type: %1").arg(adaptivityTypeString(adaptivityType)), false);
+            m_progressItemSolve->emitMessage(QObject::tr("Adaptivity type: %1").arg(adaptivityTypeString(adaptivityType)), false);
 
         double error = 0.0;
 
@@ -273,82 +249,22 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
             if (adaptivityType == AdaptivityType_None)
             {
-                if (linearityType == LinearityType_Linear)
-                {
-                    DiscreteProblem dp(&wf, space, true);
-                    isError = !solveLinear(&dp, space, solution,
-                                           solver, matrix, rhs, false, progressItemSolve);
-                }
-                else
-                {
-                    // first step - linear solution
-                    for (int i = 0; i < numberOfSolution; i++)
-                        solution.at(i)->set_const(mesh, 0.0);
-
-                    DiscreteProblem dpLin(&wf, space, true);
-                    isError = !solveLinear(&dpLin, space, solution,
-                                           solver, matrix, rhs, false, progressItemSolve);
-
-                    // next steps - Picard
-                    DiscreteProblem dpNonlin(&wf, space, true);
-
-                    // create Picard solution
-                    Hermes::vector<Solution *> solutionPicard;
-                    for (int i = 0; i < numberOfSolution; i++)
-                        solutionPicard.push_back(new Solution());
-
-                    // perform the Picard's iteration
-                    for (int i = 0; i < linearityNonlinearSteps; i++)
-                    {
-                        isError = !solveLinear(&dpNonlin, space, solutionPicard,
-                                               solver, matrix, rhs, false, progressItemSolve);
-
-                        ProjNormType projNormTypeTMP = HERMES_H1_NORM;
-                        // ProjNormType projNormTypeTMP = HERMES_L2_NORM;
-                        // calc error
-                        double error = 0.0;
-                        for (int i = 0; i < numberOfSolution; i++)
-                            error += calc_rel_error(solution.at(i), solutionPicard.at(i), projNormTypeTMP) * 100.0;
-
-                        // emit signal
-                        progressItemSolve->emitMessage(QObject::tr("Picard’s method rel. error: %1%\t(step: %2/%3)").
-                                                       arg(error, 0, 'f', 5).
-                                                       arg(i + 1).
-                                                       arg(linearityNonlinearSteps), false, 1);
-
-                        // add error to the list
-                        progressItemSolve->addNonlinearityError(error);
-
-                        if (error < linearityNonlinearTolerance)
-                        {
-                            // FIXME - clean up
-                            break;
-                        }
-
-                        // copy solution
-                        for (int i = 0; i < numberOfSolution; i++)
-                            solution.at(i)->copy(solutionPicard.at(i));
-                    }
-
-                    for (int i = 0; i < solutionPicard.size(); i++)
-                        delete solutionPicard.at(i);
-                    solutionPicard.clear();
-                }
+                solve(&wf, space, solution, solver, matrix, rhs, false);
             }
             else
             {
-                // reference solution
-                for (int j = 0; j < numberOfSolution; j++)
-                    solutionReference.push_back(new Solution());
-
                 // construct globally refined reference mesh and setup reference space.
                 Hermes::vector<Space *> spaceReference = construct_refined_spaces(space);
 
                 // assemble reference problem.
-                DiscreteProblem dpLin(&wf, spaceReference, true);
-                dpLin.assemble(matrix, rhs, false);
-                isError = !solveLinear(&dpLin, spaceReference, solutionReference,
-                                       solver, matrix, rhs, false, progressItemSolve);
+                solve(&wf, spaceReference, solution, solver, matrix, rhs, false);
+
+                // copy solution
+                for (int j = 0; j < numberOfSolution; j++)
+                {
+                    solutionReference.push_back(new Solution());
+                    solutionReference.at(j)->copy(solution.at(j));
+                }
 
                 if (!isError)
                 {
@@ -365,13 +281,13 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                                     &err_est_rel) * 100;
 
                     // emit signal
-                    progressItemSolve->emitMessage(QObject::tr("Relative error: %1%\t(step: %2/%3, DOFs: %4)").
-                                                   arg(error, 0, 'f', 3).
-                                                   arg(i + 1).
-                                                   arg(maxAdaptivitySteps).
-                                                   arg(Space::get_num_dofs(space)), false, 1);
+                    m_progressItemSolve->emitMessage(QObject::tr("Adaptivity rel. error (step: %2/%3, DOFs: %4): %1%").
+                                                     arg(error, 0, 'f', 3).
+                                                     arg(i + 1).
+                                                     arg(maxAdaptivitySteps).
+                                                     arg(Space::get_num_dofs(space)), false, 1);
                     // add error to the list
-                    progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
+                    m_progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
 
                     if (error < adaptivityTolerance || Space::get_num_dofs(space) >= NDOF_STOP)
                     {
@@ -384,7 +300,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                     actualAdaptivitySteps = i+1;
                 }
 
-                if (progressItemSolve->isCanceled())
+                if (m_progressItemSolve->isCanceled())
                 {
                     isError = true;
                     break;
@@ -422,7 +338,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             Solver *solver = NULL;
 
             // allocate dp for transient solution
-            DiscreteProblem *dp = NULL;
+            DiscreteProblem *dpTran = NULL;
             if (analysisType == AnalysisType_Transient)
             {
                 // set up the solver, matrix, and rhs according to the solver selection.
@@ -430,7 +346,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 rhs = create_vector(matrixSolver);
                 solver = create_linear_solver(matrixSolver, matrix, rhs);
 
-                dp = new DiscreteProblem(&wf, space, true);
+                dpTran = new DiscreteProblem(&wf, space, true);
             }
 
             int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
@@ -441,8 +357,8 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
                 // transient
                 if (timesteps > 1)
-                    isError = !solveLinear(dp, space, solution,
-                                           solver, matrix, rhs, (n > 0), progressItemSolve);
+                    isError = !solveLinear(dpTran, space, solution,
+                                           solver, matrix, rhs, (n > 0));
 
                 // output
                 for (int i = 0; i < numberOfSolution; i++)
@@ -451,10 +367,11 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 }
 
                 if (analysisType == AnalysisType_Transient)
-                    progressItemSolve->emitMessage(QObject::tr("Transient ime step: %1/%2").
-                                                   arg(n+1).
-                                                   arg(timesteps), false, n+2);
-                if (progressItemSolve->isCanceled())
+                    m_progressItemSolve->emitMessage(QObject::tr("Transient time step (%1/%2): %3").
+                                                     arg(n+1).
+                                                     arg(timesteps).
+                                                     arg(actualTime, 0, 'e', 2), false, n+2);
+                if (m_progressItemSolve->isCanceled())
                 {
                     isError = true;
                     break;
@@ -466,7 +383,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             if (matrix) delete matrix;
             if (rhs) delete rhs;
 
-            if (dp) delete dp;
+            if (dpTran) delete dpTran;
         }
     }
     // delete mesh
@@ -493,6 +410,155 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     }
 
     return solutionArrayList;
+}
+
+bool SolutionAgros::solveLinear(DiscreteProblem *dp,
+                                Hermes::vector<Space *> space,
+                                Hermes::vector<Solution *> solution,
+                                Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly)
+{
+    dp->assemble(matrix, rhs, rhsOnly);
+
+    if(solver->solve())
+    {
+        Solution::vector_to_solutions(solver->get_solution(), space, solution);
+        return true;
+    }
+    else
+    {
+        m_progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
+        return false;
+    }
+}
+
+bool SolutionAgros::solve(WeakForm *wf,
+                          Hermes::vector<Space *> space,
+                          Hermes::vector<Solution *> solution,
+                          Solver *solver, SparseMatrix *matrix, Vector *rhs, bool rhsOnly)
+{
+    if (linearityType == LinearityType_Linear)
+    {
+        DiscreteProblem dpLin(wf, space, true);
+        isError = !solveLinear(&dpLin, space, solution,
+                               solver, matrix, rhs, rhsOnly);
+    }
+
+    if (linearityType == LinearityType_Picard)
+    {
+        DiscreteProblem dpNonlinPicard(wf, space, true);
+
+        // create Picard solution
+        Hermes::vector<Solution *> solutionPicard;
+        for (int i = 0; i < numberOfSolution; i++)
+            solutionPicard.push_back(new Solution());
+
+        // perform the Picard's iteration
+        for (int i = 0; i < linearityNonlinearSteps; i++)
+        {
+            isError = !solveLinear(&dpNonlinPicard, space, solutionPicard,
+                                   solver, matrix, rhs, false);
+
+            ProjNormType projNormTypeTMP = HERMES_H1_NORM;
+            // ProjNormType projNormTypeTMP = HERMES_L2_NORM;
+
+            // calc error
+            double error = 0.0;
+            for (int i = 0; i < numberOfSolution; i++)
+                error += calc_rel_error(solution.at(i), solutionPicard.at(i), projNormTypeTMP) * 100.0;
+
+            // emit signal
+            m_progressItemSolve->emitMessage(QObject::tr("Picards method rel. error (%2/%3): %1%").
+                                             arg(error, 0, 'f', 5).
+                                             arg(i + 1).
+                                             arg(linearityNonlinearSteps), false, 1);
+
+            // add error to the list
+            m_progressItemSolve->addNonlinearityError(error);
+
+            if (error < linearityNonlinearTolerance)
+            {
+                // FIXME - clean up
+                break;
+            }
+
+            // copy solution
+            for (int i = 0; i < numberOfSolution; i++)
+                solution.at(i)->copy(solutionPicard.at(i));
+        }
+
+        for (int i = 0; i < solutionPicard.size(); i++)
+            delete solutionPicard.at(i);
+        solutionPicard.clear();
+    }
+
+    if (linearityType == LinearityType_Newton)
+    {
+        // project the initial condition on the FE space to obtain initial
+        // coefficient vector for the Newton's method.
+        info("Projecting to obtain initial vector for the Newton's method.");
+        double *coeff_vec = new double[Space::get_num_dofs(space)];
+        OGProjection::project_global(space, solution.at(0), coeff_vec,
+                                     Util::scene()->problemInfo()->matrixSolver);
+
+        DiscreteProblem dpNonlinNewton(wf, space, false);
+
+        // The Newton's loop.
+        double damping_coeff = 1.0;
+
+        // perform the Picard's iteration
+        for (int i = 0; i < linearityNonlinearSteps; i++)
+        {
+            // assemble the Jacobian matrix and residual vector.
+            dpNonlinNewton.assemble(coeff_vec, matrix, rhs, false);
+
+            // Multiply the residual vector with -1 since the matrix
+            // equation reads J(Y^n) \deltaY^{n+1} = -F(Y^n).
+            rhs->change_sign();
+
+            // Calculate the l2-norm of residual vector
+            double error = get_l2_norm(rhs);
+
+            // emit signal
+            m_progressItemSolve->emitMessage(QObject::tr("Newton’s method rel. error (%2/%3): %1")
+                                             .arg(error, 0, 'f', 5)
+                                             .arg(i)
+                                             .arg(linearityNonlinearSteps), false, 1);
+
+            // add error to the list
+            m_progressItemSolve->addNonlinearityError(error);
+
+            // if residual norm is within tolerance, or the maximum number of iteration has been reached, then quit.
+            if (error < linearityNonlinearTolerance)
+                break;
+
+            // Solve the linear system.
+            if(!solver->solve())
+                error("Matrix solver failed.\n");
+
+            // add \deltaY^{n+1} to Y^n.
+            for (int j = 0; j < Space::get_num_dofs(space); j++)
+                coeff_vec[j] += damping_coeff * solver->get_solution()[j];
+        }
+
+        Solution::vector_to_solutions(coeff_vec, space, solution);
+
+        delete [] coeff_vec;
+    }
+}
+
+
+SolutionArray *SolutionAgros::solutionArray(Solution *sln, Space *space, double adaptiveError, double adaptiveSteps, double time)
+{
+    SolutionArray *solution = new SolutionArray();
+    solution->order = new Orderizer();
+    if (space) solution->order->process_solution(space);
+    solution->sln = new Solution();
+    if (sln) solution->sln->copy(sln);
+    solution->adaptiveError = adaptiveError;
+    solution->adaptiveSteps = adaptiveSteps;
+    solution->time = time;
+
+    return solution;
 }
 
 // *********************************************************************************************************************************************

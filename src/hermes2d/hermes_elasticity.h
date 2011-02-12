@@ -183,8 +183,8 @@ public:
                                Value alpha, Value temp, Value temp_ref);
 
     // Lame constant
-    inline double lambda() { return (young_modulus.number * poisson_ratio.number) / ((1.0 + poisson_ratio.number) * (1.0 - 2.0*poisson_ratio.number)); }
-    inline double mu() { return young_modulus.number / (2.0*(1.0 + poisson_ratio.number)); }
+    inline double lambda() { return (young_modulus.number() * poisson_ratio.number()) / ((1.0 + poisson_ratio.number()) * (1.0 - 2.0*poisson_ratio.number())); }
+    inline double mu() { return young_modulus.number() / (2.0*(1.0 + poisson_ratio.number())); }
 
     QString script();
     QMap<QString, QString> data();

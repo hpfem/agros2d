@@ -52,10 +52,10 @@ ChartDialog::~ChartDialog()
 
     QSettings settings;
     settings.setValue("ChartDialog/Geometry", saveGeometry());
-    settings.setValue("ChartDialog/StartX", txtStartX->value().text);
-    settings.setValue("ChartDialog/EndX", txtEndX->value().text);
-    settings.setValue("ChartDialog/StartY", txtStartY->value().text);
-    settings.setValue("ChartDialog/EndY", txtEndY->value().text);
+    settings.setValue("ChartDialog/StartX", txtStartX->value().text());
+    settings.setValue("ChartDialog/EndX", txtEndX->value().text());
+    settings.setValue("ChartDialog/StartY", txtStartY->value().text());
+    settings.setValue("ChartDialog/EndY", txtEndY->value().text());
     settings.setValue("ChartDialog/AxisLength", radAxisLength->isChecked());
     settings.setValue("ChartDialog/AxisX", radAxisX->isChecked());
     settings.setValue("ChartDialog/AxisY", radAxisY->isChecked());
@@ -341,8 +341,8 @@ void ChartDialog::plotGeometry()
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
-    Point start(txtStartX->value().number, txtStartY->value().number);
-    Point end(txtEndX->value().number, txtEndY->value().number);
+    Point start(txtStartX->value().number(), txtStartY->value().number());
+    Point end(txtEndX->value().number(), txtEndY->value().number());
 
     Point diff((end.x - start.x)/(count-1), (end.y - start.y)/(count-1));
 
@@ -425,7 +425,7 @@ void ChartDialog::plotTime()
         // change time level
         Util::scene()->sceneSolution()->setTimeStep(i);
 
-        Point point(txtPointX->value().number, txtPointY->value().number);
+        Point point(txtPointX->value().number(), txtPointY->value().number());
         LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
 
         // x value
@@ -596,14 +596,16 @@ void ChartDialog::doChartLine()
             if (!txtEndX->evaluate()) return;
             if (!txtEndY->evaluate()) return;
 
-            emit setChartLine(Point(txtStartX->value().number, txtStartY->value().number), Point(txtEndX->value().number, txtEndY->value().number));
+            emit setChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                              Point(txtEndX->value().number(), txtEndY->value().number()));
         }
         if (tabAnalysisType->currentWidget() == widTime)
         {
             if (!txtPointX->evaluate()) return;
             if (!txtPointY->evaluate()) return;
 
-            emit setChartLine(Point(txtPointX->value().number, txtPointY->value().number), Point(txtPointX->value().number, txtPointY->value().number));
+            emit setChartLine(Point(txtPointX->value().number(), txtPointY->value().number()),
+                              Point(txtPointX->value().number(), txtPointY->value().number()));
         }
     }
     else

@@ -124,7 +124,7 @@ void HermesGeneral::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeM
     SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(marker);
 
     element->setAttribute("type", physicFieldBCToStringKey(edgeGeneralMarker->type));
-    element->setAttribute("value", edgeGeneralMarker->value.text);
+    element->setAttribute("value", edgeGeneralMarker->value.text());
 }
 
 void HermesGeneral::readLabelMarkerFromDomElement(QDomElement *element)
@@ -138,8 +138,8 @@ void HermesGeneral::writeLabelMarkerToDomElement(QDomElement *element, SceneLabe
 {
     SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(marker);
 
-    element->setAttribute("rightside", labelGeneralMarker->rightside.text);
-    element->setAttribute("constant", labelGeneralMarker->constant.text);
+    element->setAttribute("rightside", labelGeneralMarker->rightside.text());
+    element->setAttribute("constant", labelGeneralMarker->constant.text());
 }
 
 LocalPointValue *HermesGeneral::localPointValue(Point point)
@@ -351,7 +351,7 @@ QList<SolutionArray *> HermesGeneral::solve(ProgressItemSolve *progressItemSolve
             if (!edgeGeneralMarker->value.evaluate()) return QList<SolutionArray *>();
 
             generalEdge[i+1].type = edgeGeneralMarker->type;
-            generalEdge[i+1].value = edgeGeneralMarker->value.number;
+            generalEdge[i+1].value = edgeGeneralMarker->value.number();
 
             switch (edgeGeneralMarker->type)
             {
@@ -360,7 +360,7 @@ QList<SolutionArray *> HermesGeneral::solve(ProgressItemSolve *progressItemSolve
                 break;
             case PhysicFieldBC_General_Value:
                 bcTypes.add_bc_dirichlet(i+1);
-                bcValues.add_const(i+1, edgeGeneralMarker->value.number);
+                bcValues.add_const(i+1, edgeGeneralMarker->value.number());
                 break;
             case PhysicFieldBC_General_Derivative:
                 bcTypes.add_bc_newton(i+1);
@@ -384,15 +384,16 @@ QList<SolutionArray *> HermesGeneral::solve(ProgressItemSolve *progressItemSolve
             if (!labelGeneralMarker->rightside.evaluate()) return QList<SolutionArray *>();
             if (!labelGeneralMarker->constant.evaluate()) return QList<SolutionArray *>();
 
-            generalLabel[i].rightside = labelGeneralMarker->rightside.number;
-            generalLabel[i].constant = labelGeneralMarker->constant.number;
+            generalLabel[i].rightside = labelGeneralMarker->rightside.number();
+            generalLabel[i].constant = labelGeneralMarker->constant.number();
         }
     }
 
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Hermes::vector<BCTypes *>(&bcTypes),
-                                                                  Hermes::vector<BCValues *>(&bcValues),
-                                                                  callbackGeneralWeakForm);
+    SolutionAgros solutionAgros(progressItemSolve);
+
+    QList<SolutionArray *> solutionArrayList = solutionAgros.solveSolutioArray(Hermes::vector<BCTypes *>(&bcTypes),
+                                                                               Hermes::vector<BCValues *>(&bcValues),
+                                                                               callbackGeneralWeakForm);
 
     delete [] generalEdge;
     delete [] generalLabel;
@@ -421,8 +422,8 @@ LocalPointValueGeneral::LocalPointValueGeneral(Point &point) : LocalPointValue(p
 
             SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
 
-            rightside = marker->rightside.number;
-            constant = marker->constant.number;
+            rightside = marker->rightside.number();
+            constant = marker->constant.number();
         }
     }
 }
@@ -432,30 +433,30 @@ double LocalPointValueGeneral::variableValue(PhysicFieldVariable physicFieldVari
     switch (physicFieldVariable)
     {
     case PhysicFieldVariable_Variable:
-        {
-            return variable;
-        }
+    {
+        return variable;
+    }
         break;
     case PhysicFieldVariable_General_Gradient:
+    {
+        switch (physicFieldVariableComp)
         {
-            switch (physicFieldVariableComp)
-            {
-            case PhysicFieldVariableComp_X:
-                return gradient.x;
-                break;
-            case PhysicFieldVariableComp_Y:
-                return gradient.y;
-                break;
-            case PhysicFieldVariableComp_Magnitude:
-                return gradient.magnitude();
-                break;
-            }
+        case PhysicFieldVariableComp_X:
+            return gradient.x;
+            break;
+        case PhysicFieldVariableComp_Y:
+            return gradient.y;
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+            return gradient.magnitude();
+            break;
         }
+    }
         break;
     case PhysicFieldVariable_General_Constant:
-        {
-            return constant;
-        }
+    {
+        return constant;
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueGeneral::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
@@ -468,12 +469,12 @@ QStringList LocalPointValueGeneral::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
-            QString("%1").arg(point.y, 0, 'e', 5) <<
-            QString("%1").arg(variable, 0, 'e', 5) <<
-            QString("%1").arg(gradient.x, 0, 'e', 5) <<
-            QString("%1").arg(gradient.y, 0, 'e', 5) <<
-            QString("%1").arg(gradient.magnitude(), 0, 'e', 5) <<
-            QString("%1").arg(constant, 0, 'f', 3);
+           QString("%1").arg(point.y, 0, 'e', 5) <<
+           QString("%1").arg(variable, 0, 'e', 5) <<
+           QString("%1").arg(gradient.x, 0, 'e', 5) <<
+           QString("%1").arg(gradient.y, 0, 'e', 5) <<
+           QString("%1").arg(gradient.magnitude(), 0, 'e', 5) <<
+           QString("%1").arg(constant, 0, 'f', 3);
 
     return QStringList(row);
 }
@@ -494,7 +495,7 @@ QStringList SurfaceIntegralValueGeneral::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
-            QString("%1").arg(surface, 0, 'e', 5);
+           QString("%1").arg(surface, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -519,7 +520,7 @@ QStringList VolumeIntegralValueGeneral::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-            QString("%1").arg(crossSection, 0, 'e', 5);
+           QString("%1").arg(crossSection, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -530,37 +531,37 @@ void ViewScalarFilterGeneral::calculateVariable(int i)
     switch (m_physicFieldVariable)
     {
     case PhysicFieldVariable_Variable:
-        {
-            node->values[0][0][i] = value1[i];
-        }
+    {
+        node->values[0][0][i] = value1[i];
+    }
         break;
     case PhysicFieldVariable_General_Gradient:
+    {
+        switch (m_physicFieldVariableComp)
         {
-            switch (m_physicFieldVariableComp)
-            {
-            case PhysicFieldVariableComp_X:
-                {
-                    node->values[0][0][i] = -dudx1[i];
-                }
-                break;
-            case PhysicFieldVariableComp_Y:
-                {
-                    node->values[0][0][i] = -dudy1[i];
-                }
-                break;
-            case PhysicFieldVariableComp_Magnitude:
-                {
-                    node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
-                }
-                break;
-            }
+        case PhysicFieldVariableComp_X:
+        {
+            node->values[0][0][i] = -dudx1[i];
         }
+            break;
+        case PhysicFieldVariableComp_Y:
+        {
+            node->values[0][0][i] = -dudy1[i];
+        }
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+        {
+            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+        }
+            break;
+        }
+    }
         break;
     case PhysicFieldVariable_General_Constant:
-        {
-            SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
-            node->values[0][0][i] = marker->constant.number;
-        }
+    {
+        SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
+        node->values[0][0][i] = marker->constant.number();
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterGeneral::calculateVariable()" << endl;
@@ -582,7 +583,7 @@ QString SceneEdgeGeneralMarker::script()
     return QString("addboundary(\"%1\", \"%2\", %3)").
             arg(name).
             arg(physicFieldBCToStringKey(type)).
-            arg(value.text);
+            arg(value.text());
 }
 
 QMap<QString, QString> SceneEdgeGeneralMarker::data()
@@ -591,10 +592,10 @@ QMap<QString, QString> SceneEdgeGeneralMarker::data()
     switch (type)
     {
     case PhysicFieldBC_General_Value:
-        out["Value"] = value.text;
+        out["Value"] = value.text();
         break;
     case PhysicFieldBC_General_Derivative:
-        out["Derivative"] = value.text;
+        out["Derivative"] = value.text();
         break;
     }
     return QMap<QString, QString>(out);
@@ -619,15 +620,15 @@ QString SceneLabelGeneralMarker::script()
 {
     return QString("addmaterial(\"%1\", %2, %3)").
             arg(name).
-            arg(rightside.text).
-            arg(constant.text);
+            arg(rightside.text()).
+            arg(constant.text());
 }
 
 QMap<QString, QString> SceneLabelGeneralMarker::data()
 {
     QMap<QString, QString> out;
-    out["Rightside"] = rightside.text;
-    out["Constant"] = constant.text;
+    out["Rightside"] = rightside.text();
+    out["Constant"] = constant.text();
     return QMap<QString, QString>(out);
 }
 
