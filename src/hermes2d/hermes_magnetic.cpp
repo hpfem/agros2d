@@ -1706,7 +1706,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         }
         else
         {
-            h1_integrate_expression(dudx1[i] * (marker->current_density_imag.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+            h1_integrate_expression(dudx1[i] * (marker->current_density_real.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                                      (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
 
         }
@@ -1744,7 +1744,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
         }
         else
         {
-            h1_integrate_expression(2 * M_PI * x[i] * dudy1[i] * (marker->current_density_imag.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
+            h1_integrate_expression(2 * M_PI * x[i] * dudy1[i] * (marker->current_density_real.number - marker->conductivity.number * ((marker->velocity_x.number - marker->velocity_angular.number * y[i]) * dudx1[i] +
                                                                                                                                        (marker->velocity_y.number + marker->velocity_angular.number * x[i]) * dudy1[i])));
 
         }
