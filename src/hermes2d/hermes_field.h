@@ -62,6 +62,7 @@ public:
     virtual int numberOfSolution() = 0;
     virtual bool hasHarmonic() = 0;
     virtual bool hasTransient() = 0;
+    virtual bool hasNonlinearity() = 0;
 
     virtual void readEdgeMarkerFromDomElement(QDomElement *element) = 0;
     virtual void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker) = 0;

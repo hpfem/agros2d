@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "weakform/forms.h"
+#include "alglib/interpolation.h"
 
 // data table row
 struct DataTableRow
@@ -44,10 +45,12 @@ public:
     void clear();
     void remove(double key);
 
-    void add(double key, double value);
+    void add(double key, double value, bool init = true);
     void add(double *keys, double *values, int count);
     void get(double *keys, double *values, double *derivatives);
     DataTable *copy() const;
+
+    void init_spline();
 
     inline DataTableRow *data() { return m_data; }
 
@@ -61,10 +64,14 @@ public:
     double value(double key);
     Ord value(Ord key);
 
-    double dydx(double key);
-    Ord dydx(Ord key);
-    double dxdy(double key);
-    Ord dxdy(Ord key);
+    double derivative(double key);
+    Ord derivative(Ord key);
+
+    double value_spline(double key);
+    Ord value_spline(Ord key);
+
+    double derivative_spline(double key);
+    Ord derivative_spline(Ord key);
 
     std::string to_string();
     void from_string(const std::string &str);
@@ -74,6 +81,8 @@ public:
 
 private:
     DataTableRow *m_data;
+
+    alglib::spline1dinterpolant m_splineAlglib;
 };
 
 #endif // DATATABLE_H

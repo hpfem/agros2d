@@ -34,6 +34,7 @@ struct MagneticLabel
     double current_density_real;
     double current_density_imag;
     Value permeability;
+    Value reluctivity;
     double conductivity;
     double remanence;
     double remanence_angle;
@@ -185,7 +186,7 @@ Scalar magnetic_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Re
         for (int i = 0; i < n; i++)
         {
             result += wt[i] * magneticLabel[e->elem_marker].current_density_real * (v->val[i])
-                    - wt[i] *  magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability.value((isLinear) ? 0.0 : sqrt(sqr(ext->fn[0]->dx[i]) + sqr(ext->fn[0]->dy[i]))) * MU0)
+                    - wt[i] * magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability.value((isLinear) ? 0.0 : sqrt(sqr(ext->fn[0]->dx[i]) + sqr(ext->fn[0]->dy[i]))) * MU0)
                     * (- sin(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dx[i]
                        + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i]);
 
@@ -236,9 +237,9 @@ Scalar magnetic_jacobian(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, 
     if (isPlanar)
         for (int i = 0; i < n; i++)
         {
-            result += wt[i] * (magneticLabel[e->elem_marker].permeability.dxdy(sqrt(sqr(u_prev->dx[i]) + sqr(u_prev->dy[i])))
+            result += wt[i] * (magneticLabel[e->elem_marker].reluctivity.derivative(sqrt(sqr(u_prev->dx[i]) + sqr(u_prev->dy[i])))
                                * u->val[i] * (u_prev->dx[i] * v->dx[i] + u_prev->dy[i] * v->dy[i])
-                               + 1.0 / (magneticLabel[e->elem_marker].permeability.value(sqrt(sqr(u_prev->dx[i]) + sqr(u_prev->dy[i]))) * MU0)
+                               + (magneticLabel[e->elem_marker].reluctivity.value(sqrt(sqr(u_prev->dx[i]) + sqr(u_prev->dy[i]))))
                                * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]));
         }
 
@@ -254,12 +255,14 @@ Scalar magnetic_residual(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, 
     if (isPlanar)
         for (int i = 0; i < n; i++)
         {
-            result += wt[i] * (1.0 / (magneticLabel[e->elem_marker].permeability.value(sqrt(sqr(u_prev->dx[i]) + sqr(u_prev->dy[i]))) * MU0)
+            result += wt[i] * ((magneticLabel[e->elem_marker].reluctivity.value(sqrt(sqr(u_prev->dx[i]) + sqr(u_prev->dy[i]))))
                                * (u_prev->dx[i] * v->dx[i] + u_prev->dy[i] * v->dy[i])
-                               - (magneticLabel[e->elem_marker].current_density_real * v->val[i])
+                               - (magneticLabel[e->elem_marker].current_density_real * v->val[i]));
+            /*
                                - (magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability.value(sqrt(sqr(u_prev->dx[i]) + sqr(u_prev->dy[i]))) * MU0))
                                   * (- sin(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dx[i]
                                      + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i]));
+                               */
         }
 
     return result;
@@ -1081,6 +1084,30 @@ QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolv
             magneticLabel[i].velocity_x = labelMagneticMarker->velocity_x.number();
             magneticLabel[i].velocity_y = labelMagneticMarker->velocity_y.number();
             magneticLabel[i].velocity_angular = labelMagneticMarker->velocity_angular.number();
+
+            // newton - reluctivity
+            int count = magneticLabel[i].permeability.table->size();
+
+            if (count > 0)
+            {
+                double *keys = new double[count];
+                double *values = new double[count];
+                double *derivatives = new double[count];
+
+                magneticLabel[i].permeability.table->get(keys, values, derivatives);
+                for (int j = 0; j < count; j++)
+                    values[j] = 1.0 / (values[j] * 4*M_PI*1e-7);
+
+                magneticLabel[i].reluctivity.table->add(keys, values, count);
+
+                delete [] keys;
+                delete [] values;
+                delete [] derivatives;
+            }
+            else
+            {
+                magneticLabel[i].reluctivity.setText(QString::number(1.0 / (magneticLabel[i].permeability.number() * 4*M_PI*1e-7)));
+            }
         }
     }
 
@@ -2594,7 +2621,7 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
     case PhysicFieldVariable_Magnetic_Permeability:
     {
         SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
-        node->values[0][0][i] = marker->permeability.number();
+        node->values[0][0][i] = marker->permeability.value(sqrt((sqr(dudx1[i]) + sqr(dudy1[i]))));
     }
         break;
     case PhysicFieldVariable_Magnetic_Conductivity:

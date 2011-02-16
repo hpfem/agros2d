@@ -183,10 +183,8 @@ public:
 
     double value(double key = 0.0);
     Ord value(Ord ord);
-    double dydx(double key = 0.0);
-    Ord dydx(Ord ord);
-    double dxdy(double key = 0.0);
-    Ord dxdy(Ord ord);
+    double derivative(double key = 0.0);
+    Ord derivative(Ord ord);
 
     QString toString();
     void fromString(const QString &str);

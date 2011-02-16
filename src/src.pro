@@ -75,7 +75,21 @@ SOURCES += util.cpp \
     logdialog.cpp \
     datatable.cpp \
     datatabledialog.cpp \
-    datafunction.cpp
+    datafunction.cpp \
+    alglib/alglibinternal.cpp \
+    alglib/ap.cpp \
+    alglib/diffequations.cpp \
+    alglib/integration.cpp \
+    alglib/linalg.cpp \
+    alglib/solvers.cpp \
+    alglib/statistics.cpp \
+    alglib/alglibmisc.cpp \
+    alglib/dataanalysis.cpp \
+    alglib/fasttransforms.cpp \
+    alglib/interpolation.cpp \
+    alglib/optimization.cpp \
+    alglib/specialfunctions.cpp
+
 HEADERS += util.h \
     scene.h \
     gui.h \

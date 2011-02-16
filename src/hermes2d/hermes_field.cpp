@@ -462,9 +462,19 @@ bool SolutionAgros::solve(WeakForm *wf,
             // ProjNormType projNormTypeTMP = HERMES_L2_NORM;
 
             // calc error
+            double *val_sol, *val_solpic, *val_diff;
             double error = 0.0;
             for (int i = 0; i < numberOfSolution; i++)
+            {
                 error += calc_rel_error(solution.at(i), solutionPicard.at(i), projNormTypeTMP) * 100.0;
+
+                val_sol = solution.at(i)->get_fn_values();
+                val_solpic = solutionPicard.at(i)->get_fn_values();
+
+                val_diff = new double[Space::get_num_dofs(space)];
+                for (int j = 0; j < Space::get_num_dofs(space); j++)
+                    val_diff[j] = val_solpic[j]; //  + 0.5 * (val_sol[j] - val_solpic[j]);
+            }
 
             // emit signal
             m_progressItemSolve->emitMessage(QObject::tr("Picards method rel. error (%2/%3): %1%").
@@ -483,7 +493,14 @@ bool SolutionAgros::solve(WeakForm *wf,
 
             // copy solution
             for (int i = 0; i < numberOfSolution; i++)
+            {
+                // if (error > 100.0)
+                //     solution.at(i)->multiply(0.5);
+                // else
                 solution.at(i)->copy(solutionPicard.at(i));
+            }
+            // Solution::vector_to_solutions(val_solpic, space, solution);
+            // Solution::vector_to_solutions(solutionPicard., space, solution);
         }
 
         for (int i = 0; i < solutionPicard.size(); i++)

@@ -861,7 +861,10 @@ double Value::value(double key)
     if (m_isLinear || table->size() == 0)
         return number();
     else
-        return table->value(key);
+    {
+        // std::cout << table->value(key) << std::endl;
+        return table->value_spline(key);
+    }
 }
 
 Ord Value::value(Ord key)
@@ -869,7 +872,7 @@ Ord Value::value(Ord key)
     return 1.0;
 }
 
-double Value::dydx(double key)
+double Value::derivative(double key)
 {
     // if (m_isLinear == -1)
     m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
@@ -877,26 +880,10 @@ double Value::dydx(double key)
     if (m_isLinear || table->size() == 0)
         return 0.0;
     else
-        return table->dydx(key);
+        return table->derivative_spline(key);
 }
 
-Ord Value::dydx(Ord key)
-{
-    return 1.0;
-}
-
-double Value::dxdy(double key)
-{
-    // if (m_isLinear == -1)
-    m_isLinear = (Util::scene()->problemInfo()->linearityType == LinearityType_Linear) ? 1 : 0;
-
-    if (m_isLinear || table->size() == 0)
-        return 0.0;
-    else
-        return table->dxdy(key);
-}
-
-Ord Value::dxdy(Ord key)
+Ord Value::derivative(Ord key)
 {
     return 1.0;
 }

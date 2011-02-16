@@ -27,7 +27,9 @@ DataTable::DataTable()
 DataTable::DataTable(double key, double value)
 {
     m_data = NULL;
-    add(key, value);
+    add(key, value, false);
+
+    init_spline();
 }
 
 DataTable::DataTable(double *keys, double *values, int count)
@@ -80,7 +82,7 @@ void DataTable::remove(double key)
     }
 }
 
-void DataTable::add(double key, double value)
+void DataTable::add(double key, double value, bool init)
 {
     DataTableRow *data = m_data;
 
@@ -137,6 +139,19 @@ void DataTable::add(double key, double value)
         // next value
         data = data->next;
     }
+
+    if (init)
+        init_spline();
+}
+
+void DataTable::add(double *keys, double *values, int count)
+{
+    for (int i = 0; i<count; i++)
+    {
+        add(keys[i], values[i], false);
+    }
+
+    init_spline();
 }
 
 void DataTable::get(double *keys, double *values, double *derivatives)
@@ -149,7 +164,7 @@ void DataTable::get(double *keys, double *values, double *derivatives)
 
         keys[i] = tmp->key;
         values[i] = tmp->value;
-        derivatives[i] = dydx(tmp->key);
+        derivatives[i] = derivative(tmp->key);
 
         // next row
         data = data->next;
@@ -166,21 +181,59 @@ DataTable *DataTable::copy() const
     {
         DataTableRow *tmp = data;
 
-        table->add(tmp->key, tmp->value);
+        table->add(tmp->key, tmp->value, false);
 
         // next row
         data = data->next;
     }
 
+    table->init_spline();
     return table;
 }
 
-void DataTable::add(double *keys, double *values, int count)
+void DataTable::init_spline()
 {
-    for (int i = 0; i<count; i++)
+    int length = size();
+
+    if (length <= 1)
+        return;
+
+    // prepare data
+    double *x = new double[length];
+    double *y = new double[length];
+
+    DataTableRow *data = m_data;
+    int i = 0;
+    while (data)
     {
-        add(keys[i], values[i]);
+        DataTableRow *tmp = data;
+
+        x[i] = tmp->key;
+        y[i] = tmp->value;
+
+        // next row
+        data = data->next;
+        i++;
     }
+
+    std::cout << "init spline" << std::endl;
+
+    // alglib
+    // delete old spline
+    alglib::real_1d_array xi;
+    alglib::real_1d_array yi;
+    xi.setcontent(length, x);
+    yi.setcontent(length, y);
+
+    alglib::ae_int_t natural_bound_type = 2;
+    // alglib::spline1dbuildcubic(xi, yi, length, natural_bound_type, 0.0, natural_bound_type, 0.0, m_splineAlglib);
+    alglib::spline1dbuildakima(xi, yi, m_splineAlglib);
+    // alglib::spline1dbuildlinear(xi, yi, m_splineAlglib);
+    // alglib::spline1dbuildcatmullrom(xi, yi, m_splineAlglib);
+
+    // cleanup
+    delete [] x;
+    delete [] y;
 }
 
 int DataTable::size()
@@ -287,7 +340,7 @@ Ord DataTable::value(Ord key)
     return 1.0;
 }
 
-double DataTable::dydx(double key)
+double DataTable::derivative(double key)
 {
     DataTableRow *previous = NULL;
     DataTableRow *data = m_data;
@@ -298,13 +351,13 @@ double DataTable::dydx(double key)
 
     // key < first value
     if (key <= data->key)
-        return (data->next->value - data->value) / (data->next->key - data->key);
+        return 0.0; // (data->next->value - data->value) / (data->next->key - data->key);
 
     while (data)
     {
         // key > last value
         if (!data->next && key >= data->key)
-            return (data->value - previous->value) / (data->key - previous->key);
+            return 0.0; // (data->value - previous->value) / (data->key - previous->key);
 
         // key
         if (data->next && fabs(key - data->key) < EPS_ZERO)
@@ -322,17 +375,37 @@ double DataTable::dydx(double key)
     }
 }
 
-Ord DataTable::dydx(Ord key)
+Ord DataTable::derivative(Ord key)
 {
     return 1.0;
 }
 
-double DataTable::dxdy(double key)
+double DataTable::value_spline(double key)
 {
-    return 1.0 / dydx(key);
+    if (m_data && m_data->next)
+        return alglib::spline1dcalc(m_splineAlglib, key);
+    else
+        return 0.0;
 }
 
-Ord DataTable::dxdy(Ord key)
+Ord DataTable::value_spline(Ord key)
+{
+    return 1.0;
+}
+
+double DataTable::derivative_spline(double key)
+{
+    if (m_data && m_data->next)
+    {
+        double s, ds, d2s;
+        alglib::spline1ddiff(m_splineAlglib, key, s, ds, d2s);
+        return ds;
+    }
+    else
+        return 0.0;
+}
+
+Ord DataTable::derivative_spline(Ord key)
 {
     return 1.0;
 }
@@ -398,7 +471,9 @@ void DataTable::from_string(const std::string &str)
 
     // add to the array
     for (int i = 0; i < keys_double.size(); i++)
-        add(keys_double[i], values_double[i]);
+        add(keys_double[i], values_double[i], false);
+
+    init_spline();
 }
 
 void DataTable::print()
@@ -420,7 +495,7 @@ void DataTable::save(const char *filename, double start, double end, int count)
 
     for (double val = start; val <= end; val += (end - start) / (count-1))
     {
-        fprintf(f, "%.14g\t%.14g\t%.14g\n", val, value(val), dydx(val));
+        fprintf(f, "%.14g\t%.14g\t%.14g\n", val, value(val), derivative(val));
     }
 
     fclose(f);
@@ -482,11 +557,11 @@ void test()
     _assert(fabs(table.value(30) - 40.0) < EPS_ZERO);
     _assert(fabs(table.value(50) - 20.0) < EPS_ZERO);
 
-    _assert(fabs(table.dydx(-20) - -0.4) < EPS_ZERO);
-    _assert(fabs(table.dydx(12) - 0.0) < EPS_ZERO);
-    _assert(fabs(table.dydx(32) - -6.0) < EPS_ZERO);
-    _assert(fabs(table.dydx(30) - -2.0/3.0) < EPS_ZERO);
-    _assert(fabs(table.dydx(50) - 2.0) < EPS_ZERO);
+    _assert(fabs(table.derivative(-20) - -0.4) < EPS_ZERO);
+    _assert(fabs(table.derivative(12) - 0.0) < EPS_ZERO);
+    _assert(fabs(table.derivative(32) - -6.0) < EPS_ZERO);
+    _assert(fabs(table.derivative(30) - -2.0/3.0) < EPS_ZERO);
+    _assert(fabs(table.derivative(50) - 2.0) < EPS_ZERO);
 
     // min and max
     _assert(fabs(table.min_key() - -10.0) < EPS_ZERO);

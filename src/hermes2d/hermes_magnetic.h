@@ -32,6 +32,7 @@ public:
     int numberOfSolution();
     bool hasHarmonic() { return true; }
     bool hasTransient() { return true; }
+    bool hasNonlinearity() { return true; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
     void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);

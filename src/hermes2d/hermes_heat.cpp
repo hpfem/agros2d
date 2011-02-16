@@ -172,7 +172,7 @@ Scalar heat_jacobian(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func
     if (isPlanar)
         for (int i = 0; i < n; i++)
         {
-            result += wt[i] * (heatLabel[e->elem_marker].thermal_conductivity.dydx(u_prev->val[i])
+            result += wt[i] * (heatLabel[e->elem_marker].thermal_conductivity.derivative(u_prev->val[i])
                                * u->val[i] * (u_prev->dx[i] * v->dx[i] + u_prev->dy[i] * v->dy[i])
                               + heatLabel[e->elem_marker].thermal_conductivity.value(u_prev->val[i])
                                * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]));
