@@ -45,8 +45,11 @@ class SLineEditDouble : public QLineEdit
 {
     Q_OBJECT
 public:
-    SLineEditDouble(double val = 0, QWidget *parent = 0) : QLineEdit(parent)
+    SLineEditDouble(double val = 0, bool validator = false, QWidget *parent = 0) : QLineEdit(parent)
     {
+        if (validator)
+            setValidator(new QDoubleValidator);
+
         setValue(val);
     }
 

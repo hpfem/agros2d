@@ -570,7 +570,7 @@ QWidget *ConfigDialog::createViewWidget()
 
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
-    txtView3DAngle = new SLineEditDouble(0, this);
+    txtView3DAngle = new SLineEditDouble(0, false, this);
     chkView3DBackground = new QCheckBox(tr("Gradient background"), this);
 
     QGridLayout *layout3D = new QGridLayout();
