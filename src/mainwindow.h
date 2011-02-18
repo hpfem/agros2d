@@ -62,6 +62,8 @@ private slots:
     void doDocumentExportMeshFile();
     void doDocumentSaveImage();
     void doLoadBackground();
+    void doExportVTKScalar();
+    void doExportVTKOrder();
 
     void doSceneMouseMoved(const QPointF &position);
 
@@ -128,6 +130,8 @@ private:
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;
     QAction *actDocumentExportMeshFile;
+    QAction *actExportVTKScalar;
+    QAction *actExportVTKOrder;
     QAction *actDocumentSaveImage;
     QAction *actExit;
     QAction *actLoadBackground;

@@ -1178,59 +1178,13 @@ void Mesh::copy_converted(Mesh* mesh)
 
 void Mesh::convert_triangles_to_quads()
 {
-  Element* e;
-  Mesh tmp;
 
-  elements.set_append_only(true);
-  for_all_active_elements(e, this)
-    refine_element_to_quads(e->id);
-  elements.set_append_only(false);
-
-  tmp.copy_converted(this);
-  for (int i = 0; i < tmp.ntopvert; i++)
-  {
-     if (tmp.nodes[i].type == 1)
-     {
-       tmp.nodes[i].y = 0.0;
-     }
-  }
-  char* mesh_tmp = NULL;
-  mesh_tmp = tmpnam(NULL);
-  tmp.save(mesh_tmp);
-  Mesh mesh_tmp_for_convert;
-  H2DReader loader_mesh_tmp_for_convert;
-  loader_mesh_tmp_for_convert.load(mesh_tmp, &tmp);
-  remove(mesh_tmp);
-  copy(&tmp);
 }
 
 ////convert a quad element into two triangle elements///////
 void Mesh::convert_quads_to_triangles()
 {
-  Element* e;
-  Mesh tmp;
 
-  elements.set_append_only(true);
-  for_all_active_elements(e, this)
-    refine_element_to_triangles(e->id);
-  elements.set_append_only(false);
-
-  tmp.copy_converted(this);
-  for (int i = 0; i < tmp.ntopvert; i++)
-  {
-     if (tmp.nodes[i].type == 1)
-     {
-       tmp.nodes[i].y = 0.0;
-     }
-  }
-  char* mesh_tmp = NULL;
-  mesh_tmp = tmpnam(NULL);
-  tmp.save(mesh_tmp);
-  Mesh mesh_tmp_for_convert;
-  H2DReader loader_mesh_tmp_for_convert;
-  loader_mesh_tmp_for_convert.load(mesh_tmp, &tmp);
-  remove(mesh_tmp);
-  copy(&tmp);
 }
 
 void Mesh::refine_triangle_to_quads(Element* e)

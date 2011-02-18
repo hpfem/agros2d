@@ -191,6 +191,14 @@ void MainWindow::createActions()
     actDocumentExportMeshFile->setStatusTip(tr("Export Hermes2D mesh file"));
     connect(actDocumentExportMeshFile, SIGNAL(triggered()), this, SLOT(doDocumentExportMeshFile()));
 
+    actExportVTKScalar = new QAction(tr("Export VTK scalar..."), this);
+    actExportVTKScalar->setStatusTip(tr("Export scalar view as VTK file"));
+    connect(actExportVTKScalar, SIGNAL(triggered()), this, SLOT(doExportVTKScalar()));
+
+    actExportVTKOrder = new QAction(tr("Export VTK order..."), this);
+    actExportVTKOrder->setStatusTip(tr("Export order view as VTK file"));
+    connect(actExportVTKOrder, SIGNAL(triggered()), this, SLOT(doExportVTKOrder()));
+
     actDocumentSaveImage = new QAction(tr("Export image..."), this);
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
@@ -330,6 +338,9 @@ void MainWindow::createMenus()
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentExportMeshFile);
     mnuFile->addAction(actDocumentSaveImage);
+    mnuFile->addSeparator();
+    mnuFile->addAction(actExportVTKScalar);
+    mnuFile->addAction(actExportVTKOrder);
     mnuFile->addSeparator();
     mnuFile->addAction(actLoadBackground);
 #ifndef Q_WS_MAC
@@ -678,7 +689,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
     if (QFile::exists(fileNameDocument))
     {
-    QFileInfo fileInfo(fileNameDocument);
+        QFileInfo fileInfo(fileNameDocument);
         if (fileInfo.suffix() == "a2d")
         {
             // a2d data file
@@ -709,7 +720,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     }
     else
     {
-         QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
+        QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
     }
 }
 
@@ -1048,6 +1059,9 @@ void MainWindow::doInvalidated()
     lblPhysicField->setText(tr("Physic Field: %1").arg(physicFieldString(Util::scene()->problemInfo()->physicField())));
     lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
 
+    actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+
     //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
 }
@@ -1166,6 +1180,66 @@ void MainWindow::doDocumentExportMeshFile()
     doInvalidated();
 }
 
+void MainWindow::doExportVTKScalar()
+{
+    logMessage("MainWindow::doDocumentExportVTKScalar()");
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        QSettings settings;
+        QString dir = settings.value("General/LastVTKDir").toString();
+
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+        if (fileName.isEmpty())
+            return;
+
+        if (!fileName.endsWith(".vtk"))
+            fileName.append(".vtk");
+
+        // remove existing file
+        if (QFile::exists(fileName))
+            QFile::remove(fileName);
+
+        Util::scene()->sceneSolution()->linScalarView().save_data_vtk(fileName.toStdString().c_str(),
+                                                                      physicFieldVariableToStringKey(sceneView->sceneViewSettings().scalarPhysicFieldVariable).toStdString().c_str(),
+                                                                      true);
+
+        if (!fileName.isEmpty())
+        {
+            QFileInfo fileInfo(fileName);
+            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+        }
+    }
+}
+
+void MainWindow::doExportVTKOrder()
+{
+    logMessage("MainWindow::doDocumentExportVTKOrder()");
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        QSettings settings;
+        QString dir = settings.value("General/LastVTKDir").toString();
+
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+        if (fileName.isEmpty())
+            return;
+
+        if (!fileName.endsWith(".vtk"))
+            fileName.append(".vtk");
+
+        // remove existing file
+        if (QFile::exists(fileName))
+            QFile::remove(fileName);
+
+        Util::scene()->sceneSolution()->ordView().save_data_vtk(fileName.toStdString().c_str());
+
+        if (!fileName.isEmpty())
+        {
+            QFileInfo fileInfo(fileName);
+            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+        }
+    }
+}
+
 void MainWindow::doProgressLog()
 {
     logMessage("MainWindow::doProgressLog()");
@@ -1197,7 +1271,7 @@ void MainWindow::doLoadBackground()
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
- {
+{
     // WILL BE FIXED
     /*
     logMessage("MainWindow::closeEvent()");
