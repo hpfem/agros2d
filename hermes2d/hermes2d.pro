@@ -26,7 +26,6 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             ../hermes_common/solver/epetra.cpp \
             ../hermes_common/solver/mumps.cpp \
             ../hermes_common/solver/nox.cpp \
-            ../hermes_common/solver/pardiso.cpp \
             ../hermes_common/solver/petsc.cpp \
             ../hermes_common/solver/precond_ifpack.cpp \
             ../hermes_common/solver/precond_ml.cpp \

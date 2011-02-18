@@ -110,7 +110,7 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
 {
     SolutionArray *solution = new SolutionArray();
     solution->order = new Orderizer();
-    if (space) solution->order->process_solution(space);
+    if (space) solution->order->process_space(space);
     solution->sln = new Solution();
     if (sln) solution->sln->copy(sln);
     solution->adaptiveError = adaptiveError;

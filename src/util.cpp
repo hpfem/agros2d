@@ -189,7 +189,6 @@ void initLists()
     matrixSolverTypeList.insert(SOLVER_UMFPACK, "umfpack");
     matrixSolverTypeList.insert(SOLVER_PETSC, "petsc");
     matrixSolverTypeList.insert(SOLVER_MUMPS, "mumps");
-    matrixSolverTypeList.insert(SOLVER_PARDISO, "pardiso");
     matrixSolverTypeList.insert(SOLVER_SUPERLU, "superlu");
     matrixSolverTypeList.insert(SOLVER_AMESOS, "trilinos_amesos");
     matrixSolverTypeList.insert(SOLVER_AZTECOO, "trilinos_aztecoo");
@@ -743,8 +742,6 @@ QString matrixSolverTypeString(MatrixSolverType matrixSolverType)
         return QObject::tr("PETSc");
     case SOLVER_MUMPS:
         return QObject::tr("MUMPS");
-    case SOLVER_PARDISO:
-        return QObject::tr("Pardiso");
     case SOLVER_SUPERLU:
         return QObject::tr("SuperLU");
     case SOLVER_AMESOS:
