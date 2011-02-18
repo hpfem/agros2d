@@ -19,7 +19,8 @@ DEFINES += VERSION_DAY=22
 # run cython for python extensions
 linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
 TRANSLATIONS = lang/cs_CZ.ts \
-    lang/pl_PL.ts
+    lang/pl_PL.ts \
+    lang/de_DE.ts
 CONFIG += help
 CODECFORTR = UTF-8
 RC_FILE = src.rc

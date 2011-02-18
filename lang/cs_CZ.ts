@@ -571,7 +571,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="602"/>
         <source>Hermes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hermes</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="612"/>
@@ -833,22 +833,6 @@
 </context>
 <context>
     <name>DSceneEdgeElasticityMarker</name>
-    <message>
-        <source>BC Type X:</source>
-        <translation type="obsolete">Typ okr. podmínky X:</translation>
-    </message>
-    <message>
-        <source>BC Type Y:</source>
-        <translation type="obsolete">Typ okr. podmínky Y:</translation>
-    </message>
-    <message>
-        <source>Force X (N):</source>
-        <translation type="obsolete">Síla X (N):</translation>
-    </message>
-    <message>
-        <source>Force Y (N):</source>
-        <translation type="obsolete">Síla Y (N):</translation>
-    </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1186"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1195"/>
@@ -2117,11 +2101,6 @@
         <translation>Obrázek</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="666"/>
-        <source>Remove</source>
-        <translation>Smazat</translation>
-    </message>
-    <message>
         <location filename="../src/gui.cpp" line="670"/>
         <source>Filename:</source>
         <translation>Název souboru:</translation>
@@ -2386,7 +2365,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="190"/>
         <source>Export mesh file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export sítě...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="194"/>
@@ -2589,15 +2568,6 @@
         <location filename="../src/mainwindow.cpp" line="489"/>
         <source>Workspace</source>
         <translation>Pracovní plocha</translation>
-    </message>
-    <message>
-        <source>Application</source>
-        <translation type="obsolete">Aplikace</translation>
-    </message>
-    <message>
-        <source>Problem has been modified.
-Do you want to save your changes?</source>
-        <translation type="obsolete">Problém byl změněn. Chcete uložit tyto změny?</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1047"/>
@@ -3053,14 +3023,6 @@ Do you want to save your changes?</source>
         <translation>Průběh</translation>
     </message>
     <message>
-        <source>Adaptivity conv.</source>
-        <translation type="obsolete">Konvergence (chyba)</translation>
-    </message>
-    <message>
-        <source>Adaptivity DOFs</source>
-        <translation type="obsolete">Konvergence (st. volnosti)</translation>
-    </message>
-    <message>
         <location filename="../src/progressdialog.cpp" line="905"/>
         <source>Adapt. error</source>
         <translation>Adapt. chyba</translation>
@@ -3129,10 +3091,6 @@ Do you want to save your changes?</source>
         <location filename="../src/progressdialog.cpp" line="1412"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV soubory (*.csv)</translation>
-    </message>
-    <message>
-        <source>Convergence chart</source>
-        <translation type="obsolete">Graf konvergence</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="917"/>
@@ -3294,10 +3252,6 @@ Do you want to save your changes?</source>
         <translation>Řešič</translation>
     </message>
     <message>
-        <source>Solver was started: %1 (%2, %3)</source>
-        <translation type="obsolete">Řešení problému: %1 (%2, %3)</translation>
-    </message>
-    <message>
         <location filename="../src/progressdialog.cpp" line="763"/>
         <source>Problem analysis: %1 (%2, %3)</source>
         <translation>Analýza problému: %1 (%2, %3)</translation>
@@ -3447,10 +3401,6 @@ Do you want to save your changes?</source>
         <translation>Obecné pole</translation>
     </message>
     <message>
-        <source>Electrostatic</source>
-        <translation type="obsolete">Elektrostatické pole</translation>
-    </message>
-    <message>
         <location filename="../src/util.cpp" line="611"/>
         <source>Current field</source>
         <translation>El. proudové pole</translation>
@@ -3459,10 +3409,6 @@ Do you want to save your changes?</source>
         <location filename="../src/util.cpp" line="613"/>
         <source>Heat transfer</source>
         <translation>Teplotní pole</translation>
-    </message>
-    <message>
-        <source>Elasticity</source>
-        <translation type="obsolete">Elasticita</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="205"/>
@@ -3508,10 +3454,6 @@ Do you want to save your changes?</source>
         <location filename="../src/util.cpp" line="237"/>
         <source>Magnetic field - imag</source>
         <translation>Intenzita mag. pole - imag. složka</translation>
-    </message>
-    <message>
-        <source>Electic field</source>
-        <translation type="obsolete">Intenzita el. pole</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="284"/>
@@ -3854,14 +3796,6 @@ Do you want to save your changes?</source>
         <translation>Rychlost</translation>
     </message>
     <message>
-        <source>Velocity X</source>
-        <translation type="obsolete">Rychlost X</translation>
-    </message>
-    <message>
-        <source>Velocity Y</source>
-        <translation type="obsolete">Rychlost Y</translation>
-    </message>
-    <message>
         <location filename="../src/util.cpp" line="327"/>
         <location filename="../src/util.cpp" line="681"/>
         <source>Pressure</source>
@@ -4105,10 +4039,6 @@ Do you want to save your changes?</source>
         <location filename="../src/util.cpp" line="753"/>
         <source>Trilinos/AztecOO</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Magnetic</source>
-        <translation type="obsolete">Magnetické pole</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="617"/>
@@ -4389,14 +4319,6 @@ Do you want to save your changes?</source>
         <location filename="../src/scripteditorcommandpython.cpp" line="835"/>
         <source>Physic field variable component &apos;%1&apos; is not implemented.</source>
         <translation>Proměnná &apos;%1&apos; není implementována.</translation>
-    </message>
-    <message>
-        <source>Solver: DOF is zero</source>
-        <translation type="obsolete">Řešič: Počet stupňů volnosti je nulový</translation>
-    </message>
-    <message>
-        <source>Relative error: %1 %</source>
-        <translation type="obsolete">Relativní chyba: %1 %</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="219"/>
@@ -4707,10 +4629,6 @@ Do you want to save your changes?</source>
         <translation>Obrázek: %2</translation>
     </message>
     <message>
-        <source>Show grid in figures</source>
-        <translation type="obsolete">Zobrazit mřížku v obrázkách</translation>
-    </message>
-    <message>
         <location filename="../src/reportdialog.cpp" line="93"/>
         <source>Show report</source>
         <translation>Zobrazit zprávu</translation>
@@ -4731,10 +4649,6 @@ Do you want to save your changes?</source>
         <translation>Sekce</translation>
     </message>
     <message>
-        <source>Figures</source>
-        <translation type="obsolete">Obrázky</translation>
-    </message>
-    <message>
         <location filename="../src/reportdialog.cpp" line="122"/>
         <source>Template</source>
         <translation>Šablona</translation>
@@ -4743,10 +4657,6 @@ Do you want to save your changes?</source>
         <location filename="../src/reportdialog.cpp" line="124"/>
         <source>Style sheet</source>
         <translation>Soubor se stylem</translation>
-    </message>
-    <message>
-        <source>Basic properties</source>
-        <translation type="obsolete">Základní nastavení</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="151"/>
@@ -4867,14 +4777,6 @@ Do you want to save your changes?</source>
         <translation>Nový materiál</translation>
     </message>
     <message>
-        <source>New &amp;function...</source>
-        <translation type="obsolete">Nová &amp;funkce...</translation>
-    </message>
-    <message>
-        <source>New function</source>
-        <translation type="obsolete">Nová funkce</translation>
-    </message>
-    <message>
         <location filename="../src/scene.cpp" line="262"/>
         <source>&amp;Transform</source>
         <translation>&amp;Transformace</translation>
@@ -4929,10 +4831,6 @@ Do you want to save your changes?</source>
         <location filename="../src/scene.cpp" line="942"/>
         <source>Scale</source>
         <translation>Zvětšení/zmenšení</translation>
-    </message>
-    <message>
-        <source>unnamed function</source>
-        <translation type="obsolete">nepojmenovaná funkce</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="1309"/>
@@ -5200,7 +5098,7 @@ Do you want to save your changes?</source>
         <location filename="../src/sceneview.cpp" line="169"/>
         <location filename="../src/sceneview.cpp" line="170"/>
         <source>Snap to grid</source>
-        <translation>Zobrazit mřížku</translation>
+        <translation>Přichytit k mřížce</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="175"/>
@@ -5270,10 +5168,6 @@ Do you want to save your changes?</source>
         <location filename="../src/sceneview.cpp" line="241"/>
         <source>Volume Integrals</source>
         <translation>Objemové integrály</translation>
-    </message>
-    <message>
-        <source>&amp;Scene properties</source>
-        <translation type="obsolete">Nastavení &amp;scény</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="256"/>
@@ -5362,14 +5256,6 @@ Do you want to save your changes?</source>
 </context>
 <context>
     <name>SceneViewDialog</name>
-    <message>
-        <source>Scene View</source>
-        <translation type="obsolete">Scéna</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="obsolete">Mřížka</translation>
-    </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="131"/>
         <source>Geometry</source>
@@ -5703,12 +5589,6 @@ Do you want to save your changes?</source>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
         <translation>Soubor &apos;%1&apos; byl změněn. Chcete tyto změny uložit?</translation>
-    </message>
-    <message>
-        <source>The document has been modified.
-Do you want to save your changes?</source>
-        <translation type="obsolete">Dokument byl změněn.
-Chcete uložit změny?</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1028"/>
