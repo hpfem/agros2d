@@ -104,6 +104,7 @@ private:
     QStringList recentFiles;
 
     QMenu *mnuFile;
+    QMenu *mnuFileImportExport;
     QMenu *mnuRecentFiles;
     QMenu *mnuEdit;
     QMenu *mnuView;

@@ -319,6 +319,15 @@ void MainWindow::createMenus()
     logMessage("MainWindow::createMenus()");
 
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
+    mnuFileImportExport = new QMenu(tr("Import/Export"), this);
+    mnuFileImportExport->addAction(actDocumentImportDXF);
+    mnuFileImportExport->addAction(actDocumentExportDXF);
+    mnuFileImportExport->addSeparator();
+    mnuFileImportExport->addAction(actDocumentExportMeshFile);
+    mnuFileImportExport->addAction(actDocumentSaveImage);
+    mnuFileImportExport->addSeparator();
+    mnuFileImportExport->addAction(actExportVTKScalar);
+    mnuFileImportExport->addAction(actExportVTKOrder);
 
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
@@ -330,17 +339,10 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
-    mnuFile->addSeparator();
+    mnuFile->addMenu(mnuFileImportExport);
     mnuFile->addAction(actDocumentClose);
     mnuFile->addSeparator();
-    mnuFile->addAction(actDocumentImportDXF);
-    mnuFile->addAction(actDocumentExportDXF);
-    mnuFile->addSeparator();
-    mnuFile->addAction(actDocumentExportMeshFile);
-    mnuFile->addAction(actDocumentSaveImage);
-    mnuFile->addSeparator();
-    mnuFile->addAction(actExportVTKScalar);
-    mnuFile->addAction(actExportVTKOrder);
+
     mnuFile->addSeparator();
     mnuFile->addAction(actLoadBackground);
 #ifndef Q_WS_MAC
