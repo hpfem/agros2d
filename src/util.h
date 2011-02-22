@@ -84,6 +84,9 @@ void setVerbose(bool verb);
 void logOutput(QtMsgType type, const char *msg);
 void logMessage(const QString &msg);
 
+// show page
+void showPage(const QString &str = "");
+
 // set gui style
 void setGUIStyle(const QString &styleName);
 

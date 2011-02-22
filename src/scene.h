@@ -28,7 +28,6 @@
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
 
-struct HermesObject;
 struct HermesGeneral;
 struct HermesField;
 
@@ -38,12 +37,11 @@ class SceneEdge;
 class SceneLabel;
 class SceneEdgeMarker;
 class SceneLabelMarker;
-struct SceneViewSettings;
+class SceneViewSettings;
 class SceneSolution;
 
 class ProblemDialog;
 class SceneTransformDialog;
-class HelpDialog;
 
 class ProblemInfo
 {
@@ -86,7 +84,11 @@ public:
 
     void clear();
 
-    inline void setHermes(HermesField *hermes) { if (m_hermes) delete m_hermes; m_hermes = hermes; }
+    inline void setHermes(HermesField *hermes)
+    {
+        if (m_hermes) delete m_hermes;
+        m_hermes = hermes;
+    }
     inline HermesField *hermes() { return m_hermes; }
 
     inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
@@ -223,7 +225,6 @@ class Util
 public:
     static Util* singleton();
     static inline Scene *scene() { return Util::singleton()->m_scene; }
-    static inline HelpDialog *helpDialog() { return Util::singleton()->m_helpDialog; }
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
 
@@ -237,7 +238,6 @@ private:
     static Util *m_singleton;
 
     Scene *m_scene;
-    HelpDialog *m_helpDialog;
     QCompleter *m_completer;
     Config *m_config;
 };

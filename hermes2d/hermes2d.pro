@@ -90,8 +90,6 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/mesh/hash.cpp \
             src/mesh/h2d_reader.cpp \
             src/mesh/mesh.cpp \
-            src/mesh/mesh_lexer.cpp \
-            src/mesh/mesh_parser.cpp \
             src/mesh/python_reader.cpp \
             src/mesh/refinement_type.cpp \
             src/mesh/refmap.cpp \
@@ -114,8 +112,8 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             # src/shapeset/shapeset_hc_legendre.cpp \
             # src/shapeset/shapeset_hd_legendre.cpp \
             src/space/space.cpp \
-            #src/space/space_hcurl.cpp \
-            #src/space/space_hdiv.cpp \
+            src/space/space_hcurl.cpp \
+            src/space/space_hdiv.cpp \
             src/space/space_h1.cpp \
             src/space/space_l2.cpp \
             src/ref_selectors/hcurl_proj_based_selector.cpp \
@@ -155,8 +153,9 @@ linux-g++ {
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
 }
 
-win32-g++ {
+win32-msvc2008 {
     DEFINES += WIN32
+    DEFINES += IMPLEMENT_C99
 
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include

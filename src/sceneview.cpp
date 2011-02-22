@@ -544,15 +544,15 @@ void SceneView::paintBackground()
 
     glBegin(GL_QUADS);
     if (Util::config()->scalarView3DBackground)
-        glColor3f(0.99, 0.99, 0.99);
+        glColor3d(0.99, 0.99, 0.99);
     else
-        glColor3f(Util::config()->colorBackground.redF(),
+        glColor3d(Util::config()->colorBackground.redF(),
                   Util::config()->colorBackground.greenF(),
                   Util::config()->colorBackground.blueF());
     glVertex3d(-1.0, -1.0, 0.0);
     glVertex3d(1.0, -1.0, 0.0);
     if (Util::config()->scalarView3DBackground)
-        glColor3f(0.44, 0.56, 0.89);
+        glColor3d(0.44, 0.56, 0.89);
     glVertex3d(1.0, 1.0, 0.0);
     glVertex3d(-1.0, 1.0, 0.0);
     glEnd();
@@ -605,7 +605,7 @@ void SceneView::paintGrid()
     int step = (((int) ((cornerMax - cornerMin).x / Util::config()->gridStep) + 1) / 5);
     if (step > 0.0)
     {
-        glColor3f(Util::config()->colorGrid.redF(),
+        glColor3d(Util::config()->colorGrid.redF(),
                   Util::config()->colorGrid.greenF(),
                   Util::config()->colorGrid.blueF());
         glLineWidth(1.0);
@@ -620,11 +620,11 @@ void SceneView::paintGrid()
             for (int i = 0; i<cornerMax.x/Util::config()->gridStep; i++)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(Util::config()->colorCross.redF(),
+                    glColor3d(Util::config()->colorCross.redF(),
                               Util::config()->colorCross.greenF(),
                               Util::config()->colorCross.blueF());
                 else
-                    glColor3f(Util::config()->colorGrid.redF(),
+                    glColor3d(Util::config()->colorGrid.redF(),
                               Util::config()->colorGrid.greenF(),
                               Util::config()->colorGrid.blueF());
                 glVertex2d(i*Util::config()->gridStep, cornerMin.y);
@@ -633,11 +633,11 @@ void SceneView::paintGrid()
             for (int i = 0; i>cornerMin.x/Util::config()->gridStep; i--)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(Util::config()->colorCross.redF(),
+                    glColor3d(Util::config()->colorCross.redF(),
                               Util::config()->colorCross.greenF(),
                               Util::config()->colorCross.blueF());
                 else
-                    glColor3f(Util::config()->colorGrid.redF(),
+                    glColor3d(Util::config()->colorGrid.redF(),
                               Util::config()->colorGrid.greenF(),
                               Util::config()->colorGrid.blueF());
                 glVertex2d(i*Util::config()->gridStep, cornerMin.y);
@@ -648,11 +648,11 @@ void SceneView::paintGrid()
             for (int i = 0; i<cornerMin.y/Util::config()->gridStep; i++)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(Util::config()->colorCross.redF(),
+                    glColor3d(Util::config()->colorCross.redF(),
                               Util::config()->colorCross.greenF(),
                               Util::config()->colorCross.blueF());
                 else
-                    glColor3f(Util::config()->colorGrid.redF(),
+                    glColor3d(Util::config()->colorGrid.redF(),
                               Util::config()->colorGrid.greenF(),
                               Util::config()->colorGrid.blueF());
                 glVertex2d(cornerMin.x, i*Util::config()->gridStep);
@@ -661,11 +661,11 @@ void SceneView::paintGrid()
             for (int i = 0; i>cornerMax.y/Util::config()->gridStep; i--)
             {
                 if ((step > 0) && i % step == 0)
-                    glColor3f(Util::config()->colorCross.redF(),
+                    glColor3d(Util::config()->colorCross.redF(),
                               Util::config()->colorCross.greenF(),
                               Util::config()->colorCross.blueF());
                 else
-                    glColor3f(Util::config()->colorGrid.redF(),
+                    glColor3d(Util::config()->colorGrid.redF(),
                               Util::config()->colorGrid.greenF(),
                               Util::config()->colorGrid.blueF());
                 glVertex2d(cornerMin.x, i*Util::config()->gridStep);
@@ -686,7 +686,7 @@ void SceneView::paintGrid()
     }
 
     // axes
-    glColor3f(Util::config()->colorCross.redF(),
+    glColor3d(Util::config()->colorCross.redF(),
               Util::config()->colorCross.greenF(),
               Util::config()->colorCross.blueF());
     glLineWidth(1.0);
@@ -712,7 +712,7 @@ void SceneView::paintAxes()
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glColor3f(Util::config()->colorCross.redF(),
+    glColor3d(Util::config()->colorCross.redF(),
               Util::config()->colorCross.greenF(),
               Util::config()->colorCross.blueF());
 
@@ -772,7 +772,7 @@ void SceneView::paintRulers()
 
         if (((cornerMax.x-cornerMin.x)/step > 0) && ((cornerMin.y-cornerMax.y)/step > 0))
         {
-            glColor3f(0.3, 0.2, 0.0);
+            glColor3d(0.3, 0.2, 0.0);
 
             // horizontal ticks
             for (int i = 0; i<cornerMax.x/step; i++)
@@ -817,20 +817,20 @@ void SceneView::paintGeometry()
             glLineStipple(1, 0x8FFF);
         }
 
-        glColor3f(Util::config()->colorEdges.redF(),
+        glColor3d(Util::config()->colorEdges.redF(),
                   Util::config()->colorEdges.greenF(),
                   Util::config()->colorEdges.blueF());
         glLineWidth(Util::config()->edgeWidth);
         if (edge->isHighlighted)
         {
-            glColor3f(Util::config()->colorHighlighted.redF(),
+            glColor3d(Util::config()->colorHighlighted.redF(),
                       Util::config()->colorHighlighted.greenF(),
                       Util::config()->colorHighlighted.blueF());
             glLineWidth(Util::config()->edgeWidth + 2.0);
         }
         if (edge->isSelected)
         {
-            glColor3f(Util::config()->colorSelected.redF(),
+            glColor3d(Util::config()->colorSelected.redF(),
                       Util::config()->colorSelected.greenF(),
                       Util::config()->colorSelected.blueF());
             glLineWidth(Util::config()->edgeWidth + 2.0);
@@ -861,7 +861,7 @@ void SceneView::paintGeometry()
     {
         foreach (SceneNode *node, m_scene->nodes)
         {
-            glColor3f(Util::config()->colorNodes.redF(),
+            glColor3d(Util::config()->colorNodes.redF(),
                       Util::config()->colorNodes.greenF(),
                       Util::config()->colorNodes.blueF());
             glPointSize(Util::config()->nodeSize);
@@ -870,7 +870,7 @@ void SceneView::paintGeometry()
             glVertex2d(node->point.x, node->point.y);
             glEnd();
 
-            glColor3f(Util::config()->colorBackground.redF(),
+            glColor3d(Util::config()->colorBackground.redF(),
                       Util::config()->colorBackground.greenF(),
                       Util::config()->colorBackground.blueF());
             glPointSize(Util::config()->nodeSize - 2.0);
@@ -882,11 +882,11 @@ void SceneView::paintGeometry()
             if ((node->isSelected) || (node->isHighlighted))
             {
                 if (node->isHighlighted)
-                    glColor3f(Util::config()->colorHighlighted.redF(),
+                    glColor3d(Util::config()->colorHighlighted.redF(),
                               Util::config()->colorHighlighted.greenF(),
                               Util::config()->colorHighlighted.blueF());
                 if (node->isSelected)
-                    glColor3f(Util::config()->colorSelected.redF(),
+                    glColor3d(Util::config()->colorSelected.redF(),
                               Util::config()->colorSelected.greenF(),
                               Util::config()->colorSelected.blueF());
 
@@ -904,7 +904,7 @@ void SceneView::paintGeometry()
     {
         foreach (SceneLabel *label, m_scene->labels)
         {
-            glColor3f(Util::config()->colorLabels.redF(),
+            glColor3d(Util::config()->colorLabels.redF(),
                       Util::config()->colorLabels.greenF(),
                       Util::config()->colorLabels.blueF());
             glPointSize(Util::config()->labelSize);
@@ -912,7 +912,7 @@ void SceneView::paintGeometry()
             glVertex2d(label->point.x, label->point.y);
             glEnd();
 
-            glColor3f(Util::config()->colorBackground.redF(),
+            glColor3d(Util::config()->colorBackground.redF(),
                       Util::config()->colorBackground.greenF(),
                       Util::config()->colorBackground.blueF());
             glPointSize(Util::config()->labelSize - 2.0);
@@ -923,11 +923,11 @@ void SceneView::paintGeometry()
             if ((label->isSelected) || (label->isHighlighted))
             {
                 if (label->isHighlighted)
-                    glColor3f(Util::config()->colorHighlighted.redF(),
+                    glColor3d(Util::config()->colorHighlighted.redF(),
                               Util::config()->colorHighlighted.greenF(),
                               Util::config()->colorHighlighted.blueF());
                 if (label->isSelected)
-                    glColor3f(Util::config()->colorSelected.redF(),
+                    glColor3d(Util::config()->colorSelected.redF(),
                               Util::config()->colorSelected.greenF(),
                               Util::config()->colorSelected.blueF());
 
@@ -940,7 +940,7 @@ void SceneView::paintGeometry()
 
             if (m_sceneMode == SceneMode_OperateOnLabels)
             {
-                glColor3f(0.1, 0.1, 0.1);
+                glColor3d(0.1, 0.1, 0.1);
 
                 Point point;
                 point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(label->marker->name)/m_scale2d/2.0;
@@ -953,7 +953,7 @@ void SceneView::paintGeometry()
             if ((m_sceneMode == SceneMode_OperateOnLabels) || (m_sceneViewSettings.showInitialMesh))
             {
                 double radius = sqrt(label->area/M_PI);
-                glColor3f(0, 0.95, 0.9);
+                glColor3d(0, 0.95, 0.9);
                 glBegin(GL_LINE_LOOP);
                 for (int i = 0; i<360; i = i + 10)
                 {
@@ -980,7 +980,7 @@ void SceneView::paintInitialMesh()
 
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3f(Util::config()->colorInitialMesh.redF(),
+    glColor3d(Util::config()->colorInitialMesh.redF(),
               Util::config()->colorInitialMesh.greenF(),
               Util::config()->colorInitialMesh.blueF());
     glLineWidth(1.3);
@@ -1012,7 +1012,7 @@ void SceneView::paintSolutionMesh()
 
     // draw initial mesh
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3f(Util::config()->colorSolutionMesh.redF(),
+    glColor3d(Util::config()->colorSolutionMesh.redF(),
               Util::config()->colorSolutionMesh.greenF(),
               Util::config()->colorSolutionMesh.blueF());
     glLineWidth(1.3);
@@ -1104,7 +1104,7 @@ void SceneView::paintOrder()
 
         for (int i = 0; i < nl; i++)
         {
-            glColor3f(1, 1, 1);
+            glColor3d(1, 1, 1);
             // if (lbox[i][0]/m_scale*aspect() > size.x && lbox[i][1]/m_scale > size.y)
             {
                 renderText(vert[lvert[i]][0] - size.x / 2.0,
@@ -1166,7 +1166,7 @@ void SceneView::paintOrderColorBar()
     glBegin(GL_QUADS);
     for (int i = 1; i < max+1; i++)
     {
-        glColor3f(0.0, 0.0, 0.0);
+        glColor3d(0.0, 0.0, 0.0);
         glVertex2d(scaleLeft + 10,                                 scaleBorder.y + 10 + (i-1)*(2 * textHeight));
         glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 10 + (i-1)*(2 * textHeight));
         glVertex2d(scaleLeft + 10 + 3 * textWidth - scaleBorder.x, scaleBorder.y + 12 + (i )*(2 * textHeight) - textHeight / 2.0);
@@ -1183,7 +1183,7 @@ void SceneView::paintOrderColorBar()
     glDisable(GL_POLYGON_OFFSET_FILL);
 
     // labels
-    glColor3f(1.0, 1.0, 1.0);
+    glColor3d(1.0, 1.0, 1.0);
     for (int i = 1; i < max + 1; i++)
     {
         int sizeNumber = fontMetrics().width(QString::number(i));
@@ -1220,7 +1220,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // palette border
-    glColor3f(0.0, 0.0, 0.0);
+    glColor3d(0.0, 0.0, 0.0);
     glBegin(GL_QUADS);
     glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 50.0);
     glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 50.0);
@@ -1508,7 +1508,7 @@ void SceneView::paintScalarField3D()
         foreach (SceneEdge *edge, m_scene->edges)
         {
 
-            glColor3f(Util::config()->colorEdges.redF(),
+            glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
@@ -1788,7 +1788,7 @@ void SceneView::paintScalarField3DSolid()
         // geometry
         if (m_scene->problemInfo()->problemType == ProblemType_Planar)
         {
-            glColor3f(Util::config()->colorEdges.redF(),
+            glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
@@ -1928,7 +1928,7 @@ void SceneView::paintContours()
 
         // draw contours
         glLineWidth(1.0);
-        glColor3f(Util::config()->colorContours.redF(),
+        glColor3d(Util::config()->colorContours.redF(),
                   Util::config()->colorContours.greenF(),
                   Util::config()->colorContours.blueF());
 
@@ -2128,29 +2128,29 @@ void SceneView::paintVectors()
                         if ((Util::config()->vectorColor) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
                         {
                             double color = 0.7 - 0.7 * (value - vectorRangeMin) * irange;
-                            glColor3f(color, color, color);
+                            glColor3d(color, color, color);
                         }
                         else
                         {
-                            glColor3f(Util::config()->colorVectors.redF(),
+                            glColor3d(Util::config()->colorVectors.redF(),
                                       Util::config()->colorVectors.greenF(),
                                       Util::config()->colorVectors.blueF());
                         }
 
                         // Head for an arrow
-                        double vh1x = point.x + dm/5.0 * cos(angle - M_PI_2) + dm * cos(angle);
-                        double vh1y = point.y + dm/5.0 * sin(angle - M_PI_2) + dm * sin(angle);
-                        double vh2x = point.x + dm/5.0 * cos(angle + M_PI_2) + dm * cos(angle);
-                        double vh2y = point.y + dm/5.0 * sin(angle + M_PI_2) + dm * sin(angle);
+                        double vh1x = point.x + dm/5.0 * cos(angle - 2*M_PI) + dm * cos(angle);
+                        double vh1y = point.y + dm/5.0 * sin(angle - 2*M_PI) + dm * sin(angle);
+                        double vh2x = point.x + dm/5.0 * cos(angle + 2*M_PI) + dm * cos(angle);
+                        double vh2y = point.y + dm/5.0 * sin(angle + 2*M_PI) + dm * sin(angle);
                         double vh3x = point.x + dm * cos(angle) + dm * cos(angle);
                         double vh3y = point.y + dm * sin(angle) + dm * sin(angle);
                         glVertex2d(vh1x,vh1y); glVertex2d(vh2x,vh2y); glVertex2d(vh3x,vh3y);
 
                         // Shaft for an arrow
-                        double vs1x = point.x + dm/15.0 * cos(angle + M_PI_2) + dm * cos(angle);
-                        double vs1y = point.y + dm/15.0 * sin(angle + M_PI_2) + dm * sin(angle);
-                        double vs2x = point.x + dm/15.0 * cos(angle - M_PI_2) + dm * cos(angle);
-                        double vs2y = point.y + dm/15.0 * sin(angle - M_PI_2) + dm * sin(angle);
+                        double vs1x = point.x + dm/15.0 * cos(angle + 2*M_PI) + dm * cos(angle);
+                        double vs1y = point.y + dm/15.0 * sin(angle + 2*M_PI) + dm * sin(angle);
+                        double vs2x = point.x + dm/15.0 * cos(angle - 2*M_PI) + dm * cos(angle);
+                        double vs2y = point.y + dm/15.0 * sin(angle - 2*M_PI) + dm * sin(angle);
                         double vs3x = vs1x - dm * cos(angle);
                         double vs3y = vs1y - dm * sin(angle);
                         double vs4x = vs2x - dm * cos(angle);
@@ -2242,7 +2242,7 @@ void SceneView::paintSceneModeLabel()
     drawBlend(Point(xs, ys), Point(xe, ye), 0.8, 0.8, 0.8, 0.93);
 
     // text
-    glColor3f(0.0, 0.0, 0.0);
+    glColor3d(0.0, 0.0, 0.0);
     renderText(posText.x, posText.y, 0.0, text, fontLabel);
 }
 
@@ -2276,10 +2276,10 @@ void SceneView::paintSnapToGrid()
         Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
 
         Point snapPoint;
-        snapPoint.x = round(p.x / Util::config()->gridStep) * Util::config()->gridStep;
-        snapPoint.y = round(p.y / Util::config()->gridStep) * Util::config()->gridStep;
+        snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+        snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
 
-        glColor3f(Util::config()->colorHighlighted.redF(),
+        glColor3d(Util::config()->colorHighlighted.redF(),
                   Util::config()->colorHighlighted.greenF(),
                   Util::config()->colorHighlighted.blueF());
         glPointSize(Util::config()->nodeSize - 1.0);
@@ -2295,7 +2295,7 @@ void SceneView::paintChartLine()
 
     loadProjection2d(true);
 
-    glColor3f(Util::config()->colorSelected.redF(),
+    glColor3d(Util::config()->colorSelected.redF(),
               Util::config()->colorSelected.greenF(),
               Util::config()->colorSelected.blueF());
     glLineWidth(3.0);
@@ -2321,7 +2321,7 @@ void SceneView::paintEdgeLine()
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
 
-            glColor3f(Util::config()->colorEdges.redF(),
+            glColor3d(Util::config()->colorEdges.redF(),
                       Util::config()->colorEdges.greenF(),
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
@@ -2341,7 +2341,7 @@ void SceneView::paintEdgeLine()
     }
 }
 
-const float* SceneView::paletteColor(double x)
+const double* SceneView::paletteColor(double x)
 {
     logMessage("SceneView::paletteColor()");
 
@@ -2394,22 +2394,25 @@ const float* SceneView::paletteColor(double x)
         break;
     case Palette_BWAsc:
     {
-        static float color[3];
+        static double color[3];
         color[0] = color[1] = color[2] = x;
         return color;
     }
         break;
     case Palette_BWDesc:
     {
-        static float color[3];
+        static double color[3];
         color[0] = color[1] = color[2] = 1.0 - x;
         return color;
     }
         break;
+    default:
+        qWarning() << tr("Undefined: %1.").arg(Util::config()->paletteType);
+        return NULL;
     }
 }
 
-const float* SceneView::paletteColorOrder(int n)
+const double* SceneView::paletteColorOrder(int n)
 {
     logMessage("SceneView::paletteColorOrder()");
 
@@ -2423,6 +2426,9 @@ const float* SceneView::paletteColorOrder(int n)
         return paletteOrderBWAsc[n];
     case PaletteOrder_BWDesc:
         return paletteOrderBWDesc[n];
+    default:
+        qWarning() << tr("Undefined: %1.").arg(Util::config()->orderPaletteOrderType);
+        return NULL;
     }
 }
 
@@ -2434,7 +2440,7 @@ void SceneView::paletteCreate()
     unsigned char palette[256][3];
     for (i = 0; i < Util::config()->paletteSteps; i++)
     {
-        const float* color = paletteColor((double) i / Util::config()->paletteSteps);
+        const double* color = paletteColor((double) i / Util::config()->paletteSteps);
         palette[i][0] = (unsigned char) (color[0] * 255);
         palette[i][1] = (unsigned char) (color[1] * 255);
         palette[i][2] = (unsigned char) (color[2] * 255);
@@ -2512,10 +2518,10 @@ void SceneView::initLighting()
 #endif
 
         /*
-        float light_specular[] = {  0.1f, 0.1f, 0.1f, 1.0f };
-        float light_ambient[]  = {  0.1f, 0.1f, 0.1f, 1.0f };
-        float light_diffuse[]  = {  0.8f, 0.8f, 0.8f, 0.9f };
-        float light_position[] = {  -100.0f, -60.0f, 10.0f, 0.0f };
+        double light_specular[] = {  0.1f, 0.1f, 0.1f, 1.0f };
+        double light_ambient[]  = {  0.1f, 0.1f, 0.1f, 1.0f };
+        double light_diffuse[]  = {  0.8f, 0.8f, 0.8f, 0.9f };
+        double light_position[] = {  -100.0f, -60.0f, 10.0f, 0.0f };
 
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
@@ -2524,9 +2530,9 @@ void SceneView::initLighting()
         glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
         glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-        float material_ambient[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
-        float material_diffuse[]  = { 0.8f, 0.8f, 0.8f, 0.8f };
-        float material_specular[] = { 0.5f, 0.5f, 0.5f, 0.5f };
+        double material_ambient[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
+        double material_diffuse[]  = { 0.8f, 0.8f, 0.8f, 0.8f };
+        double material_specular[] = { 0.5f, 0.5f, 0.5f, 0.5f };
 
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
@@ -2766,8 +2772,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 {
                     Point snapPoint = position(Point(m_lastPos.x(), m_lastPos.y()));
 
-                    pointNode.x = round(snapPoint.x / Util::config()->gridStep) * Util::config()->gridStep;
-                    pointNode.y = round(snapPoint.y / Util::config()->gridStep) * Util::config()->gridStep;
+                    pointNode.x = floor(snapPoint.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+                    pointNode.y = floor(snapPoint.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
                 }
                 else
                 {
@@ -3143,8 +3149,8 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
         if (m_snapToGrid)
         {
             Point snapPoint;
-            snapPoint.x = round(p.x / Util::config()->gridStep) * Util::config()->gridStep;
-            snapPoint.y = round(p.y / Util::config()->gridStep) * Util::config()->gridStep;
+            snapPoint.x = floor(p.x / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
+            snapPoint.y = floor(p.y / Util::config()->gridStep + 0.5) * Util::config()->gridStep;
 
             emit mouseMoved(QPointF(snapPoint.x, snapPoint.y));
         }
@@ -3874,7 +3880,7 @@ void SceneView::paintPostprocessorSelectedSurface()
     }
 }
 
-void SceneView::loadBackgroundImage(const QString &fileName, float x, float y, float w, float h)
+void SceneView::loadBackgroundImage(const QString &fileName, double x, double y, double w, double h)
 {
     logMessage("SceneView::loadBackgroundImage()");
 

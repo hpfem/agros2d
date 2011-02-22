@@ -33,7 +33,6 @@
 #include "reportdialog.h"
 #include "videodialog.h"
 #include "logdialog.h"
-#include "helpdialog.h"
 #include "problemdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
@@ -43,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createScriptEngine();
     createScene();
 
-    helpDialog = new HelpDialog(this);
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new ScriptEditorDialog(this);
     reportDialog = new ReportDialog(sceneView, this);
@@ -1072,16 +1070,14 @@ void MainWindow::doHelp()
 {
     logMessage("MainWindow::doHelp()");
 
-    Util::helpDialog()->showPage("index.html");
-    Util::helpDialog()->show();
+    showPage("index.html");
 }
 
 void MainWindow::doHelpShortCut()
 {
     logMessage("MainWindow::doHelpShortCut()");
 
-    Util::helpDialog()->showPage("getting_started/basic_control.html#shortcut-keys");
-    Util::helpDialog()->show();
+    showPage("getting_started/basic_control.html#shortcut-keys");
 }
 
 void MainWindow::doOnlineHelp()

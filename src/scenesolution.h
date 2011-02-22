@@ -84,7 +84,7 @@ public:
     inline int timeElapsed() { return m_timeElapsed; }
     double adaptiveError();
     int adaptiveSteps();
-    inline int setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
+    inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
     int findTriangleInMesh(Mesh *mesh, const Point &point);
     int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point);

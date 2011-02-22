@@ -41,7 +41,7 @@ extern double timeStep;
 class SceneEdgeMarker;
 class SceneLabelMarker;
 class SceneViewSettings;
-class SolutionArray;
+struct SolutionArray;
 
 class ProgressItemSolve;
 
@@ -50,8 +50,9 @@ class ViewScalarFilter;
 struct HermesField : public QObject
 {
     Q_OBJECT
-public:    
+public:
     HermesField() { m_physicField = PhysicField_Undefined; }
+    virtual ~HermesField() {}
 
     inline PhysicField physicField() { return m_physicField; }
 

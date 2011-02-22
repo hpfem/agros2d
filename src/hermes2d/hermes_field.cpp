@@ -331,7 +331,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             }
 
             // delete reference space
-            for (int i = 0; i < spaceReference.size(); i++)
+            for (unsigned int i = 0; i < spaceReference.size(); i++)
             {
                 delete spaceReference.at(i)->get_mesh();
                 delete spaceReference.at(i);
@@ -339,7 +339,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             spaceReference.clear();
 
             // delete reference solution
-            for (int i = 0; i < solutionReference.size(); i++)
+            for (unsigned int i = 0; i < solutionReference.size(); i++)
                 delete solutionReference.at(i);
             solutionReference.clear();
         }
@@ -431,7 +431,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     delete mesh;
 
     // delete space
-    for (int i = 0; i < space.size(); i++)
+    for (unsigned int i = 0; i < space.size(); i++)
     {
         // delete space.at(i)->get_mesh();
         delete space.at(i);
@@ -439,7 +439,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     space.clear();
 
     // delete last solution
-    for (int i = 0; i < solution.size(); i++)
+    for (unsigned int i = 0; i < solution.size(); i++)
         delete solution.at(i);
     solution.clear();
 
@@ -464,7 +464,7 @@ ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln, PhysicFie
 
 double ViewScalarFilter::get_pt_value(double x, double y, int item)
 {
-    error("Not implemented");
+    return 0.0;
 }
 
 void ViewScalarFilter::precalculate(int order, int mask)

@@ -23,7 +23,7 @@
 const int numPalEntries = 256;
 
 /*
-const float paletteOrder[11][3] =
+const double paletteOrder[11][3] =
 {
     { 0.000000, 0.000000, 1.000000 },
     { 0.000000, 0.250000, 1.000000 },
@@ -38,7 +38,7 @@ const float paletteOrder[11][3] =
     { 1.000000, 0.500000, 0.000000 }
 };
 */
-const float paletteOrderHermes[11][3] =
+const double paletteOrderHermes[11][3] =
 {
     { 0.498039, 0.498039, 0.498039 },
     { 0.498039, 0.164706, 1.000000 },
@@ -53,7 +53,7 @@ const float paletteOrderHermes[11][3] =
     { 1.000000, 0.000000, 0.000000 }
 };
 
-const float paletteOrderJet[11][3] =
+const double paletteOrderJet[11][3] =
 {
     { 0.000000, 0.000000, 0.666667 },
     { 0.000000, 0.000000, 1.000000 },
@@ -68,7 +68,7 @@ const float paletteOrderJet[11][3] =
     { 1.000000, 0.000000, 0.000000 }
 };
 
-const float paletteOrderBWAsc[11][3] =
+const double paletteOrderBWAsc[11][3] =
 {
     { 0.000000, 0.000000, 0.000000 },
     { 0.100000, 0.100000, 0.100000 },
@@ -83,7 +83,7 @@ const float paletteOrderBWAsc[11][3] =
     { 1.000000, 1.000000, 1.000000 }
 };
 
-const float paletteOrderBWDesc[11][3] =
+const double paletteOrderBWDesc[11][3] =
 {
     { 1.000000, 1.000000, 1.000000 },
     { 0.900000, 0.900000, 0.900000 },
@@ -98,7 +98,7 @@ const float paletteOrderBWDesc[11][3] =
     { 0.000000, 0.000000, 0.000000 }
 };
 
-const float paletteDataHot[numPalEntries+1][3] =
+const double paletteDataHot[numPalEntries+1][3] =
 {
     { 0.010417, 0.000000, 0.000000 },
     { 0.020833, 0.000000, 0.000000 },
@@ -358,7 +358,7 @@ const float paletteDataHot[numPalEntries+1][3] =
     { 1.000000, 1.000000, 1.000000 }
 };
 
-const float paletteDataAutumn[numPalEntries+1][3] =
+const double paletteDataAutumn[numPalEntries+1][3] =
 {
     { 1.000000, 0.000000, 0.000000 },
     { 1.000000, 0.003922, 0.000000 },
@@ -618,7 +618,7 @@ const float paletteDataAutumn[numPalEntries+1][3] =
     { 1.000000, 1.000000, 0.000000 }
 };
 
-const float paletteDataJet[numPalEntries+1][3] =
+const double paletteDataJet[numPalEntries+1][3] =
 {
     { 0.000000, 0.000000, 0.515625 },
     { 0.000000, 0.000000, 0.531250 },
@@ -878,7 +878,7 @@ const float paletteDataJet[numPalEntries+1][3] =
     { 0.500000, 0.000000, 0.000000 }
 };
 
-const float paletteDataCopper[numPalEntries+1][3] =
+const double paletteDataCopper[numPalEntries+1][3] =
 {
     { 0.000000, 0.000000, 0.000000 },
     { 0.004902, 0.003064, 0.001951 },
@@ -1138,7 +1138,7 @@ const float paletteDataCopper[numPalEntries+1][3] =
     { 1.000000, 0.781200, 0.497500 }
 };
 
-const float paletteDataCool[numPalEntries+1][3] =
+const double paletteDataCool[numPalEntries+1][3] =
 {
     { 0.000000, 1.000000, 1.000000 },
     { 0.003922, 0.996078, 1.000000 },

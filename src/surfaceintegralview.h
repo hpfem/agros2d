@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class Element;
+struct Element;
 
 class SurfaceIntegralValue
 {
