@@ -42,7 +42,7 @@ void Mesh::regularize_triangle(Element* e)
   int sum = eo[0] + eo[1] + eo[2];
   if (sum == 3)
   {
-    refine_element(e->id);
+    refine_element_id(e->id);
   }
   else if (sum > 0)
   {
@@ -63,8 +63,8 @@ void Mesh::regularize_triangle(Element* e)
       nactive += 1;
       e->unref_all_nodes(this);
 
-      t[0] = create_triangle(e->marker, e->vn[k], v4, e->vn[k2], NULL);
-      t[1] = create_triangle(e->marker, v4, e->vn[k1], e->vn[k2], NULL);
+      t[0] = create_triangle(this, e->marker, e->vn[k], v4, e->vn[k2], NULL);
+      t[1] = create_triangle(this, e->marker, v4, e->vn[k1], e->vn[k2], NULL);
 
       // set correct boundary status and markers for the new nodes
       t[0]->en[2]->bnd = bnd[k2];
@@ -91,9 +91,9 @@ void Mesh::regularize_triangle(Element* e)
       nactive += 2;
       e->unref_all_nodes(this);
 
-      t[0] = create_triangle(e->marker, e->vn[k], e->vn[k1], v4,  NULL);
-      t[1] = create_triangle(e->marker, v4, v5, e->vn[k], NULL);
-      t[2] = create_triangle(e->marker, v4, e->vn[k2], v5, NULL);
+      t[0] = create_triangle(this, e->marker, e->vn[k], e->vn[k1], v4,  NULL);
+      t[1] = create_triangle(this, e->marker, v4, v5, e->vn[k], NULL);
+      t[2] = create_triangle(this, e->marker, v4, e->vn[k2], v5, NULL);
 
       // set correct boundary status and markers for the new nodes
       t[0]->en[0]->bnd = bnd[k];
@@ -130,7 +130,7 @@ void Mesh::regularize_quad(Element* e)
   int sum = eo[0] + eo[1] + eo[2] + eo[3];
   if (sum == 4)
   {
-    refine_element(e->id);
+    refine_element_id(e->id);
   }
   else if (sum > 0)
   {
@@ -151,9 +151,9 @@ void Mesh::regularize_quad(Element* e)
       nactive += 2;
       e->unref_all_nodes(this);
 
-      t[0] = create_triangle(e->marker, e->vn[k], v4, e->vn[k3], NULL);
-      t[1] = create_triangle(e->marker, v4, e->vn[k1], e->vn[k2], NULL);
-      t[2] = create_triangle(e->marker, v4, e->vn[k2], e->vn[k3], NULL);
+      t[0] = create_triangle(this, e->marker, e->vn[k], v4, e->vn[k3], NULL);
+      t[1] = create_triangle(this, e->marker, v4, e->vn[k1], e->vn[k2], NULL);
+      t[2] = create_triangle(this, e->marker, v4, e->vn[k2], e->vn[k3], NULL);
 
       // set correct boundary status and markers for the new nodes
       t[0]->en[2]->bnd = bnd[k3];
@@ -171,8 +171,8 @@ void Mesh::regularize_quad(Element* e)
     else if (sum == 2)
     {
       // two hanging nodes opposite to each other
-      if (eo[0] == 1 && eo[2] == 1) refine_element(e->id, 2);
-      else if (eo[1] == 1 && eo[3] == 1) refine_element(e->id, 1);
+      if (eo[0] == 1 && eo[2] == 1) refine_element_id(e->id, 2);
+      else if (eo[1] == 1 && eo[3] == 1) refine_element_id(e->id, 1);
       else // two hanging nodes next to each other
       {
         for(i = 0; i < 4; i++)
@@ -187,10 +187,10 @@ void Mesh::regularize_quad(Element* e)
         nactive += 3;
         e->unref_all_nodes(this);
 
-        t[0] = create_triangle(e->marker, e->vn[k1], v5, v4, NULL);
-        t[1] = create_triangle(e->marker, v5, e->vn[k2], e->vn[k3], NULL);
-        t[2] = create_triangle(e->marker, v4, v5, e->vn[k3], NULL);
-        t[3] = create_triangle(e->marker, v4, e->vn[k3], e->vn[k], NULL);
+        t[0] = create_triangle(this, e->marker, e->vn[k1], v5, v4, NULL);
+        t[1] = create_triangle(this, e->marker, v5, e->vn[k2], e->vn[k3], NULL);
+        t[2] = create_triangle(this, e->marker, v4, v5, e->vn[k3], NULL);
+        t[3] = create_triangle(this, e->marker, v4, e->vn[k3], e->vn[k], NULL);
 
         t[1]->en[1]->bnd = bnd[k2];
         t[3]->en[1]->bnd = bnd[k3];
@@ -207,14 +207,14 @@ void Mesh::regularize_quad(Element* e)
     {
        if (eo[0] == 1 && eo[2] == 1)
        {
-         refine_element(e->id, 2);
+         refine_element_id(e->id, 2);
          for (i = 0; i < 4; i++)
            assign_parent(e, i);
          n = 2; m = 3;
        }
        else if (eo[1] == 1 && eo[3] == 1)
        {
-         refine_element(e->id, 1);
+         refine_element_id(e->id, 1);
          for (i = 0; i < 4; i++)
            assign_parent(e, i);
          n = 0; m = 1;
@@ -339,7 +339,7 @@ int* Mesh::regularize(int n)
 
       if (iso >= 0)
       {
-        refine_element(e->id, iso);
+        refine_element_id(e->id, iso);
         for (int i = 0; i < 4; i++)
           assign_parent(e, i);
       }

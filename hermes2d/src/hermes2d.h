@@ -51,7 +51,7 @@
 #include "boundaryconditions/boundaryconditions.h"
 
 // Eigensolver
-//#include "../hermes_common/solver/eigensolver.h"
+#include "../hermes_common/solver/eigensolver.h"
 
 #include "hermes_logging.h"
 

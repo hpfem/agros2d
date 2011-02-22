@@ -146,6 +146,8 @@ Node* HashTable::get_vertex_node(int p1, int p2)
 
   // not found - create a new one
   Node* newnode = nodes.add();
+
+  // initialize the new Node
   newnode->type = HERMES_TYPE_VERTEX;
   newnode->ref = 0;
   newnode->bnd = 0;
@@ -162,7 +164,6 @@ Node* HashTable::get_vertex_node(int p1, int p2)
   return newnode;
 }
 
-
 Node* HashTable::get_edge_node(int p1, int p2)
 {
   // search for the node in the edge hashtable
@@ -173,6 +174,8 @@ Node* HashTable::get_edge_node(int p1, int p2)
 
   // not found - create a new one
   Node* newnode = nodes.add();
+
+  // initialize the new node
   newnode->type = HERMES_TYPE_EDGE;
   newnode->ref = 0;
   newnode->bnd = 0;

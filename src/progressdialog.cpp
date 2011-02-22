@@ -75,8 +75,17 @@ SolutionArray::~SolutionArray()
 {
     logMessage("SolutionArray::~SolutionArray()");
 
-    if (sln) { delete sln; sln = NULL; }
-    if (order) { delete order; order = NULL; }
+    if (sln)
+    {
+        delete sln;
+        sln = NULL;
+    }
+
+    if (order)
+    {
+        delete order;
+        order = NULL;
+    }
 }
 
 void SolutionArray::load(QDomElement *element)

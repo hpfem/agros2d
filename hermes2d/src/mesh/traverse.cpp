@@ -513,7 +513,7 @@ void Traverse::begin(int n, Mesh** meshes, Transformable** fn)
       error("Meshes not compatible in Traverse::begin().");
 
   // Test whether areas of corresponding elements are the same.
-  double *areas = (double*)malloc(base_elem_num*sizeof(double));
+  double *areas = new double [base_elem_num];
   if (areas == NULL) error("Not enough memory in Traverse::begin().");
   // Read base element areas from the first mesh,
   // Also get minimum element area.
@@ -540,6 +540,7 @@ void Traverse::begin(int n, Mesh** meshes, Transformable** fn)
       counter++;
     }
   }
+  delete [] areas;
 #endif
 }
 
@@ -638,7 +639,7 @@ void Traverse::union_recurrent(Rect* cr, Element** e, Rect* er, uint64_t* idx, E
   if (tri)
   {
     // visit all sons of the triangle
-    unimesh->refine_element(uni->id);
+    unimesh->refine_element_id(uni->id);
     for (son = 0; son <= 3; son++)
     {
       for (i = 0; i < num; i++)
@@ -663,7 +664,7 @@ void Traverse::union_recurrent(Rect* cr, Element** e, Rect* er, uint64_t* idx, E
     // both splits: recur to four sons
     if (split == 3)
     {
-      unimesh->refine_element(uni->id, 0);
+      unimesh->refine_element_id(uni->id, 0);
 
       for (son = 0; son <= 3; son++)
       {
@@ -685,7 +686,7 @@ void Traverse::union_recurrent(Rect* cr, Element** e, Rect* er, uint64_t* idx, E
     // v or h split, recur to two sons
     else if (split > 0)
     {
-      unimesh->refine_element(uni->id, split);
+      unimesh->refine_element_id(uni->id, split);
 
       int son0 = 4, son1 = 5;
       if (split == 2) { son0 = 6; son1 = 7; }

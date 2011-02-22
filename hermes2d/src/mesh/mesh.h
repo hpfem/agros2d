@@ -159,6 +159,7 @@ public:
   ~Mesh() {
     free();
     dump_hash_stat();
+    delete markers_conversion;
   }
   /// Creates a copy of another mesh.
   void copy(const Mesh* mesh);
@@ -223,10 +224,10 @@ public:
   /// is a quad, 0 means refine in both directions, 1 means refine
   /// horizontally (with respect to the reference domain), 2 means
   /// refine vertically.
-  void refine_element(int id, int refinement = 0);
+  void refine_element_id(int id, int refinement = 0);
 
   /// Refines all elements.
-  /// \param refinement [in] Same meaning as in refine_element().
+  /// \param refinement [in] Same meaning as in refine_element_id().
   void refine_all_elements(int refinement = 0);
 
   /// Selects elements to refine according to a given criterion and
@@ -263,7 +264,7 @@ public:
 
   /// Recursively removes all son elements of the given element and
   /// makes it active.
-  void unrefine_element(int id);
+  void unrefine_element_id(int id);
 
   /// Unrefines all elements with immediate active sons. In effect, this
   /// shaves off one layer of refinements from the mesh. If done immediately
@@ -300,17 +301,18 @@ public:
   /// used before any other mesh refinement function is called.
   void convert_quads_to_triangles();
 
-protected:
+  void refine_triangle_to_quads(Element* e);
+  void refine_element_to_quads_id(int id);
+
   Array<Element> elements;
-  int nbase, ntopvert;
-  int nactive, ninitial;
+  int nactive;
   unsigned seq;
 
-  Element* create_triangle(int marker, Node* v0, Node* v1, Node* v2, CurvMap* cm);
-  Element* create_quad(int marker, Node* v0, Node* v1, Node* v2, Node* v3, CurvMap* cm);
+protected:
 
-  void refine_triangle_to_triangles(Element* e);
-  void refine_quad(Element* e, int refinement);
+  int nbase, ntopvert;
+  int ninitial;
+
   void unrefine_element_internal(Element* e);
 
   Nurbs* reverse_nurbs(Nurbs* nurbs);
@@ -325,16 +327,14 @@ protected:
   void regularize_quad(Element* e);
   void flatten();
 
-  void refine_triangle_to_quads(Element* e);
-  void refine_element_to_quads(int id);
-
   void refine_quad_to_triangles(Element* e);
-  void refine_element_to_triangles(int id);
+  void refine_element_to_triangles_id(int id);
 
   class MarkersConversion
   {
   public:
     MarkersConversion();
+    MarkersConversion(const MarkersConversion& src);  // Copy constructor.
     ~MarkersConversion();
 
     // Info about the maximum markers used so far, used in determining
@@ -391,6 +391,15 @@ protected:
   friend class Space;
   friend class DiscreteProblem;
 };
+
+// Elementary functions to create a quad / triangle element. If mesh != NULL,
+// they are added to the mesh. 
+Element* create_quad(Mesh* mesh, int marker, Node* v0, Node* v1, Node* v2, Node* v3, CurvMap* cm);
+Element* create_triangle(Mesh* mesh, int marker, Node* v0, Node* v1, Node* v2, CurvMap* cm);
+void refine_element(Mesh* mesh, Element* e, int refinement);
+void refine_quad(Mesh* mesh, Element* e, int refinement);
+void refine_triangle_to_triangles(Mesh* mesh, Element* e);
+Node* get_vertex_node(Node* v1, Node* v2);
 
 // helper macros for easy iteration through all elements, nodes etc. in a mesh
 #define for_all_elements(e, mesh) \

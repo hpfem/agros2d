@@ -93,6 +93,8 @@ void ludcmp(double **a, int n, int *indx, double *d)
 
 void choldc(double **a, int n, double p[])
 {
+  info("nb = %f", nxx);
+
   _F_
   int i, j, k;
   for (i = 0; i < n; i++) {
@@ -101,13 +103,8 @@ void choldc(double **a, int n, double p[])
       k = i;
       while (--k >= 0) sum -= a[i][k] * a[j][k];
       if (i == j) {
-          if (sum <= 1e-9)
-          {
-              // printf("CHOLDC failed!, sum = %e\n", sum);
-              // EXIT("CHOLDC failed!");
-          }
-          else
-              p[i] = sqrt(sum);
+	if (sum <= 0.0) EXIT("CHOLDC failed!");
+	else p[i] = sqrt(sum);
       }
       else a[j][i] = sum / p[i];
     }

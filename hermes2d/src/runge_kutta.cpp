@@ -65,7 +65,7 @@
 
 void create_stage_wf(double current_time, double time_step, ButcherTable* bt, 
                      DiscreteProblem* dp, WeakForm* stage_wf_left, 
-                     WeakForm* stage_wf_right) 
+                     WeakForm* stage_wf_right, Solution** stage_time_sol) 
 {
   // First let's do the mass matrix (only one block ndof times ndof).
   WeakForm::MatrixFormVol mfv_00;
@@ -78,7 +78,10 @@ void create_stage_wf(double current_time, double time_step, ButcherTable* bt,
   mfv_00.ext = Hermes::vector<MeshFunction*> ();
   mfv_00.scaling_factor = 1.0;
   mfv_00.u_ext_offset = 0;
-  stage_wf_left->add_matrix_form(&mfv_00);
+  mfv_00.adapt_eval = false;
+  mfv_00.adapt_order_increase = -1;
+  mfv_00.adapt_rel_error_tol = -1;
+  stage_wf_left->add_matrix_form_internal(&mfv_00);
 
   // In the rest we will take the stationary jacobian and residual forms 
   // (right-hand side) and use them to create a block Jacobian matrix of
@@ -99,7 +102,6 @@ void create_stage_wf(double current_time, double time_step, ButcherTable* bt,
   // WARNING - THIS IS A TEMPORARY HACK. THE STAGE TIME SHOULD BE ENTERED
   // AS A NUMBER, NOT IN THIS WAY. IT WILL BE ADDED AFTER EXISTING EXTERNAL
   // SOLUTIONS IN ExtData.
-  Solution** stage_time_sol = new Solution*[num_stages];
   for (int i = 0; i < num_stages; i++) {
     stage_time_sol[i] = new Solution(mesh);
     stage_time_sol[i]->set_const(mesh, current_time + bt->get_C(i)*time_step);
@@ -142,9 +144,14 @@ void create_stage_wf(double current_time, double time_step, ButcherTable* bt,
         // Set offset for u_ext[] external solutions.
         mfv_ij.u_ext_offset = i;
 
+        // This form will not be integrated adaptively.
+        mfv_ij.adapt_eval = false;
+        mfv_ij.adapt_order_increase = -1;
+        mfv_ij.adapt_rel_error_tol = -1;
+
         // Add the matrix form to the corresponding block of the
         // stage Jacobian matrix.
-        stage_wf_right->add_matrix_form(&mfv_ij);
+        stage_wf_right->add_matrix_form_internal(&mfv_ij);
       }
     }
   }
@@ -176,9 +183,14 @@ void create_stage_wf(double current_time, double time_step, ButcherTable* bt,
         // Set offset for u_ext[] external solutions.
         mfs_ij.u_ext_offset = i;
 
+        // This form will not be integrated adaptively.
+        mfs_ij.adapt_eval = false;
+        mfs_ij.adapt_order_increase = -1;
+        mfs_ij.adapt_rel_error_tol = -1;
+
         // Add the matrix form to the corresponding block of the
         // stage Jacobian matrix.
-        stage_wf_right->add_matrix_form_surf(&mfs_ij);
+        stage_wf_right->add_matrix_form_surf_internal(&mfs_ij);
       }
     }
   }
@@ -208,9 +220,14 @@ void create_stage_wf(double current_time, double time_step, ButcherTable* bt,
       // Set offset for u_ext[] external solutions.
       vfv_i.u_ext_offset = i;
 
+      // This form will not be integrated adaptively.
+      vfv_i.adapt_eval = false;
+      vfv_i.adapt_order_increase = -1;
+      vfv_i.adapt_rel_error_tol = -1;
+
       // Add the matrix form to the corresponding block of the
       // stage Jacobian matrix.
-      stage_wf_right->add_vector_form(&vfv_i);
+      stage_wf_right->add_vector_form_internal(&vfv_i);
     }
   }
 
@@ -239,18 +256,17 @@ void create_stage_wf(double current_time, double time_step, ButcherTable* bt,
       // Set offset for u_ext[] external solutions.
       vfs_i.u_ext_offset = i;
 
+      // This form will not be integrated adaptively.
+      vfs_i.adapt_eval = false;
+      vfs_i.adapt_order_increase = -1;
+      vfs_i.adapt_rel_error_tol = -1;
+
       // Add the matrix form to the corresponding block of the
       // stage Jacobian matrix.
-      stage_wf_right->add_vector_form_surf(&vfs_i);
+      stage_wf_right->add_vector_form_surf_internal(&vfs_i);
     }
   }
 }
-
-void destroy_stage_wf(WeakForm* stage_wf_left, WeakForm* stage_wf_right) 
-{
-
-}
-
 
 // This takes a matrix, and uses it to formally construct a block-diagonal
 // matrix. There are num_blocks blocks on the diagonal. The block diagonal
@@ -313,7 +329,11 @@ bool rk_time_step(double current_time, double time_step, ButcherTable* const bt,
   WeakForm stage_wf_left;                   // For the matrix M (size ndof times ndof).
   WeakForm stage_wf_right(num_stages);      // For the rest of equation (written on the right),
                                             // size num_stages*ndof times num_stages*ndof.
-  create_stage_wf(current_time, time_step, bt, dp, &stage_wf_left, &stage_wf_right); 
+
+  Solution** stage_time_sol = new Solution*[num_stages];
+                                            // This array will be filled by artificially created
+                                            // solutions to represent stage times.
+  create_stage_wf(current_time, time_step, bt, dp, &stage_wf_left, &stage_wf_right, stage_time_sol); 
 
   // Initialize discrete problems for the assembling of the
   // matrix M and the stage Jacobian matrix and residual.
@@ -433,9 +453,6 @@ bool rk_time_step(double current_time, double time_step, ButcherTable* const bt,
   if (it >= newton_max_iter) {
     if (verbose) info("Maximum allowed number of Newton iterations exceeded, returning false.");
 
-    // Destroy multistage weak formulation.
-    destroy_stage_wf(&stage_wf_left, &stage_wf_right); 
-
     return false;
   }
 
@@ -480,11 +497,10 @@ bool rk_time_step(double current_time, double time_step, ButcherTable* const bt,
   // Delete all residuals.
   for (int i = 0; i < num_stages; i++) delete residuals[i];
 
-  // TODO: Delete stage_wf, in particular its external solutions
-  // stage_time_sol[i], i = 0, 1, ..., num_stages-1.
-
-  // Destroy multistage weak formulation.
-  destroy_stage_wf(&stage_wf_left, &stage_wf_right); 
+  // Delete artificial Solutions with stage times.
+  for (int i = 0; i < num_stages; i++)
+    delete stage_time_sol[i];
+  delete [] stage_time_sol;
 
   // Clean up.
   delete [] K_vector;
