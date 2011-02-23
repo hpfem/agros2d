@@ -304,10 +304,9 @@ void ConfigDialog::createControls()
     // List View
     lstView->setCurrentRow(0);
     lstView->setViewMode(QListView::IconMode);
-    lstView->setMovement(QListView::Static);
-    lstView->setIconSize(QSize(64, 64));
-    lstView->setMinimumWidth(100);
-    lstView->setMaximumWidth(100);
+     lstView->setMovement(QListView::Static);
+    lstView->setIconSize(QSize(55, 55));
+    lstView->setMaximumWidth(90);
     lstView->setSpacing(12);
     connect(lstView, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
                this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
