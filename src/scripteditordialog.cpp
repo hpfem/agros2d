@@ -28,7 +28,6 @@
 #include "terminalview.h"
 
 #include "scripteditorcommandpython.h"
-#include "helpdialog.h"
 
 #include "gui.h"
 
@@ -930,8 +929,7 @@ void ScriptEditorDialog::doHelp()
 {
     logMessage("ScriptEditorDialog::doHelp()");
 
-    Util::helpDialog()->showPage("scripting/scripting.html");
-    Util::helpDialog()->show();
+    showPage("scripting/scripting.html");
 }
 
 void ScriptEditorDialog::doCloseTab(int index)

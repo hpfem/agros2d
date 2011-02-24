@@ -75,8 +75,17 @@ SolutionArray::~SolutionArray()
 {
     logMessage("SolutionArray::~SolutionArray()");
 
-    if (sln) { delete sln; sln = NULL; }
-    if (order) { delete order; order = NULL; }
+    if (sln)
+    {
+        delete sln;
+        sln = NULL;
+    }
+
+    if (order)
+    {
+        delete order;
+        order = NULL;
+    }
 }
 
 void SolutionArray::load(QDomElement *element)
@@ -540,7 +549,7 @@ bool ProgressItemMesh::triangleToHermes2D()
 
     // triangle nodes
     sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
-    Point nodeList[k];
+    Point *nodeList = new Point[k];
     for (int i = 0; i<k; i++)
     {
         int marker;
@@ -553,7 +562,8 @@ bool ProgressItemMesh::triangleToHermes2D()
 
     // triangle edges
     sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
-    TriangleEdge edgeList[k];
+
+    TriangleEdge *edgeList = new TriangleEdge[k];
     for (int i = 0; i<k; i++)
     {
         int node_1, node_2, marker;
@@ -716,6 +726,9 @@ bool ProgressItemMesh::triangleToHermes2D()
 
     fileMesh.waitForBytesWritten(0);
     fileMesh.close();
+
+    delete [] nodeList;
+    delete [] edgeList;
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
@@ -1540,18 +1553,18 @@ void ProgressDialog::saveData()
 
         if (tabType->currentWidget() == controlsConvergenceErrorChart)
         {
-            for (int i = 0; i < curveError->data().size(); i++)
+            for (unsigned i = 0; i < curveError->data().size(); i++)
                 out << curveError->data().x(i) << ";" << curveError->data().y(i) << endl;
 
         }
         else if (tabType->currentWidget() == controlsConvergenceDOFChart)
         {
-            for (int i = 0; i < curveDOF->data().size(); i++)
+            for (unsigned i = 0; i < curveDOF->data().size(); i++)
                 out << curveDOF->data().x(i) << ";" << curveDOF->data().y(i) << endl;
         }
         else if (tabType->currentWidget() == controlsConvergenceErrorDOFChart)
         {
-            for (int i = 0; i < curveErrorDOF->data().size(); i++)
+            for (unsigned i = 0; i < curveErrorDOF->data().size(); i++)
                 out << curveErrorDOF->data().x(i) << ";" << curveErrorDOF->data().y(i) << endl;
         }
         else if (tabType->currentWidget() == controlsNonlinear)

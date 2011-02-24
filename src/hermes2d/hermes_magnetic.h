@@ -152,6 +152,11 @@ class VolumeIntegralValueMagnetic : public VolumeIntegralValue
 {
 protected:
     void calculateVariables(int i);
+    void calculateVariablesOther1(int i);
+    void calculateVariablesOther2(int i);
+    void calculateVariablesOther3(int i);
+    void calculateVariablesOther4(int i);
+    void calculateVariablesOther5(int i);
     void initSolutions();
 
 public:

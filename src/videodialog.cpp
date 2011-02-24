@@ -350,7 +350,7 @@ void VideoDialog::doOpenVideo()
 {
     logMessage("VideoDialog::doOpenVideo()");
 
-    QDesktopServices::openUrl(outputFile);
+    QDesktopServices::openUrl(QUrl::fromLocalFile(outputFile));
 }
 
 void VideoDialog::doCommandFFmpeg()

@@ -190,6 +190,8 @@ double SLineEditValue::number()
 
     if (evaluate())
         return m_number;
+    else
+        return 0.0;
 }
 
 void SLineEditValue::setValue(Value value)

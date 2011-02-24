@@ -30,7 +30,6 @@
 #include "surfaceintegralview.h"
 #include "volumeintegralview.h"
 
-#include "helpdialog.h"
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
 #include "scenemarkerselectdialog.h"
@@ -155,7 +154,6 @@ Util::Util()
     logMessage("Util::Util()");
 
     m_scene = new Scene();
-    m_helpDialog = new HelpDialog(QApplication::activeWindow());
 
     // completer
     m_completer = new QCompleter();
@@ -181,7 +179,6 @@ Util::~Util()
     logMessage("Util::~Util()");
 
     delete m_scene;
-    delete m_helpDialog;
     delete m_completer;
     delete m_config;
 }

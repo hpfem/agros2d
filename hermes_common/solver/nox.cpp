@@ -86,7 +86,7 @@ NoxProblemInterface::~NoxProblemInterface()
 void NoxProblemInterface::prealloc_jacobian()
 {
   // preallocate jacobian structure
-  fep->create(&jacobian);
+  fep->create_sparse_structure(&jacobian);
   // jacobian.finish();
 }
 
@@ -206,7 +206,9 @@ NoxSolver::~NoxSolver()
 #ifdef HAVE_NOX
   // FIXME: this does not destroy the "interface_", and Trilinos 
   // complains at closing main.cpp.
+#ifndef H1D_REAL
   interface_->fep->invalidate_matrix();
+#endif
 #endif
 }
 
@@ -349,9 +351,11 @@ bool NoxSolver::solve()
      Teuchos::RCP<NOX::StatusTest::Combo> converged =
         Teuchos::rcp(new NOX::StatusTest::Combo(NOX::StatusTest::Combo::AND));
 
-     Teuchos::RCP<NOX::StatusTest::NormF> absresid =
+     if (conv_flag.absresid) {
+       Teuchos::RCP<NOX::StatusTest::NormF> absresid =
         Teuchos::rcp(new NOX::StatusTest::NormF(conv.abs_resid, conv.norm_type, conv.stype));
-     converged->addStatusTest(absresid);
+      converged->addStatusTest(absresid);
+     }
 
      if (conv_flag.relresid) {
        Teuchos::RCP<NOX::StatusTest::NormF> relresid = 

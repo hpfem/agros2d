@@ -160,7 +160,7 @@ void ReportDialog::createControls()
     setLayout(layout);
 }
 
-bool ReportDialog::checkPaths()
+void ReportDialog::checkPaths()
 {
     logMessage("ReportDialog::checkPaths()");
 
@@ -282,7 +282,7 @@ void ReportDialog::doShowReport()
         generateFigures();
         generateIndex();
 
-        QDesktopServices::openUrl(tempProblemDir() + "/report/report.html");
+        QDesktopServices::openUrl(QUrl::fromLocalFile(tempProblemDir() + "/report/report.html"));
     }
 }
 

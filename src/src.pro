@@ -19,7 +19,8 @@ DEFINES += VERSION_DAY=22
 # run cython for python extensions
 linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
 TRANSLATIONS = lang/cs_CZ.ts \
-    lang/pl_PL.ts
+    lang/pl_PL.ts \
+    lang/de_DE.ts
 CONFIG += help
 CODECFORTR = UTF-8
 RC_FILE = src.rc
@@ -27,8 +28,8 @@ RESOURCES = src.qrc
 TARGET = agros2d
 DESTDIR = ../
 TEMPLATE = app
-QMAKE_CXXFLAGS_DEBUG += -w
-QMAKE_CXXFLAGS += -w
+# QMAKE_CXXFLAGS_DEBUG += -w
+# QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
@@ -40,6 +41,7 @@ SOURCES += util.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
     hermes2d/hermes_magnetic.cpp \
+    hermes2d/hermes_magnetic_integrals.cpp \
     hermes2d/hermes_current.cpp \
     hermes2d/hermes_elasticity.cpp \
     hermes2d/hermes_flow.cpp \
@@ -62,7 +64,6 @@ SOURCES += util.cpp \
     sceneviewdialog.cpp \
     config.cpp \
     configdialog.cpp \
-    helpdialog.cpp \
     scenesolution.cpp \
     dxflib/dl_writer_ascii.cpp \
     dxflib/dl_dxf.cpp \
@@ -120,7 +121,6 @@ HEADERS += util.h \
     sceneviewdialog.h \
     config.h \
     configdialog.h \
-    helpdialog.h \
     scenesolution.h \
     reportdialog.h \
     videodialog.h \
@@ -161,22 +161,7 @@ linux-g++ {
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
     LIBS += -lqwt-qt4
 }
-win32-g++ {
-    INCLUDEPATH += c:/qt/mingw/include
-    INCLUDEPATH += c:/Python27/include
-    INCLUDEPATH += ../hermes2d/src
-    INCLUDEPATH += ../../qwt-5.2.1/src
-    LIBS += -Lc:/Python27/libs
-    LIBS += -L../hermes2d/lib
-    LIBS += -L../../qwt-5.2.1/lib
-    LIBS += -lhermes2d
-    LIBS += -lumfpack
-    LIBS += -lamd
-    LIBS += -lblas
-    LIBS += -lpthread
-    LIBS += -lqwt
-    LIBS += -lpython27
-}
+
 macx-g++ {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
@@ -195,4 +180,19 @@ macx-g++ {
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
+}
+
+win32-msvc2008 {
+    INCLUDEPATH += c:/Python27/include
+    INCLUDEPATH += ../hermes2d/src
+    INCLUDEPATH += ../../qwt-5.2.1/src
+    LIBS += -Lc:/Python27/libs
+    LIBS += -L../hermes2d/lib
+    LIBS += -L../../qwt-5.2.1/lib
+    LIBS += -lhermes2d
+    LIBS += -lqwt
+    LIBS += -lpython27
+    LIBS += -llibumfpack
+    LIBS += -llibamd
+    LIBS += -llibpthreadVCE2
 }

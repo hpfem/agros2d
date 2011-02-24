@@ -17,7 +17,9 @@
 #ifndef __H2D_OGPROJECTION_H
 #define __H2D_OGPROJECTION_H
 
-#include "discrete_problem.h"
+#include "../hermes_common/common.h"
+#include "function/solution.h"
+#include "weakform/forms.h"
 
 class HERMES_API OGProjection
 {
@@ -32,7 +34,7 @@ public:
                              Hermes::vector<ProjNormType> proj_norms = Hermes::vector<ProjNormType>());
 
   static void project_global(Hermes::vector<Space *> spaces, Hermes::vector< std::pair<WeakForm::matrix_form_val_t,
-                             WeakForm::matrix_form_ord_t> > proj_biforms,
+									      WeakForm::matrix_form_ord_t> > proj_biforms,
                              Hermes::vector< std::pair<WeakForm::vector_form_val_t, WeakForm::vector_form_ord_t> > proj_liforms,
                              Hermes::vector<MeshFunction*> source_meshfns,
                              scalar* target_vec, MatrixSolverType matrix_solver = SOLVER_UMFPACK);

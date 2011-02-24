@@ -37,11 +37,13 @@
 #endif
 
 #if defined(WIN32)
+#ifndef strcasecmp
 #define strcasecmp(s,t) _stricmp(s,t)
+#endif
 #endif
 
 #include <iostream>
-#include <strings.h>
+#include <string.h>
 
 #include "dl_attributes.h"
 #include "dl_codes.h"

@@ -34,8 +34,8 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 
-class ScriptResult;
-class ExpressionResult;
+struct ScriptResult;
+struct ExpressionResult;
 
 void createScriptEngine();
 PythonEngine *currentPythonEngine();

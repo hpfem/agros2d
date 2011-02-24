@@ -62,6 +62,8 @@ private slots:
     void doDocumentExportMeshFile();
     void doDocumentSaveImage();
     void doLoadBackground();
+    void doExportVTKScalar();
+    void doExportVTKOrder();
 
     void doSceneMouseMoved(const QPointF &position);
 
@@ -102,6 +104,7 @@ private:
     QStringList recentFiles;
 
     QMenu *mnuFile;
+    QMenu *mnuFileImportExport;
     QMenu *mnuRecentFiles;
     QMenu *mnuEdit;
     QMenu *mnuView;
@@ -128,6 +131,8 @@ private:
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;
     QAction *actDocumentExportMeshFile;
+    QAction *actExportVTKScalar;
+    QAction *actExportVTKOrder;
     QAction *actDocumentSaveImage;
     QAction *actExit;
     QAction *actLoadBackground;

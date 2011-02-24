@@ -390,7 +390,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<BCTypes *
     delete mesh;
 
     // delete space
-    for (int i = 0; i < space.size(); i++)
+    for (unsigned int i = 0; i < space.size(); i++)
     {
         // delete space.at(i)->get_mesh();
         delete space.at(i);
@@ -398,7 +398,7 @@ QList<SolutionArray *> SolutionAgros::solveSolutioArray(Hermes::vector<BCTypes *
     space.clear();
 
     // delete last solution
-    for (int i = 0; i < solution.size(); i++)
+    for (unsigned int i = 0; i < solution.size(); i++)
         delete solution.at(i);
     solution.clear();
 
@@ -589,7 +589,7 @@ ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln, PhysicFie
 
 double ViewScalarFilter::get_pt_value(double x, double y, int item)
 {
-    error("Not implemented");
+    return 0.0;
 }
 
 void ViewScalarFilter::precalculate(int order, int mask)

@@ -8,7 +8,9 @@
 
 #undef _POSIX_C_SOURCE
 #undef _XOPEN_SOURCE
+#undef HAVE_SYS_TIME_H
 #include "Python.h"
+#include "compat.h"
 
 /*
     This is a nice C++ Python API and the only header file that you should
@@ -29,7 +31,7 @@
 
 */
 
-class Python {
+class HERMES_API Python {
 public:
     Python();
     Python(int argc, char* argv[]);
@@ -44,8 +46,10 @@ public:
     void push_str(const std::string &name, const std::string &s);
     std::string pull_str(const std::string &name);
     void push_numpy_double(const std::string &name, double *A, int n);
+    void push_numpy_double_inplace(const std::string &name, double *A, int n);
     void pull_numpy_double_inplace(const std::string &name, double **A, int *n);
     void push_numpy_int(const std::string &name, int *A, int n);
+    void push_numpy_int_inplace(const std::string &name, int *A, int n);
     void pull_numpy_int_inplace(const std::string &name, int **A, int *n);
 
 

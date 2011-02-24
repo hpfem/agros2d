@@ -262,7 +262,7 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
       int* parents;
       parents = meshes[i]->regularize(regularize);
       this->spaces[i]->distribute_orders(meshes[i], parents);
-      delete [] parents;
+      ::free(parents);
     }
   }
 
@@ -394,13 +394,13 @@ void Adapt::apply_refinement(const ElementToRefine& elem_ref) {
     space->set_element_order_internal(elem_ref.id, elem_ref.p[0]);
   else if (elem_ref.split == H2D_REFINEMENT_H) {
     if (e->active)
-      mesh->refine_element(elem_ref.id);
+      mesh->refine_element_id(elem_ref.id);
     for (int j = 0; j < 4; j++)
       space->set_element_order_internal(e->sons[j]->id, elem_ref.p[j]);
   }
   else {
     if (e->active)
-      mesh->refine_element(elem_ref.id, elem_ref.split);
+      mesh->refine_element_id(elem_ref.id, elem_ref.split);
     for (int j = 0; j < 2; j++)
       space->set_element_order_internal(e->sons[ (elem_ref.split == 1) ? j : j+2 ]->id, elem_ref.p[j]);
   }
@@ -447,8 +447,8 @@ void Adapt::unrefine(double thr)
         if ((sum1_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]) &&
              (sum2_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]))
         {
-          mesh[0]->unrefine_element(e->id);
-          mesh[1]->unrefine_element(e->id);
+          mesh[0]->unrefine_element_id(e->id);
+          mesh[1]->unrefine_element_id(e->id);
           errors[0][e->id] = sum1_squared;
           errors[1][e->id] = sum2_squared;
           this->spaces[0]->set_element_order_internal(e->id, max1);
@@ -494,7 +494,7 @@ void Adapt::unrefine(double thr)
           if ((sum_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]))
           //if ((sum < 0.1 * thr))
           {
-            mesh[m]->unrefine_element(e->id);
+            mesh[m]->unrefine_element_id(e->id);
             errors[m][e->id] = sum_squared;
             this->spaces[m]->set_element_order_internal(e->id, max);
             k++; // number of unrefined elements
@@ -583,10 +583,10 @@ double Adapt::eval_error(error_matrix_form_val_t error_bi_fn, error_matrix_form_
     jwt[i] = pt[i][2] * jac[i];
 
   // function values and values of external functions
-  Func<scalar>* err1 = init_fn(sln1, rv1, order);
-  Func<scalar>* err2 = init_fn(sln2, rv2, order);
-  Func<scalar>* v1 = init_fn(rsln1, rrv1, order);
-  Func<scalar>* v2 = init_fn(rsln2, rrv2, order);
+  Func<scalar>* err1 = init_fn(sln1, order);
+  Func<scalar>* err2 = init_fn(sln2, order);
+  Func<scalar>* v1 = init_fn(rsln1, order);
+  Func<scalar>* v2 = init_fn(rsln2, order);
 
   err1->subtract(*v1);
   err2->subtract(*v2);
@@ -646,8 +646,8 @@ double Adapt::eval_error_norm(error_matrix_form_val_t error_bi_fn, error_matrix_
     jwt[i] = pt[i][2] * jac[i];
 
   // function values
-  Func<scalar>* v1 = init_fn(rsln1, rrv1, order);
-  Func<scalar>* v2 = init_fn(rsln2, rrv2, order);
+  Func<scalar>* v1 = init_fn(rsln1, order);
+  Func<scalar>* v2 = init_fn(rsln2, order);
 
   scalar res = error_bi_fn(np, jwt, NULL, v1, v2, e, NULL);
 

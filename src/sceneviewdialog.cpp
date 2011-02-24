@@ -29,12 +29,12 @@ SceneViewDialog::SceneViewDialog(SceneView *sceneView, QWidget *parent) : QDialo
     logMessage("SceneViewDialog::SceneViewDialog()");
 
     m_sceneView = sceneView;
-       
+
     setWindowIcon(icon("scene-properties"));
     setWindowTitle(tr("Postprocessor properties"));
 
     createControls();
-    
+
     load();
 
     setMinimumSize(sizeHint());
@@ -197,10 +197,17 @@ void SceneViewDialog::createControls()
     chkScalarFieldRangeAuto = new QCheckBox();
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
 
-    txtScalarFieldRangeMin = new QLineEdit("0.1");
-    txtScalarFieldRangeMin->setValidator(new QDoubleValidator(txtScalarFieldRangeMin));
-    txtScalarFieldRangeMax = new QLineEdit("0.1");
-    txtScalarFieldRangeMax->setValidator(new QDoubleValidator(txtScalarFieldRangeMax));
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, Qt::red);
+
+    txtScalarFieldRangeMin = new SLineEditDouble(0.1, true);
+    connect(txtScalarFieldRangeMin, SIGNAL(textEdited(const QString &)), this, SLOT(doScalarFieldRangeMinChanged()));
+    lblScalarFieldRangeMinError = new QLabel("");
+    lblScalarFieldRangeMinError->setPalette(palette);
+    txtScalarFieldRangeMax = new SLineEditDouble(0.1, true);
+    connect(txtScalarFieldRangeMax, SIGNAL(textEdited(const QString &)), this, SLOT(doScalarFieldRangeMaxChanged()));
+    lblScalarFieldRangeMaxError = new QLabel("");
+    lblScalarFieldRangeMaxError->setPalette(palette);
 
     QGridLayout *layoutScalarField = new QGridLayout();
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
@@ -213,8 +220,10 @@ void SceneViewDialog::createControls()
     layoutScalarField->addWidget(chkScalarFieldRangeAuto, 2, 1);
     layoutScalarField->addWidget(new QLabel(tr("Minimum:")), 3, 0);
     layoutScalarField->addWidget(txtScalarFieldRangeMin, 3, 1);
+    layoutScalarField->addWidget(lblScalarFieldRangeMinError, 3, 2);
     layoutScalarField->addWidget(new QLabel(tr("Maximum:")), 4, 0);
     layoutScalarField->addWidget(txtScalarFieldRangeMax, 4, 1);
+    layoutScalarField->addWidget(lblScalarFieldRangeMaxError, 4, 2);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
@@ -248,9 +257,20 @@ void SceneViewDialog::createControls()
     layoutVectorFieldTransient->addWidget(grpTransient);
 
     // dialog buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+//    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+//    connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
+//    connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
+
+    btnOK = new QPushButton(tr("Ok"));
+    connect(btnOK, SIGNAL(clicked()), SLOT(doAccept()));
+
+    btnCancel = new QPushButton(tr("Cancel"));
+    connect(btnCancel, SIGNAL(clicked()), SLOT(doReject()));
+
+    QHBoxLayout *layoutButtons = new QHBoxLayout();
+    layoutButtons->addStretch();
+    layoutButtons->addWidget(btnOK);
+    layoutButtons->addWidget(btnCancel);
 
     QHBoxLayout *layoutShowPostprocessor = new QHBoxLayout();
     layoutShowPostprocessor->addWidget(grpShow);
@@ -262,7 +282,7 @@ void SceneViewDialog::createControls()
     layout->addWidget(grpScalarField);
     layout->addLayout(layoutVectorFieldTransient);
     layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addLayout(layoutButtons);
 
     setControls();
 
@@ -299,7 +319,7 @@ void SceneViewDialog::doScalarFieldRangeAuto(int state)
     logMessage("SceneViewDialog::doScalarFieldRangeAuto()");
 
     txtScalarFieldRangeMin->setEnabled(!chkScalarFieldRangeAuto->isChecked());
-    txtScalarFieldRangeMax->setEnabled(!chkScalarFieldRangeAuto->isChecked());       
+    txtScalarFieldRangeMax->setEnabled(!chkScalarFieldRangeAuto->isChecked());
 }
 
 void SceneViewDialog::setControls()
@@ -397,4 +417,40 @@ void SceneViewDialog::doReject()
     logMessage("SceneViewDialog::doReject()");
 
     reject();
+}
+
+void SceneViewDialog::doScalarFieldRangeMinChanged()
+{
+    lblScalarFieldRangeMinError->clear();
+    lblScalarFieldRangeMaxError->clear();
+    btnOK->setEnabled(true);
+
+    if (txtScalarFieldRangeMin->value() > txtScalarFieldRangeMax->value())
+    {
+        lblScalarFieldRangeMinError->setText(QString("> %1").arg(txtScalarFieldRangeMax->value()));
+        btnOK->setDisabled(true);
+    }
+    else if (txtScalarFieldRangeMin->value() == txtScalarFieldRangeMax->value())
+    {
+        lblScalarFieldRangeMinError->setText(QString("= %1").arg(txtScalarFieldRangeMax->value()));
+        btnOK->setDisabled(true);
+    }
+}
+
+void SceneViewDialog::doScalarFieldRangeMaxChanged()
+{
+    lblScalarFieldRangeMaxError->clear();
+    lblScalarFieldRangeMinError->clear();
+    btnOK->setEnabled(true);
+
+    if (txtScalarFieldRangeMax->value() < txtScalarFieldRangeMin->value())
+    {
+        lblScalarFieldRangeMaxError->setText(QString("< %1").arg(txtScalarFieldRangeMin->value()));
+        btnOK->setDisabled(true);
+    }
+    else if (txtScalarFieldRangeMax->value() == txtScalarFieldRangeMin->value())
+    {
+        lblScalarFieldRangeMaxError->setText(QString("= %1").arg(txtScalarFieldRangeMin->value()));
+        btnOK->setDisabled(true);
+    }
 }

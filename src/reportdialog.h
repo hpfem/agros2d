@@ -81,7 +81,7 @@ private:
 private slots:
     void resetControls();
     void defaultValues();
-    bool checkPaths();
+    void checkPaths();
 
     void doClose();
     void doShowReport();

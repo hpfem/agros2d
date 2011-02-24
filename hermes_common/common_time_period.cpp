@@ -13,14 +13,25 @@ using namespace std;
 TimePeriod::TimePeriod(const char *name) : period_name(name == NULL ? "unnamed" : name) {
   //initialization
 #ifdef WIN32 //Windows
-
+  LARGE_INTEGER freq;
+  if (QueryPerformanceFrequency(&freq))
+    frequency = (double)freq.QuadPart;
+  else
+    frequency = -1;
 #endif //Linux
   tick_reset();
 }
 
 TimePeriod::SysTime TimePeriod::get_time() const {
 #ifdef WIN32 //Windows
-
+  if (frequency > 0) {
+    LARGE_INTEGER ticks;
+    QueryPerformanceCounter(&ticks);
+    return ticks.QuadPart;
+  }
+  else {
+    return clock();
+  }
 #elif defined(__APPLE__) //Mac
   // FIXME: implement time measurement on Mac
   timespec tm;
@@ -34,7 +45,11 @@ TimePeriod::SysTime TimePeriod::get_time() const {
 
 double TimePeriod::period_in_seconds(const SysTime& begin, const SysTime& end) const {
 #ifdef WIN32 //Windows
-
+  uint64_t period = end - begin;
+  if (frequency > 0)
+    return period / frequency;
+  else
+    return period / (double)CLOCKS_PER_SEC;
 #else //Linux
   int sec_corr = 0;
   long period_nsec = end.tv_nsec - begin.tv_nsec;

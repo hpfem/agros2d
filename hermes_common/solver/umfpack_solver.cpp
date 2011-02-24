@@ -34,11 +34,13 @@
 
 static int find_position(int *Ai, int Alen, int idx) {
   _F_
+  assert (Ai != NULL);
+  assert (Alen > 0);
   assert (idx >= 0);
   
   register int lo = 0, hi = Alen - 1, mid;
   
-  while (1) 
+  while (true) 
   {
     mid = (lo + hi) >> 1;
     
@@ -57,7 +59,7 @@ static int find_position(int *Ai, int Alen, int idx) {
   return mid;
 }
 
-UMFPackMatrix::UMFPackMatrix() {
+CSCMatrix::CSCMatrix() {
   _F_
   size = 0; nnz = 0;
   Ap = NULL;
@@ -65,18 +67,18 @@ UMFPackMatrix::UMFPackMatrix() {
   Ax = NULL;
 }
 
-UMFPackMatrix::UMFPackMatrix(int size) {
+CSCMatrix::CSCMatrix(unsigned int size) {
   _F_
   this->size = size;
   this->alloc();
 }
 
-UMFPackMatrix::~UMFPackMatrix() {
+CSCMatrix::~CSCMatrix() {
   _F_
   free();
 }
 
-void UMFPackMatrix::multiply(scalar* vector_in, scalar* vector_out) 
+void CSCMatrix::multiply_with_vector(scalar* vector_in, scalar* vector_out) 
 {
   int n = this->size;
   for (int j=0; j<n; j++) vector_out[j] = 0;
@@ -87,11 +89,14 @@ void UMFPackMatrix::multiply(scalar* vector_in, scalar* vector_out)
   }
 }
 
-void UMFPackMatrix::alloc() {
+void CSCMatrix::multiply_with_scalar(scalar value) 
+{
+  for (unsigned int i = 0; i < this->nnz; i++) Ax[i] *= value;
+}
+
+void CSCMatrix::alloc() {
   _F_
   assert(pages != NULL);
-  if (size <= 0)
-      error("UMFPack failed, matrix size must be greater than 0.");
 
   // initialize the arrays Ap and Ai
   Ap = new int [size + 1];
@@ -101,7 +106,8 @@ void UMFPackMatrix::alloc() {
   MEM_CHECK(Ai);
 
   // sort the indices and remove duplicities, insert into Ai
-  int i, pos = 0;
+  unsigned int i;
+  int pos = 0;
   for (i = 0; i < size; i++) {
     Ap[i] = pos;
     pos += sort_and_store_indices(pages[i], Ai + pos, Ai + aisize);
@@ -118,7 +124,7 @@ void UMFPackMatrix::alloc() {
   memset(Ax, 0, sizeof(scalar) * nnz);
 }
 
-void UMFPackMatrix::free() {
+void CSCMatrix::free() {
   _F_
   nnz = 0;
   if (Ap != NULL) {delete [] Ap; Ap = NULL;}
@@ -126,7 +132,7 @@ void UMFPackMatrix::free() {
   if (Ax != NULL) {delete [] Ax; Ax = NULL;}
 }
 
-scalar UMFPackMatrix::get(int m, int n)
+scalar CSCMatrix::get(unsigned int m, unsigned int n)
 {
   _F_
   // Find m-th row in the n-th column.
@@ -138,20 +144,20 @@ scalar UMFPackMatrix::get(int m, int n)
     return Ax[Ap[n] + mid];
 }
 
-void UMFPackMatrix::zero() {
+void CSCMatrix::zero() {
   _F_
   memset(Ax, 0, sizeof(scalar) * nnz);
 }
 
-void UMFPackMatrix::add(int m, int n, scalar v) {
+void CSCMatrix::add(unsigned int m, unsigned int n, scalar v) {
   _F_
-  if (v != 0.0 && m >= 0 && n >= 0)   // ignore dirichlet DOFs
+  if (v != 0.0)   // ignore zero values.
   {
     // Find m-th row in the n-th column.
     int pos = find_position(Ai + Ap[n], Ap[n + 1] - Ap[n], m);
     // Make sure we are adding to an existing non-zero entry.
     if (pos < 0) {
-      info("UMFPackMatrix::add(): i = %d, j = %d.", m, n);
+      info("CSCMatrix::add(): i = %d, j = %d.", m, n);
       error("Sparse matrix entry not found");
     }
 
@@ -160,45 +166,45 @@ void UMFPackMatrix::add(int m, int n, scalar v) {
 }
 
 // NOTE: Corresponding nonzero entries in the matrix "this" must be existing.
-void UMFPackMatrix::add_to_diagonal_blocks(int num_stages, UMFPackMatrix* mat_block)
+void CSCMatrix::add_to_diagonal_blocks(int num_stages, CSCMatrix* mat_block)
 {
   _F_
   int ndof = mat_block->get_size();
-  if (this->get_size() != num_stages * ndof) 
-    error("Incompatible matrix sizes in UMFPackMatrix::add_to_diagonal_blocks()");
+  if (this->get_size() != (unsigned int) num_stages * ndof) 
+    error("Incompatible matrix sizes in CSCMatrix::add_to_diagonal_blocks()");
 
   for (int i = 0; i < num_stages; i++) {
     this->add_as_block(ndof*i, ndof*i, mat_block);
   }
 }
 
-void UMFPackMatrix::add_as_block(int offset_i, int offset_j, UMFPackMatrix* mat)
+void CSCMatrix::add_as_block(unsigned int offset_i, unsigned int offset_j, CSCMatrix* mat)
 {
   UMFPackIterator mat_it(mat);
   UMFPackIterator this_it(this);
 
   // Sanity check.
   bool this_not_empty = this_it.init();
-  if (!this_not_empty) error("Empty matrix detected in UMFPackMatrix::add_as_block().");
+  if (!this_not_empty) error("Empty matrix detected in CSCMatrix::add_as_block().");
 
   // Iterate through the small matrix column by column and add all nonzeros 
   // to the large one.
   bool mat_not_finished = mat_it.init();
-  if (!mat_not_finished) error("Empty matrix detected in UMFPackMatrix::add_as_block().");
+  if (!mat_not_finished) error("Empty matrix detected in CSCMatrix::add_as_block().");
   
   int mat_i, mat_j;
   scalar mat_val;
   while(mat_not_finished) {
     mat_it.get_current_position(mat_i, mat_j, mat_val);
     bool found = this_it.move_to_position(mat_i + offset_i, mat_j + offset_j);
-    if (!found) error ("Nonzero matrix entry at %d, %d not found in UMFPackMatrix::add_as_block().", 
+    if (!found) error ("Nonzero matrix entry at %d, %d not found in CSCMatrix::add_as_block().", 
                        mat_i + offset_i, mat_j + offset_j);
     this_it.add_to_current_position(mat_val);
     mat_not_finished = mat_it.move_ptr();
   }
 }
 
-void UMFPackMatrix::add_matrix(UMFPackMatrix* mat) {
+void CSCMatrix::add_matrix(CSCMatrix* mat) {
   _F_
   assert(this->get_size() == mat->get_size());
   // Create iterators for both matrices. 
@@ -234,30 +240,31 @@ void UMFPackMatrix::add_matrix(UMFPackMatrix* mat) {
 }
 
 /// Add a number to each diagonal entry.
-void UMFPackMatrix::add_to_diagonal(scalar v) 
+void CSCMatrix::add_to_diagonal(scalar v) 
 {
-  for (int i=0; i<size; i++) {
+  for (unsigned int i = 0; i<size; i++) {
     add(i, i, v);
   }
 };
 
-void UMFPackMatrix::add(int m, int n, scalar **mat, int *rows, int *cols) {
+void CSCMatrix::add(unsigned int m, unsigned int n, scalar **mat, int *rows, int *cols) {
   _F_
-  for (int i = 0; i < m; i++)       // rows
-    for (int j = 0; j < n; j++)     // cols
-      add(rows[i], cols[j], mat[i][j]);
+  for (unsigned int i = 0; i < m; i++)       // rows
+    for (unsigned int j = 0; j < n; j++)     // cols
+      if(rows[i] >= 0 && cols[j] >= 0) // not Dir. dofs.
+        add(rows[i], cols[j], mat[i][j]);
 }
 
 /// dumping matrix and right-hand side
 ///
-bool UMFPackMatrix::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt) {
+bool CSCMatrix::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt) {
   _F_
   switch (fmt) 
   {
     case DF_MATLAB_SPARSE:
       fprintf(file, "%% Size: %dx%d\n%% Nonzeros: %d\ntemp = zeros(%d, 3);\ntemp = [\n", 
               size, size, nnz, nnz);
-      for (int j = 0; j < size; j++)
+      for (unsigned int j = 0; j < size; j++)
         for (int i = Ap[j]; i < Ap[j + 1]; i++)
           fprintf(file, "%d %d " SCALAR_FMT "\n", Ai[i] + 1, j + 1, SCALAR(Ax[i]));
       fprintf(file, "];\n%s = spconvert(temp);\n", var_name);
@@ -286,7 +293,7 @@ bool UMFPackMatrix::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
   }
 }
 
-int UMFPackMatrix::get_matrix_size() const {
+unsigned int CSCMatrix::get_matrix_size() const {
   return size;
 }
 
@@ -299,12 +306,12 @@ int UMFPackMatrix::get_matrix_size() const {
 }
 */
 
-double UMFPackMatrix::get_fill_in() const {
+double CSCMatrix::get_fill_in() const {
   _F_
   return nnz / (double) (size * size);
 }
 
-void UMFPackMatrix::create(int size, int nnz, int* ap, int* ai, scalar* ax) 
+void CSCMatrix::create(unsigned int size, unsigned int nnz, int* ap, int* ai, scalar* ax) 
 {
   _F_
   this->nnz = nnz;
@@ -312,11 +319,19 @@ void UMFPackMatrix::create(int size, int nnz, int* ap, int* ai, scalar* ax)
   this->Ap = new int[size+1]; assert(this->Ap != NULL);
   this->Ai = new int[nnz];    assert(this->Ai != NULL);
   this->Ax = new scalar[nnz]; assert(this->Ax != NULL);
-  for (int i=0; i < size+1; i++) this->Ap[i] = ap[i];
-  for (int i=0; i < nnz; i++) {
+  for (unsigned int i = 0; i < size+1; i++) this->Ap[i] = ap[i];
+  for (unsigned int i = 0; i < nnz; i++) {
     this->Ax[i] = ax[i]; 
     this->Ai[i] = ai[i];
   } 
+}
+
+CSCMatrix* CSCMatrix::duplicate()
+{
+  _F_
+  CSCMatrix* new_matrix = new CSCMatrix();
+  create(this->get_size(), this->get_nnz(), this->get_Ap(),  this->get_Ai(),  this->get_Ax());
+  return new_matrix;
 }
 
 
@@ -328,7 +343,7 @@ UMFPackVector::UMFPackVector() {
   size = 0;
 }
 
-UMFPackVector::UMFPackVector(int size) {
+UMFPackVector::UMFPackVector(unsigned int size) {
   _F_
   v = NULL;
   this->size = size;
@@ -340,7 +355,7 @@ UMFPackVector::~UMFPackVector() {
   free();
 }
 
-void UMFPackVector::alloc(int n) {
+void UMFPackVector::alloc(unsigned int n) {
   _F_
   free();
   this->size = n;
@@ -356,7 +371,7 @@ void UMFPackVector::zero() {
 
 void UMFPackVector::change_sign() {
   _F_
-  for (int i = 0; i < size; i++) v[i] *= -1.;
+  for (unsigned int i = 0; i < size; i++) v[i] *= -1.;
 }
 
 void UMFPackVector::free() {
@@ -366,20 +381,20 @@ void UMFPackVector::free() {
   size = 0;
 }
 
-void UMFPackVector::set(int idx, scalar y) {
+void UMFPackVector::set(unsigned int idx, scalar y) {
   _F_
-  if (idx >= 0) v[idx] = y;
+  v[idx] = y;
 }
 
-void UMFPackVector::add(int idx, scalar y) {
+void UMFPackVector::add(unsigned int idx, scalar y) {
   _F_
-  if (idx >= 0) v[idx] += y;
+  v[idx] += y;
 }
 
-void UMFPackVector::add(int n, int *idx, scalar *y) {
+void UMFPackVector::add(unsigned int n, unsigned int *idx, scalar *y) {
   _F_
-  for (int i = 0; i < n; i++)
-    if (idx[i] >= 0) v[idx[i]] += y[i];
+  for (unsigned int i = 0; i < n; i++)
+    v[idx[i]] += y[i];
 }
 
 bool UMFPackVector::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt) {
@@ -388,7 +403,7 @@ bool UMFPackVector::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
   {
     case DF_MATLAB_SPARSE:
       fprintf(file, "%% Size: %dx1\n%s = [\n", size, var_name);
-      for (int i = 0; i < size; i++)
+      for (unsigned int i = 0; i < size; i++)
         fprintf(file, SCALAR_FMT "\n", SCALAR(v[i]));
       fprintf(file, " ];\n");
       return true;

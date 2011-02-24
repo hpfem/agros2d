@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-struct ProblemInfo;
+class ProblemInfo;
 class ScriptEditor;
 
 class SLineEditDouble;

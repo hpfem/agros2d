@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class Element;
+struct Element;
 class Quad2D;
 class RefMap;
 class Solution;

@@ -224,6 +224,7 @@ bool H2DReader::load_stream(std::istream &is, Mesh *mesh,
     p.exec("nv = len(elements[i])");
     int nv = p.pull_int("nv");
     int idx[5];
+    std::string el_marker;
     if (!nv) { mesh->elements.skip_slot(); continue; }
     if (nv < 4 || nv > 5)
       error("File %s: element #%d: wrong number of vertex indices.", filename, i);
@@ -232,14 +233,22 @@ bool H2DReader::load_stream(std::istream &is, Mesh *mesh,
       idx[0] = p.pull_int("n1");
       idx[1] = p.pull_int("n2");
       idx[2] = p.pull_int("n3");
-      idx[3] = p.pull_int("b");
+      p.exec("b_str = 1 if isinstance(b, str) else 0");
+      if (p.pull_int("b_str"))
+          el_marker = p.pull_str("b");
+      else
+          idx[3] = p.pull_int("b");
     } else {
       p.exec("n1, n2, n3, n4, b = elements[i]");
       idx[0] = p.pull_int("n1");
       idx[1] = p.pull_int("n2");
       idx[2] = p.pull_int("n3");
       idx[3] = p.pull_int("n4");
-      idx[4] = p.pull_int("b");
+      p.exec("b_str = 1 if isinstance(b, str) else 0");
+      if (p.pull_int("b_str"))
+          el_marker = p.pull_str("b");
+      else
+          idx[4] = p.pull_int("b");
     }
     for (j = 0; j < nv-1; j++)
       if (idx[j] < 0 || idx[j] >= mesh->ntopvert)
@@ -248,17 +257,14 @@ bool H2DReader::load_stream(std::istream &is, Mesh *mesh,
     Node *v0 = &mesh->nodes[idx[0]], *v1 = &mesh->nodes[idx[1]], *v2 = &mesh->nodes[idx[2]];
     int marker;
 
-    /* FIXME: enable the string markers again:
     // If we are dealing with a string as a marker.
-    if(elem->marker->size() > 0) {
-      // Number of vertices + the marker is 1 bigger than in the previous context.
-      nv += 1;
+    if (el_marker != "") {
       // This functions check if the user-supplied marker on this element has been
       // already used, and if not, inserts it in the appropriate structure.
-      mesh->markers_conversion->insert_element_marker(mesh->markers_conversion->min_element_marker_unused, *elem->marker);
-      marker = mesh->markers_conversion->get_internal_element_marker(*elem->marker);
+      mesh->markers_conversion->insert_element_marker(mesh->markers_conversion->min_element_marker_unused, el_marker);
+      marker = mesh->markers_conversion->get_internal_element_marker(el_marker);
     }
-    else*/ {
+    else {
       if(nv == 4) {
         // If we have some string-labeled boundary markers.
         if(mesh->markers_conversion != NULL) {
@@ -281,12 +287,12 @@ bool H2DReader::load_stream(std::istream &is, Mesh *mesh,
 
     if(nv == 4) {
         check_triangle(i, v0, v1, v2);
-        mesh->create_triangle(marker, v0, v1, v2, NULL);
+        create_triangle(mesh, marker, v0, v1, v2, NULL);
       }
       else {
         Node *v3 = &mesh->nodes[idx[3]];
         check_quad(i, v0, v1, v2, v3);
-        mesh->create_quad(marker, v0, v1, v2, v3, NULL);
+        create_quad(mesh, marker, v0, v1, v2, v3, NULL);
       }
 
     mesh->nactive++;
@@ -388,7 +394,7 @@ bool H2DReader::load_stream(std::istream &is, Mesh *mesh,
         }
 
         int idx = -1;
-        for (j = 0; j < e->nvert; j++)
+        for (unsigned j = 0; j < e->nvert; j++)
           if (e->en[j] == en) { idx = j; break; }
         assert(idx >= 0);
 
@@ -430,7 +436,7 @@ bool H2DReader::load_stream(std::istream &is, Mesh *mesh,
       p.exec("id, ref = refinements[i]");
       id = p.pull_int("id");
       ref = p.pull_int("ref");
-      mesh->refine_element(id, ref);
+      mesh->refine_element_id(id, ref);
     }
   }
   mesh->ninitial = mesh->elements.get_num_items();
@@ -536,7 +542,7 @@ bool H2DReader::save(const char* filename, Mesh *mesh)
   fprintf(f, "\n}\n\nboundaries =\n{");
   first = true;
   for_all_base_elements(e, mesh)
-    for (i = 0; i < e->nvert; i++)
+    for (unsigned i = 0; i < e->nvert; i++)
       if ((mrk = mesh->get_base_edge_node(e, i)->marker)) {
         const char* nl = first ? "\n" : ",\n";  first = false;
         fprintf(f, "%s  { %d, %d, %d }", nl, e->vn[i]->id, e->vn[e->next_vert(i)]->id, mrk);
@@ -547,7 +553,7 @@ bool H2DReader::save(const char* filename, Mesh *mesh)
   first = true;
   for_all_base_elements(e, mesh)
     if (e->is_curved())
-      for (i = 0; i < e->nvert; i++)
+      for (unsigned i = 0; i < e->nvert; i++)
         if (e->cm->nurbs[i] != NULL && !is_twin_nurbs(e, i)) {
           fprintf(f, first ? "curves =\n{\n" : ",\n");  first = false;
           save_nurbs(mesh, f, e->vn[i]->id, e->vn[e->next_vert(i)]->id, e->cm->nurbs[i]);

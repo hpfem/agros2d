@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # backup
-cp hermes2d/src/config.h hermes2d/src/config.h.backup
-cp hermes_common/common_time_period.h hermes_common/common_time_period.h.backup
-cp hermes_common/common_time_period.cpp hermes_common/common_time_period.cpp.backup
+# cp hermes2d/src/config.h hermes2d/src/config.h.backup
+# cp hermes_common/common_time_period.h hermes_common/common_time_period.h.backup
+# cp hermes_common/common_time_period.cpp hermes_common/common_time_period.cpp.backup
 
 cp ../hermes/hermes2d/src/*.cpp hermes2d/src
 cp ../hermes/hermes2d/src/*.h hermes2d/src
@@ -42,9 +42,9 @@ cp ../hermes/hermes_common/third_party_codes/trilinos-teuchos/* hermes_common/th
 cp ../hermes/hermes_common/python/*.* hermes_common/python
 
 # restore
-cp hermes2d/src/config.h.backup hermes2d/src/config.h
-cp hermes_common/common_time_period.h.backup hermes_common/common_time_period.h
-cp hermes_common/common_time_period.cpp.backup hermes_common/common_time_period.cpp
-cp hermes_common/compat.h.backup hermes_common/compat.h
-cp hermes_common/third_party_codes/trilinos-teuchos/Teuchos_DLLExportMacro.h.backup hermes_common/third_party_codes/trilinos-teuchos/Teuchos_DLLExportMacro.h
+# cp hermes2d/src/config.h.backup hermes2d/src/config.h
+# cp hermes_common/common_time_period.h.backup hermes_common/common_time_period.h
+# cp hermes_common/common_time_period.cpp.backup hermes_common/common_time_period.cpp
+# cp hermes_common/compat.h.backup hermes_common/compat.h
+# cp hermes_common/third_party_codes/trilinos-teuchos/Teuchos_DLLExportMacro.h.backup hermes_common/third_party_codes/trilinos-teuchos/Teuchos_DLLExportMacro.h
  
