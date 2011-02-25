@@ -6,52 +6,52 @@
     <message>
         <location filename="../src/helpdialog.cpp" line="545"/>
         <source>Add new page</source>
-        <translation type="unfinished"></translation>
+        <translation>neue Seite zugeben</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="551"/>
         <source>Go back</source>
-        <translation type="unfinished"></translation>
+        <translation>zurück gehen</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="559"/>
         <source>Go forward</source>
-        <translation type="unfinished"></translation>
+        <translation>vorwärts gehen</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="567"/>
         <source>Go home</source>
-        <translation type="unfinished"></translation>
+        <translation>home gehen</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="836"/>
         <source>Print Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokument ausdrücken</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="975"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>unbekannt</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="1077"/>
         <source>Add New Page</source>
-        <translation type="unfinished"></translation>
+        <translation>neue Seite zugeben</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="1080"/>
         <source>Close This Page</source>
-        <translation type="unfinished"></translation>
+        <translation>diese Seite schließen</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="1083"/>
         <source>Close Other Pages</source>
-        <translation type="unfinished"></translation>
+        <translation>andere Seite schließen</translation>
     </message>
     <message>
         <location filename="../src/helpdialog.cpp" line="1088"/>
         <source>Add Bookmark for this Page...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesezeichen für diese Seite zugeben...</translation>
     </message>
 </context>
 <context>
@@ -59,12 +59,12 @@
     <message>
         <location filename="../src/gui.cpp" line="300"/>
         <source>Export image to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Bildes in Datei</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="300"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG Dateien (*.png)</translation>
     </message>
 </context>
 <context>
@@ -73,117 +73,117 @@
         <location filename="../src/chartdialog.cpp" line="32"/>
         <location filename="../src/chartdialog.cpp" line="278"/>
         <source>Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Graph</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="115"/>
         <source>Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Auszeichnen</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="119"/>
         <source>Save image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild speichern</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="123"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="149"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="159"/>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>Ende</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="163"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="182"/>
         <source>Horizontal axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontalachse</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="196"/>
         <source>Points:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkte:</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="197"/>
         <source>Time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitschritt:</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="199"/>
         <source>Points and time step</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkte und Zeitschritt</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="214"/>
         <source>Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="227"/>
         <source>Variable:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kenngröße:</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="228"/>
         <source>Component:</source>
-        <translation type="unfinished"></translation>
+        <translation>Komponente:</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="263"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="264"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeit</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="279"/>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabelle</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="338"/>
         <source>Length (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge (m)</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="418"/>
         <source>Time (s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeit (s)</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="478"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalar</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="482"/>
         <source>Magnitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Amplitude</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="515"/>
         <source>Export data to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Daten in Datei</translation>
     </message>
     <message>
         <location filename="../src/chartdialog.cpp" line="515"/>
         <source>CSV files (*.csv);;Matlab/Octave script (*.m)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV Dateien;;Matlab/Octave Skript (*.m)</translation>
     </message>
 </context>
 <context>
@@ -193,22 +193,22 @@
         <location filename="../src/util.cpp" line="1241"/>
         <location filename="../src/util.cpp" line="1245"/>
         <source>New version</source>
-        <translation type="unfinished"></translation>
+        <translation>neue Version</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="1226"/>
         <source>File is corrupted or network is disconnected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei ist beschädigt oder das Netz ist nicht verbunden.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="1233"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Neue Version ist zugänglich.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Verwendet Version: %1&lt;br/&gt;Neue Version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="1245"/>
         <source>You are using actual version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie benutzen aktuelle Version.</translation>
     </message>
 </context>
 <context>
@@ -216,145 +216,145 @@
     <message>
         <location filename="../src/configdialog.cpp" line="33"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Möglichkeiten</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="131"/>
         <source>Width and height of bounding box over vector count.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Breite und die Höhe der Grenze von der Anzahl geteilt.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="175"/>
         <source>Language change</source>
-        <translation type="unfinished"></translation>
+        <translation>Wechsel der Sprache</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="176"/>
         <source>Interface language has been changed. You must restart the application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Sprache wurde gewechselt. Sie müssen die Aplikation durchstarten.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="316"/>
         <source>Main</source>
-        <translation type="unfinished"></translation>
+        <translation>Haupt</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="320"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Darstellung</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="324"/>
         <location filename="../src/configdialog.cpp" line="657"/>
         <source>Solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechengerät</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="328"/>
         <location filename="../src/configdialog.cpp" line="738"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Farben</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="332"/>
         <source>Python</source>
-        <translation type="unfinished"></translation>
+        <translation>Python</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="336"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Fortgeschrittene</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="381"/>
         <source>UI:</source>
-        <translation type="unfinished"></translation>
+        <translation>AO:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="383"/>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprache:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="385"/>
         <source>Default physic field:</source>
-        <translation type="unfinished"></translation>
+        <translation>physikalisches Ausgangsfeld:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="388"/>
         <location filename="../src/configdialog.cpp" line="629"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Allgemain</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="393"/>
         <source>Clear command history</source>
-        <translation type="unfinished"></translation>
+        <translation>Historie der Weisungen löschen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="396"/>
         <source>Show value result in line edit input</source>
-        <translation type="unfinished"></translation>
+        <translation>Ergebnis an Textfelder anzeigen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="397"/>
         <source>Check new version during startup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Version beim Start der Applikation kontrollieren.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="398"/>
         <source>Enabled application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufzeichnung der Applikation bewilligen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="399"/>
         <source>Enabled progress log</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufzeichnung des Verlaufes der Lösung bewilligen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="412"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="439"/>
         <source>Node size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe der Knoten:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="441"/>
         <source>Edge width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite der Kante:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="443"/>
         <source>Label size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe der Gebietzeichen:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="446"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="452"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster anzeigen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="453"/>
         <source>Show rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lineal anzeigen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="454"/>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Ins Raster fangen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="455"/>
         <source>Show axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Achsen anzeigen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="456"/>
