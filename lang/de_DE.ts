@@ -231,7 +231,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="176"/>
         <source>Interface language has been changed. You must restart the application.</source>
-        <translation>Die Sprache wurde gewechselt. Sie müssen die Aplikation durchstarten.</translation>
+        <translation type="unfinished">Die Sprache wurde gewechselt. Sie müssen die Applikation durchstarten.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="316"/>
