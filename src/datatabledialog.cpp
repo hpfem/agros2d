@@ -39,12 +39,14 @@ DataTableDialog::DataTableDialog(QWidget *parent) : QDialog(parent)
 
     QSettings settings;
     restoreGeometry(settings.value("DataTableDialog/Geometry", saveGeometry()).toByteArray());
+    chkInterpolation->setChecked(settings.value("DataTableDialog/Interpolation").toBool());
 }
 
 DataTableDialog::~DataTableDialog()
 {
     QSettings settings;
     settings.setValue("DataTableDialog/Geometry", saveGeometry());
+    settings.setValue("DataTableDialog/Interpolation", chkInterpolation->isChecked());
 
     if (m_table)
         delete m_table;
@@ -183,7 +185,7 @@ void DataTableDialog::createControls()
     chartDerivativeCurveDots->setSymbol(QwtSymbol(QwtSymbol::Diamond, Qt::red, QPen(Qt::blue, 1), QSize(10,10)));
     chartDerivativeCurveDots->attach(chartDerivative);
 
-    QVBoxLayout *chartLayout = new QVBoxLayout();
+    QGridLayout *chartLayout = new QGridLayout();
     chartLayout->addWidget(chartValue);
     chartLayout->addWidget(chartDerivative);
 
@@ -197,12 +199,18 @@ void DataTableDialog::createControls()
     lstY->setMinimumWidth(100);
     connect(lstY, SIGNAL(textChanged()), this, SLOT(doTextChanged()));
 
+    chkInterpolation = new QCheckBox(tr("Spline interpolation"));
+
+    QGridLayout *layoutSettings = new QGridLayout();
+    layoutSettings->addWidget(chkInterpolation, 3, 0, 1, 2);
+
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(lblInfoX, 0, 0);
     controlsLayout->addWidget(lstX, 1, 0);
     controlsLayout->addWidget(lblInfoY, 0, 1);
     controlsLayout->addWidget(lstY, 1, 1);
-    controlsLayout->addLayout(chartLayout, 0, 2, 2, 1);
+    controlsLayout->addLayout(layoutSettings, 2, 0, 1, 2);
+    controlsLayout->addLayout(chartLayout, 1, 2, 3, 1);
     controlsLayout->addWidget(lblInfoError, 3, 0, 1, 3);
 
     // dialog buttons
@@ -258,22 +266,35 @@ void DataTableDialog::doPlot()
     delete [] values;
     delete [] derivatives;
 
-    // spline
-    int countSpline = 50;
+    // interpolation
+    int countSpline = count*1e3;
+    double dx = (m_table->max_key() - m_table->min_key()) / (countSpline);
 
     double *keysSpline = new double[countSpline];
     double *valuesSpline = new double[countSpline];
     double *derivativesSpline = new double[countSpline];
 
-    double dx = (m_table->max_key() - m_table->min_key()) / (countSpline);
-
-    for (int i = 0; i < countSpline; i++)
+    if (chkInterpolation->isChecked())
     {
-        keysSpline[i] = m_table->min_key() + (i * dx);
-        // values[i] = m_table->value(keys[i]);
-        valuesSpline[i] = m_table->value_spline(keysSpline[i]);
-        // derivatives[i] = m_table->derivative(keys[i]);
-        derivativesSpline[i] = m_table->derivative_spline(keysSpline[i]);
+        // spline
+        for (int i = 0; i < countSpline; i++)
+        {
+            keysSpline[i] = m_table->min_key() + (i * dx);
+            // values[i] = m_table->value(keys[i]);
+            valuesSpline[i] = m_table->value_spline(keysSpline[i]);
+            // derivatives[i] = m_table->derivative(keys[i]);
+            derivativesSpline[i] = m_table->derivative_spline(keysSpline[i]);
+        }
+    }
+    else
+    {
+        // lines
+        for (int i = 0; i < countSpline; i++)
+        {
+            keysSpline[i] = m_table->min_key() + (i * dx);
+            valuesSpline[i] = m_table->value(keysSpline[i]);
+            derivativesSpline[i] = m_table->derivative(keysSpline[i]);
+        }
     }
 
     chartValue->setData(keysSpline, valuesSpline, countSpline);

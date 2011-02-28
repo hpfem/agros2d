@@ -836,7 +836,7 @@ Value::Value(const QString &str, bool evaluateExpression)
     fromString(str);
 
     if (evaluateExpression)
-        evaluate(true); 
+        evaluate(true);
 }
 
 Value::~Value()
@@ -893,20 +893,20 @@ QString Value::toString()
     if (table->size() == 0)
         return m_text;
     else
-        return m_text + "|" + QString::fromStdString(table->to_string());
+        return m_text + ";" + QString::fromStdString(table->to_string());
 }
 
 void Value::fromString(const QString &str)
 {
     table = new DataTable();
 
-    if (str.contains("|"))
+    if (str.contains(";"))
     {
         // string and table
-        QStringList lst = str.split("|");
+        QStringList lst = str.split(";");
         this->setText(lst.at(0));
 
-        table->from_string((lst.at(1) + "|" + lst.at(2)).toStdString());
+        table->from_string((lst.at(1) + ";" + lst.at(2)).toStdString());
     }
     else
     {

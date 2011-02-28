@@ -216,7 +216,7 @@ void DataTable::init_spline()
         i++;
     }
 
-    std::cout << "init spline" << std::endl;
+    //std::cout << "init spline" << std::endl;
 
     // alglib
     // delete old spline
@@ -437,12 +437,12 @@ std::string DataTable::to_string()
         }
     }
 
-    return (str_key + "|" + str_value);
+    return (str_key + ";" + str_value);
 }
 
 void DataTable::from_string(const std::string &str)
 {
-    std::string::const_iterator pos = std::find(str.begin(), str.end(), '|');
+    std::string::const_iterator pos = std::find(str.begin(), str.end(), ';');
 
     std::string str_keys(str.begin(), pos);
     std::string str_values(pos + 1, str.end());
