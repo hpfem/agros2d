@@ -68,7 +68,8 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
                        int numberofrefinements, int polynomialorder, char *adaptivitytype,
                        double adaptivitysteps, double adaptivitytolerance,
                        double frequency,
-                       char *analysistype, double timestep, double totaltime, double initialcondition);
+                       char *analysistype, double timestep, double totaltime, double initialcondition,
+                       char *linearitytype, double nonlinearitytolerance, int nonlinearitysteps);
 void pythonOpenDocument(char *str);
 void pythonSaveDocument(char *str);
 

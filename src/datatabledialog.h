@@ -51,6 +51,8 @@ private:
     QLabel *lblInfoY;
     QLabel *lblInfoError;
 
+    QCheckBox *chkInterpolation;
+
     QPushButton *btnOk;
     QPushButton *btnClose;
     QPushButton *btnPlot;
@@ -66,7 +68,7 @@ private slots:
     void doReject();
 
     void doTextChanged();
-    void doPlot();   
+    void doPlot();
 };
 
 #endif // DATATABLEDIALOG_H

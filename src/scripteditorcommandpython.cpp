@@ -125,12 +125,13 @@ void pythonQuit()
     QApplication::exit(0);
 }
 
-// newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition)
+// newdocument(name, type, physicfield, numberofrefinements, polynomialorder, adaptivitytype, adaptivitysteps, adaptivitytolerance, frequency, analysistype, timestep, totaltime, initialcondition, linearitytype, nonlinearitytolerance, nonlinearitysteps)
 void pythonNewDocument(char *name, char *type, char *physicfield,
                        int numberofrefinements, int polynomialorder, char *adaptivitytype,
                        double adaptivitysteps, double adaptivitytolerance,
                        double frequency,
-                       char *analysistype, double timestep, double totaltime, double initialcondition)
+                       char *analysistype, double timestep, double totaltime, double initialcondition,
+                       char *linearitytype, double nonlinearitytolerance, int nonlinearitysteps)
 {
     logMessage("pythonNewDocument()");
 
@@ -192,11 +193,6 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
         throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
 
-    // analysis type
-    Util::scene()->problemInfo()->analysisType = analysisTypeFromStringKey(QString(analysistype));
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Undefined)
-        throw invalid_argument(QObject::tr("Analysis type '%1' is not implemented").arg(QString(adaptivitytype)).toStdString());
-
     // transient timestep
     if (timestep > 0)
         Util::scene()->problemInfo()->timeStep = Value(QString::number(timestep));
@@ -211,6 +207,23 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
 
     // transient initial condition
     Util::scene()->problemInfo()->initialCondition = Value(QString::number(initialcondition));
+
+    // linarity type
+    Util::scene()->problemInfo()->linearityType = linearityTypeFromStringKey(QString(linearitytype));
+    if (Util::scene()->problemInfo()->linearityType == LinearityType_Undefined)
+        throw invalid_argument(QObject::tr("Linearity or nonlinearity type '%1' is not implemented").arg(QString(linearitytype)).toStdString());
+
+    // nonlinearity tolerance
+    if (nonlinearitytolerance >= 0)
+        Util::scene()->problemInfo()->linearityNonlinearTolerance = nonlinearitytolerance;
+    else if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+        throw out_of_range(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
+
+    // nonlinearity steps
+    if ((nonlinearitysteps >= 1) && (nonlinearitysteps <=100))
+        Util::scene()->problemInfo()->linearityNonlinearSteps = nonlinearitysteps;
+    else if (Util::scene()->problemInfo()->linearityType != LinearityType_Linear)
+        throw out_of_range(QObject::tr("Nonlinearity steps '%1' is out of range.").toStdString());
 
     // invalidate
     sceneView()->doDefaultValues();
