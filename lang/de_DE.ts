@@ -231,7 +231,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="176"/>
         <source>Interface language has been changed. You must restart the application.</source>
-        <translation type="unfinished">Die Sprache wurde gewechselt. Sie müssen die Applikation durchstarten.</translation>
+        <translation>Die Sprache wurde gewechselt. Sie müssen die Applikation durchstarten.</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="316"/>
@@ -278,7 +278,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="385"/>
         <source>Default physic field:</source>
-        <translation>physikalisches Ausgangsfeld:</translation>
+        <translation>anfängliches physikalisches Feld:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="388"/>
@@ -359,294 +359,294 @@
     <message>
         <location filename="../src/configdialog.cpp" line="456"/>
         <source>Zoom to mouse pointer</source>
-        <translation type="unfinished"></translation>
+        <translation>Größerung zur Position des Kurzors der Maus</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="459"/>
         <source>Grid step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schritt des Rasters:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="467"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="477"/>
         <source>Set font</source>
-        <translation type="unfinished"></translation>
+        <translation>Schrift einstellen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="484"/>
         <source>Scene font</source>
-        <translation type="unfinished"></translation>
+        <translation>Schrift in der Szene</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="499"/>
         <location filename="../src/configdialog.cpp" line="603"/>
         <source>Jet</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenflugzeug</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="500"/>
         <source>Autumn</source>
-        <translation type="unfinished"></translation>
+        <translation>Herbst</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="501"/>
         <source>Hot</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitze</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="502"/>
         <source>Copper</source>
-        <translation type="unfinished"></translation>
+        <translation>Kupfer</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="503"/>
         <source>Cool</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalt</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="504"/>
         <location filename="../src/configdialog.cpp" line="604"/>
         <source>B/W ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>Sch/W steigend</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="505"/>
         <location filename="../src/configdialog.cpp" line="605"/>
         <source>B/W descending</source>
-        <translation type="unfinished"></translation>
+        <translation>Sch/W sinkend</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="507"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="515"/>
         <source>Log. scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Log. Skala</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="524"/>
         <location filename="../src/configdialog.cpp" line="609"/>
         <source>Palette:</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="527"/>
         <source>Steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Schritte:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="530"/>
         <source>Base:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grund des Logarithmus:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="534"/>
         <source>Number of decimal places:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Dezimalstellen:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="537"/>
         <source>Scalar view</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalare Darstellung</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="546"/>
         <source>Contours count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Konturen:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="549"/>
         <location filename="../src/configdialog.cpp" line="587"/>
         <source>Contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Konturen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="553"/>
         <source>Proportional</source>
-        <translation type="unfinished"></translation>
+        <translation>Proportional</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="554"/>
         <source>Color (b/w)</source>
-        <translation type="unfinished"></translation>
+        <translation>Farbe (sch/w)</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="561"/>
         <location filename="../src/configdialog.cpp" line="715"/>
         <source>Vectors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Vektoren:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="564"/>
         <source>Scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="568"/>
         <source>Vector view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektordarstellung</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="572"/>
         <source>Ligthing</source>
-        <translation type="unfinished"></translation>
+        <translation>Anleuchtung</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="574"/>
         <source>Gradient background</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradientenhintergrund</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="577"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Winkel:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="582"/>
         <source>3D</source>
-        <translation type="unfinished"></translation>
+        <translation>3D</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="586"/>
         <source>Scalar field</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalarfeld</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="588"/>
         <source>Vector field</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektorfeld</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="595"/>
         <source>Deform shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Form der Deformation</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="599"/>
         <source>Show order label</source>
-        <translation type="unfinished"></translation>
+        <translation>Legende der Zehnerpotenz darstellen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="602"/>
         <source>Hermes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hermes</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="612"/>
         <source>Polynomial order</source>
-        <translation type="unfinished"></translation>
+        <translation>Zehnerpotenz des Polynoms</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="630"/>
         <source>Postprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>Postprozessor</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="642"/>
         <source>Delete files with initial mesh (Triangle)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateien mit Anfangsraster löschen (Triangle)</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="643"/>
         <source>Delete files with solution mesh (Hermes2D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateien mit Rechenraster löschen (Hermes2D)</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="645"/>
         <source>Save problem with solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem mit der Lösung speichern</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="647"/>
         <source>Show convergence chart after solving</source>
-        <translation type="unfinished"></translation>
+        <translation>Graph der Konvergenz nach der Lösung darstellen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="664"/>
         <source>Curvilinear elements</source>
-        <translation type="unfinished"></translation>
+        <translation>krummlinge Elemente</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="667"/>
         <source>Angle segments count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Segmente der Winkel:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="671"/>
         <source>Mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Netz</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="708"/>
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergrund:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="709"/>
         <source>Grid:</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="710"/>
         <source>Cross:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreuz:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="711"/>
         <source>Nodes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Knoten:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="712"/>
         <source>Edges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanten:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="713"/>
         <source>Labels:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichen der Gebiete:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="714"/>
         <source>Contours:</source>
-        <translation type="unfinished"></translation>
+        <translation>Konturen:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="716"/>
         <source>Initial mesh:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfangsnetz:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="717"/>
         <source>Solution mesh:</source>
-        <translation type="unfinished"></translation>
+        <translation>gelöstes Netz:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="718"/>
         <source>Highlighted elements:</source>
-        <translation type="unfinished"></translation>
+        <translation>ausgezeichnete Elemente:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="719"/>
         <source>Selected elements:</source>
-        <translation type="unfinished"></translation>
+        <translation>ausgewählte Elemente:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="735"/>
         <location filename="../src/configdialog.cpp" line="823"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfänglich</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="758"/>
         <source>Isotropic refinement</source>
-        <translation type="unfinished"></translation>
+        <translation>isotropisch Verfeinerung</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="759"/>
@@ -666,17 +666,17 @@
     <message>
         <location filename="../src/configdialog.cpp" line="768"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="769"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="770"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="771"/>
