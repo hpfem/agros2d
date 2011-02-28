@@ -97,7 +97,7 @@ QString createPythonFromModel()
 
     // model
     str += "# model\n";
-    str += QString("newdocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13)").
+    str += QString("newdocument(\"%1\", \"%2\", \"%3\", %4, %5, \"%6\", %7, %8, %9, \"%10\", %11, %12, %13, \"%14\", %15, %16)").
            arg(Util::scene()->problemInfo()->name).
            arg(problemTypeToStringKey(Util::scene()->problemInfo()->problemType)).
            arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField())).
@@ -110,7 +110,10 @@ QString createPythonFromModel()
            arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)).
            arg(Util::scene()->problemInfo()->timeStep.text()).
            arg(Util::scene()->problemInfo()->timeTotal.text()).
-           arg(Util::scene()->problemInfo()->initialCondition.text())
+           arg(Util::scene()->problemInfo()->initialCondition.text()).
+           arg(linearityTypeToStringKey(Util::scene()->problemInfo()->linearityType)).
+           arg(Util::scene()->problemInfo()->linearityNonlinearTolerance).
+           arg(Util::scene()->problemInfo()->linearityNonlinearSteps)
            + "\n";
     str += "\n";
 
