@@ -760,7 +760,7 @@ QWidget *ConfigDialog::createAdvancedWidget()
                                "<tr><td><b>false</b><td><td>anisotropic refinement</td></tr>"
                                "</table>"));
     txtConvExp = new SLineEditDouble();
-    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of cancidates in hp-adaptivity"));
+    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of candidates in hp-adaptivity"));
     txtThreshold = new SLineEditDouble();
     lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
     cmbStrategy = new QComboBox();
