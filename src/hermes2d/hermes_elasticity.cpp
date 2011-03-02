@@ -325,7 +325,7 @@ QStringList HermesElasticity::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesElasticity::newEdgeMarker()
 {
-    return new SceneEdgeElasticityMarker(tr("new boundary"),
+    return new SceneEdgeElasticityMarker(tr("new boundary condition"),
                                          PhysicFieldBC_Elasticity_Free,
                                          PhysicFieldBC_Elasticity_Free,
                                          Value("0"),

@@ -304,9 +304,10 @@ void ConfigDialog::createControls()
     // List View
     lstView->setCurrentRow(0);
     lstView->setViewMode(QListView::IconMode);
-     lstView->setMovement(QListView::Static);
+    lstView->setMovement(QListView::Static);
+    lstView->setFlow(QListView::TopToBottom);
     lstView->setIconSize(QSize(55, 55));
-    lstView->setMaximumWidth(90);
+    lstView->setMaximumWidth(150);
     lstView->setSpacing(12);
     connect(lstView, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
                this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
@@ -768,9 +769,9 @@ QWidget *ConfigDialog::createAdvancedWidget()
     cmbStrategy->addItem(tr("1"), 1);
     cmbStrategy->addItem(tr("2"), 2);
     lblStrategy = new QLabel(tr("<table>"
-                                 "<tr><td><b>0</b><td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
-                                 "<tr><td><b>1</b><td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
-                                 "<tr><td><b>2</b><td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
+                                 "<tr><td><b>0</b></td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
+                                 "<tr><td><b>1</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
+                                 "<tr><td><b>2</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
                                  "</table>"));
     cmbMeshRegularity = new QComboBox();
     cmbMeshRegularity->addItem(tr("arbitrary level hang. nodes"), -1);
@@ -889,7 +890,7 @@ void ConfigDialog::doClearCommandHistory()
     QStringListModel *model = dynamic_cast<QStringListModel *>(Util::completer()->model());
     model->setStringList(QStringList());
 
-    QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared succesfully."));
+    QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared successfully."));
 }
 
 void ConfigDialog::doAdvancedDefault()
