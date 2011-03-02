@@ -1,7 +1,6 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
 QT += opengl \
     xml \
-    webkit \
     network
 
 CONFIG(debug): DEFINES += BETA

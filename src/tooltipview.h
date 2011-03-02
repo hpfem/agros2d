@@ -33,7 +33,7 @@ public slots:
     void loadTooltip(SceneMode sceneMode);
 
 private:
-     QWebView *webView;
+     QTextEdit *txtView;
 };
 
 #endif // TOOLTIPVIEW_H

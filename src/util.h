@@ -22,12 +22,8 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <QFont>
 #include <QtNetwork>
-#include <QWebView>
 #include <QDomDocument>
-
-#include <QtHelp/QHelpEngine>
 
 #include <Python.h>
 
