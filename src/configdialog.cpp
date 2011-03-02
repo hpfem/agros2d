@@ -756,8 +756,8 @@ QWidget *ConfigDialog::createAdvancedWidget()
     // adaptivity
     chkIsoOnly = new QCheckBox(tr("Isotropic refinement"));
     lblIsoOnly = new QLabel(tr("<table>"
-                               "<tr><td><b>true</b><td><td>isotropic refinement</td></tr>"
-                               "<tr><td><b>false</b><td><td>anisotropic refinement</td></tr>"
+                               "<tr><td><b>true</b></td><td>isotropic refinement</td></tr>"
+                               "<tr><td><b>false</b></td><td>anisotropic refinement</td></tr>"
                                "</table>"));
     txtConvExp = new SLineEditDouble();
     lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of candidates in hp-adaptivity"));
