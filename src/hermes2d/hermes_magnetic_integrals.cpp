@@ -201,6 +201,12 @@ LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue
                 FL_real.y =   (current_density_total_real*B_real.x - current_density_total_imag*B_imag.x);
                 FL_imag.x = - (current_density_total_imag*B_real.y + current_density_total_real*B_imag.y);
                 FL_imag.y =   (current_density_total_imag*B_real.x + current_density_total_real*B_imag.x);
+                // axisymmetric harmonic field
+                if (Util::scene()->problemInfo()->problemType == ProblemType_Axisymmetric)
+                {
+                    FL_real = FL_real * (-1.0);
+                    FL_imag = FL_imag * (-1.0);
+                }
 
                 // power losses
                 pj = (marker->conductivity.number > 0.0) ?
