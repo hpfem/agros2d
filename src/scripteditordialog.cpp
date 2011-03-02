@@ -322,8 +322,6 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
 
-    setMinimumSize(400, 400);
-    resize(sizeHint());
     QSettings settings;
     restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("ScriptEditorDialog/RecentFiles").value<QStringList>();
