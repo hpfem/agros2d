@@ -39,6 +39,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     logMessage("MainWindow::MainWindow()");
 
+    // fixme - curve elements from script doesn't work
+    readMeshDirtyFix();
+
     createScriptEngine();
     createScene();
 

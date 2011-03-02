@@ -132,6 +132,9 @@ protected:
     virtual void calculateVariable(int i) = 0;
 };
 
+// mesh fix
+void readMeshDirtyFix();
+
 // read mesh
 Mesh *readMeshFromFile(const QString &fileName);
 void writeMeshFromFile(const QString &fileName, Mesh *mesh);
