@@ -1099,30 +1099,8 @@ void MainWindow::doCheckVersion()
 
 void MainWindow::doAbout()
 {
-    logMessage("MainWindow::doAbout()");
-
-    QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics application based on <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library.<br/><br/>"
-                   "Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>"
-                   "Issues: <a href=\"http://github.com/hpfem/agros2d/issues\">http://github.com/hpfem/agros2d/issues</a><br/><br/><b>Authors:</b>"
-                   "<p><table>"
-                   "<tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a> (main developer)</td></tr>"
-                   "<tr><td>&nbsp;</td><td>Frantisek Mach <a href=\"mailto:mach.frantisek@gmail.com\">mach.frantisek@gmail.com</a> (developer, documentation)</td></tr>"
-                   "<tr><td>&nbsp;</td><td>Bartosz Sawicki <a href=\"mailto:sawickib@iem.pw.edu.pl\">sawickib@iem.pw.edu.pl</a> (developer, Polish translation)</td></tr>"
-                   "<tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr>"
-                   "<tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr>"
-                   "<tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr>"
-                   "<tr><td>&nbsp;</td><td>Ondrej Certik <a href=\"mailto:ondrej@certik.cz\">ondrej@certik.cz</a></td></tr>"
-                   "<tr><td>Nokia Qt:</td><td>Nokia Qt (<a href=\"http://qt.nokia.com/\">Qt - A cross-platform framework</a>)</td></tr>"
-                   "<tr><td>Qwt:</td><td>Qwt (<a href=\"http://qwt.sourceforge.net/\">Qt Widgets for Technical Applications</a>)</td></tr>"
-                   "<tr><td>Python:</td><td>Python Programming Language (<a href=\"http://www.python.org\">Python</a>)</td></tr>"
-                   "<tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr>"
-                   "<tr><td>Triangle:</td><td>Jonathan Richard Shewchuk (<a href=\"http://www.cs.cmu.edu/~quake/triangle.html\">Triangle</a>)</td></tr>"
-                   "<tr><td>FFmpeg:</td><td>FFmpeg group (<a href=\"http://ffmpeg.org/\">FFmpeg</a>)</td></tr>"
-                   "</table></p>"
-                   "<br/><b>License:</b><p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Agros2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").
-                arg(QApplication::applicationVersion()));
-
-    QMessageBox::about(this, tr("About Agros2D"), str);
+    AboutDialog about(this);
+    about.exec();
 }
 
 void MainWindow::doDocumentExportMeshFile()
