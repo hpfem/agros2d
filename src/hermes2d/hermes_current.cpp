@@ -152,7 +152,7 @@ QStringList HermesCurrent::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesCurrent::newEdgeMarker()
 {
-    return new SceneEdgeCurrentMarker(tr("new boundary"),
+    return new SceneEdgeCurrentMarker(tr("new boundary condition"),
                                       PhysicFieldBC_Current_Potential,
                                       Value("0"));
 }
