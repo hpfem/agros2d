@@ -1179,18 +1179,8 @@ void Solution::save(const char* filename, bool compress)
 
   // open the stream
   std::string fname = filename;
-  if (compress) fname += ".gz";
   FILE* f = fopen(fname.c_str(), "wb");
   if (f == NULL) error("Could not open %s for writing.", filename);
-
-  if (compress)
-  {
-    fclose(f);
-    std::stringstream cmdline;
-    cmdline << "gzip > " << filename << ".gz";
-    f = popen(cmdline.str().c_str(), "w");
-    if (f == NULL) error("Could not create compressed stream (command line: %s).", cmdline.str().c_str());
-  }
 
   // write header
   hermes_fwrite("H2DS\001\000\000\000", 1, 8, f);
@@ -1218,7 +1208,7 @@ void Solution::save(const char* filename, bool compress)
   // write the mesh
   mesh->save_raw(f);
 
-  if (compress) pclose(f); else fclose(f);
+  fclose(f);
 }
 
 
@@ -1230,20 +1220,10 @@ void Solution::load(const char* filename)
   sln_type = HERMES_SLN;
 
   int len = strlen(filename);
-  bool compressed = (len > 3 && !strcmp(filename + len - 3, ".gz"));
 
   // open the stream
   FILE* f = fopen(filename, "rb");
   if (f == NULL) error("Could not open %s", filename);
-
-  if (compressed)
-  {
-    fclose(f);
-    std::stringstream cmdline;
-    cmdline << "gunzip < " << filename << ".gz";
-    f = popen(cmdline.str().c_str(), "r");
-    if (f == NULL) error("Could not read from compressed stream (command line: %s).", cmdline.str().c_str());
-  }
 
   // load header
   struct {
@@ -1316,7 +1296,7 @@ void Solution::load(const char* filename)
   //printf("Loading mesh from file and setting own_mesh = true.\n");
   own_mesh = true;
 
-  if (compressed) pclose(f); else fclose(f);
+  fclose(f);
 
   init_dxdy_buffer();
 }

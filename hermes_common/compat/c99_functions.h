@@ -15,6 +15,8 @@ extern HERMES_API double exp2(double x); ///< exp 2
 extern HERMES_API double log2(double x); ///< log 2
 extern HERMES_API double cbrt(double x); ///< cubic root
 
+#define finite _finite
+
 #endif /* IMPLEMENT_C99 */
 
 #endif

@@ -123,7 +123,7 @@ uint8_t ElementToRefineStream::get_byte_size(int value) {
     return 1;
   else {
     int value_abs = abs(value);
-    double byte_len = ceil((log(value_abs) / 0.69314718055994530942 + 1) / 8);
+    double byte_len = ceil((log((double) value_abs) / 0.69314718055994530942 + 1) / 8);
     error_if(byte_len > 255, "Required calculation of byte size of %d but the size is larger than 256 bytes", value);
     return (uint8_t)byte_len;
   }
