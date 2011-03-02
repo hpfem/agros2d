@@ -40,7 +40,7 @@ extern double timeStep;
 
 class SceneEdgeMarker;
 class SceneLabelMarker;
-class SceneViewSettings;
+struct SceneViewSettings;
 struct SolutionArray;
 
 class ProgressItemSolve;

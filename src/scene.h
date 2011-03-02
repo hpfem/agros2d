@@ -37,7 +37,7 @@ class SceneEdge;
 class SceneLabel;
 class SceneEdgeMarker;
 class SceneLabelMarker;
-class SceneViewSettings;
+struct SceneViewSettings;
 class SceneSolution;
 
 class ProblemDialog;
