@@ -25,20 +25,18 @@ TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
 
     setObjectName("TooltipView");
 
-    webView = new QWebView(this);
-    webView->settings()->setAttribute(QWebSettings::PluginsEnabled, false);
-    webView->settings()->setAttribute(QWebSettings::JavaEnabled, false);
-    webView->setAcceptDrops(false);
+    txtView = new QTextEdit(this);
+    txtView->setReadOnly(true);
+    txtView->setMinimumSize(160, 160);
 
-    setWidget(webView);
-    setMinimumSize(160, 160);
+    setWidget(txtView);
 }
 
 void TooltipView::loadTooltip(const QString &html)
 {
     logMessage("TooltipView::loadTooltip()");
 
-    webView->setHtml(html);
+    txtView->setText(html);
 }
 
 void TooltipView::loadTooltip(SceneMode sceneMode)

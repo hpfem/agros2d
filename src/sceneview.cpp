@@ -2561,6 +2561,13 @@ void SceneView::keyPressEvent(QKeyEvent *event)
     }
     else
     {
+        if ((event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier))
+            emit mouseSceneModeChanged(MouseSceneMode_Add);
+        if (!(event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier))
+            emit mouseSceneModeChanged(MouseSceneMode_Pan);
+        if ((event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier))
+            emit mouseSceneModeChanged(MouseSceneMode_Move);
+
         Point stepTemp = position(Point(contextWidth(), contextHeight()));
         stepTemp.x = stepTemp.x - m_offset2d.x;
         stepTemp.y = stepTemp.y - m_offset2d.y;
@@ -2620,51 +2627,64 @@ void SceneView::keyPressEvent(QKeyEvent *event)
             refresh();
         }
             break;
+        case Qt::Key_N:
+        {
+            // add node with coordinates under mouse pointer
+            if ((event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier))
+            {
+                Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+                m_scene->doNewNode(p);
+            }
+        }
+            break;
+        case Qt::Key_L:
+        {
+            // add label with coordinates under mouse pointer
+            if ((event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier))
+            {
+                Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
+                m_scene->doNewLabel(p);
+            }
+        }
+            break;
+        case Qt::Key_A:
+        {
+            // select all
+            if (event->modifiers() & Qt::ControlModifier)
+            {
+                if (m_sceneMode == SceneMode_Postprocessor)
+                {
+                    // select volume integral area
+                    if (actPostprocessorModeVolumeIntegral->isChecked())
+                    {
+                        m_scene->selectAll(SceneMode_OperateOnLabels);
+                        emit mousePressed();
+                    }
+
+                    // select surface integral area
+                    if (actPostprocessorModeSurfaceIntegral->isChecked())
+                    {
+                        m_scene->selectAll(SceneMode_OperateOnEdges);
+                        emit mousePressed();
+                    }
+                }
+                else
+                {
+                    m_scene->selectAll(m_sceneMode);
+                }
+
+                refresh();
+            }
+        }
+            break;
         default:
             QGLWidget::keyPressEvent(event);
         }
 
         // snap to grid
-        m_snapToGrid = ((Util::config()->snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
-
-        // select all
-        if ((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_A))
-        {
-            if (m_sceneMode == SceneMode_Postprocessor)
-            {
-                // select volume integral area
-                if (actPostprocessorModeVolumeIntegral->isChecked())
-                {
-                    m_scene->selectAll(SceneMode_OperateOnLabels);
-                    emit mousePressed();
-                }
-
-                // select surface integral area
-                if (actPostprocessorModeSurfaceIntegral->isChecked())
-                {
-                    m_scene->selectAll(SceneMode_OperateOnEdges);
-                    emit mousePressed();
-                }
-            }
-            else
-            {
-                m_scene->selectAll(m_sceneMode);
-            }
-
-            refresh();
-        }
-
-        // add node with coordinates under mouse pointer
-        if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_N))
-        {
-            Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-            m_scene->doNewNode(p);
-        }
-        if ((event->modifiers() & Qt::AltModifier & Qt::ControlModifier) | (event->key() == Qt::Key_L))
-        {
-            Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
-            m_scene->doNewLabel(p);
-        }
+        m_snapToGrid = ((Util::config()->snapToGrid)
+                        && (event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier)
+                        && (m_sceneMode == SceneMode_OperateOnNodes));
     }
 }
 
@@ -2678,12 +2698,14 @@ void SceneView::keyReleaseEvent(QKeyEvent *event)
     }
     else
     {
-        if (m_snapToGrid)
+        // if (m_snapToGrid)
         {
             m_snapToGrid = false;
             updateGL();
         }
     }
+
+    emit mouseSceneModeChanged(MouseSceneMode_Nothing);
 }
 
 void SceneView::mousePressEvent(QMouseEvent *event)
@@ -2700,7 +2722,10 @@ void SceneView::mousePressEvent(QMouseEvent *event)
     {
         Point p = position(Point(event->pos().x(), event->pos().y()));
 
-        if (event->button() & Qt::LeftButton)
+        // zoom or select region or select local value, volume and surface integral
+        // without modificators + left mouse
+        if ((event->button() & Qt::LeftButton)
+                && !(event->modifiers() & Qt::ShiftModifier) && !(event->modifiers() & Qt::ControlModifier))
         {
             // zoom region
             if (actSceneZoomRegion->isChecked())
@@ -2760,7 +2785,8 @@ void SceneView::mousePressEvent(QMouseEvent *event)
         }
 
         // add node, edge or label by mouse click
-        if (event->modifiers() & Qt::ControlModifier)
+        // control + left mouse
+        if ((event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier))
         {
             // add node directly by mouse click
             if (m_sceneMode == SceneMode_OperateOnNodes)
@@ -2849,7 +2875,12 @@ void SceneView::mousePressEvent(QMouseEvent *event)
             }
         }
 
-        if ((event->modifiers() == 0) && (event->button() & Qt::LeftButton))
+        // multiple select or just one node or label due to movement
+        // nothing or (shift + control) + left mouse
+        if ((event->button() & Qt::LeftButton) && ((event->modifiers() == 0)
+                                                   || ((event->modifiers() & Qt::ControlModifier)
+                                                       && (event->modifiers() & Qt::ShiftModifier)
+                                                       && (m_scene->selectedCount() == 0))))
         {
             // select scene objects
             if (m_sceneMode == SceneMode_OperateOnNodes)
@@ -2873,6 +2904,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     updateGL();
                 }
             }
+
             if (m_sceneMode == SceneMode_OperateOnLabels)
             {
                 // select the closest label
@@ -2902,9 +2934,12 @@ void SceneView::mouseDoubleClickEvent(QMouseEvent * event)
         // zoom best fit
         if (!(event->modifiers() & Qt::ControlModifier))
         {
-            if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
+            if ((event->buttons() & Qt::MidButton)
+                    || ((event->buttons() & Qt::LeftButton)
+                        && ((!(event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier)))))
             {
                 doZoomBestFit();
+                return;
             }
 
             if (event->button() & Qt::LeftButton)
@@ -2991,7 +3026,15 @@ void SceneView::mouseReleaseEvent(QMouseEvent *event)
         }
 
         m_region = false;
+
+        // move by mouse - select none
+        if ((event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier))
+        {
+            m_scene->selectNone();
+        }
     }
+
+    emit mouseSceneModeChanged(MouseSceneMode_Nothing);
 
     updateGL();
 }
@@ -3010,31 +3053,42 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     if (is3DMode())
     {
         // pan
-        if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
+        if ((event->buttons() & Qt::MidButton)
+                || ((event->buttons() & Qt::LeftButton)
+                    && (((event->modifiers() & Qt::ShiftModifier) && !(event->modifiers() & Qt::ControlModifier)))))
+
         {
             setCursor(Qt::PointingHandCursor);
 
             m_offset3d.x -= 2.0/contextWidth() * dx*aspect();
             m_offset3d.y += 2.0/contextHeight() * dy;
 
+            emit mouseSceneModeChanged(MouseSceneMode_Pan);
+
             updateGL();
         }
 
         // rotate
-        if ((event->buttons() & Qt::LeftButton) && !(event->modifiers() & Qt::ShiftModifier) && !(event->modifiers() & Qt::ControlModifier))
+        if ((event->buttons() & Qt::LeftButton)
+                && (!(event->modifiers() & Qt::ShiftModifier) && !(event->modifiers() & Qt::ControlModifier)))
         {
             setCursor(Qt::PointingHandCursor);
 
             m_rotation3d.x -= dy;
             m_rotation3d.y += dx;
 
+            emit mouseSceneModeChanged(MouseSceneMode_Rotate);
+
             updateGL();
         }
-        if ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ControlModifier))
+        if ((event->buttons() & Qt::LeftButton)
+                && (!(event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier)))
         {
             setCursor(Qt::PointingHandCursor);
 
             m_rotation3d.z -= dy;
+
+            emit mouseSceneModeChanged(MouseSceneMode_Rotate);
 
             updateGL();
         }
@@ -3043,34 +3097,11 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
     {
         Point p = position(Point(m_lastPos.x(), m_lastPos.y()));
 
-        // zoom or select region
-        if (m_region)
-            updateGL();
-
-        // snap to grid
-        if (m_snapToGrid && !(event->modifiers() & Qt::ControlModifier))
-        {
-            m_snapToGrid = false;
-            updateGL();
-        }
-        m_snapToGrid = ((Util::config()->snapToGrid) && (event->modifiers() & Qt::ControlModifier) && (m_sceneMode == SceneMode_OperateOnNodes));
-
-        if (m_snapToGrid)
-            updateGL();
-
-        // pan
-        if ((event->buttons() & Qt::MidButton) || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier)))
-        {
-            setCursor(Qt::PointingHandCursor);
-
-            m_offset2d.x -= 2.0/contextWidth() * dx/m_scale2d*aspect();
-            m_offset2d.y += 2.0/contextHeight() * dy/m_scale2d;
-
-            updateGL();
-        }
-
-        // hints
-        if (event->modifiers() == 0)
+        // highlight scene objects + hints
+        if ((event->modifiers() == 0)
+                || ((event->modifiers() & Qt::ControlModifier)
+                    && (event->modifiers() & Qt::ShiftModifier)
+                    && (m_scene->selectedCount() == 0)))
         {
             // highlight scene objects
             if (m_sceneMode == SceneMode_OperateOnNodes)
@@ -3129,7 +3160,8 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             }
         }
 
-        if (event->modifiers() & Qt::ControlModifier)
+        // add edge by mouse - draw line
+        if ((event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier))
         {
             // add edge directly by mouse click - highlight
             if (m_sceneMode == SceneMode_OperateOnEdges)
@@ -3145,6 +3177,127 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
             }
         }
 
+        // zoom or select region
+        if (m_region)
+            updateGL();
+
+        // snap to grid - nodes
+        m_snapToGrid = ((Util::config()->snapToGrid)
+                        && ((event->modifiers() & Qt::ControlModifier) && !(event->modifiers() & Qt::ShiftModifier))
+                        && (m_sceneMode == SceneMode_OperateOnNodes));
+        if (m_snapToGrid && !(event->modifiers() & Qt::ControlModifier))
+        {
+            m_snapToGrid = false;
+            updateGL();
+        }
+        if (m_snapToGrid && (event->modifiers() & Qt::ControlModifier))
+            updateGL();
+
+        // pan - middle button or shift + left mouse
+        if ((event->buttons() & Qt::MidButton)
+                || ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier) && !(event->modifiers() & Qt::ControlModifier)))
+        {
+            setCursor(Qt::PointingHandCursor);
+
+            m_offset2d.x -= 2.0/contextWidth() * dx/m_scale2d*aspect();
+            m_offset2d.y += 2.0/contextHeight() * dy/m_scale2d;
+
+            emit mouseSceneModeChanged(MouseSceneMode_Pan);
+
+            updateGL();
+        }
+
+        // move nodes and labels directly by mouse - left mouse + control + shift
+        if ((event->buttons() & Qt::LeftButton)
+                && ((event->modifiers() & Qt::ControlModifier) && (event->modifiers() & Qt::ShiftModifier)))
+        {
+            Point dp = Point(2.0/contextWidth() * dx/m_scale2d*aspect(), -2.0/contextHeight() * dy/m_scale2d);
+
+            if (m_sceneMode == SceneMode_OperateOnNodes)
+            {
+                // mouse move length memory
+                static Point len;
+                len = len + dp;
+
+                if (Util::config()->snapToGrid)
+                {
+                    if (fabs(len.x) > Util::config()->gridStep)
+                    {
+                        foreach (SceneNode *node, m_scene->nodes)
+                            if (node->isSelected)
+                                node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                        len.x = 0;
+                        updateGL();
+                    }
+
+                    if (fabs(len.y) > Util::config()->gridStep)
+                    {
+                        foreach (SceneNode *node, m_scene->nodes)
+                            if (node->isSelected)
+                                node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                        len.y = 0;
+                        updateGL();
+                    }
+                }
+                else
+                {
+                    m_scene->transformTranslate(dp, false);
+                    updateGL();
+                }
+            }
+            else if (m_sceneMode == SceneMode_OperateOnEdges)
+            {
+                // mouse move length memory
+                static Point len;
+                len = len + dp;
+
+                if (Util::config()->snapToGrid)
+                {
+                    if (fabs(len.x) > Util::config()->gridStep)
+                    {
+                        foreach (SceneEdge *edge, m_scene->edges)
+                            if (edge->isSelected)
+                            {
+                                edge->nodeStart->isSelected = true;
+                                edge->nodeEnd->isSelected = true;
+                            }
+                        foreach (SceneNode *node, m_scene->nodes)
+                            if (node->isSelected)
+                                node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+
+                        len.x = 0;
+                        updateGL();
+                    }
+
+                    if (fabs(len.y) > Util::config()->gridStep)
+                    {
+                        foreach (SceneEdge *edge, m_scene->edges)
+                            foreach (SceneEdge *edge, m_scene->edges)
+                                if (edge->isSelected)
+                                {
+                                    edge->nodeStart->isSelected = true;
+                                    edge->nodeEnd->isSelected = true;
+                                }
+                        foreach (SceneNode *node, m_scene->nodes)
+                            if (node->isSelected)
+                                node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+
+                        len.y = 0;
+                        updateGL();
+                    }
+                }
+                else
+                {
+                    m_scene->transformTranslate(dp, false);
+                    updateGL();
+                }
+            }
+            else if (m_sceneMode == SceneMode_OperateOnLabels)
+            {
+                m_scene->transformTranslate(dp, false);
+                updateGL();
+            }
+        }
 
         if (m_snapToGrid)
         {

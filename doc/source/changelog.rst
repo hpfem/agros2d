@@ -50,3 +50,18 @@ Changes in Agros2D
   * added curvilinear elements
   * added refine towards edge
 
+1.5.0.519 (26.12.2010)
+----------------------  
+  * added structural mechanics
+  * added more linear solvers (mumps, umfpack, superlu)
+  * added coordinate axes
+  * fixed help dialog
+  * logmessage viewer
+  * improved preprocessor
+  
+1.7.1.620 (2.3.2011)
+----------------------  
+  * curvilinear elements (arcs)
+  * synced with latest hermes (removed judy dependence)
+  * little improvements to GUI
+  * complete Python + numpy (needed by mesh loader)

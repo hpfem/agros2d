@@ -304,38 +304,47 @@ void ConfigDialog::createControls()
     // List View
     lstView->setCurrentRow(0);
     lstView->setViewMode(QListView::IconMode);
+    lstView->setResizeMode(QListView::Adjust);
     lstView->setMovement(QListView::Static);
     lstView->setFlow(QListView::TopToBottom);
-    lstView->setIconSize(QSize(55, 55));
-    lstView->setMaximumWidth(150);
-    lstView->setSpacing(12);
+    lstView->setIconSize(QSize(60, 60));
+    lstView->setMinimumWidth(135);
+    lstView->setMaximumWidth(135);
     connect(lstView, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
                this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
+
+    QSize sizeItem(131, 85);
 
     // listView items
     QListWidgetItem *itemMain = new QListWidgetItem(icon("options-main"), tr("Main"), lstView);
     itemMain->setTextAlignment(Qt::AlignHCenter);
     itemMain->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemMain->setSizeHint(sizeItem);
 
     QListWidgetItem *itemView = new QListWidgetItem(icon("options-view"), tr("View"), lstView);
     itemView->setTextAlignment(Qt::AlignHCenter);
     itemView->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemView->setSizeHint(sizeItem);
 
     QListWidgetItem *itemSolver = new QListWidgetItem(icon("options-solver"), tr("Solver"), lstView);
     itemSolver->setTextAlignment(Qt::AlignHCenter);
     itemSolver->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemSolver->setSizeHint(sizeItem);
 
     QListWidgetItem *itemColors = new QListWidgetItem(icon("options-colors"), tr("Colors"), lstView);
     itemColors->setTextAlignment(Qt::AlignHCenter);
     itemColors->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemColors->setSizeHint(sizeItem);
 
     QListWidgetItem *itemGlobalScript = new QListWidgetItem(icon("options-python"), tr("Python"), lstView);
     itemGlobalScript->setTextAlignment(Qt::AlignHCenter);
     itemGlobalScript->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemGlobalScript->setSizeHint(sizeItem);
 
     QListWidgetItem *itemAdvanced = new QListWidgetItem(icon("options-advanced"), tr("Advanced"), lstView);
     itemAdvanced->setTextAlignment(Qt::AlignHCenter);
     itemAdvanced->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemAdvanced->setSizeHint(sizeItem);
 
     pages->addWidget(panMain);
     pages->addWidget(panView);

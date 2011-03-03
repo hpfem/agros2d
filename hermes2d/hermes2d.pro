@@ -156,6 +156,8 @@ linux-g++ {
 win32-msvc2008 {
     DEFINES += WIN32
     DEFINES += IMPLEMENT_C99
+    DEFINES += "finite=_finite"
+    DEFINES += "popen=_popen"
 
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include

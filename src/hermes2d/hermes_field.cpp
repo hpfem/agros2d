@@ -62,6 +62,44 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     }
 }
 
+void readMeshDirtyFix()
+{
+    // fix precalulating matrices for mapping of curved elements
+
+    // save locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    std::ostringstream os;
+    os << "vertices =" << std::endl <<
+    "{" << std::endl <<
+      "{ 0, 0 \}," << std::endl <<
+      "{ 1, 0 \}," << std::endl <<
+      "{ 0, 1 \}" << std::endl <<
+    "}" << std::endl <<
+    "elements =" << std::endl <<
+    "{" << std::endl <<
+      "{ 0, 1, 2, 0 \}" << std::endl <<
+    "}" << std::endl <<
+    "boundaries =" << std::endl <<
+    "{" << std::endl <<
+      "{ 0, 1, 1 \}," << std::endl <<
+      "{ 1, 2, 1 \}," << std::endl <<
+      "{ 2, 0, 1 \}" << std::endl <<
+    "}" << std::endl <<
+    "curves =" << std::endl <<
+    "{" << std::endl <<
+      "{ 1, 2, 90 \}" << std::endl <<
+    "}";
+
+    Mesh mesh;
+    H2DReader meshloader;
+    meshloader.load_str(os.str().c_str(), &mesh);
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
 Mesh *readMeshFromFile(const QString &fileName)
 {
     // save locale

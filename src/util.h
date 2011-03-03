@@ -22,12 +22,8 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <QFont>
 #include <QtNetwork>
-#include <QWebView>
 #include <QDomDocument>
-
-#include <QtHelp/QHelpEngine>
 
 #include <Python.h>
 
@@ -549,6 +545,15 @@ enum SceneMode
     SceneMode_OperateOnEdges,
     SceneMode_OperateOnLabels,
     SceneMode_Postprocessor
+};
+
+enum MouseSceneMode
+{
+    MouseSceneMode_Nothing,
+    MouseSceneMode_Pan,
+    MouseSceneMode_Rotate,
+    MouseSceneMode_Move,
+    MouseSceneMode_Add
 };
 
 enum SceneModePostprocessor

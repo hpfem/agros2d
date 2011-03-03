@@ -1,18 +1,17 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
 QT += opengl \
     xml \
-    webkit \
     network
 
 CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=7
-DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=580
+DEFINES += VERSION_SUB=1
+DEFINES += VERSION_GIT=620
 DEFINES += VERSION_YEAR=2011
-DEFINES += VERSION_MONTH=1
-DEFINES += VERSION_DAY=22
+DEFINES += VERSION_MONTH=3
+DEFINES += VERSION_DAY=2
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -165,6 +164,8 @@ macx-g++ {
 }
 
 win32-msvc2008 {
+    DEFINES += "finite=_finite"
+
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../hermes2d/src
     INCLUDEPATH += ../../qwt-5.2.1/src

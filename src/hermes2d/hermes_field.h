@@ -40,7 +40,7 @@ extern double timeStep;
 
 class SceneEdgeMarker;
 class SceneLabelMarker;
-class SceneViewSettings;
+struct SceneViewSettings;
 struct SolutionArray;
 
 class ProgressItemSolve;
@@ -131,6 +131,9 @@ protected:
     void precalculate(int order, int mask);
     virtual void calculateVariable(int i) = 0;
 };
+
+// mesh fix
+void readMeshDirtyFix();
 
 // read mesh
 Mesh *readMeshFromFile(const QString &fileName);
