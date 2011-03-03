@@ -2138,19 +2138,19 @@ void SceneView::paintVectors()
                         }
 
                         // Head for an arrow
-                        double vh1x = point.x + dm/5.0 * cos(angle - 2*M_PI) + dm * cos(angle);
-                        double vh1y = point.y + dm/5.0 * sin(angle - 2*M_PI) + dm * sin(angle);
-                        double vh2x = point.x + dm/5.0 * cos(angle + 2*M_PI) + dm * cos(angle);
-                        double vh2y = point.y + dm/5.0 * sin(angle + 2*M_PI) + dm * sin(angle);
+                        double vh1x = point.x + dm/5.0 * cos(angle - M_PI/2.0) + dm * cos(angle);
+                        double vh1y = point.y + dm/5.0 * sin(angle - M_PI/2.0) + dm * sin(angle);
+                        double vh2x = point.x + dm/5.0 * cos(angle + M_PI/2.0) + dm * cos(angle);
+                        double vh2y = point.y + dm/5.0 * sin(angle + M_PI/2.0) + dm * sin(angle);
                         double vh3x = point.x + dm * cos(angle) + dm * cos(angle);
                         double vh3y = point.y + dm * sin(angle) + dm * sin(angle);
                         glVertex2d(vh1x,vh1y); glVertex2d(vh2x,vh2y); glVertex2d(vh3x,vh3y);
 
                         // Shaft for an arrow
-                        double vs1x = point.x + dm/15.0 * cos(angle + 2*M_PI) + dm * cos(angle);
-                        double vs1y = point.y + dm/15.0 * sin(angle + 2*M_PI) + dm * sin(angle);
-                        double vs2x = point.x + dm/15.0 * cos(angle - 2*M_PI) + dm * cos(angle);
-                        double vs2y = point.y + dm/15.0 * sin(angle - 2*M_PI) + dm * sin(angle);
+                        double vs1x = point.x + dm/15.0 * cos(angle + M_PI/2.0) + dm * cos(angle);
+                        double vs1y = point.y + dm/15.0 * sin(angle + M_PI/2.0) + dm * sin(angle);
+                        double vs2x = point.x + dm/15.0 * cos(angle - M_PI/2.0) + dm * cos(angle);
+                        double vs2y = point.y + dm/15.0 * sin(angle - M_PI/2.0) + dm * sin(angle);
                         double vs3x = vs1x - dm * cos(angle);
                         double vs3y = vs1y - dm * sin(angle);
                         double vs4x = vs2x - dm * cos(angle);
