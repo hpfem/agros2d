@@ -7,47 +7,47 @@
     <message>
         <location filename="../src/gui.cpp" line="781"/>
         <source>About...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="797"/>
         <source>Agros2D</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="798"/>
         <source>Hermes2D</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="799"/>
         <source>Libraries</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="800"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="815"/>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="852"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="891"/>
         <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Nokia Qt:&lt;/b&gt; Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;FFmpeg:&lt;/b&gt; FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="913"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2576,42 +2576,42 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="606"/>
         <source>Mode: Add node</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="609"/>
         <source>Mode: Add edge</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="612"/>
         <source>Mode: Add label</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="620"/>
         <source>Mode: Pan</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="623"/>
         <source>Mode: Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="630"/>
         <source>Mode: Move node</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="633"/>
         <source>Mode: Move edge</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="636"/>
         <source>Mode: Move label</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1112"/>
@@ -5919,7 +5919,7 @@ Do you want to save your changes?</source>
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Control + Shift + Left mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Move nodes by mouse&lt;/td&gt;
-	&lt;/tr&gt;	
+	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift + Left mouse or Middle mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pan over the workspace (you can also use arrows keys)&lt;/td&gt;
@@ -5931,7 +5931,7 @@ Do you want to save your changes?</source>
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Middle button double click or Shift + Left mouse double click&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Zoom to fit&lt;/td&gt;
-	&lt;/tr&gt;	
+	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
     </message>
@@ -5954,10 +5954,10 @@ Do you want to save your changes?</source>
 		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Open dialog for setting of selected edge&lt;/td&gt;
 	&lt;/tr&gt;
-    &lt;tr&gt;
+	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Control + Shift + Left mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Move edges by mouse&lt;/td&gt;
-	&lt;/tr&gt;		
+	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift + Left mouse or Middle mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pan over the workspace (you can also use arrows keys)&lt;/td&gt;
@@ -5965,6 +5965,10 @@ Do you want to save your changes?</source>
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Zoom the workspace&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Middle button double click or Shift + Left mouse double click&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Zoom to fit&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
@@ -5985,21 +5989,21 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Add label directly by mouse&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl + L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Alt + L&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Add label using coordinates (open dialog)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Ctrl + Shift + L&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Add label by coordinates (in the dialog will be used the actual coordinates of the mouse cursor)&lt;/td&gt;
-	&lt;/tr&gt;	
+	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Open dialog for setting of selected label&lt;/td&gt;
 	&lt;/tr&gt;
-    &lt;tr&gt;
+	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Control + Shift + Left mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Move labels by mouse&lt;/td&gt;
-	&lt;/tr&gt;	
+	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift + Left mouse or Middle mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pan over the workspace (you can also use arrows keys)&lt;/td&gt;
@@ -6011,14 +6015,14 @@ Do you want to save your changes?</source>
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Middle button double click or Shift + Left mouse double click&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Zoom to fit&lt;/td&gt;
-	&lt;/tr&gt;		
+	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
     </message>
     <message>
         <location filename="../src/tooltipview.cpp" line="58"/>
         <source>Tooltip_Postprocessor</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
 &lt;head&gt;
 	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
@@ -6041,11 +6045,11 @@ Do you want to save your changes?</source>
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;3D: Left mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Rotate the object in &lt;it&gt;xy&lt;/it&gt; plane)&lt;/td&gt;
-	&lt;/tr&gt;	
+	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;3D: Control + Left mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Rotate the object in &lt;it&gt;z&lt;/it&gt; plane)&lt;/td&gt;
-	&lt;/tr&gt;	
+	&lt;/tr&gt;
 &lt;/table&gt;
 
 You can also calculate variables at the point and surface or volume integrals. Always you must choose the tool for the collection them of menu &quot;Problem&quot; or the toolbar.

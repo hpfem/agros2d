@@ -6015,12 +6015,20 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přidat uzel pomocí souřadnic (v dialogu se využijí aktuální souřadnice kurzoru myši)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Shift +levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Přesun uzlů pomocí myši&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši  + pohyb myší&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Kolečko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přiblížení a oddálení pracovní plochy&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Dvojtý stisk kolečka myši ne Shift + dvojtý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Nastavení do viditelné oblastit&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;</translation>
     </message>
@@ -6044,6 +6052,9 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Otevřít dialog pro nastavení vlastností vybrané hrany&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Shift + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Přesun hran pomocí myši&lt;/td&gt;
+	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
@@ -6051,6 +6062,10 @@ Do you want to save your changes?</source>
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Kolečko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přiblížení a oddálení pracovní plochy&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Dvojtý stisk kolečka myši ne Shift + dvojtý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Nastavení do viditelné oblastit&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
@@ -6071,8 +6086,12 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přidat značku oblasti přímo pomocí myši&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl+L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Alt+L&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přidat značku oblastí pomocí souřadnic (otevře se dialog)&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl+Shift+L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Přidat značku oblasti pomocí souřadnic (v dialogu se využijí aktuální souřadnice kurzoru myši)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mezerník&lt;/b&gt;&lt;/td&gt;
@@ -6083,8 +6102,16 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Shift + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Přesun značek oblastí pomocí myši&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Kolečko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přiblížení a oddálení pracovní plochy&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Dvojtý stisk kolečka myši ne Shift + dvojtý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Nastavení do viditelné oblastit&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
@@ -6105,18 +6132,25 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Otevřít dialog pro nastavení scény&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;2D + 3D:  Shift+levé tlačítko myši nebo kolečko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Kolečko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;2D + 3D: Kolečko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přiblížení a oddálení pracovní plochy&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;/td&gt;
-		&lt;td&gt;Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály. Vždy musíte vybrat správný nástroj pro jejich označení z nabýdky &quot;Problém&quot; nebo z panelu nástrojů.&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;3D: levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;rotace objektu v osách &lt;it&gt;x&lt;/it&gt; a &lt;it&gt;y&lt;/it&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;3D: Ctrl + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Rotace objektu v ose &lt;it&gt;z&lt;/it&gt;&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
+
+Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály. Vždy musíte vybrat správný nástroj pro jejich označení z nabýdky &quot;Problém&quot; nebo z panelu nástrojů.
+
 &lt;/body&gt;</translation>
     </message>
 </context>
