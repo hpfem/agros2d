@@ -6007,7 +6007,7 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přidat uzel přímo pomocí myši&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Alt+N&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přidat uzel pomocí souřadnic (otevře se dialog)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
@@ -6015,7 +6015,7 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přidat uzel pomocí souřadnic (v dialogu se využijí aktuální souřadnice kurzoru myši)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši  + pohyb myší&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
