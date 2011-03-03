@@ -18,7 +18,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "hermes_elasticity.h"
+
 #include "scene.h"
+#include "gui.h"
+
 
 struct ElasticityEdge
 {
@@ -322,7 +325,7 @@ QStringList HermesElasticity::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesElasticity::newEdgeMarker()
 {
-    return new SceneEdgeElasticityMarker(tr("new boundary"),
+    return new SceneEdgeElasticityMarker(tr("new boundary condition"),
                                          PhysicFieldBC_Elasticity_Free,
                                          PhysicFieldBC_Elasticity_Free,
                                          Value("0"),

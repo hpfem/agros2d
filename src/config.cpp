@@ -123,6 +123,7 @@ void Config::load()
 
     // order view
     orderLabel = settings.value("SceneViewSettings/OrderLabel", false).toBool();
+    orderPaletteOrderType = (PaletteOrderType) settings.value("SceneViewSettings/OrderPaletteOrderType", PaletteOrder_Hermes).toInt();
 
     // deformations
     deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();
@@ -234,6 +235,7 @@ void Config::save()
 
     // order view
     settings.setValue("SceneViewSettings/OrderLabel", orderLabel);
+    settings.setValue("SceneViewSettings/OrderPaletteOrderType", orderPaletteOrderType);
 
     // deformations
     settings.setValue("SceneViewSettings/DeformScalar", deformScalar);

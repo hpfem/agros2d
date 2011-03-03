@@ -45,8 +45,11 @@ class SLineEditDouble : public QLineEdit
 {
     Q_OBJECT
 public:
-    SLineEditDouble(double val = 0, QWidget *parent = 0) : QLineEdit(parent)
+    SLineEditDouble(double val = 0, bool validator = false, QWidget *parent = 0) : QLineEdit(parent)
     {
+        if (validator)
+            setValidator(new QDoubleValidator);
+
         setValue(val);
     }
 
@@ -193,6 +196,26 @@ private:
     SLineEditDouble *txtHeight;
 
     void createControls();
+};
+
+// ***************************************************************************************************************
+
+class AboutDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    AboutDialog(QWidget *parent = 0);
+    ~AboutDialog();
+
+private:
+    void createControls();
+
+    QWidget *createMain();
+    QWidget *createAgros2D();
+    QWidget *createHermes2D();
+    QWidget *createLibraries();
+    QWidget *createLicense();
 };
 
 #endif // GUI_H

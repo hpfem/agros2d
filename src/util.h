@@ -22,19 +22,19 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <QFont>
 #include <QtNetwork>
-
-#include <QtHelp/QHelpEngine>
+#include <QDomDocument>
 
 #include <Python.h>
 
 #include <typeinfo>
 #include <iostream>
-#include <stdlib.h>
 #include <cmath>
-#include <locale.h>
+#include <limits>
+#include <vector>
 
+#include <locale.h>
+#include <stdlib.h>
 #include <common.h>
 
 #define EPS_ZERO 1e-10
@@ -79,6 +79,9 @@ void setVerbose(bool verb);
 // log file
 void logOutput(QtMsgType type, const char *msg);
 void logMessage(const QString &msg);
+
+// show page
+void showPage(const QString &str = "");
 
 // set gui style
 void setGUIStyle(const QString &styleName);
@@ -544,6 +547,15 @@ enum SceneMode
     SceneMode_Postprocessor
 };
 
+enum MouseSceneMode
+{
+    MouseSceneMode_Nothing,
+    MouseSceneMode_Pan,
+    MouseSceneMode_Rotate,
+    MouseSceneMode_Move,
+    MouseSceneMode_Add
+};
+
 enum SceneModePostprocessor
 {
     SceneMode_LocalValue,
@@ -560,6 +572,14 @@ enum PaletteType
     Palette_Cool,
     Palette_BWAsc,
     Palette_BWDesc
+};
+
+enum PaletteOrderType
+{
+    PaletteOrder_Hermes,
+    PaletteOrder_Jet,
+    PaletteOrder_BWAsc,
+    PaletteOrder_BWDesc
 };
 
 enum SceneViewPostprocessorShow

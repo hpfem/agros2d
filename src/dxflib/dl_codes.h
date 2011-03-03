@@ -36,14 +36,11 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#if defined(__OS2__)||defined(__EMX__)
-#define strcasecmp(s,t) stricmp(s,t)
-#endif
-
-#if defined(_WIN32)
+#if defined(WIN32)
+#ifndef strcasecmp
 #define strcasecmp(s,t) _stricmp(s,t)
 #endif
-
+#endif
 
 #ifdef _WIN32
 #undef M_PI

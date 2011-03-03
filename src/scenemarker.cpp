@@ -18,7 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scenemarker.h"
+
 #include "scene.h"
+#include "gui.h"
 
 SceneEdgeMarker::SceneEdgeMarker(const QString &name, PhysicFieldBC type)
 {

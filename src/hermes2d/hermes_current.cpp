@@ -18,7 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "hermes_current.h"
+
 #include "scene.h"
+#include "gui.h"
 
 struct CurrentEdge
 {
@@ -150,7 +152,7 @@ QStringList HermesCurrent::volumeIntegralValueHeader()
 
 SceneEdgeMarker *HermesCurrent::newEdgeMarker()
 {
-    return new SceneEdgeCurrentMarker(tr("new boundary"),
+    return new SceneEdgeCurrentMarker(tr("new boundary condition"),
                                       PhysicFieldBC_Current_Potential,
                                       Value("0"));
 }

@@ -21,9 +21,11 @@
 #define SCENEFUNCTION_H
 
 #include "util.h"
-#include "gui.h"
 
 class SLineEdit;
+class SLineEditValue;
+class SLineEditValue;
+
 struct Point;
 class Chart;
 class SceneFunction;

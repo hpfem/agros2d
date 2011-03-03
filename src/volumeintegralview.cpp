@@ -17,8 +17,11 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "volumeintegralview.h"
+#include "gui.h"
 #include "scene.h"
+#include "volumeintegralview.h"
+
+#include "hermes2d.h"
 
 VolumeIntegralValue::VolumeIntegralValue()
 {

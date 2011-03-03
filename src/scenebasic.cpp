@@ -18,7 +18,11 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scenebasic.h"
+
+#include "gui.h"
+
 #include "scene.h"
+#include "scenemarker.h"
 
 SceneBasic::SceneBasic()
 {
@@ -372,7 +376,7 @@ QLayout* DSceneEdge::createContent()
     connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
     cmbMarker = new QComboBox();
     connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
-    btnMarker = new QPushButton("...");
+    btnMarker = new QPushButton(icon("three-dots"), "");
     btnMarker->setMaximumSize(btnMarker->sizeHint());
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtAngle = new SLineEditValue();
@@ -596,7 +600,7 @@ QLayout* DSceneLabel::createContent()
     connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     cmbMarker = new QComboBox();
     connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
-    btnMarker = new QPushButton("...");
+    btnMarker = new QPushButton(icon("three-dots"), "");
     btnMarker->setMaximumSize(btnMarker->sizeHint());
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
     txtArea = new SLineEditValue();

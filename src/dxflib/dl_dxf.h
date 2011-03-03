@@ -203,12 +203,12 @@ public:
                      const DL_VertexData& data);
     void writePolylineEnd(DL_WriterA& dw);
     void writeSpline(DL_WriterA& dw,
-                       const DL_SplineData& data,
-                       const DL_Attributes& attrib);
+                     const DL_SplineData& data,
+                     const DL_Attributes& attrib);
     void writeControlPoint(DL_WriterA& dw,
-                     const DL_ControlPointData& data);
+                           const DL_ControlPointData& data);
     void writeKnot(DL_WriterA& dw,
-                     const DL_KnotData& data);
+                   const DL_KnotData& data);
     void writeCircle(DL_WriterA& dw,
                      const DL_CircleData& data,
                      const DL_Attributes& attrib);
@@ -219,11 +219,11 @@ public:
                       const DL_EllipseData& data,
                       const DL_Attributes& attrib);
     void writeSolid(DL_WriterA& dw,
-                   const DL_SolidData& data,
-                   const DL_Attributes& attrib);
+                    const DL_SolidData& data,
+                    const DL_Attributes& attrib);
     void write3dFace(DL_WriterA& dw,
-                   const DL_3dFaceData& data,
-                   const DL_Attributes& attrib);
+                     const DL_3dFaceData& data,
+                     const DL_Attributes& attrib);
     void writeInsert(DL_WriterA& dw,
                      const DL_InsertData& data,
                      const DL_Attributes& attrib);
@@ -231,8 +231,8 @@ public:
                     const DL_MTextData& data,
                     const DL_Attributes& attrib);
     void writeText(DL_WriterA& dw,
-                    const DL_TextData& data,
-                    const DL_Attributes& attrib);
+                   const DL_TextData& data,
+                   const DL_Attributes& attrib);
     void writeDimAligned(DL_WriterA& dw,
                          const DL_DimensionData& data,
                          const DL_DimAlignedData& edata,
@@ -258,9 +258,9 @@ public:
                            const DL_DimAngular3PData& edata,
                            const DL_Attributes& attrib);
     void writeDimOrdinate(DL_WriterA& dw,
-                         const DL_DimensionData& data,
-                         const DL_DimOrdinateData& edata,
-                         const DL_Attributes& attrib);
+                          const DL_DimensionData& data,
+                          const DL_DimOrdinateData& edata,
+                          const DL_Attributes& attrib);
     void writeLeader(DL_WriterA& dw,
                      const DL_LeaderData& data,
                      const DL_Attributes& attrib);
@@ -318,17 +318,17 @@ public:
      * default valud (def) if value is NULL or empty.
      */
     static double toReal(const char* value, double def=0.0) {
-       if (value!=NULL && value[0] != '\0') {
+        if (value!=NULL && value[0] != '\0') {
             double ret;
             if (strchr(value, ',') != NULL) {
-               char* tmp = new char[strlen(value)+1];
-               strcpy(tmp, value);
-               DL_WriterA::strReplace(tmp, ',', '.');
-               ret = atof(tmp);
-      		   delete[] tmp;
+                char* tmp = new char[strlen(value)+1];
+                strcpy(tmp, value);
+                DL_WriterA::strReplace(tmp, ',', '.');
+                ret = atof(tmp);
+                delete[] tmp;
             }
             else {
-               ret = atof(value);
+                ret = atof(value);
             }
 			return ret;
         } else {

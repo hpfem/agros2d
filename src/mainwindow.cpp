@@ -19,14 +19,32 @@
 
 #include "mainwindow.h"
 
+#include "gui.h"
+
+#include "scene.h"
+#include "scenebasic.h"
+#include "sceneview.h"
+#include "sceneinfoview.h"
+#include "terminalview.h"
+#include "tooltipview.h"
+#include "chartdialog.h"
+#include "configdialog.h"
+#include "scripteditordialog.h"
+#include "reportdialog.h"
+#include "videodialog.h"
+#include "logdialog.h"
+#include "problemdialog.h"
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     logMessage("MainWindow::MainWindow()");
 
+    // fixme - curve elements from script doesn't work
+    readMeshDirtyFix();
+
     createScriptEngine();
     createScene();
 
-    helpDialog = new HelpDialog(this);
     chartDialog = new ChartDialog(this);
     scriptEditorDialog = new ScriptEditorDialog(this);
     reportDialog = new ReportDialog(sceneView, this);
@@ -170,9 +188,17 @@ void MainWindow::createActions()
     actDocumentExportDXF->setStatusTip(tr("Export AutoCAD DXF"));
     connect(actDocumentExportDXF, SIGNAL(triggered()), this, SLOT(doDocumentExportDXF()));
 
-    actDocumentExportMeshFile = new QAction(tr("Export mesh file"), this);
+    actDocumentExportMeshFile = new QAction(tr("Export mesh file..."), this);
     actDocumentExportMeshFile->setStatusTip(tr("Export Hermes2D mesh file"));
     connect(actDocumentExportMeshFile, SIGNAL(triggered()), this, SLOT(doDocumentExportMeshFile()));
+
+    actExportVTKScalar = new QAction(tr("Export VTK scalar..."), this);
+    actExportVTKScalar->setStatusTip(tr("Export scalar view as VTK file"));
+    connect(actExportVTKScalar, SIGNAL(triggered()), this, SLOT(doExportVTKScalar()));
+
+    actExportVTKOrder = new QAction(tr("Export VTK order..."), this);
+    actExportVTKOrder->setStatusTip(tr("Export order view as VTK file"));
+    connect(actExportVTKOrder, SIGNAL(triggered()), this, SLOT(doExportVTKOrder()));
 
     actDocumentSaveImage = new QAction(tr("Export image..."), this);
     actDocumentSaveImage->setStatusTip(tr("Export image to file"));
@@ -294,6 +320,15 @@ void MainWindow::createMenus()
     logMessage("MainWindow::createMenus()");
 
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
+    mnuFileImportExport = new QMenu(tr("Import/Export"), this);
+    mnuFileImportExport->addAction(actDocumentImportDXF);
+    mnuFileImportExport->addAction(actDocumentExportDXF);
+    mnuFileImportExport->addSeparator();
+    mnuFileImportExport->addAction(actDocumentExportMeshFile);
+    mnuFileImportExport->addAction(actDocumentSaveImage);
+    mnuFileImportExport->addSeparator();
+    mnuFileImportExport->addAction(actExportVTKScalar);
+    mnuFileImportExport->addAction(actExportVTKOrder);
 
     mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
@@ -305,14 +340,10 @@ void MainWindow::createMenus()
     mnuFile->addAction(actDocumentSaveAs);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuRecentFiles);
-    mnuFile->addSeparator();
+    mnuFile->addMenu(mnuFileImportExport);
     mnuFile->addAction(actDocumentClose);
     mnuFile->addSeparator();
-    mnuFile->addAction(actDocumentImportDXF);
-    mnuFile->addAction(actDocumentExportDXF);
-    mnuFile->addSeparator();
-    mnuFile->addAction(actDocumentExportMeshFile);
-    mnuFile->addAction(actDocumentSaveImage);
+
     mnuFile->addSeparator();
     mnuFile->addAction(actLoadBackground);
 #ifndef Q_WS_MAC
@@ -481,28 +512,28 @@ void MainWindow::createStatusBar()
     logMessage("MainWindow::createStatusBar()");
 
     lblMessage = new QLabel(statusBar());
-    // lblMessage->setStyleSheet("QLabel {border-left: 1px solid gray;}");
 
     lblPosition = new QLabel(statusBar());
-    lblPosition->setMinimumWidth(170);
-    // lblPosition->setStyleSheet("QLabel {border: 1px solid gray;}");
+    lblPosition->setMinimumWidth(180);
+
+    lblMouseMode = new QLabel(statusBar());
+    lblMouseMode->setMinimumWidth(130);
 
     lblProblemType = new QLabel(statusBar());
-    // lblProblemType->setStyleSheet("QLabel {border: 1px solid gray;}");
 
     lblPhysicField = new QLabel(statusBar());
-    // lblPhysicField->setStyleSheet("QLabel {border: 1px solid gray;}");
 
     lblAnalysisType = new QLabel(statusBar());
-    // lblAnalysisType->setStyleSheet("QLabel {border: 1px solid gray;}");
 
     statusBar()->showMessage(tr("Ready"));
     statusBar()->addPermanentWidget(lblProblemType);
     statusBar()->addPermanentWidget(lblPhysicField);
     statusBar()->addPermanentWidget(lblAnalysisType);
     statusBar()->addPermanentWidget(lblPosition);
+    statusBar()->addPermanentWidget(lblMouseMode);
 
     connect(sceneView, SIGNAL(mouseMoved(const QPointF &)), this, SLOT(doSceneMouseMoved(const QPointF &)));
+    connect(sceneView, SIGNAL(mouseSceneModeChanged(MouseSceneMode)), this, SLOT(doMouseSceneModeChanged(MouseSceneMode)));
 }
 
 void MainWindow::createScene()
@@ -558,9 +589,60 @@ void MainWindow::createViews()
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
 {
-    logMessage("MainWindow::doSceneMouseMoved()");
-
     lblPosition->setText(tr("Position: [%1; %2]").arg(position.x(), 8, 'f', 5).arg(position.y(), 8, 'f', 5));
+}
+
+void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
+{
+    lblMouseMode->setText("Mode: -");
+
+    switch (mouseSceneMode)
+    {
+    case MouseSceneMode_Add:
+    {
+        switch (sceneView->sceneMode())
+        {
+        case SceneMode_OperateOnNodes:
+            lblMouseMode->setText(tr("Mode: Add node"));
+            break;
+        case SceneMode_OperateOnEdges:
+            lblMouseMode->setText(tr("Mode: Add edge"));
+            break;
+        case SceneMode_OperateOnLabels:
+            lblMouseMode->setText(tr("Mode: Add label"));
+            break;
+        default:
+            break;
+        }
+    }
+        break;
+    case MouseSceneMode_Pan:
+        lblMouseMode->setText(tr("Mode: Pan"));
+        break;
+    case MouseSceneMode_Rotate:
+        lblMouseMode->setText(tr("Mode: Rotate"));
+        break;
+    case MouseSceneMode_Move:
+    {
+        switch (sceneView->sceneMode())
+        {
+        case SceneMode_OperateOnNodes:
+            lblMouseMode->setText(tr("Mode: Move node"));
+            break;
+        case SceneMode_OperateOnEdges:
+            lblMouseMode->setText(tr("Mode: Move edge"));
+            break;
+        case SceneMode_OperateOnLabels:
+            lblMouseMode->setText(tr("Mode: Move label"));
+            break;
+        default:
+            break;
+        }
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 void MainWindow::setRecentFiles()
@@ -661,7 +743,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
     if (QFile::exists(fileNameDocument))
     {
-    QFileInfo fileInfo(fileNameDocument);
+        QFileInfo fileInfo(fileNameDocument);
         if (fileInfo.suffix() == "a2d")
         {
             // a2d data file
@@ -692,7 +774,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     }
     else
     {
-         QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
+        QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
     }
 }
 
@@ -1031,6 +1113,9 @@ void MainWindow::doInvalidated()
     lblPhysicField->setText(tr("Physic Field: %1").arg(physicFieldString(Util::scene()->problemInfo()->physicField())));
     lblAnalysisType->setText(tr("Analysis type: %1").arg(analysisTypeString(Util::scene()->problemInfo()->analysisType)));
 
+    actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
+    actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+
     //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);
 }
@@ -1039,16 +1124,14 @@ void MainWindow::doHelp()
 {
     logMessage("MainWindow::doHelp()");
 
-    Util::helpDialog()->showPage("index.html");
-    Util::helpDialog()->show();
+    showPage("index.html");
 }
 
 void MainWindow::doHelpShortCut()
 {
     logMessage("MainWindow::doHelpShortCut()");
 
-    Util::helpDialog()->showPage("getting_started/basic_control.html#shortcut-keys");
-    Util::helpDialog()->show();
+    showPage("getting_started/basic_control.html#shortcut-keys");
 }
 
 void MainWindow::doOnlineHelp()
@@ -1067,30 +1150,8 @@ void MainWindow::doCheckVersion()
 
 void MainWindow::doAbout()
 {
-    logMessage("MainWindow::doAbout()");
-
-    QString str(tr("<b>Agros2D %1</b><br/> <i>hp</i>-FEM multiphysics application based on <a href=\"http://hpfem.org/hermes2d/\">Hermes2D</a> library.<br/><br/>"
-                   "Web page: <a href=\"http://hpfem.org/agros2d/\">http://hpfem.org/agros2d/</a><br/>"
-                   "Issues: <a href=\"http://github.com/hpfem/agros2d/issues\">http://github.com/hpfem/agros2d/issues</a><br/><br/><b>Authors:</b>"
-                   "<p><table>"
-                   "<tr><td>Agros2D:</td><td>Pavel Karban <a href=\"mailto:pkarban@gmail.com\">pkarban@gmail.com</a> (main developer)</td></tr>"
-                   "<tr><td>&nbsp;</td><td>Frantisek Mach <a href=\"mailto:mach.frantisek@gmail.com\">mach.frantisek@gmail.com</a> (developer, documentation)</td></tr>"
-                   "<tr><td>&nbsp;</td><td>Bartosz Sawicki <a href=\"mailto:sawickib@iem.pw.edu.pl\">sawickib@iem.pw.edu.pl</a> (developer, Polish translation)</td></tr>"
-                   "<tr><td>Hermes 2D:&nbsp;&nbsp;</td><td>Pavel Solin <a href=\"mailto:solin@unr.edu\">solin@unr.edu</a></td></tr>"
-                   "<tr><td>&nbsp;</td><td>Jakub Cerveny <a href=\"mailto:jakub.cerveny@gmail.com\">jakub.cerveny@gmail.com</a></td></tr>"
-                   "<tr><td>&nbsp;</td><td>Lenka Dubcova <a href=\"mailto:dubcova@gmail.com\">dubcova@gmail.com</a></td></tr>"
-                   "<tr><td>&nbsp;</td><td>Ondrej Certik <a href=\"mailto:ondrej@certik.cz\">ondrej@certik.cz</a></td></tr>"
-                   "<tr><td>Nokia Qt:</td><td>Nokia Qt (<a href=\"http://qt.nokia.com/\">Qt - A cross-platform framework</a>)</td></tr>"
-                   "<tr><td>Qwt:</td><td>Qwt (<a href=\"http://qwt.sourceforge.net/\">Qt Widgets for Technical Applications</a>)</td></tr>"
-                   "<tr><td>Python:</td><td>Python Programming Language (<a href=\"http://www.python.org\">Python</a>)</td></tr>"
-                   "<tr><td>dxflib:</td><td>Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)</td></tr>"
-                   "<tr><td>Triangle:</td><td>Jonathan Richard Shewchuk (<a href=\"http://www.cs.cmu.edu/~quake/triangle.html\">Triangle</a>)</td></tr>"
-                   "<tr><td>FFmpeg:</td><td>FFmpeg group (<a href=\"http://ffmpeg.org/\">FFmpeg</a>)</td></tr>"
-                   "</table></p>"
-                   "<br/><b>License:</b><p>Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.</p><p>Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with Agros2D. If not, see <a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a>.</p>").
-                arg(QApplication::applicationVersion()));
-
-    QMessageBox::about(this, tr("About Agros2D"), str);
+    AboutDialog about(this);
+    about.exec();
 }
 
 void MainWindow::doDocumentExportMeshFile()
@@ -1123,6 +1184,11 @@ void MainWindow::doDocumentExportMeshFile()
             sourceFileName.replace("a2d", "mesh");
             if (!fileName.isEmpty())
             {
+                // remove existing file
+                if (QFile::exists(fileName + ".mesh"))
+                    QFile::remove(fileName + ".mesh");
+
+                // copy file
                 QFile::copy(sourceFileName, fileName + ".mesh");
                 settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
             }
@@ -1142,6 +1208,66 @@ void MainWindow::doDocumentExportMeshFile()
     Util::config()->deleteHermes2DMeshFile = commutator;
 
     doInvalidated();
+}
+
+void MainWindow::doExportVTKScalar()
+{
+    logMessage("MainWindow::doDocumentExportVTKScalar()");
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        QSettings settings;
+        QString dir = settings.value("General/LastVTKDir").toString();
+
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+        if (fileName.isEmpty())
+            return;
+
+        if (!fileName.endsWith(".vtk"))
+            fileName.append(".vtk");
+
+        // remove existing file
+        if (QFile::exists(fileName))
+            QFile::remove(fileName);
+
+        Util::scene()->sceneSolution()->linScalarView().save_data_vtk(fileName.toStdString().c_str(),
+                                                                      physicFieldVariableToStringKey(sceneView->sceneViewSettings().scalarPhysicFieldVariable).toStdString().c_str(),
+                                                                      true);
+
+        if (!fileName.isEmpty())
+        {
+            QFileInfo fileInfo(fileName);
+            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+        }
+    }
+}
+
+void MainWindow::doExportVTKOrder()
+{
+    logMessage("MainWindow::doDocumentExportVTKOrder()");
+    if (Util::scene()->sceneSolution()->isSolved())
+    {
+        QSettings settings;
+        QString dir = settings.value("General/LastVTKDir").toString();
+
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export vtk file"), dir, tr("VTK files (*.vtk)"));
+        if (fileName.isEmpty())
+            return;
+
+        if (!fileName.endsWith(".vtk"))
+            fileName.append(".vtk");
+
+        // remove existing file
+        if (QFile::exists(fileName))
+            QFile::remove(fileName);
+
+        Util::scene()->sceneSolution()->ordView().save_data_vtk(fileName.toStdString().c_str());
+
+        if (!fileName.isEmpty())
+        {
+            QFileInfo fileInfo(fileName);
+            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+        }
+    }
 }
 
 void MainWindow::doProgressLog()
@@ -1175,7 +1301,7 @@ void MainWindow::doLoadBackground()
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
- {
+{
     // WILL BE FIXED
     /*
     logMessage("MainWindow::closeEvent()");

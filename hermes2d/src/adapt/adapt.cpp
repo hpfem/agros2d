@@ -32,11 +32,7 @@
 
 using namespace std;
 
-/* Private constants */
-#define HERMES_TOTAL_ERROR_MASK 0x0F ///< A mask which mask-out total error type. Used by Adapt::calc_errors_internal(). \internal
-#define HERMES_ELEMENT_ERROR_MASK 0xF0 ///< A mask which mask-out element error type. Used by Adapt::calc_errors_internal(). \internal
-
-Adapt::Adapt(Hermes::vector< Space* > spaces_, 
+Adapt::Adapt(Hermes::vector< Space* > spaces_,
              Hermes::vector<ProjNormType> proj_norms) :
     num_act_elems(-1),
     have_errors(false),
@@ -44,17 +40,17 @@ Adapt::Adapt(Hermes::vector< Space* > spaces_,
     have_reference_solutions(false)
 {
   // sanity check
-  if (proj_norms.size() > 0 && spaces_.size() != proj_norms.size()) 
+  if (proj_norms.size() > 0 && spaces_.size() != proj_norms.size())
     error("Mismatched numbers of spaces and projection types in Adapt::Adapt().");
 
   this->num = spaces_.size();
 
   // sanity checks
   error_if(this->num <= 0, "Too few components (%d), only %d supported.", this->num, H2D_MAX_COMPONENTS);
-  error_if(this->num >= H2D_MAX_COMPONENTS, "Too many components (%d), only %d supported.", this->num, H2D_MAX_COMPONENTS);
+  error_if(this->num > H2D_MAX_COMPONENTS, "Too many components (%d), only %d supported.", this->num, H2D_MAX_COMPONENTS);
   for (int i = 0; i < this->num; i++) {
     if (spaces_[i] == NULL) error("spaces[%d] is NULL in Adapt::Adapt().", i);
-    this->spaces.push_back(spaces_[i]); 
+    this->spaces.push_back(spaces_[i]);
   }
 
   // reset values
@@ -64,7 +60,7 @@ Adapt::Adapt(Hermes::vector< Space* > spaces_,
   memset(sln, 0, sizeof(sln));
   memset(rsln, 0, sizeof(rsln));
 
-  // if norms were not set by the user, set them to defaults 
+  // if norms were not set by the user, set them to defaults
   // according to spaces
   if (proj_norms.size() == 0) {
     for (int i = 0; i < this->num; i++) {
@@ -74,31 +70,31 @@ Adapt::Adapt(Hermes::vector< Space* > spaces_,
         case HERMES_HDIV_SPACE: proj_norms.push_back(HERMES_HDIV_NORM); break;
         case HERMES_L2_SPACE: proj_norms.push_back(HERMES_L2_NORM); break;
         default: error("Unknown space type in Adapt::Adapt().");
-      }      
+      }
     }
   }
 
   // assign norm weak forms  according to norms selection
   for (int i = 0; i < this->num; i++) {
     switch (proj_norms[i]) {
-      case HERMES_H1_NORM: 
-           error_form[i][i] = h1_error_form<double, scalar>; error_ord[i][i] = h1_error_form<Ord, Ord>; 
+      case HERMES_H1_NORM:
+           error_form[i][i] = h1_error_form<double, scalar>; error_ord[i][i] = h1_error_form<Ord, Ord>;
            //printf("H1 norm.\n");
            break;
-      case HERMES_H1_SEMINORM: 
-           error_form[i][i] = h1_error_semi_form<double, scalar>; error_ord[i][i] = h1_error_semi_form<Ord, Ord>; 
+      case HERMES_H1_SEMINORM:
+           error_form[i][i] = h1_error_semi_form<double, scalar>; error_ord[i][i] = h1_error_semi_form<Ord, Ord>;
            //printf("H1 semi norm.\n");
            break;
-      case HERMES_HCURL_NORM: 
-           error_form[i][i] = hcurl_error_form<double, scalar>; error_ord[i][i] = hcurl_error_form<Ord, Ord>; 
+      case HERMES_HCURL_NORM:
+           error_form[i][i] = hcurl_error_form<double, scalar>; error_ord[i][i] = hcurl_error_form<Ord, Ord>;
            //printf("Hcurl norm.\n");
            break;
-      case HERMES_HDIV_NORM: 
-           error_form[i][i] = hdiv_error_form<double, scalar>; error_ord[i][i] = hdiv_error_form<Ord, Ord>; 
+      case HERMES_HDIV_NORM:
+           error_form[i][i] = hdiv_error_form<double, scalar>; error_ord[i][i] = hdiv_error_form<Ord, Ord>;
            //printf("Hdiv norm.\n");
            break;
-      case HERMES_L2_NORM: 
-           error_form[i][i] = l2_error_form<double, scalar>; error_ord[i][i] = l2_error_form<Ord, Ord>; 
+      case HERMES_L2_NORM:
+           error_form[i][i] = l2_error_form<double, scalar>; error_ord[i][i] = l2_error_form<Ord, Ord>;
 	   //printf("L2 norm.\n");
            break;
       default: error("Unknown projection type in Adapt::Adapt().");
@@ -114,7 +110,7 @@ Adapt::~Adapt()
 
 //// adapt /////////////////////////////////////////////////////////////////////////////////////////
 
-bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_selectors, double thr, int strat, 
+bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_selectors, double thr, int strat,
             int regularize, double to_be_processed)
 {
   error_if(!have_errors, "element errors have to be calculated first, call Adapt::calc_err_est().");
@@ -127,8 +123,10 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
   Mesh* meshes[H2D_MAX_COMPONENTS];
   for (int j = 0; j < this->num; j++) {
     meshes[j] = this->spaces[j]->get_mesh();
-    rsln[j]->set_quad_2d(&g_quad_2d_std);
-    rsln[j]->enable_transform(false);
+    if (rsln[j] != NULL) {
+      rsln[j]->set_quad_2d(&g_quad_2d_std);
+      rsln[j]->enable_transform(false);
+    }
     if (meshes[j]->get_max_element_id() > max_id)
       max_id = meshes[j]->get_max_element_id();
   }
@@ -191,7 +189,7 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
         // first refinement strategy:
         // refine elements until prescribed amount of error is processed
         // if more elements have similar error refine all to keep the mesh symmetric
-        if ((strat == 0) && (processed_error_squared > sqrt(thr) * errors_squared_sum) 
+        if ((strat == 0) && (processed_error_squared > sqrt(thr) * errors_squared_sum)
                          && fabs((err_squared - err0_squared)/err0_squared) > 1e-3) break;
 
         // second refinement strategy:
@@ -208,6 +206,7 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
       // get refinement suggestion
       ElementToRefine elem_ref(id, comp);
       int current = this->spaces[comp]->get_element_order(id);
+      // rsln[comp] may be unset if refinement_selectors[comp] == HOnlySelector or POnlySelector
       bool refined = refinement_selectors[comp]->select_refinement(e, current, rsln[comp], elem_ref);
 
       //add to a list of elements that are going to be refined
@@ -263,12 +262,13 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
       int* parents;
       parents = meshes[i]->regularize(regularize);
       this->spaces[i]->distribute_orders(meshes[i], parents);
-      delete [] parents;
+      ::free(parents);
     }
   }
 
   for (int j = 0; j < this->num; j++)
-    rsln[j]->enable_transform(true);
+    if (rsln[j] != NULL)
+      rsln[j]->enable_transform(true);
 
   verbose("Refined elements: %d", elem_inx_to_proc.size());
   report_time("Refined elements in: %g s", cpu_time.tick().last());
@@ -286,7 +286,7 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
   return done;
 }
 
-void Adapt::fix_shared_mesh_refinements(Mesh** meshes, std::vector<ElementToRefine>& elems_to_refine, 
+void Adapt::fix_shared_mesh_refinements(Mesh** meshes, std::vector<ElementToRefine>& elems_to_refine,
                                         AutoLocalArray2<int>& idx, Hermes::vector<RefinementSelectors::Selector *> refinement_selectors) {
   int num_elem_to_proc = elems_to_refine.size();
   for(int inx = 0; inx < num_elem_to_proc; inx++) {
@@ -377,7 +377,7 @@ const std::vector<ElementToRefine>& Adapt::get_last_refinements() const {
 
 void Adapt::apply_refinements(std::vector<ElementToRefine>& elems_to_refine)
 {
-  for (vector<ElementToRefine>::const_iterator elem_ref = elems_to_refine.begin(); 
+  for (vector<ElementToRefine>::const_iterator elem_ref = elems_to_refine.begin();
        elem_ref != elems_to_refine.end(); elem_ref++) { // go over elements to be refined
     apply_refinement(*elem_ref);
   }
@@ -394,13 +394,13 @@ void Adapt::apply_refinement(const ElementToRefine& elem_ref) {
     space->set_element_order_internal(elem_ref.id, elem_ref.p[0]);
   else if (elem_ref.split == H2D_REFINEMENT_H) {
     if (e->active)
-      mesh->refine_element(elem_ref.id);
+      mesh->refine_element_id(elem_ref.id);
     for (int j = 0; j < 4; j++)
       space->set_element_order_internal(e->sons[j]->id, elem_ref.p[j]);
   }
   else {
     if (e->active)
-      mesh->refine_element(elem_ref.id, elem_ref.split);
+      mesh->refine_element_id(elem_ref.id, elem_ref.split);
     for (int j = 0; j < 2; j++)
       space->set_element_order_internal(e->sons[ (elem_ref.split == 1) ? j : j+2 ]->id, elem_ref.p[j]);
   }
@@ -447,8 +447,8 @@ void Adapt::unrefine(double thr)
         if ((sum1_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]) &&
              (sum2_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]))
         {
-          mesh[0]->unrefine_element(e->id);
-          mesh[1]->unrefine_element(e->id);
+          mesh[0]->unrefine_element_id(e->id);
+          mesh[1]->unrefine_element_id(e->id);
           errors[0][e->id] = sum1_squared;
           errors[1][e->id] = sum2_squared;
           this->spaces[0]->set_element_order_internal(e->id, max1);
@@ -494,7 +494,7 @@ void Adapt::unrefine(double thr)
           if ((sum_squared < thr * errors[regular_queue[0].comp][regular_queue[0].id]))
           //if ((sum < 0.1 * thr))
           {
-            mesh[m]->unrefine_element(e->id);
+            mesh[m]->unrefine_element_id(e->id);
             errors[m][e->id] = sum_squared;
             this->spaces[m]->set_element_order_internal(e->id, max);
             k++; // number of unrefined elements
@@ -520,7 +520,7 @@ void Adapt::unrefine(double thr)
 
 void Adapt::set_error_form(int i, int j, error_matrix_form_val_t error_bi_form, error_matrix_form_ord_t error_bi_ord)
 {
-  error_if(i < 0 || i >= this->num || j < 0 || j >= this->num, 
+  error_if(i < 0 || i >= this->num || j < 0 || j >= this->num,
            "invalid component number (%d, %d), max. supported components: %d", i, j, H2D_MAX_COMPONENTS);
 
   error_form[i][j] = error_bi_form;
@@ -538,7 +538,7 @@ void Adapt::set_error_form(error_matrix_form_val_t error_bi_form, error_matrix_f
 }
 
 double Adapt::eval_error(error_matrix_form_val_t error_bi_fn, error_matrix_form_ord_t error_bi_ord,
-                         MeshFunction *sln1, MeshFunction *sln2, MeshFunction *rsln1, 
+                         MeshFunction *sln1, MeshFunction *sln2, MeshFunction *rsln1,
                          MeshFunction *rsln2)
 {
   RefMap *rv1 = sln1->get_refmap();
@@ -563,7 +563,7 @@ double Adapt::eval_error(error_matrix_form_val_t error_bi_fn, error_matrix_form_
     else
       limit_order(order);
   }
-  else  
+  else
     limit_order(order);
 
   ou->free_ord(); delete ou;
@@ -583,10 +583,10 @@ double Adapt::eval_error(error_matrix_form_val_t error_bi_fn, error_matrix_form_
     jwt[i] = pt[i][2] * jac[i];
 
   // function values and values of external functions
-  Func<scalar>* err1 = init_fn(sln1, rv1, order);
-  Func<scalar>* err2 = init_fn(sln2, rv2, order);
-  Func<scalar>* v1 = init_fn(rsln1, rrv1, order);
-  Func<scalar>* v2 = init_fn(rsln2, rrv2, order);
+  Func<scalar>* err1 = init_fn(sln1, order);
+  Func<scalar>* err2 = init_fn(sln2, order);
+  Func<scalar>* v1 = init_fn(rsln1, order);
+  Func<scalar>* v2 = init_fn(rsln2, order);
 
   err1->subtract(*v1);
   err2->subtract(*v2);
@@ -626,7 +626,7 @@ double Adapt::eval_error_norm(error_matrix_form_val_t error_bi_fn, error_matrix_
     else
       limit_order(order);
   }
-  else  
+  else
     limit_order(order);
 
   ou->free_ord(); delete ou;
@@ -646,8 +646,8 @@ double Adapt::eval_error_norm(error_matrix_form_val_t error_bi_fn, error_matrix_
     jwt[i] = pt[i][2] * jac[i];
 
   // function values
-  Func<scalar>* v1 = init_fn(rsln1, rrv1, order);
-  Func<scalar>* v2 = init_fn(rsln2, rrv2, order);
+  Func<scalar>* v1 = init_fn(rsln1, order);
+  Func<scalar>* v2 = init_fn(rsln2, order);
 
   scalar res = error_bi_fn(np, jwt, NULL, v1, v2, e, NULL);
 
@@ -660,7 +660,7 @@ double Adapt::eval_error_norm(error_matrix_form_val_t error_bi_fn, error_matrix_
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-double Adapt::calc_err_internal(Hermes::vector<Solution *> slns, Hermes::vector<Solution *> rslns, 
+double Adapt::calc_err_internal(Hermes::vector<Solution *> slns, Hermes::vector<Solution *> rslns,
                                 Hermes::vector<double>* component_errors, bool solutions_for_adapt, unsigned int error_flags)
 {
   _F_
@@ -671,8 +671,8 @@ double Adapt::calc_err_internal(Hermes::vector<Solution *> slns, Hermes::vector<
 
   TimePeriod tmr;
 
-  Solution* rslns_original[10];
-  Solution* slns_original[10];
+  Solution* rslns_original[H2D_MAX_COMPONENTS];
+  Solution* slns_original[H2D_MAX_COMPONENTS];
 
   for (i = 0; i < n; i++) {
     slns_original[i] = this->sln[i];
@@ -723,22 +723,18 @@ double Adapt::calc_err_internal(Hermes::vector<Solution *> slns, Hermes::vector<
   while ((ee = trav.get_next_state(NULL, NULL)) != NULL) {
     for (i = 0; i < num; i++) {
       for (j = 0; j < num; j++) {
-	if (error_form[i][j] != NULL) {
-	  double err, nrm;
-					
-          err = fabs(eval_error(error_form[i][j], error_ord[i][j], sln[i], sln[j], rsln[i], rsln[j]));
-          nrm = fabs(eval_error_norm(error_form[i][j], error_ord[i][j], rsln[i], rsln[j]));
+        if (error_form[i][j] != NULL) {
+          double err, nrm;
+          err = eval_error(error_form[i][j], error_ord[i][j], sln[i], sln[j], rsln[i], rsln[j]);
+          nrm = eval_error_norm(error_form[i][j], error_ord[i][j], rsln[i], rsln[j]);
 
           norms[i] += nrm;
           total_norm  += nrm;
           total_error += err;
           errors_components[i] += err;
           if(solutions_for_adapt)
-          {
             this->errors[i][ee[i]->id] += err;
-	    this->errors_squared_sum += err;
-          }
-	}
+        }
       }
     }
   }
@@ -771,10 +767,13 @@ double Adapt::calc_err_internal(Hermes::vector<Solution *> slns, Hermes::vector<
           errors[i][e->id] /= norms[i];
       }
     }
+
+    this->errors_squared_sum = total_error;
+
     // Element error mask is used here, because this variable is used in the adapt()
     // function, where the processed error (sum of errors of processed element errors)
     // is matched to this variable.
-    if ((error_flags & HERMES_TOTAL_ERROR_MASK) == HERMES_ELEMENT_ERROR_REL) 
+    if ((error_flags & HERMES_TOTAL_ERROR_MASK) == HERMES_ELEMENT_ERROR_REL)
       errors_squared_sum = errors_squared_sum / total_norm;
   }
 

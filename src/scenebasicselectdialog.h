@@ -21,11 +21,9 @@
 #define SCENEBASICSELECTDIALOG_H
 
 #include "util.h"
-#include "gui.h"
-#include "scene.h"
-#include "sceneview.h"
 
 class Scene;
+class SceneView;
 
 class SceneBasicSelectDialog : public QDialog
 {

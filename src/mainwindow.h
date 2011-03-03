@@ -21,18 +21,21 @@
 #define MAINWINDOW_H
 
 #include "util.h"
-#include "scene.h"
-#include "scenebasic.h"
-#include "sceneview.h"
-#include "sceneinfoview.h"
-#include "terminalview.h"
-#include "tooltipview.h"
-#include "chartdialog.h"
-#include "configdialog.h"
-#include "scripteditordialog.h"
-#include "reportdialog.h"
-#include "videodialog.h"
-#include "logdialog.h"
+
+class SceneView;
+class SceneInfoView;
+class LocalPointValueView;
+class VolumeIntegralValueView;
+class SurfaceIntegralValueView;
+class TerminalView;
+class TooltipView;
+
+class HelpDialog;
+class ChartDialog;
+class ScriptEditorDialog;
+class ReportDialog;
+class VideoDialog;
+class LogDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -59,8 +62,11 @@ private slots:
     void doDocumentExportMeshFile();
     void doDocumentSaveImage();
     void doLoadBackground();
+    void doExportVTKScalar();
+    void doExportVTKOrder();
 
     void doSceneMouseMoved(const QPointF &position);
+    void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
     void doCreateMesh();
     void doSolve();
@@ -99,6 +105,7 @@ private:
     QStringList recentFiles;
 
     QMenu *mnuFile;
+    QMenu *mnuFileImportExport;
     QMenu *mnuRecentFiles;
     QMenu *mnuEdit;
     QMenu *mnuView;
@@ -125,6 +132,8 @@ private:
     QAction *actDocumentImportDXF;
     QAction *actDocumentExportDXF;
     QAction *actDocumentExportMeshFile;
+    QAction *actExportVTKScalar;
+    QAction *actExportVTKOrder;
     QAction *actDocumentSaveImage;
     QAction *actExit;
     QAction *actLoadBackground;
@@ -159,6 +168,7 @@ private:
     QLabel *lblPhysicField;
     QLabel *lblMessage;
     QLabel *lblPosition;
+    QLabel *lblMouseMode;
     QLabel *lblAnalysisType;
 
     QComboBox *cmbTimeStep;

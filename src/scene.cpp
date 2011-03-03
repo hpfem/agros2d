@@ -18,6 +18,32 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scene.h"
+#include "sceneview.h"
+
+#include "util.h"
+#include "scenebasic.h"
+#include "scenemarker.h"
+#include "scenefunction.h"
+#include "scenesolution.h"
+
+#include "localvalueview.h"
+#include "surfaceintegralview.h"
+#include "volumeintegralview.h"
+
+#include "problemdialog.h"
+#include "scenetransformdialog.h"
+#include "scenemarkerselectdialog.h"
+#include "scenebasicselectdialog.h"
+#include "progressdialog.h"
+
+#include "hermes2d/hermes_field.h"
+
+#include "scripteditordialog.h"
+
+ PhysicField ProblemInfo::physicField()
+ {
+     return (m_hermes) ? m_hermes->physicField() : PhysicField_Undefined;
+ }
 
 void ProblemInfo::clear()
 {
@@ -123,7 +149,6 @@ Util::Util()
     logMessage("Util::Util()");
 
     m_scene = new Scene();
-    m_helpDialog = new HelpDialog(QApplication::activeWindow());
 
     // completer
     m_completer = new QCompleter();
@@ -149,7 +174,6 @@ Util::~Util()
     logMessage("Util::~Util()");
 
     delete m_scene;
-    delete m_helpDialog;
     delete m_completer;
     delete m_config;
 }
@@ -231,11 +255,6 @@ void Scene::createActions()
     actNewLabelMarker->setShortcut(tr("Alt+M"));
     actNewLabelMarker->setStatusTip(tr("New material"));
     connect(actNewLabelMarker, SIGNAL(triggered()), this, SLOT(doNewLabelMarker()));
-
-    actNewFunction = new QAction(icon(""), tr("New &function..."), this);
-    actNewFunction->setShortcut(tr("Alt+F"));
-    actNewFunction->setStatusTip(tr("New function"));
-    connect(actNewFunction, SIGNAL(triggered()), this, SLOT(doNewFunction()));
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
     actTransform->setStatusTip(tr("Transform"));
@@ -614,33 +633,6 @@ void Scene::replaceLabelMarker(SceneLabelMarker *labelMarker)
     markerNew->name = name;
 }
 
-SceneFunction *Scene::addFunction(SceneFunction *function)
-{
-    logMessage("SceneFunction *Scene::addFunction()");
-
-    // check if function doesn't exists
-    foreach (SceneFunction *functionCheck, functions)
-    {
-        if ((functionCheck->name == function->name) && (functionCheck->function == function->function))
-            return functionCheck;
-    }
-
-    functions.append(function);
-    emit invalidated();
-
-    return function;
-}
-
-void Scene::removeFunction(SceneFunction *function)
-{
-    logMessage("Scene::removeFunction()");
-
-    functions.removeOne(function);
-    delete function;
-
-    emit invalidated();
-}
-
 void Scene::clear()
 {
     logMessage("Scene::clear()");
@@ -665,10 +657,6 @@ void Scene::clear()
     edgeMarkers.clear();
     for (int i = 0; i < labelMarkers.count(); i++) delete labelMarkers[i];
     labelMarkers.clear();
-
-    // functions
-    for (int i = 0; i < functions.count(); i++) delete functions[i];
-    functions.clear();
 
     // none edge
     addEdgeMarker(new SceneEdgeMarkerNone());
@@ -1086,19 +1074,6 @@ void Scene::doNewLabelMarker()
         delete marker;
 }
 
-void Scene::doNewFunction()
-{
-    logMessage("Scene::doNewFunction()");
-
-    SceneFunction *function = new SceneFunction(tr("unnamed function"), "x", Value("0"), Value("10"));
-    if (function->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
-    {
-        addFunction(function);
-    }
-    else
-        delete function;
-}
-
 void Scene::doTransform()
 {
     logMessage("Scene::doTransform()");
@@ -1495,17 +1470,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         n = n.nextSibling();
     }
 
-    // functions
-    QDomNode eleFunctions = eleDoc.elementsByTagName("functions").at(0);
-    n = eleFunctions.firstChild();
-    while(!n.isNull())
-    {
-        element = n.toElement();
-
-        addFunction(new SceneFunction(element.attribute("name"), element.attribute("function"), element.attribute("start"), element.attribute("end")));
-        n = n.nextSibling();
-    }
-
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 
@@ -1697,21 +1661,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         }
 
         eleLabelMarkers.appendChild(eleLabelMarker);
-    }
-
-    // functions
-    QDomNode eleFunctions = doc.createElement("functions");
-    eleDoc.appendChild(eleFunctions);
-    for (int i = 0; i<functions.length(); i++)
-    {
-        QDomElement eleFunction = doc.createElement("function");
-
-        eleFunction.setAttribute("name", functions[i]->name);
-        eleFunction.setAttribute("function", functions[i]->function);
-        eleFunction.setAttribute("start", functions[i]->start.text);
-        eleFunction.setAttribute("end", functions[i]->end.text);
-
-        eleFunctions.appendChild(eleFunction);
     }
 
     if (settings.value("Solver/SaveProblemWithSolution", false).value<bool>())

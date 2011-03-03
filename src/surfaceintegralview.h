@@ -21,8 +21,8 @@
 #define SURFACEINTEGRALVIEW_H
 
 #include "util.h"
-#include "gui.h"
-#include "hermes2d.h"
+
+struct Element;
 
 class SurfaceIntegralValue
 {

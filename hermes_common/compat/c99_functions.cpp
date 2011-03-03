@@ -16,7 +16,7 @@ HERMES_API double exp2(double x)
 
 HERMES_API double log2(double x)
 {
-	return log(x) / M_LN2;
+    return log(x) / M_LN2;
 }
 
 HERMES_API double cbrt(double x)

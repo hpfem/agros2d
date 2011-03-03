@@ -27,7 +27,7 @@ struct HermesElectrostatic : public HermesField
 {
     Q_OBJECT
 public:
-    HermesElectrostatic() { physicField = PhysicField_Electrostatic; }
+    HermesElectrostatic() { m_physicField = PhysicField_Electrostatic; }
 
     inline int numberOfSolution() { return 1; }
     bool hasHarmonic() { return false; }

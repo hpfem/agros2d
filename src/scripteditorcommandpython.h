@@ -21,8 +21,8 @@
 #define SCRIPTEDITORCOMMANDPYTHON_H
 
 #include "util.h"
-#include "sceneview.h"
-#include "Python.h"
+
+class Solution;
 
 class PythonEngine : public QObject
 {

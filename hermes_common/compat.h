@@ -6,8 +6,8 @@
    src/compat directory.
 */
 
-#ifndef __HERMES_COMPAT_H
-#define __HERMES_COMPAT_H
+#ifndef __HERMES_COMMON_COMPAT_H
+#define __HERMES_COMMON_COMPAT_H
 #include <stdio.h>
 
 #ifndef HAVE_FMEMOPEN
@@ -23,6 +23,14 @@ FILE *fmemopen (void *buf, size_t size, const char *opentype);
 
 //C99 functions
 #include "compat/c99_functions.h"
+
+// Microsoft does not recognize long double and handles it just like double.
+#ifdef _MSC_VER
+#ifdef strtold
+#undef strtold
+#endif
+#define strtold strtod
+#endif
 
 #ifdef __GNUC__
 #define NORETURN __attribute__((noreturn))

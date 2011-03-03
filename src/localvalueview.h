@@ -21,9 +21,10 @@
 #define LOCALVALUE_H
 
 #include "util.h"
-#include "gui.h"
-#include "scenemarker.h"
-#include "hermes2d.h"
+
+class SLineEditValue;
+class SceneLabelMarker;
+class Solution;
 
 struct PointValue
 {

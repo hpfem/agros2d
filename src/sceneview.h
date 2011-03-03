@@ -23,13 +23,9 @@
 #include <QGLWidget>
 
 #include "util.h"
-#include "scene.h"
-
-#include "sceneviewdialog.h"
-#include "scenebasic.h"
-#include "progressdialog.h"
 
 class Scene;
+class SceneView;
 
 class SceneNode;
 class SceneEdge;
@@ -42,9 +38,8 @@ class VolumeIntegralValue;
 // scene view
 SceneView *sceneView();
 
-class SceneViewSettings
+struct SceneViewSettings
 {
-public:
     bool showGeometry;
     bool showInitialMesh;
 
@@ -140,7 +135,7 @@ public:
     void saveImagesForReport(const QString &path, bool showRulers, bool showGrid, int w = 0, int h = 0);
     QPixmap renderScenePixmap(int w = 0, int h = 0, bool useContext = false);
 
-    void loadBackgroundImage(const QString &fileName, float x = 0, float y = 0, float w = 1.0, float h = 1.0);
+    void loadBackgroundImage(const QString &fileName, double x = 0, double y = 0, double w = 1.0, double h = 1.0);
 
     void processRangeContour();
     void processRangeScalar();
@@ -153,6 +148,7 @@ signals:
     void mousePressed();
     void mousePressed(const Point &point);
     void sceneModeChanged(SceneMode sceneMode);
+    void mouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
 protected:
     void initializeGL();
@@ -246,7 +242,8 @@ private:
     void createMenu();
 
     // palette
-    const float *paletteColor(double x);
+    const double *paletteColor(double x);
+    const double *paletteColorOrder(int n);
     void paletteCreate();
     void paletteFilter();
     void paletteUpdateTexAdjust();
@@ -291,16 +288,15 @@ private:
     void loadProjection2d(bool setScene = false);
     void loadProjection3d(bool setScene = false);
 
-    inline Point &position(double x, double y)
+    inline Point position(double x, double y)
     {
         return position(Point(x, y));
     }
 
-    inline Point &position(const Point &point)
+    Point position(const Point &point)
     {
-        Point p((2.0/contextWidth()*point.x-1)/m_scale2d*aspect()+m_offset2d.x, -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);
-
-        return p;
+        return Point((2.0/contextWidth()*point.x-1)/m_scale2d*aspect()+m_offset2d.x,
+                -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);
     }
 
 private slots:

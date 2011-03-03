@@ -18,7 +18,11 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "surfaceintegralview.h"
+
+#include "gui.h"
 #include "scene.h"
+
+#include "hermes2d.h"
 
 SurfaceIntegralValue::SurfaceIntegralValue()
 {
@@ -48,7 +52,7 @@ void SurfaceIntegralValue::calculate()
         {
             for_all_active_elements(e, mesh)
             {
-                for (int edge = 0; edge < e->nvert; edge++)
+                for (unsigned edge = 0; edge < e->nvert; edge++)
                 {
                     bool integrate = false;
                     boundary = false;

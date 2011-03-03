@@ -20,19 +20,19 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             ../hermes_common/matrix.cpp \
             ../hermes_common/trace.cpp \
             ../hermes_common/utils.cpp \
-            ../hermes_common/butcher_tables.cpp \
             ../hermes_common/tables.cpp \
             ../hermes_common/solver/amesos.cpp \
             ../hermes_common/solver/aztecoo.cpp \
             ../hermes_common/solver/epetra.cpp \
             ../hermes_common/solver/mumps.cpp \
             ../hermes_common/solver/nox.cpp \
-            ../hermes_common/solver/pardiso.cpp \
             ../hermes_common/solver/petsc.cpp \
             ../hermes_common/solver/precond_ifpack.cpp \
             ../hermes_common/solver/precond_ml.cpp \
             ../hermes_common/solver/superlu.cpp \
             ../hermes_common/solver/umfpack_solver.cpp \
+            ../hermes_common/python/python_api.cpp \
+            ../hermes_common/python/python_engine.cpp \
             ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_any.hpp \
             ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_ConstTypeTraits.hpp \
             ../hermes_common/third_party_codes/trilinos-teuchos/Teuchos_Exceptions.hpp \
@@ -67,6 +67,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/ogprojection.cpp \
             src/qsort.cpp \
             src/runge_kutta.cpp \
+            src/boundaryconditions/boundaryconditions.cpp \
             src/adapt/adapt.cpp \
             src/function/filter.cpp \
             src/function/norm.cpp \
@@ -89,8 +90,7 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             src/mesh/hash.cpp \
             src/mesh/h2d_reader.cpp \
             src/mesh/mesh.cpp \
-            src/mesh/mesh_lexer.cpp \
-            src/mesh/mesh_parser.cpp \
+            src/mesh/python_reader.cpp \
             src/mesh/refinement_type.cpp \
             src/mesh/refmap.cpp \
             src/mesh/regul.cpp \
@@ -112,11 +112,10 @@ SOURCES +=  ../hermes_common/compat/fmemopen.cpp \
             # src/shapeset/shapeset_hc_legendre.cpp \
             # src/shapeset/shapeset_hd_legendre.cpp \
             src/space/space.cpp \
-            #src/space/space_hcurl.cpp \
-            #src/space/space_hdiv.cpp \
+            src/space/space_hcurl.cpp \
+            src/space/space_hdiv.cpp \
             src/space/space_h1.cpp \
             src/space/space_l2.cpp \
-            src/shapeset/shapeset.cpp \
             src/ref_selectors/hcurl_proj_based_selector.cpp \
             src/ref_selectors/h1_proj_based_selector.cpp \
             src/ref_selectors/l2_proj_based_selector.cpp \
@@ -146,15 +145,26 @@ linux-g++ {
 
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/superlu
+    INCLUDEPATH += /usr/include/python2.6
     LIBS += -lumfpack
     LIBS += -ldmumps_seq
     LIBS += -lsuperlu
+    LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
+    LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
 }
 
-win32-g++ {
+win32-msvc2008 {
     DEFINES += WIN32
+    DEFINES += IMPLEMENT_C99
+    DEFINES += "finite=_finite"
+    DEFINES += "popen=_popen"
+
+    INCLUDEPATH += c:/Python27/include
+    INCLUDEPATH += C:/Python27/Lib/site-packages/numpy/core/include
+    LIBS += -Lc:/Python27
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lpthread
+    LIBS += -lpython27
 }

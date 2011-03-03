@@ -103,7 +103,7 @@ public:
 
   /// \brief Returns the polynomial degree of the function being represented by the class.
   int get_fn_order() const { return order; }
-  
+
   /// \brief Returns the polynomial degree of the function at given edge. To be overriden in derived classes.
   /// \param edge [in] Edge at which the order should be evaluated. (0-3)
   virtual int get_edge_fn_order(int edge) { return order; }
@@ -117,23 +117,21 @@ public:
   /// \param mask [in] A combination of one or more of the constants H2D_FN_VAL, H2D_FN_DX, H2D_FN_DY,
   ///   H2D_FN_DXX, H2D_FN_DYY, H2D_FN_DXY specifying the values which should be precalculated. The default is
   ///   H2D_FN_VAL | H2D_FN_DX | H2D_FN_DY. You can also use H2D_FN_ALL to precalculate everything.
-  void set_quad_order(int order, int mask = H2D_FN_DEFAULT)
+  void set_quad_order(unsigned int order, int mask = H2D_FN_DEFAULT)
   {
-    Node* updated_node = NULL;
-    if(nodes->insert(std::make_pair(order, updated_node)).second == false) {
-      // The value had already existed.
-      cur_node = (*nodes)[order];
+    if(nodes->present(order)) {
+      cur_node = nodes->get(order);
       // If the mask has changed.
       if((cur_node->mask & mask) != mask) {
         precalculate(order, mask);
-        (*nodes)[order] = cur_node;
+        nodes->add(cur_node, order);
       }
     }
     else {
       // The value had not existed.
-      cur_node = (*nodes)[order];
+      cur_node = NULL;
       precalculate(order, mask);
-      (*nodes)[order] = cur_node;
+      nodes->add(cur_node, order);
     }
   }
 
@@ -220,10 +218,6 @@ public:
   /// \brief Returns the current quadrature points.
   Quad2D* get_quad_2d() const { return quads[cur_quad]; }
 
-  /// See Transformable::pop_transform()
-  virtual void pop_transform();
-
-
   /// \brief Frees all precalculated tables.
   virtual void free() = 0;
 
@@ -249,30 +243,27 @@ protected:
   };
 
   /// Table of Node tables, for each possible transformation there can be a different Node table.
-  std::map<uint64_t, std::map<unsigned int, Node*>*>* sub_tables;
-  /// Table of Nodes. Indexed by integration order.
-  std::map<unsigned int, Node*>* nodes;
+  LightArray<LightArray<Node*>*>* sub_tables;
+
+  /// Table of nodes.
+  LightArray<Node*>* nodes;
+
   // Current Node.
   Node* cur_node;
-  // Nodes for the overflow sub-element transformation.
-  std::map<unsigned int, Node*>* overflow_nodes;
 
+  // Nodes for the overflow sub-element transformation.
+  LightArray<Node*>* overflow_nodes;
 
   /// With changed sub-element mapping, there comes the need for a change of the current
   /// Node table nodes.
   void update_nodes_ptr()
   {
-    std::map<unsigned int, Node*>* updated_nodes = new std::map<unsigned int, Node*>;
-
-    if (sub_idx > H2D_MAX_IDX) {
-      delete updated_nodes;
+    if (sub_idx > H2D_MAX_IDX)
       handle_overflow_idx();
-    }
     else {
-      if(sub_tables->insert(std::make_pair(sub_idx, updated_nodes)).second == false)
-        // The value had already existed.
-        delete updated_nodes;
-      nodes = (*sub_tables)[sub_idx];
+      if(!sub_tables->present((unsigned int)sub_idx))
+        sub_tables->add(new LightArray<Node*>, (unsigned int)sub_idx);
+      nodes = sub_tables->get((unsigned int) sub_idx);
     }
   };
 
@@ -294,9 +285,9 @@ protected:
 
   void replace_cur_node(Node* node)
   {
-    if (cur_node != NULL) { 
-      total_mem -= cur_node->size; 
-      ::free(cur_node); 
+    if (cur_node != NULL) {
+      total_mem -= cur_node->size;
+      ::free(cur_node);
     }
     cur_node = node;
   }
@@ -367,15 +358,6 @@ void Function<TYPE>::set_quad_2d(Quad2D* quad_2d)
 
   error("too many quadratures.");
 }
-
-
-template<typename TYPE>
-void Function<TYPE>::pop_transform()
-{
-  Transformable::pop_transform();
-  update_nodes_ptr();
-}
-
 
 template<typename TYPE>
 int Function<TYPE>::idx2mask[6][2] =

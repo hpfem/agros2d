@@ -3,7 +3,7 @@ Requirements
 ============
 
 First install the following free packages:
-- Hermes2D (http://www.hpfem.org/hermes2d)
+- Hermes - Hermes2D (http://www.hpfem.org/hermes2d)
 - Nokia Qt (http://www.qtsoftware.com/products)
 - Python (http://www.python.org)
 - dxflib (http://www.ribbonsoft.com/dxflib.html)
@@ -32,7 +32,7 @@ $ ./agros2d.sh help
 Localization
 ============
 
-Agros2D is available in English and Czech. Localization files can be genarated as follows:
+Agros2D is available in English, Czech and Polish. Localization files can be genarated as follows:
 
 $ lrelease ./lang/*.ts
 

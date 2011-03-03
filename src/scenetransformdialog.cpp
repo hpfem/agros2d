@@ -19,6 +19,9 @@
 
 #include "scenetransformdialog.h"
 
+#include "gui.h"
+#include "scene.h"
+
 SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("SceneTransformDialog::SceneTransformDialog()");

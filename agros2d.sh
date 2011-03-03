@@ -8,7 +8,7 @@ langPath="./lang"
 temporaryDirectory="./tmp"
 debianizedFiles="./data ./debian ./lang ./src ./hermes_common ./src-remote ./agros2d.desktop ./agros2d.iss ./agros2d.pro ./COPYING ./functions.py ./problem-agros2d.xml ./README ./hermes2d"
 
-version="1.6"
+version="1.7"
 
 case "$1" in
 	help )
@@ -28,10 +28,10 @@ case "$1" in
 		lrelease $langPath/*.ts
 		;;
 	lang.update )
-		lupdate src/src.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts
+		lupdate src/src.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts $langPath/de_DE.ts
 		;;
 	lang.update-noobsolete )
-		lupdate src/src.pro -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts
+		lupdate src/src.pro -noobsolete -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts $langPath/de_DE.ts
 		;;
 	comp )
 		if qmake ./agros2d.pro ; then make ; fi

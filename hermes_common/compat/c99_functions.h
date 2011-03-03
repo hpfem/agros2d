@@ -1,5 +1,5 @@
-#ifndef __HERMES_C99_FUNCTIONS_H
-#define __HERMES_C99_FUNCTIONS_H
+#ifndef __HERMES_COMMON_C99_FUNCTIONS_H
+#define __HERMES_COMMON_C99_FUNCTIONS_H
 
 #ifdef IMPLEMENT_C99
 
@@ -14,6 +14,8 @@ extern HERMES_API const double NAN;
 extern HERMES_API double exp2(double x); ///< exp 2
 extern HERMES_API double log2(double x); ///< log 2
 extern HERMES_API double cbrt(double x); ///< cubic root
+
+#define finite _finite
 
 #endif /* IMPLEMENT_C99 */
 

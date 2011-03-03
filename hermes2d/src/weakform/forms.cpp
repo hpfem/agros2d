@@ -26,45 +26,45 @@ template<> double DiscontinuousFunc<double>::zero = 0.0;
   template<> std::complex<double> DiscontinuousFunc<std::complex<double> >::zero = std::complex<double>(0);
 #endif
 
-// Integration order for coordinates, normals and tangents is one
+/// Integration order for coordinates, normals and tangents is one.
 Geom<Ord>* init_geom_ord()
 {
-	Geom<Ord>* e = new Geom<Ord>;
-	static Ord x[] = { Ord(1) };
-	static Ord y[] = { Ord(1) };
+  Geom<Ord>* e = new Geom<Ord>;
+  static Ord x[] = { Ord(1) };
+  static Ord y[] = { Ord(1) };
 
-	static Ord nx[] = { Ord(1) };
-	static Ord ny[] = { Ord(1) };
+  static Ord nx[] = { Ord(1) };
+  static Ord ny[] = { Ord(1) };
 
-	static Ord tx[] = { Ord(1) };
-	static Ord ty[] = { Ord(1) };
+  static Ord tx[] = { Ord(1) };
+  static Ord ty[] = { Ord(1) };
 
-	static Ord diam = Ord(1);
+  static Ord diam = Ord(1);
 
-        // element = NULL;
-	e->x = x; e->y = y;
-	e->nx = nx; e->ny = ny;
-	e->tx = tx; e->ty = ty;
-    e->diam = diam;
-    e->edge_marker = -8888;
-    e->elem_marker = -9999;
-	return e;
+  // element = NULL;
+  e->x = x; e->y = y;
+  e->nx = nx; e->ny = ny;
+  e->tx = tx; e->ty = ty;
+  e->diam = diam;
+  e->edge_marker = -8888;
+  e->elem_marker = -9999;
+  return e;
 }
 
-// Initialize element marker and coordinates
+/// Initialize element marker and coordinates.
 Geom<double>* init_geom_vol(RefMap *rm, const int order)
 {
-    Geom<double>* e = new Geom<double>;
-    //e->element = rm->get_active_element();
-    e->diam = rm->get_active_element()->get_diameter();
-    e->id = rm->get_active_element()->id;
-    e->elem_marker = rm->get_active_element()->marker;
-    e->x = rm->get_phys_x(order);
-    e->y = rm->get_phys_y(order);
-    return e;
+  Geom<double>* e = new Geom<double>;
+  //e->element = rm->get_active_element();
+  e->diam = rm->get_active_element()->get_diameter();
+  e->id = rm->get_active_element()->id;
+  e->elem_marker = rm->get_active_element()->marker;
+  e->x = rm->get_phys_x(order);
+  e->y = rm->get_phys_y(order);
+  return e;
 }
 
-// Initialize edge marker, coordinates, tangent and normals
+/// Initialize edge marker, coordinates, tangent and normals.
 Geom<double>* init_geom_surf(RefMap *rm, SurfPos* surf_pos, const int order)
 {
   Geom<double>* e = new Geom<double>;
@@ -92,7 +92,7 @@ Geom<double>* init_geom_surf(RefMap *rm, SurfPos* surf_pos, const int order)
 	return e;
 }
 
-// Initialize integration order for function values and derivatives
+/// Initialize integration order for function values and derivatives.
 Func<Ord>* init_fn_ord(const int order)
 {
   Ord *d = new Ord(order);
@@ -111,17 +111,18 @@ Func<Ord>* init_fn_ord(const int order)
 	return f;
 }
 
-// Transformation of shape functions using reference mapping
+/// Transformation of shape functions using reference mapping.
 Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 {
   int nc = fu->get_num_components();
   ESpaceType space_type = fu->get_space_type();
   Quad2D* quad = fu->get_quad_2d();
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED  
-  if (space_type == 0) fu->set_quad_order(order, H2D_FN_ALL);
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+  if (space_type == HERMES_H1_SPACE)
+    fu->set_quad_order(order, H2D_FN_ALL);
   else
-#endif    
-    fu->set_quad_order(order);
+#endif
+  fu->set_quad_order(order);
   double3* pt = quad->get_points(order);
   int np = quad->get_num_points(order);
   Func<double>* u = new Func<double>(np, nc);
@@ -142,12 +143,12 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
     double *dxy = fu->get_dxy_values();
     double *dyy = fu->get_dyy_values();
 #endif
-    
+
     double2x2 *m;
     if(rm->is_jacobian_const()) {
       m = new double2x2[np];
       double2x2 const_inv_ref_map;
-      
+
       const_inv_ref_map[0][0] = rm->get_const_inv_ref_map()[0][0][0];
       const_inv_ref_map[0][1] = rm->get_const_inv_ref_map()[0][0][1];
       const_inv_ref_map[1][0] = rm->get_const_inv_ref_map()[0][1][0];
@@ -171,7 +172,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
 #ifdef H2D_SECOND_DERIVATIVES_ENABLED
     for (int i = 0; i < np; i++, m++, mm++)
 #else
-    for (int i = 0; i < np; i++, m++) 
+    for (int i = 0; i < np; i++, m++)
 #endif
     {
       u->val[i] = fn[i];
@@ -187,7 +188,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
       u->laplace[i] = ( dx[i] * ax + dy[i] * ay + dxx[i] * axx + dxy[i] * axy + dyy[i] * ayy );
 #endif
     }
-    
+
     m -= np;
     if(rm->is_jacobian_const())
       delete [] m;
@@ -207,7 +208,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
     if(rm->is_jacobian_const()) {
       m = new double2x2[np];
       double2x2 const_inv_ref_map;
-      
+
       const_inv_ref_map[0][0] = rm->get_const_inv_ref_map()[0][0][0];
       const_inv_ref_map[0][1] = rm->get_const_inv_ref_map()[0][0][1];
       const_inv_ref_map[1][0] = rm->get_const_inv_ref_map()[0][1][0];
@@ -249,7 +250,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
     if(rm->is_jacobian_const()) {
       m = new double2x2[np];
       double2x2 const_inv_ref_map;
-      
+
       const_inv_ref_map[0][0] = rm->get_const_inv_ref_map()[0][0][0];
       const_inv_ref_map[0][1] = rm->get_const_inv_ref_map()[0][0][1];
       const_inv_ref_map[1][0] = rm->get_const_inv_ref_map()[0][1][0];
@@ -278,7 +279,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
   // L2 Space.
   else if (space_type == HERMES_L2_SPACE)
   {
-    // Same as for H1, except that we currently do not have 
+    // Same as for H1, except that we currently do not have
     // second derivatives of L2 shape functions for triangles.
     u->val = new double [np];
     u->dx  = new double [np];
@@ -287,12 +288,12 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
     double *fn = fu->get_fn_values();
     double *dx = fu->get_dx_values();
     double *dy = fu->get_dy_values();
-    
+
     double2x2 *m;
     if(rm->is_jacobian_const()) {
       m = new double2x2[np];
       double2x2 const_inv_ref_map;
-      
+
       const_inv_ref_map[0][0] = rm->get_const_inv_ref_map()[0][0][0];
       const_inv_ref_map[0][1] = rm->get_const_inv_ref_map()[0][0][1];
       const_inv_ref_map[1][0] = rm->get_const_inv_ref_map()[0][1][0];
@@ -315,7 +316,7 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
       u->dx[i] = (dx[i] * (*m)[0][0] + dy[i] * (*m)[0][1]);
       u->dy[i] = (dx[i] * (*m)[1][0] + dy[i] * (*m)[1][1]);
     }
-		
+
     m -= np;
     if(rm->is_jacobian_const())
       delete [] m;
@@ -326,8 +327,8 @@ Func<double>* init_fn(PrecalcShapeset *fu, RefMap *rm, const int order)
   return u;
 }
 
-// Preparation of mesh-functions
-Func<scalar>* init_fn(MeshFunction *fu, RefMap *rm, const int order)
+/// Preparation of mesh functions.
+Func<scalar>* init_fn(MeshFunction *fu, const int order)
 {
   // sanity checks
   if (fu == NULL) error("NULL MeshFunction in Func<scalar>*::init_fn().");
@@ -348,6 +349,80 @@ Func<scalar>* init_fn(MeshFunction *fu, RefMap *rm, const int order)
     memcpy(u->val, fu->get_fn_values(), np * sizeof(scalar));
     memcpy(u->dx, fu->get_dx_values(), np * sizeof(scalar));
     memcpy(u->dy, fu->get_dy_values(), np * sizeof(scalar));
+  }
+  else if (u->nc == 2)
+  {
+    u->val0 = new scalar [np];
+    u->val1 = new scalar [np];
+    u->curl = new scalar [np];
+    u->div = new scalar [np];
+
+    memcpy(u->val0, fu->get_fn_values(0), np * sizeof(scalar));
+    memcpy(u->val1, fu->get_fn_values(1), np * sizeof(scalar));
+
+    // This works.
+    scalar *dx1 = fu->get_dx_values(1);
+    scalar *dy0 = fu->get_dy_values(0);
+    for (int i = 0; i < np; i++) u->curl[i] = dx1[i] - dy0[i];
+    // This was never tested but it should work.
+    scalar *dx0 = fu->get_dx_values(0);
+    scalar *dy1 = fu->get_dy_values(1);
+    for (int i = 0; i < np; i++) u->div[i] = dx0[i] + dy1[i];
+  }
+  return u;
+}
+
+/// Preparation of solutions.
+Func<scalar>* init_fn(Solution *fu, const int order)
+{
+  // sanity checks
+  if (fu == NULL) error("NULL MeshFunction in Func<scalar>*::init_fn().");
+  if (fu->get_mesh() == NULL) error("Uninitialized MeshFunction used.");
+
+  ESpaceType space_type = fu->get_space_type();
+  ESolutionType sln_type = fu->get_type();
+
+  int nc = fu->get_num_components();
+  Quad2D* quad = fu->get_quad_2d();
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+  if (space_type == HERMES_H1_SPACE && sln_type != HERMES_EXACT)
+    fu->set_quad_order(order, H2D_FN_ALL);
+  else
+#endif
+    fu->set_quad_order(order);
+
+  double3* pt = quad->get_points(order);
+  int np = quad->get_num_points(order);
+  Func<scalar>* u = new Func<scalar>(np, nc);
+
+  if (u->nc == 1)
+  {
+    u->val = new scalar [np];
+    u->dx  = new scalar [np];
+    u->dy  = new scalar [np];
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+    if (space_type == HERMES_H1_SPACE && sln_type != HERMES_EXACT)
+      u->laplace = new scalar [np];
+#endif
+    memcpy(u->val, fu->get_fn_values(), np * sizeof(scalar));
+    memcpy(u->dx, fu->get_dx_values(), np * sizeof(scalar));
+    memcpy(u->dy, fu->get_dy_values(), np * sizeof(scalar));
+#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+    if (space_type == HERMES_H1_SPACE)
+    {
+      if(sln_type == HERMES_SLN)
+      {
+        scalar *dxx = fu->get_dxx_values();
+        scalar *dyy = fu->get_dyy_values();
+        for (int i = 0; i < np; i++)
+          u->laplace[i] = dxx[i] + dyy[i];
+      }
+      else if (sln_type == HERMES_CONST)
+      {
+        memset(u->laplace, 0, np * sizeof(scalar));
+      }
+    }
+#endif
   }
   else if (u->nc == 2)
   {

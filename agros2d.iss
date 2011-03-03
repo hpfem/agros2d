@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "1.6.0.569"
-#define AppDate "2011-01-17"
+#define AppVersion "1.7.1.580"
+#define AppDate "2011-02-22"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -28,11 +28,9 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 [Languages]
 
 [Files]
-Source: src\Agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
+Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: src\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
-Source: src-remote\release\Agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
-Source: install\win32\triangle.exe; DestDir: {app}; DestName: triangle.exe
-Source: install\win32\ffmpeg.exe; DestDir: {app}; DestName: ffmpeg.exe
+Source: agros2d-remote.exe; DestDir: {app}; DestName: Agros2D-remote.exe
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
 Source: functions.py; DestDir: {app}; DestName: functions.py
@@ -45,9 +43,7 @@ Source: lang\*.qm; DestDir: {app}/lang
 Source: doc\web\*; DestDir: {app}/doc/web; Flags: ignoreversion recursesubdirs 
 Source: doc\report\default.css; DestDir: {app}/doc/report
 Source: doc\report\default.html; DestDir: {app}/doc/report
-Source: install\win32\*.dll; DestDir: {app}
-Source: install\win32\lib\*.pyc; DestDir: {app}
-Source: install\win32\sqldrivers\*.dll; DestDir: {app}/sqldrivers
+Source: ..\agros2d_windows_install\runtime\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: {group}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
@@ -76,17 +72,3 @@ Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http:/
 Type: files; Name: {app}\Agros2D.url
 
 [Code]
-
-
-
-
-
-
-
-
-
-
-
-
-
-

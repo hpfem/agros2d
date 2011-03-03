@@ -21,8 +21,11 @@
 #define VOLUMEINTEGRALVIEW_H
 
 #include "util.h"
-#include "gui.h"
-#include "hermes2d.h"
+
+struct Element;
+class Quad2D;
+class RefMap;
+class Solution;
 
 class VolumeIntegralValue
 {

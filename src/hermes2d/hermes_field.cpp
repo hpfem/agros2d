@@ -27,7 +27,8 @@
 #include "hermes_elasticity.h"
 #include "hermes_flow.h"
 
-#include "scene.h"
+#include "progressdialog.h"
+
 #include "mesh/h2d_reader.h"
 
 bool isPlanar;
@@ -59,6 +60,44 @@ HermesField *hermesFieldFactory(PhysicField physicField)
         throw;
         break;
     }
+}
+
+void readMeshDirtyFix()
+{
+    // fix precalulating matrices for mapping of curved elements
+
+    // save locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    std::ostringstream os;
+    os << "vertices =" << std::endl <<
+    "{" << std::endl <<
+      "{ 0, 0 \}," << std::endl <<
+      "{ 1, 0 \}," << std::endl <<
+      "{ 0, 1 \}" << std::endl <<
+    "}" << std::endl <<
+    "elements =" << std::endl <<
+    "{" << std::endl <<
+      "{ 0, 1, 2, 0 \}" << std::endl <<
+    "}" << std::endl <<
+    "boundaries =" << std::endl <<
+    "{" << std::endl <<
+      "{ 0, 1, 1 \}," << std::endl <<
+      "{ 1, 2, 1 \}," << std::endl <<
+      "{ 2, 0, 1 \}" << std::endl <<
+    "}" << std::endl <<
+    "curves =" << std::endl <<
+    "{" << std::endl <<
+      "{ 1, 2, 90 \}" << std::endl <<
+    "}";
+
+    Mesh mesh;
+    H2DReader meshloader;
+    meshloader.load_str(os.str().c_str(), &mesh);
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
 }
 
 Mesh *readMeshFromFile(const QString &fileName)
@@ -109,7 +148,7 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
 {
     SolutionArray *solution = new SolutionArray();
     solution->order = new Orderizer();
-    if (space) solution->order->process_solution(space);
+    if (space) solution->order->process_space(space);
     solution->sln = new Solution();
     if (sln) solution->sln->copy(sln);
     solution->adaptiveError = adaptiveError;
@@ -330,7 +369,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             }
 
             // delete reference space
-            for (int i = 0; i < spaceReference.size(); i++)
+            for (unsigned int i = 0; i < spaceReference.size(); i++)
             {
                 delete spaceReference.at(i)->get_mesh();
                 delete spaceReference.at(i);
@@ -338,7 +377,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             spaceReference.clear();
 
             // delete reference solution
-            for (int i = 0; i < solutionReference.size(); i++)
+            for (unsigned int i = 0; i < solutionReference.size(); i++)
                 delete solutionReference.at(i);
             solutionReference.clear();
         }
@@ -430,7 +469,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     delete mesh;
 
     // delete space
-    for (int i = 0; i < space.size(); i++)
+    for (unsigned int i = 0; i < space.size(); i++)
     {
         // delete space.at(i)->get_mesh();
         delete space.at(i);
@@ -438,7 +477,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     space.clear();
 
     // delete last solution
-    for (int i = 0; i < solution.size(); i++)
+    for (unsigned int i = 0; i < solution.size(); i++)
         delete solution.at(i);
     solution.clear();
 
@@ -463,7 +502,7 @@ ViewScalarFilter::ViewScalarFilter(Hermes::vector<MeshFunction *> sln, PhysicFie
 
 double ViewScalarFilter::get_pt_value(double x, double y, int item)
 {
-    error("Not implemented");
+    return 0.0;
 }
 
 void ViewScalarFilter::precalculate(int order, int mask)

@@ -22,8 +22,6 @@
 
 #include "util.h"
 
-#include <QWebView>
-
 class TooltipView : public QDockWidget
 {
     Q_OBJECT
@@ -35,7 +33,7 @@ public slots:
     void loadTooltip(SceneMode sceneMode);
 
 private:
-     QWebView *webView;
+     QTextEdit *txtView;
 };
 
 #endif // TOOLTIPVIEW_H

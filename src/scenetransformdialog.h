@@ -21,10 +21,9 @@
 #define SCENETRANSFORMDIALOG_H
 
 #include "util.h"
-#include "gui.h"
-#include "scene.h"
 
 class Scene;
+class SLineEditValue;
 
 class SceneTransformDialog : public QDialog
 {

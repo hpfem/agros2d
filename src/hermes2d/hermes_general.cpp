@@ -18,7 +18,9 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "hermes_general.h"
+
 #include "scene.h"
+#include "gui.h"
 
 struct GeneralEdge
 {

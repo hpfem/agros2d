@@ -1,33 +1,34 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
 QT += opengl \
     xml \
-    webkit \
     network
 
 CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
-DEFINES += VERSION_MINOR=6
-DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=560
+DEFINES += VERSION_MINOR=7
+DEFINES += VERSION_SUB=1
+DEFINES += VERSION_GIT=620
 DEFINES += VERSION_YEAR=2011
-DEFINES += VERSION_MONTH=1
-DEFINES += VERSION_DAY=15
+DEFINES += VERSION_MONTH=3
+DEFINES += VERSION_DAY=2
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
 linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
 TRANSLATIONS = lang/cs_CZ.ts \
-    lang/pl_PL.ts
+    lang/pl_PL.ts \
+    lang/de_DE.ts
 CONFIG += help
 CODECFORTR = UTF-8
 RC_FILE = src.rc
 RESOURCES = src.qrc
-TARGET = ../agros2d
+TARGET = agros2d
+DESTDIR = ../
 TEMPLATE = app
-QMAKE_CXXFLAGS_DEBUG += -w
-QMAKE_CXXFLAGS += -w
+# QMAKE_CXXFLAGS_DEBUG += -w
+# QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
@@ -39,6 +40,7 @@ SOURCES += util.cpp \
     hermes2d/hermes_electrostatic.cpp \
     hermes2d/hermes_heat.cpp \
     hermes2d/hermes_magnetic.cpp \
+    hermes2d/hermes_magnetic_integrals.cpp \
     hermes2d/hermes_current.cpp \
     hermes2d/hermes_elasticity.cpp \
     hermes2d/hermes_flow.cpp \
@@ -62,7 +64,6 @@ SOURCES += util.cpp \
     sceneviewdialog.cpp \
     config.cpp \
     configdialog.cpp \
-    helpdialog.cpp \
     scenesolution.cpp \
     dxflib/dl_writer_ascii.cpp \
     dxflib/dl_dxf.cpp \
@@ -104,7 +105,6 @@ HEADERS += util.h \
     sceneviewdialog.h \
     config.h \
     configdialog.h \
-    helpdialog.h \
     scenesolution.h \
     reportdialog.h \
     videodialog.h \
@@ -142,21 +142,7 @@ linux-g++ {
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
     LIBS += -lqwt-qt4
 }
-win32-g++ {
-    INCLUDEPATH += c:/qt/mingw/include
-    INCLUDEPATH += c:/Python26/include
-    INCLUDEPATH += ../hermes2d/src
-    INCLUDEPATH += ../../qwt-5.2.1/src
-    LIBS += -L../hermes2d/lib
-    LIBS += -L../../qwt-5.2.1/lib
-    LIBS += -lhermes2d
-    LIBS += -lumfpack
-    LIBS += -lamd
-    LIBS += -lblas
-    LIBS += -lpthread
-    LIBS += -lqwt
-    LIBS += -lpython26
-}
+
 macx-g++ {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
@@ -175,4 +161,21 @@ macx-g++ {
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
+}
+
+win32-msvc2008 {
+    DEFINES += "finite=_finite"
+
+    INCLUDEPATH += c:/Python27/include
+    INCLUDEPATH += ../hermes2d/src
+    INCLUDEPATH += ../../qwt-5.2.1/src
+    LIBS += -Lc:/Python27/libs
+    LIBS += -L../hermes2d/lib
+    LIBS += -L../../qwt-5.2.1/lib
+    LIBS += -lhermes2d
+    LIBS += -lqwt
+    LIBS += -lpython27
+    LIBS += -llibumfpack
+    LIBS += -llibamd
+    LIBS += -llibpthreadVCE2
 }

@@ -20,20 +20,17 @@
 #ifndef HERMES_FIELD_H
 #define HERMES_FIELD_H
 
-#include <QDomDocument>
-
 #include "util.h"
 #include "hermes2d.h"
-#include "../hermes_common/solver/umfpack_solver.h"
+
+#include "scene.h"
+#include "scenebasic.h"
+#include "scenesolution.h"
+#include "scenemarker.h"
 
 #include "localvalueview.h"
 #include "surfaceintegralview.h"
 #include "volumeintegralview.h"
-
-#include "scenemarker.h"
-#include "progressdialog.h"
-
-using namespace Hermes;
 
 extern bool isPlanar;
 extern AnalysisType analysisType;
@@ -41,15 +38,12 @@ extern double frequency;
 extern double actualTime;
 extern double timeStep;
 
-class LocalPointValue;
-class VolumeIntegralValue;
-class SurfaceIntegralValue;
-
 class SceneEdgeMarker;
 class SceneLabelMarker;
-class SceneViewSettings;
+struct SceneViewSettings;
+struct SolutionArray;
 
-class SolutionArray;
+class ProgressItemSolve;
 
 class ViewScalarFilter;
 
@@ -57,8 +51,10 @@ struct HermesField : public QObject
 {
     Q_OBJECT
 public:
-    PhysicField physicField;
-    HermesField() { physicField = PhysicField_Undefined; }
+    HermesField() { m_physicField = PhysicField_Undefined; }
+    virtual ~HermesField() {}
+
+    inline PhysicField physicField() { return m_physicField; }
 
     virtual int numberOfSolution() = 0;
     virtual bool hasHarmonic() = 0;
@@ -106,6 +102,9 @@ public:
 
     virtual inline void deformShape(double3* linVert, int count) {}
     virtual inline void deformShape(double4* linVert, int count) {}
+
+protected:
+    PhysicField m_physicField;
 };
 
 HermesField *hermesFieldFactory(PhysicField physicField);
@@ -132,6 +131,9 @@ protected:
     void precalculate(int order, int mask);
     virtual void calculateVariable(int i) = 0;
 };
+
+// mesh fix
+void readMeshDirtyFix();
 
 // read mesh
 Mesh *readMeshFromFile(const QString &fileName);

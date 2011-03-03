@@ -19,6 +19,8 @@
 
 #include "videodialog.h"
 
+#include "gui.h"
+#include "scene.h"
 #include "sceneview.h"
 
 VideoDialog::VideoDialog(SceneView *sceneView, QWidget *parent) : QDialog(parent)
@@ -348,7 +350,7 @@ void VideoDialog::doOpenVideo()
 {
     logMessage("VideoDialog::doOpenVideo()");
 
-    QDesktopServices::openUrl(outputFile);
+    QDesktopServices::openUrl(QUrl::fromLocalFile(outputFile));
 }
 
 void VideoDialog::doCommandFFmpeg()

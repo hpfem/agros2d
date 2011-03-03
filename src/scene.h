@@ -20,58 +20,28 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <QDomDocument>
+#include "util.h"
+#include "config.h"
+
+#include "hermes2d/hermes_field.h"
 
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
 
-#include "util.h"
-#include "scenebasic.h"
-#include "scenemarker.h"
-#include "scenefunction.h"
-#include "scenesolution.h"
-
-#include "localvalueview.h"
-#include "surfaceintegralview.h"
-#include "volumeintegralview.h"
-
-#include "helpdialog.h"
-#include "problemdialog.h"
-#include "scenetransformdialog.h"
-#include "scenemarkerselectdialog.h"
-#include "scenebasicselectdialog.h"
-#include "progressdialog.h"
-
-#include "hermes2d/hermes_field.h"
-#include "hermes2d/hermes_general.h"
-#include "hermes2d/hermes_electrostatic.h"
-#include "hermes2d/hermes_magnetic.h"
-#include "hermes2d/hermes_heat.h"
-#include "hermes2d/hermes_current.h"
-#include "hermes2d/hermes_elasticity.h"
-
-#include "config.h"
-
-struct HermesObject;
 struct HermesGeneral;
+struct HermesField;
 
+class Scene;
 class SceneNode;
 class SceneEdge;
 class SceneLabel;
-
 class SceneEdgeMarker;
 class SceneLabelMarker;
-
-class SceneFunction;
-
 struct SceneViewSettings;
 class SceneSolution;
 
 class ProblemDialog;
 class SceneTransformDialog;
-class HelpDialog;
-
-class Config;
 
 class ProblemInfo
 {
@@ -79,7 +49,7 @@ public:
     QString name;
     QDate date;
     QString fileName;
-    PhysicField physicField() { return (m_hermes) ? m_hermes->physicField : PhysicField_Undefined; }
+    PhysicField physicField();
     ProblemType problemType;
     int numberOfRefinements;
     int polynomialOrder;
@@ -114,7 +84,11 @@ public:
 
     void clear();
 
-    inline void setHermes(HermesField *hermes) { if (m_hermes) delete m_hermes; m_hermes = hermes; }
+    inline void setHermes(HermesField *hermes)
+    {
+        if (m_hermes) delete m_hermes;
+        m_hermes = hermes;
+    }
     inline HermesField *hermes() { return m_hermes; }
 
     inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
@@ -148,7 +122,6 @@ public slots:
     void doDeleteSelected();
     void doNewEdgeMarker();
     void doNewLabelMarker();
-    void doNewFunction();
     void doTransform();
     void doClearSolution();
     void doProblemProperties();
@@ -162,7 +135,6 @@ public:
     QList<SceneNode *> nodes;
     QList<SceneEdge *> edges;
     QList<SceneLabel *> labels;
-    QList<SceneFunction *> functions;
 
     QList<SceneEdgeMarker *> edgeMarkers;
     QList<SceneLabelMarker *> labelMarkers;
@@ -173,7 +145,6 @@ public:
     QAction *actDeleteSelected;
     QAction *actNewEdgeMarker;
     QAction *actNewLabelMarker;
-    QAction *actNewFunction;
     QAction *actProblemProperties;
     QAction *actClearSolution;
     QAction *actTransform;
@@ -207,9 +178,6 @@ public:
     bool setLabelMarker(const QString &name, SceneLabelMarker *labelMarker);
     void replaceLabelMarker(SceneLabelMarker *labelMarker);
 
-    SceneFunction *addFunction(SceneFunction *function);
-    void removeFunction(SceneFunction *function);
-
     void clear();
 
     RectPoint boundingBox();
@@ -225,7 +193,7 @@ public:
     void transformScale(const Point &point, double scaleFactor, bool copy);
 
     inline ProblemInfo *problemInfo() { return m_problemInfo; }
-    inline void setProblemInfo(ProblemInfo *problemInfo) { delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
+    void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
 
     inline void refresh() { emit invalidated(); }
     inline SceneSolution *sceneSolution() { return m_sceneSolution; }
@@ -257,7 +225,6 @@ class Util
 public:
     static Util* singleton();
     static inline Scene *scene() { return Util::singleton()->m_scene; }
-    static inline HelpDialog *helpDialog() { return Util::singleton()->m_helpDialog; }
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
     static inline Config *config() { return Util::singleton()->m_config; }
 
@@ -271,7 +238,6 @@ private:
     static Util *m_singleton;
 
     Scene *m_scene;
-    HelpDialog *m_helpDialog;
     QCompleter *m_completer;
     Config *m_config;
 };

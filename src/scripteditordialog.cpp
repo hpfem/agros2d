@@ -18,7 +18,18 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "scripteditordialog.h"
+
+#include <QCompleter>
+
+#include "scene.h"
+#include "sceneview.h"
+#include "scenemarker.h"
+#include "scripteditorhighlighter.h"
+#include "terminalview.h"
+
 #include "scripteditorcommandpython.h"
+
+#include "gui.h"
 
 static PythonEngine *pythonEngine = NULL;
 
@@ -311,8 +322,6 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget *parent) : QMainWindow(parent)
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
 
-    setMinimumSize(400, 400);
-    resize(sizeHint());
     QSettings settings;
     restoreGeometry(settings.value("ScriptEditorDialog/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("ScriptEditorDialog/RecentFiles").value<QStringList>();
@@ -505,7 +514,7 @@ void ScriptEditorDialog::createControls()
     QLineEdit *txtPath = new QLineEdit(this);
     txtPath->setReadOnly(true);
 
-    QPushButton *btnPath = new QPushButton("...");
+    QPushButton *btnPath = new QPushButton(icon("three-dots"), "");
     btnPath->setMaximumSize(btnPath->sizeHint());
 
     connect(btnPath, SIGNAL(clicked()), this, SLOT(doPathChangeDir()));
@@ -918,8 +927,7 @@ void ScriptEditorDialog::doHelp()
 {
     logMessage("ScriptEditorDialog::doHelp()");
 
-    Util::helpDialog()->showPage("scripting/scripting.html");
-    Util::helpDialog()->show();
+    showPage("scripting/scripting.html");
 }
 
 void ScriptEditorDialog::doCloseTab(int index)

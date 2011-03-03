@@ -20,12 +20,13 @@
 #ifndef PROBLEMDIALOG_H
 #define PROBLEMDIALOG_H
 
-#include "gui.h"
-#include "scene.h"
-#include "scripteditordialog.h"
+#include "util.h"
 
-struct ProblemInfo;
+class ProblemInfo;
 class ScriptEditor;
+
+class SLineEditDouble;
+class SLineEditValue;
 
 class ProblemDialog: public QDialog
 {

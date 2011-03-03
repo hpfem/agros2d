@@ -21,9 +21,9 @@
 #define SCENEVIEWDIALOG_H
 
 #include "util.h"
-#include "sceneview.h"
 
 class SceneView;
+class SLineEditDouble;
 
 class SceneViewDialog : public QDialog
 {
@@ -41,7 +41,7 @@ private slots:
 private:
     SceneView *m_sceneView;
 
-    // show    
+    // show
     QCheckBox *chkShowGeometry;
     QCheckBox *chkShowInitialMesh;
 
@@ -61,14 +61,19 @@ private:
     QComboBox *cmbScalarFieldVariable;
     QComboBox *cmbScalarFieldVariableComp;
     QCheckBox *chkScalarFieldRangeAuto;
-    QLineEdit *txtScalarFieldRangeMin;
-    QLineEdit *txtScalarFieldRangeMax;
+    SLineEditDouble *txtScalarFieldRangeMin;
+    SLineEditDouble *txtScalarFieldRangeMax;
+    QLabel *lblScalarFieldRangeMinError;
+    QLabel *lblScalarFieldRangeMaxError;
 
     // vector field
     QComboBox *cmbVectorFieldVariable;
 
     // transient
     QComboBox *cmbTimeStep;
+
+    QPushButton *btnOK;
+    QPushButton *btnCancel;
 
     void load();
     void save();
@@ -79,6 +84,8 @@ private slots:
     void doScalarFieldVariable(int index);
     void doScalarFieldRangeAuto(int state);
     void buttonClicked(QAbstractButton *button);
+    void doScalarFieldRangeMinChanged();
+    void doScalarFieldRangeMaxChanged();
 
     void setControls();
 };

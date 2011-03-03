@@ -19,6 +19,12 @@
 
 #include "configdialog.h"
 
+#include "gui.h"
+
+#include "scene.h"
+#include "sceneview.h"
+#include "scripteditordialog.h"
+
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("ConfigDialog::ConfigDialog()");
@@ -127,6 +133,7 @@ void ConfigDialog::load()
 
     // order view
     chkOrderLabel->setChecked(Util::config()->orderLabel);
+    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Util::config()->orderPaletteOrderType));
 
     // 3d
     chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
@@ -249,6 +256,7 @@ void ConfigDialog::save()
 
     // order view
     Util::config()->orderLabel = chkOrderLabel->isChecked();
+    Util::config()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
 
     // 3d
     Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
@@ -296,38 +304,47 @@ void ConfigDialog::createControls()
     // List View
     lstView->setCurrentRow(0);
     lstView->setViewMode(QListView::IconMode);
+    lstView->setResizeMode(QListView::Adjust);
     lstView->setMovement(QListView::Static);
-    lstView->setIconSize(QSize(64, 64));
-    lstView->setMinimumWidth(100);
-    lstView->setMaximumWidth(100);
-    lstView->setSpacing(12);
+    lstView->setFlow(QListView::TopToBottom);
+    lstView->setIconSize(QSize(60, 60));
+    lstView->setMinimumWidth(135);
+    lstView->setMaximumWidth(135);
     connect(lstView, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
                this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
+
+    QSize sizeItem(131, 85);
 
     // listView items
     QListWidgetItem *itemMain = new QListWidgetItem(icon("options-main"), tr("Main"), lstView);
     itemMain->setTextAlignment(Qt::AlignHCenter);
     itemMain->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemMain->setSizeHint(sizeItem);
 
     QListWidgetItem *itemView = new QListWidgetItem(icon("options-view"), tr("View"), lstView);
     itemView->setTextAlignment(Qt::AlignHCenter);
     itemView->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemView->setSizeHint(sizeItem);
 
     QListWidgetItem *itemSolver = new QListWidgetItem(icon("options-solver"), tr("Solver"), lstView);
     itemSolver->setTextAlignment(Qt::AlignHCenter);
     itemSolver->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemSolver->setSizeHint(sizeItem);
 
     QListWidgetItem *itemColors = new QListWidgetItem(icon("options-colors"), tr("Colors"), lstView);
     itemColors->setTextAlignment(Qt::AlignHCenter);
     itemColors->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemColors->setSizeHint(sizeItem);
 
     QListWidgetItem *itemGlobalScript = new QListWidgetItem(icon("options-python"), tr("Python"), lstView);
     itemGlobalScript->setTextAlignment(Qt::AlignHCenter);
     itemGlobalScript->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemGlobalScript->setSizeHint(sizeItem);
 
     QListWidgetItem *itemAdvanced = new QListWidgetItem(icon("options-advanced"), tr("Advanced"), lstView);
     itemAdvanced->setTextAlignment(Qt::AlignHCenter);
     itemAdvanced->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    itemAdvanced->setSizeHint(sizeItem);
 
     pages->addWidget(panMain);
     pages->addWidget(panView);
@@ -562,7 +579,7 @@ QWidget *ConfigDialog::createViewWidget()
 
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
-    txtView3DAngle = new SLineEditDouble(0, this);
+    txtView3DAngle = new SLineEditDouble(0, false, this);
     chkView3DBackground = new QCheckBox(tr("Gradient background"), this);
 
     QGridLayout *layout3D = new QGridLayout();
@@ -589,9 +606,17 @@ QWidget *ConfigDialog::createViewWidget()
 
     // layout order
     chkOrderLabel = new QCheckBox(tr("Show order label"), this);
+    // layout order palette
+    cmbOrderPaletteOrder = new QComboBox();
+    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
+    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
+    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
+    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
-    QHBoxLayout *layoutOrder = new QHBoxLayout();
-    layoutOrder->addWidget(chkOrderLabel);
+    QGridLayout *layoutOrder = new QGridLayout();
+    layoutOrder->addWidget(chkOrderLabel, 0, 0, 1, 2);
+    layoutOrder->addWidget(new QLabel(tr("Palette:")), 1, 0);
+    layoutOrder->addWidget(cmbOrderPaletteOrder, 1, 1);
 
     QGroupBox *grpOrder = new QGroupBox(tr("Polynomial order"));
     grpOrder->setLayout(layoutOrder);
@@ -741,11 +766,11 @@ QWidget *ConfigDialog::createAdvancedWidget()
     // adaptivity
     chkIsoOnly = new QCheckBox(tr("Isotropic refinement"));
     lblIsoOnly = new QLabel(tr("<table>"
-                               "<tr><td><b>true</b><td><td>isotropic refinement</td></tr>"
-                               "<tr><td><b>false</b><td><td>anisotropic refinement</td></tr>"
+                               "<tr><td><b>true</b></td><td>isotropic refinement</td></tr>"
+                               "<tr><td><b>false</b></td><td>anisotropic refinement</td></tr>"
                                "</table>"));
     txtConvExp = new SLineEditDouble();
-    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of cancidates in hp-adaptivity"));
+    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences<br/>the selection of candidates in hp-adaptivity"));
     txtThreshold = new SLineEditDouble();
     lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
     cmbStrategy = new QComboBox();
@@ -753,9 +778,9 @@ QWidget *ConfigDialog::createAdvancedWidget()
     cmbStrategy->addItem(tr("1"), 1);
     cmbStrategy->addItem(tr("2"), 2);
     lblStrategy = new QLabel(tr("<table>"
-                                 "<tr><td><b>0</b><td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
-                                 "<tr><td><b>1</b><td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
-                                 "<tr><td><b>2</b><td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
+                                 "<tr><td><b>0</b></td><td>refine elements until sqrt(<b>threshold</b>)<br/>times total error is processed.<br/>If more elements have similar errors,<br/>refine all to keep the mesh symmetric</td></tr>"
+                                 "<tr><td><b>1</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b><br/>times maximum element error</td></tr>"
+                                 "<tr><td><b>2</b></td><td>refine all elements<br/>whose error is larger than <b>threshold</b></td></tr>"
                                  "</table>"));
     cmbMeshRegularity = new QComboBox();
     cmbMeshRegularity->addItem(tr("arbitrary level hang. nodes"), -1);
@@ -874,7 +899,7 @@ void ConfigDialog::doClearCommandHistory()
     QStringListModel *model = dynamic_cast<QStringListModel *>(Util::completer()->model());
     model->setStringList(QStringList());
 
-    QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared succesfully."));
+    QMessageBox::information(QApplication::activeWindow(), tr("Information"), tr("Command history was cleared successfully."));
 }
 
 void ConfigDialog::doAdvancedDefault()

@@ -20,16 +20,16 @@
 #ifndef SCENEHERMES_H
 #define SCENEHERMES_H
 
-#include <QDomDocument>
-
 #include "util.h"
-#include "gui.h"
 
 class Solution;
 class Linearizer;
 class Vectorizer;
 class Orderizer;
 class Mesh;
+
+class Chart;
+class QwtPlotCurve;
 
 struct SolutionArray
 {

@@ -83,6 +83,7 @@ public:
 
     // order view
     bool orderLabel;
+    PaletteOrderType orderPaletteOrderType;
 
     // deformations
     bool deformScalar;
