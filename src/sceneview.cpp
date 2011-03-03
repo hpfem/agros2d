@@ -3258,9 +3258,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                         foreach (SceneEdge *edge, m_scene->edges)
                             if (edge->isSelected)
                             {
-                                edge->nodeStart->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
-                                edge->nodeEnd->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+                                edge->nodeStart->isSelected = true;
+                                edge->nodeEnd->isSelected = true;
                             }
+                        foreach (SceneNode *node, m_scene->nodes)
+                            if (node->isSelected)
+                                node->point.x += (len.x > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+
                         len.x = 0;
                         updateGL();
                     }
@@ -3268,11 +3272,16 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     if (fabs(len.y) > Util::config()->gridStep)
                     {
                         foreach (SceneEdge *edge, m_scene->edges)
-                            if (edge->isSelected)
-                            {
-                                edge->nodeStart->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
-                                edge->nodeEnd->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
-                            }
+                            foreach (SceneEdge *edge, m_scene->edges)
+                                if (edge->isSelected)
+                                {
+                                    edge->nodeStart->isSelected = true;
+                                    edge->nodeEnd->isSelected = true;
+                                }
+                        foreach (SceneNode *node, m_scene->nodes)
+                            if (node->isSelected)
+                                node->point.y += (len.y > 0) ? Util::config()->gridStep : -Util::config()->gridStep;
+
                         len.y = 0;
                         updateGL();
                     }
