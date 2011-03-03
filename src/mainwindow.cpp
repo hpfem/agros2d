@@ -512,28 +512,28 @@ void MainWindow::createStatusBar()
     logMessage("MainWindow::createStatusBar()");
 
     lblMessage = new QLabel(statusBar());
-    // lblMessage->setStyleSheet("QLabel {border-left: 1px solid gray;}");
 
     lblPosition = new QLabel(statusBar());
-    lblPosition->setMinimumWidth(170);
-    // lblPosition->setStyleSheet("QLabel {border: 1px solid gray;}");
+    lblPosition->setMinimumWidth(180);
+
+    lblMouseMode = new QLabel(statusBar());
+    lblMouseMode->setMinimumWidth(130);
 
     lblProblemType = new QLabel(statusBar());
-    // lblProblemType->setStyleSheet("QLabel {border: 1px solid gray;}");
 
     lblPhysicField = new QLabel(statusBar());
-    // lblPhysicField->setStyleSheet("QLabel {border: 1px solid gray;}");
 
     lblAnalysisType = new QLabel(statusBar());
-    // lblAnalysisType->setStyleSheet("QLabel {border: 1px solid gray;}");
 
     statusBar()->showMessage(tr("Ready"));
     statusBar()->addPermanentWidget(lblProblemType);
     statusBar()->addPermanentWidget(lblPhysicField);
     statusBar()->addPermanentWidget(lblAnalysisType);
     statusBar()->addPermanentWidget(lblPosition);
+    statusBar()->addPermanentWidget(lblMouseMode);
 
     connect(sceneView, SIGNAL(mouseMoved(const QPointF &)), this, SLOT(doSceneMouseMoved(const QPointF &)));
+    connect(sceneView, SIGNAL(mouseSceneModeChanged(MouseSceneMode)), this, SLOT(doMouseSceneModeChanged(MouseSceneMode)));
 }
 
 void MainWindow::createScene()
@@ -589,9 +589,60 @@ void MainWindow::createViews()
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
 {
-    logMessage("MainWindow::doSceneMouseMoved()");
-
     lblPosition->setText(tr("Position: [%1; %2]").arg(position.x(), 8, 'f', 5).arg(position.y(), 8, 'f', 5));
+}
+
+void MainWindow::doMouseSceneModeChanged(MouseSceneMode mouseSceneMode)
+{
+    lblMouseMode->setText("Mode: -");
+
+    switch (mouseSceneMode)
+    {
+    case MouseSceneMode_Add:
+    {
+        switch (sceneView->sceneMode())
+        {
+        case SceneMode_OperateOnNodes:
+            lblMouseMode->setText(tr("Mode: Add node"));
+            break;
+        case SceneMode_OperateOnEdges:
+            lblMouseMode->setText(tr("Mode: Add edge"));
+            break;
+        case SceneMode_OperateOnLabels:
+            lblMouseMode->setText(tr("Mode: Add label"));
+            break;
+        default:
+            break;
+        }
+    }
+        break;
+    case MouseSceneMode_Pan:
+        lblMouseMode->setText(tr("Mode: Pan"));
+        break;
+    case MouseSceneMode_Rotate:
+        lblMouseMode->setText(tr("Mode: Rotate"));
+        break;
+    case MouseSceneMode_Move:
+    {
+        switch (sceneView->sceneMode())
+        {
+        case SceneMode_OperateOnNodes:
+            lblMouseMode->setText(tr("Mode: Move node"));
+            break;
+        case SceneMode_OperateOnEdges:
+            lblMouseMode->setText(tr("Mode: Move edge"));
+            break;
+        case SceneMode_OperateOnLabels:
+            lblMouseMode->setText(tr("Mode: Move label"));
+            break;
+        default:
+            break;
+        }
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 void MainWindow::setRecentFiles()

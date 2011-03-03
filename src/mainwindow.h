@@ -66,6 +66,7 @@ private slots:
     void doExportVTKOrder();
 
     void doSceneMouseMoved(const QPointF &position);
+    void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
     void doCreateMesh();
     void doSolve();
@@ -167,6 +168,7 @@ private:
     QLabel *lblPhysicField;
     QLabel *lblMessage;
     QLabel *lblPosition;
+    QLabel *lblMouseMode;
     QLabel *lblAnalysisType;
 
     QComboBox *cmbTimeStep;

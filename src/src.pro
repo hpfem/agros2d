@@ -164,6 +164,8 @@ macx-g++ {
 }
 
 win32-msvc2008 {
+    DEFINES += "finite=_finite"
+
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../hermes2d/src
     INCLUDEPATH += ../../qwt-5.2.1/src

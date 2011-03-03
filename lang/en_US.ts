@@ -518,7 +518,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="602"/>
         <source>Hermes</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="612"/>
@@ -688,7 +688,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="893"/>
         <source>Command history was cleared successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="735"/>
@@ -699,7 +699,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="759"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;/td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="764"/>
@@ -709,7 +709,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="771"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="893"/>
@@ -1299,7 +1299,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="155"/>
         <source>new boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="207"/>
@@ -1379,7 +1379,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="328"/>
         <source>new boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="395"/>
@@ -2281,27 +2281,27 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="188"/>
         <source>Export mesh file...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="192"/>
         <source>Export VTK scalar...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="193"/>
         <source>Export scalar view as VTK file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="196"/>
         <source>Export VTK order...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="197"/>
         <source>Export order view as VTK file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="200"/>
@@ -2498,7 +2498,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="320"/>
         <source>Import/Export</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="330"/>
@@ -2549,13 +2549,13 @@
         <location filename="../src/mainwindow.cpp" line="1189"/>
         <location filename="../src/mainwindow.cpp" line="1220"/>
         <source>Export vtk file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1189"/>
         <location filename="../src/mainwindow.cpp" line="1220"/>
         <source>VTK files (*.vtk)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="459"/>
@@ -5151,7 +5151,7 @@
         <location filename="../src/sceneview.cpp" line="2410"/>
         <location filename="../src/sceneview.cpp" line="2430"/>
         <source>Undefined: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2787"/>
@@ -5329,12 +5329,12 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="264"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="267"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="302"/>
@@ -5827,25 +5827,33 @@ Do you want to save your changes?</source>
 &lt;body style=&quot;font-size: 11px;&quot;&gt;
 &lt;table&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Left mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Add node directly by mouse&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Alt+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Alt + N&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Add node by coordinates (open dialog)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl+Shift+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Shift + N&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Add node by coordinates (in the dialog will be used the actual coordinates of the mouse cursor)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;Pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Control + Shift + Left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Move nodes by mouse&lt;/td&gt;
+	&lt;/tr&gt;	
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Shift + Left mouse or Middle mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Pan over the workspace (you can also use arrows keys)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Zoom the workspace&lt;/td&gt;
 	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Middle button double click or Shift + Left mouse double click&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Zoom to fit&lt;/td&gt;
+	&lt;/tr&gt;	
 &lt;/table&gt;
 &lt;/body&gt;</translation>
     </message>
@@ -5861,17 +5869,20 @@ Do you want to save your changes?</source>
 &lt;body style=&quot;font-size: 11px;&quot;&gt;
 &lt;table&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl + left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Left mouse&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Add edge directly by mouse&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Open dialog for setting of selected edge&lt;/td&gt;
 	&lt;/tr&gt;
+    &lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Control + Shift + Left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Move edges by mouse&lt;/td&gt;
+	&lt;/tr&gt;		
 	&lt;tr&gt;
-	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;Pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Shift + Left mouse or Middle mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Pan over the workspace (you can also use arrows keys)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
@@ -5896,21 +5907,33 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Add label directly by mouse&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl+L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + L&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Add label using coordinates (open dialog)&lt;/td&gt;
 	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Shift + L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Add label by coordinates (in the dialog will be used the actual coordinates of the mouse cursor)&lt;/td&gt;
+	&lt;/tr&gt;	
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Space&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Open dialog for setting of selected label&lt;/td&gt;
 	&lt;/tr&gt;
+    &lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Control + Shift + Left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Move labels by mouse&lt;/td&gt;
+	&lt;/tr&gt;	
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;Pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Shift + Left mouse or Middle mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Pan over the workspace (you can also use arrows keys)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Zoom the workspace&lt;/td&gt;
 	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;Middle button double click or Shift + Left mouse double click&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Zoom to fit&lt;/td&gt;
+	&lt;/tr&gt;		
 &lt;/table&gt;
 &lt;/body&gt;</translation>
     </message>
@@ -5930,18 +5953,25 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Open dialog for setting scene properties&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Shift+left mouse&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;Pan over the workspace (you can also use middle mouse button or arrows keys)&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;2D + 3D: Shift + Left mouse or Middle mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Pan over the workspace (you can also use arrows keys)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Mouse wheel&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;2D + 3D: Mouse wheel&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Zoom the workspace&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;/td&gt;
-		&lt;td&gt;You can also calculate variables at the point and surface or volume integrals. Always you must choose the tool for the collection them of menu &quot;Problem&quot; or the toolbar.&lt;/td&gt;
-	&lt;/tr&gt;
+		&lt;td&gt;&lt;b&gt;3D: Left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Rotate the object in &lt;it&gt;xy&lt;/it&gt; plane)&lt;/td&gt;
+	&lt;/tr&gt;	
+	&lt;tr&gt;
+		&lt;td&gt;&lt;b&gt;3D: Control + Left mouse&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Rotate the object in &lt;it&gt;z&lt;/it&gt; plane)&lt;/td&gt;
+	&lt;/tr&gt;	
 &lt;/table&gt;
+
+You can also calculate variables at the point and surface or volume integrals. Always you must choose the tool for the collection them of menu &quot;Problem&quot; or the toolbar.
+
 &lt;/body&gt;</translation>
     </message>
 </context>

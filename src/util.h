@@ -547,6 +547,15 @@ enum SceneMode
     SceneMode_Postprocessor
 };
 
+enum MouseSceneMode
+{
+    MouseSceneMode_Nothing,
+    MouseSceneMode_Pan,
+    MouseSceneMode_Rotate,
+    MouseSceneMode_Move,
+    MouseSceneMode_Add
+};
+
 enum SceneModePostprocessor
 {
     SceneMode_LocalValue,

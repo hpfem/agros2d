@@ -148,6 +148,7 @@ signals:
     void mousePressed();
     void mousePressed(const Point &point);
     void sceneModeChanged(SceneMode sceneMode);
+    void mouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
 protected:
     void initializeGL();
