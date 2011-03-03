@@ -216,6 +216,9 @@ private:
     QWidget *createHermes2D();
     QWidget *createLibraries();
     QWidget *createLicense();
+
+private slots:
+    void checkVersion();
 };
 
 #endif // GUI_H

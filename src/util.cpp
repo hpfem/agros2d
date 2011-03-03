@@ -1160,7 +1160,7 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content)
     }
 }
 
-CheckVersion *checkVersion = NULL;
+static CheckVersion *checkVersion = NULL;
 void checkForNewVersion(bool quiet)
 {
     logMessage("checkForNewVersion()");

@@ -799,13 +799,21 @@ void AboutDialog::createControls()
     tab->addTab(createLibraries(), tr("Libraries"));
     tab->addTab(createLicense(), tr("License"));
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(close()));
+    QPushButton *buttonClose = new QPushButton(tr("Close"));
+    QPushButton *buttonCheckForNewVersion = new QPushButton(tr("Check version"));
+
+    QHBoxLayout *buttonBox = new QHBoxLayout();
+    buttonBox->addStretch();
+    buttonBox->addWidget(buttonCheckForNewVersion);
+    buttonBox->addWidget(buttonClose);
+
+    connect(buttonClose, SIGNAL(clicked()), this, SLOT(close()));
+    connect(buttonCheckForNewVersion, SIGNAL(clicked()), this, SLOT(checkVersion()));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tab);
     // layout->addStretch();
-    layout->addWidget(buttonBox);
+    layout->addLayout(buttonBox);
 
     setLayout(layout);
 }
@@ -923,4 +931,9 @@ QWidget *AboutDialog::createLicense()
     widget->setLayout(layout);
 
     return widget;
+}
+
+void AboutDialog::checkVersion()
+{
+    checkForNewVersion();
 }

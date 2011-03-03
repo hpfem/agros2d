@@ -1,9 +1,10 @@
-agros2d (1.7-1ubuntu26) maverick; urgency=low
+agros2d (1.7-2ubuntu27) maverick; urgency=low
 
   * curvilinear elements (arcs)
   * synced with latest hermes (removed judy dependence)
   * little improvements to GUI
   * complete Python + numpy (needed by mesh loader)
+  * move objects by mouse
 
  -- Pavel Karban <pkarban@gmail.com>  Wen, 3 Mar 2011 12:40:00 +0200
 

@@ -6007,7 +6007,7 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přidat uzel přímo pomocí myši&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Alt+N&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Alt + N&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přidat uzel pomocí souřadnic (otevře se dialog)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
@@ -6015,11 +6015,11 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přidat uzel pomocí souřadnic (v dialogu se využijí aktuální souřadnice kurzoru myši)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl + Shift +levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Shift + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přesun uzlů pomocí myši&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši  + pohyb myší&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Shift + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
@@ -6027,8 +6027,8 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přiblížení a oddálení pracovní plochy&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Dvojtý stisk kolečka myši ne Shift + dvojtý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;Nastavení do viditelné oblastit&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Dvojitý stisk kolečka myši nebo Shift + dvojitý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Nastavení do viditelné oblasti&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;</translation>
     </message>
@@ -6056,7 +6056,7 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přesun hran pomocí myši&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Shift+levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Shift + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
@@ -6064,8 +6064,8 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přiblížení a oddálení pracovní plochy&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Dvojtý stisk kolečka myši ne Shift + dvojtý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;Nastavení do viditelné oblastit&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Dvojitý stisk kolečka myši nebo Shift + dvojitý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Nastavení do viditelné oblasti&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
@@ -6086,11 +6086,11 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přidat značku oblasti přímo pomocí myši&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Alt+L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Alt + L&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přidat značku oblastí pomocí souřadnic (otevře se dialog)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Ctrl+Shift+L&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Ctrl + Shift + L&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Přidat značku oblasti pomocí souřadnic (v dialogu se využijí aktuální souřadnice kurzoru myši)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
@@ -6110,8 +6110,8 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Přiblížení a oddálení pracovní plochy&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;Dvojtý stisk kolečka myši ne Shift + dvojtý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;Nastavení do viditelné oblastit&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;Dvojitý stisk kolečka myši nebo Shift + dvojitý stisk levého tlačítka myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;Nastavení do viditelné oblasti&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;/body&gt;</translation>
@@ -6132,7 +6132,7 @@ Do you want to save your changes?</source>
 		&lt;td&gt;Otevřít dialog pro nastavení scény&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
-		&lt;td&gt;&lt;b&gt;2D + 3D:  Shift+levé tlačítko myši nebo kolečko myši&lt;/b&gt;&lt;/td&gt;
+		&lt;td&gt;&lt;b&gt;2D + 3D: Shift + levé tlačítko myši nebo kolečko myši&lt;/b&gt;&lt;/td&gt;
 		&lt;td&gt;Pohyb nad pracovní plochou (můžete také využít prostředního tlačítka myši nebo klávesy šipek)&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
@@ -6141,7 +6141,7 @@ Do you want to save your changes?</source>
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;3D: levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
-		&lt;td&gt;rotace objektu v osách &lt;it&gt;x&lt;/it&gt; a &lt;it&gt;y&lt;/it&gt;&lt;/td&gt;
+		&lt;td&gt;rotace objektu v rovině &lt;it&gt;xy&lt;/it&gt;&lt;/td&gt;
 	&lt;/tr&gt;
 	&lt;tr&gt;
 		&lt;td&gt;&lt;b&gt;3D: Ctrl + levé tlačítko myši&lt;/b&gt;&lt;/td&gt;
