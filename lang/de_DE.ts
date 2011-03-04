@@ -1008,7 +1008,7 @@
     <message>
         <location filename="../src/scenemarker.cpp" line="172"/>
         <source>Boundary marker name already exists.</source>
-        <translation>Den Namen der Randbedingung gibt es nicht mehr.</translation>
+        <translation>Den Namen der Randbedingung existiert schon.</translation>
     </message>
     <message>
         <location filename="../src/scenemarker.cpp" line="185"/>
@@ -1344,7 +1344,7 @@
     <message>
         <location filename="../src/gui.cpp" line="492"/>
         <source>Create directory</source>
-        <translation>Directory anfertigen</translation>
+        <translation>Verzeichnis anfertigen</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="492"/>
@@ -1729,32 +1729,32 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="344"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="395"/>
         <source>Heat transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperaturfeld</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="348"/>
         <source>Thermal conductivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>thermische Leifähigkeit:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="348"/>
         <source>W/m.K</source>
-        <translation type="unfinished"></translation>
+        <translation>W/m.K</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="351"/>
         <source>Volume heat:</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumetrische Wärme:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="351"/>
         <source>W/m3</source>
-        <translation type="unfinished">W/m3</translation>
+        <translation>W/m3</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="354"/>
         <source>Temperature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatur:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="354"/>
@@ -1762,55 +1762,55 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="385"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="398"/>
         <source>deg.</source>
-        <translation type="unfinished"></translation>
+        <translation>gr.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="358"/>
         <source>Heat flux</source>
-        <translation type="unfinished"></translation>
+        <translation>Wärmefluss</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="361"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="362"/>
         <source>W/m2</source>
-        <translation type="unfinished">W/m2</translation>
+        <translation>W/m2</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="367"/>
         <source>Temperature gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperaturgradient</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="370"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="371"/>
         <source>deg./m</source>
-        <translation type="unfinished"></translation>
+        <translation>gr./m</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="381"/>
         <source>Heat Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperaturfeld</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="384"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="398"/>
         <source>Temperature avg.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchschnittliche Temperatur:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="385"/>
         <source>Temperature dif.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperaturdifferenz:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="386"/>
         <source>Heat flux:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wärmefluss:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="386"/>
         <source>W</source>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -1818,17 +1818,17 @@
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="231"/>
         <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished">Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
+        <translation>Die Randbedingung &apos;%1&apos; existiert nicht.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="320"/>
         <source>new boundary</source>
-        <translation type="unfinished">Neue Randbedingung</translation>
+        <translation>neue Randbedingung</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="378"/>
         <source>new material</source>
-        <translation type="unfinished">Neues Material</translation>
+        <translation>neues Material</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="529"/>
@@ -1836,18 +1836,18 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="715"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="733"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisches Feld</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="535"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="654"/>
         <source>Permeability:</source>
-        <translation type="unfinished"></translation>
+        <translation>Permeabilität:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="539"/>
         <source>Vector potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisches Vektorpotential</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="542"/>
@@ -1860,7 +1860,7 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="761"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="770"/>
         <source>real:</source>
-        <translation type="unfinished"></translation>
+        <translation>Realkomponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="543"/>
@@ -1873,7 +1873,7 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="762"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="771"/>
         <source>imag:</source>
-        <translation type="unfinished"></translation>
+        <translation>Imaginäre Komponente:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="544"/>
@@ -1886,194 +1886,194 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="763"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="772"/>
         <source>magnitude:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="551"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Feldstärke - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="560"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Feldstärke - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="572"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisches Feld - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="581"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisches Feld - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="590"/>
         <source>Currrent dens. - external</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte - externe</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="599"/>
         <source>Current density - avg. transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte - durchschnittliche transformierte</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="608"/>
         <source>Current density - velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte - dynamische</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="617"/>
         <source>Current density - total</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - gesamte</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="629"/>
         <source>Lorentz force - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Lorentzstärke - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="638"/>
         <source>Lorentz force - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Lorentzstärke - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="646"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="703"/>
         <source>Losses density:</source>
-        <translation type="unfinished"></translation>
+        <translation>Verlustedichte:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="649"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="706"/>
         <source>Energy density:</source>
-        <translation type="unfinished">Energiedichte:</translation>
+        <translation>Energiedichte:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="657"/>
         <source>Conductivity:</source>
-        <translation type="unfinished">Leitfähigkeit:</translation>
+        <translation>Leitfähigkeit:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="660"/>
         <source>Rem. flux dens.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rem. mag. Induktion:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="661"/>
         <source>Direction of rem.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtung der Remanenz:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="665"/>
         <source>Velocity</source>
-        <translation type="unfinished">Geschwindigkeit</translation>
+        <translation>Geschwindigkeit</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="672"/>
         <source>Vector potential:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mag. Vektorpotential:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="676"/>
         <source>Flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Induktion</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="694"/>
         <source>Current density</source>
-        <translation type="unfinished">Stromdichte</translation>
+        <translation>Stromdichte</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="697"/>
         <source>external:</source>
-        <translation type="unfinished"></translation>
+        <translation>externe:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="698"/>
         <source>transform:</source>
-        <translation type="unfinished"></translation>
+        <translation>transformierte:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="699"/>
         <source>velocity:</source>
-        <translation type="unfinished"></translation>
+        <translation>dynamische:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="700"/>
         <source>total:</source>
-        <translation type="unfinished"></translation>
+        <translation>gesamte:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="720"/>
         <source>Maxwell force</source>
-        <translation type="unfinished"></translation>
+        <translation>Maxwellstärke</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="740"/>
         <source>External current</source>
-        <translation type="unfinished"></translation>
+        <translation>externer Strom</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="749"/>
         <source>Transform induced current</source>
-        <translation type="unfinished"></translation>
+        <translation>Von der Transormation induzierter Strom</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="758"/>
         <source>Velocity induced current</source>
-        <translation type="unfinished"></translation>
+        <translation>Von der Beurgung induzierter Strom</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="767"/>
         <source>Total current</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesamtstrom</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="774"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="793"/>
         <source>Power Losses:</source>
-        <translation type="unfinished">Verluste:</translation>
+        <translation>Wattverluste:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="774"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="793"/>
         <source>W</source>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="775"/>
         <source>Energy avg.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchschnittliche Energie:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="775"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="794"/>
         <source>J</source>
-        <translation type="unfinished">J</translation>
+        <translation>J</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="779"/>
         <source>Lorentz force avg.</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchschnittlice Lorentzstärke</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="785"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="803"/>
         <source>Torque:</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehmoment:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="785"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="803"/>
         <source>Nm</source>
-        <translation type="unfinished"></translation>
+        <translation>Nm</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="789"/>
         <source>External current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Externer Strom:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="789"/>
@@ -2081,38 +2081,38 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="791"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="792"/>
         <source>A</source>
-        <translation type="unfinished">A</translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="790"/>
         <source>Transform current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformationsstrom:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="791"/>
         <source>Velocity current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bewegungsstrom:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="792"/>
         <source>Total current:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesamtstrom:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="794"/>
         <source>Energy:</source>
-        <translation type="unfinished">Energie:</translation>
+        <translation>Energie:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="797"/>
         <source>Force</source>
-        <translation type="unfinished"></translation>
+        <translation>Stärke</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="800"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="801"/>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation>N</translation>
     </message>
 </context>
 <context>
@@ -2120,22 +2120,22 @@
     <message>
         <location filename="../src/gui.cpp" line="629"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="672"/>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Deteiname:</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="683"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="685"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="687"/>
@@ -2155,7 +2155,7 @@
     <message>
         <location filename="../src/gui.cpp" line="719"/>
         <source>Images (*.png *.bmp *.jpg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildes (*.png *.bmp *.jpg)</translation>
     </message>
 </context>
 <context>
@@ -2189,7 +2189,7 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="95"/>
         <source>Label</source>
-        <translation type="unfinished">Zeichen des Gebietes</translation>
+        <translation>Zeichen des Gebietes</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="95"/>
@@ -2214,13 +2214,13 @@
     <message>
         <location filename="../src/localvalueview.cpp" line="203"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../src/localvalueview.cpp" line="206"/>
         <location filename="../src/localvalueview.cpp" line="207"/>
         <source>m</source>
-        <translation type="unfinished"></translation>
+        <translation>m</translation>
     </message>
 </context>
 <context>
@@ -2292,22 +2292,22 @@
     <message>
         <location filename="../src/logdialog.cpp" line="232"/>
         <source>Save data</source>
-        <translation type="unfinished"></translation>
+        <translation>Daten speichern</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="235"/>
         <source>Save image</source>
-        <translation type="unfinished">Bild speichern</translation>
+        <translation>Bild speichern</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="271"/>
         <source>Export data to file</source>
-        <translation type="unfinished">Export Daten in Datei</translation>
+        <translation>Export Daten in Datei</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="271"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV Dateien (*.csv)</translation>
     </message>
     <message>
         <location filename="../src/logdialog.cpp" line="283"/>
@@ -2329,7 +2329,7 @@
     <message>
         <location filename="../src/logdialog.cpp" line="296"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG Dateien (*.png)</translation>
+        <translation>PNG Dateien (*.png)</translation>
     </message>
 </context>
 <context>
@@ -2337,7 +2337,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="149"/>
         <source>&amp;New...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Neue...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="151"/>
@@ -2357,7 +2357,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="159"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Speichern</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="161"/>
@@ -2447,13 +2447,13 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="203"/>
         <source>Export image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Bild...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="204"/>
         <location filename="../src/mainwindow.cpp" line="923"/>
         <source>Export image to file</source>
-        <translation type="unfinished">Export Bildes in Datei</translation>
+        <translation>Export Bild in Datei</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="207"/>
@@ -2483,7 +2483,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="216"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Q</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="217"/>
@@ -2580,12 +2580,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="266"/>
         <source>&amp;Options</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Möglichkeiten</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="267"/>
         <source>Options</source>
-        <translation type="unfinished">Möglichkeiten</translation>
+        <translation>Möglichkeiten</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="271"/>
@@ -2605,7 +2605,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="276"/>
         <source>Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+S</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="277"/>
@@ -2615,12 +2615,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="280"/>
         <source>&amp;Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Graph</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="281"/>
         <source>Chart</source>
-        <translation type="unfinished">Graph</translation>
+        <translation>Graph</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="284"/>
@@ -2630,7 +2630,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="285"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="291"/>
@@ -2660,7 +2660,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="301"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="302"/>
@@ -2745,7 +2745,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="446"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="452"/>
@@ -2755,7 +2755,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="462"/>
         <source>View</source>
-        <translation type="unfinished">Darstellung</translation>
+        <translation>Darstellung</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="469"/>
@@ -2775,7 +2775,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="497"/>
         <source>Time step:</source>
-        <translation type="unfinished">Zeitschritt:</translation>
+        <translation>Zeitschritt:</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="503"/>
@@ -2862,7 +2862,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="837"/>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Daten speichern</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="837"/>
@@ -2878,7 +2878,7 @@
         <location filename="../src/mainwindow.cpp" line="887"/>
         <location filename="../src/mainwindow.cpp" line="905"/>
         <source>DXF files (*.dxf)</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF Dateien (*.dxf)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="905"/>
@@ -2888,7 +2888,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="923"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG Dateien (*.png)</translation>
+        <translation>PNG Dateien (*.png)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1037"/>
@@ -2940,7 +2940,7 @@
         <location filename="../src/mainwindow.cpp" line="1221"/>
         <location filename="../src/mainwindow.cpp" line="1252"/>
         <source>VTK files (*.vtk)</source>
-        <translation type="unfinished"></translation>
+        <translation>VTK Dateien (*.vtk)</translation>
     </message>
 </context>
 <context>
@@ -2953,7 +2953,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="83"/>
         <source>General</source>
-        <translation type="unfinished">Allgemain</translation>
+        <translation>Allgemain</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="84"/>
@@ -2968,7 +2968,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="148"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="151"/>
@@ -3043,7 +3043,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="180"/>
         <source>Steps:</source>
-        <translation type="unfinished">Anzahl der Schritte:</translation>
+        <translation>Anzahl der Schritte:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="185"/>
@@ -3168,7 +3168,7 @@
         <location filename="../src/progressdialog.cpp" line="1008"/>
         <location filename="../src/progressdialog.cpp" line="1048"/>
         <source>Steps (-)</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Schritte (-)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="1044"/>
@@ -3184,12 +3184,12 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="1425"/>
         <source>Export data to file</source>
-        <translation type="unfinished">Export Daten in Datei</translation>
+        <translation>Export Daten in Datei</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="1425"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV Dateien (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -3197,7 +3197,7 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="179"/>
         <source>Mesh</source>
-        <translation type="unfinished">Netz</translation>
+        <translation>Netz</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="192"/>
@@ -3310,7 +3310,7 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="805"/>
         <source>View</source>
-        <translation type="unfinished">Darstellung</translation>
+        <translation>Darstellung</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="836"/>
@@ -3338,7 +3338,7 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="745"/>
         <source>Solver</source>
-        <translation type="unfinished">Rechengerät</translation>
+        <translation>Rechengerät</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="776"/>
@@ -3616,93 +3616,93 @@
     <message>
         <location filename="../src/util.cpp" line="204"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Kenngröße</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="206"/>
         <source>Gradient</source>
-        <translation type="unfinished">Gradient</translation>
+        <translation>Gradient</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="208"/>
         <source>Constant</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstante</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="211"/>
         <location filename="../src/util.cpp" line="279"/>
         <source>Scalar potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalarpotential</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="213"/>
         <location filename="../src/util.cpp" line="281"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrisches Feldintensität</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="215"/>
         <location filename="../src/util.cpp" line="301"/>
         <source>Displacement</source>
-        <translation type="unfinished">Verschiebung</translation>
+        <translation>Verschiebung</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="217"/>
         <location filename="../src/util.cpp" line="268"/>
         <source>Energy density</source>
-        <translation type="unfinished"></translation>
+        <translation>Energiedichte</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="219"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitivität</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="222"/>
         <source>Vector potential - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Mag. Vektorpotential - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="224"/>
         <source>Vector potential - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Mag. Vektorpotential - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="226"/>
         <location filename="../src/util.cpp" line="658"/>
         <source>Vector potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisches Vektorpotential</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="228"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Induktion - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="230"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Induktion - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="232"/>
         <source>Flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetische Induktion</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="234"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisches Feld - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="236"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisches Feld - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="238"/>
         <location filename="../src/util.cpp" line="608"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisches Feld</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="240"/>
@@ -4472,7 +4472,7 @@
         <location filename="../src/reportdialog.cpp" line="457"/>
         <location filename="../src/reportdialog.cpp" line="540"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="67"/>
@@ -4489,7 +4489,7 @@
         <location filename="../src/reportdialog.cpp" line="72"/>
         <location filename="../src/reportdialog.cpp" line="545"/>
         <source>Mesh</source>
-        <translation type="unfinished">Netz</translation>
+        <translation>Netz</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="73"/>
@@ -4499,22 +4499,22 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="74"/>
         <source>Scalar view</source>
-        <translation type="unfinished">Skalare Darstellung</translation>
+        <translation>Skalare Darstellung</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="75"/>
         <source>Show grid</source>
-        <translation type="unfinished">Raster anzeigen</translation>
+        <translation>Raster anzeigen</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="76"/>
         <source>Show rulers</source>
-        <translation type="unfinished">Lineal anzeigen</translation>
+        <translation>Lineal anzeigen</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="90"/>
         <source>Default</source>
-        <translation type="unfinished">Anfänglich</translation>
+        <translation>Anfänglich</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="93"/>
@@ -4585,7 +4585,7 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="357"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="358"/>
@@ -4689,7 +4689,7 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="486"/>
         <source>Nodes:</source>
-        <translation type="unfinished">Knoten:</translation>
+        <translation>Knoten:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="487"/>
@@ -4724,7 +4724,7 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="550"/>
         <source>Polynomial order</source>
-        <translation type="unfinished">Zehnerpotenz des Polynoms</translation>
+        <translation>Zehnerpotenz des Polynoms</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="555"/>
@@ -4786,7 +4786,7 @@
     <message>
         <location filename="../src/scene.cpp" line="231"/>
         <source>Alt+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+N</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="232"/>
@@ -4801,7 +4801,7 @@
     <message>
         <location filename="../src/scene.cpp" line="236"/>
         <source>Alt+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+E</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="237"/>
@@ -4816,7 +4816,7 @@
     <message>
         <location filename="../src/scene.cpp" line="241"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="242"/>
@@ -4837,7 +4837,7 @@
     <message>
         <location filename="../src/scene.cpp" line="250"/>
         <source>Alt+B</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+B</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="251"/>
@@ -4852,7 +4852,7 @@
     <message>
         <location filename="../src/scene.cpp" line="255"/>
         <source>Alt+M</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="256"/>
@@ -4960,7 +4960,7 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="68"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Löschen</translation>
+        <translation>&amp;Löschen</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="69"/>
@@ -4970,17 +4970,17 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="110"/>
         <source>General</source>
-        <translation type="unfinished">Allgemain</translation>
+        <translation>Allgemain</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="115"/>
         <source>Solver</source>
-        <translation type="unfinished">Rechengerät</translation>
+        <translation>Rechengerät</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="121"/>
         <source>Boundary conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>Randbedingungen</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="127"/>
@@ -4995,37 +4995,37 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="141"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="146"/>
         <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Knoten</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="151"/>
         <source>Edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanten</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="156"/>
         <source>Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichen der Gebiete</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="187"/>
         <source>Name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="190"/>
         <source>Type: </source>
-        <translation type="unfinished"></translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="193"/>
         <source>Field: </source>
-        <translation type="unfinished"></translation>
+        <translation>Feld:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="196"/>
@@ -5035,7 +5035,7 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="199"/>
         <source>Solver: </source>
-        <translation type="unfinished"></translation>
+        <translation>Rechengerät:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="205"/>
@@ -5046,7 +5046,7 @@
         <location filename="../src/sceneinfoview.cpp" line="209"/>
         <location filename="../src/sceneinfoview.cpp" line="221"/>
         <source>Nodes: </source>
-        <translation type="unfinished"></translation>
+        <translation>Knoten:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="212"/>
@@ -5062,7 +5062,7 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="229"/>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptivität</translation>
+        <translation>Adaptivität</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="233"/>
@@ -5072,7 +5072,7 @@
     <message>
         <location filename="../src/sceneinfoview.cpp" line="236"/>
         <source>Steps: </source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Schritte:</translation>
     </message>
     <message>
         <location filename="../src/sceneinfoview.cpp" line="242"/>
@@ -5175,19 +5175,19 @@
         <location filename="../src/sceneview.cpp" line="163"/>
         <location filename="../src/sceneview.cpp" line="164"/>
         <source>Show grid</source>
-        <translation type="unfinished">Raster anzeigen</translation>
+        <translation>Raster anzeigen</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="169"/>
         <location filename="../src/sceneview.cpp" line="170"/>
         <source>Snap to grid</source>
-        <translation type="unfinished">Ins Raster fangen</translation>
+        <translation>Ins Raster fangen</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="175"/>
         <location filename="../src/sceneview.cpp" line="176"/>
         <source>Show rulers</source>
-        <translation type="unfinished">Lineal anzeigen</translation>
+        <translation>Lineal anzeigen</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="182"/>
@@ -5231,7 +5231,7 @@
         <location filename="../src/sceneview.cpp" line="199"/>
         <location filename="../src/sceneview.cpp" line="2215"/>
         <source>Postprocessor</source>
-        <translation type="unfinished">Postprozessor</translation>
+        <translation>Postprozessor</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="218"/>
@@ -5241,7 +5241,7 @@
     <message>
         <location filename="../src/sceneview.cpp" line="221"/>
         <source>Contours</source>
-        <translation type="unfinished">Konturen</translation>
+        <translation>Konturen</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="224"/>
@@ -5302,7 +5302,7 @@
     <message>
         <location filename="../src/sceneview.cpp" line="2212"/>
         <source>Polynomial order</source>
-        <translation type="unfinished">Zehnerpotenz des Polynoms</translation>
+        <translation>Zehnerpotenz des Polynoms</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2410"/>
@@ -5314,7 +5314,7 @@
         <location filename="../src/sceneview.cpp" line="2813"/>
         <location filename="../src/sceneview.cpp" line="2862"/>
         <source>Node</source>
-        <translation type="unfinished">Knoten</translation>
+        <translation>Knoten</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2813"/>
@@ -5353,7 +5353,7 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="131"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="132"/>
@@ -5368,13 +5368,13 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="136"/>
         <source>Polynomial order</source>
-        <translation type="unfinished">Zehnerpotenz des Polynoms</translation>
+        <translation>Zehnerpotenz des Polynoms</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="137"/>
         <location filename="../src/sceneviewdialog.cpp" line="138"/>
         <source>Scalar view</source>
-        <translation type="unfinished">Skalare Darstellung</translation>
+        <translation>Skalare Darstellung</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="139"/>
@@ -5394,7 +5394,7 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="167"/>
         <source>Contours</source>
-        <translation type="unfinished">Konturen</translation>
+        <translation>Konturen</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="168"/>
@@ -5414,18 +5414,18 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="187"/>
         <source>Postprocessor</source>
-        <translation type="unfinished">Postprozessor</translation>
+        <translation>Postprozessor</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="213"/>
         <location filename="../src/sceneviewdialog.cpp" line="236"/>
         <source>Variable:</source>
-        <translation type="unfinished">Kenngröße:</translation>
+        <translation>Kenngröße:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="216"/>
         <source>Component:</source>
-        <translation type="unfinished">Komponente:</translation>
+        <translation>Komponente:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="219"/>
@@ -5445,17 +5445,17 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="228"/>
         <source>Scalar field</source>
-        <translation type="unfinished">Skalarfeld</translation>
+        <translation>Skalarfeld</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="240"/>
         <source>Vector field</source>
-        <translation type="unfinished">Vektorfeld</translation>
+        <translation>Vektorfeld</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="248"/>
         <source>Time step:</source>
-        <translation type="unfinished">Zeitschritt:</translation>
+        <translation>Zeitschritt:</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="252"/>
@@ -5475,12 +5475,12 @@
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="302"/>
         <source>Scalar</source>
-        <translation type="unfinished">Skalar</translation>
+        <translation>Skalar</translation>
     </message>
     <message>
         <location filename="../src/sceneviewdialog.cpp" line="306"/>
         <source>Magnitude</source>
-        <translation type="unfinished">Amplitude</translation>
+        <translation>Amplitude</translation>
     </message>
 </context>
 <context>
@@ -5592,7 +5592,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="423"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+U</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="425"/>
@@ -5602,7 +5602,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="426"/>
         <source>Alt+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+G</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="428"/>
@@ -5612,7 +5612,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="429"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+R</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="431"/>
@@ -5622,7 +5622,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="432"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+M</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="435"/>
@@ -5632,7 +5632,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="436"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Q</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="437"/>
@@ -5693,7 +5693,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="536"/>
         <source>Add new page</source>
-        <translation type="unfinished">neue Seite zugeben</translation>
+        <translation>Neue Seite zugeben</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="581"/>
@@ -5733,7 +5733,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="732"/>
         <source>Information</source>
-        <translation type="unfinished">Information</translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="732"/>
@@ -5754,7 +5754,7 @@
     <message>
         <location filename="../src/scripteditordialog.cpp" line="842"/>
         <source>Print Document</source>
-        <translation type="unfinished">Dokument ausdrücken</translation>
+        <translation>Dokument ausdrücken</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="949"/>
@@ -5826,7 +5826,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1529"/>
         <source>Options</source>
-        <translation type="unfinished">Möglichkeiten</translation>
+        <translation>Möglichkeiten</translation>
     </message>
     <message>
         <location filename="../src/scripteditordialog.cpp" line="1532"/>
@@ -5864,7 +5864,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="158"/>
         <source>Label</source>
-        <translation type="unfinished">Zeichen des Gebietes</translation>
+        <translation>Zeichen des Gebietes</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="158"/>
@@ -5884,23 +5884,23 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="221"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="224"/>
         <source>Length:</source>
-        <translation type="unfinished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="224"/>
         <location filename="../src/surfaceintegralview.cpp" line="225"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="224"/>
         <source>m</source>
-        <translation type="unfinished"></translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="225"/>
@@ -5910,7 +5910,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/surfaceintegralview.cpp" line="225"/>
         <source>m2</source>
-        <translation type="unfinished"></translation>
+        <translation>m2</translation>
     </message>
 </context>
 <context>
@@ -5987,7 +5987,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/videodialog.cpp" line="86"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="88"/>
@@ -6027,7 +6027,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/videodialog.cpp" line="155"/>
         <source>Save ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern...</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="159"/>
@@ -6052,12 +6052,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/videodialog.cpp" line="208"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeit:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="210"/>
         <source>Time step:</source>
-        <translation type="unfinished">Zeitschritt:</translation>
+        <translation>Zeitschritt:</translation>
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="213"/>
@@ -6091,7 +6091,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="143"/>
         <source>Label</source>
-        <translation type="unfinished">Zeichen des Gebietes</translation>
+        <translation>Zeichen des Gebietes</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="143"/>
@@ -6111,7 +6111,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="207"/>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <location filename="../src/volumeintegralview.cpp" line="210"/>
