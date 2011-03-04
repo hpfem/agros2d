@@ -3,6 +3,7 @@
 helpPath="./doc/help"
 helpSourcePath="./doc/source"
 webPath="./doc/web"
+reportPath="./doc/report"
 latexPath="./doc/latex"
 langPath="./lang"
 temporaryDirectory="./tmp"
@@ -65,6 +66,7 @@ case "$1" in
 		# web page
 		mkdir $temporaryDirectory/agros2d-$version/doc
 		cp -r $webPath $temporaryDirectory/agros2d-$version/doc
+		cp -r $reportPath $temporaryDirectory/agros2d-$version/doc
 		
 		rm -f $temporaryDirectory/agros2d-$version/src/Doxyfile
 		rm -f $temporaryDirectory/agros2d-$version/src/Makefile

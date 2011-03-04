@@ -27,8 +27,7 @@ linux-g++ {
 
     # install report
     report.path = $${PREFIX}/share/agros2d/doc/report
-    report.files = doc/report/default.html \
-        doc/report/default.css
+    report.files = doc/report/*
 
     # install translations
     lang.path = $${PREFIX}/share/agros2d/lang
