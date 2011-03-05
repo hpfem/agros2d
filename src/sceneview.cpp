@@ -24,7 +24,6 @@
 #include "scenemarkerselectdialog.h"
 #include "scenebasicselectdialog.h"
 
-#include "sceneviewdialog.h"
 #include "scenebasic.h"
 #include "progressdialog.h"
 
@@ -247,11 +246,6 @@ void SceneView::createActions()
     actPostprocessorModeGroup->addAction(actPostprocessorModeSurfaceIntegral);
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
 
-    // scene properties
-    actSceneViewProperties = new QAction(icon("scene-properties"), tr("&Postprocessor properties"), this);
-    actSceneViewProperties->setShortcut(Qt::Key_F12);
-    connect(actSceneViewProperties, SIGNAL(triggered()), this, SLOT(doSceneViewProperties()));
-
     // object properties
     actSceneObjectProperties = new QAction(icon("scene-properties"), tr("Object properties"), this);
     connect(actSceneObjectProperties, SIGNAL(triggered()), this, SLOT(doSceneObjectProperties()));
@@ -292,7 +286,6 @@ void SceneView::createMenu()
     mnuInfo->addSeparator();
     mnuInfo->addAction(actSceneObjectProperties);
     mnuInfo->addAction(m_scene->actProblemProperties);
-    mnuInfo->addAction(actSceneViewProperties);
 }
 
 void SceneView::initializeGL()
@@ -1308,7 +1301,7 @@ void SceneView::paintScalarField()
 
     if (m_listScalarField == -1)
     {
-        qDebug() << "SceneView::paintScalarField(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
+        // qDebug() << "SceneView::paintScalarField(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
 
         m_listScalarField = glGenLists(1);
         glNewList(m_listScalarField, GL_COMPILE);
@@ -1395,7 +1388,7 @@ void SceneView::paintScalarField3D()
 
     if (m_listScalarField3D == -1)
     {
-        qDebug() << "SceneView::paintScalarField3D(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
+        // qDebug() << "SceneView::paintScalarField3D(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
 
         m_listScalarField3D = glGenLists(1);
         glNewList(m_listScalarField3D, GL_COMPILE);
@@ -1564,7 +1557,7 @@ void SceneView::paintScalarField3DSolid()
 
     if (m_listScalarField3DSolid == -1)
     {
-        qDebug() << "SceneView::paintScalarField3DSolid(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
+        // qDebug() << "SceneView::paintScalarField3DSolid(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
 
         m_listScalarField3DSolid = glGenLists(1);
         glNewList(m_listScalarField3DSolid, GL_COMPILE);
@@ -1921,8 +1914,6 @@ void SceneView::paintContours()
             if (vert[i][2] < rangeMin) rangeMin = tvert[i][2];
         }
 
-        qDebug() << "SceneView::paintContours(), min = " << rangeMin << ", max = " << rangeMax;
-
         // value range
         double step = (rangeMax-rangeMin)/Util::config()->contoursCount;
 
@@ -2026,7 +2017,7 @@ void SceneView::paintVectors()
         vectorRangeMin = vectorRangeMin - 0.2*vectorRange;
         vectorRangeMax = vectorRangeMax + 0.2*vectorRange;
 
-        qDebug() << "SceneView::paintVectors(), min = " << vectorRangeMin << ", max = " << vectorRangeMax;
+        // qDebug() << "SceneView::paintVectors(), min = " << vectorRangeMin << ", max = " << vectorRangeMax;
 
         double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
         // if (fabs(vectorRangeMin - vectorRangeMax) < EPS_ZERO) return;
@@ -3414,7 +3405,10 @@ void SceneView::doZoomRegion(const Point &start, const Point &end)
     double maxScene = (((double) contextWidth() / (double) contextHeight()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
+    {
         m_scale2d = 1.95/maxScene;
+        m_scale3d = 0.6 * m_scale2d;
+    }
 
     setZoom(0);
 }
@@ -3469,9 +3463,12 @@ void SceneView::doDefaultValues()
     m_offset2d = Point();
 
     // 3d
-    m_scale3d = 1.0;
+    m_scale3d = 0.6;
     m_offset3d = Point();
     m_rotation3d = Point3();
+    m_rotation3d.x = 66.0;
+    m_rotation3d.y = -35.0;
+    m_rotation3d.z = 0.0;
 
     m_chartLine.start = Point();
     m_chartLine.end = Point();
@@ -3604,6 +3601,7 @@ void SceneView::doPostprocessorModeGroup(QAction *action)
 
 void SceneView::doSceneViewProperties()
 {
+    /*
     logMessage("SceneView::doSceneViewProperties()");
 
     SceneViewPostprocessorShow postprocessorShow = m_sceneViewSettings.postprocessorShow;
@@ -3628,7 +3626,10 @@ void SceneView::doSceneViewProperties()
 
             doZoomBestFit();
         }
+
+        doInvalidated();
     }
+    */
 }
 
 void SceneView::doSceneObjectProperties()

@@ -37,12 +37,10 @@ public:
 
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-    void doPaletteFilter(int state);
     void doClearCommandHistory();
     void doSceneFont();
     void doAdvancedDefault();
     void doColorsDefault();
-    void doScalarFieldLog(int state);
 
     void doAccept();
     void doReject();
@@ -126,27 +124,6 @@ private:
 
     // axes
     QCheckBox *chkShowAxes;
-
-    // contours
-    QSpinBox *txtContoursCount;
-
-    // scalar field
-    QComboBox *cmbPalette;
-    QCheckBox *chkPaletteFilter;
-    QSpinBox *txtPaletteSteps;
-    QCheckBox *chkScalarFieldRangeLog;
-    QLineEdit *txtScalarFieldRangeBase;
-    QSpinBox *txtScalarDecimalPlace;
-
-    // vector field
-    QCheckBox *chkVectorProportional;
-    QCheckBox *chkVectorColor;
-    QSpinBox *txtVectorCount;
-    SLineEditDouble *txtVectorScale;
-
-    // order view
-    QCheckBox *chkOrderLabel;
-    QComboBox *cmbOrderPaletteOrder;
 
     // 3d
     QCheckBox *chkView3DLighting;

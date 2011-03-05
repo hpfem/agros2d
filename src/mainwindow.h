@@ -27,6 +27,7 @@ class SceneInfoView;
 class LocalPointValueView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;
+class PostprocessorView;
 class TerminalView;
 class TooltipView;
 
@@ -80,6 +81,7 @@ private slots:
     void doReport();
     void doCreateVideo();
     void doFullScreen();
+    void doPostprocessorView();
     void doApplicationLog();
 
     void doCut();
@@ -149,6 +151,7 @@ private:
     QAction *actProgressLog;
     QAction *actChart;
     QAction *actFullScreen;
+    QAction *actPostprocessorView;
 
     QAction *actScriptEditor;
     QAction *actScriptEditorRunScript;
@@ -178,6 +181,7 @@ private:
     LocalPointValueView *localPointValueView;
     VolumeIntegralValueView *volumeIntegralValueView;
     SurfaceIntegralValueView *surfaceIntegralValueView;
+    PostprocessorView *postprocessorView;
     TerminalView *terminalView;
     TooltipView *tooltipView;
 

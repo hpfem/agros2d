@@ -25,22 +25,23 @@
 class SceneView;
 class SLineEditDouble;
 
-class SceneViewDialog : public QDialog
+class PostprocessorView : public QDockWidget
 {
     Q_OBJECT
 
 public:
-    SceneViewDialog(SceneView *sceneView, QWidget *parent);
-
-    int showDialog();
+    PostprocessorView(SceneView *sceneView, QWidget *parent);
 
 private slots:
-    void doAccept();
-    void doReject();
+    void doApply();
 
 private:
     SceneView *m_sceneView;
 
+    QWidget *basic;
+    QWidget *advanced;
+
+    // basic
     // show
     QCheckBox *chkShowGeometry;
     QCheckBox *chkShowInitialMesh;
@@ -61,6 +62,8 @@ private:
     QComboBox *cmbScalarFieldVariable;
     QComboBox *cmbScalarFieldVariableComp;
     QCheckBox *chkScalarFieldRangeAuto;
+    QLabel *lblScalarFieldRangeMin;
+    QLabel *lblScalarFieldRangeMax;
     SLineEditDouble *txtScalarFieldRangeMin;
     SLineEditDouble *txtScalarFieldRangeMax;
     QLabel *lblScalarFieldRangeMinError;
@@ -72,22 +75,54 @@ private:
     // transient
     QComboBox *cmbTimeStep;
 
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
+    // advanced
+    // contours
+    QSpinBox *txtContoursCount;
 
-    void load();
-    void save();
+    // scalar field
+    QComboBox *cmbPalette;
+    QCheckBox *chkPaletteFilter;
+    QSpinBox *txtPaletteSteps;
+    QCheckBox *chkScalarFieldRangeLog;
+    QLineEdit *txtScalarFieldRangeBase;
+    QSpinBox *txtScalarDecimalPlace;
+
+    // vector field
+    QCheckBox *chkVectorProportional;
+    QCheckBox *chkVectorColor;
+    QSpinBox *txtVectorCount;
+    QDoubleSpinBox *txtVectorScale;
+
+    // order view
+    QCheckBox *chkOrderLabel;
+    QComboBox *cmbOrderPaletteOrder;
+
+    QPushButton *btnOK;
+
+    void loadBasic();
+    void loadAdvanced();
+    void saveBasic();
+    void saveAdvanced();
 
     void createControls();
+    QWidget *controlsBasic();
+    QWidget *controlsAdvanced();
+
+signals:
+    void apply();
+
+public slots:
+    void updateControls();
+    void setControls();
 
 private slots:
     void doScalarFieldVariable(int index);
     void doScalarFieldRangeAuto(int state);
-    void buttonClicked(QAbstractButton *button);
+    void doPostprocessorGroupClicked(QAbstractButton *button);
     void doScalarFieldRangeMinChanged();
     void doScalarFieldRangeMaxChanged();
-
-    void setControls();
+    void doPaletteFilter(int state);
+    void doScalarFieldLog(int state);
 };
 
 #endif // SCENEVIEWDIALOG_H

@@ -764,8 +764,6 @@ void ProgressItemSolve::solve()
     m_adaptivityError.clear();
     m_adaptivityDOF.clear();
 
-    qDebug() << "ProgressItemSolve::solve()";
-
     if (!QFile::exists(tempProblemFileName() + ".mesh"))
         return;
 

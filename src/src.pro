@@ -6,12 +6,12 @@ QT += opengl \
 CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
-DEFINES += VERSION_MINOR=7
-DEFINES += VERSION_SUB=2
-DEFINES += VERSION_GIT=627
+DEFINES += VERSION_MINOR=8
+DEFINES += VERSION_SUB=0
+DEFINES += VERSION_GIT=640
 DEFINES += VERSION_YEAR=2011
 DEFINES += VERSION_MONTH=3
-DEFINES += VERSION_DAY=3
+DEFINES += VERSION_DAY=5
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -27,8 +27,8 @@ RESOURCES = src.qrc
 TARGET = agros2d
 DESTDIR = ../
 TEMPLATE = app
-# QMAKE_CXXFLAGS_DEBUG += -w
-# QMAKE_CXXFLAGS += -w
+QMAKE_CXXFLAGS_DEBUG += -w
+QMAKE_CXXFLAGS += -w
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
@@ -61,7 +61,6 @@ SOURCES += util.cpp \
     chartdialog.cpp \
     problemdialog.cpp \
     scenetransformdialog.cpp \
-    sceneviewdialog.cpp \
     config.cpp \
     configdialog.cpp \
     scenesolution.cpp \
@@ -73,7 +72,8 @@ SOURCES += util.cpp \
     scenemarkerselectdialog.cpp \
     tooltipview.cpp \
     scenebasicselectdialog.cpp \
-    logdialog.cpp
+    logdialog.cpp \
+    postprocessorview.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -102,7 +102,6 @@ HEADERS += util.h \
     chartdialog.h \
     problemdialog.h \
     scenetransformdialog.h \
-    sceneviewdialog.h \
     config.h \
     configdialog.h \
     scenesolution.h \
@@ -112,7 +111,8 @@ HEADERS += util.h \
     scenemarkerselectdialog.h \
     tooltipview.h \
     scenebasicselectdialog.h \
-    logdialog.h
+    logdialog.h \
+    postprocessorview.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

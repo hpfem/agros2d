@@ -353,8 +353,6 @@ void SceneSolution::setTimeStep(int timeStep, bool showViewProgress)
 {
     logMessage("SceneSolution::setTimeStep()");
 
-    qDebug() << "SceneSolution::setTimeStep";
-
     m_timeStep = timeStep;
     if (!isSolved()) return;
 

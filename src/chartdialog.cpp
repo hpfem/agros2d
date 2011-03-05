@@ -235,6 +235,7 @@ void ChartDialog::createControls()
 
     // button bar
     QHBoxLayout *layoutButton = new QHBoxLayout();
+    layoutButton->addStretch();
     layoutButton->addWidget(btnPlot);
     layoutButton->addWidget(btnSaveImage);
     layoutButton->addWidget(btnExportData);

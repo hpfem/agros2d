@@ -71,7 +71,7 @@ class SceneView : public QGLWidget
 {
     Q_OBJECT
 
-    public slots:
+public slots:
     void doZoomBestFit();
     void doZoomIn();
     void doZoomOut();
@@ -121,7 +121,6 @@ public:
 
     QAction *actSceneViewSelectRegion;
     QAction *actSceneViewSelectMarker;
-    QAction *actSceneViewProperties;
     QAction *actSceneObjectProperties;
 
     SceneNode *findClosestNode(const Point &point);
@@ -142,6 +141,14 @@ public:
     void processRangeVector();
 
     void setSceneFont();
+
+    inline bool is3DMode()
+    {
+        return ((m_sceneMode == SceneMode_Postprocessor) &&
+                (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
+                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid ||
+                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model));
+    }
 
 signals:
     void mouseMoved(const QPointF &position);
@@ -171,13 +178,6 @@ protected:
     inline int contextWidth() { return context()->device()->width(); }
     inline int contextHeight() { return context()->device()->height(); }
     inline double aspect() { return (double) contextWidth() / (double) contextHeight(); }
-    inline bool is3DMode()
-    {
-        return ((m_sceneMode == SceneMode_Postprocessor) &&
-                (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
-                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3DSolid ||
-                 m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model));
-    }
 
 private:
     Scene *m_scene;

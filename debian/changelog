@@ -1,3 +1,9 @@
+agros2d (1.8-ubuntu30) maverick; urgency=low
+
+  * reworked postprocessor settings
+
+ -- Pavel Karban <pkarban@gmail.com>  Wen, 5 Mar 2011 12:40:00 +0200
+
 agros2d (1.7-2ubuntu29) maverick; urgency=low
 
   * curvilinear elements (arcs)

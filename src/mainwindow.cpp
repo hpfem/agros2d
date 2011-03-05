@@ -27,6 +27,7 @@
 #include "sceneinfoview.h"
 #include "terminalview.h"
 #include "tooltipview.h"
+#include "postprocessorview.h"
 #include "chartdialog.h"
 #include "configdialog.h"
 #include "scripteditordialog.h"
@@ -66,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
     connect(sceneView, SIGNAL(mousePressed()), surfaceIntegralValueView, SLOT(doShowSurfaceIntegral()));
     connect(sceneView, SIGNAL(sceneModeChanged(SceneMode)), tooltipView, SLOT(loadTooltip(SceneMode)));
+    connect(postprocessorView, SIGNAL(apply()), sceneView, SLOT(doInvalidated()));
+    connect(postprocessorView, SIGNAL(apply()), this, SLOT(doInvalidated()));
 
     sceneView->doDefaultValues();
 
@@ -285,6 +288,10 @@ void MainWindow::createActions()
     actFullScreen->setShortcut(QKeySequence(tr("F11")));
     connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
 
+    actPostprocessorView = new QAction(icon("scene-properties"), tr("&Postprocessor properties"), this);
+    actPostprocessorView->setShortcut(Qt::Key_F12);
+    connect(actPostprocessorView, SIGNAL(triggered()), this, SLOT(doPostprocessorView()));
+
     actDocumentOpenRecentGroup = new QActionGroup(this);
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
 
@@ -376,7 +383,7 @@ void MainWindow::createMenus()
     mnuView->addSeparator();
     mnuView->addAction(actFullScreen);
     mnuView->addSeparator();
-    mnuView->addAction(sceneView->actSceneViewProperties);
+    mnuView->addAction(actPostprocessorView);
     mnuView->addSeparator();
     mnuView->addAction(actApplicationLog);
     mnuView->addAction(actProgressLog);
@@ -485,12 +492,10 @@ void MainWindow::createToolBars()
 
     tlbTools = addToolBar(tr("Tools"));
     tlbTools->setObjectName("Tools");
-    tlbTools->hide();
     tlbTools->addAction(actChart);
     tlbTools->addAction(actScriptEditor);
     tlbTools->addSeparator();
     tlbTools->addAction(Util::scene()->actProblemProperties);
-    tlbTools->addAction(sceneView->actSceneViewProperties);
 
     tlbTransient = addToolBar(tr("Transient"));
     tlbTransient->setObjectName("Transient");
@@ -571,6 +576,10 @@ void MainWindow::createViews()
     surfaceIntegralValueView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::RightDockWidgetArea, surfaceIntegralValueView);
 
+    postprocessorView = new PostprocessorView(sceneView, this);
+    postprocessorView->setAllowedAreas(Qt::AllDockWidgetAreas);
+    addDockWidget(Qt::LeftDockWidgetArea, postprocessorView);
+
     terminalView = new TerminalView(this);
     terminalView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::BottomDockWidgetArea, terminalView);
@@ -578,13 +587,6 @@ void MainWindow::createViews()
     tooltipView = new TooltipView(this);
     tooltipView->setAllowedAreas(Qt::AllDockWidgetAreas);
     addDockWidget(Qt::LeftDockWidgetArea, tooltipView);
-
-    /*
-    modelView = new ModelView(this);
-    connect(Util::scene()->sceneSolution(), SIGNAL(meshed()), modelView, SLOT(invalidated()));
-    modelView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::LeftDockWidgetArea, modelView);
-    */
 }
 
 void MainWindow::doSceneMouseMoved(const QPointF &position)
@@ -967,6 +969,14 @@ void MainWindow::doFullScreen()
         showFullScreen();
 }
 
+void MainWindow::doPostprocessorView()
+{
+    logMessage("MainWindow::doPostprocessorView()");
+
+    postprocessorView->show();
+    postprocessorView->activateWindow();
+}
+
 void MainWindow::doSolve()
 {
     logMessage("MainWindow::doSolve()");
@@ -1094,7 +1104,10 @@ void MainWindow::doTimeStepChanged(int index)
     logMessage("MainWindow::doTimeStepChanged()");
 
     if (cmbTimeStep->currentIndex() != -1)
+    {
         Util::scene()->sceneSolution()->setTimeStep(cmbTimeStep->currentIndex(), false);
+        postprocessorView->updateControls();
+    }
 }
 
 void MainWindow::doInvalidated()
@@ -1115,6 +1128,11 @@ void MainWindow::doInvalidated()
 
     actExportVTKScalar->setEnabled(Util::scene()->sceneSolution()->isSolved());
     actExportVTKOrder->setEnabled(Util::scene()->sceneSolution()->isSolved());
+
+    postprocessorView->updateControls();
+
+    // set current timestep
+    cmbTimeStep->setCurrentIndex(Util::scene()->sceneSolution()->timeStep());
 
     //actProgressLog->setEnabled(Util::config()->enabledProgressLog);
     //actApplicationLog->setEnabled(Util::config()->enabledApplicationLog);

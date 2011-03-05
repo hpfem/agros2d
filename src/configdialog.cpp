@@ -111,30 +111,6 @@ void ConfigDialog::load()
     // axes
     chkShowAxes->setChecked(Util::config()->showAxes);
 
-    // contours
-    txtContoursCount->setValue(Util::config()->contoursCount);
-
-    // scalar field
-    cmbPalette->setCurrentIndex(cmbPalette->findData(Util::config()->paletteType));
-    chkPaletteFilter->setChecked(Util::config()->paletteFilter);
-    doPaletteFilter(chkPaletteFilter->checkState());
-    txtPaletteSteps->setValue(Util::config()->paletteSteps);
-    chkScalarFieldRangeLog->setChecked(Util::config()->scalarRangeLog);
-    doScalarFieldLog(chkScalarFieldRangeLog->checkState());
-    txtScalarFieldRangeBase->setText(QString::number(Util::config()->scalarRangeBase));
-    txtScalarDecimalPlace->setValue(Util::config()->scalarDecimalPlace);
-
-    // vector field
-    chkVectorProportional->setChecked(Util::config()->vectorProportional);
-    chkVectorColor->setChecked(Util::config()->vectorColor);
-    txtVectorCount->setValue(Util::config()->vectorCount);
-    txtVectorCount->setToolTip(tr("Width and height of bounding box over vector count."));
-    txtVectorScale->setValue(Util::config()->vectorScale);
-
-    // order view
-    chkOrderLabel->setChecked(Util::config()->orderLabel);
-    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Util::config()->orderPaletteOrderType));
-
     // 3d
     chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
     txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
@@ -236,27 +212,6 @@ void ConfigDialog::save()
 
     // axes
     Util::config()->showAxes = chkShowAxes->isChecked();
-
-    // contours
-    Util::config()->contoursCount = txtContoursCount->value();
-
-    // scalar field
-    Util::config()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
-    Util::config()->paletteFilter = chkPaletteFilter->isChecked();
-    Util::config()->paletteSteps = txtPaletteSteps->value();
-    Util::config()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
-    Util::config()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
-    Util::config()->scalarDecimalPlace = txtScalarDecimalPlace->value();
-
-    // vector field
-    Util::config()->vectorProportional = chkVectorProportional->isChecked();
-    Util::config()->vectorColor = chkVectorColor->isChecked();
-    Util::config()->vectorCount = txtVectorCount->value();
-    Util::config()->vectorScale = txtVectorScale->value();
-
-    // order view
-    Util::config()->orderLabel = chkOrderLabel->isChecked();
-    Util::config()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
 
     // 3d
     Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
@@ -479,10 +434,6 @@ QWidget *ConfigDialog::createViewWidget()
     // scene font
     lblSceneFontExample = new QLabel(QString("%1, %2").arg(Util::config()->sceneFont.family()).arg(Util::config()->sceneFont.pointSize()));
 
-//    QPalette palette;
-//    palette.setColor(QPalette::Background, QColor(Util::config()->colorBackground.toRgb()));
-//    lblSceneFontExample->setPalette(palette);
-
     btnSceneFont = new QPushButton(tr("Set font"));
     connect(btnSceneFont, SIGNAL(clicked()), this, SLOT(doSceneFont()));
 
@@ -502,80 +453,6 @@ QWidget *ConfigDialog::createViewWidget()
 
     QWidget *widgetGeneral = new QWidget(this);
     widgetGeneral->setLayout(layoutGeneral);
-
-    // layout palette
-    cmbPalette = new QComboBox();
-    cmbPalette->addItem(tr("Jet"), Palette_Jet);
-    cmbPalette->addItem(tr("Autumn"), Palette_Autumn);
-    cmbPalette->addItem(tr("Hot"), Palette_Hot);
-    cmbPalette->addItem(tr("Copper"), Palette_Copper);
-    cmbPalette->addItem(tr("Cool"), Palette_Cool);
-    cmbPalette->addItem(tr("B/W ascending"), Palette_BWAsc);
-    cmbPalette->addItem(tr("B/W descending"), Palette_BWDesc);
-
-    chkPaletteFilter = new QCheckBox(tr("Filter"));
-    connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
-
-    txtPaletteSteps = new QSpinBox(this);
-    txtPaletteSteps->setMinimum(5);
-    txtPaletteSteps->setMaximum(100);
-
-    // log scale
-    chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
-    txtScalarFieldRangeBase = new QLineEdit("10");
-    connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
-
-    txtScalarDecimalPlace = new QSpinBox(this);
-    txtScalarDecimalPlace->setMinimum(1);
-    txtScalarDecimalPlace->setMaximum(10);
-
-    QGridLayout *layoutScalarField = new QGridLayout();
-    layoutScalarField->addWidget(new QLabel(tr("Palette:")), 0, 0);
-    layoutScalarField->addWidget(cmbPalette, 0, 1, 1, 1);
-
-    layoutScalarField->addWidget(new QLabel(tr("Steps:")), 1, 0);
-    layoutScalarField->addWidget(txtPaletteSteps, 1, 1);
-    layoutScalarField->addWidget(chkPaletteFilter, 1, 2);
-    layoutScalarField->addWidget(new QLabel(tr("Base:")), 2, 0);
-    layoutScalarField->addWidget(txtScalarFieldRangeBase, 2, 1);
-    layoutScalarField->addWidget(chkScalarFieldRangeLog, 2, 2);
-
-    layoutScalarField->addWidget(new QLabel(tr("Number of decimal places:")), 3, 0);
-    layoutScalarField->addWidget(txtScalarDecimalPlace, 3, 1);
-
-    QGroupBox *grpScalarView = new QGroupBox(tr("Scalar view"));
-    grpScalarView->setLayout(layoutScalarField);
-
-    // layout contours
-    txtContoursCount = new QSpinBox(this);
-    txtContoursCount->setMinimum(1);
-    txtContoursCount->setMaximum(100);
-
-    QGridLayout *layoutContours = new QGridLayout();
-    layoutContours->addWidget(new QLabel(tr("Contours count:")), 0, 0);
-    layoutContours->addWidget(txtContoursCount, 0, 1);
-
-    QGroupBox *grpContours = new QGroupBox(tr("Contours"));
-    grpContours->setLayout(layoutContours);
-
-    // vector field
-    chkVectorProportional = new QCheckBox(tr("Proportional"), this);
-    chkVectorColor = new QCheckBox(tr("Color (b/w)"), this);
-    txtVectorCount = new QSpinBox(this);
-    txtVectorCount->setMinimum(1);
-    txtVectorCount->setMaximum(200);
-    txtVectorScale = new SLineEditDouble(0);
-
-    QGridLayout *layoutVectorField = new QGridLayout();
-    layoutVectorField->addWidget(new QLabel(tr("Vectors:")), 0, 0);
-    layoutVectorField->addWidget(txtVectorCount, 0, 1);
-    layoutVectorField->addWidget(chkVectorProportional, 0, 2);
-    layoutVectorField->addWidget(new QLabel(tr("Scale:")), 1, 0);
-    layoutVectorField->addWidget(txtVectorScale, 1, 1);
-    layoutVectorField->addWidget(chkVectorColor, 1, 2);
-
-    QGroupBox *grpVectorView = new QGroupBox(tr("Vector view"));
-    grpVectorView->setLayout(layoutVectorField);
 
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
@@ -604,29 +481,8 @@ QWidget *ConfigDialog::createViewWidget()
     QGroupBox *grpDeformShape = new QGroupBox(tr("Deform shape"));
     grpDeformShape->setLayout(layoutDeformShape);
 
-    // layout order
-    chkOrderLabel = new QCheckBox(tr("Show order label"), this);
-    // layout order palette
-    cmbOrderPaletteOrder = new QComboBox();
-    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
-    cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
-    cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
-    cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
-
-    QGridLayout *layoutOrder = new QGridLayout();
-    layoutOrder->addWidget(chkOrderLabel, 0, 0, 1, 2);
-    layoutOrder->addWidget(new QLabel(tr("Palette:")), 1, 0);
-    layoutOrder->addWidget(cmbOrderPaletteOrder, 1, 1);
-
-    QGroupBox *grpOrder = new QGroupBox(tr("Polynomial order"));
-    grpOrder->setLayout(layoutOrder);
-
     // layout postprocessor
     QVBoxLayout *layoutPostprocessor = new QVBoxLayout();
-    layoutPostprocessor->addWidget(grpContours);
-    layoutPostprocessor->addWidget(grpScalarView);
-    layoutPostprocessor->addWidget(grpVectorView);
-    layoutPostprocessor->addWidget(grpOrder);
     layoutPostprocessor->addWidget(grp3D);
     layoutPostprocessor->addWidget(grpDeformShape);
     layoutPostprocessor->addStretch();
@@ -883,13 +739,6 @@ void ConfigDialog::doReject()
     reject();
 }
 
-void ConfigDialog::doPaletteFilter(int state)
-{
-    logMessage("ConfigDialog::doPaletteFilter()");
-
-    txtPaletteSteps->setEnabled(!chkPaletteFilter->isChecked());
-}
-
 void ConfigDialog::doClearCommandHistory()
 {
     logMessage("ConfigDialog::doClearCommandHistory()");
@@ -935,13 +784,6 @@ void ConfigDialog::doColorsDefault()
     colorSolutionMesh->setColor(COLORSOLUTIONMESH);
     colorHighlighted->setColor(COLORHIGHLIGHTED);
     colorSelected->setColor(COLORSELECTED);
-}
-
-void ConfigDialog::doScalarFieldLog(int state)
-{
-    logMessage("ConfigDialog::doScalarFieldLog()");
-
-    txtScalarFieldRangeBase->setEnabled(chkScalarFieldRangeLog->isChecked());
 }
 
 void ConfigDialog::doSceneFont()
