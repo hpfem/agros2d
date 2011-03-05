@@ -603,6 +603,10 @@ void PostprocessorView::doApply()
         txtScalarFieldRangeMax->setText(QString::number(m_sceneView->sceneViewSettings().scalarRangeMax));
     }
 
+    // switch to the postprocessor
+    if (Util::scene()->sceneSolution()->isSolved())
+        m_sceneView->actSceneModePostprocessor->trigger();
+
     emit apply();
 
     activateWindow();
