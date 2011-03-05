@@ -1499,7 +1499,7 @@ void SceneView::paintScalarField3D()
         }
         glEnd();
 
-        m_scene->sceneSolution()->linSolutionMeshView().unlock_data();
+        m_scene->sceneSolution()->linInitialMeshView().unlock_data();
 
         glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
@@ -3984,7 +3984,7 @@ void SceneView::paintPostprocessorSelectedVolume()
 
     // triangles
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_scene->sceneSolution()->linInitialMeshView().get_num_triangles(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_triangles(); i++)
     {
         if (m_scene->labels[element->marker]->isSelected)
         {
@@ -4115,11 +4115,13 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
             resultMesh1.showDialog();
         m_sceneViewSettings.showInitialMesh = false;
     }
+
     if (m_scene->sceneSolution()->isSolved())
     {
         // when solved show both meshes
         actSceneModePostprocessor->trigger();
 
+        m_scene->sceneSolution()->processSolutionMesh();
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
         updateGL();
 
@@ -4130,31 +4132,48 @@ void SceneView::saveImagesForReport(const QString &path, bool showRulers, bool s
             resultMesh2.showDialog();
         m_sceneViewSettings.showInitialMesh = false;
         m_sceneViewSettings.showSolutionMesh = false;
-    }
 
-    // order
-    m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
-    updateGL();
-    ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
-    if (resultOrder.isError())
-        resultOrder.showDialog();
+        // contours
+        m_scene->sceneSolution()->processRangeContour();
+        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
+        m_sceneViewSettings.showContours = true;
+        updateGL();
+        ErrorResult resultContourView = saveImageToFile(path + "/contourview.png", w, h);
+        if (resultContourView.isError())
+            resultContourView.showDialog();
+        m_sceneViewSettings.showContours = false;
 
-    if (m_scene->sceneSolution()->isSolved())
-    {
+        // vectors
+        m_scene->sceneSolution()->processRangeVector();
+        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_None;
+        m_sceneViewSettings.showVectors = true;
+        m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->hermes()->vectorPhysicFieldVariable();
+        updateGL();
+        ErrorResult resultVectorView = saveImageToFile(path + "/vectorview.png", w, h);
+        if (resultVectorView.isError())
+            resultVectorView.showDialog();
+        m_sceneViewSettings.showVectors = false;
+
+        // order
+        m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_Order;
+        updateGL();
+        ErrorResult resultOrder = saveImageToFile(path + "/order.png", w, h);
+        if (resultOrder.isError())
+            resultOrder.showDialog();
+
         actSceneModePostprocessor->trigger();
 
         // last step
         if (m_scene->problemInfo()->hermes()->hasTransient())
             m_scene->sceneSolution()->setTimeStep(m_scene->sceneSolution()->timeStepCount() - 1);
 
+        // scalar field
+        m_scene->sceneSolution()->processRangeScalar();
         m_sceneViewSettings.scalarRangeAuto = true;
         m_sceneViewSettings.scalarPhysicFieldVariable = m_scene->problemInfo()->hermes()->scalarPhysicFieldVariable();
         m_sceneViewSettings.scalarPhysicFieldVariableComp = m_scene->problemInfo()->hermes()->scalarPhysicFieldVariableComp();
         m_sceneViewSettings.vectorPhysicFieldVariable = m_scene->problemInfo()->hermes()->vectorPhysicFieldVariable();
 
-        doInvalidated();
-
-        // scalar field
         m_sceneViewSettings.postprocessorShow = SceneViewPostprocessorShow_ScalarView;
         updateGL();
         ErrorResult resultScalarView = saveImageToFile(path + "/scalarview.png", w, h);

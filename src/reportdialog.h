@@ -57,6 +57,8 @@ private:
     QCheckBox *chkFigureMesh;
     QCheckBox *chkFigureOrder;
     QCheckBox *chkFigureScalarView;
+    QCheckBox *chkFigureContourView;
+    QCheckBox *chkFigureVectorView;
     QCheckBox *chkShowGrid;
     QCheckBox *chkShowRulers;
 

@@ -72,6 +72,8 @@ void ReportDialog::createControls()
     chkFigureMesh = new QCheckBox(tr("Mesh"));
     chkFigureOrder = new QCheckBox(tr("Order"));
     chkFigureScalarView = new QCheckBox(tr("Scalar view"));
+    chkFigureContourView = new QCheckBox(tr("Contour view"));
+    chkFigureVectorView = new QCheckBox(tr("Vector view"));
     chkShowGrid = new QCheckBox(tr("Show grid"));
     chkShowRulers = new QCheckBox(tr("Show rulers"));
 
@@ -111,6 +113,8 @@ void ReportDialog::createControls()
     layoutFigures->addWidget(chkFigureMesh);
     layoutFigures->addWidget(chkFigureOrder);
     layoutFigures->addWidget(chkFigureScalarView);
+    layoutFigures->addWidget(chkFigureContourView);
+    layoutFigures->addWidget(chkFigureVectorView);
     layoutFigures->addWidget(new QLabel());
     layoutFigures->addWidget(chkShowGrid);
     layoutFigures->addWidget(chkShowRulers);
@@ -223,6 +227,10 @@ void ReportDialog::setControls()
     chkFigureOrder->setChecked(Util::scene()->sceneSolution()->isSolved());
     chkFigureScalarView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
     chkFigureScalarView->setChecked(Util::scene()->sceneSolution()->isSolved());
+    chkFigureContourView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+    chkFigureContourView->setChecked(Util::scene()->sceneSolution()->isSolved());
+    chkFigureVectorView->setDisabled(!Util::scene()->sceneSolution()->isSolved());
+    chkFigureVectorView->setChecked(Util::scene()->sceneSolution()->isSolved());
 }
 
 void ReportDialog::resetControls()
@@ -533,7 +541,7 @@ QString ReportDialog::replaceTemplates(const QString &source)
     }
 
     // footer
-    destination.replace("[Report.Footer]", "<p id=\"footer\">" + tr("Computed by Agros2D (<a href=\"http://hpfem.org/agros2d\">http://hpfem.org/agros2d</a>)") + "</p>");
+    destination.replace("[Report.Footer]", "<p id=\"footer\">" + tr("Computed by Agros2D (<a href=\"http://agros2d.org/\">http://agros2d.org/</a>)") + "</p>");
 
     // figures
     if (chkFigureGeometry->isChecked())
@@ -555,6 +563,16 @@ QString ReportDialog::replaceTemplates(const QString &source)
         destination.replace("[Figure.ScalarView]", htmlFigure("scalarview.png", tr("ScalarView: ") + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->scalarPhysicFieldVariable())), Qt::CaseSensitive);
     else
         destination.remove("[Figure.ScalarView]", Qt::CaseSensitive);
+
+    if (chkFigureContourView->isChecked())
+        destination.replace("[Figure.ContourView]", htmlFigure("contourview.png", tr("ContourView: ") + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->contourPhysicFieldVariable())), Qt::CaseSensitive);
+    else
+        destination.remove("[Figure.ContourView]", Qt::CaseSensitive);
+
+    if (chkFigureVectorView->isChecked())
+        destination.replace("[Figure.VectorView]", htmlFigure("vectorview.png", tr("VectorView: ") + physicFieldVariableString(Util::scene()->problemInfo()->hermes()->vectorPhysicFieldVariable())), Qt::CaseSensitive);
+    else
+        destination.remove("[Figure.VectorView]", Qt::CaseSensitive);
 
     return destination;
 }
