@@ -37,8 +37,6 @@ PostprocessorView::PostprocessorView(SceneView *sceneView, QWidget *parent) : QD
 
     loadBasic();
     loadAdvanced();
-
-    setMinimumSize(sizeHint());
 }
 
 void PostprocessorView::loadBasic()
@@ -205,11 +203,15 @@ QWidget *PostprocessorView::controlsBasic()
 {
     logMessage("PostprocessorView::controlsBasic()");
 
-    double minWidth = 130;
+    double minWidth = 110;
 
     // layout show
     chkShowGeometry = new QCheckBox(tr("Geometry"));
     chkShowInitialMesh = new QCheckBox(tr("Initial mesh"));
+    chkShowContours = new QCheckBox(tr("Contours"));
+    chkShowVectors = new QCheckBox(tr("Vectors"));
+    connect(chkShowVectors, SIGNAL(clicked()), this, SLOT(setControls()));
+    chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
 
     // postprocessor mode
     radPostprocessorNone = new QRadioButton(tr("None"), this);
@@ -228,35 +230,20 @@ QWidget *PostprocessorView::controlsBasic()
     butPostprocessorGroup->addButton(radPostprocessorModel);
     connect(butPostprocessorGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(doPostprocessorGroupClicked(QAbstractButton*)));
 
-    // postprocessor 2d
-    QGridLayout *layoutPostprocessorMode = new QGridLayout();
-    layoutPostprocessorMode->addWidget(new QLabel(tr("2D mode:")), 0, 0);
-    layoutPostprocessorMode->addWidget(radPostprocessorNone, 0, 1);
-    layoutPostprocessorMode->addWidget(radPostprocessorOrder, 1, 1);
-    layoutPostprocessorMode->addWidget(radPostprocessorScalarField, 2, 1);
-    layoutPostprocessorMode->addWidget(new QLabel("     "), 3, 0);
-    layoutPostprocessorMode->addWidget(new QLabel(tr("3D mode:")), 4, 0);
-    layoutPostprocessorMode->addWidget(radPostprocessorScalarField3D, 4, 1);
-    layoutPostprocessorMode->addWidget(radPostprocessorScalarField3DSolid, 5, 1);
-    layoutPostprocessorMode->addWidget(radPostprocessorModel, 6, 1);
-
-    // postprocessor
-    QGroupBox *grpPostprocessor = new QGroupBox(tr("Postprocessor"));
-    grpPostprocessor->setLayout(layoutPostprocessorMode);
-
-    // postprocessor show
-    chkShowContours = new QCheckBox(tr("Contours"));
-    chkShowVectors = new QCheckBox(tr("Vectors"));
-    connect(chkShowVectors, SIGNAL(clicked()), this, SLOT(setControls()));
-    chkShowSolutionMesh = new QCheckBox(tr("Solution mesh"));
-
-    QVBoxLayout *layoutShow = new QVBoxLayout();
-    layoutShow->addWidget(chkShowGeometry);
-    layoutShow->addWidget(chkShowInitialMesh);
-    layoutShow->addWidget(chkShowSolutionMesh);
-    layoutShow->addWidget(chkShowContours);
-    layoutShow->addWidget(chkShowVectors);
-    layoutShow->addStretch();
+    QGridLayout *layoutShow = new QGridLayout();
+    layoutShow->addWidget(chkShowGeometry, 0, 0);
+    layoutShow->addWidget(chkShowInitialMesh, 1, 0);
+    layoutShow->addWidget(chkShowSolutionMesh, 2, 0);
+    layoutShow->addWidget(chkShowContours, 3, 0);
+    layoutShow->addWidget(chkShowVectors, 4, 0);
+    layoutShow->addWidget(new QLabel(tr("2D:")), 0, 1);
+    layoutShow->addWidget(radPostprocessorNone, 0, 2);
+    layoutShow->addWidget(radPostprocessorOrder, 1, 2);
+    layoutShow->addWidget(radPostprocessorScalarField, 2, 2);
+    layoutShow->addWidget(new QLabel(tr("3D:")), 3, 1);
+    layoutShow->addWidget(radPostprocessorScalarField3D, 3, 2);
+    layoutShow->addWidget(radPostprocessorScalarField3DSolid, 4, 2);
+    layoutShow->addWidget(radPostprocessorModel, 5, 2);
 
     QGroupBox *grpShow = new QGroupBox(tr("Show"));
     grpShow->setLayout(layoutShow);
@@ -267,7 +254,7 @@ QWidget *PostprocessorView::controlsBasic()
 
     cmbScalarFieldVariableComp = new QComboBox();
 
-    chkScalarFieldRangeAuto = new QCheckBox();
+    chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
 
     QPalette palette;
@@ -286,21 +273,20 @@ QWidget *PostprocessorView::controlsBasic()
     layoutScalarField->setColumnMinimumWidth(0, minWidth);
     layoutScalarField->setColumnStretch(1, 1);
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
-    layoutScalarField->addWidget(cmbScalarFieldVariable, 0, 1, 1, 2);
+    layoutScalarField->addWidget(cmbScalarFieldVariable, 0, 1, 1, 3);
 
     layoutScalarField->addWidget(new QLabel(tr("Component:")), 1, 0);
-    layoutScalarField->addWidget(cmbScalarFieldVariableComp, 1, 1, 1, 2);
+    layoutScalarField->addWidget(cmbScalarFieldVariableComp, 1, 1, 1, 3);
 
-    layoutScalarField->addWidget(new QLabel(tr("Auto range:")), 2, 0);
-    layoutScalarField->addWidget(chkScalarFieldRangeAuto, 2, 1);
+    layoutScalarField->addWidget(chkScalarFieldRangeAuto, 2, 0);
     lblScalarFieldRangeMin = new QLabel(tr("Minimum:"));
-    layoutScalarField->addWidget(lblScalarFieldRangeMin, 3, 0);
-    layoutScalarField->addWidget(txtScalarFieldRangeMin, 3, 1);
-    layoutScalarField->addWidget(lblScalarFieldRangeMinError, 3, 2);
+    layoutScalarField->addWidget(lblScalarFieldRangeMin, 2, 1);
+    layoutScalarField->addWidget(txtScalarFieldRangeMin, 2, 2);
+    layoutScalarField->addWidget(lblScalarFieldRangeMinError, 2, 3);
     lblScalarFieldRangeMax = new QLabel(tr("Maximum:"));
-    layoutScalarField->addWidget(lblScalarFieldRangeMax, 4, 0);
-    layoutScalarField->addWidget(txtScalarFieldRangeMax, 4, 1);
-    layoutScalarField->addWidget(lblScalarFieldRangeMaxError, 4, 2);
+    layoutScalarField->addWidget(lblScalarFieldRangeMax, 3, 1);
+    layoutScalarField->addWidget(txtScalarFieldRangeMax, 3, 2);
+    layoutScalarField->addWidget(lblScalarFieldRangeMaxError, 3, 3);
 
     QGroupBox *grpScalarField = new QGroupBox(tr("Scalar field"));
     grpScalarField->setLayout(layoutScalarField);
@@ -329,13 +315,8 @@ QWidget *PostprocessorView::controlsBasic()
     QGroupBox *grpTransient = new QGroupBox(tr("Transient analysis"));
     grpTransient->setLayout(layoutTransient);
 
-    QHBoxLayout *layoutShowPostprocessor = new QHBoxLayout();
-    layoutShowPostprocessor->addWidget(grpShow);
-    layoutShowPostprocessor->addWidget(grpPostprocessor);
-    layoutShowPostprocessor->addStretch();
-
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutShowPostprocessor);
+    layout->addWidget(grpShow);
     layout->addWidget(grpScalarField);
     layout->addWidget(grpVectorField);
     layout->addWidget(grpTransient);
@@ -351,7 +332,7 @@ QWidget *PostprocessorView::controlsAdvanced()
 {
     logMessage("PostprocessorView::controlsAdvanced()");
 
-    double minWidth = 130;
+    double minWidth = 110;
 
     // layout contours
     txtContoursCount = new QSpinBox(this);
