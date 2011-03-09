@@ -81,7 +81,6 @@ private slots:
     void doReport();
     void doCreateVideo();
     void doFullScreen();
-    void doPostprocessorView();
     void doApplicationLog();
 
     void doCut();

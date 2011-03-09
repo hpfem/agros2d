@@ -6357,7 +6357,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/tooltipview.cpp" line="58"/>
         <source>Tooltip_Postprocessor</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
 &lt;head&gt;
 	&lt;meta http-equiv=&quot;content-type&quot; content=&quot;application/xhtml+xml; charset=UTF-8&quot; /&gt;
@@ -6387,7 +6387,7 @@ Do you want to save your changes?</source>
 	&lt;/tr&gt;
 &lt;/table&gt;
 
-Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály. Vždy musíte vybrat správný nástroj pro jejich označení z nabýdky &quot;Problém&quot; nebo z panelu nástrojů.
+Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály. Vždy musíte vybrat správný nástroj pro jejich označení z nabídky &quot;Problém&quot; nebo z panelu nástrojů.
 
 &lt;/body&gt;</translation>
     </message>

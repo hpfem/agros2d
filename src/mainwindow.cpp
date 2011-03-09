@@ -288,10 +288,6 @@ void MainWindow::createActions()
     actFullScreen->setShortcut(QKeySequence(tr("F11")));
     connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
 
-    actPostprocessorView = new QAction(icon("scene-properties"), tr("&Postprocessor properties"), this);
-    actPostprocessorView->setShortcut(Qt::Key_F12);
-    connect(actPostprocessorView, SIGNAL(triggered()), this, SLOT(doPostprocessorView()));
-
     actDocumentOpenRecentGroup = new QActionGroup(this);
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
 
@@ -382,8 +378,6 @@ void MainWindow::createMenus()
     mnuShow->addAction(sceneView->actSceneShowRulers);
     mnuView->addSeparator();
     mnuView->addAction(actFullScreen);
-    mnuView->addSeparator();
-    mnuView->addAction(actPostprocessorView);
     mnuView->addSeparator();
     mnuView->addAction(actApplicationLog);
     mnuView->addAction(actProgressLog);
@@ -967,14 +961,6 @@ void MainWindow::doFullScreen()
         showNormal();
     else
         showFullScreen();
-}
-
-void MainWindow::doPostprocessorView()
-{
-    logMessage("MainWindow::doPostprocessorView()");
-
-    postprocessorView->show();
-    postprocessorView->activateWindow();
 }
 
 void MainWindow::doSolve()
