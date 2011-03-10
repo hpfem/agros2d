@@ -1166,7 +1166,7 @@ void checkForNewVersion(bool quiet)
     logMessage("checkForNewVersion()");
 
     // download version
-    QUrl url("http://hpfem.org/agros2d/download/version.xml");
+    QUrl url("http://agros2d.org/version/version.xml");
     if (checkVersion == NULL)
         checkVersion = new CheckVersion(url);
 
