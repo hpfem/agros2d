@@ -34,6 +34,7 @@ public:
 
 private slots:
     void doApply();
+    void doDefault();
 
 private:
     SceneView *m_sceneView;

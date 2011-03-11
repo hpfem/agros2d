@@ -46,31 +46,6 @@
 #define deg2rad(degrees) (degrees*M_PI/180.0)
 #define rad2deg(radians) (radians*180.0/M_PI)
 
-const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);
-const QColor COLORGRID = QColor::fromRgb(200, 200, 200);
-const QColor COLORCROSS = QColor::fromRgb(150, 150, 150);
-const QColor COLORNODES = QColor::fromRgb(150, 0, 0);
-const QColor COLOREDGES = QColor::fromRgb(0, 0, 150);
-const QColor COLORLABELS = QColor::fromRgb(0, 150, 0);
-const QColor COLORCONTOURS = QColor::fromRgb(0, 0, 0);
-const QColor COLORVECTORS = QColor::fromRgb(0, 0, 0);
-const QColor COLORINITIALMESH = QColor::fromRgb(250, 202, 119);
-const QColor COLORSOLUTIONMESH = QColor::fromRgb(150, 70, 0);
-const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
-const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
-
-// adaptivity
-const bool ADAPTIVITY_ISOONLY = false;
-const double ADAPTIVITY_CONVEXP = 1.0;
-const double ADAPTIVITY_THRESHOLD = 0.3;
-const int ADAPTIVITY_STRATEGY = 0;
-const int ADAPTIVITY_MESHREGULARITY = -1;
-const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
-
-// command argument
-const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I \"%2\"";
-const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
-
 using namespace std;
 
 // verbose
@@ -654,5 +629,49 @@ AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 
 QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType);
 MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
+
+// constants
+const QColor COLORBACKGROUND = QColor::fromRgb(255, 255, 255);
+const QColor COLORGRID = QColor::fromRgb(200, 200, 200);
+const QColor COLORCROSS = QColor::fromRgb(150, 150, 150);
+const QColor COLORNODES = QColor::fromRgb(150, 0, 0);
+const QColor COLOREDGES = QColor::fromRgb(0, 0, 150);
+const QColor COLORLABELS = QColor::fromRgb(0, 150, 0);
+const QColor COLORCONTOURS = QColor::fromRgb(0, 0, 0);
+const QColor COLORVECTORS = QColor::fromRgb(0, 0, 0);
+const QColor COLORINITIALMESH = QColor::fromRgb(250, 202, 119);
+const QColor COLORSOLUTIONMESH = QColor::fromRgb(150, 70, 0);
+const QColor COLORHIGHLIGHTED = QColor::fromRgb(250, 150, 0);
+const QColor COLORSELECTED = QColor::fromRgb(150, 0, 0);
+
+// posprocessor
+const int CONTOURSCOUNT = 15;
+
+const PaletteType PALETTETYPE = Palette_Jet;
+const bool PALETTEFILTER = false;
+const int PALETTESTEPS = 30;
+const bool SCALARRANGELOG = false;
+const double SCALARRANGEBASE = 10;
+const double SCALARDECIMALPLACE = 2;
+
+const bool VECTORPROPORTIONAL = true;
+const bool VECTORCOLOR = true;
+const int VECTORNUMBER = 50;
+const double VECTORSCALE = 0.6;
+
+const bool ORDERLABEL = false;
+const PaletteOrderType ORDERPALETTEORDERTYPE = PaletteOrder_Hermes;
+
+// adaptivity
+const bool ADAPTIVITY_ISOONLY = false;
+const double ADAPTIVITY_CONVEXP = 1.0;
+const double ADAPTIVITY_THRESHOLD = 0.3;
+const int ADAPTIVITY_STRATEGY = 0;
+const int ADAPTIVITY_MESHREGULARITY = -1;
+const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
+
+// command argument
+const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I \"%2\"";
+const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
 
 #endif // UTIL_H
