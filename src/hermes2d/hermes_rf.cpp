@@ -75,42 +75,54 @@ template<typename Real, typename Scalar>
 Scalar rf_matrix_form_real_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-                - sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
+        return - int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
+                + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
                 * int_u_v<Real, Scalar>(n, wt, u, v);
     else
         return 0.0;
+                /*- 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
+                + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
+                * int_u_v<Real, Scalar>(n, wt, u, v);*/
 }
+
+
 
 template<typename Real, typename Scalar>
 Scalar rf_matrix_form_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        return 0.0;
-}
-
-template<typename Real, typename Scalar>
-Scalar rf_matrix_form_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
         return + 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
                 * int_u_v<Real, Scalar>(n, wt, u, v);
     else
         return 0.0;
+                /*+ 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
+                * int_u_v<Real, Scalar>(n, wt, u, v);*/
+}
+
+template<typename Real, typename Scalar>
+Scalar rf_matrix_form_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
+                * int_u_v<Real, Scalar>(n, wt, u, v);
+    else
+        return 0.0;
+                /*- 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
+                * int_u_v<Real, Scalar>(n, wt, u, v);*/
 }
 
 template<typename Real, typename Scalar>
 Scalar rf_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-                - sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
+        return - int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
+                + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
                 * int_u_v<Real, Scalar>(n, wt, u, v);
     else
         return 0.0;
+                /*- 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
+                + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
+                * int_u_v<Real, Scalar>(n, wt, u, v);*/
 }
 
 template<typename Real, typename Scalar>
@@ -437,9 +449,9 @@ void HermesRF::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPoin
         itemElectricField->setText(0, tr("Electric field"));
         itemElectricField->setExpanded(true);
 
-        addTreeWidgetItemValue(itemElectricField, tr("real:"), QString("%1").arg(localPointValueRF->potential_real, 0, 'e', 3), "V/m");
-        addTreeWidgetItemValue(itemElectricField, tr("imag:"), QString("%1").arg(localPointValueRF->potential_imag, 0, 'e', 3), "V/m");
-        addTreeWidgetItemValue(itemElectricField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->potential_real) + sqr(localPointValueRF->potential_imag)), 0, 'e', 3), "V/m");
+        addTreeWidgetItemValue(itemElectricField, tr("real:"), QString("%1").arg(localPointValueRF->electric_field_real, 0, 'e', 3), "V/m");
+        addTreeWidgetItemValue(itemElectricField, tr("imag:"), QString("%1").arg(localPointValueRF->electric_field_imag, 0, 'e', 3), "V/m");
+        addTreeWidgetItemValue(itemElectricField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->electric_field_real) + sqr(localPointValueRF->electric_field_imag)), 0, 'e', 3), "V/m");
     }
 }
 
