@@ -3589,22 +3589,22 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="774"/>
         <source>Problem analysis: %1 (%2, %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Problemanalyse: %1 (%2, %3)</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="779"/>
         <source>Solver was started: %1 </source>
-        <translation type="unfinished"></translation>
+        <translation>Lösung des Problems: %1</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="785"/>
         <source>Problem was solved</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Problem war gelöst</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="790"/>
         <source>Problem was not solved</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Problem war nicht gelöst</translation>
     </message>
 </context>
 <context>
