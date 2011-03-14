@@ -8,10 +8,10 @@ CONFIG(debug): DEFINES += BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=8
 DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=646
+DEFINES += VERSION_GIT=645
 DEFINES += VERSION_YEAR=2011
 DEFINES += VERSION_MONTH=3
-DEFINES += VERSION_DAY=9
+DEFINES += VERSION_DAY=10
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -128,6 +128,7 @@ linux-g++ {
     INCLUDEPATH += /usr/include/superlu
     INCLUDEPATH += /usr/include/qwt-qt4
     INCLUDEPATH += /usr/include/python2.6
+    INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../hermes2d/src
     LIBS += -L../hermes2d/lib
@@ -138,6 +139,7 @@ linux-g++ {
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lpthread
+    LIBS += -lrt
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
     LIBS += -lqwt-qt4

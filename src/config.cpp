@@ -105,25 +105,25 @@ void Config::load()
     showAxes = settings.value("SceneViewSettings/ShowAxes", true).toBool();
 
     // countour
-    contoursCount = settings.value("SceneViewSettings/ContoursCount", 15).toInt();
+    contoursCount = settings.value("SceneViewSettings/ContoursCount", CONTOURSCOUNT).toInt();
 
     // scalar view
-    paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", Palette_Jet).toInt();
-    paletteFilter = settings.value("SceneViewSettings/PaletteFilter", false).toBool();
-    paletteSteps = settings.value("SceneViewSettings/PaletteSteps", 30).toInt();
-    scalarRangeLog = settings.value("SceneViewSettings/ScalarRangeLog", false).toBool();
-    scalarRangeBase = settings.value("SceneViewSettings/ScalarRangeBase", 10).toDouble();
-    scalarDecimalPlace = settings.value("SceneViewSettings/ScalarDecimalPlace", 2).toDouble();
+    paletteType = (PaletteType) settings.value("SceneViewSettings/PaletteType", PALETTETYPE).toInt();
+    paletteFilter = settings.value("SceneViewSettings/PaletteFilter", PALETTEFILTER).toBool();
+    paletteSteps = settings.value("SceneViewSettings/PaletteSteps", PALETTESTEPS).toInt();
+    scalarRangeLog = settings.value("SceneViewSettings/ScalarRangeLog", SCALARRANGELOG).toBool();
+    scalarRangeBase = settings.value("SceneViewSettings/ScalarRangeBase", SCALARRANGEBASE).toDouble();
+    scalarDecimalPlace = settings.value("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE).toDouble();
 
     // vector view
-    vectorProportional = settings.value("SceneViewSettings/VectorProportional", false).toBool();
-    vectorColor = settings.value("SceneViewSettings/VectorColor", true).toBool();
-    vectorCount = settings.value("SceneViewSettings/VectorNumber", 50).toInt();
-    vectorScale = settings.value("SceneViewSettings/VectorScale", 0.6).toDouble();
+    vectorProportional = settings.value("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL).toBool();
+    vectorColor = settings.value("SceneViewSettings/VectorColor", VECTORCOLOR).toBool();
+    vectorCount = settings.value("SceneViewSettings/VectorNumber", VECTORNUMBER).toInt();
+    vectorScale = settings.value("SceneViewSettings/VectorScale", VECTORSCALE).toDouble();
 
     // order view
-    orderLabel = settings.value("SceneViewSettings/OrderLabel", false).toBool();
-    orderPaletteOrderType = (PaletteOrderType) settings.value("SceneViewSettings/OrderPaletteOrderType", PaletteOrder_Hermes).toInt();
+    orderLabel = settings.value("SceneViewSettings/OrderLabel", ORDERLABEL).toBool();
+    orderPaletteOrderType = (PaletteOrderType) settings.value("SceneViewSettings/OrderPaletteOrderType", ORDERPALETTEORDERTYPE).toInt();
 
     // deformations
     deformScalar = settings.value("SceneViewSettings/DeformScalar", true).toBool();

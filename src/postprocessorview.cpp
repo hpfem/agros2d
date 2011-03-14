@@ -245,8 +245,12 @@ QWidget *PostprocessorView::controlsBasic()
     layoutShow->addWidget(radPostprocessorScalarField3DSolid, 4, 2);
     layoutShow->addWidget(radPostprocessorModel, 5, 2);
 
+    QHBoxLayout *layoutShowSpace = new QHBoxLayout();
+    layoutShowSpace->addLayout(layoutShow);
+    layoutShowSpace->addStretch();
+
     QGroupBox *grpShow = new QGroupBox(tr("Show"));
-    grpShow->setLayout(layoutShow);
+    grpShow->setLayout(layoutShowSpace);
 
     // layout scalar field
     cmbScalarFieldVariable = new QComboBox();   
@@ -436,6 +440,10 @@ QWidget *PostprocessorView::controlsAdvanced()
     QGroupBox *grpOrder = new QGroupBox(tr("Polynomial order"));
     grpOrder->setLayout(layoutOrder);
 
+    // default
+    QPushButton *btnDefault = new QPushButton(tr("Default"));
+    connect(btnDefault, SIGNAL(clicked()), this, SLOT(doDefault()));
+
     // layout postprocessor
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(grpContours);
@@ -443,6 +451,7 @@ QWidget *PostprocessorView::controlsAdvanced()
     layout->addWidget(grpVectorView);
     layout->addWidget(grpOrder);
     layout->addStretch();
+    layout->addWidget(btnDefault, 0, Qt::AlignLeft);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -591,6 +600,32 @@ void PostprocessorView::doApply()
     emit apply();
 
     activateWindow();
+}
+
+void PostprocessorView::doDefault()
+{
+    logMessage("PostprocessorView::doDefault()");
+
+    // countour
+    txtContoursCount->setValue(CONTOURSCOUNT);
+
+    // scalar view
+    cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
+    chkPaletteFilter->setChecked(PALETTEFILTER);
+    txtPaletteSteps->setValue(PALETTESTEPS);
+    chkScalarFieldRangeLog->setChecked(SCALARRANGELOG);
+    txtScalarFieldRangeBase->setText(QString::number(SCALARRANGEBASE));
+    txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
+
+    // vector view
+    chkVectorProportional->setChecked(VECTORPROPORTIONAL);
+    chkVectorColor->setChecked(VECTORCOLOR);
+    txtVectorCount->setValue(VECTORNUMBER);
+    txtVectorScale->setValue(VECTORSCALE);
+
+    // order view
+    chkOrderLabel->setChecked(ORDERLABEL);
+    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) ORDERPALETTEORDERTYPE));
 }
 
 void PostprocessorView::doScalarFieldRangeMinChanged()

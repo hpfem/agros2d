@@ -152,13 +152,13 @@ def selectedgepoint(double x, double y):
 def selectlabelpoint(double x, double y):
     pythonSelectLabelPoint(x, y)
 
-def rotateselection(double x, double y, double angle, bool copy = False):
+def rotateselection(double x, double y, double angle, int copy = False):
     pythonRotateSelection(x, y, angle, int(copy))
 
-def scaleselection(double x, double y, double scale, bool copy = False):
+def scaleselection(double x, double y, double scale, int copy = False):
     pythonScaleSelection(x, y, scale, int(copy))
 
-def moveselection(double dx, double dy, bool copy = False):
+def moveselection(double dx, double dy, int copy = False):
     pythonMoveSelection(dx, dy, int(copy))
 
 def deleteselection():
@@ -195,22 +195,22 @@ def postprocessormode(char *str):
 def showscalar(char *type, char *variable, char *component, int rangemin = c_INT_MIN, int rangemax = c_INT_MIN):
     pythonShowScalar(type, variable, component, rangemin, rangemax)
 
-def showgrid(bool show):
+def showgrid(int show):
     pythonShowGrid(int(show))
 
-def showgeometry(bool show):
+def showgeometry(int show):
     pythonShowGeometry(int(show))
 
-def showinitialmesh(bool show):
+def showinitialmesh(int show):
     pythonShowInitialMesh(int(show))
 
-def showsolutionmesh(bool show):
+def showsolutionmesh(int show):
     pythonShowSolutionMesh(int(show))
 
-def showcontours(bool show):
+def showcontours(int show):
     pythonShowContours(int(show))
 
-def showvectors(bool show):
+def showvectors(int show):
     pythonShowVectors(int(show))
 
 def timestep(int timestep):
