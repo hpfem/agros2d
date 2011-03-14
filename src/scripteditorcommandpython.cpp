@@ -49,13 +49,6 @@ const int count = 100; \
                                                   )) \
                              // FIX ********************************************************************************************************************************************************************
 
-static PyObject *pythonVersion(PyObject *self, PyObject *args)
-{
-    logMessage("pythonVersion()");
-
-    return Py_BuildValue("s", QApplication::applicationVersion().toStdString());
-}
-
 // version()
 char *pythonVersion()
 {

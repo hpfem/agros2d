@@ -146,6 +146,7 @@ linux-g++ {
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/superlu
     INCLUDEPATH += /usr/include/python2.6
+    INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
     LIBS += -ldmumps_seq
     LIBS += -lsuperlu
