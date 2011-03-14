@@ -238,7 +238,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
 
     if (exitCode == 0)
     {
-        emit message(tr("Mesh files was created"), false, 2);
+        emit message(tr("Mesh files were created"), false, 2);
 
         // convert triangle mesh to hermes mesh
         if (triangleToHermes2D())
@@ -260,7 +260,7 @@ void ProgressItemMesh::meshTriangleCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".ele");
             QFile::remove(tempProblemFileName() + ".triangle.out");
             QFile::remove(tempProblemFileName() + ".triangle.err");
-            emit message(tr("Mesh files was deleted"), false, 4);
+            emit message(tr("Mesh files were deleted"), false, 4);
 
             // load mesh
             Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
