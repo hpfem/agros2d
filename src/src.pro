@@ -20,7 +20,6 @@ linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
     lang/de_DE.ts
-CONFIG += help
 CODECFORTR = UTF-8
 RC_FILE = src.rc
 RESOURCES = src.qrc
@@ -128,7 +127,6 @@ linux-g++ {
     INCLUDEPATH += /usr/include/superlu
     INCLUDEPATH += /usr/include/qwt-qt4
     INCLUDEPATH += /usr/include/python2.6
-    INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../hermes2d/src
     LIBS += -L../hermes2d/lib
@@ -139,7 +137,6 @@ linux-g++ {
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lpthread
-    LIBS += -lrt
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
     LIBS += -lqwt-qt4

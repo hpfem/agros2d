@@ -2104,8 +2104,16 @@ void SceneView::paintVectors()
 
                         if ((Util::config()->vectorProportional) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
                         {
-                            dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
-                            dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
+                            if ((value / vectorRangeMax) < 1e-6)
+                            {
+                                dx = 0.0;
+                                dy = 0.0;
+                            }
+                            else
+                            {
+                                dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
+                                dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
+                            }
                         }
                         else
                         {
