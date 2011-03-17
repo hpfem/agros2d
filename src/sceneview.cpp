@@ -3607,39 +3607,6 @@ void SceneView::doPostprocessorModeGroup(QAction *action)
     updateGL();
 }
 
-void SceneView::doSceneViewProperties()
-{
-    /*
-    logMessage("SceneView::doSceneViewProperties()");
-
-    SceneViewPostprocessorShow postprocessorShow = m_sceneViewSettings.postprocessorShow;
-
-    SceneViewDialog sceneViewDialog(this, this);
-    if (sceneViewDialog.showDialog() == QDialog::Accepted)
-    {
-        // set defaults
-        if (postprocessorShow != m_sceneViewSettings.postprocessorShow)
-        {
-            if (is3DMode())
-            {
-                m_rotation3d.x = 66.0;
-                m_rotation3d.y = -35.0;
-                m_rotation3d.z = 0.0;
-
-                m_offset3d.x = 0.0;
-                m_offset3d.y = 0.0;
-
-                m_scale3d = 0.6 * m_scale2d;
-            }
-
-            doZoomBestFit();
-        }
-
-        doInvalidated();
-    }
-    */
-}
-
 void SceneView::doSceneObjectProperties()
 {
     logMessage("SceneView::doSceneObjectProperties()");
@@ -3941,6 +3908,7 @@ void SceneView::paintPostprocessorSelectedVolume()
 
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_DEPTH_TEST);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -3966,6 +3934,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     }
     glEnd();
 
+    glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     glDisable(GL_POLYGON_OFFSET_FILL);
 

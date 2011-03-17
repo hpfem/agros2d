@@ -147,6 +147,7 @@ void SceneSolution::loadMeshInitial(QDomElement *element)
     writeStringContentByteArray(fileName, QByteArray::fromBase64(content));
 
     Mesh *mesh = readMeshFromFile(tempProblemFileName() + ".mesh");
+    // refineMesh(mesh, true, true);
 
     setMeshInitial(mesh);
 }

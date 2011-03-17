@@ -79,7 +79,6 @@ public slots:
     void doShowGrid();
     void doSnapToGrid();
     void doShowRulers();
-    void doSceneViewProperties();
     void doSceneObjectProperties();
     void doSceneModeSet(QAction *action);
     void doSelectMarker();
