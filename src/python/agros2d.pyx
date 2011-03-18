@@ -22,6 +22,7 @@ cdef extern from "../scripteditorcommandpython.h":
                            char *analysistype, double timestep, double totaltime, double initialcondition) except +
     void pythonOpenDocument(char *str) except +
     void pythonSaveDocument(char *str) except +
+    void pythonCloseDocument()
     
     void pythonAddNode(double x, double y) except +
     void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker) except +
@@ -107,6 +108,9 @@ def opendocument(char *str):
 
 def savedocument(char *str):
     pythonSaveDocument(str)
+
+def closedocument():
+    pythonCloseDocument()
 
 # preprocessor
 

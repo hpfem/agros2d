@@ -71,6 +71,7 @@ void pythonNewDocument(char *name, char *type, char *physicfield,
                        char *analysistype, double timestep, double totaltime, double initialcondition);
 void pythonOpenDocument(char *str);
 void pythonSaveDocument(char *str);
+void pythonCloseDocument();
 
 void pythonAddNode(double x, double y);
 void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, char *marker);
