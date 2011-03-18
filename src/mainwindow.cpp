@@ -370,6 +370,15 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneView->actSceneZoomOut);
     QMenu *mnuShow = new QMenu(tr("&Show"), this);
     mnuView->addMenu(mnuShow);
+    QMenu *mnuShowDocks = new QMenu(tr("Show docks"), this);
+    mnuShowDocks->addAction(sceneInfoView->toggleViewAction());
+    mnuShowDocks->addAction(localPointValueView->toggleViewAction());
+    mnuShowDocks->addAction(surfaceIntegralValueView->toggleViewAction());
+    mnuShowDocks->addAction(volumeIntegralValueView->toggleViewAction());
+    mnuShowDocks->addAction(postprocessorView->toggleViewAction());
+    mnuShowDocks->addAction(terminalView->toggleViewAction());
+    mnuShowDocks->addAction(tooltipView->toggleViewAction());
+    mnuView->addMenu(mnuShowDocks);
     mnuShow->addAction(sceneView->actSceneShowGrid);
     mnuShow->addAction(sceneView->actSceneSnapToGrid);
     mnuShow->addAction(sceneView->actSceneShowRulers);
