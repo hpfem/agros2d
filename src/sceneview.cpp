@@ -1020,6 +1020,7 @@ void SceneView::paintSolutionMesh()
     glLineWidth(1.3);
 
     // triangles
+    qDebug() << m_scene->sceneSolution()->linSolutionMeshView().get_num_edges();
     glBegin(GL_LINES);
     for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_edges(); i++)
     {

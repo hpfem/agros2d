@@ -44,6 +44,12 @@ void SceneSolution::clear()
 
     m_timeStep = -1;
 
+    m_linInitialMeshView.free();
+    m_linSolutionMeshView.free();
+    m_linContourView.free();
+    m_linScalarView.free();
+    // m_vecVectorView.free();
+
     // solution array
     if (!m_solutionArrayList.isEmpty())
     {
