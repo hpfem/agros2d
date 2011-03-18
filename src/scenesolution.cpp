@@ -241,12 +241,14 @@ Solution *SceneSolution::sln(int i)
     return NULL;
 }
 
-Orderizer &SceneSolution::ordView()
+Orderizer *SceneSolution::ordView()
 {
     logMessage("SceneSolution::ordView()");
 
     if (isSolved())
-        return *m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->order;
+        return m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->order;
+    else
+        return NULL;
 }
 
 double SceneSolution::adaptiveError()

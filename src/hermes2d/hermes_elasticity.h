@@ -28,6 +28,7 @@ struct HermesElasticity : public HermesField
     Q_OBJECT
 public:
     HermesElasticity() { m_physicField = PhysicField_Elasticity; }
+    virtual ~HermesElasticity() {}
 
     inline int numberOfSolution() { return 2; }
     bool hasHarmonic() { return false; }
