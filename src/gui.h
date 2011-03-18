@@ -45,16 +45,28 @@ class SLineEditDouble : public QLineEdit
 {
     Q_OBJECT
 public:
-    SLineEditDouble(double val = 0, bool validator = false, QWidget *parent = 0) : QLineEdit(parent)
+    SLineEditDouble(double val = 0, bool validator = false, QWidget *parent = 0) : QLineEdit(parent),
+        m_validator(NULL)
     {
         if (validator)
-            setValidator(new QDoubleValidator);
+        {
+            m_validator = new QDoubleValidator(this);
+            setValidator(m_validator);
+        }
 
         setValue(val);
+    }
+    ~SLineEditDouble()
+    {
+        if (m_validator)
+            delete m_validator;
     }
 
     inline double value() { return text().toDouble(); }
     inline void setValue(double value) { setText(QString::number(value)); }
+
+private:
+    QDoubleValidator *m_validator;
 };
 
 // ****************************************************************************************************

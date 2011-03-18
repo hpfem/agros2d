@@ -97,7 +97,16 @@ void SceneViewSettings::defaultValues()
 
 // *******************************************************************************************************
 
-SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
+    m_listInitialMesh(-1),
+    m_listSolutionMesh(-1),
+    m_listContours(-1),
+    m_listVectors(-1),
+    m_listScalarField(-1),
+    m_listScalarField3D(-1),
+    m_listScalarField3DSolid(-1),
+    m_listOrder(-1),
+    m_listModel(-1)
 {
     logMessage("SceneView::SceneView()");
 
@@ -3461,6 +3470,8 @@ void SceneView::doSetChartLine(const Point &start, const Point &end)
 void SceneView::doDefaultValues()
 {
     logMessage("SceneView::doDefaultValues()");
+
+    m_sceneMode = SceneMode_OperateOnNodes;
 
     m_snapToGrid = false;
     m_region = false;

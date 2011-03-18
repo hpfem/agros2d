@@ -87,9 +87,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // set recent files
     setRecentFiles();
 
-    // run server
-    new ScriptEngineRemote();
-
     // accept drops
     setAcceptDrops(true);
 
