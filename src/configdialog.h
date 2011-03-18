@@ -125,6 +125,9 @@ private:
     // axes
     QCheckBox *chkShowAxes;
 
+    // label
+    QCheckBox *chkShowLabel;
+
     // 3d
     QCheckBox *chkView3DLighting;
     SLineEditDouble *txtView3DAngle;

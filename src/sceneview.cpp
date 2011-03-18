@@ -495,7 +495,7 @@ void SceneView::paintGL()
         paintChartLine();
     }
 
-    paintSceneModeLabel();
+    if (Util::config()->showLabel) paintSceneModeLabel();
 }
 
 void SceneView::clearGLLists()

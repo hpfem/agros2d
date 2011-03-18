@@ -67,6 +67,9 @@ public:
     // axes
     bool showAxes;
 
+    // label
+    bool showLabel;
+
     // contour
     int contoursCount;
 
