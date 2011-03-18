@@ -1209,7 +1209,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     // dimensions
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
-    Point scaleSize = Point(45.0 + textWidth, contextHeight() - 20.0);
+    Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
     Point scaleBorder = Point(10.0, 10.0);
     double scaleLeft = (contextWidth() - (45.0 + textWidth));
     int numTicks = 11;
