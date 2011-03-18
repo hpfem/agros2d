@@ -1449,5 +1449,5 @@ scalar Solution::get_pt_value(double x, double y, int item)
   }
 
   warn("Point (%g, %g) does not lie in any element.", x, y);
-  return NAN;
+  return 0.0;
 }
