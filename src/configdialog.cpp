@@ -340,6 +340,7 @@ QWidget *ConfigDialog::createMainWidget()
     // general
     cmbGUIStyle = new QComboBox(mainWidget);
     cmbGUIStyle->addItems(QStyleFactory::keys());
+    cmbGUIStyle->addItem("Manhattan");
 
     cmbLanguage = new QComboBox(mainWidget);
     cmbLanguage->addItems(availableLanguages());

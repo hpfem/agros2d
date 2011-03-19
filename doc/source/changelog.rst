@@ -59,9 +59,19 @@ Changes in Agros2D
   * logmessage viewer
   * improved preprocessor
   
-1.7.1.620 (2.3.2011)
+1.7.1.620 (02.03.2011)
 ----------------------  
   * curvilinear elements (arcs)
   * synced with latest hermes (removed judy dependence)
   * little improvements to GUI
   * complete Python + numpy (needed by mesh loader)
+
+1.8.0.645 (10.03.2011)
+----------------------
+
+  * reworked postprocessor settings
+
+1.8.1.xxx (xx.xx.2011)
+----------------------
+
+  * 

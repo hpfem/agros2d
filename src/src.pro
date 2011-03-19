@@ -77,7 +77,10 @@ SOURCES += util.cpp \
     tooltipview.cpp \
     scenebasicselectdialog.cpp \
     logdialog.cpp \
-    postprocessorview.cpp
+    postprocessorview.cpp \
+    style/stylehelper.cpp \
+    style/styleanimator.cpp \
+    style/manhattanstyle.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -116,7 +119,10 @@ HEADERS += util.h \
     tooltipview.h \
     scenebasicselectdialog.h \
     logdialog.h \
-    postprocessorview.h
+    postprocessorview.h \
+    style/stylehelper.h \
+    style/styleanimator.h \
+    style/manhattanstyle.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common
