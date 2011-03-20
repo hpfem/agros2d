@@ -90,7 +90,7 @@ public:
     QString description;
 
     // harmonic
-    int frequency;
+    double frequency;
 
     // transient
     AnalysisType analysisType;

@@ -60,7 +60,9 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_EnergyDensity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permittivity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permeability ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Conductivity); }
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Conductivity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_J_Ext_real ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_J_Ext_imag); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -92,6 +94,8 @@ public:
     double permittivity;
     double permeability;
     double conductivity;
+    double J_ext_real;
+    double J_ext_imag;
 
     double potential_real;
     double potential_imag;
@@ -159,8 +163,10 @@ public:
     Value permittivity;
     Value permeability;
     Value conductivity;
+    Value J_ext_real;
+    Value J_ext_imag;
 
-    SceneLabelRFMarker(const QString &name, Value permittivity, Value permeability, Value conductivity);
+    SceneLabelRFMarker(const QString &name, Value permittivity, Value permeability, Value conductivity, Value J_ext_real, Value J_ext_imag);
 
     QString script();
     QMap<QString, QString> data();
@@ -205,6 +211,8 @@ private:
     SLineEditValue *txtPermittivity;
     SLineEditValue *txtPermeability;
     SLineEditValue *txtConductivity;
+    SLineEditValue *txtJ_Ext_real;
+    SLineEditValue *txtJ_Ext_imag;
 };
 
 #endif // RF_H

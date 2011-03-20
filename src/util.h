@@ -463,7 +463,9 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_EnergyDensity,
     PhysicFieldVariable_RF_Permittivity,
     PhysicFieldVariable_RF_Permeability,
-    PhysicFieldVariable_RF_Conductivity
+    PhysicFieldVariable_RF_Conductivity,
+    PhysicFieldVariable_RF_J_Ext_real,
+    PhysicFieldVariable_RF_J_Ext_imag
 };
 
 
@@ -555,6 +557,8 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_Permittivity:
     case PhysicFieldVariable_RF_Permeability:
     case PhysicFieldVariable_RF_Conductivity:
+    case PhysicFieldVariable_RF_J_Ext_real:
+    case PhysicFieldVariable_RF_J_Ext_imag:
         return true;
         break;
     default:

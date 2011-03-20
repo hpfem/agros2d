@@ -156,6 +156,8 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permittivity, "rf_permittivity");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permeability, "rf_permeability");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Conductivity, "rf_conductivity");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_J_Ext_real, "rf_J_ext_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_J_Ext_imag, "rf_J_ext_imag");
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -364,6 +366,10 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Permeability");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("Conductivity");
+    case PhysicFieldVariable_RF_J_Ext_real:
+        return QObject::tr("J_Ext_real");
+    case PhysicFieldVariable_RF_J_Ext_imag:
+        return QObject::tr("J_Ext_imag");
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
     }
@@ -522,6 +528,10 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("mur");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("g");
+    case PhysicFieldVariable_RF_J_Ext_real:
+        return QObject::tr("J_r");
+    case PhysicFieldVariable_RF_J_Ext_imag:
+        return QObject::tr("J_i");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -673,6 +683,10 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("H/m");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("S/m");
+    case PhysicFieldVariable_RF_J_Ext_real:
+        return QObject::tr("A/m2");
+    case PhysicFieldVariable_RF_J_Ext_imag:
+        return QObject::tr("A/m2");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
