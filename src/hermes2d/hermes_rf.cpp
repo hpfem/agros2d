@@ -130,13 +130,13 @@ Scalar rf_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return 0.0;
+    return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].J_ext_imag;
 }
 
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return 0.0;
+    return 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].J_ext_real;
 }
 
 void callbackRFWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
@@ -457,8 +457,8 @@ void HermesRF::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPoin
         addTreeWidgetItemValue(magneticNode, tr("Permittivity:"), QString("%1").arg(localPointValueRF->permittivity, 0, 'f', 2), "");
         addTreeWidgetItemValue(magneticNode, tr("Permeability:"), QString("%1").arg(localPointValueRF->permeability, 0, 'f', 2), "");
         addTreeWidgetItemValue(magneticNode, tr("Conductivity:"), QString("%1").arg(localPointValueRF->conductivity, 0, 'f', 2), "");
-        addTreeWidgetItemValue(magneticNode, tr("J_ext_real:"), QString("%1").arg(localPointValueRF->J_ext_real, 0, 'f', 2), "");
-        addTreeWidgetItemValue(magneticNode, tr("J_ext_imag:"), QString("%1").arg(localPointValueRF->J_ext_imag, 0, 'f', 2), "");
+        addTreeWidgetItemValue(magneticNode, tr("J_ext_real:"), QString("%1").arg(localPointValueRF->J_ext_real, 0, 'f', 2), "A/m2");
+        addTreeWidgetItemValue(magneticNode, tr("J_ext_imag:"), QString("%1").arg(localPointValueRF->J_ext_imag, 0, 'f', 2), "A/m2");
 
         // Electric Field
         QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(magneticNode);
