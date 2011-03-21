@@ -87,9 +87,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // set recent files
     setRecentFiles();
 
-    // run server
-    new ScriptEngineRemote();
-
     // accept drops
     setAcceptDrops(true);
 
@@ -373,6 +370,15 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneView->actSceneZoomOut);
     QMenu *mnuShow = new QMenu(tr("&Show"), this);
     mnuView->addMenu(mnuShow);
+    QMenu *mnuShowDocks = new QMenu(tr("Show docks"), this);
+    mnuShowDocks->addAction(sceneInfoView->toggleViewAction());
+    mnuShowDocks->addAction(localPointValueView->toggleViewAction());
+    mnuShowDocks->addAction(surfaceIntegralValueView->toggleViewAction());
+    mnuShowDocks->addAction(volumeIntegralValueView->toggleViewAction());
+    mnuShowDocks->addAction(postprocessorView->toggleViewAction());
+    mnuShowDocks->addAction(terminalView->toggleViewAction());
+    mnuShowDocks->addAction(tooltipView->toggleViewAction());
+    mnuView->addMenu(mnuShowDocks);
     mnuShow->addAction(sceneView->actSceneShowGrid);
     mnuShow->addAction(sceneView->actSceneSnapToGrid);
     mnuShow->addAction(sceneView->actSceneShowRulers);
@@ -1264,7 +1270,7 @@ void MainWindow::doExportVTKOrder()
         if (QFile::exists(fileName))
             QFile::remove(fileName);
 
-        Util::scene()->sceneSolution()->ordView().save_data_vtk(fileName.toStdString().c_str());
+        Util::scene()->sceneSolution()->ordView()->save_data_vtk(fileName.toStdString().c_str());
 
         if (!fileName.isEmpty())
         {

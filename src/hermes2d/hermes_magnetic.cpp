@@ -139,25 +139,6 @@ Scalar magnetic_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Re
         return magneticLabel[e->elem_marker].current_density_imag * int_v<Real, Scalar>(n, wt, v);
 }
 
-/*
-void callbackMagneticSpace(Hermes::vector<Space *> space)
-{
-    if (space.size() == 1)
-    {
-        space.at(0)->set_bc_types(magnetic_bc_types);
-        space.at(0)->set_essential_bc_values(magnetic_bc_values_real);
-    }
-    else
-    {
-        space.at(0)->set_bc_types(magnetic_bc_types);
-        space.at(0)->set_essential_bc_values(magnetic_bc_values_real);
-
-        space.at(1)->set_bc_types(magnetic_bc_types);
-        space.at(1)->set_essential_bc_values(magnetic_bc_values_imag);
-    }
-}
-*/
-
 void callbackMagneticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     if (slnArray.size() == 1)

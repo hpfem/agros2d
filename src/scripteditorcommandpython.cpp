@@ -230,6 +230,19 @@ void pythonSaveDocument(char *str)
         throw invalid_argument(result.message().toStdString());
 }
 
+// closedocument(filename)
+void pythonCloseDocument()
+{
+    logMessage("pythonCloseDocument()");
+
+    Util::scene()->clear();
+    sceneView()->doDefaultValues();
+    Util::scene()->refresh();
+
+    sceneView()->actSceneModeNode->trigger();
+    sceneView()->doZoomBestFit();
+}
+
 // addnode(x, y)
 void pythonAddNode(double x, double y)
 {

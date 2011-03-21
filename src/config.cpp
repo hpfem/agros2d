@@ -104,6 +104,9 @@ void Config::load()
     // axes
     showAxes = settings.value("SceneViewSettings/ShowAxes", true).toBool();
 
+    // label
+    showLabel = settings.value("SceneViewSettings/ShowLabel", true).toBool();
+
     // countour
     contoursCount = settings.value("SceneViewSettings/ContoursCount", CONTOURSCOUNT).toInt();
 
@@ -215,6 +218,9 @@ void Config::save()
 
     // axes
     settings.setValue("SceneViewSettings/ShowAxes", showAxes);
+
+    // label
+    settings.setValue("SceneViewSettings/ShowLabel", showLabel);
 
     // countour
     settings.setValue("SceneViewSettings/ContoursCount", contoursCount);

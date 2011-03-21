@@ -150,6 +150,9 @@ Util::Util()
 
     m_scene = new Scene();
 
+    // script remote
+    m_scriptEngineRemote = new ScriptEngineRemote();
+
     // completer
     m_completer = new QCompleter();
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
@@ -176,6 +179,7 @@ Util::~Util()
     delete m_scene;
     delete m_completer;
     delete m_config;
+    delete m_scriptEngineRemote;
 }
 
 Util *Util::singleton()

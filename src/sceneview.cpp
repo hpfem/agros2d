@@ -97,7 +97,16 @@ void SceneViewSettings::defaultValues()
 
 // *******************************************************************************************************
 
-SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+SceneView::SceneView(QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
+    m_listInitialMesh(-1),
+    m_listSolutionMesh(-1),
+    m_listContours(-1),
+    m_listVectors(-1),
+    m_listScalarField(-1),
+    m_listScalarField3D(-1),
+    m_listScalarField3DSolid(-1),
+    m_listOrder(-1),
+    m_listModel(-1)
 {
     logMessage("SceneView::SceneView()");
 
@@ -486,7 +495,7 @@ void SceneView::paintGL()
         paintChartLine();
     }
 
-    paintSceneModeLabel();
+    if (Util::config()->showLabel) paintSceneModeLabel();
 }
 
 void SceneView::clearGLLists()
@@ -1011,6 +1020,7 @@ void SceneView::paintSolutionMesh()
     glLineWidth(1.3);
 
     // triangles
+    qDebug() << m_scene->sceneSolution()->linSolutionMeshView().get_num_edges();
     glBegin(GL_LINES);
     for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_edges(); i++)
     {
@@ -1037,15 +1047,15 @@ void SceneView::paintOrder()
         glNewList(m_listOrder, GL_COMPILE);
 
         // order scalar view
-        m_scene->sceneSolution()->ordView().lock_data();
+        m_scene->sceneSolution()->ordView()->lock_data();
 
-        double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
-        int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
+        double3* vert = m_scene->sceneSolution()->ordView()->get_vertices();
+        int3* tris = m_scene->sceneSolution()->ordView()->get_triangles();
 
         // draw mesh
         int min = 11;
         int max = 1;
-        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->sceneSolution()->ordView()->get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
@@ -1056,7 +1066,7 @@ void SceneView::paintOrder()
 
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+        for (int i = 0; i < m_scene->sceneSolution()->ordView()->get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
             glColor3d(paletteColorOrder(color)[0], paletteColorOrder(color)[1], paletteColorOrder(color)[2]);
@@ -1084,13 +1094,13 @@ void SceneView::paintOrder()
         QFont fontLabel = font();
         fontLabel.setPointSize(fontLabel.pointSize() - 3);
 
-        m_scene->sceneSolution()->ordView().lock_data();
+        m_scene->sceneSolution()->ordView()->lock_data();
 
-        double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
+        double3* vert = m_scene->sceneSolution()->ordView()->get_vertices();
         int* lvert;
         char** ltext;
         double2* lbox;
-        int nl = m_scene->sceneSolution()->ordView().get_labels(lvert, ltext, lbox);
+        int nl = m_scene->sceneSolution()->ordView()->get_labels(lvert, ltext, lbox);
 
         Point size((2.0/contextWidth()*fontMetrics().width(" "))/m_scale2d*aspect(),
                    (2.0/contextHeight()*fontMetrics().height())/m_scale2d);
@@ -1108,7 +1118,7 @@ void SceneView::paintOrder()
             }
         }
 
-        m_scene->sceneSolution()->ordView().unlock_data();
+        m_scene->sceneSolution()->ordView()->unlock_data();
     }
 }
 
@@ -1119,20 +1129,20 @@ void SceneView::paintOrderColorBar()
     if (!m_isSolutionPrepared) return;
 
     // order scalar view
-    m_scene->sceneSolution()->ordView().lock_data();
+    m_scene->sceneSolution()->ordView()->lock_data();
 
-    double3* vert = m_scene->sceneSolution()->ordView().get_vertices();
-    int3* tris = m_scene->sceneSolution()->ordView().get_triangles();
+    double3* vert = m_scene->sceneSolution()->ordView()->get_vertices();
+    int3* tris = m_scene->sceneSolution()->ordView()->get_triangles();
 
     int min = 11;
     int max = 1;
-    for (int i = 0; i < m_scene->sceneSolution()->ordView().get_num_triangles(); i++)
+    for (int i = 0; i < m_scene->sceneSolution()->ordView()->get_num_triangles(); i++)
     {
         if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
         if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
     }
 
-    m_scene->sceneSolution()->ordView().unlock_data();
+    m_scene->sceneSolution()->ordView()->unlock_data();
 
     // order color map
     loadProjection2d();
@@ -1199,7 +1209,7 @@ void SceneView::paintScalarFieldColorBar(double min, double max)
     // dimensions
     int textWidth = fontMetrics().width(QString::number(-1.0, '+e', Util::config()->scalarDecimalPlace)) + 3;
     int textHeight = fontMetrics().height();
-    Point scaleSize = Point(45.0 + textWidth, contextHeight() - 20.0);
+    Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
     Point scaleBorder = Point(10.0, 10.0);
     double scaleLeft = (contextWidth() - (45.0 + textWidth));
     int numTicks = 11;
@@ -2104,8 +2114,16 @@ void SceneView::paintVectors()
 
                         if ((Util::config()->vectorProportional) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
                         {
-                            dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
-                            dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
+                            if ((value / vectorRangeMax) < 1e-6)
+                            {
+                                dx = 0.0;
+                                dy = 0.0;
+                            }
+                            else
+                            {
+                                dx = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * cos(angle);
+                                dy = ((value - vectorRangeMin) * irange) * Util::config()->vectorScale * gs * sin(angle);
+                            }
                         }
                         else
                         {
@@ -3454,6 +3472,8 @@ void SceneView::doDefaultValues()
 {
     logMessage("SceneView::doDefaultValues()");
 
+    m_sceneMode = SceneMode_OperateOnNodes;
+
     m_snapToGrid = false;
     m_region = false;
     m_isSolutionPrepared = false;
@@ -3597,39 +3617,6 @@ void SceneView::doPostprocessorModeGroup(QAction *action)
 
     m_scene->selectNone();
     updateGL();
-}
-
-void SceneView::doSceneViewProperties()
-{
-    /*
-    logMessage("SceneView::doSceneViewProperties()");
-
-    SceneViewPostprocessorShow postprocessorShow = m_sceneViewSettings.postprocessorShow;
-
-    SceneViewDialog sceneViewDialog(this, this);
-    if (sceneViewDialog.showDialog() == QDialog::Accepted)
-    {
-        // set defaults
-        if (postprocessorShow != m_sceneViewSettings.postprocessorShow)
-        {
-            if (is3DMode())
-            {
-                m_rotation3d.x = 66.0;
-                m_rotation3d.y = -35.0;
-                m_rotation3d.z = 0.0;
-
-                m_offset3d.x = 0.0;
-                m_offset3d.y = 0.0;
-
-                m_scale3d = 0.6 * m_scale2d;
-            }
-
-            doZoomBestFit();
-        }
-
-        doInvalidated();
-    }
-    */
 }
 
 void SceneView::doSceneObjectProperties()
@@ -3933,6 +3920,7 @@ void SceneView::paintPostprocessorSelectedVolume()
 
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_DEPTH_TEST);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -3958,6 +3946,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     }
     glEnd();
 
+    glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     glDisable(GL_POLYGON_OFFSET_FILL);
 

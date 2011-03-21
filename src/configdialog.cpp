@@ -111,6 +111,9 @@ void ConfigDialog::load()
     // axes
     chkShowAxes->setChecked(Util::config()->showAxes);
 
+    // label
+    chkShowLabel->setChecked(Util::config()->showLabel);
+
     // 3d
     chkView3DLighting->setChecked(Util::config()->scalarView3DLighting);
     txtView3DAngle->setValue(Util::config()->scalarView3DAngle);
@@ -212,6 +215,9 @@ void ConfigDialog::save()
 
     // axes
     Util::config()->showAxes = chkShowAxes->isChecked();
+
+    // label
+    Util::config()->showLabel = chkShowLabel->isChecked();
 
     // 3d
     Util::config()->scalarView3DLighting = chkView3DLighting->isChecked();
@@ -334,6 +340,7 @@ QWidget *ConfigDialog::createMainWidget()
     // general
     cmbGUIStyle = new QComboBox(mainWidget);
     cmbGUIStyle->addItems(QStyleFactory::keys());
+    cmbGUIStyle->addItem("Manhattan");
 
     cmbLanguage = new QComboBox(mainWidget);
     cmbLanguage->addItems(availableLanguages());
@@ -416,7 +423,8 @@ QWidget *ConfigDialog::createViewWidget()
     chkShowGrid = new QCheckBox(tr("Show grid"));
     chkRulers = new QCheckBox(tr("Show rulers"));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkShowAxes = new QCheckBox(tr("Show axes"));
+    chkShowAxes = new QCheckBox(tr("Show axes"));    
+    chkShowLabel = new QCheckBox(tr("Show label"));
     chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
 
     QGridLayout *layoutGrid = new QGridLayout();
@@ -425,8 +433,9 @@ QWidget *ConfigDialog::createViewWidget()
     layoutGrid->addWidget(chkShowGrid, 1, 0, 1, 2);
     layoutGrid->addWidget(chkSnapToGrid, 2, 0, 1, 2);
     layoutGrid->addWidget(chkRulers, 3, 0, 1, 2);
-    layoutGrid->addWidget(chkShowAxes, 4, 0, 1, 2);
-    layoutGrid->addWidget(chkZoomToMouse, 5, 0, 1, 2);
+    layoutGrid->addWidget(chkShowAxes, 4, 0, 1, 2);    
+    layoutGrid->addWidget(chkShowLabel, 5, 0, 1, 2);
+    layoutGrid->addWidget(chkZoomToMouse, 6, 0, 1, 2);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);

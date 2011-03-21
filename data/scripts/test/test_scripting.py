@@ -117,11 +117,15 @@ volume = volumeintegral(0)
 testAddSemiCircle = test("addsemicircle()", volume["S"], (pi*(r**2))/2)
 
 # savedocument, opendocument
-savedocument("test_scripting.a2d")
-opendocument("test_scripting.a2d")
+import tempfile, os
+fn = tempfile.gettempdir() + "/test.a2d"
+savedocument(fn)
+opendocument(fn)
 solve()
 volume = volumeintegral(0)
 testSaveDocument = test("addsemicircle()", volume["S"], (pi*(r**2))/2)
+closedocument()
+os.remove(fn)
 
 print("Test: Scripting: " + str(testMoveSelection1 and testMoveSelection2 and testScaleSelection1 and testScaleSelection2 and testRotateSelection1 and testRotateSelection2 and testAddRect and testAddCircle and testAddSemiCircle and testSaveDocument))
 

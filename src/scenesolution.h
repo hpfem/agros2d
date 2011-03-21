@@ -79,7 +79,7 @@ public:
     inline Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     // order view
-    Orderizer &ordView();
+    Orderizer *ordView();
 
     inline int timeElapsed() { return m_timeElapsed; }
     double adaptiveError();

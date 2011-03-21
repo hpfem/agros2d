@@ -61,24 +61,24 @@ int main(int argc, char *argv[])
     // first run
     if (settings.value("General/GUIStyle").value<QString>().isEmpty())
     {
-        QString style = "";
+        QString styleName = "";
         QStringList styles = QStyleFactory::keys();
 
 #ifdef Q_WS_X11
         // kde 3
         if (getenv("KDE_FULL_SESSION") != NULL)
-            style = "Plastique";
+            styleName = "Plastique";
         // kde 4
         if (getenv("KDE_SESSION_VERSION") != NULL)
         {
             if (styles.contains("Oxygen"))
-                style = "Oxygen";
+                styleName = "Oxygen";
             else
-                style = "Plastique";
+                styleName = "Plastique";
         }
         // gtk+
-        if (style == "")
-            style = "GTK+";
+        if (styleName == "")
+            styleName = "GTK+";
 #endif
 
 #ifdef Q_WS_WIN
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
     style = "Aqua";
 #endif
 
-        settings.setValue("General/GUIStyle", style);
+        settings.setValue("General/GUIStyle", styleName);
     }
 
     // setting gui style

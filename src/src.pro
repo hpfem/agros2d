@@ -7,11 +7,11 @@ CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=8
-DEFINES += VERSION_SUB=0
-DEFINES += VERSION_GIT=645
+DEFINES += VERSION_SUB=1
+DEFINES += VERSION_GIT=659
 DEFINES += VERSION_YEAR=2011
 DEFINES += VERSION_MONTH=3
-DEFINES += VERSION_DAY=10
+DEFINES += VERSION_DAY=18
 
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
@@ -20,15 +20,19 @@ linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
     lang/de_DE.ts
-CONFIG += help
 CODECFORTR = UTF-8
 RC_FILE = src.rc
 RESOURCES = src.qrc
 TARGET = agros2d
 DESTDIR = ../
 TEMPLATE = app
-QMAKE_CXXFLAGS_DEBUG += -w
-QMAKE_CXXFLAGS += -w
+CONFIG += warn_off
+# QMAKE_CXXFLAGS_DEBUG += -Wno-builtin-macro-redefined -Wunused-variable -Wreturn-type
+# QMAKE_CXXFLAGS += -fno-strict-aliasing -Wno-builtin-macro-redefined
+# QMAKE_CXXFLAGS_DEBUG += -w
+# QMAKE_CXXFLAGS += -w
+# QMAKE_CXXFLAGS_DEBUG += -Wuninitialized
+# QMAKE_CXXFLAGS += -Wuninitialized
 OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
@@ -73,7 +77,10 @@ SOURCES += util.cpp \
     tooltipview.cpp \
     scenebasicselectdialog.cpp \
     logdialog.cpp \
-    postprocessorview.cpp
+    postprocessorview.cpp \
+    style/stylehelper.cpp \
+    style/styleanimator.cpp \
+    style/manhattanstyle.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -112,7 +119,10 @@ HEADERS += util.h \
     tooltipview.h \
     scenebasicselectdialog.h \
     logdialog.h \
-    postprocessorview.h
+    postprocessorview.h \
+    style/stylehelper.h \
+    style/styleanimator.h \
+    style/manhattanstyle.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common
@@ -128,7 +138,6 @@ linux-g++ {
     INCLUDEPATH += /usr/include/superlu
     INCLUDEPATH += /usr/include/qwt-qt4
     INCLUDEPATH += /usr/include/python2.6
-    INCLUDEPATH += /usr/include/python2.7
     INCLUDEPATH += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_python_inc()\"")
     INCLUDEPATH += ../hermes2d/src
     LIBS += -L../hermes2d/lib
@@ -139,7 +148,6 @@ linux-g++ {
     LIBS += -lamd
     LIBS += -lblas
     LIBS += -lpthread
-    LIBS += -lrt
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
     LIBS += -lqwt-qt4

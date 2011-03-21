@@ -39,6 +39,7 @@ class SceneEdgeMarker;
 class SceneLabelMarker;
 struct SceneViewSettings;
 class SceneSolution;
+class ScriptEngineRemote;
 
 class ProblemDialog;
 class SceneTransformDialog;
@@ -240,6 +241,7 @@ private:
     Scene *m_scene;
     QCompleter *m_completer;
     Config *m_config;
+    ScriptEngineRemote *m_scriptEngineRemote;
 };
 
 #endif /* SCENE_H */

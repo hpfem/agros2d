@@ -541,7 +541,7 @@ void PostprocessorView::setControls()
     cmbScalarFieldVariable->setEnabled(false);
     cmbScalarFieldVariableComp->setEnabled(false);
     chkScalarFieldRangeAuto->setEnabled(false);
-    cmbVectorFieldVariable->setEnabled(false);
+    cmbVectorFieldVariable->setEnabled(chkShowVectors->isChecked());
 
     if (isSolved && (radPostprocessorScalarField->isChecked() ||
                      radPostprocessorScalarField3D->isChecked() ||
@@ -549,7 +549,6 @@ void PostprocessorView::setControls()
     {
         cmbScalarFieldVariable->setEnabled(true);
         cmbScalarFieldVariableComp->setEnabled(true);
-        cmbVectorFieldVariable->setEnabled(chkShowVectors->isChecked());
 
         chkScalarFieldRangeAuto->setEnabled(true);
         doScalarFieldRangeAuto(-1);

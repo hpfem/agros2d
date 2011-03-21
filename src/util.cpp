@@ -20,6 +20,7 @@
 #include "util.h"
 #include "scene.h"
 #include "scripteditordialog.h"
+#include "style/manhattanstyle.h"
 
 bool verbose = false;
 
@@ -797,7 +798,39 @@ void setGUIStyle(const QString &styleName)
 {
     logMessage("setGUIStyle()");
 
-    QStyle *style = QStyleFactory::create(styleName);
+    QStyle *style = NULL;
+    if (styleName == "Manhattan")
+    {
+        QString styleName = "";
+        QStringList styles = QStyleFactory::keys();
+
+#ifdef Q_WS_X11
+        // kde 3
+        if (getenv("KDE_FULL_SESSION") != NULL)
+            styleName = "Plastique";
+        // kde 4
+        if (getenv("KDE_SESSION_VERSION") != NULL)
+        {
+            if (styles.contains("Oxygen"))
+                styleName = "Oxygen";
+            else
+                styleName = "Plastique";
+        }
+
+        // gtk+
+        if (styleName == "")
+            styleName = "GTK+";
+#else
+        styleName = "Plastique";
+#endif
+
+        style = new ManhattanStyle(styleName);
+    }
+    else
+    {
+        // standard style
+        style = QStyleFactory::create(styleName);
+    }
 
     QApplication::setStyle(style);
     if (QApplication::desktopSettingsAware())

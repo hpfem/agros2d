@@ -209,7 +209,11 @@ void LocalPointValueView::doShowPoint()
     trvWidget->insertTopLevelItem(0, pointNode);
 
     if (Util::scene()->sceneSolution()->isSolved())
-        Util::scene()->problemInfo()->hermes()->showLocalValue(trvWidget, Util::scene()->problemInfo()->hermes()->localPointValue(point));
+    {
+        LocalPointValue *value = Util::scene()->problemInfo()->hermes()->localPointValue(point);
+        Util::scene()->problemInfo()->hermes()->showLocalValue(trvWidget, value);
+        delete value;
+    }
 
     trvWidget->resizeColumnToContents(2);
 }

@@ -3291,7 +3291,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="168"/>
         <source>Linear solver:</source>
-        <translation>Řěšič:</translation>
+        <translation>Řešič:</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="174"/>

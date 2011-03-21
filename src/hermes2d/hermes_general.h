@@ -28,6 +28,7 @@ struct HermesGeneral : public HermesField
     Q_OBJECT
 public:
     HermesGeneral() { m_physicField = PhysicField_General; }
+    virtual ~HermesGeneral() {}
 
     inline int numberOfSolution() { return 1; }
     bool hasHarmonic() { return false; }
