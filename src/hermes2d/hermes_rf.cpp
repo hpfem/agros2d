@@ -126,18 +126,46 @@ Scalar rf_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
                 + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
                 * int_u_v<Real, Scalar>(n, wt, u, v);*/
 }
-
+/*
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].J_ext_imag;
 }
+*/
 
+template<typename Real, typename Scalar>
+Scalar rf_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    Scalar result = 0 ;
+    int u = 0;
+    for (int i = 0; i < n; i++)
+      result += wt[i] * (rfLabel[e->elem_marker].J_ext_imag * v->val[i]);
+
+    return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * result;
+}
+
+
+/*
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     return 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].J_ext_real;
 }
+*/
+
+template<typename Real, typename Scalar>
+Scalar rf_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    Scalar result = 0 ;
+    int u = 0;
+    for (int i = 0; i < n; i++)
+      result += wt[i] * (rfLabel[e->elem_marker].J_ext_real * v->val[i]);
+
+
+    return 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * result;
+}
+
 
 void callbackRFWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
@@ -848,6 +876,22 @@ void ViewScalarFilterRF::calculateVariable(int i)
     }
         break;
     case PhysicFieldVariable_RF_EnergyDensity:
+    {
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+        {
+            node->values[0][0][i] = 0.25 * (sqr(dudx1[i]) + sqr(dudy1[i])) / (marker->permeability.number * MU0);
+            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+                node->values[0][0][i] += 0.25 * (sqr(dudx2[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
+        }
+        else
+        {
+            node->values[0][0][i] = 0.25 * (sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+                node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+        }
+    }
+    case PhysicFieldVariable_RF_PowerLosses: // prepocitat a upravit !!!
     {
         SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
