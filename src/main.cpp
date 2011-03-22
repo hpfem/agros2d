@@ -83,16 +83,16 @@ int main(int argc, char *argv[])
 
 #ifdef Q_WS_WIN
         if (styles.contains("WindowsVista"))
-            style = "WindowsVista";
+            styleName = "WindowsVista";
         else if (styles.contains("WindowsXP"))
-            style = "WindowsXP";
+            styleName = "WindowsXP";
         else
-            style = "Windows";
+            styleName = "Windows";
 #endif
 
 
 #ifdef Q_WS_MAC
-    style = "Aqua";
+    styleName = "Aqua";
 #endif
 
         settings.setValue("General/GUIStyle", styleName);
