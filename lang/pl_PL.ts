@@ -7,57 +7,57 @@
     <message>
         <location filename="../src/gui.cpp" line="781"/>
         <source>About...</source>
-        <translation type="unfinished"></translation>
+        <translation>O...</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="797"/>
         <source>Agros2D</source>
-        <translation type="unfinished"></translation>
+        <translation>Agros2D</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="798"/>
         <source>Hermes2D</source>
-        <translation type="unfinished"></translation>
+        <translation>Hermes2D</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="799"/>
         <source>Libraries</source>
-        <translation type="unfinished"></translation>
+        <translation>Biblioteki</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="800"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Licencja</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="802"/>
         <source>Close</source>
-        <translation type="unfinished">Zamknij</translation>
+        <translation>Zamknij</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="803"/>
         <source>Check version</source>
-        <translation type="unfinished">Sprawdź wersje</translation>
+        <translation>Sprawdź wersje</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="823"/>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D jest programem służącym modelowania zagadnień polowych. Rozwiązywanie równań różniczkowych cząstkowych oparte jest o bibliotekę &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt;, która wykorzystuje metodę elementów skończonych wraz z automatyczną adaptacją stopnia i rozmiarów elementów (&lt;i&gt;hp&lt;/i&gt;-FEM).&lt;br/&gt;&lt;br/&gt;Strona projektu: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Zgłoszenia błędów: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - główny programista (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; - programista, dokumentacja (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polskie tłumaczenie (Politechnika Warszawska)&lt;br/&gt;&lt;b&gt;Vaclav Kotlan&lt;/b&gt; - niemieckie tłumaczenie (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="860"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Hermes2D&lt;/h3&gt;Strona projektu: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (lider projektu, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="899"/>
         <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Nokia Qt:&lt;/b&gt; Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;FFmpeg:&lt;/b&gt; FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Biblioteki&lt;/h3&gt;&lt;b&gt;Nokia Qt:&lt;/b&gt; Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - zestaw przenośnych bibliotek&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; język programowania Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;FFmpeg:&lt;/b&gt; FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui.cpp" line="921"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Licencja:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -2443,27 +2443,27 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="194"/>
         <source>Export mesh file...</source>
-        <translation>Export siatki...</translation>
+        <translation>Eksport siatki...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="198"/>
         <source>Export VTK scalar...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport VTK skalarne...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="199"/>
         <source>Export scalar view as VTK file</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj pole skalarne do pliku VTK</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="202"/>
         <source>Export VTK order...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport VTK stopień wielomianu...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="203"/>
         <source>Export order view as VTK file</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport stopnia wielomianu do pliku VTK</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="206"/>
@@ -2720,7 +2720,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="326"/>
         <source>Import/Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Import/Eksport</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="374"/>
@@ -2740,13 +2740,13 @@
         <location filename="../src/mainwindow.cpp" line="1225"/>
         <location filename="../src/mainwindow.cpp" line="1256"/>
         <source>Export vtk file</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport pliku vtk</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1225"/>
         <location filename="../src/mainwindow.cpp" line="1256"/>
         <source>VTK files (*.vtk)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki VTK (*.vtk)</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="325"/>
@@ -2836,42 +2836,42 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="602"/>
         <source>Mode: Add node</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb: Dodawanie węzłów</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="605"/>
         <source>Mode: Add edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb: Dodawanie krawędzi</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="608"/>
         <source>Mode: Add label</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb: Dodawanie etykiet</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="616"/>
         <source>Mode: Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb: Przesunięcie</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="619"/>
         <source>Mode: Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb: Obrót</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="626"/>
         <source>Mode: Move node</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb: Przesunięcie węzła</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="629"/>
         <source>Mode: Move edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb: Przesunięcie krawędzi</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="632"/>
         <source>Mode: Move label</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb: Przesunięcie etykiety</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="731"/>
@@ -2986,7 +2986,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="179"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Podstawowy</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="180"/>
@@ -2996,7 +2996,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="183"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastosuj</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="209"/>
@@ -3006,7 +3006,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="210"/>
         <source>Initial mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka początkowa</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="217"/>
@@ -3024,12 +3024,12 @@
         <location filename="../src/postprocessorview.cpp" line="220"/>
         <location filename="../src/postprocessorview.cpp" line="392"/>
         <source>Scalar view</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole skalarne</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="221"/>
         <source>Scalar view solid</source>
-        <translation type="unfinished">Pole skalarne, bryła</translation>
+        <translation>Pole skalarne, bryła</translation>
     </message>
     <message>
         <source>Postprocessor</source>
@@ -3054,12 +3054,12 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="239"/>
         <source>2D:</source>
-        <translation type="unfinished"></translation>
+        <translation>2D:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="243"/>
         <source>3D:</source>
-        <translation type="unfinished"></translation>
+        <translation>3D:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="248"/>
@@ -3069,7 +3069,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="257"/>
         <source>Auto range</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakres autom.</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="275"/>
@@ -3080,7 +3080,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="278"/>
         <source>Component:</source>
-        <translation type="unfinished"></translation>
+        <translation>Składnik:</translation>
     </message>
     <message>
         <source>Auto range:</source>
@@ -3109,7 +3109,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="312"/>
         <source>Time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Czas:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="315"/>
@@ -3178,7 +3178,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="382"/>
         <source>Steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kroki:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="385"/>
@@ -3188,7 +3188,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="389"/>
         <source>Decimal places:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba miejsc po przecinku:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="396"/>
@@ -3228,7 +3228,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="463"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalarne</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="467"/>
@@ -3518,12 +3518,12 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="241"/>
         <source>Mesh files were created</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki siatki zostały utworzone</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="263"/>
         <source>Mesh files were deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki siatki zostały skasowane</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="277"/>
@@ -4805,12 +4805,12 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="75"/>
         <source>Contour view</source>
-        <translation type="unfinished"></translation>
+        <translation>Izolinie</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="76"/>
         <source>Vector view</source>
-        <translation type="unfinished">Pola wektorowe</translation>
+        <translation>Pola wektorowe</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="77"/>
@@ -5049,12 +5049,12 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="568"/>
         <source>ContourView: </source>
-        <translation type="unfinished"></translation>
+        <translation>Izolinie</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="573"/>
         <source>VectorView: </source>
-        <translation type="unfinished"></translation>
+        <translation>Pola wektorowe</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="661"/>
@@ -5632,7 +5632,7 @@
         <location filename="../src/sceneview.cpp" line="2401"/>
         <location filename="../src/sceneview.cpp" line="2421"/>
         <source>Undefined: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznane: %1.</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="2804"/>
