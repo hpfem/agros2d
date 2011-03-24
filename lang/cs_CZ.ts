@@ -528,7 +528,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="482"/>
         <source>Contours</source>
-        <translation>Ekvičáry</translation>
+        <translation>Kontury</translation>
     </message>
     <message>
         <source>Proportional</source>
@@ -636,7 +636,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="588"/>
         <source>Contours:</source>
-        <translation>Ekvičáry:</translation>
+        <translation>Kontury:</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="590"/>
@@ -3049,7 +3049,7 @@
         <location filename="../src/postprocessorview.cpp" line="211"/>
         <location filename="../src/postprocessorview.cpp" line="352"/>
         <source>Contours</source>
-        <translation>Ekvičáry</translation>
+        <translation>Kontury</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="212"/>
@@ -3129,7 +3129,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="349"/>
         <source>Contours count:</source>
-        <translation>Počet ekvičar:</translation>
+        <translation>Počet kontur:</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="357"/>
@@ -3640,7 +3640,7 @@
     <message>
         <location filename="../src/progressdialog.cpp" line="840"/>
         <source>Processing countour view cache</source>
-        <translation>Zpracování dat pro ekvičáry</translation>
+        <translation>Zpracování dat pro kontury</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.cpp" line="848"/>
@@ -4845,7 +4845,7 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="75"/>
         <source>Contour view</source>
-        <translation>Ekvičáry</translation>
+        <translation>Kontury</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="76"/>
@@ -5018,7 +5018,7 @@
     <message>
         <location filename="../src/reportdialog.cpp" line="568"/>
         <source>ContourView: </source>
-        <translation>Ekvičáry:</translation>
+        <translation>Kontury:</translation>
     </message>
     <message>
         <location filename="../src/reportdialog.cpp" line="573"/>
@@ -5580,7 +5580,7 @@
     <message>
         <location filename="../src/sceneview.cpp" line="229"/>
         <source>Contours</source>
-        <translation>Ekvičáry</translation>
+        <translation>Kontury</translation>
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="243"/>

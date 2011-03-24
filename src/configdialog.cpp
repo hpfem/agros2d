@@ -271,6 +271,7 @@ void ConfigDialog::createControls()
     lstView->setIconSize(QSize(60, 60));
     lstView->setMinimumWidth(135);
     lstView->setMaximumWidth(135);
+    lstView->setMinimumHeight((60+fontMetrics().height()*4)*5);
     connect(lstView, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
                this, SLOT(doCurrentItemChanged(QListWidgetItem *, QListWidgetItem *)));
 
