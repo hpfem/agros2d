@@ -9,6 +9,7 @@ Content of Agros2D Documentation
    ./scripting/scripting.rst
    ./program_features/program_features.rst
    ./examples/examples.rst
+   ./compile_win/compile_win.rst
    ./glossary.rst
    ./changelog.rst
 
