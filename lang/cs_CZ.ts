@@ -1918,12 +1918,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="553"/>
         <source>Magnetic field - real</source>
-        <translation>Intenzita mag. pole - reál. složka</translation>
+        <translation>Magnetické pole - reál. složka</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="562"/>
         <source>Magnetic field - imag</source>
-        <translation>Intenzita mag. pole - imag. složka</translation>
+        <translation>Magnetické pole - imag. složka</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="571"/>
@@ -3727,7 +3727,7 @@
         <location filename="../src/util.cpp" line="239"/>
         <location filename="../src/util.cpp" line="609"/>
         <source>Magnetic field</source>
-        <translation>Intenzita mag. pole</translation>
+        <translation>Magnetické pole</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="271"/>
@@ -3857,12 +3857,12 @@
     <message>
         <location filename="../src/util.cpp" line="235"/>
         <source>Magnetic field - real</source>
-        <translation>Intenzita mag. pole - reál. složka</translation>
+        <translation>Magnetické pole - reál. složka</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="237"/>
         <source>Magnetic field - imag</source>
-        <translation>Intenzita mag. pole - imag. složka</translation>
+        <translation>Magnetické pole - imag. složka</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="284"/>
