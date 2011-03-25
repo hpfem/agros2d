@@ -374,8 +374,8 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Conductivity");
     case PhysicFieldVariable_Acoustic_Pressure:
         return QObject::tr("Pressure");        
-        case PhysicFieldVariable_Acoustic_PressureGradient:
-            return QObject::tr("Pressure gradient");
+    case PhysicFieldVariable_Acoustic_PressureGradient:
+        return QObject::tr("Pressure gradient");
     case PhysicFieldVariable_Acoustic_Density:
         return QObject::tr("Density");
     case PhysicFieldVariable_Acoustic_Speed:
