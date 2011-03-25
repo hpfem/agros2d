@@ -3632,7 +3632,7 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="261"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="343"/>
         <source>Boundary type &apos;%1&apos; is not supported.</source>
-        <translation>Der Typ der Randbedingung &apos;%1&apos; ist nicht unterstüzt.</translation>
+        <translation>Der Typ der Randbedingung &apos;%1&apos; ist nicht unterstützt.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="199"/>
@@ -3659,7 +3659,7 @@
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="379"/>
         <source>Boundary type &apos;%1&apos; or &apos;%2&apos; is not supported.</source>
-        <translation>Der Typ der Randbedingung &apos;%1&apos; oder &apos;%2&apos; ist nicht unterstüzt.</translation>
+        <translation>Der Typ der Randbedingung &apos;%1&apos; oder &apos;%2&apos; ist nicht unterstützt.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="257"/>
@@ -3671,7 +3671,7 @@
         <location filename="../src/hermes2d/hermes_field.cpp" line="312"/>
         <location filename="../src/hermes2d/hermes_field.cpp" line="427"/>
         <source>DOF is zero</source>
-        <translation>FG ist Null</translation>
+        <translation>FG ist null</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="298"/>
@@ -3704,17 +3704,17 @@
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="65"/>
         <source>Script message</source>
-        <translation>Bericht des Skripts</translation>
+        <translation>Bericht des Skriptes</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="73"/>
         <source>Script input</source>
-        <translation>Eingang des Skripts</translation>
+        <translation>Eingang des Skriptes</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="85"/>
         <source>Problem is not meshed.</source>
-        <translation>Es ist nicht möglich, das Netz des Problems anfertigen.</translation>
+        <translation>Das Problem kann man nicht vernetzt.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="95"/>
@@ -3766,113 +3766,113 @@
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="180"/>
         <source>The frequency can not be used for this problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Für diesen Typ des Problems kann man nicht die Frequenz vergeben.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="186"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="191"/>
         <source>Analysis type &apos;%1&apos; is not implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Typ der Analyse &apos;%1&apos; ist nicht implementiert</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="197"/>
         <source>Time step must be positive.</source>
-        <translation type="unfinished">Der Zeitschritt muss positiv sein.</translation>
+        <translation>Der Zeitschritt muss positiv sein.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="203"/>
         <source>Total time must be positive.</source>
-        <translation type="unfinished">Die Gesamtzeit muss positiv sein.</translation>
+        <translation>Die Gesamtzeit muss positiv sein.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="259"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="296"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="324"/>
         <source>Index &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Index &apos;%1&apos; ist außer Umfang.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="276"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Winkel &apos;%1&apos; ist außer Umfang.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="280"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="314"/>
         <source>Marker &apos;%1&apos; is not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Zeichen &apos;%1&apos; ist nich definiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="348"/>
         <source>Boundary marker already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Zeichen der Randbedingung existiert schon.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="377"/>
         <source>Label marker already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Zeichen des Gebietes existriert schon.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="443"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Index des Knotens muss zwischen 0 und &apos;%1&apos; sein.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="486"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="743"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Index der Kante muss zwischen 0 und &apos;%1&apos; sein.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="529"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="793"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Index des Gebietszeichen muss zwischen 0 und &apos;%1&apos; sein.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="658"/>
         <source>Mode &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Modus &apos;%1&apos; ist nicht implementiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="680"/>
         <source>Postprocessor mode &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Modus des Postprozessors. &apos;%1&apos; ist nicht implementiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="829"/>
         <source>View type &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Typ der Abbildung &apos;%1&apos; ist nicht implementiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="834"/>
         <source>Physic field variable &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Veränderliche &apos;%1&apos; des physikalischen Feldes ist nicht implementiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="836"/>
         <source>Physic field variable &apos;%1&apos; cannot be used with this field.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Veränderliche &apos;%1&apos; des physikalischen Feldes kann man nicht in diesemTyp des Feldes benutzen.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="841"/>
         <source>Physic field variable component &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Komponente &apos;%1&apos; der Veränderlichen des physikalischen Feldes ist nicht implementiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="844"/>
         <source>Physic field variable is scalar variable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Veränderliche des physikalischen Feldes ist eine skalare Veränderliche.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="927"/>
         <source>Solved problem is not transient.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das gelöste Problem ist nicht der Einschwingvorgang.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="930"/>
         <source>Time step must be between 0 and %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Zeitschritt muss zwischen 0 und &apos;%1&apos; sein.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="205"/>
@@ -3968,160 +3968,160 @@
     <message>
         <location filename="../src/util.cpp" line="241"/>
         <source>Current density - external - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte - externe - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="243"/>
         <source>Current density - external - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte - externe - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="245"/>
         <source>Current density - external</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte - externe</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="247"/>
         <source>Current density - total - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - gesamte - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="249"/>
         <source>Current density - total - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - gesamte - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="251"/>
         <source>Current density - total</source>
-        <translation type="unfinished">Stromdichte  - gesamte</translation>
+        <translation>Stromdichte  - gesamte</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="253"/>
         <source>Current density - induced transform - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - induzierte transf. - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="255"/>
         <source>Current density - induced transform - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - induzierte transf. - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="257"/>
         <source>Current density - induced transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - induzierte transf. </translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="259"/>
         <source>Current density - induced velocity - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - induzierte dynamische - Realkomponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="261"/>
         <source>Current density - induced velocity - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - induzierte dynamische - imag. Komponente</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="263"/>
         <source>Current density - induced velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromdichte  - induzierte dynamische</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="265"/>
         <location filename="../src/util.cpp" line="286"/>
         <source>Power losses</source>
-        <translation type="unfinished"></translation>
+        <translation>Energieverluste</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="267"/>
         <source>Lorentz force</source>
-        <translation type="unfinished"></translation>
+        <translation>Lorentz Kraft</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="271"/>
         <source>Permeability</source>
-        <translation type="unfinished"></translation>
+        <translation>Permeabilität</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="273"/>
         <location filename="../src/util.cpp" line="288"/>
         <location filename="../src/util.cpp" line="297"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Leitfähigkeit</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="275"/>
         <source>Remanent flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Remanente magnetische Induktion</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="277"/>
         <location filename="../src/util.cpp" line="321"/>
         <location filename="../src/util.cpp" line="679"/>
         <source>Velocity</source>
-        <translation type="unfinished">Geschwindigkeit</translation>
+        <translation>Geschwindigkeit</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="284"/>
         <source>Current density</source>
-        <translation type="unfinished">Stromdichte</translation>
+        <translation>Stromdichte</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="291"/>
         <location filename="../src/util.cpp" line="663"/>
         <source>Temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatur</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="293"/>
         <source>Temperature gradient</source>
-        <translation type="unfinished">Temperaturgradient</translation>
+        <translation>Temperaturgradient</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="295"/>
         <location filename="../src/util.cpp" line="665"/>
         <source>Heat flux</source>
-        <translation type="unfinished">Wärmefluss</translation>
+        <translation>Wärmefluss</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="300"/>
         <source>Von Mises stress</source>
-        <translation type="unfinished"></translation>
+        <translation>Von-Mises-Spannung</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="304"/>
         <location filename="../src/util.cpp" line="306"/>
         <location filename="../src/util.cpp" line="308"/>
         <source>Normal strain </source>
-        <translation type="unfinished"></translation>
+        <translation>Normaldeformation</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="310"/>
         <source>Shear strain </source>
-        <translation type="unfinished"></translation>
+        <translation>Scherdeformation</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="312"/>
         <location filename="../src/util.cpp" line="314"/>
         <location filename="../src/util.cpp" line="316"/>
         <source>Normal stress </source>
-        <translation type="unfinished"></translation>
+        <translation>Normalspannung</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="318"/>
         <source>Shear stress </source>
-        <translation type="unfinished"></translation>
+        <translation>Scherspannung</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="323"/>
         <location filename="../src/util.cpp" line="325"/>
         <source>Velocity </source>
-        <translation type="unfinished"></translation>
+        <translation>Geschwindigkeit</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="327"/>
         <location filename="../src/util.cpp" line="681"/>
         <source>Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation>Druck</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="341"/>
@@ -4130,177 +4130,177 @@
         <location filename="../src/util.cpp" line="481"/>
         <location filename="../src/util.cpp" line="547"/>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="343"/>
         <location filename="../src/util.cpp" line="429"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="345"/>
         <source>C</source>
-        <translation type="unfinished">C</translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="350"/>
         <location filename="../src/util.cpp" line="418"/>
         <location filename="../src/util.cpp" line="436"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="352"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="354"/>
         <source>we</source>
-        <translation type="unfinished"></translation>
+        <translation>we</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="356"/>
         <source>epsr</source>
-        <translation type="unfinished"></translation>
+        <translation>epsr</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="359"/>
         <source>Are</source>
-        <translation type="unfinished"></translation>
+        <translation>Are</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="361"/>
         <source>Aim</source>
-        <translation type="unfinished"></translation>
+        <translation>Aim</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="363"/>
         <source>A</source>
-        <translation type="unfinished">A</translation>
+        <translation>AA</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="365"/>
         <source>Bre</source>
-        <translation type="unfinished"></translation>
+        <translation>Bre</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="367"/>
         <source>Bim</source>
-        <translation type="unfinished"></translation>
+        <translation>Bim</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="369"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="371"/>
         <source>Hre</source>
-        <translation type="unfinished"></translation>
+        <translation>Hre</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="373"/>
         <source>Him</source>
-        <translation type="unfinished"></translation>
+        <translation>Him</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="375"/>
         <source>H</source>
-        <translation type="unfinished"></translation>
+        <translation>H</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="377"/>
         <source>Jere</source>
-        <translation type="unfinished"></translation>
+        <translation>Jere</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="379"/>
         <source>Jeim</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeim</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="381"/>
         <source>Je</source>
-        <translation type="unfinished"></translation>
+        <translation>Je</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="383"/>
         <source>Jtre</source>
-        <translation type="unfinished"></translation>
+        <translation>Jtre</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="385"/>
         <source>Jtim</source>
-        <translation type="unfinished"></translation>
+        <translation>Jtim</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="387"/>
         <source>Jt</source>
-        <translation type="unfinished"></translation>
+        <translation>Jt</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="389"/>
         <source>Jitre</source>
-        <translation type="unfinished"></translation>
+        <translation>Jitre</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="391"/>
         <source>Jitim</source>
-        <translation type="unfinished"></translation>
+        <translation>Jitim</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="393"/>
         <source>Jit</source>
-        <translation type="unfinished"></translation>
+        <translation>Jit</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="395"/>
         <source>Jivre</source>
-        <translation type="unfinished"></translation>
+        <translation>Jivre</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="397"/>
         <source>Jivim</source>
-        <translation type="unfinished"></translation>
+        <translation>Jivim</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="399"/>
         <source>Jiv</source>
-        <translation type="unfinished"></translation>
+        <translation>Jiv</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="401"/>
         <location filename="../src/util.cpp" line="422"/>
         <source>pj</source>
-        <translation type="unfinished"></translation>
+        <translation>pj</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="403"/>
         <source>FL</source>
-        <translation type="unfinished"></translation>
+        <translation>FL</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="405"/>
         <source>wm</source>
-        <translation type="unfinished"></translation>
+        <translation>wm</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="407"/>
         <source>mur</source>
-        <translation type="unfinished"></translation>
+        <translation>mur</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="409"/>
         <location filename="../src/util.cpp" line="424"/>
         <source>g</source>
-        <translation type="unfinished"></translation>
+        <translation>g</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="411"/>
         <source>Br</source>
-        <translation type="unfinished"></translation>
+        <translation>Br</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="413"/>
@@ -4308,12 +4308,12 @@
         <location filename="../src/util.cpp" line="459"/>
         <location filename="../src/util.cpp" line="461"/>
         <source>v</source>
-        <translation type="unfinished"></translation>
+        <translation>v</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="420"/>
         <source>J</source>
-        <translation type="unfinished">J</translation>
+        <translation>J</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="427"/>
@@ -4322,22 +4322,22 @@
         <location filename="../src/util.cpp" line="501"/>
         <location filename="../src/util.cpp" line="543"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="431"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="433"/>
         <source>k</source>
-        <translation type="unfinished"></translation>
+        <translation>k</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="438"/>
         <source>d</source>
-        <translation type="unfinished"></translation>
+        <translation>d</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="440"/>
@@ -4345,7 +4345,7 @@
         <location filename="../src/util.cpp" line="444"/>
         <location filename="../src/util.cpp" line="446"/>
         <source>e</source>
-        <translation type="unfinished"></translation>
+        <translation>e</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="448"/>
@@ -4353,29 +4353,29 @@
         <location filename="../src/util.cpp" line="452"/>
         <location filename="../src/util.cpp" line="454"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="463"/>
         <source>p</source>
-        <translation type="unfinished"></translation>
+        <translation>p</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="483"/>
         <location filename="../src/util.cpp" line="549"/>
         <source>V/m</source>
-        <translation type="unfinished"></translation>
+        <translation>V/m</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="485"/>
         <source>C/m2</source>
-        <translation type="unfinished"></translation>
+        <translation>C/m2</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="487"/>
         <location filename="../src/util.cpp" line="537"/>
         <source>J/m3</source>
-        <translation type="unfinished"></translation>
+        <translation>J/m3</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="489"/>
@@ -4385,14 +4385,14 @@
         <location filename="../src/util.cpp" line="573"/>
         <location filename="../src/util.cpp" line="575"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="491"/>
         <location filename="../src/util.cpp" line="493"/>
         <location filename="../src/util.cpp" line="495"/>
         <source>Wb/m</source>
-        <translation type="unfinished"></translation>
+        <translation>Wb/m</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="503"/>
@@ -4402,7 +4402,7 @@
         <location filename="../src/util.cpp" line="511"/>
         <location filename="../src/util.cpp" line="513"/>
         <source>A/m</source>
-        <translation type="unfinished"></translation>
+        <translation>A/m</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="515"/>
@@ -4416,24 +4416,24 @@
         <location filename="../src/util.cpp" line="531"/>
         <location filename="../src/util.cpp" line="551"/>
         <source>A/m2</source>
-        <translation type="unfinished"></translation>
+        <translation>A/m2</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="533"/>
         <location filename="../src/util.cpp" line="553"/>
         <source>W/m3</source>
-        <translation type="unfinished">W/m3</translation>
+        <translation>W/m3</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="535"/>
         <source>N/m3</source>
-        <translation type="unfinished"></translation>
+        <translation>N/m3</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="541"/>
         <location filename="../src/util.cpp" line="555"/>
         <source>S/m</source>
-        <translation type="unfinished"></translation>
+        <translation>S/m</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="545"/>
@@ -4441,27 +4441,27 @@
         <location filename="../src/util.cpp" line="587"/>
         <location filename="../src/util.cpp" line="589"/>
         <source>m/s</source>
-        <translation type="unfinished"></translation>
+        <translation>m/s</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="557"/>
         <source>deg.</source>
-        <translation type="unfinished">gr.</translation>
+        <translation>gr.</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="559"/>
         <source>K/m</source>
-        <translation type="unfinished"></translation>
+        <translation>K/m</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="561"/>
         <source>W/m2</source>
-        <translation type="unfinished">W/m2</translation>
+        <translation>W/m2</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="563"/>
         <source>W/m.K</source>
-        <translation type="unfinished">W/m.K</translation>
+        <translation>W/m.K</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="565"/>
@@ -4471,87 +4471,87 @@
         <location filename="../src/util.cpp" line="583"/>
         <location filename="../src/util.cpp" line="591"/>
         <source>Pa</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="567"/>
         <source>m</source>
-        <translation type="unfinished">m</translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="605"/>
         <source>General</source>
-        <translation type="unfinished">Allgemain</translation>
+        <translation>Allgemain</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="607"/>
         <source>Electrostatic field</source>
-        <translation type="unfinished">Elektrostatisches Feld</translation>
+        <translation>Elektrostatisches Feld</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="611"/>
         <source>Current field</source>
-        <translation type="unfinished">El. Stormfeld</translation>
+        <translation>El. Stormfeld</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="613"/>
         <source>Heat transfer</source>
-        <translation type="unfinished">Temperaturfeld</translation>
+        <translation>Temperaturfeld</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="615"/>
         <source>Structural mechanics</source>
-        <translation type="unfinished"></translation>
+        <translation>Strukturmechanik</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="617"/>
         <source>Incompressible flow</source>
-        <translation type="unfinished"></translation>
+        <translation>Inkompressible Strömung</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="631"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>Dauerzustand</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="633"/>
         <source>Transient</source>
-        <translation type="unfinished">Einschwingvorgang</translation>
+        <translation>Einschwingvorgang</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="635"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonische Analyse</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="649"/>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>Nichts</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="651"/>
         <source>Value</source>
-        <translation type="unfinished">Wert</translation>
+        <translation>Wert</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="653"/>
         <source>Derivative</source>
-        <translation type="unfinished"></translation>
+        <translation>Derivation</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="655"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrisches Potential</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="657"/>
         <source>Surface charge density</source>
-        <translation type="unfinished"></translation>
+        <translation>Oberflächliche Ladungsdichte</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="661"/>
         <source>Surface current density</source>
-        <translation type="unfinished"></translation>
+        <translation>Oberflächliche Stormdichte</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="667"/>
