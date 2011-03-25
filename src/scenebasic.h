@@ -85,6 +85,7 @@ public:
     double radius();
     double distance(const Point &point);
     int segments(); // needed by mesh generator
+    double length();
 
     int showDialog(QWidget *parent, bool isNew = false);
 };

@@ -27,6 +27,9 @@ struct RFEdge
     PhysicFieldBC type;
     double value_real;
     double value_imag;
+    Point start;
+    Point end;
+    double angle;
 };
 
 struct RFLabel
@@ -42,9 +45,50 @@ RFEdge *rfEdge;
 RFLabel *rfLabel;
 
 template<typename Real, typename Scalar>
+Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (!(rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MatchedBoundary
+       || rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port))
+        return 0.0;
+
+    double mu = rfLabel[e->elem_marker].permeability * MU0;
+    double eps = rfLabel[e->elem_marker].permittivity * EPS0;
+    // FIXME: pro port zadavat z GUI
+    int mode = 1;
+    // FIXME: zadavat z GUI
+    double height = 0.01016;
+
+    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
+
+    return - beta * int_u_v<Real, Scalar>(n, wt, u, v);
+}
+
+template<typename Real, typename Scalar>
+Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (!(rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MatchedBoundary
+       || rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port))
+        return 0.0;
+
+    double mu = rfLabel[e->elem_marker].permeability * MU0;
+    double eps = rfLabel[e->elem_marker].permittivity * EPS0;
+    int mode = 1;
+    double height = 0.01016;
+
+    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
+
+    return beta * int_u_v<Real, Scalar>(n, wt, u, v);
+}
+
+template<typename Real, typename Scalar>
 Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     return 0.0;
+    // dodelat clen  + 2*j*beta*E0z
+    // kde E0z je podle mode
+    // pro mode = 1 => pulvlna sinusovky
+    // e->x[i]
+
     /*
     double K = 0.0;
 
@@ -188,6 +232,8 @@ void callbackRFWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
         wf->add_matrix_form(1, 1, callback(rf_matrix_form_imag_imag));
         wf->add_vector_form(0, callback(rf_vector_form_real));
         wf->add_vector_form(1, callback(rf_vector_form_imag));
+        wf->add_matrix_form_surf(0, 1, callback(rf_matrix_form_surf_imag_real));
+        wf->add_matrix_form_surf(1, 0, callback(rf_matrix_form_surf_real_imag));
         wf->add_vector_form_surf(0, callback(rf_vector_form_surf_real));
         wf->add_vector_form_surf(1, callback(rf_vector_form_surf_imag));
     }
@@ -202,12 +248,12 @@ int HermesRF::numberOfSolution()
 
 PhysicFieldVariable HermesRF::contourPhysicFieldVariable()
 {
-    return PhysicFieldVariable_RF_ElectricField;
+    return PhysicFieldVariable_RF_ElectricFieldReal;
 }
 
 PhysicFieldVariable HermesRF::scalarPhysicFieldVariable()
 {
-    return PhysicFieldVariable_RF_ElectricField;
+    return PhysicFieldVariable_RF_ElectricFieldReal;
 }
 
 PhysicFieldVariableComp HermesRF::scalarPhysicFieldVariableComp()
@@ -229,6 +275,7 @@ void HermesRF::readEdgeMarkerFromDomElement(QDomElement *element)
     case PhysicFieldBC_None:
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
+    case PhysicFieldBC_RF_MatchedBoundary:
         Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
                                                            type,
                                                            Value(element->attribute("value_real", "0")),
@@ -256,7 +303,7 @@ void HermesRF::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker
     {
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
-
+    case PhysicFieldBC_RF_MatchedBoundary:
         element->setAttribute("value_real", edgeRFMarker->value_real.text);
         element->setAttribute("value_imag", edgeRFMarker->value_imag.text);
         break;
@@ -562,6 +609,9 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
             rfEdge[i+1].type = edgeRFMarker->type;
             rfEdge[i+1].value_real = edgeRFMarker->value_real.number;
             rfEdge[i+1].value_imag = edgeRFMarker->value_imag.number;
+            rfEdge[i+1].start = Util::scene()->edges[i]->nodeStart->point;
+            rfEdge[i+1].end = Util::scene()->edges[i]->nodeEnd->point;
+            rfEdge[i+1].angle = Util::scene()->edges[i]->angle;
 
             switch (edgeRFMarker->type)
             {
@@ -578,6 +628,10 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
             case PhysicFieldBC_RF_MagneticField:
                 bcTypesReal.add_bc_neumann(i+1);
                 bcTypesImag.add_bc_neumann(i+1);
+                break;
+            case PhysicFieldBC_RF_MatchedBoundary:
+                bcTypesReal.add_bc_newton(i+1);
+                bcTypesImag.add_bc_newton(i+1);
                 break;
             }
         }
@@ -1055,7 +1109,9 @@ void DSceneEdgeRFMarker::createContent()
     cmbType = new QComboBox(this);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_ElectricField), PhysicFieldBC_RF_ElectricField);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_MagneticField), PhysicFieldBC_RF_MagneticField);
+    cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_MatchedBoundary), PhysicFieldBC_RF_MatchedBoundary);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_Port), PhysicFieldBC_RF_Port);
+    // FIXME: kontrolovat typ BC a podle toho zapnout nebo vypnout textova pole
 
     txtValueReal = new SLineEditValue(this);
     txtValueImag = new SLineEditValue(this);

@@ -474,6 +474,7 @@ enum PhysicFieldBC
     PhysicFieldBC_Flow_Wall,
     PhysicFieldBC_RF_ElectricField,
     PhysicFieldBC_RF_MagneticField,
+    PhysicFieldBC_RF_MatchedBoundary,
     PhysicFieldBC_RF_Port,
     PhysicFieldBC_Acoustic_Pressure,
     PhysicFieldBC_Acoustic_NormalAcceleration,

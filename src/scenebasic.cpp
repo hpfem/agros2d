@@ -148,6 +148,14 @@ int SceneEdge::segments()
     return segments;
 }
 
+double SceneEdge::length()
+{
+    if (angle == 0)
+        return (nodeEnd->point - nodeStart->point).magnitude();
+    else
+        return radius() * angle / 180.0 * M_PI;
+}
+
 int SceneEdge::showDialog(QWidget *parent, bool isNew)
 {
     logMessage("SceneEdge::showDialog()");

@@ -193,6 +193,7 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Flow_Wall, "flow_wall");
     physicFieldBCList.insert(PhysicFieldBC_RF_ElectricField, "rf_electric_field");
     physicFieldBCList.insert(PhysicFieldBC_RF_MagneticField, "rf_magnetic_field");
+    physicFieldBCList.insert(PhysicFieldBC_RF_MatchedBoundary, "rf_matched_boundary");
     physicFieldBCList.insert(PhysicFieldBC_RF_Port, "rf_port");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_Pressure, "acoustic_pressure");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_NormalAcceleration, "acoustic_normal_acceleration");
@@ -817,6 +818,8 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Electric field");
     case PhysicFieldBC_RF_MagneticField:
         return QObject::tr("Magnetic field");
+    case PhysicFieldBC_RF_MatchedBoundary:
+        return QObject::tr("Matched boundary");
     case PhysicFieldBC_RF_Port:
         return QObject::tr("Port");
     case PhysicFieldBC_Acoustic_Pressure:
