@@ -81,10 +81,10 @@ Scalar rf_matrix_form_real_real(int n, double *wt, Func<Real> *u_ext[], Func<Rea
                 + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
                 * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return 0.0;
-                /*- 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
+        //return 0.0;
+        return - 2 * M_PI * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v))
                 + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
-                * int_u_v<Real, Scalar>(n, wt, u, v);*/
+                * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 
@@ -96,9 +96,9 @@ Scalar rf_matrix_form_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
         return + 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
                 * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return 0.0;
-                /*+ 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
-                * int_u_v<Real, Scalar>(n, wt, u, v);*/
+        //return 0.0;
+        return + 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
+                * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
@@ -108,9 +108,9 @@ Scalar rf_matrix_form_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Rea
         return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
                 * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return 0.0;
-                /*- 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
-                * int_u_v<Real, Scalar>(n, wt, u, v);*/
+        //return 0.0;
+        return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].conductivity
+                * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
@@ -121,10 +121,10 @@ Scalar rf_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
                 + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
                 * int_u_v<Real, Scalar>(n, wt, u, v);
     else
-        return 0.0;
-                /*- 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
+        //return 0.0;
+        return - 2 * M_PI * (int_u_dvdx_over_x<Real, Scalar>(n, wt, u, v, e) + int_grad_u_grad_v<Real, Scalar>(n, wt, u, v))
                 + sqr(2 * M_PI * frequency) * (rfLabel[e->elem_marker].permeability * MU0) * (rfLabel[e->elem_marker].permittivity * EPS0)
-                * int_u_v<Real, Scalar>(n, wt, u, v);*/
+                * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 /*
 template<typename Real, typename Scalar>
