@@ -406,7 +406,7 @@
     <message>
         <location filename="../src/configdialog.cpp" line="428"/>
         <source>Show label</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebietzeichen zeigen</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="429"/>
@@ -1928,7 +1928,7 @@
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="627"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="684"/>
         <source>Losses density:</source>
-        <translation>Verlustedichte:</translation>
+        <translation>Verlustdichte:</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="630"/>
@@ -3187,7 +3187,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="444"/>
         <source>Default</source>
-        <translation type="unfinished">Anfänglich</translation>
+        <translation>Anfänglich</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="472"/>
@@ -3310,7 +3310,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="305"/>
         <source>Change physical field type</source>
-        <translation>Änderung den Typ des physikalisches Feld</translation>
+        <translation>Änderung des Types des physikalischen Feldes</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="305"/>
@@ -3632,7 +3632,7 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="261"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="343"/>
         <source>Boundary type &apos;%1&apos; is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Typ der Randbedingung &apos;%1&apos; ist nicht unterstüzt.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="199"/>
@@ -3643,7 +3643,7 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="278"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="349"/>
         <source>Boundary marker with name &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Zeichen der Randbedingung mit dem Namen &apos;%1&apos; existiert nicht.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_current.cpp" line="240"/>
@@ -3654,67 +3654,67 @@
         <location filename="../src/hermes2d/hermes_heat.cpp" line="330"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="416"/>
         <source>Label marker with name &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Zeichen des Gebietes mit dem Namen &apos;%1&apos; existiert nicht.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="379"/>
         <source>Boundary type &apos;%1&apos; or &apos;%2&apos; is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Typ der Randbedingung &apos;%1&apos; oder &apos;%2&apos; ist nicht unterstüzt.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="257"/>
         <source>Adaptivity type: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ der Adaptivität: %1</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="283"/>
         <location filename="../src/hermes2d/hermes_field.cpp" line="312"/>
         <location filename="../src/hermes2d/hermes_field.cpp" line="427"/>
         <source>DOF is zero</source>
-        <translation type="unfinished"></translation>
+        <translation>FG ist Null</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="298"/>
         <location filename="../src/hermes2d/hermes_field.cpp" line="328"/>
         <location filename="../src/hermes2d/hermes_field.cpp" line="439"/>
         <source>Matrix solver failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lösung der Matrize hat verunglückt.</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="346"/>
         <source>Relative error: %1%	(step: %2/%3, DOFs: %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Relativer Fehler: %1%	(Schritt: %2/%3, FGe: %4)</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_field.cpp" line="450"/>
         <source>Time step: %1/%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitschritt: %1/%2</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="367"/>
         <location filename="../src/util.cpp" line="792"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../src/scene.cpp" line="61"/>
         <source>unnamed</source>
-        <translation type="unfinished"></translation>
+        <translation>unbekannt</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="65"/>
         <source>Script message</source>
-        <translation type="unfinished"></translation>
+        <translation>Bericht des Skripts</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="73"/>
         <source>Script input</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingang des Skripts</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="85"/>
         <source>Problem is not meshed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es ist nicht möglich, das Netz des Problems anfertigen.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="95"/>
@@ -3726,42 +3726,42 @@
         <location filename="../src/scripteditorcommandpython.cpp" line="814"/>
         <location filename="../src/scripteditorcommandpython.cpp" line="924"/>
         <source>Problem is not solved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Problem ist nicht gelöst.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="136"/>
         <source>Problem type &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Typ des Problems &apos;%1&apos; ist nicht implementiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="143"/>
         <source>Physic field &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das physikalische Feld &apos;%1&apos; ist nicht implementiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="149"/>
         <source>Number of refinements &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Anzahl der Verfeinerung &apos;%1&apos; ist außer Umfang.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="155"/>
         <source>Polynomial order &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Zehnerpotenz des Polynoms &apos;%1&apos; ist außer Umfang.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="160"/>
         <source>Adaptivity type &apos;%1&apos; is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Typ der Adaptivität &apos;%1&apos; ist nicht implementiert.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="166"/>
         <source>Adaptivity step &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Schritt der Adaptivität &apos;%1&apos; ist außer Umfang.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="172"/>
         <source>Adaptivity tolerance &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Toleranz der Adaptivität &apos;%1&apos; ist außer Umfang.</translation>
     </message>
     <message>
         <location filename="../src/scripteditorcommandpython.cpp" line="180"/>
