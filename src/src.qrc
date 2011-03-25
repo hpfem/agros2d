@@ -85,5 +85,6 @@
         <file>images/snap-to-grid.png</file>
         <file>images/rulers.png</file>
         <file>images/options-solver.png</file>
+        <file>images/equations/rf_harmonic.png</file>
     </qresource>
 </RCC>
