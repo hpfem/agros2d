@@ -76,6 +76,7 @@ void initLists()
     physicFieldList.insert(PhysicField_Magnetic, "magnetic");
     physicFieldList.insert(PhysicField_Flow, "flow");
     physicFieldList.insert(PhysicField_RF, "rf");
+    physicFieldList.insert(PhysicField_Acoustic, "acoustic");
 
     // PHYSICFIELDVARIABLE
     physicFieldVariableList.insert(PhysicFieldVariable_Undefined, "");
@@ -157,6 +158,10 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permittivity, "rf_permittivity");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permeability, "rf_permeability");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Conductivity, "rf_conductivity");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Pressure, "acoustic_pressure");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureGradient, "acoustic_pressure_gradient");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Density, "acoustic_density");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Speed, "acoustic_speed");
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -187,6 +192,9 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_RF_ElectricField, "rf_electric_field");
     physicFieldBCList.insert(PhysicFieldBC_RF_MagneticField, "rf_magnetic_field");
     physicFieldBCList.insert(PhysicFieldBC_RF_Port, "rf_port");
+    physicFieldBCList.insert(PhysicFieldBC_Acoustic_Pressure, "acoustic_pressure");
+    physicFieldBCList.insert(PhysicFieldBC_Acoustic_NormalAcceleration, "acoustic_normal_acceleration");
+    physicFieldBCList.insert(PhysicFieldBC_Acoustic_Impedance, "acoustic_impedance");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -364,6 +372,14 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Permeability");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("Conductivity");
+    case PhysicFieldVariable_Acoustic_Pressure:
+        return QObject::tr("Pressure");        
+        case PhysicFieldVariable_Acoustic_PressureGradient:
+            return QObject::tr("Pressure gradient");
+    case PhysicFieldVariable_Acoustic_Density:
+        return QObject::tr("Density");
+    case PhysicFieldVariable_Acoustic_Speed:
+        return QObject::tr("Speed of sound");
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
     }
@@ -522,6 +538,14 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("mur");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("g");
+    case PhysicFieldVariable_Acoustic_Pressure:
+        return QObject::tr("p");
+    case PhysicFieldVariable_Acoustic_PressureGradient:
+        return QObject::tr("pg");
+    case PhysicFieldVariable_Acoustic_Density:
+        return QObject::tr("rho");
+    case PhysicFieldVariable_Acoustic_Speed:
+        return QObject::tr("v");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -673,6 +697,14 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("H/m");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("S/m");
+    case PhysicFieldVariable_Acoustic_Pressure:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Acoustic_PressureGradient:
+        return QObject::tr("Pa/m");
+        case PhysicFieldVariable_Acoustic_Density:
+        return QObject::tr("kg/m3");
+    case PhysicFieldVariable_Acoustic_Speed:
+        return QObject::tr("m/s");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldVariable).toStdString() + "' is not implemented. physicFieldVariableUnits(PhysicFieldVariable physicFieldVariable)" << endl;
         throw;
@@ -701,6 +733,8 @@ QString physicFieldString(PhysicField physicField)
         return QObject::tr("Incompressible flow");
     case PhysicField_RF:
         return QObject::tr("TE Waves");
+    case PhysicField_Acoustic:
+        return QObject::tr("Acoustic");
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
         throw;
@@ -771,6 +805,12 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
         return QObject::tr("Magnetic field");
     case PhysicFieldBC_RF_Port:
         return QObject::tr("Port");
+    case PhysicFieldBC_Acoustic_Pressure:
+        return QObject::tr("Pressure");
+    case PhysicFieldBC_Acoustic_NormalAcceleration:
+        return QObject::tr("Normal acceleration");
+    case PhysicFieldBC_Acoustic_Impedance:
+        return QObject::tr("Input impedance");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
@@ -861,6 +901,7 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
 #ifdef BETA
     cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
     cmbPhysicField->addItem(physicFieldString(PhysicField_RF), PhysicField_RF);
+    cmbPhysicField->addItem(physicFieldString(PhysicField_Acoustic), PhysicField_Acoustic);
 #endif
 
     // default physic field

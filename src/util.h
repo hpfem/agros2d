@@ -364,7 +364,8 @@ enum PhysicField
     PhysicField_Heat,
     PhysicField_Elasticity,
     PhysicField_Flow,
-    PhysicField_RF
+    PhysicField_RF,
+    PhysicField_Acoustic
 };
 
 enum PhysicFieldVariable
@@ -441,7 +442,11 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_EnergyDensity,
     PhysicFieldVariable_RF_Permittivity,
     PhysicFieldVariable_RF_Permeability,
-    PhysicFieldVariable_RF_Conductivity
+    PhysicFieldVariable_RF_Conductivity,
+    PhysicFieldVariable_Acoustic_Pressure,
+    PhysicFieldVariable_Acoustic_PressureGradient,
+    PhysicFieldVariable_Acoustic_Density,
+    PhysicFieldVariable_Acoustic_Speed
 };
 
 
@@ -467,7 +472,10 @@ enum PhysicFieldBC
     PhysicFieldBC_Flow_Wall,
     PhysicFieldBC_RF_ElectricField,
     PhysicFieldBC_RF_MagneticField,
-    PhysicFieldBC_RF_Port
+    PhysicFieldBC_RF_Port,
+    PhysicFieldBC_Acoustic_Pressure,
+    PhysicFieldBC_Acoustic_NormalAcceleration,
+    PhysicFieldBC_Acoustic_Impedance
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
@@ -533,6 +541,10 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_Permittivity:
     case PhysicFieldVariable_RF_Permeability:
     case PhysicFieldVariable_RF_Conductivity:
+
+    case PhysicFieldVariable_Acoustic_Pressure:
+    case PhysicFieldVariable_Acoustic_Density:
+    case PhysicFieldVariable_Acoustic_Speed:
         return true;
         break;
     default:

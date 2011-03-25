@@ -27,7 +27,8 @@ struct HermesRF : public HermesField
 {
     Q_OBJECT
 public:
-    HermesRF() { physicField = PhysicField_RF; }
+    HermesRF() { m_physicField = PhysicField_RF; }
+    virtual ~HermesRF() {}
 
     int numberOfSolution();
     bool hasHarmonic() { return true; }
