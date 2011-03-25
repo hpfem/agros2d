@@ -1,0 +1,34 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="20000000000" numberofrefinements="2" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="harmonic" adaptivitysteps="1" polynomialorder="2" problemtype="planar" timetotal="1.0" type="rf" timestep="1.0" id="0" name="RF_waveguide_R100" initialcondition="0.0">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge value_imag="0" type="rf_electric_field" id="1" name="E = 0" value_real="0"/>
+                <edge value_imag="0" type="rf_electric_field" id="2" name="E = +1" value_real="1"/>
+                <edge value_imag="0" type="rf_electric_field" id="3" name="E = -1" value_real="-1"/>
+            </edges>
+            <labels>
+                <label conductivity="0" J_ext_imag="0" J_ext_real="0" id="1" name="Air" permeability="1" permittivity="1"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0.02286" y="0.01016" id="0"/>
+            <node x="0" y="0" id="1"/>
+            <node x="0" y="0.01016" id="2"/>
+            <node x="0.02286" y="0" id="3"/>
+        </nodes>
+        <edges>
+            <edge end="0" refine_towards="0" marker="1" id="0" start="2" angle="0"/>
+            <edge end="0" refine_towards="0" marker="3" id="1" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" marker="1" id="2" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" marker="2" id="3" start="2" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.00179561" y="0.008164950000000001" polynomialorder="0" marker="1" id="0" area="0"/>
+        </labels>
+    </geometry>
+    <functions/>
+</document>

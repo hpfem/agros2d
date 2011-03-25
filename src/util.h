@@ -443,6 +443,8 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_Permittivity,
     PhysicFieldVariable_RF_Permeability,
     PhysicFieldVariable_RF_Conductivity,
+    PhysicFieldVariable_RF_J_Ext_real,
+    PhysicFieldVariable_RF_J_Ext_imag,
     PhysicFieldVariable_Acoustic_Pressure,
     PhysicFieldVariable_Acoustic_PressureGradient,
     PhysicFieldVariable_Acoustic_Density,
@@ -541,6 +543,8 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_Permittivity:
     case PhysicFieldVariable_RF_Permeability:
     case PhysicFieldVariable_RF_Conductivity:
+    case PhysicFieldVariable_RF_J_Ext_real:
+    case PhysicFieldVariable_RF_J_Ext_imag:
 
     case PhysicFieldVariable_Acoustic_Pressure:
     case PhysicFieldVariable_Acoustic_Density:
