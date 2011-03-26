@@ -183,6 +183,9 @@ struct Point
     }
 };
 
+// return center
+Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
+
 struct Point3
 {
     double x, y, z;
@@ -446,7 +449,11 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_J_Ext_real,
     PhysicFieldVariable_RF_J_Ext_imag,
     PhysicFieldVariable_Acoustic_Pressure,
-    PhysicFieldVariable_Acoustic_PressureGradient,
+    PhysicFieldVariable_Acoustic_PressureReal,
+    PhysicFieldVariable_Acoustic_PressureImag,
+    PhysicFieldVariable_Acoustic_LocalVelocity,
+    PhysicFieldVariable_Acoustic_LocalAcceleration,
+    PhysicFieldVariable_Acoustic_PressureLevel,
     PhysicFieldVariable_Acoustic_Density,
     PhysicFieldVariable_Acoustic_Speed
 };
@@ -478,7 +485,8 @@ enum PhysicFieldBC
     PhysicFieldBC_RF_Port,
     PhysicFieldBC_Acoustic_Pressure,
     PhysicFieldBC_Acoustic_NormalAcceleration,
-    PhysicFieldBC_Acoustic_Impedance
+    PhysicFieldBC_Acoustic_Impedance,
+    PhysicFieldBC_Acoustic_MatchedBoundary
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
@@ -548,6 +556,9 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_J_Ext_imag:
 
     case PhysicFieldVariable_Acoustic_Pressure:
+    case PhysicFieldVariable_Acoustic_PressureReal:
+    case PhysicFieldVariable_Acoustic_PressureImag:
+    case PhysicFieldVariable_Acoustic_PressureLevel:
     case PhysicFieldVariable_Acoustic_Density:
     case PhysicFieldVariable_Acoustic_Speed:
         return true;

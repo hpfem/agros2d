@@ -31,6 +31,7 @@ public:
     virtual ~HermesRF() {}
 
     int numberOfSolution();
+    bool hasSteadyState() { return false; }
     bool hasHarmonic() { return true; }
     bool hasTransient() { return false; }
 

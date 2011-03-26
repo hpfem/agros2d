@@ -31,6 +31,7 @@ public:
     virtual ~HermesMagnetic() {}
 
     int numberOfSolution();
+    bool hasSteadyState() { return true; }
     bool hasHarmonic() { return true; }
     bool hasTransient() { return true; }
 

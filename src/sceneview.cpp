@@ -2309,9 +2309,14 @@ void SceneView::paintChartLine()
               Util::config()->colorSelected.blueF());
     glLineWidth(3.0);
 
+    QList<Point> points = m_chartLine.getPoints();
+
     glBegin(GL_LINES);
-    glVertex2d(m_chartLine.start.x, m_chartLine.start.y);
-    glVertex2d(m_chartLine.end.x, m_chartLine.end.y);
+    for (int i = 0; i < points.length() - 1; i++)
+    {
+        glVertex2d(points.at(i).x, points.at(i).y);
+        glVertex2d(points.at(i+1).x, points.at(i+1).y);
+    }
     glEnd();
 }
 
@@ -3457,13 +3462,12 @@ void SceneView::doShowRulers()
     doInvalidated();
 }
 
-void SceneView::doSetChartLine(const Point &start, const Point &end)
+void SceneView::doSetChartLine(const ChartLine &chartLine)
 {
     logMessage("SceneView::doSetChartLine()");
 
     // set line for chart
-    m_chartLine.start = start;
-    m_chartLine.end = end;
+    m_chartLine = chartLine;
 
     updateGL();
 }
@@ -3490,8 +3494,7 @@ void SceneView::doDefaultValues()
     m_rotation3d.y = -35.0;
     m_rotation3d.z = 0.0;
 
-    m_chartLine.start = Point();
-    m_chartLine.end = Point();
+    m_chartLine = ChartLine();
 
     m_sceneViewSettings.defaultValues();
 

@@ -325,9 +325,9 @@ SceneEdgeMarker *HermesMagnetic::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneEdgeMarker *HermesMagnetic::modifyEdgeMarker(PyObject *self, PyObject *args)
 {
-    double value_real, value_imag;
+    double value_real, value_imag = 0.0;
     char *name, *type;
-    if (PyArg_ParseTuple(args, "ssdd", &name, &type, &value_real, &value_imag))
+    if (PyArg_ParseTuple(args, "ssd|d", &name, &type, &value_real, &value_imag))
     {
         if (SceneEdgeMagneticMarker *marker = dynamic_cast<SceneEdgeMagneticMarker *>(Util::scene()->getEdgeMarker(name)))
         {

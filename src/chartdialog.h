@@ -28,12 +28,33 @@ class SLineEditValue;
 
 class QwtPlotPicker;
 
+// definition of chart line
+struct ChartLine
+{
+    Point start;
+    Point end;
+    double angle;
+    int numberOfPoints;
+
+    ChartLine() : start(Point()), end(end), angle(0.0), numberOfPoints(0) {}
+
+    ChartLine(Point start, Point end, double angle = 0.0, int numberOfPoints = 200)
+    {
+        this->start = start;
+        this->end = end;
+        this->angle = angle;
+        this->numberOfPoints = numberOfPoints;
+    }
+
+    QList<Point> getPoints();
+};
+
 class ChartDialog : public QDialog
 {
     Q_OBJECT
 
 signals:
-    void setChartLine(const Point &start, const Point &end);
+    void setChartLine(const ChartLine &chartLine);
 
 public slots:
     void doPlot();
@@ -65,12 +86,14 @@ private:
     SLineEditValue *txtStartY;
     SLineEditValue *txtEndX;
     SLineEditValue *txtEndY;
+    SLineEditValue *txtAngle;
 
     QRadioButton *radAxisLength;
     QRadioButton *radAxisX;
     QRadioButton *radAxisY;
 
     QSpinBox *txtAxisPoints;
+    QCheckBox *chkAxisPointsReverse;
 
     // time
     QLabel *lblPointX;

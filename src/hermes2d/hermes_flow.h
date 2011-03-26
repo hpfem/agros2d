@@ -31,6 +31,7 @@ public:
     virtual ~HermesFlow() {}
 
     inline int numberOfSolution() { return 3; }
+    bool hasSteadyState() { return true; }
     bool hasHarmonic() { return false; }
     bool hasTransient() { return true; }
 

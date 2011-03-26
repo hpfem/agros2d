@@ -161,7 +161,10 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_RF_J_Ext_real, "rf_J_ext_real");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_J_Ext_imag, "rf_J_ext_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Pressure, "acoustic_pressure");
-    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureGradient, "acoustic_pressure_gradient");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureReal, "acoustic_pressure_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureImag, "acoustic_pressure_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_LocalVelocity, "acoustic_local_velocity");
+    physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_LocalAcceleration, "acoustic_local_acceleration");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Density, "acoustic_density");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Speed, "acoustic_speed");
 
@@ -198,6 +201,7 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_Pressure, "acoustic_pressure");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_NormalAcceleration, "acoustic_normal_acceleration");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_Impedance, "acoustic_impedance");
+    physicFieldBCList.insert(PhysicFieldBC_Acoustic_MatchedBoundary, "acoustic_matched_boundary");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -380,9 +384,17 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_J_Ext_imag:
         return QObject::tr("J_Ext_imag");
     case PhysicFieldVariable_Acoustic_Pressure:
-        return QObject::tr("Pressure");        
-    case PhysicFieldVariable_Acoustic_PressureGradient:
-        return QObject::tr("Pressure gradient");
+        return QObject::tr("Acoustic pressure");
+    case PhysicFieldVariable_Acoustic_PressureReal:
+        return QObject::tr("Acoustic pressure - real");
+    case PhysicFieldVariable_Acoustic_PressureImag:
+        return QObject::tr("Acoustic pressure - imag");
+    case PhysicFieldVariable_Acoustic_PressureLevel:
+        return QObject::tr("Sound pressure level");
+    case PhysicFieldVariable_Acoustic_LocalVelocity:
+        return QObject::tr("Local velocity");
+    case PhysicFieldVariable_Acoustic_LocalAcceleration:
+        return QObject::tr("Local acceleration");
     case PhysicFieldVariable_Acoustic_Density:
         return QObject::tr("Density");
     case PhysicFieldVariable_Acoustic_Speed:
@@ -551,8 +563,16 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("J_i");
     case PhysicFieldVariable_Acoustic_Pressure:
         return QObject::tr("p");
-    case PhysicFieldVariable_Acoustic_PressureGradient:
-        return QObject::tr("pg");
+    case PhysicFieldVariable_Acoustic_PressureReal:
+        return QObject::tr("p");
+    case PhysicFieldVariable_Acoustic_PressureImag:
+        return QObject::tr("p");
+    case PhysicFieldVariable_Acoustic_PressureLevel:
+        return QObject::tr("I");
+    case PhysicFieldVariable_Acoustic_LocalVelocity:
+        return QObject::tr("v");
+    case PhysicFieldVariable_Acoustic_LocalAcceleration:
+        return QObject::tr("a");
     case PhysicFieldVariable_Acoustic_Density:
         return QObject::tr("rho");
     case PhysicFieldVariable_Acoustic_Speed:
@@ -712,10 +732,19 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("A/m2");
     case PhysicFieldVariable_RF_J_Ext_imag:
         return QObject::tr("A/m2");
+
     case PhysicFieldVariable_Acoustic_Pressure:
         return QObject::tr("Pa");
-    case PhysicFieldVariable_Acoustic_PressureGradient:
-        return QObject::tr("Pa/m");
+    case PhysicFieldVariable_Acoustic_PressureReal:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Acoustic_PressureImag:
+        return QObject::tr("Pa");
+    case PhysicFieldVariable_Acoustic_PressureLevel:
+        return QObject::tr("dB");
+    case PhysicFieldVariable_Acoustic_LocalVelocity:
+        return QObject::tr("m/s");
+    case PhysicFieldVariable_Acoustic_LocalAcceleration:
+        return QObject::tr("m/s2");
     case PhysicFieldVariable_Acoustic_Density:
         return QObject::tr("kg/m3");
     case PhysicFieldVariable_Acoustic_Speed:
@@ -823,11 +852,13 @@ QString physicFieldBCString(PhysicFieldBC physicFieldBC)
     case PhysicFieldBC_RF_Port:
         return QObject::tr("Port");
     case PhysicFieldBC_Acoustic_Pressure:
-        return QObject::tr("Pressure");
+        return QObject::tr("Acoustic pressure");
     case PhysicFieldBC_Acoustic_NormalAcceleration:
         return QObject::tr("Normal acceleration");
     case PhysicFieldBC_Acoustic_Impedance:
-        return QObject::tr("Input impedance");
+        return QObject::tr("Impedance boundary condition");
+    case PhysicFieldBC_Acoustic_MatchedBoundary:
+        return QObject::tr("Matched boundary");
     default:
         std::cerr << "Physical field '" + QString::number(physicFieldBC).toStdString() + "' is not implemented. physicFieldBCString(PhysicFieldBC physicFieldBC)" << endl;
         throw;
@@ -1342,6 +1373,18 @@ void writeStringContentByteArray(const QString &fileName, QByteArray content)
         file.waitForBytesWritten(0);
         file.close();
     }
+}
+
+Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
+{
+    double distance = (pointEnd - pointStart).magnitude();
+    Point t = (pointEnd - pointStart) / distance;
+    double R = distance / (2.0*sin(angle/180.0*M_PI / 2.0));
+
+    Point p = Point(distance/2.0, sqrt(sqr(R) - sqr(distance)/4.0 > 0.0 ? sqr(R) - sqr(distance)/4.0 : 0.0));
+    Point center = pointStart + Point(p.x*t.x - p.y*t.y, p.x*t.y + p.y*t.x);
+
+    return center;
 }
 
 static CheckVersion *checkVersion = NULL;

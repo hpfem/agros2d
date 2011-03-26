@@ -23,6 +23,7 @@
 #include <QGLWidget>
 
 #include "util.h"
+#include "chartdialog.h"
 
 class Scene;
 class SceneView;
@@ -87,7 +88,7 @@ public slots:
     void solved();
     void doDefaultValues();
     void refresh();
-    void doSetChartLine(const Point &start, const Point &end);
+    void doSetChartLine(const ChartLine &chartLine);
     void timeStepChanged(bool showViewProgress = false);
 
     void processedSolutionMesh();
@@ -192,7 +193,7 @@ private:
     Point m_offset3d; // offset
     Point3 m_rotation3d; // rotation
 
-    RectPoint m_chartLine; // line
+    ChartLine m_chartLine; // line
 
     SceneNode *m_nodeLast;
 

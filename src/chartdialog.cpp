@@ -23,6 +23,44 @@
 #include "scene.h"
 #include "localvalueview.h"
 
+QList<Point> ChartLine::getPoints()
+{
+    if (numberOfPoints == 0)
+        return QList<Point>();
+
+    QList<Point> points;
+
+    if (fabs(angle) < EPS_ZERO)
+    {
+        double dx = (end.x - start.x) / (numberOfPoints - 1);
+        double dy = (end.y - start.y) / (numberOfPoints - 1);
+
+        for (int i = 0; i < numberOfPoints; i++)
+            points.append(Point(start.x + i*dx, start.y + i*dy));
+    }
+    else
+    {
+        Point center = centerPoint(start, end, angle);
+        double radius = (start - center).magnitude();
+        double startAngle = atan2(center.y - start.y, center.x - start.x) / M_PI*180 - 180;
+        double theta = angle / double(numberOfPoints - 1);
+
+        for (int i = 0; i < numberOfPoints; i++)
+        {
+            double arc = (startAngle + i*theta)/180.0*M_PI;
+
+            double x = radius * cos(arc);
+            double y = radius * sin(arc);
+
+            points.append(Point(center.x + x, center.y + y));
+        }
+    }
+
+    return points;
+}
+
+// **************************************************************************************************
+
 ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
 {
     logMessage("ChartDialog::ChartDialog()");
@@ -40,10 +78,12 @@ ChartDialog::ChartDialog(QWidget *parent) : QDialog(parent)
     txtEndX->setValue(settings.value("ChartDialog/EndX", "0").toString());
     txtStartY->setValue(settings.value("ChartDialog/StartY", "0").toString());
     txtEndY->setValue(settings.value("ChartDialog/EndY", "0").toString());
+    txtAngle->setValue(settings.value("ChartDialog/Angle", "0").toString());
     radAxisLength->setChecked(settings.value("ChartDialog/AxisLength", true).toBool());
     radAxisX->setChecked(settings.value("ChartDialog/AxisX", false).toBool());
     radAxisY->setChecked(settings.value("ChartDialog/AxisY", false).toBool());
     txtAxisPoints->setValue(settings.value("ChartDialog/AxisPoints", 200).toInt());
+    chkAxisPointsReverse->setChecked(settings.value("ChartDialog/AxisPointsReverse", false).toBool());
 }
 
 ChartDialog::~ChartDialog()
@@ -56,10 +96,12 @@ ChartDialog::~ChartDialog()
     settings.setValue("ChartDialog/EndX", txtEndX->value().text);
     settings.setValue("ChartDialog/StartY", txtStartY->value().text);
     settings.setValue("ChartDialog/EndY", txtEndY->value().text);
+    settings.setValue("ChartDialog/Angle", txtAngle->value().text);
     settings.setValue("ChartDialog/AxisLength", radAxisLength->isChecked());
     settings.setValue("ChartDialog/AxisX", radAxisX->isChecked());
     settings.setValue("ChartDialog/AxisY", radAxisY->isChecked());
     settings.setValue("ChartDialog/AxisPoints", txtAxisPoints->value());
+    settings.setValue("ChartDialog/AxisPointsReverse", chkAxisPointsReverse->isChecked());
 }
 
 void ChartDialog::showDialog()
@@ -159,6 +201,17 @@ void ChartDialog::createControls()
     QGroupBox *grpEnd = new QGroupBox(tr("End"), this);
     grpEnd->setLayout(layoutEnd);
 
+    // angle
+    txtAngle = new SLineEditValue();
+    connect(txtAngle, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
+
+    QHBoxLayout *layoutAngle = new QHBoxLayout();
+    layoutAngle->addWidget(new QLabel("Angle"));
+    layoutAngle->addWidget(txtAngle);
+
+    QGroupBox *grpAngle = new QGroupBox(tr("Angle"), this);
+    grpAngle->setLayout(layoutAngle);
+
     // x - axis
     radAxisLength = new QRadioButton(tr("Length"), this);
     radAxisLength->setChecked(true);
@@ -187,14 +240,18 @@ void ChartDialog::createControls()
     txtAxisPoints->setMinimum(2);
     txtAxisPoints->setMaximum(500);
     txtAxisPoints->setValue(200);
+    chkAxisPointsReverse = new QCheckBox(tr("Reverse"));
 
     // timestep
     cmbTimeStep = new QComboBox(this);
     connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStepChanged(int)));
 
-    QFormLayout *layoutAxisPointsAndTimeStep = new QFormLayout();
-    layoutAxisPointsAndTimeStep->addRow(tr("Points:"), txtAxisPoints);
-    layoutAxisPointsAndTimeStep->addRow(tr("Time step:"), cmbTimeStep);
+    QGridLayout *layoutAxisPointsAndTimeStep = new QGridLayout();
+    layoutAxisPointsAndTimeStep->addWidget(new QLabel(tr("Points:")), 0, 0);
+    layoutAxisPointsAndTimeStep->addWidget(txtAxisPoints, 0, 1);
+    layoutAxisPointsAndTimeStep->addWidget(chkAxisPointsReverse, 0, 2);
+    layoutAxisPointsAndTimeStep->addWidget(new QLabel(tr("Time step:")), 1, 0);
+    layoutAxisPointsAndTimeStep->addWidget(cmbTimeStep, 1, 1, 1, 2);
 
     QGroupBox *grpAxisPointsAndTimeStep = new QGroupBox(tr("Points and time step"), this);
     grpAxisPointsAndTimeStep->setLayout(layoutAxisPointsAndTimeStep);
@@ -249,6 +306,7 @@ void ChartDialog::createControls()
     widGeometry->setLayout(controlsGeometryLayout);
     controlsGeometryLayout->addWidget(grpStart);
     controlsGeometryLayout->addWidget(grpEnd);
+    controlsGeometryLayout->addWidget(grpAngle);
     controlsGeometryLayout->addWidget(grpAxis);
     controlsGeometryLayout->addWidget(grpAxisPointsAndTimeStep);
     controlsGeometryLayout->addStretch();
@@ -307,6 +365,7 @@ void ChartDialog::plotGeometry()
     if (!txtStartY->evaluate()) return;
     if (!txtEndX->evaluate()) return;
     if (!txtEndY->evaluate()) return;
+    if (!txtAngle->evaluate()) return;
 
     doChartLine();
 
@@ -342,22 +401,41 @@ void ChartDialog::plotGeometry()
     chart->setAxisTitle(QwtPlot::xBottom, text);
 
     // line
-    Point start(txtStartX->value().number, txtStartY->value().number);
-    Point end(txtEndX->value().number, txtEndY->value().number);
+    ChartLine chartLine(Point(txtStartX->value().number, txtStartY->value().number),
+                        Point(txtEndX->value().number, txtEndY->value().number),
+                        txtAngle->value().number,
+                        count);
 
-    Point diff((end.x - start.x)/(count-1), (end.y - start.y)/(count-1));
+    QList<Point> points = chartLine.getPoints();
 
     // calculate values
     QStringList row;
-    for (int i = 0; i<count; i++)
+    for (int i = 0; i < points.length(); i++)
     {
-        Point point(start.x + i*diff.x, start.y + i*diff.y);
-        LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(point);
+        LocalPointValue *localPointValue = Util::scene()->problemInfo()->hermes()->localPointValue(points.at(i));
 
         // x value
-        if (radAxisLength->isChecked()) xval[i] = sqrt(sqr(i*diff.x) + sqr(i*diff.y));
-        if (radAxisX->isChecked()) xval[i] = start.x + i*diff.x;
-        if (radAxisY->isChecked()) xval[i] = start.y + i*diff.y;
+        if (radAxisLength->isChecked())
+        {
+            if (i == 0)
+                xval[i] = 0.0;
+            else
+                if (fabs(chartLine.angle) < EPS_ZERO)
+                {
+                    xval[i] = xval[i-1] + sqrt(sqr(points.at(i).x - points.at(i-1).x) + sqr(points.at(i).y - points.at(i-1).y));
+                }
+                else
+                {
+                    Point center = centerPoint(points.at(i-1), points.at(i), chartLine.angle/(points.length() - 1));
+                    double radius = (points.at(i-1) - center).magnitude();
+                    double angle = atan2(points.at(i).y - center.y, points.at(i).x - center.x) -
+                            atan2(points.at(i-1).y - center.y, points.at(i-1).x - center.x);
+
+                    xval[i] = xval[i-1] + radius * angle;
+                }
+        }
+        if (radAxisX->isChecked()) xval[i] = points.at(i).x;
+        if (radAxisY->isChecked()) xval[i] = points.at(i).y;
 
         // y value
         yval[i] = localPointValue->variableValue(physicFieldVariable, physicFieldVariableComp);
@@ -367,9 +445,20 @@ void ChartDialog::plotGeometry()
         row << localPointValue->variables();
 
         for (int j = 0; j<row.count(); j++)
-            trvTable->setItem(i, j, new QTableWidgetItem(row.at(j)));
+            trvTable->setItem(chkAxisPointsReverse->isChecked() ? points.length() - 1 - i : i, j, new QTableWidgetItem(row.at(j)));
 
         delete localPointValue;
+    }
+
+    // reverse vertical axis
+    if (chkAxisPointsReverse->isChecked())
+    {
+        for (int i = 0; i < points.length() / 2; i++)
+        {
+            double tmp = yval[i];
+            yval[i] = yval[points.length() - i - 1];
+            yval[points.length() - i - 1] = tmp;
+        }
     }
 
     chart->setData(xval, yval, count);
@@ -596,20 +685,27 @@ void ChartDialog::doChartLine()
             if (!txtStartY->evaluate()) return;
             if (!txtEndX->evaluate()) return;
             if (!txtEndY->evaluate()) return;
+            if (!txtAngle->evaluate()) return;
 
-            emit setChartLine(Point(txtStartX->value().number, txtStartY->value().number), Point(txtEndX->value().number, txtEndY->value().number));
+            emit setChartLine(ChartLine(Point(txtStartX->value().number, txtStartY->value().number),
+                                        Point(txtEndX->value().number, txtEndY->value().number),
+                                        txtAngle->value().number,
+                                        txtAxisPoints->value()));
         }
         if (tabAnalysisType->currentWidget() == widTime)
         {
             if (!txtPointX->evaluate()) return;
             if (!txtPointY->evaluate()) return;
 
-            emit setChartLine(Point(txtPointX->value().number, txtPointY->value().number), Point(txtPointX->value().number, txtPointY->value().number));
+            emit setChartLine(ChartLine(Point(txtPointX->value().number, txtPointY->value().number),
+                                        Point(txtPointX->value().number, txtPointY->value().number),
+                                        0.0,
+                                        0));
         }
     }
     else
     {
-        emit setChartLine(Point(), Point());
+        emit setChartLine(ChartLine());
     }
 }
 

@@ -1,0 +1,37 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="5000" numberofrefinements="4" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="harmonic" adaptivitysteps="1" polynomialorder="2" problemtype="axisymmetric" timetotal="1.0" type="acoustic" timestep="1.0" id="0" name="unnamed" initialcondition="0.0">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge type="acoustic_normal_acceleration" id="1" name="Wall" acceleration="0"/>
+                <edge type="acoustic_matched_boundary" id="2" name="Matched boundary"/>
+                <edge type="acoustic_pressure" id="3" name="Source" pressure="1"/>
+            </edges>
+            <labels>
+                <label speed="343" id="1" density="1.25" name="Air"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0" y="-0.2" id="0"/>
+            <node x="0.025" y="-0.2" id="1"/>
+            <node x="0.025" y="-0.175" id="2"/>
+            <node x="0.1" y="0" id="3"/>
+            <node x="0.3" y="0" id="4"/>
+            <node x="0" y="0.3" id="5"/>
+        </nodes>
+        <edges>
+            <edge end="5" refine_towards="0" marker="2" id="0" start="4" angle="90"/>
+            <edge end="4" refine_towards="0" marker="1" id="1" start="3" angle="0"/>
+            <edge end="2" refine_towards="0" marker="1" id="2" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" marker="1" id="3" start="2" angle="0"/>
+            <edge end="0" refine_towards="0" marker="3" id="4" start="1" angle="0"/>
+            <edge end="0" refine_towards="0" marker="1" id="5" start="5" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.109723" y="0.176647" polynomialorder="0" marker="1" id="0" area="0"/>
+        </labels>
+    </geometry>
+</document>

@@ -31,6 +31,7 @@ public:
     virtual ~HermesElectrostatic() {}
 
     inline int numberOfSolution() { return 1; }
+    bool hasSteadyState() { return true; }
     bool hasHarmonic() { return false; }
     bool hasTransient() { return false; }
 

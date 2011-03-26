@@ -31,6 +31,7 @@ public:
     virtual ~HermesElasticity() {}
 
     inline int numberOfSolution() { return 2; }
+    bool hasSteadyState() { return true; }
     bool hasHarmonic() { return false; }
     bool hasTransient() { return false; }
 

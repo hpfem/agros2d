@@ -57,6 +57,7 @@ public:
     inline PhysicField physicField() { return m_physicField; }
 
     virtual int numberOfSolution() = 0;
+    virtual bool hasSteadyState() = 0;
     virtual bool hasHarmonic() = 0;
     virtual bool hasTransient() = 0;
 

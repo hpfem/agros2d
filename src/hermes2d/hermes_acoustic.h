@@ -17,22 +17,22 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef GENERAL_H
-#define GENERAL_H
+#ifndef ACOUSTIC_H
+#define ACOUSTIC_H
 
 #include "util.h"
 #include "hermes_field.h"
 
-struct HermesGeneral : public HermesField
+struct HermesAcoustic : public HermesField
 {
     Q_OBJECT
 public:
-    HermesGeneral() { m_physicField = PhysicField_General; }
-    virtual ~HermesGeneral() {}
+    HermesAcoustic() { m_physicField = PhysicField_Acoustic; }
+    virtual ~HermesAcoustic() {}
 
-    inline int numberOfSolution() { return 1; }
-    bool hasSteadyState() { return true; }
-    bool hasHarmonic() { return false; }
+    inline int numberOfSolution() { return 2; }
+    bool hasSteadyState() { return false; }
+    bool hasHarmonic() { return true; }
     bool hasTransient() { return false; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
@@ -49,11 +49,10 @@ public:
     VolumeIntegralValue *volumeIntegralValue();
     QStringList volumeIntegralValueHeader();
 
-    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_General_Value ||
-                                                                          physicFieldBC == PhysicFieldBC_General_Derivative); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Variable ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_General_Gradient ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_General_Constant); }
+    inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Acoustic_Pressure ||
+                                                                          physicFieldBC == PhysicFieldBC_Acoustic_NormalAcceleration ||
+                                                                          physicFieldBC == PhysicFieldBC_Acoustic_Impedance); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -64,21 +63,13 @@ public:
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
-    inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Variable; }
-    inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Variable; }
-    inline PhysicFieldVariableComp scalarPhysicFieldVariableComp() { return PhysicFieldVariableComp_Scalar; }
-    inline PhysicFieldVariable vectorPhysicFieldVariable() { return PhysicFieldVariable_General_Gradient; }
+    PhysicFieldVariable contourPhysicFieldVariable();
+    PhysicFieldVariable scalarPhysicFieldVariable();
+    PhysicFieldVariableComp scalarPhysicFieldVariableComp();
+    PhysicFieldVariable vectorPhysicFieldVariable();
 
-    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Variable), PhysicFieldVariable_Variable);
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_General_Gradient), PhysicFieldVariable_General_Gradient);
-    }
-
-    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
-    {
-        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_General_Gradient), PhysicFieldVariable_General_Gradient);
-    }
+    void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
+    void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
 
     void showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPointValue);
     void showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue);
@@ -87,86 +78,85 @@ public:
     ViewScalarFilter *viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
 };
 
-class LocalPointValueGeneral : public LocalPointValue
+class LocalPointValueAcoustic : public LocalPointValue
 {
-protected:
-    void calculateVariables(int i);
-
 public:
-    double variable;
-    double rightside;
-    Point gradient;
-    double constant;
+    double density;
+    double speed;
+    double pressure_real;
+    double pressure_imag;
+    double pressureLevel;
+    Point localVelocity;
+    Point localAccelaration;
 
-    LocalPointValueGeneral(Point &point);
+    LocalPointValueAcoustic(Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };
 
-class SurfaceIntegralValueGeneral : public SurfaceIntegralValue
+class SurfaceIntegralValueAcoustic : public SurfaceIntegralValue
 {
 protected:
     void calculateVariables(int i);
 
 public:
-    SurfaceIntegralValueGeneral();
-
+    SurfaceIntegralValueAcoustic();
     QStringList variables();
 };
 
-class VolumeIntegralValueGeneral : public VolumeIntegralValue
+class VolumeIntegralValueAcoustic : public VolumeIntegralValue
 {
 protected:
     void calculateVariables(int i);
     void initSolutions();
 
 public:
-    VolumeIntegralValueGeneral();
-
+    VolumeIntegralValueAcoustic();
     QStringList variables();
 };
 
-class ViewScalarFilterGeneral : public ViewScalarFilter
+class ViewScalarFilterAcoustic : public ViewScalarFilter
 {
 public:
-    ViewScalarFilterGeneral(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
+    ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *> sln, PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) :
             ViewScalarFilter(sln, physicFieldVariable, physicFieldVariableComp) {};
 
 protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeGeneralMarker : public SceneEdgeMarker
+class SceneEdgeAcousticMarker : public SceneEdgeMarker
 {
 public:
-    Value value;
+    Value value_real;
 
-    SceneEdgeGeneralMarker(const QString &name, PhysicFieldBC type, Value value);
+    SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real);
+    SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelGeneralMarker : public SceneLabelMarker
+class SceneLabelAcousticMarker : public SceneLabelMarker
 {
 public:
-    Value rightside;
-    Value constant;
+    Value density;
+    Value speed;
 
-    SceneLabelGeneralMarker(const QString &name, Value rightside, Value constant);
+    SceneLabelAcousticMarker(const QString &name, Value density, Value speed);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeGeneralMarker : public DSceneEdgeMarker
+class DSceneEdgeAcousticMarker : public DSceneEdgeMarker
 {
     Q_OBJECT
+
 public:
-    DSceneEdgeGeneralMarker(SceneEdgeGeneralMarker *edgeGeneralMarker, QWidget *parent);
-    ~DSceneEdgeGeneralMarker();
+    DSceneEdgeAcousticMarker(SceneEdgeAcousticMarker *edgeAcousticMarker, QWidget *parent);
 
 protected:
     void createContent();
@@ -177,14 +167,17 @@ protected:
 private:
     QComboBox *cmbType;
     SLineEditValue *txtValue;
+
+private slots:
+    void doTypeChanged(int index);
 };
 
-class DSceneLabelGeneralMarker : public DSceneLabelMarker
+class DSceneLabelAcousticMarker : public DSceneLabelMarker
 {
     Q_OBJECT
+
 public:
-    DSceneLabelGeneralMarker(QWidget *parent, SceneLabelGeneralMarker *labelGeneralMarker);
-    ~DSceneLabelGeneralMarker();
+    DSceneLabelAcousticMarker(QWidget *parent, SceneLabelAcousticMarker *labelAcousticMarker);
 
 protected:
     void createContent();
@@ -193,8 +186,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtConstant;
-    SLineEditValue *txtRightSide;
+    SLineEditValue *txtDensity;
+    SLineEditValue *txtSpeed;
 };
 
-#endif // GENERAL_H
+#endif // ACOUSTIC_H
