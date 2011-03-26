@@ -831,8 +831,10 @@ QWidget *AboutDialog::createAgros2D()
                                          "<p>"
                                          "<b>Pavel Karban</b> - main developer (University of West Bohemia, Pilsen))<br/>"
                                          "<b>František Mach</b> - developer, documentation (University of West Bohemia, Pilsen)<br/>"
+                                         "<b>Lukáš Koudela</b> - developer - RF module (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Bartosz Sawicki</b> - Polish translation (Warsaw University of Technology, Warsaw)<br/>"
                                          "<b>Václav Kotlan</b> - German translation (University of West Bohemia, Pilsen)<br/>"
+                                         "<b>Petr Kropík</b> - University of West Bohemia, Pilsen<br/>"
                                          "</p>")
                                       .arg(QApplication::applicationVersion()));
     labelContent->setWordWrap(true);
