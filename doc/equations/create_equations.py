@@ -18,7 +18,7 @@ def create_image(template, equation, fnimage):
     os.system("pdfcrop equation.pdf")
     
     # convert to png
-    os.system("convert -transparent white -antialias -density 110 equation-crop.pdf " + fnimage)
+    os.system("convert -transparent white -antialias -density 110 -quality 100 equation-crop.pdf " + fnimage)
     
     # rm files
     os.unlink("equation.aux")
@@ -36,7 +36,7 @@ f.close()
 dir = "../../src/images/equations/"
 
 create_image(template, r"-\, \div \left( \sigma\,\, \grad \varphi \right) = 0", dir + "current_steadystate.png")
-create_image(template, r"-\, \div \left( \sigma\,\, \varepsilon\ \varphi \right) = \rho", dir + "electrostatic_steadystate.png")
+create_image(template, r"-\, \div \left( \varepsilon\,\, \grad \varphi \right) = \rho", dir + "electrostatic_steadystate.png")
 create_image(template, r"-\, (\lambda + \mu)~\grad \div \vec{u} -\, \mu \triangle \vec{u} = \vec{f}", dir + "elasticity_steadystate.png")
 create_image(template, r"-\, \div \left( \lambda\,\, \grad T \right) = Q", dir + "heat_steadystate.png")
 create_image(template, r"-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \frac{\partial T}{\partial t} = Q", dir + "heat_transient.png")
