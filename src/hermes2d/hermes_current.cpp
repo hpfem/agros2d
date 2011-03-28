@@ -114,7 +114,7 @@ void HermesCurrent::writeLabelMarkerToDomElement(QDomElement *element, SceneLabe
     element->setAttribute("conductivity", labelCurrentMarker->conductivity.text);
 }
 
-LocalPointValue *HermesCurrent::localPointValue(Point point)
+LocalPointValue *HermesCurrent::localPointValue(const Point &point)
 {
     return new LocalPointValueCurrent(point);
 }
@@ -387,7 +387,7 @@ QList<SolutionArray *> HermesCurrent::solve(ProgressItemSolve *progressItemSolve
 
 // ****************************************************************************************************************
 
-LocalPointValueCurrent::LocalPointValueCurrent(Point &point) : LocalPointValue(point)
+LocalPointValueCurrent::LocalPointValueCurrent(const Point &point) : LocalPointValue(point)
 {
     conductivity = 0;
 

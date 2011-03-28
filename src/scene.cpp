@@ -673,7 +673,7 @@ void Scene::clear()
     emit invalidated();
 }
 
-RectPoint Scene::boundingBox()
+RectPoint Scene::boundingBox() const
 {
     logMessage("RectPoint Scene::boundingBox()");
 

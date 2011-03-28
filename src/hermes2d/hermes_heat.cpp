@@ -176,7 +176,7 @@ void HermesHeat::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMa
     element->setAttribute("specific_heat", labelHeatMarker->specific_heat.text);
 }
 
-LocalPointValue *HermesHeat::localPointValue(Point point)
+LocalPointValue *HermesHeat::localPointValue(const Point &point)
 {
     return new LocalPointValueHeat(point);
 }
@@ -509,7 +509,7 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
 
 // ****************************************************************************************************************
 
-LocalPointValueHeat::LocalPointValueHeat(Point &point) : LocalPointValue(point)
+LocalPointValueHeat::LocalPointValueHeat(const Point &point) : LocalPointValue(point)
 {
     thermal_conductivity = 0;
     volume_heat = 0;

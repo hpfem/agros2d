@@ -23,7 +23,7 @@
 #include "scenemarker.h"
 #include "hermes2d.h"
 
-LocalPointValue::LocalPointValue(Point &point)
+LocalPointValue::LocalPointValue(const Point &point)
 {
     logMessage("LocalPointValue::LocalPointValue()");
 
@@ -36,7 +36,7 @@ LocalPointValue::LocalPointValue(Point &point)
     labelMarker = val.marker;
 }
 
-PointValue LocalPointValue::pointValue(Solution *sln, Point &point)
+PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
 {
     logMessage("LocalPointValue::pointValue()");
 

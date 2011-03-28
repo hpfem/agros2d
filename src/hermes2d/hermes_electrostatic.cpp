@@ -119,7 +119,7 @@ void HermesElectrostatic::writeLabelMarkerToDomElement(QDomElement *element, Sce
     element->setAttribute("permittivity", labelElectrostaticMarker->permittivity.text);
 }
 
-LocalPointValue *HermesElectrostatic::localPointValue(Point point)
+LocalPointValue *HermesElectrostatic::localPointValue(const Point &point)
 {
     return new LocalPointValueElectrostatic(point);
 }
@@ -404,7 +404,7 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
 
 // ****************************************************************************************************************
 
-LocalPointValueElectrostatic::LocalPointValueElectrostatic(Point &point) : LocalPointValue(point)
+LocalPointValueElectrostatic::LocalPointValueElectrostatic(const Point &point) : LocalPointValue(point)
 {
     charge_density = 0;
     permittivity = 0;

@@ -54,12 +54,12 @@ protected:
     Point derivative;
     SceneLabelMarker *labelMarker;
 
-    PointValue pointValue(Solution *sln, Point &point);
+    PointValue pointValue(Solution *sln, const Point &point);
 
 public:
     Point point;
 
-    LocalPointValue(Point &point);
+    LocalPointValue(const Point &point);
 
     virtual double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp) = 0;
     virtual QStringList variables() = 0;

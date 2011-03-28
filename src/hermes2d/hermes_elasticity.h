@@ -40,7 +40,7 @@ public:
     void readLabelMarkerFromDomElement(QDomElement *element);
     void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
 
-    LocalPointValue *localPointValue(Point point);
+    LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
 
     SurfaceIntegralValue *surfaceIntegralValue();
@@ -115,7 +115,7 @@ public:
     double stress_z;
     double stress_xy;
 
-    LocalPointValueElasticity(Point &point);
+    LocalPointValueElasticity(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };

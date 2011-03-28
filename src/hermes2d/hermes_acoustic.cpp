@@ -284,7 +284,7 @@ void HermesAcoustic::writeLabelMarkerToDomElement(QDomElement *element, SceneLab
     element->setAttribute("speed", labelAcousticMarker->speed.text);
 }
 
-LocalPointValue *HermesAcoustic::localPointValue(Point point)
+LocalPointValue *HermesAcoustic::localPointValue(const Point &point)
 {
     return new LocalPointValueAcoustic(point);
 }
@@ -605,7 +605,7 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
 
 // ****************************************************************************************************************
 
-LocalPointValueAcoustic::LocalPointValueAcoustic(Point &point) : LocalPointValue(point)
+LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPointValue(point)
 {
     density = 0;
     speed = 0;

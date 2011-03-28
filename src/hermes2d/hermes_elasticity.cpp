@@ -285,7 +285,7 @@ void HermesElasticity::writeLabelMarkerToDomElement(QDomElement *element, SceneL
     element->setAttribute("temp_ref", labelElasticityMarker->temp_ref.text);
 }
 
-LocalPointValue *HermesElasticity::localPointValue(Point point)
+LocalPointValue *HermesElasticity::localPointValue(const Point &point)
 {
     return new LocalPointValueElasticity(point);
 }
@@ -689,7 +689,7 @@ QList<SolutionArray *> HermesElasticity::solve(ProgressItemSolve *progressItemSo
 
 // ****************************************************************************************************************
 
-LocalPointValueElasticity::LocalPointValueElasticity(Point &point) : LocalPointValue(point)
+LocalPointValueElasticity::LocalPointValueElasticity(const Point &point) : LocalPointValue(point)
 {
     young_modulus = 0.0;
     poisson_ratio = 0.0;

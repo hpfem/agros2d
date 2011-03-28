@@ -40,7 +40,7 @@ public:
     void readLabelMarkerFromDomElement(QDomElement *element);
     void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
 
-    LocalPointValue *localPointValue(Point point);
+    LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
 
     SurfaceIntegralValue *surfaceIntegralValue();
@@ -98,7 +98,7 @@ public:
     Point gradient;
     double constant;
 
-    LocalPointValueGeneral(Point &point);
+    LocalPointValueGeneral(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);
     QStringList variables();
 };

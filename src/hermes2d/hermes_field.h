@@ -66,7 +66,7 @@ public:
     virtual void readLabelMarkerFromDomElement(QDomElement *element) = 0;
     virtual void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker) = 0;
 
-    virtual LocalPointValue *localPointValue(Point point) = 0;
+    virtual LocalPointValue *localPointValue(const Point &point) = 0;
     virtual QStringList localPointValueHeader() = 0;
 
     virtual SurfaceIntegralValue *surfaceIntegralValue() = 0;

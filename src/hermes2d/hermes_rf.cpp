@@ -339,7 +339,7 @@ void HermesRF::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMark
     element->setAttribute("J_ext_imag", labelRFMarker->J_ext_imag.text);
 }
 
-LocalPointValue *HermesRF::localPointValue(Point point)
+LocalPointValue *HermesRF::localPointValue(const Point &point)
 {
     return new LocalPointValueRF(point);
 }
@@ -676,7 +676,7 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
 
 // ****************************************************************************************************************
 
-LocalPointValueRF::LocalPointValueRF(Point &point) : LocalPointValue(point)
+LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point)
 {
     permittivity = 0;
     permeability = 0;

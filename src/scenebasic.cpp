@@ -49,7 +49,7 @@ SceneNode::SceneNode(const Point &point) : SceneBasic()
 
     this->point = point;
 }
-double SceneNode::distance(const Point &point)
+double SceneNode::distance(const Point &point) const
 {
     logMessage("SceneNode::distance()");
 
@@ -78,19 +78,19 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *
     this->refineTowardsEdge = refineTowardsEdge;
 }
 
-Point SceneEdge::center()
+Point SceneEdge::center() const
 {
     return centerPoint(nodeStart->point, nodeEnd->point, angle);
 }
 
-double SceneEdge::radius()
+double SceneEdge::radius() const
 {
     logMessage("SceneEdge::radius()");
 
     return (center() - nodeStart->point).magnitude();
 }
 
-double SceneEdge::distance(const Point &point)
+double SceneEdge::distance(const Point &point) const
 {
     logMessage("SceneEdge::distance()");
 
@@ -129,7 +129,7 @@ double SceneEdge::distance(const Point &point)
     }
 }
 
-int SceneEdge::segments()
+int SceneEdge::segments() const
 {
     double division = 40.0;
     int segments = angle/division + 1;
@@ -139,7 +139,7 @@ int SceneEdge::segments()
     return segments;
 }
 
-double SceneEdge::length()
+double SceneEdge::length() const
 {
     if (angle == 0)
         return (nodeEnd->point - nodeStart->point).magnitude();
@@ -168,7 +168,7 @@ SceneLabel::SceneLabel(const Point &point, SceneLabelMarker *marker, double area
     this->polynomialOrder = polynomialOrder;
 }
 
-double SceneLabel::distance(const Point &point)
+double SceneLabel::distance(const Point &point) const
 {
     logMessage("SceneLabel::distance()");
 

@@ -90,7 +90,7 @@ public:
         if (m_hermes) delete m_hermes;
         m_hermes = hermes;
     }
-    inline HermesField *hermes() { return m_hermes; }
+    inline HermesField *hermes() const { return m_hermes; }
 
     inline QString labelX() { return ((problemType == ProblemType_Planar) ? "X" : "R");  }
     inline QString labelY() { return ((problemType == ProblemType_Planar) ? "Y" : "Z");  }
@@ -181,7 +181,7 @@ public:
 
     void clear();
 
-    RectPoint boundingBox();
+    RectPoint boundingBox() const;
 
     void selectNone();
     void selectAll(SceneMode sceneMode);
@@ -204,7 +204,7 @@ public:
     ErrorResult readFromFile(const QString &fileName);
     ErrorResult writeToFile(const QString &fileName);
 
-    inline QUndoStack *undoStack() { return m_undoStack; }
+    inline QUndoStack *undoStack() const { return m_undoStack; }
 
 private:
     QUndoStack *m_undoStack;

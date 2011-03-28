@@ -22,7 +22,7 @@
 #include "scene.h"
 #include "gui.h"
 
-LocalPointValueMagnetic::LocalPointValueMagnetic(Point &point) : LocalPointValue(point)
+LocalPointValueMagnetic::LocalPointValueMagnetic(const Point &point) : LocalPointValue(point)
 {
     permeability = 0;
     conductivity = 0;

@@ -251,7 +251,7 @@ void HermesMagnetic::writeLabelMarkerToDomElement(QDomElement *element, SceneLab
     element->setAttribute("velocity_y", labelMagneticMarker->velocity_y.text);
     element->setAttribute("velocity_angular", labelMagneticMarker->velocity_angular.text);}
 
-LocalPointValue *HermesMagnetic::localPointValue(Point point)
+LocalPointValue *HermesMagnetic::localPointValue(const Point &point)
 {
     return new LocalPointValueMagnetic(point);
 }

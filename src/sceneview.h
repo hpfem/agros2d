@@ -293,10 +293,10 @@ private:
         return position(Point(x, y));
     }
 
-    Point position(const Point &point)
+    inline Point position(const Point &point)
     {
         return Point((2.0/contextWidth()*point.x-1)/m_scale2d*aspect()+m_offset2d.x,
-                -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);
+                     -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);
     }
 
 private slots:

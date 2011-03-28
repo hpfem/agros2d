@@ -142,7 +142,7 @@ void HermesGeneral::writeLabelMarkerToDomElement(QDomElement *element, SceneLabe
     element->setAttribute("constant", labelGeneralMarker->constant.text);
 }
 
-LocalPointValue *HermesGeneral::localPointValue(Point point)
+LocalPointValue *HermesGeneral::localPointValue(const Point &point)
 {
     return new LocalPointValueGeneral(point);
 }
@@ -402,7 +402,7 @@ QList<SolutionArray *> HermesGeneral::solve(ProgressItemSolve *progressItemSolve
 
 // ****************************************************************************************************************
 
-LocalPointValueGeneral::LocalPointValueGeneral(Point &point) : LocalPointValue(point)
+LocalPointValueGeneral::LocalPointValueGeneral(const Point &point) : LocalPointValue(point)
 {
     variable = 0;
     rightside = 0;

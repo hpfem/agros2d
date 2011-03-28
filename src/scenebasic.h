@@ -63,7 +63,7 @@ public:
 
     SceneNode(const Point &point);
 
-    double distance(const Point &point);
+    double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 };
@@ -81,11 +81,11 @@ public:
 
     SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *marker, double angle, int refineTowardsEdge);
 
-    Point center();
-    double radius();
-    double distance(const Point &point);
-    int segments(); // needed by mesh generator
-    double length();
+    Point center() const;
+    double radius() const;
+    double distance(const Point &point) const;
+    int segments() const; // needed by mesh generator
+    double length() const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 };
@@ -102,7 +102,7 @@ public:
 
     SceneLabel(const Point &point, SceneLabelMarker *marker, double area, int polynomialOrder);
 
-    double distance(const Point &point);
+    double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 };

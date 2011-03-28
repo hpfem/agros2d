@@ -162,7 +162,7 @@ void HermesFlow::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMa
     element->setAttribute("density", labelFlowMarker->density.text);
 }
 
-LocalPointValue *HermesFlow::localPointValue(Point point)
+LocalPointValue *HermesFlow::localPointValue(const Point &point)
 {
     return new LocalPointValueFlow(point);
 }
@@ -464,7 +464,7 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
 
 // ****************************************************************************************************************
 
-LocalPointValueFlow::LocalPointValueFlow(Point &point) : LocalPointValue(point)
+LocalPointValueFlow::LocalPointValueFlow(const Point &point) : LocalPointValue(point)
 {
     velocity_x = 0;
     velocity_y = 0;

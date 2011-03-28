@@ -169,10 +169,10 @@ struct Point
     inline bool operator!=(const Point &vec) const { return ((fabs(vec.x-x) > EPS_ZERO) || (fabs(vec.y-y) > EPS_ZERO)); }
     inline bool operator==(const Point &vec) const { return ((fabs(vec.x-x) < EPS_ZERO) && (fabs(vec.y-y) < EPS_ZERO)); }
 
-    inline double magnitude() { return sqrt(x * x + y * y); }
-    inline double angle() { return atan2(y, x); }
+    inline double magnitude() const { return sqrt(x * x + y * y); }
+    inline double angle() const { return atan2(y, x); }
 
-    Point normalizePoint()
+    Point normalizePoint() const
     {
         double m = magnitude();
 
@@ -198,12 +198,12 @@ struct Point3
     inline Point3 operator*(double num) const { return Point3(x * num, y * num, z * num); }
     inline Point3 operator/(double num) const { return Point3(x / num, y / num, z / num); }
 
-    inline double magnitude() { return sqrt(x * x + y * y); }
-    inline double anglexy() { return atan2(y, x); }
-    inline double angleyz() { return atan2(z, y); }
-    inline double anglezx() { return atan2(x, z); }
+    inline double magnitude() const { return sqrt(x * x + y * y); }
+    inline double anglexy() const { return atan2(y, x); }
+    inline double angleyz() const { return atan2(z, y); }
+    inline double anglezx() const { return atan2(x, z); }
 
-    Point3 normalizePoint()
+    Point3 normalizePoint() const
     {
         double m = magnitude();
 
@@ -224,8 +224,8 @@ struct RectPoint
     inline RectPoint() { this->start = Point(); this->end = Point(); }
 
     inline void set(const Point &start, const Point &end) { this->start = start; this->end = end; }
-    inline double width() { return fabs(end.x - start.x); }
-    inline double height() { return fabs(end.y - start.y); }
+    inline double width() const { return fabs(end.x - start.x); }
+    inline double height() const { return fabs(end.y - start.y); }
 };
 
 struct ScriptResult
