@@ -2318,6 +2318,29 @@ void SceneView::paintChartLine()
         glVertex2d(points.at(i+1).x, points.at(i+1).y);
     }
     glEnd();
+
+    // angle
+    glBegin(GL_TRIANGLES);
+    if (points.length() > 1)
+    {
+        double angle = atan2(points.at(points.length() - 1).y - points.at(points.length() - 2).y,
+                             points.at(points.length() - 1).x - points.at(points.length() - 2).x);
+
+        RectPoint rect = m_scene->boundingBox();
+        double dm = (rect.width() + rect.height()) / 40.0;
+
+        // head of an arrow
+        double vh1x = points.at(points.length() - 1).x - dm/5.0 * cos(angle - M_PI/2.0) - dm * cos(angle);
+        double vh1y = points.at(points.length() - 1).y - dm/5.0 * sin(angle - M_PI/2.0) - dm * sin(angle);
+        double vh2x = points.at(points.length() - 1).x - dm/5.0 * cos(angle + M_PI/2.0) - dm * cos(angle);
+        double vh2y = points.at(points.length() - 1).y - dm/5.0 * sin(angle + M_PI/2.0) - dm * sin(angle);
+        double vh3x = points.at(points.length() - 1).x;
+        double vh3y = points.at(points.length() - 1).y;
+        glVertex2d(vh1x, vh1y);
+        glVertex2d(vh2x, vh2y);
+        glVertex2d(vh3x, vh3y);
+    }
+    glEnd();
 }
 
 void SceneView::paintEdgeLine()

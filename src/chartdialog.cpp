@@ -29,6 +29,7 @@ QList<Point> ChartLine::getPoints()
         return QList<Point>();
 
     QList<Point> points;
+    points.reserve(numberOfPoints);
 
     if (fabs(angle) < EPS_ZERO)
     {
@@ -36,7 +37,10 @@ QList<Point> ChartLine::getPoints()
         double dy = (end.y - start.y) / (numberOfPoints - 1);
 
         for (int i = 0; i < numberOfPoints; i++)
-            points.append(Point(start.x + i*dx, start.y + i*dy));
+            if (reverse)
+                points.insert(0, Point(start.x + i*dx, start.y + i*dy));
+            else
+                points.append(Point(start.x + i*dx, start.y + i*dy));
     }
     else
     {
@@ -52,7 +56,10 @@ QList<Point> ChartLine::getPoints()
             double x = radius * cos(arc);
             double y = radius * sin(arc);
 
-            points.append(Point(center.x + x, center.y + y));
+            if (reverse)
+                points.insert(0, Point(center.x + x, center.y + y));
+            else
+                points.append(Point(center.x + x, center.y + y));
         }
     }
 
@@ -241,6 +248,7 @@ void ChartDialog::createControls()
     txtAxisPoints->setMaximum(500);
     txtAxisPoints->setValue(200);
     chkAxisPointsReverse = new QCheckBox(tr("Reverse"));
+    connect(chkAxisPointsReverse, SIGNAL(clicked()), this, SLOT(doPlot()));
 
     // timestep
     cmbTimeStep = new QComboBox(this);
@@ -690,7 +698,8 @@ void ChartDialog::doChartLine()
             emit setChartLine(ChartLine(Point(txtStartX->value().number, txtStartY->value().number),
                                         Point(txtEndX->value().number, txtEndY->value().number),
                                         txtAngle->value().number,
-                                        txtAxisPoints->value()));
+                                        txtAxisPoints->value(),
+                                        chkAxisPointsReverse->isChecked()));
         }
         if (tabAnalysisType->currentWidget() == widTime)
         {

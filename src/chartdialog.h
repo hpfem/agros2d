@@ -35,15 +35,17 @@ struct ChartLine
     Point end;
     double angle;
     int numberOfPoints;
+    bool reverse;
 
-    ChartLine() : start(Point()), end(end), angle(0.0), numberOfPoints(0) {}
+    ChartLine() : start(Point()), end(end), angle(0.0), numberOfPoints(0), reverse(false) {}
 
-    ChartLine(Point start, Point end, double angle = 0.0, int numberOfPoints = 200)
+    ChartLine(Point start, Point end, double angle = 0.0, int numberOfPoints = 200, bool reverse = false)
     {
         this->start = start;
         this->end = end;
         this->angle = angle;
         this->numberOfPoints = numberOfPoints;
+        this->reverse = reverse;
     }
 
     QList<Point> getPoints();
