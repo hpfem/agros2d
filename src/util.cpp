@@ -568,7 +568,7 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
     case PhysicFieldVariable_Acoustic_PressureImag:
         return QObject::tr("p");
     case PhysicFieldVariable_Acoustic_PressureLevel:
-        return QObject::tr("I");
+        return QObject::tr("Lp");
     case PhysicFieldVariable_Acoustic_LocalVelocity:
         return QObject::tr("v");
     case PhysicFieldVariable_Acoustic_LocalAcceleration:

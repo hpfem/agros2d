@@ -292,7 +292,7 @@ LocalPointValue *HermesAcoustic::localPointValue(Point point)
 QStringList HermesAcoustic::localPointValueHeader()
 {
     QStringList headers;
-    headers << "X" << "Y" << "p_real" << "p_imag" << "p" << "I" << "rho" << "c";
+    headers << "X" << "Y" << "p_real" << "p_imag" << "p" << "Lp" << "rho" << "c";
     return QStringList(headers);
 }
 
@@ -642,7 +642,7 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(Point &point) : LocalPointValue
                 localVelocity.x = localAccelaration.x / (2 * M_PI * frequency);
                 localVelocity.y = localAccelaration.y / (2 * M_PI * frequency);
 
-                pressureLevel = 20.0 * log10(sqrt(sqr(valueReal.value) + sqr(valueImag.value)) / 20e-6);
+                pressureLevel = 20.0 * log10(sqrt(sqr(valueReal.value) + sqr(valueImag.value)) / sqrt(2.) / 20e-6);
             }
         }
     }
@@ -786,7 +786,7 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Acoustic_PressureLevel:
     {
-        node->values[0][0][i] = 20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / 20e-6);
+        node->values[0][0][i] = 20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2) / 20e-6);
     }
         break;
     case PhysicFieldVariable_Acoustic_LocalVelocity:

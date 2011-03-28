@@ -36,7 +36,7 @@ point = pointresult(-0.084614, 0.053416)
 testP = test("Acoustic pressure", point["p"], 0.003064)
 testP_real = test("Acoustic pressure - real", point["p_real"], 0.002322)
 testP_imag = test("Acoustic pressure - imag", point["p_imag"], -0.001999)
-testI = test("Acoustic pressure", point["I"], 43.705385)
+testI = test("Acoustic pressure", point["Lp"], 40.695085)
 # volume integral
 # volume = volumeintegral(0, 1, 2)
 # testEnergy = test("Energy", volume["We"], 1.799349e-8)
