@@ -190,8 +190,16 @@ protected:
 
 private:
     QComboBox *cmbType;
+<<<<<<< HEAD
     ValueLineEdit *txtValueReal;
     ValueLineEdit *txtValueImag;
+=======
+    SLineEditValue *txtValueReal;
+    SLineEditValue *txtValueImag;
+
+private slots:
+    void doTypeChanged(int index);
+>>>>>>> hiding boxes in boundary condition window
 };
 
 class DSceneLabelRFMarker : public DSceneLabelMarker

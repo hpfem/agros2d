@@ -936,6 +936,7 @@ void ViewScalarFilterRF::calculateVariable(int i)
         SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
+            // FIX zeptat
             node->values[0][0][i] = 0.25 * (sqr(dudx1[i]) + sqr(dudy1[i])) / (marker->permeability.number * MU0);
             if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
                 node->values[0][0][i] += 0.25 * (sqr(dudx2[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
@@ -947,20 +948,16 @@ void ViewScalarFilterRF::calculateVariable(int i)
                 node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
         }
     }
-    case PhysicFieldVariable_RF_PowerLosses: // prepocitat a upravit !!!
+    case PhysicFieldVariable_RF_PowerLosses:
     {
         SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            node->values[0][0][i] = 0.25 * (sqr(dudx1[i]) + sqr(dudy1[i])) / (marker->permeability.number * MU0);
-            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                node->values[0][0][i] += 0.25 * (sqr(dudx2[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
+            node->values[0][0][i] = (sqr(value1[i]) + sqr(value2[i])) * (marker->conductivity.number);
         }
         else
         {
-            node->values[0][0][i] = 0.25 * (sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
-            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+            node->values[0][0][i] = (sqr(value1[i]) + sqr(value2[i])) * (marker->conductivity.number) * x[i];
         }
     }
         break;
@@ -1111,7 +1108,7 @@ void DSceneEdgeRFMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_MagneticField), PhysicFieldBC_RF_MagneticField);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_MatchedBoundary), PhysicFieldBC_RF_MatchedBoundary);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_Port), PhysicFieldBC_RF_Port);
-    // FIXME: kontrolovat typ BC a podle toho zapnout nebo vypnout textova pole
+    connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValueReal = new ValueLineEdit(this);
     txtValueImag = new ValueLineEdit(this);
@@ -1159,6 +1156,28 @@ bool DSceneEdgeRFMarker::save() {
         return false;
 
     return true;
+}
+
+void DSceneEdgeRFMarker::doTypeChanged(int index)
+{
+    txtValueReal->setEnabled(false);
+    txtValueImag->setEnabled(false);
+
+    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
+    {
+    case PhysicFieldBC_RF_ElectricField:
+    {
+        txtValueReal->setEnabled(true);
+        txtValueImag->setEnabled(true);
+    }
+        break;
+    case PhysicFieldBC_RF_MagneticField:
+    {
+        txtValueReal->setEnabled(true);
+        txtValueImag->setEnabled(true);
+    }
+        break;
+    }
 }
 
 // *************************************************************************************************************************************
