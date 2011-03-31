@@ -598,8 +598,8 @@ void HermesAcoustic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
     acousticNode->setExpanded(true);
 
     // material
-    addTreeWidgetItemValue(acousticNode, tr("Density:"), QString("%1").arg(localPointValueAcoustic->density, 0, 'f', 2), "");
-    addTreeWidgetItemValue(acousticNode, tr("Speed of sound:"), QString("%1").arg(localPointValueAcoustic->speed, 0, 'f', 2), "");
+    addTreeWidgetItemValue(acousticNode, tr("Density:"), QString("%1").arg(localPointValueAcoustic->density, 0, 'f', 2), "kg/m3");
+    addTreeWidgetItemValue(acousticNode, tr("Speed of sound:"), QString("%1").arg(localPointValueAcoustic->speed, 0, 'f', 2), "m/s");
 
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
     {

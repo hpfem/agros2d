@@ -36,9 +36,9 @@ public:
     bool hasTransient()
     {
 #ifdef BETA
-        return true;
+    return true;
 #else
-    return false
+    return false;
 #endif
     }
 

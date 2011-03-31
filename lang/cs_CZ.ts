@@ -41,21 +41,25 @@
     </message>
     <message>
         <location filename="../src/gui.cpp" line="823"/>
-        <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D je multiplatformní multifyzikální aplikace k řešení parciálních diferenciálních rovnic (PDR) založená na knihovně &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; využívající metodu konečných prvků vyšších řádů (&lt;i&gt;hp&lt;/i&gt;MKP) s automatickou adaptivitou.&lt;br/&gt;&lt;br/&gt;WWW stránky: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Diskuze: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - hlavní vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;František Mach&lt;/b&gt; - vývoj, dokumentace (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polský překlad (Warsaw University of Technology, Varšava)&lt;br/&gt;&lt;b&gt;Václav Kotlan&lt;/b&gt; - německý překlad (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;/p&gt;</translation>
+        <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="860"/>
+        <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</source>
+        <translation type="obsolete">&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D je multiplatformní multifyzikální aplikace k řešení parciálních diferenciálních rovnic (PDR) založená na knihovně &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; využívající metodu konečných prvků vyšších řádů (&lt;i&gt;hp&lt;/i&gt;MKP) s automatickou adaptivitou.&lt;br/&gt;&lt;br/&gt;WWW stránky: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Diskuze: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - hlavní vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;František Mach&lt;/b&gt; - vývoj, dokumentace (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polský překlad (Warsaw University of Technology, Varšava)&lt;br/&gt;&lt;b&gt;Václav Kotlan&lt;/b&gt; - německý překlad (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui.cpp" line="862"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Hermes2D&lt;/h3&gt;WWW stránky: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (vedoucí týmu, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Akademie věd ČR, Praha)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Akademie věd ČR, Praha)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (Centrum nových technologií, Plzeň)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (dříve University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Karlova univerzita, Praha)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="899"/>
+        <location filename="../src/gui.cpp" line="901"/>
         <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Nokia Qt:&lt;/b&gt; Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;FFmpeg:&lt;/b&gt; FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;br/&gt;</source>
         <translation>&lt;h3&gt;Knihovny&lt;/h3&gt;&lt;b&gt;Nokia Qt:&lt;/b&gt; Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - multiplatformní framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt widgety pro technické aplikace&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Programovací jazyk Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;FFmpeg:&lt;/b&gt; FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="921"/>
+        <location filename="../src/gui.cpp" line="923"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
         <translation>&lt;h3&gt;Licence:&lt;/h3&gt;&lt;p&gt;Agros2D je volný software: můžete jej distribuovat a/nebo upravovat podle podmínek GNU General Public License, vydávané Free Software Foundation, a to buď verze 2 této licence anebo (podle vašeho uvážení) kterékoli pozdější verze.&lt;/p&gt;&lt;p&gt;Agros2D je distribuován v naději, že to bude užitečný, ale BEZ JAKÉKOLIV ZÁRUKY; dokonce i bez záruky PRODEJNOSTI nebo VHODNOSTI PRO URČITÝ ÚČEL. Podívejte se na GNU General Public License pro další podrobnosti.&lt;/p&gt;&lt;p&gt;Měli byste obdržet kopii GNU General Public License současně s Agros2D, pokud ne, podívejte se na stránky &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</translation>
     </message>
@@ -119,118 +123,128 @@
 <context>
     <name>ChartDialog</name>
     <message>
-        <location filename="../src/chartdialog.cpp" line="32"/>
-        <location filename="../src/chartdialog.cpp" line="279"/>
+        <location filename="../src/chartdialog.cpp" line="77"/>
+        <location filename="../src/chartdialog.cpp" line="345"/>
         <source>Chart</source>
         <translation>Graf</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="115"/>
+        <location filename="../src/chartdialog.cpp" line="164"/>
         <source>Plot</source>
         <translation>Vykreslit</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="119"/>
+        <location filename="../src/chartdialog.cpp" line="168"/>
         <source>Save image</source>
         <translation>Uložit obrázek</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="123"/>
+        <location filename="../src/chartdialog.cpp" line="172"/>
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="149"/>
+        <location filename="../src/chartdialog.cpp" line="198"/>
         <source>Start</source>
         <translation>Počátek</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="159"/>
+        <location filename="../src/chartdialog.cpp" line="208"/>
         <source>End</source>
         <translation>Konec</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="163"/>
+        <location filename="../src/chartdialog.cpp" line="219"/>
+        <source>Angle</source>
+        <translation>Úhel</translation>
+    </message>
+    <message>
+        <location filename="../src/chartdialog.cpp" line="223"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="182"/>
+        <location filename="../src/chartdialog.cpp" line="242"/>
         <source>Horizontal axis</source>
         <translation>Horizontální osa</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="196"/>
+        <location filename="../src/chartdialog.cpp" line="250"/>
+        <source>Reverse</source>
+        <translation>Opač. směr</translation>
+    </message>
+    <message>
+        <location filename="../src/chartdialog.cpp" line="258"/>
         <source>Points:</source>
         <translation>Počet bodů:</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="197"/>
+        <location filename="../src/chartdialog.cpp" line="261"/>
         <source>Time step:</source>
         <translation>Časový krok:</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="199"/>
+        <location filename="../src/chartdialog.cpp" line="264"/>
         <source>Points and time step</source>
         <translation>Body a časový krok</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="214"/>
+        <location filename="../src/chartdialog.cpp" line="279"/>
         <source>Point</source>
         <translation>Bod</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="227"/>
+        <location filename="../src/chartdialog.cpp" line="292"/>
         <source>Variable:</source>
         <translation>Veličina:</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="228"/>
+        <location filename="../src/chartdialog.cpp" line="293"/>
         <source>Component:</source>
         <translation>Složka:</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="264"/>
+        <location filename="../src/chartdialog.cpp" line="330"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="265"/>
+        <location filename="../src/chartdialog.cpp" line="331"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="280"/>
+        <location filename="../src/chartdialog.cpp" line="346"/>
         <source>Table</source>
         <translation>Tabulka</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="339"/>
+        <location filename="../src/chartdialog.cpp" line="406"/>
         <source>Length (m)</source>
         <translation>Délka (m)</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="419"/>
+        <location filename="../src/chartdialog.cpp" line="516"/>
         <source>Time (s)</source>
         <translation>Čas (s)</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="479"/>
+        <location filename="../src/chartdialog.cpp" line="576"/>
         <source>Scalar</source>
         <translation>Skalár</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="483"/>
+        <location filename="../src/chartdialog.cpp" line="580"/>
         <source>Magnitude</source>
         <translation>Modul</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="516"/>
+        <location filename="../src/chartdialog.cpp" line="613"/>
         <source>Export data to file</source>
         <translation>Export dat do souboru</translation>
     </message>
     <message>
-        <location filename="../src/chartdialog.cpp" line="516"/>
+        <location filename="../src/chartdialog.cpp" line="613"/>
         <source>CSV files (*.csv);;Matlab/Octave script (*.m)</source>
         <translation>Soubory CSV (*.csv);;Matlab/Octave skripty (*.m)</translation>
     </message>
@@ -238,24 +252,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../src/util.cpp" line="1274"/>
+        <location filename="../src/util.cpp" line="1468"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation>&lt;b&gt;Nová verze aplikace.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Aktuální verze: %1&lt;br/&gt;Nová verze: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1267"/>
-        <location filename="../src/util.cpp" line="1282"/>
-        <location filename="../src/util.cpp" line="1286"/>
+        <location filename="../src/util.cpp" line="1461"/>
+        <location filename="../src/util.cpp" line="1476"/>
+        <location filename="../src/util.cpp" line="1480"/>
         <source>New version</source>
         <translation>Nová verze</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1267"/>
+        <location filename="../src/util.cpp" line="1461"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation>Soubor je poškozen nebo není připojena síť.</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="1286"/>
+        <location filename="../src/util.cpp" line="1480"/>
         <source>You are using actual version.</source>
         <translation>Používáte aktuální verzi aplikace.</translation>
     </message>
@@ -272,200 +286,205 @@
         <translation type="obsolete">Śířka a výška hranice dělená počtem.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="154"/>
+        <location filename="../src/configdialog.cpp" line="155"/>
         <source>Language change</source>
         <translation>Změna jazyka</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="155"/>
+        <location filename="../src/configdialog.cpp" line="156"/>
         <source>Interface language has been changed. You must restart the application.</source>
         <translation>Byla provedena změna jazyka. Nyní musíte restartovat aplikaci.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="281"/>
+        <location filename="../src/configdialog.cpp" line="283"/>
         <source>Main</source>
         <translation>Hlavní</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="286"/>
+        <location filename="../src/configdialog.cpp" line="288"/>
         <source>View</source>
         <translation>Zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="296"/>
-        <location filename="../src/configdialog.cpp" line="613"/>
+        <location filename="../src/configdialog.cpp" line="298"/>
+        <location filename="../src/configdialog.cpp" line="624"/>
         <source>Colors</source>
         <translation>Barvy</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="301"/>
+        <location filename="../src/configdialog.cpp" line="303"/>
         <source>Python</source>
         <translation>Python</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="306"/>
+        <location filename="../src/configdialog.cpp" line="308"/>
         <source>Advanced</source>
         <translation>Pokročilé</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="353"/>
+        <location filename="../src/configdialog.cpp" line="355"/>
         <source>UI:</source>
         <translation>UR:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="355"/>
+        <location filename="../src/configdialog.cpp" line="357"/>
         <source>Language:</source>
         <translation>Jazyk:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="357"/>
+        <location filename="../src/configdialog.cpp" line="359"/>
         <source>Default physic field:</source>
         <translation>Výchozí fyz. pole:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="360"/>
-        <location filename="../src/configdialog.cpp" line="504"/>
+        <location filename="../src/configdialog.cpp" line="362"/>
+        <location filename="../src/configdialog.cpp" line="515"/>
         <source>General</source>
         <translation>Obecné</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="428"/>
+        <location filename="../src/configdialog.cpp" line="430"/>
         <source>Show label</source>
         <translation>Zobrazit popisek</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="517"/>
+        <location filename="../src/configdialog.cpp" line="485"/>
+        <source>Height:</source>
+        <translation>Výška:</translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog.cpp" line="528"/>
         <source>Delete files with initial mesh (Triangle)</source>
         <translation>Mazat soubory s počáteční sítí (Triangle)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="518"/>
+        <location filename="../src/configdialog.cpp" line="529"/>
         <source>Delete files with solution mesh (Hermes2D)</source>
         <translation>Mazat soubory s výpočetní sítí (Hermes2D)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="520"/>
+        <location filename="../src/configdialog.cpp" line="531"/>
         <source>Save problem with solution</source>
         <translation>Ukládat včetně řešení</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="291"/>
-        <location filename="../src/configdialog.cpp" line="532"/>
+        <location filename="../src/configdialog.cpp" line="293"/>
+        <location filename="../src/configdialog.cpp" line="543"/>
         <source>Solver</source>
         <translation>Řešič</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="365"/>
+        <location filename="../src/configdialog.cpp" line="367"/>
         <source>Clear command history</source>
         <translation>Smazat historii příkazů</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="368"/>
+        <location filename="../src/configdialog.cpp" line="370"/>
         <source>Show value result in line edit input</source>
         <translation>Zobrazit výsledek u textových polí</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="369"/>
+        <location filename="../src/configdialog.cpp" line="371"/>
         <source>Check new version during startup.</source>
         <translation>Kontrolovat novou verzi při startu aplikace.</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="522"/>
+        <location filename="../src/configdialog.cpp" line="533"/>
         <source>Show convergence chart after solving</source>
         <translation>Zobrazit graf konvergence po skončení řešení</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="370"/>
+        <location filename="../src/configdialog.cpp" line="372"/>
         <source>Enabled application log</source>
         <translation>Povolit záznam aplikace</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="371"/>
+        <location filename="../src/configdialog.cpp" line="373"/>
         <source>Enabled progress log</source>
         <translation>Povolit záznam průběhu řešení</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="384"/>
+        <location filename="../src/configdialog.cpp" line="386"/>
         <source>Other</source>
         <translation>Ostatní</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="429"/>
+        <location filename="../src/configdialog.cpp" line="431"/>
         <source>Zoom to mouse pointer</source>
         <translation>Zvětšení k pozici kurzoru myši</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="542"/>
+        <location filename="../src/configdialog.cpp" line="553"/>
         <source>Angle segments count:</source>
         <translation>Počet segmentů úhlu:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="411"/>
+        <location filename="../src/configdialog.cpp" line="413"/>
         <source>Node size:</source>
         <translation>Velikost uzlů:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="413"/>
+        <location filename="../src/configdialog.cpp" line="415"/>
         <source>Edge width:</source>
         <translation>Šířka hrany:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="415"/>
+        <location filename="../src/configdialog.cpp" line="417"/>
         <source>Label size:</source>
         <translation>Velikost značek oblastí:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="418"/>
+        <location filename="../src/configdialog.cpp" line="420"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="424"/>
+        <location filename="../src/configdialog.cpp" line="426"/>
         <source>Show grid</source>
         <translation>Zobrazit mřížku</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="425"/>
+        <location filename="../src/configdialog.cpp" line="427"/>
         <source>Show rulers</source>
         <translation>Zobrazit pravítko</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="426"/>
+        <location filename="../src/configdialog.cpp" line="428"/>
         <source>Snap to grid</source>
         <translation>Zachytávat do mřížky</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="427"/>
+        <location filename="../src/configdialog.cpp" line="429"/>
         <source>Show axes</source>
         <translation>Zobrazit osy</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="432"/>
+        <location filename="../src/configdialog.cpp" line="434"/>
         <source>Grid step:</source>
         <translation>Krok mřížky:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="441"/>
+        <location filename="../src/configdialog.cpp" line="443"/>
         <source>Grid</source>
         <translation>Mřížka</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="539"/>
+        <location filename="../src/configdialog.cpp" line="550"/>
         <source>Curvilinear elements</source>
         <translation>Křivočaré elementy</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="546"/>
+        <location filename="../src/configdialog.cpp" line="557"/>
         <source>Mesh</source>
         <translation>Síť</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="447"/>
+        <location filename="../src/configdialog.cpp" line="449"/>
         <source>Set font</source>
         <translation>Nastavit písmo</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="454"/>
+        <location filename="../src/configdialog.cpp" line="456"/>
         <source>Scene font</source>
         <translation>Písmo ve scéně</translation>
     </message>
@@ -526,7 +545,7 @@
         <translation type="obsolete">Počet ekvičar:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="483"/>
+        <location filename="../src/configdialog.cpp" line="494"/>
         <source>Contours</source>
         <translation>Kontury</translation>
     </message>
@@ -539,7 +558,7 @@
         <translation type="obsolete">Barva (čb.)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="590"/>
+        <location filename="../src/configdialog.cpp" line="601"/>
         <source>Vectors:</source>
         <translation>Vektory:</translation>
     </message>
@@ -552,37 +571,37 @@
         <translation type="obsolete">Vektorové zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="468"/>
+        <location filename="../src/configdialog.cpp" line="470"/>
         <source>Ligthing</source>
         <translation>Osvětlení</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="470"/>
+        <location filename="../src/configdialog.cpp" line="474"/>
         <source>Gradient background</source>
         <translation>Gradientní pozadí</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="473"/>
+        <location filename="../src/configdialog.cpp" line="482"/>
         <source>Angle:</source>
         <translation>Úhel:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="478"/>
+        <location filename="../src/configdialog.cpp" line="489"/>
         <source>3D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="482"/>
+        <location filename="../src/configdialog.cpp" line="493"/>
         <source>Scalar field</source>
         <translation>Skalární pole</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="484"/>
+        <location filename="../src/configdialog.cpp" line="495"/>
         <source>Vector field</source>
         <translation>Vektorové pole</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="491"/>
+        <location filename="../src/configdialog.cpp" line="502"/>
         <source>Deform shape</source>
         <translation>Tvar deformace</translation>
     </message>
@@ -599,72 +618,72 @@
         <translation type="obsolete">Řád polynomu</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="505"/>
+        <location filename="../src/configdialog.cpp" line="516"/>
         <source>Postprocessor</source>
         <translation>Postprocesor</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="583"/>
+        <location filename="../src/configdialog.cpp" line="594"/>
         <source>Background:</source>
         <translation>Pozadí:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="584"/>
+        <location filename="../src/configdialog.cpp" line="595"/>
         <source>Grid:</source>
         <translation>Mřížka:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="585"/>
+        <location filename="../src/configdialog.cpp" line="596"/>
         <source>Cross:</source>
         <translation>Kříž:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="586"/>
+        <location filename="../src/configdialog.cpp" line="597"/>
         <source>Nodes:</source>
         <translation>Uzly:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="587"/>
+        <location filename="../src/configdialog.cpp" line="598"/>
         <source>Edges:</source>
         <translation>Hrany:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="588"/>
+        <location filename="../src/configdialog.cpp" line="599"/>
         <source>Labels:</source>
         <translation>Značky oblastí:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="589"/>
+        <location filename="../src/configdialog.cpp" line="600"/>
         <source>Contours:</source>
         <translation>Kontury:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="591"/>
+        <location filename="../src/configdialog.cpp" line="602"/>
         <source>Initial mesh:</source>
         <translation>Počáteční síť:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="592"/>
+        <location filename="../src/configdialog.cpp" line="603"/>
         <source>Solution mesh:</source>
         <translation>Řešená síť:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="593"/>
+        <location filename="../src/configdialog.cpp" line="604"/>
         <source>Highlighted elements:</source>
         <translation>Zvýrazněné elementy:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="594"/>
+        <location filename="../src/configdialog.cpp" line="605"/>
         <source>Selected elements:</source>
         <translation>Vybrané elementy:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="633"/>
+        <location filename="../src/configdialog.cpp" line="644"/>
         <source>Isotropic refinement</source>
         <translation>Izotropní zjemnění</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="761"/>
+        <location filename="../src/configdialog.cpp" line="772"/>
         <source>Command history was cleared successfully.</source>
         <translation>Historie příkazů byla smázána.</translation>
     </message>
@@ -677,22 +696,22 @@
         <translation type="obsolete">&lt;b&gt;&lt;/b&gt;výchozí hodnota je 1.0, tento parametr ovlivňuje&lt;br/&gt;výběr kandidátů hp-adaptivity</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="641"/>
+        <location filename="../src/configdialog.cpp" line="652"/>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
         <translation>&lt;b&gt;&lt;/b&gt;kvantitativní parametr adaptivní funkce&lt;br/&gt;s různýmy významy pro různé adaptivní strategie</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="643"/>
+        <location filename="../src/configdialog.cpp" line="654"/>
         <source>0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="644"/>
+        <location filename="../src/configdialog.cpp" line="655"/>
         <source>1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="645"/>
+        <location filename="../src/configdialog.cpp" line="656"/>
         <source>2</source>
         <translation></translation>
     </message>
@@ -701,103 +720,103 @@
         <translation type="obsolete">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;td&gt;&lt;td&gt;zjemnit elementy pokud není chyba menší než &lt;br/&gt;kvadratická odchylka od &lt;b&gt;prahu&lt;/b&gt; násobeného celkovou chybou.&lt;br/&gt;Pokud má více elementů stejnou chybu,&lt;br/&gt;jsou všechny zjemněny pro zachování symetrie sítě&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;td&gt;&lt;td&gt;zjemnit všechny elementy,&lt;br/&gt;které mají chybu větší než &lt;b&gt;práh&lt;/b&gt;&lt;br/&gt; násobený maximální chybou na elementu&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;td&gt;&lt;td&gt;zjemnit všechny elementy&lt;br/&gt;s chybou větší než &lt;b&gt;práh&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="652"/>
+        <location filename="../src/configdialog.cpp" line="663"/>
         <source>arbitrary level hang. nodes</source>
         <translation>libovolná úrobeň visících uzlů</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="653"/>
+        <location filename="../src/configdialog.cpp" line="664"/>
         <source>at most one-level hang. nodes</source>
         <translation>nanejvýš jedna úroveň visících uzlů</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="654"/>
+        <location filename="../src/configdialog.cpp" line="665"/>
         <source>at most two-level hang. nodes</source>
         <translation>nanejvýš dvě úroveně visících uzlů</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="655"/>
+        <location filename="../src/configdialog.cpp" line="666"/>
         <source>at most three-level hang. nodes</source>
         <translation>nanejvýš tři úroveně visících uzlů</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="656"/>
+        <location filename="../src/configdialog.cpp" line="667"/>
         <source>at most four-level hang. nodes</source>
         <translation>nanejvýš čtyři úroveně visících uzlů</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="657"/>
+        <location filename="../src/configdialog.cpp" line="668"/>
         <source>at most five-level hang. nodes</source>
         <translation>nanejvýš pět úrovní visících uzlů</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="667"/>
+        <location filename="../src/configdialog.cpp" line="678"/>
         <source>Conv. exp.:</source>
         <translation>Konv. exp.:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="670"/>
+        <location filename="../src/configdialog.cpp" line="681"/>
         <source>Strategy:</source>
         <translation>Strategie:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="673"/>
+        <location filename="../src/configdialog.cpp" line="684"/>
         <source>Threshold:</source>
         <translation>Práh:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="676"/>
+        <location filename="../src/configdialog.cpp" line="687"/>
         <source>Mesh regularity:</source>
         <translation>Pravidelnost sítě:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="678"/>
+        <location filename="../src/configdialog.cpp" line="689"/>
         <source>Norm:</source>
         <translation>Norma:</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="681"/>
+        <location filename="../src/configdialog.cpp" line="692"/>
         <source>Adaptivity</source>
         <translation>Adaptivita</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="689"/>
+        <location filename="../src/configdialog.cpp" line="700"/>
         <source>Triangle</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="691"/>
+        <location filename="../src/configdialog.cpp" line="702"/>
         <source>FFmpeg</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="694"/>
+        <location filename="../src/configdialog.cpp" line="705"/>
         <source>Commands</source>
         <translation>Příkazy</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="610"/>
-        <location filename="../src/configdialog.cpp" line="698"/>
+        <location filename="../src/configdialog.cpp" line="621"/>
+        <location filename="../src/configdialog.cpp" line="709"/>
         <source>Default</source>
         <translation>Výchozí</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="634"/>
+        <location filename="../src/configdialog.cpp" line="645"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;true&lt;/b&gt;&lt;/td&gt;&lt;td&gt;isotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;false&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anisotropic refinement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;zaškrtnuto&lt;/b&gt;&lt;/td&gt;&lt;td&gt;izotropní zjemnění&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;nezaškrtnuto&lt;/b&gt;&lt;/td&gt;&lt;td&gt;anizotropní zjemnění&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="639"/>
+        <location filename="../src/configdialog.cpp" line="650"/>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences&lt;br/&gt;the selection of candidates in hp-adaptivity</source>
         <translation>&lt;b&gt;&lt;/b&gt;výchozí hodnota je 1.0, tento parametr ovlivňuje&lt;br/&gt;výběr kandidátů hp-adaptivity</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="646"/>
+        <location filename="../src/configdialog.cpp" line="657"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;)&lt;br/&gt;times total error is processed.&lt;br/&gt;If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;br/&gt;times maximum element error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;&lt;td&gt;refine all elements&lt;br/&gt;whose error is larger than &lt;b&gt;threshold&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;0&lt;/b&gt;&lt;/td&gt;&lt;td&gt;zjemnit elementy pokud není chyba menší než &lt;br/&gt;kvadratická odchylka od &lt;b&gt;prahu&lt;/b&gt; násobeného celkovou chybou.&lt;br/&gt;Pokud má více elementů stejnou chybu,&lt;br/&gt;jsou všechny zjemněny pro zachování symetrie sítě&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;&lt;td&gt;zjemnit všechny elementy,&lt;br/&gt;které mají chybu větší než &lt;b&gt;práh&lt;/b&gt;&lt;br/&gt; násobený maximální chybou na elementu&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;&lt;td&gt;zjemnit všechny elementy&lt;br/&gt;s chybou větší než &lt;b&gt;práh&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/configdialog.cpp" line="761"/>
+        <location filename="../src/configdialog.cpp" line="772"/>
         <source>Information</source>
         <translation>Informace</translation>
     </message>
@@ -809,49 +828,77 @@
 <context>
     <name>DSceneEdge</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="359"/>
+        <location filename="../src/scenebasic.cpp" line="358"/>
         <source>Edge</source>
         <translation>Hrana</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="393"/>
+        <location filename="../src/scenebasic.cpp" line="392"/>
         <source>Start point:</source>
         <translation>Počáteční bod:</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="394"/>
+        <location filename="../src/scenebasic.cpp" line="393"/>
         <source>End point:</source>
         <translation>Koncový bod:</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="397"/>
+        <location filename="../src/scenebasic.cpp" line="396"/>
         <source>Coordinates</source>
         <translation>Souřadnice</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="416"/>
+        <location filename="../src/scenebasic.cpp" line="415"/>
         <source>Refine towards edge:</source>
         <translation>Zjemnění sítě k hranám:</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="418"/>
+        <location filename="../src/scenebasic.cpp" line="417"/>
         <source>Mesh parameters</source>
         <translation>Parametry sítě</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="423"/>
+        <location filename="../src/scenebasic.cpp" line="422"/>
         <source>Boundary condition:</source>
         <translation>Okrajová podmínka:</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="395"/>
+        <location filename="../src/scenebasic.cpp" line="394"/>
         <source>Angle (deg.):</source>
         <translation>Úhel (st.):</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="426"/>
+        <location filename="../src/scenebasic.cpp" line="425"/>
         <source>Length:</source>
         <translation>Délka:</translation>
+    </message>
+</context>
+<context>
+    <name>DSceneEdgeAcousticMarker</name>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1164"/>
+        <source>Amplitude</source>
+        <translation>Amplituda</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1166"/>
+        <source>Frequency</source>
+        <translation>Frekvence</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1169"/>
+        <source>Harmonic function</source>
+        <translation>Harmonická funkce</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1172"/>
+        <source>BC type:</source>
+        <translation>Typ okr. podmínky:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1174"/>
+        <source>Value:</source>
+        <translation>Hodnota:</translation>
     </message>
 </context>
 <context>
@@ -1008,6 +1055,19 @@
     </message>
 </context>
 <context>
+    <name>DSceneEdgeRFMarker</name>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1127"/>
+        <source>BC type:</source>
+        <translation>Typ okr. podmínky:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1129"/>
+        <source>Value:</source>
+        <translation>Hodnota:</translation>
+    </message>
+</context>
+<context>
     <name>DSceneFunction</name>
     <message>
         <location filename="../src/scenefunction.cpp" line="155"/>
@@ -1048,39 +1108,52 @@
 <context>
     <name>DSceneLabel</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="583"/>
+        <location filename="../src/scenebasic.cpp" line="582"/>
         <source>Label</source>
         <translation>Značka oblasti</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="622"/>
+        <location filename="../src/scenebasic.cpp" line="621"/>
         <source>Coordinates</source>
         <translation>Souřadnice</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="637"/>
+        <location filename="../src/scenebasic.cpp" line="636"/>
         <source>Global order is %1.</source>
         <translation>Globální řád je %1.</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="652"/>
+        <location filename="../src/scenebasic.cpp" line="651"/>
         <source>Mesh parameters</source>
         <translation>Parametry sítě</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="656"/>
+        <location filename="../src/scenebasic.cpp" line="655"/>
         <source>Material:</source>
         <translation>Materiál:</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="649"/>
+        <location filename="../src/scenebasic.cpp" line="648"/>
         <source>Triangle area (m):</source>
         <translation>Obsah elementu (m):</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="650"/>
+        <location filename="../src/scenebasic.cpp" line="649"/>
         <source>Polynomial order (-):</source>
         <translation>Řád polynomu (-):</translation>
+    </message>
+</context>
+<context>
+    <name>DSceneLabelAcousticMarker</name>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1266"/>
+        <source>Density (kg/m3):</source>
+        <translation>Hustota (kg/m3):</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1268"/>
+        <source>Speed of sound (m/s):</source>
+        <translation>Rychlost zvuku (m/s):</translation>
     </message>
 </context>
 <context>
@@ -1274,25 +1347,53 @@
     </message>
 </context>
 <context>
+    <name>DSceneLabelRFMarker</name>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1199"/>
+        <source>Permitivity (-):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1201"/>
+        <source>Permeability (-):</source>
+        <translation type="unfinished">Permeabilita (-):</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1203"/>
+        <source>Conductivity (S/m):</source>
+        <translation type="unfinished">Vodivost (S/m):</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1205"/>
+        <source>J_ext_real (A/m2):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1207"/>
+        <source>J_ext_imag (A/m2):</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DSceneNode</name>
     <message>
-        <location filename="../src/scenebasic.cpp" line="289"/>
+        <location filename="../src/scenebasic.cpp" line="288"/>
         <source>Distance:</source>
         <translation>Vzdálenost:</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="290"/>
+        <location filename="../src/scenebasic.cpp" line="289"/>
         <source>Angle:</source>
         <translation>Úhel:</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="323"/>
+        <location filename="../src/scenebasic.cpp" line="322"/>
         <source>Node already exists.</source>
         <translation>Uzel již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/scenebasic.cpp" line="251"/>
-        <location filename="../src/scenebasic.cpp" line="323"/>
+        <location filename="../src/scenebasic.cpp" line="250"/>
+        <location filename="../src/scenebasic.cpp" line="322"/>
         <source>Node</source>
         <translation>Uzel</translation>
     </message>
@@ -1402,6 +1503,73 @@
     <message>
         <source>Open Link in New Tab</source>
         <translation type="obsolete">Otevřít odkaz na nové stránce</translation>
+    </message>
+</context>
+<context>
+    <name>HermesAcoustic</name>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="367"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="396"/>
+        <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
+        <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="455"/>
+        <source>new boundary</source>
+        <translation>nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="516"/>
+        <source>new material</source>
+        <translation>nový materiál</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="597"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="650"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="660"/>
+        <source>Acoustic field</source>
+        <translation>Akustické pole</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="601"/>
+        <source>Density:</source>
+        <translation>Měrná hmotnost:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="602"/>
+        <source>Speed of sound:</source>
+        <translation>Rychlost zvuku:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="608"/>
+        <source>Acoustic pressure</source>
+        <translation>Akustický tlak</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="611"/>
+        <source>real:</source>
+        <translation>reál. složka:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="612"/>
+        <source>imag:</source>
+        <translation>imag. složka:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="613"/>
+        <source>magnitude:</source>
+        <translation>modul:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="615"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="641"/>
+        <source>Sound pressure level:</source>
+        <translation>Úroveň akustického tlaku:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="640"/>
+        <source>Acoustic pressure:</source>
+        <translation>Akustický tlak:</translation>
     </message>
 </context>
 <context>
@@ -2133,6 +2301,77 @@
     </message>
 </context>
 <context>
+    <name>HermesRF</name>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="291"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="315"/>
+        <source>Boundary type &apos;%1&apos; doesn&apos;t exists.</source>
+        <translation>Hraniční podmínka &apos;%1&apos; neexistuje.</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="380"/>
+        <source>new boundary</source>
+        <translation type="unfinished">nová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="445"/>
+        <source>new material</source>
+        <translation type="unfinished">nový materiál</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="528"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="556"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="566"/>
+        <source>RF field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="534"/>
+        <source>Permittivity:</source>
+        <translation type="unfinished">Permitivita:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="535"/>
+        <source>Permeability:</source>
+        <translation type="unfinished">Permeabilita:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="536"/>
+        <source>Conductivity:</source>
+        <translation type="unfinished">Vodivost:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="537"/>
+        <source>J_ext_real:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="538"/>
+        <source>J_ext_imag:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="542"/>
+        <source>Electric field</source>
+        <translation type="unfinished">Intenzita el. pole</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="545"/>
+        <source>real:</source>
+        <translation type="unfinished">reál. složka:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="546"/>
+        <source>imag:</source>
+        <translation type="unfinished">imag. složka:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="547"/>
+        <source>magnitude:</source>
+        <translation type="unfinished">modul:</translation>
+    </message>
+</context>
+<context>
     <name>ImageLoaderDialog</name>
     <message>
         <location filename="../src/gui.cpp" line="629"/>
@@ -2352,204 +2591,204 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="151"/>
+        <location filename="../src/mainwindow.cpp" line="155"/>
         <source>Create a new file</source>
         <translation>Vytvořit nový soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="154"/>
+        <location filename="../src/mainwindow.cpp" line="158"/>
         <source>&amp;Open...</source>
         <translation>&amp;Otevřít...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="156"/>
+        <location filename="../src/mainwindow.cpp" line="160"/>
         <source>Open an existing file</source>
         <translation>Otevřít existující soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="159"/>
+        <location filename="../src/mainwindow.cpp" line="163"/>
         <source>&amp;Save</source>
         <translation>&amp;Uložit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="166"/>
+        <location filename="../src/mainwindow.cpp" line="170"/>
         <source>Save the file to disk with solution</source>
         <translation>Uložit včetně řešení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="173"/>
+        <location filename="../src/mainwindow.cpp" line="177"/>
         <source>Save &amp;As...</source>
         <translation>Uložit &amp;jako...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="183"/>
+        <location filename="../src/mainwindow.cpp" line="187"/>
         <source>Import DXF...</source>
         <translation>Import DXF...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="187"/>
+        <location filename="../src/mainwindow.cpp" line="191"/>
         <source>Export DXF...</source>
         <translation>Export DXF...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1186"/>
+        <location filename="../src/mainwindow.cpp" line="1190"/>
         <source>Export mesh file</source>
         <translation>Exportovat soubor se sítí</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="192"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
         <source>Export Hermes2D mesh file</source>
         <translation>Exportovat soubor se sítí pro Hermes2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="191"/>
+        <location filename="../src/mainwindow.cpp" line="195"/>
         <source>Export mesh file...</source>
         <translation>Export sítě...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="195"/>
+        <location filename="../src/mainwindow.cpp" line="199"/>
         <source>Export VTK scalar...</source>
         <translation>Export VTK skaláru...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="196"/>
+        <location filename="../src/mainwindow.cpp" line="200"/>
         <source>Export scalar view as VTK file</source>
         <translation>Export rozložení skaláru jako VTK soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="199"/>
+        <location filename="../src/mainwindow.cpp" line="203"/>
         <source>Export VTK order...</source>
         <translation>Export VTK řádu...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="200"/>
+        <location filename="../src/mainwindow.cpp" line="204"/>
         <source>Export order view as VTK file</source>
         <translation>Export rozložení řádu jako VTK soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="203"/>
+        <location filename="../src/mainwindow.cpp" line="207"/>
         <source>Export image...</source>
         <translation>Export obrázku...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="204"/>
-        <location filename="../src/mainwindow.cpp" line="925"/>
+        <location filename="../src/mainwindow.cpp" line="208"/>
+        <location filename="../src/mainwindow.cpp" line="929"/>
         <source>Export image to file</source>
         <translation>Export obrázku do souboru</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="208"/>
+        <location filename="../src/mainwindow.cpp" line="212"/>
         <source>Create video</source>
         <translation>Vytvořit video</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="211"/>
+        <location filename="../src/mainwindow.cpp" line="215"/>
         <source>Load background...</source>
         <translation>Načítání pozadí...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="215"/>
+        <location filename="../src/mainwindow.cpp" line="219"/>
         <source>E&amp;xit</source>
         <translation>U&amp;končit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="216"/>
+        <location filename="../src/mainwindow.cpp" line="220"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="217"/>
+        <location filename="../src/mainwindow.cpp" line="221"/>
         <source>Exit the application</source>
         <translation>Ukončit aplikaci</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="224"/>
+        <location filename="../src/mainwindow.cpp" line="228"/>
         <source>&amp;Undo</source>
         <translation>&amp;Zpět</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="226"/>
+        <location filename="../src/mainwindow.cpp" line="230"/>
         <source>Undo operation</source>
         <translation>Vzít poslední operaci zpět</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="230"/>
+        <location filename="../src/mainwindow.cpp" line="234"/>
         <source>&amp;Redo</source>
         <translation>Zn&amp;ovu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="232"/>
+        <location filename="../src/mainwindow.cpp" line="236"/>
         <source>Redo operation</source>
         <translation>Znovu provést operaci</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="240"/>
+        <location filename="../src/mainwindow.cpp" line="244"/>
         <source>Show help</source>
         <translation>Zobrazit nápovědu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="244"/>
+        <location filename="../src/mainwindow.cpp" line="248"/>
         <source>&amp;Shortcuts</source>
         <translation>Klávesové &amp;zkratky</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="245"/>
+        <location filename="../src/mainwindow.cpp" line="249"/>
         <source>Shortcuts</source>
         <translation>Klávesové zkratky</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="248"/>
+        <location filename="../src/mainwindow.cpp" line="252"/>
         <source>&amp;Online help</source>
         <translation>&amp;Online nápověda</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="249"/>
+        <location filename="../src/mainwindow.cpp" line="253"/>
         <source>Online help</source>
         <translation>Online nápověda</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="252"/>
-        <location filename="../src/mainwindow.cpp" line="253"/>
+        <location filename="../src/mainwindow.cpp" line="256"/>
+        <location filename="../src/mainwindow.cpp" line="257"/>
         <source>Check version</source>
         <translation>Zkonrolovat verzi</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="257"/>
+        <location filename="../src/mainwindow.cpp" line="261"/>
         <source>Show the application&apos;s About box</source>
         <translation>Zobrazit informace o Agros 2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="261"/>
+        <location filename="../src/mainwindow.cpp" line="265"/>
         <source>About &amp;Qt</source>
         <translation>O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="262"/>
+        <location filename="../src/mainwindow.cpp" line="266"/>
         <source>Show the Qt library&apos;s About box</source>
         <translation>Zobrazit informace o Qt toolkitu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="267"/>
+        <location filename="../src/mainwindow.cpp" line="271"/>
         <source>Options</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="272"/>
+        <location filename="../src/mainwindow.cpp" line="276"/>
         <source>Mesh area</source>
         <translation>Diskretizovat oblast</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="277"/>
+        <location filename="../src/mainwindow.cpp" line="281"/>
         <source>Solve problem</source>
         <translation>Vyřešit problém</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="284"/>
+        <location filename="../src/mainwindow.cpp" line="288"/>
         <source>Fullscreen mode</source>
         <translation>Celá obrazovka</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="285"/>
+        <location filename="../src/mainwindow.cpp" line="289"/>
         <source>F11</source>
         <translation></translation>
     </message>
@@ -2558,174 +2797,174 @@
         <translation type="obsolete">&amp;Vlastnosti postprocesoru</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="291"/>
+        <location filename="../src/mainwindow.cpp" line="295"/>
         <source>Script &amp;editor</source>
         <translation>&amp;Editor skriptů</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="292"/>
+        <location filename="../src/mainwindow.cpp" line="296"/>
         <source>Script editor</source>
         <translation>Editor skriptů</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="297"/>
+        <location filename="../src/mainwindow.cpp" line="301"/>
         <source>Run script...</source>
         <translation>Spustit skript...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="301"/>
+        <location filename="../src/mainwindow.cpp" line="305"/>
         <source>Alt+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="302"/>
+        <location filename="../src/mainwindow.cpp" line="306"/>
         <source>Run command...</source>
         <translation>Příkaz...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="306"/>
+        <location filename="../src/mainwindow.cpp" line="310"/>
         <source>Problem html report</source>
         <translation>HTML zpráva</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="309"/>
+        <location filename="../src/mainwindow.cpp" line="313"/>
         <source>Progress &amp;log</source>
         <translation>&amp;Záznam průběhu řešení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="310"/>
+        <location filename="../src/mainwindow.cpp" line="314"/>
         <source>Show progress log</source>
         <translation>Zobrazit záznam průběhu řešení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="313"/>
+        <location filename="../src/mainwindow.cpp" line="317"/>
         <source>Application &amp;log</source>
         <translation>&amp;Záznam aplikace</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="314"/>
+        <location filename="../src/mainwindow.cpp" line="318"/>
         <source>Show application log</source>
         <translation>Zobrazit záznam aplikace</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="323"/>
+        <location filename="../src/mainwindow.cpp" line="327"/>
         <source>Import/Export</source>
         <translation>Import/Export</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="333"/>
+        <location filename="../src/mainwindow.cpp" line="337"/>
         <source>&amp;File</source>
         <translation>S&amp;oubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="366"/>
+        <location filename="../src/mainwindow.cpp" line="370"/>
         <source>&amp;View</source>
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="371"/>
+        <location filename="../src/mainwindow.cpp" line="375"/>
         <source>&amp;Show</source>
         <translation>&amp;Zobrazit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="373"/>
+        <location filename="../src/mainwindow.cpp" line="377"/>
         <source>Show docks</source>
         <translation>Zobrazit doky</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="493"/>
+        <location filename="../src/mainwindow.cpp" line="497"/>
         <source>Tools</source>
         <translation>Nástroje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="508"/>
+        <location filename="../src/mainwindow.cpp" line="512"/>
         <source>Workspace</source>
         <translation>Pracovní plocha</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="608"/>
+        <location filename="../src/mainwindow.cpp" line="612"/>
         <source>Mode: Add node</source>
         <translation>Mód: Přidat uzel</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="611"/>
+        <location filename="../src/mainwindow.cpp" line="615"/>
         <source>Mode: Add edge</source>
         <translation>Mód: Přidat hranu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="614"/>
+        <location filename="../src/mainwindow.cpp" line="618"/>
         <source>Mode: Add label</source>
         <translation>Mód: Přidat popisek</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="622"/>
+        <location filename="../src/mainwindow.cpp" line="626"/>
         <source>Mode: Pan</source>
         <translation>Mód: Panorama</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="625"/>
+        <location filename="../src/mainwindow.cpp" line="629"/>
         <source>Mode: Rotate</source>
         <translation>Mód: Rotace</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="632"/>
+        <location filename="../src/mainwindow.cpp" line="636"/>
         <source>Mode: Move node</source>
         <translation>Mód: Posun uzlu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="635"/>
+        <location filename="../src/mainwindow.cpp" line="639"/>
         <source>Mode: Move edge</source>
         <translation>Mód: Posun hrany</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="638"/>
+        <location filename="../src/mainwindow.cpp" line="642"/>
         <source>Mode: Move label</source>
         <translation>Mód: Posun popisku</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1117"/>
+        <location filename="../src/mainwindow.cpp" line="1121"/>
         <source>Problem Type: %1</source>
         <translation>Typ problému: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1118"/>
+        <location filename="../src/mainwindow.cpp" line="1122"/>
         <source>Physic Field: %1</source>
         <translation>Fyzikální pole: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1119"/>
+        <location filename="../src/mainwindow.cpp" line="1123"/>
         <source>Analysis type: %1</source>
         <translation>Typ analýzy: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1186"/>
+        <location filename="../src/mainwindow.cpp" line="1190"/>
         <source>Mesh files (*.mesh)</source>
         <translation>Soubory se sítí (*.mesh)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1231"/>
-        <location filename="../src/mainwindow.cpp" line="1262"/>
+        <location filename="../src/mainwindow.cpp" line="1235"/>
+        <location filename="../src/mainwindow.cpp" line="1266"/>
         <source>Export vtk file</source>
         <translation>Export vtk souboru</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1231"/>
-        <location filename="../src/mainwindow.cpp" line="1262"/>
+        <location filename="../src/mainwindow.cpp" line="1235"/>
+        <location filename="../src/mainwindow.cpp" line="1266"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK soubor (*.vtk)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="469"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>View</source>
         <translation>Zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="737"/>
+        <location filename="../src/mainwindow.cpp" line="741"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
         <translation>Soubory Agros2D (*.a2d *.py);;Datové soubory Agros2D (*.a2d);;Python scripty (*.py)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1039"/>
+        <location filename="../src/mainwindow.cpp" line="1043"/>
         <source>Python script (*.py)</source>
         <translation>Python scripty (*.py)</translation>
     </message>
@@ -2734,241 +2973,241 @@
         <translation type="obsolete">O Agros2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="239"/>
-        <location filename="../src/mainwindow.cpp" line="434"/>
+        <location filename="../src/mainwindow.cpp" line="243"/>
+        <location filename="../src/mainwindow.cpp" line="438"/>
         <source>&amp;Help</source>
         <translation>Nápově&amp;da</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="453"/>
+        <location filename="../src/mainwindow.cpp" line="457"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="459"/>
+        <location filename="../src/mainwindow.cpp" line="463"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="533"/>
+        <location filename="../src/mainwindow.cpp" line="537"/>
         <source>Ready</source>
         <translation>Připraveno</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="594"/>
+        <location filename="../src/mainwindow.cpp" line="598"/>
         <source>Position: [%1; %2]</source>
         <translation>Pozice: [%1; %2]</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="737"/>
+        <location filename="../src/mainwindow.cpp" line="741"/>
         <source>Open file</source>
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="281"/>
+        <location filename="../src/mainwindow.cpp" line="285"/>
         <source>Chart</source>
         <translation>Graf</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="149"/>
+        <location filename="../src/mainwindow.cpp" line="153"/>
         <source>&amp;New...</source>
         <translation>&amp;Nový...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="161"/>
+        <location filename="../src/mainwindow.cpp" line="165"/>
         <source>Save the file to disk</source>
         <translation>Uložit soubor na disk</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="165"/>
+        <location filename="../src/mainwindow.cpp" line="169"/>
         <source>Save with solution</source>
         <translation>Uložit včetně řešení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="175"/>
+        <location filename="../src/mainwindow.cpp" line="179"/>
         <source>Save the file under a new name</source>
         <translation>Uložit soubor pod novým jménem</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="178"/>
+        <location filename="../src/mainwindow.cpp" line="182"/>
         <source>&amp;Close</source>
         <translation>&amp;Zavřít</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="180"/>
+        <location filename="../src/mainwindow.cpp" line="184"/>
         <source>Close the file</source>
         <translation>Zavřít soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="184"/>
+        <location filename="../src/mainwindow.cpp" line="188"/>
         <source>Import AutoCAD DXF</source>
         <translation>Import AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="188"/>
+        <location filename="../src/mainwindow.cpp" line="192"/>
         <source>Export AutoCAD DXF</source>
         <translation>Export AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="207"/>
+        <location filename="../src/mainwindow.cpp" line="211"/>
         <source>Create &amp;video...</source>
         <translation>Vytvořit &amp;video...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="212"/>
+        <location filename="../src/mainwindow.cpp" line="216"/>
         <source>Load background image</source>
         <translation>Načítání obrázek na pozadí</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="234"/>
+        <location filename="../src/mainwindow.cpp" line="238"/>
         <source>Copy</source>
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="236"/>
+        <location filename="../src/mainwindow.cpp" line="240"/>
         <source>Copy image to clipboard.</source>
         <translation>Kopírovat obrázek do schránky.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="256"/>
+        <location filename="../src/mainwindow.cpp" line="260"/>
         <source>About &amp;Agros2D</source>
         <translation>O &amp;Agros2D</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="266"/>
+        <location filename="../src/mainwindow.cpp" line="270"/>
         <source>&amp;Options</source>
         <translation>&amp;Nastavení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="271"/>
+        <location filename="../src/mainwindow.cpp" line="275"/>
         <source>&amp;Mesh area</source>
         <translation>&amp;Diskretizace oblasti</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="275"/>
+        <location filename="../src/mainwindow.cpp" line="279"/>
         <source>&amp;Solve problem</source>
         <translation>&amp;Vyřešit problém</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="276"/>
+        <location filename="../src/mainwindow.cpp" line="280"/>
         <source>Alt+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="280"/>
+        <location filename="../src/mainwindow.cpp" line="284"/>
         <source>&amp;Chart</source>
         <translation>&amp;Graf</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="397"/>
+        <location filename="../src/mainwindow.cpp" line="401"/>
         <source>&amp;Add</source>
         <translation>Přid&amp;at</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="354"/>
+        <location filename="../src/mainwindow.cpp" line="358"/>
         <source>E&amp;dit</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="391"/>
+        <location filename="../src/mainwindow.cpp" line="395"/>
         <source>&amp;Problem</source>
         <translation>&amp;Problém</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="420"/>
+        <location filename="../src/mainwindow.cpp" line="424"/>
         <source>&amp;Tools</source>
         <translation>Nás&amp;troje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="476"/>
+        <location filename="../src/mainwindow.cpp" line="480"/>
         <source>Problem</source>
         <translation>Problém</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="500"/>
+        <location filename="../src/mainwindow.cpp" line="504"/>
         <source>Transient</source>
         <translation>Přechodný děj</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="502"/>
+        <location filename="../src/mainwindow.cpp" line="506"/>
         <source>Time step:</source>
         <translation>Časový krok:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="775"/>
+        <location filename="../src/mainwindow.cpp" line="779"/>
         <source>Unknown suffix.</source>
         <translation>Neznámá přípona.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="779"/>
+        <location filename="../src/mainwindow.cpp" line="783"/>
         <source>File &apos;%1&apos; is not found.</source>
         <translation>Soubor &apos;%1&apos; nebyl nalezen.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1063"/>
+        <location filename="../src/mainwindow.cpp" line="1067"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Soubor &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="775"/>
         <location filename="../src/mainwindow.cpp" line="779"/>
-        <location filename="../src/mainwindow.cpp" line="1063"/>
+        <location filename="../src/mainwindow.cpp" line="783"/>
+        <location filename="../src/mainwindow.cpp" line="1067"/>
         <source>File open</source>
         <translation>Soubor otevřen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="296"/>
+        <location filename="../src/mainwindow.cpp" line="300"/>
         <source>Run &amp;script...</source>
         <translation>Spustit &amp;skript...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="300"/>
+        <location filename="../src/mainwindow.cpp" line="304"/>
         <source>Run &amp;command...</source>
         <translation>Spustit &amp;příkaz...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="305"/>
+        <location filename="../src/mainwindow.cpp" line="309"/>
         <source>&amp;Report...</source>
         <translation>&amp;Zpráva...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="322"/>
+        <location filename="../src/mainwindow.cpp" line="326"/>
         <source>&amp;Recent files</source>
         <translation>&amp;Nedávné soubory</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="839"/>
+        <location filename="../src/mainwindow.cpp" line="843"/>
         <source>Agros2D files (*.a2d)</source>
         <translation>Soubory Agros2D (*.a2d)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="839"/>
+        <location filename="../src/mainwindow.cpp" line="843"/>
         <source>Save file</source>
         <translation>Uložit soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="889"/>
+        <location filename="../src/mainwindow.cpp" line="893"/>
         <source>Import file</source>
         <translation>Importovat soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="889"/>
-        <location filename="../src/mainwindow.cpp" line="907"/>
+        <location filename="../src/mainwindow.cpp" line="893"/>
+        <location filename="../src/mainwindow.cpp" line="911"/>
         <source>DXF files (*.dxf)</source>
         <translation>Soubory AUTOCAD DXF (*.dxf)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="907"/>
+        <location filename="../src/mainwindow.cpp" line="911"/>
         <source>Export file</source>
         <translation>Exportovat soubor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="925"/>
+        <location filename="../src/mainwindow.cpp" line="929"/>
         <source>PNG files (*.png)</source>
         <translation>Soubory PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1039"/>
+        <location filename="../src/mainwindow.cpp" line="1043"/>
         <source>Open File</source>
         <translation>Otevřít soubor</translation>
     </message>
@@ -3410,92 +3649,92 @@
 <context>
     <name>ProgressDialog</name>
     <message>
-        <location filename="../src/progressdialog.cpp" line="869"/>
+        <location filename="../src/progressdialog.cpp" line="874"/>
         <source>Progress...</source>
         <translation>Průběh...</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="915"/>
+        <location filename="../src/progressdialog.cpp" line="920"/>
         <source>Progress</source>
         <translation>Průběh</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="916"/>
+        <location filename="../src/progressdialog.cpp" line="921"/>
         <source>Adapt. error</source>
         <translation>Adapt. chyba</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="917"/>
+        <location filename="../src/progressdialog.cpp" line="922"/>
         <source>Adapt. DOFs</source>
         <translation>Adapt. DOFs</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="918"/>
+        <location filename="../src/progressdialog.cpp" line="923"/>
         <source>Adapt. conv.</source>
         <translation>Adapt. conv.</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="936"/>
+        <location filename="../src/progressdialog.cpp" line="941"/>
         <source>&amp;Save image</source>
         <translation>&amp;Uložit obrázek</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="940"/>
+        <location filename="../src/progressdialog.cpp" line="945"/>
         <source>Save data</source>
         <translation>Uložit data</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="989"/>
-        <location filename="../src/progressdialog.cpp" line="1038"/>
+        <location filename="../src/progressdialog.cpp" line="994"/>
+        <location filename="../src/progressdialog.cpp" line="1043"/>
         <source>current error</source>
         <translation>Celková chyba</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="998"/>
-        <location filename="../src/progressdialog.cpp" line="1082"/>
+        <location filename="../src/progressdialog.cpp" line="1003"/>
+        <location filename="../src/progressdialog.cpp" line="1087"/>
         <source>max. error</source>
         <translation>max. chyba</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1002"/>
-        <location filename="../src/progressdialog.cpp" line="1086"/>
+        <location filename="../src/progressdialog.cpp" line="1007"/>
+        <location filename="../src/progressdialog.cpp" line="1091"/>
         <source>Error (%)</source>
         <translation>Chyba (%)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1006"/>
-        <location filename="../src/progressdialog.cpp" line="1046"/>
+        <location filename="../src/progressdialog.cpp" line="1011"/>
+        <location filename="../src/progressdialog.cpp" line="1051"/>
         <source>Steps (-)</source>
         <translation>Kroky (-)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1042"/>
-        <location filename="../src/progressdialog.cpp" line="1090"/>
+        <location filename="../src/progressdialog.cpp" line="1047"/>
+        <location filename="../src/progressdialog.cpp" line="1095"/>
         <source>DOFs (-)</source>
         <translation>Stupně volnosti (-)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1073"/>
+        <location filename="../src/progressdialog.cpp" line="1078"/>
         <source>conv. chart</source>
         <translation>conv. graf</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1423"/>
+        <location filename="../src/progressdialog.cpp" line="1428"/>
         <source>Export data to file</source>
         <translation>Export dat do souboru</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="1423"/>
+        <location filename="../src/progressdialog.cpp" line="1428"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV soubory (*.csv)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="928"/>
+        <location filename="../src/progressdialog.cpp" line="933"/>
         <source>Cance&amp;l</source>
         <translation>Zruši&amp;t</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="932"/>
+        <location filename="../src/progressdialog.cpp" line="937"/>
         <source>&amp;Close</source>
         <translation>&amp;Zavřít</translation>
     </message>
@@ -3628,27 +3867,27 @@
 <context>
     <name>ProgressItemProcessView</name>
     <message>
-        <location filename="../src/progressdialog.cpp" line="803"/>
+        <location filename="../src/progressdialog.cpp" line="808"/>
         <source>View</source>
         <translation>Zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="834"/>
+        <location filename="../src/progressdialog.cpp" line="839"/>
         <source>Processing solution mesh cache</source>
         <translation>Zpracování dat pro síť</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="840"/>
+        <location filename="../src/progressdialog.cpp" line="845"/>
         <source>Processing countour view cache</source>
         <translation>Zpracování dat pro kontury</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="848"/>
+        <location filename="../src/progressdialog.cpp" line="853"/>
         <source>Processing scalar view cache</source>
         <translation>Zpracování dat pro skalární zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="854"/>
+        <location filename="../src/progressdialog.cpp" line="859"/>
         <source>Processing vector view cache</source>
         <translation>Zpracování dat pro zobrazení vektorů</translation>
     </message>
@@ -3661,22 +3900,22 @@
         <translation>Řešič</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="774"/>
+        <location filename="../src/progressdialog.cpp" line="779"/>
         <source>Problem analysis: %1 (%2, %3)</source>
         <translation>Analýza problému: %1 (%2, %3)</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="779"/>
+        <location filename="../src/progressdialog.cpp" line="784"/>
         <source>Solver was started: %1 </source>
         <translation>Řešení problému: %1</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="785"/>
+        <location filename="../src/progressdialog.cpp" line="790"/>
         <source>Problem was solved</source>
         <translation>Problém byl vyřešen</translation>
     </message>
     <message>
-        <location filename="../src/progressdialog.cpp" line="790"/>
+        <location filename="../src/progressdialog.cpp" line="795"/>
         <source>Problem was not solved</source>
         <translation>Problém nebyl vyřešen</translation>
     </message>
@@ -3684,833 +3923,1036 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/util.cpp" line="212"/>
-        <location filename="../src/util.cpp" line="280"/>
+        <location filename="../src/util.cpp" line="243"/>
+        <location filename="../src/util.cpp" line="311"/>
         <source>Scalar potential</source>
         <translation>Skalární el. potenciál</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="214"/>
-        <location filename="../src/util.cpp" line="282"/>
+        <location filename="../src/util.cpp" line="245"/>
+        <location filename="../src/util.cpp" line="313"/>
+        <location filename="../src/util.cpp" line="361"/>
+        <location filename="../src/util.cpp" line="847"/>
         <source>Electric field</source>
         <translation>Intenzita el. pole</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="216"/>
-        <location filename="../src/util.cpp" line="302"/>
+        <location filename="../src/util.cpp" line="247"/>
+        <location filename="../src/util.cpp" line="333"/>
         <source>Displacement</source>
         <translation>El. indukce</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="218"/>
-        <location filename="../src/util.cpp" line="269"/>
+        <location filename="../src/util.cpp" line="249"/>
+        <location filename="../src/util.cpp" line="300"/>
+        <location filename="../src/util.cpp" line="375"/>
         <source>Energy density</source>
         <translation>Hustota energie</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="220"/>
+        <location filename="../src/util.cpp" line="251"/>
+        <location filename="../src/util.cpp" line="377"/>
         <source>Permittivity</source>
         <translation>Permitivita</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="227"/>
-        <location filename="../src/util.cpp" line="659"/>
+        <location filename="../src/util.cpp" line="258"/>
+        <location filename="../src/util.cpp" line="823"/>
         <source>Vector potential</source>
         <translation>Vektorový mag. potenciál</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="233"/>
+        <location filename="../src/util.cpp" line="264"/>
         <source>Flux density</source>
         <translation>Mag. indukce</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="239"/>
-        <location filename="../src/util.cpp" line="609"/>
+        <location filename="../src/util.cpp" line="270"/>
+        <location filename="../src/util.cpp" line="367"/>
+        <location filename="../src/util.cpp" line="769"/>
+        <location filename="../src/util.cpp" line="849"/>
         <source>Magnetic field</source>
         <translation>Magnetické pole</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="271"/>
+        <location filename="../src/util.cpp" line="302"/>
+        <location filename="../src/util.cpp" line="379"/>
         <source>Permeability</source>
         <translation>Permeabilita</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="291"/>
-        <location filename="../src/util.cpp" line="663"/>
+        <location filename="../src/util.cpp" line="322"/>
+        <location filename="../src/util.cpp" line="827"/>
         <source>Temperature</source>
         <translation>Teplota</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="293"/>
+        <location filename="../src/util.cpp" line="324"/>
         <source>Temperature gradient</source>
         <translation>Gradient teploty</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="295"/>
-        <location filename="../src/util.cpp" line="665"/>
+        <location filename="../src/util.cpp" line="326"/>
+        <location filename="../src/util.cpp" line="829"/>
         <source>Heat flux</source>
         <translation>Tepelný tok</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="273"/>
-        <location filename="../src/util.cpp" line="288"/>
-        <location filename="../src/util.cpp" line="297"/>
+        <location filename="../src/util.cpp" line="304"/>
+        <location filename="../src/util.cpp" line="319"/>
+        <location filename="../src/util.cpp" line="328"/>
+        <location filename="../src/util.cpp" line="381"/>
         <source>Conductivity</source>
         <translation>Vodivost</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="367"/>
-        <location filename="../src/util.cpp" line="792"/>
+        <location filename="../src/timefunction.cpp" line="44"/>
+        <location filename="../src/timefunction.cpp" line="67"/>
+        <location filename="../src/util.cpp" line="974"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="711"/>
+        <location filename="../src/util.cpp" line="891"/>
         <source>Planar</source>
         <translation>Kartézský</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="711"/>
+        <location filename="../src/util.cpp" line="891"/>
         <source>Axisymmetric</source>
         <translation>Osově symetrický</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="721"/>
+        <location filename="../src/util.cpp" line="901"/>
         <source>Disabled</source>
         <translation>Vypnuto</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="723"/>
+        <location filename="../src/util.cpp" line="903"/>
         <source>h-adaptivity</source>
         <translation>h-adaptivita</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="725"/>
+        <location filename="../src/util.cpp" line="905"/>
         <source>p-adaptivity</source>
         <translation>p-adaptivita</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="727"/>
+        <location filename="../src/util.cpp" line="907"/>
         <source>hp-adaptivity</source>
         <translation>hp-adaptivita</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="695"/>
+        <location filename="../src/util.cpp" line="875"/>
         <source>Scalar</source>
         <translation>Skalár</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="697"/>
+        <location filename="../src/util.cpp" line="877"/>
         <source>Magnitude</source>
         <translation>Modul</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="605"/>
+        <location filename="../src/util.cpp" line="765"/>
         <source>General</source>
         <translation>Obecné pole</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="611"/>
+        <location filename="../src/util.cpp" line="771"/>
         <source>Current field</source>
         <translation>El. proudové pole</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="613"/>
+        <location filename="../src/util.cpp" line="773"/>
         <source>Heat transfer</source>
         <translation>Teplotní pole</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="205"/>
+        <location filename="../src/util.cpp" line="236"/>
         <source>Variable</source>
         <translation>Veličina</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="207"/>
+        <location filename="../src/util.cpp" line="238"/>
         <source>Gradient</source>
         <translation>Gradient</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="209"/>
+        <location filename="../src/util.cpp" line="240"/>
         <source>Constant</source>
         <translation>Konstanta</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="223"/>
+        <location filename="../src/util.cpp" line="254"/>
         <source>Vector potential - real</source>
         <translation>Vektorový mag. potenciál - reál. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="225"/>
+        <location filename="../src/util.cpp" line="256"/>
         <source>Vector potential - imag</source>
         <translation>Vektorový mag. potenciál - imag. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="229"/>
+        <location filename="../src/util.cpp" line="260"/>
         <source>Flux density - real</source>
         <translation>Mag. indukce - reál. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="231"/>
+        <location filename="../src/util.cpp" line="262"/>
         <source>Flux density - imag</source>
         <translation>Mag. indukce - imag. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="235"/>
+        <location filename="../src/util.cpp" line="266"/>
+        <location filename="../src/util.cpp" line="369"/>
         <source>Magnetic field - real</source>
         <translation>Magnetické pole - reál. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="237"/>
+        <location filename="../src/util.cpp" line="268"/>
+        <location filename="../src/util.cpp" line="371"/>
         <source>Magnetic field - imag</source>
         <translation>Magnetické pole - imag. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="284"/>
+        <location filename="../src/util.cpp" line="315"/>
         <source>Current density</source>
         <translation>Proudová hustota</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="265"/>
-        <location filename="../src/util.cpp" line="286"/>
+        <location filename="../src/util.cpp" line="296"/>
+        <location filename="../src/util.cpp" line="317"/>
+        <location filename="../src/util.cpp" line="373"/>
         <source>Power losses</source>
         <translation>Ztráty</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="300"/>
+        <location filename="../src/util.cpp" line="331"/>
         <source>Von Mises stress</source>
         <translation>Von Misses napětí</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="341"/>
-        <location filename="../src/util.cpp" line="348"/>
-        <location filename="../src/util.cpp" line="416"/>
-        <location filename="../src/util.cpp" line="481"/>
-        <location filename="../src/util.cpp" line="547"/>
+        <location filename="../src/util.cpp" line="414"/>
+        <location filename="../src/util.cpp" line="421"/>
+        <location filename="../src/util.cpp" line="489"/>
+        <location filename="../src/util.cpp" line="597"/>
+        <location filename="../src/util.cpp" line="663"/>
         <source>V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="483"/>
-        <location filename="../src/util.cpp" line="549"/>
+        <location filename="../src/util.cpp" line="599"/>
+        <location filename="../src/util.cpp" line="665"/>
+        <location filename="../src/util.cpp" line="710"/>
+        <location filename="../src/util.cpp" line="712"/>
+        <location filename="../src/util.cpp" line="714"/>
         <source>V/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="485"/>
+        <location filename="../src/util.cpp" line="601"/>
         <source>C/m2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="487"/>
-        <location filename="../src/util.cpp" line="537"/>
+        <location filename="../src/util.cpp" line="603"/>
+        <location filename="../src/util.cpp" line="653"/>
+        <location filename="../src/util.cpp" line="724"/>
         <source>J/m3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="489"/>
-        <location filename="../src/util.cpp" line="539"/>
-        <location filename="../src/util.cpp" line="569"/>
-        <location filename="../src/util.cpp" line="571"/>
-        <location filename="../src/util.cpp" line="573"/>
-        <location filename="../src/util.cpp" line="575"/>
+        <location filename="../src/util.cpp" line="605"/>
+        <location filename="../src/util.cpp" line="655"/>
+        <location filename="../src/util.cpp" line="685"/>
+        <location filename="../src/util.cpp" line="687"/>
+        <location filename="../src/util.cpp" line="689"/>
+        <location filename="../src/util.cpp" line="691"/>
         <source>-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="491"/>
-        <location filename="../src/util.cpp" line="493"/>
-        <location filename="../src/util.cpp" line="495"/>
+        <location filename="../src/util.cpp" line="607"/>
+        <location filename="../src/util.cpp" line="609"/>
+        <location filename="../src/util.cpp" line="611"/>
         <source>Wb/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="427"/>
-        <location filename="../src/util.cpp" line="497"/>
-        <location filename="../src/util.cpp" line="499"/>
-        <location filename="../src/util.cpp" line="501"/>
-        <location filename="../src/util.cpp" line="543"/>
+        <location filename="../src/util.cpp" line="500"/>
+        <location filename="../src/util.cpp" line="613"/>
+        <location filename="../src/util.cpp" line="615"/>
+        <location filename="../src/util.cpp" line="617"/>
+        <location filename="../src/util.cpp" line="659"/>
         <source>T</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="304"/>
-        <location filename="../src/util.cpp" line="306"/>
-        <location filename="../src/util.cpp" line="308"/>
+        <location filename="../src/util.cpp" line="335"/>
+        <location filename="../src/util.cpp" line="337"/>
+        <location filename="../src/util.cpp" line="339"/>
         <source>Normal strain </source>
         <translation>Normálová deformace</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="310"/>
+        <location filename="../src/util.cpp" line="341"/>
         <source>Shear strain </source>
         <translation>Smyková deformace</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="312"/>
-        <location filename="../src/util.cpp" line="314"/>
-        <location filename="../src/util.cpp" line="316"/>
+        <location filename="../src/util.cpp" line="343"/>
+        <location filename="../src/util.cpp" line="345"/>
+        <location filename="../src/util.cpp" line="347"/>
         <source>Normal stress </source>
         <translation>Normálové napětí</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="318"/>
+        <location filename="../src/util.cpp" line="349"/>
         <source>Shear stress </source>
         <translation>Smykové napětí</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="323"/>
-        <location filename="../src/util.cpp" line="325"/>
+        <location filename="../src/util.cpp" line="354"/>
+        <location filename="../src/util.cpp" line="356"/>
         <source>Velocity </source>
         <translation>Rychlost</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="438"/>
+        <location filename="../src/util.cpp" line="511"/>
         <source>d</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="440"/>
-        <location filename="../src/util.cpp" line="442"/>
-        <location filename="../src/util.cpp" line="444"/>
-        <location filename="../src/util.cpp" line="446"/>
+        <location filename="../src/util.cpp" line="513"/>
+        <location filename="../src/util.cpp" line="515"/>
+        <location filename="../src/util.cpp" line="517"/>
+        <location filename="../src/util.cpp" line="519"/>
         <source>e</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="448"/>
-        <location filename="../src/util.cpp" line="450"/>
-        <location filename="../src/util.cpp" line="452"/>
-        <location filename="../src/util.cpp" line="454"/>
-        <source>s</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/util.cpp" line="503"/>
-        <location filename="../src/util.cpp" line="505"/>
-        <location filename="../src/util.cpp" line="507"/>
-        <location filename="../src/util.cpp" line="509"/>
-        <location filename="../src/util.cpp" line="511"/>
-        <location filename="../src/util.cpp" line="513"/>
-        <source>A/m</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/util.cpp" line="515"/>
-        <location filename="../src/util.cpp" line="517"/>
-        <location filename="../src/util.cpp" line="519"/>
         <location filename="../src/util.cpp" line="521"/>
         <location filename="../src/util.cpp" line="523"/>
         <location filename="../src/util.cpp" line="525"/>
         <location filename="../src/util.cpp" line="527"/>
-        <location filename="../src/util.cpp" line="529"/>
-        <location filename="../src/util.cpp" line="531"/>
-        <location filename="../src/util.cpp" line="551"/>
+        <source>s</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="619"/>
+        <location filename="../src/util.cpp" line="621"/>
+        <location filename="../src/util.cpp" line="623"/>
+        <location filename="../src/util.cpp" line="625"/>
+        <location filename="../src/util.cpp" line="627"/>
+        <location filename="../src/util.cpp" line="629"/>
+        <location filename="../src/util.cpp" line="716"/>
+        <location filename="../src/util.cpp" line="718"/>
+        <location filename="../src/util.cpp" line="720"/>
+        <source>A/m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="631"/>
+        <location filename="../src/util.cpp" line="633"/>
+        <location filename="../src/util.cpp" line="635"/>
+        <location filename="../src/util.cpp" line="637"/>
+        <location filename="../src/util.cpp" line="639"/>
+        <location filename="../src/util.cpp" line="641"/>
+        <location filename="../src/util.cpp" line="643"/>
+        <location filename="../src/util.cpp" line="645"/>
+        <location filename="../src/util.cpp" line="647"/>
+        <location filename="../src/util.cpp" line="667"/>
+        <location filename="../src/util.cpp" line="732"/>
+        <location filename="../src/util.cpp" line="734"/>
         <source>A/m2</source>
         <translation>A/m2</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="533"/>
-        <location filename="../src/util.cpp" line="553"/>
+        <location filename="../src/util.cpp" line="649"/>
+        <location filename="../src/util.cpp" line="669"/>
+        <location filename="../src/util.cpp" line="722"/>
         <source>W/m3</source>
         <translation>W/m3</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="535"/>
+        <location filename="../src/util.cpp" line="651"/>
         <source>N/m3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="541"/>
-        <location filename="../src/util.cpp" line="555"/>
+        <location filename="../src/util.cpp" line="657"/>
+        <location filename="../src/util.cpp" line="671"/>
+        <location filename="../src/util.cpp" line="730"/>
         <source>S/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="545"/>
-        <location filename="../src/util.cpp" line="585"/>
-        <location filename="../src/util.cpp" line="587"/>
-        <location filename="../src/util.cpp" line="589"/>
+        <location filename="../src/util.cpp" line="661"/>
+        <location filename="../src/util.cpp" line="701"/>
+        <location filename="../src/util.cpp" line="703"/>
+        <location filename="../src/util.cpp" line="705"/>
+        <location filename="../src/util.cpp" line="745"/>
+        <location filename="../src/util.cpp" line="751"/>
         <source>m/s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="559"/>
+        <location filename="../src/util.cpp" line="675"/>
         <source>K/m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="561"/>
+        <location filename="../src/util.cpp" line="677"/>
         <source>W/m2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="563"/>
+        <location filename="../src/util.cpp" line="679"/>
         <source>W/m.K</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="565"/>
-        <location filename="../src/util.cpp" line="577"/>
-        <location filename="../src/util.cpp" line="579"/>
-        <location filename="../src/util.cpp" line="581"/>
-        <location filename="../src/util.cpp" line="583"/>
-        <location filename="../src/util.cpp" line="591"/>
+        <location filename="../src/util.cpp" line="681"/>
+        <location filename="../src/util.cpp" line="693"/>
+        <location filename="../src/util.cpp" line="695"/>
+        <location filename="../src/util.cpp" line="697"/>
+        <location filename="../src/util.cpp" line="699"/>
+        <location filename="../src/util.cpp" line="707"/>
+        <location filename="../src/util.cpp" line="737"/>
+        <location filename="../src/util.cpp" line="739"/>
+        <location filename="../src/util.cpp" line="741"/>
         <source>Pa</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="567"/>
+        <location filename="../src/util.cpp" line="683"/>
         <source>m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="607"/>
+        <location filename="../src/util.cpp" line="767"/>
         <source>Electrostatic field</source>
         <translation>Elektrostatické pole</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="615"/>
+        <location filename="../src/util.cpp" line="775"/>
         <source>Structural mechanics</source>
         <translation>Strukturální mechanika</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="675"/>
+        <location filename="../src/util.cpp" line="781"/>
+        <source>Acoustics</source>
+        <translation>Akustické pole</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="839"/>
         <source>Outlet</source>
         <translation>Výtok</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="677"/>
+        <location filename="../src/util.cpp" line="841"/>
         <source>Wall</source>
         <translation>Stěna</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="703"/>
+        <location filename="../src/util.cpp" line="883"/>
         <source>Undefined</source>
         <translation>Nedefinována</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="302"/>
+        <location filename="../src/util.h" line="305"/>
         <source>Information</source>
         <translation>Informace</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="305"/>
+        <location filename="../src/util.h" line="308"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="308"/>
+        <location filename="../src/util.h" line="311"/>
         <source>Critical</source>
         <translation>Kritická chyba</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="588"/>
+        <location filename="../src/util.h" line="643"/>
         <source>H1 norm</source>
         <translation>H1 norma</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="590"/>
+        <location filename="../src/util.h" line="645"/>
         <source>L2 norm</source>
         <translation>L2 norma</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="592"/>
+        <location filename="../src/util.h" line="647"/>
         <source>H1 seminorm</source>
         <translation>H1 seminorma</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="594"/>
+        <location filename="../src/util.h" line="649"/>
         <source>Hdiv norm</source>
         <translation>Hdiv norma</translation>
     </message>
     <message>
-        <location filename="../src/util.h" line="596"/>
+        <location filename="../src/util.h" line="651"/>
         <source>Hcurl norm</source>
         <translation>Hcurl norma</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="241"/>
+        <location filename="../src/util.cpp" line="272"/>
         <source>Current density - external - real</source>
         <translation>Proudová hustota - vnější - reálná složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="243"/>
+        <location filename="../src/util.cpp" line="274"/>
         <source>Current density - external - imag</source>
         <translation>Proudová hustota - vnější - imag. sožka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="245"/>
+        <location filename="../src/util.cpp" line="276"/>
         <source>Current density - external</source>
         <translation>Proudová hustota - vnější</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="247"/>
+        <location filename="../src/util.cpp" line="278"/>
         <source>Current density - total - real</source>
         <translation>Proudová hustota - celková - reálná složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="249"/>
+        <location filename="../src/util.cpp" line="280"/>
         <source>Current density - total - imag</source>
         <translation>Proudová hustota - celková - imag. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="251"/>
+        <location filename="../src/util.cpp" line="282"/>
         <source>Current density - total</source>
         <translation>Proudová hustota - celková</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="253"/>
+        <location filename="../src/util.cpp" line="284"/>
         <source>Current density - induced transform - real</source>
         <translation>Proudová hustota - indukovaná trans. - reálná složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="255"/>
+        <location filename="../src/util.cpp" line="286"/>
         <source>Current density - induced transform - imag</source>
         <translation>Proudová hustota - indukovaná trans. - imag. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="257"/>
+        <location filename="../src/util.cpp" line="288"/>
         <source>Current density - induced transform</source>
         <translation>Proudová hustota - indukovaná transformací</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="259"/>
+        <location filename="../src/util.cpp" line="290"/>
         <source>Current density - induced velocity - real</source>
         <translation>Proudová hustota - indukovaná pohyb. - reálná složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="261"/>
+        <location filename="../src/util.cpp" line="292"/>
         <source>Current density - induced velocity - imag</source>
         <translation>Proudová hustota - indukovaná pohyb. - imag. složka</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="263"/>
+        <location filename="../src/util.cpp" line="294"/>
         <source>Current density - induced velocity</source>
         <translation>Proudová hustota - indukovaná pohybem</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="267"/>
+        <location filename="../src/util.cpp" line="298"/>
         <source>Lorentz force</source>
         <translation>Lorentzova síla</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="275"/>
+        <location filename="../src/util.cpp" line="306"/>
         <source>Remanent flux density</source>
         <translation>Remanentní mag. indukce</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="277"/>
-        <location filename="../src/util.cpp" line="321"/>
-        <location filename="../src/util.cpp" line="679"/>
+        <location filename="../src/util.cpp" line="308"/>
+        <location filename="../src/util.cpp" line="352"/>
+        <location filename="../src/util.cpp" line="843"/>
         <source>Velocity</source>
         <translation>Rychlost</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="327"/>
-        <location filename="../src/util.cpp" line="681"/>
+        <location filename="../src/util.cpp" line="358"/>
+        <location filename="../src/util.cpp" line="845"/>
         <source>Pressure</source>
         <translatorcomment>Tlak</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="343"/>
-        <location filename="../src/util.cpp" line="429"/>
+        <location filename="../src/util.cpp" line="363"/>
+        <source>Electric field - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="365"/>
+        <source>Electric field - imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="383"/>
+        <source>J_Ext_real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="385"/>
+        <source>J_Ext_imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="387"/>
+        <location filename="../src/util.cpp" line="855"/>
+        <source>Acoustic pressure</source>
+        <translation>Akustický tlak</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="389"/>
+        <source>Acoustic pressure - real</source>
+        <translation>Akustický tlak - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="391"/>
+        <source>Acoustic pressure - imag</source>
+        <translation>Akustický tlak - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="393"/>
+        <source>Sound pressure level</source>
+        <translation>Úroveň akustického tlaku</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="395"/>
+        <source>Local velocity</source>
+        <translation>Lokální rychlost částic</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="397"/>
+        <source>Local acceleration</source>
+        <translation>Lokální zrychlení částic</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="399"/>
+        <source>Density</source>
+        <translation>Měrná hmotnost</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="401"/>
+        <source>Speed of sound</source>
+        <translation>Rychlost zvuku</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="416"/>
+        <location filename="../src/util.cpp" line="502"/>
         <source>G</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="345"/>
+        <location filename="../src/util.cpp" line="418"/>
         <source>C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="350"/>
-        <location filename="../src/util.cpp" line="418"/>
-        <location filename="../src/util.cpp" line="436"/>
+        <location filename="../src/util.cpp" line="423"/>
+        <location filename="../src/util.cpp" line="491"/>
+        <location filename="../src/util.cpp" line="509"/>
+        <location filename="../src/util.cpp" line="539"/>
         <source>E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="352"/>
+        <location filename="../src/util.cpp" line="425"/>
         <source>D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="354"/>
+        <location filename="../src/util.cpp" line="427"/>
         <source>we</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="356"/>
+        <location filename="../src/util.cpp" line="429"/>
+        <location filename="../src/util.cpp" line="555"/>
         <source>epsr</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="359"/>
+        <location filename="../src/util.cpp" line="432"/>
         <source>Are</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="361"/>
+        <location filename="../src/util.cpp" line="434"/>
         <source>Aim</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="363"/>
+        <location filename="../src/util.cpp" line="436"/>
         <source>A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="365"/>
+        <location filename="../src/util.cpp" line="438"/>
         <source>Bre</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="367"/>
+        <location filename="../src/util.cpp" line="440"/>
         <source>Bim</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="369"/>
+        <location filename="../src/util.cpp" line="442"/>
         <source>B</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="371"/>
+        <location filename="../src/util.cpp" line="444"/>
+        <location filename="../src/util.cpp" line="547"/>
         <source>Hre</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="373"/>
+        <location filename="../src/util.cpp" line="446"/>
+        <location filename="../src/util.cpp" line="549"/>
         <source>Him</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="375"/>
+        <location filename="../src/util.cpp" line="448"/>
+        <location filename="../src/util.cpp" line="545"/>
         <source>H</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="377"/>
+        <location filename="../src/util.cpp" line="450"/>
         <source>Jere</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="379"/>
+        <location filename="../src/util.cpp" line="452"/>
         <source>Jeim</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="381"/>
+        <location filename="../src/util.cpp" line="454"/>
         <source>Je</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="383"/>
+        <location filename="../src/util.cpp" line="456"/>
         <source>Jtre</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="385"/>
+        <location filename="../src/util.cpp" line="458"/>
         <source>Jtim</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="387"/>
+        <location filename="../src/util.cpp" line="460"/>
         <source>Jt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="389"/>
+        <location filename="../src/util.cpp" line="462"/>
         <source>Jitre</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="391"/>
+        <location filename="../src/util.cpp" line="464"/>
         <source>Jitim</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="393"/>
+        <location filename="../src/util.cpp" line="466"/>
         <source>Jit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="395"/>
+        <location filename="../src/util.cpp" line="468"/>
         <source>Jivre</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="397"/>
+        <location filename="../src/util.cpp" line="470"/>
         <source>Jivim</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="399"/>
+        <location filename="../src/util.cpp" line="472"/>
         <source>Jiv</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="401"/>
-        <location filename="../src/util.cpp" line="422"/>
+        <location filename="../src/util.cpp" line="474"/>
+        <location filename="../src/util.cpp" line="495"/>
+        <location filename="../src/util.cpp" line="551"/>
         <source>pj</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="403"/>
+        <location filename="../src/util.cpp" line="476"/>
         <source>FL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="405"/>
+        <location filename="../src/util.cpp" line="478"/>
         <source>wm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="407"/>
+        <location filename="../src/util.cpp" line="480"/>
+        <location filename="../src/util.cpp" line="557"/>
         <source>mur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="409"/>
-        <location filename="../src/util.cpp" line="424"/>
+        <location filename="../src/util.cpp" line="482"/>
+        <location filename="../src/util.cpp" line="497"/>
+        <location filename="../src/util.cpp" line="559"/>
         <source>g</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="411"/>
+        <location filename="../src/util.cpp" line="484"/>
         <source>Br</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="413"/>
-        <location filename="../src/util.cpp" line="457"/>
-        <location filename="../src/util.cpp" line="459"/>
-        <location filename="../src/util.cpp" line="461"/>
+        <location filename="../src/util.cpp" line="486"/>
+        <location filename="../src/util.cpp" line="530"/>
+        <location filename="../src/util.cpp" line="532"/>
+        <location filename="../src/util.cpp" line="534"/>
+        <location filename="../src/util.cpp" line="573"/>
+        <location filename="../src/util.cpp" line="579"/>
         <source>v</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="420"/>
+        <location filename="../src/util.cpp" line="493"/>
         <source>J</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="431"/>
+        <location filename="../src/util.cpp" line="504"/>
         <source>F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="433"/>
+        <location filename="../src/util.cpp" line="506"/>
         <source>k</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="463"/>
+        <location filename="../src/util.cpp" line="536"/>
+        <location filename="../src/util.cpp" line="565"/>
+        <location filename="../src/util.cpp" line="567"/>
+        <location filename="../src/util.cpp" line="569"/>
         <source>p</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="557"/>
+        <location filename="../src/util.cpp" line="541"/>
+        <source>Ere</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="543"/>
+        <source>Eim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="553"/>
+        <source>w</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="561"/>
+        <source>J_r</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="563"/>
+        <source>J_i</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="571"/>
+        <source>Lp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="575"/>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="577"/>
+        <source>rho</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="673"/>
         <source>deg.</source>
         <translation>st.</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="741"/>
+        <location filename="../src/util.cpp" line="726"/>
+        <source>F/m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="728"/>
+        <source>H/m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="743"/>
+        <source>dB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="747"/>
+        <source>m/s2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="749"/>
+        <source>kg/m3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="779"/>
+        <source>TE Waves</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acoustic</source>
+        <translation type="obsolete">Akustické pole</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="851"/>
+        <location filename="../src/util.cpp" line="861"/>
+        <source>Matched boundary</source>
+        <translation>Přizpůsobená hranice</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="853"/>
+        <source>Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="857"/>
+        <source>Normal acceleration</source>
+        <translation>Normálové zrychlení</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="859"/>
+        <source>Impedance boundary condition</source>
+        <translation>Impedanční hraniční podmínka</translation>
+    </message>
+    <message>
+        <location filename="../src/util.cpp" line="921"/>
         <source>UMFPACK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="743"/>
+        <location filename="../src/util.cpp" line="923"/>
         <source>PETSc</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="745"/>
+        <location filename="../src/util.cpp" line="925"/>
         <source>MUMPS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="747"/>
+        <location filename="../src/util.cpp" line="927"/>
         <source>SuperLU</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="749"/>
+        <location filename="../src/util.cpp" line="929"/>
         <source>Trilinos/Amesos</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="751"/>
+        <location filename="../src/util.cpp" line="931"/>
         <source>Trilinos/AztecOO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="617"/>
+        <location filename="../src/util.cpp" line="777"/>
         <source>Incompressible flow</source>
         <translation>Nestlačitelné proudění</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="631"/>
+        <location filename="../src/util.cpp" line="795"/>
         <source>Steady state</source>
         <translation>Ustálený stav</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="633"/>
+        <location filename="../src/util.cpp" line="797"/>
         <source>Transient</source>
         <translation>Přechodný děj</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="635"/>
+        <location filename="../src/util.cpp" line="799"/>
         <source>Harmonic</source>
         <translation>Harmonická analýza</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="649"/>
+        <location filename="../src/util.cpp" line="813"/>
         <source>none</source>
         <translation>nic</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="651"/>
+        <location filename="../src/util.cpp" line="815"/>
         <source>Value</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="653"/>
+        <location filename="../src/util.cpp" line="817"/>
         <source>Derivative</source>
         <translation>Derivace</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="655"/>
+        <location filename="../src/util.cpp" line="819"/>
         <source>Fixed voltage</source>
         <translation>El. potenciál</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="657"/>
+        <location filename="../src/util.cpp" line="821"/>
         <source>Surface charge density</source>
         <translation>Povrchová hustota náboje</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="661"/>
+        <location filename="../src/util.cpp" line="825"/>
         <source>Surface current density</source>
         <translation>Povrchová proudová hustota</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="667"/>
+        <location filename="../src/util.cpp" line="831"/>
         <source>Potential</source>
         <translation>Potenciál</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="669"/>
+        <location filename="../src/util.cpp" line="833"/>
         <source>Inward current flow</source>
         <translation>Vstupní proudová hustota</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="671"/>
+        <location filename="../src/util.cpp" line="835"/>
         <source>Fixed</source>
         <translation>Pevný</translation>
     </message>
     <message>
-        <location filename="../src/util.cpp" line="673"/>
+        <location filename="../src/util.cpp" line="837"/>
         <source>Free</source>
         <translation>Volný</translation>
     </message>
@@ -4636,16 +5078,19 @@
         <translation>Značka &apos;%1&apos; není definována.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="500"/>
         <location filename="../src/hermes2d/hermes_current.cpp" line="193"/>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="198"/>
         <location filename="../src/hermes2d/hermes_flow.cpp" line="248"/>
         <location filename="../src/hermes2d/hermes_general.cpp" line="221"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="261"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="343"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="429"/>
         <source>Boundary type &apos;%1&apos; is not supported.</source>
         <translation>Hraniční podmínka &apos;%1&apos; není podporována.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="506"/>
         <location filename="../src/hermes2d/hermes_current.cpp" line="199"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="385"/>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="204"/>
@@ -4653,6 +5098,7 @@
         <location filename="../src/hermes2d/hermes_general.cpp" line="227"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="278"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="349"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="435"/>
         <source>Boundary marker with name &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Hraniční podmínka se jménem &apos;%1&apos; neexistuje.</translation>
     </message>
@@ -4662,6 +5108,7 @@
         <translation>Popisek oblasti již existuje.</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="552"/>
         <location filename="../src/hermes2d/hermes_current.cpp" line="240"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="446"/>
         <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="250"/>
@@ -4669,6 +5116,7 @@
         <location filename="../src/hermes2d/hermes_general.cpp" line="273"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="330"/>
         <location filename="../src/hermes2d/hermes_magnetic.cpp" line="416"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="490"/>
         <source>Label marker with name &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Značka oblasti se jménem &apos;%1&apos; neexistuje.</translation>
     </message>
@@ -4725,31 +5173,31 @@
         <translation>Proměnná &apos;%1&apos; není implementována.</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="257"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="269"/>
         <source>Adaptivity type: %1</source>
         <translation>Typ adaptivity: %1</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="283"/>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="312"/>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="427"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="295"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="324"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="442"/>
         <source>DOF is zero</source>
         <translation>Počet stupňů volnosti je nulový</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="298"/>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="328"/>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="439"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="310"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="340"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="454"/>
         <source>Matrix solver failed.</source>
         <translation>Řešič matice selhal.</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="346"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="358"/>
         <source>Relative error: %1%	(step: %2/%3, DOFs: %4)</source>
         <translation>Relativní chyba: %1%	(krok: %2/%3, St. volnosti: %4)</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_field.cpp" line="450"/>
+        <location filename="../src/hermes2d/hermes_field.cpp" line="465"/>
         <source>Time step: %1/%2</source>
         <translation>Časový krok: %1/%2</translation>
     </message>
@@ -4757,6 +5205,11 @@
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="379"/>
         <source>Boundary type &apos;%1&apos; or &apos;%2&apos; is not supported.</source>
         <translation>Hraniční podmínka &apos;%1&apos; nebo &apos;%2&apos; není podporována.</translation>
+    </message>
+    <message>
+        <location filename="../src/timefunction.cpp" line="44"/>
+        <source>Invalid time expression. &quot;time&quot; variable cannot be found.</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5124,154 +5577,154 @@
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../src/scene.cpp" line="235"/>
+        <location filename="../src/scene.cpp" line="229"/>
         <source>Alt+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="236"/>
+        <location filename="../src/scene.cpp" line="230"/>
         <source>New node</source>
         <translation>Nový uzel</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="240"/>
+        <location filename="../src/scene.cpp" line="234"/>
         <source>Alt+E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="241"/>
+        <location filename="../src/scene.cpp" line="235"/>
         <source>New edge</source>
         <translation>Nová hrana</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="245"/>
+        <location filename="../src/scene.cpp" line="239"/>
         <source>Alt+L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="246"/>
+        <location filename="../src/scene.cpp" line="240"/>
         <source>New label</source>
         <translation>Nová značka oblasti</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="254"/>
+        <location filename="../src/scene.cpp" line="248"/>
         <source>Alt+B</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="255"/>
+        <location filename="../src/scene.cpp" line="249"/>
         <source>New boundary condition</source>
         <translation>Nová okrajová podmínka</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="234"/>
+        <location filename="../src/scene.cpp" line="228"/>
         <source>New &amp;node...</source>
         <translation>Nový &amp;uzel...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="239"/>
+        <location filename="../src/scene.cpp" line="233"/>
         <source>New &amp;edge...</source>
         <translation>Nová &amp;hrana...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="244"/>
+        <location filename="../src/scene.cpp" line="238"/>
         <source>New &amp;label...</source>
         <translation>Nová &amp;značka oblasti...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="249"/>
-        <location filename="../src/scene.cpp" line="250"/>
+        <location filename="../src/scene.cpp" line="243"/>
+        <location filename="../src/scene.cpp" line="244"/>
         <source>Delete selected objects</source>
         <translation>Smazat vybrané objekty</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="253"/>
+        <location filename="../src/scene.cpp" line="247"/>
         <source>New &amp;boundary condition...</source>
         <translation>Nová okrajová &amp;podmínka...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="258"/>
+        <location filename="../src/scene.cpp" line="252"/>
         <source>New &amp;material...</source>
         <translation>Nový &amp;materiál...</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="259"/>
+        <location filename="../src/scene.cpp" line="253"/>
         <source>Alt+M</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="260"/>
+        <location filename="../src/scene.cpp" line="254"/>
         <source>New material</source>
         <translation>Nový materiál</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="263"/>
+        <location filename="../src/scene.cpp" line="257"/>
         <source>&amp;Transform</source>
         <translation>&amp;Transformace</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="264"/>
+        <location filename="../src/scene.cpp" line="258"/>
         <source>Transform</source>
         <translation>Transformace</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="267"/>
-        <location filename="../src/scene.cpp" line="268"/>
+        <location filename="../src/scene.cpp" line="261"/>
+        <location filename="../src/scene.cpp" line="262"/>
         <source>Clear solution</source>
         <translation>Vymazat řešení</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="271"/>
+        <location filename="../src/scene.cpp" line="265"/>
         <source>&amp;Problem properties</source>
         <translation>Nastavení &amp;problému</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="272"/>
+        <location filename="../src/scene.cpp" line="266"/>
         <source>Problem properties</source>
         <translation>Nastavení problému</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="672"/>
+        <location filename="../src/scene.cpp" line="666"/>
         <source>unnamed</source>
         <translation>nepojmenovaný</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="740"/>
+        <location filename="../src/scene.cpp" line="734"/>
         <source>Delete selected</source>
         <translation>Smazat vybrané</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="746"/>
+        <location filename="../src/scene.cpp" line="740"/>
         <source>Remove node</source>
         <translation>Smazat uzel</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="815"/>
+        <location filename="../src/scene.cpp" line="809"/>
         <source>Translation</source>
         <translation>Posun</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="882"/>
+        <location filename="../src/scene.cpp" line="876"/>
         <source>Rotation</source>
         <translation>Otočení</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="943"/>
+        <location filename="../src/scene.cpp" line="937"/>
         <source>Scale</source>
         <translation>Zvětšení/zmenšení</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1310"/>
+        <location filename="../src/scene.cpp" line="1304"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze otevřít (%2).</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1686"/>
+        <location filename="../src/scene.cpp" line="1680"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze uložit (%2).</translation>
     </message>
     <message>
-        <location filename="../src/scene.cpp" line="1326"/>
+        <location filename="../src/scene.cpp" line="1320"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation>Soubor &apos;%1&apos; není platným souborem Agros2D.</translation>
     </message>
@@ -5541,7 +5994,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="192"/>
-        <location filename="../src/sceneview.cpp" line="2199"/>
+        <location filename="../src/sceneview.cpp" line="2195"/>
         <source>Operate on nodes</source>
         <translation>Práce s uzly</translation>
     </message>
@@ -5552,7 +6005,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="197"/>
-        <location filename="../src/sceneview.cpp" line="2202"/>
+        <location filename="../src/sceneview.cpp" line="2198"/>
         <source>Operate on edges</source>
         <translation>Práce s hranami</translation>
     </message>
@@ -5568,7 +6021,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="207"/>
-        <location filename="../src/sceneview.cpp" line="2224"/>
+        <location filename="../src/sceneview.cpp" line="2220"/>
         <source>Postprocessor</source>
         <translation>Postprocesor</translation>
     </message>
@@ -5614,7 +6067,7 @@
         <translation>Vybrat podle značky</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2218"/>
+        <location filename="../src/sceneview.cpp" line="2214"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
@@ -5628,45 +6081,45 @@
         <translation type="obsolete">&amp;Vlastnosti postprocesoru</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2221"/>
+        <location filename="../src/sceneview.cpp" line="2217"/>
         <source>Polynomial order</source>
         <translation>Řád polynomu</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2419"/>
-        <location filename="../src/sceneview.cpp" line="2439"/>
+        <location filename="../src/sceneview.cpp" line="2443"/>
+        <location filename="../src/sceneview.cpp" line="2463"/>
         <source>Undefined: %1.</source>
         <translation>Nedefinováno: %1.</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2822"/>
-        <location filename="../src/sceneview.cpp" line="2871"/>
+        <location filename="../src/sceneview.cpp" line="2846"/>
+        <location filename="../src/sceneview.cpp" line="2895"/>
         <source>Node</source>
         <translation>Uzel</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="2822"/>
-        <location filename="../src/sceneview.cpp" line="2871"/>
+        <location filename="../src/sceneview.cpp" line="2846"/>
+        <location filename="../src/sceneview.cpp" line="2895"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation>Radiální složka musí být větší nebo rovna nule.</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3124"/>
+        <location filename="../src/sceneview.cpp" line="3148"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Uzel&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Index: %3</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3139"/>
+        <location filename="../src/sceneview.cpp" line="3163"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;Point: [%1; %2] - [%3; %4]&lt;br/&gt;Boundary Condition: %5&lt;br/&gt;Angle: %6 deg.&lt;br/&gt;Index: %7 %8</source>
         <translation>&lt;h3&gt;Hrana&lt;/h3&gt;Body: [%1; %2] - [%3; %4]&lt;br/&gt;Hraniční podmínka: %5&lt;br/&gt;Úhel: %6 st.&lt;br/&gt;Index: %7 %8</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="3159"/>
+        <location filename="../src/sceneview.cpp" line="3183"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Material: %3&lt;br/&gt;Triangle area: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Polynomial order: %5&lt;br/&gt;Index: %6 %7</source>
         <translation>&lt;h3&gt;Značka oblasti&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Materiál: %3&lt;br/&gt;Obsah elementu: %4 m&lt;sup&gt;2&lt;/sup&gt;&lt;br/&gt;Řád polynomu: %5&lt;br/&gt;Index: %6 %7</translation>
     </message>
     <message>
-        <location filename="../src/sceneview.cpp" line="4053"/>
+        <location filename="../src/sceneview.cpp" line="4075"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obrázek nelze uložit do souboru s názvem &apos;%1&apos;.</translation>
     </message>
@@ -5682,7 +6135,7 @@
     </message>
     <message>
         <location filename="../src/sceneview.cpp" line="202"/>
-        <location filename="../src/sceneview.cpp" line="2205"/>
+        <location filename="../src/sceneview.cpp" line="2201"/>
         <source>Operate on labels</source>
         <translation>Práce se značkami oblastí</translation>
     </message>
@@ -6498,7 +6951,7 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="387"/>
+        <location filename="../src/videodialog.cpp" line="398"/>
         <source>FFmpeg error</source>
         <translation>chyba FFmpeg</translation>
     </message>
@@ -6534,17 +6987,17 @@ Mužete také počítat veličiny v bodě, křivkové nebo objemové integrály.
     </message>
     <message>
         <location filename="../src/videodialog.cpp" line="213"/>
-        <location filename="../src/videodialog.cpp" line="239"/>
+        <location filename="../src/videodialog.cpp" line="241"/>
         <source>Animate</source>
         <translation>Animovat</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="243"/>
+        <location filename="../src/videodialog.cpp" line="247"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="../src/videodialog.cpp" line="337"/>
+        <location filename="../src/videodialog.cpp" line="346"/>
         <source>Save video to file</source>
         <translation>Uložit video do souboru</translation>
     </message>

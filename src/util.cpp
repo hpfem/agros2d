@@ -778,7 +778,7 @@ QString physicFieldString(PhysicField physicField)
     case PhysicField_RF:
         return QObject::tr("TE Waves");
     case PhysicField_Acoustic:
-        return QObject::tr("Acoustic");
+        return QObject::tr("Acoustics");
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. physicFieldString(PhysicField physicField)" << endl;
         throw;
