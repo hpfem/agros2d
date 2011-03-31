@@ -49,7 +49,7 @@ How to Build Release
   * To the system variable "path" add path PythonXX\\Scripts, e.g. C:\\Python27\\Scripts.
   * Install cython - in Windows command prompt run command: ``easy_install cython``
   * Install pyrex - in Windows command prompt run command: ``easy_install Pyrex``
-  * In the  run (in Windows command prompt) command: ``cython agros2D.pyx``
+  * In the folder \\agros2d\\src\\python in Windows command prompt run command: ``cython agros2D.pyx``
   * In the folder \\agros2d\\src\\python the file ``agros2d.c`` appears (or it has been updated).
   
 14. To run debugger - add to Windows ``Path`` variable a path to the bin folder of the Qt SDK, e.g. C:\\Qt\\4.7.2\\bin
