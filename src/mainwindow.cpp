@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     logMessage("MainWindow::MainWindow()");
 
+    Util::createSingleton();
+
     // fixme - curve elements from script doesn't work
     readMeshDirtyFix();
 

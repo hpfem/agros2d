@@ -182,19 +182,13 @@ Util::~Util()
     delete m_scriptEngineRemote;
 }
 
-Util *Util::singleton()
+void Util::createSingleton()
 {
-    if (!m_singleton)
-    {
-        static QMutex mutex;
-        mutex.lock();
+    m_singleton = new Util();
+}
 
-        if (!m_singleton)
-            m_singleton = new Util();
-
-        mutex.unlock();
-    }
-
+Util *Util::singleton()
+{    
     return m_singleton;
 }
 

@@ -224,6 +224,7 @@ private slots:
 class Util
 {
 public:
+    static void createSingleton();
     static Util* singleton();
     static inline Scene *scene() { return Util::singleton()->m_scene; }
     static inline QCompleter *completer() { return Util::singleton()->m_completer; }
