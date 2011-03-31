@@ -786,7 +786,7 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Acoustic_PressureLevel:
     {
-        node->values[0][0][i] = 20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2) / 20e-6);
+        node->values[0][0][i] = 20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2.0) / 20e-6);
     }
         break;
     case PhysicFieldVariable_Acoustic_LocalVelocity:
