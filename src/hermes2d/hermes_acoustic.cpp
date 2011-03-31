@@ -26,6 +26,8 @@ struct AcousticEdge
 {
     PhysicFieldBC type;
     double value;
+    double transient_amplitude;
+    double transient_frequency;
 };
 
 struct AcousticLabel
@@ -91,21 +93,7 @@ Scalar acoustic_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Fu
     double an = 0.0;
 
     if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_NormalAcceleration)
-         an = acousticEdge[e->edge_marker].value;
-
-    if (isPlanar)
-        return an * int_v<Real, Scalar>(n, wt, v);
-    else
-        return an * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    double an = 0.0;
-
-    // if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_NormalAcceleration)
-    //    an = acousticEdge[e->edge_marker].value;
+        an = acousticEdge[e->edge_marker].value;
 
     if (isPlanar)
         return an * int_v<Real, Scalar>(n, wt, v);
@@ -151,41 +139,175 @@ Scalar acoustic_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Fu
                            * int_x_u_v<Real, Scalar>(n, wt, u, v, e));
 }
 
-template<typename Real, typename Scalar>
-Scalar acoustic_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+// ****************************************************************************************************
+// time dependent
+
+// - 1/rho * \Delta p + 1/(rho * c^2) * \frac{\partial v}{\partial t} = 0.
+// - v                +                 \frac{\partial p}{\partial t} = 0,
+
+scalar acoustic_essential_time_bc_pressure(int edge_marker, double x, double y, double time)
 {
-    return 0.0;
+    return acousticEdge[edge_marker].transient_amplitude
+            * sin(2.0 * M_PI * acousticEdge[edge_marker].transient_frequency * time);
 }
 
 template<typename Real, typename Scalar>
-Scalar acoustic_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+Scalar acoustic_matrix_form_surf_time(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return 0.0;
+    if (!(acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance
+          || acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_MatchedBoundary))
+        return 0.0;
+
+    double Z = 0.0;
+
+    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance)
+        Z = acousticEdge[e->edge_marker].value;
+
+    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_MatchedBoundary)
+        Z = acousticLabel[e->elem_marker].density * acousticLabel[e->elem_marker].speed;
+
+    if (fabs(Z) < EPS_ZERO)
+        return 0.0;
+
+    if (isPlanar)
+        return 1.0 / Z * int_u_v<Real, Scalar>(n, wt, u, v);
+    else
+        return 2 * M_PI / Z * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
 }
+
+template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_surf_time2(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (!(acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance
+          || acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_MatchedBoundary))
+        return 0.0;
+
+    double Z = 0.0;
+
+    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance)
+        Z = acousticEdge[e->edge_marker].value;
+
+    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_MatchedBoundary)
+        Z = acousticLabel[e->elem_marker].density * acousticLabel[e->elem_marker].speed;
+
+    if (fabs(Z) < EPS_ZERO)
+        return 0.0;
+
+    if (isPlanar)
+        return - 1.0 / Z * int_u_v<Real, Scalar>(n, wt, u, v);
+    else
+        return 2 * M_PI / Z * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_vector_form_surf_time(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    double an = 0.0;
+
+    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_NormalAcceleration)
+        an = acousticEdge[e->edge_marker].value
+                + acousticEdge[e->edge_marker].transient_amplitude
+                * sin(2.0 * M_PI * acousticEdge[e->edge_marker].transient_frequency * actualTime);
+
+    if (isPlanar)
+        return an * int_v<Real, Scalar>(n, wt, v);
+    else
+        return an * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_time_velocity_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return int_u_v<Real, Scalar>(n, wt, u, v) / timeStep;
+    else
+        return 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep;
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_time_velocity_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return - int_u_v<Real, Scalar>(n, wt, u, v);
+    else
+        return - 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_time_pressure_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return 1.0 / acousticLabel[e->elem_marker].density * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
+    else
+        return 2 * M_PI * 1.0 / acousticLabel[e->elem_marker].density * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_time_pressure_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
+                * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep;
+    else
+        return 2 * M_PI * 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
+                * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep;
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_vector_form_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep;
+    else
+        return 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep;
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_vector_form_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    if (isPlanar)
+        return 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
+                * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep;
+    else
+        return 2 * M_PI * 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
+                * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep;
+}
+
+// *****************************************************************************************
+
 
 void callbackAcousticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
-    if (slnArray.size() == 1)
+    if (analysisType == AnalysisType_Transient)
     {
-        wf->add_matrix_form(0, 0, callback(acoustic_matrix_form_real_real));
-        if (analysisType == AnalysisType_Transient)
-            wf->add_vector_form(0, callback(acoustic_vector_form_real), HERMES_ANY, slnArray.at(0));
-        else
-            wf->add_vector_form(0, callback(acoustic_vector_form_real));
-        wf->add_vector_form_surf(0, callback(acoustic_vector_form_surf_real));
+        wf->add_matrix_form(0, 0, callback(acoustic_matrix_form_time_velocity_velocity));
+        wf->add_matrix_form(0, 1, callback(acoustic_matrix_form_time_velocity_pressure));
+        wf->add_matrix_form(1, 0, callback(acoustic_matrix_form_time_pressure_velocity));
+        wf->add_matrix_form(1, 1, callback(acoustic_matrix_form_time_pressure_pressure));
+
+        wf->add_vector_form(0, callback(acoustic_vector_form_velocity), HERMES_ANY, slnArray.at(0));
+        wf->add_vector_form(1, callback(acoustic_vector_form_pressure), HERMES_ANY, slnArray.at(1));
+
+        // matched boundary and impedance
+        wf->add_matrix_form_surf(1, 0, callback(acoustic_matrix_form_surf_time));
+        // wf->add_matrix_form_surf(0, 1, callback(acoustic_matrix_form_surf_time2));
+
+        // pressure normal derivative
+        wf->add_vector_form_surf(1, callback(acoustic_vector_form_surf_time));
     }
-    else
+    else if (analysisType == AnalysisType_Harmonic)
     {
         wf->add_matrix_form(0, 0, callback(acoustic_matrix_form_real_real));
         wf->add_matrix_form(0, 1, callback(acoustic_matrix_form_real_imag));
         wf->add_matrix_form(1, 0, callback(acoustic_matrix_form_imag_real));
         wf->add_matrix_form(1, 1, callback(acoustic_matrix_form_imag_imag));
-        wf->add_vector_form(0, callback(acoustic_vector_form_real));
-        wf->add_vector_form(1, callback(acoustic_vector_form_imag));
+
+        // matched boundary and impedance
         wf->add_matrix_form_surf(0, 1, callback(acoustic_matrix_form_surf_imag_real));
         wf->add_matrix_form_surf(1, 0, callback(acoustic_matrix_form_surf_real_imag));
+
+        // pressure normal derivative
         wf->add_vector_form_surf(0, callback(acoustic_vector_form_surf_real));
-        wf->add_vector_form_surf(1, callback(acoustic_vector_form_surf_imag));
     }
 }
 
@@ -203,7 +325,7 @@ PhysicFieldVariable HermesAcoustic::scalarPhysicFieldVariable()
 
 PhysicFieldVariableComp HermesAcoustic::scalarPhysicFieldVariableComp()
 {
-    return PhysicFieldVariableComp_Magnitude;
+    return PhysicFieldVariableComp_Scalar;
 }
 
 PhysicFieldVariable HermesAcoustic::vectorPhysicFieldVariable()
@@ -221,12 +343,16 @@ void HermesAcoustic::readEdgeMarkerFromDomElement(QDomElement *element)
     case PhysicFieldBC_Acoustic_Pressure:
         Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
                                                                  type,
-                                                                 Value(element->attribute("pressure", "0"))));
+                                                                 Value(element->attribute("pressure", "0")),
+                                                                 Value(element->attribute("transient_amplitude", "0")),
+                                                                 Value(element->attribute("transient_frequency", "0"))));
         break;
     case PhysicFieldBC_Acoustic_NormalAcceleration:
         Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
                                                                  type,
-                                                                 Value(element->attribute("acceleration", "0"))));
+                                                                 Value(element->attribute("acceleration", "0")),
+                                                                 Value(element->attribute("transient_amplitude", "0")),
+                                                                 Value(element->attribute("transient_frequency", "0"))));
         break;
     case PhysicFieldBC_Acoustic_Impedance:
         Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
@@ -253,9 +379,13 @@ void HermesAcoustic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdge
     {
     case PhysicFieldBC_Acoustic_Pressure:
         element->setAttribute("pressure", edgeAcousticMarker->value_real.text);
+        element->setAttribute("transient_amplitude", edgeAcousticMarker->transient_amplitude.text);
+        element->setAttribute("transient_frequency", edgeAcousticMarker->transient_frequency.text);
         break;
     case PhysicFieldBC_Acoustic_NormalAcceleration:
         element->setAttribute("acceleration", edgeAcousticMarker->value_real.text);
+        element->setAttribute("transient_amplitude", edgeAcousticMarker->transient_amplitude.text);
+        element->setAttribute("transient_frequency", edgeAcousticMarker->transient_frequency.text);
         break;
     case PhysicFieldBC_Acoustic_Impedance:
         element->setAttribute("impedance", edgeAcousticMarker->value_real.text);
@@ -338,11 +468,11 @@ SceneEdgeMarker *HermesAcoustic::newEdgeMarker(PyObject *self, PyObject *args)
 
         if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Acoustic_MatchedBoundary)
             return new SceneEdgeAcousticMarker(name,
-                                           physicFieldBCFromStringKey(type));
+                                               physicFieldBCFromStringKey(type));
         else
             return new SceneEdgeAcousticMarker(name,
-                                           physicFieldBCFromStringKey(type),
-                                           Value(QString::number(pressure)));
+                                               physicFieldBCFromStringKey(type),
+                                               Value(QString::number(pressure)));
     }
 
     return NULL;
@@ -429,14 +559,28 @@ SceneLabelMarker *HermesAcoustic::modifyLabelMarker(PyObject *self, PyObject *ar
 
 void HermesAcoustic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Pressure), PhysicFieldVariable_Acoustic_Pressure);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureReal), PhysicFieldVariable_Acoustic_PressureReal);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureImag), PhysicFieldVariable_Acoustic_PressureImag);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureLevel), PhysicFieldVariable_Acoustic_PressureLevel);
-    // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalVelocity), PhysicFieldVariable_Acoustic_LocalVelocity);
-    // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalAcceleration), PhysicFieldVariable_Acoustic_LocalAcceleration);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Density), PhysicFieldVariable_Acoustic_Density);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Speed), PhysicFieldVariable_Acoustic_Speed);
+    // harmonic
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+    {
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Pressure), PhysicFieldVariable_Acoustic_Pressure);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureReal), PhysicFieldVariable_Acoustic_PressureReal);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureImag), PhysicFieldVariable_Acoustic_PressureImag);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureLevel), PhysicFieldVariable_Acoustic_PressureLevel);
+        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalVelocity), PhysicFieldVariable_Acoustic_LocalVelocity);
+        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalAcceleration), PhysicFieldVariable_Acoustic_LocalAcceleration);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Density), PhysicFieldVariable_Acoustic_Density);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Speed), PhysicFieldVariable_Acoustic_Speed);
+    }
+    // transient
+    if (analysisType == AnalysisType_Transient)
+    {
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Pressure), PhysicFieldVariable_Acoustic_PressureReal);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureLevel), PhysicFieldVariable_Acoustic_PressureLevel);
+        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalVelocity), PhysicFieldVariable_Acoustic_LocalVelocity);
+        // cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_LocalAcceleration), PhysicFieldVariable_Acoustic_LocalAcceleration);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Density), PhysicFieldVariable_Acoustic_Density);
+        cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Speed), PhysicFieldVariable_Acoustic_Speed);
+    }
 }
 
 void HermesAcoustic::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
@@ -453,12 +597,12 @@ void HermesAcoustic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
     acousticNode->setText(0, tr("Acoustic field"));
     acousticNode->setExpanded(true);
 
+    // material
+    addTreeWidgetItemValue(acousticNode, tr("Density:"), QString("%1").arg(localPointValueAcoustic->density, 0, 'f', 2), "");
+    addTreeWidgetItemValue(acousticNode, tr("Speed of sound:"), QString("%1").arg(localPointValueAcoustic->speed, 0, 'f', 2), "");
+
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
     {
-        // material
-        addTreeWidgetItemValue(acousticNode, tr("Density:"), QString("%1").arg(localPointValueAcoustic->density, 0, 'f', 2), "");
-        addTreeWidgetItemValue(acousticNode, tr("Speed of sound:"), QString("%1").arg(localPointValueAcoustic->speed, 0, 'f', 2), "");
-
         // Pressure
         QTreeWidgetItem *itemPressure = new QTreeWidgetItem(acousticNode);
         itemPressure->setText(0, tr("Acoustic pressure"));
@@ -490,6 +634,12 @@ void HermesAcoustic::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *loc
         addTreeWidgetItemValue(itemLocalAcceleration, "a:", QString("%1").arg(localPointValueAcoustic->localAccelaration.magnitude(), 0, 'f', 5), "m/s2");
         */
     }
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+    {
+        // Pressure
+        addTreeWidgetItemValue(acousticNode, tr("Acoustic pressure:"), QString("%1").arg(localPointValueAcoustic->pressure_real, 0, 'e', 3), "Pa");
+        addTreeWidgetItemValue(acousticNode, tr("Sound pressure level:"), QString("%1").arg(localPointValueAcoustic->pressureLevel, 0, 'f', 2), "");
+    }
 }
 
 void HermesAcoustic::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -514,21 +664,26 @@ void HermesAcoustic::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeInteg
 ViewScalarFilter *HermesAcoustic::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     Solution *sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
-
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-    {
-        Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
-        return new ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *>(sln1, sln2),
-                                            physicFieldVariable,
-                                            physicFieldVariableComp);
-    }
+    Solution *sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
+    return new ViewScalarFilterAcoustic(Hermes::vector<MeshFunction *>(sln1, sln2),
+                                        physicFieldVariable,
+                                        physicFieldVariableComp);
 }
 
 QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolve)
 {
+    // transient
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+    {
+        if (!Util::scene()->problemInfo()->timeStep.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return QList<SolutionArray *>();
+        if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return QList<SolutionArray *>();
+    }
+
     // edge markers
     BCTypes bcTypesReal, bcTypesImag;
-    BCValues bcValuesReal, bcValuesImag;
+    BCValues bcValuesReal(&actualTime), bcValuesImag;
+    // BCValues bcValuesReal, bcValuesImag;
 
     acousticEdge = new AcousticEdge[Util::scene()->edges.count()+1];
     acousticEdge[0].type = PhysicFieldBC_None;
@@ -549,6 +704,8 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
 
             acousticEdge[i+1].type = edgeAcousticMarker->type;
             acousticEdge[i+1].value = edgeAcousticMarker->value_real.number;
+            acousticEdge[i+1].transient_amplitude = edgeAcousticMarker->transient_amplitude.number;
+            acousticEdge[i+1].transient_frequency = edgeAcousticMarker->transient_frequency.number;
 
             switch (edgeAcousticMarker->type)
             {
@@ -557,16 +714,32 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
                 bcTypesImag.add_bc_none(i+1);
                 break;
             case PhysicFieldBC_Acoustic_Pressure:
-                bcTypesReal.add_bc_dirichlet(i+1);
-                bcTypesImag.add_bc_dirichlet(i+1);
-                bcValuesReal.add_const(i+1, edgeAcousticMarker->value_real.number);
-                bcValuesImag.add_const(i+1, 0.0);
+                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+                {
+                    bcTypesReal.add_bc_dirichlet(i+1);
+                    bcTypesImag.add_bc_dirichlet(i+1);
+                    bcValuesReal.add_const(i+1, edgeAcousticMarker->value_real.number);
+                    bcValuesImag.add_const(i+1, 0.0);
+                }
+                else
+                {
+                    bcTypesReal.add_bc_dirichlet(i+1);
+                    if (fabs(edgeAcousticMarker->transient_frequency.number) < EPS_ZERO)
+                        bcValuesReal.add_const(i+1,edgeAcousticMarker->value_real.number);
+                    else
+                        bcValuesReal.add_timedep_function(i+1, acoustic_essential_time_bc_pressure);
+                    // bcTypesImag.add_bc_dirichlet(i+1);
+                    // bcTypesImag.add_bc_none(i+1);
+                    // bcValuesImag.add_const(i+1, 0.0);
+                }
                 break;
             case PhysicFieldBC_Acoustic_NormalAcceleration:
                 bcTypesReal.add_bc_neumann(i+1);
                 bcTypesImag.add_bc_neumann(i+1);
                 break;
             case PhysicFieldBC_Acoustic_MatchedBoundary:
+                bcTypesReal.add_bc_neumann(i+1);
+                bcTypesImag.add_bc_neumann(i+1);
                 break;
             }
         }
@@ -642,7 +815,15 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
                 localVelocity.x = localAccelaration.x / (2 * M_PI * frequency);
                 localVelocity.y = localAccelaration.y / (2 * M_PI * frequency);
 
-                pressureLevel = 20.0 * log10(sqrt(sqr(valueReal.value) + sqr(valueImag.value)) / sqrt(2.) / 20e-6);
+                pressureLevel = 20.0 * log10(sqrt(sqr(valueReal.value) + sqr(valueImag.value)) / sqrt(2.0) / 20e-6);
+            }
+            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+            {
+                Point derReal = valueReal.derivative;
+
+                pressure_real = valueReal.value;
+
+                pressureLevel = 20.0 * log10(valueReal.value / 20e-6);
             }
         }
     }
@@ -708,8 +889,8 @@ QStringList LocalPointValueAcoustic::variables()
            QString("%1").arg(pressureLevel, 0, 'e', 5) <<
            QString("%1").arg(density, 0, 'f', 2) <<
            QString("%1").arg(speed, 0, 'f', 2);
-           // QString("%1").arg(localAccelaration.x, 0, 'e', 5) <<
-           // QString("%1").arg(localAccelaration.y, 0, 'e', 5);
+    // QString("%1").arg(localAccelaration.x, 0, 'e', 5) <<
+    // QString("%1").arg(localAccelaration.y, 0, 'e', 5);
 
     return QStringList(row);
 }
@@ -750,9 +931,7 @@ void VolumeIntegralValueAcoustic::calculateVariables(int i)
 void VolumeIntegralValueAcoustic::initSolutions()
 {
     sln1 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
-    sln2 = NULL;
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-        sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
+    sln2 = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
 }
 
 QStringList VolumeIntegralValueAcoustic::variables()
@@ -786,7 +965,10 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Acoustic_PressureLevel:
     {
-        node->values[0][0][i] = 20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2) / 20e-6);
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+            node->values[0][0][i] = 20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2) / 20e-6);
+        else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+            node->values[0][0][i] = 20.0 * log10(value1[i] / 20e-6);
     }
         break;
     case PhysicFieldVariable_Acoustic_LocalVelocity:
@@ -858,9 +1040,17 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
 
 // *************************************************************************************************************************************
 
-SceneEdgeAcousticMarker::SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value pressure) : SceneEdgeMarker(name, type)
+SceneEdgeAcousticMarker::SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real, Value transient_amplitude, Value transient_frequency)
+ : SceneEdgeMarker(name, type)
 {
-    this->value_real = pressure;
+    this->value_real = value_real;
+    this->transient_amplitude = transient_amplitude;
+    this->transient_frequency = transient_frequency;
+}
+
+SceneEdgeAcousticMarker::SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real) : SceneEdgeMarker(name, type)
+{
+    this->value_real = value_real;
 }
 
 SceneEdgeAcousticMarker::SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type) : SceneEdgeMarker(name, type)
@@ -869,10 +1059,18 @@ SceneEdgeAcousticMarker::SceneEdgeAcousticMarker(const QString &name, PhysicFiel
 
 QString SceneEdgeAcousticMarker::script()
 {
-    return QString("addboundary(\"%1\", \"%2\", %3)").
-            arg(name).
-            arg(physicFieldBCToStringKey(type)).
-            arg(value_real.text);
+    if (fabs(transient_frequency.number) < EPS_ZERO)
+        return QString("addboundary(\"%1\", \"%2\", %3)").
+                arg(name).
+                arg(physicFieldBCToStringKey(type)).
+                arg(value_real.text);
+    else
+        return QString("addboundary(\"%1\", \"%2\", %3, %4, %5)").
+                arg(name).
+                arg(physicFieldBCToStringKey(type)).
+                arg(value_real.text).
+                arg(transient_amplitude.text).
+                arg(transient_frequency.text);
 }
 
 QMap<QString, QString> SceneEdgeAcousticMarker::data()
@@ -954,16 +1152,28 @@ void DSceneEdgeAcousticMarker::createContent()
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValue = new SLineEditValue(this);
+    txtTransientHarmonicAmplitude = new SLineEditValue(this);
+    txtTransientHarmonicFrequency = new SLineEditValue(this);
 
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     // set active marker
     doTypeChanged(cmbType->currentIndex());
 
+    QGridLayout *layoutTransientHarmonic = new QGridLayout(this);
+    layoutTransientHarmonic->addWidget(new QLabel(tr("Amplitude")), 0, 0);
+    layoutTransientHarmonic->addWidget(txtTransientHarmonicAmplitude, 0, 1);
+    layoutTransientHarmonic->addWidget(new QLabel(tr("Frequency")), 1, 0);
+    layoutTransientHarmonic->addWidget(txtTransientHarmonicFrequency, 1, 1);
+
+    QGroupBox *grpTransientHarmonic = new QGroupBox(tr("Harmonic function"), this);
+    grpTransientHarmonic->setLayout(layoutTransientHarmonic);
+
     layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
-    layout->addWidget(cmbType, 1, 1);
+    layout->addWidget(cmbType, 1, 1, 1, 2);
     layout->addWidget(new QLabel(tr("Value:")), 2, 0);
     layout->addWidget(txtValue, 2, 1);
+    layout->addWidget(grpTransientHarmonic, 3, 0, 1, 2);
 }
 
 void DSceneEdgeAcousticMarker::load()
@@ -974,6 +1184,10 @@ void DSceneEdgeAcousticMarker::load()
 
     cmbType->setCurrentIndex(cmbType->findData(edgeAcousticMarker->type));
     txtValue->setValue(edgeAcousticMarker->value_real);
+
+    // transient
+    txtTransientHarmonicAmplitude->setValue(edgeAcousticMarker->transient_amplitude);
+    txtTransientHarmonicFrequency->setValue(edgeAcousticMarker->transient_frequency);
 }
 
 bool DSceneEdgeAcousticMarker::save() {
@@ -988,17 +1202,35 @@ bool DSceneEdgeAcousticMarker::save() {
     else
         return false;
 
+    // transient
+    if (txtTransientHarmonicAmplitude->evaluate())
+        edgeAcousticMarker->transient_amplitude = txtTransientHarmonicAmplitude->value();
+    else
+        return false;
+
+    if (txtTransientHarmonicFrequency->evaluate())
+        edgeAcousticMarker->transient_frequency = txtTransientHarmonicFrequency->value();
+    else
+        return false;
+
     return true;
 }
 
 void DSceneEdgeAcousticMarker::doTypeChanged(int index)
 {
     txtValue->setEnabled(false);
+    txtTransientHarmonicAmplitude->setEnabled(false);
+    txtTransientHarmonicFrequency->setEnabled(false);
 
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
     case PhysicFieldBC_Acoustic_Pressure:
     case PhysicFieldBC_Acoustic_NormalAcceleration:
+        if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        {
+            txtTransientHarmonicAmplitude->setEnabled(true);
+            txtTransientHarmonicFrequency->setEnabled(true);
+        }
     case PhysicFieldBC_Acoustic_Impedance:
     {
         txtValue->setEnabled(true);

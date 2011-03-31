@@ -82,7 +82,8 @@ SOURCES += util.cpp \
     postprocessorview.cpp \
     style/stylehelper.cpp \
     style/styleanimator.cpp \
-    style/manhattanstyle.cpp
+    style/manhattanstyle.cpp \
+    timefunction.cpp
 HEADERS += util.h \
     scene.h \
     gui.h \
@@ -126,7 +127,8 @@ HEADERS += util.h \
     postprocessorview.h \
     style/stylehelper.h \
     style/styleanimator.h \
-    style/manhattanstyle.h
+    style/manhattanstyle.h \
+    timefunction.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

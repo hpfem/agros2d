@@ -1398,8 +1398,6 @@ void SceneView::paintScalarField3D()
 
     if (m_listScalarField3D == -1)
     {
-        // qDebug() << "SceneView::paintScalarField3D(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
-
         m_listScalarField3D = glGenLists(1);
         glNewList(m_listScalarField3D, GL_COMPILE);
 
@@ -1428,7 +1426,7 @@ void SceneView::paintScalarField3D()
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         glPushMatrix();
-        glScaled(1.0, 1.0, max/4.0 * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
+        glScaled(1.0, 1.0, max / Util::config()->scalarView3DHeight * 1.0/(fabs(m_sceneViewSettings.scalarRangeMin - m_sceneViewSettings.scalarRangeMax)));
 
         initLighting();
 
@@ -1567,8 +1565,6 @@ void SceneView::paintScalarField3DSolid()
 
     if (m_listScalarField3DSolid == -1)
     {
-        // qDebug() << "SceneView::paintScalarField3DSolid(), min = " << m_sceneViewSettings.scalarRangeMin << ", max = " << m_sceneViewSettings.scalarRangeMax;
-
         m_listScalarField3DSolid = glGenLists(1);
         glNewList(m_listScalarField3DSolid, GL_COMPILE);
 
@@ -1580,7 +1576,7 @@ void SceneView::paintScalarField3DSolid()
 
         RectPoint rect = m_scene->boundingBox();
         double max = qMax(rect.width(), rect.height());
-        double depth = max / 4.0;
+        double depth = max / Util::config()->scalarView3DHeight;
 
         // range
         double irange = 1.0 / (m_sceneViewSettings.scalarRangeMax - m_sceneViewSettings.scalarRangeMin);

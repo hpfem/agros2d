@@ -118,6 +118,7 @@ void Config::load()
     scalarRangeBase = settings.value("SceneViewSettings/ScalarRangeBase", SCALARRANGEBASE).toDouble();
     scalarDecimalPlace = settings.value("SceneViewSettings/ScalarDecimalPlace", SCALARDECIMALPLACE).toDouble();
 
+
     // vector view
     vectorProportional = settings.value("SceneViewSettings/VectorProportional", VECTORPROPORTIONAL).toBool();
     vectorColor = settings.value("SceneViewSettings/VectorColor", VECTORCOLOR).toBool();
@@ -137,6 +138,7 @@ void Config::load()
     scalarView3DLighting = settings.value("SceneViewSettings/ScalarView3DLighting", false).toBool();
     scalarView3DAngle = settings.value("SceneViewSettings/ScalarView3DAngle", 270).toDouble();
     scalarView3DBackground = settings.value("SceneViewSettings/ScalarView3DBackground", true).toBool();
+    scalarView3DHeight = settings.value("SceneViewSettings/ScalarView3DHeight", 4.0).toDouble();
 
     // adaptivity
     isoOnly = settings.value("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY).toBool();
@@ -252,6 +254,7 @@ void Config::save()
     settings.setValue("SceneViewSettings/ScalarView3DLighting", scalarView3DLighting);
     settings.setValue("SceneViewSettings/ScalarView3DAngle", scalarView3DAngle);
     settings.setValue("SceneViewSettings/ScalarView3DBackground", scalarView3DBackground);
+    settings.setValue("SceneViewSettings/ScalarView3DHeight", scalarView3DHeight);
 
     // adaptivity
     settings.setValue("Adaptivity/IsoOnly", isoOnly);

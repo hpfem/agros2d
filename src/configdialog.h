@@ -130,8 +130,9 @@ private:
 
     // 3d
     QCheckBox *chkView3DLighting;
-    SLineEditDouble *txtView3DAngle;
+    QDoubleSpinBox *txtView3DAngle;
     QCheckBox *chkView3DBackground;
+    QDoubleSpinBox *txtView3DHeight;
 
     // deform shape
     QCheckBox *chkDeformScalar;

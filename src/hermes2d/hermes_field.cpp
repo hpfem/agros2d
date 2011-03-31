@@ -164,6 +164,12 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
     return solution;
 }
 
+// Initial condition for u.
+double init_cond_u(double x, double y, double& dx, double& dy) {
+  dx = exp(-x*x - y*y) * (-2*x);
+  dy = exp(-x*x - y*y) * (-2*y);
+  return exp(-x*x - y*y);
+}
 
 QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                          Hermes::vector<BCTypes *> bcTypes,
@@ -426,6 +432,9 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             // transient
             if (timesteps > 1)
             {
+                // update essential bc values
+                update_essential_bc_values(space);
+
                 dp->assemble(matrix, rhs, (n > 0));
 
                 if (Space::get_num_dofs(space) == 0)

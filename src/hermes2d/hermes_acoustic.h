@@ -33,7 +33,14 @@ public:
     inline int numberOfSolution() { return 2; }
     bool hasSteadyState() { return false; }
     bool hasHarmonic() { return true; }
-    bool hasTransient() { return false; }
+    bool hasTransient()
+    {
+#ifdef BETA
+        return true;
+#else
+    return false
+#endif
+    }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
     void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
@@ -130,6 +137,11 @@ class SceneEdgeAcousticMarker : public SceneEdgeMarker
 public:
     Value value_real;
 
+    // transient
+    Value transient_amplitude;
+    Value transient_frequency;
+
+    SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real, Value transient_amplitude, Value transient_frequency);
     SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real);
     SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type);
 
@@ -167,6 +179,8 @@ protected:
 private:
     QComboBox *cmbType;
     SLineEditValue *txtValue;
+    SLineEditValue *txtTransientHarmonicAmplitude;
+    SLineEditValue *txtTransientHarmonicFrequency;
 
 private slots:
     void doTypeChanged(int index);
