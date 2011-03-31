@@ -45,4 +45,4 @@ testI = test("Acoustic pressure", point["Lp"], 40.695085)
 # surface = surfaceintegral(1, 12)
 # testQ = test("Electric charge", surface["Q"], -1.291778e-9)
 
-print("Test: Acoustic - axisymmetric: " + str(testP and testP_real and testP_imag and testI))
+print("Test: Acoustic - planar: " + str(testP and testP_real and testP_imag and testI))

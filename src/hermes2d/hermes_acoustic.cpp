@@ -966,7 +966,7 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
     case PhysicFieldVariable_Acoustic_PressureLevel:
     {
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-            node->values[0][0][i] = 20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2) / 20e-6);
+            node->values[0][0][i] = 20.0 * log10(sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(2.0) / 20e-6);
         else if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
             node->values[0][0][i] = 20.0 * log10(value1[i] / 20e-6);
     }
