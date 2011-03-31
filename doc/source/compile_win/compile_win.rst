@@ -17,7 +17,7 @@ How to Build Release
 6. You can install additional (optional) debugger, e.g. Debugging Tools for Windows (http://download.cnet.com/Debugging-Tools-for-Windows/3000-2086_4-10907878.html)
 7. You need a necessary files from "triangle"  - copy binaries from Agros binaries for Windows, copy into the project folder with Agros2D sources
 8. You need a necessary files from "ffmpeg" - copy binaries from Agros binaries for Windows, copy into the project folder with Agros2D sources
-9. Install Python and NumPy
+9. Install Python and NumPy http://www.python.org
 
   * Copy files from Python directory into the directory of Agros2D sources (http://www.python.org/download/) especially
     
@@ -43,7 +43,15 @@ How to Build Release
   * ``libumfpack.dll`` from directory UMFPACK\\Lib\\  into Agros2D directory (or into library path)
   * header files from directories AMD, UFconfig, UMFPACK copy into include path
 
-13. Install Python http://www.python.org
+13. It is necessary to generate agros2d.c file in the \\agros2d\\src\\python.
+
+  * Install setuptools for Python (easy_install_setup, http://pypi.python.org/pypi/setuptools#windows).
+  * To the system variable "path" add path PythonXX\\Scripts, e.g. C:\\Python27\\Scripts.
+  * Install cython - in Windows command prompt run command: ``easy_install cython``
+  * Install pyrex - in Windows command prompt run command: ``easy_install Pyrex``
+  * In the  run (in Windows command prompt) command: ``cython agros2D.pyx``
+  * In the folder \\agros2d\\src\\python the file ``agros2d.c`` appears (or it has been updated).
+  
 14. To run debugger - add to Windows ``Path`` variable a path to the bin folder of the Qt SDK, e.g. C:\\Qt\\4.7.2\\bin
 15. Copy the file ``inttypes.h`` from Hermes\\CMakeVars\\MSVC to your include directory.
 16. Set in the project include path to the folder with header files (.h) files and with the libraries (.lib, .dll)
@@ -58,7 +66,7 @@ Building Html Documentation
 3. To the system variable "path" add path PythonXX\\Scripts, e.g. C:\\Python27\\Scripts.
 4. Install Sphinx documentation tool: on the command line run command ``easy_install sphinx``. It automatically download and install all necessary tools.
 5. To start building of the html documentation, run on the command line in the Agros2D project folder command: ``sphinx-build -b html .\\doc\\source .\\doc\\web``
-6. For convenient using is a better way to prepare windows script e.g. build_help_win.cmd including following contents:
+6. For convenient using is a better way to prepare windows script e.g. agros2d.cmd including following contents:
 
 ::
 
