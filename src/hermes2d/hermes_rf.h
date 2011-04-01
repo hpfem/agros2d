@@ -62,8 +62,8 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permittivity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permeability ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Conductivity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_J_Ext_real ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_J_Ext_imag); }
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Current_density_real ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Current_density_imag); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
@@ -95,8 +95,8 @@ public:
     double permittivity;
     double permeability;
     double conductivity;
-    double J_ext_real;
-    double J_ext_imag;
+    double current_density_real;
+    double current_density_imag;
 
     double potential_real;
     double potential_imag;
@@ -148,6 +148,7 @@ class SceneEdgeRFMarker : public SceneEdgeMarker
 public:
     Value value_real;
     Value value_imag;
+    Value height;
     Value power;
     Value phase;
 
@@ -164,10 +165,10 @@ public:
     Value permittivity;
     Value permeability;
     Value conductivity;
-    Value J_ext_real;
-    Value J_ext_imag;
+    Value current_density_real;
+    Value current_density_imag;
 
-    SceneLabelRFMarker(const QString &name, Value permittivity, Value permeability, Value conductivity, Value J_ext_real, Value J_ext_imag);
+    SceneLabelRFMarker(const QString &name, Value permittivity, Value permeability, Value conductivity, Value current_density_real, Value current_density_imag);
 
     QString script();
     QMap<QString, QString> data();
@@ -191,11 +192,17 @@ protected:
 private:
     QComboBox *cmbType;
 <<<<<<< HEAD
+<<<<<<< HEAD
     ValueLineEdit *txtValueReal;
     ValueLineEdit *txtValueImag;
 =======
+=======
+    //QComboBox *cmbMode;
+>>>>>>> height from GUI
     SLineEditValue *txtValueReal;
     SLineEditValue *txtValueImag;
+    //SLineEditValue *txtMode;
+    SLineEditValue *txtHeight;
 
 private slots:
     void doTypeChanged(int index);
@@ -217,11 +224,19 @@ protected:
     bool save();
 
 private:
+<<<<<<< HEAD
     ValueLineEdit *txtPermittivity;
     ValueLineEdit *txtPermeability;
     ValueLineEdit *txtConductivity;
     ValueLineEdit *txtJ_Ext_real;
     ValueLineEdit *txtJ_Ext_imag;
+=======
+    SLineEditValue *txtPermittivity;
+    SLineEditValue *txtPermeability;
+    SLineEditValue *txtConductivity;
+    SLineEditValue *txtCurrent_density_real;
+    SLineEditValue *txtCurrent_density_imag;
+>>>>>>> height from GUI
 };
 
 #endif // RF_H

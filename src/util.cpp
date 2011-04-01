@@ -158,8 +158,8 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permittivity, "rf_permittivity");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permeability, "rf_permeability");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Conductivity, "rf_conductivity");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_J_Ext_real, "rf_J_ext_real");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_J_Ext_imag, "rf_J_ext_imag");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_Current_density_real, "rf_current_density_real");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_Current_density_imag, "rf_current_density_imag");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_Pressure, "acoustic_pressure");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureReal, "acoustic_pressure_real");
     physicFieldVariableList.insert(PhysicFieldVariable_Acoustic_PressureImag, "acoustic_pressure_imag");
@@ -379,10 +379,10 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Permeability");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("Conductivity");
-    case PhysicFieldVariable_RF_J_Ext_real:
-        return QObject::tr("J_Ext_real");
-    case PhysicFieldVariable_RF_J_Ext_imag:
-        return QObject::tr("J_Ext_imag");
+    case PhysicFieldVariable_RF_Current_density_real:
+        return QObject::tr("Current density - real");
+    case PhysicFieldVariable_RF_Current_density_imag:
+        return QObject::tr("Current density - imag");
     case PhysicFieldVariable_Acoustic_Pressure:
         return QObject::tr("Acoustic pressure");
     case PhysicFieldVariable_Acoustic_PressureReal:
@@ -538,15 +538,15 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
     case PhysicFieldVariable_RF_ElectricField:
         return QObject::tr("E");
     case PhysicFieldVariable_RF_ElectricFieldReal:
-        return QObject::tr("Ere");
+        return QObject::tr("E_re");
     case PhysicFieldVariable_RF_ElectricFieldImag:
-        return QObject::tr("Eim");
+        return QObject::tr("E_im");
     case PhysicFieldVariable_RF_MagneticField:
         return QObject::tr("H");
     case PhysicFieldVariable_RF_MagneticFieldReal:
-        return QObject::tr("Hre");
+        return QObject::tr("H_re");
     case PhysicFieldVariable_RF_MagneticFieldImag:
-        return QObject::tr("Him");
+        return QObject::tr("H_im");
     case PhysicFieldVariable_RF_PowerLosses:
         return QObject::tr("pj");
     case PhysicFieldVariable_RF_EnergyDensity:
@@ -557,10 +557,10 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("mur");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("g");
-    case PhysicFieldVariable_RF_J_Ext_real:
-        return QObject::tr("J_r");
-    case PhysicFieldVariable_RF_J_Ext_imag:
-        return QObject::tr("J_i");
+    case PhysicFieldVariable_RF_Current_density_real:
+        return QObject::tr("J_re");
+    case PhysicFieldVariable_RF_Current_density_imag:
+        return QObject::tr("J_im");
     case PhysicFieldVariable_Acoustic_Pressure:
         return QObject::tr("p");
     case PhysicFieldVariable_Acoustic_PressureReal:
@@ -728,9 +728,9 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("H/m");
     case PhysicFieldVariable_RF_Conductivity:
         return QObject::tr("S/m");
-    case PhysicFieldVariable_RF_J_Ext_real:
+    case PhysicFieldVariable_RF_Current_density_real:
         return QObject::tr("A/m2");
-    case PhysicFieldVariable_RF_J_Ext_imag:
+    case PhysicFieldVariable_RF_Current_density_imag:
         return QObject::tr("A/m2");
 
     case PhysicFieldVariable_Acoustic_Pressure:

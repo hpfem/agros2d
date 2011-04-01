@@ -18,7 +18,6 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "hermes_rf.h"
-
 #include "scene.h"
 #include "gui.h"
 
@@ -27,6 +26,7 @@ struct RFEdge
     PhysicFieldBC type;
     double value_real;
     double value_imag;
+    double height;
     Point start;
     Point end;
     double angle;
@@ -37,8 +37,8 @@ struct RFLabel
     double permittivity;
     double permeability;
     double conductivity;
-    double J_ext_real;
-    double J_ext_imag;
+    double current_density_real;
+    double current_density_imag;
 };
 
 RFEdge *rfEdge;
@@ -56,7 +56,8 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
     // FIXME: pro port zadavat z GUI
     int mode = 1;
     // FIXME: zadavat z GUI
-    double height = 0.01016;
+    //double height = 0.01016;
+    double height = rfEdge[e->edge_marker].height;
 
     double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
 
@@ -73,7 +74,8 @@ Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Fun
     double mu = rfLabel[e->elem_marker].permeability * MU0;
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
     int mode = 1;
-    double height = 0.01016;
+    //double height = 0.01016;
+    double height = rfEdge[e->edge_marker].height;
 
     double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
 
@@ -176,7 +178,7 @@ Scalar rf_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].J_ext_imag;
+    return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].current_density_imag;
 }
 */
 
@@ -186,7 +188,7 @@ Scalar rf_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
     Scalar result = 0 ;
     int u = 0;
     for (int i = 0; i < n; i++)
-      result += wt[i] * (rfLabel[e->elem_marker].J_ext_imag * v->val[i]);
+      result += wt[i] * (rfLabel[e->elem_marker].current_density_imag * v->val[i]);
 
     return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * result;
 }
@@ -196,7 +198,7 @@ Scalar rf_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].J_ext_real;
+    return 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * rfLabel[e->elem_marker].current_density_real;
 }
 */
 
@@ -206,7 +208,7 @@ Scalar rf_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
     Scalar result = 0 ;
     int u = 0;
     for (int i = 0; i < n; i++)
-      result += wt[i] * (rfLabel[e->elem_marker].J_ext_real * v->val[i]);
+      result += wt[i] * (rfLabel[e->elem_marker].current_density_real * v->val[i]);
 
 
     return 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * result;
@@ -324,8 +326,8 @@ void HermesRF::readLabelMarkerFromDomElement(QDomElement *element)
                                                          Value(element->attribute("permittivity", "1")),
                                                          Value(element->attribute("permeability", "1")),
                                                          Value(element->attribute("conductivity", "0")),
-                                                         Value(element->attribute("J_ext_real", "0")),
-                                                         Value(element->attribute("J_ext_imag", "0"))));
+                                                         Value(element->attribute("current density - real", "0")),
+                                                         Value(element->attribute("current density - imag", "0"))));
 }
 
 void HermesRF::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
@@ -335,8 +337,8 @@ void HermesRF::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMark
     element->setAttribute("permittivity", labelRFMarker->permittivity.text);
     element->setAttribute("permeability", labelRFMarker->permeability.text);
     element->setAttribute("conductivity", labelRFMarker->conductivity.text);
-    element->setAttribute("J_ext_real", labelRFMarker->J_ext_real.text);
-    element->setAttribute("J_ext_imag", labelRFMarker->J_ext_imag.text);
+    element->setAttribute("current density - real", labelRFMarker->current_density_real.text);
+    element->setAttribute("current density - imag", labelRFMarker->current_density_imag.text);
 }
 
 LocalPointValue *HermesRF::localPointValue(const Point &point)
@@ -452,9 +454,9 @@ SceneLabelMarker *HermesRF::newLabelMarker()
 
 SceneLabelMarker *HermesRF::newLabelMarker(PyObject *self, PyObject *args)
 {
-    double permittivity, permeability, conductivity, J_ext_real, J_ext_imag;
+    double permittivity, permeability, conductivity, current_density_real, current_density_imag;
     char *name;
-    if (PyArg_ParseTuple(args, "sddd", &name, &permittivity, &permeability, &conductivity, &J_ext_real, &J_ext_imag))
+    if (PyArg_ParseTuple(args, "sddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
     {
         // check name
         if (Util::scene()->getLabelMarker(name)) return NULL;
@@ -463,8 +465,8 @@ SceneLabelMarker *HermesRF::newLabelMarker(PyObject *self, PyObject *args)
                                       Value(QString::number(permittivity)),
                                       Value(QString::number(permeability)),
                                       Value(QString::number(conductivity)),
-                                      Value(QString::number(J_ext_real)),
-                                      Value(QString::number(J_ext_imag)));
+                                      Value(QString::number(current_density_real)),
+                                      Value(QString::number(current_density_imag)));
     }
 
     return NULL;
@@ -472,17 +474,17 @@ SceneLabelMarker *HermesRF::newLabelMarker(PyObject *self, PyObject *args)
 
 SceneLabelMarker *HermesRF::modifyLabelMarker(PyObject *self, PyObject *args)
 {
-    double permittivity, permeability, conductivity, J_ext_real, J_ext_imag;
+    double permittivity, permeability, conductivity, current_density_real, current_density_imag;
     char *name;
-    if (PyArg_ParseTuple(args, "sddd", &name, &permittivity, &permeability, &conductivity, &J_ext_real, &J_ext_imag))
+    if (PyArg_ParseTuple(args, "sddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
     {
         if (SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(Util::scene()->getLabelMarker(name)))
         {
             marker->permittivity = Value(QString::number(permittivity));
             marker->permeability = Value(QString::number(permeability));
             marker->conductivity = Value(QString::number(conductivity));
-            marker->J_ext_real = Value(QString::number(J_ext_real));
-            marker->J_ext_imag = Value(QString::number(J_ext_imag));
+            marker->current_density_real = Value(QString::number(current_density_real));
+            marker->current_density_imag = Value(QString::number(current_density_imag));
             return marker;
         }
         else
@@ -508,8 +510,8 @@ void HermesRF::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_Permittivity), PhysicFieldVariable_RF_Permittivity);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_Permeability), PhysicFieldVariable_RF_Permeability);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_Conductivity), PhysicFieldVariable_RF_Conductivity);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_J_Ext_real), PhysicFieldVariable_RF_J_Ext_real);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_J_Ext_imag), PhysicFieldVariable_RF_J_Ext_imag);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_Current_density_real), PhysicFieldVariable_RF_Current_density_real);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_Current_density_imag), PhysicFieldVariable_RF_Current_density_imag);
 }
 
 void HermesRF::fillComboBoxVectorVariable(QComboBox *cmbFieldVariable)
@@ -524,27 +526,34 @@ void HermesRF::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPoin
     LocalPointValueRF *localPointValueRF = dynamic_cast<LocalPointValueRF *>(localPointValue);
 
     // magnetic
-    QTreeWidgetItem *magneticNode = new QTreeWidgetItem(trvWidget);
-    magneticNode->setText(0, tr("RF field"));
-    magneticNode->setExpanded(true);
+    QTreeWidgetItem *rfNode = new QTreeWidgetItem(trvWidget);
+    rfNode->setText(0, tr("RF field"));
+    rfNode->setExpanded(true);
 
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
     {
         // material
-        addTreeWidgetItemValue(magneticNode, tr("Permittivity:"), QString("%1").arg(localPointValueRF->permittivity, 0, 'f', 2), "");
-        addTreeWidgetItemValue(magneticNode, tr("Permeability:"), QString("%1").arg(localPointValueRF->permeability, 0, 'f', 2), "");
-        addTreeWidgetItemValue(magneticNode, tr("Conductivity:"), QString("%1").arg(localPointValueRF->conductivity, 0, 'f', 2), "");
-        addTreeWidgetItemValue(magneticNode, tr("J_ext_real:"), QString("%1").arg(localPointValueRF->J_ext_real, 0, 'f', 2), "A/m2");
-        addTreeWidgetItemValue(magneticNode, tr("J_ext_imag:"), QString("%1").arg(localPointValueRF->J_ext_imag, 0, 'f', 2), "A/m2");
+        addTreeWidgetItemValue(rfNode, tr("Permittivity:"), QString("%1").arg(localPointValueRF->permittivity, 0, 'f', 2), "");
+        addTreeWidgetItemValue(rfNode, tr("Permeability:"), QString("%1").arg(localPointValueRF->permeability, 0, 'f', 2), "");
+        addTreeWidgetItemValue(rfNode, tr("Conductivity:"), QString("%1").arg(localPointValueRF->conductivity, 0, 'f', 2), "");
 
         // Electric Field
-        QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(magneticNode);
+        QTreeWidgetItem *itemElectricField = new QTreeWidgetItem(rfNode);
         itemElectricField->setText(0, tr("Electric field"));
         itemElectricField->setExpanded(true);
 
         addTreeWidgetItemValue(itemElectricField, tr("real:"), QString("%1").arg(localPointValueRF->electric_field_real, 0, 'e', 3), "V/m");
         addTreeWidgetItemValue(itemElectricField, tr("imag:"), QString("%1").arg(localPointValueRF->electric_field_imag, 0, 'e', 3), "V/m");
         addTreeWidgetItemValue(itemElectricField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->electric_field_real) + sqr(localPointValueRF->electric_field_imag)), 0, 'e', 3), "V/m");
+
+        // Current Density
+        QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(rfNode);
+        itemCurrentDensity->setText(0, tr("Current density"));
+        itemCurrentDensity->setExpanded(true);
+
+        addTreeWidgetItemValue(itemCurrentDensity, tr("real:"), QString("%1").arg(localPointValueRF->current_density_real, 0, 'f', 2), "A/m2");
+        addTreeWidgetItemValue(itemCurrentDensity, tr("imag:"), QString("%1").arg(localPointValueRF->current_density_imag, 0, 'f', 2), "A/m2");
+        addTreeWidgetItemValue(itemCurrentDensity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->current_density_real) + sqr(localPointValueRF->current_density_imag)), 0, 'f', 2), "A/m2");
     }
 }
 
@@ -609,6 +618,7 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
             rfEdge[i+1].type = edgeRFMarker->type;
             rfEdge[i+1].value_real = edgeRFMarker->value_real.number;
             rfEdge[i+1].value_imag = edgeRFMarker->value_imag.number;
+            rfEdge[i+1].height = edgeRFMarker->height.number;
             rfEdge[i+1].start = Util::scene()->edges[i]->nodeStart->point;
             rfEdge[i+1].end = Util::scene()->edges[i]->nodeEnd->point;
             rfEdge[i+1].angle = Util::scene()->edges[i]->angle;
@@ -652,14 +662,14 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
             if (!labelRFMarker->permittivity.evaluate()) return QList<SolutionArray *>();
             if (!labelRFMarker->permeability.evaluate()) return QList<SolutionArray *>();
             if (!labelRFMarker->conductivity.evaluate()) return QList<SolutionArray *>();
-            if (!labelRFMarker->J_ext_real.evaluate()) return QList<SolutionArray *>();
-            if (!labelRFMarker->J_ext_imag.evaluate()) return QList<SolutionArray *>();
+            if (!labelRFMarker->current_density_real.evaluate()) return QList<SolutionArray *>();
+            if (!labelRFMarker->current_density_imag.evaluate()) return QList<SolutionArray *>();
 
             rfLabel[i].permittivity = labelRFMarker->permittivity.number;
             rfLabel[i].permeability = labelRFMarker->permeability.number;
             rfLabel[i].conductivity = labelRFMarker->conductivity.number;
-            rfLabel[i].J_ext_real = labelRFMarker->J_ext_real.number;
-            rfLabel[i].J_ext_imag = labelRFMarker->J_ext_imag.number;
+            rfLabel[i].current_density_real = labelRFMarker->current_density_real.number;
+            rfLabel[i].current_density_imag = labelRFMarker->current_density_imag.number;
         }
     }
 
@@ -681,8 +691,8 @@ LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point
     permittivity = 0;
     permeability = 0;
     conductivity = 0;
-    J_ext_real = 0;
-    J_ext_imag = 0;
+    current_density_real = 0;
+    current_density_imag = 0;
 
     electric_field_real = 0;
     electric_field_imag = 0;
@@ -729,8 +739,8 @@ LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point
                 permittivity = marker->permittivity.number;
                 permeability = marker->permeability.number;
                 conductivity = marker->conductivity.number;
-                J_ext_real = marker->J_ext_real.number;
-                J_ext_imag = marker->J_ext_imag.number;
+                current_density_real = marker->current_density_real.number;
+                current_density_imag = marker->current_density_imag.number;
             }
         }
     }
@@ -770,14 +780,14 @@ double LocalPointValueRF::variableValue(PhysicFieldVariable physicFieldVariable,
         return conductivity;
     }
         break;
-    case PhysicFieldVariable_RF_J_Ext_real:
+    case PhysicFieldVariable_RF_Current_density_real:
     {
-        return J_ext_real;
+        return current_density_real;
     }
         break;
-    case PhysicFieldVariable_RF_J_Ext_imag:
+    case PhysicFieldVariable_RF_Current_density_imag:
     {
-        return J_ext_imag;
+        return current_density_imag;
     }
         break;
     default:
@@ -798,8 +808,8 @@ QStringList LocalPointValueRF::variables()
            QString("%1").arg(permittivity, 0, 'e', 5) <<
            QString("%1").arg(permeability, 0, 'f', 3) <<
            QString("%1").arg(conductivity, 0, 'e', 5) <<
-           QString("%1").arg(J_ext_real, 0, 'e', 5) <<
-           QString("%1").arg(J_ext_imag, 0, 'e', 5);
+           QString("%1").arg(current_density_real, 0, 'e', 5) <<
+           QString("%1").arg(current_density_imag, 0, 'e', 5);
 
     return QStringList(row);
 }
@@ -979,16 +989,16 @@ void ViewScalarFilterRF::calculateVariable(int i)
         node->values[0][0][i] = marker->conductivity.number;
     }
         break;
-    case PhysicFieldVariable_RF_J_Ext_real:
+    case PhysicFieldVariable_RF_Current_density_real:
     {
         SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
-        node->values[0][0][i] = marker->J_ext_real.number;
+        node->values[0][0][i] = marker->current_density_real.number;
     }
         break;
-    case PhysicFieldVariable_RF_J_Ext_imag:
+    case PhysicFieldVariable_RF_Current_density_imag:
     {
         SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
-        node->values[0][0][i] = marker->J_ext_imag.number;
+        node->values[0][0][i] = marker->current_density_imag.number;
     }
         break;
     default:
@@ -1044,14 +1054,14 @@ int SceneEdgeRFMarker::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelRFMarker::SceneLabelRFMarker(const QString &name, Value permittivity,Value permeability, Value conductivity, Value J_ext_real, Value J_ext_imag)
+SceneLabelRFMarker::SceneLabelRFMarker(const QString &name, Value permittivity,Value permeability, Value conductivity, Value current_density_real, Value current_density_imag)
     : SceneLabelMarker(name)
 {
     this->permittivity = permittivity;
     this->permeability = permeability;
     this->conductivity = conductivity;
-    this->J_ext_real = J_ext_real;
-    this->J_ext_imag = J_ext_imag;
+    this->current_density_real = current_density_real;
+    this->current_density_imag = current_density_imag;
 }
 
 QString SceneLabelRFMarker::script()
@@ -1061,8 +1071,8 @@ QString SceneLabelRFMarker::script()
             arg(permittivity.text).
             arg(permeability.text).
             arg(conductivity.text).
-            arg(J_ext_real.text).
-            arg(J_ext_imag.text);
+            arg(current_density_real.text).
+            arg(current_density_imag.text);
 }
 
 QMap<QString, QString> SceneLabelRFMarker::data()
@@ -1071,8 +1081,8 @@ QMap<QString, QString> SceneLabelRFMarker::data()
     out["Permittivity (-)"] = permittivity.text;
     out["Permeability (-)"] = permeability.text;
     out["Conductivity (S/m)"] = conductivity.text;
-    out["J_ext_real (A/m2)"] = J_ext_real.text;
-    out["J_ext_imag (A/m2)"] = J_ext_imag.text;
+    out["Current density - real (A/m2)"] = current_density_real.text;
+    out["Current density - imag (A/m2)"] = current_density_imag.text;
     return QMap<QString, QString>(out);
 }
 
@@ -1099,6 +1109,7 @@ DSceneEdgeRFMarker::~DSceneEdgeRFMarker()
     delete cmbType;
     delete txtValueReal;
     delete txtValueImag;
+    delete txtHeight;
 }
 
 void DSceneEdgeRFMarker::createContent()
@@ -1110,8 +1121,24 @@ void DSceneEdgeRFMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_Port), PhysicFieldBC_RF_Port);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
+<<<<<<< HEAD
     txtValueReal = new ValueLineEdit(this);
     txtValueImag = new ValueLineEdit(this);
+=======
+    /*cmbMode = new QComboBox(this);
+    cmbMode->addItem("0", Mode_0);
+    cmbMode->addItem("1", Mode_1);
+    cmbMode->addItem("2", Mode_2);
+    //cmbMode->setEnabled(false);*/
+
+    txtValueReal = new SLineEditValue(this);
+    txtValueImag = new SLineEditValue(this);
+    //txtMode = new SLineEditValue(this);
+    txtHeight = new SLineEditValue(this);
+
+    // set active marker
+    doTypeChanged(cmbType->currentIndex());
+>>>>>>> height from GUI
 
     connect(txtValueReal, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtValueImag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -1125,6 +1152,11 @@ void DSceneEdgeRFMarker::createContent()
     layout->addWidget(cmbType, 1, 1);
     layout->addWidget(new QLabel(tr("Value:")), 2, 0);
     layout->addLayout(layoutCurrentDensity, 2, 1);
+   // layout->addWidget(new QLabel(tr("TE mode:")), 3, 0);
+   // layout->addWidget(cmbMode, 3, 1);
+    layout->addWidget(new QLabel(tr("Height:")), 4, 0);
+    layout->addWidget(txtHeight, 4, 1);
+
 }
 
 void DSceneEdgeRFMarker::load()
@@ -1136,6 +1168,7 @@ void DSceneEdgeRFMarker::load()
     cmbType->setCurrentIndex(cmbType->findData(edgeRFMarker->type));
     txtValueReal->setValue(edgeRFMarker->value_real);
     txtValueImag->setValue(edgeRFMarker->value_imag);
+    txtHeight->setValue(edgeRFMarker->height);
 }
 
 bool DSceneEdgeRFMarker::save() {
@@ -1155,6 +1188,11 @@ bool DSceneEdgeRFMarker::save() {
     else
         return false;
 
+    if (txtHeight->evaluate())
+        edgeRFMarker->height  = txtHeight->value();
+    else
+        return false;
+
     return true;
 }
 
@@ -1162,6 +1200,7 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
 {
     txtValueReal->setEnabled(false);
     txtValueImag->setEnabled(false);
+    txtHeight->setEnabled(false);
 
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
@@ -1171,10 +1210,23 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
         txtValueImag->setEnabled(true);
     }
         break;
+
     case PhysicFieldBC_RF_MagneticField:
     {
         txtValueReal->setEnabled(true);
         txtValueImag->setEnabled(true);
+    }
+        break;
+
+    case PhysicFieldBC_RF_MatchedBoundary:
+    {
+        txtHeight->setEnabled(true);
+    }
+        break;
+
+    case PhysicFieldBC_RF_Port:
+    {
+        txtHeight->setEnabled(true);
     }
         break;
     }
@@ -1197,22 +1249,30 @@ DSceneLabelRFMarker::~DSceneLabelRFMarker()
     delete txtPermittivity;
     delete txtPermeability;
     delete txtConductivity;
-    delete txtJ_Ext_real;
-    delete txtJ_Ext_imag;
+    delete txtCurrent_density_real;
+    delete txtCurrent_density_imag;
 }
 
 void DSceneLabelRFMarker::createContent()
 {
+<<<<<<< HEAD
     txtPermittivity = new ValueLineEdit(this);
     txtPermeability = new ValueLineEdit(this);
     txtConductivity = new ValueLineEdit(this);
     txtJ_Ext_real = new ValueLineEdit(this);
     txtJ_Ext_imag = new ValueLineEdit(this);
+=======
+    txtPermittivity = new SLineEditValue(this);
+    txtPermeability = new SLineEditValue(this);
+    txtConductivity = new SLineEditValue(this);
+    txtCurrent_density_real = new SLineEditValue(this);
+    txtCurrent_density_imag = new SLineEditValue(this);
+>>>>>>> height from GUI
 
     connect(txtPermeability, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    connect(txtJ_Ext_real, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    connect(txtJ_Ext_imag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtCurrent_density_real, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtCurrent_density_imag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtPermittivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     layout->addWidget(new QLabel(tr("Permitivity (-):")), 1, 0);
@@ -1221,10 +1281,10 @@ void DSceneLabelRFMarker::createContent()
     layout->addWidget(txtPermeability, 2, 1);
     layout->addWidget(new QLabel(tr("Conductivity (S/m):")), 3, 0);
     layout->addWidget(txtConductivity, 3, 1);
-    layout->addWidget(new QLabel(tr("J_ext_real (A/m2):")), 4, 0);
-    layout->addWidget(txtJ_Ext_real, 4, 1);
-    layout->addWidget(new QLabel(tr("J_ext_imag (A/m2):")), 5, 0);
-    layout->addWidget(txtJ_Ext_imag, 5, 1);
+    layout->addWidget(new QLabel(tr("Current density - real (A/m2):")), 4, 0);
+    layout->addWidget(txtCurrent_density_real, 4, 1);
+    layout->addWidget(new QLabel(tr("Current density - imag (A/m2):")), 5, 0);
+    layout->addWidget(txtCurrent_density_imag, 5, 1);
 }
 
 void DSceneLabelRFMarker::load()
@@ -1236,8 +1296,8 @@ void DSceneLabelRFMarker::load()
     txtPermittivity->setValue(labelRFMarker->permittivity);
     txtPermeability->setValue(labelRFMarker->permeability);
     txtConductivity->setValue(labelRFMarker->conductivity);
-    txtJ_Ext_real->setValue(labelRFMarker->J_ext_real);
-    txtJ_Ext_imag->setValue(labelRFMarker->J_ext_imag);
+    txtCurrent_density_real->setValue(labelRFMarker->current_density_real);
+    txtCurrent_density_imag->setValue(labelRFMarker->current_density_imag);
 }
 
 bool DSceneLabelRFMarker::save() {
@@ -1260,13 +1320,13 @@ bool DSceneLabelRFMarker::save() {
     else
         return false;
 
-    if (txtJ_Ext_real->evaluate())
-        labelRFMarker->J_ext_real  = txtJ_Ext_real->value();
+    if (txtCurrent_density_real->evaluate())
+        labelRFMarker->current_density_real  = txtCurrent_density_real->value();
     else
         return false;
 
-    if (txtJ_Ext_imag->evaluate())
-        labelRFMarker->J_ext_imag  = txtJ_Ext_imag->value();
+    if (txtCurrent_density_imag->evaluate())
+        labelRFMarker->current_density_imag  = txtCurrent_density_imag->value();
     else
         return false;
 

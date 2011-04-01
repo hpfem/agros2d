@@ -438,8 +438,8 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_Permittivity,
     PhysicFieldVariable_RF_Permeability,
     PhysicFieldVariable_RF_Conductivity,
-    PhysicFieldVariable_RF_J_Ext_real,
-    PhysicFieldVariable_RF_J_Ext_imag,
+    PhysicFieldVariable_RF_Current_density_real,
+    PhysicFieldVariable_RF_Current_density_imag,
     PhysicFieldVariable_Acoustic_Pressure,
     PhysicFieldVariable_Acoustic_PressureReal,
     PhysicFieldVariable_Acoustic_PressureImag,
@@ -479,6 +479,14 @@ enum PhysicFieldBC
     PhysicFieldBC_Acoustic_NormalAcceleration,
     PhysicFieldBC_Acoustic_Impedance,
     PhysicFieldBC_Acoustic_MatchedBoundary
+};
+
+enum TEMode
+{
+    Mode_0,
+    Mode_1,
+    Mode_2
+
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
@@ -544,8 +552,8 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_Permittivity:
     case PhysicFieldVariable_RF_Permeability:
     case PhysicFieldVariable_RF_Conductivity:
-    case PhysicFieldVariable_RF_J_Ext_real:
-    case PhysicFieldVariable_RF_J_Ext_imag:
+    case PhysicFieldVariable_RF_Current_density_real:
+    case PhysicFieldVariable_RF_Current_density_imag:
 
     case PhysicFieldVariable_Acoustic_Pressure:
     case PhysicFieldVariable_Acoustic_PressureReal:
