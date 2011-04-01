@@ -42,6 +42,8 @@ public:
     ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }
 
+    QString fillTimeFunction(const QString &expression, double time_min, double time_max, double N, QList<double> *list);
+
 private slots:
     void doPrintStdout(const QString &message);
 

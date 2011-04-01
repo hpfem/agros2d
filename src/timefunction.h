@@ -27,11 +27,16 @@ class TimeFunction
 public:
     Point point;
 
-    TimeFunction(const QString &function, double time_min, double time_max, double N = 100);
+    TimeFunction(const QString &function = "0.0", double time_min = 0.0, double time_max = 1.0, double N = 200);
     ~TimeFunction();
 
-    void setFunction(const QString &function, double time_min, double time_max, double N = 100);
+    void setFunction(const QString &function, double time_min, double time_max, double N = 200);
+    inline QString function() { return m_function; }
+    inline bool isValid() { return (m_values.count() > 0); }
+    inline QString getError() { return m_error; }
+    void showError();
 
+    bool fillValues(bool quiet = true);
     double value(double time) const;
 private:
     double m_time_min;
@@ -39,11 +44,10 @@ private:
     int m_N;
 
     QString m_function;
+    QString m_error;
 
     QList<double> m_times;
-    QList<double> m_values;
-
-    void fillValues();
+    QList<double> m_values;    
 };
 
 

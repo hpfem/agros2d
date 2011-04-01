@@ -21,6 +21,7 @@
 #define ACOUSTIC_H
 
 #include "util.h"
+#include "timefunction.h"
 #include "hermes_field.h"
 
 struct HermesAcoustic : public HermesField
@@ -138,10 +139,9 @@ public:
     Value value_real;
 
     // transient
-    Value transient_amplitude;
-    Value transient_frequency;
+    TimeFunction value_transient;
 
-    SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real, Value transient_amplitude, Value transient_frequency);
+    SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real, TimeFunction value_transient);
     SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real);
     SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type);
 
@@ -179,8 +179,7 @@ protected:
 private:
     QComboBox *cmbType;
     SLineEditValue *txtValue;
-    SLineEditValue *txtTransientHarmonicAmplitude;
-    SLineEditValue *txtTransientHarmonicFrequency;
+    QLineEdit *txtValueTransient;
 
 private slots:
     void doTypeChanged(int index);

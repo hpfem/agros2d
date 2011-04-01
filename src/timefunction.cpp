@@ -24,6 +24,7 @@
 
 TimeFunction::TimeFunction(const QString &function, double time_min, double time_max, double N)
 {
+    m_error = "";
     setFunction(function, time_min, time_max, N);
 }
 
@@ -35,38 +36,48 @@ TimeFunction::~TimeFunction()
 
 void TimeFunction::setFunction(const QString &function, double time_min, double time_max, double N)
 {
+    m_error = "";
     m_function = function;
     m_time_min = time_min;
     m_time_max = time_max;
     m_N = N;
 
-    if (m_function.indexOf("time") == -1)
-         QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), QObject::tr("Invalid time expression. \"time\" variable cannot be found."));
-    else
-        fillValues();
+    fillValues();
 }
 
-void TimeFunction::fillValues()
+void TimeFunction::showError()
+{
+    if (!m_error.isEmpty())
+        QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Time function error"), m_error);
+}
+
+bool TimeFunction::fillValues(bool quiet)
 {
     m_times.clear();
     m_values.clear();
 
-    double dt = (m_time_max - m_time_min) / (m_N - 1);
-    for (int i = 0; i < m_N; i++)
-    {
-        QString function = m_function;
+    if (m_function.isEmpty())
+        m_function = "0.0";
 
-        ExpressionResult expressionResult = runPythonExpression(function.replace("time", QString::number(i * dt)));
-        if (expressionResult.error.isEmpty())
-        {
-            m_times.append(i * dt);
-            m_values.append(expressionResult.value);
-        }
-        else
-        {
-            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
-            break;
-        }
+    // times
+    double dt = (m_time_max - m_time_min) / (m_N + 1);
+    for (int i = 0; i < m_N; i++)
+        m_times.append(i * dt);
+
+    // values
+    QString error = fillTimeFunction(m_function, m_time_min, m_time_max, m_N, &m_values);
+
+    if (error.isEmpty())
+    {
+        m_error = "";
+        return true;
+    }
+    else
+    {
+        m_error = error;
+        if (!quiet)
+            showError();
+        return false;
     }
 }
 
@@ -84,7 +95,9 @@ double TimeFunction::value(double time) const
         return m_values.last();
 
     // linear approach
-    for (int i = 0; m_times.length() - 1; i++)
+    for (int i = 0; i < m_times.length() - 1; i++)
         if ((m_times.at(i) >= time) && (time <= m_times.at(i+1)))
             return m_values.at(i) + ((time - m_times.at(i)) / (m_times.at(i+1) - m_times.at(i))) * (m_values.at(i+1) - m_values.at(i));
+
+    return m_values.last();
 }

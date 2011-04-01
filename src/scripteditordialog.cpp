@@ -57,6 +57,13 @@ ExpressionResult runPythonExpression(const QString &expression)
     return pythonEngine->runPythonExpression(expression);
 }
 
+QString fillTimeFunction(const QString &expression, double time_min, double time_max, double N, QList<double> *list)
+{
+    logMessage("fillTimeFunction()");
+
+    return pythonEngine->fillTimeFunction(expression, time_min, time_max, N, list);
+}
+
 bool scriptIsRunning()
 {
     logMessage("scriptIsRunning()");

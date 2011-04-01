@@ -1,4 +1,4 @@
- // This file is part of Agros2D.
+// This file is part of Agros2D.
 //
 // Agros2D is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,23 +31,23 @@
 // FIX ********************************************************************************************************************************************************************
 // Terible, is it possible to write this code better???
 #define python_int_array() \
-const int count = 100; \
-                  int index[count]; \
-                  for (int i = 0; i < count; i++) \
-                  index[i] = INT_MIN; \
-                             if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
-                                                  &index[ 0], &index[ 1], &index[ 2], &index[ 3], &index[ 4], &index[ 5], &index[ 6], &index[ 7], &index[ 8], &index[ 9], \
-                                                  &index[10], &index[11], &index[12], &index[13], &index[14], &index[15], &index[16], &index[17], &index[18], &index[19], \
-                                                  &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
-                                                  &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
-                                                  &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
-                                                  &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59], \
-                                                  &index[60], &index[61], &index[62], &index[63], &index[64], &index[65], &index[66], &index[67], &index[68], &index[69], \
-                                                  &index[70], &index[71], &index[72], &index[73], &index[74], &index[75], &index[76], &index[77], &index[78], &index[79], \
-                                                  &index[80], &index[81], &index[82], &index[83], &index[84], &index[85], &index[86], &index[87], &index[88], &index[89], \
-                                                  &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
-                                                  )) \
-                             // FIX ********************************************************************************************************************************************************************
+    const int count = 100; \
+    int index[count]; \
+    for (int i = 0; i < count; i++) \
+    index[i] = INT_MIN; \
+    if (PyArg_ParseTuple(args, "i|iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", \
+    &index[ 0], &index[ 1], &index[ 2], &index[ 3], &index[ 4], &index[ 5], &index[ 6], &index[ 7], &index[ 8], &index[ 9], \
+    &index[10], &index[11], &index[12], &index[13], &index[14], &index[15], &index[16], &index[17], &index[18], &index[19], \
+    &index[20], &index[21], &index[22], &index[23], &index[24], &index[25], &index[26], &index[27], &index[28], &index[29], \
+    &index[30], &index[31], &index[32], &index[33], &index[34], &index[35], &index[36], &index[37], &index[38], &index[39], \
+    &index[40], &index[41], &index[42], &index[43], &index[44], &index[45], &index[46], &index[47], &index[48], &index[49], \
+    &index[50], &index[51], &index[52], &index[53], &index[54], &index[55], &index[56], &index[57], &index[58], &index[59], \
+    &index[60], &index[61], &index[62], &index[63], &index[64], &index[65], &index[66], &index[67], &index[68], &index[69], \
+    &index[70], &index[71], &index[72], &index[73], &index[74], &index[75], &index[76], &index[77], &index[78], &index[79], \
+    &index[80], &index[81], &index[82], &index[83], &index[84], &index[85], &index[86], &index[87], &index[88], &index[89], \
+    &index[90], &index[91], &index[92], &index[93], &index[94], &index[95], &index[96], &index[97], &index[98], &index[99]  \
+    )) \
+    // FIX ********************************************************************************************************************************************************************
 
 // version()
 char *pythonVersion()
@@ -652,8 +652,8 @@ void pythonMode(char *str)
     else if (QString(str) == "postprocessor")
         if (Util::scene()->sceneSolution()->isSolved())
             sceneView()->actSceneModePostprocessor->trigger();
-    else
-        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+        else
+            throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
     else
         throw invalid_argument(QObject::tr("Mode '%1' is not implemented.").arg(QString(str)).toStdString());
 
@@ -840,7 +840,7 @@ void pythonShowScalar(char *type, char *variable, char *component, int rangemin,
     if (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp == PhysicFieldVariableComp_Undefined)
         throw invalid_argument(QObject::tr("Physic field variable component '%1' is not implemented.").arg(QString(component)).toStdString());
     if ((isPhysicFieldVariableScalar(sceneView()->sceneViewSettings().scalarPhysicFieldVariable)) &&
-        (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar))
+            (sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp != PhysicFieldVariableComp_Scalar))
         throw invalid_argument(QObject::tr("Physic field variable is scalar variable.").toStdString());
 
     // range
@@ -1168,6 +1168,54 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
     Py_DECREF(Py_None);
 
     return expressionResult;
+}
+
+QString PythonEngine::fillTimeFunction(const QString &expression, double time_min, double time_max, double N, QList<double> *list)
+{
+    runPythonHeader();
+
+    std::ostringstream os;
+    os << "out = []" << std::endl <<
+    "for i in range(" << N << "):" << std::endl <<
+    "    time = i * (" << time_max << " - " << time_min << ") / (" << N << " + 1.0)" << std::endl <<
+    "    out.append(" << expression.toStdString() << ")" << std::endl;
+
+    PyRun_String(os.str().c_str(), Py_file_input, m_dict, m_dict);
+
+    PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
+    PyErr_Fetch(&type, &value, &traceback);
+
+    if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
+    {
+        Py_INCREF(type);
+
+        QString error = PyString_AsString(str);
+
+        if (type) Py_DECREF(type);
+        if (str) Py_DECREF(str);
+
+        return error;
+    }
+    else
+    {
+        // parse result
+        PyObject *result = PyDict_GetItemString(m_dict, "out");
+        PyObject *seq = PyObject_GetIter(result);
+        while (PyObject* item = PyIter_Next(seq))
+        {
+            PyObject *fitem;
+            fitem = PyNumber_Float(item);
+
+            double value = PyFloat_AS_DOUBLE(fitem);
+            list->append(value);
+
+            if (fitem) Py_DECREF(fitem);
+            if (item) Py_DECREF(item);
+        }
+        if (seq) Py_DECREF(seq);
+
+        return "";
+    }
 }
 
 ScriptResult PythonEngine::parseError()

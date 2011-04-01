@@ -82,6 +82,7 @@
         <file>images/equations/elasticity_steadystate.png</file>
         <file>images/equations/rf_harmonic.png</file>
         <file>images/equations/acoustic_harmonic.png</file>
+        <file>images/equations/acoustic_transient.png</file>
         <file>images/log.png</file>
         <file>images/grid.png</file>
         <file>images/snap-to-grid.png</file>
