@@ -1153,8 +1153,7 @@ void DSceneEdgeAcousticMarker::createContent()
     layout->addWidget(cmbType, 1, 1, 1, 2);
     layout->addWidget(new QLabel(tr("Value:")), 2, 0);
     layout->addWidget(txtValue, 2, 1);
-    layout->addWidget(new QLabel(tr("Transient value:")), 3, 0);
-    layout->addWidget(txtValueTransient, 3, 1);
+    layout->addWidget(txtValueTransient, 2, 1);
 }
 
 void DSceneEdgeAcousticMarker::load()
@@ -1167,7 +1166,10 @@ void DSceneEdgeAcousticMarker::load()
     txtValue->setValue(edgeAcousticMarker->value_real);
 
     // transient
-    txtValueTransient->setText(edgeAcousticMarker->value_transient.function());
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+    {
+        txtValueTransient->setText(edgeAcousticMarker->value_transient.function());
+    }
 }
 
 bool DSceneEdgeAcousticMarker::save() {
@@ -1183,13 +1185,16 @@ bool DSceneEdgeAcousticMarker::save() {
         return false;
 
     // transient
-    TimeFunction valueTransient(txtValueTransient->text(), 0.0, Util::scene()->problemInfo()->timeTotal.number);
-    if (valueTransient.isValid())
-        edgeAcousticMarker->value_transient = valueTransient;
-    else
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        valueTransient.showError();
-        return false;
+        TimeFunction valueTransient(txtValueTransient->text(), 0.0, Util::scene()->problemInfo()->timeTotal.number);
+        if (valueTransient.isValid())
+            edgeAcousticMarker->value_transient = valueTransient;
+        else
+        {
+            valueTransient.showError();
+            return false;
+        }
     }
 
     return true;
@@ -1198,16 +1203,24 @@ bool DSceneEdgeAcousticMarker::save() {
 void DSceneEdgeAcousticMarker::doTypeChanged(int index)
 {
     txtValue->setEnabled(false);
+    txtValue->setVisible(true);
     txtValueTransient->setEnabled(false);
+    txtValueTransient->setVisible(true);
 
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
     case PhysicFieldBC_Acoustic_Pressure:
     case PhysicFieldBC_Acoustic_NormalAcceleration:
         if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
+        {
             txtValue->setEnabled(true);
+            txtValueTransient->setVisible(false);
+        }
         else
+        {
             txtValueTransient->setEnabled(true);
+            txtValue->setVisible(false);
+        }
         break;
     case PhysicFieldBC_Acoustic_Impedance:
     {
