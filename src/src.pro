@@ -17,6 +17,7 @@ DEFINES += VERSION_DAY=18
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
 linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
+linux-g++:CONFIG(release) system(lrelease ../lang/*.ts)
 TRANSLATIONS = lang/cs_CZ.ts \
     lang/pl_PL.ts \
     lang/de_DE.ts
