@@ -126,6 +126,7 @@ public:
 
 public slots:
    void setData(double *xval, double *yval, int count);
+   void setData(QList<double> xval, QList<double> yval);
 
 private:
     QwtPlotCurve *m_curve;

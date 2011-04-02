@@ -317,15 +317,13 @@ void HermesAcoustic::readEdgeMarkerFromDomElement(QDomElement *element)
         Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
                                                                  type,
                                                                  Value(element->attribute("pressure", "0")),
-                                                                 TimeFunction(element->attribute("pressure_transient", "0"),
-                                                                              0.0, Util::scene()->problemInfo()->timeTotal.number)));
+                                                                 TimeFunction(element->attribute("pressure_transient", "0"))));
         break;
     case PhysicFieldBC_Acoustic_NormalAcceleration:
         Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
                                                                  type,
                                                                  Value(element->attribute("acceleration", "0")),
-                                                                 TimeFunction(element->attribute("acceleration_transient", "0"),
-                                                                              0.0, Util::scene()->problemInfo()->timeTotal.number)));
+                                                                 TimeFunction(element->attribute("acceleration_transient", "0"))));
         break;
     case PhysicFieldBC_Acoustic_Impedance:
         Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
@@ -655,8 +653,7 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
         {
             SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edges[i]->marker);
 
-            TimeFunction timeFunction(edgeAcousticMarker->value_transient.function(), 0.0, Util::scene()->problemInfo()->timeTotal.number, 2);
-            if (!timeFunction.isValid())
+            if (!edgeAcousticMarker->value_transient.check())
                 return QList<SolutionArray *>();
         }
     }
@@ -684,8 +681,15 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
 
             acousticEdge[i+1].type = edgeAcousticMarker->type;
             acousticEdge[i+1].value = edgeAcousticMarker->value_real.number;
-            acousticEdge[i+1].valueTransient = TimeFunction(edgeAcousticMarker->value_transient.function(),
-                                                            0.0, Util::scene()->problemInfo()->timeTotal.number);
+            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+            {
+                if (fabs(edgeAcousticMarker->value_transient.timeMax() - Util::scene()->problemInfo()->timeTotal.number) > EPS_ZERO)
+                {
+                    edgeAcousticMarker->value_transient.setTimeMax(Util::scene()->problemInfo()->timeTotal.number);
+                    edgeAcousticMarker->value_transient.fillValues();
+                }
+                acousticEdge[i+1].valueTransient = edgeAcousticMarker->value_transient;
+            }
 
             switch (edgeAcousticMarker->type)
             {
@@ -1046,7 +1050,7 @@ SceneEdgeAcousticMarker::SceneEdgeAcousticMarker(const QString &name, PhysicFiel
 
 QString SceneEdgeAcousticMarker::script()
 {
-    if (value_transient.isValid())
+    if (value_transient.isTimeDep())
         return QString("addboundary(\"%1\", \"%2\", %3, \"%4\")").
                 arg(name).
                 arg(physicFieldBCToStringKey(type)).
@@ -1142,7 +1146,7 @@ void DSceneEdgeAcousticMarker::createContent()
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValue = new SLineEditValue(this);
-    txtValueTransient = new QLineEdit("0", this);
+    txtValueTransient = new TimeFunctionEdit(this);
 
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
@@ -1150,7 +1154,7 @@ void DSceneEdgeAcousticMarker::createContent()
     doTypeChanged(cmbType->currentIndex());
 
     layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
-    layout->addWidget(cmbType, 1, 1, 1, 2);
+    layout->addWidget(cmbType, 1, 1);
     layout->addWidget(new QLabel(tr("Value:")), 2, 0);
     layout->addWidget(txtValue, 2, 1);
     layout->addWidget(txtValueTransient, 2, 1);
@@ -1168,7 +1172,10 @@ void DSceneEdgeAcousticMarker::load()
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        txtValueTransient->setText(edgeAcousticMarker->value_transient.function());
+        Util::scene()->problemInfo()->timeTotal.evaluate();
+        edgeAcousticMarker->value_transient.setTimeMax(Util::scene()->problemInfo()->timeTotal.number);
+        edgeAcousticMarker->value_transient.fillValues(true);
+        txtValueTransient->setTimeFunction(edgeAcousticMarker->value_transient);
     }
 }
 
@@ -1187,12 +1194,11 @@ bool DSceneEdgeAcousticMarker::save() {
     // transient
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
-        TimeFunction valueTransient(txtValueTransient->text(), 0.0, Util::scene()->problemInfo()->timeTotal.number);
-        if (valueTransient.isValid())
-            edgeAcousticMarker->value_transient = valueTransient;
+        if (txtValueTransient->timeFunction().isValid())
+            edgeAcousticMarker->value_transient = txtValueTransient->timeFunction();
         else
         {
-            valueTransient.showError();
+            txtValueTransient->timeFunction().showError();
             return false;
         }
     }

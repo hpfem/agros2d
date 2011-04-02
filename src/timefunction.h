@@ -22,26 +22,46 @@
 
 #include "util.h"
 
+class QwtPlotCurve;
+class QwtPlotPicker;
+
 class TimeFunction
 {
 public:
     Point point;
 
-    TimeFunction(const QString &function = "0.0", double time_min = 0.0, double time_max = 1.0, double N = 200);
+    TimeFunction();
+    TimeFunction(const QString &function, int count = 200);
     ~TimeFunction();
 
-    void setFunction(const QString &function, double time_min, double time_max, double N = 200);
-    inline QString function() { return m_function; }
-    inline bool isValid() { return (m_values.count() > 0); }
-    inline QString getError() { return m_error; }
+    void setFunction(const QString &function, double time_min, double time_max, double N = 200, bool quiet = true);
+    inline QString function() const { return m_function; }
+
+    inline bool isValid() const { return (m_values.count() > 0); }
+    bool isTimeDep() const { return m_function.contains("time"); }
+    bool check() const;
+
+    inline QString getError() const { return m_error; }
     void showError();
+
+    inline double timeMin() const { return m_time_min; }
+    inline double timeMax() const { return m_time_max; }
+    inline void setTimeMin(double time_min) { m_time_min = time_min; }
+    inline void setTimeMax(double time_max) { m_time_max = time_max; }
+
+    inline double count() const { return m_count; }
+    inline void setCount(int count) { m_count = count; }
+
+    inline QList<double> times() const { return m_times; }
+    inline QList<double> values() const { return m_values; }
 
     bool fillValues(bool quiet = true);
     double value(double time) const;
+
 private:
     double m_time_min;
     double m_time_max;
-    int m_N;
+    int m_count;
 
     QString m_function;
     QString m_error;
@@ -50,5 +70,63 @@ private:
     QList<double> m_values;    
 };
 
+class Chart;
+
+class TimeFunctionEdit: public QWidget
+{
+    Q_OBJECT
+
+public:
+    TimeFunctionEdit(QWidget *parent = 0);
+
+    void setTimeFunction(const TimeFunction &timeFunction);
+    inline TimeFunction timeFunction() const { return m_timeFunction; }
+
+private slots:
+    void doOpenDialog();
+
+private:
+    QLineEdit *txtFunction;
+    QPushButton *btnEdit;
+
+    void createControls();
+
+    TimeFunction m_timeFunction;
+};
+
+class TimeFunctionDialog: public QDialog
+{
+    Q_OBJECT
+
+public:
+    TimeFunctionDialog(QWidget *parent = 0);
+    ~TimeFunctionDialog();
+
+    inline TimeFunction timeFunction() const { return m_timeFunction; }
+    void setTimeFunction(const TimeFunction &timeFunction);
+
+private:
+    TimeFunction m_timeFunction;
+    Chart *chart;
+    QwtPlotCurve *chartCurve;
+
+    QwtPlotPicker *picker;
+
+    QPushButton *btnOk;
+    QPushButton *btnClose;
+    QPushButton *btnPlot;
+
+    QLabel *lblInfoError;
+    QLineEdit *txtFunction;
+
+    void createControls();
+
+private slots:
+    void doAccept();
+    void doReject();
+
+    void doPlot();
+    void doMoved(const QPoint &pos);
+};
 
 #endif // TIMEFUNCTION_H

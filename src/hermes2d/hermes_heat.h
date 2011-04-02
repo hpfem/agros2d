@@ -21,6 +21,7 @@
 #define HEAT_H
 
 #include "util.h"
+#include "timefunction.h"
 #include "hermes_field.h"
 
 struct HermesHeat : public HermesField
@@ -169,11 +170,11 @@ class SceneLabelHeatMarker : public SceneLabelMarker
 {
 public:
     Value thermal_conductivity;
-    Value volume_heat;
+    TimeFunction volume_heat;
     Value density;
     Value specific_heat;
 
-    SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
+    SceneLabelHeatMarker(const QString &name, TimeFunction volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
 
     QString script();
     QMap<QString, QString> data();
@@ -221,7 +222,7 @@ protected:
 
 private:
     SLineEditValue *txtThermalConductivity;
-    SLineEditValue *txtVolumeHeat;
+    TimeFunctionEdit *txtVolumeHeat;
     SLineEditValue *txtDensity;
     SLineEditValue *txtSpecificHeat;
 };

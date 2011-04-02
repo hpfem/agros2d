@@ -136,9 +136,10 @@ protected:
 class SceneEdgeAcousticMarker : public SceneEdgeMarker
 {
 public:
+    // harmonic value
     Value value_real;
 
-    // transient
+    // transient value
     TimeFunction value_transient;
 
     SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real, TimeFunction value_transient);
@@ -179,7 +180,7 @@ protected:
 private:
     QComboBox *cmbType;
     SLineEditValue *txtValue;
-    QLineEdit *txtValueTransient;
+    TimeFunctionEdit *txtValueTransient;
 
 private slots:
     void doTypeChanged(int index);

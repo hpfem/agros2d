@@ -1180,6 +1180,8 @@ QString PythonEngine::fillTimeFunction(const QString &expression, double time_mi
     "    time = i * (" << time_max << " - " << time_min << ") / (" << N << " + 1.0)" << std::endl <<
     "    out.append(" << expression.toStdString() << ")" << std::endl;
 
+    // std::cout << os.str() << std::endl;
+
     PyRun_String(os.str().c_str(), Py_file_input, m_dict, m_dict);
 
     PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;

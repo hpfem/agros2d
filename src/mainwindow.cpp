@@ -76,8 +76,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     sceneView->doDefaultValues();
 
-    TimeFunction time("sin(time)");
-
     connect(chartDialog, SIGNAL(setChartLine(ChartLine)), sceneView, SLOT(doSetChartLine(ChartLine)));
 
     QSettings settings;

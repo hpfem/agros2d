@@ -352,6 +352,25 @@ void Chart::setData(double *xval, double *yval, int count)
     replot();
 }
 
+void Chart::setData(QList<double> xval, QList<double> yval)
+{
+    logMessage("Chart::setData()");
+
+    double *txval = new double[xval.count()];
+    double *tyval = new double[xval.count()];
+
+    for (int i = 0; i < xval.count(); i++)
+    {
+        txval[i] = xval[i];
+        tyval[i] = yval[i];
+    }
+
+    setData(txval, tyval, xval.count());
+
+    delete [] txval;
+    delete [] tyval;
+}
+
 // ****************************************************************************************************
 
 FileBrowser::FileBrowser(QWidget *parent) : QListWidget(parent)
