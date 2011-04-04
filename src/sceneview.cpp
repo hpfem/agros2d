@@ -214,6 +214,19 @@ void SceneView::createActions()
     actSceneModeGroup->addAction(actSceneModePostprocessor);
     connect(actSceneModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doSceneModeSet(QAction *)));
 
+    // projection
+    actSetProjectionXY = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelY()), this);
+    actSetProjectionXY->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelY()));
+    connect(actSetProjectionXY, SIGNAL(triggered()), this, SLOT(doSetProjectionXY()));
+
+    actSetProjectionXZ = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelZ()), this);
+    actSetProjectionXZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelX()).arg(Util::scene()->problemInfo()->labelZ()));
+    connect(actSetProjectionXZ, SIGNAL(triggered()), this, SLOT(doSetProjectionXZ()));
+
+    actSetProjectionYZ = new QAction(tr("Projection to %1%2").arg(Util::scene()->problemInfo()->labelY()).arg(Util::scene()->problemInfo()->labelZ()), this);
+    actSetProjectionYZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Util::scene()->problemInfo()->labelY()).arg(Util::scene()->problemInfo()->labelZ()));
+    connect(actSetProjectionYZ, SIGNAL(triggered()), this, SLOT(doSetProjectionYZ()));
+
     // material
     actMaterialGroup = new QActionGroup(this);
     connect(actMaterialGroup, SIGNAL(triggered(QAction *)), this, SLOT(doMaterialGroup(QAction *)));
@@ -273,7 +286,7 @@ void SceneView::createMenu()
 {
     logMessage("SceneView::createMenu()");
 
-    mnuInfo = new QMenu(this);
+    mnuScene = new QMenu(this);
 
     QMenu *mnuModeGroup = new QMenu(tr("Set mode"), this);
     mnuModeGroup->addAction(actSceneModeNode);
@@ -281,20 +294,32 @@ void SceneView::createMenu()
     mnuModeGroup->addAction(actSceneModeLabel);
     mnuModeGroup->addAction(actSceneModePostprocessor);
 
-    mnuInfo->addAction(m_scene->actNewNode);
-    mnuInfo->addAction(m_scene->actNewEdge);
-    mnuInfo->addAction(m_scene->actNewLabel);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(m_scene->actNewEdgeMarker);
-    mnuInfo->addAction(m_scene->actNewLabelMarker);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(actSceneViewSelectRegion);
-    mnuInfo->addAction(m_scene->actTransform);
-    mnuInfo->addSeparator();
-    mnuInfo->addMenu(mnuModeGroup);
-    mnuInfo->addSeparator();
-    mnuInfo->addAction(actSceneObjectProperties);
-    mnuInfo->addAction(m_scene->actProblemProperties);
+    QMenu *mnuProjectionGroup = new QMenu(tr("Projection"), this);
+    mnuProjectionGroup->addAction(actSetProjectionXY);
+    mnuProjectionGroup->addAction(actSetProjectionXZ);
+    mnuProjectionGroup->addAction(actSetProjectionYZ);
+
+    mnuScene->addMenu(mnuModeGroup);
+    mnuScene->addSeparator();
+    mnuScene->addAction(m_scene->actNewNode);
+    mnuScene->addAction(m_scene->actNewEdge);
+    mnuScene->addAction(m_scene->actNewLabel);
+    mnuScene->addSeparator();
+    mnuScene->addAction(m_scene->actNewEdgeMarker);
+    mnuScene->addAction(m_scene->actNewLabelMarker);
+    mnuScene->addSeparator();
+    mnuScene->addAction(actSceneViewSelectRegion);
+    mnuScene->addAction(m_scene->actTransform);
+    mnuScene->addSeparator();
+    mnuScene->addAction(actSceneZoomBestFit);
+    mnuScene->addAction(actSceneZoomIn);
+    mnuScene->addAction(actSceneZoomOut);
+    mnuScene->addAction(actSceneZoomRegion);
+    mnuScene->addSeparator();
+    mnuScene->addMenu(mnuProjectionGroup);
+    mnuScene->addSeparator();
+    mnuScene->addAction(actSceneObjectProperties);
+    mnuScene->addAction(m_scene->actProblemProperties);
 }
 
 void SceneView::initializeGL()
@@ -3398,7 +3423,7 @@ void SceneView::contextMenuEvent(QContextMenuEvent *event)
         actSceneObjectProperties->setEnabled(m_scene->selectedCount() > 0);
 
 
-    mnuInfo->exec(event->globalPos());
+    mnuScene->exec(event->globalPos());
 }
 
 void SceneView::closeEvent(QCloseEvent *event)
@@ -3564,6 +3589,10 @@ void SceneView::doInvalidated()
     actSceneSnapToGrid->setChecked(Util::config()->snapToGrid);
     actSceneSnapToGrid->setEnabled(m_sceneMode != SceneMode_Postprocessor);
     actSceneShowRulers->setChecked(Util::config()->showRulers);
+
+    actSetProjectionXY->setEnabled(is3DMode());
+    actSetProjectionXZ->setEnabled(is3DMode());
+    actSetProjectionYZ->setEnabled(is3DMode());
 
     setSceneFont();
 
@@ -4217,4 +4246,21 @@ void SceneView::setSceneFont()
     logMessage("SceneView::setSceneFont()");
 
     setFont(Util::config()->sceneFont);
+}
+
+void SceneView::doSetProjectionXY() {
+    m_rotation3d.x = m_rotation3d.y = m_rotation3d.z = 0.0;
+    updateGL();
+}
+
+void SceneView::doSetProjectionXZ() {
+    m_rotation3d.y = m_rotation3d.z = 0.0;
+    m_rotation3d.x = 90.0;
+    updateGL();
+}
+
+void SceneView::doSetProjectionYZ() {
+    m_rotation3d.x = m_rotation3d.y = 90.0;
+    m_rotation3d.z = 0.0;
+    updateGL();
 }

@@ -87,8 +87,12 @@ public slots:
     void doInvalidated();
     void solved();
     void doDefaultValues();
-    void refresh();
     void doSetChartLine(const ChartLine &chartLine);
+    void doSetProjectionXY();
+    void doSetProjectionXZ();
+    void doSetProjectionYZ();
+
+    void refresh();
     void timeStepChanged(bool showViewProgress = false);
 
     void processedSolutionMesh();
@@ -114,6 +118,10 @@ public:
     QAction *actSceneModeEdge;
     QAction *actSceneModeLabel;
     QAction *actSceneModePostprocessor;
+
+    QAction *actSetProjectionXY;
+    QAction *actSetProjectionXZ;
+    QAction *actSetProjectionYZ;
 
     QAction *actPostprocessorModeLocalPointValue;
     QAction *actPostprocessorModeSurfaceIntegral;
@@ -227,7 +235,7 @@ private:
     int m_backgroundTexture;
     QRectF m_backgroundPosition;
 
-    QMenu *mnuInfo;
+    QMenu *mnuScene;
 
     QActionGroup *actMaterialGroup;
     QActionGroup *actBoundaryGroup;

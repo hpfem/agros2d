@@ -365,30 +365,35 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actOptions);
 #endif
 
+    QMenu *mnuProjection = new QMenu(tr("Projection"), this);
+    mnuProjection->addAction(sceneView->actSetProjectionXY);
+    mnuProjection->addAction(sceneView->actSetProjectionXZ);
+    mnuProjection->addAction(sceneView->actSetProjectionYZ);
+
+    QMenu *mnuShowPanels = new QMenu(tr("Panels"), this);
+    mnuShowPanels->addAction(sceneInfoView->toggleViewAction());
+    mnuShowPanels->addAction(localPointValueView->toggleViewAction());
+    mnuShowPanels->addAction(surfaceIntegralValueView->toggleViewAction());
+    mnuShowPanels->addAction(volumeIntegralValueView->toggleViewAction());
+    mnuShowPanels->addAction(postprocessorView->toggleViewAction());
+    mnuShowPanels->addAction(terminalView->toggleViewAction());
+    mnuShowPanels->addAction(tooltipView->toggleViewAction());
+
     mnuView = menuBar()->addMenu(tr("&View"));
     mnuView->addAction(sceneView->actSceneZoomBestFit);
-    mnuView->addAction(sceneView->actSceneZoomRegion);
     mnuView->addAction(sceneView->actSceneZoomIn);
     mnuView->addAction(sceneView->actSceneZoomOut);
-    QMenu *mnuShow = new QMenu(tr("&Show"), this);
-    mnuView->addMenu(mnuShow);
-    QMenu *mnuShowDocks = new QMenu(tr("Show docks"), this);
-    mnuShowDocks->addAction(sceneInfoView->toggleViewAction());
-    mnuShowDocks->addAction(localPointValueView->toggleViewAction());
-    mnuShowDocks->addAction(surfaceIntegralValueView->toggleViewAction());
-    mnuShowDocks->addAction(volumeIntegralValueView->toggleViewAction());
-    mnuShowDocks->addAction(postprocessorView->toggleViewAction());
-    mnuShowDocks->addAction(terminalView->toggleViewAction());
-    mnuShowDocks->addAction(tooltipView->toggleViewAction());
-    mnuView->addMenu(mnuShowDocks);
-    mnuShow->addAction(sceneView->actSceneShowGrid);
-    mnuShow->addAction(sceneView->actSceneSnapToGrid);
-    mnuShow->addAction(sceneView->actSceneShowRulers);
+    mnuView->addAction(sceneView->actSceneZoomRegion);
+    mnuView->addSeparator();
+    mnuView->addMenu(mnuProjection);
+    mnuView->addSeparator();
+    mnuView->addAction(sceneView->actSceneShowGrid);
+    mnuView->addAction(sceneView->actSceneSnapToGrid);
+    mnuView->addAction(sceneView->actSceneShowRulers);
+    mnuView->addSeparator();
+    mnuView->addMenu(mnuShowPanels);
     mnuView->addSeparator();
     mnuView->addAction(actFullScreen);
-    mnuView->addSeparator();
-    mnuView->addAction(actApplicationLog);
-    mnuView->addAction(actProgressLog);
 
     mnuProblem = menuBar()->addMenu(tr("&Problem"));
     mnuProblem->addAction(sceneView->actSceneModeNode);
@@ -428,6 +433,9 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actApplicationLog);
+    mnuTools->addAction(actProgressLog);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
