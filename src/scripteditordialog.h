@@ -46,7 +46,6 @@ bool scriptIsRunning();
 QString createPythonFromModel();
 ScriptResult runPythonScript(const QString &script, const QString &fileName = "");
 ExpressionResult runPythonExpression(const QString &expression);
-QString fillTimeFunction(const QString &expression, double time_min, double time_max, double N, QList<double> *list);
 
 class ScriptEngineRemote : QObject
 {

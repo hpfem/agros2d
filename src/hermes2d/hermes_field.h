@@ -86,6 +86,7 @@ public:
     virtual SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args) = 0;
 
     virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
+    inline virtual void updateTimeFunctions(double time) { }
 
     virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
     virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;

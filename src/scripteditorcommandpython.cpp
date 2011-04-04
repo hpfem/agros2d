@@ -1127,9 +1127,9 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
 {
     logMessage("PythonEngine::runPythonExpression()");
 
-    runPythonHeader();
+    runPythonHeader();        
 
-    QString exp = "result = " + expression;
+    QString exp = QString("result = %1").arg(expression);
 
     PyObject *output = PyRun_String(exp.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
@@ -1168,56 +1168,6 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
     Py_DECREF(Py_None);
 
     return expressionResult;
-}
-
-QString PythonEngine::fillTimeFunction(const QString &expression, double time_min, double time_max, double N, QList<double> *list)
-{
-    runPythonHeader();
-
-    std::ostringstream os;
-    os << "out = []" << std::endl <<
-    "for i in range(" << N << "):" << std::endl <<
-    "    time = i * (" << time_max << " - " << time_min << ") / (" << N << " + 1.0)" << std::endl <<
-    "    out.append(" << expression.toStdString() << ")" << std::endl;
-
-    // std::cout << os.str() << std::endl;
-
-    PyRun_String(os.str().c_str(), Py_file_input, m_dict, m_dict);
-
-    PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
-    PyErr_Fetch(&type, &value, &traceback);
-
-    if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
-    {
-        Py_INCREF(type);
-
-        QString error = PyString_AsString(str);
-
-        if (type) Py_DECREF(type);
-        if (str) Py_DECREF(str);
-
-        return error;
-    }
-    else
-    {
-        // parse result
-        PyObject *result = PyDict_GetItemString(m_dict, "out");
-        PyObject *seq = PyObject_GetIter(result);
-        while (PyObject* item = PyIter_Next(seq))
-        {
-            PyObject *fitem;
-            fitem = PyNumber_Float(item);
-
-            double value = PyFloat_AS_DOUBLE(fitem);
-            list->append(value);
-
-            if (fitem) Py_DECREF(fitem);
-            if (item) Py_DECREF(item);
-        }
-        if (seq) Py_DECREF(seq);
-
-        return "";
-    }
 }
 
 ScriptResult PythonEngine::parseError()

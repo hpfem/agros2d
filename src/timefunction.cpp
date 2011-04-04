@@ -23,223 +23,39 @@
 #include "scripteditordialog.h"
 #include "scene.h"
 
-// TimeFunction timeFunction("sin(2*pi*50*time)");
-
-TimeFunction::TimeFunction()
+ValueTimeDialog::ValueTimeDialog(QWidget *parent) : QDialog(parent)
 {
-    TimeFunction("0.0", 2);
-}
-
-TimeFunction::TimeFunction(const QString &function, int count)
-{
-    m_function = "";
-    m_error = "";
-    m_times.clear();
-    m_values.clear();
-    m_count = 0;
-
-    Util::scene()->problemInfo()->timeTotal.evaluate(true);
-    setFunction(function, 0.0, Util::scene()->problemInfo()->timeTotal.number, count);
-}
-
-TimeFunction::~TimeFunction()
-{
-    m_times.clear();
-    m_values.clear();
-}
-
-void TimeFunction::setFunction(const QString &function, double time_min, double time_max, double N, bool quiet)
-{
-    m_error = "";
-    m_function = function;
-    m_time_min = time_min;
-    m_time_max = time_max;
-    m_count = N;
-
-    fillValues(quiet);
-}
-
-bool TimeFunction::check() const
-{
-    TimeFunction timeFunction(m_function, 1);
-    return timeFunction.isValid();
-}
-
-void TimeFunction::showError()
-{
-    if (!m_error.isEmpty())
-        QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Time function error"), m_error);
-}
-
-bool TimeFunction::fillValues(bool quiet)
-{
-    m_times.clear();
-    m_values.clear();
-
-    if (m_function.isEmpty())
-        m_function = "0.0";
-
-    // speed improvement for const values
-    if (!isTimeDep())
-    {
-        qDebug() << "bool TimeFunction::fillValues(bool quiet) - const";
-
-        m_count = 1;
-        ExpressionResult result = runPythonExpression(m_function);
-        if (result.error.isEmpty())
-        {
-            m_times.append(0.0);
-            m_values.append(result.value);
-
-            return true;
-        }
-        else
-        {
-            m_error = result.error;
-
-            return false;
-        }
-    }
-    else
-    {
-        if (m_times.count() == 1)
-            qDebug() << "bool TimeFunction::fillValues(bool quiet) - timedep - check";
-        else
-            qDebug() << "bool TimeFunction::fillValues(bool quiet) - timedep";
-
-        // times
-        double dt = (m_time_max - m_time_min) / (m_count + 1);
-        for (int i = 0; i < m_count; i++)
-            m_times.append(i * dt);
-
-        // values
-        QString error = fillTimeFunction(m_function, m_time_min, m_time_max, m_count, &m_values);
-
-        if (error.isEmpty())
-        {
-            m_error = "";
-            return true;
-        }
-        else
-        {
-            m_error = error;
-            if (!quiet)
-                showError();
-            return false;
-        }
-    }
-}
-
-double TimeFunction::value(double time) const
-{   
-    if (!isTimeDep())
-    {
-        return m_values.at(0);
-    }
-    else
-    {
-        if (m_times.isEmpty())
-            return 0.0;
-
-        // first value
-        if (time <= m_times.at(0))
-            return m_values.at(0);
-
-        // last value
-        if (time >= m_times.last())
-            return m_values.last();
-
-        // linear approach
-        // general case - non constant time start = 0
-        int start = floor((time - m_time_min) / (m_time_max - m_time_min));
-        for (int i = start; i < m_times.length() - 1; i++)
-            if ((m_times.at(i) >= time) && (time <= m_times.at(i+1)))
-                return m_values.at(i) + ((time - m_times.at(i)) / (m_times.at(i+1) - m_times.at(i))) * (m_values.at(i+1) - m_values.at(i));
-
-        return m_values.last();
-    }
-}
-
-// ************************************************************************************************************
-
-TimeFunctionEdit::TimeFunctionEdit(QWidget *parent) : QWidget(parent)
-{
-    logMessage("TimeFunctionEdit::TimeFunctionEdit()");
-
-    setToolTip(tr("Input time function. You can use 'time' variable."));
-    createControls();
-}
-
-void TimeFunctionEdit::createControls()
-{
-    logMessage("TimeFunctionEdit::createControls()");
-
-    txtFunction = new QLineEdit(this);
-    btnEdit = new QPushButton(icon("three-dots"), "", this);
-    connect(btnEdit, SIGNAL(clicked()), this, SLOT(doOpenDialog()));
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(txtFunction);
-    layout->addWidget(btnEdit);
-
-    setLayout(layout);
-}
-
-void TimeFunctionEdit::setTimeFunction(const TimeFunction &timeFunction)
-{
-    m_timeFunction = timeFunction;
-    txtFunction->setText(m_timeFunction.function());
-}
-
-void TimeFunctionEdit::doOpenDialog()
-{
-    TimeFunctionDialog *dialog = new TimeFunctionDialog();
-    dialog->setTimeFunction(m_timeFunction);
-
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        setTimeFunction(dialog->timeFunction());
-    }
-    delete dialog;
-}
-
-// ************************************************************************************************************
-
-TimeFunctionDialog::TimeFunctionDialog(QWidget *parent) : QDialog(parent)
-{
-    logMessage("TimeFunctionDialog::TimeFunctionDialog()");
+    logMessage("ValueTimeDialog::ValueTimeDialog()");
 
     setWindowIcon(icon("timefunction"));
     setWindowTitle(tr("Time function"));
 
     createControls();
-    doPlot();
+    plotFunction();
 
     setMinimumSize(600, 400);
 
     QSettings settings;
-    restoreGeometry(settings.value("TimeFunctionDialog/Geometry", saveGeometry()).toByteArray());
+    restoreGeometry(settings.value("ValueTimeDialog/Geometry", saveGeometry()).toByteArray());
 }
 
-TimeFunctionDialog::~TimeFunctionDialog()
+ValueTimeDialog::~ValueTimeDialog()
 {
     QSettings settings;
-    settings.setValue("TimeFunctionDialog/Geometry", saveGeometry());
+    settings.setValue("ValueTimeDialog/Geometry", saveGeometry());
 }
 
-void TimeFunctionDialog::setTimeFunction(const TimeFunction &timeFunction)
+void ValueTimeDialog::setValue(const Value &value)
 {
-    m_timeFunction = timeFunction;
-    txtFunction->setText(m_timeFunction.function());
+    txtLineEdit->setText(value.text);
 
     // plot
-    doPlot();
+    plotFunction();
 }
 
-void TimeFunctionDialog::createControls()
+void ValueTimeDialog::createControls()
 {
-    logMessage("TimeFunctionDialog::createControls()");
+    logMessage("ValueTimeDialog::createControls()");
 
     lblInfoError = new QLabel();
 
@@ -247,7 +63,8 @@ void TimeFunctionDialog::createControls()
     palette.setColor(QPalette::WindowText, Qt::red);
     lblInfoError->setPalette(palette);
 
-    txtFunction = new QLineEdit(this);
+    txtLineEdit = new QLineEdit(this);
+    connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(checkExpression()));
 
     // chart
     QwtText text("");
@@ -278,12 +95,12 @@ void TimeFunctionDialog::createControls()
     picker->setTrackerMode(QwtPicker::ActiveOnly);
     picker->setTrackerPen(QColor(Qt::black));
 
-    connect(picker, SIGNAL(moved(const QPoint &)), SLOT(doMoved(const QPoint &)));
+    connect(picker, SIGNAL(moved(const QPoint &)), SLOT(crossMoved(const QPoint &)));
 
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(chart, 0, 0, 1, 2);
     controlsLayout->addWidget(new QLabel(tr("Function:")), 1, 0);
-    controlsLayout->addWidget(txtFunction, 1, 1);
+    controlsLayout->addWidget(txtLineEdit, 1, 1);
     controlsLayout->addWidget(lblInfoError, 2, 1);
 
     // dialog buttons
@@ -293,7 +110,7 @@ void TimeFunctionDialog::createControls()
     btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(doReject()));
     btnPlot = new QPushButton(tr("Plot"));
-    connect(btnPlot, SIGNAL(clicked()), this, SLOT(doPlot()));
+    connect(btnPlot, SIGNAL(clicked()), this, SLOT(plotFunction()));
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     layoutButtons->addStretch();
@@ -309,48 +126,67 @@ void TimeFunctionDialog::createControls()
     setLayout(layout);
 }
 
-void TimeFunctionDialog::doMoved(const QPoint &pos)
+void ValueTimeDialog::crossMoved(const QPoint &pos)
 {
-    logMessage("ChartDialog::doMoved()");
+    logMessage("ChartDialog::crossMoved()");
 
     QString info;
     info.sprintf("x=%g, y=%g", chart->invTransform(QwtPlot::xBottom, pos.x()), chart->invTransform(QwtPlot::yLeft, pos.y()));
 }
 
-void TimeFunctionDialog::doPlot()
+void ValueTimeDialog::checkExpression()
 {
-    logMessage("TimeFunctionDialog::doPlot()");
+    logMessage("ValueTimeDialog::checkExpression()");
 
-    m_timeFunction.setFunction(txtFunction->text(), m_timeFunction.timeMin(), m_timeFunction.timeMax(),
-                               m_timeFunction.count(), true);
-    if (!m_timeFunction.isValid())
-    {
-        lblInfoError->setText(m_timeFunction.getError());
-        return;
-    }
-    else
-    {
-        lblInfoError->setText("");
-    }
+    // eval time
+    runPythonExpression(QString("time = %1").arg(0.0));
 
-    chart->setData(m_timeFunction.times(), m_timeFunction.values());
+    // eval expression
+    ExpressionResult expressionResult;
+    expressionResult = runPythonExpression(txtLineEdit->text());
+    lblInfoError->setText(expressionResult.error.trimmed());
+    if (!expressionResult.error.isEmpty())
+        txtLineEdit->setFocus();
 }
 
-void TimeFunctionDialog::doAccept()
+void ValueTimeDialog::plotFunction()
 {
-    m_timeFunction.setFunction(txtFunction->text(), m_timeFunction.timeMin(), m_timeFunction.timeMax(),
-                               m_timeFunction.count(), true);
-    if (!m_timeFunction.isValid())
+    logMessage("ValueTimeDialog::plotFunction()");
+
+    // plot solution
+    int count = 200;
+
+    double *xval = new double[count];
+    double *yval = new double[count];
+
+    Util::scene()->problemInfo()->timeTotal.evaluate();
+    double totalTime = Util::scene()->problemInfo()->timeTotal.number;
+
+    // time step
+    double dt = totalTime / (count + 1);
+
+    Value val(txtLineEdit->text());
+    for (int i = 0; i < count; i++)
     {
-        lblInfoError->setText(m_timeFunction.getError());
-        txtFunction->setFocus();
-        return;
+        xval[i] = i*dt;
+
+        if (!val.evaluate(xval[i], true))
+            break;
+        yval[i] = val.number;
     }
 
+    chart->setData(xval, yval, count);
+
+    delete [] xval;
+    delete [] yval;
+}
+
+void ValueTimeDialog::doAccept()
+{
     accept();
 }
 
-void TimeFunctionDialog::doReject()
+void ValueTimeDialog::doReject()
 {
     reject();
 }

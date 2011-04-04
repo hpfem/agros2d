@@ -34,7 +34,7 @@ struct HeatEdge
 struct HeatLabel
 {
     double thermal_conductivity;
-    TimeFunction volume_heat;
+    double volume_heat;
     double density;
     double specific_heat;
 };
@@ -94,10 +94,10 @@ template<typename Real, typename Scalar>
 Scalar heat_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (isPlanar)
-        return heatLabel[e->elem_marker].volume_heat.value(actualTime) * int_v<Real, Scalar>(n, wt, v)
+        return heatLabel[e->elem_marker].volume_heat * int_v<Real, Scalar>(n, wt, v)
                 + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep : 0.0);
     else
-        return heatLabel[e->elem_marker].volume_heat.value(actualTime) * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
+        return heatLabel[e->elem_marker].volume_heat * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e)
                 + ((analysisType == AnalysisType_Transient) ? heatLabel[e->elem_marker].density * heatLabel[e->elem_marker].specific_heat * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep : 0.0);
 }
 
@@ -160,7 +160,7 @@ void HermesHeat::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMark
 void HermesHeat::readLabelMarkerFromDomElement(QDomElement *element)
 {
     Util::scene()->addLabelMarker(new SceneLabelHeatMarker(element->attribute("name"),
-                                                           TimeFunction(element->attribute("volume_heat", "0")),
+                                                           Value(element->attribute("volume_heat", "0")),
                                                            Value(element->attribute("thermal_conductivity", "0")),
                                                            Value(element->attribute("density", "0")),
                                                            Value(element->attribute("specific_heat", "0"))));
@@ -171,7 +171,7 @@ void HermesHeat::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMa
     SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(marker);
 
     element->setAttribute("thermal_conductivity", labelHeatMarker->thermal_conductivity.text);
-    element->setAttribute("volume_heat", labelHeatMarker->volume_heat.function());
+    element->setAttribute("volume_heat", labelHeatMarker->volume_heat.text);
     element->setAttribute("density", labelHeatMarker->density.text);
     element->setAttribute("specific_heat", labelHeatMarker->specific_heat.text);
 }
@@ -286,7 +286,7 @@ SceneEdgeMarker *HermesHeat::modifyEdgeMarker(PyObject *self, PyObject *args)
 SceneLabelMarker *HermesHeat::newLabelMarker()
 {
     return new SceneLabelHeatMarker(tr("new material"),
-                                    TimeFunction("0"),
+                                    Value("0"),
                                     Value("385"),
                                     Value("0"),
                                     Value("0"));
@@ -302,7 +302,7 @@ SceneLabelMarker *HermesHeat::newLabelMarker(PyObject *self, PyObject *args)
         if (Util::scene()->getLabelMarker(name)) return NULL;
 
         return new SceneLabelHeatMarker(name,
-                                        TimeFunction(QString::number(volume_heat)),
+                                        Value(QString::number(volume_heat)),
                                         Value(QString::number(thermal_conductivity)),
                                         Value(QString::number(density)),
                                         Value(QString::number(specific_heat)));
@@ -319,7 +319,7 @@ SceneLabelMarker *HermesHeat::modifyLabelMarker(PyObject *self, PyObject *args)
     {
         if (SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->getLabelMarker(name)))
         {
-            marker->volume_heat = TimeFunction(QString::number(volume_heat));
+            marker->volume_heat = Value(QString::number(volume_heat));
             marker->thermal_conductivity = Value(QString::number(thermal_conductivity));
             marker->density = Value(QString::number(density));
             marker->specific_heat = Value(QString::number(specific_heat));
@@ -414,15 +414,6 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
         if (!Util::scene()->problemInfo()->timeStep.evaluate()) return QList<SolutionArray *>();
         if (!Util::scene()->problemInfo()->timeTotal.evaluate()) return QList<SolutionArray *>();
         if (!Util::scene()->problemInfo()->initialCondition.evaluate()) return QList<SolutionArray *>();
-
-        // check functions
-        for (int i = 0; i<Util::scene()->labels.count(); i++)
-        {
-            SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
-
-            if (!labelHeatMarker->volume_heat.check())
-                return QList<SolutionArray *>();
-        }
     }
 
     // edge markers
@@ -496,17 +487,12 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
             if (!labelHeatMarker->thermal_conductivity.evaluate()) return QList<SolutionArray *>();
             if (!labelHeatMarker->density.evaluate()) return QList<SolutionArray *>();
             if (!labelHeatMarker->specific_heat.evaluate()) return QList<SolutionArray *>();
+            if (!labelHeatMarker->volume_heat.evaluate()) return QList<SolutionArray *>();
 
             heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;                       
             heatLabel[i].density = labelHeatMarker->density.number;
             heatLabel[i].specific_heat = labelHeatMarker->specific_heat.number;
-
-            // if (fabs(labelHeatMarker->volume_heat.timeMax() - Util::scene()->problemInfo()->timeTotal.number) > EPS_ZERO)
-            {
-                labelHeatMarker->volume_heat.setTimeMax(Util::scene()->problemInfo()->timeTotal.number);
-                labelHeatMarker->volume_heat.fillValues();
-            }
-            heatLabel[i].volume_heat = labelHeatMarker->volume_heat;
+            heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
         }
     }
 
@@ -519,6 +505,26 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
     delete [] heatLabel;
 
     return solutionArrayList;
+}
+
+void HermesHeat::updateTimeFunctions(double time)
+{
+    // update markers
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+    {
+        SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labelMarkers[i]);
+        labelHeatMarker->volume_heat.evaluate(time);
+    }
+    // set values
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        // regular marker ("none" is reserved for holes)
+        if (!(Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0))
+        {
+            SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
+            heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
+        }
+    }
 }
 
 // ****************************************************************************************************************
@@ -545,7 +551,7 @@ LocalPointValueHeat::LocalPointValueHeat(const Point &point) : LocalPointValue(p
             SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
 
             thermal_conductivity = marker->thermal_conductivity.number;
-            volume_heat = marker->volume_heat.value(Util::scene()->sceneSolution()->time());
+            volume_heat = marker->volume_heat.number;
 
             // heat flux
             F = G * marker->thermal_conductivity.number;
@@ -849,7 +855,7 @@ int SceneEdgeHeatMarker::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, TimeFunction volume_heat, Value thermal_conductivity, Value density, Value specific_heat)
+SceneLabelHeatMarker::SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat)
     : SceneLabelMarker(name)
 {
     this->thermal_conductivity = thermal_conductivity;
@@ -863,14 +869,14 @@ QString SceneLabelHeatMarker::script()
     if (Util::scene()->problemInfo()->analysisType == AnalysisType_SteadyState)
         return QString("addmaterial(\"%1\", %2, %3, %4, %5)").
                 arg(name).
-                arg(volume_heat.function()).
+                arg(volume_heat.text).
                 arg(thermal_conductivity.text).
                 arg(density.text).
                 arg(specific_heat.text);
     else
         return QString("addmaterial(\"%1\", \"%2\", %3, %4, %5)").
                 arg(name).
-                arg(volume_heat.function()).
+                arg(volume_heat.text).
                 arg(thermal_conductivity.text).
                 arg(density.text).
                 arg(specific_heat.text);
@@ -879,7 +885,7 @@ QString SceneLabelHeatMarker::script()
 QMap<QString, QString> SceneLabelHeatMarker::data()
 {
     QMap<QString, QString> out;
-    out["Volume heat (W/m3)"] = volume_heat.function();
+    out["Volume heat (W/m3)"] = volume_heat.text;
     out["Thermal conductivity (W/m.K)"] = thermal_conductivity.text;
     out["Density (kg/m3)"] = density.text;
     out["Specific heat (J/kg.K)"] = specific_heat.text;
@@ -1054,7 +1060,7 @@ void DSceneLabelHeatMarker::createContent()
 {
     txtThermalConductivity = new SLineEditValue(this);
     txtThermalConductivity->setMinimumSharp(0.0);
-    txtVolumeHeat = new TimeFunctionEdit(this);
+    txtVolumeHeat = new SLineEditValue(this, true);
     txtDensity = new SLineEditValue(this);
     txtDensity->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
     txtSpecificHeat = new SLineEditValue(this);
@@ -1081,7 +1087,7 @@ void DSceneLabelHeatMarker::load()
     SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(m_labelMarker);
 
     txtThermalConductivity->setValue(labelHeatMarker->thermal_conductivity);
-    txtVolumeHeat->setTimeFunction(labelHeatMarker->volume_heat);
+    txtVolumeHeat->setValue(labelHeatMarker->volume_heat);
     txtDensity->setValue(labelHeatMarker->density);
     txtSpecificHeat->setValue(labelHeatMarker->specific_heat);
 }
@@ -1097,13 +1103,10 @@ bool DSceneLabelHeatMarker::save()
     else
         return false;
 
-    if (txtVolumeHeat->timeFunction().isValid())
-        labelHeatMarker->volume_heat = txtVolumeHeat->timeFunction();
+    if (txtVolumeHeat->evaluate())
+        labelHeatMarker->volume_heat  = txtVolumeHeat->value();
     else
-    {
-        txtVolumeHeat->timeFunction().showError();
         return false;
-    }
 
     if (txtDensity->evaluate())
         labelHeatMarker->density  = txtDensity->value();

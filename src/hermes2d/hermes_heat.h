@@ -65,6 +65,7 @@ public:
     SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+    virtual void updateTimeFunctions(double time);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
@@ -170,11 +171,11 @@ class SceneLabelHeatMarker : public SceneLabelMarker
 {
 public:
     Value thermal_conductivity;
-    TimeFunction volume_heat;
+    Value volume_heat;
     Value density;
     Value specific_heat;
 
-    SceneLabelHeatMarker(const QString &name, TimeFunction volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
+    SceneLabelHeatMarker(const QString &name, Value volume_heat, Value thermal_conductivity, Value density, Value specific_heat);
 
     QString script();
     QMap<QString, QString> data();
@@ -222,7 +223,7 @@ protected:
 
 private:
     SLineEditValue *txtThermalConductivity;
-    TimeFunctionEdit *txtVolumeHeat;
+    SLineEditValue *txtVolumeHeat;
     SLineEditValue *txtDensity;
     SLineEditValue *txtSpecificHeat;
 };

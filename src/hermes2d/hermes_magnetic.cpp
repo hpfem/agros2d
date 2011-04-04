@@ -919,6 +919,28 @@ QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolv
     return solutionArrayList;
 }
 
+void HermesMagnetic::updateTimeFunctions(double time)
+{
+    // update markers
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+    {
+        SceneLabelMagneticMarker *labelMagneticMarker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labelMarkers[i]);
+        labelMagneticMarker->current_density_real.evaluate(time);
+        labelMagneticMarker->current_density_imag.evaluate(time);
+    }
+    // set values
+    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    {
+        // regular marker ("none" is reserved for holes)
+        if (!(Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0))
+        {
+            SceneLabelMagneticMarker *labelMagneticMarker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[i]->marker);
+            magneticLabel[i].current_density_real = labelMagneticMarker->current_density_real.number;
+            magneticLabel[i].current_density_imag = labelMagneticMarker->current_density_imag.number;
+        }
+    }
+}
+
 // *************************************************************************************************************************************
 
 SceneEdgeMagneticMarker::SceneEdgeMagneticMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag) : SceneEdgeMarker(name, type)
@@ -1109,8 +1131,8 @@ void DSceneLabelMagneticMarker::createContent()
 {
     txtPermeability = new SLineEditValue(this);
     txtConductivity = new SLineEditValue(this);
-    txtCurrentDensityReal = new SLineEditValue(this);
-    txtCurrentDensityImag = new SLineEditValue(this);
+    txtCurrentDensityReal = new SLineEditValue(this, true);
+    txtCurrentDensityImag = new SLineEditValue(this, true);
     txtCurrentDensityImag->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic);
     txtRemanence = new SLineEditValue(this);
     txtRemanenceAngle = new SLineEditValue(this);

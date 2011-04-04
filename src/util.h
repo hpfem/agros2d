@@ -151,6 +151,9 @@ struct Value
     inline Value(const QString &value, bool evaluateExpression = true) { text = value; if (evaluateExpression) evaluate(true); }
 
     bool evaluate(bool quiet = false);
+    bool evaluate(double time, bool quiet = false);
+
+    bool isTimeDep() const;
 };
 
 struct Point

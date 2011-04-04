@@ -75,7 +75,7 @@ class SLineEditValue : public QWidget
 {
     Q_OBJECT
 public:
-    SLineEditValue(QWidget *parent = 0);
+    SLineEditValue(QWidget *parent = 0, bool hasTimeDep = false);
 
     double number();
     void setNumber(double number);
@@ -90,6 +90,7 @@ public:
 
 public slots:
     bool evaluate(bool quiet = true);
+    void doOpenValueTimeDialog();
 
 signals:
     void editingFinished();
@@ -105,8 +106,11 @@ private:
     double m_maximumSharp;
     double m_number;
 
+    bool m_hasTimeDep;
+
     QLineEdit *txtLineEdit;
     QLabel *lblValue;
+    QPushButton *btnEdit;
 
     void setLabel(const QString &text, QColor color, bool isVisible);
 };

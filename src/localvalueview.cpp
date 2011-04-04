@@ -28,6 +28,9 @@ LocalPointValue::LocalPointValue(const Point &point)
     logMessage("LocalPointValue::LocalPointValue()");
 
     this->point = point;
+    if (Util::scene()->sceneSolution()->isSolved() &&
+            Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+        Util::scene()->problemInfo()->hermes()->updateTimeFunctions(Util::scene()->sceneSolution()->time());
 
     PointValue val = pointValue(Util::scene()->sceneSolution()->sln(), point);
 
@@ -50,7 +53,7 @@ PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
         if (index != -1)
         {
             if ((Util::scene()->problemInfo()->analysisType == AnalysisType_Transient) &&
-                Util::scene()->sceneSolution()->timeStep() == 0)
+                    Util::scene()->sceneSolution()->timeStep() == 0)
                 // const solution at first time step
                 tmpValue = Util::scene()->problemInfo()->initialCondition.number;
             else                

@@ -22,6 +22,7 @@
 #include "scene.h"
 #include "scenesolution.h"
 #include "progressdialog.h"
+#include "timefunction.h"
 
 #include "hermes2d/hermes_field.h"
 
@@ -99,7 +100,7 @@ void fillComboBoxTimeStep(QComboBox *cmbFieldVariable)
 
 // ***********************************************************************************************************
 
-SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
+SLineEditValue::SLineEditValue(QWidget *parent, bool hasTimeDep) : QWidget(parent)
 {
     logMessage("SLineEditValue::SLineEditValue()");
 
@@ -107,6 +108,8 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
     m_minimumSharp = -CONST_DOUBLE;
     m_maximum =  CONST_DOUBLE;
     m_maximumSharp =  CONST_DOUBLE;
+
+    m_hasTimeDep = hasTimeDep;
 
     // create controls
     txtLineEdit = new QLineEdit(this);
@@ -117,10 +120,15 @@ SLineEditValue::SLineEditValue(QWidget *parent) : QWidget(parent)
 
     lblValue = new QLabel(this);
 
+    // timedep value
+    btnEdit = new QPushButton(icon("three-dots"), "", this);
+    connect(btnEdit, SIGNAL(clicked()), this, SLOT(doOpenValueTimeDialog()));
+
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->addWidget(txtLineEdit, 1);
     layout->addWidget(lblValue, 0, Qt::AlignRight);
+    layout->addWidget(btnEdit, 0, Qt::AlignRight);
 
     setLayout(layout);
 
@@ -167,6 +175,9 @@ bool SLineEditValue::evaluate(bool quiet)
     bool isOk = false;
 
     Value val = value();
+    // btnEdit->setVisible(m_hasTimeDep && val.isTimeDep());
+    btnEdit->setVisible(m_hasTimeDep && Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
+
     if (val.evaluate(quiet))
     {
         if (val.number <= m_minimumSharp)
@@ -226,6 +237,19 @@ void SLineEditValue::focusInEvent(QFocusEvent *event)
     logMessage("SLineEditValue::focusInEvent()");
 
     txtLineEdit->setFocus(event->reason());
+}
+
+void SLineEditValue::doOpenValueTimeDialog()
+{
+    ValueTimeDialog *dialog = new ValueTimeDialog();
+    dialog->setValue(Value(txtLineEdit->text()));
+
+    if (dialog->exec() == QDialog::Accepted)
+    {
+        txtLineEdit->setText(dialog->value().text);
+        evaluate();
+    }
+    delete dialog;
 }
 
 // ****************************************************************************************************************

@@ -70,6 +70,7 @@ public:
     SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
+    virtual void updateTimeFunctions(double time);
 
     PhysicFieldVariable contourPhysicFieldVariable();
     PhysicFieldVariable scalarPhysicFieldVariable();
@@ -136,13 +137,8 @@ protected:
 class SceneEdgeAcousticMarker : public SceneEdgeMarker
 {
 public:
-    // harmonic value
     Value value_real;
 
-    // transient value
-    TimeFunction value_transient;
-
-    SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real, TimeFunction value_transient);
     SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real);
     SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type);
 
@@ -180,7 +176,6 @@ protected:
 private:
     QComboBox *cmbType;
     SLineEditValue *txtValue;
-    TimeFunctionEdit *txtValueTransient;
 
 private slots:
     void doTypeChanged(int index);
