@@ -71,52 +71,6 @@ private:
 
 // ****************************************************************************************************
 
-class SLineEditValue : public QWidget
-{
-    Q_OBJECT
-public:
-    SLineEditValue(QWidget *parent = 0, bool hasTimeDep = false);
-
-    double number();
-    void setNumber(double number);
-
-    Value value();
-    void setValue(Value value);
-
-    inline void setMinimum(double min) { m_minimum = min; }
-    inline void setMinimumSharp(double min) { m_minimumSharp = min; }
-    inline void setMaximum(double max) { m_maximum = max; }
-    inline void setMaximumSharp(double max) { m_maximumSharp = max; }
-
-public slots:
-    bool evaluate(bool quiet = true);
-    void doOpenValueTimeDialog();
-
-signals:
-    void editingFinished();
-    void evaluated(bool isError);
-
-protected:
-    void focusInEvent(QFocusEvent *event);
-
-private:
-    double m_minimum;
-    double m_minimumSharp;
-    double m_maximum;
-    double m_maximumSharp;
-    double m_number;
-
-    bool m_hasTimeDep;
-
-    QLineEdit *txtLineEdit;
-    QLabel *lblValue;
-    QPushButton *btnEdit;
-
-    void setLabel(const QString &text, QColor color, bool isVisible);
-};
-
-// ****************************************************************************************************
-
 class Chart : public QwtPlot
 {
     Q_OBJECT

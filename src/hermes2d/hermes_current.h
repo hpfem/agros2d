@@ -184,7 +184,7 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtValue;
+    ValueLineEdit *txtValue;
 };
 
 class DSceneLabelCurrentMarker : public DSceneLabelMarker
@@ -202,7 +202,7 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtConductivity;
+    ValueLineEdit *txtConductivity;
 };
 
 #endif // HERMES_CURRENT_H

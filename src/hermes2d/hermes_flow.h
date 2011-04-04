@@ -180,9 +180,9 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtVelocityX;
-    SLineEditValue *txtVelocityY;
-    SLineEditValue *txtPressure;
+    ValueLineEdit *txtVelocityX;
+    ValueLineEdit *txtVelocityY;
+    ValueLineEdit *txtPressure;
 
 private slots:
     void doTypeChanged(int index);
@@ -203,8 +203,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtDynamicViscosity;
-    SLineEditValue *txtDensity;
+    ValueLineEdit *txtDynamicViscosity;
+    ValueLineEdit *txtDensity;
 };
 
 #endif // HERMES_FLOW_H

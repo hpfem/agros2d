@@ -716,9 +716,9 @@ void DSceneEdgeFlowMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Flow_Pressure), PhysicFieldBC_Flow_Pressure);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
-    txtVelocityX = new SLineEditValue(this);
-    txtVelocityY = new SLineEditValue(this);
-    txtPressure = new SLineEditValue(this);
+    txtVelocityX = new ValueLineEdit(this);
+    txtVelocityY = new ValueLineEdit(this);
+    txtPressure = new ValueLineEdit(this);
 
     layout->addWidget(new QLabel(tr("BC Type:")), 1, 0);
     layout->addWidget(cmbType, 1, 1);
@@ -810,8 +810,8 @@ DSceneLabelFlowMarker::~DSceneLabelFlowMarker()
 
 void DSceneLabelFlowMarker::createContent()
 {
-    txtDynamicViscosity = new SLineEditValue(this);
-    txtDensity = new SLineEditValue(this);
+    txtDynamicViscosity = new ValueLineEdit(this);
+    txtDensity = new ValueLineEdit(this);
 
     layout->addWidget(new QLabel(tr("Dynamic viscosity (Pa.s):")), 1, 0);
     layout->addWidget(txtDynamicViscosity, 1, 1);

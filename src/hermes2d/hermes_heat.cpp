@@ -926,10 +926,10 @@ void DSceneEdgeHeatMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Heat_Flux), PhysicFieldBC_Heat_Flux);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
-    txtHeatFlux = new SLineEditValue(this);
-    txtTemperature = new SLineEditValue(this);
-    txtHeatTransferCoefficient = new SLineEditValue(this);
-    txtExternalTemperature = new SLineEditValue(this);
+    txtHeatFlux = new ValueLineEdit(this);
+    txtTemperature = new ValueLineEdit(this);
+    txtHeatTransferCoefficient = new ValueLineEdit(this);
+    txtExternalTemperature = new ValueLineEdit(this);
 
     connect(txtHeatFlux, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtTemperature, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -1058,12 +1058,12 @@ DSceneLabelHeatMarker::~DSceneLabelHeatMarker()
 
 void DSceneLabelHeatMarker::createContent()
 {
-    txtThermalConductivity = new SLineEditValue(this);
+    txtThermalConductivity = new ValueLineEdit(this);
     txtThermalConductivity->setMinimumSharp(0.0);
-    txtVolumeHeat = new SLineEditValue(this, true);
-    txtDensity = new SLineEditValue(this);
+    txtVolumeHeat = new ValueLineEdit(this, true);
+    txtDensity = new ValueLineEdit(this);
     txtDensity->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
-    txtSpecificHeat = new SLineEditValue(this);
+    txtSpecificHeat = new ValueLineEdit(this);
     txtSpecificHeat->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
 
     connect(txtThermalConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

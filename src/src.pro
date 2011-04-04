@@ -38,6 +38,7 @@ OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
 SOURCES += util.cpp \
+    value.cpp \
     scene.cpp \
     gui.cpp \
     hermes2d/hermes_field.cpp \
@@ -83,9 +84,9 @@ SOURCES += util.cpp \
     postprocessorview.cpp \
     style/stylehelper.cpp \
     style/styleanimator.cpp \
-    style/manhattanstyle.cpp \
-    timefunction.cpp
+    style/manhattanstyle.cpp
 HEADERS += util.h \
+    value.h \
     scene.h \
     gui.h \
     hermes2d/hermes_field.h \
@@ -128,8 +129,7 @@ HEADERS += util.h \
     postprocessorview.h \
     style/stylehelper.h \
     style/styleanimator.h \
-    style/manhattanstyle.h \
-    timefunction.h
+    style/manhattanstyle.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common

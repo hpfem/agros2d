@@ -17,11 +17,201 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "timefunction.h"
+#include "value.h"
 
 #include "gui.h"
 #include "scripteditordialog.h"
 #include "scene.h"
+
+bool Value::evaluate(bool quiet)
+{
+    evaluate(0.0, quiet);
+}
+
+bool Value::evaluate(double time, bool quiet)
+{
+    logMessage("Value::evaluate()");
+
+    // eval time
+    runPythonExpression(QString("time = %1").arg(time));
+
+    // eval expression
+    ExpressionResult expressionResult;
+    expressionResult = runPythonExpression(text);
+    if (expressionResult.error.isEmpty())
+    {
+        number = expressionResult.value;
+    }
+    else
+    {
+        if (!quiet)
+            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
+    }
+    return expressionResult.error.isEmpty();
+}
+
+bool Value::isTimeDep() const
+{
+    // FIXME - do it better
+    return Util::scene()->problemInfo()->analysisType == AnalysisType_Transient
+            && text.contains("time");
+}
+
+// ***********************************************************************************
+
+ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep) : QWidget(parent)
+{
+    logMessage("SLineEditValue::SLineEditValue()");
+
+    m_minimum = -CONST_DOUBLE;
+    m_minimumSharp = -CONST_DOUBLE;
+    m_maximum =  CONST_DOUBLE;
+    m_maximumSharp =  CONST_DOUBLE;
+
+    m_hasTimeDep = hasTimeDep;
+
+    // create controls
+    txtLineEdit = new QLineEdit(this);
+    txtLineEdit->setToolTip(tr("This textedit allows using variables."));
+    txtLineEdit->setText("0");
+    connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
+    connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
+
+    lblValue = new QLabel(this);
+
+    // timedep value
+    btnEdit = new QPushButton(icon("three-dots"), "", this);
+    connect(btnEdit, SIGNAL(clicked()), this, SLOT(doOpenValueTimeDialog()));
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(txtLineEdit, 1);
+    layout->addWidget(lblValue, 0, Qt::AlignRight);
+    layout->addWidget(btnEdit, 0, Qt::AlignRight);
+
+    setLayout(layout);
+
+    evaluate();
+}
+
+void ValueLineEdit::setNumber(double value)
+{
+    logMessage("SLineEditValue::setNumber()");
+
+    txtLineEdit->setText(QString::number(value));
+    evaluate();
+}
+
+double ValueLineEdit::number()
+{
+    logMessage("SLineEditValue::number()");
+
+    if (evaluate())
+        return m_number;
+    else
+        return 0.0;
+}
+
+void ValueLineEdit::setValue(Value value)
+{
+    logMessage("SLineEditValue::setValue()");
+
+    txtLineEdit->setText(value.text);
+    evaluate();
+}
+
+Value ValueLineEdit::value()
+{
+    logMessage("SLineEditValue::value()");
+
+    return Value(txtLineEdit->text());
+}
+
+bool ValueLineEdit::evaluate(bool quiet)
+{
+    logMessage("SLineEditValue::evaluate()");
+
+    bool isOk = false;
+
+    Value val = value();
+    // btnEdit->setVisible(m_hasTimeDep && val.isTimeDep());
+    btnEdit->setVisible(m_hasTimeDep && Util::scene()->problemInfo()->analysisType == AnalysisType_Transient);
+
+    if (val.evaluate(quiet))
+    {
+        if (val.number <= m_minimumSharp)
+        {
+            setLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
+        }
+        else if (val.number >= m_maximumSharp)
+        {
+            setLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
+        }
+        else if (val.number < m_minimum)
+        {
+            setLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
+        }
+        else if (val.number > m_maximum)
+        {
+            setLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
+        }
+        else
+        {
+            m_number = val.number;
+            setLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText), Util::config()->lineEditValueShowResult);
+            isOk = true;
+        }
+    }
+    else
+    {
+        setLabel(tr("error"), QColor(Qt::red), true);
+        setFocus();
+    }
+
+    if (isOk)
+    {
+        emit evaluated(false);
+        return true;
+    }
+    else
+    {
+        emit evaluated(true);
+        return false;
+    }
+}
+
+void ValueLineEdit::setLabel(const QString &text, QColor color, bool isVisible)
+{
+    logMessage("SLineEditValue::setLabel()");
+
+    lblValue->setText(text);
+    QPalette palette = lblValue->palette();
+    palette.setColor(QPalette::WindowText, color);
+    lblValue->setPalette(palette);
+    lblValue->setVisible(isVisible);
+}
+
+void ValueLineEdit::focusInEvent(QFocusEvent *event)
+{
+    logMessage("SLineEditValue::focusInEvent()");
+
+    txtLineEdit->setFocus(event->reason());
+}
+
+void ValueLineEdit::doOpenValueTimeDialog()
+{
+    ValueTimeDialog *dialog = new ValueTimeDialog();
+    dialog->setValue(Value(txtLineEdit->text()));
+
+    if (dialog->exec() == QDialog::Accepted)
+    {
+        txtLineEdit->setText(dialog->value().text);
+        evaluate();
+    }
+    delete dialog;
+}
+
+// ****************************************************************************************************************
 
 ValueTimeDialog::ValueTimeDialog(QWidget *parent) : QDialog(parent)
 {

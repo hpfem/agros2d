@@ -24,7 +24,7 @@
 
 class Chart;
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 class QwtPlotPicker;
 
@@ -84,11 +84,11 @@ private:
     QLabel *lblEndX;
     QLabel *lblEndY;
 
-    SLineEditValue *txtStartX;
-    SLineEditValue *txtStartY;
-    SLineEditValue *txtEndX;
-    SLineEditValue *txtEndY;
-    SLineEditValue *txtAngle;
+    ValueLineEdit *txtStartX;
+    ValueLineEdit *txtStartY;
+    ValueLineEdit *txtEndX;
+    ValueLineEdit *txtEndY;
+    ValueLineEdit *txtAngle;
 
     QRadioButton *radAxisLength;
     QRadioButton *radAxisX;
@@ -100,8 +100,8 @@ private:
     // time
     QLabel *lblPointX;
     QLabel *lblPointY;
-    SLineEditValue *txtPointX;
-    SLineEditValue *txtPointY;
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
 
     QComboBox *cmbFieldVariable;
     QComboBox *cmbFieldVariableComp;

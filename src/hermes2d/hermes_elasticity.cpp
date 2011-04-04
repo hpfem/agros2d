@@ -1173,10 +1173,10 @@ void DSceneEdgeElasticityMarker::createContent()
     cmbTypeY->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Fixed), PhysicFieldBC_Elasticity_Fixed);
     connect(cmbTypeY, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeYChanged(int)));
 
-    txtForceX = new SLineEditValue(this);
-    txtForceY = new SLineEditValue(this);
-    txtDisplacementX = new SLineEditValue(this);
-    txtDisplacementY = new SLineEditValue(this);
+    txtForceX = new ValueLineEdit(this);
+    txtForceY = new ValueLineEdit(this);
+    txtDisplacementX = new ValueLineEdit(this);
+    txtDisplacementY = new ValueLineEdit(this);
 
     doTypeXChanged(cmbTypeX->currentIndex());
     doTypeYChanged(cmbTypeY->currentIndex());
@@ -1304,13 +1304,13 @@ DSceneLabelElasticityMarker::DSceneLabelElasticityMarker(QWidget *parent, SceneL
 
 void DSceneLabelElasticityMarker::createContent()
 {
-    txtYoungModulus = new SLineEditValue(this);
-    txtPoissonNumber = new SLineEditValue(this);
-    txtForceX = new SLineEditValue(this);
-    txtForceY = new SLineEditValue(this);
-    txtAlpha = new SLineEditValue(this);
-    txtTemp = new SLineEditValue(this);
-    txtTempRef = new SLineEditValue(this);
+    txtYoungModulus = new ValueLineEdit(this);
+    txtPoissonNumber = new ValueLineEdit(this);
+    txtForceX = new ValueLineEdit(this);
+    txtForceY = new ValueLineEdit(this);
+    txtAlpha = new ValueLineEdit(this);
+    txtTemp = new ValueLineEdit(this);
+    txtTempRef = new ValueLineEdit(this);
 
     // forces
     QFormLayout *layoutForces = new QFormLayout();

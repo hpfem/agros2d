@@ -26,7 +26,7 @@ class ProblemInfo;
 class ScriptEditor;
 
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 class ProblemDialog: public QDialog
 {
@@ -66,9 +66,9 @@ private:
 
     // transient
     QComboBox *cmbAnalysisType;
-    SLineEditValue *txtTransientTimeStep;
-    SLineEditValue *txtTransientTimeTotal;
-    SLineEditValue *txtTransientInitialCondition;
+    ValueLineEdit *txtTransientTimeStep;
+    ValueLineEdit *txtTransientTimeTotal;
+    ValueLineEdit *txtTransientInitialCondition;
     QLabel *lblTransientSteps;
 
     // startup script

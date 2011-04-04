@@ -27,7 +27,7 @@ class ScriptEditor;
 
 class ColorButton;
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 class ConfigDialog : public QDialog
 {

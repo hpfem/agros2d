@@ -185,7 +185,7 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtValue;
+    ValueLineEdit *txtValue;
 };
 
 class DSceneLabelElectrostaticMarker : public DSceneLabelMarker
@@ -202,8 +202,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtPermittivity;
-    SLineEditValue *txtChargeDensity;
+    ValueLineEdit *txtPermittivity;
+    ValueLineEdit *txtChargeDensity;
 };
 
 #endif // ELECTROSTATIC_H

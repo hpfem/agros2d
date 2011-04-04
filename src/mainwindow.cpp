@@ -36,8 +36,6 @@
 #include "logdialog.h"
 #include "problemdialog.h"
 
-#include "timefunction.h"
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     logMessage("MainWindow::MainWindow()");

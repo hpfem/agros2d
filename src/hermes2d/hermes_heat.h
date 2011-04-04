@@ -21,7 +21,6 @@
 #define HEAT_H
 
 #include "util.h"
-#include "timefunction.h"
 #include "hermes_field.h"
 
 struct HermesHeat : public HermesField
@@ -198,10 +197,10 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtTemperature;
-    SLineEditValue *txtHeatFlux;
-    SLineEditValue *txtHeatTransferCoefficient;
-    SLineEditValue *txtExternalTemperature;
+    ValueLineEdit *txtTemperature;
+    ValueLineEdit *txtHeatFlux;
+    ValueLineEdit *txtHeatTransferCoefficient;
+    ValueLineEdit *txtExternalTemperature;
 
 private slots:
     void doTypeChanged(int index);
@@ -222,10 +221,10 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtThermalConductivity;
-    SLineEditValue *txtVolumeHeat;
-    SLineEditValue *txtDensity;
-    SLineEditValue *txtSpecificHeat;
+    ValueLineEdit *txtThermalConductivity;
+    ValueLineEdit *txtVolumeHeat;
+    ValueLineEdit *txtDensity;
+    ValueLineEdit *txtSpecificHeat;
 };
 
 #endif // HEAT_H

@@ -23,7 +23,7 @@
 #include "util.h"
 
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 class SceneEdgeMarker;
 class SceneLabelMarker;

@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class SLineEditValue;
+class ValueLineEdit;
 class SceneLabelMarker;
 class Solution;
 
@@ -106,8 +106,8 @@ public:
 private:
     QDialogButtonBox *buttonBox;
 
-    SLineEditValue *txtPointX;
-    SLineEditValue *txtPointY;
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
 
 private slots:
     void evaluated(bool isError);

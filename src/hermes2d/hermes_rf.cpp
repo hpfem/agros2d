@@ -1113,8 +1113,8 @@ void DSceneEdgeRFMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_Port), PhysicFieldBC_RF_Port);
     // FIXME: kontrolovat typ BC a podle toho zapnout nebo vypnout textova pole
 
-    txtValueReal = new SLineEditValue(this);
-    txtValueImag = new SLineEditValue(this);
+    txtValueReal = new ValueLineEdit(this);
+    txtValueImag = new ValueLineEdit(this);
 
     connect(txtValueReal, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtValueImag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -1184,11 +1184,11 @@ DSceneLabelRFMarker::~DSceneLabelRFMarker()
 
 void DSceneLabelRFMarker::createContent()
 {
-    txtPermittivity = new SLineEditValue(this);
-    txtPermeability = new SLineEditValue(this);
-    txtConductivity = new SLineEditValue(this);
-    txtJ_Ext_real = new SLineEditValue(this);
-    txtJ_Ext_imag = new SLineEditValue(this);
+    txtPermittivity = new ValueLineEdit(this);
+    txtPermeability = new ValueLineEdit(this);
+    txtConductivity = new ValueLineEdit(this);
+    txtJ_Ext_real = new ValueLineEdit(this);
+    txtJ_Ext_imag = new ValueLineEdit(this);
 
     connect(txtPermeability, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

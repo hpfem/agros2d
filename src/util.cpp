@@ -958,40 +958,6 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
         cmbPhysicField->setCurrentIndex(0);
 }
 
-bool Value::evaluate(bool quiet)
-{
-    evaluate(0.0, quiet);
-}
-
-bool Value::evaluate(double time, bool quiet)
-{
-    logMessage("Value::evaluate()");
-
-    // eval time
-    runPythonExpression(QString("time = %1").arg(time));
-
-    // eval expression
-    ExpressionResult expressionResult;
-    expressionResult = runPythonExpression(text);
-    if (expressionResult.error.isEmpty())
-    {
-        number = expressionResult.value;
-    }
-    else
-    {
-        if (!quiet)
-            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Error"), expressionResult.error);
-    }
-    return expressionResult.error.isEmpty();
-}
-
-bool Value::isTimeDep() const
-{
-    // FIXME - do it better
-    return Util::scene()->problemInfo()->analysisType == AnalysisType_Transient
-            && text.contains("time");
-}
-
 void setGUIStyle(const QString &styleName)
 {
     logMessage("setGUIStyle()");

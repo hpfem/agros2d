@@ -21,7 +21,6 @@
 #define ACOUSTIC_H
 
 #include "util.h"
-#include "timefunction.h"
 #include "hermes_field.h"
 
 struct HermesAcoustic : public HermesField
@@ -175,7 +174,7 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtValue;
+    ValueLineEdit *txtValue;
 
 private slots:
     void doTypeChanged(int index);
@@ -195,8 +194,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtDensity;
-    SLineEditValue *txtSpeed;
+    ValueLineEdit *txtDensity;
+    ValueLineEdit *txtSpeed;
 };
 
 #endif // ACOUSTIC_H

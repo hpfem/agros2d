@@ -665,7 +665,7 @@ void DSceneEdgeGeneralMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_General_Value), PhysicFieldBC_General_Value);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_General_Derivative), PhysicFieldBC_General_Derivative);
 
-    txtValue = new SLineEditValue(this);
+    txtValue = new ValueLineEdit(this);
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
@@ -723,9 +723,9 @@ DSceneLabelGeneralMarker::~DSceneLabelGeneralMarker()
 
 void DSceneLabelGeneralMarker::createContent()
 {
-    txtConstant = new SLineEditValue(this);
+    txtConstant = new ValueLineEdit(this);
     txtConstant->setMinimumSharp(0.0);
-    txtRightSide = new SLineEditValue(this);
+    txtRightSide = new ValueLineEdit(this);
 
     connect(txtConstant, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtRightSide, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

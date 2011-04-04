@@ -269,8 +269,8 @@ QLayout* DSceneNode::createContent()
 {
     logMessage("DSceneNode::createContent()");
 
-    txtPointX = new SLineEditValue();
-    txtPointY = new SLineEditValue();
+    txtPointX = new ValueLineEdit();
+    txtPointY = new ValueLineEdit();
     connect(txtPointX, SIGNAL(editingFinished()), this, SLOT(doEditingFinished()));
     connect(txtPointY, SIGNAL(editingFinished()), this, SLOT(doEditingFinished()));
     connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -378,7 +378,7 @@ QLayout* DSceneEdge::createContent()
     btnMarker = new QPushButton(icon("three-dots"), "");
     btnMarker->setMaximumSize(btnMarker->sizeHint());
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
-    txtAngle = new SLineEditValue();
+    txtAngle = new ValueLineEdit();
     txtAngle->setMinimum(0.0);
     txtAngle->setMaximum(180.0);
     connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -593,8 +593,8 @@ QLayout* DSceneLabel::createContent()
 {
     logMessage("DSceneLabel::createContent()");
 
-    txtPointX = new SLineEditValue();
-    txtPointY = new SLineEditValue();
+    txtPointX = new ValueLineEdit();
+    txtPointY = new ValueLineEdit();
     connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     cmbMarker = new QComboBox();
@@ -602,7 +602,7 @@ QLayout* DSceneLabel::createContent()
     btnMarker = new QPushButton(icon("three-dots"), "");
     btnMarker->setMaximumSize(btnMarker->sizeHint());
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
-    txtArea = new SLineEditValue();
+    txtArea = new ValueLineEdit();
     txtArea->setMinimum(0.0);
     connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     txtPolynomialOrder = new QSpinBox(this);

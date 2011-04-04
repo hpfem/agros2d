@@ -191,8 +191,8 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtValueReal;
-    SLineEditValue *txtValueImag;
+    ValueLineEdit *txtValueReal;
+    ValueLineEdit *txtValueImag;
 };
 
 class DSceneLabelRFMarker : public DSceneLabelMarker
@@ -210,11 +210,11 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtPermittivity;
-    SLineEditValue *txtPermeability;
-    SLineEditValue *txtConductivity;
-    SLineEditValue *txtJ_Ext_real;
-    SLineEditValue *txtJ_Ext_imag;
+    ValueLineEdit *txtPermittivity;
+    ValueLineEdit *txtPermeability;
+    ValueLineEdit *txtConductivity;
+    ValueLineEdit *txtJ_Ext_real;
+    ValueLineEdit *txtJ_Ext_imag;
 };
 
 #endif // RF_H

@@ -240,8 +240,8 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtValueReal;
-    SLineEditValue *txtValueImag;
+    ValueLineEdit *txtValueReal;
+    ValueLineEdit *txtValueImag;
 };
 
 class DSceneLabelMagneticMarker : public DSceneLabelMarker
@@ -259,15 +259,15 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtPermeability;
-    SLineEditValue *txtConductivity;
-    SLineEditValue *txtCurrentDensityReal;
-    SLineEditValue *txtCurrentDensityImag;
-    SLineEditValue *txtRemanence;
-    SLineEditValue *txtRemanenceAngle;
-    SLineEditValue *txtVelocityX;
-    SLineEditValue *txtVelocityY;
-    SLineEditValue *txtVelocityAngular;
+    ValueLineEdit *txtPermeability;
+    ValueLineEdit *txtConductivity;
+    ValueLineEdit *txtCurrentDensityReal;
+    ValueLineEdit *txtCurrentDensityImag;
+    ValueLineEdit *txtRemanence;
+    ValueLineEdit *txtRemanenceAngle;
+    ValueLineEdit *txtVelocityX;
+    ValueLineEdit *txtVelocityY;
+    ValueLineEdit *txtVelocityAngular;
 };
 
 #endif // MAGNETIC_H

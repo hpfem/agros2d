@@ -1058,8 +1058,8 @@ void DSceneEdgeMagneticMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Magnetic_VectorPotential), PhysicFieldBC_Magnetic_VectorPotential);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Magnetic_SurfaceCurrent), PhysicFieldBC_Magnetic_SurfaceCurrent);
 
-    txtValueReal = new SLineEditValue(this);
-    txtValueImag = new SLineEditValue(this);
+    txtValueReal = new ValueLineEdit(this);
+    txtValueImag = new ValueLineEdit(this);
     txtValueImag->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic);
 
     connect(txtValueReal, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -1129,17 +1129,17 @@ DSceneLabelMagneticMarker::~DSceneLabelMagneticMarker()
 
 void DSceneLabelMagneticMarker::createContent()
 {
-    txtPermeability = new SLineEditValue(this);
-    txtConductivity = new SLineEditValue(this);
-    txtCurrentDensityReal = new SLineEditValue(this, true);
-    txtCurrentDensityImag = new SLineEditValue(this, true);
+    txtPermeability = new ValueLineEdit(this);
+    txtConductivity = new ValueLineEdit(this);
+    txtCurrentDensityReal = new ValueLineEdit(this, true);
+    txtCurrentDensityImag = new ValueLineEdit(this, true);
     txtCurrentDensityImag->setEnabled(Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic);
-    txtRemanence = new SLineEditValue(this);
-    txtRemanenceAngle = new SLineEditValue(this);
-    txtVelocityX = new SLineEditValue(this);
+    txtRemanence = new ValueLineEdit(this);
+    txtRemanenceAngle = new ValueLineEdit(this);
+    txtVelocityX = new ValueLineEdit(this);
     txtVelocityX->setEnabled(Util::scene()->problemInfo()->problemType == ProblemType_Planar);
-    txtVelocityY = new SLineEditValue(this);
-    txtVelocityAngular = new SLineEditValue(this);
+    txtVelocityY = new ValueLineEdit(this);
+    txtVelocityAngular = new ValueLineEdit(this);
     txtVelocityAngular->setEnabled(Util::scene()->problemInfo()->problemType == ProblemType_Planar);
 
     connect(txtPermeability, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

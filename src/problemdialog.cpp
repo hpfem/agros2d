@@ -130,9 +130,9 @@ QWidget *ProblemDialog::createControlsGeneral()
 
     // transient
     cmbAnalysisType = new QComboBox();
-    txtTransientTimeStep = new SLineEditValue();
-    txtTransientTimeTotal = new SLineEditValue();
-    txtTransientInitialCondition = new SLineEditValue();
+    txtTransientTimeStep = new ValueLineEdit();
+    txtTransientTimeTotal = new ValueLineEdit();
+    txtTransientInitialCondition = new ValueLineEdit();
     lblTransientSteps = new QLabel("0");
 
     connect(txtTransientTimeStep, SIGNAL(editingFinished()), this, SLOT(doTransientChanged()));

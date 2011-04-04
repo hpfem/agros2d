@@ -178,10 +178,10 @@ void ChartDialog::createControls()
     lblEndX = new QLabel("X:");
     lblEndY = new QLabel("Y:");
 
-    txtStartX = new SLineEditValue();
-    txtStartY = new SLineEditValue();
-    txtEndX = new SLineEditValue();
-    txtEndY = new SLineEditValue();
+    txtStartX = new ValueLineEdit();
+    txtStartY = new ValueLineEdit();
+    txtEndX = new ValueLineEdit();
+    txtEndY = new ValueLineEdit();
 
     connect(txtStartX, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
     connect(txtStartY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
@@ -209,7 +209,7 @@ void ChartDialog::createControls()
     grpEnd->setLayout(layoutEnd);
 
     // angle
-    txtAngle = new SLineEditValue();
+    txtAngle = new ValueLineEdit();
     connect(txtAngle, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
 
     QHBoxLayout *layoutAngle = new QHBoxLayout();
@@ -267,8 +267,8 @@ void ChartDialog::createControls()
     // time
     lblPointX = new QLabel("X:");
     lblPointY = new QLabel("Y:");
-    txtPointX = new SLineEditValue();
-    txtPointY = new SLineEditValue();
+    txtPointX = new ValueLineEdit();
+    txtPointY = new ValueLineEdit();
 
     QGridLayout *layoutTime = new QGridLayout();
     layoutTime->addWidget(lblPointX, 0, 0);

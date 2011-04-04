@@ -23,7 +23,7 @@
 #include "util.h"
 
 class Scene;
-class SLineEditValue;
+class ValueLineEdit;
 
 class SceneTransformDialog : public QDialog
 {
@@ -46,14 +46,14 @@ private:
     QWidget *widRotate;
     QWidget *widScale;
 
-    SLineEditValue *txtTranslateX;
-    SLineEditValue *txtTranslateY;
-    SLineEditValue *txtRotateBasePointX;
-    SLineEditValue *txtRotateBasePointY;
-    SLineEditValue *txtRotateAngle;
-    SLineEditValue *txtScaleBasePointX;
-    SLineEditValue *txtScaleBasePointY;
-    SLineEditValue *txtScaleFactor;
+    ValueLineEdit *txtTranslateX;
+    ValueLineEdit *txtTranslateY;
+    ValueLineEdit *txtRotateBasePointX;
+    ValueLineEdit *txtRotateBasePointY;
+    ValueLineEdit *txtRotateAngle;
+    ValueLineEdit *txtScaleBasePointX;
+    ValueLineEdit *txtScaleBasePointY;
+    ValueLineEdit *txtScaleFactor;
 
     QCheckBox *chkCopy;
 };

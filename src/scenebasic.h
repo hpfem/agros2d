@@ -23,7 +23,7 @@
 #include "util.h"
 
 class SLineEditDouble;
-class SLineEditValue;
+class ValueLineEdit;
 
 struct Point;
 
@@ -156,8 +156,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtPointX;
-    SLineEditValue *txtPointY;
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
     QLabel *lblDistance;
     QLabel *lblAngle;
 
@@ -185,7 +185,7 @@ private:
     QComboBox *cmbNodeEnd;
     QComboBox *cmbMarker;
     QPushButton *btnMarker;
-    SLineEditValue *txtAngle;
+    ValueLineEdit *txtAngle;
     QLabel *lblLength;
     QCheckBox *chkRefineTowardsEdge;
     QSpinBox *txtRefineTowardsEdge;
@@ -215,11 +215,11 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtPointX;
-    SLineEditValue *txtPointY;
+    ValueLineEdit *txtPointX;
+    ValueLineEdit *txtPointY;
     QComboBox *cmbMarker;
     QPushButton *btnMarker;
-    SLineEditValue *txtArea;
+    ValueLineEdit *txtArea;
     QSpinBox *txtPolynomialOrder;
     QCheckBox *chkArea;
     QCheckBox *chkPolynomialOrder;

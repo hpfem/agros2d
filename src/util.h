@@ -37,6 +37,8 @@
 #include <stdlib.h>
 #include <common.h>
 
+#include "value.h"
+
 #define EPS_ZERO 1e-10
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
@@ -140,20 +142,6 @@ private slots:
     void downloadFinished(QNetworkReply *networkReply);
     void showProgress(qint64, qint64);
     void handleError(QNetworkReply::NetworkError error);
-};
-
-struct Value
-{
-    QString text;
-    double number;
-
-    Value() { text = "0"; number = 0;}
-    inline Value(const QString &value, bool evaluateExpression = true) { text = value; if (evaluateExpression) evaluate(true); }
-
-    bool evaluate(bool quiet = false);
-    bool evaluate(double time, bool quiet = false);
-
-    bool isTimeDep() const;
 };
 
 struct Point

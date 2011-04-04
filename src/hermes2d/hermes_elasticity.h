@@ -209,10 +209,10 @@ protected:
 private:
     QComboBox *cmbTypeX;
     QComboBox *cmbTypeY;
-    SLineEditValue *txtForceX;
-    SLineEditValue *txtForceY;
-    SLineEditValue *txtDisplacementX;
-    SLineEditValue *txtDisplacementY;
+    ValueLineEdit *txtForceX;
+    ValueLineEdit *txtForceY;
+    ValueLineEdit *txtDisplacementX;
+    ValueLineEdit *txtDisplacementY;
 
 private slots:
     void doTypeXChanged(int index);
@@ -233,13 +233,13 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtYoungModulus;
-    SLineEditValue *txtPoissonNumber;
-    SLineEditValue *txtForceX;
-    SLineEditValue *txtForceY;
-    SLineEditValue *txtAlpha;
-    SLineEditValue *txtTemp;
-    SLineEditValue *txtTempRef;
+    ValueLineEdit *txtYoungModulus;
+    ValueLineEdit *txtPoissonNumber;
+    ValueLineEdit *txtForceX;
+    ValueLineEdit *txtForceY;
+    ValueLineEdit *txtAlpha;
+    ValueLineEdit *txtTemp;
+    ValueLineEdit *txtTempRef;
 };
 
 #endif // HERMES_ELASTICITY_H

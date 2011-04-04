@@ -753,7 +753,7 @@ void DSceneEdgeElectrostaticMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_Potential), PhysicFieldBC_Electrostatic_Potential);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_SurfaceCharge), PhysicFieldBC_Electrostatic_SurfaceCharge);
 
-    txtValue = new SLineEditValue(this);
+    txtValue = new ValueLineEdit(this);
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
@@ -807,9 +807,9 @@ DSceneLabelElectrostaticMarker::~DSceneLabelElectrostaticMarker()
 
 void DSceneLabelElectrostaticMarker::createContent()
 {
-    txtPermittivity = new SLineEditValue(this);
+    txtPermittivity = new ValueLineEdit(this);
     txtPermittivity->setMinimumSharp(0.0);
-    txtChargeDensity = new SLineEditValue(this);
+    txtChargeDensity = new ValueLineEdit(this);
     connect(txtPermittivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtChargeDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 

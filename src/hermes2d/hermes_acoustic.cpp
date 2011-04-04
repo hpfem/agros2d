@@ -1128,7 +1128,7 @@ void DSceneEdgeAcousticMarker::createContent()
     }
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
-    txtValue = new SLineEditValue(this, true);
+    txtValue = new ValueLineEdit(this, true);
 
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
@@ -1204,8 +1204,8 @@ DSceneLabelAcousticMarker::DSceneLabelAcousticMarker(QWidget *parent, SceneLabel
 
 void DSceneLabelAcousticMarker::createContent()
 {
-    txtDensity = new SLineEditValue(this);
-    txtSpeed = new SLineEditValue(this);
+    txtDensity = new ValueLineEdit(this);
+    txtSpeed = new ValueLineEdit(this);
 
     connect(txtDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtSpeed, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

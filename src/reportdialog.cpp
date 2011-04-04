@@ -82,10 +82,10 @@ void ReportDialog::createControls()
     txtStyleSheet = new QLineEdit();
     connect(txtStyleSheet, SIGNAL(textChanged(QString)), this, SLOT(checkPaths()));
 
-    txtFigureWidth = new SLineEditValue();
+    txtFigureWidth = new ValueLineEdit();
     txtFigureWidth->setValue(Value("600"));
     txtFigureWidth->setMinimum(200);
-    txtFigureHeight = new SLineEditValue();
+    txtFigureHeight = new ValueLineEdit();
     txtFigureHeight->setValue(Value("400"));
     txtFigureHeight->setMinimum(200);
 

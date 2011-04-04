@@ -230,9 +230,9 @@ LocalPointValueDialog::LocalPointValueDialog(Point point, QWidget *parent) : QDi
 
     setModal(true);
 
-    txtPointX = new SLineEditValue();
+    txtPointX = new ValueLineEdit();
     txtPointX->setNumber(point.x);
-    txtPointY = new SLineEditValue();
+    txtPointY = new ValueLineEdit();
     txtPointY->setNumber(point.y);
 
     connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

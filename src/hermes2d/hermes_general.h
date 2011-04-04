@@ -176,7 +176,7 @@ protected:
 
 private:
     QComboBox *cmbType;
-    SLineEditValue *txtValue;
+    ValueLineEdit *txtValue;
 };
 
 class DSceneLabelGeneralMarker : public DSceneLabelMarker
@@ -193,8 +193,8 @@ protected:
     bool save();
 
 private:
-    SLineEditValue *txtConstant;
-    SLineEditValue *txtRightSide;
+    ValueLineEdit *txtConstant;
+    ValueLineEdit *txtRightSide;
 };
 
 #endif // GENERAL_H

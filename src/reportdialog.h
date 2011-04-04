@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class SLineEditValue;
+class ValueLineEdit;
 
 class SceneView;
 
@@ -65,8 +65,8 @@ private:
     QLineEdit *txtTemplate;
     QLineEdit *txtStyleSheet;
 
-    SLineEditValue *txtFigureWidth;
-    SLineEditValue *txtFigureHeight;
+    ValueLineEdit *txtFigureWidth;
+    ValueLineEdit *txtFigureHeight;
 
     QPushButton *btnShowReport;
     QPushButton *btnDefault;
