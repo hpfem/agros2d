@@ -80,7 +80,7 @@ void SceneViewSettings::defaultValues()
     showGeometry = true;
     showInitialMesh = false;
 
-    postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
+    postprocessorShow = SceneViewPostprocessorShow_ScalarView;
 
     showContours = false;
     showVectors = false;
