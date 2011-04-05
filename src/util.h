@@ -483,10 +483,10 @@ enum PhysicFieldBC
 
 enum TEMode
 {
-    Mode_0,
-    Mode_1,
-    Mode_2
-
+    TEMode_None,
+    TEMode_0,
+    TEMode_1,
+    TEMode_2
 };
 
 inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)

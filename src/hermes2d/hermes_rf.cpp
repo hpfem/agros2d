@@ -24,6 +24,7 @@
 struct RFEdge
 {
     PhysicFieldBC type;
+    TEMode mode;
     double value_real;
     double value_imag;
     double height;
@@ -54,12 +55,18 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
     double mu = rfLabel[e->elem_marker].permeability * MU0;
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
     // FIXME: pro port zadavat z GUI
-    int mode = 1;
-    // FIXME: zadavat z GUI
+    int mode;
+    if (rfEdge[e->edge_marker].mode == TEMode_1)
+        mode = 1;
+    else
+        mode = 0;
+
+   // FIXME: zadavat z GUI
     //double height = 0.01016;
     double height = rfEdge[e->edge_marker].height;
 
     double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
+    qDebug() << mode;
 
     return - beta * int_u_v<Real, Scalar>(n, wt, u, v);
 }
@@ -73,7 +80,12 @@ Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Fun
 
     double mu = rfLabel[e->elem_marker].permeability * MU0;
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
-    int mode = 1;
+    //int mode = 1;
+    int mode;
+    if (rfEdge[e->edge_marker].mode == TEMode_1)
+        mode = 1;
+    else
+        mode = 0;
     //double height = 0.01016;
     double height = rfEdge[e->edge_marker].height;
 
@@ -1122,6 +1134,7 @@ void DSceneEdgeRFMarker::createContent()
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     txtValueReal = new ValueLineEdit(this);
     txtValueImag = new ValueLineEdit(this);
 =======
@@ -1130,10 +1143,15 @@ void DSceneEdgeRFMarker::createContent()
     cmbMode->addItem("1", Mode_1);
     cmbMode->addItem("2", Mode_2);
     //cmbMode->setEnabled(false);*/
+=======
+    cmbMode = new QComboBox(this);
+    cmbMode->addItem("0", TEMode_0);
+    cmbMode->addItem("1", TEMode_1);
+    cmbMode->addItem("2", TEMode_2);
+>>>>>>> TE Mode selection
 
     txtValueReal = new SLineEditValue(this);
     txtValueImag = new SLineEditValue(this);
-    //txtMode = new SLineEditValue(this);
     txtHeight = new SLineEditValue(this);
 
     // set active marker
@@ -1152,8 +1170,8 @@ void DSceneEdgeRFMarker::createContent()
     layout->addWidget(cmbType, 1, 1);
     layout->addWidget(new QLabel(tr("Value:")), 2, 0);
     layout->addLayout(layoutCurrentDensity, 2, 1);
-   // layout->addWidget(new QLabel(tr("TE mode:")), 3, 0);
-   // layout->addWidget(cmbMode, 3, 1);
+    layout->addWidget(new QLabel(tr("TE mode:")), 3, 0);
+    layout->addWidget(cmbMode, 3, 1);
     layout->addWidget(new QLabel(tr("Height:")), 4, 0);
     layout->addWidget(txtHeight, 4, 1);
 
@@ -1201,6 +1219,7 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
     txtValueReal->setEnabled(false);
     txtValueImag->setEnabled(false);
     txtHeight->setEnabled(false);
+    cmbMode->setEnabled(false);
 
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
@@ -1221,12 +1240,14 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
     case PhysicFieldBC_RF_MatchedBoundary:
     {
         txtHeight->setEnabled(true);
+        cmbMode->setEnabled(true);
     }
         break;
 
     case PhysicFieldBC_RF_Port:
     {
         txtHeight->setEnabled(true);
+        cmbMode->setEnabled(true);
     }
         break;
     }

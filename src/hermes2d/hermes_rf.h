@@ -193,15 +193,18 @@ private:
     QComboBox *cmbType;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     ValueLineEdit *txtValueReal;
     ValueLineEdit *txtValueImag;
 =======
 =======
     //QComboBox *cmbMode;
 >>>>>>> height from GUI
+=======
+    QComboBox *cmbMode;
+>>>>>>> TE Mode selection
     SLineEditValue *txtValueReal;
     SLineEditValue *txtValueImag;
-    //SLineEditValue *txtMode;
     SLineEditValue *txtHeight;
 
 private slots:
