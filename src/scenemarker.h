@@ -131,6 +131,7 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
+    QLabel *lblEquation;
     SceneEdgeMarker *m_edgeMarker;
 
     virtual void createContent() = 0;
@@ -161,6 +162,7 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
+    QLabel *lblEquation;
     SceneLabelMarker *m_labelMarker;
 
     virtual void createContent() = 0;

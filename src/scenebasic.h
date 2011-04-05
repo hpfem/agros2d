@@ -181,6 +181,7 @@ protected:
     bool save();
 
 private:
+    QLabel *lblEquation;
     QComboBox *cmbNodeStart;
     QComboBox *cmbNodeEnd;
     QComboBox *cmbMarker;

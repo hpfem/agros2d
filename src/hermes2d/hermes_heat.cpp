@@ -1024,13 +1024,19 @@ void DSceneEdgeHeatMarker::doTypeChanged(int index)
     case PhysicFieldBC_Heat_Temperature:
     {
         txtTemperature->setEnabled(true);
+        lblEquation->setText("<i>T</i> = <i>T</i>");
     }
         break;
     case PhysicFieldBC_Heat_Flux:
     {
         txtHeatFlux->setEnabled(true);
         txtHeatTransferCoefficient->setEnabled(true);
-        txtExternalTemperature->setEnabled(true);
+        txtExternalTemperature->setEnabled(true);        
+        // lblEquation->setText();
+        lblEquation->setText(QString("- %1(%2<i>T</i> / %2<i>n</i>) = <i>q</i> + %3(<i>T</i> - <i>T</i><sub>ext</sub>)").
+                             arg(QString::fromUtf8("λ")).
+                             arg(QString::fromUtf8("∂")).
+                             arg(QString::fromUtf8("α")));
     }
         break;
     }
