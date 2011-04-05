@@ -14,7 +14,7 @@ How to Build Release
 3. Download and install QtCreator - http://qt.nokia.com/products
 4. Download and install Windows SDK for Qt - Qt libraries 4.7.2 for Windows (VS 2008) (http://qt.nokia.com/downloads/windows-cpp-vs2008).
 5. Install Microsoft Visual Studio C++ (Express version is enough) - MSVC compiler is necessary
-6. You can install additional (optional) debugger, e.g. Debugging Tools for Windows (http://download.cnet.com/Debugging-Tools-for-Windows/3000-2086_4-10907878.html)
+6. You can install additional (optional) debugger, e.g. Debugging Tools for Windows (http://download.cnet.com/Debugging-Tools-for-Windows/3000-2086_4-10907878.html) and set it to be post-mortem debugger by command ``windbg -I``
 7. You need a necessary files from "triangle"  - copy binaries from Agros binaries for Windows, copy into the project folder with Agros2D sources
 8. You need a necessary files from "ffmpeg" - copy binaries from Agros binaries for Windows, copy into the project folder with Agros2D sources
 9. Install Python and NumPy http://www.python.org
@@ -49,7 +49,7 @@ How to Build Release
   * To the system variable "path" add path PythonXX\\Scripts, e.g. C:\\Python27\\Scripts.
   * Install cython - in Windows command prompt run command: ``easy_install cython``
   * Install pyrex - in Windows command prompt run command: ``easy_install Pyrex``
-  * In the folder \\agros2d\\src\\python in Windows command prompt run command: ``cython agros2D.pyx``
+  * In the  run (in Windows command prompt) command: ``cython agros2D.pyx``
   * In the folder \\agros2d\\src\\python the file ``agros2d.c`` appears (or it has been updated).
   
 14. To run debugger - add to Windows ``Path`` variable a path to the bin folder of the Qt SDK, e.g. C:\\Qt\\4.7.2\\bin
