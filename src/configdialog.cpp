@@ -471,6 +471,8 @@ QWidget *ConfigDialog::createViewWidget()
     txtView3DAngle = new QDoubleSpinBox(this);
     txtView3DAngle->setDecimals(1);
     txtView3DAngle->setSingleStep(1);
+    txtView3DAngle->setMinimum(30);
+    txtView3DAngle->setMaximum(360);
     chkView3DBackground = new QCheckBox(tr("Gradient background"), this);
     txtView3DHeight = new QDoubleSpinBox(this);
     txtView3DHeight->setDecimals(1);
