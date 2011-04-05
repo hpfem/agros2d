@@ -855,11 +855,14 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
     {
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) + sqr(dudy1[i]) + sqr(dudy2[i]));
+            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudx2[i]) +
+                                         sqr(dudy1[i]) + sqr(dudy2[i]));
         }
         else
         {
-            node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0)));
+            node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) +
+                                         sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0)) +
+                                         sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0)));
         }
     }
         break;
@@ -897,12 +900,13 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 break;
             case PhysicFieldVariableComp_Y:
             {
-                node->values[0][0][i] = - dudx1[i] - ((x[i] > 0) ? value1[i] / x[i] : 0.0);
+                node->values[0][0][i] = - dudx1[i] - ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0);
             }
                 break;
             case PhysicFieldVariableComp_Magnitude:
             {
-                node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)));
+                node->values[0][0][i] = sqrt(sqr(dudy1[i]) +
+                                             sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0)));
             }
                 break;
             }
@@ -943,12 +947,13 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 break;
             case PhysicFieldVariableComp_Y:
             {
-                node->values[0][0][i] = - dudx2[i] - ((x > 0) ? value2[i] / x[i] : 0.0);
+                node->values[0][0][i] = - dudx2[i] - ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0);
             }
                 break;
             case PhysicFieldVariableComp_Magnitude:
             {
-                node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0)));
+                node->values[0][0][i] = sqrt(sqr(dudy2[i]) +
+                                             sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0)));
             }
                 break;
             }
@@ -964,7 +969,9 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         }
         else
         {
-            node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0)) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+            node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudy2[i]) +
+                                         sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0)) +
+                                         sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
         }
     }
         break;
@@ -1003,12 +1010,12 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 break;
             case PhysicFieldVariableComp_Y:
             {
-                node->values[0][0][i] = - (dudx1[i] - ((x[i] > 0) ? value1[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
+                node->values[0][0][i] = - (dudx1[i] - ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
             }
                 break;
             case PhysicFieldVariableComp_Magnitude:
             {
-                node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                node->values[0][0][i] = sqrt(sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
             }
                 break;
             }
@@ -1050,12 +1057,12 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
                 break;
             case PhysicFieldVariableComp_Y:
             {
-                node->values[0][0][i] = - (dudx2[i] - ((x > 0) ? value2[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
+                node->values[0][0][i] = - (dudx2[i] - ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0)) / (marker->permeability.number * MU0);
             }
                 break;
             case PhysicFieldVariableComp_Magnitude:
             {
-                node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                node->values[0][0][i] = sqrt(sqr(dudy2[i]) + sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
             }
                 break;
             }
@@ -1395,9 +1402,9 @@ void ViewScalarFilterMagnetic::calculateVariable(int i)
         }
         else
         {
-            node->values[0][0][i] = 0.25 * (sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+            node->values[0][0][i] = 0.25 * (sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > EPS_ZERO) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
             if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+                node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x[i] > EPS_ZERO) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
         }
     }
         break;
