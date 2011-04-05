@@ -264,6 +264,7 @@ void Scene::createActions()
     connect(actClearSolution, SIGNAL(triggered()), this, SLOT(doClearSolution()));
 
     actProblemProperties = new QAction(icon("document-properties"), tr("&Problem properties"), this);
+    actProblemProperties->setShortcut(tr("F12"));
     actProblemProperties->setStatusTip(tr("Problem properties"));
     connect(actProblemProperties, SIGNAL(triggered()), this, SLOT(doProblemProperties()));
 }

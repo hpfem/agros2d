@@ -160,6 +160,7 @@ void SceneView::createActions()
     connect(actSceneZoomOut, SIGNAL(triggered()), this, SLOT(doZoomOut()));
 
     actSceneZoomBestFit = new QAction(icon("zoom-original"), tr("Zoom best fit"), this);
+    actSceneZoomBestFit->setShortcut(tr("Ctrl+0"));
     actSceneZoomBestFit->setStatusTip(tr("Best fit"));
     connect(actSceneZoomBestFit, SIGNAL(triggered()), this, SLOT(doZoomBestFit()));
 
@@ -270,6 +271,7 @@ void SceneView::createActions()
 
     // object properties
     actSceneObjectProperties = new QAction(icon("scene-properties"), tr("Object properties"), this);
+    actSceneObjectProperties->setShortcut(Qt::Key_Space);
     connect(actSceneObjectProperties, SIGNAL(triggered()), this, SLOT(doSceneObjectProperties()));
 
     // select region
@@ -288,7 +290,7 @@ void SceneView::createMenu()
 
     mnuScene = new QMenu(this);
 
-    QMenu *mnuModeGroup = new QMenu(tr("Set mode"), this);
+    QMenu *mnuModeGroup = new QMenu(tr("Mode"), this);
     mnuModeGroup->addAction(actSceneModeNode);
     mnuModeGroup->addAction(actSceneModeEdge);
     mnuModeGroup->addAction(actSceneModeLabel);
@@ -299,8 +301,6 @@ void SceneView::createMenu()
     mnuProjectionGroup->addAction(actSetProjectionXZ);
     mnuProjectionGroup->addAction(actSetProjectionYZ);
 
-    mnuScene->addMenu(mnuModeGroup);
-    mnuScene->addSeparator();
     mnuScene->addAction(m_scene->actNewNode);
     mnuScene->addAction(m_scene->actNewEdge);
     mnuScene->addAction(m_scene->actNewLabel);
@@ -311,11 +311,7 @@ void SceneView::createMenu()
     mnuScene->addAction(actSceneViewSelectRegion);
     mnuScene->addAction(m_scene->actTransform);
     mnuScene->addSeparator();
-    mnuScene->addAction(actSceneZoomBestFit);
-    mnuScene->addAction(actSceneZoomIn);
-    mnuScene->addAction(actSceneZoomOut);
-    mnuScene->addAction(actSceneZoomRegion);
-    mnuScene->addSeparator();
+    mnuScene->addMenu(mnuModeGroup);
     mnuScene->addMenu(mnuProjectionGroup);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneObjectProperties);
