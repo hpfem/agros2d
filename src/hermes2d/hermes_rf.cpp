@@ -1133,30 +1133,17 @@ void DSceneEdgeRFMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_Port), PhysicFieldBC_RF_Port);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     txtValueReal = new ValueLineEdit(this);
     txtValueImag = new ValueLineEdit(this);
-=======
-    /*cmbMode = new QComboBox(this);
-    cmbMode->addItem("0", Mode_0);
-    cmbMode->addItem("1", Mode_1);
-    cmbMode->addItem("2", Mode_2);
-    //cmbMode->setEnabled(false);*/
-=======
+    txtHeight = new ValueLineEdit(this);
+
     cmbMode = new QComboBox(this);
     cmbMode->addItem("0", TEMode_0);
     cmbMode->addItem("1", TEMode_1);
     cmbMode->addItem("2", TEMode_2);
->>>>>>> TE Mode selection
-
-    txtValueReal = new SLineEditValue(this);
-    txtValueImag = new SLineEditValue(this);
-    txtHeight = new SLineEditValue(this);
 
     // set active marker
     doTypeChanged(cmbType->currentIndex());
->>>>>>> height from GUI
 
     connect(txtValueReal, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtValueImag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -1276,19 +1263,12 @@ DSceneLabelRFMarker::~DSceneLabelRFMarker()
 
 void DSceneLabelRFMarker::createContent()
 {
-<<<<<<< HEAD
+
     txtPermittivity = new ValueLineEdit(this);
     txtPermeability = new ValueLineEdit(this);
     txtConductivity = new ValueLineEdit(this);
-    txtJ_Ext_real = new ValueLineEdit(this);
-    txtJ_Ext_imag = new ValueLineEdit(this);
-=======
-    txtPermittivity = new SLineEditValue(this);
-    txtPermeability = new SLineEditValue(this);
-    txtConductivity = new SLineEditValue(this);
-    txtCurrent_density_real = new SLineEditValue(this);
-    txtCurrent_density_imag = new SLineEditValue(this);
->>>>>>> height from GUI
+    txtCurrent_density_real = new ValueLineEdit(this);
+    txtCurrent_density_imag = new ValueLineEdit(this);
 
     connect(txtPermeability, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));

@@ -191,25 +191,13 @@ protected:
 
 private:
     QComboBox *cmbType;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+    QComboBox *cmbMode;
     ValueLineEdit *txtValueReal;
     ValueLineEdit *txtValueImag;
-=======
-=======
-    //QComboBox *cmbMode;
->>>>>>> height from GUI
-=======
-    QComboBox *cmbMode;
->>>>>>> TE Mode selection
-    SLineEditValue *txtValueReal;
-    SLineEditValue *txtValueImag;
-    SLineEditValue *txtHeight;
+    ValueLineEdit *txtHeight;
 
 private slots:
     void doTypeChanged(int index);
->>>>>>> hiding boxes in boundary condition window
 };
 
 class DSceneLabelRFMarker : public DSceneLabelMarker
@@ -227,19 +215,12 @@ protected:
     bool save();
 
 private:
-<<<<<<< HEAD
     ValueLineEdit *txtPermittivity;
     ValueLineEdit *txtPermeability;
     ValueLineEdit *txtConductivity;
-    ValueLineEdit *txtJ_Ext_real;
-    ValueLineEdit *txtJ_Ext_imag;
-=======
-    SLineEditValue *txtPermittivity;
-    SLineEditValue *txtPermeability;
-    SLineEditValue *txtConductivity;
-    SLineEditValue *txtCurrent_density_real;
-    SLineEditValue *txtCurrent_density_imag;
->>>>>>> height from GUI
+    ValueLineEdit *txtCurrent_density_real;
+    ValueLineEdit *txtCurrent_density_imag;
+
 };
 
 #endif // RF_H
