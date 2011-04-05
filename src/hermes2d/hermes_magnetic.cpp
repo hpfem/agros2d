@@ -187,7 +187,7 @@ Scalar magnetic_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Re
         for (int i = 0; i < n; i++)
         {
             result += wt[i] * magneticLabel[e->elem_marker].current_density_real  * (v->val[i])
-                    + wt[i] * magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability * MU0)
+                    - wt[i] * magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability * MU0)
                     * (- sin(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dx[i]
                        + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i]);
 
