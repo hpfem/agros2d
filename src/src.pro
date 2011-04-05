@@ -16,6 +16,16 @@ DEFINES += VERSION_DAY=18
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
+win32-msvc2008:CONFIG(release) system(cython python\\agros2d.pyx)
+win32-msvc2008:CONFIG(release) system(lrelease ..\\lang\\cs_CZ.ts)
+win32-msvc2008:CONFIG(release) system(lrelease ..\\lang\\de_DE.ts)
+win32-msvc2008:CONFIG(release) system(lrelease ..\\lang\\en_US.ts)
+win32-msvc2008:CONFIG(release) system(lrelease ..\\lang\\pl_PL.ts)
+win32-msvc2008:CONFIG(release) system(lrelease ..\\lang\\qt_cs.ts)
+win32-msvc2008:CONFIG(release) system(lrelease ..\\lang\\qt_de.ts)
+win32-msvc2008:CONFIG(release) system(lrelease ..\\lang\\qt_en.ts)
+win32-msvc2008:CONFIG(release) system(lrelease ..\\lang\\qt_pl.ts)
+
 linux-g++:CONFIG(release) system(cython python/agros2d.pyx)
 linux-g++:CONFIG(release) system(lrelease ../lang/*.ts)
 TRANSLATIONS = lang/cs_CZ.ts \
@@ -38,6 +48,7 @@ OBJECTS_DIR = build
 MOC_DIR = build
 SUBDIRS += src
 SOURCES += util.cpp \
+    value.cpp \
     scene.cpp \
     gui.cpp \
     hermes2d/hermes_field.cpp \
@@ -83,9 +94,9 @@ SOURCES += util.cpp \
     postprocessorview.cpp \
     style/stylehelper.cpp \
     style/styleanimator.cpp \
-    style/manhattanstyle.cpp \
-    timefunction.cpp
+    style/manhattanstyle.cpp
 HEADERS += util.h \
+    value.h \
     scene.h \
     gui.h \
     hermes2d/hermes_field.h \
@@ -128,8 +139,7 @@ HEADERS += util.h \
     postprocessorview.h \
     style/stylehelper.h \
     style/styleanimator.h \
-    style/manhattanstyle.h \
-    timefunction.h
+    style/manhattanstyle.h
 INCLUDEPATH += . \
     dxflib \
     ../hermes_common
