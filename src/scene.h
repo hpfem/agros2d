@@ -198,7 +198,7 @@ public:
     void setProblemInfo(ProblemInfo *problemInfo) { clear(); delete m_problemInfo; m_problemInfo = problemInfo; emit defaultValues(); }
 
     inline void refresh() { emit invalidated(); }
-    inline SceneSolution *sceneSolution() { return m_sceneSolution; }
+    inline SceneSolution *sceneSolution() const { return m_sceneSolution; }
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);

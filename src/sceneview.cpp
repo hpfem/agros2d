@@ -342,14 +342,12 @@ void SceneView::resizeGL(int w, int h)
     }
 }
 
-void SceneView::loadProjection2d(bool setScene)
+void SceneView::loadProjection2d(bool setScene) const
 {
-    logMessage("SceneView::loadProjection2d()");
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(3.0, contextWidth()-6.0, contextHeight()-6.0, 3.0, -10.0, -10.0);
+    glOrtho(-0.5, 0.5, -0.5, 0.5, -10.0, -10.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -362,10 +360,8 @@ void SceneView::loadProjection2d(bool setScene)
     }
 }
 
-void SceneView::loadProjection3d(bool setScene)
+void SceneView::loadProjection3d(bool setScene) const
 {
-    logMessage("SceneView::loadProjection3d()");
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-0.5, 0.5, -0.5, 0.5, 4.0, 15.0);
@@ -1027,7 +1023,7 @@ void SceneView::paintSolutionMesh()
     glLineWidth(1.3);
 
     // triangles
-    qDebug() << m_scene->sceneSolution()->linSolutionMeshView().get_num_edges();
+    // qDebug() << m_scene->sceneSolution()->linSolutionMeshView().get_num_edges();
     glBegin(GL_LINES);
     for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_edges(); i++)
     {
@@ -2381,7 +2377,7 @@ void SceneView::paintEdgeLine()
     }
 }
 
-const double* SceneView::paletteColor(double x)
+const double* SceneView::paletteColor(double x) const
 {
     logMessage("SceneView::paletteColor()");
 
@@ -2452,7 +2448,7 @@ const double* SceneView::paletteColor(double x)
     }
 }
 
-const double* SceneView::paletteColorOrder(int n)
+const double* SceneView::paletteColorOrder(int n) const
 {
     logMessage("SceneView::paletteColorOrder()");
 
@@ -3876,7 +3872,7 @@ SceneLabel *SceneView::findClosestLabel(const Point &point)
     return labelClosest;
 }
 
-void SceneView::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments)
+void SceneView::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const
 {
     logMessage("SceneView::drawArc()");
 
@@ -3895,7 +3891,7 @@ void SceneView::drawArc(const Point &point, double r, double startAngle, double 
     glEnd();
 }
 
-void SceneView::drawBlend(Point start, Point end, double red, double green, double blue, double alpha)
+void SceneView::drawBlend(Point start, Point end, double red, double green, double blue, double alpha) const
 {
     logMessage("SceneView::drawBlend()");
 
@@ -4230,18 +4226,21 @@ void SceneView::setSceneFont()
     setFont(Util::config()->sceneFont);
 }
 
-void SceneView::doSetProjectionXY() {
+void SceneView::doSetProjectionXY()
+{
     m_rotation3d.x = m_rotation3d.y = m_rotation3d.z = 0.0;
     updateGL();
 }
 
-void SceneView::doSetProjectionXZ() {
+void SceneView::doSetProjectionXZ()
+{
     m_rotation3d.y = m_rotation3d.z = 0.0;
     m_rotation3d.x = 90.0;
     updateGL();
 }
 
-void SceneView::doSetProjectionYZ() {
+void SceneView::doSetProjectionYZ()
+{
     m_rotation3d.x = m_rotation3d.y = 90.0;
     m_rotation3d.z = 0.0;
     updateGL();

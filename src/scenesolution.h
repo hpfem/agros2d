@@ -50,13 +50,13 @@ public:
     void setSolutionArrayList(QList<SolutionArray *> solutionArrayList);
     inline QList<SolutionArray *> solutionArrayList() { return m_solutionArrayList; }
     void setTimeStep(int timeStep, bool showViewProgress = true);
-    inline int timeStep() { return m_timeStep; }
-    int timeStepCount();
-    double time();
+    inline int timeStep() const { return m_timeStep; }
+    int timeStepCount() const;
+    double time() const;
 
-    bool isSolved() { return (m_timeStep != -1); }
-    bool isMeshed() { return m_meshInitial; }
-    bool isSolving() { return m_isSolving; }
+    bool isSolved() const { return (m_timeStep != -1); }
+    bool isMeshed()  const { return m_meshInitial; }
+    bool isSolving() const { return m_isSolving; }
 
     // mesh
     inline Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
@@ -81,13 +81,13 @@ public:
     // order view
     Orderizer *ordView();
 
-    inline int timeElapsed() { return m_timeElapsed; }
+    inline int timeElapsed() const { return m_timeElapsed; }
     double adaptiveError();
     int adaptiveSteps();
     inline void setTimeElapsed(int timeElapsed) { m_timeElapsed = timeElapsed; }
 
-    int findTriangleInMesh(Mesh *mesh, const Point &point);
-    int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point);
+    int findTriangleInMesh(Mesh *mesh, const Point &point) const;
+    int findTriangleInVectorizer(const Vectorizer &vecVectorView, const Point &point) const;
 
     // process
     void processSolutionMesh();

@@ -136,7 +136,7 @@ public:
     SceneLabel *findClosestLabel(const Point &point);
 
     inline SceneViewSettings &sceneViewSettings() { return m_sceneViewSettings; }
-    inline SceneMode sceneMode() { return m_sceneMode; }
+    inline SceneMode sceneMode() const { return m_sceneMode; }
 
     ErrorResult saveImageToFile(const QString &fileName, int w = 0, int h = 0);
     void saveImagesForReport(const QString &path, bool showRulers, bool showGrid, int w = 0, int h = 0);
@@ -150,7 +150,7 @@ public:
 
     void setSceneFont();
 
-    inline bool is3DMode()
+    inline bool is3DMode() const
     {
         return ((m_sceneMode == SceneMode_Postprocessor) &&
                 (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D ||
@@ -250,8 +250,8 @@ private:
     void createMenu();
 
     // palette
-    const double *paletteColor(double x);
-    const double *paletteColorOrder(int n);
+    const double *paletteColor(double x) const;
+    const double *paletteColorOrder(int n) const;
     void paletteCreate();
     void paletteFilter();
     void paletteUpdateTexAdjust();
@@ -287,21 +287,21 @@ private:
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
 
-    void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments);
-    void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75);
+    void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const;
+    void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
 
     void setZoom(double power);
     void selectRegion(const Point &start, const Point &end);
 
-    void loadProjection2d(bool setScene = false);
-    void loadProjection3d(bool setScene = false);
+    void loadProjection2d(bool setScene = false) const;
+    void loadProjection3d(bool setScene = false) const;
 
-    inline Point position(double x, double y)
+    inline Point position(double x, double y) const
     {
         return position(Point(x, y));
     }
 
-    inline Point position(const Point &point)
+    inline Point position(const Point &point) const
     {
         return Point((2.0/contextWidth()*point.x-1)/m_scale2d*aspect()+m_offset2d.x,
                      -(2.0/contextHeight()*point.y-1)/m_scale2d+m_offset2d.y);

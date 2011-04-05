@@ -271,7 +271,7 @@ int SceneSolution::adaptiveSteps()
     return (isSolved()) ? m_solutionArrayList.value(m_timeStep * Util::scene()->problemInfo()->hermes()->numberOfSolution())->adaptiveSteps : 0.0;
 }
 
-int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &point)
+int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInVectorizer()");
 
@@ -307,7 +307,7 @@ int SceneSolution::findTriangleInVectorizer(const Vectorizer &vec, const Point &
     return -1;
 }
 
-int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point)
+int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point) const
 {
     logMessage("SceneSolution::findTriangleInMesh()");
 
@@ -368,14 +368,14 @@ void SceneSolution::setTimeStep(int timeStep, bool showViewProgress)
     emit timeStepChanged(showViewProgress);
 }
 
-int SceneSolution::timeStepCount()
+int SceneSolution::timeStepCount() const
 {
     logMessage("SceneSolution::timeStepCount()");
 
     return (!m_solutionArrayList.isEmpty()) ? m_solutionArrayList.count() / Util::scene()->problemInfo()->hermes()->numberOfSolution() : 0;
 }
 
-double SceneSolution::time()
+double SceneSolution::time() const
 {
     logMessage("SceneSolution::time()");
 
@@ -489,6 +489,8 @@ void SceneSolution::processRangeScalar()
     {
         ViewScalarFilter *viewScalarFilter = Util::scene()->problemInfo()->hermes()->viewScalarFilter(sceneView()->sceneViewSettings().scalarPhysicFieldVariable,
                                                                                                       sceneView()->sceneViewSettings().scalarPhysicFieldVariableComp);
+        // qDebug() << "void SceneSolution::processRangeScalar()";
+
         setSlnScalarView(viewScalarFilter);
         emit processedRangeScalar();
     }
