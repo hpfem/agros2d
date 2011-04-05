@@ -146,7 +146,9 @@ void DSceneEdgeMarker::createDialog()
     createContent();
 
     layout->addWidget(new QLabel("Equation:"), 99, 0);
+#ifdef BETA
     layout->addWidget(lblEquation, 99, 1);
+#endif
     layout->addWidget(buttonBox, 100, 0, 1, 2);
 
     txtName->setFocus();
@@ -249,6 +251,9 @@ void DSceneLabelMarker::createDialog()
     // content
     createContent();
 
+#ifdef BETA
+    layout->addWidget(lblEquation, 99, 1);
+#endif
     layout->addWidget(buttonBox, 100, 0, 1, 2);
 
     txtName->setFocus();
