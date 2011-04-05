@@ -80,7 +80,7 @@ void SceneViewSettings::defaultValues()
     showGeometry = true;
     showInitialMesh = false;
 
-    postprocessorShow = SceneViewPostprocessorShow_ScalarView;
+    postprocessorShow = SceneViewPostprocessorShow_ScalarView3DSolid;
 
     showContours = false;
     showVectors = false;
@@ -366,37 +366,25 @@ void SceneView::loadProjection3d(bool setScene)
 {
     logMessage("SceneView::loadProjection3d()");
 
-    int fov = 50.0;
-    double znear = 0.001;
-    double zfar = 100.0;
-
-    double right = znear * tan((double) fov / 2.0 / 180.0 * M_PI);
-    double top = (double) contextHeight() / contextWidth() * right;
-    double left = -right;
-    double bottom = -top;
-    double offsx = (right - left) / contextWidth();
-    double offsy = (top - bottom) / contextHeight();
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    // glFrustum(left - offsx, right - offsx, bottom - offsy, top - offsy, znear, zfar);
-    glOrtho(3.0, contextWidth()-6.0, contextHeight()-6.0, 3.0, -10.0, -10.0);
+    glOrtho(-0.5, 0.5, -0.5, 0.5, 4.0, 15.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     if (setScene)
     {
-        glScaled(1.0/aspect(), 1.0, 1.0);
+        glScaled(1.0/aspect(), 1.0, 0.1);
 
         // move to origin
-        RectPoint rect = Util::scene()->boundingBox();
-        glTranslated(-m_offset3d.x, -m_offset3d.y, 0.0);
+        glTranslated(-m_offset3d.x, -m_offset3d.y, 1.0);
 
         glRotated(m_rotation3d.x, 1.0, 0.0, 0.0);
         glRotated(m_rotation3d.z, 0.0, 1.0, 0.0);
         glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
 
+        RectPoint rect = Util::scene()->boundingBox();
         if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_ScalarView3D)
         {
             glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
@@ -449,8 +437,6 @@ void SceneView::paintGL()
 
     if (is3DMode())
     {
-        glClear(GL_DEPTH_BUFFER_BIT);
-
         if (m_scene->sceneSolution()->isMeshed() && (m_sceneMode == SceneMode_Postprocessor))
         {
             if (m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model) paintScalarField3DSolid();

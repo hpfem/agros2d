@@ -183,9 +183,9 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void closeEvent(QCloseEvent *event);
 
-    inline int contextWidth() { return context()->device()->width(); }
-    inline int contextHeight() { return context()->device()->height(); }
-    inline double aspect() { return (double) contextWidth() / (double) contextHeight(); }
+    inline int contextWidth() const { return context()->device()->width(); }
+    inline int contextHeight() const { return context()->device()->height(); }
+    inline double aspect() const { return (double) contextWidth() / (double) contextHeight(); }
 
 private:
     Scene *m_scene;
