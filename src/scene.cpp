@@ -68,6 +68,7 @@ void ProblemInfo::clear()
     adaptivityType = AdaptivityType_None;
     adaptivitySteps = 0;
     adaptivityTolerance = 1.0;
+    maxDOFs = MAX_DOFS;
 
     // harmonic
     frequency = 0.0;
@@ -188,7 +189,7 @@ void Util::createSingleton()
 }
 
 Util *Util::singleton()
-{    
+{
     return m_singleton;
 }
 
@@ -1348,6 +1349,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
     m_problemInfo->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
+    m_problemInfo->maxDOFs = eleProblem.toElement().attribute("maxdofs").toInt();
+    // Only for compatibility
+    if (m_problemInfo->maxDOFs == 0)
+        m_problemInfo->maxDOFs = MAX_DOFS;
 
     // harmonic
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();
@@ -1545,6 +1550,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("adaptivitytype", adaptivityTypeToStringKey(m_problemInfo->adaptivityType));
     eleProblem.setAttribute("adaptivitysteps", m_problemInfo->adaptivitySteps);
     eleProblem.setAttribute("adaptivitytolerance", m_problemInfo->adaptivityTolerance);
+    eleProblem.setAttribute("maxdofs", m_problemInfo->maxDOFs);
     // harmonic magnetic
     eleProblem.setAttribute("frequency", m_problemInfo->frequency);
     // transient

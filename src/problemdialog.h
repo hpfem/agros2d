@@ -59,6 +59,7 @@ private:
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     SLineEditDouble *txtAdaptivityTolerance;
+    QSpinBox *txtMaxDOFs;
     QComboBox *cmbMatrixSolver;
 
     // harmonic

@@ -52,6 +52,7 @@ ProblemDialog::~ProblemDialog()
     delete txtPolynomialOrder;
     delete txtAdaptivitySteps;
     delete txtAdaptivityTolerance;
+    delete txtMaxDOFs;
     delete cmbAdaptivityType;
 
     // harmonic
@@ -123,6 +124,10 @@ QWidget *ProblemDialog::createControlsGeneral()
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new SLineEditDouble(1);
+    txtMaxDOFs = new QSpinBox(this);
+    txtMaxDOFs->setMinimum(1e2);
+    txtMaxDOFs->setMaximum(1e9);
+    txtMaxDOFs->setSingleStep(1e2);
     cmbMatrixSolver = new QComboBox();
 
     // harmonic
@@ -164,7 +169,9 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutProblemTable->addWidget(txtAdaptivitySteps, 8, 1);
     layoutProblemTable->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
     layoutProblemTable->addWidget(txtAdaptivityTolerance, 9, 1);
-    // right    
+    layoutProblemTable->addWidget(new QLabel(tr("Maximum number of DOFs:")), 10, 0);
+    layoutProblemTable->addWidget(txtMaxDOFs, 10, 1);
+    // right
     layoutProblemTable->addWidget(new QLabel(tr("Linear solver:")), 2, 2);
     layoutProblemTable->addWidget(cmbMatrixSolver, 2, 3);
     layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
@@ -270,6 +277,7 @@ void ProblemDialog::load()
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_problemInfo->adaptivityType));
     txtAdaptivitySteps->setValue(m_problemInfo->adaptivitySteps);
     txtAdaptivityTolerance->setValue(m_problemInfo->adaptivityTolerance);
+    txtMaxDOFs->setValue(m_problemInfo->maxDOFs);
     // harmonic magnetic
     txtFrequency->setValue(m_problemInfo->frequency);
     // transient
@@ -357,6 +365,10 @@ bool ProblemDialog::save()
             return false;
         }
     }
+    if (txtMaxDOFs->value() <= 0) {
+        QMessageBox::critical(this, tr("Error"), tr("Maximum DOFS must be greater then zero."));
+        return false;
+    }
 
     // run and check startup script
     if (!txtStartupScript->toPlainText().isEmpty())
@@ -378,6 +390,7 @@ bool ProblemDialog::save()
     m_problemInfo->adaptivityType = (AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt();
     m_problemInfo->adaptivitySteps = txtAdaptivitySteps->value();
     m_problemInfo->adaptivityTolerance = txtAdaptivityTolerance->value();
+    m_problemInfo->maxDOFs = txtMaxDOFs->value();
 
     m_problemInfo->frequency = txtFrequency->value();
 
@@ -436,6 +449,7 @@ void ProblemDialog::doAdaptivityChanged(int index)
 
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtMaxDOFs->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void ProblemDialog::doAnalysisTypeChanged(int index)

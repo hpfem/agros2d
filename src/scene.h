@@ -57,6 +57,7 @@ public:
     AdaptivityType adaptivityType;
     int adaptivitySteps;
     double adaptivityTolerance; // percent
+    int maxDOFs;
     QString scriptStartup;
     QString description;
 

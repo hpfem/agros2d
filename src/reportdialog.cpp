@@ -376,12 +376,13 @@ QString ReportDialog::replaceTemplates(const QString &source)
             destination.replace("[ProblemInformation.AdaptivityType]", "<table><tr><td>" + tr("Adaptivity type:") + "</td><td>" + adaptivityTypeString(Util::scene()->problemInfo()->adaptivityType) + "</td></tr>", Qt::CaseSensitive);
             destination.replace("[ProblemInformation.AdaptivitySteps]", "<tr><td>" + tr("Adaptivity steps:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivitySteps) + "</td></tr>", Qt::CaseSensitive);
             destination.replace("[ProblemInformation.AdaptivityTolerance]", "<tr><td>" + tr("Adaptivity tolerance:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->adaptivityTolerance) + "</td></tr></table>", Qt::CaseSensitive);
+            destination.replace("[ProblemInformation.MaxDOFs]", "<tr><td>" + tr("Maximum DOFs:") + "</td><td>" + QString::number(Util::scene()->problemInfo()->maxDOFs) + "</td></tr></table>", Qt::CaseSensitive);
         }
         else
         {
             // remove empty tags
-            QString tag [3] = {"[ProblemInformation.AdaptivityType]", "[ProblemInformation.AdaptivitySteps]",
-                               "[ProblemInformation.AdaptivityTolerance]"};
+            QString tag [4] = {"[ProblemInformation.AdaptivityType]", "[ProblemInformation.AdaptivitySteps]",
+                               "[ProblemInformation.AdaptivityTolerance]", "[ProblemInformation.MaxDOFs]"};
 
             for (int i = 0; i < 3; i++)
             {
@@ -411,14 +412,15 @@ QString ReportDialog::replaceTemplates(const QString &source)
     else
     {
         // remove empty tags
-        QString tag [16] = {"[ProblemInformation.Label]", "[ProblemInformation.Name]",
+        QString tag [17] = {"[ProblemInformation.Label]", "[ProblemInformation.Name]",
                            "[ProblemInformation.Date]", "[ProblemInformation.FileName]",
                            "[ProblemInformation.ProblemType]", "[ProblemInformation.PhysicField]",
                            "[ProblemInformation.AnalysisType]", "[ProblemInformation.NumberOfRefinements]",
                            "[ProblemInformation.PolynomialOrder]", "[ProblemInformation.AdaptivityType]",
-                           "[ProblemInformation.AdaptivitySteps]", "[ProblemInformation.AdaptivityTolerance]",
-                           "[ProblemInformation.Frequency]", "[ProblemInformation.TimeStep]",
-                           "[ProblemInformation.TimeTotal]", "[ProblemInformation.InititalCondition]"};
+                           "[ProblemInformation.AdaptivityType]", "[ProblemInformation.AdaptivitySteps]",
+                           "[ProblemInformation.AdaptivityTolerance]", "[ProblemInformation.Frequency]",
+                           "[ProblemInformation.TimeStep]", "[ProblemInformation.TimeTotal]",
+                           "[ProblemInformation.InititalCondition]"};
 
         for (int i = 0; i < 16; i++)
         {

@@ -180,6 +180,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
     int adaptivitySteps = Util::scene()->problemInfo()->adaptivitySteps;
     double adaptivityTolerance = Util::scene()->problemInfo()->adaptivityTolerance;
+    int maxDOFs = Util::scene()->problemInfo()->maxDOFs;
     int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
     double timeTotal = Util::scene()->problemInfo()->timeTotal.number;
     double initialCondition = Util::scene()->problemInfo()->initialCondition.number;
@@ -312,7 +313,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
         }
         else
         {
-            // reference solution            
+            // reference solution
             for (int j = 0; j < numberOfSolution; j++)
                 solutionReference.push_back(new Solution());
 
@@ -363,7 +364,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 // add error to the list
                 progressItemSolve->addAdaptivityError(error, Space::get_num_dofs(space));
 
-                if (error < adaptivityTolerance || Space::get_num_dofs(space) >= NDOF_STOP)
+                if (error < adaptivityTolerance || Space::get_num_dofs(space) >= maxDOFs)
                 {
                     break;
                 }

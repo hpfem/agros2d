@@ -42,7 +42,7 @@
 #define EPS_ZERO 1e-10
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
-#define NDOF_STOP 40000
+#define MAX_DOFS 60e3
 #define CONST_DOUBLE 1e100
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
