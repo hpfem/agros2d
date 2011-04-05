@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="5" polynomialorder="2" problemtype="axisymmetric" timetotal="1.0" type="magnetic" timestep="1.0" id="0" name="unnamed" initialcondition="0.0">
+        <problem adaptivitytolerance="1" maxdofs="60000" frequency="0" numberofrefinements="1" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="steadystate" adaptivitysteps="5" polynomialorder="2" problemtype="axisymmetric" timetotal="1.0" type="magnetic" timestep="1.0" id="0" name="unnamed" initialcondition="0.0">
             <scriptstartup></scriptstartup>
             <description>Woofer femm 4.2 model
 http://www.femm.info/wiki/Woofer</description>

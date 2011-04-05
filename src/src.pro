@@ -3,7 +3,7 @@ QT += opengl \
     xml \
     network
 
-CONFIG(debug): DEFINES += BETA
+# CONFIG(debug): DEFINES += BETA
 # DEFINES += VERSION_BETA
 DEFINES += VERSION_MAJOR=1
 DEFINES += VERSION_MINOR=8
