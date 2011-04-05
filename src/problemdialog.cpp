@@ -148,57 +148,114 @@ QWidget *ProblemDialog::createControlsGeneral()
     connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
     fillComboBox();
 
-    QGridLayout *layoutProblemTable = new QGridLayout();
-    // top
-    layoutProblemTable->addWidget(new QLabel(tr("Name:")), 1, 0);
-    layoutProblemTable->addWidget(txtName, 1, 1, 1, 3);
+    int minWidth = 130;
+
+    // table
+    QGridLayout *layoutTable = new QGridLayout();
+    layoutTable->setColumnMinimumWidth(0, minWidth);
+    layoutTable->setColumnStretch(1, 1);
+    layoutTable->addWidget(new QLabel(tr("Date:")), 2, 0);
+    layoutTable->addWidget(dtmDate, 2, 1);
+    layoutTable->addWidget(new QLabel(tr("Physic field:")), 3, 0);
+    layoutTable->addWidget(cmbPhysicField, 3, 1);
+    layoutTable->addWidget(new QLabel(tr("Problem type:")), 4, 0);
+    layoutTable->addWidget(cmbProblemType, 4, 1);
+    layoutTable->addWidget(new QLabel(tr("Type of analysis:")), 5, 0);
+    layoutTable->addWidget(cmbAnalysisType, 5, 1);
+    layoutTable->addWidget(new QLabel(tr("Adaptivity:")), 6, 0);
+    layoutTable->addWidget(cmbAdaptivityType, 6, 1);
+    layoutTable->addWidget(new QLabel(tr("Linear solver:")), 7, 0);
+    layoutTable->addWidget(cmbMatrixSolver, 7, 1);
+
+    // harmonic analysis
+    QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
+    layoutHarmonicAnalysis->setColumnMinimumWidth(0, minWidth);
+    layoutHarmonicAnalysis->addWidget(new QLabel(tr("Frequency (Hz):")), 0, 0);
+    layoutHarmonicAnalysis->addWidget(txtFrequency, 0, 1);
+
+    QGroupBox *grpHarmonicAnalysis = new QGroupBox(tr("Harmonic analysis"));
+    grpHarmonicAnalysis->setLayout(layoutHarmonicAnalysis);
+
+    // harmonic analysis
+    QGridLayout *layoutTransientAnalysis = new QGridLayout();
+    layoutTransientAnalysis->setColumnMinimumWidth(0, minWidth);
+    layoutTransientAnalysis->setColumnStretch(1, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Time step (s):")), 0, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTimeStep, 0, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 1, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 1, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 2, 0);
+    layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 2, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Steps:")), 3, 0);
+    layoutTransientAnalysis->addWidget(lblTransientSteps, 3, 1);
+
+    QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
+    grpTransientAnalysis->setLayout(layoutTransientAnalysis);
+
+    // harmonic analysis
+    QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->setColumnMinimumWidth(0, minWidth);
+    layoutMesh->setColumnStretch(1, 1);
+    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 0, 0);
+    layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
+    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 1, 0);
+    layoutMesh->addWidget(txtPolynomialOrder, 1, 1);
+
+    QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
+    grpMesh->setLayout(layoutMesh);
+
+    // adaptivity
+    QGridLayout *layoutAdaptivity = new QGridLayout();
+    layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
+    layoutAdaptivity->setColumnStretch(1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity steps:")), 0, 0);
+    layoutAdaptivity->addWidget(txtAdaptivitySteps, 0, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 1, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Maximum number of DOFs:")), 2, 0);
+    layoutAdaptivity->addWidget(txtMaxDOFs, 2, 1);
+
+    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    grpAdaptivity->setLayout(layoutAdaptivity);
+
     // left
-    layoutProblemTable->addWidget(new QLabel(tr("Date:")), 2, 0);
-    layoutProblemTable->addWidget(dtmDate, 2, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Physic field:")), 3, 0);
-    layoutProblemTable->addWidget(cmbPhysicField, 3, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Problem type:")), 4, 0);
-    layoutProblemTable->addWidget(cmbProblemType, 4, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Number of refinements:")), 5, 0);
-    layoutProblemTable->addWidget(txtNumberOfRefinements, 5, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Polynomial order:")), 6, 0);
-    layoutProblemTable->addWidget(txtPolynomialOrder, 6, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity:")), 7, 0);
-    layoutProblemTable->addWidget(cmbAdaptivityType, 7, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity steps:")), 8, 0);
-    layoutProblemTable->addWidget(txtAdaptivitySteps, 8, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Adaptivity tolerance (%):")), 9, 0);
-    layoutProblemTable->addWidget(txtAdaptivityTolerance, 9, 1);
-    layoutProblemTable->addWidget(new QLabel(tr("Maximum number of DOFs:")), 10, 0);
-    layoutProblemTable->addWidget(txtMaxDOFs, 10, 1);
-    // right
-    layoutProblemTable->addWidget(new QLabel(tr("Linear solver:")), 2, 2);
-    layoutProblemTable->addWidget(cmbMatrixSolver, 2, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Type of analysis:")), 3, 2);
-    layoutProblemTable->addWidget(cmbAnalysisType, 3, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Frequency (Hz):")), 4, 2);
-    layoutProblemTable->addWidget(txtFrequency, 4, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Time step (s):")), 5, 2);
-    layoutProblemTable->addWidget(txtTransientTimeStep, 5, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Total time (s):")), 6, 2);
-    layoutProblemTable->addWidget(txtTransientTimeTotal, 6, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Initial condition:")), 7, 2);
-    layoutProblemTable->addWidget(txtTransientInitialCondition, 7, 3);
-    layoutProblemTable->addWidget(new QLabel(tr("Steps:")), 8, 2);
-    layoutProblemTable->addWidget(lblTransientSteps, 8, 3);
+    QVBoxLayout *layoutLeft = new QVBoxLayout();
+    layoutLeft->addLayout(layoutTable);
+    // layoutLeft->addWidget(grpAdaptivity);
+    layoutLeft->addStretch();
+    layoutLeft->addWidget(grpMesh);
+
+     // right
+    QVBoxLayout *layoutRight = new QVBoxLayout();
+    layoutRight->addWidget(grpHarmonicAnalysis);
+    layoutRight->addWidget(grpTransientAnalysis);
+    // layoutRight->addWidget(grpMesh);
+    layoutRight->addWidget(grpAdaptivity);
+    layoutRight->addStretch();
+
+    // both
+    QHBoxLayout *layoutPanel = new QHBoxLayout();
+    layoutPanel->addLayout(layoutLeft);
+    layoutPanel->addLayout(layoutRight);
+
+    // name
+    QGridLayout *layoutName = new QGridLayout();
+    layoutName->setColumnMinimumWidth(0, minWidth);
+    layoutName->setColumnStretch(1, 1);
+    layoutName->addWidget(new QLabel(tr("Name:")), 0, 0);
+    layoutName->addWidget(txtName, 0, 1);
 
     // equation
-    QHBoxLayout *layoutEquation = new QHBoxLayout();
-    layoutEquation->addWidget(new QLabel(tr("Equation:")));
-    layoutEquation->addWidget(lblEquationPixmap, 1);
-
-    // QWidget *widgetEquation = new QWidget(this);
-    // widgetEquation->setLayout(widgetEquation);
+    QGridLayout *layoutEquation = new QGridLayout();
+    layoutEquation->setColumnMinimumWidth(0, minWidth);
+    layoutEquation->setColumnStretch(1, 1);
+    layoutEquation->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    layoutEquation->addWidget(lblEquationPixmap, 0, 1, 1, 1, Qt::AlignLeft);
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
-    layoutProblem->addLayout(layoutProblemTable);
-    // layoutProblem->addWidget();
+    layoutProblem->addLayout(layoutName);
     layoutProblem->addLayout(layoutEquation);
+    layoutProblem->addLayout(layoutPanel);
 
     QWidget *widMain = new QWidget();
     widMain->setLayout(layoutProblem);
