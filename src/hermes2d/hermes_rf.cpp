@@ -241,7 +241,7 @@ void callbackRFWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 
 // *******************************************************************************************************
 
-int HermesRF::numberOfSolution()
+int HermesRF::numberOfSolution() const
 {
     return (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic) ? 2 : 1;
 }

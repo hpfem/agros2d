@@ -27,13 +27,12 @@ struct HermesAcoustic : public HermesField
 {
     Q_OBJECT
 public:
-    HermesAcoustic() { m_physicField = PhysicField_Acoustic; }
-    virtual ~HermesAcoustic() {}
+    PhysicField physicField() const { return PhysicField_Acoustic; }
 
-    inline int numberOfSolution() { return 2; }
-    bool hasSteadyState() { return false; }
-    bool hasHarmonic() { return true; }
-    bool hasTransient()
+    inline int numberOfSolution() const { return 2; }
+    inline bool hasSteadyState() const { return false; }
+    inline bool hasHarmonic() const { return true; }
+    inline bool hasTransient() const
     {
 #ifdef BETA
     return true;

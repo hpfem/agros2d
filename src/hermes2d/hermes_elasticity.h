@@ -27,13 +27,12 @@ struct HermesElasticity : public HermesField
 {
     Q_OBJECT
 public:
-    HermesElasticity() { m_physicField = PhysicField_Elasticity; }
-    virtual ~HermesElasticity() {}
+    PhysicField physicField() const { return PhysicField_Elasticity; }
 
-    inline int numberOfSolution() { return 2; }
-    bool hasSteadyState() { return true; }
-    bool hasHarmonic() { return false; }
-    bool hasTransient() { return false; }
+    inline int numberOfSolution() const { return 2; }
+    bool hasSteadyState() const { return true; }
+    bool hasHarmonic() const { return false; }
+    bool hasTransient() const { return false; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
     void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);

@@ -51,15 +51,12 @@ struct HermesField : public QObject
 {
     Q_OBJECT
 public:
-    HermesField() { m_physicField = PhysicField_Undefined; }
-    virtual ~HermesField() {}
+    virtual PhysicField physicField() const { return PhysicField_Undefined; }
 
-    inline PhysicField physicField() { return m_physicField; }
-
-    virtual int numberOfSolution() = 0;
-    virtual bool hasSteadyState() = 0;
-    virtual bool hasHarmonic() = 0;
-    virtual bool hasTransient() = 0;
+    virtual int numberOfSolution() const = 0;
+    virtual bool hasSteadyState() const = 0;
+    virtual bool hasHarmonic() const = 0;
+    virtual bool hasTransient() const = 0;
 
     virtual void readEdgeMarkerFromDomElement(QDomElement *element) = 0;
     virtual void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker) = 0;
@@ -104,9 +101,6 @@ public:
 
     virtual inline void deformShape(double3* linVert, int count) {}
     virtual inline void deformShape(double4* linVert, int count) {}
-
-protected:
-    PhysicField m_physicField;
 };
 
 HermesField *hermesFieldFactory(PhysicField physicField);

@@ -541,8 +541,8 @@ ViewScalarFilter *HermesElasticity::viewScalarFilter(PhysicFieldVariable physicF
 template <class T>
 void deformShapeTemplate(T linVert, int count)
 {
-    double min =  CONST_DOUBLE;
-    double max = -CONST_DOUBLE;
+    double min =  numeric_limits<double>::max();
+    double max = -numeric_limits<double>::max();
     for (int i = 0; i < count; i++)
     {
         double x = linVert[i][0];

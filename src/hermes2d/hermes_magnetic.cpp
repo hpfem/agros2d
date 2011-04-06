@@ -242,7 +242,7 @@ void callbackMagneticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 
 // *******************************************************************************************************
 
-int HermesMagnetic::numberOfSolution()
+int HermesMagnetic::numberOfSolution() const
 {
     return (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic) ? 2 : 1;
 }

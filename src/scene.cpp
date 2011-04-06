@@ -40,10 +40,10 @@
 
 #include "scripteditordialog.h"
 
- PhysicField ProblemInfo::physicField()
- {
-     return (m_hermes) ? m_hermes->physicField() : PhysicField_Undefined;
- }
+PhysicField ProblemInfo::physicField()
+{
+    return (m_hermes) ? m_hermes->physicField() : PhysicField_Undefined;
+}
 
 void ProblemInfo::clear()
 {
@@ -673,23 +673,25 @@ RectPoint Scene::boundingBox() const
 {
     logMessage("RectPoint Scene::boundingBox()");
 
-    Point min( CONST_DOUBLE,  CONST_DOUBLE);
-    Point max(-CONST_DOUBLE, -CONST_DOUBLE);
-
-    foreach (SceneNode *node, nodes) {
-        if (node->point.x<min.x) min.x = node->point.x;
-        if (node->point.x>max.x) max.x = node->point.x;
-        if (node->point.y<min.y) min.y = node->point.y;
-        if (node->point.y>max.y) max.y = node->point.y;
+    if (nodes.isEmpty())
+    {
+        return RectPoint(Point(-0.5, -0.5), Point(0.5, 0.5));
     }
-
-    RectPoint rect;
-    if (nodes.length() > 0)
-        rect.set(min, max);
     else
-        rect.set(Point(-0.5, -0.5), Point(0.5, 0.5));
+    {
+        Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
+        Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
 
-    return rect;
+        foreach (SceneNode *node, nodes)
+        {
+            min.x = qMin(min.x, node->point.x);
+            max.x = qMax(max.x, node->point.x);
+            min.y = qMin(min.y, node->point.y);
+            max.y = qMax(max.y, node->point.y);
+        }
+
+        return RectPoint(min, max);
+    }
 }
 
 void Scene::selectNone()
@@ -1221,7 +1223,7 @@ void Scene::writeToDxf(const QString &fileName)
     // edges
     for (int i = 0; i<edges.length(); i++)
     {
-        if (edges[i]->angle == 0)
+        if (fabs(edges[i]->angle) < EPS_ZERO)
         {
             // line
             double x1 = edges[i]->nodeStart->point.x;
@@ -1350,10 +1352,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     m_problemInfo->adaptivityType = adaptivityTypeFromStringKey(eleProblem.toElement().attribute("adaptivitytype"));
     m_problemInfo->adaptivitySteps = eleProblem.toElement().attribute("adaptivitysteps").toInt();
     m_problemInfo->adaptivityTolerance = eleProblem.toElement().attribute("adaptivitytolerance").toDouble();
-    m_problemInfo->maxDOFs = eleProblem.toElement().attribute("maxdofs").toInt();
-    // Only for compatibility
-    if (m_problemInfo->maxDOFs == 0)
-        m_problemInfo->maxDOFs = MAX_DOFS;
+    m_problemInfo->maxDOFs = eleProblem.toElement().attribute("maxdofs", QString::number(MAX_DOFS)).toInt();
 
     // harmonic
     m_problemInfo->frequency = eleProblem.toElement().attribute("frequency", "0").toDouble();

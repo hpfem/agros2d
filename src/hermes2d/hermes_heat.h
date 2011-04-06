@@ -26,14 +26,13 @@
 struct HermesHeat : public HermesField
 {
     Q_OBJECT
-public:
-    HermesHeat() { m_physicField = PhysicField_Heat; }
-    virtual ~HermesHeat() {}
+public:    
+    PhysicField physicField() const { return PhysicField_Heat; }
 
-    inline int numberOfSolution() { return 1; }
-    bool hasSteadyState() { return true; }
-    bool hasHarmonic() { return false; }
-    bool hasTransient() { return true; }
+    inline int numberOfSolution() const { return 1; }
+    inline bool hasSteadyState() const { return true; }
+    inline bool hasHarmonic() const { return false; }
+    inline bool hasTransient() const { return true; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
     void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);

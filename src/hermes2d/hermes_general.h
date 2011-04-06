@@ -27,13 +27,12 @@ struct HermesGeneral : public HermesField
 {
     Q_OBJECT
 public:
-    HermesGeneral() { m_physicField = PhysicField_General; }
-    virtual ~HermesGeneral() {}
+    PhysicField physicField() const { return PhysicField_General; }
 
-    inline int numberOfSolution() { return 1; }
-    bool hasSteadyState() { return true; }
-    bool hasHarmonic() { return false; }
-    bool hasTransient() { return false; }
+    inline int numberOfSolution() const { return 1; }
+    inline bool hasSteadyState() const { return true; }
+    inline bool hasHarmonic() const { return false; }
+    inline bool hasTransient() const { return false; }
 
     void readEdgeMarkerFromDomElement(QDomElement *element);
     void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);

@@ -39,11 +39,12 @@
 
 #include "value.h"
 
+// zero
 #define EPS_ZERO 1e-10
+
+// physical constants
 #define EPS0 8.854e-12
 #define MU0 4*M_PI*1e-7
-#define MAX_DOFS 60e3
-#define CONST_DOUBLE 1e100
 
 #define deg2rad(degrees) (degrees*M_PI/180.0)
 #define rad2deg(radians) (radians*180.0/M_PI)
@@ -719,5 +720,8 @@ const ProjNormType ADAPTIVITY_PROJNORMTYPE = HERMES_H1_NORM;
 // command argument
 const QString COMMANDS_TRIANGLE = "%1 -p -P -q30.0 -e -A -a -z -Q -I \"%2\"";
 const QString COMMANDS_FFMPEG = "%1 -r %2 -y -i \"%3video_%08d.png\" -vcodec %4 \"%5\"";
+
+// max dofs
+const int MAX_DOFS = 60e3;
 
 #endif // UTIL_H
