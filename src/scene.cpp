@@ -1337,6 +1337,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     QDomNode eleProblem = eleProblems.toElement().elementsByTagName("problem").at(0);
     // name
     m_problemInfo->name = eleProblem.toElement().attribute("name");
+    // date
+    m_problemInfo->date = QDate::fromString(eleProblem.toElement().attribute("date", QDate::currentDate().toString(Qt::ISODate)), Qt::ISODate);
     // problem type                                                                                                                                                                                                                             `
     m_problemInfo->problemType = problemTypeFromStringKey(eleProblem.toElement().attribute("problemtype"));
     // analysis type
@@ -1536,6 +1538,8 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("id", 0);
     // name
     eleProblem.setAttribute("name", m_problemInfo->name);
+    // date
+    eleProblem.setAttribute("date", m_problemInfo->date.toString(Qt::ISODate));
     // problem type
     eleProblem.toElement().setAttribute("problemtype", problemTypeToStringKey(m_problemInfo->problemType));
     // analysis type
