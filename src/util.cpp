@@ -28,10 +28,12 @@ static QHash<PhysicField, QString> physicFieldList;
 static QHash<PhysicFieldVariable, QString> physicFieldVariableList;
 static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QHash<PhysicFieldBC, QString> physicFieldBCList;
+static QHash<TEMode, QString> teModeList;
 static QHash<SceneViewPostprocessorShow, QString> sceneViewPostprocessorShowList;
 static QHash<AdaptivityType, QString> adaptivityTypeList;
 static QHash<AnalysisType, QString> analysisTypeList;
 static QHash<MatrixSolverType, QString> matrixSolverTypeList;
+
 
 QString analysisTypeToStringKey(AnalysisType analysisType) { return analysisTypeList[analysisType]; }
 AnalysisType analysisTypeFromStringKey(const QString &analysisType) { return analysisTypeList.key(analysisType); }
@@ -48,8 +50,8 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC) { return physicFieldBCList[physicFieldBC]; }
 PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC) { return physicFieldBCList.key(physicFieldBC); }
 
-//QString teModeToStringKey(TEMode teMode) { return teModeList[teMode]; }
-//TEMode teModeFromStringKey(const QString &teMode) { return teModeList.key(teMode); }
+QString teModeToStringKey(TEMode teMode) { return teModeList[teMode]; }
+TEMode teModeFromStringKey(const QString &teMode) { return teModeList.key(teMode); }
 
 QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList[sceneViewPostprocessorShow]; }
 SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList.key(sceneViewPostprocessorShow); }
@@ -206,6 +208,10 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_Impedance, "acoustic_impedance");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_MatchedBoundary, "acoustic_matched_boundary");
 
+    //TEMODE
+    teModeList.insert(TEMode_0, "TE Mode 0");
+    teModeList.insert(TEMode_1, "TE Mode 1");
+    teModeList.insert(TEMode_2, "TE Mode 2");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");

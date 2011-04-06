@@ -56,7 +56,7 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
     // FIXME: pro port zadavat z GUI
     int mode;
-    if (rfEdge[e->edge_marker].mode == TEMode_1)
+    if (rfEdge[e->edge_marker].mode == TEMode_0)
         mode = 1;
     else
         mode = 0;
@@ -287,9 +287,9 @@ void HermesRF::readEdgeMarkerFromDomElement(QDomElement *element)
     switch (type)
     {
     case PhysicFieldBC_None:
+        break;
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
-    case PhysicFieldBC_RF_MatchedBoundary:
         Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
                                                            type,
                                                            Value(element->attribute("value_real", "0")),
@@ -300,6 +300,11 @@ void HermesRF::readEdgeMarkerFromDomElement(QDomElement *element)
                                                            type,
                                                            Value(element->attribute("power", "0")),
                                                            Value(element->attribute("phase", "0"))));
+        break;
+    case PhysicFieldBC_RF_MatchedBoundary:
+        Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
+                                                           type,
+                                                           Value(element->attribute("height", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -317,7 +322,6 @@ void HermesRF::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker
     {
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
-    case PhysicFieldBC_RF_MatchedBoundary:
         element->setAttribute("value_real", edgeRFMarker->value_real.text);
         element->setAttribute("value_imag", edgeRFMarker->value_imag.text);
         break;
@@ -325,11 +329,13 @@ void HermesRF::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker
         element->setAttribute("power", edgeRFMarker->value_real.text);
         element->setAttribute("phase", edgeRFMarker->value_imag.text);
         break;
+    case PhysicFieldBC_RF_MatchedBoundary:
+        element->setAttribute("height", edgeRFMarker->height.text);
+        break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
         break;
     }
-
 }
 
 void HermesRF::readLabelMarkerFromDomElement(QDomElement *element)
@@ -338,8 +344,8 @@ void HermesRF::readLabelMarkerFromDomElement(QDomElement *element)
                                                          Value(element->attribute("permittivity", "1")),
                                                          Value(element->attribute("permeability", "1")),
                                                          Value(element->attribute("conductivity", "0")),
-                                                         Value(element->attribute("current density - real", "0")),
-                                                         Value(element->attribute("current density - imag", "0"))));
+                                                         Value(element->attribute("current_density_real", "0")),
+                                                         Value(element->attribute("current_density_imag", "0"))));
 }
 
 void HermesRF::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
@@ -349,8 +355,8 @@ void HermesRF::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMark
     element->setAttribute("permittivity", labelRFMarker->permittivity.text);
     element->setAttribute("permeability", labelRFMarker->permeability.text);
     element->setAttribute("conductivity", labelRFMarker->conductivity.text);
-    element->setAttribute("current density - real", labelRFMarker->current_density_real.text);
-    element->setAttribute("current density - imag", labelRFMarker->current_density_imag.text);
+    element->setAttribute("current_density_real", labelRFMarker->current_density_real.text);
+    element->setAttribute("current_density_imag", labelRFMarker->current_density_imag.text);
 }
 
 LocalPointValue *HermesRF::localPointValue(const Point &point)
@@ -399,17 +405,23 @@ SceneEdgeMarker *HermesRF::newEdgeMarker()
 
 SceneEdgeMarker *HermesRF::newEdgeMarker(PyObject *self, PyObject *args)
 {
-    double value1, value2;
+    double value1, value2, height;
     char *name, *type;
-    if (PyArg_ParseTuple(args, "ssdd", &name, &type, &value1, &value2))
+    if (PyArg_ParseTuple(args, "ssdd|d", &name, &type, &value1, &value2, &height))
     {
         // check name
         if (Util::scene()->getEdgeMarker(name)) return NULL;
 
+        if (physicFieldBCFromStringKey(type) == (PhysicFieldBC_RF_ElectricField || PhysicFieldBC_RF_MagneticField || PhysicFieldBC_RF_Port))
         return new SceneEdgeRFMarker(name,
                                      physicFieldBCFromStringKey(type),
                                      Value(QString::number(value1)),
                                      Value(QString::number(value2)));
+        if (physicFieldBCFromStringKey(type) == (PhysicFieldBC_RF_MatchedBoundary))
+        return new SceneEdgeRFMarker(name,
+                                     physicFieldBCFromStringKey(type),
+                                     Value(QString::number(height)));
+
     }
 
     return NULL;
@@ -417,31 +429,32 @@ SceneEdgeMarker *HermesRF::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneEdgeMarker *HermesRF::modifyEdgeMarker(PyObject *self, PyObject *args)
 {
-    double value1, value2;
+    double value1, value2, height;
     char *name, *type;
-    if (PyArg_ParseTuple(args, "ssd", &name, &type, &value1, &value2))
+    if (PyArg_ParseTuple(args, "ssd|d", &name, &type, &value1, &value2, &height))
     {
         if (SceneEdgeRFMarker *marker = dynamic_cast<SceneEdgeRFMarker *>(Util::scene()->getEdgeMarker(name)))
         {
             if (physicFieldBCFromStringKey(type))
             {
                 marker->type = physicFieldBCFromStringKey(type);
-                if ((marker->type == PhysicFieldBC_RF_ElectricField) || (marker->type == PhysicFieldBC_RF_MagneticField))
-                {
-                    marker->value_real = Value(QString::number(value1));
-                    marker->value_imag = Value(QString::number(value2));
-                }
-                else if (marker->type == PhysicFieldBC_RF_Port)
-                {
-                    // marker->power = Value(QString::number(power));
-                    // marker->phase = Value(QString::number(phase));
-                }
                 return marker;
             }
             else
             {
                 PyErr_SetString(PyExc_RuntimeError, QObject::tr("Boundary type '%1' is not supported.").arg(type).toStdString().c_str());
                 return NULL;
+            }
+
+            if ((physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_ElectricField) || (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_MagneticField) || (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_Port))
+            {
+                marker->value_real = Value(QString::number(value1));
+                marker->value_imag = Value(QString::number(value2));
+            }
+            if (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_MatchedBoundary)
+            {
+                marker->height = Value(QString::number(height));
+
             }
         }
         else
@@ -1026,6 +1039,11 @@ SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Va
 {
     this->value_real = value_real;
     this->value_imag = value_imag;
+}
+
+SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height) : SceneEdgeMarker(name, type)
+{
+    this->height = height;
 }
 
 QString SceneEdgeRFMarker::script()

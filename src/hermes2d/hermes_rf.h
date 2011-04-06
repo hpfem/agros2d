@@ -156,6 +156,7 @@ public:
     Value phase;
 
     SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
+    SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height);
 
     QString script();
     QMap<QString, QString> data();
