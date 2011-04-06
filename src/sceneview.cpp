@@ -1422,7 +1422,9 @@ void SceneView::paintScalarField3D()
 
         double max = qMax(m_scene->boundingBox().width(), m_scene->boundingBox().height());
 
-        if (!Util::config()->scalarView3DLighting)
+        if (Util::config()->scalarView3DLighting)
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        else
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         glPushMatrix();
@@ -1481,6 +1483,9 @@ void SceneView::paintScalarField3D()
         }
         glEnd();
 
+        // remove normal
+        delete [] normal;
+
         glDisable(GL_TEXTURE_1D);
         glDisable(GL_LIGHTING);
 
@@ -1518,7 +1523,7 @@ void SceneView::paintScalarField3D()
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
 
-            if (edge->isCurved())
+            if (edge->isStraight())
             {
                 glBegin(GL_LINES);
                 glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, 0.0);
@@ -1537,9 +1542,6 @@ void SceneView::paintScalarField3D()
             glDisable(GL_LINE_STIPPLE);
             glLineWidth(1.0);
         }
-
-        // remove normal
-        delete [] normal;
 
         glDisable(GL_DEPTH_TEST);
 
@@ -1610,13 +1612,18 @@ void SceneView::paintScalarField3DSolid()
         {
             glEnable(GL_TEXTURE_1D);
             glBindTexture(GL_TEXTURE_1D, 1);
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
             // set texture transformation matrix
             glMatrixMode(GL_TEXTURE);
             glLoadIdentity();
             glTranslated(m_texShift, 0.0, 0.0);
             glScaled(m_texScale, 0.0, 0.0);
+        }
+        else
+        {
+            glColor3d(0.7, 0.7, 0.7);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
         }
 
         initLighting();
@@ -1643,11 +1650,14 @@ void SceneView::paintScalarField3DSolid()
                 }
 
                 // z = - depth / 2.0
-                computeNormal(point[0].x, point[0].y, -depth/2.0,
-                              point[1].x, point[1].y, -depth/2.0,
-                              point[2].x, point[2].y, -depth/2.0,
-                              normal);
-                glNormal3d(normal[0], normal[1], normal[2]);
+                if (Util::config()->scalarView3DLighting || isModel)
+                {
+                    computeNormal(point[0].x, point[0].y, -depth/2.0,
+                                  point[1].x, point[1].y, -depth/2.0,
+                                  point[2].x, point[2].y, -depth/2.0,
+                                  normal);
+                    glNormal3d(normal[0], normal[1], normal[2]);
+                }
 
                 for (int j = 0; j < 3; j++)
                 {
@@ -1656,11 +1666,14 @@ void SceneView::paintScalarField3DSolid()
                 }
 
                 // z = + depth / 2.0
-                computeNormal(point[0].x, point[0].y, depth/2.0,
-                              point[1].x, point[1].y, depth/2.0,
-                              point[2].x, point[2].y, depth/2.0,
-                              normal);
-                glNormal3d(normal[0], normal[1], normal[2]);
+                if (Util::config()->scalarView3DLighting || isModel)
+                {
+                    computeNormal(point[0].x, point[0].y, depth/2.0,
+                                  point[1].x, point[1].y, depth/2.0,
+                                  point[2].x, point[2].y, depth/2.0,
+                                  normal);
+                    glNormal3d(normal[0], normal[1], normal[2]);
+                }
 
                 for (int j = 0; j < 3; j++)
                 {
@@ -1691,11 +1704,14 @@ void SceneView::paintScalarField3DSolid()
                         continue;
                 }
 
-                computeNormal(point[0].x, point[0].y, -depth/2.0,
-                              point[1].x, point[1].y, -depth/2.0,
-                              point[1].x, point[1].y,  depth/2.0,
-                              normal);
-                glNormal3d(normal[0], normal[1], normal[2]);
+                if (Util::config()->scalarView3DLighting || isModel)
+                {
+                    computeNormal(point[0].x, point[0].y, -depth/2.0,
+                                  point[1].x, point[1].y, -depth/2.0,
+                                  point[1].x, point[1].y,  depth/2.0,
+                                  normal);
+                    glNormal3d(normal[0], normal[1], normal[2]);
+                }
 
                 if (!isModel) glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
                 glVertex3d(point[0].x, point[0].y, -depth/2.0);
@@ -1730,11 +1746,14 @@ void SceneView::paintScalarField3DSolid()
 
                 for (int j = 0; j < 2; j++)
                 {
-                    computeNormal(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI),
-                                  point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
-                                  point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI),
-                                  normal);
-                    glNormal3d(normal[0], normal[1], normal[2]);
+                    if (Util::config()->scalarView3DLighting || isModel)
+                    {
+                        computeNormal(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI),
+                                      point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
+                                      point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI),
+                                      normal);
+                        glNormal3d(normal[0], normal[1], normal[2]);
+                    }
 
                     glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
                     glVertex3d(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI));
@@ -1771,11 +1790,15 @@ void SceneView::paintScalarField3DSolid()
                 double step = phi/count;
                 for (int j = 0; j < count; j++)
                 {
-                    computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
-                                  point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
-                                  point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI),
-                                  normal);
-                    glNormal3d(normal[0], normal[1], normal[2]);
+                    if (Util::config()->scalarView3DLighting || isModel)
+                    {
+
+                        computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
+                                      point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
+                                      point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI),
+                                      normal);
+                        glNormal3d(normal[0], normal[1], normal[2]);
+                    }
 
                     if (!isModel) glTexCoord1d((value[0] - m_sceneViewSettings.scalarRangeMin) * irange);
                     glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
@@ -1814,11 +1837,12 @@ void SceneView::paintScalarField3DSolid()
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
 
+            // top and bottom
             foreach (SceneEdge *edge, m_scene->edges)
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    if (edge->isCurved())
+                    if (edge->isStraight())
                     {
                         glBegin(GL_LINES);
                         glVertex3d(edge->nodeStart->point.x, edge->nodeStart->point.y, - depth/2.0 + j*depth);
@@ -1847,6 +1871,16 @@ void SceneView::paintScalarField3DSolid()
                     }
                 }
             }
+
+            // side
+            glBegin(GL_LINES);
+            foreach (SceneNode *node, m_scene->nodes)
+            {
+                glVertex3d(node->point.x, node->point.y,  depth/2.0);
+                glVertex3d(node->point.x, node->point.y, -depth/2.0);
+            }
+            glEnd();
+
             glLineWidth(1.0);
         }
         else
@@ -1857,11 +1891,12 @@ void SceneView::paintScalarField3DSolid()
                       Util::config()->colorEdges.blueF());
             glLineWidth(Util::config()->edgeWidth);
 
+            // top
             foreach (SceneEdge *edge, m_scene->edges)
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    if (edge->isCurved())
+                    if (edge->isStraight())
                     {
                         glBegin(GL_LINES);
                         glVertex3d(edge->nodeStart->point.x * cos(j*phi/180.0*M_PI), edge->nodeStart->point.y, edge->nodeStart->point.x * sin(j*phi/180.0*M_PI));
@@ -1890,6 +1925,22 @@ void SceneView::paintScalarField3DSolid()
                     }
                 }
             }
+
+            // side
+            foreach (SceneNode *node, m_scene->nodes)
+            {
+                int count = 30;
+                double step = phi/count;
+
+                glBegin(GL_LINE_STRIP);
+                for (int j = 0; j < count; j++)
+                {
+                    glVertex3d(node->point.x * cos((j+0)*step/180.0*M_PI), node->point.y, node->point.x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(node->point.x * cos((j+1)*step/180.0*M_PI), node->point.y, node->point.x * sin((j+1)*step/180.0*M_PI));
+                }
+                glEnd();
+            }
+
             glLineWidth(1.0);
         }
 
@@ -2542,69 +2593,38 @@ void SceneView::initLighting()
 
     if (Util::config()->scalarView3DLighting || m_sceneViewSettings.postprocessorShow == SceneViewPostprocessorShow_Model)
     {
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        // environment
+        float light_specular[] = {  1.0f, 1.0f, 1.0f, 1.0f };
+        float light_ambient[]  = {  0.7f, 0.7f, 0.7f, 1.0f };
+        float light_diffuse[]  = {  1.0f, 1.0f, 1.0f, 1.0f };
+        float light_position[] = {  1.0f, 0.0f, 1.0f, 0.0f };
 
-        float light_specular[] = {  0.3f, 0.3f, 0.3f, 1.0f };
-        float light_ambient[]  = {  0.1f, 0.1f, 0.1f, 1.0f };
-        float light_diffuse[]  = {  0.8f, 0.8f, 0.8f, 0.9f };
-        float light_position[] = {  0.0f, 10.0f, 0.0f, 1.0f };
-
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
         glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-        glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
-        // glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-        float material_specular[] = { 0.5f, 0.5f, 0.5f, 0.5f };
-        float material_ambient[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
-        float material_diffuse[]  = { 0.8f, 0.8f, 0.8f, 1.0f };
-
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 8);
-        glDisable(GL_COLOR_MATERIAL);
-
-        glShadeModel(GL_SMOOTH);
-        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-#if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
-        glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-#endif
-
-        /*
-        double light_specular[] = {  0.1f, 0.1f, 0.1f, 1.0f };
-        double light_ambient[]  = {  0.1f, 0.1f, 0.1f, 1.0f };
-        double light_diffuse[]  = {  0.8f, 0.8f, 0.8f, 0.9f };
-        double light_position[] = {  -100.0f, -60.0f, 10.0f, 0.0f };
-
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
-        glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-        glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
+        glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
         glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-        double material_ambient[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
-        double material_diffuse[]  = { 0.8f, 0.8f, 0.8f, 0.8f };
-        double material_specular[] = { 0.5f, 0.5f, 0.5f, 0.5f };
+        // material
+        float material_ambient[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
+        float material_diffuse[]  = { 0.5f, 0.5f, 0.5f, 1.0f };
+        float material_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material_ambient);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 8);
-        glDisable(GL_COLOR_MATERIAL);
+        glMaterialf(GL_FRONT, GL_SHININESS, 128.0);
 
+        // glEnable(GL_COLOR_MATERIAL);
+        glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL_EXT, GL_SEPARATE_SPECULAR_COLOR_EXT);
         glShadeModel(GL_SMOOTH);
-        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-        #if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
-            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-        #endif
-        */
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
     }
     else
     {
-
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
     }
 }
 
@@ -4055,7 +4075,7 @@ void SceneView::paintPostprocessorSelectedSurface()
 
         if (edge->isSelected)
         {
-            if (edge->isCurved())
+            if (edge->isStraight())
             {
                 glBegin(GL_LINES);
                 glVertex2d(edge->nodeStart->point.x, edge->nodeStart->point.y);

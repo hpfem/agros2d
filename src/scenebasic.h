@@ -86,7 +86,7 @@ public:
     double distance(const Point &point) const;
     int segments() const; // needed by mesh generator
     double length() const;
-    bool isCurved() const { return (fabs(angle) < EPS_ZERO); }
+    bool isStraight() const { return (fabs(angle) < EPS_ZERO); }
 
     int showDialog(QWidget *parent, bool isNew = false);
 };

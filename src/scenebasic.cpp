@@ -94,7 +94,7 @@ double SceneEdge::distance(const Point &point) const
 {
     logMessage("SceneEdge::distance()");
 
-    if (isCurved())
+    if (isStraight())
     {
         double t = ((point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y)) /
                    ((nodeEnd->point.x-nodeStart->point.x)*(nodeEnd->point.x-nodeStart->point.x) + (nodeEnd->point.y-nodeStart->point.y)*(nodeEnd->point.y-nodeStart->point.y));
@@ -141,7 +141,7 @@ int SceneEdge::segments() const
 
 double SceneEdge::length() const
 {
-    if (isCurved())
+    if (isStraight())
         return (nodeEnd->point - nodeStart->point).magnitude();
     else
         return radius() * angle / 180.0 * M_PI;
