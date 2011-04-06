@@ -290,17 +290,13 @@ void HermesRF::readEdgeMarkerFromDomElement(QDomElement *element)
         break;
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
+    case PhysicFieldBC_RF_Port:
         Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
                                                            type,
                                                            Value(element->attribute("value_real", "0")),
                                                            Value(element->attribute("value_imag", "0"))));
         break;
-    case PhysicFieldBC_RF_Port:
-        Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
-                                                           type,
-                                                           Value(element->attribute("power", "0")),
-                                                           Value(element->attribute("phase", "0"))));
-        break;
+
     case PhysicFieldBC_RF_MatchedBoundary:
         Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
                                                            type,
@@ -322,12 +318,9 @@ void HermesRF::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker
     {
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
+    case PhysicFieldBC_RF_Port:
         element->setAttribute("value_real", edgeRFMarker->value_real.text);
         element->setAttribute("value_imag", edgeRFMarker->value_imag.text);
-        break;
-    case PhysicFieldBC_RF_Port:
-        element->setAttribute("power", edgeRFMarker->value_real.text);
-        element->setAttribute("phase", edgeRFMarker->value_imag.text);
         break;
     case PhysicFieldBC_RF_MatchedBoundary:
         element->setAttribute("height", edgeRFMarker->height.text);
