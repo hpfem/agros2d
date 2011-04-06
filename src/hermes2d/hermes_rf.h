@@ -50,7 +50,10 @@ public:
 
     inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_RF_ElectricField ||
                                                                           physicFieldBC == PhysicFieldBC_RF_MagneticField ||
+                                                                          physicFieldBC == PhysicFieldBC_RF_MatchedBoundary ||
                                                                           physicFieldBC == PhysicFieldBC_RF_Port); }
+    inline bool teModeCheck(TEMode teMode) { return (teMode == TEMode_0 || teMode == TEMode_1 || teMode == TEMode_2); }
+
     inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_RF_MagneticField ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldImag ||

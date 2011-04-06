@@ -483,7 +483,6 @@ enum PhysicFieldBC
 
 enum TEMode
 {
-    TEMode_None,
     TEMode_0,
     TEMode_1,
     TEMode_2
@@ -630,6 +629,7 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
 QString physicFieldString(PhysicField physicField);
 QString analysisTypeString(AnalysisType analysisType);
 QString physicFieldBCString(PhysicFieldBC physicFieldBC);
+QString teModeString(TEMode teMode);
 QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
 QString problemTypeString(ProblemType problemType);
 QString adaptivityTypeString(AdaptivityType adaptivityType);

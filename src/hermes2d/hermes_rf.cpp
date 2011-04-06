@@ -1138,15 +1138,16 @@ void DSceneEdgeRFMarker::createContent()
     txtHeight = new ValueLineEdit(this);
 
     cmbMode = new QComboBox(this);
-    cmbMode->addItem("0", TEMode_0);
-    cmbMode->addItem("1", TEMode_1);
-    cmbMode->addItem("2", TEMode_2);
+    cmbMode->addItem(teModeString(TEMode_0), TEMode_0);
+    cmbMode->addItem(teModeString(TEMode_1), TEMode_1);
+    cmbMode->addItem(teModeString(TEMode_2), TEMode_2);
 
     // set active marker
     doTypeChanged(cmbType->currentIndex());
 
     connect(txtValueReal, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtValueImag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtHeight, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
     QHBoxLayout *layoutCurrentDensity = new QHBoxLayout();
     layoutCurrentDensity->addWidget(txtValueReal);
@@ -1227,7 +1228,6 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
     case PhysicFieldBC_RF_MatchedBoundary:
     {
         txtHeight->setEnabled(true);
-        cmbMode->setEnabled(true);
     }
         break;
 

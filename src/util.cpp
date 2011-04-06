@@ -48,6 +48,9 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC) { return physicFieldBCList[physicFieldBC]; }
 PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC) { return physicFieldBCList.key(physicFieldBC); }
 
+//QString teModeToStringKey(TEMode teMode) { return teModeList[teMode]; }
+//TEMode teModeFromStringKey(const QString &teMode) { return teModeList.key(teMode); }
+
 QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList[sceneViewPostprocessorShow]; }
 SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow) { return sceneViewPostprocessorShowList.key(sceneViewPostprocessorShow); }
 
@@ -202,6 +205,7 @@ void initLists()
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_NormalAcceleration, "acoustic_normal_acceleration");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_Impedance, "acoustic_impedance");
     physicFieldBCList.insert(PhysicFieldBC_Acoustic_MatchedBoundary, "acoustic_matched_boundary");
+
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -802,6 +806,25 @@ QString analysisTypeString(AnalysisType analysisType)
         throw;
     }
 }
+
+QString teModeString(TEMode teMode)
+{
+    logMessage("TEModeString()");
+
+     switch (teMode)
+     {
+     case TEMode_0:
+     return QObject::tr("TE Mode 0");
+     case TEMode_1:
+     return QObject::tr("TE Mode 01");
+     case TEMode_2:
+     return QObject::tr("TE Mode 02");
+     default:
+         std::cerr << "TE mode '" + QString::number(teMode).toStdString() + "' is not implemented. TEModeString(TEMode teMode)" << endl;
+         throw;
+     }
+}
+
 
 QString physicFieldBCString(PhysicFieldBC physicFieldBC)
 {
