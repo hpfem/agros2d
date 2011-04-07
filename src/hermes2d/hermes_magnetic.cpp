@@ -85,10 +85,9 @@ Scalar magnetic_matrix_form_real_real(int n, double *wt, Func<Real> *u_ext[], Fu
                     * wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i])
                     - magneticLabel[e->elem_marker].conductivity * (wt[i] * u->val[i] *
                                                                     ((magneticLabel[e->elem_marker].velocity_x - e->y[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dx[i] +
-                                                                     (magneticLabel[e->elem_marker].velocity_y + e->x[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dy[i]));
+                                                                     (magneticLabel[e->elem_marker].velocity_y + e->x[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dy[i]))
 
-            if (analysisType == AnalysisType_Transient)
-                result += magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]) / timeStep;
+                    + ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]) / timeStep : 0.0);
         }
     else
         for (int i = 0; i < n; i++)
@@ -97,10 +96,9 @@ Scalar magnetic_matrix_form_real_real(int n, double *wt, Func<Real> *u_ext[], Fu
                     * (wt[i] * (e->x[i] > 0.0 ? ((v->dx[i] * u->val[i]) / e->x[i]) : 0.0) + wt[i] * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]))
                     - magneticLabel[e->elem_marker].conductivity * (wt[i] * u->val[i] *
                                                                     ((magneticLabel[e->elem_marker].velocity_x - e->y[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dx[i] +
-                                                                     (magneticLabel[e->elem_marker].velocity_y + e->x[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dy[i]));
+                                                                     (magneticLabel[e->elem_marker].velocity_y + e->x[i] * magneticLabel[e->elem_marker].velocity_angular) * v->dy[i]))
 
-            if (analysisType == AnalysisType_Transient)
-                result += magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]) / timeStep;
+            + ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * wt[i] * (u->val[i] * v->val[i]) / timeStep : 0.0);
         }
 
     return result;
@@ -178,10 +176,9 @@ Scalar magnetic_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Re
             result += wt[i] * magneticLabel[e->elem_marker].current_density_real * (v->val[i])
                     + wt[i] * magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability * MU0)
                     * (- sin(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dx[i]
-                       + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i]);
+                       + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i])
 
-            if (analysisType == AnalysisType_Transient)
-                result += magneticLabel[e->elem_marker].conductivity * wt[i] * (ext->fn[0]->val[i] * v->val[i]) / timeStep;
+            + ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * wt[i] * (ext->fn[0]->val[i] * v->val[i]) / timeStep : 0.0);
         }
     else
         for (int i = 0; i < n; i++)
@@ -189,10 +186,9 @@ Scalar magnetic_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Re
             result += wt[i] * magneticLabel[e->elem_marker].current_density_real  * (v->val[i])
                     - wt[i] * magneticLabel[e->elem_marker].remanence / (magneticLabel[e->elem_marker].permeability * MU0)
                     * (- sin(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dx[i]
-                       + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i]);
+                       + cos(magneticLabel[e->elem_marker].remanence_angle / 180.0 * M_PI) * v->dy[i])
 
-            if (analysisType == AnalysisType_Transient)
-                result += magneticLabel[e->elem_marker].conductivity * wt[i] * (ext->fn[0]->val[i] * v->val[i]) / timeStep;
+            + ((analysisType == AnalysisType_Transient) ? magneticLabel[e->elem_marker].conductivity * wt[i] * (ext->fn[0]->val[i] * v->val[i]) / timeStep : 0.0);
         }
 
     return result;
