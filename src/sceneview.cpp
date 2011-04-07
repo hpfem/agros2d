@@ -2616,7 +2616,9 @@ void SceneView::initLighting()
         glMaterialf(GL_FRONT, GL_SHININESS, 128.0);
 
         // glEnable(GL_COLOR_MATERIAL);
-        glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL_EXT, GL_SEPARATE_SPECULAR_COLOR_EXT);
+#if defined(GL_LIGHT_MODEL_COLOR_CONTROL) && defined(GL_SEPARATE_SPECULAR_COLOR)
+        glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+#endif
         glShadeModel(GL_SMOOTH);
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);

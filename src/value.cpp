@@ -25,7 +25,7 @@
 
 bool Value::evaluate(bool quiet)
 {
-    evaluate(0.0, quiet);
+    return evaluate(0.0, quiet);
 }
 
 bool Value::evaluate(double time, bool quiet)
