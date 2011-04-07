@@ -3980,7 +3980,7 @@
         <location filename="../src/util.cpp" line="247"/>
         <location filename="../src/util.cpp" line="333"/>
         <source>Displacement</source>
-        <translation>El. indukce</translation>
+        <translation>Posuv</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="249"/>

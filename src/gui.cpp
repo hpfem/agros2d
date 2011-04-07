@@ -34,7 +34,7 @@ void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const 
     item->setText(0, name);
     item->setText(1, text);
     item->setTextAlignment(1, Qt::AlignRight);
-    item->setText(2, unit + " ");
+    item->setText(2, QString("%1 ").arg(unit));
     item->setTextAlignment(2, Qt::AlignLeft);
 }
 

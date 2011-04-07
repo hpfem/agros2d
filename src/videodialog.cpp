@@ -304,7 +304,7 @@ void VideoDialog::doCreateImages()
     for (int i = 0; i < Util::scene()->sceneSolution()->timeStepCount(); i++)
     {
         progressBar->setValue(i);
-        Util::scene()->sceneSolution()->setTimeStep(i);
+        Util::scene()->sceneSolution()->setTimeStep(i, false);
         m_sceneView->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(i)).right(8)));
     }
 

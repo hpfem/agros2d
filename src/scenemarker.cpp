@@ -118,8 +118,10 @@ DSceneEdgeMarker::DSceneEdgeMarker(QWidget *parent) : QDialog(parent)
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
+#ifdef BETA
     lblEquation = new QLabel(this);
     lblEquation->setTextFormat(Qt::RichText);
+#endif
 }
 
 DSceneEdgeMarker::~DSceneEdgeMarker()
@@ -145,8 +147,8 @@ void DSceneEdgeMarker::createDialog()
     // content
     createContent();
 
-    layout->addWidget(new QLabel("Equation:"), 99, 0);
 #ifdef BETA
+    layout->addWidget(new QLabel("Equation:"), 99, 0);
     layout->addWidget(lblEquation, 99, 1);
 #endif
     layout->addWidget(buttonBox, 100, 0, 1, 2);
@@ -224,8 +226,10 @@ DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
+#ifdef BETA
     lblEquation = new QLabel(this);
     lblEquation->setTextFormat(Qt::RichText);
+#endif
 }
 
 DSceneLabelMarker::~DSceneLabelMarker()
@@ -252,6 +256,7 @@ void DSceneLabelMarker::createDialog()
     createContent();
 
 #ifdef BETA
+    layout->addWidget(new QLabel("Equation:"), 99, 0);
     layout->addWidget(lblEquation, 99, 1);
 #endif
     layout->addWidget(buttonBox, 100, 0, 1, 2);
