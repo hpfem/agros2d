@@ -37,7 +37,7 @@ public:
 #ifdef BETA
     return true;
 #else
-    return false;
+     return false;
 #endif
     }
 
@@ -57,8 +57,17 @@ public:
 
     inline bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) { return (physicFieldBC == PhysicFieldBC_Acoustic_Pressure ||
                                                                           physicFieldBC == PhysicFieldBC_Acoustic_NormalAcceleration ||
-                                                                          physicFieldBC == PhysicFieldBC_Acoustic_Impedance); }
-    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal); }
+                                                                          physicFieldBC == PhysicFieldBC_Acoustic_Impedance ||
+                                                                          physicFieldBC == PhysicFieldBC_Acoustic_MatchedBoundary); }
+    inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Pressure ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_PressureReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_PressureImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_LocalVelocity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_LocalAcceleration ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_PressureLevel ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Density ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_Acoustic_Speed); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);

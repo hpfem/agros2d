@@ -437,8 +437,8 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 // update essential bc values
                 update_essential_bc_values(space);
 
-                // dp->assemble(matrix, rhs, (n > 0));
-                dp->assemble(matrix, rhs);
+                dp->assemble(matrix, rhs, (n > 0));
+                // dp->assemble(matrix, rhs);
 
                 if (Space::get_num_dofs(space) == 0)
                 {

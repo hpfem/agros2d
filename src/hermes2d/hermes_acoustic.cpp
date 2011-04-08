@@ -776,7 +776,7 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
 
         SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(valueReal.marker);
         // solution
-        if (marker != NULL)
+        if (marker)
         {            
             density = marker->density.number;
             speed = marker->speed.number;

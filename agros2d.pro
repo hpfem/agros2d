@@ -64,3 +64,6 @@ linux-g++ {
         report \
         desktop
 }
+
+OTHER_FILES += \
+    agros2d.supp
