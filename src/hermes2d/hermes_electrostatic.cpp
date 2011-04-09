@@ -741,25 +741,25 @@ DSceneEdgeElectrostaticMarker::DSceneEdgeElectrostaticMarker(SceneEdgeElectrosta
     setSize();
 }
 
-DSceneEdgeElectrostaticMarker::~DSceneEdgeElectrostaticMarker()
-{
-    delete cmbType;
-    delete txtValue;
-}
-
 void DSceneEdgeElectrostaticMarker::createContent()
 {
+    lblValueUnit = new QLabel("");
+
     cmbType = new QComboBox(this);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_Potential), PhysicFieldBC_Electrostatic_Potential);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Electrostatic_SurfaceCharge), PhysicFieldBC_Electrostatic_SurfaceCharge);
+    connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValue = new ValueLineEdit(this);
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
-    layout->addWidget(cmbType, 1, 1);
-    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
-    layout->addWidget(txtValue, 2, 1);
+    // set active marker
+    doTypeChanged(cmbType->currentIndex());
+
+    layout->addWidget(new QLabel(tr("BC type:")), 4, 0);
+    layout->addWidget(cmbType, 4, 2);
+    layout->addWidget(lblValueUnit, 11, 0);
+    layout->addWidget(txtValue, 11, 2);
 }
 
 void DSceneEdgeElectrostaticMarker::load()
@@ -787,6 +787,35 @@ bool DSceneEdgeElectrostaticMarker::save() {
     return true;
 }
 
+void DSceneEdgeElectrostaticMarker::doTypeChanged(int index)
+{
+    txtValue->setEnabled(false);
+
+    // read equation
+    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+
+    // enable controls
+    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
+    {
+    case PhysicFieldBC_Electrostatic_Potential:
+    {
+        txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>%1</i><sub>0</sub> (V)").arg(QString::fromUtf8("φ")));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
+    }
+        break;
+    case PhysicFieldBC_Electrostatic_SurfaceCharge:
+    {
+        txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>%1</i><sub>0</sub> (C/m<sup>2</sup>)").arg(QString::fromUtf8("σ")));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
+    }
+        break;
+    }
+
+    setMinimumSize(sizeHint());
+}
+
 // *************************************************************************************************************************************
 
 DSceneLabelElectrostaticMarker::DSceneLabelElectrostaticMarker(QWidget *parent, SceneLabelElectrostaticMarker *labelElectrostaticMarker) : DSceneLabelMarker(parent)
@@ -807,11 +836,11 @@ void DSceneLabelElectrostaticMarker::createContent()
     connect(txtPermittivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtChargeDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Permittivity")), 10, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("ε"))), 10, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("ε")),
+                                  tr("Permittivity")), 10, 0);
     layout->addWidget(txtPermittivity, 10, 2);
-    layout->addWidget(new QLabel(tr("Charge density")), 11, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i> (C/m<sup>3</sup>)").arg(QString::fromUtf8("ρ"))), 11, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i> (C/m<sup>3</sup>)").arg(QString::fromUtf8("ρ")),
+                                  tr("Charge density")), 11, 0);
     layout->addWidget(txtChargeDensity, 11, 2);
 }
 

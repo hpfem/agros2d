@@ -124,7 +124,6 @@ class DSceneEdgeMarker: public QDialog
 
 public:
     DSceneEdgeMarker(QWidget *parent);
-    ~DSceneEdgeMarker();
 
 protected:
     QGridLayout *layout;
@@ -144,6 +143,7 @@ protected:
 
 protected slots:
     void evaluated(bool isError);
+    void readEquation(QLabel *lblEquation, PhysicFieldBC type);
 
 private slots:
     void doAccept();
@@ -156,7 +156,6 @@ class DSceneLabelMarker: public QDialog
 
 public:
     DSceneLabelMarker(QWidget *parent);
-    ~DSceneLabelMarker();
 
 protected:
     QGridLayout *layout;

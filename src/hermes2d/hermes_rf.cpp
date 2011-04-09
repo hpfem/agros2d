@@ -1127,16 +1127,10 @@ DSceneEdgeRFMarker::DSceneEdgeRFMarker(SceneEdgeRFMarker *edgeRFMarker, QWidget 
     setSize();
 }
 
-DSceneEdgeRFMarker::~DSceneEdgeRFMarker()
-{
-    delete cmbType;
-    delete txtValueReal;
-    delete txtValueImag;
-    delete txtHeight;
-}
-
 void DSceneEdgeRFMarker::createContent()
 {
+    lblValueUnit = new QLabel("");
+
     cmbType = new QComboBox(this);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_ElectricField), PhysicFieldBC_RF_ElectricField);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_MagneticField), PhysicFieldBC_RF_MagneticField);
@@ -1165,15 +1159,15 @@ void DSceneEdgeRFMarker::createContent()
     layoutCurrentDensity->addWidget(new QLabel(" + j "));
     layoutCurrentDensity->addWidget(txtValueImag);
 
-    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
-    layout->addWidget(cmbType, 1, 1);
-    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
-    layout->addLayout(layoutCurrentDensity, 2, 1);
-    layout->addWidget(new QLabel(tr("TE mode:")), 3, 0);
-    layout->addWidget(cmbMode, 3, 1);
-    layout->addWidget(new QLabel(tr("Height:")), 4, 0);
-    layout->addWidget(txtHeight, 4, 1);
-
+    layout->addWidget(new QLabel(tr("BC type:")), 4, 0);
+    layout->addWidget(cmbType, 4, 2);
+    layout->addWidget(lblValueUnit, 10, 0);
+    layout->addLayout(layoutCurrentDensity, 10, 2);
+    layout->addWidget(new QLabel(tr("TE mode:")), 11, 0);
+    layout->addWidget(cmbMode, 11, 2);
+    layout->addWidget(createLabel(tr("<i>h</i> (m)"),
+                                  tr("Height:")), 12, 0);
+    layout->addWidget(txtHeight, 12, 2);
 }
 
 void DSceneEdgeRFMarker::load()
@@ -1282,17 +1276,18 @@ void DSceneLabelRFMarker::createContent()
     layoutCurrentDensity->addWidget(new QLabel(" + j "));
     layoutCurrentDensity->addWidget(txtCurrentDensityImag);
 
-    layout->addWidget(new QLabel(tr("Permittivity")), 10, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("ε"))), 10, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("ε")),
+                                  tr("Permittivity")), 10, 0);
     layout->addWidget(txtPermittivity, 10, 2);
-    layout->addWidget(new QLabel(tr("Permeability")), 11, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("μ"))), 11, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("μ")),
+                                  tr("Permeability")), 11, 0);
     layout->addWidget(txtPermeability, 11, 2);
-    layout->addWidget(new QLabel(tr("Conductivity")), 12, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i> (S/m)").arg(QString::fromUtf8("σ"))), 12, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i> (S/m)").arg(QString::fromUtf8("σ")),
+                                  tr("Conductivity")), 12, 0);
     layout->addWidget(txtConductivity, 12, 2);
-    layout->addWidget(new QLabel(tr("Current density")), 13, 0);
-    layout->addWidget(new QLabel(tr("<i>J</i><sub>ext</sub> (A/m<sup>2</sup>)")), 13, 1);
+    layout->addWidget(new QLabel(), 13, 0);
+    layout->addWidget(createLabel(tr("<i>J</i><sub>ext</sub> (A/m<sup>2</sup>)"),
+                                  tr("Current density")), 13, 0);
     layout->addLayout(layoutCurrentDensity, 13, 2);
 }
 

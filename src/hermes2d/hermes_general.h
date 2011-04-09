@@ -165,7 +165,6 @@ class DSceneEdgeGeneralMarker : public DSceneEdgeMarker
     Q_OBJECT
 public:
     DSceneEdgeGeneralMarker(SceneEdgeGeneralMarker *edgeGeneralMarker, QWidget *parent);
-    ~DSceneEdgeGeneralMarker();
 
 protected:
     void createContent();
@@ -174,8 +173,12 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
     ValueLineEdit *txtValue;
+
+private slots:
+    void doTypeChanged(int index);
 };
 
 class DSceneLabelGeneralMarker : public DSceneLabelMarker

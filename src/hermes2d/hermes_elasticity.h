@@ -206,6 +206,10 @@ protected:
     bool save();
 
 private:
+    QLabel *lblEquationX;
+    QLabel *lblEquationImageX;
+    QLabel *lblEquationY;
+    QLabel *lblEquationImageY;
     QComboBox *cmbTypeX;
     QComboBox *cmbTypeY;
     ValueLineEdit *txtForceX;

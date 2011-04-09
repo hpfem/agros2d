@@ -186,7 +186,6 @@ class DSceneEdgeHeatMarker : public DSceneEdgeMarker
 
 public:
     DSceneEdgeHeatMarker(SceneEdgeHeatMarker *edgeEdgeHeatMarker, QWidget *parent);
-    ~DSceneEdgeHeatMarker();
 
 protected:
     void createContent();

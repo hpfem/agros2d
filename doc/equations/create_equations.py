@@ -37,25 +37,38 @@ dir = "../../src/images/equations/"
 
 # current
 create_image(template, r"-\, \div \left( \sigma\,\, \grad \varphi \right) = 0", dir + "current/current_steadystate.png")
+create_image(template, r"\varphi = \varphi_0", dir + "current/current_potential.png")
+create_image(template, r"J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n_0} = J_0", dir + "current/current_inward_current_flow.png")
 
 # electrostatic
 create_image(template, r"-\, \div \left( \varepsilon\,\, \grad \varphi \right) = \rho", dir + "electrostatic/electrostatic_steadystate.png")
+create_image(template, r"\varphi = \varphi_0", dir + "electrostatic/electrostatic_potential.png")
+create_image(template, r"\sigma = D_\mathrm{n} = \varepsilon \frac{\partial \varphi}{\partial n_0} = \sigma_0", dir + "electrostatic/electrostatic_surface_charge_density.png")
 
 # elasticity
-create_image(template, r"-\, (\lambda + \mu)~\grad \div \vec{u} -\, \mu \triangle \vec{u} - \left( 3 \lambda + 2 \mu \right) \grad \alpha_\mathrm{T} = \vec{f}", dir + "elasticity/elasticity_steadystate.png")
+create_image(template, r"-\, (\lambda + \mu)~\grad \div \vec{u} -\, \mu \triangle \vec{u} - \alpha_\mathrm{T} \left( 3 \lambda + 2 \mu \right) \grad T = \vec{f}", dir + "elasticity/elasticity_steadystate.png")
 create_image(template, r"\lambda = \frac{\nu E}{(1 + \nu) (1 - 2 \nu)},\,\,\, \mu = \frac{E}{2(1 + \nu)}", dir + "elasticity/elasticity_coeffs.png")
+create_image(template, r"f = f_0", dir + "elasticity/elasticity_free.png")
+create_image(template, r"u = u_0", dir + "elasticity/elasticity_fixed.png")
 
 # heat
 create_image(template, r"-\, \div \left( \lambda\,\, \grad T \right) = Q", dir + "heat/heat_steadystate.png")
 create_image(template, r"-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \frac{\partial T}{\partial t} = Q", dir + "heat/heat_transient.png")
+create_image(template, r"T = T_0", dir + "heat/heat_temperature.png")
+create_image(template, r"f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right)", dir + "heat/heat_heat_flux.png")
 
 # general
 create_image(template, r"-\, \div \left( c\,\, \grad u \right) = r", dir + "general/general_steadystate.png")
+create_image(template, r"u = u_0", dir + "general/general_value.png")
+create_image(template, r"g_\mathrm{n} = \frac{\partial u}{\partial n_0} = g_0", dir + "general/general_derivative.png")
 
 # magnetic
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_steadystate.png")
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vec{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vec{A} + \sigma \frac{\partial \vec{A}}{\partial t} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_transient.png")
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \left( \curl \vecfaz{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vecfaz{A} + \mj \omega \sigma \vecfaz{A} = \vec{J}_\mathrm{ext}", dir + "magnetic/magnetic_harmonic.png")
+create_image(template, r"A = A_0", dir + "magnetic/magnetic_vector_potential.png")
+create_image(template, r"K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0", dir + "magnetic/magnetic_surface_current_density.png")
+
 
 # rf
 create_image(template, r"\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon \mu) \vecfaz{E} = \mj \omega \vecfaz{J}_\mathrm{ext}", dir + "rf/rf_harmonic.png")
@@ -63,6 +76,12 @@ create_image(template, r"\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) -
 # acoustic
 create_image(template, r"-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) - \frac{\omega^2}{\rho  c^2} \cdot p = 0", dir + "acoustic/acoustic_harmonic.png")
 create_image(template, r"-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0", dir + "acoustic/acoustic_transient.png")
+create_image(template, r"p = p_0", dir + "acoustic/acoustic_pressure.png")
+create_image(template, r"a_\mathrm{n} = \frac{1}{\rho} \frac{\partial p}{\partial n_0} = a_0", dir + "acoustic/acoustic_normal_acceleration.png")
+create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \mj \omega \frac{p}{Z_0}", dir + "acoustic/acoustic_impedance_harmonic.png")
+create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{Z_0} \frac{\partial p}{\partial t}", dir + "acoustic/acoustic_impedance_transient.png")
+create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \mj \omega \frac{p}{\rho c}", dir + "acoustic/acoustic_matched_boundary_harmonic.png")
+create_image(template, r"\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{\rho c} \frac{\partial p}{\partial t}", dir + "acoustic/acoustic_matched_boundary_transient.png")
 
 # flow
 create_image(template, r"\rho \vec{v} \cdot \grad \vec{v} = -\, \grad p + \mu \triangle \vec{v} + \vec{f},~\div \vec{v} = 0", dir + "flow/flow_steadystate.png")

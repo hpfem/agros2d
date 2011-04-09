@@ -479,9 +479,9 @@ void HermesElasticity::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *l
     itemThermalExpansion->setText(0, tr("Thermal expansion"));
     itemThermalExpansion->setExpanded(true);
 
-    addTreeWidgetItemValue(itemThermalExpansion, "Thermal exp. coef.:", QString("%1").arg(localPointValueElasticity->alpha, 0, 'e', 3), "1/deg");
-    addTreeWidgetItemValue(itemThermalExpansion, "Temperature:", QString("%1").arg(localPointValueElasticity->temp, 0, 'e', 3), "deg");
-    addTreeWidgetItemValue(itemThermalExpansion, "Ref. temperature:", QString("%1").arg(localPointValueElasticity->temp_ref, 0, 'e', 3), "deg");
+    addTreeWidgetItemValue(itemThermalExpansion, "Thermal exp. coef.:", QString("%1").arg(localPointValueElasticity->alpha, 0, 'e', 3), "1/K");
+    addTreeWidgetItemValue(itemThermalExpansion, "Temperature:", QString("%1").arg(localPointValueElasticity->temp, 0, 'e', 3), "K");
+    addTreeWidgetItemValue(itemThermalExpansion, "Ref. temperature:", QString("%1").arg(localPointValueElasticity->temp_ref, 0, 'e', 3), "K");
 
     // Von Mises stress
     addTreeWidgetItemValue(elasticityNode, tr("Von Mises stress:"), QString("%1").arg(localPointValueElasticity->von_mises_stress, 0, 'e', 3), "Pa");
@@ -677,9 +677,9 @@ QList<SolutionArray *> HermesElasticity::solve(ProgressItemSolve *progressItemSo
     }
 
     QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY),
-                                                                  Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY),
-                                                                  callbackElasticityWeakForm);
+                                                                 Hermes::vector<BCTypes *>(&bcTypesX, &bcTypesY),
+                                                                 Hermes::vector<BCValues *>(&bcValuesX, &bcValuesY),
+                                                                 callbackElasticityWeakForm);
 
     delete [] elasticityEdge;
     delete [] elasticityLabel;
@@ -1137,9 +1137,9 @@ QMap<QString, QString> SceneLabelElasticityMarker::data()
     out["Poisson ratio (-)"] = poisson_ratio.number;
     out["Volumetric force X (N/m3)"] = forceX.number;
     out["Volumetric force Y (N/m3)"] = forceX.number;
-    out["Thermal exp. coef. (1/deg)"] = alpha.number;
-    out["Volumetric force Y (deg)"] = temp.number;
-    out["Volumetric force Y (deg)"] = temp_ref.number;
+    out["Thermal exp. coef. (1/K)"] = alpha.number;
+    out["Temperature (K)"] = temp.number;
+    out["Ref. temperature (K)"] = temp_ref.number;
     return QMap<QString, QString>(out);
 }
 
@@ -1163,6 +1163,14 @@ DSceneEdgeElasticityMarker::DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker
 
 void DSceneEdgeElasticityMarker::createContent()
 {
+    lblEquation->setVisible(false);
+    lblEquationImage->setVisible(false);
+
+    lblEquationX = new QLabel(tr("Equation:"));
+    lblEquationImageX = new QLabel(this);
+    lblEquationY = new QLabel(tr("Equation:"));
+    lblEquationImageY = new QLabel(this);
+
     cmbTypeX = new QComboBox(this);
     cmbTypeX->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Free), PhysicFieldBC_Elasticity_Free);
     cmbTypeX->addItem(physicFieldBCString(PhysicFieldBC_Elasticity_Fixed), PhysicFieldBC_Elasticity_Fixed);
@@ -1182,25 +1190,39 @@ void DSceneEdgeElasticityMarker::createContent()
     doTypeYChanged(cmbTypeY->currentIndex());
 
     // X
-    QFormLayout *layoutX = new QFormLayout();
-    layoutX->addRow(tr("BC Type:"), cmbTypeX);
-    layoutX->addRow(tr("Force (N):"), txtForceX);
-    layoutX->addRow(tr("Displacement (m):"), txtDisplacementX);
+    QGridLayout *layoutX = new QGridLayout();
+    layoutX->addWidget(new QLabel(tr("BC Type:")), 0, 0);
+    layoutX->addWidget(cmbTypeX, 0, 1);
+    layoutX->addWidget(lblEquationX, 1, 0);
+    layoutX->addWidget(lblEquationImageX, 1, 1);
+    layoutX->addWidget(createLabel(tr("<i>f</i><sub>%1</sub> (N/m<sup>2</sup>)").arg(Util::scene()->problemInfo()->labelX()),
+                                   tr("Force")), 2, 0);
+    layoutX->addWidget(txtForceX, 2, 1);
+    layoutX->addWidget(createLabel(tr("<i>u</i><sub>%1</sub> (m)").arg(Util::scene()->problemInfo()->labelX()),
+                                   tr("Displacement")), 3, 0);
+    layoutX->addWidget(txtDisplacementX, 3, 1);
 
     QGroupBox *grpX = new QGroupBox(tr("Direction %1").arg(Util::scene()->problemInfo()->labelX()), this);
     grpX->setLayout(layoutX);
 
     // X
-    QFormLayout *layoutY = new QFormLayout();
-    layoutY->addRow(tr("BC Type:"), cmbTypeY);
-    layoutY->addRow(tr("Force (N):"), txtForceY);
-    layoutY->addRow(tr("Displacement (m):"), txtDisplacementY);
+    QGridLayout *layoutY = new QGridLayout();
+    layoutY->addWidget(new QLabel(tr("BC Type:")), 0, 0);
+    layoutY->addWidget(cmbTypeY, 0, 1);
+    layoutY->addWidget(lblEquationY, 1, 0);
+    layoutY->addWidget(lblEquationImageY, 1, 1);
+    layoutY->addWidget(createLabel(tr("<i>f</i><sub>%1</sub> (N/m<sup>2</sup>)").arg(Util::scene()->problemInfo()->labelY()),
+                                   tr("Force")), 2, 0);
+    layoutY->addWidget(txtForceY, 2, 1);
+    layoutY->addWidget(createLabel(tr("<i>u</i><sub>%1</sub> (m)").arg(Util::scene()->problemInfo()->labelY()),
+                                   tr("Displacement")), 3, 0);
+    layoutY->addWidget(txtDisplacementY, 3, 1);
 
     QGroupBox *grpY = new QGroupBox(tr("Direction %1").arg(Util::scene()->problemInfo()->labelY()), this);
     grpY->setLayout(layoutY);
 
-    layout->addWidget(grpX, 1, 0, 1, 2);
-    layout->addWidget(grpY, 2, 0, 1, 2);
+    layout->addWidget(grpX, 10, 0, 1, 3);
+    layout->addWidget(grpY, 11, 0, 1, 3);
 }
 
 void DSceneEdgeElasticityMarker::load()
@@ -1255,17 +1277,20 @@ void DSceneEdgeElasticityMarker::doTypeXChanged(int index)
     txtForceX->setEnabled(false);
     txtDisplacementX->setEnabled(false);
 
+    // read equation
+    readEquation(lblEquationImageX, (PhysicFieldBC) cmbTypeX->itemData(index).toInt());
+
     switch ((PhysicFieldBC) cmbTypeX->itemData(index).toInt())
     {
     case PhysicFieldBC_Elasticity_Fixed:
-        {
-            txtDisplacementX->setEnabled(true);
-        }
+    {
+        txtDisplacementX->setEnabled(true);
+    }
         break;
     case PhysicFieldBC_Elasticity_Free:
-        {
-            txtForceX->setEnabled(true);
-        }
+    {
+        txtForceX->setEnabled(true);
+    }
         break;
     }
 }
@@ -1275,17 +1300,20 @@ void DSceneEdgeElasticityMarker::doTypeYChanged(int index)
     txtForceY->setEnabled(false);
     txtDisplacementY->setEnabled(false);
 
+    // read equation
+    readEquation(lblEquationImageY, (PhysicFieldBC) cmbTypeY->itemData(index).toInt());
+
     switch ((PhysicFieldBC) cmbTypeY->itemData(index).toInt())
     {
     case PhysicFieldBC_Elasticity_Fixed:
-        {
-            txtDisplacementY->setEnabled(true);
-        }
+    {
+        txtDisplacementY->setEnabled(true);
+    }
         break;
     case PhysicFieldBC_Elasticity_Free:
-        {
-            txtForceY->setEnabled(true);
-        }
+    {
+        txtForceY->setEnabled(true);
+    }
         break;
     }
 }
@@ -1314,11 +1342,11 @@ void DSceneLabelElasticityMarker::createContent()
 
     // forces
     QGridLayout *layoutForces = new QGridLayout();
-    layoutForces->addWidget(new QLabel(tr("Force")), 0, 0);
-    layoutForces->addWidget(new QLabel(tr("<i>v</i><sub>%1</sub> (N)").arg(Util::scene()->problemInfo()->labelX().toLower())), 0, 1);
+    layoutForces->addWidget(createLabel(tr("<i>f</i><sub>%1</sub> (N/m<sup>3</sup>)").arg(Util::scene()->problemInfo()->labelX().toLower()),
+                                        tr("Force")), 0, 0);
     layoutForces->addWidget(txtForceX, 0, 2);
-    layoutForces->addWidget(new QLabel(tr("Force")), 1, 0);
-    layoutForces->addWidget(new QLabel(tr("<i>v</i><sub>%1</sub> (N)").arg(Util::scene()->problemInfo()->labelY().toLower())), 1, 1);
+    layoutForces->addWidget(createLabel(tr("<i>f</i><sub>%1</sub> (N/m<sup>3</sup>)").arg(Util::scene()->problemInfo()->labelY().toLower()),
+                                        tr("Force")), 1, 0);
     layoutForces->addWidget(txtForceY, 1, 2);
 
     QGroupBox *grpForces = new QGroupBox(tr("Volumetric forces"), this);
@@ -1326,14 +1354,14 @@ void DSceneLabelElasticityMarker::createContent()
 
     // thermal expansion
     QGridLayout *layoutThermalExpansion = new QGridLayout();
-    layoutThermalExpansion->addWidget(new QLabel(tr("Thermal exp. coef.")), 0, 0);
-    layoutThermalExpansion->addWidget(new QLabel(tr("<i>%1</i><sub>T</sub> (1/deg.)").arg(QString::fromUtf8("α"))), 0, 1);
+    layoutThermalExpansion->addWidget(createLabel(tr("<i>%1</i><sub>T</sub> (1/K)").arg(QString::fromUtf8("α")),
+                                                  tr("Thermal exp. coef.")), 0, 0);
     layoutThermalExpansion->addWidget(txtAlpha, 0, 2);
-    layoutThermalExpansion->addWidget(new QLabel(tr("Temperature")), 1, 0);
-    layoutThermalExpansion->addWidget(new QLabel(tr("<i>T</i> (deg.)").arg(QString::fromUtf8("υ"))), 1, 1);
+    layoutThermalExpansion->addWidget(createLabel(tr("<i>T</i> (K)").arg(QString::fromUtf8("υ")),
+                                                  tr("Temperature")), 1, 0);
     layoutThermalExpansion->addWidget(txtTemp, 1, 2);
-    layoutThermalExpansion->addWidget(new QLabel(tr("Ref. temperature")), 2, 0);
-    layoutThermalExpansion->addWidget(new QLabel(tr("<i>T</i><sub>ref</sub> (deg.)")), 2, 1);
+    layoutThermalExpansion->addWidget(createLabel(tr("<i>T</i><sub>ref</sub> (K)"),
+                                                  tr("Ref. temperature")), 2, 0);
     layoutThermalExpansion->addWidget(txtTempRef, 2, 2);
 
     QGroupBox *grpThermalExpansion = new QGroupBox(tr("Thermal expansion"), this);
@@ -1347,11 +1375,11 @@ void DSceneLabelElasticityMarker::createContent()
                QString(":/images/equations/%1/%1_coeffs.png")
                .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField())));
 
-    layout->addWidget(new QLabel(tr("Young modulus")), 10, 0);
-    layout->addWidget(new QLabel(tr("<i>E</i> (Pa)")), 10, 1);
+    layout->addWidget(createLabel(tr("<i>E</i> (Pa)"),
+                                  tr("Young modulus")), 10, 0);
     layout->addWidget(txtYoungModulus, 10, 2);
-    layout->addWidget(new QLabel(tr("Poisson number")), 11, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i> (-)").arg(QString::fromUtf8("υ"))), 11, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i> (-)").arg(QString::fromUtf8("υ")),
+                                  tr("Poisson number")), 11, 0);
     layout->addWidget(txtPoissonNumber, 11, 2);
     layout->addWidget(grpForces, 12, 0, 1, 3);
     layout->addWidget(grpThermalExpansion, 13, 0, 1, 3);

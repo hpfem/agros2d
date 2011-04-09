@@ -122,14 +122,6 @@ DSceneEdgeMarker::DSceneEdgeMarker(QWidget *parent) : QDialog(parent)
     lblEquationImage = new QLabel(this);
 }
 
-DSceneEdgeMarker::~DSceneEdgeMarker()
-{
-    logMessage("DSceneEdgeMarker::~DSceneEdgeMarker()");
-
-    delete layout;
-    delete txtName;
-}
-
 void DSceneEdgeMarker::createDialog()
 {
     logMessage("DSceneEdgeMarker::createDialog()");
@@ -140,14 +132,15 @@ void DSceneEdgeMarker::createDialog()
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
     layout->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layout->addWidget(txtName, 0, 1);
+    layout->addWidget(txtName, 0, 2);
+    layout->addWidget(lblEquation, 5, 0);
+    layout->addWidget(lblEquationImage, 5, 2);
 
     // content
     createContent();
 
-    layout->addWidget(lblEquation, 99, 0);
-    layout->addWidget(lblEquationImage, 99, 1);
-    layout->addWidget(buttonBox, 100, 0, 1, 2);
+    layout->addWidget(buttonBox, 100, 0, 1, 3);
+    layout->setRowStretch(99, 1);
 
     txtName->setFocus();
 
@@ -189,11 +182,6 @@ void DSceneEdgeMarker::setSize()
     setWindowTitle(tr("Boundary condition"));
 
     setMinimumSize(sizeHint());
-    setMaximumSize(sizeHint());
-
-    // set equation
-    // lblEquation->setEnabled(lblEquationImage->pixmap()->isNull());
-    // lblEquationImage->setEnabled(lblEquationImage->pixmap()->isNull());
 }
 
 void DSceneEdgeMarker::doAccept()
@@ -218,6 +206,23 @@ void DSceneEdgeMarker::evaluated(bool isError)
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!isError);
 }
 
+void DSceneEdgeMarker::readEquation(QLabel *lblEquation, PhysicFieldBC type)
+{
+    QString fileName = QString(":/images/equations/%1/%2_%3.png")
+            .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+            .arg(physicFieldBCToStringKey(type))
+            .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType));
+
+    if (QFile::exists(fileName))
+        // analysis dependand
+        readPixmap(lblEquation, fileName);
+    else
+        // general form
+        readPixmap(lblEquation, QString(":/images/equations/%1/%2.png")
+                   .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+                   .arg(physicFieldBCToStringKey(type)));
+}
+
 // *************************************************************************************************************************************
 
 DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
@@ -228,14 +233,6 @@ DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
     txtName = new QLineEdit(this);
     lblEquation = new QLabel(tr("Equation:"));
     lblEquationImage = new QLabel(this);
-}
-
-DSceneLabelMarker::~DSceneLabelMarker()
-{
-    logMessage("DSceneLabelMarker::~DSceneLabelMarker()");
-
-    delete layout;
-    delete txtName;
 }
 
 void DSceneLabelMarker::createDialog()
@@ -263,6 +260,7 @@ void DSceneLabelMarker::createDialog()
     createContent();
 
     layout->addWidget(buttonBox, 100, 0, 1, 3);
+    layout->setRowStretch(99, 1);
 
     txtName->setFocus();
 
@@ -277,11 +275,6 @@ void DSceneLabelMarker::setSize()
     setWindowTitle(tr("Material"));
 
     setMinimumSize(sizeHint());
-    setMaximumSize(sizeHint());
-
-    // set equation
-    // lblEquation->setEnabled(lblEquationImage->pixmap()->isNull());
-    // lblEquationImage->setEnabled(lblEquationImage->pixmap()->isNull());
 }
 
 void DSceneLabelMarker::load()

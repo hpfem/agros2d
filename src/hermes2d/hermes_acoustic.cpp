@@ -1117,6 +1117,8 @@ DSceneEdgeAcousticMarker::DSceneEdgeAcousticMarker(SceneEdgeAcousticMarker *edge
 
 void DSceneEdgeAcousticMarker::createContent()
 {
+    lblValueUnit = new QLabel("");
+
     cmbType = new QComboBox(this);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Acoustic_Pressure), PhysicFieldBC_Acoustic_Pressure);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Acoustic_NormalAcceleration), PhysicFieldBC_Acoustic_NormalAcceleration);
@@ -1135,10 +1137,10 @@ void DSceneEdgeAcousticMarker::createContent()
     // set active marker
     doTypeChanged(cmbType->currentIndex());
 
-    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
-    layout->addWidget(cmbType, 1, 1);
-    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
-    layout->addWidget(txtValue, 2, 1);
+    layout->addWidget(new QLabel(tr("BC type:")), 4, 0);
+    layout->addWidget(cmbType, 4, 2);
+    layout->addWidget(lblValueUnit, 11, 0);
+    layout->addWidget(txtValue, 11, 2);
 }
 
 void DSceneEdgeAcousticMarker::load()
@@ -1170,24 +1172,42 @@ void DSceneEdgeAcousticMarker::doTypeChanged(int index)
 {
     txtValue->setEnabled(false);
 
+    // read equation
+    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+
+    // enable controls
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
     case PhysicFieldBC_Acoustic_Pressure:
+    {
+        txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>p</i><sub>0</sub> (Pa)"));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
+    }
+        break;
     case PhysicFieldBC_Acoustic_NormalAcceleration:
     {
         txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>a</i><sub>0</sub> (m/s<sup>2</sup>)"));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
     }
         break;
     case PhysicFieldBC_Acoustic_Impedance:
     {
         txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>Z</i><sub>0</sub> (Pa·s/m)"));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
     }
         break;
     case PhysicFieldBC_Acoustic_MatchedBoundary:
     {
+        lblValueUnit->setText("-");
+        lblValueUnit->setToolTip(cmbType->itemText(index));
     }
         break;
     }
+
+    setMinimumSize(sizeHint());
 }
 
 // *************************************************************************************************************************************
@@ -1210,11 +1230,11 @@ void DSceneLabelAcousticMarker::createContent()
     connect(txtDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtSpeed, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Mass density")), 10, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i> (kg/m<sup>3</sup>)").arg(QString::fromUtf8("ρ"))), 10, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i> (kg/m<sup>3</sup>)").arg(QString::fromUtf8("ρ")),
+                                  tr("Mass density")), 10, 0);
     layout->addWidget(txtDensity, 10, 2);
-    layout->addWidget(new QLabel(tr("Speed of sound")), 11, 0);
-    layout->addWidget(new QLabel(tr("<i>c</i> (m/s)")), 11, 1);
+    layout->addWidget(createLabel(tr("<i>c</i> (m/s)"),
+                                  tr("Speed of sound")), 11, 0);
     layout->addWidget(txtSpeed, 11, 2);
 }
 

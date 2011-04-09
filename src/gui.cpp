@@ -33,6 +33,13 @@ void readPixmap(QLabel *lblEquation, const QString &name)
     lblEquation->setPixmap(pixmap);
 }
 
+QLabel *createLabel(const QString &label, const QString &toolTip)
+{
+    QLabel *lblEquation = new QLabel(label + ":");
+    lblEquation->setToolTip(toolTip);
+    return lblEquation;
+}
+
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit)
 {
     logMessage("addTreeWidgetItemValue()");

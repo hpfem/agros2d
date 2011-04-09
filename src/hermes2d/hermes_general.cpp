@@ -390,9 +390,9 @@ QList<SolutionArray *> HermesGeneral::solve(ProgressItemSolve *progressItemSolve
     }
 
     QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Hermes::vector<BCTypes *>(&bcTypes),
-                                                                  Hermes::vector<BCValues *>(&bcValues),
-                                                                  callbackGeneralWeakForm);
+                                                                 Hermes::vector<BCTypes *>(&bcTypes),
+                                                                 Hermes::vector<BCValues *>(&bcValues),
+                                                                 callbackGeneralWeakForm);
 
     delete [] generalEdge;
     delete [] generalLabel;
@@ -432,30 +432,30 @@ double LocalPointValueGeneral::variableValue(PhysicFieldVariable physicFieldVari
     switch (physicFieldVariable)
     {
     case PhysicFieldVariable_Variable:
-        {
-            return variable;
-        }
+    {
+        return variable;
+    }
         break;
     case PhysicFieldVariable_General_Gradient:
+    {
+        switch (physicFieldVariableComp)
         {
-            switch (physicFieldVariableComp)
-            {
-            case PhysicFieldVariableComp_X:
-                return gradient.x;
-                break;
-            case PhysicFieldVariableComp_Y:
-                return gradient.y;
-                break;
-            case PhysicFieldVariableComp_Magnitude:
-                return gradient.magnitude();
-                break;
-            }
+        case PhysicFieldVariableComp_X:
+            return gradient.x;
+            break;
+        case PhysicFieldVariableComp_Y:
+            return gradient.y;
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+            return gradient.magnitude();
+            break;
         }
+    }
         break;
     case PhysicFieldVariable_General_Constant:
-        {
-            return constant;
-        }
+    {
+        return constant;
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(physicFieldVariable).toStdString() + "' is not implemented. LocalPointValueGeneral::variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)" << endl;
@@ -468,12 +468,12 @@ QStringList LocalPointValueGeneral::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(point.x, 0, 'e', 5) <<
-            QString("%1").arg(point.y, 0, 'e', 5) <<
-            QString("%1").arg(variable, 0, 'e', 5) <<
-            QString("%1").arg(gradient.x, 0, 'e', 5) <<
-            QString("%1").arg(gradient.y, 0, 'e', 5) <<
-            QString("%1").arg(gradient.magnitude(), 0, 'e', 5) <<
-            QString("%1").arg(constant, 0, 'f', 3);
+           QString("%1").arg(point.y, 0, 'e', 5) <<
+           QString("%1").arg(variable, 0, 'e', 5) <<
+           QString("%1").arg(gradient.x, 0, 'e', 5) <<
+           QString("%1").arg(gradient.y, 0, 'e', 5) <<
+           QString("%1").arg(gradient.magnitude(), 0, 'e', 5) <<
+           QString("%1").arg(constant, 0, 'f', 3);
 
     return QStringList(row);
 }
@@ -494,7 +494,7 @@ QStringList SurfaceIntegralValueGeneral::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(length, 0, 'e', 5) <<
-            QString("%1").arg(surface, 0, 'e', 5);
+           QString("%1").arg(surface, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -519,7 +519,7 @@ QStringList VolumeIntegralValueGeneral::variables()
 {
     QStringList row;
     row <<  QString("%1").arg(volume, 0, 'e', 5) <<
-            QString("%1").arg(crossSection, 0, 'e', 5);
+           QString("%1").arg(crossSection, 0, 'e', 5);
     return QStringList(row);
 }
 
@@ -530,37 +530,37 @@ void ViewScalarFilterGeneral::calculateVariable(int i)
     switch (m_physicFieldVariable)
     {
     case PhysicFieldVariable_Variable:
-        {
-            node->values[0][0][i] = value1[i];
-        }
+    {
+        node->values[0][0][i] = value1[i];
+    }
         break;
     case PhysicFieldVariable_General_Gradient:
+    {
+        switch (m_physicFieldVariableComp)
         {
-            switch (m_physicFieldVariableComp)
-            {
-            case PhysicFieldVariableComp_X:
-                {
-                    node->values[0][0][i] = -dudx1[i];
-                }
-                break;
-            case PhysicFieldVariableComp_Y:
-                {
-                    node->values[0][0][i] = -dudy1[i];
-                }
-                break;
-            case PhysicFieldVariableComp_Magnitude:
-                {
-                    node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
-                }
-                break;
-            }
+        case PhysicFieldVariableComp_X:
+        {
+            node->values[0][0][i] = -dudx1[i];
         }
+            break;
+        case PhysicFieldVariableComp_Y:
+        {
+            node->values[0][0][i] = -dudy1[i];
+        }
+            break;
+        case PhysicFieldVariableComp_Magnitude:
+        {
+            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i]));
+        }
+            break;
+        }
+    }
         break;
     case PhysicFieldVariable_General_Constant:
-        {
-            SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
-            node->values[0][0][i] = marker->constant.number;
-        }
+    {
+        SceneLabelGeneralMarker *marker = dynamic_cast<SceneLabelGeneralMarker *>(labelMarker);
+        node->values[0][0][i] = marker->constant.number;
+    }
         break;
     default:
         cerr << "Physical field variable '" + physicFieldVariableString(m_physicFieldVariable).toStdString() + "' is not implemented. ViewScalarFilterGeneral::calculateVariable()" << endl;
@@ -653,25 +653,25 @@ DSceneEdgeGeneralMarker::DSceneEdgeGeneralMarker(SceneEdgeGeneralMarker *edgeGen
     setSize();
 }
 
-DSceneEdgeGeneralMarker::~DSceneEdgeGeneralMarker()
-{
-    delete cmbType;
-    delete txtValue;
-}
-
 void DSceneEdgeGeneralMarker::createContent()
 {
+    lblValueUnit = new QLabel("");
+
     cmbType = new QComboBox();
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_General_Value), PhysicFieldBC_General_Value);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_General_Derivative), PhysicFieldBC_General_Derivative);
+    connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValue = new ValueLineEdit(this);
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
-    layout->addWidget(cmbType, 1, 1);
-    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
-    layout->addWidget(txtValue, 2, 1);
+    // set active marker
+    doTypeChanged(cmbType->currentIndex());
+
+    layout->addWidget(new QLabel(tr("BC type:")), 4, 0);
+    layout->addWidget(cmbType, 4, 2);
+    layout->addWidget(lblValueUnit, 11, 0);
+    layout->addWidget(txtValue, 11, 2);
 }
 
 void DSceneEdgeGeneralMarker::load()
@@ -699,6 +699,35 @@ bool DSceneEdgeGeneralMarker::save() {
     return true;
 }
 
+void DSceneEdgeGeneralMarker::doTypeChanged(int index)
+{
+    txtValue->setEnabled(false);
+
+    // read equation
+    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+
+    // enable controls
+    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
+    {
+    case PhysicFieldBC_General_Value:
+    {
+        txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>u</i><sub>0</sub> (-)"));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
+    }
+        break;
+    case PhysicFieldBC_General_Derivative:
+    {
+        txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>g</i><sub>0</sub> (-)"));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
+    }
+        break;
+    }
+
+    setMinimumSize(sizeHint());
+}
+
 // *************************************************************************************************************************************
 
 DSceneLabelGeneralMarker::DSceneLabelGeneralMarker(QWidget *parent, SceneLabelGeneralMarker *labelGeneralMarker) : DSceneLabelMarker(parent)
@@ -724,11 +753,11 @@ void DSceneLabelGeneralMarker::createContent()
     connect(txtConstant, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtRightSide, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Constant")), 10, 0);
-    layout->addWidget(new QLabel(tr("<i>c</i> (-)")), 10, 1);
+    layout->addWidget(createLabel(tr("<i>c</i> (-)"),
+                                  tr("Constant")), 10, 0);
     layout->addWidget(txtConstant, 10, 2);
-    layout->addWidget(new QLabel(tr("Rightside")), 11, 0);
-    layout->addWidget(new QLabel(tr("<i>r</i> (-)")), 11, 1);
+    layout->addWidget(createLabel(tr("<i>r</i> (-)"),
+                                  tr("Rightside")), 11, 0);
     layout->addWidget(txtRightSide, 11, 2);
 }
 

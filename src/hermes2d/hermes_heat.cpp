@@ -351,7 +351,7 @@ void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPo
     addTreeWidgetItemValue(heatNode, tr("Volume heat:"), QString("%1").arg(localPointValueHeat->volume_heat, 0, 'e', 3), tr("W/m3"));
 
     // Temperature
-    addTreeWidgetItemValue(heatNode, tr("Temperature:"), QString("%1").arg(localPointValueHeat->temperature, 0, 'f', 2), tr("deg."));
+    addTreeWidgetItemValue(heatNode, tr("Temperature:"), QString("%1").arg(localPointValueHeat->temperature, 0, 'f', 2), tr("K"));
 
     // Heat Flux
     QTreeWidgetItem *itemHeatFlux = new QTreeWidgetItem(heatNode);
@@ -367,9 +367,9 @@ void HermesHeat::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPo
     itemTemperatureGradient->setText(0, tr("Temperature gradient"));
     itemTemperatureGradient->setExpanded(true);
 
-    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), tr("deg./m"));
-    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), tr("deg./m"));
-    addTreeWidgetItemValue(itemTemperatureGradient, "G:", QString("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "deg./m");
+    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelX().toLower() + ":", QString("%1").arg(localPointValueHeat->G.x, 0, 'f', 5), tr("K/m"));
+    addTreeWidgetItemValue(itemTemperatureGradient, "G" + Util::scene()->problemInfo()->labelY().toLower() + ":", QString("%1").arg(localPointValueHeat->G.y, 0, 'f', 5), tr("K/m"));
+    addTreeWidgetItemValue(itemTemperatureGradient, "G:", QString("%1").arg(localPointValueHeat->G.magnitude(), 0, 'f', 5), "K/m");
 }
 
 void HermesHeat::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -381,8 +381,8 @@ void HermesHeat::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegra
     heatNode->setText(0, tr("Heat Transfer"));
     heatNode->setExpanded(true);
 
-    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
-    addTreeWidgetItemValue(heatNode, tr("Temperature dif.:"), QString("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("deg."));
+    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(surfaceIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("K"));
+    addTreeWidgetItemValue(heatNode, tr("Temperature dif.:"), QString("%1").arg(surfaceIntegralValueHeat->temperatureDifference, 0, 'e', 3), tr("K"));
     addTreeWidgetItemValue(heatNode, tr("Heat flux:"), QString("%1").arg(surfaceIntegralValueHeat->heatFlux, 0, 'e', 3), tr("W"));
 }
 
@@ -395,7 +395,7 @@ void HermesHeat::showVolumeIntegralValue(QTreeWidget *trvWidget, VolumeIntegralV
     heatNode->setText(0, tr("Heat transfer"));
     heatNode->setExpanded(true);
 
-    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("deg."));
+    addTreeWidgetItemValue(heatNode, tr("Temperature avg.:"), QString("%1").arg(volumeIntegralValueHeat->averageTemperature, 0, 'e', 3), tr("K"));
 }
 
 ViewScalarFilter *HermesHeat::viewScalarFilter(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp)
@@ -836,12 +836,12 @@ QMap<QString, QString> SceneEdgeHeatMarker::data()
     switch (type)
     {
     case PhysicFieldBC_Heat_Temperature:
-        out["Temperature (deg.)"] = temperature.text;
+        out["Temperature (K)"] = temperature.text;
         break;
     case PhysicFieldBC_Heat_Flux:
         out["Heat flux (W/m2)"] = heatFlux.text;
         out["Heat transfer coef. (Q/m2.K)"] = h.text;
-        out["External temperature (deg.)"] = externalTemperature.text;
+        out["External temperature (K)"] = externalTemperature.text;
         break;
     }
     return QMap<QString, QString>(out);
@@ -910,15 +910,6 @@ DSceneEdgeHeatMarker::DSceneEdgeHeatMarker(SceneEdgeHeatMarker *edgeEdgeHeatMark
     setSize();
 }
 
-DSceneEdgeHeatMarker::~DSceneEdgeHeatMarker()
-{
-    delete cmbType;
-    delete txtTemperature;
-    delete txtHeatFlux;
-    delete txtHeatTransferCoefficient;
-    delete txtExternalTemperature;
-}
-
 void DSceneEdgeHeatMarker::createContent()
 {
     cmbType = new QComboBox(this);
@@ -938,17 +929,21 @@ void DSceneEdgeHeatMarker::createContent()
 
     // set active marker
     doTypeChanged(cmbType->currentIndex());
+    layout->addWidget(new QLabel(tr("BC type:")), 4, 0);
+    layout->addWidget(cmbType, 4, 2);
+    layout->addWidget(createLabel(tr("<i>T</i><sub>0</sub> (K)"),
+                                  tr("Temperature")), 11, 0);
+    layout->addWidget(txtTemperature, 11, 2);
+    layout->addWidget(createLabel(tr("<i>f</i><sub>0</sub> (W/m<sup>2</sup>)"),
+                                  tr("Heat flux")), 12, 0);
+    layout->addWidget(txtHeatFlux, 12, 2);
+    layout->addWidget(createLabel(tr("<i>%1</i> (W/m<sup>2</sup>·K)").arg(QString::fromUtf8("α")),
+                                  tr("Heat transfer coef.")), 13, 0);
+    layout->addWidget(txtHeatTransferCoefficient, 13, 2);
+    layout->addWidget(createLabel(tr("<i>T</i><sub>ext</sub> (K)"),
+                                  tr("External temperature")), 14, 0);
+    layout->addWidget(txtExternalTemperature, 14, 2);
 
-    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
-    layout->addWidget(cmbType, 1, 1);
-    layout->addWidget(new QLabel(tr("Temperature (deg.):")), 2, 0);
-    layout->addWidget(txtTemperature, 2, 1);
-    layout->addWidget(new QLabel(tr("Heat flux (W/m2):")), 3, 0);
-    layout->addWidget(txtHeatFlux, 3, 1);
-    layout->addWidget(new QLabel(tr("Heat transfer coef. (W/m2.K):")), 4, 0);
-    layout->addWidget(txtHeatTransferCoefficient, 4, 1);
-    layout->addWidget(new QLabel(tr("External temperature (deg.):")), 5, 0);
-    layout->addWidget(txtExternalTemperature, 5, 1);
 }
 
 void DSceneEdgeHeatMarker::load()
@@ -1019,15 +1014,15 @@ void DSceneEdgeHeatMarker::doTypeChanged(int index)
     txtHeatTransferCoefficient->setEnabled(false);
     txtExternalTemperature->setEnabled(false);
 
+    // read equation
+    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+
+    // enable controls
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
     case PhysicFieldBC_Heat_Temperature:
     {
-        txtTemperature->setEnabled(true);
-
-#ifdef BETA
-        lblEquation->setText("<i>T</i> = <i>T</i>");
-#endif
+        txtTemperature->setEnabled(true);        
     }
         break;
     case PhysicFieldBC_Heat_Flux:
@@ -1035,15 +1030,11 @@ void DSceneEdgeHeatMarker::doTypeChanged(int index)
         txtHeatFlux->setEnabled(true);
         txtHeatTransferCoefficient->setEnabled(true);
         txtExternalTemperature->setEnabled(true);        
-#ifdef BETA
-        lblEquation->setText(QString("- %1(%2<i>T</i> / %2<i>n</i>) = <i>q</i> + %3(<i>T</i> - <i>T</i><sub>ext</sub>)").
-                             arg(QString::fromUtf8("λ")).
-                             arg(QString::fromUtf8("∂")).
-                             arg(QString::fromUtf8("α")));
-#endif
     }
         break;
     }
+
+    setMinimumSize(sizeHint());
 }
 
 // *************************************************************************************************************************************
@@ -1072,17 +1063,17 @@ void DSceneLabelHeatMarker::createContent()
     connect(txtDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtSpecificHeat, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Thermal conductivity")), 10, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i> (W/m.K)").arg(QString::fromUtf8("λ"))), 10, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i> (W/m·K)").arg(QString::fromUtf8("λ")),
+                                  tr("Thermal conductivity")), 10, 0);
     layout->addWidget(txtThermalConductivity, 10, 2);
-    layout->addWidget(new QLabel(tr("Volume heat")), 11, 0);
-    layout->addWidget(new QLabel(tr("<i>Q</i> (W/m<sup>3</sup>)")), 11, 1);
+    layout->addWidget(createLabel(tr("<i>Q</i> (W/m<sup>3</sup>)"),
+                                  tr("Volume heat")), 11, 0);
     layout->addWidget(txtVolumeHeat, 11, 2);
-    layout->addWidget(new QLabel(tr("Mass density")), 12, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i> (kg/m<sup>3</sup>)").arg(QString::fromUtf8("ρ"))), 12, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i> (kg/m<sup>3</sup>)").arg(QString::fromUtf8("ρ")),
+                                  tr("Mass density")), 12, 0);
     layout->addWidget(txtDensity, 12, 2);
-    layout->addWidget(new QLabel(tr("Specific heat")), 13, 0);
-    layout->addWidget(new QLabel(tr("<i>c</i><sub>p</sub> (J/kg.K)")), 13, 1);
+    layout->addWidget(createLabel(tr("<i>c</i><sub>p</sub> (J/kg·K)"),
+                                  tr("Specific heat")), 13, 0);
     layout->addWidget(txtSpecificHeat, 13, 2);
 }
 

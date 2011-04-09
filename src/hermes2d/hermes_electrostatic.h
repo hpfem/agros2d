@@ -174,7 +174,6 @@ class DSceneEdgeElectrostaticMarker : public DSceneEdgeMarker
     Q_OBJECT
 public:
     DSceneEdgeElectrostaticMarker(SceneEdgeElectrostaticMarker *edgeElectrostaticMarker, QWidget *parent);
-    ~DSceneEdgeElectrostaticMarker();
 
 protected:
     void createContent();
@@ -183,8 +182,12 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
     ValueLineEdit *txtValue;
+
+private slots:
+    void doTypeChanged(int index);
 };
 
 class DSceneLabelElectrostaticMarker : public DSceneLabelMarker

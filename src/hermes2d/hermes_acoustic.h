@@ -181,6 +181,7 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
     ValueLineEdit *txtValue;
 

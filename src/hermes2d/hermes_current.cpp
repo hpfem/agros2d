@@ -718,25 +718,25 @@ DSceneEdgeCurrentMarker::DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCur
     setSize();
 }
 
-DSceneEdgeCurrentMarker::~DSceneEdgeCurrentMarker()
-{
-    delete cmbType;
-    delete txtValue;
-}
-
 void DSceneEdgeCurrentMarker::createContent()
 {
+    lblValueUnit = new QLabel("");
+
     cmbType = new QComboBox(this);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Current_Potential), PhysicFieldBC_Current_Potential);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_Current_InwardCurrentFlow), PhysicFieldBC_Current_InwardCurrentFlow);
+    connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     txtValue = new ValueLineEdit(this);
     connect(txtValue, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("BC type:")), 1, 0);
-    layout->addWidget(cmbType, 1, 1);
-    layout->addWidget(new QLabel(tr("Value:")), 2, 0);
-    layout->addWidget(txtValue, 2, 1);
+    // set active marker
+    doTypeChanged(cmbType->currentIndex());
+
+    layout->addWidget(new QLabel(tr("BC type:")), 4, 0);
+    layout->addWidget(cmbType, 4, 2);
+    layout->addWidget(lblValueUnit, 11, 0);
+    layout->addWidget(txtValue, 11, 2);
 }
 
 void DSceneEdgeCurrentMarker::load()
@@ -764,6 +764,35 @@ bool DSceneEdgeCurrentMarker::save() {
     return true;
 }
 
+void DSceneEdgeCurrentMarker::doTypeChanged(int index)
+{
+    txtValue->setEnabled(false);
+
+    // read equation
+    readEquation(lblEquationImage, (PhysicFieldBC) cmbType->itemData(index).toInt());
+
+    // enable controls
+    switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
+    {
+    case PhysicFieldBC_Current_Potential:
+    {
+        txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>%1</i><sub>0</sub> (V)").arg(QString::fromUtf8("φ")));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
+    }
+        break;
+    case PhysicFieldBC_Current_InwardCurrentFlow:
+    {
+        txtValue->setEnabled(true);
+        lblValueUnit->setText(tr("<i>J</i><sub>0</sub> (A/m<sup>2</sup>)"));
+        lblValueUnit->setToolTip(cmbType->itemText(index));
+    }
+        break;
+    }
+
+    setMinimumSize(sizeHint());
+}
+
 // *************************************************************************************************************************************
 
 DSceneLabelCurrentMarker::DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker) : DSceneLabelMarker(parent)
@@ -782,8 +811,8 @@ void DSceneLabelCurrentMarker::createContent()
     txtConductivity->setMinimumSharp(0.0);
     connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Conductivity")), 10, 0);
-    layout->addWidget(new QLabel(tr("<i>%1</i> (S/m)").arg(QString::fromUtf8("σ"))), 10, 1);
+    layout->addWidget(createLabel(tr("<i>%1</i> (S/m)").arg(QString::fromUtf8("σ")),
+                                  tr("Conductivity")), 10, 0);
     layout->addWidget(txtConductivity, 10, 2);
 }
 

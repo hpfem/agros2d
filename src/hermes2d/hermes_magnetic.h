@@ -229,7 +229,6 @@ class DSceneEdgeMagneticMarker : public DSceneEdgeMarker
 
 public:
     DSceneEdgeMagneticMarker(SceneEdgeMagneticMarker *edgeMagneticMarker, QWidget *parent);
-    ~DSceneEdgeMagneticMarker();
 
 protected:
     void createContent();
@@ -238,9 +237,13 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
     ValueLineEdit *txtValueReal;
     ValueLineEdit *txtValueImag;
+
+private slots:
+    void doTypeChanged(int index);
 };
 
 class DSceneLabelMagneticMarker : public DSceneLabelMarker

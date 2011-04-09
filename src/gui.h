@@ -37,6 +37,7 @@
 #include "util.h"
 
 void readPixmap(QLabel *lblEquation, const QString &name);
+QLabel *createLabel(const QString &label, const QString &toolTip = "");
 void fillComboBoxScalarVariable(QComboBox *cmbFieldVariable);
 void fillComboBoxVectorVariable(QComboBox *cmbFieldVariable);
 void fillComboBoxTimeStep(QComboBox *cmbFieldVariable);

@@ -5,42 +5,42 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../src/gui.cpp" line="677"/>
+        <location filename="../src/gui.cpp" line="684"/>
         <source>About...</source>
         <translation>O...</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="693"/>
+        <location filename="../src/gui.cpp" line="700"/>
         <source>Agros2D</source>
         <translation>Agros2D</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="694"/>
+        <location filename="../src/gui.cpp" line="701"/>
         <source>Hermes2D</source>
         <translation>Hermes2D</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="695"/>
+        <location filename="../src/gui.cpp" line="702"/>
         <source>Libraries</source>
         <translation>Biblioteki</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="696"/>
+        <location filename="../src/gui.cpp" line="703"/>
         <source>License</source>
         <translation>Licencja</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="698"/>
+        <location filename="../src/gui.cpp" line="705"/>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="699"/>
+        <location filename="../src/gui.cpp" line="706"/>
         <source>Check version</source>
         <translation>Sprawdź wersje</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="719"/>
+        <location filename="../src/gui.cpp" line="726"/>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -49,17 +49,17 @@
         <translation type="obsolete">&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D jest programem służącym modelowania zagadnień polowych. Rozwiązywanie równań różniczkowych cząstkowych oparte jest o bibliotekę &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt;, która wykorzystuje metodę elementów skończonych wraz z automatyczną adaptacją stopnia i rozmiarów elementów (&lt;i&gt;hp&lt;/i&gt;-FEM).&lt;br/&gt;&lt;br/&gt;Strona projektu: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Zgłoszenia błędów: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - główny programista (University of West Bohemia, Pilsen))&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; - programista, dokumentacja (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polskie tłumaczenie (Politechnika Warszawska)&lt;br/&gt;&lt;b&gt;Vaclav Kotlan&lt;/b&gt; - niemieckie tłumaczenie (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="758"/>
+        <location filename="../src/gui.cpp" line="765"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Hermes2D&lt;/h3&gt;Strona projektu: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autorzy:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (lider projektu, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="797"/>
+        <location filename="../src/gui.cpp" line="804"/>
         <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Nokia Qt:&lt;/b&gt; Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;FFmpeg:&lt;/b&gt; FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;br/&gt;</source>
         <translation>&lt;h3&gt;Biblioteki&lt;/h3&gt;&lt;b&gt;Nokia Qt:&lt;/b&gt; Nokia Qt (&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt - zestaw przenośnych bibliotek&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; język programowania Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;FFmpeg:&lt;/b&gt; FFmpeg group (&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;FFmpeg&lt;/a&gt;)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="819"/>
+        <location filename="../src/gui.cpp" line="826"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
         <translation>&lt;h3&gt;Licencja:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</translation>
     </message>
@@ -110,12 +110,12 @@
 <context>
     <name>Chart</name>
     <message>
-        <location filename="../src/gui.cpp" line="179"/>
+        <location filename="../src/gui.cpp" line="186"/>
         <source>Export image to file</source>
         <translation>Eksport obrazu do pliku</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="179"/>
+        <location filename="../src/gui.cpp" line="186"/>
         <source>PNG files (*.png)</source>
         <translation>Pliki PNG (*.png)</translation>
     </message>
@@ -880,14 +880,28 @@
 <context>
     <name>DSceneEdgeAcousticMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1138"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1140"/>
         <source>BC type:</source>
         <translation>Typ WB:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1140"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1184"/>
+        <source>&lt;i&gt;p&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Pa)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1191"/>
+        <source>&lt;i&gt;a&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (m/s&lt;sup&gt;2&lt;/sup&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1198"/>
+        <source>&lt;i&gt;Z&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (PaÂ·s/m)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Value:</source>
-        <translation>Wartość:</translation>
+        <translation type="obsolete">Wartość:</translation>
     </message>
 </context>
 <context>
@@ -898,34 +912,69 @@
         <translation>Typ WB:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="738"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="780"/>
+        <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (V)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="787"/>
+        <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Value:</source>
-        <translation>Wartość:</translation>
+        <translation type="obsolete">Wartość:</translation>
     </message>
 </context>
 <context>
     <name>DSceneEdgeElasticityMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1186"/>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1195"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1169"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1171"/>
+        <source>Equation:</source>
+        <translation>Równanie:</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1194"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1210"/>
         <source>BC Type:</source>
         <translation>Typ WB:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1187"/>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1196"/>
-        <source>Force (N):</source>
-        <translation>Siła (N):</translation>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1198"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1214"/>
+        <source>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;2&lt;/sup&gt;)</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1188"/>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1197"/>
-        <source>Displacement (m):</source>
-        <translation>Odkształcenie (m):</translation>
-    </message>
-    <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1190"/>
         <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1199"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1215"/>
+        <source>Force</source>
+        <translation>Siła</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1201"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1217"/>
+        <source>&lt;i&gt;u&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (m)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1202"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1218"/>
+        <source>Displacement</source>
+        <translation>Przesunięcie</translation>
+    </message>
+    <message>
+        <source>Force (N):</source>
+        <translation type="obsolete">Siła (N):</translation>
+    </message>
+    <message>
+        <source>Displacement (m):</source>
+        <translation type="obsolete">Odkształcenie (m):</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1205"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1221"/>
         <source>Direction %1</source>
         <translation>Kierunek %1</translation>
     </message>
@@ -938,9 +987,18 @@
         <translation>Typ WB:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="761"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="803"/>
+        <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (V)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="810"/>
+        <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (C/m&lt;sup&gt;2&lt;/sup&gt;)</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Value:</source>
-        <translation>Wartość:</translation>
+        <translation type="obsolete">Wartość:</translation>
     </message>
 </context>
 <context>
@@ -974,50 +1032,104 @@
         <translation>Typ WB:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="673"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="715"/>
+        <source>&lt;i&gt;u&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="722"/>
+        <source>&lt;i&gt;g&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (-)</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Value:</source>
-        <translation>Wartość:</translation>
+        <translation type="obsolete">Wartość:</translation>
     </message>
 </context>
 <context>
     <name>DSceneEdgeHeatMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="942"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="932"/>
         <source>BC type:</source>
         <translation>Typ WB:</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="934"/>
+        <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (K)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="935"/>
+        <source>Temperature</source>
+        <translation>Temperatura</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="937"/>
+        <source>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="938"/>
+        <source>Heat flux</source>
+        <translation>Strumień ciepła</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="940"/>
+        <source>&lt;i&gt;%1&lt;/i&gt; (W/m&lt;sup&gt;2&lt;/sup&gt;Â·K)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="941"/>
+        <source>Heat transfer coef.</source>
+        <translation>Współ. przenik. cieplnej</translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="943"/>
+        <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (K)</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="944"/>
+        <source>External temperature</source>
+        <translation>Zewnętrzna temperatura</translation>
+    </message>
+    <message>
         <source>Temperature (deg.):</source>
-        <translation>Temperatura (stopnie):</translation>
+        <translation type="obsolete">Temperatura (stopnie):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="946"/>
         <source>Heat flux (W/m2):</source>
-        <translation>Strumień ciepła (W/m2):</translation>
+        <translation type="obsolete">Strumień ciepła (W/m2):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="948"/>
         <source>Heat transfer coef. (W/m2.K):</source>
-        <translation>Współ. przenik. cieplnej (W/m2.K):</translation>
+        <translation type="obsolete">Współ. przenik. cieplnej (W/m2.K):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="950"/>
         <source>External temperature (deg.):</source>
-        <translation>Zewnętrzna temperatura (stopnie):</translation>
+        <translation type="obsolete">Zewnętrzna temperatura (stopnie):</translation>
     </message>
 </context>
 <context>
     <name>DSceneEdgeMagneticMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1146"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1144"/>
         <source>BC type:</source>
         <translation>Typ WB:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1148"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1196"/>
+        <source>&lt;i&gt;A&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (Wb/m)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1204"/>
+        <source>&lt;i&gt;K&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt; (A/m)</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Value:</source>
-        <translation>Wartość:</translation>
+        <translation type="obsolete">Wartość:</translation>
     </message>
 </context>
 <context>
@@ -1028,22 +1140,22 @@
         <translation>Równanie:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="142"/>
+        <location filename="../src/scenemarker.cpp" line="134"/>
         <source>Name:</source>
         <translation>Nazwa:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="176"/>
+        <location filename="../src/scenemarker.cpp" line="169"/>
         <source>Boundary marker</source>
         <translation>Znacznik brzegu</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="176"/>
+        <location filename="../src/scenemarker.cpp" line="169"/>
         <source>Boundary marker name already exists.</source>
         <translation>Istnieje już znacznik brzegu o takiej nazwie.</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="189"/>
+        <location filename="../src/scenemarker.cpp" line="182"/>
         <source>Boundary condition</source>
         <translation>Warunek brzegowy</translation>
     </message>
@@ -1051,22 +1163,26 @@
 <context>
     <name>DSceneEdgeRFMarker</name>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1168"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1162"/>
         <source>BC type:</source>
         <translation>Typ WB:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1170"/>
         <source>Value:</source>
-        <translation>Wartość:</translation>
+        <translation type="obsolete">Wartość:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1172"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1166"/>
         <source>TE mode:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1174"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1168"/>
+        <source>&lt;i&gt;h&lt;/i&gt; (m)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1169"/>
         <source>Height:</source>
         <translation type="unfinished">Wysokość:</translation>
     </message>
@@ -1154,22 +1270,22 @@
         <translation type="obsolete">Gęstość (kg/m3):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1213"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1234"/>
         <source>Mass density</source>
         <translation>Gęstość</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1214"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1233"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1216"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1237"/>
         <source>Speed of sound</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1217"/>
+        <location filename="../src/hermes2d/hermes_acoustic.cpp" line="1236"/>
         <source>&lt;i&gt;c&lt;/i&gt; (m/s)</source>
         <translation></translation>
     </message>
@@ -1181,14 +1297,14 @@
         <translation type="obsolete">Konduktywność (S/m):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="785"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="815"/>
         <source>Conductivity</source>
         <translation>Konduktywność</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_current.cpp" line="786"/>
+        <location filename="../src/hermes2d/hermes_current.cpp" line="814"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (S/m)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1202,74 +1318,74 @@
         <translation type="obsolete">Siła Y (N):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1317"/>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1320"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1346"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1349"/>
         <source>Force</source>
         <translation>Siła</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1318"/>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1321"/>
-        <source>&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1324"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1352"/>
         <source>Volumetric forces</source>
         <translation>Siły w objętości</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1329"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1358"/>
         <source>Thermal exp. coef.</source>
         <translation>Wsp. rozsz. ciepl.</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1330"/>
-        <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;T&lt;/sub&gt; (1/deg.)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1332"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1361"/>
         <source>Temperature</source>
         <translation>Temperatura</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1333"/>
-        <source>&lt;i&gt;T&lt;/i&gt; (deg.)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1335"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1364"/>
         <source>Ref. temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1336"/>
-        <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt; (deg.)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1343"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1371"/>
         <source>Lame&apos;s coefficients:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1350"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1379"/>
         <source>Young modulus</source>
         <translation>Moduł Younga</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1351"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1378"/>
         <source>&lt;i&gt;E&lt;/i&gt; (Pa)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1353"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1345"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1348"/>
+        <source>&lt;i&gt;f&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (N/m&lt;sup&gt;3&lt;/sup&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1357"/>
+        <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;T&lt;/sub&gt; (1/K)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1360"/>
+        <source>&lt;i&gt;T&lt;/i&gt; (K)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1363"/>
+        <source>&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;ref&lt;/sub&gt; (K)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1382"/>
         <source>Poisson number</source>
         <translation>Liczba Poissona</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1354"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1381"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (-)</source>
         <translation></translation>
     </message>
@@ -1286,7 +1402,7 @@
         <translation type="obsolete">Temp. odniesienia (K):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1339"/>
+        <location filename="../src/hermes2d/hermes_elasticity.cpp" line="1367"/>
         <source>Thermal expansion</source>
         <translation>Rozszerzalność cieplna</translation>
     </message>
@@ -1310,22 +1426,22 @@
         <translation type="obsolete">Gęstość ładunku (C/m3):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="810"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="840"/>
         <source>Permittivity</source>
         <translation>Przenikalność</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="811"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="839"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="813"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="843"/>
         <source>Charge density</source>
         <translation>Gęstość ładunku</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="814"/>
+        <location filename="../src/hermes2d/hermes_electrostatic.cpp" line="842"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (C/m&lt;sup&gt;3&lt;/sup&gt;)</source>
         <translation></translation>
     </message>
@@ -1372,22 +1488,22 @@
         <translation type="obsolete">Prawa strona:</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="727"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="757"/>
         <source>Constant</source>
         <translation>Stała</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="728"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="756"/>
         <source>&lt;i&gt;c&lt;/i&gt; (-)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="730"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="760"/>
         <source>Rightside</source>
         <translation>Prawa strona</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_general.cpp" line="731"/>
+        <location filename="../src/hermes2d/hermes_general.cpp" line="759"/>
         <source>&lt;i&gt;r&lt;/i&gt; (-)</source>
         <translation></translation>
     </message>
@@ -1411,44 +1527,44 @@
         <translation type="obsolete">Źródło cieplne (J/kg.K):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1075"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1067"/>
         <source>Thermal conductivity</source>
         <translation>Przewodność cieplna</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1076"/>
-        <source>&lt;i&gt;%1&lt;/i&gt; (W/m.K)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1078"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1070"/>
         <source>Volume heat</source>
         <translation>Źródło cieplne</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1079"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1069"/>
         <source>&lt;i&gt;Q&lt;/i&gt; (W/m&lt;sup&gt;3&lt;/sup&gt;)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1081"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1066"/>
+        <source>&lt;i&gt;%1&lt;/i&gt; (W/mÂ·K)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1073"/>
         <source>Mass density</source>
         <translation>Gęstość</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1082"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1072"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (kg/m&lt;sup&gt;3&lt;/sup&gt;)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1084"/>
-        <source>Specific heat</source>
-        <translation>Źródło cieplne</translation>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1075"/>
+        <source>&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;p&lt;/sub&gt; (J/kgÂ·K)</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="1085"/>
-        <source>&lt;i&gt;c&lt;/i&gt;&lt;sub&gt;p&lt;/sub&gt; (J/kg.K)</source>
-        <translation></translation>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="1076"/>
+        <source>Specific heat</source>
+        <translation>Źródło cieplne</translation>
     </message>
 </context>
 <context>
@@ -1462,73 +1578,73 @@
         <translation type="obsolete">Kierunek remamencji (stop.):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1227"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1258"/>
         <source>Rem. flux dens.</source>
         <translation>Remanencja</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1228"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1257"/>
         <source>&lt;i&gt;B&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (T)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1230"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1261"/>
         <source>Direction of rem.</source>
         <translation>Kierunek remanencji</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1231"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1260"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (deg.)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1234"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1264"/>
         <source>Permanent magnet</source>
         <translation>Magnes trwały</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1240"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1243"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1269"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1272"/>
         <source>&lt;i&gt;v&lt;/i&gt;&lt;sub&gt;%1&lt;/sub&gt; (m/s)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1245"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1276"/>
         <source>Velocity angular</source>
         <translation>Prędkość kątowa</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1246"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1275"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (rad/s)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1252"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1283"/>
         <source>Permeability</source>
         <translation>Przenikalność mag.</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1253"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1282"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1255"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1286"/>
         <source>Conductivity</source>
         <translation>Konduktywność</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1256"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1285"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (S/m)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1258"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1289"/>
         <source>Current density</source>
         <translation>Gęstość prądu</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1259"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1288"/>
         <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</source>
         <translation></translation>
     </message>
@@ -1541,9 +1657,9 @@
         <translation type="obsolete">Prędkość kątowa (rad/s):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1239"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1242"/>
-        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1249"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1270"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1273"/>
+        <location filename="../src/hermes2d/hermes_magnetic.cpp" line="1279"/>
         <source>Velocity</source>
         <translation>Prędkość</translation>
     </message>
@@ -1563,27 +1679,27 @@
 <context>
     <name>DSceneLabelMarker</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="229"/>
+        <location filename="../src/scenemarker.cpp" line="234"/>
         <source>Equation:</source>
         <translation>Równanie:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="251"/>
+        <location filename="../src/scenemarker.cpp" line="248"/>
         <source>Name:</source>
         <translation>Nazwa:</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="277"/>
+        <location filename="../src/scenemarker.cpp" line="275"/>
         <source>Material</source>
         <translation>Materiał</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="306"/>
+        <location filename="../src/scenemarker.cpp" line="299"/>
         <source>Material marker</source>
         <translation>Znacznik materiału</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="306"/>
+        <location filename="../src/scenemarker.cpp" line="299"/>
         <source>Material marker name already exists.</source>
         <translation>Istnieje już taki znacznik materiału.</translation>
     </message>
@@ -1599,38 +1715,38 @@
         <translation type="obsolete">Konduktywność (S/m):</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1285"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1280"/>
         <source>Permittivity</source>
         <translation>Przenikalność</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1286"/>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1289"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1279"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1282"/>
         <source>&lt;i&gt;%1&lt;/i&gt;&lt;sub&gt;r&lt;/sub&gt; (-)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1288"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1283"/>
         <source>Permeability</source>
         <translation>Przenikalność mag.</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1291"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1286"/>
         <source>Conductivity</source>
         <translation>Konduktywność</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1292"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1285"/>
         <source>&lt;i&gt;%1&lt;/i&gt; (S/m)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1294"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1290"/>
         <source>Current density</source>
         <translation>Gęstość prądu</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_rf.cpp" line="1295"/>
+        <location filename="../src/hermes2d/hermes_rf.cpp" line="1289"/>
         <source>&lt;i&gt;J&lt;/i&gt;&lt;sub&gt;ext&lt;/sub&gt; (A/m&lt;sup&gt;2&lt;/sup&gt;)</source>
         <translation></translation>
     </message>
@@ -1662,12 +1778,12 @@
 <context>
     <name>EdgeMarkerDialog</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="342"/>
+        <location filename="../src/scenemarker.cpp" line="335"/>
         <source>Edge marker</source>
         <translation>Znacznik krawędzi</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="380"/>
+        <location filename="../src/scenemarker.cpp" line="373"/>
         <source>Edge marker:</source>
         <translation>Znacznik krawędzi:</translation>
     </message>
@@ -1675,67 +1791,67 @@
 <context>
     <name>FileBrowser</name>
     <message>
-        <location filename="../src/gui.cpp" line="261"/>
+        <location filename="../src/gui.cpp" line="268"/>
         <source>&amp;Create directory</source>
         <translation>&amp;Utwórz katalog</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="264"/>
+        <location filename="../src/gui.cpp" line="271"/>
         <source>Create &amp;file</source>
         <translation>Utwórz &amp;plik</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="267"/>
+        <location filename="../src/gui.cpp" line="274"/>
         <source>&amp;Rename</source>
         <translation>&amp;Zmiana nazwy</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="270"/>
+        <location filename="../src/gui.cpp" line="277"/>
         <source>&amp;Delete</source>
         <translation>&amp;Usuń</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="388"/>
+        <location filename="../src/gui.cpp" line="395"/>
         <source>Create directory</source>
         <translation>Utwórz katalog</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="388"/>
-        <location filename="../src/gui.cpp" line="471"/>
+        <location filename="../src/gui.cpp" line="395"/>
+        <location filename="../src/gui.cpp" line="478"/>
         <source>Enter directory name</source>
         <translation>Podaj nazwę katalogu</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="404"/>
-        <location filename="../src/gui.cpp" line="416"/>
+        <location filename="../src/gui.cpp" line="411"/>
+        <location filename="../src/gui.cpp" line="423"/>
         <source>Create file</source>
         <translation>Utwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="404"/>
-        <location filename="../src/gui.cpp" line="486"/>
+        <location filename="../src/gui.cpp" line="411"/>
+        <location filename="../src/gui.cpp" line="493"/>
         <source>Enter file name</source>
         <translation>Podaj nazwę pliku</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="471"/>
-        <location filename="../src/gui.cpp" line="477"/>
+        <location filename="../src/gui.cpp" line="478"/>
+        <location filename="../src/gui.cpp" line="484"/>
         <source>Rename directory</source>
         <translation>Zmiana nazwy katalogu</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="477"/>
+        <location filename="../src/gui.cpp" line="484"/>
         <source>Directory could not be renamed.</source>
         <translation>Nie można zmienić nazwy katalogu.</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="486"/>
-        <location filename="../src/gui.cpp" line="496"/>
+        <location filename="../src/gui.cpp" line="493"/>
+        <location filename="../src/gui.cpp" line="503"/>
         <source>Rename file</source>
         <translation>Zmiana nazwy pliku</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="496"/>
+        <location filename="../src/gui.cpp" line="503"/>
         <source>File could not be renamed.</source>
         <translation>Nie można zmienić nazwy pliku.</translation>
     </message>
@@ -2203,6 +2319,14 @@
         <translation>Temperatura:</translation>
     </message>
     <message>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="354"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="384"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="385"/>
+        <location filename="../src/hermes2d/hermes_heat.cpp" line="398"/>
+        <source>K</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="358"/>
         <source>Heat flux</source>
         <translation>Strumień ciepła</translation>
@@ -2221,8 +2345,12 @@
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="370"/>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="371"/>
+        <source>K/m</source>
+        <translation>K/m</translation>
+    </message>
+    <message>
         <source>deg./m</source>
-        <translation>deg./m</translation>
+        <translation type="obsolete">deg./m</translation>
     </message>
     <message>
         <location filename="../src/hermes2d/hermes_heat.cpp" line="381"/>
@@ -2251,12 +2379,8 @@
         <translation>W</translation>
     </message>
     <message>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="354"/>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="384"/>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="385"/>
-        <location filename="../src/hermes2d/hermes_heat.cpp" line="398"/>
         <source>deg.</source>
-        <translation>deg.</translation>
+        <translation type="obsolete">deg.</translation>
     </message>
 </context>
 <context>
@@ -2633,42 +2757,42 @@
 <context>
     <name>ImageLoaderDialog</name>
     <message>
-        <location filename="../src/gui.cpp" line="525"/>
+        <location filename="../src/gui.cpp" line="532"/>
         <source>Image</source>
         <translation>Obraz</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="568"/>
+        <location filename="../src/gui.cpp" line="575"/>
         <source>Filename:</source>
         <translation>Plik:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="579"/>
+        <location filename="../src/gui.cpp" line="586"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="581"/>
+        <location filename="../src/gui.cpp" line="588"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="583"/>
+        <location filename="../src/gui.cpp" line="590"/>
         <source>Width:</source>
         <translation>Szerokość:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="585"/>
+        <location filename="../src/gui.cpp" line="592"/>
         <source>Height:</source>
         <translation>Wysokość:</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="615"/>
+        <location filename="../src/gui.cpp" line="622"/>
         <source>Open file</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../src/gui.cpp" line="615"/>
+        <location filename="../src/gui.cpp" line="622"/>
         <source>Images (*.png *.bmp *.jpg)</source>
         <translation>Obrazy (*.png *.bmp *.jpg)</translation>
     </message>
@@ -2676,12 +2800,12 @@
 <context>
     <name>LabelMarkerDialog</name>
     <message>
-        <location filename="../src/scenemarker.cpp" line="421"/>
+        <location filename="../src/scenemarker.cpp" line="414"/>
         <source>Label marker</source>
         <translation>Znacznik etykiety</translation>
     </message>
     <message>
-        <location filename="../src/scenemarker.cpp" line="459"/>
+        <location filename="../src/scenemarker.cpp" line="452"/>
         <source>Label marker:</source>
         <translation>Znacznik etykiety:</translation>
     </message>
@@ -3736,7 +3860,7 @@
     <message>
         <location filename="../src/postprocessorview.cpp" line="444"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślne</translation>
     </message>
     <message>
         <location filename="../src/postprocessorview.cpp" line="472"/>
@@ -3859,12 +3983,12 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="192"/>
         <source>Transient analysis</source>
-        <translation type="unfinished">Analiza w czasie</translation>
+        <translation>Analiza w czasie</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="204"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished">Parametry siatki</translation>
+        <translation>Parametry siatki</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="215"/>
@@ -3874,7 +3998,7 @@
     <message>
         <location filename="../src/problemdialog.cpp" line="218"/>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptacja</translation>
+        <translation>Adaptacja</translation>
     </message>
     <message>
         <location filename="../src/problemdialog.cpp" line="252"/>
@@ -4763,7 +4887,7 @@
     <message>
         <location filename="../src/util.cpp" line="409"/>
         <source>Density</source>
-        <translation type="unfinished"></translation>
+        <translation>Gęstość</translation>
     </message>
     <message>
         <location filename="../src/util.cpp" line="411"/>
@@ -7193,7 +7317,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../src/value.cpp" line="75"/>
         <source>This textedit allows using variables.</source>
-        <translation type="unfinished">W tym polu można używać zmiennych.</translation>
+        <translation>W tym polu można używać zmiennych.</translation>
     </message>
     <message>
         <location filename="../src/value.cpp" line="167"/>

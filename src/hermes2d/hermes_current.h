@@ -173,7 +173,6 @@ class DSceneEdgeCurrentMarker : public DSceneEdgeMarker
 
 public:
     DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent);
-    ~DSceneEdgeCurrentMarker();
 
 protected:
     void createContent();
@@ -182,8 +181,12 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
     ValueLineEdit *txtValue;
+
+private slots:
+    void doTypeChanged(int index);
 };
 
 class DSceneLabelCurrentMarker : public DSceneLabelMarker

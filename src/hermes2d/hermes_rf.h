@@ -185,7 +185,6 @@ class DSceneEdgeRFMarker : public DSceneEdgeMarker
 
 public:
     DSceneEdgeRFMarker(SceneEdgeRFMarker *edgeRFMarker, QWidget *parent);
-    ~DSceneEdgeRFMarker();
 
 protected:
     void createContent();
@@ -194,6 +193,7 @@ protected:
     bool save();
 
 private:
+    QLabel *lblValueUnit;
     QComboBox *cmbType;
     QComboBox *cmbMode;
     ValueLineEdit *txtValueReal;
