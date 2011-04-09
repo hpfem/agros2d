@@ -118,7 +118,7 @@ DSceneEdgeMarker::DSceneEdgeMarker(QWidget *parent) : QDialog(parent)
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
-    lblEquation = new QLabel("Equation:");
+    lblEquation = new QLabel(tr("Equation:"));
     lblEquationImage = new QLabel(this);
 }
 
@@ -226,7 +226,7 @@ DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
-    lblEquation = new QLabel("Equation:");
+    lblEquation = new QLabel(tr("Equation:"));
     lblEquationImage = new QLabel(this);
 }
 

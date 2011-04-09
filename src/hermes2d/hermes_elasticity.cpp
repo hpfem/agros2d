@@ -1340,7 +1340,7 @@ void DSceneLabelElasticityMarker::createContent()
     grpThermalExpansion->setLayout(layoutThermalExpansion);
 
     // elasticity coeffs \lambda and \mu
-    layout->addWidget(new QLabel("Lame's coefficients:"), 2, 0, 1, 2);
+    layout->addWidget(new QLabel(tr("Lame's coefficients:")), 2, 0, 1, 2);
     QLabel *lblEquationImageCoeffs = new QLabel(this);
     layout->addWidget(lblEquationImageCoeffs, 2, 2);
     readPixmap(lblEquationImageCoeffs,
