@@ -1313,28 +1313,48 @@ void DSceneLabelElasticityMarker::createContent()
     txtTempRef = new ValueLineEdit(this);
 
     // forces
-    QFormLayout *layoutForces = new QFormLayout();
-    layoutForces->addRow(tr("Force X (N):"), txtForceX);
-    layoutForces->addRow(tr("Force Y (N):"), txtForceY);
+    QGridLayout *layoutForces = new QGridLayout();
+    layoutForces->addWidget(new QLabel(tr("Force")), 0, 0);
+    layoutForces->addWidget(new QLabel(tr("<i>v</i><sub>%1</sub> (N)").arg(Util::scene()->problemInfo()->labelX().toLower())), 0, 1);
+    layoutForces->addWidget(txtForceX, 0, 2);
+    layoutForces->addWidget(new QLabel(tr("Force")), 1, 0);
+    layoutForces->addWidget(new QLabel(tr("<i>v</i><sub>%1</sub> (N)").arg(Util::scene()->problemInfo()->labelY().toLower())), 1, 1);
+    layoutForces->addWidget(txtForceY, 1, 2);
 
     QGroupBox *grpForces = new QGroupBox(tr("Volumetric forces"), this);
     grpForces->setLayout(layoutForces);
 
     // thermal expansion
-    QFormLayout *layoutThermalExpansion = new QFormLayout();
-    layoutThermalExpansion->addRow(tr("Thermal exp. coef. (1/deg):"), txtAlpha);
-    layoutThermalExpansion->addRow(tr("Temperature (deg):"), txtTemp);
-    layoutThermalExpansion->addRow(tr("Ref. temperature (deg):"), txtTempRef);
+    QGridLayout *layoutThermalExpansion = new QGridLayout();
+    layoutThermalExpansion->addWidget(new QLabel(tr("Thermal exp. coef.")), 0, 0);
+    layoutThermalExpansion->addWidget(new QLabel(tr("<i>%1</i><sub>T</sub> (1/deg.)").arg(QString::fromUtf8("α"))), 0, 1);
+    layoutThermalExpansion->addWidget(txtAlpha, 0, 2);
+    layoutThermalExpansion->addWidget(new QLabel(tr("Temperature")), 1, 0);
+    layoutThermalExpansion->addWidget(new QLabel(tr("<i>T</i> (deg.)").arg(QString::fromUtf8("υ"))), 1, 1);
+    layoutThermalExpansion->addWidget(txtTemp, 1, 2);
+    layoutThermalExpansion->addWidget(new QLabel(tr("Ref. temperature")), 2, 0);
+    layoutThermalExpansion->addWidget(new QLabel(tr("<i>T</i><sub>ref</sub> (deg.)")), 2, 1);
+    layoutThermalExpansion->addWidget(txtTempRef, 2, 2);
 
     QGroupBox *grpThermalExpansion = new QGroupBox(tr("Thermal expansion"), this);
     grpThermalExpansion->setLayout(layoutThermalExpansion);
 
-    layout->addWidget(new QLabel(tr("Young modulus (Pa):")), 1, 0);
-    layout->addWidget(txtYoungModulus, 1, 1);
-    layout->addWidget(new QLabel(tr("Poisson number (-):")), 2, 0);
-    layout->addWidget(txtPoissonNumber, 2, 1);
-    layout->addWidget(grpForces, 3, 0, 1, 2);
-    layout->addWidget(grpThermalExpansion, 4, 0, 1, 2);
+    // elasticity coeffs \lambda and \mu
+    layout->addWidget(new QLabel("Lame's coefficients:"), 2, 0, 1, 2);
+    QLabel *lblEquationImageCoeffs = new QLabel(this);
+    layout->addWidget(lblEquationImageCoeffs, 2, 2);
+    readPixmap(lblEquationImageCoeffs,
+               QString(":/images/equations/%1/%1_coeffs.png")
+               .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField())));
+
+    layout->addWidget(new QLabel(tr("Young modulus")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>E</i> (Pa)")), 10, 1);
+    layout->addWidget(txtYoungModulus, 10, 2);
+    layout->addWidget(new QLabel(tr("Poisson number")), 11, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (-)").arg(QString::fromUtf8("υ"))), 11, 1);
+    layout->addWidget(txtPoissonNumber, 11, 2);
+    layout->addWidget(grpForces, 12, 0, 1, 3);
+    layout->addWidget(grpThermalExpansion, 13, 0, 1, 3);
 }
 
 void DSceneLabelElasticityMarker::load()

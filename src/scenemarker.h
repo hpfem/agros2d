@@ -132,6 +132,7 @@ protected:
 
     QLineEdit *txtName;
     QLabel *lblEquation;
+    QLabel *lblEquationImage;
     SceneEdgeMarker *m_edgeMarker;
 
     virtual void createContent() = 0;
@@ -163,6 +164,7 @@ protected:
 
     QLineEdit *txtName;
     QLabel *lblEquation;
+    QLabel *lblEquationImage;
     SceneLabelMarker *m_labelMarker;
 
     virtual void createContent() = 0;

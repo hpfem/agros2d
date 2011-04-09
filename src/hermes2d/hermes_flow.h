@@ -169,7 +169,6 @@ class DSceneEdgeFlowMarker : public DSceneEdgeMarker
 
 public:
     DSceneEdgeFlowMarker(SceneEdgeFlowMarker *edgeEdgeFlowMarker, QWidget *parent);
-    ~DSceneEdgeFlowMarker();
 
 protected:
     void createContent();
@@ -193,7 +192,6 @@ class DSceneLabelFlowMarker : public DSceneLabelMarker
 
 public:
     DSceneLabelFlowMarker(QWidget *parent, SceneLabelFlowMarker *labelFlowMarker);
-    ~DSceneLabelFlowMarker();
 
 protected:
     void createContent();

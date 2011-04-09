@@ -1058,14 +1058,6 @@ DSceneLabelHeatMarker::DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMark
     setSize();
 }
 
-DSceneLabelHeatMarker::~DSceneLabelHeatMarker()
-{
-    delete txtThermalConductivity;
-    delete txtVolumeHeat;
-    delete txtDensity;
-    delete txtSpecificHeat;
-}
-
 void DSceneLabelHeatMarker::createContent()
 {
     txtThermalConductivity = new ValueLineEdit(this);
@@ -1080,14 +1072,18 @@ void DSceneLabelHeatMarker::createContent()
     connect(txtDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtSpecificHeat, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Thermal conductivity (W/m.K):")), 1, 0);
-    layout->addWidget(txtThermalConductivity, 1, 1);
-    layout->addWidget(new QLabel(tr("Volume heat (J/m3):")), 2, 0);
-    layout->addWidget(txtVolumeHeat, 2, 1);
-    layout->addWidget(new QLabel(tr("Density (kg/m3):")), 3, 0);
-    layout->addWidget(txtDensity, 3, 1);
-    layout->addWidget(new QLabel(tr("Specific heat (J/kg.K):")), 4, 0);
-    layout->addWidget(txtSpecificHeat, 4, 1);
+    layout->addWidget(new QLabel(tr("Thermal conductivity")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (W/m.K)").arg(QString::fromUtf8("λ"))), 10, 1);
+    layout->addWidget(txtThermalConductivity, 10, 2);
+    layout->addWidget(new QLabel(tr("Volume heat")), 11, 0);
+    layout->addWidget(new QLabel(tr("<i>Q</i> (W/m<sup>3</sup>)")), 11, 1);
+    layout->addWidget(txtVolumeHeat, 11, 2);
+    layout->addWidget(new QLabel(tr("Mass density")), 12, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (kg/m<sup>3</sup>)").arg(QString::fromUtf8("ρ"))), 12, 1);
+    layout->addWidget(txtDensity, 12, 2);
+    layout->addWidget(new QLabel(tr("Specific heat")), 13, 0);
+    layout->addWidget(new QLabel(tr("<i>c</i><sub>p</sub> (J/kg.K)")), 13, 1);
+    layout->addWidget(txtSpecificHeat, 13, 2);
 }
 
 void DSceneLabelHeatMarker::load()

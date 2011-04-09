@@ -192,7 +192,6 @@ class DSceneLabelElectrostaticMarker : public DSceneLabelMarker
     Q_OBJECT
 public:
     DSceneLabelElectrostaticMarker(QWidget *parent, SceneLabelElectrostaticMarker *labelElectrostaticMarker);
-    ~DSceneLabelElectrostaticMarker();
 
 protected:
     void createContent();

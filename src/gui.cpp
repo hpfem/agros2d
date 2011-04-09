@@ -26,6 +26,13 @@
 
 #include "hermes2d/hermes_field.h"
 
+void readPixmap(QLabel *lblEquation, const QString &name)
+{
+    QPixmap pixmap;
+    pixmap.load(name);
+    lblEquation->setPixmap(pixmap);
+}
+
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit)
 {
     logMessage("addTreeWidgetItemValue()");

@@ -211,7 +211,6 @@ class DSceneLabelHeatMarker : public DSceneLabelMarker
 
 public:
     DSceneLabelHeatMarker(QWidget *parent, SceneLabelHeatMarker *labelHeatMarker);
-    ~DSceneLabelHeatMarker();
 
 protected:
     void createContent();

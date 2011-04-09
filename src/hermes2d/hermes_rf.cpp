@@ -1263,40 +1263,37 @@ DSceneLabelRFMarker::DSceneLabelRFMarker(QWidget *parent, SceneLabelRFMarker *la
     setSize();
 }
 
-DSceneLabelRFMarker::~DSceneLabelRFMarker()
-{
-    delete txtPermittivity;
-    delete txtPermeability;
-    delete txtConductivity;
-    delete txtCurrent_density_real;
-    delete txtCurrent_density_imag;
-}
-
 void DSceneLabelRFMarker::createContent()
 {
-
     txtPermittivity = new ValueLineEdit(this);
     txtPermeability = new ValueLineEdit(this);
     txtConductivity = new ValueLineEdit(this);
-    txtCurrent_density_real = new ValueLineEdit(this);
-    txtCurrent_density_imag = new ValueLineEdit(this);
+    txtCurrentDensityReal = new ValueLineEdit(this);
+    txtCurrentDensityImag = new ValueLineEdit(this);
 
     connect(txtPermeability, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    connect(txtCurrent_density_real, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    connect(txtCurrent_density_imag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtCurrentDensityReal, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
+    connect(txtCurrentDensityImag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtPermittivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Permitivity (-):")), 1, 0);
-    layout->addWidget(txtPermittivity, 1, 1);
-    layout->addWidget(new QLabel(tr("Permeability (-):")), 2, 0);
-    layout->addWidget(txtPermeability, 2, 1);
-    layout->addWidget(new QLabel(tr("Conductivity (S/m):")), 3, 0);
-    layout->addWidget(txtConductivity, 3, 1);
-    layout->addWidget(new QLabel(tr("Current density - real (A/m2):")), 4, 0);
-    layout->addWidget(txtCurrent_density_real, 4, 1);
-    layout->addWidget(new QLabel(tr("Current density - imag (A/m2):")), 5, 0);
-    layout->addWidget(txtCurrent_density_imag, 5, 1);
+    QHBoxLayout *layoutCurrentDensity = new QHBoxLayout();
+    layoutCurrentDensity->addWidget(txtCurrentDensityReal);
+    layoutCurrentDensity->addWidget(new QLabel(" + j "));
+    layoutCurrentDensity->addWidget(txtCurrentDensityImag);
+
+    layout->addWidget(new QLabel(tr("Permittivity")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("ε"))), 10, 1);
+    layout->addWidget(txtPermittivity, 10, 2);
+    layout->addWidget(new QLabel(tr("Permeability")), 11, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("μ"))), 11, 1);
+    layout->addWidget(txtPermeability, 11, 2);
+    layout->addWidget(new QLabel(tr("Conductivity")), 12, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (S/m)").arg(QString::fromUtf8("σ"))), 12, 1);
+    layout->addWidget(txtConductivity, 12, 2);
+    layout->addWidget(new QLabel(tr("Current density")), 13, 0);
+    layout->addWidget(new QLabel(tr("<i>J</i><sub>ext</sub> (A/m<sup>2</sup>)")), 13, 1);
+    layout->addLayout(layoutCurrentDensity, 13, 2);
 }
 
 void DSceneLabelRFMarker::load()
@@ -1308,8 +1305,8 @@ void DSceneLabelRFMarker::load()
     txtPermittivity->setValue(labelRFMarker->permittivity);
     txtPermeability->setValue(labelRFMarker->permeability);
     txtConductivity->setValue(labelRFMarker->conductivity);
-    txtCurrent_density_real->setValue(labelRFMarker->current_density_real);
-    txtCurrent_density_imag->setValue(labelRFMarker->current_density_imag);
+    txtCurrentDensityReal->setValue(labelRFMarker->current_density_real);
+    txtCurrentDensityImag->setValue(labelRFMarker->current_density_imag);
 }
 
 bool DSceneLabelRFMarker::save() {
@@ -1332,13 +1329,13 @@ bool DSceneLabelRFMarker::save() {
     else
         return false;
 
-    if (txtCurrent_density_real->evaluate())
-        labelRFMarker->current_density_real  = txtCurrent_density_real->value();
+    if (txtCurrentDensityReal->evaluate())
+        labelRFMarker->current_density_real  = txtCurrentDensityReal->value();
     else
         return false;
 
-    if (txtCurrent_density_imag->evaluate())
-        labelRFMarker->current_density_imag  = txtCurrent_density_imag->value();
+    if (txtCurrentDensityImag->evaluate())
+        labelRFMarker->current_density_imag  = txtCurrentDensityImag->value();
     else
         return false;
 

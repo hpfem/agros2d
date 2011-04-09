@@ -249,7 +249,6 @@ class DSceneLabelMagneticMarker : public DSceneLabelMarker
 
 public:
     DSceneLabelMagneticMarker(QWidget *parent, SceneLabelMagneticMarker *labelMagneticMarker);
-    ~DSceneLabelMagneticMarker();
 
 protected:
     void createContent();

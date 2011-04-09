@@ -210,7 +210,6 @@ class DSceneLabelRFMarker : public DSceneLabelMarker
 
 public:
     DSceneLabelRFMarker(QWidget *parent, SceneLabelRFMarker *labelRFMarker);
-    ~DSceneLabelRFMarker();
 
 protected:
     void createContent();
@@ -222,8 +221,8 @@ private:
     ValueLineEdit *txtPermittivity;
     ValueLineEdit *txtPermeability;
     ValueLineEdit *txtConductivity;
-    ValueLineEdit *txtCurrent_density_real;
-    ValueLineEdit *txtCurrent_density_imag;
+    ValueLineEdit *txtCurrentDensityReal;
+    ValueLineEdit *txtCurrentDensityImag;
 
 };
 

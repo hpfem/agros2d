@@ -1210,10 +1210,12 @@ void DSceneLabelAcousticMarker::createContent()
     connect(txtDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtSpeed, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Density (kg/m3):")), 1, 0);
-    layout->addWidget(txtDensity, 1, 1);
-    layout->addWidget(new QLabel(tr("Speed of sound (m/s):")), 2, 0);
-    layout->addWidget(txtSpeed, 2, 1);
+    layout->addWidget(new QLabel(tr("Mass density")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (kg/m<sup>3</sup>)").arg(QString::fromUtf8("ρ"))), 10, 1);
+    layout->addWidget(txtDensity, 10, 2);
+    layout->addWidget(new QLabel(tr("Speed of sound")), 11, 0);
+    layout->addWidget(new QLabel(tr("<i>c</i> (m/s)")), 11, 1);
+    layout->addWidget(txtSpeed, 11, 2);
 }
 
 void DSceneLabelAcousticMarker::load()

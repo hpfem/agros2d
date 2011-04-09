@@ -192,7 +192,6 @@ class DSceneLabelCurrentMarker : public DSceneLabelMarker
 
 public:
     DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker);
-    ~DSceneLabelCurrentMarker();
 
 protected:
     void createContent();

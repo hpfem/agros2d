@@ -1192,14 +1192,6 @@ DSceneLabelMagneticMarker::DSceneLabelMagneticMarker(QWidget *parent, SceneLabel
     setSize();
 }
 
-DSceneLabelMagneticMarker::~DSceneLabelMagneticMarker()
-{
-    delete txtPermeability;
-    delete txtConductivity;
-    delete txtCurrentDensityReal;
-    delete txtCurrentDensityImag;
-}
-
 void DSceneLabelMagneticMarker::createContent()
 {
     txtPermeability = new ValueLineEdit(this);
@@ -1231,30 +1223,43 @@ void DSceneLabelMagneticMarker::createContent()
     layoutCurrentDensity->addWidget(txtCurrentDensityImag);
 
     // remanence
-    QFormLayout *layoutRemanence = new QFormLayout();
-    layoutRemanence->addRow(tr("Rem. flux dens. (T):"), txtRemanence);
-    layoutRemanence->addRow(tr("Direction of rem. (deg.):"), txtRemanenceAngle);
+    QGridLayout *layoutRemanence = new QGridLayout();
+    layoutRemanence->addWidget(new QLabel(tr("Rem. flux dens.")), 0, 0);
+    layoutRemanence->addWidget(new QLabel(tr("<i>B</i><sub>r</sub> (T)")), 0, 1);
+    layoutRemanence->addWidget(txtRemanence, 0, 2);
+    layoutRemanence->addWidget(new QLabel(tr("Direction of rem.")), 1, 0);
+    layoutRemanence->addWidget(new QLabel(tr("<i>%1</i> (deg.)").arg(QString::fromUtf8("α"))), 1, 1);
+    layoutRemanence->addWidget(txtRemanenceAngle, 1, 2);
 
     QGroupBox *grpRemanence = new QGroupBox(tr("Permanent magnet"), this);
     grpRemanence->setLayout(layoutRemanence);
 
     // velocity
-    QFormLayout *layoutVelocity = new QFormLayout();
-    layoutVelocity->addRow(tr("Velocity %1 (m/s):").arg(Util::scene()->problemInfo()->labelX().toLower()), txtVelocityX);
-    layoutVelocity->addRow(tr("Velocity %1 (m/s):").arg(Util::scene()->problemInfo()->labelY().toLower()), txtVelocityY);
-    layoutVelocity->addRow(tr("Velocity angular (rad/s):"), txtVelocityAngular);
+    QGridLayout *layoutVelocity = new QGridLayout();
+    layoutVelocity->addWidget(new QLabel(tr("Velocity")), 0, 0);
+    layoutVelocity->addWidget(new QLabel(tr("<i>v</i><sub>%1</sub> (m/s)").arg(Util::scene()->problemInfo()->labelX().toLower())), 0, 1);
+    layoutVelocity->addWidget(txtVelocityX, 0, 2);
+    layoutVelocity->addWidget(new QLabel(tr("Velocity")), 1, 0);
+    layoutVelocity->addWidget(new QLabel(tr("<i>v</i><sub>%1</sub> (m/s)").arg(Util::scene()->problemInfo()->labelY().toLower())), 1, 1);
+    layoutVelocity->addWidget(txtVelocityY, 1, 2);
+    layoutVelocity->addWidget(new QLabel(tr("Velocity angular")), 2, 0);
+    layoutVelocity->addWidget(new QLabel(tr("<i>%1</i> (rad/s)").arg(QString::fromUtf8("ω"))), 2, 1);
+    layoutVelocity->addWidget(txtVelocityAngular, 2, 2);
 
     QGroupBox *grpVelocity = new QGroupBox(tr("Velocity"), this);
     grpVelocity->setLayout(layoutVelocity);
 
-    layout->addWidget(new QLabel(tr("Permeability (-):")), 1, 0);
-    layout->addWidget(txtPermeability, 1, 1);
-    layout->addWidget(new QLabel(tr("Conductivity (S/m):")), 2, 0);
-    layout->addWidget(txtConductivity, 2, 1);
-    layout->addWidget(new QLabel(tr("Current density (A/m2):")), 3, 0);
-    layout->addLayout(layoutCurrentDensity, 3, 1);
-    layout->addWidget(grpRemanence, 4, 0, 1, 2);
-    layout->addWidget(grpVelocity, 5, 0, 1, 2);
+    layout->addWidget(new QLabel(tr("Permeability")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("μ"))), 10, 1);
+    layout->addWidget(txtPermeability, 10, 2);
+    layout->addWidget(new QLabel(tr("Conductivity")), 11, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (S/m)").arg(QString::fromUtf8("σ"))), 11, 1);
+    layout->addWidget(txtConductivity, 11, 2);
+    layout->addWidget(new QLabel(tr("Current density")), 12, 0);
+    layout->addWidget(new QLabel(tr("<i>J</i><sub>ext</sub> (A/m<sup>2</sup>)")), 12, 1);
+    layout->addLayout(layoutCurrentDensity, 12, 2);
+    layout->addWidget(grpRemanence, 13, 0, 1, 3);
+    layout->addWidget(grpVelocity, 14, 0, 1, 3);
 }
 
 void DSceneLabelMagneticMarker::load()

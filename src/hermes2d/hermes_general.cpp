@@ -715,12 +715,6 @@ DSceneLabelGeneralMarker::DSceneLabelGeneralMarker(QWidget *parent, SceneLabelGe
     setSize();
 }
 
-DSceneLabelGeneralMarker::~DSceneLabelGeneralMarker()
-{
-    delete txtConstant;
-    delete txtRightSide;
-}
-
 void DSceneLabelGeneralMarker::createContent()
 {
     txtConstant = new ValueLineEdit(this);
@@ -730,10 +724,12 @@ void DSceneLabelGeneralMarker::createContent()
     connect(txtConstant, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtRightSide, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Constant:")), 1, 0);
-    layout->addWidget(txtConstant, 1, 1);
-    layout->addWidget(new QLabel(tr("Rightside:")), 2, 0);
-    layout->addWidget(txtRightSide, 2, 1);
+    layout->addWidget(new QLabel(tr("Constant")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>c</i> (-)")), 10, 1);
+    layout->addWidget(txtConstant, 10, 2);
+    layout->addWidget(new QLabel(tr("Rightside")), 11, 0);
+    layout->addWidget(new QLabel(tr("<i>r</i> (-)")), 11, 1);
+    layout->addWidget(txtRightSide, 11, 2);
 }
 
 void DSceneLabelGeneralMarker::load()

@@ -118,10 +118,8 @@ DSceneEdgeMarker::DSceneEdgeMarker(QWidget *parent) : QDialog(parent)
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
-#ifdef BETA
-    lblEquation = new QLabel(this);
-    lblEquation->setTextFormat(Qt::RichText);
-#endif
+    lblEquation = new QLabel("Equation:");
+    lblEquationImage = new QLabel(this);
 }
 
 DSceneEdgeMarker::~DSceneEdgeMarker()
@@ -147,10 +145,8 @@ void DSceneEdgeMarker::createDialog()
     // content
     createContent();
 
-#ifdef BETA
-    layout->addWidget(new QLabel("Equation:"), 99, 0);
-    layout->addWidget(lblEquation, 99, 1);
-#endif
+    layout->addWidget(lblEquation, 99, 0);
+    layout->addWidget(lblEquationImage, 99, 1);
     layout->addWidget(buttonBox, 100, 0, 1, 2);
 
     txtName->setFocus();
@@ -194,6 +190,10 @@ void DSceneEdgeMarker::setSize()
 
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
+
+    // set equation
+    // lblEquation->setEnabled(lblEquationImage->pixmap()->isNull());
+    // lblEquationImage->setEnabled(lblEquationImage->pixmap()->isNull());
 }
 
 void DSceneEdgeMarker::doAccept()
@@ -226,10 +226,8 @@ DSceneLabelMarker::DSceneLabelMarker(QWidget *parent) : QDialog(parent)
 
     layout = new QGridLayout();
     txtName = new QLineEdit(this);
-#ifdef BETA
-    lblEquation = new QLabel(this);
-    lblEquation->setTextFormat(Qt::RichText);
-#endif
+    lblEquation = new QLabel("Equation:");
+    lblEquationImage = new QLabel(this);
 }
 
 DSceneLabelMarker::~DSceneLabelMarker()
@@ -249,17 +247,22 @@ void DSceneLabelMarker::createDialog()
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
-    layout->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layout->addWidget(txtName, 0, 1);
+    // name
+    layout->addWidget(new QLabel(tr("Name:")), 0, 0, 1, 2);
+    layout->addWidget(txtName, 0, 2);
+
+    // equation
+    layout->addWidget(lblEquation, 1, 0, 1, 2);
+    layout->addWidget(lblEquationImage, 1, 2);
+    readPixmap(lblEquationImage,
+               QString(":/images/equations/%1/%1_%2.png")
+               .arg(physicFieldToStringKey(Util::scene()->problemInfo()->physicField()))
+               .arg(analysisTypeToStringKey(Util::scene()->problemInfo()->analysisType)));
 
     // content
     createContent();
 
-#ifdef BETA
-    layout->addWidget(new QLabel("Equation:"), 99, 0);
-    layout->addWidget(lblEquation, 99, 1);
-#endif
-    layout->addWidget(buttonBox, 100, 0, 1, 2);
+    layout->addWidget(buttonBox, 100, 0, 1, 3);
 
     txtName->setFocus();
 
@@ -275,6 +278,10 @@ void DSceneLabelMarker::setSize()
 
     setMinimumSize(sizeHint());
     setMaximumSize(sizeHint());
+
+    // set equation
+    // lblEquation->setEnabled(lblEquationImage->pixmap()->isNull());
+    // lblEquationImage->setEnabled(lblEquationImage->pixmap()->isNull());
 }
 
 void DSceneLabelMarker::load()

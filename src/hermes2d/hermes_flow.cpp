@@ -699,14 +699,6 @@ DSceneEdgeFlowMarker::DSceneEdgeFlowMarker(SceneEdgeFlowMarker *edgeEdgeFlowMark
     setSize();
 }
 
-DSceneEdgeFlowMarker::~DSceneEdgeFlowMarker()
-{
-    delete cmbType;
-    delete txtVelocityX;
-    delete txtVelocityY;
-    delete txtPressure;
-}
-
 void DSceneEdgeFlowMarker::createContent()
 {
     cmbType = new QComboBox(this);
@@ -802,21 +794,17 @@ DSceneLabelFlowMarker::DSceneLabelFlowMarker(QWidget *parent, SceneLabelFlowMark
     setSize();
 }
 
-DSceneLabelFlowMarker::~DSceneLabelFlowMarker()
-{
-    delete txtDynamicViscosity;
-    delete txtDensity;
-}
-
 void DSceneLabelFlowMarker::createContent()
 {
     txtDynamicViscosity = new ValueLineEdit(this);
     txtDensity = new ValueLineEdit(this);
 
-    layout->addWidget(new QLabel(tr("Dynamic viscosity (Pa.s):")), 1, 0);
-    layout->addWidget(txtDynamicViscosity, 1, 1);
-    layout->addWidget(new QLabel(tr("Density (kg/m3):")), 2, 0);
-    layout->addWidget(txtDensity, 2, 1);
+    layout->addWidget(new QLabel(tr("Dynamic viscosity")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (Pa.s)").arg(QString::fromUtf8("μ"))), 10, 1);
+    layout->addWidget(txtDynamicViscosity, 10, 2);
+    layout->addWidget(new QLabel(tr("Mass density")), 11, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (kg/m<sup>3</sup>)").arg(QString::fromUtf8("ρ"))), 11, 1);
+    layout->addWidget(txtDensity, 11, 2);
 }
 
 void DSceneLabelFlowMarker::load()

@@ -183,7 +183,6 @@ class DSceneLabelGeneralMarker : public DSceneLabelMarker
     Q_OBJECT
 public:
     DSceneLabelGeneralMarker(QWidget *parent, SceneLabelGeneralMarker *labelGeneralMarker);
-    ~DSceneLabelGeneralMarker();
 
 protected:
     void createContent();

@@ -799,12 +799,6 @@ DSceneLabelElectrostaticMarker::DSceneLabelElectrostaticMarker(QWidget *parent, 
     setSize();
 }
 
-DSceneLabelElectrostaticMarker::~DSceneLabelElectrostaticMarker()
-{
-    delete txtPermittivity;
-    delete txtChargeDensity;
-}
-
 void DSceneLabelElectrostaticMarker::createContent()
 {
     txtPermittivity = new ValueLineEdit(this);
@@ -813,10 +807,12 @@ void DSceneLabelElectrostaticMarker::createContent()
     connect(txtPermittivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtChargeDensity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Permittivity (-):")), 1, 0);
-    layout->addWidget(txtPermittivity, 1, 1);
-    layout->addWidget(new QLabel(tr("Charge density (C/m3):")), 2, 0);
-    layout->addWidget(txtChargeDensity, 2, 1);
+    layout->addWidget(new QLabel(tr("Permittivity")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i><sub>r</sub> (-)").arg(QString::fromUtf8("ε"))), 10, 1);
+    layout->addWidget(txtPermittivity, 10, 2);
+    layout->addWidget(new QLabel(tr("Charge density")), 11, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (C/m<sup>3</sup>)").arg(QString::fromUtf8("ρ"))), 11, 1);
+    layout->addWidget(txtChargeDensity, 11, 2);
 }
 
 void DSceneLabelElectrostaticMarker::load()

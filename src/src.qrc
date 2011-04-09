@@ -69,26 +69,27 @@
         <file>images/video.png</file>
         <file>images/report.png</file>
         <file>images/view-fullscreen.png</file>
-        <file>images/equations/current_steadystate.png</file>
-        <file>images/equations/electrostatic_steadystate.png</file>
-        <file>images/equations/general_steadystate.png</file>
-        <file>images/equations/heat_steadystate.png</file>
-        <file>images/equations/heat_transient.png</file>
-        <file>images/equations/magnetic_harmonic.png</file>
-        <file>images/equations/magnetic_steadystate.png</file>
-        <file>images/equations/magnetic_transient.png</file>
-        <file>images/equations/flow_steadystate.png</file>
-        <file>images/equations/flow_transient.png</file>
-        <file>images/equations/elasticity_steadystate.png</file>
-        <file>images/equations/rf_harmonic.png</file>
-        <file>images/equations/acoustic_harmonic.png</file>
-        <file>images/equations/acoustic_transient.png</file>
         <file>images/log.png</file>
         <file>images/grid.png</file>
         <file>images/snap-to-grid.png</file>
         <file>images/rulers.png</file>
         <file>images/options-solver.png</file>
         <file>images/three-dots.png</file>
-        <file>images/remove-item.png</file>
+        <file>images/remove-item.png</file>        
+        <file>images/equations/current/current_steadystate.png</file>
+        <file>images/equations/electrostatic/electrostatic_steadystate.png</file>
+        <file>images/equations/general/general_steadystate.png</file>
+        <file>images/equations/heat/heat_steadystate.png</file>
+        <file>images/equations/heat/heat_transient.png</file>
+        <file>images/equations/magnetic/magnetic_harmonic.png</file>
+        <file>images/equations/magnetic/magnetic_steadystate.png</file>
+        <file>images/equations/magnetic/magnetic_transient.png</file>
+        <file>images/equations/flow/flow_steadystate.png</file>
+        <file>images/equations/flow/flow_transient.png</file>
+        <file>images/equations/elasticity/elasticity_steadystate.png</file>
+        <file>images/equations/elasticity/elasticity_coeffs.png</file>        
+        <file>images/equations/rf/rf_harmonic.png</file>
+        <file>images/equations/acoustic/acoustic_harmonic.png</file>
+        <file>images/equations/acoustic/acoustic_transient.png</file>
     </qresource>
 </RCC>

@@ -225,7 +225,7 @@ QWidget *ProblemDialog::createControlsGeneral()
     layoutLeft->addStretch();
     layoutLeft->addWidget(grpMesh);
 
-     // right
+    // right
     QVBoxLayout *layoutRight = new QVBoxLayout();
     layoutRight->addWidget(grpHarmonicAnalysis);
     layoutRight->addWidget(grpTransientAnalysis);
@@ -535,11 +535,8 @@ void ProblemDialog::doTransientChanged()
 
 void ProblemDialog::doShowEquation()
 {
-    logMessage("ProblemDialog::doShowEquation()");
-
-    QPixmap pixmap;
-    pixmap.load(QString(":/images/equations/%1_%2.png")
-                .arg(physicFieldToStringKey((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
-                .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
-    lblEquationPixmap->setPixmap(pixmap);
+    readPixmap(lblEquationPixmap,
+               QString(":/images/equations/%1/%1_%2.png")
+               .arg(physicFieldToStringKey((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()))
+               .arg(analysisTypeToStringKey((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
 }

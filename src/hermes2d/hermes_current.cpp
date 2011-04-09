@@ -776,19 +776,15 @@ DSceneLabelCurrentMarker::DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCu
     setSize();
 }
 
-DSceneLabelCurrentMarker::~DSceneLabelCurrentMarker()
-{
-    delete txtConductivity;
-}
-
 void DSceneLabelCurrentMarker::createContent()
 {
     txtConductivity = new ValueLineEdit(this);
     txtConductivity->setMinimumSharp(0.0);
     connect(txtConductivity, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    layout->addWidget(new QLabel(tr("Conductivity (S/m):")), 1, 0);
-    layout->addWidget(txtConductivity, 1, 1);
+    layout->addWidget(new QLabel(tr("Conductivity")), 10, 0);
+    layout->addWidget(new QLabel(tr("<i>%1</i> (S/m)").arg(QString::fromUtf8("σ"))), 10, 1);
+    layout->addWidget(txtConductivity, 10, 2);
 }
 
 void DSceneLabelCurrentMarker::load()
