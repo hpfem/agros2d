@@ -56,7 +56,7 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
     // FIXME: pro port zadavat z GUI
     int mode;
-    if (rfEdge[e->edge_marker].mode == TEMode_0)
+    if (!rfEdge[e->edge_marker].mode == TEMode_0)
         mode = 1;
     else
         mode = 0;
@@ -66,7 +66,7 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
     double height = rfEdge[e->edge_marker].height;
 
     double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
-    qDebug() << mode;
+    qDebug() << height;
 
     return - beta * int_u_v<Real, Scalar>(n, wt, u, v);
 }
@@ -82,14 +82,14 @@ Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Fun
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
     //int mode = 1;
     int mode;
-    if (rfEdge[e->edge_marker].mode == TEMode_1)
+    if (!rfEdge[e->edge_marker].mode == TEMode_1)
         mode = 1;
     else
         mode = 0;
     //double height = 0.01016;
-    double height = rfEdge[e->edge_marker].height;
+   // double height = rfEdge[e->edge_marker].height;
 
-    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
+    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
 
     return beta * int_u_v<Real, Scalar>(n, wt, u, v);
 }
@@ -97,33 +97,53 @@ Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Fun
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return 0.0;
+    //return 0.0;
     // dodelat clen  + 2*j*beta*E0z
     // kde E0z je podle mode
     // pro mode = 1 => pulvlna sinusovky
     // e->x[i]
 
-    /*
+    double mu = rfLabel[e->elem_marker].permeability * MU0;
+    double eps = rfLabel[e->elem_marker].permittivity * EPS0;
     double K = 0.0;
+    double E0z = 0.0;
+    int mode = 1;
+    double lenght = 0.0229;
 
-    if (rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MagneticField)
-        K = rfEdge[e->edge_marker].value_real;
+    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+
+    switch (mode)
+    {
+    case 1:
+        E0z=  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    default:
+        break;
+    }
+
+
+    if (rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port)
+        K = E0z * 2 * beta;
 
     if (isPlanar)
         return K * int_v<Real, Scalar>(n, wt, v);
     else
         return K * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
-    */
+
 }
 
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    return 0.0;
+   // return 0.0;
     /*
     double K = 0.0;
 
-    if (rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MagneticField)
+    if (rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port)
         K = rfEdge[e->edge_marker].value_imag;
 
     if (isPlanar)
@@ -131,6 +151,40 @@ Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
     else
         return 0.0;
     */
+
+    double mu = rfLabel[e->elem_marker].permeability * MU0;
+    double eps = rfLabel[e->elem_marker].permittivity * EPS0;
+    double K = 0.0;
+    double E0z = 0.0;
+    int mode = 1;
+    double lenght = 0.0229;
+
+    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+
+    switch (mode)
+    {
+    case 1:
+        E0z=  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    default:
+        break;
+    }
+
+
+    if (rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port)
+        K = E0z * 2 * beta;
+
+    if (isPlanar)
+        return K * int_v<Real, Scalar>(n, wt, v);
+    else
+        return K * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
+
+
+
 }
 
 template<typename Real, typename Scalar>
@@ -439,7 +493,7 @@ SceneEdgeMarker *HermesRF::modifyEdgeMarker(PyObject *self, PyObject *args)
                 return NULL;
             }
 
-            if ((physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_ElectricField) || (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_MagneticField) || (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_Port))
+                    if (physicFieldBCFromStringKey(type) == (PhysicFieldBC_RF_ElectricField || PhysicFieldBC_RF_MagneticField || PhysicFieldBC_RF_Port))
             {
                 marker->value_real = Value(QString::number(value1));
                 marker->value_imag = Value(QString::number(value2));
@@ -1213,6 +1267,7 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
     txtValueImag->setEnabled(false);
     txtHeight->setEnabled(false);
     cmbMode->setEnabled(false);
+    //cmbMode->setShown(false);
 
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
@@ -1238,8 +1293,11 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
 
     case PhysicFieldBC_RF_Port:
     {
+        txtValueReal->setEnabled(true);
+        txtValueImag->setEnabled(true);
         txtHeight->setEnabled(true);
         cmbMode->setEnabled(true);
+        //cmbMode->setShown(true);
     }
         break;
     }
