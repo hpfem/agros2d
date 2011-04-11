@@ -37,6 +37,7 @@ QLabel *createLabel(const QString &label, const QString &toolTip)
 {
     QLabel *lblEquation = new QLabel(label + ":");
     lblEquation->setToolTip(toolTip);
+    lblEquation->setMinimumWidth(100);
     return lblEquation;
 }
 

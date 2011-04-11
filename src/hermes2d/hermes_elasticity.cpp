@@ -1357,7 +1357,7 @@ void DSceneLabelElasticityMarker::createContent()
     layoutThermalExpansion->addWidget(createLabel(tr("<i>%1</i><sub>T</sub> (1/K)").arg(QString::fromUtf8("α")),
                                                   tr("Thermal exp. coef.")), 0, 0);
     layoutThermalExpansion->addWidget(txtAlpha, 0, 2);
-    layoutThermalExpansion->addWidget(createLabel(tr("<i>T</i> (K)").arg(QString::fromUtf8("υ")),
+    layoutThermalExpansion->addWidget(createLabel(tr("<i>T</i> (K)"),
                                                   tr("Temperature")), 1, 0);
     layoutThermalExpansion->addWidget(txtTemp, 1, 2);
     layoutThermalExpansion->addWidget(createLabel(tr("<i>T</i><sub>ref</sub> (K)"),
