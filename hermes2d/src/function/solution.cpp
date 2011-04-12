@@ -18,7 +18,6 @@
 #include "../../../hermes_common/matrix.h"
 #include "../shapeset/precalc.h"
 #include "../mesh/refmap.h"
-#include "../auto_local_array.h"
 
 //// MeshFunction //////////////////////////////////////////////////////////////////////////////////
 
@@ -81,6 +80,12 @@ void MeshFunction::handle_overflow_idx()
 void MeshFunction::push_transform(int son)
 {
   Transformable::push_transform(son);
+  update_nodes_ptr();
+}
+
+void MeshFunction::pop_transform()
+{
+  Transformable::pop_transform();
   update_nodes_ptr();
 }
 
@@ -189,7 +194,7 @@ void Solution::init()
 
   for(int i = 0; i < 4; i++)
     for(int j = 0; j < 4; j++)
-      tables[i][j] = new LightArray<LightArray<Node*>*>;
+      tables[i][j] = new std::map<uint64_t, LightArray<Node*>*>;
 
   mono_coefs = NULL;
   elem_coefs[0] = elem_coefs[1] = NULL;
@@ -216,15 +221,6 @@ Solution::Solution(Mesh *mesh) : MeshFunction(mesh)
   this->own_mesh = false;
 }
 
-Solution::Solution(Mesh *mesh, ExactFunction exactfn) : MeshFunction(mesh)
-{
-  space_type = HERMES_INVALID_SPACE;
-  this->init();
-  this->mesh = mesh;
-  this->own_mesh = false;
-  this->set_exact(mesh, exactfn);
-}
-
 Solution::Solution(Mesh *mesh, scalar init_const) : MeshFunction(mesh)
 {
   space_type = HERMES_INVALID_SPACE;
@@ -232,6 +228,15 @@ Solution::Solution(Mesh *mesh, scalar init_const) : MeshFunction(mesh)
   this->mesh = mesh;
   this->own_mesh = false;
   this->set_const(mesh, init_const);
+}
+
+Solution::Solution(Mesh *mesh, scalar init_const_0, scalar init_const_1) : MeshFunction(mesh)
+{
+  space_type = HERMES_INVALID_SPACE;
+  this->init();
+  this->mesh = mesh;
+  this->own_mesh = false;
+  this->set_const(mesh, init_const_0, init_const_1);
 }
 
 Solution::Solution(Space* s, Vector* coeff_vec) : MeshFunction(s->get_mesh())
@@ -314,30 +319,28 @@ void Solution::copy(const Solution* sln)
 
     init_dxdy_buffer();
   }
-  else // exact, const
+  else // Const, exact handled differently.
   {
-    exactfn1 = sln->exactfn1;
-    exactfn2 = sln->exactfn2;
     cnst[0] = sln->cnst[0];
     cnst[1] = sln->cnst[1];
+    if((dynamic_cast<ExactSolutionScalar*>(this)) != NULL || (dynamic_cast<ExactSolutionVector*>(this)) != NULL)
+      error("ExactSolutions can not be copied into an instance of Solution already coming from computation,\nuse ExactSolutionND = sln.");
   }
 
   element = NULL;
 }
-
 
 void Solution::free_tables()
 {
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++)
       if(tables[i][j] != NULL) {
-        for(unsigned int k = 0; k < tables[i][j]->get_size(); k++) 
-          if(tables[i][j]->present(k)) {
-            for(unsigned int l = 0; l < tables[i][j]->get(k)->get_size(); l++)
-              if(tables[i][j]->get(k)->present(l))
-                ::free(tables[i][j]->get(k)->get(l));
-            delete tables[i][j]->get(k);
-          }
+        for(std::map<uint64_t, LightArray<Node*>*>::iterator it = tables[i][j]->begin(); it != tables[i][j]->end(); it++) {
+          for(unsigned int l = 0; l < it->second->get_size(); l++)
+            if(it->second->present(l))
+              ::free(it->second->get(l));
+          delete it->second;
+        }
         delete tables[i][j];
         tables[i][j] = NULL;
         elems[i][j] = NULL;
@@ -451,7 +454,6 @@ void Solution::set_coeff_vector(Space* space, scalar* coeffs, bool add_dir_lift)
 {
     // sanity check
     if (space == NULL) error("Space == NULL in Solutin::set_coeff_vector().");
-    int ndof = Space::get_num_dofs(space);
 
     // initialize precalc shapeset using the space's shapeset
     Shapeset *shapeset = space->get_shapeset();
@@ -478,7 +480,6 @@ void Solution::set_coeff_vector(Space* space, PrecalcShapeset* pss, scalar* coef
     error("Provided 'space' is not up to date.");
   if (space->get_shapeset() != pss->get_shapeset())
     error("Provided 'space' and 'pss' must have the same shapesets.");
-  int ndof = Space::get_num_dofs(space);
 
   free();
  
@@ -486,7 +487,7 @@ void Solution::set_coeff_vector(Space* space, PrecalcShapeset* pss, scalar* coef
 
   num_components = pss->get_num_components();
   sln_type = HERMES_SLN;
-  num_dofs = Space::get_num_dofs(space);
+  num_dofs = space->get_num_dofs();
 
   // copy the mesh   TODO: share meshes between solutions // WHAT???
   mesh = space->get_mesh();
@@ -574,35 +575,6 @@ void Solution::set_coeff_vector(Space* space, PrecalcShapeset* pss, scalar* coef
   element = NULL;
 }
 
-
-//// set_exact etc. ////////////////////////////////////////////////////////////////////////////////
-
-void Solution::set_exact(Mesh* mesh, ExactFunction exactfn)
-{
-  free();
-
-  this->mesh = mesh;
-  exactfn1 = exactfn;
-  num_components = 1;
-  sln_type = HERMES_EXACT;
-  exact_mult = 1.0;
-  num_dofs = -1;
-}
-
-
-void Solution::set_exact(Mesh* mesh, ExactFunction2 exactfn)
-{
-  free();
-
-  this->mesh = mesh;
-  exactfn2 = exactfn;
-  num_components = 2;
-  sln_type = HERMES_EXACT;
-  exact_mult = 1.0;
-  num_dofs = -1;
-}
-
-
 void Solution::set_const(Mesh* mesh, scalar c)
 {
   free();
@@ -658,9 +630,16 @@ void Solution::vector_to_solutions(scalar* solution_vector,
 void Solution::vector_to_solution(scalar* solution_vector, Space* space,
                                   Solution* solution, bool add_dir_lift)
 {
-  Solution::vector_to_solutions(solution_vector, Hermes::vector<Space*>(space),
-                                Hermes::vector<Solution*>(solution),
-                                Hermes::vector<bool>(add_dir_lift));
+  Hermes::vector<Space *> spaces_to_pass;
+  spaces_to_pass.push_back(space);
+
+  Hermes::vector<Solution*> solutions_to_pass;
+  solutions_to_pass.push_back(solution);
+
+  Hermes::vector<bool> add_dir_lift_to_pass;
+  add_dir_lift_to_pass.push_back(add_dir_lift);
+
+  Solution::vector_to_solutions(solution_vector, spaces_to_pass, solutions_to_pass, add_dir_lift_to_pass);
 }
 
 void Solution::vector_to_solutions(Vector* solution_vector, Hermes::vector<Space*> spaces,
@@ -680,9 +659,16 @@ void Solution::vector_to_solutions(Vector* solution_vector, Hermes::vector<Space
 void Solution::vector_to_solution(Vector* solution_vector, Space* space,
                                   Solution* solution, bool add_dir_lift)
 {
-  Solution::vector_to_solutions(solution_vector, Hermes::vector<Space*>(space),
-                                Hermes::vector<Solution*>(solution),
-                                Hermes::vector<bool>(add_dir_lift));
+  Hermes::vector<Space *> spaces_to_pass;
+  spaces_to_pass.push_back(space);
+
+  Hermes::vector<Solution*> solutions_to_pass;
+  solutions_to_pass.push_back(solution);
+
+  Hermes::vector<bool> add_dir_lift_to_pass;
+  add_dir_lift_to_pass.push_back(add_dir_lift);
+
+  Solution::vector_to_solutions(solution_vector, spaces_to_pass, solutions_to_pass, add_dir_lift_to_pass);
 }
 
 void Solution::vector_to_solutions(scalar* solution_vector, Hermes::vector<Space*> spaces,
@@ -703,17 +689,26 @@ void Solution::vector_to_solutions(scalar* solution_vector, Hermes::vector<Space
 void Solution::vector_to_solution(scalar* solution_vector, Space* space, Solution* solution,
                                   PrecalcShapeset* pss, bool add_dir_lift)
 {
-  Solution::vector_to_solutions(solution_vector, Hermes::vector<Space*>(space),
-                                Hermes::vector<Solution*>(solution),
-                                Hermes::vector<PrecalcShapeset *>(pss),
-                                Hermes::vector<bool>(add_dir_lift));
+  Hermes::vector<Space *> spaces_to_pass;
+  spaces_to_pass.push_back(space);
+
+  Hermes::vector<Solution*> solutions_to_pass;
+  solutions_to_pass.push_back(solution);
+
+  Hermes::vector<PrecalcShapeset*> pss_to_pass;
+  pss_to_pass.push_back(pss);
+
+  Hermes::vector<bool> add_dir_lift_to_pass;
+  add_dir_lift_to_pass.push_back(add_dir_lift);
+
+  Solution::vector_to_solutions(solution_vector, spaces_to_pass, solutions_to_pass, pss_to_pass, add_dir_lift_to_pass);
 }
 
 
 void Solution::set_dirichlet_lift(Space* space, PrecalcShapeset* pss)
 {
   space_type = space->get_type();
-  int ndof = Space::get_num_dofs(space);
+  int ndof = space->get_num_dofs();
   scalar *temp = new scalar[ndof];
   memset(temp, 0, sizeof(scalar)*ndof);
   this->set_coeff_vector(space, pss, temp, true);
@@ -808,19 +803,18 @@ void Solution::set_active_element(Element* e)
   if (cur_elem >= 4)
   {
     if(tables[cur_quad][oldest[cur_quad]] != NULL) {
-      for(unsigned int k = 0; k < tables[cur_quad][oldest[cur_quad]]->get_size(); k++) 
-        if(tables[cur_quad][oldest[cur_quad]]->present(k)) {
-          for(unsigned int l = 0; l < tables[cur_quad][oldest[cur_quad]]->get(k)->get_size(); l++)
-            if(tables[cur_quad][oldest[cur_quad]]->get(k)->present(l))
-              ::free(tables[cur_quad][oldest[cur_quad]]->get(k)->get(l));
-          delete tables[cur_quad][oldest[cur_quad]]->get(k);
+        for(std::map<uint64_t, LightArray<Node*>*>::iterator it = tables[cur_quad][oldest[cur_quad]]->begin(); it != tables[cur_quad][oldest[cur_quad]]->end(); it++) {
+          for(unsigned int l = 0; l < it->second->get_size(); l++)
+            if(it->second->present(l))
+              ::free(it->second->get(l));
+          delete it->second;
         }
-      delete tables[cur_quad][oldest[cur_quad]];
-      tables[cur_quad][oldest[cur_quad]] = NULL;
-      elems[cur_quad][oldest[cur_quad]] = NULL;
-    }
+        delete tables[cur_quad][oldest[cur_quad]];
+        tables[cur_quad][oldest[cur_quad]] = NULL;
+        elems[cur_quad][oldest[cur_quad]] = NULL;
+      }
 
-    tables[cur_quad][oldest[cur_quad]] = new LightArray<LightArray<Node*>*>;
+    tables[cur_quad][oldest[cur_quad]] = new std::map<uint64_t, LightArray<Node*>*>;
 
     cur_elem = oldest[cur_quad];
     if (++oldest[cur_quad] >= 4)
@@ -1005,7 +999,7 @@ int Solution::get_edge_fn_order(int edge, Space* space, Element* e)
 void Solution::precalculate(int order, int mask)
 {
   int i, j, k, l;
-  Node* node;
+  Node* node = NULL;
   Quad2D* quad = quads[cur_quad];
   quad->set_mode(mode);
   H2D_CHECK_ORDER(quad, order);
@@ -1036,7 +1030,9 @@ void Solution::precalculate(int order, int mask)
     node = new_node(newmask, np);
 
     // transform integration points by the current matrix
-    AUTOLA_OR(scalar, x, np); AUTOLA_OR(scalar, y, np); AUTOLA_OR(scalar, tx, np);
+    scalar* x = new scalar[np];
+    scalar* y = new scalar[np];
+    scalar* tx = new scalar[np];
     double3* pt = quad->get_points(order);
     for (i = 0; i < np; i++)
     {
@@ -1076,6 +1072,10 @@ void Solution::precalculate(int order, int mask)
       }
     }
 
+    delete [] x;
+    delete [] y;
+    delete [] tx;
+
     // transform gradient or vector solution, if required
     if (transform)
       transform_values(order, node, newmask, oldmask, np);
@@ -1105,7 +1105,7 @@ void Solution::precalculate(int order, int mask)
         {
           double jac = (*m)[0][0] *  (*m)[1][1] - (*m)[1][0] *  (*m)[0][1];
           scalar val, dx = 0.0, dy = 0.0;
-          val = exactfn1(x[i], y[i], dx, dy);
+          val = (static_cast<ExactSolutionScalar*>(this))->exact_function(x[i], y[i], dx, dy);
           node->values[0][0][i] = val * exact_mult;
           node->values[0][1][i] = (  (*m)[1][1]*dx - (*m)[0][1]*dy) / jac * exact_mult;
           node->values[0][2][i] = (- (*m)[1][0]*dx + (*m)[0][0]*dy) / jac * exact_mult;
@@ -1116,7 +1116,7 @@ void Solution::precalculate(int order, int mask)
         for (i = 0; i < np; i++)
         {
           scalar val, dx = 0.0, dy = 0.0;
-          val = exactfn1(x[i], y[i], dx, dy);
+          val = (static_cast<ExactSolutionScalar*>(this))->exact_function(x[i], y[i], dx, dy);
           node->values[0][0][i] = val * exact_mult;
           node->values[0][1][i] = dx * exact_mult;
           node->values[0][2][i] = dy * exact_mult;
@@ -1127,8 +1127,8 @@ void Solution::precalculate(int order, int mask)
     {
       for (i = 0; i < np; i++)
       {
-        scalar2 dx = { 0.0, 0.0 }, dy = { 0.0, 0.0 };
-        scalar2& val = exactfn2(x[i], y[i], dx, dy);
+        scalar2 dx ( 0.0, 0.0 ), dy ( 0.0, 0.0 );
+        scalar2 val = (static_cast<ExactSolutionVector*>(this))->exact_function(x[i], y[i], dx, dy);
         for (j = 0; j < 2; j++) {
           node->values[j][0][i] = val[j] * exact_mult;
           node->values[j][1][i] = dx[j] * exact_mult;
@@ -1179,8 +1179,18 @@ void Solution::save(const char* filename, bool compress)
 
   // open the stream
   std::string fname = filename;
+  if (compress) fname += ".gz";
   FILE* f = fopen(fname.c_str(), "wb");
   if (f == NULL) error("Could not open %s for writing.", filename);
+
+  if (compress)
+  {
+    fclose(f);
+    std::stringstream cmdline;
+    cmdline << "gzip > " << filename << ".gz";
+    f = popen(cmdline.str().c_str(), "w");
+    if (f == NULL) error("Could not create compressed stream (command line: %s).", cmdline.str().c_str());
+  }
 
   // write header
   hermes_fwrite("H2DS\001\000\000\000", 1, 8, f);
@@ -1208,7 +1218,7 @@ void Solution::save(const char* filename, bool compress)
   // write the mesh
   mesh->save_raw(f);
 
-  fclose(f);
+  if (compress) pclose(f); else fclose(f);
 }
 
 
@@ -1220,10 +1230,20 @@ void Solution::load(const char* filename)
   sln_type = HERMES_SLN;
 
   int len = strlen(filename);
+  bool compressed = (len > 3 && !strcmp(filename + len - 3, ".gz"));
 
   // open the stream
   FILE* f = fopen(filename, "rb");
   if (f == NULL) error("Could not open %s", filename);
+
+  if (compressed)
+  {
+    fclose(f);
+    std::stringstream cmdline;
+    cmdline << "gunzip < " << filename << ".gz";
+    f = popen(cmdline.str().c_str(), "r");
+    if (f == NULL) error("Could not read from compressed stream (command line: %s).", cmdline.str().c_str());
+  }
 
   // load header
   struct {
@@ -1296,7 +1316,7 @@ void Solution::load(const char* filename)
   //printf("Loading mesh from file and setting own_mesh = true.\n");
   own_mesh = true;
 
-  fclose(f);
+  if (compressed) pclose(f); else fclose(f);
 
   init_dxdy_buffer();
 }
@@ -1387,15 +1407,15 @@ scalar Solution::get_pt_value(double x, double y, int item)
     if (num_components == 1)
     {
       scalar val, dx = 0.0, dy = 0.0;
-      val = exactfn1(x, y, dx, dy);
+      val = (static_cast<ExactSolutionScalar*>(this))->exact_function(x, y, dx, dy);
       if (b == 0) return val;
       if (b == 1) return dx;
       if (b == 2) return dy;
     }
     else
     {
-      scalar2 dx = {0.0, 0.0}, dy = {0.0, 0.0};
-      scalar2& val = exactfn2(x, y, dx, dy);
+      scalar2 dx(0.0, 0.0), dy(0.0, 0.0);
+      scalar2 val = (static_cast<ExactSolutionVector*>(this))->exact_function(x, y, dx, dy);
       if (b == 0) return val[a];
       if (b == 1) return dx[a];
       if (b == 2) return dy[a];
@@ -1449,5 +1469,43 @@ scalar Solution::get_pt_value(double x, double y, int item)
   }
 
   warn("Point (%g, %g) does not lie in any element.", x, y);
-  return 0.0;
+  return NAN;
+}
+
+
+// Exact solution.
+ExactSolution::ExactSolution(Mesh* mesh) : Solution(mesh)
+{
+  sln_type = HERMES_EXACT;
+  exact_mult = 1.0;
+  num_dofs = -1;
+}
+
+ExactSolution::~ExactSolution()
+{}
+
+ExactSolutionScalar::ExactSolutionScalar(Mesh* mesh) : ExactSolution(mesh)
+{
+  num_components = 1;
+}
+
+ExactSolutionScalar::~ExactSolutionScalar()
+{}
+
+unsigned int ExactSolutionScalar::get_dimension() const
+{
+  return 1;
+}
+ 
+ExactSolutionVector::ExactSolutionVector(Mesh* mesh) : ExactSolution(mesh)
+{
+  num_components = 2;
+}
+
+ExactSolutionVector::~ExactSolutionVector()
+{}
+
+unsigned int ExactSolutionVector::get_dimension() const
+{
+  return 2;
 }

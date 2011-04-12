@@ -22,59 +22,48 @@
 #include "scene.h"
 #include "gui.h"
 
-struct ElectrostaticEdge
+class WeakFormElectrostatics : public WeakForm
 {
-    PhysicFieldBC type;
-    double value;
+public:
+    WeakFormElectrostatics()
+    {
+        // boundary conditions
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edges[i]->marker);
+
+            if (edgeElectrostaticMarker && Util::scene()->edges[i]->marker != Util::scene()->edgeMarkers[0])
+            {
+                if (edgeElectrostaticMarker->type == PhysicFieldBC_Electrostatic_SurfaceCharge)
+                    if (fabs(edgeElectrostaticMarker->value.number) > EPS_ZERO)
+                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        edgeElectrostaticMarker->value.number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+            }
+        }
+
+        // materials
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[i]->marker);
+
+            if (labelElectrostaticMarker && Util::scene()->labels[i]->marker != Util::scene()->labelMarkers[0])
+            {
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
+                                                                                               QString::number(i).toStdString(),
+                                                                                               labelElectrostaticMarker->permittivity.number * EPS0,
+                                                                                               HERMES_SYM,
+                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
+                if (fabs(labelElectrostaticMarker->charge_density.number) > EPS_ZERO)
+                    add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
+                                                                                                   QString::number(i).toStdString(),
+                                                                                                   labelElectrostaticMarker->charge_density.number,
+                                                                                                   convertProblemType(Util::scene()->problemInfo()->problemType)));
+            }
+        }
+    }
 };
-
-struct ElectrostaticLabel
-{
-    double charge_density;
-    double permittivity;
-};
-
-ElectrostaticEdge *electrostaticEdge;
-ElectrostaticLabel *electrostaticLabel;
-
-template<typename Real, typename Scalar>
-Scalar electrostatic_vector_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    double surfaceCharge = 0.0;
-
-    if (electrostaticEdge[e->edge_marker].type == PhysicFieldBC_Electrostatic_SurfaceCharge)
-        surfaceCharge = electrostaticEdge[e->edge_marker].value;
-
-    if (isPlanar)
-        return surfaceCharge * int_v<Real, Scalar>(n, wt, v);
-    else
-        return surfaceCharge * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar electrostatic_matrix_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return electrostaticLabel[e->elem_marker].permittivity * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
-    else
-        return electrostaticLabel[e->elem_marker].permittivity * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar electrostatic_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return electrostaticLabel[e->elem_marker].charge_density / EPS0 * int_v<Real, Scalar>(n, wt, v);
-    else
-        return electrostaticLabel[e->elem_marker].charge_density / EPS0 * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
-}
-
-void callbackElectrostaticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
-{
-    wf->add_matrix_form(0, 0, callback(electrostatic_matrix_form));
-    wf->add_vector_form(0, callback(electrostatic_vector_form));
-    wf->add_vector_form_surf(0, callback(electrostatic_vector_form_surf));
-}
 
 // **************************************************************************************************************************
 
@@ -332,72 +321,40 @@ ViewScalarFilter *HermesElectrostatic::viewScalarFilter(PhysicFieldVariable phys
 QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
-    BCTypes bcTypes;
-    BCValues bcValues;
-
-    electrostaticEdge = new ElectrostaticEdge[Util::scene()->edges.count()+1];
-    electrostaticEdge[0].type = PhysicFieldBC_None;
-    electrostaticEdge[0].value = 0;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
     {
-        if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
-        {
-            electrostaticEdge[i+1].type = PhysicFieldBC_None;
-            electrostaticEdge[i+1].value = 0;
-        }
-        else
-        {
-            SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edges[i]->marker);
+        SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edgeMarkers[i]);
 
-            // evaluate script
-            if (!edgeElectrostaticMarker->value.evaluate()) return QList<SolutionArray *>();
-
-            electrostaticEdge[i+1].type = edgeElectrostaticMarker->type;
-            electrostaticEdge[i+1].value = edgeElectrostaticMarker->value.number;
-
-            switch (edgeElectrostaticMarker->type)
-            {
-            case PhysicFieldBC_None:
-                bcTypes.add_bc_none(i+1);
-                break;
-            case PhysicFieldBC_Electrostatic_Potential:
-                bcTypes.add_bc_dirichlet(i+1);
-                bcValues.add_const(i+1, edgeElectrostaticMarker->value.number);
-                break;
-            case PhysicFieldBC_Electrostatic_SurfaceCharge:
-                bcTypes.add_bc_neumann(i+1);
-                break;
-            }
-        }
+        // evaluate script
+        if (!edgeElectrostaticMarker->value.evaluate()) return QList<SolutionArray *>();
     }
 
     // label markers
-    electrostaticLabel = new ElectrostaticLabel[Util::scene()->labels.count()];
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
-        {
-        }
-        else
-        {
-            SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[i]->marker);
+        SceneLabelElectrostaticMarker *labelElectrostaticMarker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labelMarkers[i]);
 
-            // evaluate script
-            if (!labelElectrostaticMarker->charge_density.evaluate()) return QList<SolutionArray *>();
-            if (!labelElectrostaticMarker->permittivity.evaluate()) return QList<SolutionArray *>();
+        // evaluate script
+        if (!labelElectrostaticMarker->charge_density.evaluate()) return QList<SolutionArray *>();
+        if (!labelElectrostaticMarker->permittivity.evaluate()) return QList<SolutionArray *>();
+    }
 
-            electrostaticLabel[i].charge_density = labelElectrostaticMarker->charge_density.number;
-            electrostaticLabel[i].permittivity = labelElectrostaticMarker->permittivity.number;
+    // boundary conditions
+    EssentialBCs bcs;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        SceneEdgeElectrostaticMarker *edgeElectrostaticMarker = dynamic_cast<SceneEdgeElectrostaticMarker *>(Util::scene()->edges[i]->marker);
+
+        if (edgeElectrostaticMarker)
+        {
+            if (edgeElectrostaticMarker->type == PhysicFieldBC_Electrostatic_Potential)
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), edgeElectrostaticMarker->value.number));
         }
     }
 
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                  Hermes::vector<BCTypes *>(&bcTypes),
-                                                                  Hermes::vector<BCValues *>(&bcValues),
-                                                                  callbackElectrostaticWeakForm);
+    WeakFormElectrostatics wf;
 
-    delete [] electrostaticEdge;
-    delete [] electrostaticLabel;
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
 
     return solutionArrayList;
 }
@@ -529,7 +486,7 @@ void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
 {
     if (boundary)
     {
-        SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[e->marker]->marker);
+        SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
@@ -557,8 +514,9 @@ VolumeIntegralValueElectrostatic::VolumeIntegralValueElectrostatic() : VolumeInt
 
 void VolumeIntegralValueElectrostatic::calculateVariables(int i)
 {
+    SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
+
     result = 0.0;
-    SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(Util::scene()->labels[e->marker]->marker);
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
     {
         h1_integrate_expression(0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));

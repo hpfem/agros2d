@@ -64,6 +64,8 @@ void SceneSolution::clear()
         delete m_meshInitial;
         m_meshInitial = NULL;
     }
+    conversion_table_labels.clear();
+    conversion_table_boundaries.clear();
 
     // countour
     if (m_slnContourView)
@@ -339,6 +341,35 @@ int SceneSolution::findTriangleInMesh(Mesh *mesh, const Point &point) const
     }
     
     return -1;
+}
+
+void SceneSolution::setMeshInitial(Mesh *meshInitial)
+{
+    if (m_meshInitial)
+    {
+        delete m_meshInitial;
+    }
+
+    m_meshInitial = meshInitial;
+
+    // cache agros markes
+    std::map<int, std::string>::const_iterator elem;
+
+    conversion_table_labels.clear();
+    elem = m_meshInitial->get_element_markers_conversion().conversion_table->begin();
+    while (elem != m_meshInitial->get_element_markers_conversion().conversion_table->end())
+    {
+        conversion_table_labels[elem->first] = QString::fromStdString(elem->second).toInt();
+        elem++;
+    }
+
+    conversion_table_boundaries.clear();
+    elem = m_meshInitial->get_boundary_markers_conversion().conversion_table->begin();
+    while (elem != m_meshInitial->get_boundary_markers_conversion().conversion_table->end())
+    {
+        conversion_table_boundaries[elem->first] = QString::fromStdString(elem->second).toInt();
+        elem++;
+    }
 }
 
 void SceneSolution::setSolutionArrayList(QList<SolutionArray *> solutionArrayList)

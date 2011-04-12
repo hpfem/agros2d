@@ -63,8 +63,8 @@ PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
             tmpDerivative.y =  sln->get_pt_value(point.x, point.y, H2D_FN_DY_0);
 
             // find marker
-            Element *element = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
-            tmpLabelMarker = Util::scene()->labels[element->marker]->marker;
+            Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
+            tmpLabelMarker = Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->marker)]->marker;
         }
     }
 

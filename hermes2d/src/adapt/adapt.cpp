@@ -22,7 +22,6 @@
 #include "../mesh/refmap.h"
 #include "../quadrature/quad_all.h"
 #include "../mesh/traverse.h"
-#include "../function/norm.h"
 #include "../mesh/element_to_refine.h"
 #include "../ref_selectors/selector.h"
 #include "../views/scalar_view.h"
@@ -32,31 +31,26 @@
 
 using namespace std;
 
-Adapt::Adapt(Hermes::vector< Space* > spaces_,
+Adapt::Adapt(Hermes::vector<Space *> spaces,
              Hermes::vector<ProjNormType> proj_norms) :
+    spaces(spaces),
     num_act_elems(-1),
     have_errors(false),
     have_coarse_solutions(false),
     have_reference_solutions(false)
 {
   // sanity check
-  if (proj_norms.size() > 0 && spaces_.size() != proj_norms.size())
+  if (proj_norms.size() > 0 && spaces.size() != proj_norms.size())
     error("Mismatched numbers of spaces and projection types in Adapt::Adapt().");
 
-  this->num = spaces_.size();
+  this->num = spaces.size();
 
   // sanity checks
   error_if(this->num <= 0, "Too few components (%d), only %d supported.", this->num, H2D_MAX_COMPONENTS);
   error_if(this->num > H2D_MAX_COMPONENTS, "Too many components (%d), only %d supported.", this->num, H2D_MAX_COMPONENTS);
-  for (int i = 0; i < this->num; i++) {
-    if (spaces_[i] == NULL) error("spaces[%d] is NULL in Adapt::Adapt().", i);
-    this->spaces.push_back(spaces_[i]);
-  }
-
+  
   // reset values
   memset(errors, 0, sizeof(errors));
-  memset(error_form, 0, sizeof(error_form));
-  memset(error_ord, 0, sizeof(error_ord));
   memset(sln, 0, sizeof(sln));
   memset(rsln, 0, sizeof(rsln));
 
@@ -75,37 +69,55 @@ Adapt::Adapt(Hermes::vector< Space* > spaces_,
   }
 
   // assign norm weak forms  according to norms selection
-  for (int i = 0; i < this->num; i++) {
-    switch (proj_norms[i]) {
-      case HERMES_H1_NORM:
-           error_form[i][i] = h1_error_form<double, scalar>; error_ord[i][i] = h1_error_form<Ord, Ord>;
-           //printf("H1 norm.\n");
-           break;
-      case HERMES_H1_SEMINORM:
-           error_form[i][i] = h1_error_semi_form<double, scalar>; error_ord[i][i] = h1_error_semi_form<Ord, Ord>;
-           //printf("H1 semi norm.\n");
-           break;
-      case HERMES_HCURL_NORM:
-           error_form[i][i] = hcurl_error_form<double, scalar>; error_ord[i][i] = hcurl_error_form<Ord, Ord>;
-           //printf("Hcurl norm.\n");
-           break;
-      case HERMES_HDIV_NORM:
-           error_form[i][i] = hdiv_error_form<double, scalar>; error_ord[i][i] = hdiv_error_form<Ord, Ord>;
-           //printf("Hdiv norm.\n");
-           break;
-      case HERMES_L2_NORM:
-           error_form[i][i] = l2_error_form<double, scalar>; error_ord[i][i] = l2_error_form<Ord, Ord>;
-	   //printf("L2 norm.\n");
-           break;
-      default: error("Unknown projection type in Adapt::Adapt().");
+  for (int i = 0; i < this->num; i++)
+    for (int j = 0; j < this->num; j++)
+      error_form[i][j] = NULL;
+
+  for (int i = 0; i < this->num; i++)
+    error_form[i][i] = new MatrixFormVolError(proj_norms[i]);
+}
+
+Adapt::Adapt(Space* space, ProjNormType proj_norm) :
+    spaces(Hermes::vector<Space *>()),
+    num_act_elems(-1),
+    have_errors(false),
+    have_coarse_solutions(false),
+    have_reference_solutions(false)
+{
+  spaces.push_back(space);
+
+  this->num = 1;
+
+  // reset values
+  memset(errors, 0, sizeof(errors));
+  memset(sln, 0, sizeof(sln));
+  memset(rsln, 0, sizeof(rsln));
+
+  // if norms were not set by the user, set them to defaults
+  // according to spaces
+  if (proj_norm == HERMES_UNSET_NORM) {
+      switch (space->get_type()) {
+        case HERMES_H1_SPACE: proj_norm = HERMES_H1_NORM; break;
+        case HERMES_HCURL_SPACE: proj_norm = HERMES_HCURL_NORM; break;
+        case HERMES_HDIV_SPACE: proj_norm = HERMES_HDIV_NORM; break;
+        case HERMES_L2_SPACE: proj_norm = HERMES_L2_NORM; break;
+        default: error("Unknown space type in Adapt::Adapt().");
+      }
     }
-  }
+
+  // assign norm weak forms  according to norms selection
+  error_form[0][0] = new MatrixFormVolError(proj_norm);
 }
 
 Adapt::~Adapt()
 {
   for (int i = 0; i < this->num; i++)
     delete [] errors[i];
+
+  // free error_form
+  for (int i = 0; i < this->num; i++)
+    for (int j = 0; j < this->num; j++)
+      delete error_form[i][j];
 }
 
 //// adapt /////////////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +144,10 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
   }
 
   //reset element refinement info
-  AUTOLA2_OR(int, idx, max_id + 1, this->num + 1);
+  int** idx = new int*[max_id];
+  for(int i = 0; i < max_id; i++)
+    idx[i] = new int[num];
+  
   for(int j = 0; j < max_id; j++)
     for(int l = 0; l < this->num; l++)
       idx[j][l] = -1; // element not refined
@@ -140,7 +155,7 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
   double err0_squared = 1000.0;
   double processed_error_squared = 0.0;
 
-  vector<ElementToRefine> elem_inx_to_proc; //list of indices of elements that are going to be processed
+  Hermes::vector<ElementToRefine> elem_inx_to_proc; //list of indices of elements that are going to be processed
   elem_inx_to_proc.reserve(num_act_elems);
 
   //adaptivity loop
@@ -286,8 +301,16 @@ bool Adapt::adapt(Hermes::vector<RefinementSelectors::Selector *> refinement_sel
   return done;
 }
 
-void Adapt::fix_shared_mesh_refinements(Mesh** meshes, std::vector<ElementToRefine>& elems_to_refine,
-                                        AutoLocalArray2<int>& idx, Hermes::vector<RefinementSelectors::Selector *> refinement_selectors) {
+bool Adapt::adapt(RefinementSelectors::Selector* refinement_selector, double thr, int strat,
+            int regularize, double to_be_processed)
+{
+  Hermes::vector<RefinementSelectors::Selector *> refinement_selectors;
+  refinement_selectors.push_back(refinement_selector);
+  return adapt(refinement_selectors, thr, strat, regularize, to_be_processed);
+}
+
+void Adapt::fix_shared_mesh_refinements(Mesh** meshes, Hermes::vector<ElementToRefine>& elems_to_refine,
+                                        int** idx, Hermes::vector<RefinementSelectors::Selector *> refinement_selectors) {
   int num_elem_to_proc = elems_to_refine.size();
   for(int inx = 0; inx < num_elem_to_proc; inx++) {
     ElementToRefine& elem_ref = elems_to_refine[inx];
@@ -518,26 +541,21 @@ void Adapt::unrefine(double thr)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Adapt::set_error_form(int i, int j, error_matrix_form_val_t error_bi_form, error_matrix_form_ord_t error_bi_ord)
+void Adapt::set_error_form(int i, int j, Adapt::MatrixFormVolError* form)
 {
   error_if(i < 0 || i >= this->num || j < 0 || j >= this->num,
            "invalid component number (%d, %d), max. supported components: %d", i, j, H2D_MAX_COMPONENTS);
 
-  error_form[i][j] = error_bi_form;
-  error_ord[i][j] = error_bi_ord;
+  error_form[i][j] = form;
 }
 
 // case i = j = 0
-void Adapt::set_error_form(error_matrix_form_val_t error_bi_form, error_matrix_form_ord_t error_bi_ord)
+void Adapt::set_error_form(Adapt::MatrixFormVolError* form)
 {
-  int i = 0;
-  int j = 0;
-
-  error_form[i][j] = error_bi_form;
-  error_ord[i][j] = error_bi_ord;
+  set_error_form(0, 0, form);
 }
 
-double Adapt::eval_error(error_matrix_form_val_t error_bi_fn, error_matrix_form_ord_t error_bi_ord,
+double Adapt::eval_error(Adapt::MatrixFormVolError* form,
                          MeshFunction *sln1, MeshFunction *sln2, MeshFunction *rsln1,
                          MeshFunction *rsln2)
 {
@@ -553,7 +571,7 @@ double Adapt::eval_error(error_matrix_form_val_t error_bi_fn, error_matrix_form_
 
   double fake_wt = 1.0;
   Geom<Ord>* fake_e = init_geom_ord();
-  Ord o = error_bi_ord(1, &fake_wt, NULL, ou, ov, fake_e, NULL);
+  Ord o = form->ord(1, &fake_wt, NULL, ou, ov, fake_e, NULL);
   int order = rrv1->get_inv_ref_order();
   order += o.get_order();
   if(static_cast<Solution *>(rsln1) || static_cast<Solution *>(rsln2))
@@ -591,7 +609,7 @@ double Adapt::eval_error(error_matrix_form_val_t error_bi_fn, error_matrix_form_
   err1->subtract(*v1);
   err2->subtract(*v2);
 
-  scalar res = error_bi_fn(np, jwt, NULL, err1, err2, e, NULL);
+  scalar res = form->value(np, jwt, NULL, err1, err2, e, NULL);
 
   e->free(); delete e;
   delete [] jwt;
@@ -603,7 +621,7 @@ double Adapt::eval_error(error_matrix_form_val_t error_bi_fn, error_matrix_form_
   return std::abs(res);
 }
 
-double Adapt::eval_error_norm(error_matrix_form_val_t error_bi_fn, error_matrix_form_ord_t error_bi_ord,
+double Adapt::eval_error_norm(Adapt::MatrixFormVolError* form,
                               MeshFunction *rsln1, MeshFunction *rsln2)
 {
   RefMap *rrv1 = rsln1->get_refmap();
@@ -616,7 +634,7 @@ double Adapt::eval_error_norm(error_matrix_form_val_t error_bi_fn, error_matrix_
 
   double fake_wt = 1.0;
   Geom<Ord>* fake_e = init_geom_ord();
-  Ord o = error_bi_ord(1, &fake_wt, NULL, ou, ov, fake_e, NULL);
+  Ord o = form->ord(1, &fake_wt, NULL, ou, ov, fake_e, NULL);
   int order = rrv1->get_inv_ref_order();
   order += o.get_order();
   if(static_cast<Solution *>(rsln1) || static_cast<Solution *>(rsln2))
@@ -649,7 +667,7 @@ double Adapt::eval_error_norm(error_matrix_form_val_t error_bi_fn, error_matrix_
   Func<scalar>* v1 = init_fn(rsln1, order);
   Func<scalar>* v2 = init_fn(rsln2, order);
 
-  scalar res = error_bi_fn(np, jwt, NULL, v1, v2, e, NULL);
+  scalar res = form->value(np, jwt, NULL, v1, v2, e, NULL);
 
   e->free(); delete e;
   delete [] jwt;
@@ -725,8 +743,8 @@ double Adapt::calc_err_internal(Hermes::vector<Solution *> slns, Hermes::vector<
       for (j = 0; j < num; j++) {
         if (error_form[i][j] != NULL) {
           double err, nrm;
-          err = eval_error(error_form[i][j], error_ord[i][j], sln[i], sln[j], rsln[i], rsln[j]);
-          nrm = eval_error_norm(error_form[i][j], error_ord[i][j], rsln[i], rsln[j]);
+          err = eval_error(error_form[i][j], sln[i], sln[j], rsln[i], rsln[j]);
+          nrm = eval_error_norm(error_form[i][j], rsln[i], rsln[j]);
 
           norms[i] += nrm;
           total_norm  += nrm;
@@ -805,6 +823,18 @@ double Adapt::calc_err_internal(Hermes::vector<Solution *> slns, Hermes::vector<
     return -1.0;
   }
 }
+
+double Adapt::calc_err_internal(Solution* sln, Solution* rsln,
+                                   Hermes::vector<double>* component_errors, bool solutions_for_adapt,
+                                   unsigned int error_flags)
+{
+  Hermes::vector<Solution *> slns;
+  slns.push_back(sln);
+  Hermes::vector<Solution *> rslns;
+  rslns.push_back(rsln);
+  return calc_err_internal(slns, rslns, component_errors, solutions_for_adapt, error_flags);
+}
+
 
 void Adapt::fill_regular_queue(Mesh** meshes) {
   assert_msg(num_act_elems > 0, "Number of active elements (%d) is invalid.", num_act_elems);

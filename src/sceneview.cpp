@@ -2844,7 +2844,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     if (index != -1)
                     {
                         //  find label marker
-                        int labelIndex = m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker;
+                        int labelIndex = Util::scene()->sceneSolution()->agrosLabelMarker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker);
 
                         m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
                         updateGL();
@@ -4008,7 +4008,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
         Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
-        if (m_scene->labels[element->marker]->isSelected)
+        if (m_scene->labels[Util::scene()->sceneSolution()->agrosLabelMarker(element->marker)]->isSelected)
         {
             if (element->is_triangle())
             {
@@ -4050,7 +4050,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < m_scene->sceneSolution()->linSolutionMeshView().get_num_triangles(); i++)
     {
-        if (m_scene->labels[element->marker]->isSelected)
+        if (m_scene->labels[element->marker - 1]->isSelected)
         {
             glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
             glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);

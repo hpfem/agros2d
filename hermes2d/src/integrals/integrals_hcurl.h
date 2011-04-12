@@ -27,6 +27,31 @@ Scalar int_e_f(int n, double *wt, Func<Real> *u, Func<Real> *v)
   return result;
 }
 
+class MatrixFormVolHCurl : public WeakForm::MatrixFormVol
+{
+public:
+    MatrixFormVolHCurl(int i, int j, SymFlag sym = HERMES_SYM) : MatrixFormVol(i, j, sym) {}
+
+    template<typename Real, typename Scalar>
+    Scalar matrix_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *u,
+                       Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext) const
+    {
+      return int_e_f<Real, Scalar>(n, wt, u, v);
+    }
+
+    virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                 Geom<double> *e, ExtData<scalar> *ext) const
+    {
+        return matrix_form<double, scalar>(n, wt, u_ext, u, v, e, ext);
+    }
+
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+            Geom<Ord> *e, ExtData<Ord> *ext) const
+    {
+        return matrix_form<Ord, Ord>(n, wt, u_ext, u, v, e, ext);
+    }
+};
+
 template<typename Real, typename Scalar>
 Scalar int_curl_e_curl_f(int n, double *wt, Func<Real> *u, Func<Real> *v)
 {
@@ -36,12 +61,22 @@ Scalar int_curl_e_curl_f(int n, double *wt, Func<Real> *u, Func<Real> *v)
   return result;
 }
 
+
+template<typename Real, typename Scalar>
+Scalar int_v0(int n, double *wt, Func<Scalar> *v)
+{
+  Scalar result = 0;
+  for (int i = 0; i < n; i++)
+    result += wt[i] * v->val0[i];
+  return result;
+}
+
 template<typename Real, typename Scalar>
 Scalar int_v1(int n, double *wt, Func<Real> *v)
 {
   Scalar result = 0;
   for (int i = 0; i < n; i++)
-    result += wt[i] * (v->val1[i]);
+    result += wt[i] * v->val1[i];
   return result;
 }
 
@@ -61,18 +96,6 @@ Scalar int_e_tau_f_tau(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Rea
   for (int i = 0; i < n; i++)
     result += wt[i] * (    (u->val0[i] * e->tx[i] + u->val1[i] * e->ty[i]) *
                        conj(v->val0[i] * e->tx[i] + v->val1[i] * e->ty[i]));
-  return result;
-}
-
-//// error calculation for adaptivity  //////////////////////////////////////////////////////////////////////////////
-
-template<typename Real, typename Scalar>
-Scalar hcurl_error_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Scalar> *u, Func<Scalar> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-  Scalar result = 0;
-  for (int i = 0; i < n; i++)
-    result += wt[i] * (u->curl[i] * conj(v->curl[i]) +
-                       u->val0[i] * conj(v->val0[i]) + u->val1[i] * conj(v->val1[i]));
   return result;
 }
 

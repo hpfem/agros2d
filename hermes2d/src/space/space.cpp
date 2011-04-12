@@ -16,11 +16,10 @@
 #include "../h2d_common.h"
 #include "space.h"
 #include "../../../hermes_common/matrix.h"
-#include "../auto_local_array.h"
+#include "../boundaryconditions/essential_bcs.h"
 
-Space::Space(Mesh* mesh, Shapeset* shapeset, BCTypes* bc_types, BCValues* bc_values, Ord2 p_init)
-        : shapeset(shapeset), mesh(mesh)
-{
+Space::Space(Mesh* mesh, Shapeset* shapeset, EssentialBCs* essential_bcs, Ord2 p_init)
+  : shapeset(shapeset), essential_bcs(essential_bcs), mesh(mesh) {
   _F_
   if (mesh == NULL) error("Space must be initialized with an existing mesh.");
   this->default_tri_order = -1;
@@ -34,84 +33,11 @@ Space::Space(Mesh* mesh, Shapeset* shapeset, BCTypes* bc_types, BCValues* bc_val
   this->was_assigned = false;
   this->ndof = 0;
 
-  this->own_bc_values = this->own_bc_types = false;
-  
-  if(bc_types == NULL) error("BCTypes pointer cannot be NULL in Space::Space().");
-
-  // Before adding, update the boundary variables with the user-supplied string markers
-  // according to the conversion table contained in the mesh.
-  this->update_markers_acc_to_conversion(bc_types, mesh->markers_conversion);
-  if(bc_values != NULL)
-    this->update_markers_acc_to_conversion(bc_values, mesh->markers_conversion);
-  this->set_bc_types_init(bc_types);
-  this->set_essential_bc_values(bc_values);
-  this->bc_value_callback_by_coord = NULL;
-
-  // This will not be needed once we get rid of the old Space constructors etc.
-  this->set_essential_bc_values((scalar (*)(SurfPos*)) NULL);
-
-  own_shapeset = (shapeset == NULL);
-}
-
-
-Space::Space(Mesh* mesh, Shapeset* shapeset, BCTypes* bc_types,
-        scalar (*bc_value_callback_by_coord)(int, double, double), Ord2 p_init)
-        : shapeset(shapeset), mesh(mesh)
-{
-  _F_
-  if (mesh == NULL) error("Space must be initialized with an existing mesh.");
-  this->default_tri_order = -1;
-  this->default_quad_order = -1;
-  this->ndata = NULL;
-  this->edata = NULL;
-  this->nsize = esize = 0;
-  this->ndata_allocated = 0;
-  this->mesh_seq = -1;
-  this->seq = 0;
-  this->was_assigned = false;
-  this->ndof = 0;
-
-  if(bc_types == NULL) error("BCTypes pointer cannot be NULL in Space::Space().");
-  this->set_bc_types_init(bc_types);
-  this->set_essential_bc_values(bc_value_callback_by_coord);
-  this->set_essential_bc_values((scalar (*)(SurfPos*)) NULL);
-
-  this->own_bc_values = this->own_bc_types = false;
-  this->bc_values = NULL;
-
-  own_shapeset = (shapeset == NULL);
-}
-
-// DEPRECATED
-Space::Space(Mesh* mesh, Shapeset* shapeset, BCType (*bc_type_callback)(int),
-        scalar (*bc_value_callback_by_coord)(int, double, double), Ord2 p_init)
-        : shapeset(shapeset), mesh(mesh)
-{
-  _F_
-  if (mesh == NULL) error("Space must be initialized with an existing mesh.");
-  warn("Using deprecated callback function BCType (*bc_type_callback)(int).");
-  this->default_tri_order = -1;
-  this->default_quad_order = -1;
-  this->ndata = NULL;
-  this->edata = NULL;
-  this->nsize = esize = 0;
-  this->ndata_allocated = 0;
-  this->mesh_seq = -1;
-  this->seq = 0;
-  this->was_assigned = false;
-  this->ndof = 0;
-
-  this->own_bc_values = false;
-  this->own_bc_types = true;
-  
-  BCTypesCallback *bc_types = new BCTypesCallback();
-  bc_types->register_callback(bc_type_callback);
-  this->update_markers_acc_to_conversion(bc_types, mesh->markers_conversion);
-  this->set_bc_types_init(bc_types);
-
-  this->set_essential_bc_values(bc_value_callback_by_coord);
-  this->set_essential_bc_values((scalar (*)(SurfPos*)) NULL);
-  this->bc_values = NULL;
+  if(essential_bcs != NULL)
+    for(std::vector<EssentialBoundaryCondition*>::const_iterator it = essential_bcs->begin(); it != essential_bcs->end(); it++)
+      for(unsigned int i = 0; i < (*it)->markers.size(); i++)
+        if(mesh->get_boundary_markers_conversion().conversion_table_inverse->find((*it)->markers.at(i)) == mesh->get_boundary_markers_conversion().conversion_table_inverse->end())
+          error("A boundary condition defined on a non-existent marker.");
 
   own_shapeset = (shapeset == NULL);
 }
@@ -128,16 +54,6 @@ void Space::free()
   free_extra_data();
   if (nsize) { ::free(ndata); ndata=NULL; }
   if (esize) { ::free(edata); edata=NULL; }
-  if (this->own_bc_values && this->bc_values != NULL)
-  {
-    delete this->bc_values;
-    this->own_bc_values = false;
-  }
-  if (this->own_bc_types && this->bc_types != NULL)
-  {
-    delete this->bc_types;
-    this->own_bc_types = false;
-  }
 }
 
 //// element orders ///////////////////////////////////////////////////////////////////////////////
@@ -227,10 +143,13 @@ int Space::get_element_order(int id) const
 }
 
 
-void Space::set_uniform_order(int order, int marker)
+void Space::set_uniform_order(int order, std::string marker)
 {
   _F_
-  set_uniform_order_internal(Ord2(order,order), marker);
+  if(marker == HERMES_ANY)
+    set_uniform_order_internal(Ord2(order,order), -1234);
+  else
+    set_uniform_order_internal(Ord2(order,order), mesh->element_markers_conversion.get_internal_marker(marker));
 
   // since space changed, enumerate basis functions
   this->assign_dofs();
@@ -249,7 +168,7 @@ void Space::set_uniform_order_internal(Ord2 order, int marker)
   Element* e;
   for_all_active_elements(e, mesh)
   {
-    if (marker == HERMES_ANY || e->marker == marker)
+    if (marker == HERMES_ANY_INT || e->marker == marker)
     {
       ElementData* ed = &edata[e->id];
       if (e->is_triangle())
@@ -291,6 +210,48 @@ void Space::set_default_order(int tri_order, int quad_order)
   default_quad_order = quad_order;
 }
 
+void Space::adjust_element_order(int order_change, int min_order)
+{
+  _F_
+  Element* e;
+  for_all_active_elements(e, this->get_mesh()) {
+    if(e->is_triangle())
+      set_element_order_internal(e->id, std::max<int>(min_order, get_element_order(e->id) + order_change));
+    else {
+      int h_order, v_order;
+      // check that we are not imposing smaller than minimal orders.
+      if(H2D_GET_H_ORDER(get_element_order(e->id)) + order_change < min_order)
+        h_order = min_order;
+      else
+        h_order = H2D_GET_H_ORDER(get_element_order(e->id)) + order_change;
+
+      if(H2D_GET_V_ORDER(get_element_order(e->id)) + order_change < min_order)
+        v_order = min_order;
+      else
+        v_order = H2D_GET_V_ORDER(get_element_order(e->id)) + order_change;
+
+      set_element_order_internal(e->id, H2D_MAKE_QUAD_ORDER(h_order, v_order));
+    }
+  }
+  assign_dofs();
+}
+
+void Space::adjust_element_order(int horizontal_order_change, int vertical_order_change, unsigned int horizontal_min_order, unsigned int vertical_min_order)
+{
+  _F_
+  Element* e;
+  for_all_active_elements(e, this->get_mesh()) {
+    if(e->is_triangle()) {
+      warn("Using quad version of Space::adjust_element_order(), only horizontal orders will be used.");
+      set_element_order_internal(e->id, std::max<int>(horizontal_min_order, get_element_order(e->id) + horizontal_order_change));
+    }
+    else
+      set_element_order_internal(e->id, std::max<int>
+          (H2D_MAKE_QUAD_ORDER(horizontal_min_order, vertical_min_order), 
+           H2D_MAKE_QUAD_ORDER(H2D_GET_H_ORDER(get_element_order(e->id)) + horizontal_order_change, H2D_GET_V_ORDER(get_element_order(e->id)) + vertical_order_change)));
+  }
+  assign_dofs();
+}
 
 void Space::copy_orders_recurrent(Element* e, int order)
 {
@@ -402,7 +363,7 @@ void Space::distribute_orders(Mesh* mesh, int* parents)
 {
   _F_
   int num = mesh->get_max_element_id();
-  AUTOLA_OR(int, orders, num+1);
+  int* orders = new int[num+1];
   Element* e;
   for_all_active_elements(e, mesh)
   {
@@ -413,7 +374,7 @@ void Space::distribute_orders(Mesh* mesh, int* parents)
   }
   for_all_active_elements(e, mesh)
     set_element_order_internal(e->id, orders[e->id]);
-
+  delete [] orders;
 }
 
 
@@ -474,7 +435,7 @@ void Space::reset_dof_assignment()
   int i, j;
   for (i = 0; i < mesh->get_max_node_id(); i++)
   {
-    ndata[i].n = BC_NATURAL;
+    ndata[i].n = 1; // Natural boundary condition. The point is that it is not (0 == Dirichlet).
     ndata[i].dof = H2D_UNASSIGNED_DOF;
   }
 
@@ -485,12 +446,13 @@ void Space::reset_dof_assignment()
   {
     for (unsigned int i = 0; i < e->nvert; i++)
     {
-      if (e->en[i]->bnd && this->bc_types->get_type(e->en[i]->marker) == BC_ESSENTIAL)
-      {
-        j = e->next_vert(i);
-        ndata[e->vn[i]->id].n = BC_ESSENTIAL;
-        ndata[e->vn[j]->id].n = BC_ESSENTIAL;
-      }
+      if (e->en[i]->bnd)
+        if(essential_bcs != NULL)
+          if(essential_bcs->get_boundary_condition(mesh->boundary_markers_conversion.get_user_marker(e->en[i]->marker)) != NULL) {
+            j = e->next_vert(i);
+            ndata[e->vn[i]->id].n = 0;
+            ndata[e->vn[j]->id].n = 0;
+          }
     }
   }
 }
@@ -551,85 +513,14 @@ void Space::get_bubble_assembly_list(Element* e, AsmList* al)
 }
 
 //// BC stuff /////////////////////////////////////////////////////////////////////////////////////
-
-static scalar default_bc_value_by_coord(int marker, double x, double y)
-{
-  return 0;
-}
-
-scalar default_bc_value_by_edge(SurfPos* surf_pos)
-{
-  double x, y;
-  Nurbs* nurbs = surf_pos->base->is_curved() ? surf_pos->base->cm->nurbs[surf_pos->surf_num] : NULL;
-  nurbs_edge(surf_pos->base, nurbs, surf_pos->surf_num, 2.0*surf_pos->t - 1.0, x, y);
-  if(surf_pos->space->bc_value_callback_by_coord != NULL)
-    return surf_pos->space->bc_value_callback_by_coord(surf_pos->marker, x, y);
-  else
-    return surf_pos->space->bc_values->calculate(surf_pos->marker, x, y);
-}
-
-void Space::set_bc_types(BCTypes* bc_types)
+void Space::set_essential_bcs(EssentialBCs* essential_bcs)
 {
   _F_
-  this->set_bc_types_init(bc_types);
-
+  this->essential_bcs = essential_bcs;
+  
   // since space changed, enumerate basis functions
   this->assign_dofs();
 }
-
-void Space::set_bc_types_init(BCTypes* bc_types)
-{
-  _F_
-  if (bc_types == NULL)
-      this->bc_types = new BCTypes(); // This will use BC_NATURAL by default
-  else {
-      this->bc_types = bc_types;
-      this->bc_types->check_consistency();
-  }
-  seq++;
-}
-
-void Space::set_essential_bc_values(BCValues* bc_values)
-{
-  _F_
-  this->bc_values = bc_values;
-  if (bc_values == NULL)
-    return;
-  this->bc_values->check_consistency(this->bc_types);
-  this->bc_values->update(this->bc_types);
-}
-
-
-void Space::set_essential_bc_values(scalar (*bc_value_callback_by_coord)(int, double, double))
-{
-  _F_
-  if (bc_value_callback_by_coord == NULL) bc_value_callback_by_coord = default_bc_value_by_coord;
-  this->bc_value_callback_by_coord = bc_value_callback_by_coord;
-  seq++;
-}
-
-void Space::set_essential_bc_values(scalar (*bc_value_callback_by_edge)(SurfPos*))
-{
-  _F_
-  if (bc_value_callback_by_edge == NULL) bc_value_callback_by_edge = default_bc_value_by_edge;
-  this->bc_value_callback_by_edge = bc_value_callback_by_edge;
-  seq++;
-}
-
-void Space::copy_callbacks(const Space* space)
-{
-  _F_
-  this->bc_types = space->bc_types->dup();
-  this->own_bc_types = true; // New instance of BCTypes is dynamically allocated in 'dup'.
-  if(space->bc_values != NULL)
-  {
-    this->bc_values = space->bc_values->dup();
-    this->own_bc_values = true; // New instance of BCValues is dynamically allocated in 'dup'.
-  }
-  this->bc_value_callback_by_coord = space->bc_value_callback_by_coord;
-  this->bc_value_callback_by_edge  = space->bc_value_callback_by_edge;
-}
-
 
 void Space::precalculate_projection_matrix(int nv, double**& mat, double*& p)
 {
@@ -673,17 +564,18 @@ void Space::update_edge_bc(Element* e, SurfPos* surf_pos)
     NodeData* nd = &ndata[en->id];
     nd->edge_bc_proj = NULL;
 
-    if (nd->dof != H2D_UNASSIGNED_DOF && en->bnd && this->bc_types->get_type(en->marker) == BC_ESSENTIAL)
-    {
-      int order = get_edge_order_internal(en);
-      surf_pos->marker = en->marker;
-      nd->edge_bc_proj = get_bc_projection(surf_pos, order);
-      extra_data.push_back(nd->edge_bc_proj);
+    if (nd->dof != H2D_UNASSIGNED_DOF && en->bnd)
+      if(essential_bcs != NULL)
+        if(essential_bcs->get_boundary_condition(mesh->boundary_markers_conversion.get_user_marker(en->marker)) != NULL) {
+          int order = get_edge_order_internal(en);
+          surf_pos->marker = en->marker;
+          nd->edge_bc_proj = get_bc_projection(surf_pos, order);
+          extra_data.push_back(nd->edge_bc_proj);
 
-      int i = surf_pos->surf_num, j = e->next_vert(i);
-      ndata[e->vn[i]->id].vertex_bc_coef = nd->edge_bc_proj + 0;
-      ndata[e->vn[j]->id].vertex_bc_coef = nd->edge_bc_proj + 1;
-    }
+          int i = surf_pos->surf_num, j = e->next_vert(i);
+          ndata[e->vn[i]->id].vertex_bc_coef = nd->edge_bc_proj + 0;
+          ndata[e->vn[j]->id].vertex_bc_coef = nd->edge_bc_proj + 1;
+        }
   }
   else
   {
@@ -729,31 +621,6 @@ void Space::free_extra_data()
   extra_data.clear();
 }
 
-/*void Space::dump_node_info()
-{
-  Node* n;
-  for_all_nodes(n, mesh)
-  {
-    NodeData* nd = &ndata[n->id];
-    if (n->type == HERMES_TYPE_VERTEX)
-    {
-      printf("vert node id=%d ref=%d bnd=%d x=%g y=%g dof=%d n=%d ",
-             n->id, n->ref, n->bnd, n->x, n->y, nd->dof, nd->n);
-      if (nd->dof < 0)
-        printf("coef=%g", nd->vertex_bc_coef[0]);
-    }
-    else
-    {
-      printf("edge node id=%d ref=%d bnd=%d marker=%d p1=%d p2=%d dof=%d n=%d ",
-             n->id, n->ref, n->bnd, n->marker, n->p1, n->p2, nd->dof, nd->n);
-      if (nd->dof < 0)
-        for (int i = 0; i < nd->n; i++)
-          printf("proj[%d]=%g ", i, nd->edge_bc_proj[i+2]);
-    }
-    printf("\n");
-  }
-}*/
-
 int Space::get_num_dofs(Hermes::vector<Space *> spaces)
 {
   _F_
@@ -762,6 +629,12 @@ int Space::get_num_dofs(Hermes::vector<Space *> spaces)
     ndof += spaces[i]->get_num_dofs();
   }
   return ndof;
+}
+
+int Space::get_num_dofs(Space* space)
+{
+  _F_
+  return space->get_num_dofs();
 }
 
 // This is identical to H3D.
@@ -778,50 +651,51 @@ int Space::assign_dofs(Hermes::vector<Space*> spaces)
   return ndof;
 }
 
-void Space::update_markers_acc_to_conversion(BCTypes* bc_types, Mesh::MarkersConversion* markers_conversion)
+// Performs uniform global refinement of a FE space.
+Hermes::vector<Space *>* Space::construct_refined_spaces(Hermes::vector<Space *> coarse, int order_increase)
 {
-  for(unsigned int i = 0; i < bc_types->markers_neumann_string_temp.size(); i++)
-    bc_types->markers_neumann.push_back(markers_conversion->get_internal_boundary_marker(bc_types->markers_neumann_string_temp[i]));
+  _F_
+  Hermes::vector<Space *> * ref_spaces = new Hermes::vector<Space *>;
+  bool same_meshes = true;
+  unsigned int same_seq = coarse[0]->get_mesh()->get_seq();
+  for (unsigned int i = 0; i < coarse.size(); i++) {
+    if(coarse[i]->get_mesh()->get_seq() != same_seq)
+      same_meshes = false;
+    Mesh* ref_mesh = new Mesh;
+    ref_mesh->copy(coarse[i]->get_mesh());
+    ref_mesh->refine_all_elements();
+    ref_spaces->push_back(coarse[i]->dup(ref_mesh, order_increase));
+  }
 
-  for(unsigned int i = 0; i < bc_types->markers_newton_string_temp.size(); i++)
-    bc_types->markers_newton.push_back(markers_conversion->get_internal_boundary_marker(bc_types->markers_newton_string_temp[i]));
-
-  for(unsigned int i = 0; i < bc_types->markers_dirichlet_string_temp.size(); i++)
-    bc_types->markers_dirichlet.push_back(markers_conversion->get_internal_boundary_marker(bc_types->markers_dirichlet_string_temp[i]));
-
-  for(unsigned int i = 0; i < bc_types->markers_none_string_temp.size(); i++)
-    bc_types->markers_none.push_back(markers_conversion->get_internal_boundary_marker(bc_types->markers_none_string_temp[i]));
-
+  if(same_meshes)
+    for (unsigned int i = 0; i < coarse.size(); i++)
+      ref_spaces->at(i)->get_mesh()->set_seq(same_seq);
+  return ref_spaces;
 }
 
-void Space::update_markers_acc_to_conversion(BCValues* bc_values, Mesh::MarkersConversion* markers_conversion)
+// Light version for a single space.
+Space* Space::construct_refined_space(Space* coarse, int order_increase)
 {
-  std::map<std::string, BCValues::value_callback>::iterator it;
-  for(it = bc_values->value_callbacks_string_temp.begin(); it != bc_values->value_callbacks_string_temp.end(); it++)
-    bc_values->add_function(markers_conversion->get_internal_boundary_marker(it->first), it->second);
+  _F_
+  Mesh* ref_mesh = new Mesh;
+  ref_mesh->copy(coarse->get_mesh());
+  ref_mesh->refine_all_elements();
+  Space* ref_space = coarse->dup(ref_mesh, order_increase);
 
-  std::map<std::string, BCValues::value_callback_time>::iterator it_time;
-  for(it_time = bc_values->value_callbacks_time_string_temp.begin(); it_time != bc_values->value_callbacks_time_string_temp.end(); it_time++)
-    bc_values->add_timedep_function(markers_conversion->get_internal_boundary_marker(it_time->first), it_time->second);
-
-  std::map<std::string, scalar>::iterator it_scalar;
-  for(it_scalar = bc_values->value_constants_string_temp.begin(); it_scalar != bc_values->value_constants_string_temp.end(); it_scalar++)
-    bc_values->add_const(markers_conversion->get_internal_boundary_marker(it_scalar->first), it_scalar->second);
-
-  std::map<std::string, bool>::iterator it_zero;
-  for(it_zero = bc_values->value_zeroes_string_temp.begin(); it_zero != bc_values->value_zeroes_string_temp.end(); it_zero++)
-    bc_values->add_zero(markers_conversion->get_internal_boundary_marker(it_zero->first));
+  return ref_space;
 }
 
 // updating time-dependent essential BC
-HERMES_API void update_essential_bc_values(Hermes::vector<Space*> spaces) {
+void Space::update_essential_bc_values(Hermes::vector<Space*> spaces, double time) {
   int n = spaces.size();
   for (int i = 0; i < n; i++) {
+    spaces[i]->get_essential_bcs()->set_current_time(time);
     spaces[i]->update_essential_bc_values();
   }
 }
 
-HERMES_API void update_essential_bc_values(Space *s) {
-  return update_essential_bc_values(Hermes::vector<Space*>(s));
+void Space::update_essential_bc_values(Space *s, double time) {
+  s->get_essential_bcs()->set_current_time(time);
+  s->update_essential_bc_values();
 }
 

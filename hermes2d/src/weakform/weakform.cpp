@@ -16,654 +16,311 @@
 #include "../h2d_common.h"
 #include "weakform.h"
 #include "../../../hermes_common/matrix.h"
+#include "../function/forms.h"
 
 //// interface /////////////////////////////////////////////////////////////////////////////////////
 
-// Constructor.
+WeakForm::Form::Form(std::string area, Hermes::vector<MeshFunction *> ext, Hermes::vector<scalar> param, 
+                     double scaling_factor, int u_ext_offset) :
+  area(area), ext(ext), param(param), scaling_factor(scaling_factor), u_ext_offset(u_ext_offset)
+{
+  adapt_eval = false;
+  stage_time = 0.0;
+}
+
+void WeakForm::Form::set_current_stage_time(double time)
+{
+  stage_time = time;
+}
+
+double WeakForm::Form::get_current_stage_time() const
+{
+  return stage_time;
+}
+
+scalar WeakForm::MatrixFormVol::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                                      Geom<double> *e, ExtData<scalar> *ext) const
+{
+  error("WeakForm::MatrixFormVol::value must be overridden.");
+  return 0.0;
+}
+
+Ord WeakForm::MatrixFormVol::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+                                 Geom<Ord> *e, ExtData<Ord> *ext) const
+{
+  error("WeakForm::MatrixFormVol::ord must be overridden.");
+  return Ord();
+}
+
+WeakForm::MatrixFormVol* WeakForm::MatrixFormVol::clone()
+{
+  error("WeakForm::MatrixFormVol::clone() must be overridden.");
+  return NULL;
+}
+
+WeakForm::MatrixFormVol::MatrixFormVol(unsigned int i, unsigned int j, SymFlag sym,
+                                       std::string area, Hermes::vector<MeshFunction *> ext, 
+                                       Hermes::vector<scalar> param, double scaling_factor, int u_ext_offset) : 
+  Form(area, ext, param, scaling_factor, u_ext_offset), i(i), j(j), sym(sym)
+{
+}
+
+scalar WeakForm::MatrixFormSurf::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                                       Geom<double> *e, ExtData<scalar> *ext) const
+{
+  error("WeakForm::MatrixFormSurf::value must be overridden.");
+  return 0.0;
+}
+
+Ord WeakForm::MatrixFormSurf::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+                                  Geom<Ord> *e, ExtData<Ord> *ext) const
+{
+  error("WeakForm::MatrixFormSurf::ord must be overridden.");
+  return Ord();
+}
+
+WeakForm::MatrixFormSurf* WeakForm::MatrixFormSurf::clone()
+{
+  error("WeakForm::MatrixFormSurf::clone() must be overridden.");
+  return NULL;
+}
+
+WeakForm::MatrixFormSurf::MatrixFormSurf(unsigned int i, unsigned int j, std::string area,
+                                         Hermes::vector<MeshFunction *> ext, 
+                                         Hermes::vector<scalar> param, double scaling_factor, int u_ext_offset) : 
+  Form(area, ext, param, scaling_factor, u_ext_offset), i(i), j(j)
+{
+}
+
+scalar WeakForm::VectorFormVol::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v, 
+                                      Geom<double> *e, ExtData<scalar> *ext) const
+{
+  error("WeakForm::VectorFormVol::value must be overridden.");
+  return 0.0;
+}
+
+Ord WeakForm::VectorFormVol::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, 
+                                 Geom<Ord> *e, ExtData<Ord> *ext) const
+{
+  error("WeakForm::VectorFormVol::ord must be overridden.");
+  return Ord();
+}
+
+WeakForm::VectorFormVol* WeakForm::VectorFormVol::clone()
+{
+  error("WeakForm::VectorFormVol::clone() must be overridden.");
+  return NULL;
+}
+
+WeakForm::VectorFormVol::VectorFormVol(unsigned int i, std::string area,
+                                       Hermes::vector<MeshFunction *> ext, 
+                                       Hermes::vector<scalar> param, double scaling_factor, int u_ext_offset) : 
+  Form(area, ext, param, scaling_factor, u_ext_offset), i(i)
+{
+}
+
+WeakForm::VectorFormSurf::VectorFormSurf(unsigned int i, std::string area,
+                                         Hermes::vector<MeshFunction *> ext, 
+                                         Hermes::vector<scalar> param, double scaling_factor, int u_ext_offset) : 
+  Form(area, ext, param, scaling_factor, u_ext_offset), i(i)
+{
+}
+
+scalar WeakForm::VectorFormSurf::value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v, 
+                                       Geom<double> *e, ExtData<scalar> *ext) const
+{
+  error("WeakForm::VectorFormSurf::value must be overridden.");
+  return 0.0;
+}
+
+Ord WeakForm::VectorFormSurf::ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, 
+                                  Geom<Ord> *e, ExtData<Ord> *ext) const
+{
+  error("WeakForm::VectorFormSurf::ord must be overridden.");
+  return Ord();
+}
+
+WeakForm::VectorFormSurf* WeakForm::VectorFormSurf::clone()
+{
+  error("WeakForm::VectorFormSurf::clone() must be overridden.");
+  return NULL;
+}
+
+// Multi component.
+WeakForm::MultiComponentMatrixFormVol::MultiComponentMatrixFormVol(Hermes::vector<std::pair<unsigned int, unsigned int> >coordinates, SymFlag sym,
+                                       std::string area, Hermes::vector<MeshFunction *> ext, 
+                                       Hermes::vector<scalar> param, double scaling_factor, int u_ext_offset) : 
+  Form(area, ext, param, scaling_factor, u_ext_offset), coordinates(coordinates), sym(sym)
+{
+}
+
+WeakForm::MultiComponentMatrixFormVol* WeakForm::MultiComponentMatrixFormVol::clone()
+{
+  error("WeakForm::MultiComponentMatrixFormVol::clone() must be overridden.");
+  return NULL;
+}
+
+WeakForm::MultiComponentMatrixFormSurf::MultiComponentMatrixFormSurf(Hermes::vector<std::pair<unsigned int, unsigned int> >coordinates, std::string area,
+                                         Hermes::vector<MeshFunction *> ext, 
+                                         Hermes::vector<scalar> param, double scaling_factor, int u_ext_offset) : 
+  Form(area, ext, param, scaling_factor, u_ext_offset), coordinates(coordinates)
+{
+}
+
+WeakForm::MultiComponentMatrixFormSurf* WeakForm::MultiComponentMatrixFormSurf::clone()
+{
+  error("WeakForm::MatrixFormSurf::clone() must be overridden.");
+  return NULL;
+}
+
+WeakForm::MultiComponentVectorFormVol::MultiComponentVectorFormVol(Hermes::vector<unsigned int> coordinates, std::string area,
+                                       Hermes::vector<MeshFunction *> ext, 
+                                       Hermes::vector<scalar> param, double scaling_factor, int u_ext_offset) : 
+  Form(area, ext, param, scaling_factor, u_ext_offset), coordinates(coordinates)
+{
+}
+  
+WeakForm::MultiComponentVectorFormVol* WeakForm::MultiComponentVectorFormVol::clone()
+{
+  error("WeakForm::VectorFormVol::clone() must be overridden.");
+  return NULL;
+}
+
+WeakForm::MultiComponentVectorFormSurf::MultiComponentVectorFormSurf(Hermes::vector<unsigned int> coordinates, std::string area,
+                                         Hermes::vector<MeshFunction *> ext, 
+                                         Hermes::vector<scalar> param, double scaling_factor, int u_ext_offset) : 
+  Form(area, ext, param, scaling_factor, u_ext_offset), coordinates(coordinates)
+{
+}
+
+WeakForm::MultiComponentVectorFormSurf* WeakForm::MultiComponentVectorFormSurf::clone()
+{
+  error("WeakForm::VectorFormVol::clone() must be overridden.");
+  return NULL;
+}
+
 WeakForm::WeakForm(unsigned int neq, bool mat_free)
 {
   _F_
+
   this->neq = neq;
-  seq = 0;
+  this->seq = 0;
   this->is_matfree = mat_free;
 }
 
-/* VOLUMETRIC MATRIX FORMS */
+WeakForm::~WeakForm()
+{
+}
 
-// Internal.
-void WeakForm::add_matrix_form_internal(MatrixFormVol* form)
+void WeakForm::add_matrix_form(MatrixFormVol* form)
 {
   _F_
-  // Sanity checks.
+
   if (form->i >= neq || form->j >= neq)
     error("Invalid equation number.");
   if (form->sym < -1 || form->sym > 1)
     error("\"sym\" must be -1, 0 or 1.");
   if (form->sym < 0 && form->i == form->j)
     error("Only off-diagonal forms can be antisymmetric.");
-  if (form->area != HERMES_ANY && form->area < 0 && (unsigned) (-form->area) > areas.size())
-    error("Invalid area number.");
   if (mfvol.size() > 100) {
     warn("Large number of forms (> 100). Is this the intent?");
   }
 
-  // Add the form.
-  mfvol.push_back(*form);
-  seq++;
-}
-
-// Most general case, integer markers - internal
-void WeakForm::add_matrix_form_internal(unsigned int i, unsigned int j, matrix_form_val_t fn,
-                                        matrix_form_ord_t ord, SymFlag sym, int area, Hermes::vector<MeshFunction*>ext,
-                                        bool adapt, int order_increase, double rel_error_tol)
-{
-  _F_
-  // Sanity checks.
-  if (i >= neq || j >= neq)
-    error("Invalid equation number.");
-  if (sym < -1 || sym > 1)
-    error("\"sym\" must be -1, 0 or 1.");
-  if (sym < 0 && i == j)
-    error("Only off-diagonal forms can be antisymmetric.");
-  if (area != HERMES_ANY && area < 0 && (unsigned) (-area) > areas.size())
-    error("Invalid area number.");
-  if (mfvol.size() > 100) {
-    warn("Large number of forms (> 100). Is this the intent?");
-  }
-
-  // Add the form.
-  double scaling_factor = 1.0;
-  int u_ext_offset = 0;
-  MatrixFormVol form = { i, j, sym, area, fn, ord, ext, scaling_factor, u_ext_offset, 
-                         adapt, order_increase, rel_error_tol };
+  form->set_weakform(this);
   mfvol.push_back(form);
   seq++;
 }
 
-// Most general case, string markers - internal
-void WeakForm::add_matrix_form_internal(unsigned int i, unsigned int j, matrix_form_val_t fn,
-                                        matrix_form_ord_t ord, SymFlag sym, std::string area, 
-                                        Hermes::vector<MeshFunction*>ext,
-                                        bool adapt, int order_increase, double rel_error_tol)
-{
-  _F_
-  // Sanity checks.
-  if (i >= neq || j >= neq)
-    error("Invalid equation number.");
-  if (sym < -1 || sym > 1)
-    error("\"sym\" must be -1, 0 or 1.");
-  if (sym < 0 && i == j)
-    error("Only off-diagonal forms can be antisymmetric.");
-  if (mfvol.size() > 100) {
-    warn("Large number of forms (> 100). Is this the intent?");
-  }
-
-  // Add the form.
-  double scaling_factor = 1.0;
-  int u_ext_offset = 0;
-  MatrixFormVol form = { i, j, sym, 0, fn, ord, ext, scaling_factor, u_ext_offset, 
-                         adapt, order_increase, rel_error_tol };
-  mfvol_string_temp.insert(std::pair<std::string, MatrixFormVol>(area, form));
-  seq++;
-}
-
-// Wrapper for non-adaptive numerical integration.
-// Version with integer markers.
-void WeakForm::add_matrix_form(unsigned int i, unsigned int j, 
-                               matrix_form_val_t fn, matrix_form_ord_t ord,
-		               SymFlag sym, int area,
-                               Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_matrix_form_internal(i, j, fn, ord, sym, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration.
-// Version with string markers.
-void WeakForm::add_matrix_form(unsigned int i, unsigned int j, 
-                               matrix_form_val_t fn, matrix_form_ord_t ord,
-		               SymFlag sym, std::string area,
-                               Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_matrix_form_internal(i, j, fn, ord, sym, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration.
-// Version with integer markers.
-void WeakForm::add_matrix_form(unsigned int i, unsigned int j, 
-                               matrix_form_val_t fn,
-		               SymFlag sym, int area,
-                               Hermes::vector<MeshFunction*>ext,
-                               int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_matrix_form_internal(i, j, fn, NULL, sym, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration.
-// Version with string markers.
-void WeakForm::add_matrix_form(unsigned int i, unsigned int j, 
-                               matrix_form_val_t fn,
-		               SymFlag sym, std::string area,
-                               Hermes::vector<MeshFunction*>ext,
-                               int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_matrix_form_internal(i, j, fn, NULL, sym, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration - single equation case.
-// Version with integer markers.
-void WeakForm::add_matrix_form(matrix_form_val_t fn, matrix_form_ord_t ord,
-		               SymFlag sym, int area,
-                               Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  int i = 0, j = 0;
-  add_matrix_form(i, j, fn, ord, sym, area, ext);
-}
-
-// Wrapper for non-adaptive numerical integration - single equation case.
-// Version with string markers.
-void WeakForm::add_matrix_form(matrix_form_val_t fn, matrix_form_ord_t ord,
-		               SymFlag sym, std::string area,
-                               Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  int i = 0, j = 0;
-  add_matrix_form(i, j, fn, ord, sym, area, ext);
-}
-
-// Wrapper for adaptive numerical integration - single equation case.
-// Version with integer markers.
-void WeakForm::add_matrix_form(matrix_form_val_t fn,
-		               SymFlag sym, int area,
-                               Hermes::vector<MeshFunction*>ext,
-                               int order_increase, double rel_error_tol)
-{
-  _F_
-  int i = 0, j = 0;
-  add_matrix_form(i, j, fn, sym, area, ext, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration - single equation case.
-// Version with string markers.
-void WeakForm::add_matrix_form(matrix_form_val_t fn,
-		               SymFlag sym, std::string area,
-                               Hermes::vector<MeshFunction*>ext,
-                               int order_increase, double rel_error_tol)
-{
-  _F_
-  int i = 0, j = 0;
-  add_matrix_form(i, j, fn, sym, area, ext, order_increase, rel_error_tol);
-}
-
-/* SURFACE MATRIX FORMS */
-
-// Internal.
-void WeakForm::add_matrix_form_surf_internal(MatrixFormSurf* form)
+void WeakForm::add_matrix_form_surf(MatrixFormSurf* form)
 {
   _F_
   if (form->i >= neq || form->j >= neq)
     error("Invalid equation number.");
-  if (form->area != HERMES_ANY && form->area != H2D_DG_BOUNDARY_EDGE && form->area !=
-          H2D_DG_INNER_EDGE && form->area < 0 && (unsigned) (-form->area) > areas.size())
-    error("Invalid area number.");
 
-  mfsurf.push_back(*form);
-  seq++;
-}
-
-// Most general case, integer markers - internal.
-void WeakForm::add_matrix_form_surf_internal(unsigned int i, unsigned int j, 
-                                             matrix_form_val_t fn, matrix_form_ord_t ord,
-                                             int area, Hermes::vector<MeshFunction*>ext,
-                                             bool adapt, int order_increase, double rel_error_tol)
-{
-  _F_
-  //Sanity checks.
-  if (i >= neq || j >= neq)
-    error("Invalid equation number.");
-  if (area != HERMES_ANY && area != H2D_DG_BOUNDARY_EDGE && area !=
-          H2D_DG_INNER_EDGE && area < 0 && (unsigned) (-area) > areas.size())
-    error("Invalid area number.");
-
-  // Add the form.
-  double scaling_factor = 1.0;
-  int u_ext_offset = 0;
-  MatrixFormSurf form = { i, j, area, fn, ord, ext, scaling_factor, u_ext_offset,
-                          adapt, order_increase, rel_error_tol };
+  form->set_weakform(this);
   mfsurf.push_back(form);
   seq++;
 }
 
-// Most general case, string markers - internal.
-void WeakForm::add_matrix_form_surf_internal(unsigned int i, unsigned int j, 
-                                             matrix_form_val_t fn, matrix_form_ord_t ord,
-			                     std::string area, Hermes::vector<MeshFunction*>ext,
-                                             bool adapt, int order_increase, double rel_error_tol)
-{
-  _F_
-  // Sanity checks.
-  if (i >= neq || j >= neq) error("Invalid equation number.");
-  if (mfsurf.size() > 100) {
-    warn("Large number of forms (> 100). Is this the intent?");
-  }
-
-  // Add the form.
-  double scaling_factor = 1.0;
-  int u_ext_offset = 0;
-  MatrixFormSurf form = { i, j, 0, fn, ord, ext, scaling_factor, u_ext_offset, 
-                          adapt, order_increase, rel_error_tol };
-  mfsurf_string_temp.insert(std::pair<std::string, MatrixFormSurf>(area, form));
-  seq++;
-}
-
-// Wrapper for non-adaptive numerical integration.
-// Version with integer markers.
-void WeakForm::add_matrix_form_surf(unsigned int i, unsigned int j, 
-                                    matrix_form_val_t fn, matrix_form_ord_t ord,
-	                            int area,
-                                    Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_matrix_form_surf_internal(i, j, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration.
-// Version with string markers.
-void WeakForm::add_matrix_form_surf(unsigned int i, unsigned int j, 
-                                    matrix_form_val_t fn, matrix_form_ord_t ord,
-			            std::string area,
-                                    Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_matrix_form_surf_internal(i, j, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration.
-// Version with integer markers.
-void WeakForm::add_matrix_form_surf(unsigned int i, unsigned int j, matrix_form_val_t fn, 
-                                    int area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_matrix_form_surf_internal(i, j, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration.
-// Version with string markers.
-void WeakForm::add_matrix_form_surf(unsigned int i, unsigned int j, matrix_form_val_t fn, 
-                                    std::string area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_matrix_form_surf_internal(i, j, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration - single equation case.
-// Version with integer markers.
-void WeakForm::add_matrix_form_surf(matrix_form_val_t fn, matrix_form_ord_t ord,
-	                            int area,
-                                    Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  int i = 0, j = 0;
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_matrix_form_surf_internal(i, j, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration - single equation case.
-// Version with string markers.
-void WeakForm::add_matrix_form_surf(matrix_form_val_t fn, matrix_form_ord_t ord,
-			            std::string area,
-                                    Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  int i = 0, j = 0;
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_matrix_form_surf_internal(i, j, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration - single equation case.
-// Version with integer markers.
-void WeakForm::add_matrix_form_surf(matrix_form_val_t fn, int area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    int order_increase, double rel_error_tol)
-{
-  _F_
-  int i = 0, j = 0;
-  bool adapt = true;
-  add_matrix_form_surf_internal(i, j, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration - single equation case.
-// Version with string markers.
-void WeakForm::add_matrix_form_surf(matrix_form_val_t fn, std::string area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    int order_increase, double rel_error_tol)
-{
-  _F_
-  int i = 0, j = 0;
-  bool adapt = true;
-  add_matrix_form_surf_internal(i, j, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-
-/* VOLUME VECTOR FORMS */
-
-// Internal.
-void WeakForm::add_vector_form_internal(VectorFormVol* form)
+void WeakForm::add_vector_form(VectorFormVol* form)
 {
   _F_
   if (form->i >= neq)
     error("Invalid equation number.");
-  if (form->area != HERMES_ANY && form->area < 0 && (unsigned) (-form->area) > areas.size())
-    error("Invalid area number.");
-
-  vfvol.push_back(*form);
-  seq++;
-}
-
-// Most general case, integer markers - internal.
-void WeakForm::add_vector_form_internal(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord, int area, 
-                               Hermes::vector<MeshFunction*>ext,
-                               bool adapt, int order_increase, double rel_error_tol)
-{
-  _F_
-  if (i >= neq)
-    error("Invalid equation number.");
-  if (area != HERMES_ANY && area < 0 && (unsigned) (-area) > areas.size())
-    error("Invalid area number.");
-
-  double scaling_factor = 1.0;
-  int u_ext_offset = 0;
-  VectorFormVol form = { i, area, fn, ord, ext, scaling_factor, u_ext_offset,
-                         adapt, order_increase, rel_error_tol };
+  form->set_weakform(this);
   vfvol.push_back(form);
   seq++;
 }
 
-// Most general case, string markers - internal.
-void WeakForm::add_vector_form_internal(unsigned int i, 
-                              vector_form_val_t fn, vector_form_ord_t ord,
-		              std::string area, Hermes::vector<MeshFunction*>ext,
-                              bool adapt, int order_increase, 
-                              double rel_error_tol)
-{
-  _F_
-  if (i >= neq) error("Invalid equation number.");
-
-  double scaling_factor = 1.0;
-  int u_ext_offset = 0;
-  VectorFormVol form = { i, 0, fn, ord, ext, scaling_factor, u_ext_offset,
-                         adapt, order_increase, rel_error_tol };
-  vfvol_string_temp.insert(std::pair<std::string, VectorFormVol>(area, form));
-  seq++;
-}
-
-// Wrapper for non-adaptive numerical integration.
-// Version with integer markers.
-void WeakForm::add_vector_form(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord,
-		               int area, Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_vector_form_internal(i, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration.
-// Version with string markers.
-void WeakForm::add_vector_form(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord,
-		               std::string area, Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_vector_form_internal(i, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration.
-// Version with integer markers.
-void WeakForm::add_vector_form(unsigned int i, vector_form_val_t fn, int area,
-                               Hermes::vector<MeshFunction*>ext,
-                               int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_vector_form_internal(i, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration.
-// Version with string markers.
-void WeakForm::add_vector_form(unsigned int i, vector_form_val_t fn, std::string area,
-                               Hermes::vector<MeshFunction*>ext,
-                               int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_vector_form_internal(i, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration - single equation version.
-// Version with integer markers.
-void WeakForm::add_vector_form(vector_form_val_t fn, vector_form_ord_t ord,
-		               int area, Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_vector_form_internal(0, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration - single equation version.
-// Version with string markers.
-void WeakForm::add_vector_form(vector_form_val_t fn, vector_form_ord_t ord,
-		     std::string area, Hermes::vector<MeshFunction*>ext)
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_vector_form_internal(0, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration - single equation version.
-// Version with integer markers.
-void WeakForm::add_vector_form(vector_form_val_t fn, int area,
-                               Hermes::vector<MeshFunction*>ext,
-                               int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_vector_form_internal(0, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration - single equation version.
-// Version with string markers.
-void WeakForm::add_vector_form(vector_form_val_t fn, std::string area,
-                               Hermes::vector<MeshFunction*>ext,
-                               int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_vector_form_internal(0, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-
-/* SURFACE VECTOR FORMS */
-
-// Internal.
-void WeakForm::add_vector_form_surf_internal(VectorFormSurf* form)
+void WeakForm::add_vector_form_surf(VectorFormSurf* form)
 {
   _F_
   if (form->i >= neq)
     error("Invalid equation number.");
-  if (form->area != HERMES_ANY && form->area != H2D_DG_BOUNDARY_EDGE && form->area !=
-          H2D_DG_INNER_EDGE && form->area < 0 && (unsigned) (-form->area) > areas.size())
-    error("Invalid area number.");
 
-  vfsurf.push_back(*form);
-  seq++;
-}
-
-// Most general case, integer markers - internal.
-void WeakForm::add_vector_form_surf_internal(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord, int area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    bool adapt, int order_increase, double rel_error_tol)
-{
-  _F_
-  if (i >= neq)
-    error("Invalid equation number.");
-  if (area != HERMES_ANY && area != H2D_DG_BOUNDARY_EDGE && area !=
-          H2D_DG_INNER_EDGE && area < 0 && (unsigned) (-area) > areas.size())
-    error("Invalid area number.");
-
-  double scaling_factor = 1.0;
-  int u_ext_offset = 0;
-  VectorFormSurf form = { i, area, fn, ord, ext, scaling_factor, u_ext_offset,
-                          adapt, order_increase, rel_error_tol };
+  form->set_weakform(this);
   vfsurf.push_back(form);
   seq++;
 }
 
-// Most general case, string markers - internal.
-void WeakForm::add_vector_form_surf_internal(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord, std::string area,
-                                             Hermes::vector<MeshFunction*>ext,
-                                             bool adapt, int order_increase, double rel_error_tol)
+void WeakForm::add_multicomponent_matrix_form(MultiComponentMatrixFormVol* form)
 {
   _F_
-  if (i >= neq) error("Invalid equation number.");
 
-  double scaling_factor = 1.0;
-  int u_ext_offset = 0;
-  VectorFormSurf form = { i, 0, fn, ord, ext, scaling_factor, u_ext_offset,
-                          adapt, order_increase, rel_error_tol};
-  vfsurf_string_temp.insert(std::pair<std::string, VectorFormSurf>(area, form));
+  for(unsigned int form_i = 0; form_i < form->coordinates.size(); form_i++) {
+    if(form->coordinates.at(form_i).first >= neq || form->coordinates.at(form_i).second >= neq)
+      error("Invalid equation number.");
+    if (form->sym < 0 && form->coordinates.at(form_i).first == form->coordinates.at(form_i).second)
+      error("Only off-diagonal forms can be antisymmetric.");
+  }
+  if (form->sym < -1 || form->sym > 1)
+    error("\"sym\" must be -1, 0 or 1.");
+
+  if (mfvol_mc.size() > 100)
+    warn("Large number of forms (> 100). Is this the intent?");
+
+  form->set_weakform(this);
+  
+  mfvol_mc.push_back(form);
   seq++;
 }
 
-// Wrapper for non-adaptive numerical integration.
-// Version with integer markers.
-void WeakForm::add_vector_form_surf(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord,
-			            int area, Hermes::vector<MeshFunction*>ext) 
+void WeakForm::add_multicomponent_matrix_form_surf(MultiComponentMatrixFormSurf* form)
 {
   _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_vector_form_surf_internal(i, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
+  for(unsigned int form_i = 0; form_i < form->coordinates.size(); form_i++)
+    if(form->coordinates.at(form_i).first >= neq || form->coordinates.at(form_i).second >= neq)
+      error("Invalid equation number.");
+
+  form->set_weakform(this);
+  mfsurf_mc.push_back(form);
+  seq++;
 }
 
-// Wrapper for non-adaptive numerical integration.
-// Version with string markers.
-void WeakForm::add_vector_form_surf(unsigned int i, vector_form_val_t fn, vector_form_ord_t ord,
-				    std::string area, Hermes::vector<MeshFunction*>ext) 
+void WeakForm::add_multicomponent_vector_form(MultiComponentVectorFormVol* form)
 {
   _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_vector_form_surf_internal(i, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
+  for(unsigned int form_i = 0; form_i < form->coordinates.size(); form_i++)
+    if(form->coordinates.at(form_i) >= neq)
+      error("Invalid equation number.");
+  form->set_weakform(this);
+  vfvol_mc.push_back(form);
+  seq++;
 }
 
-// Wrapper for adaptive numerical integration.
-// Version with integer markers.
-void WeakForm::add_vector_form_surf(unsigned int i, vector_form_val_t fn, int area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    int order_increase, double rel_error_tol)
+void WeakForm::add_multicomponent_vector_form_surf(MultiComponentVectorFormSurf* form)
 {
   _F_
-  bool adapt = true;
-  add_vector_form_surf_internal(i, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
+  for(unsigned int form_i = 0; form_i < form->coordinates.size(); form_i++)
+    if(form->coordinates.at(form_i) >= neq)
+      error("Invalid equation number.");
+
+  form->set_weakform(this);
+  vfsurf_mc.push_back(form);
+  seq++;
 }
 
-// Wrapper for adaptive numerical integration.
-// Version with string markers.
-void WeakForm::add_vector_form_surf(unsigned int i, vector_form_val_t fn, std::string area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_vector_form_surf_internal(i, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration - single equation version.
-// Version with integer markers.
-void WeakForm::add_vector_form_surf(vector_form_val_t fn, vector_form_ord_t ord,
-			            int area, Hermes::vector<MeshFunction*>ext) 
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_vector_form_surf_internal(0, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for non-adaptive numerical integration - single equation version.
-// Version with string markers.
-void WeakForm::add_vector_form_surf(vector_form_val_t fn, vector_form_ord_t ord,
-				    std::string area, Hermes::vector<MeshFunction*>ext) 
-{
-  _F_
-  bool adapt = false;
-  int order_increase = -1;
-  double rel_error_tol = -1;
-  add_vector_form_surf_internal(0, fn, ord, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration - single equation version.
-// Version with integer markers.
-void WeakForm::add_vector_form_surf(vector_form_val_t fn, int area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_vector_form_surf_internal(0, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Wrapper for adaptive numerical integration - single equation version.
-// Version with string markers.
-void WeakForm::add_vector_form_surf(vector_form_val_t fn, std::string area,
-                                    Hermes::vector<MeshFunction*>ext,
-                                    int order_increase, double rel_error_tol)
-{
-  _F_
-  bool adapt = true;
-  add_vector_form_surf_internal(0, fn, NULL, area, ext, adapt, order_increase, rel_error_tol);
-}
-
-// Sets external functions.
-void WeakForm::set_ext_fns(void* fn, Hermes::vector<MeshFunction*>ext)
+void WeakForm::set_ext_fns(void* fn, Hermes::vector<MeshFunction*> ext)
 {
   _F_
   error("Not implemented yet.");
@@ -678,57 +335,107 @@ void WeakForm::set_ext_fns(void* fn, Hermes::vector<MeshFunction*>ext)
 /// This function is identical in H2D and H3D.
 ///
 void WeakForm::get_stages(Hermes::vector<Space *> spaces, Hermes::vector<Solution *>& u_ext,
-			  std::vector<WeakForm::Stage>& stages, bool rhsonly)
+                          std::vector<WeakForm::Stage>& stages, bool want_matrix, bool want_vector)
 {
   _F_
+
+  if (!want_matrix && !want_vector) return;
+
   unsigned int i;
   stages.clear();
 
-  // process volume matrix forms
-  for (i = 0; i < mfvol.size(); i++)
-  {
-    unsigned int ii = mfvol[i].i, jj = mfvol[i].j;
-    Mesh* m1 = spaces[ii]->get_mesh();
-    Mesh* m2 = spaces[jj]->get_mesh();
-    Stage* s = find_stage(stages, ii, jj, m1, m2,
-                          mfvol[i].ext, u_ext);
-    s->mfvol.push_back(&mfvol[i]);
+  if (want_matrix || want_vector) {    // This is because of linear problems where 
+                                       // matrix terms with the Dirichlet lift go to rhs.
+    // Process volume matrix forms.
+    for (i = 0; i < mfvol.size(); i++)
+    {
+      unsigned int ii = mfvol[i]->i, jj = mfvol[i]->j;
+      Mesh* m1 = spaces[ii]->get_mesh();
+      Mesh* m2 = spaces[jj]->get_mesh();
+      Stage* s = find_stage(stages, ii, jj, m1, m2, mfvol[i]->ext, u_ext);
+      s->mfvol.push_back(mfvol[i]);
+    }
+
+    // Process surface matrix forms.
+    for (i = 0; i < mfsurf.size(); i++)
+    {
+      unsigned int ii = mfsurf[i]->i, jj = mfsurf[i]->j;
+      Mesh* m1 = spaces[ii]->get_mesh();
+      Mesh* m2 = spaces[jj]->get_mesh();
+      Stage* s = find_stage(stages, ii, jj, m1, m2, mfsurf[i]->ext, u_ext);
+      s->mfsurf.push_back(mfsurf[i]);
+    }
+
+    // Multi component forms.
+    for (unsigned i = 0; i < mfvol_mc.size(); i++) {
+      Mesh* the_one_mesh = spaces[mfvol_mc.at(i)->coordinates.at(0).first]->get_mesh();
+      for(unsigned int form_i = 0; form_i < mfvol_mc.at(i)->coordinates.size(); form_i++) {
+        if(spaces[mfvol_mc.at(i)->coordinates.at(form_i).first]->get_mesh()->get_seq() != the_one_mesh->get_seq())
+          error("When using multi-component forms, the Meshes have to be identical.");
+        if(spaces[mfvol_mc.at(i)->coordinates.at(form_i).second]->get_mesh()->get_seq() != the_one_mesh->get_seq())
+          error("When using multi-component forms, the Meshes have to be identical.");
+      }
+    
+      Stage* s = find_stage(stages, mfvol_mc.at(i)->coordinates, the_one_mesh, the_one_mesh, mfvol_mc[i]->ext, u_ext);
+      s->mfvol_mc.push_back(mfvol_mc[i]);
+    }
+    for (unsigned i = 0; i < mfsurf_mc.size(); i++) {
+      Mesh* the_one_mesh = spaces[mfsurf_mc.at(i)->coordinates.at(0).first]->get_mesh();
+      for(unsigned int form_i = 0; form_i < mfsurf_mc.at(i)->coordinates.size(); form_i++) {
+        if(spaces[mfsurf_mc.at(i)->coordinates.at(form_i).first]->get_mesh()->get_seq() != the_one_mesh->get_seq())
+          error("When using multi-component forms, the Meshes have to be identical.");
+        if(spaces[mfsurf_mc.at(i)->coordinates.at(form_i).second]->get_mesh()->get_seq() != the_one_mesh->get_seq())
+          error("When using multi-component forms, the Meshes have to be identical.");
+      }
+    
+      Stage* s = find_stage(stages, mfsurf_mc.at(i)->coordinates, the_one_mesh, the_one_mesh, mfsurf_mc[i]->ext, u_ext);
+      s->mfsurf_mc.push_back(mfsurf_mc[i]);
+    }
   }
 
-  // process surface matrix forms
-  for (i = 0; i < mfsurf.size(); i++)
-  {
-    unsigned int ii = mfsurf[i].i, jj = mfsurf[i].j;
-    Mesh* m1 = spaces[ii]->get_mesh();
-    Mesh* m2 = spaces[jj]->get_mesh();
-    Stage* s = find_stage(stages, ii, jj, m1, m2,
-                          mfsurf[i].ext, u_ext);
-    s->mfsurf.push_back(&mfsurf[i]);
+  if (want_vector) {
+    // Process volume vector forms.
+    for (unsigned i = 0; i < vfvol.size(); i++) {
+      unsigned int ii = vfvol[i]->i;
+      Mesh *m = spaces[ii]->get_mesh();
+      Stage *s = find_stage(stages, ii, ii, m, m, vfvol[i]->ext, u_ext);
+      s->vfvol.push_back(vfvol[i]);
+    }
+
+    // Process surface vector forms.
+    for (unsigned i = 0; i < vfsurf.size(); i++) {
+      unsigned int ii = vfsurf[i]->i;
+      Mesh *m = spaces[ii]->get_mesh();
+      Stage *s = find_stage(stages, ii, ii, m, m, vfsurf[i]->ext, u_ext);
+      s->vfsurf.push_back(vfsurf[i]);
+    }
+
+    // Multi component forms.
+    for (unsigned i = 0; i < vfvol_mc.size(); i++) {
+      Mesh* the_one_mesh = spaces[vfvol_mc.at(i)->coordinates.at(0)]->get_mesh();
+      for(unsigned int form_i = 0; form_i < vfvol_mc.at(i)->coordinates.size(); form_i++)
+        if(spaces[vfvol_mc.at(i)->coordinates.at(form_i)]->get_mesh()->get_seq() != the_one_mesh->get_seq())
+          error("When using multi-component forms, the Meshes have to be identical.");
+    
+      Stage *s = find_stage(stages, vfvol_mc.at(i)->coordinates, the_one_mesh, the_one_mesh, vfvol_mc[i]->ext, u_ext);
+      s->vfvol_mc.push_back(vfvol_mc[i]);
+    }
+    for (unsigned i = 0; i < vfsurf_mc.size(); i++) {
+      Mesh* the_one_mesh = spaces[vfsurf_mc.at(i)->coordinates.at(0)]->get_mesh();
+      for(unsigned int form_i = 0; form_i < vfsurf_mc.at(i)->coordinates.size(); form_i++)
+        if(spaces[vfsurf_mc.at(i)->coordinates.at(form_i)]->get_mesh()->get_seq() != the_one_mesh->get_seq())
+          error("When using multi-component forms, the Meshes have to be identical.");
+    
+      Stage *s = find_stage(stages, vfsurf_mc.at(i)->coordinates, the_one_mesh, the_one_mesh, vfsurf_mc[i]->ext, u_ext);
+      s->vfsurf_mc.push_back(vfsurf_mc[i]);
+    }
   }
 
-  // process volume vector forms
-  for (unsigned i = 0; i < vfvol.size(); i++) {
-    unsigned int ii = vfvol[i].i;
-    Mesh *m = spaces[ii]->get_mesh();
-    Stage *s = find_stage(stages, ii, ii, m, m,
-                          vfvol[i].ext, u_ext);
-    s->vfvol.push_back(&vfvol[i]);
-  }
+  // Helper macro for iterating in a set,
+#define set_for_each(myset, type) \
+  for (std::set<type>::iterator it = (myset).begin(); it != (myset).end(); it++)
 
-  // process surface vector forms
-  for (unsigned i = 0; i < vfsurf.size(); i++) {
-    unsigned int ii = vfsurf[i].i;
-    Mesh *m = spaces[ii]->get_mesh();
-    Stage *s = find_stage(stages, ii, ii, m, m,
-                          vfsurf[i].ext, u_ext);
-    s->vfsurf.push_back(&vfsurf[i]);
-  }
-
-  // helper macro for iterating in a set
-  #define set_for_each(myset, type) \
-    for (std::set<type>::iterator it = (myset).begin(); it != (myset).end(); it++)
-
-  // initialize the arrays meshes and fns needed by Traverse for each stage
+  // Initialize the arrays meshes and fns needed by Traverse for each stage.
   for (i = 0; i < stages.size(); i++)
   {
     Stage* s = &stages[i];
@@ -790,8 +497,9 @@ WeakForm::Stage* WeakForm::find_stage(std::vector<WeakForm::Stage>& stages, int 
   Stage* s = NULL;
   for (unsigned i = 0; i < stages.size(); i++)
     if (seq.size() == stages[i].seq_set.size() &&
-        equal(seq.begin(), seq.end(), stages[i].seq_set.begin()))
-      { s = &stages[i]; break; }
+        equal(seq.begin(), seq.end(), stages[i].seq_set.begin())) {
+      s = &stages[i]; break;
+    }
 
   // create a new stage if not found
   if (s == NULL)
@@ -814,6 +522,112 @@ WeakForm::Stage* WeakForm::find_stage(std::vector<WeakForm::Stage>& stages, int 
   return s;
 }
 
+WeakForm::Stage* WeakForm::find_stage(std::vector<WeakForm::Stage>& stages, Hermes::vector<std::pair<unsigned int, unsigned int> > coordinates,
+                                      Mesh* m1, Mesh* m2,
+                                      Hermes::vector<MeshFunction*>& ext, Hermes::vector<Solution*>& u_ext)
+{
+  _F_
+  // first create a list of meshes the form uses
+  std::set<unsigned> seq;
+  seq.insert(m1->get_seq());
+  seq.insert(m2->get_seq());
+  Mesh *mmm;
+  for (unsigned i = 0; i < ext.size(); i++) {
+    mmm = ext[i]->get_mesh();
+    if (mmm == NULL) error("NULL Mesh pointer detected in ExtData during assembling.\n  Have you initialized all external functions?");
+    seq.insert(mmm->get_seq());
+  }
+  for (unsigned i = 0; i < u_ext.size(); i++) {
+    if (u_ext[i] != NULL) {
+      mmm = u_ext[i]->get_mesh();
+      if (mmm == NULL) error("NULL Mesh pointer detected in u_ext during assembling.");
+      seq.insert(mmm->get_seq());
+    }
+  }
+
+  // find a suitable existing stage for the form
+  Stage* s = NULL;
+  for (unsigned i = 0; i < stages.size(); i++)
+    if (seq.size() == stages[i].seq_set.size() &&
+        equal(seq.begin(), seq.end(), stages[i].seq_set.begin())) {
+      s = &stages[i]; break;
+    }
+
+  // create a new stage if not found
+  if (s == NULL)
+  {
+    Stage newstage;
+    stages.push_back(newstage);
+    s = &stages.back();
+    s->seq_set = seq;
+  }
+
+  // update and return the stage
+  for (unsigned int i = 0; i < ext.size(); i++)
+    s->ext_set.insert(ext[i]);
+  for (unsigned int i = 0; i < u_ext.size(); i++)
+    if (u_ext[i] != NULL)
+      s->ext_set.insert(u_ext[i]);
+
+  for(unsigned int ii = 0; ii < coordinates.size(); ii++) {
+    s->idx_set.insert(coordinates.at(ii).first);
+    s->idx_set.insert(coordinates.at(ii).second);
+  }
+  return s;
+}
+
+WeakForm::Stage* WeakForm::find_stage(std::vector<WeakForm::Stage>& stages, Hermes::vector<unsigned int> coordinates,
+                                      Mesh* m1, Mesh* m2,
+                                      Hermes::vector<MeshFunction*>& ext, Hermes::vector<Solution*>& u_ext)
+{
+  _F_
+  // first create a list of meshes the form uses
+  std::set<unsigned> seq;
+  seq.insert(m1->get_seq());
+  seq.insert(m2->get_seq());
+  Mesh *mmm;
+  for (unsigned i = 0; i < ext.size(); i++) {
+    mmm = ext[i]->get_mesh();
+    if (mmm == NULL) error("NULL Mesh pointer detected in ExtData during assembling.\n  Have you initialized all external functions?");
+    seq.insert(mmm->get_seq());
+  }
+  for (unsigned i = 0; i < u_ext.size(); i++) {
+    if (u_ext[i] != NULL) {
+      mmm = u_ext[i]->get_mesh();
+      if (mmm == NULL) error("NULL Mesh pointer detected in u_ext during assembling.");
+      seq.insert(mmm->get_seq());
+    }
+  }
+
+  // find a suitable existing stage for the form
+  Stage* s = NULL;
+  for (unsigned i = 0; i < stages.size(); i++)
+    if (seq.size() == stages[i].seq_set.size() &&
+        equal(seq.begin(), seq.end(), stages[i].seq_set.begin())) {
+      s = &stages[i]; break;
+    }
+
+  // create a new stage if not found
+  if (s == NULL)
+  {
+    Stage newstage;
+    stages.push_back(newstage);
+    s = &stages.back();
+    s->seq_set = seq;
+  }
+
+  // update and return the stage
+  for (unsigned int i = 0; i < ext.size(); i++)
+    s->ext_set.insert(ext[i]);
+  for (unsigned int i = 0; i < u_ext.size(); i++)
+    if (u_ext[i] != NULL)
+      s->ext_set.insert(u_ext[i]);
+
+  for(unsigned int ii = 0; ii < coordinates.size(); ii++)
+    s->idx_set.insert(coordinates.at(ii));
+  
+  return s;
+}
 
 /// Returns a (neq x neq) array containing true in each element, if the corresponding
 /// block of weak forms is used, and false otherwise.
@@ -824,76 +638,47 @@ bool** WeakForm::get_blocks(bool force_diagonal_blocks)
   _F_
   bool** blocks = new_matrix<bool>(neq, neq);
   for (unsigned int i = 0; i < neq; i++) {
-    for (unsigned int j = 0; j < neq; j++) {
+    for (unsigned int j = 0; j < neq; j++)
       blocks[i][j] = false;
-    }
-    if (force_diagonal_blocks == true) blocks[i][i] = true;
+    if (force_diagonal_blocks == true)
+      blocks[i][i] = true;
   }
   for (unsigned i = 0; i < mfvol.size(); i++) {
-    if (fabs(mfvol[i].scaling_factor) > 1e-12) blocks[mfvol[i].i][mfvol[i].j] = true;
-    if (mfvol[i].sym) {
-      if (fabs(mfvol[i].scaling_factor) > 1e-12) blocks[mfvol[i].j][mfvol[i].i] = true;
-    }
+    if (fabs(mfvol[i]->scaling_factor) > 1e-12)
+      blocks[mfvol[i]->i][mfvol[i]->j] = true;
+    if (mfvol[i]->sym)
+      if (fabs(mfvol[i]->scaling_factor) > 1e-12)
+        blocks[mfvol[i]->j][mfvol[i]->i] = true;
   }
 
-  for (unsigned i = 0; i < mfsurf.size(); i++) {
-    if (fabs(mfsurf[i].scaling_factor) > 1e-12) blocks[mfsurf[i].i][mfsurf[i].j] = true;
+  for (unsigned i = 0; i < mfvol_mc.size(); i++) {
+    if (fabs(mfvol_mc[i]->scaling_factor) > 1e-12)
+      for(unsigned int component_i = 0; component_i < mfvol_mc[i]->coordinates.size(); component_i++)
+        blocks[mfvol_mc[i]->coordinates[component_i].first][mfvol_mc[i]->coordinates[component_i].second] = true;
+    if (mfvol_mc[i]->sym)
+      if (fabs(mfvol_mc[i]->scaling_factor) > 1e-12)
+        for(unsigned int component_i = 0; component_i < mfvol_mc[i]->coordinates.size(); component_i++)
+          blocks[mfvol_mc[i]->coordinates[component_i].second][mfvol_mc[i]->coordinates[component_i].first] = true;
   }
+
+  for (unsigned i = 0; i < mfsurf.size(); i++)
+    if (fabs(mfsurf[i]->scaling_factor) > 1e-12)
+      blocks[mfsurf[i]->i][mfsurf[i]->j] = true;
+
+  for (unsigned i = 0; i < mfsurf_mc.size(); i++)
+    if (fabs(mfsurf_mc[i]->scaling_factor) > 1e-12)
+      for(unsigned int component_i = 0; component_i < mfsurf_mc[i]->coordinates.size(); component_i++)
+        blocks[mfsurf_mc[i]->coordinates[component_i].first][mfsurf_mc[i]->coordinates[component_i].second] = true;
+  
   return blocks;
 }
 
-
-//// areas /////////////////////////////////////////////////////////////////////////////////////////
-
-bool WeakForm::is_in_area_2(int marker, int area) const
+void WeakForm::set_current_time(double time)
 {
-  _F_
-  if (-area > (int)(areas.size())) error("Invalid area number.");
-  const Area* a = &areas[-area-1];
-
-  for (unsigned int i = 0; i < a->markers.size(); i++)
-    if (a->markers[i] == marker)
-      return true;
-
-  return false;
+  current_time = time;
 }
 
-// Function which according to the conversion table provided, updates the above members.
-void WeakForm::update_markers_acc_to_conversion(Mesh::MarkersConversion* markers_conversion)
+double WeakForm::get_current_time() const
 {
-  Hermes::vector<MeshFunction*> vector_to_pass;
-
-  std::map<std::string, MatrixFormVol>::iterator it_mfv;
-  for(it_mfv = mfvol_string_temp.begin(); it_mfv != mfvol_string_temp.end(); it_mfv++) {
-    vector_to_pass = it_mfv->second.ext;
-    add_matrix_form(it_mfv->second.i, it_mfv->second.j, it_mfv->second.fn,
-                    it_mfv->second.ord, (SymFlag)it_mfv->second.sym,
-                    markers_conversion->get_internal_boundary_marker(it_mfv->first),
-                    vector_to_pass);
-  }
-
-  std::map<std::string, MatrixFormSurf>::iterator it_mfs;
-  for(it_mfs = mfsurf_string_temp.begin(); it_mfs != mfsurf_string_temp.end(); it_mfs++) {
-    vector_to_pass = it_mfs->second.ext;
-    add_matrix_form_surf(it_mfs->second.i, it_mfs->second.j,
-                         it_mfs->second.fn, it_mfs->second.ord,
-                         markers_conversion->get_internal_boundary_marker(it_mfs->first),
-                         vector_to_pass);
-  }
-
-  std::map<std::string, VectorFormVol>::iterator it_vfv;
-  for(it_vfv = vfvol_string_temp.begin(); it_vfv != vfvol_string_temp.end(); it_vfv++) {
-    vector_to_pass = it_vfv->second.ext;
-    add_vector_form(it_vfv->second.i, it_vfv->second.fn, it_vfv->second.ord,
-                    markers_conversion->get_internal_boundary_marker(it_vfv->first),
-                    vector_to_pass);
-  }
-
-  std::map<std::string, VectorFormSurf>::iterator it_vfs;
-  for(it_vfs = vfsurf_string_temp.begin(); it_vfs != vfsurf_string_temp.end(); it_vfs++) {
-    vector_to_pass = it_vfs->second.ext;
-    add_vector_form_surf(it_vfs->second.i, it_vfs->second.fn, it_vfs->second.ord,
-                         markers_conversion->get_internal_boundary_marker(it_vfs->first),
-                         vector_to_pass);
-  }
+  return current_time;
 }

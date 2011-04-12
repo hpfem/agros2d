@@ -93,8 +93,6 @@ void ludcmp(double **a, int n, int *indx, double *d)
 
 void choldc(double **a, int n, double p[])
 {
-  info("nb = %f", nxx);
-
   _F_
   int i, j, k;
   for (i = 0; i < n; i++) {
@@ -122,10 +120,8 @@ double vec_dot(double *r, double *s, int n_dof)
 double vec_dot(Vector *r, Vector *s, int n_dof)
 {
   double result = 0;
-#ifndef H2D_COMPLEX
-#ifndef H3D_COMPLEX
+#ifndef HERMES_COMMON_COMPLEX
   for (int i=0; i < n_dof; i++) result += r->get(i)*s->get(i);
-#endif
 #endif
   return result;
 }
@@ -215,7 +211,6 @@ int SparseMatrix::get_num_indices()
   return total;
 }
 
-// This function is identical in H2D and H3D.
 SparseMatrix* create_matrix(MatrixSolverType matrix_solver)
 {
   _F_
@@ -253,7 +248,6 @@ SparseMatrix* create_matrix(MatrixSolverType matrix_solver)
   return NULL;
 }
 
-// This function is identical in H2D and H3D.
 Solver* create_linear_solver(MatrixSolverType matrix_solver, Matrix* matrix, Vector* rhs)
 {
   _F_

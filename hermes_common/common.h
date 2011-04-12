@@ -19,7 +19,15 @@
 // Include
 //
 // common headers
+
+#ifdef _POSIX_C_SOURCE
+# undef _POSIX_C_SOURCE	// typeinfo defines it
+#endif
+#ifdef _XOPEN_SOURCE
+# undef _XOPEN_SOURCE	// typeinfo defines it
+#endif
 #include <typeinfo>
+
 #include <stdexcept>
 #include <cstdarg>
 #include <stdio.h>
@@ -49,7 +57,7 @@
 #include "compat.h"               // platform compatibility stuff
 #include "callstack.h"            // error tracing
 #include "error.h"
-//.
+//
 #include "vector.h"
 #include "tables.h"
 
@@ -57,21 +65,9 @@
 
 // Decide which version of Hermes is being compiled and import
 // the build options from the corresponding config.h file.
-#if defined(H1D_REAL) || defined(H1D_COMPLEX)
-  #ifndef CONFIG_H_INCLUDED
-    #include "../hermes1d/src/config.h"
-    #define CONFIG_H_INCLUDED
-  #endif
-#elif defined(H2D_REAL) || defined(H2D_COMPLEX)
-  #ifndef CONFIG_H_INCLUDED
-    #include "../hermes2d/src/config.h"
-    #define CONFIG_H_INCLUDED
-  #endif
-#elif defined(H3D_REAL) || defined(H3D_COMPLEX)
-  #ifndef CONFIG_H_INCLUDED
-    #include "../hermes3d/src/config.h"
-    #define CONFIG_H_INCLUDED
-  #endif
+#ifndef CONFIG_H_INCLUDED
+  #include "config.h"
+  #define CONFIG_H_INCLUDED
 #endif
 
 // Error codes
@@ -138,10 +134,12 @@ enum ProjNormType
   HERMES_H1_NORM, 
   HERMES_H1_SEMINORM, 
   HERMES_HCURL_NORM, 
-  HERMES_HDIV_NORM
+  HERMES_HDIV_NORM,
+  // Used for passing to projecting functions.
+  HERMES_UNSET_NORM
 };
 
-#if defined(H2D_COMPLEX) || defined(H3D_COMPLEX)
+#ifdef HERMES_COMMON_COMPLEX
 
   #include <complex>
 
@@ -232,6 +230,11 @@ struct HERMES_API Point2D {
 struct HERMES_API Point3D {
 	double x, y, z;		// coordinates of a point
 };
+
+struct HERMES_API SplineCoeff {
+  double a, b, c, d;		// four coefficients of a cubic spline.
+};
+
 
 inline double dot_product(const Point3D &a, const Point3D &b) { return a.x * b.x + a.y * b.y + a.z * b.z;}
 
@@ -356,8 +359,39 @@ typedef double double2x2[2][2];
 typedef double double3x2[3][2];
 typedef double double3x3[3][3];
 
-typedef scalar scalar2[2];
-typedef scalar scalar3[3];
+struct scalar2 
+{ 
+  scalar val[2]; 
+
+ public:
+  scalar2(scalar v1, scalar v2) 
+  { 
+    val[0] = v1; val[1] = v2; 
+  }
+
+  scalar& operator[] (int idx) 
+  { 
+    assert(idx >= 0 && idx < 2);
+    return val[idx];
+  }
+};
+
+struct scalar3
+{ 
+  scalar val[3]; 
+
+ public:
+  scalar3(scalar v1, scalar v2, scalar v3) 
+  { 
+    val[0] = v1; val[1] = v2, val[2] = v3; 
+  }
+
+  scalar& operator[] (int idx) 
+  { 
+    assert(idx >= 0 && idx < 3);
+    return val[idx];
+  }
+};
 
 typedef unsigned long long int uint64;
 
@@ -371,43 +405,46 @@ typedef unsigned long long int uint64;
 #define M_PI           3.14159265358979323846
 #endif
 
-const int HERMES_ANY = -1234;
+const std::string HERMES_ANY = "-1234";
+// For internal use.
+const int HERMES_ANY_INT = -1234;
 /// This defines the edge types used by discontinuous Galerkin weak forms.
-enum DG_EdgeType
-{
-	H2D_DG_BOUNDARY_EDGE = -12345,  ///< This is to be used by weak forms on the boundary. 
+const std::string H2D_DG_BOUNDARY_EDGE = "-12345";  ///< This is to be used by weak forms on the boundary. 
                                     ///< It complements H2D_ANY in that it ensures the forms are evaluated also on non-natural
                                     ///< boundaries (essential conditions may be enforced weakly in some DG methods).
-	H2D_DG_INNER_EDGE = -1234567    ///< This is to be used by weak forms specifying numerical flux through interior edges.
+const std::string H2D_DG_INNER_EDGE = "-1234567";    ///< This is to be used by weak forms specifying numerical flux through interior edges.
                                     ///< Forms with this identifier will receive DiscontinuousFunc representations of shape
                                     ///< and ext. functions, which they may query for values on either side of given interface.
-};
+
+// For internal use.
+const int H2D_DG_INNER_EDGE_INT = -1234567;
+const int H2D_DG_BOUNDARY_EDGE_INT = -12345;
 
 const int HERMES_DIRICHLET_DOF = -1; // Dirichlet lift is a special DOF with number -1.
 
 /// This class makes command line arguments available to any other method in Hermes.
 class HERMES_API CommandLineArgs
 {
-  static int m_argc;
-  static char** m_argv;
-  
-  CommandLineArgs() {};
-  
   public:  
-    static void set(int argc_in, char** argv_in) { 
+    CommandLineArgs() {};
+
+    int m_argc;
+    char** m_argv;
+  
+    void set(int argc_in, char** argv_in) { 
       m_argc = argc_in; 
       m_argv = argv_in; 
     }
-    static bool check() { 
+    bool check() { 
       return (m_argc > 0);
     }
-    static void missing_error() {
+    void missing_error() {
       error("Command line arguments have not been set."); 
     }
-    static int& get_argc() { 
+    int& get_argc() { 
       return m_argc; 
     }
-    static char**& get_argv() { 
+    char**& get_argv() { 
       return m_argv; 
     }
 };

@@ -20,10 +20,6 @@
 #include "../mesh/transform.h"
 #include "../quadrature/quad_all.h"
 
-// Type for exact functions
-typedef scalar(*ExactFunction)(double x, double y, scalar& dx, scalar& dy);
-typedef scalar2&(*ExactFunction2)(double x, double y, scalar2& dx, scalar2& dy);
-
 // Precalculation masks
 enum
 {
@@ -104,7 +100,7 @@ public:
   /// \brief Returns the polynomial degree of the function being represented by the class.
   int get_fn_order() const { return order; }
 
-  /// \brief Returns the polynomial degree of the function at given edge. To be overriden in derived classes.
+  /// \brief Returns the polynomial degree of the function at given edge. To be overridden in derived classes.
   /// \param edge [in] Edge at which the order should be evaluated. (0-3)
   virtual int get_edge_fn_order(int edge) { return order; }
 
@@ -243,7 +239,7 @@ protected:
   };
 
   /// Table of Node tables, for each possible transformation there can be a different Node table.
-  LightArray<LightArray<Node*>*>* sub_tables;
+  std::map<uint64_t, LightArray<Node*>*>* sub_tables;
 
   /// Table of nodes.
   LightArray<Node*>* nodes;
@@ -261,9 +257,9 @@ protected:
     if (sub_idx > H2D_MAX_IDX)
       handle_overflow_idx();
     else {
-      if(!sub_tables->present((unsigned int)sub_idx))
-        sub_tables->add(new LightArray<Node*>, (unsigned int)sub_idx);
-      nodes = sub_tables->get((unsigned int) sub_idx);
+      if(sub_tables->find(sub_idx) == sub_tables->end())
+        sub_tables->insert(std::pair<uint64_t, LightArray<Node*>*>(sub_idx, new LightArray<Node*>));
+      nodes = sub_tables->find(sub_idx)->second;
     }
   };
 

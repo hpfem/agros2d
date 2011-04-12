@@ -28,7 +28,7 @@
 #include <dl_dxf.h>
 #include <dl_creationadapter.h>
 
-struct HermesGeneral;
+struct HermesElectrostatic;
 struct HermesField;
 
 class Scene;

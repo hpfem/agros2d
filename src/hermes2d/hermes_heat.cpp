@@ -489,7 +489,7 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
             if (!labelHeatMarker->specific_heat.evaluate()) return QList<SolutionArray *>();
             if (!labelHeatMarker->volume_heat.evaluate()) return QList<SolutionArray *>();
 
-            heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;                       
+                heatLabel[i].thermal_conductivity = labelHeatMarker->thermal_conductivity.number;
             heatLabel[i].density = labelHeatMarker->density.number;
             heatLabel[i].specific_heat = labelHeatMarker->specific_heat.number;
             heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;

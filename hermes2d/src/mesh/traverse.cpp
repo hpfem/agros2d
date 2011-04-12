@@ -17,8 +17,6 @@
 #include "mesh.h"
 #include "transform.h"
 #include "traverse.h"
-#include "../auto_local_array.h"
-
 
 const uint64_t ONE = (uint64_t) 1 << 63;
 
@@ -155,7 +153,7 @@ State* Traverse::push_state()
 
 void Traverse::set_boundary_info(State* s, bool* bnd, SurfPos* surf_pos)
 {
-  Element* e;
+  Element* e = NULL;
   for (int i = 0; i < num; i++)
     if ((e = s->e[i]) != NULL) break;
 
@@ -583,7 +581,7 @@ uint64_t Traverse::init_idx(Rect* cr, Rect* er)
   {
     uint64_t hmid = (r.l + r.r) >> 1;
     uint64_t vmid = (r.t + r.b) >> 1;
-    int son;
+    int son = -1;
 
     if (cr->r <= hmid && cr->t <= vmid) { son = 0; r.r = hmid; r.t = vmid; }
     else if (cr->l >= hmid && cr->t <= vmid) { son = 1; r.l = hmid; r.t = vmid; }
@@ -629,12 +627,13 @@ void Traverse::union_recurrent(Rect* cr, Element** e, Rect* er, uint64_t* idx, E
   }
 
   // state arrays
-  AUTOLA_OR(Element*, e_new, num);
-  AUTOLA_CL(Rect, er_new, num);
+  Element** e_new = new Element*[num];
+  Rect* er_new = new Rect[num];
   Rect cr_new;
-  AUTOLA_OR(int4, sons, num);
-  AUTOLA_OR(uint64_t, idx_new, num);
-  memcpy(idx_new, idx, idx_new.size);
+
+  int4* sons = new int4[num];
+  uint64_t* idx_new = new uint64_t[num];
+  memcpy(idx_new, idx, num*sizeof(uint64_t));
 
   if (tri)
   {
@@ -732,8 +731,8 @@ void Traverse::union_recurrent(Rect* cr, Element** e, Rect* er, uint64_t* idx, E
 UniData** Traverse::construct_union_mesh(Mesh* unimesh)
 {
   int i;
-  AUTOLA_OR(Element*, e, num);
-  AUTOLA_CL(Rect, er, num);
+  Element** e = new Element*[num];
+  Rect* er = new Rect[num];
   Rect cr;
 
   this->unimesh = unimesh;
@@ -743,8 +742,8 @@ UniData** Traverse::construct_union_mesh(Mesh* unimesh)
   unidata = new UniData*[num];
   memset(unidata, 0, sizeof(UniData*) * num);
 
-  AUTOLA_OR(uint64_t, idx, num);
-  memset(idx, 0, idx.size);
+  uint64_t* idx = new uint64_t[num];
+  memset(idx, 0, num*sizeof(uint64_t));
 
   for (id = 0; id < meshes[0]->get_num_base_elements(); id++)
   {

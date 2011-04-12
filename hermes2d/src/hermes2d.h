@@ -45,10 +45,7 @@
 #include "../hermes_common/solver/precond_ml.h"
 
 // boundary conditions
-  // this
-#include "../hermes_common/bctypes.h"
-  // is going to be replaced with this
-#include "boundaryconditions/boundaryconditions.h"
+#include "boundaryconditions/essential_bcs.h"
 
 // Eigensolver
 #include "../hermes_common/solver/eigensolver.h"
@@ -80,7 +77,7 @@
 
 #include "weakform/weakform.h"
 #include "discrete_problem.h"
-#include "weakform/forms.h"
+#include "function/forms.h"
 
 #include "integrals/integrals_h1.h"
 #include "integrals/integrals_hcurl.h"
@@ -90,7 +87,6 @@
 #include "function/solution.h"
 #include "function/filter.h"
 
-#include "function/norm.h"
 #include "graph.h"
 
 #include "views/view.h"
@@ -117,8 +113,8 @@
 #include "neighbor.h"
 #include "ogprojection.h"
 
-#include "numerical_flux.h"
 #include "runge_kutta.h"
+#include "spline.h"
 #include "tables.h"
 /**
 

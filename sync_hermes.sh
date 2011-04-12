@@ -31,6 +31,7 @@ cp ../hermes/hermes2d/src/views/*.cpp hermes2d/src/views
 cp ../hermes/hermes2d/src/views/*.h hermes2d/src/views
 cp ../hermes/hermes2d/src/weakform/*.cpp hermes2d/src/weakform
 cp ../hermes/hermes2d/src/weakform/*.h hermes2d/src/weakform
+cp ../hermes/hermes2d/src/weakform_library/*.h hermes2d/src/weakform_library
 
 cp ../hermes/hermes_common/*.cpp hermes_common
 cp ../hermes/hermes_common/*.h hermes_common

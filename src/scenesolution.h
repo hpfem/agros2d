@@ -43,12 +43,23 @@ public:
     void loadSolution(QDomElement *element);
     void saveSolution(QDomDocument *doc, QDomElement *element);
 
+    // solve
     void solve(SolverMode solverMode);
+
+    // mesh
     inline Mesh *meshInitial() { return m_meshInitial; }
-    inline void setMeshInitial(Mesh *meshInitial) { if (m_meshInitial) { delete m_meshInitial; } m_meshInitial = meshInitial; }
+    void setMeshInitial(Mesh *meshInitial);
+
+    // get marker
+    inline int agrosLabelMarker(int marker) { return conversion_table_labels[marker]; }
+    inline int agrosBoundaryMarker(int marker) { return conversion_table_boundaries[marker]; }
+
+    // solution
     Solution *sln(int i = -1);
     void setSolutionArrayList(QList<SolutionArray *> solutionArrayList);
     inline QList<SolutionArray *> solutionArrayList() { return m_solutionArrayList; }
+
+    // time
     void setTimeStep(int timeStep, bool showViewProgress = true);
     inline int timeStep() const { return m_timeStep; }
     int timeStepCount() const;
@@ -131,6 +142,10 @@ private:
     Vectorizer m_vecVectorView; // vectorizer for vector view
 
     Mesh *m_meshInitial; // linearizer only for mesh (on empty solution)
+
+    // agros internal markers
+    std::map<int, int> conversion_table_labels;
+    std::map<int, int> conversion_table_boundaries;
 };
 
 #endif // SCENESOLUTION_H

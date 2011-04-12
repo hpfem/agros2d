@@ -51,13 +51,13 @@ void SurfaceIntegralValue::calculate()
         if (sceneEdge->isSelected)
         {
             for_all_active_elements(e, mesh)
-            {
+            {               
                 for (unsigned edge = 0; edge < e->nvert; edge++)
                 {
                     bool integrate = false;
                     boundary = false;
 
-                    if (e->en[edge]->bnd && e->en[edge]->marker-1 == i)
+                    if (e->en[edge]->bnd && Util::scene()->sceneSolution()->agrosBoundaryMarker(e->en[edge]->marker) - 1 == i)
                     {
                         // boundary
                         integrate = true;
@@ -96,6 +96,8 @@ void SurfaceIntegralValue::calculate()
                         sln->get_dx_dy_values(dudx, dudy);
                         // x - coordinate
                         x = ru->get_phys_x(eo);
+
+                        labelMarker = Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->marker)]->marker;
 
                         for (int i = 0; i < quad2d->get_num_points(eo); i++)
                         {

@@ -24,7 +24,7 @@
 #include "../matrix.h"
 
 #ifdef WITH_SUPERLU  
-  #if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+  #ifndef HERMES_COMMON_COMPLEX
     #ifdef SLU_MT
       #include <pdsp_defs.h>  
             
@@ -125,7 +125,7 @@
     #define SLU_PRINT_STAT(stat_ptr)  StatPrint(stat_ptr)
   #endif
 #else
-  #if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+  #ifndef HERMES_COMMON_COMPLEX
     typedef scalar slu_scalar;
     #define SUPERLU_SCALAR(a) SCALAR(a)
   #else
@@ -150,6 +150,18 @@ public:
   virtual unsigned int get_matrix_size() const;
   virtual unsigned int get_nnz() const;
   virtual double get_fill_in() const;
+  virtual void add_matrix(SuperLUMatrix* mat);
+  virtual void add_to_diagonal_blocks(int num_stages, SuperLUMatrix* mat);
+  virtual void add_as_block(unsigned int i, unsigned int j, SuperLUMatrix* mat);
+
+  // Applies the matrix to vector_in and saves result to vector_out.
+  void multiply_with_vector(scalar* vector_in, scalar* vector_out);
+  // Multiplies matrix with a scalar.
+  void multiply_with_scalar(scalar value);
+  // Creates matrix using size, nnz, and the three arrays.
+  void create(unsigned int size, unsigned int nnz, int* ap, int* ai, scalar* ax);
+  // Duplicates a matrix (including allocation).
+  SuperLUMatrix* duplicate();
 
 protected:
   // SUPERLU specific data structures for storing the matrix (CSC format).
@@ -169,7 +181,7 @@ public:
 
   virtual void alloc(unsigned int ndofs);
   virtual void free();
-#if !defined(H1D_COMPLEX) && !defined(H2D_COMPLEX) && !defined(H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
   virtual scalar get(unsigned int idx) { return v[idx]; }
 #else
   virtual scalar get(unsigned int idx) { return cplx(v[idx].r, v[idx].i); }

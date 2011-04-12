@@ -17,9 +17,14 @@
 #define __H2D_CURVED_H
 
 #include "../h2d_common.h"
+#include "../shapeset/shapeset_common.h"
 
-struct Element;
-
+class Element;
+class H1ShapesetJacobi;
+class PrecalcShapeset;
+class Quad1DStd;
+class Quad2DStd;
+struct Trf;
 
 /// \brief Represents one NURBS curve.
 ///
@@ -30,7 +35,10 @@ struct Element;
 /// "http://devworld.apple.com/dev/techsupport/develop/issue25/schneider.html">
 /// here</a>.
 ///
-struct Nurbs
+
+
+
+struct HERMES_API Nurbs
 {
   Nurbs() { ref = 0; twin = false; };
   void unref();
@@ -51,9 +59,10 @@ struct Nurbs
 /// an element. There are two variants of this structure. The first is for
 /// top-level (master mesh) elements.
 ///
-struct CurvMap
+class HERMES_API CurvMap
 {
-  CurvMap() { coeffs = NULL; };
+public:
+  CurvMap() { coeffs = NULL;};
   CurvMap(CurvMap* cm);
   ~CurvMap();
 
@@ -91,10 +100,69 @@ struct CurvMap
 
   void get_mid_edge_points(Element* e, double2* pt, int n);
 
+  static H1ShapesetJacobi ref_map_shapeset;
+  static PrecalcShapeset ref_map_pss;
+
+  static double** edge_proj_matrix;  //projection matrix for each edge is the same
+  static double** bubble_proj_matrix_tri; //projection matrix for triangle bubbles
+  static double** bubble_proj_matrix_quad; //projection matrix for quad bubbles
+
+  static double* edge_p;  // diagonal vector in cholesky factorization
+  static double* bubble_tri_p; // diagonal vector in cholesky factorization
+  static double* bubble_quad_p; // diagonal vector in cholesky factorization
+
+  static Quad1DStd quad1d;
+  static Quad2DStd quad2d; // fixme: g_quad_2d_std
+
+  static Trf ctm;
+
+  static double nurbs_basis_fn(int i, int k, double t, double* knot);
+  static void nurbs_edge(Element* e, Nurbs* nurbs, int edge, double t, double& x, 
+                         double& y, double& n_x, double& n_y, double& t_x, double& t_y);
+  
+  // definition of vertex basis functions for triangle
+  static double lambda_0(double x, double y) { return -0.5 * (x + y); }
+  static double lambda_1(double x, double y) { return  0.5 * (x + 1); }
+  static double lambda_2(double x, double y) { return  0.5 * (y + 1); }
+
+  // 1D Lobatto functions
+  static double lob0(double x)  { return l0(x); }
+  static double lob1(double x)  { return l1(x); }
+  static double lob2(double x)  { return l2(x); }
+  static double lob3(double x)  { return l3(x); }
+  static double lob4(double x)  { return l4(x); }
+  static double lob5(double x)  { return l5(x); }
+  static double lob6(double x)  { return l6(x); }
+  static double lob7(double x)  { return l7(x); }
+  static double lob8(double x)  { return l8(x); }
+  static double lob9(double x)  { return l9(x); }
+  static double lob10(double x) { return l10(x); }
+  static double lob11(double x) { return l11(x); }
+
+  static const double2 ref_vert[2][4];
+
+  // subtraction of straight edge and nurbs curve
+  static void nurbs_edge_0(Element* e, Nurbs* nurbs, int edge, double t, double& x, double& y, double& n_x, double& n_y, double& t_x, double& t_y);
+  static void calc_ref_map_tri(Element* e, Nurbs** nurbs, double xi_1, double xi_2, double& x, double& y);
+  static void calc_ref_map_quad(Element* e, Nurbs** nurbs, double xi_1, double xi_2,
+                              double& x, double& y);
+
+  static void calc_ref_map(Element* e, Nurbs** nurbs, double xi_1, double xi_2, double2& f);
+
+  static void precalculate_cholesky_projection_matrix_edge();
+  static double** calculate_bubble_projection_matrix(int nb, int* indices);
+  static void precalculate_cholesky_projection_matrices_bubble();
+
+  static void edge_coord(Element* e, int edge, double t, double2& x, double2& v);
+  static void calc_edge_projection(Element* e, int edge, Nurbs** nurbs, int order, double2* proj);
+
+  static void old_projection(Element* e, int order, double2* proj, double* old[2]);
+  static void calc_bubble_projection(Element* e, Nurbs** nurbs, int order, double2* proj);
+  
+  static void ref_map_projection(Element* e, Nurbs** nurbs, int order, double2* proj);
+
+  static bool warning_issued;
 };
-
-
-void nurbs_edge(Element* e, Nurbs* nurbs, int edge, double t, double& x, double& y);
 
 
 #endif

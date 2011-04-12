@@ -50,9 +50,12 @@ void VolumeIntegralValue::calculate()
     {
         if (Util::scene()->labels[i]->isSelected)
         {
+            labelMarker = Util::scene()->labels[i]->marker;
+            int marker = Util::scene()->labelMarkers.indexOf(labelMarker);
+
             for_all_active_elements(e, mesh)
             {
-                if (e->marker == i)
+                if (e->marker == marker)
                 {
                     update_limit_table(e->get_mode());
 

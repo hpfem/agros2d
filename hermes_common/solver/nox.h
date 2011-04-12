@@ -16,19 +16,17 @@
 #ifndef __HERMES_COMMON_NOX_SOLVER_H_
 #define __HERMES_COMMON_NOX_SOLVER_H_
 
-#if defined(H1D_REAL)
-#include "../../hermes1d/src/discrete_problem.h"
-#elif defined(H2D_REAL) || defined(H2D_COMPLEX)
-  #include "../../hermes2d/src/discrete_problem.h"
-#elif defined(H3D_REAL) || defined(H3D_COMPLEX)
-  #include "../../hermes3d/src/discrete_problem.h"
-#endif
-
 #include "solver.h"
 #include "epetra.h"
 
 #ifdef HAVE_NOX
   #include <NOX.H>
+    #ifdef _POSIX_C_SOURCE
+        # undef _POSIX_C_SOURCE	// pyconfig.h included by NOX_Epetra defines it
+    #endif
+    #ifdef _XOPEN_SOURCE
+        # undef _XOPEN_SOURCE	// pyconfig.h included by NOX_Epetra defines it
+    #endif
   #include <NOX_Epetra.H>
 #endif
 
@@ -40,7 +38,34 @@ class NoxProblemInterface;
 class HERMES_API NoxSolver : public IterSolver
 {
 public:
-  NoxSolver(DiscreteProblem *problem);
+  // Basic constructor.
+  NoxSolver(DiscreteProblemInterface *problem);
+#ifdef HAVE_NOX
+  // Enhanced constructor.
+  // For details of the parameter message_type, please see NOX_Utils.H, enum MsgType.
+  // http://trilinos.sandia.gov/packages/docs/r4.0/packages/nox/doc/html/parameters.html
+  // http://trilinos.sandia.gov/packages/docs/r7.0/packages/nox/doc/html/classNOX_1_1Epetra_1_1LinearSystemAztecOO.html
+  NoxSolver(DiscreteProblemInterface *problem, unsigned message_type, const char* ls_type = "GMRES", const char* nl_dir = "Newton", 
+    double ls_tolerance = 1e-8,
+    const char* precond_type = "None",
+    unsigned flag_absresid = 1,
+    double abs_resid = 1.0e-6,
+    unsigned flag_relresid = 0,
+    double rel_resid = 1.0e-2,
+    int max_iters = 10,
+    double update = 1.0e-5,
+    int ls_max_iters = 800,
+    int ls_sizeof_krylov_subspace = 50,
+    NOX::Abstract::Vector::NormType norm_type = NOX::Abstract::Vector::TwoNorm,
+    NOX::StatusTest::NormF::ScaleType stype = NOX::StatusTest::NormF::Scaled,
+    double wrms_rtol = 1.0e-2,
+    double wrms_atol = 1.0e-8,
+    unsigned flag_update = 0,
+    unsigned flag_wrms = 0
+   );
+#endif
+
+
   virtual ~NoxSolver();
 
   bool set_init_sln(double *ic);
@@ -82,6 +107,7 @@ public:
   
 #ifdef HAVE_TEUCHOS
   virtual void set_precond(Teuchos::RCP<Precond> &pc);
+  virtual void unset_precond();
 #else
   virtual void set_precond(Precond* pc) 
   { 

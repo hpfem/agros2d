@@ -19,8 +19,9 @@
 
 #include "hermes_field.h"
 
-#include "hermes_general.h"
+// #include "hermes_general.h"
 #include "hermes_electrostatic.h"
+/*
 #include "hermes_magnetic.h"
 #include "hermes_heat.h"
 #include "hermes_current.h"
@@ -28,7 +29,7 @@
 #include "hermes_flow.h"
 #include "hermes_rf.h"
 #include "hermes_acoustic.h"
-
+*/
 #include "progressdialog.h"
 
 #include "mesh/h2d_reader.h"
@@ -39,6 +40,7 @@ double frequency;
 double actualTime;
 double timeStep;
 
+/*
 HermesField *hermesFieldFactory(PhysicField physicField)
 {
     switch (physicField)
@@ -67,6 +69,12 @@ HermesField *hermesFieldFactory(PhysicField physicField)
         break;
     }
 }
+*/
+
+HermesField *hermesFieldFactory(PhysicField physicField)
+{
+    return new HermesElectrostatic();
+}
 
 void readMeshDirtyFix()
 {
@@ -78,25 +86,25 @@ void readMeshDirtyFix()
 
     std::ostringstream os;
     os << "vertices =" << std::endl <<
-    "{" << std::endl <<
-      "{ 0, 0 }," << std::endl <<
-      "{ 1, 0 }," << std::endl <<
-      "{ 0, 1 }" << std::endl <<
-    "}" << std::endl <<
-    "elements =" << std::endl <<
-    "{" << std::endl <<
-      "{ 0, 1, 2, 0 }" << std::endl <<
-    "}" << std::endl <<
-    "boundaries =" << std::endl <<
-    "{" << std::endl <<
-      "{ 0, 1, 1 }," << std::endl <<
-      "{ 1, 2, 1 }," << std::endl <<
-      "{ 2, 0, 1 }" << std::endl <<
-    "}" << std::endl <<
-    "curves =" << std::endl <<
-    "{" << std::endl <<
-      "{ 1, 2, 90 }" << std::endl <<
-    "}";
+          "{" << std::endl <<
+          "{ 0, 0 }," << std::endl <<
+          "{ 1, 0 }," << std::endl <<
+          "{ 0, 1 }" << std::endl <<
+          "}" << std::endl <<
+          "elements =" << std::endl <<
+          "{" << std::endl <<
+          "{ 0, 1, 2, 0 }" << std::endl <<
+          "}" << std::endl <<
+          "boundaries =" << std::endl <<
+          "{" << std::endl <<
+          "{ 0, 1, 1 }," << std::endl <<
+          "{ 1, 2, 1 }," << std::endl <<
+          "{ 2, 0, 1 }" << std::endl <<
+          "}" << std::endl <<
+          "curves =" << std::endl <<
+          "{" << std::endl <<
+          "{ 1, 2, 90 }" << std::endl <<
+          "}";
 
     Mesh mesh;
     H2DReader meshloader;
@@ -147,7 +155,13 @@ void refineMesh(Mesh *mesh, bool refineGlobal, bool refineTowardsEdge)
     if (refineTowardsEdge)
         for (int i = 0; i < Util::scene()->edges.count(); i++)
             if (Util::scene()->edges[i]->refineTowardsEdge > 0)
-                mesh->refine_towards_boundary(i + 1, Util::scene()->edges[i]->refineTowardsEdge);
+                mesh->refine_towards_boundary(QString::number(i + 1).toStdString(), Util::scene()->edges[i]->refineTowardsEdge);
+}
+
+// return geom type
+GeomType convertProblemType(ProblemType problemType)
+{
+    return (problemType == ProblemType_Planar ? HERMES_PLANAR : HERMES_AXISYM_Y);
 }
 
 SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptiveError = 0.0, double adaptiveSteps = 0.0, double time = 0.0)
@@ -164,17 +178,9 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
     return solution;
 }
 
-// Initial condition for u.
-double init_cond_u(double x, double y, double& dx, double& dy) {
-  dx = exp(-x*x - y*y) * (-2*x);
-  dy = exp(-x*x - y*y) * (-2*y);
-  return exp(-x*x - y*y);
-}
-
 QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
-                                         Hermes::vector<BCTypes *> bcTypes,
-                                         Hermes::vector<BCValues *> bcValues,
-                                         void (*cbWeakForm)(WeakForm *, Hermes::vector<Solution *>))
+                                         Hermes::vector<EssentialBCs> bcs,
+                                         WeakForm *wf)
 {
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -232,11 +238,13 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
     for (int i = 0; i < numberOfSolution; i++)
     {
-        space.push_back(new H1Space(mesh, bcTypes[i], bcValues[i], polynomialOrder));
+        space.push_back(new H1Space(mesh, &bcs[i], polynomialOrder));
 
         // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
-            space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder, j);
+            if (Util::scene()->labels[j]->marker != Util::scene()->labelMarkers[0])
+                space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
+                                               QString::number(j).toStdString());
 
         // solution agros array
         solution.push_back(new Solution());
@@ -259,11 +267,6 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             solutionArrayList.append(solutionArray(solution.at(i)));
         }
     }
-
-    // initialize the weak formulation
-    WeakForm wf(numberOfSolution);
-    // callback weakform
-    cbWeakForm(&wf, solution);
 
     // emit message
     if (adaptivityType != AdaptivityType_None)
@@ -298,7 +301,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 break;
             }
 
-            DiscreteProblem dp(&wf, space, isLinear);
+            DiscreteProblem dp(wf, space, isLinear);
             dp.assemble(matrix, rhs, false);
 
             if(solver->solve())
@@ -318,7 +321,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 solutionReference.push_back(new Solution());
 
             // construct globally refined reference mesh and setup reference space.
-            Hermes::vector<Space *> spaceReference = construct_refined_spaces(space);
+            Hermes::vector<Space *> spaceReference = *Space::construct_refined_spaces(space);
 
             if (Space::get_num_dofs(spaceReference) == 0)
             {
@@ -328,7 +331,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             }
 
             // assemble reference problem.
-            DiscreteProblem dp(&wf, spaceReference, isLinear);
+            DiscreteProblem dp(wf, spaceReference, isLinear);
             dp.assemble(matrix, rhs, false);
 
             if (solver->solve())
@@ -421,7 +424,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             rhs = create_vector(matrixSolver);
             solver = create_linear_solver(matrixSolver, matrix, rhs);
 
-            dp = new DiscreteProblem(&wf, space, isLinear);
+            dp = new DiscreteProblem(wf, space, isLinear);
         }
 
         int timesteps = (analysisType == AnalysisType_Transient) ? floor(timeTotal/timeStep) : 1;
@@ -435,7 +438,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
             if (timesteps > 1)
             {
                 // update essential bc values
-                update_essential_bc_values(space);
+                Space::update_essential_bc_values(space, actualTime);
 
                 dp->assemble(matrix, rhs, (n > 0));
                 // dp->assemble(matrix, rhs);
@@ -556,12 +559,18 @@ void ViewScalarFilter::precalculate(int order, int mask)
     y = refmap->get_phys_y(order);
     Element *e = refmap->get_active_element();
 
-    labelMarker = Util::scene()->labels[e->marker]->marker;
+    labelMarker = Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->marker)]->marker;
 
     for (int i = 0; i < np; i++)
     {
         calculateVariable(i);
     }
 
-    replace_cur_node(node);
+    if (nodes->present(order))
+    {
+        assert(nodes->get(order) == cur_node);
+        ::free(nodes->get(order));
+    }
+    nodes->add(node, order);
+    cur_node = node;
 }

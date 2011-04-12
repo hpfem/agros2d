@@ -5,7 +5,7 @@
 #include "mesh/mesh.h"
 #include "quadrature/quad.h"
 #include "function/solution.h"
-#include "weakform/forms.h"
+#include "function/forms.h"
 #include "mesh/refmap.h"
 
 /*** Class NeighborSearch. ***/
@@ -415,6 +415,8 @@ public:
   bool ignore_errors;
 
   friend class DiscreteProblem;
+  friend class KellyTypeAdapt;
+  friend class DiscontinuityDetector;
 };
 
 #endif /* NEIGHBOR_H_ */

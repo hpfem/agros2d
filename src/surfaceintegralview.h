@@ -24,6 +24,8 @@
 
 struct Element;
 
+class SceneLabelMarker;
+
 class SurfaceIntegralValue
 {
 protected:
@@ -36,6 +38,8 @@ protected:
     double3 *tan;
 
     bool boundary;
+
+    SceneLabelMarker *labelMarker;
 
     void calculate();
     virtual void calculateVariables(int i) = 0;

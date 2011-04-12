@@ -271,9 +271,27 @@ bool CSCMatrix::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt) {
 
       return true;
 
+    case DF_MATRIX_MARKET:
+    {
+      fprintf(file,"%%%%MatrixMarket matrix coordinate real symmetric\n");
+      int nnz_sym=0;
+      for (int j = 0; j < (int)size; j++)
+        for (int i = Ap[j]; i < Ap[j + 1]; i++)
+          if (j <= Ai[i]) nnz_sym++;
+      fprintf(file,"%d %d %d\n", size, size, nnz_sym);
+      for (int j = 0; j < (int)size; j++)
+        for (int i = Ap[j]; i < Ap[j + 1]; i++)
+          // The following line was replaced with the one below, because it gave a warning 
+	  // to cause code abort at runtime. 
+          //if (j <= Ai[i]) fprintf(file, "%d %d %24.15e\n", Ai[i]+1, j+1, Ax[i]);
+          if (j <= Ai[i]) fprintf(file, "%d %d " SCALAR_FMT "\n", Ai[i] + 1, j + 1, SCALAR(Ax[i]));
+
+      return true;
+    }
+
     case DF_HERMES_BIN: 
     {
-      hermes_fwrite("H3DX\001\000\000\000", 1, 8, file);
+      hermes_fwrite("HERMESX\001", 1, 8, file);
       int ssize = sizeof(scalar);
       hermes_fwrite(&ssize, sizeof(int), 1, file);
       hermes_fwrite(&size, sizeof(int), 1, file);
@@ -285,8 +303,52 @@ bool CSCMatrix::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt) {
     }
 
     case DF_PLAIN_ASCII:
-      EXIT(HERMES_ERR_NOT_IMPLEMENTED);
-      return false;
+    {
+
+      const double zero_cutoff = 1e-10;
+      scalar *ascii_entry_buff = new scalar[nnz];
+      int *ascii_entry_i = new int[nnz];
+      int *ascii_entry_j = new int[nnz];
+      int k = 0;
+
+      // If real or imaginary part of scalar entry is below zero_cutoff
+      // it's not included in ascii file, and number of non-zeros is reduced by one.
+      for (unsigned int j = 0; j < size; j++){
+        for (int i = Ap[j]; i < Ap[j + 1]; i++){
+          if (REAL(Ax[i]) > zero_cutoff || IMAG(Ax[i]) > zero_cutoff){
+            ascii_entry_buff[k] = Ax[i];
+            ascii_entry_i[k] = Ai[i];
+            ascii_entry_j[k] = j;
+            k++; 
+          }
+          else
+            nnz -= 1;            
+        }
+      }
+
+      fprintf(file, "%d\n", size);
+      fprintf(file, "%d\n", nnz);
+      for (unsigned int k = 0; k < nnz; k++) {
+
+#ifdef HERMES_COMMON_COMPLEX
+      fprintf(file, "%d %d %E %E\n", ascii_entry_i[k], ascii_entry_j[k], REAL(ascii_entry_buff[k]), IMAG(ascii_entry_buff[k]));     
+#else
+      fprintf(file, "%d %d" SCALAR_FMT "\n", ascii_entry_i[k], ascii_entry_j[k], SCALAR(ascii_entry_buff[k]));
+#endif 
+      }
+
+      //Free memory
+      delete [] ascii_entry_buff;
+      delete [] ascii_entry_i;
+      delete [] ascii_entry_j;
+
+      //Clear pointer
+      ascii_entry_buff = NULL;
+      ascii_entry_i = NULL;
+      ascii_entry_j = NULL;
+
+      return true;
+    }
 
     default:
       return false;
@@ -410,7 +472,7 @@ bool UMFPackVector::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
 
     case DF_HERMES_BIN: 
     {
-      hermes_fwrite("H3DR\001\000\000\000", 1, 8, file);
+      hermes_fwrite("HERMESR\001", 1, 8, file);
       int ssize = sizeof(scalar);
       hermes_fwrite(&ssize, sizeof(int), 1, file);
       hermes_fwrite(&size, sizeof(int), 1, file);
@@ -419,9 +481,19 @@ bool UMFPackVector::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
     }
 
     case DF_PLAIN_ASCII:
-      EXIT(HERMES_ERR_NOT_IMPLEMENTED);
-      return false;
+    {
+      fprintf(file, "\n");
+      for (unsigned int i = 0; i < size; i++){
 
+#ifdef HERMES_COMMON_COMPLEX
+        fprintf(file, "%E %E\n", REAL(v[i]), IMAG(v[i]));     
+#else
+        fprintf(file, SCALAR_FMT "\n", SCALAR(v[i]));
+#endif
+      }
+
+      return true;
+    }
     default:
       return false;
   }
@@ -429,7 +501,7 @@ bool UMFPackVector::dump(FILE *file, const char *var_name, EMatrixDumpFormat fmt
 
 // UMFPack solver //////
 
-#if !defined (H2D_COMPLEX) && !defined (H3D_COMPLEX)
+#ifndef HERMES_COMMON_COMPLEX
   // real case
   #define umfpack_symbolic(m, n, Ap, Ai, Ax, S, C, I)   umfpack_di_symbolic(m, n, Ap, Ai, Ax, S, C, I)
   #define umfpack_numeric(Ap, Ai, Ax, S, N, C, I)       umfpack_di_numeric(Ap, Ai, Ax, S, N, C, I)
