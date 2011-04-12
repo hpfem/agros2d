@@ -21,10 +21,10 @@
 
 // #include "hermes_general.h"
 #include "hermes_electrostatic.h"
-/*
-#include "hermes_magnetic.h"
-#include "hermes_heat.h"
+// #include "hermes_magnetic.h"
+// #include "hermes_heat.h"
 #include "hermes_current.h"
+/*
 #include "hermes_elasticity.h"
 #include "hermes_flow.h"
 #include "hermes_rf.h"
@@ -40,40 +40,33 @@ double frequency;
 double actualTime;
 double timeStep;
 
-/*
 HermesField *hermesFieldFactory(PhysicField physicField)
 {
     switch (physicField)
     {
     case PhysicField_General:
-        return new HermesGeneral();
+        // return new HermesGeneral();
     case PhysicField_Electrostatic:
         return new HermesElectrostatic();
     case PhysicField_Magnetic:
-        return new HermesMagnetic();
+        // return new HermesMagnetic();
     case PhysicField_Heat:
-        return new HermesHeat();
+        // return new HermesHeat();
     case PhysicField_Current:
         return new HermesCurrent();
     case PhysicField_Elasticity:
-        return new HermesElasticity();
+        // return new HermesElasticity();
     case PhysicField_Flow:
-        return new HermesFlow();
+        // return new HermesFlow();
     case PhysicField_RF:
-        return new HermesRF();
+        // return new HermesRF();
     case PhysicField_Acoustic:
-        return new HermesAcoustic();
+        // return new HermesAcoustic();
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. hermesObjectFactory()" << endl;
         throw;
         break;
     }
-}
-*/
-
-HermesField *hermesFieldFactory(PhysicField physicField)
-{
-    return new HermesElectrostatic();
 }
 
 void readMeshDirtyFix()

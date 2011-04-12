@@ -486,7 +486,7 @@ void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
 {
     if (boundary)
     {
-        SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
+            SceneLabelElectrostaticMarker *marker = dynamic_cast<SceneLabelElectrostaticMarker *>(labelMarker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
