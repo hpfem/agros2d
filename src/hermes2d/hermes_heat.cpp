@@ -22,63 +22,62 @@
 #include "scene.h"
 #include "gui.h"
 
-struct HeatEdge
+
+class WeakFormHeat : public WeakForm
 {
-    PhysicFieldBC type;
-    double temperature;
-    double heatFlux;
-    double h;
-    double externalTemperature;
-};
-
-struct HeatLabel
-{
-    double thermal_conductivity;
-    double volume_heat;
-    double density;
-    double specific_heat;
-};
-
-HeatEdge *heatEdge;
-HeatLabel *heatLabel;
-
-template<typename Real, typename Scalar>
-Scalar heat_matrix_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    double h = 0.0;
-
-    if (heatEdge[e->edge_marker].type == PhysicFieldBC_Heat_Flux)
-        h = heatEdge[e->edge_marker].h;
-
-    if (isPlanar)
-        return h * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        return h * 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar heat_vector_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (heatEdge[e->edge_marker].type == PhysicFieldBC_None)
-        return 0.0;
-
-    double q = 0.0;
-    double h = 0.0;
-    double Text = 0.0;
-
-    if (heatEdge[e->edge_marker].type == PhysicFieldBC_Heat_Flux)
+public:
+    WeakFormHeat()
     {
-        q = heatEdge[e->edge_marker].heatFlux;
-        h = heatEdge[e->edge_marker].h;
-        Text = heatEdge[e->edge_marker].externalTemperature;
+        // boundary conditions
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(Util::scene()->edges[i]->marker);
+
+            if (edgeHeatMarker && Util::scene()->edges[i]->marker != Util::scene()->edgeMarkers[0])
+            {
+                if (edgeHeatMarker->type == PhysicFieldBC_Heat_Flux)
+                {
+                    // vector flux term
+                    double flux = edgeHeatMarker->heatFlux.number + edgeHeatMarker->h.number * edgeHeatMarker->externalTemperature.number;
+
+                    if (fabs(flux) > EPS_ZERO)
+                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        flux,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                    if (fabs(edgeHeatMarker->h.number) > EPS_ZERO)
+                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(0, 0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        edgeHeatMarker->h.number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+                }
+            }
+        }
+
+        // materials
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
+
+            if (labelHeatMarker && Util::scene()->labels[i]->marker != Util::scene()->labelMarkers[0])
+            {
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
+                                                                                               QString::number(i).toStdString(),
+                                                                                               labelHeatMarker->thermal_conductivity.number,
+                                                                                               HERMES_SYM,
+                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
+                if (fabs(labelHeatMarker->volume_heat.number) > EPS_ZERO)
+                    add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
+                                                                                                   QString::number(i).toStdString(),
+                                                                                                   labelHeatMarker->volume_heat.number,
+                                                                                                   convertProblemType(Util::scene()->problemInfo()->problemType)));
+            }
+        }
     }
+};
 
-    if (isPlanar)
-        return (q + Text * h) * int_v<Real, Scalar>(n, wt, v);
-    else
-        return (q + Text * h) * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
-}
-
+/*
 template<typename Real, typename Scalar>
 Scalar heat_matrix_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
@@ -111,6 +110,7 @@ void callbackHeatWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
     wf->add_matrix_form_surf(0, 0, callback(heat_matrix_form_surf));
     wf->add_vector_form_surf(0, callback(heat_vector_form_surf));
 }
+*/
 
 // *******************************************************************************************************
 
@@ -417,6 +417,50 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
     }
 
     // edge markers
+    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+    {
+        SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(Util::scene()->edgeMarkers[i]);
+
+        // evaluate script
+        if (!edgeHeatMarker->temperature.evaluate()) return QList<SolutionArray *>();
+        if (!edgeHeatMarker->heatFlux.evaluate()) return QList<SolutionArray *>();
+        if (!edgeHeatMarker->h.evaluate()) return QList<SolutionArray *>();
+        if (!edgeHeatMarker->externalTemperature.evaluate()) return QList<SolutionArray *>();
+    }
+
+    // label markers
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+    {
+        SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labelMarkers[i]);
+
+        // evaluate script
+        if (!labelHeatMarker->thermal_conductivity.evaluate()) return QList<SolutionArray *>();
+        if (!labelHeatMarker->density.evaluate()) return QList<SolutionArray *>();
+        if (!labelHeatMarker->specific_heat.evaluate()) return QList<SolutionArray *>();
+        if (!labelHeatMarker->volume_heat.evaluate()) return QList<SolutionArray *>();
+    }
+
+    // boundary conditions
+    EssentialBCs bcs;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        SceneEdgeHeatMarker *edgeHeatMarker = dynamic_cast<SceneEdgeHeatMarker *>(Util::scene()->edges[i]->marker);
+
+        if (edgeHeatMarker)
+        {
+            if (edgeHeatMarker->type == PhysicFieldBC_Heat_Temperature)
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), edgeHeatMarker->temperature.number));
+        }
+    }
+
+    WeakFormHeat wf;
+
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
+
+    return solutionArrayList;
+
+    /*
+    // edge markers
     BCTypes bcTypes;
     BCValues bcValues;
 
@@ -505,6 +549,7 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
     delete [] heatLabel;
 
     return solutionArrayList;
+    */
 }
 
 void HermesHeat::updateTimeFunctions(double time)
@@ -522,7 +567,8 @@ void HermesHeat::updateTimeFunctions(double time)
         if (!(Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0))
         {
             SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
-            heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
+            // FIXME
+            // heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
         }
     }
 }
@@ -653,6 +699,8 @@ void SurfaceIntegralValueHeat::calculateVariables(int i)
 {
     if (boundary)
     {
+        SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(labelMarker);
+
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             averageTemperature += pt[i][2] * tan[i][2] * value[i];
         else
@@ -663,7 +711,6 @@ void SurfaceIntegralValueHeat::calculateVariables(int i)
         else
             temperatureDifference += 2 * M_PI * x[i] * pt[i][2] * tan[i][2] * (tan[i][0] * dudx[i] + tan[i][1] * dudy[i]);
 
-        SceneLabelHeatMarker *marker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[e->marker]->marker);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             heatFlux -= pt[i][2] * tan[i][2] * marker->thermal_conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
