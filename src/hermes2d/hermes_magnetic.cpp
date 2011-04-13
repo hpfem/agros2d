@@ -143,7 +143,7 @@ public:
             else if (gt == HERMES_AXISYM_Y)
                 axisym_part = int_u_dvdx_over_x_check<double, scalar>(n, wt, u, v, e);
 
-            if (gamma < EPS_ZERO)
+            if (gamma > EPS_ZERO)
               for (int i = 0; i < n; i++)
                 velocity_part += wt[i] * u->val[i] * ((vel_x - e->y[i] * vel_ang) * v->dx[i] + (vel_y + e->x[i] * vel_ang) * v->dy[i]);
 
