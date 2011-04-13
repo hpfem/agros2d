@@ -83,6 +83,13 @@ public:
                                                                                                    labelMagneticMarker->current_density_real.number,
                                                                                                    HERMES_PLANAR));
 
+                // remanence
+                if (fabs(labelMagneticMarker->remanence.number) > EPS_ZERO)
+                    add_vector_form(new RemanenceVectorForm(0,
+                                                            QString::number(i).toStdString(), labelMagneticMarker->permeability.number,
+                                                            labelMagneticMarker->remanence.number, labelMagneticMarker->remanence_angle.number,
+                                                            HERMES_PLANAR));
+
                 // harmonic analysis (velocity is not implemented)
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
                 {
@@ -169,6 +176,46 @@ public:
         scalar nu, gamma, vel_x, vel_y, vel_ang;
         GeomType gt;
         int order_increase;
+    };
+
+    class RemanenceVectorForm : public WeakForm::VectorFormVol
+    {
+    public:
+      DefaultVectorFormConst(int i, scalar perm = 1.0, scalar rem = 0.0, rem_ang = 0.0, GeomType gt = HERMES_PLANAR)
+                   : WeakForm::VectorFormVol(i), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
+
+      DefaultVectorFormConst(int i, std::string area, scalar perm = 0.0, scalar rem = 0.0, rem_ang = 0.0, GeomType gt = HERMES_PLANAR)
+  : WeakForm::VectorFormVol(i, area), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
+
+      virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                           Geom<double> *e, ExtData<scalar> *ext) const {
+        scalar result = 0;
+        for (int i = 0; i < n; i++)
+          result += wt[i] * rem/(perm * MU0) * (-sin(rem/180.0 * M_PI) * v->dx[i] + cos(rem/180.0 * M_PI) * v->dy[i]);
+
+        if (gt == HERMES_PLANAR)
+          return result;
+        else
+          return -1.0*result;
+      }
+
+      virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
+              Geom<Ord> *e, ExtData<Ord> *ext) const {
+        Ord result = 0;
+        for (int i = 0; i < n; i++)
+          result += wt[i] * rem/(perm * MU0) * (-sin(rem/180.0 * M_PI) * v->dx[i] + cos(rem/180.0 * M_PI) * v->dy[i]);
+
+        return result;
+      }
+
+      // This is to make the form usable in rk_time_step().
+      virtual WeakForm::VectorFormVol* clone() {
+        return new DefaultVectorFormConst(*this);
+      }
+
+      private:
+        scalar perm, rem, rem_ang;
+        GeomType gt;
     };
 
     /*
