@@ -22,82 +22,48 @@
 #include "scene.h"
 #include "gui.h"
 
-struct GeneralEdge
+class WeakFormGenerals : public WeakForm
 {
 public:
-    PhysicFieldBC type;
-    double value;
-};
-
-struct GeneralLabel
-{
-    double rightside;
-    double constant;
-};
-
-GeneralEdge *generalEdge;
-GeneralLabel *generalLabel;
-
-BCType general_bc_types(int marker)
-{
-    switch (generalEdge[marker].type)
+    WeakFormGenerals()
     {
-    case PhysicFieldBC_None:
-        return BC_NONE;
-    case PhysicFieldBC_General_Value:
-        return BC_ESSENTIAL;
-    case PhysicFieldBC_General_Derivative:
-        return BC_NATURAL;
+        // boundary conditions
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(Util::scene()->edges[i]->marker);
+
+            if (edgeGeneralMarker && Util::scene()->edges[i]->marker != Util::scene()->edgeMarkers[0])
+            {
+                if (edgeGeneralMarker->type == PhysicFieldBC_General_Derivative)
+                    if (fabs(edgeGeneralMarker->value.number) > EPS_ZERO)
+                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        edgeGeneralMarker->value.number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+            }
+        }
+
+        // materials
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(Util::scene()->labels[i]->marker);
+
+            if (labelGeneralMarker && Util::scene()->labels[i]->marker != Util::scene()->labelMarkers[0])
+            {
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
+                                                                                               QString::number(i).toStdString(),
+                                                                                               labelGeneralMarker->constant.number * EPS0,
+                                                                                               HERMES_SYM,
+                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
+                if (fabs(labelGeneralMarker->rightside.number) > EPS_ZERO)
+                    add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
+                                                                                                   QString::number(i).toStdString(),
+                                                                                                   labelGeneralMarker->rightside.number,
+                                                                                                   convertProblemType(Util::scene()->problemInfo()->problemType)));
+            }
+        }
     }
-}
-
-scalar general_bc_values(int marker, double x, double y)
-{
-    return generalEdge[marker].value;
-}
-
-template<typename Real, typename Scalar>
-Scalar general_vector_form_surf(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    double derivative = 0.0;
-
-    if (generalEdge[e->edge_marker].type == PhysicFieldBC_General_Derivative)
-        derivative = generalEdge[e->edge_marker].value;
-
-    if (isPlanar)
-        return derivative * int_v<Real, Scalar>(n, wt, v);
-    else
-        return derivative * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar general_matrix_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    int marker = e->elem_marker;
-
-    if (isPlanar)
-        return generalLabel[marker].constant * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
-    else
-        return generalLabel[marker].constant * 2 * M_PI * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar general_vector_form(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    int marker = e->elem_marker;
-
-    if (isPlanar)
-        return generalLabel[marker].rightside * int_v<Real, Scalar>(n, wt, v);
-    else
-        return generalLabel[marker].rightside * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
-}
-
-void callbackGeneralWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
-{
-    wf->add_matrix_form(0, 0, callback(general_matrix_form));
-    wf->add_vector_form(0, callback(general_vector_form));
-    wf->add_vector_form_surf(0, callback(general_vector_form_surf));
-}
+};
 
 // **************************************************************************************************************************
 
@@ -330,72 +296,40 @@ ViewScalarFilter *HermesGeneral::viewScalarFilter(PhysicFieldVariable physicFiel
 QList<SolutionArray *> HermesGeneral::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
-    BCTypes bcTypes;
-    BCValues bcValues;
-
-    generalEdge = new GeneralEdge[Util::scene()->edges.count()+1];
-    generalEdge[0].type = PhysicFieldBC_None;
-    generalEdge[0].value = 0;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
     {
-        if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
-        {
-            generalEdge[i+1].type = PhysicFieldBC_None;
-            generalEdge[i+1].value = 0;
-        }
-        else
-        {
-            SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(Util::scene()->edges[i]->marker);
+        SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(Util::scene()->edgeMarkers[i]);
 
-            // evaluate script
-            if (!edgeGeneralMarker->value.evaluate()) return QList<SolutionArray *>();
-
-            generalEdge[i+1].type = edgeGeneralMarker->type;
-            generalEdge[i+1].value = edgeGeneralMarker->value.number;
-
-            switch (edgeGeneralMarker->type)
-            {
-            case PhysicFieldBC_None:
-                bcTypes.add_bc_none(i+1);
-                break;
-            case PhysicFieldBC_General_Value:
-                bcTypes.add_bc_dirichlet(i+1);
-                bcValues.add_const(i+1, edgeGeneralMarker->value.number);
-                break;
-            case PhysicFieldBC_General_Derivative:
-                bcTypes.add_bc_newton(i+1);
-                break;
-            }
-        }
+        // evaluate script
+        if (!edgeGeneralMarker->value.evaluate()) return QList<SolutionArray *>();
     }
 
     // label markers
-    generalLabel = new GeneralLabel[Util::scene()->labels.count()];
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
-        {
-        }
-        else
-        {
-            SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(Util::scene()->labels[i]->marker);
+        SceneLabelGeneralMarker *labelGeneralMarker = dynamic_cast<SceneLabelGeneralMarker *>(Util::scene()->labelMarkers[i]);
 
-            // evaluate script
-            if (!labelGeneralMarker->rightside.evaluate()) return QList<SolutionArray *>();
-            if (!labelGeneralMarker->constant.evaluate()) return QList<SolutionArray *>();
+        // evaluate script
+        if (!labelGeneralMarker->rightside.evaluate()) return QList<SolutionArray *>();
+        if (!labelGeneralMarker->constant.evaluate()) return QList<SolutionArray *>();
+    }
 
-            generalLabel[i].rightside = labelGeneralMarker->rightside.number;
-            generalLabel[i].constant = labelGeneralMarker->constant.number;
+    // boundary conditions
+    EssentialBCs bcs;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        SceneEdgeGeneralMarker *edgeGeneralMarker = dynamic_cast<SceneEdgeGeneralMarker *>(Util::scene()->edges[i]->marker);
+
+        if (edgeGeneralMarker)
+        {
+            if (edgeGeneralMarker->type == PhysicFieldBC_General_Value)
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), edgeGeneralMarker->value.number));
         }
     }
 
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                 Hermes::vector<BCTypes *>(&bcTypes),
-                                                                 Hermes::vector<BCValues *>(&bcValues),
-                                                                 callbackGeneralWeakForm);
+    WeakFormGenerals wf;
 
-    delete [] generalEdge;
-    delete [] generalLabel;
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
 
     return solutionArrayList;
 }

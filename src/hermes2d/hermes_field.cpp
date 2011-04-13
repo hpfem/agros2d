@@ -19,17 +19,15 @@
 
 #include "hermes_field.h"
 
-// #include "hermes_general.h"
+#include "hermes_general.h"
 #include "hermes_electrostatic.h"
 // #include "hermes_magnetic.h"
 // #include "hermes_heat.h"
 #include "hermes_current.h"
-/*
-#include "hermes_elasticity.h"
-#include "hermes_flow.h"
-#include "hermes_rf.h"
-#include "hermes_acoustic.h"
-*/
+// #include "hermes_elasticity.h"
+// #include "hermes_flow.h"
+// #include "hermes_rf.h"
+// #include "hermes_acoustic.h"
 #include "progressdialog.h"
 
 #include "mesh/h2d_reader.h"
@@ -45,7 +43,7 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     switch (physicField)
     {
     case PhysicField_General:
-        // return new HermesGeneral();
+        return new HermesGeneral();
     case PhysicField_Electrostatic:
         return new HermesElectrostatic();
     case PhysicField_Magnetic:
