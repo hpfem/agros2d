@@ -27,14 +27,11 @@
 // #include "hermes_elasticity.h"
 // #include "hermes_flow.h"
 // #include "hermes_rf.h"
-// #include "hermes_acoustic.h"
+#include "hermes_acoustic.h"
 #include "progressdialog.h"
 
 #include "mesh/h2d_reader.h"
 
-bool isPlanar;
-AnalysisType analysisType;
-double frequency;
 double actualTime;
 double timeStep;
 
@@ -59,7 +56,7 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     case PhysicField_RF:
         // return new HermesRF();
     case PhysicField_Acoustic:
-        // return new HermesAcoustic();
+        return new HermesAcoustic();
     default:
         std::cerr << "Physical field '" + QString::number(physicField).toStdString() + "' is not implemented. hermesObjectFactory()" << endl;
         throw;
@@ -181,11 +178,9 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
     double timeTotal = Util::scene()->problemInfo()->timeTotal.number;
     double initialCondition = Util::scene()->problemInfo()->initialCondition.number;
+    AnalysisType analysisType = Util::scene()->problemInfo()->analysisType;
 
     timeStep = Util::scene()->problemInfo()->timeStep.number;
-    isPlanar = (Util::scene()->problemInfo()->problemType == ProblemType_Planar);
-    analysisType = Util::scene()->problemInfo()->analysisType;
-    frequency = Util::scene()->problemInfo()->frequency;
 
     bool isLinear = true;
 

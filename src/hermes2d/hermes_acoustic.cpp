@@ -24,120 +24,127 @@
 
 const double PRESSURE_MIN_AIR = 20e-6;
 
-struct AcousticEdge
+
+class WeakFormAcoustics : public WeakForm
 {
-    PhysicFieldBC type;
-    double value;
+public:
+    WeakFormAcoustics() : WeakForm(2)
+    {
+        // boundary conditions
+        for (int i = 0; i<Util::scene()->edges.count(); i++)
+        {
+            SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edges[i]->marker);
+
+            if (edgeAcousticMarker && Util::scene()->edges[i]->marker != Util::scene()->edgeMarkers[0])
+            {
+                if (edgeAcousticMarker->type == PhysicFieldBC_Acoustic_NormalAcceleration)
+                    if (fabs(edgeAcousticMarker->value_real.number) > EPS_ZERO)
+                        add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        edgeAcousticMarker->value_real.number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                if (edgeAcousticMarker->type == PhysicFieldBC_Acoustic_Impedance)
+                {
+                    if (fabs(edgeAcousticMarker->value_real.number) > EPS_ZERO)
+                    {
+                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(0, 1,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        - 2 * M_PI * Util::scene()->problemInfo()->frequency / edgeAcousticMarker->value_real.number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+                        add_matrix_form_surf(new WeakFormsH1::SurfaceMatrixForms::DefaultMatrixFormSurf(1, 0,
+                                                                                                        QString::number(i + 1).toStdString(),
+                                                                                                        2 * M_PI * Util::scene()->problemInfo()->frequency / edgeAcousticMarker->value_real.number,
+                                                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+                    }
+                }
+
+                if (edgeAcousticMarker->type == PhysicFieldBC_Acoustic_MatchedBoundary)
+                {
+                    add_matrix_form_surf(new MatchedBoundaryMatrixFormSurf(0, 1,
+                                                                           QString::number(i + 1).toStdString(),
+                                                                           - 2 * M_PI * Util::scene()->problemInfo()->frequency,
+                                                                           convertProblemType(Util::scene()->problemInfo()->problemType)));
+                    add_matrix_form_surf(new MatchedBoundaryMatrixFormSurf(1, 0,
+                                                                           QString::number(i + 1).toStdString(),
+                                                                           2 * M_PI * Util::scene()->problemInfo()->frequency,
+                                                                           convertProblemType(Util::scene()->problemInfo()->problemType)));
+                }
+            }
+        }
+
+        // materials
+        for (int i = 0; i<Util::scene()->labels.count(); i++)
+        {
+            SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labels[i]->marker);
+
+            if (labelAcousticMarker && Util::scene()->labels[i]->marker != Util::scene()->labelMarkers[0])
+            {
+                // real part
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
+                                                                                               QString::number(i).toStdString(),
+                                                                                               1.0 / labelAcousticMarker->density.number,
+                                                                                               HERMES_SYM,
+                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) / (labelAcousticMarker->density.number * sqr(labelAcousticMarker->speed.number)),
+                                                                                          HERMES_SYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                // imag part
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(1, 1,
+                                                                                               QString::number(i).toStdString(),
+                                                                                               1.0 / labelAcousticMarker->density.number,
+                                                                                               HERMES_SYM,
+                                                                                               convertProblemType(Util::scene()->problemInfo()->problemType)));
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 1,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          - sqr(2 * M_PI * Util::scene()->problemInfo()->frequency) / (labelAcousticMarker->density.number * sqr(labelAcousticMarker->speed.number)),
+                                                                                          HERMES_SYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
+            }
+        }
+    }
+
+    class MatchedBoundaryMatrixFormSurf : public WeakForm::MatrixFormSurf
+    {
+    public:
+        MatchedBoundaryMatrixFormSurf(int i, int j, scalar coeff, GeomType gt = HERMES_PLANAR)
+            : WeakForm::MatrixFormSurf(i, j), coeff(coeff), gt(gt) { }
+        MatchedBoundaryMatrixFormSurf(int i, int j, std::string area, scalar coeff, GeomType gt = HERMES_PLANAR)
+            : WeakForm::MatrixFormSurf(i, j, area), coeff(coeff), gt(gt) { }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            scalar result = 0;
+            if (gt == HERMES_PLANAR) result = int_u_v<double, scalar>(n, wt, u, v);
+            else if (gt == HERMES_AXISYM_X) result = int_y_u_v<double, scalar>(n, wt, u, v, e);
+            else result = int_x_u_v<double, scalar>(n, wt, u, v, e);
+
+            SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->elem_marker)]->marker);
+            return coeff / (labelAcousticMarker->density.number * labelAcousticMarker->speed.number) * result;
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u,
+                        Func<Ord> *v, Geom<Ord> *e, ExtData<Ord> *ext) const {
+            Ord result = 0;
+            if (gt == HERMES_PLANAR) result = int_u_v<Ord, Ord>(n, wt, u, v);
+            else if (gt == HERMES_AXISYM_X) result = int_y_u_v<Ord, Ord>(n, wt, u, v, e);
+            else result = int_x_u_v<Ord, Ord>(n, wt, u, v, e);
+            return result;
+        }
+
+        // This is to make the form usable in rk_time_step().
+        virtual WeakForm::MatrixFormSurf* clone() {
+            return new MatchedBoundaryMatrixFormSurf(*this);
+        }
+
+    private:
+        scalar coeff;
+        GeomType gt;
+    };
 };
-
-struct AcousticLabel
-{
-    double density;
-    double speed;
-};
-
-AcousticEdge *acousticEdge;
-AcousticLabel *acousticLabel;
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (!(acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance
-          || acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_MatchedBoundary))
-        return 0.0;
-
-    double Z = 0.0;
-
-    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance)
-        Z = acousticEdge[e->edge_marker].value;
-
-    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_MatchedBoundary)
-        Z = acousticLabel[e->elem_marker].density * acousticLabel[e->elem_marker].speed;
-
-    if (fabs(Z) < EPS_ZERO)
-        return 0.0;
-
-    if (isPlanar)
-        return 2 * M_PI * frequency / Z * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        return 2 * M_PI * 2 * M_PI * frequency / Z * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (!(acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance
-          || acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_MatchedBoundary))
-        return 0.0;
-
-    double Z = 0.0;
-
-    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance)
-        Z = acousticEdge[e->edge_marker].value;
-
-    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_MatchedBoundary)
-        Z = acousticLabel[e->elem_marker].density * acousticLabel[e->elem_marker].speed;
-
-    if (fabs(Z) < EPS_ZERO)
-        return 0.0;
-
-    if (isPlanar)
-        return - 2 * M_PI * frequency / Z * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        return - 2 * M_PI * 2 * M_PI * frequency / Z * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    double an = 0.0;
-
-    if (acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_NormalAcceleration)
-        an = acousticEdge[e->edge_marker].value;
-
-    if (isPlanar)
-        return an * int_v<Real, Scalar>(n, wt, v);
-    else
-        return an * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_real_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return 1.0/acousticLabel[e->elem_marker].density * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-                - sqr(2 * M_PI * frequency) / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        return 2 * M_PI * (1.0/acousticLabel[e->elem_marker].density * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
-                           - sqr(2 * M_PI * frequency) / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
-                           * int_x_u_v<Real, Scalar>(n, wt, u, v, e));
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    return 0.0;
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    return 0.0;
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return 1.0/acousticLabel[e->elem_marker].density * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v)
-                - sqr(2 * M_PI * frequency) / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
-                * int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        return 2 * M_PI * (1.0/acousticLabel[e->elem_marker].density * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e)
-                           - sqr(2 * M_PI * frequency) / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
-                           * int_x_u_v<Real, Scalar>(n, wt, u, v, e));
-}
 
 // ****************************************************************************************************
 // time dependent
@@ -145,6 +152,7 @@ Scalar acoustic_matrix_form_imag_imag(int n, double *wt, Func<Real> *u_ext[], Fu
 // - 1/rho * \Delta p + 1/(rho * c^2) * \frac{\partial v}{\partial t} = 0.
 // - v                +                 \frac{\partial p}{\partial t} = 0,
 
+/*
 scalar acoustic_essential_time_bc_pressure(int edge_marker, double x, double y, double time)
 {
     return acousticEdge[edge_marker].value;
@@ -245,10 +253,10 @@ Scalar acoustic_vector_form_pressure(int n, double *wt, Func<Real> *u_ext[], Fun
         return 2 * M_PI * 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
                 * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep;
 }
+*/
 
 // *****************************************************************************************
-
-
+/*
 void callbackAcousticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 {
     if (analysisType == AnalysisType_Transient)
@@ -282,6 +290,7 @@ void callbackAcousticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
         wf->add_vector_form_surf(0, callback(acoustic_vector_form_surf_real));
     }
 }
+*/
 
 // *******************************************************************************************************
 
@@ -524,7 +533,7 @@ SceneLabelMarker *HermesAcoustic::modifyLabelMarker(PyObject *self, PyObject *ar
 void HermesAcoustic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
 {
     // harmonic
-    if (analysisType == AnalysisType_Harmonic)
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Pressure), PhysicFieldVariable_Acoustic_Pressure);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureReal), PhysicFieldVariable_Acoustic_PressureReal);
@@ -536,7 +545,7 @@ void HermesAcoustic::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Speed), PhysicFieldVariable_Acoustic_Speed);
     }
     // transient
-    if (analysisType == AnalysisType_Transient)
+    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
     {
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_Pressure), PhysicFieldVariable_Acoustic_PressureReal);
         cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_Acoustic_PressureLevel), PhysicFieldVariable_Acoustic_PressureLevel);
@@ -645,94 +654,45 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
     }
 
     // edge markers
-    BCTypes bcTypesReal, bcTypesImag;
-    BCValues bcValuesReal(&actualTime), bcValuesImag;
-
-    acousticEdge = new AcousticEdge[Util::scene()->edges.count()+1];
-    acousticEdge[0].type = PhysicFieldBC_None;
-    acousticEdge[0].value = 0.0;
-    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
     {
-        if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
-        {
-            acousticEdge[i+1].type = PhysicFieldBC_None;
-            acousticEdge[i+1].value = 0.0;
-        }
-        else
-        {
-            SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edges[i]->marker);
+        SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edgeMarkers[i]);
 
-            // evaluate script
-            if (!edgeAcousticMarker->value_real.evaluate()) return QList<SolutionArray *>();
-
-            acousticEdge[i+1].type = edgeAcousticMarker->type;
-            acousticEdge[i+1].value = edgeAcousticMarker->value_real.number;
-
-            switch (edgeAcousticMarker->type)
-            {
-            case PhysicFieldBC_None:
-                bcTypesReal.add_bc_none(i+1);
-                bcTypesImag.add_bc_none(i+1);
-                break;
-            case PhysicFieldBC_Acoustic_Pressure:
-                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                {
-                    bcTypesReal.add_bc_dirichlet(i+1);
-                    bcTypesImag.add_bc_dirichlet(i+1);
-                    bcValuesReal.add_const(i+1, edgeAcousticMarker->value_real.number);
-                    bcValuesImag.add_const(i+1, 0.0);
-                }
-                else
-                {
-                    bcTypesReal.add_bc_dirichlet(i+1);
-                    if (edgeAcousticMarker->value_real.isTimeDep())
-                        bcValuesReal.add_timedep_function(i+1, acoustic_essential_time_bc_pressure);
-                    else
-                        bcValuesReal.add_const(i+1, edgeAcousticMarker->value_real.number);
-                    // bcTypesImag.add_bc_dirichlet(i+1);
-                    // bcTypesImag.add_bc_none(i+1);
-                    // bcValuesImag.add_const(i+1, 0.0);
-                }
-                break;
-            case PhysicFieldBC_Acoustic_NormalAcceleration:
-                bcTypesReal.add_bc_neumann(i+1);
-                bcTypesImag.add_bc_neumann(i+1);
-                break;
-            case PhysicFieldBC_Acoustic_MatchedBoundary:
-                bcTypesReal.add_bc_neumann(i+1);
-                bcTypesImag.add_bc_neumann(i+1);
-                break;
-            }
-        }
+        // evaluate script
+        if (!edgeAcousticMarker->value_real.evaluate()) return QList<SolutionArray *>();
     }
 
     // label markers
-    acousticLabel = new AcousticLabel[Util::scene()->labels.count()];
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
+    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
-        {
-        }
-        else
-        {
-            SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labels[i]->marker);
+        SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labelMarkers[i]);
 
-            // evaluate script
-            if (!labelAcousticMarker->density.evaluate()) return QList<SolutionArray *>();
-            if (!labelAcousticMarker->speed.evaluate()) return QList<SolutionArray *>();
-
-            acousticLabel[i].density = labelAcousticMarker->density.number;
-            acousticLabel[i].speed = labelAcousticMarker->speed.number;
-        }
+        // evaluate script
+        if (!labelAcousticMarker->density.evaluate()) return QList<SolutionArray *>();
+        if (!labelAcousticMarker->speed.evaluate()) return QList<SolutionArray *>();
     }
 
-    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve,
-                                                                 Hermes::vector<BCTypes *>(&bcTypesReal, &bcTypesImag),
-                                                                 Hermes::vector<BCValues *>(&bcValuesReal, &bcValuesImag),
-                                                                 callbackAcousticWeakForm);
+    // boundary conditions
+    EssentialBCs bc1;
+    EssentialBCs bc2;
+    for (int i = 0; i<Util::scene()->edges.count(); i++)
+    {
+        SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edges[i]->marker);
 
-    delete [] acousticEdge;
-    delete [] acousticLabel;
+        if (edgeAcousticMarker)
+        {
+            if (edgeAcousticMarker->type == PhysicFieldBC_Acoustic_Pressure)
+            {
+                bc1.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), edgeAcousticMarker->value_real.number));
+                bc2.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), 0.0));
+            }
+        }
+    }
+    Hermes::vector<EssentialBCs> bcs(bc1, bc2);
+
+    WeakFormAcoustics wf;
+
+    QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
 
     return solutionArrayList;
 }
@@ -752,7 +712,8 @@ void HermesAcoustic::updateTimeFunctions(double time)
                 Util::scene()->edges[i]->marker->type == PhysicFieldBC_Acoustic_NormalAcceleration)
         {
             SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edges[i]->marker);
-            acousticEdge[i+1].value = edgeAcousticMarker->value_real.number;
+            // FIXME
+            // acousticEdge[i+1].value = edgeAcousticMarker->value_real.number;
         }
     }
 }
@@ -891,7 +852,7 @@ SurfaceIntegralValueAcoustic::SurfaceIntegralValueAcoustic() : SurfaceIntegralVa
 
 void SurfaceIntegralValueAcoustic::calculateVariables(int i)
 {
-    SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(labelMarker);
 }
 
 QStringList SurfaceIntegralValueAcoustic::variables()
@@ -912,7 +873,7 @@ VolumeIntegralValueAcoustic::VolumeIntegralValueAcoustic() : VolumeIntegralValue
 
 void VolumeIntegralValueAcoustic::calculateVariables(int i)
 {
-    SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(labelMarker);
 }
 
 void VolumeIntegralValueAcoustic::initSolutions()
@@ -968,17 +929,17 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
         {
         case PhysicFieldVariableComp_X:
         {
-            node->values[0][0][i] = - dudx1[i] / marker->density.number / (2 * M_PI * frequency);
+            node->values[0][0][i] = - dudx1[i] / marker->density.number / (2 * M_PI * Util::scene()->problemInfo()->frequency);
         }
             break;
         case PhysicFieldVariableComp_Y:
         {
-            node->values[0][0][i] = - dudy1[i] / marker->density.number / (2 * M_PI * frequency);
+            node->values[0][0][i] = - dudy1[i] / marker->density.number / (2 * M_PI * Util::scene()->problemInfo()->frequency);
         }
             break;
         case PhysicFieldVariableComp_Magnitude:
         {
-            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i])) / marker->density.number / (2 * M_PI * frequency);;
+            node->values[0][0][i] = sqrt(sqr(dudx1[i]) + sqr(dudy1[i])) / marker->density.number / (2 * M_PI * Util::scene()->problemInfo()->frequency);;
         }
             break;
         }

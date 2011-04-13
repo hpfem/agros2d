@@ -33,9 +33,6 @@
 #include "surfaceintegralview.h"
 #include "volumeintegralview.h"
 
-extern bool isPlanar;
-extern AnalysisType analysisType;
-extern double frequency;
 extern double actualTime;
 extern double timeStep;
 
