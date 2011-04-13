@@ -399,7 +399,7 @@ SurfaceIntegralValueMagnetic::SurfaceIntegralValueMagnetic() : SurfaceIntegralVa
 
 void SurfaceIntegralValueMagnetic::calculateVariables(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
 
     if (fabs(marker->permeability.number - 1.0) < EPS_ZERO)
     {
@@ -468,7 +468,7 @@ VolumeIntegralValueMagnetic::VolumeIntegralValueMagnetic() : VolumeIntegralValue
 
 void VolumeIntegralValueMagnetic::calculateVariables(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
 
     // current - real
     result = 0.0;
@@ -541,7 +541,7 @@ void VolumeIntegralValueMagnetic::calculateVariables(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther1(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
 
     // power losses
     result = 0.0;
@@ -619,7 +619,7 @@ void VolumeIntegralValueMagnetic::calculateVariablesOther1(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther2(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
 
     // energy
     result = 0.0;
@@ -651,7 +651,7 @@ void VolumeIntegralValueMagnetic::calculateVariablesOther2(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther3(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
 
     // Lorentz force X
     result = 0.0;
@@ -694,7 +694,7 @@ void VolumeIntegralValueMagnetic::calculateVariablesOther3(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther4(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
     // Lorentz force Y
     result = 0.0;
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
@@ -736,7 +736,7 @@ void VolumeIntegralValueMagnetic::calculateVariablesOther4(int i)
 
 void VolumeIntegralValueMagnetic::calculateVariablesOther5(int i)
 {
-    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[e->marker]->marker);
+    SceneLabelMagneticMarker *marker = dynamic_cast<SceneLabelMagneticMarker *>(labelMarker);
 
     // torque
     result = 0.0;

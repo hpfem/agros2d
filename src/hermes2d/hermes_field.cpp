@@ -21,7 +21,7 @@
 
 #include "hermes_general.h"
 #include "hermes_electrostatic.h"
-// #include "hermes_magnetic.h"
+#include "hermes_magnetic.h"
 #include "hermes_heat.h"
 #include "hermes_current.h"
 // #include "hermes_elasticity.h"
@@ -44,7 +44,7 @@ HermesField *hermesFieldFactory(PhysicField physicField)
     case PhysicField_Electrostatic:
         return new HermesElectrostatic();
     case PhysicField_Magnetic:
-        // return new HermesMagnetic();
+        return new HermesMagnetic();
     case PhysicField_Heat:
         return new HermesHeat();
     case PhysicField_Current:
