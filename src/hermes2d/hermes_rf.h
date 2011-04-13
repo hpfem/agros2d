@@ -152,10 +152,11 @@ public:
     Value value_real;
     Value value_imag;
     Value height;
+    TEMode mode;
  //   Value power;
 //    Value phase;
 
-    SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
+    SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, TEMode mode, Value value_real, Value value_imag);
     SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height);
 
     QString script();

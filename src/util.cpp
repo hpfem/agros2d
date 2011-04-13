@@ -210,8 +210,8 @@ void initLists()
 
     //TEMODE
     teModeList.insert(TEMode_0, "TE Mode 0");
-    teModeList.insert(TEMode_1, "TE Mode 1");
-    teModeList.insert(TEMode_2, "TE Mode 2");
+    teModeList.insert(TEMode_1, "TE Mode 01");
+    teModeList.insert(TEMode_2, "TE Mode 02");
 
     // SCENEVIEW_POSTPROCESSOR_SHOW
     sceneViewPostprocessorShowList.insert(SceneViewPostprocessorShow_Undefined, "");
@@ -976,10 +976,10 @@ void fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->addItem(physicFieldString(PhysicField_Heat), PhysicField_Heat);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Elasticity), PhysicField_Elasticity);
     cmbPhysicField->addItem(physicFieldString(PhysicField_Acoustic), PhysicField_Acoustic);
-#ifdef BETA
+//odebrat #ifdef BETA
     cmbPhysicField->addItem(physicFieldString(PhysicField_Flow), PhysicField_Flow);
     cmbPhysicField->addItem(physicFieldString(PhysicField_RF), PhysicField_RF);
-#endif
+//#endif
 
     // default physic field
     cmbPhysicField->setCurrentIndex(cmbPhysicField->findData(Util::config()->defaultPhysicField));

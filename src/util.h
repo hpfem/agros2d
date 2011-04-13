@@ -676,6 +676,9 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QString physicFieldBCToStringKey(PhysicFieldBC physicFieldBC);
 PhysicFieldBC physicFieldBCFromStringKey(const QString &physicFieldBC);
 
+QString teModeToStringKey(TEMode teMode);
+TEMode teModeFromStringKey(const QString &teMode);
+
 QString sceneViewPostprocessorShowToStringKey(SceneViewPostprocessorShow sceneViewPostprocessorShow);
 SceneViewPostprocessorShow sceneViewPostprocessorShowFromStringKey(const QString &sceneViewPostprocessorShow);
 
