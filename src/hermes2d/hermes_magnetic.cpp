@@ -70,8 +70,9 @@ public:
                 // steady state and transient analysis
                 add_matrix_form(new DefaultLinearMagnetostatics(0, 0,
                                                                 QString::number(i).toStdString(),
-                                                                1.0 / (labelMagneticMarker->permeability.number * MU0),
-                                                                HERMES_NONSYM,
+                                                                1.0 / (labelMagneticMarker->permeability.number * MU0), labelMagneticMarker->conductivity.number,
+                                                                labelMagneticMarker->velocity_x.number, labelMagneticMarker->velocity_y.number,
+                                                                labelMagneticMarker->velocity_angular.number, HERMES_NONSYM,
                                                                 convertProblemType(Util::scene()->problemInfo()->problemType),
                                                                 (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
 
@@ -82,7 +83,7 @@ public:
                                                                                                    labelMagneticMarker->current_density_real.number,
                                                                                                    HERMES_PLANAR));
 
-                // harmonic analysis
+                // harmonic analysis (velocity is not implemented)
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
                 {
                     add_matrix_form(new DefaultLinearMagnetostatics(1, 1,
@@ -122,23 +123,31 @@ public:
     {
     public:
         // The optional order_increase takes into account the axisymmetric part.
-        DefaultLinearMagnetostatics(int i, int j, scalar coeff = 1.0,
-                                    SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
-            : WeakForm::MatrixFormVol(i, j, sym), coeff(coeff), gt(gt), order_increase(order_increase) { }
-        DefaultLinearMagnetostatics(int i, int j, std::string area, scalar coeff = 1.0,
-                                    SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
-            : WeakForm::MatrixFormVol(i, j, sym, area), coeff(coeff), gt(gt), order_increase(order_increase) { }
+        DefaultLinearMagnetostatics(int i, int j, scalar nu = 1.0, scalar gamma = 0.0, scalar vel_x = 0.0, scalar vel_y = 0.0,
+                                    scalar vel_ang = 0.0, SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
+          : WeakForm::MatrixFormVol(i, j, sym), nu(nu), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang),
+            gt(gt), order_increase(order_increase) { }
+
+        DefaultLinearMagnetostatics(int i, int j, std::string area, scalar nu = 1.0, scalar gamma = 0.0, scalar vel_x = 0.0, scalar vel_y = 0.0,
+                                    scalar vel_ang = 0.0, SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
+          : WeakForm::MatrixFormVol(i, j, sym, area), nu(nu), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang),
+            gt(gt), order_increase(order_increase) { }
 
         virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u,
                              Func<double> *v, Geom<double> *e, ExtData<scalar> *ext) const {
             scalar planar_part = int_grad_u_grad_v<double, scalar>(n, wt, u, v);
             scalar axisym_part = 0;
+            scalar velocity_part = 0;
             if (gt == HERMES_AXISYM_X)
                 axisym_part = int_u_dvdy_over_y<double, scalar>(n, wt, u, v, e);
             else if (gt == HERMES_AXISYM_Y)
                 axisym_part = int_u_dvdx_over_x_check<double, scalar>(n, wt, u, v, e);
 
-            return coeff * (planar_part + axisym_part);
+            if (gamma < EPS_ZERO)
+              for (int i = 0; i < n; i++)
+                velocity_part += wt[i] * u->val[i] * ((vel_x - e->y[i] * vel_ang) * v->dx[i] + (vel_y + e->x[i] * vel_ang) * v->dy[i]);
+
+            return nu * (planar_part + axisym_part) - gamma * velocity_part;
         }
 
         virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
@@ -148,7 +157,7 @@ public:
             // This increase is for the axisymmetric part. We are not letting the
             // Ord class do it since it would automatically choose the highest order
             // due to the nonpolynomial 1/r term.
-            return planar_part + Ord(order_increase);
+            return planar_part * velocity_part * Ord(order_increase);
         }
 
         // This is to make the form usable in rk_time_step().
@@ -157,7 +166,7 @@ public:
         }
 
     private:
-        scalar coeff;
+        scalar nu, gamma, vel_x, vel_y, vel_ang;
         GeomType gt;
         int order_increase;
     };
