@@ -85,10 +85,23 @@ public:
 
                 // remanence
                 if (fabs(labelMagneticMarker->remanence.number) > EPS_ZERO)
-                    add_vector_form(new RemanenceVectorForm(0,
-                                                            QString::number(i).toStdString(), labelMagneticMarker->permeability.number,
-                                                            labelMagneticMarker->remanence.number, labelMagneticMarker->remanence_angle.number,
-                                                            HERMES_PLANAR));
+                    add_vector_form(new DefaultLinearMagnetostaticsRemanence(0,
+                                                                             QString::number(i).toStdString(),
+                                                                             labelMagneticMarker->permeability.number * MU0,
+                                                                             labelMagneticMarker->remanence.number,
+                                                                             labelMagneticMarker->remanence_angle.number));
+
+                // velocity
+                if ((fabs(labelMagneticMarker->conductivity.number) > EPS_ZERO) &&
+                        ((fabs(labelMagneticMarker->velocity_x.number) > EPS_ZERO) ||
+                        (fabs(labelMagneticMarker->velocity_y.number) > EPS_ZERO) ||
+                        (fabs(labelMagneticMarker->velocity_angular.number) > EPS_ZERO)))
+                    add_matrix_form(new DefaultLinearMagnetostaticsVelocity(0, 0,
+                                                                            QString::number(i).toStdString(),
+                                                                            labelMagneticMarker->conductivity.number,
+                                                                            labelMagneticMarker->velocity_x.number,
+                                                                            labelMagneticMarker->velocity_y.number,
+                                                                            labelMagneticMarker->velocity_angular.number));
 
                 // harmonic analysis (velocity is not implemented)
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
@@ -130,15 +143,12 @@ public:
     {
     public:
         // The optional order_increase takes into account the axisymmetric part.
-        DefaultLinearMagnetostatics(int i, int j, scalar nu = 1.0, scalar gamma = 0.0, scalar vel_x = 0.0, scalar vel_y = 0.0,
-                                    scalar vel_ang = 0.0, SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
-          : WeakForm::MatrixFormVol(i, j, sym), nu(nu), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang),
-            gt(gt), order_increase(order_increase) { }
+        DefaultLinearMagnetostatics(int i, int j, scalar nu = 1.0, SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
+            : WeakForm::MatrixFormVol(i, j, sym), nu(nu), gt(gt), order_increase(order_increase) { }
 
         DefaultLinearMagnetostatics(int i, int j, std::string area, scalar nu = 1.0, scalar gamma = 0.0, scalar vel_x = 0.0, scalar vel_y = 0.0,
                                     scalar vel_ang = 0.0, SymFlag sym = HERMES_SYM, GeomType gt = HERMES_PLANAR, int order_increase = 3)
-          : WeakForm::MatrixFormVol(i, j, sym, area), nu(nu), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang),
-            gt(gt), order_increase(order_increase) { }
+            : WeakForm::MatrixFormVol(i, j, sym, area), nu(nu), gt(gt), order_increase(order_increase) { }
 
         virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u,
                              Func<double> *v, Geom<double> *e, ExtData<scalar> *ext) const {
@@ -150,11 +160,7 @@ public:
             else if (gt == HERMES_AXISYM_Y)
                 axisym_part = int_u_dvdx_over_x_check<double, scalar>(n, wt, u, v, e);
 
-            if (gamma > EPS_ZERO)
-              for (int i = 0; i < n; i++)
-                velocity_part += wt[i] * u->val[i] * ((vel_x - e->y[i] * vel_ang) * v->dx[i] + (vel_y + e->x[i] * vel_ang) * v->dy[i]);
-
-            return nu * (planar_part + axisym_part) - gamma * velocity_part;
+            return nu * (planar_part + axisym_part);
         }
 
         virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
@@ -164,7 +170,7 @@ public:
             // This increase is for the axisymmetric part. We are not letting the
             // Ord class do it since it would automatically choose the highest order
             // due to the nonpolynomial 1/r term.
-            return planar_part * velocity_part * Ord(order_increase);
+            return planar_part * Ord(order_increase);
         }
 
         // This is to make the form usable in rk_time_step().
@@ -173,90 +179,85 @@ public:
         }
 
     private:
-        scalar nu, gamma, vel_x, vel_y, vel_ang;
+        scalar nu;
         GeomType gt;
         int order_increase;
     };
 
-    class RemanenceVectorForm : public WeakForm::VectorFormVol
+    class DefaultLinearMagnetostaticsRemanence : public WeakForm::VectorFormVol
     {
     public:
-      DefaultVectorFormConst(int i, scalar perm = 1.0, scalar rem = 0.0, rem_ang = 0.0, GeomType gt = HERMES_PLANAR)
-                   : WeakForm::VectorFormVol(i), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
+        DefaultLinearMagnetostaticsRemanence(int i, double perm, double rem, double rem_ang, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
 
-      DefaultVectorFormConst(int i, std::string area, scalar perm = 0.0, scalar rem = 0.0, rem_ang = 0.0, GeomType gt = HERMES_PLANAR)
-  : WeakForm::VectorFormVol(i, area), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
+        DefaultLinearMagnetostaticsRemanence(int i, std::string area, double perm, double rem, double rem_ang, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i, area), perm(perm), rem(rem), rem_ang(rem_ang), gt(gt) { }
 
-      virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-                           Geom<double> *e, ExtData<scalar> *ext) const {
-        scalar result = 0;
-        for (int i = 0; i < n; i++)
-          result += wt[i] * rem/(perm * MU0) * (-sin(rem/180.0 * M_PI) * v->dx[i] + cos(rem/180.0 * M_PI) * v->dy[i]);
-
-        if (gt == HERMES_PLANAR)
-          return result;
-        else
-          return -1.0*result;
-      }
-
-      virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
-              Geom<Ord> *e, ExtData<Ord> *ext) const {
-        Ord result = 0;
-        for (int i = 0; i < n; i++)
-          result += wt[i] * rem/(perm * MU0) * (-sin(rem/180.0 * M_PI) * v->dx[i] + cos(rem/180.0 * M_PI) * v->dy[i]);
-
-        return result;
-      }
-
-      // This is to make the form usable in rk_time_step().
-      virtual WeakForm::VectorFormVol* clone() {
-        return new DefaultVectorFormConst(*this);
-      }
-
-      private:
-        scalar perm, rem, rem_ang;
-        GeomType gt;
-    };
-
-    /*
-    class MatchedBoundaryMatrixFormSurf : public WeakForm::MatrixFormSurf
-    {
-    public:
-        MatchedBoundaryMatrixFormSurf(int i, int j, scalar coeff, GeomType gt = HERMES_PLANAR)
-            : WeakForm::MatrixFormSurf(i, j), coeff(coeff), gt(gt) { }
-        MatchedBoundaryMatrixFormSurf(int i, int j, std::string area, scalar coeff, GeomType gt = HERMES_PLANAR)
-            : WeakForm::MatrixFormSurf(i, j, area), coeff(coeff), gt(gt) { }
-
-        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
                              Geom<double> *e, ExtData<scalar> *ext) const {
             scalar result = 0;
-            if (gt == HERMES_PLANAR) result = int_u_v<double, scalar>(n, wt, u, v);
-            else if (gt == HERMES_AXISYM_X) result = int_y_u_v<double, scalar>(n, wt, u, v, e);
-            else result = int_x_u_v<double, scalar>(n, wt, u, v, e);
+            for (int i = 0; i < n; i++)
+                result += wt[i] * rem/perm * (- sin(rem_ang / 180.0 * M_PI) * v->dx[i]
+                                              + cos(rem_ang / 180.0 * M_PI) * v->dy[i]);
 
-            SceneLabelMagneticMarker *labelMagneticMarker = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->elem_marker)]->marker);
-            return coeff / (labelMagneticMarker->density.number * labelMagneticMarker->speed.number) * result;
+            return (gt == HERMES_PLANAR ? -1.0 : 1.0) * result;
         }
 
-        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u,
-                        Func<Ord> *v, Geom<Ord> *e, ExtData<Ord> *ext) const {
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
+                        Geom<Ord> *e, ExtData<Ord> *ext) const {
             Ord result = 0;
-            if (gt == HERMES_PLANAR) result = int_u_v<Ord, Ord>(n, wt, u, v);
-            else if (gt == HERMES_AXISYM_X) result = int_y_u_v<Ord, Ord>(n, wt, u, v, e);
-            else result = int_x_u_v<Ord, Ord>(n, wt, u, v, e);
+            for (int i = 0; i < n; i++)
+                result += wt[i] * (v->dx[i] + v->dy[i]);
+
             return result;
         }
 
         // This is to make the form usable in rk_time_step().
-        virtual WeakForm::MatrixFormSurf* clone() {
-            return new MatchedBoundaryMatrixFormSurf(*this);
+        virtual WeakForm::VectorFormVol* clone() {
+            return new DefaultLinearMagnetostaticsRemanence(*this);
         }
 
     private:
-        scalar coeff;
+        double perm, rem, rem_ang;
         GeomType gt;
     };
-    */
+
+    class DefaultLinearMagnetostaticsVelocity : public WeakForm::MatrixFormVol
+    {
+    public:
+        DefaultLinearMagnetostaticsVelocity(int i, int j, double gamma, double vel_x, double vel_y, scalar vel_ang = 0.0)
+            : WeakForm::MatrixFormVol(i, j), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang) { }
+
+        DefaultLinearMagnetostaticsVelocity(int i, int j, std::string area, double gamma, double vel_x, double vel_y, scalar vel_ang = 0.0)
+            : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM, area), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang) { }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            scalar result = 0;
+            for (int i = 0; i < n; i++)
+                result += wt[i] * u->val[i] * ((vel_x - e->y[i] * vel_ang) * v->dx[i] +
+                                               (vel_y + e->x[i] * vel_ang) * v->dy[i]);
+
+            return - gamma * result;
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
+                        Geom<Ord> *e, ExtData<Ord> *ext) const {
+            Ord result = 0;
+            for (int i = 0; i < n; i++)
+                result += wt[i] * u->val[i] * (v->dx[i] + v->dy[i]);
+
+            return result;
+        }
+
+        // This is to make the form usable in rk_time_step().
+        virtual WeakForm::MatrixFormVol* clone() {
+            return new DefaultLinearMagnetostaticsVelocity(*this);
+        }
+
+    private:
+        double gamma, vel_x, vel_y, vel_ang;
+    };
 };
 
 /*
