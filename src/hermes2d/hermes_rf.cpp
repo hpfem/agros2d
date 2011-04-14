@@ -57,7 +57,10 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
     // FIXME: pro port zadavat z GUI
     int mode;
     if (rfEdge[e->edge_marker].mode == TEMode_0)
+    {
         mode = 1;
+        qDebug() << mode;
+    }
     else
         mode = 0;
 
@@ -66,7 +69,7 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
     double height = rfEdge[e->edge_marker].height;
 
     double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
-    qDebug() << mode;
+
 
     return - beta * int_u_v<Real, Scalar>(n, wt, u, v);
 }
@@ -107,21 +110,27 @@ Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Rea
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
     double K = 0.0;
     double E0z = 0.0;
-    int mode = 1;
-    double lenght = 0.0229;
+    double beta = 0.0;
+    int mode = 0;
+    double lenght = 0.0229; // FIX automaticky
 
-    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-
-    switch (mode)
+    switch (rfEdge[e->edge_marker].mode)
     {
-    case 1:
-        E0z=  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+    case TEMode_0:
+        {
+           mode = 1;
+           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+           E0z =  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+        }
+
         break;
-    case 2:
+    case TEMode_1:
       /*  {int i;
         int lenght_cnt = sqrt(sqr(e->x[i+1] - e->x[i]) + sqr(e->y[i+1] - e->y[i]));
         E0z=  rfEdge[e->edge_marker].value_real * cos((lenght_cnt * M_PI) / (rfEdge[e->edge_marker].height));
         break;}*/
+    case TEMode_2:
+        break;
     default:
         break;
     }
@@ -155,19 +164,22 @@ Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
     double K = 0.0;
     double E0z = 0.0;
-    int mode = 1;
+    double beta = 0.0;
+    int mode = 0;
     double lenght = 0.0229;
 
-    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-
-    switch (mode)
+    switch (rfEdge[e->edge_marker].mode)
     {
-    case 1:
-        E0z=  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+    case TEMode_0:
+        {
+           mode = 1;
+           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+           E0z =  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+        }
         break;
-    case 2:
+    case TEMode_1:
         break;
-    case 3:
+    case TEMode_2:
         break;
     default:
         break;
