@@ -100,7 +100,7 @@ Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Fun
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    //return 0.0;
+ //   return 0.0;
     // dodelat clen  + 2*j*beta*E0z
     // kde E0z je podle mode
     // pro mode = 1 => pulvlna sinusovky
@@ -113,6 +113,8 @@ Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Rea
     double beta = 0.0;
     int mode = 0;
     double lenght = 0.0229; // FIX automaticky
+    //int i;
+    //int lenght_cnt = sqrt(sqr(e->x[i+1] - e->x[i]) + sqr(e->y[i+1] - e->y[i]));
 
     switch (rfEdge[e->edge_marker].mode)
     {
@@ -125,11 +127,18 @@ Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Rea
 
         break;
     case TEMode_1:
-      /*  {int i;
-        int lenght_cnt = sqrt(sqr(e->x[i+1] - e->x[i]) + sqr(e->y[i+1] - e->y[i]));
-        E0z=  rfEdge[e->edge_marker].value_real * cos((lenght_cnt * M_PI) / (rfEdge[e->edge_marker].height));
-        break;}*/
+        {
+           mode = 1;
+           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+           E0z =  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+        }
+        break;
     case TEMode_2:
+        {
+           mode = 1;
+           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+           E0z =  0;
+        }
         break;
     default:
         break;
@@ -178,8 +187,18 @@ Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
         }
         break;
     case TEMode_1:
+        {
+           mode = 1;
+           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+           E0z =  0;
+        }
         break;
     case TEMode_2:
+        {
+           mode = 1;
+           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+           E0z =  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+        }
         break;
     default:
         break;
