@@ -27,6 +27,8 @@ struct RFEdge
     TEMode mode;
     double value_real;
     double value_imag;
+    double power;
+    double phase;
     double height;
     Point start;
     Point end;
@@ -48,8 +50,8 @@ RFLabel *rfLabel;
 template<typename Real, typename Scalar>
 Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (!(rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MatchedBoundary
-       || rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port))
+    if (!(rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MatchedBoundary ||
+          rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port))
         return 0.0;
 
     double mu = rfLabel[e->elem_marker].permeability * MU0;
@@ -70,15 +72,14 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
 
     double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
 
-
-    return - beta * int_u_v<Real, Scalar>(n, wt, u, v);
+    return beta * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
 Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-    if (!(rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MatchedBoundary
-       || rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port))
+    if (!(rfEdge[e->edge_marker].type == PhysicFieldBC_RF_MatchedBoundary ||
+          rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port))
         return 0.0;
 
     double mu = rfLabel[e->elem_marker].permeability * MU0;
@@ -90,17 +91,20 @@ Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Fun
     else
         mode = 0;
     //double height = 0.01016;
-   // double height = rfEdge[e->edge_marker].height;
+    // double height = rfEdge[e->edge_marker].height;
 
     double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
 
-    return beta * int_u_v<Real, Scalar>(n, wt, u, v);
+    return - beta * int_u_v<Real, Scalar>(n, wt, u, v);
 }
 
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
- //   return 0.0;
+    if (rfEdge[e->edge_marker].type != PhysicFieldBC_RF_Port)
+        return 0.0;
+
+    //   return 0.0;
     // dodelat clen  + 2*j*beta*E0z
     // kde E0z je podle mode
     // pro mode = 1 => pulvlna sinusovky
@@ -108,109 +112,119 @@ Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Rea
 
     double mu = rfLabel[e->elem_marker].permeability * MU0;
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
-    double K = 0.0;
-    double E0z = 0.0;
+    Scalar E0z = 0.0;
     double beta = 0.0;
     int mode = 0;
-    double lenght = 0.0229; // FIX automaticky
-    //int i;
-    //int lenght_cnt = sqrt(sqr(e->x[i+1] - e->x[i]) + sqr(e->y[i+1] - e->y[i]));
+    Scalar length = sqrt(sqr(rfEdge[e->edge_marker].end.x - rfEdge[e->edge_marker].start.x) +
+                         sqr(rfEdge[e->edge_marker].end.y - rfEdge[e->edge_marker].start.y));
 
-    switch (rfEdge[e->edge_marker].mode)
+    Scalar result = 0;
+    for (int i = 0; i < n; i++)
     {
-    case TEMode_0:
+        Scalar lengthPoint = sqrt(sqr(e->x[i] - rfEdge[e->edge_marker].start.x) +
+                                  sqr(e->y[i] - rfEdge[e->edge_marker].start.y));
+
+        switch (rfEdge[e->edge_marker].mode)
         {
-           mode = 1;
-           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-           E0z =  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+        case TEMode_0:
+        {
+            mode = 1;
+            beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            E0z =  rfEdge[e->edge_marker].power * sin((lengthPoint * M_PI) / length);
         }
 
-        break;
-    case TEMode_1:
+            break;
+        case TEMode_1:
         {
-           mode = 1;
-           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-           E0z =  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+            mode = 1;
+            beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            E0z =  rfEdge[e->edge_marker].power * cos((lengthPoint * M_PI) / (rfEdge[e->edge_marker].height));
         }
-        break;
-    case TEMode_2:
+            break;
+        case TEMode_2:
         {
-           mode = 1;
-           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-           E0z =  0;
+            mode = 1;
+            beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            E0z =  0;
         }
-        break;
-    default:
-        break;
+            break;
+        default:
+            break;
+        }
+
+        E0z *= sin(rfEdge[e->edge_marker].phase / 180.0 * M_PI);
+
+        if (isPlanar)
+            result += wt[i] * E0z * 2 * beta * (v->val[i]);
+        else
+            result += 2 * M_PI * wt[i] * E0z * 2 * beta * (e->x[i] * v->val[i]);
     }
 
-    if (rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port)
-        K = E0z * 2 * beta;
-
-    if (isPlanar)
-        return K * int_v<Real, Scalar>(n, wt, v);
-    else
-        return K * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
+    return result;
 }
 
 template<typename Real, typename Scalar>
 Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
-   // return 0.0;
-    /*
-    double K = 0.0;
-
-    if (rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port)
-        K = rfEdge[e->edge_marker].value_imag;
-
-    if (isPlanar)
-        return K * int_v<Real, Scalar>(n, wt, v);
-    else
+    if (rfEdge[e->edge_marker].type != PhysicFieldBC_RF_Port)
         return 0.0;
-    */
+
+    //   return 0.0;
+    // dodelat clen  + 2*j*beta*E0z
+    // kde E0z je podle mode
+    // pro mode = 1 => pulvlna sinusovky
+    // e->x[i]
 
     double mu = rfLabel[e->elem_marker].permeability * MU0;
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
-    double K = 0.0;
-    double E0z = 0.0;
+    Scalar E0z = 0.0;
     double beta = 0.0;
     int mode = 0;
-    double lenght = 0.0229;
+    Scalar length = sqrt(sqr(rfEdge[e->edge_marker].end.x - rfEdge[e->edge_marker].start.x) +
+                         sqr(rfEdge[e->edge_marker].end.y - rfEdge[e->edge_marker].start.y));
 
-    switch (rfEdge[e->edge_marker].mode)
+    Scalar result = 0;
+    for (int i = 0; i < n; i++)
     {
-    case TEMode_0:
+        Scalar lengthPoint = sqrt(sqr(e->x[i] - rfEdge[e->edge_marker].start.x) +
+                                  sqr(e->y[i] - rfEdge[e->edge_marker].start.y));
+
+        switch (rfEdge[e->edge_marker].mode)
         {
-           mode = 1;
-           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-           E0z =  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
-        }
-        break;
-    case TEMode_1:
+        case TEMode_0:
         {
-           mode = 1;
-           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-           E0z =  0;
+            mode = 1;
+            beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            E0z =  rfEdge[e->edge_marker].power * sin((lengthPoint * M_PI) / length);
         }
-        break;
-    case TEMode_2:
+
+            break;
+        case TEMode_1:
         {
-           mode = 1;
-           beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-           E0z =  rfEdge[e->edge_marker].value_real * cos((lenght * M_PI) / (rfEdge[e->edge_marker].height));
+            mode = 1;
+            beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            E0z =  rfEdge[e->edge_marker].power * cos((lengthPoint * M_PI) / (rfEdge[e->edge_marker].height));
         }
-        break;
-    default:
-        break;
+            break;
+        case TEMode_2:
+        {
+            mode = 1;
+            beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            E0z =  0;
+        }
+            break;
+        default:
+            break;
+        }
+
+        E0z *= - cos(rfEdge[e->edge_marker].phase / 180.0 * M_PI);
+
+        if (isPlanar)
+            result += wt[i] * E0z * 2 * beta * (v->val[i]);
+        else
+            result += 2 * M_PI * wt[i] * E0z * 2 * beta * (e->x[i] * v->val[i]);
     }
-
-    if (rfEdge[e->edge_marker].type == PhysicFieldBC_RF_Port)
-        K = E0z * 2 * beta;
-
-    if (isPlanar)
-        return K * int_v<Real, Scalar>(n, wt, v);
-    else
-        return K * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
+    return result;
 }
 
 template<typename Real, typename Scalar>
@@ -280,7 +294,7 @@ Scalar rf_vector_form_real(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
     Scalar result = 0 ;
     int u = 0;
     for (int i = 0; i < n; i++)
-      result += wt[i] * (rfLabel[e->elem_marker].current_density_imag * v->val[i]);
+        result += wt[i] * (rfLabel[e->elem_marker].current_density_imag * v->val[i]);
 
     return - 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * result;
 }
@@ -300,7 +314,7 @@ Scalar rf_vector_form_imag(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v
     Scalar result = 0 ;
     int u = 0;
     for (int i = 0; i < n; i++)
-      result += wt[i] * (rfLabel[e->elem_marker].current_density_real * v->val[i]);
+        result += wt[i] * (rfLabel[e->elem_marker].current_density_real * v->val[i]);
 
 
     return 2 * M_PI * frequency * (rfLabel[e->elem_marker].permeability * MU0) * result;
@@ -371,14 +385,19 @@ void HermesRF::readEdgeMarkerFromDomElement(QDomElement *element)
         break;
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
+        Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
+                                                           type,
+                                                           Value(element->attribute("value_real", "0")),
+                                                           Value(element->attribute("value_imag", "0"))));
+        break;
     case PhysicFieldBC_RF_Port:
         Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
                                                            type,
                                                            mode,
-                                                           Value(element->attribute("value_real", "0")),
-                                                           Value(element->attribute("value_imag", "0"))));
+                                                           Value(element->attribute("power", "0")),
+                                                           Value(element->attribute("phase", "0")),
+                                                           Value(element->attribute("height", "0"))));
         break;
-
     case PhysicFieldBC_RF_MatchedBoundary:
         Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
                                                            type,
@@ -400,10 +419,14 @@ void HermesRF::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker
     {
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
-    case PhysicFieldBC_RF_Port:
         element->setAttribute("value_real", edgeRFMarker->value_real.text);
         element->setAttribute("value_imag", edgeRFMarker->value_imag.text);
+        break;
+    case PhysicFieldBC_RF_Port:
+        element->setAttribute("power", edgeRFMarker->power.text);
+        element->setAttribute("phase", edgeRFMarker->phase.text);
         element->setAttribute("mode", teModeToStringKey(edgeRFMarker->mode));
+        element->setAttribute("height", edgeRFMarker->height.text);
         break;
     case PhysicFieldBC_RF_MatchedBoundary:
         element->setAttribute("height", edgeRFMarker->height.text);
@@ -475,13 +498,13 @@ SceneEdgeMarker *HermesRF::newEdgeMarker()
 {
     return new SceneEdgeRFMarker(tr("new boundary"),
                                  PhysicFieldBC_RF_ElectricField,
-                                 TEMode_0,
                                  Value("0"),
                                  Value("0"));
 }
 
 SceneEdgeMarker *HermesRF::newEdgeMarker(PyObject *self, PyObject *args)
 {
+    // FIXME - parse
     double value1, value2, height;
     char *name, *type, *mode;
     if (PyArg_ParseTuple(args, "sssdd|d", &name, &type, &mode, &value1, &value2, &height))
@@ -489,16 +512,23 @@ SceneEdgeMarker *HermesRF::newEdgeMarker(PyObject *self, PyObject *args)
         // check name
         if (Util::scene()->getEdgeMarker(name)) return NULL;
 
-        if (physicFieldBCFromStringKey(type) == (PhysicFieldBC_RF_ElectricField || PhysicFieldBC_RF_MagneticField || PhysicFieldBC_RF_Port))
-        return new SceneEdgeRFMarker(name,
-                                     physicFieldBCFromStringKey(type),
-                                     teModeFromStringKey(mode),
-                                     Value(QString::number(value1)),
-                                     Value(QString::number(value2)));
+        if (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_ElectricField ||
+                physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_MagneticField)
+            return new SceneEdgeRFMarker(name,
+                                         physicFieldBCFromStringKey(type),
+                                         Value(QString::number(value1)),
+                                         Value(QString::number(value2)));
+        if (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_Port)
+            return new SceneEdgeRFMarker(name,
+                                         physicFieldBCFromStringKey(type),
+                                         teModeFromStringKey(mode),
+                                         Value(QString::number(value1)),
+                                         Value(QString::number(value2)),
+                                         Value(QString::number(height)));
         if (physicFieldBCFromStringKey(type) == (PhysicFieldBC_RF_MatchedBoundary))
-        return new SceneEdgeRFMarker(name,
-                                     physicFieldBCFromStringKey(type),
-                                     Value(QString::number(height)));
+            return new SceneEdgeRFMarker(name,
+                                         physicFieldBCFromStringKey(type),
+                                         Value(QString::number(height)));
 
     }
 
@@ -507,6 +537,7 @@ SceneEdgeMarker *HermesRF::newEdgeMarker(PyObject *self, PyObject *args)
 
 SceneEdgeMarker *HermesRF::modifyEdgeMarker(PyObject *self, PyObject *args)
 {
+    // FIXME - parse
     double value1, value2, height;
     char *name, *type, *mode;
     if (PyArg_ParseTuple(args, "sssdd|d", &name, &type, &mode, &value1, &value2, &height))
@@ -524,7 +555,9 @@ SceneEdgeMarker *HermesRF::modifyEdgeMarker(PyObject *self, PyObject *args)
                 return NULL;
             }
 
-                    if (physicFieldBCFromStringKey(type) == (PhysicFieldBC_RF_ElectricField || PhysicFieldBC_RF_MagneticField || PhysicFieldBC_RF_Port))
+            if (physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_ElectricField ||
+                    physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_MagneticField ||
+                    physicFieldBCFromStringKey(type) == PhysicFieldBC_RF_Port)
             {
                 marker->value_real = Value(QString::number(value1));
                 marker->value_imag = Value(QString::number(value2));
@@ -703,6 +736,8 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
     rfEdge[0].type = PhysicFieldBC_None;
     rfEdge[0].value_real = 0.0;
     rfEdge[0].value_imag = 0.0;
+    rfEdge[0].power = 0.0;
+    rfEdge[0].phase = 0.0;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
         if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
@@ -723,6 +758,8 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
             rfEdge[i+1].mode = edgeRFMarker->mode;
             rfEdge[i+1].value_real = edgeRFMarker->value_real.number;
             rfEdge[i+1].value_imag = edgeRFMarker->value_imag.number;
+            rfEdge[i+1].power = edgeRFMarker->power.number;
+            rfEdge[i+1].phase = edgeRFMarker->phase.number;
             rfEdge[i+1].height = edgeRFMarker->height.number;
             rfEdge[i+1].start = Util::scene()->edges[i]->nodeStart->point;
             rfEdge[i+1].end = Util::scene()->edges[i]->nodeEnd->point;
@@ -745,6 +782,10 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
                 bcTypesImag.add_bc_neumann(i+1);
                 break;
             case PhysicFieldBC_RF_MatchedBoundary:
+                bcTypesReal.add_bc_newton(i+1);
+                bcTypesImag.add_bc_newton(i+1);
+                break;
+            case PhysicFieldBC_RF_Port:
                 bcTypesReal.add_bc_newton(i+1);
                 bcTypesImag.add_bc_newton(i+1);
                 break;
@@ -1115,11 +1156,21 @@ void ViewScalarFilterRF::calculateVariable(int i)
 
 // *************************************************************************************************************************************
 
-SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, TEMode mode, Value value_real, Value value_imag) : SceneEdgeMarker(name, type)
+SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag)
+    : SceneEdgeMarker(name, type)
 {
     this->value_real = value_real;
     this->value_imag = value_imag;
+}
+
+
+SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, TEMode mode, Value power, Value phase, Value height)
+    : SceneEdgeMarker(name, type)
+{
+    this->power = power;
+    this->phase = phase;
     this->mode = mode;
+    this->height = height;
 }
 
 SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height) : SceneEdgeMarker(name, type)
@@ -1129,13 +1180,22 @@ SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Va
 
 QString SceneEdgeRFMarker::script()
 {
-    if (type == (PhysicFieldBC_RF_ElectricField || PhysicFieldBC_RF_MagneticField || PhysicFieldBC_RF_Port))
-    return QString("addboundary(\"%1\", \"%2\", \"%3\", %4, %5)").
-            arg(name).
-            arg(physicFieldBCToStringKey(type)).
-            arg(teModeToStringKey(mode)).
-            arg(value_real.text).
-            arg(value_imag.text);
+    if (type == PhysicFieldBC_RF_ElectricField ||
+            type == PhysicFieldBC_RF_MagneticField)
+        return QString("addboundary(\"%1\", \"%2\", %4, %5)").
+                arg(name).
+                arg(physicFieldBCToStringKey(type)).
+                arg(value_real.text).
+                arg(value_imag.text);
+
+    if (type == (PhysicFieldBC_RF_Port))
+        return QString("addboundary(\"%1\", \"%2\", \"%3\", %4, %5, %6)").
+                arg(name).
+                arg(physicFieldBCToStringKey(type)).
+                arg(teModeToStringKey(mode)).
+                arg(power.text).
+                arg(phase.text).
+                arg(height.text);
 
     if (type == PhysicFieldBC_RF_MatchedBoundary)
     {
@@ -1161,8 +1221,8 @@ QMap<QString, QString> SceneEdgeRFMarker::data()
         out["Magnetic field - imag (A/m)"] = value_imag.text;
         break;
     case PhysicFieldBC_RF_Port:
-        out["Port - power (W)"] = value_real.text;
-        out["Port - phase (deg.)"] = value_imag.text;
+        out["Port - power (W)"] = power.text;
+        out["Port - phase (deg.)"] = phase.text;
         break;
     case PhysicFieldBC_RF_MatchedBoundary:
         break;
@@ -1279,10 +1339,28 @@ void DSceneEdgeRFMarker::load()
     SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(m_edgeMarker);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeRFMarker->type));
-    cmbMode->setCurrentIndex(cmbMode->findData(edgeRFMarker->mode));
-    txtValueReal->setValue(edgeRFMarker->value_real);
-    txtValueImag->setValue(edgeRFMarker->value_imag);
-    txtHeight->setValue(edgeRFMarker->height);
+
+    if (edgeRFMarker->type == PhysicFieldBC_RF_Port)
+        cmbMode->setCurrentIndex(cmbMode->findData(edgeRFMarker->mode));
+
+    if (edgeRFMarker->type == PhysicFieldBC_RF_ElectricField ||
+            edgeRFMarker->type == PhysicFieldBC_RF_MagneticField)
+    {
+        txtValueReal->setValue(edgeRFMarker->value_real);
+        txtValueImag->setValue(edgeRFMarker->value_imag);
+    }
+
+    if (edgeRFMarker->type == PhysicFieldBC_RF_Port ||
+            edgeRFMarker->type == PhysicFieldBC_RF_MatchedBoundary)
+    {
+        txtHeight->setValue(edgeRFMarker->height);
+    }
+
+    if (edgeRFMarker->type == PhysicFieldBC_RF_Port)
+    {
+        txtValueReal->setValue(edgeRFMarker->power);
+        txtValueImag->setValue(edgeRFMarker->phase);
+    }
 }
 
 bool DSceneEdgeRFMarker::save() {
@@ -1293,20 +1371,55 @@ bool DSceneEdgeRFMarker::save() {
     edgeRFMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
     edgeRFMarker->mode = (TEMode) cmbMode->itemData(cmbMode->currentIndex()).toInt();
 
-    if (txtValueReal->evaluate())
-        edgeRFMarker->value_real  = txtValueReal->value();
-    else
-        return false;
+    if (edgeRFMarker->type == PhysicFieldBC_RF_ElectricField ||
+            edgeRFMarker->type == PhysicFieldBC_RF_MagneticField)
+    {
+        if (txtValueReal->evaluate())
+            edgeRFMarker->value_real  = txtValueReal->value();
+        else
+            return false;
 
-    if (txtValueImag->evaluate())
-        edgeRFMarker->value_imag  = txtValueImag->value();
+        if (txtValueImag->evaluate())
+            edgeRFMarker->value_imag  = txtValueImag->value();
+        else
+            return false;
+    }
     else
-        return false;
+    {
+        edgeRFMarker->value_real = Value();
+        edgeRFMarker->value_imag = Value();
+    }
 
-    if (txtHeight->evaluate())
-        edgeRFMarker->height  = txtHeight->value();
+    if (edgeRFMarker->type == PhysicFieldBC_RF_Port ||
+            edgeRFMarker->type == PhysicFieldBC_RF_MatchedBoundary)
+    {
+        if (txtHeight->evaluate())
+            edgeRFMarker->height  = txtHeight->value();
+        else
+            return false;
+    }
     else
-        return false;
+    {
+        edgeRFMarker->height = Value();
+    }
+
+    if (edgeRFMarker->type == PhysicFieldBC_RF_Port)
+    {
+        if (txtValueReal->evaluate())
+            edgeRFMarker->power  = txtValueReal->value();
+        else
+            return false;
+
+        if (txtValueImag->evaluate())
+            edgeRFMarker->phase = txtValueImag->value();
+        else
+            return false;
+    }
+    else
+    {
+        edgeRFMarker->power = Value();
+        edgeRFMarker->phase = Value();
+    }
 
     return true;
 }
