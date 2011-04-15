@@ -23,6 +23,7 @@
 #include "util.h"
 #include "hermes2d.h"
 #include "weakform_library/h1.h"
+#include "weakform_library/maxwell.h"
 
 #include "scene.h"
 #include "scenebasic.h"
