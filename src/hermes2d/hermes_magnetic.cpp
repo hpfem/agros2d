@@ -70,11 +70,21 @@ public:
                 // steady state and transient analysis
                 add_matrix_form(new DefaultLinearMagnetostatics(0, 0,
                                                                 QString::number(i).toStdString(),
-                                                                1.0 / (labelMagneticMarker->permeability.number * MU0), labelMagneticMarker->conductivity.number,
-                                                                labelMagneticMarker->velocity_x.number, labelMagneticMarker->velocity_y.number,
-                                                                labelMagneticMarker->velocity_angular.number, HERMES_NONSYM,
+                                                                1.0 / (labelMagneticMarker->permeability.number * MU0), HERMES_NONSYM,
                                                                 convertProblemType(Util::scene()->problemInfo()->problemType),
                                                                 (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
+
+                // velocity
+                if ((fabs(labelMagneticMarker->conductivity.number) > EPS_ZERO) &&
+                        ((fabs(labelMagneticMarker->velocity_x.number) > EPS_ZERO) ||
+                        (fabs(labelMagneticMarker->velocity_y.number) > EPS_ZERO) ||
+                        (fabs(labelMagneticMarker->velocity_angular.number) > EPS_ZERO)))
+                    add_matrix_form(new DefaultLinearMagnetostaticsVelocity(0, 0,
+                                                                            QString::number(i).toStdString(),
+                                                                            labelMagneticMarker->conductivity.number,
+                                                                            labelMagneticMarker->velocity_x.number,
+                                                                            labelMagneticMarker->velocity_y.number,
+                                                                            labelMagneticMarker->velocity_angular.number));
 
                 // external current density
                 if (fabs(labelMagneticMarker->current_density_real.number) > EPS_ZERO)
@@ -91,19 +101,7 @@ public:
                                                                              labelMagneticMarker->remanence.number,
                                                                              labelMagneticMarker->remanence_angle.number));
 
-                // velocity
-                if ((fabs(labelMagneticMarker->conductivity.number) > EPS_ZERO) &&
-                        ((fabs(labelMagneticMarker->velocity_x.number) > EPS_ZERO) ||
-                        (fabs(labelMagneticMarker->velocity_y.number) > EPS_ZERO) ||
-                        (fabs(labelMagneticMarker->velocity_angular.number) > EPS_ZERO)))
-                    add_matrix_form(new DefaultLinearMagnetostaticsVelocity(0, 0,
-                                                                            QString::number(i).toStdString(),
-                                                                            labelMagneticMarker->conductivity.number,
-                                                                            labelMagneticMarker->velocity_x.number,
-                                                                            labelMagneticMarker->velocity_y.number,
-                                                                            labelMagneticMarker->velocity_angular.number));
-
-                // harmonic analysis (velocity is not implemented)
+                // harmonic analysis
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
                 {
                     add_matrix_form(new DefaultLinearMagnetostatics(1, 1,
@@ -154,7 +152,6 @@ public:
                              Func<double> *v, Geom<double> *e, ExtData<scalar> *ext) const {
             scalar planar_part = int_grad_u_grad_v<double, scalar>(n, wt, u, v);
             scalar axisym_part = 0;
-            scalar velocity_part = 0;
             if (gt == HERMES_AXISYM_X)
                 axisym_part = int_u_dvdy_over_y<double, scalar>(n, wt, u, v, e);
             else if (gt == HERMES_AXISYM_Y)
@@ -225,10 +222,10 @@ public:
     class DefaultLinearMagnetostaticsVelocity : public WeakForm::MatrixFormVol
     {
     public:
-        DefaultLinearMagnetostaticsVelocity(int i, int j, double gamma, double vel_x, double vel_y, scalar vel_ang = 0.0)
+        DefaultLinearMagnetostaticsVelocity(int i, int j, double gamma, double vel_x, double vel_y, double vel_ang = 0.0)
             : WeakForm::MatrixFormVol(i, j), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang) { }
 
-        DefaultLinearMagnetostaticsVelocity(int i, int j, std::string area, double gamma, double vel_x, double vel_y, scalar vel_ang = 0.0)
+        DefaultLinearMagnetostaticsVelocity(int i, int j, std::string area, double gamma, double vel_x, double vel_y, double vel_ang = 0.0)
             : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM, area), gamma(gamma), vel_x(vel_x), vel_y(vel_y), vel_ang(vel_ang) { }
 
         virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *u, Func<double> *v,
@@ -238,7 +235,7 @@ public:
                 result += wt[i] * u->val[i] * ((vel_x - e->y[i] * vel_ang) * v->dx[i] +
                                                (vel_y + e->x[i] * vel_ang) * v->dy[i]);
 
-            return - gamma * result;
+            return -gamma * result;
         }
 
         virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *u, Func<Ord> *v,
