@@ -25,17 +25,17 @@
 const double PRESSURE_MIN_AIR = 20e-6;
 
 
-class WeakFormAcoustics : public WeakForm
+class WeakFormAcoustics : public WeakFormAgros
 {
 public:
-    WeakFormAcoustics() : WeakForm(2)
+    WeakFormAcoustics() : WeakFormAgros(2)
     {
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edges[i]->marker);
+            SceneBoundaryAcoustic *edgeAcousticMarker = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->edges[i]->boundary);
 
-            if (edgeAcousticMarker && Util::scene()->edges[i]->marker != Util::scene()->edgeMarkers[0])
+            if (edgeAcousticMarker && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
                 if (edgeAcousticMarker->type == PhysicFieldBC_Acoustic_NormalAcceleration)
                     if (fabs(edgeAcousticMarker->value_real.number) > EPS_ZERO)
@@ -76,9 +76,9 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labels[i]->marker);
+            SceneMaterialAcoustic *labelAcousticMarker = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->labels[i]->material);
 
-            if (labelAcousticMarker && Util::scene()->labels[i]->marker != Util::scene()->labelMarkers[0])
+            if (labelAcousticMarker && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 // real part
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
@@ -122,7 +122,7 @@ public:
             else if (gt == HERMES_AXISYM_X) result = int_y_u_v<double, scalar>(n, wt, u, v, e);
             else result = int_x_u_v<double, scalar>(n, wt, u, v, e);
 
-            SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->elem_marker)]->marker);
+            SceneMaterialAcoustic *labelAcousticMarker = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterial(e->elem_marker)]->material);
             return coeff / (labelAcousticMarker->density.number * labelAcousticMarker->speed.number) * result;
         }
 
@@ -315,29 +315,29 @@ PhysicFieldVariable HermesAcoustic::vectorPhysicFieldVariable()
 }
 
 
-void HermesAcoustic::readEdgeMarkerFromDomElement(QDomElement *element)
+void HermesAcoustic::readBoundaryFromDomElement(QDomElement *element)
 {
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
     {
     case PhysicFieldBC_None:
     case PhysicFieldBC_Acoustic_Pressure:
-        Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
+        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
                                                                  type,
                                                                  Value(element->attribute("pressure", "0"))));
         break;
     case PhysicFieldBC_Acoustic_NormalAcceleration:
-        Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
+        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
                                                                  type,
                                                                  Value(element->attribute("acceleration", "0"))));
         break;
     case PhysicFieldBC_Acoustic_Impedance:
-        Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
+        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
                                                                  type,
                                                                  Value(element->attribute("impedance", "0"))));
         break;
     case PhysicFieldBC_Acoustic_MatchedBoundary:
-        Util::scene()->addEdgeMarker(new SceneEdgeAcousticMarker(element->attribute("name"),
+        Util::scene()->addBoundary(new SceneBoundaryAcoustic(element->attribute("name"),
                                                                  type));
         break;
     default:
@@ -346,9 +346,9 @@ void HermesAcoustic::readEdgeMarkerFromDomElement(QDomElement *element)
     }
 }
 
-void HermesAcoustic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+void HermesAcoustic::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
-    SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(marker);
+    SceneBoundaryAcoustic *edgeAcousticMarker = dynamic_cast<SceneBoundaryAcoustic *>(marker);
 
     element->setAttribute("type", physicFieldBCToStringKey(edgeAcousticMarker->type));
 
@@ -372,16 +372,16 @@ void HermesAcoustic::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdge
 
 }
 
-void HermesAcoustic::readLabelMarkerFromDomElement(QDomElement *element)
+void HermesAcoustic::readMaterialFromDomElement(QDomElement *element)
 {
-    Util::scene()->addLabelMarker(new SceneLabelAcousticMarker(element->attribute("name"),
+    Util::scene()->addMaterial(new SceneMaterialAcoustic(element->attribute("name"),
                                                                Value(element->attribute("density", "1.25")),
                                                                Value(element->attribute("speed", "343"))));
 }
 
-void HermesAcoustic::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+void HermesAcoustic::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
-    SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(marker);
+    SceneMaterialAcoustic *labelAcousticMarker = dynamic_cast<SceneMaterialAcoustic *>(marker);
 
     element->setAttribute("density", labelAcousticMarker->density.text);
     element->setAttribute("speed", labelAcousticMarker->speed.text);
@@ -423,27 +423,27 @@ QStringList HermesAcoustic::volumeIntegralValueHeader()
     return QStringList(headers);
 }
 
-SceneEdgeMarker *HermesAcoustic::newEdgeMarker()
+SceneBoundary *HermesAcoustic::newBoundary()
 {
-    return new SceneEdgeAcousticMarker(tr("new boundary"),
+    return new SceneBoundaryAcoustic(tr("new boundary"),
                                        PhysicFieldBC_Acoustic_Pressure,
                                        Value("0"));
 }
 
-SceneEdgeMarker *HermesAcoustic::newEdgeMarker(PyObject *self, PyObject *args)
+SceneBoundary *HermesAcoustic::newBoundary(PyObject *self, PyObject *args)
 {
     double pressure;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ss|d", &name, &type, &pressure))
     {
         // check name
-        if (Util::scene()->getEdgeMarker(name)) return NULL;
+        if (Util::scene()->getBoundary(name)) return NULL;
 
         if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Acoustic_MatchedBoundary)
-            return new SceneEdgeAcousticMarker(name,
+            return new SceneBoundaryAcoustic(name,
                                                physicFieldBCFromStringKey(type));
         else
-            return new SceneEdgeAcousticMarker(name,
+            return new SceneBoundaryAcoustic(name,
                                                physicFieldBCFromStringKey(type),
                                                Value(QString::number(pressure)));
     }
@@ -451,13 +451,13 @@ SceneEdgeMarker *HermesAcoustic::newEdgeMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneEdgeMarker *HermesAcoustic::modifyEdgeMarker(PyObject *self, PyObject *args)
+SceneBoundary *HermesAcoustic::modifyBoundary(PyObject *self, PyObject *args)
 {
     double pressure;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &pressure))
     {
-        if (SceneEdgeAcousticMarker *marker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->getEdgeMarker(name)))
+        if (SceneBoundaryAcoustic *marker = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->getBoundary(name)))
         {
             if (physicFieldBCFromStringKey(type))
             {
@@ -484,23 +484,23 @@ SceneEdgeMarker *HermesAcoustic::modifyEdgeMarker(PyObject *self, PyObject *args
     return NULL;
 }
 
-SceneLabelMarker *HermesAcoustic::newLabelMarker()
+SceneMaterial *HermesAcoustic::newMaterial()
 {
-    return new SceneLabelAcousticMarker(tr("new material"),
+    return new SceneMaterialAcoustic(tr("new material"),
                                         Value("1.25"),
                                         Value("343"));
 }
 
-SceneLabelMarker *HermesAcoustic::newLabelMarker(PyObject *self, PyObject *args)
+SceneMaterial *HermesAcoustic::newMaterial(PyObject *self, PyObject *args)
 {
     double density, speed;
     char *name;
     if (PyArg_ParseTuple(args, "sdd", &name, &density, &speed))
     {
         // check name
-        if (Util::scene()->getLabelMarker(name)) return NULL;
+        if (Util::scene()->getMaterial(name)) return NULL;
 
-        return new SceneLabelAcousticMarker(name,
+        return new SceneMaterialAcoustic(name,
                                             Value(QString::number(density)),
                                             Value(QString::number(speed)));
     }
@@ -508,13 +508,13 @@ SceneLabelMarker *HermesAcoustic::newLabelMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneLabelMarker *HermesAcoustic::modifyLabelMarker(PyObject *self, PyObject *args)
+SceneMaterial *HermesAcoustic::modifyMaterial(PyObject *self, PyObject *args)
 {
     double density, speed;
     char *name;
     if (PyArg_ParseTuple(args, "sdd", &name, &density, &speed))
     {
-        if (SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->getLabelMarker(name)))
+        if (SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->getMaterial(name)))
         {
             marker->density = Value(QString::number(density));
             marker->speed = Value(QString::number(speed));
@@ -654,18 +654,18 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
     }
 
     // edge markers
-    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
-        SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edgeMarkers[i]);
+        SceneBoundaryAcoustic *edgeAcousticMarker = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->boundaries[i]);
 
         // evaluate script
         if (!edgeAcousticMarker->value_real.evaluate()) return QList<SolutionArray *>();
     }
 
     // label markers
-    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
-        SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(Util::scene()->labelMarkers[i]);
+        SceneMaterialAcoustic *labelAcousticMarker = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->materials[i]);
 
         // evaluate script
         if (!labelAcousticMarker->density.evaluate()) return QList<SolutionArray *>();
@@ -677,7 +677,7 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
     EssentialBCs bc2;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edges[i]->marker);
+        SceneBoundaryAcoustic *edgeAcousticMarker = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->edges[i]->boundary);
 
         if (edgeAcousticMarker)
         {
@@ -697,21 +697,21 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
     return solutionArrayList;
 }
 
-void HermesAcoustic::updateTimeFunctions(double time)
+void HermesAcoustic::updateTimeFunctions(WeakFormAgros *wf, double time)
 {
     // update markers
-    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
-        SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edgeMarkers[i]);
+        SceneBoundaryAcoustic *edgeAcousticMarker = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->boundaries[i]);
         edgeAcousticMarker->value_real.evaluate(time);
     }
     // set values
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        if (Util::scene()->edges[i]->marker->type == PhysicFieldBC_Acoustic_Pressure ||
-                Util::scene()->edges[i]->marker->type == PhysicFieldBC_Acoustic_NormalAcceleration)
+        if (Util::scene()->edges[i]->boundary->type == PhysicFieldBC_Acoustic_Pressure ||
+                Util::scene()->edges[i]->boundary->type == PhysicFieldBC_Acoustic_NormalAcceleration)
         {
-            SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(Util::scene()->edges[i]->marker);
+            SceneBoundaryAcoustic *edgeAcousticMarker = dynamic_cast<SceneBoundaryAcoustic *>(Util::scene()->edges[i]->boundary);
             // FIXME
             // acousticEdge[i+1].value = edgeAcousticMarker->value_real.number;
         }
@@ -733,9 +733,9 @@ LocalPointValueAcoustic::LocalPointValueAcoustic(const Point &point) : LocalPoin
     if (Util::scene()->sceneSolution()->isSolved())
     {
         // value real
-        PointValue valueReal = PointValue(value, derivative, labelMarker);
+        PointValue valueReal = PointValue(value, derivative, material);
 
-        SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(valueReal.marker);
+        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(valueReal.marker);
         // solution
         if (marker)
         {            
@@ -852,7 +852,7 @@ SurfaceIntegralValueAcoustic::SurfaceIntegralValueAcoustic() : SurfaceIntegralVa
 
 void SurfaceIntegralValueAcoustic::calculateVariables(int i)
 {
-    SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(labelMarker);
+    SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
 }
 
 QStringList SurfaceIntegralValueAcoustic::variables()
@@ -873,7 +873,7 @@ VolumeIntegralValueAcoustic::VolumeIntegralValueAcoustic() : VolumeIntegralValue
 
 void VolumeIntegralValueAcoustic::calculateVariables(int i)
 {
-    SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(labelMarker);
+    SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
 }
 
 void VolumeIntegralValueAcoustic::initSolutions()
@@ -923,7 +923,7 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Acoustic_LocalVelocity:
     {
-        SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(labelMarker);
+        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
 
         switch (m_physicFieldVariableComp)
         {
@@ -947,7 +947,7 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Acoustic_LocalAcceleration:
     {
-        SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(labelMarker);
+        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
 
         switch (m_physicFieldVariableComp)
         {
@@ -971,13 +971,13 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Acoustic_Density:
     {
-        SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(labelMarker);
+        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
         node->values[0][0][i] = marker->density.number;
     }
         break;
     case PhysicFieldVariable_Acoustic_Speed:
     {
-        SceneLabelAcousticMarker *marker = dynamic_cast<SceneLabelAcousticMarker *>(labelMarker);
+        SceneMaterialAcoustic *marker = dynamic_cast<SceneMaterialAcoustic *>(material);
         node->values[0][0][i] = marker->speed.number;
     }
         break;
@@ -990,16 +990,16 @@ void ViewScalarFilterAcoustic::calculateVariable(int i)
 
 // *************************************************************************************************************************************
 
-SceneEdgeAcousticMarker::SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real) : SceneEdgeMarker(name, type)
+SceneBoundaryAcoustic::SceneBoundaryAcoustic(const QString &name, PhysicFieldBC type, Value value_real) : SceneBoundary(name, type)
 {
     this->value_real = value_real;
 }
 
-SceneEdgeAcousticMarker::SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type) : SceneEdgeMarker(name, type)
+SceneBoundaryAcoustic::SceneBoundaryAcoustic(const QString &name, PhysicFieldBC type) : SceneBoundary(name, type)
 {
 }
 
-QString SceneEdgeAcousticMarker::script()
+QString SceneBoundaryAcoustic::script()
 {
     return QString("addboundary(\"%1\", \"%2\", %3)").
             arg(name).
@@ -1007,7 +1007,7 @@ QString SceneEdgeAcousticMarker::script()
             arg(value_real.text);
 }
 
-QMap<QString, QString> SceneEdgeAcousticMarker::data()
+QMap<QString, QString> SceneBoundaryAcoustic::data()
 {
     QMap<QString, QString> out;
     switch (type)
@@ -1027,22 +1027,22 @@ QMap<QString, QString> SceneEdgeAcousticMarker::data()
     return QMap<QString, QString>(out);
 }
 
-int SceneEdgeAcousticMarker::showDialog(QWidget *parent)
+int SceneBoundaryAcoustic::showDialog(QWidget *parent)
 {
-    DSceneEdgeAcousticMarker *dialog = new DSceneEdgeAcousticMarker(this, parent);
+    SceneBoundaryAcousticDialog *dialog = new SceneBoundaryAcousticDialog(this, parent);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-SceneLabelAcousticMarker::SceneLabelAcousticMarker(const QString &name, Value density, Value speed)
-    : SceneLabelMarker(name)
+SceneMaterialAcoustic::SceneMaterialAcoustic(const QString &name, Value density, Value speed)
+    : SceneMaterial(name)
 {
     this->density = density;
     this->speed = speed;
 }
 
-QString SceneLabelAcousticMarker::script()
+QString SceneMaterialAcoustic::script()
 {
     return QString("addmaterial(\"%1\", %2, %3)").
             arg(name).
@@ -1050,7 +1050,7 @@ QString SceneLabelAcousticMarker::script()
             arg(speed.text);
 }
 
-QMap<QString, QString> SceneLabelAcousticMarker::data()
+QMap<QString, QString> SceneMaterialAcoustic::data()
 {
     QMap<QString, QString> out;
     out["Density (-)"] = density.text;
@@ -1058,17 +1058,17 @@ QMap<QString, QString> SceneLabelAcousticMarker::data()
     return QMap<QString, QString>(out);
 }
 
-int SceneLabelAcousticMarker::showDialog(QWidget *parent)
+int SceneMaterialAcoustic::showDialog(QWidget *parent)
 {
-    DSceneLabelAcousticMarker *dialog = new DSceneLabelAcousticMarker(parent, this);
+    SceneMaterialAcousticDialog *dialog = new SceneMaterialAcousticDialog(parent, this);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-DSceneEdgeAcousticMarker::DSceneEdgeAcousticMarker(SceneEdgeAcousticMarker *edgeAcousticMarker, QWidget *parent) : DSceneEdgeMarker(parent)
+SceneBoundaryAcousticDialog::SceneBoundaryAcousticDialog(SceneBoundaryAcoustic *edgeAcousticMarker, QWidget *parent) : SceneBoundaryDialog(parent)
 {
-    m_edgeMarker = edgeAcousticMarker;
+    m_boundary = edgeAcousticMarker;
 
     createDialog();
 
@@ -1076,7 +1076,7 @@ DSceneEdgeAcousticMarker::DSceneEdgeAcousticMarker(SceneEdgeAcousticMarker *edge
     setSize();
 }
 
-void DSceneEdgeAcousticMarker::createContent()
+void SceneBoundaryAcousticDialog::createContent()
 {
     lblValueUnit = new QLabel("");
 
@@ -1104,20 +1104,20 @@ void DSceneEdgeAcousticMarker::createContent()
     layout->addWidget(txtValue, 11, 2);
 }
 
-void DSceneEdgeAcousticMarker::load()
+void SceneBoundaryAcousticDialog::load()
 {
-    DSceneEdgeMarker::load();
+    SceneBoundaryDialog::load();
 
-    SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(m_edgeMarker);
+    SceneBoundaryAcoustic *edgeAcousticMarker = dynamic_cast<SceneBoundaryAcoustic *>(m_boundary);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeAcousticMarker->type));
     txtValue->setValue(edgeAcousticMarker->value_real);
 }
 
-bool DSceneEdgeAcousticMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
+bool SceneBoundaryAcousticDialog::save() {
+    if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneEdgeAcousticMarker *edgeAcousticMarker = dynamic_cast<SceneEdgeAcousticMarker *>(m_edgeMarker);
+    SceneBoundaryAcoustic *edgeAcousticMarker = dynamic_cast<SceneBoundaryAcoustic *>(m_boundary);
 
     edgeAcousticMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
@@ -1129,7 +1129,7 @@ bool DSceneEdgeAcousticMarker::save() {
     return true;
 }
 
-void DSceneEdgeAcousticMarker::doTypeChanged(int index)
+void SceneBoundaryAcousticDialog::doTypeChanged(int index)
 {
     txtValue->setEnabled(false);
 
@@ -1173,9 +1173,9 @@ void DSceneEdgeAcousticMarker::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-DSceneLabelAcousticMarker::DSceneLabelAcousticMarker(QWidget *parent, SceneLabelAcousticMarker *labelAcousticMarker) : DSceneLabelMarker(parent)
+SceneMaterialAcousticDialog::SceneMaterialAcousticDialog(QWidget *parent, SceneMaterialAcoustic *labelAcousticMarker) : SceneMaterialDialog(parent)
 {
-    m_labelMarker = labelAcousticMarker;
+    m_material = labelAcousticMarker;
 
     createDialog();
 
@@ -1183,7 +1183,7 @@ DSceneLabelAcousticMarker::DSceneLabelAcousticMarker(QWidget *parent, SceneLabel
     setSize();
 }
 
-void DSceneLabelAcousticMarker::createContent()
+void SceneMaterialAcousticDialog::createContent()
 {
     txtDensity = new ValueLineEdit(this);
     txtSpeed = new ValueLineEdit(this);
@@ -1199,20 +1199,20 @@ void DSceneLabelAcousticMarker::createContent()
     layout->addWidget(txtSpeed, 11, 2);
 }
 
-void DSceneLabelAcousticMarker::load()
+void SceneMaterialAcousticDialog::load()
 {
-    DSceneLabelMarker::load();
+    SceneMaterialDialog::load();
 
-    SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(m_labelMarker);
+    SceneMaterialAcoustic *labelAcousticMarker = dynamic_cast<SceneMaterialAcoustic *>(m_material);
 
     txtDensity->setValue(labelAcousticMarker->density);
     txtSpeed->setValue(labelAcousticMarker->speed);
 }
 
-bool DSceneLabelAcousticMarker::save() {
-    if (!DSceneLabelMarker::save()) return false;;
+bool SceneMaterialAcousticDialog::save() {
+    if (!SceneMaterialDialog::save()) return false;;
 
-    SceneLabelAcousticMarker *labelAcousticMarker = dynamic_cast<SceneLabelAcousticMarker *>(m_labelMarker);
+    SceneMaterialAcoustic *labelAcousticMarker = dynamic_cast<SceneMaterialAcoustic *>(m_material);
 
     if (txtDensity->evaluate())
         labelAcousticMarker->density  = txtDensity->value();

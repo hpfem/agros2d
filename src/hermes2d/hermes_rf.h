@@ -34,10 +34,10 @@ public:
     inline bool hasHarmonic() const { return true; }
     inline bool hasTransient() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
     LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
@@ -68,12 +68,12 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Current_density_real ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Current_density_imag); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
@@ -146,7 +146,7 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeRFMarker : public SceneEdgeMarker
+class SceneEdgeRFMarker : public SceneBoundary
 {
 public:
     Value value_real;
@@ -163,7 +163,7 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelRFMarker : public SceneLabelMarker
+class SceneLabelRFMarker : public SceneMaterial
 {
 public:
     Value permittivity;
@@ -179,7 +179,7 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeRFMarker : public DSceneEdgeMarker
+class DSceneEdgeRFMarker : public SceneBoundaryDialog
 {
     Q_OBJECT
 
@@ -204,7 +204,7 @@ private slots:
     void doTypeChanged(int index);
 };
 
-class DSceneLabelRFMarker : public DSceneLabelMarker
+class DSceneLabelRFMarker : public SceneMaterialDialog
 {
     Q_OBJECT
 

@@ -24,7 +24,7 @@
 #include "hermes2d.h"
 
 class Scene;
-class SceneLabelMarker;
+class SceneMaterial;
 
 class ViewScalarFilter;
 
@@ -51,7 +51,7 @@ public:
     void setMeshInitial(Mesh *meshInitial);
 
     // get marker
-    inline int agrosLabelMarker(int marker) { return conversion_table_labels[marker]; }
+    inline int agrosMaterial(int marker) { return conversion_table_labels[marker]; }
     inline int agrosBoundaryMarker(int marker) { return conversion_table_boundaries[marker]; }
 
     // solution

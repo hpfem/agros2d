@@ -66,14 +66,14 @@ int SceneNode::showDialog(QWidget *parent, bool isNew)
 
 // *************************************************************************************************************************************
 
-SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *marker, double angle, int refineTowardsEdge)
+SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *marker, double angle, int refineTowardsEdge)
     : SceneBasic()
 {
     logMessage("SceneEdge::SceneEdge()");
 
     this->nodeStart = nodeStart;
     this->nodeEnd = nodeEnd;
-    this->marker = marker;
+    this->boundary = marker;
     this->angle = angle;
     this->refineTowardsEdge = refineTowardsEdge;
 }
@@ -151,19 +151,19 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
 {
     logMessage("SceneEdge::showDialog()");
 
-    DSceneEdge *dialog = new DSceneEdge(this, parent, isNew);
+    SceneEdgeDialog *dialog = new SceneEdgeDialog(this, parent, isNew);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-SceneLabel::SceneLabel(const Point &point, SceneLabelMarker *marker, double area, int polynomialOrder)
+SceneLabel::SceneLabel(const Point &point, SceneMaterial *marker, double area, int polynomialOrder)
     : SceneBasic()
 {
     logMessage("SceneLabel::SceneLabel()");
 
     this->point = point;
-    this->marker = marker;
+    this->material = marker;
     this->area = area;
     this->polynomialOrder = polynomialOrder;
 }
@@ -348,7 +348,7 @@ void DSceneNode::doEditingFinished()
 
 // *************************************************************************************************************************************
 
-DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
+SceneEdgeDialog::SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
 {
     logMessage("DSceneEdge::DSceneEdge()");
 
@@ -365,7 +365,7 @@ DSceneEdge::DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew) : DSceneBas
     // setMaximumSize(sizeHint());
 }
 
-QLayout* DSceneEdge::createContent()
+QLayout* SceneEdgeDialog::createContent()
 {
     logMessage("DSceneEdge::createContent()");
 
@@ -373,8 +373,8 @@ QLayout* DSceneEdge::createContent()
     cmbNodeEnd = new QComboBox();
     connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
     connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
-    cmbMarker = new QComboBox();
-    connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
+    cmbBoundary = new QComboBox();
+    connect(cmbBoundary, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
     btnMarker = new QPushButton(icon("three-dots"), "");
     btnMarker->setMaximumSize(btnMarker->sizeHint());
     connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
@@ -398,7 +398,7 @@ QLayout* DSceneEdge::createContent()
 
     // marker
     QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(cmbMarker);
+    layoutMarker->addWidget(cmbBoundary);
     layoutMarker->addWidget(btnMarker);
 
     // refine towards edge
@@ -429,7 +429,7 @@ QLayout* DSceneEdge::createContent()
     return layout;
 }
 
-void DSceneEdge::fillComboBox()
+void SceneEdgeDialog::fillComboBox()
 {
     logMessage("DSceneEdge::fillComboBox()");
 
@@ -451,14 +451,14 @@ void DSceneEdge::fillComboBox()
     }
 
     // markers
-    cmbMarker->clear();
-    for (int i = 0; i<Util::scene()->edgeMarkers.count(); i++)
+    cmbBoundary->clear();
+    for (int i = 0; i<Util::scene()->boundaries.count(); i++)
     {
-        cmbMarker->addItem(Util::scene()->edgeMarkers[i]->name, Util::scene()->edgeMarkers[i]->variant());
+        cmbBoundary->addItem(Util::scene()->boundaries[i]->name, Util::scene()->boundaries[i]->variant());
     }
 }
 
-bool DSceneEdge::load()
+bool SceneEdgeDialog::load()
 {
     logMessage("DSceneEdge::load()");
 
@@ -466,7 +466,7 @@ bool DSceneEdge::load()
 
     cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart->variant()));
     cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd->variant()));
-    cmbMarker->setCurrentIndex(cmbMarker->findData(sceneEdge->marker->variant()));
+    cmbBoundary->setCurrentIndex(cmbBoundary->findData(sceneEdge->boundary->variant()));
     txtAngle->setNumber(sceneEdge->angle);
     chkRefineTowardsEdge->setChecked(sceneEdge->refineTowardsEdge > 0.0);
     txtRefineTowardsEdge->setEnabled(chkRefineTowardsEdge->isChecked());
@@ -477,7 +477,7 @@ bool DSceneEdge::load()
     return true;
 }
 
-bool DSceneEdge::save()
+bool SceneEdgeDialog::save()
 {
     logMessage("DSceneEdge::save()");
 
@@ -514,33 +514,33 @@ bool DSceneEdge::save()
 
     sceneEdge->nodeStart = nodeStart;
     sceneEdge->nodeEnd = nodeEnd;
-    sceneEdge->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
+    sceneEdge->boundary = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     sceneEdge->angle = txtAngle->number();
     sceneEdge->refineTowardsEdge = chkRefineTowardsEdge->isChecked() ? txtRefineTowardsEdge->value() : 0;
 
     return true;
 }
 
-void DSceneEdge::doMarkerChanged(int index)
+void SceneEdgeDialog::doMarkerChanged(int index)
 {
     logMessage("DSceneEdge::doMarkerChanged()");
 
-    btnMarker->setEnabled(cmbMarker->currentIndex() > 0);
+    btnMarker->setEnabled(cmbBoundary->currentIndex() > 0);
 }
 
-void DSceneEdge::doMarkerClicked()
+void SceneEdgeDialog::doMarkerClicked()
 {
     logMessage("DSceneEdge::doMarkerClicked()");
 
-    SceneEdgeMarker *marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneEdgeMarker *>();
+    SceneBoundary *marker = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
-        cmbMarker->setItemText(cmbMarker->currentIndex(), marker->name);
+        cmbBoundary->setItemText(cmbBoundary->currentIndex(), marker->name);
         Util::scene()->refresh();
     }
 }
 
-void DSceneEdge::doNodeChanged()
+void SceneEdgeDialog::doNodeChanged()
 {
     logMessage("DSceneEdge::doNodeChanged()");
 
@@ -557,13 +557,13 @@ void DSceneEdge::doNodeChanged()
         else
         {
             // arc
-            SceneEdge edge(nodeStart, nodeEnd, Util::scene()->edgeMarkers[0], txtAngle->number(), 0);
+            SceneEdge edge(nodeStart, nodeEnd, Util::scene()->boundaries[0], txtAngle->number(), 0);
             lblLength->setText(QString("%1 m").arg(edge.radius() * edge.angle / 180.0 * M_PI));
         }
     }
 }
 
-void DSceneEdge::doRefineTowardsEdge(int state)
+void SceneEdgeDialog::doRefineTowardsEdge(int state)
 {
     logMessage("DSceneLabel::doRefineTowardsEdge()");
 
@@ -667,9 +667,9 @@ void DSceneLabel::fillComboBox()
 
     // markers
     cmbMarker->clear();
-    for (int i = 0; i<Util::scene()->labelMarkers.count(); i++)
+    for (int i = 0; i<Util::scene()->materials.count(); i++)
     {
-        cmbMarker->addItem(Util::scene()->labelMarkers[i]->name, Util::scene()->labelMarkers[i]->variant());
+        cmbMarker->addItem(Util::scene()->materials[i]->name, Util::scene()->materials[i]->variant());
     }
 }
 
@@ -681,7 +681,7 @@ bool DSceneLabel::load()
 
     txtPointX->setNumber(sceneLabel->point.x);
     txtPointY->setNumber(sceneLabel->point.y);
-    cmbMarker->setCurrentIndex(cmbMarker->findData(sceneLabel->marker->variant()));
+    cmbMarker->setCurrentIndex(cmbMarker->findData(sceneLabel->material->variant()));
     txtArea->setNumber(sceneLabel->area);
     chkArea->setChecked(sceneLabel->area > 0.0);
     txtArea->setEnabled(chkArea->isChecked());
@@ -729,7 +729,7 @@ bool DSceneLabel::save()
     }
 
     sceneLabel->point = point;
-    sceneLabel->marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
+    sceneLabel->material = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneMaterial *>();
     sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
     sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
 
@@ -747,7 +747,7 @@ void DSceneLabel::doMarkerClicked()
 {
     logMessage("DSceneLabel::doMarkerClicked()");
 
-    SceneLabelMarker *marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneLabelMarker *>();
+    SceneMaterial *marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneMaterial *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
         cmbMarker->setItemText(cmbMarker->currentIndex(), marker->name);
@@ -878,9 +878,9 @@ void SceneLabelCommandAdd::redo()
 {
     logMessage("SceneLabelCommandAdd::redo()");
 
-    SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(m_markerName);
-    if (labelMarker == NULL) labelMarker = Util::scene()->labelMarkers[0];
-    Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area, m_polynomialOrder));
+    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
+    if (material == NULL) material = Util::scene()->materials[0];
+    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
 }
 
 SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QString &markerName, double area, int polynomialOrder, QUndoCommand *parent) : QUndoCommand(parent)
@@ -897,9 +897,9 @@ void SceneLabelCommandRemove::undo()
 {
     logMessage("SceneLabelCommandRemove::undo()");
 
-    SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(m_markerName);
-    if (labelMarker == NULL) labelMarker = Util::scene()->labelMarkers[0];
-    Util::scene()->addLabel(new SceneLabel(m_point, labelMarker, m_area, m_polynomialOrder));
+    SceneMaterial *material = Util::scene()->getMaterial(m_markerName);
+    if (material == NULL) material = Util::scene()->materials[0];
+    Util::scene()->addLabel(new SceneLabel(m_point, material, m_area, m_polynomialOrder));
 }
 
 void SceneLabelCommandRemove::redo()
@@ -966,11 +966,11 @@ void SceneEdgeCommandAdd::redo()
 {
     logMessage("SceneEdgeCommandAdd::redo()");
 
-    SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(m_markerName);
-    if (edgeMarker == NULL) edgeMarker = Util::scene()->edgeMarkers[0];
+    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
+    if (boundary == NULL) boundary = Util::scene()->boundaries[0];
     Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
                                          Util::scene()->addNode(new SceneNode(m_pointEnd)),
-                                         edgeMarker,
+                                         boundary,
                                          m_angle,
                                          m_refineTowardsEdge));
 }
@@ -991,11 +991,11 @@ void SceneEdgeCommandRemove::undo()
 {
     logMessage("SceneEdgeCommandRemove::undo()");
 
-    SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(m_markerName);
-    if (edgeMarker == NULL) edgeMarker = Util::scene()->edgeMarkers[0];
+    SceneBoundary *boundary = Util::scene()->getBoundary(m_markerName);
+    if (boundary == NULL) boundary = Util::scene()->boundaries[0];
     Util::scene()->addEdge(new SceneEdge(Util::scene()->addNode(new SceneNode(m_pointStart)),
                                          Util::scene()->addNode(new SceneNode(m_pointEnd)),
-                                         edgeMarker,
+                                         boundary,
                                          m_angle,
                                          m_refineTowardsEdge));
 }

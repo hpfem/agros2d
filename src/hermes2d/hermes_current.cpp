@@ -22,7 +22,7 @@
 #include "scene.h"
 #include "gui.h"
 
-class WeakFormCurrent : public WeakForm
+class WeakFormCurrent : public WeakFormAgros
 {
 public:
     WeakFormCurrent()
@@ -30,9 +30,9 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->marker);
+            SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->boundary);
 
-            if (edgeCurrentMarker && Util::scene()->edges[i]->marker != Util::scene()->edgeMarkers[0])
+            if (edgeCurrentMarker && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
                 if (edgeCurrentMarker->type == PhysicFieldBC_Current_InwardCurrentFlow)
                     if (fabs(edgeCurrentMarker->value.number) > EPS_ZERO)
@@ -46,9 +46,9 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[i]->marker);
+            SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labels[i]->material);
 
-            if (labelCurrentMarker && Util::scene()->labels[i]->marker != Util::scene()->labelMarkers[0])
+            if (labelCurrentMarker && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
                                                                                                QString::number(i).toStdString(),
@@ -62,7 +62,7 @@ public:
 
 // *******************************************************************************************************
 
-void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
+void HermesCurrent::readBoundaryFromDomElement(QDomElement *element)
 {
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
@@ -70,7 +70,7 @@ void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
     case PhysicFieldBC_None:
     case PhysicFieldBC_Current_Potential:
     case PhysicFieldBC_Current_InwardCurrentFlow:
-        Util::scene()->addEdgeMarker(new SceneEdgeCurrentMarker(element->attribute("name"),
+        Util::scene()->addBoundary(new SceneEdgeCurrentMarker(element->attribute("name"),
                                                                 type,
                                                                 Value(element->attribute("value", "0"))));
         break;
@@ -80,7 +80,7 @@ void HermesCurrent::readEdgeMarkerFromDomElement(QDomElement *element)
     }
 }
 
-void HermesCurrent::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+void HermesCurrent::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
     SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(marker);
 
@@ -88,13 +88,13 @@ void HermesCurrent::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeM
     element->setAttribute("value", edgeCurrentMarker->value.text);
 }
 
-void HermesCurrent::readLabelMarkerFromDomElement(QDomElement *element)
+void HermesCurrent::readMaterialFromDomElement(QDomElement *element)
 {
-    Util::scene()-> addLabelMarker(new SceneLabelCurrentMarker(element->attribute("name"),
+    Util::scene()-> addMaterial(new SceneLabelCurrentMarker(element->attribute("name"),
                                                                Value(element->attribute("conductivity", "0"))));
 }
 
-void HermesCurrent::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+void HermesCurrent::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
     SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(marker);
 
@@ -137,21 +137,21 @@ QStringList HermesCurrent::volumeIntegralValueHeader()
     return QStringList(headers);
 }
 
-SceneEdgeMarker *HermesCurrent::newEdgeMarker()
+SceneBoundary *HermesCurrent::newBoundary()
 {
     return new SceneEdgeCurrentMarker(tr("new boundary condition"),
                                       PhysicFieldBC_Current_Potential,
                                       Value("0"));
 }
 
-SceneEdgeMarker *HermesCurrent::newEdgeMarker(PyObject *self, PyObject *args)
+SceneBoundary *HermesCurrent::newBoundary(PyObject *self, PyObject *args)
 {
     double value;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
     {
         // check name
-        if (Util::scene()->getEdgeMarker(name)) return NULL;
+        if (Util::scene()->getBoundary(name)) return NULL;
 
         return new SceneEdgeCurrentMarker(name,
                                           physicFieldBCFromStringKey(type),
@@ -161,13 +161,13 @@ SceneEdgeMarker *HermesCurrent::newEdgeMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneEdgeMarker *HermesCurrent::modifyEdgeMarker(PyObject *self, PyObject *args)
+SceneBoundary *HermesCurrent::modifyBoundary(PyObject *self, PyObject *args)
 {
     double value;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd", &name, &type, &value))
     {
-        if (SceneEdgeCurrentMarker *marker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->getEdgeMarker(name)))
+        if (SceneEdgeCurrentMarker *marker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->getBoundary(name)))
         {
             if (physicFieldBCFromStringKey(type))
             {
@@ -189,20 +189,20 @@ SceneEdgeMarker *HermesCurrent::modifyEdgeMarker(PyObject *self, PyObject *args)
     }
 }
 
-SceneLabelMarker *HermesCurrent::newLabelMarker()
+SceneMaterial *HermesCurrent::newMaterial()
 {
     return new SceneLabelCurrentMarker(tr("new material"),
                                        Value("57e6"));
 }
 
-SceneLabelMarker *HermesCurrent::newLabelMarker(PyObject *self, PyObject *args)
+SceneMaterial *HermesCurrent::newMaterial(PyObject *self, PyObject *args)
 {
     double conductivity;
     char *name;
     if (PyArg_ParseTuple(args, "sd", &name, &conductivity))
     {
         // check name
-        if (Util::scene()->getLabelMarker(name)) return NULL;
+        if (Util::scene()->getMaterial(name)) return NULL;
 
         return new SceneLabelCurrentMarker(name,
                                            Value(QString::number(conductivity)));
@@ -211,13 +211,13 @@ SceneLabelMarker *HermesCurrent::newLabelMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneLabelMarker *HermesCurrent::modifyLabelMarker(PyObject *self, PyObject *args)
+SceneMaterial *HermesCurrent::modifyMaterial(PyObject *self, PyObject *args)
 {
     double conductivity;
     char *name;
     if (PyArg_ParseTuple(args, "sd", &name, &conductivity))
     {
-        if (SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->getLabelMarker(name)))
+        if (SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->getMaterial(name)))
         {
             marker->conductivity = Value(QString::number(conductivity));
             return marker;
@@ -304,18 +304,18 @@ ViewScalarFilter *HermesCurrent::viewScalarFilter(PhysicFieldVariable physicFiel
 QList<SolutionArray *> HermesCurrent::solve(ProgressItemSolve *progressItemSolve)
 {
     // edge markers
-    for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
-        SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edgeMarkers[i]);
+        SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->boundaries[i]);
 
         // evaluate script
         if (!edgeCurrentMarker->value.evaluate()) return QList<SolutionArray *>();
     }
 
     // label markers
-    for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+    for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
-        SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->labelMarkers[i]);
+        SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(Util::scene()->materials[i]);
 
         // evaluate script
         if (!labelCurrentMarker->conductivity.evaluate()) return QList<SolutionArray *>();
@@ -325,7 +325,7 @@ QList<SolutionArray *> HermesCurrent::solve(ProgressItemSolve *progressItemSolve
     EssentialBCs bcs;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->marker);
+        SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(Util::scene()->edges[i]->boundary);
 
         if (edgeCurrentMarker)
         {
@@ -354,7 +354,7 @@ LocalPointValueCurrent::LocalPointValueCurrent(const Point &point) : LocalPointV
 
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        if (labelMarker != NULL)
+        if (material != NULL)
         {
             // potential
             potential = value;
@@ -363,7 +363,7 @@ LocalPointValueCurrent::LocalPointValueCurrent(const Point &point) : LocalPointV
             E.x = -derivative.x;
             E.y = -derivative.y;
 
-            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(material);
 
             conductivity = marker->conductivity.number;
 
@@ -467,7 +467,7 @@ void SurfaceIntegralValueCurrent::calculateVariables(int i)
 {
     if (boundary)
     {
-        SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+        SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(material);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             current -= pt[i][2] * tan[i][2] * marker->conductivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
@@ -496,7 +496,7 @@ VolumeIntegralValueCurrent::VolumeIntegralValueCurrent() : VolumeIntegralValue()
 void VolumeIntegralValueCurrent::calculateVariables(int i)
 {
     result = 0.0;
-    SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+    SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(material);
     if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
     {
         h1_integrate_expression(marker->conductivity.number * (sqr(dudx1[i]) + sqr(dudy1[i])));
@@ -558,7 +558,7 @@ void ViewScalarFilterCurrent::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Current_CurrentDensity:
         {
-            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(material);
 
             switch (m_physicFieldVariableComp)
             {
@@ -582,13 +582,13 @@ void ViewScalarFilterCurrent::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Current_Losses:
         {
-            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(material);
             node->values[0][0][i] = marker->conductivity.number * (sqr(dudx1[i]) + sqr(dudy1[i]));
         }
         break;
     case PhysicFieldVariable_Current_Conductivity:
         {
-            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(labelMarker);
+            SceneLabelCurrentMarker *marker = dynamic_cast<SceneLabelCurrentMarker *>(material);
             node->values[0][0][i] = marker->conductivity.number;
         }
         break;
@@ -601,7 +601,7 @@ void ViewScalarFilterCurrent::calculateVariable(int i)
 
 // *************************************************************************************************************************************
 
-SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, Value value) : SceneEdgeMarker(name, type)
+SceneEdgeCurrentMarker::SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, Value value) : SceneBoundary(name, type)
 {
     this->value = value;
 }
@@ -631,13 +631,13 @@ QMap<QString, QString> SceneEdgeCurrentMarker::data()
 
 int SceneEdgeCurrentMarker::showDialog(QWidget *parent)
 {
-    DSceneEdgeCurrentMarker *dialog = new DSceneEdgeCurrentMarker(this, parent);
+    SceneBoundaryCurrentDialog *dialog = new SceneBoundaryCurrentDialog(this, parent);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, Value conductivity) : SceneLabelMarker(name)
+SceneLabelCurrentMarker::SceneLabelCurrentMarker(const QString &name, Value conductivity) : SceneMaterial(name)
 {
     this->conductivity = conductivity;
 }
@@ -658,15 +658,15 @@ QMap<QString, QString> SceneLabelCurrentMarker::data()
 
 int SceneLabelCurrentMarker::showDialog(QWidget *parent)
 {
-    DSceneLabelCurrentMarker *dialog = new DSceneLabelCurrentMarker(parent, this);
+    SceneMaterialCurrentDialog *dialog = new SceneMaterialCurrentDialog(parent, this);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-DSceneEdgeCurrentMarker::DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent) : DSceneEdgeMarker(parent)
+SceneBoundaryCurrentDialog::SceneBoundaryCurrentDialog(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent) : SceneBoundaryDialog(parent)
 {
-    m_edgeMarker = edgeCurrentMarker;
+    m_boundary = edgeCurrentMarker;
 
     createDialog();
 
@@ -674,7 +674,7 @@ DSceneEdgeCurrentMarker::DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCur
     setSize();
 }
 
-void DSceneEdgeCurrentMarker::createContent()
+void SceneBoundaryCurrentDialog::createContent()
 {
     lblValueUnit = new QLabel("");
 
@@ -695,20 +695,20 @@ void DSceneEdgeCurrentMarker::createContent()
     layout->addWidget(txtValue, 11, 2);
 }
 
-void DSceneEdgeCurrentMarker::load()
+void SceneBoundaryCurrentDialog::load()
 {
-    DSceneEdgeMarker::load();
+    SceneBoundaryDialog::load();
 
-    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
+    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_boundary);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeCurrentMarker->type));
     txtValue->setValue(edgeCurrentMarker->value);
 }
 
-bool DSceneEdgeCurrentMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
+bool SceneBoundaryCurrentDialog::save() {
+    if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_edgeMarker);
+    SceneEdgeCurrentMarker *edgeCurrentMarker = dynamic_cast<SceneEdgeCurrentMarker *>(m_boundary);
 
     edgeCurrentMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
@@ -720,7 +720,7 @@ bool DSceneEdgeCurrentMarker::save() {
     return true;
 }
 
-void DSceneEdgeCurrentMarker::doTypeChanged(int index)
+void SceneBoundaryCurrentDialog::doTypeChanged(int index)
 {
     txtValue->setEnabled(false);
 
@@ -751,9 +751,9 @@ void DSceneEdgeCurrentMarker::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-DSceneLabelCurrentMarker::DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker) : DSceneLabelMarker(parent)
+SceneMaterialCurrentDialog::SceneMaterialCurrentDialog(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker) : SceneMaterialDialog(parent)
 {
-    m_labelMarker = labelCurrentMarker;
+    m_material = labelCurrentMarker;
 
     createDialog();
 
@@ -761,7 +761,7 @@ DSceneLabelCurrentMarker::DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCu
     setSize();
 }
 
-void DSceneLabelCurrentMarker::createContent()
+void SceneMaterialCurrentDialog::createContent()
 {
     txtConductivity = new ValueLineEdit(this);
     txtConductivity->setMinimumSharp(0.0);
@@ -772,20 +772,20 @@ void DSceneLabelCurrentMarker::createContent()
     layout->addWidget(txtConductivity, 10, 2);
 }
 
-void DSceneLabelCurrentMarker::load()
+void SceneMaterialCurrentDialog::load()
 {
-    DSceneLabelMarker::load();
+    SceneMaterialDialog::load();
 
-    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
+    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_material);
 
     txtConductivity->setValue(labelCurrentMarker->conductivity);
 }
 
-bool DSceneLabelCurrentMarker::save()
+bool SceneMaterialCurrentDialog::save()
 {
-    if (!DSceneLabelMarker::save()) return false;;
+    if (!SceneMaterialDialog::save()) return false;;
 
-    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_labelMarker);
+    SceneLabelCurrentMarker *labelCurrentMarker = dynamic_cast<SceneLabelCurrentMarker *>(m_material);
 
     if (txtConductivity->evaluate())
         labelCurrentMarker->conductivity  = txtConductivity->value();

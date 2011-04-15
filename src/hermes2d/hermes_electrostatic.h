@@ -34,10 +34,10 @@ public:
     inline bool hasHarmonic() const { return false; }
     inline bool hasTransient() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
     LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
@@ -56,12 +56,12 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Electrostatic_EnergyDensity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Electrostatic_Permittivity); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
@@ -144,36 +144,36 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeElectrostaticMarker : public SceneEdgeMarker
+class SceneBoundaryElectrostatic : public SceneBoundary
 {
 public:
     Value value;
 
-    SceneEdgeElectrostaticMarker(const QString &name, PhysicFieldBC type, Value value);
+    SceneBoundaryElectrostatic(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelElectrostaticMarker : public SceneLabelMarker
+class SceneMaterialElectrostatic : public SceneMaterial
 {
 public:
     Value charge_density;
     Value permittivity;
 
-    SceneLabelElectrostaticMarker(const QString &name, Value charge_density, Value permittivity);
+    SceneMaterialElectrostatic(const QString &name, Value charge_density, Value permittivity);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeElectrostaticMarker : public DSceneEdgeMarker
+class SceneBoundaryElectrostaticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 public:
-    DSceneEdgeElectrostaticMarker(SceneEdgeElectrostaticMarker *edgeElectrostaticMarker, QWidget *parent);
+    SceneBoundaryElectrostaticDialog(SceneBoundaryElectrostatic *material, QWidget *parent);
 
 protected:
     void createContent();
@@ -190,11 +190,11 @@ private slots:
     void doTypeChanged(int index);
 };
 
-class DSceneLabelElectrostaticMarker : public DSceneLabelMarker
+class SceneMaterialElectrostaticDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 public:
-    DSceneLabelElectrostaticMarker(QWidget *parent, SceneLabelElectrostaticMarker *labelElectrostaticMarker);
+    SceneMaterialElectrostaticDialog(QWidget *parent, SceneMaterialElectrostatic *material);
 
 protected:
     void createContent();

@@ -167,7 +167,7 @@ SolutionArray *solutionArray(Solution *sln, Space *space = NULL, double adaptive
 
 QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                          Hermes::vector<EssentialBCs> bcs,
-                                         WeakForm *wf)
+                                         WeakFormAgros *wf)
 {
     int polynomialOrder = Util::scene()->problemInfo()->polynomialOrder;
     AdaptivityType adaptivityType = Util::scene()->problemInfo()->adaptivityType;
@@ -226,7 +226,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
         // set order by element
         for (int j = 0; j < Util::scene()->labels.count(); j++)
-            if (Util::scene()->labels[j]->marker != Util::scene()->labelMarkers[0])
+            if (Util::scene()->labels[j]->material != Util::scene()->materials[0])
                 space.at(i)->set_uniform_order(Util::scene()->labels[j]->polynomialOrder > 0 ? Util::scene()->labels[j]->polynomialOrder : polynomialOrder,
                                                QString::number(j).toStdString());
 
@@ -416,7 +416,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
         {
             // set actual time
             actualTime = (n+1)*timeStep;
-            Util::scene()->problemInfo()->hermes()->updateTimeFunctions(actualTime);
+            Util::scene()->problemInfo()->hermes()->updateTimeFunctions(wf, actualTime);
 
             // transient
             if (timesteps > 1)
@@ -543,7 +543,7 @@ void ViewScalarFilter::precalculate(int order, int mask)
     y = refmap->get_phys_y(order);
     Element *e = refmap->get_active_element();
 
-    labelMarker = Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->marker)]->marker;
+    material = Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterial(e->marker)]->material;
 
     for (int i = 0; i < np; i++)
     {

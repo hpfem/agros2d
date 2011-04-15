@@ -34,10 +34,10 @@ public:
     bool hasHarmonic() const { return false; }
     bool hasTransient() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
     LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
@@ -61,12 +61,12 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Elasticity_StressZZ ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Elasticity_StressXY); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
@@ -151,7 +151,7 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeElasticityMarker : public SceneEdgeMarker
+class SceneEdgeElasticityMarker : public SceneBoundary
 {
 public:
     PhysicFieldBC typeX;
@@ -169,7 +169,7 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelElasticityMarker : public SceneLabelMarker
+class SceneLabelElasticityMarker : public SceneMaterial
 {
 public:
     Value young_modulus;
@@ -192,7 +192,7 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeElasticityMarker : public DSceneEdgeMarker
+class DSceneEdgeElasticityMarker : public SceneBoundaryDialog
 {
     Q_OBJECT
 
@@ -222,7 +222,7 @@ private slots:
     void doTypeYChanged(int index);
 };
 
-class DSceneLabelElasticityMarker : public DSceneLabelMarker
+class DSceneLabelElasticityMarker : public SceneMaterialDialog
 {
     Q_OBJECT
 

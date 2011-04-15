@@ -302,8 +302,8 @@ void SceneView::createMenu()
     mnuScene->addAction(m_scene->actNewEdge);
     mnuScene->addAction(m_scene->actNewLabel);
     mnuScene->addSeparator();
-    mnuScene->addAction(m_scene->actNewEdgeMarker);
-    mnuScene->addAction(m_scene->actNewLabelMarker);
+    mnuScene->addAction(m_scene->actNewBoundary);
+    mnuScene->addAction(m_scene->actNewMaterial);
     mnuScene->addSeparator();
     mnuScene->addAction(actSceneViewSelectRegion);
     mnuScene->addAction(m_scene->actTransform);
@@ -813,7 +813,7 @@ void SceneView::paintGeometry()
     foreach (SceneEdge *edge, m_scene->edges)
     {
         // edge with marker
-        if (m_sceneMode == SceneMode_OperateOnEdges && edge->marker->type == PhysicFieldBC_None)
+        if (m_sceneMode == SceneMode_OperateOnEdges && edge->boundary->type == PhysicFieldBC_None)
         {
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
@@ -945,10 +945,10 @@ void SceneView::paintGeometry()
                 glColor3d(0.1, 0.1, 0.1);
 
                 Point point;
-                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(label->marker->name)/m_scale2d/2.0;
+                point.x = 2.0/contextWidth()*aspect()*fontMetrics().width(label->material->name)/m_scale2d/2.0;
                 point.y = 2.0/contextHeight()*fontMetrics().height()/m_scale2d;
 
-                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->marker->name, false);
+                renderTextPos(label->point.x-point.x, label->point.y-point.y, 0.0, label->material->name, false);
             }
 
             // area size
@@ -2844,7 +2844,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     if (index != -1)
                     {
                         //  find label marker
-                        int labelIndex = Util::scene()->sceneSolution()->agrosLabelMarker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker);
+                        int labelIndex = Util::scene()->sceneSolution()->agrosMaterial(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker);
 
                         m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
                         updateGL();
@@ -2917,11 +2917,11 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     {
                         if (node != m_nodeLast)
                         {
-                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->edgeMarkers[0], 0, 0);
+                            SceneEdge *edge = new SceneEdge(m_nodeLast, node, m_scene->boundaries[0], 0, 0);
                             SceneEdge *edgeAdded = m_scene->addEdge(edge);
                             if (edgeAdded == edge) m_scene->undoStack()->push(new SceneEdgeCommandAdd(edge->nodeStart->point,
                                                                                                       edge->nodeEnd->point,
-                                                                                                      edge->marker->name,
+                                                                                                      edge->boundary->name,
                                                                                                       edge->angle,
                                                                                                       edge->refineTowardsEdge));
                         }
@@ -2945,10 +2945,10 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                 }
                 else
                 {
-                    SceneLabel *label = new SceneLabel(p, m_scene->labelMarkers[0], 0, 0);
+                    SceneLabel *label = new SceneLabel(p, m_scene->materials[0], 0, 0);
                     SceneLabel *labelAdded = m_scene->addLabel(label);
                     if (labelAdded == label) m_scene->undoStack()->push(new SceneLabelCommandAdd(label->point,
-                                                                                                 label->marker->name,
+                                                                                                 label->material->name,
                                                                                                  label->area,
                                                                                                  label->polynomialOrder));
                     updateGL();
@@ -3213,10 +3213,10 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                                arg(edge->nodeStart->point.y, 0, 'g', 3).
                                arg(edge->nodeEnd->point.x, 0, 'g', 3).
                                arg(edge->nodeEnd->point.y, 0, 'g', 3).
-                               arg(edge->marker->name).
+                               arg(edge->boundary->name).
                                arg(edge->angle, 0, 'f', 0).
                                arg(m_scene->edges.indexOf(edge)).
-                               arg(edge->marker->html()));
+                               arg(edge->boundary->html()));
                     updateGL();
                 }
             }
@@ -3231,11 +3231,11 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
                     setToolTip(tr("<h3>Label</h3>Point: [%1; %2]<br/>Material: %3<br/>Triangle area: %4 m<sup>2</sup><br/>Polynomial order: %5<br/>Index: %6 %7").
                                arg(label->point.x, 0, 'g', 3).
                                arg(label->point.y, 0, 'g', 3).
-                               arg(label->marker->name).
+                               arg(label->material->name).
                                arg(label->area, 0, 'g', 3).
                                arg(label->polynomialOrder).
                                arg(m_scene->labels.indexOf(label)).
-                               arg(label->marker->html()));
+                               arg(label->material->html()));
                     updateGL();
                 }
             }
@@ -3662,16 +3662,16 @@ void SceneView::doMaterialGroup(QAction *action)
 {
     logMessage("SceneView::doMaterialGroup()");
 
-    if (SceneLabelMarker *labelMarker = action->data().value<SceneLabelMarker *>())
-        m_scene->setLabelLabelMarker(labelMarker);
+    if (SceneMaterial *material = action->data().value<SceneMaterial *>())
+        m_scene->setMaterial(material);
 }
 
 void SceneView::doBoundaryGroup(QAction *action)
 {
     logMessage("SceneView::doBoundaryGroup()");
 
-    if (SceneEdgeMarker *edgeMarker = action->data().value<SceneEdgeMarker *>())
-        m_scene->setEdgeEdgeMarker(edgeMarker);
+    if (SceneBoundary *boundary = action->data().value<SceneBoundary *>())
+        m_scene->setBoundary(boundary);
 }
 
 void SceneView::doShowGroup(QAction *action)
@@ -3701,8 +3701,8 @@ void SceneView::doSceneObjectProperties()
     {
         if (m_scene->selectedCount() > 1)
         {
-            EdgeMarkerDialog edgeMarkerDialog(this);
-            edgeMarkerDialog.exec();
+            SceneBoundarySelectDialog boundaryDialog(this);
+            boundaryDialog.exec();
         }
         if (m_scene->selectedCount() == 1)
         {
@@ -3717,8 +3717,8 @@ void SceneView::doSceneObjectProperties()
     {
         if (m_scene->selectedCount() > 1)
         {
-            LabelMarkerDialog labelMarkerDialog(this);
-            labelMarkerDialog.exec();
+            SceneMaterialSelectDialog materialDialog(this);
+            materialDialog.exec();
         }
         if (m_scene->selectedCount() == 1)
         {
@@ -4008,7 +4008,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
         Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
-        if (m_scene->labels[Util::scene()->sceneSolution()->agrosLabelMarker(element->marker)]->isSelected)
+        if (m_scene->labels[Util::scene()->sceneSolution()->agrosMaterial(element->marker)]->isSelected)
         {
             if (element->is_triangle())
             {

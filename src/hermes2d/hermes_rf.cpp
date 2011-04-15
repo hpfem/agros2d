@@ -281,7 +281,7 @@ PhysicFieldVariable HermesRF::vectorPhysicFieldVariable()
 }
 
 
-void HermesRF::readEdgeMarkerFromDomElement(QDomElement *element)
+void HermesRF::readBoundaryFromDomElement(QDomElement *element)
 {
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
@@ -291,14 +291,14 @@ void HermesRF::readEdgeMarkerFromDomElement(QDomElement *element)
     case PhysicFieldBC_RF_ElectricField:
     case PhysicFieldBC_RF_MagneticField:
     case PhysicFieldBC_RF_Port:
-        Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
+        Util::scene()->addBoundary(new SceneEdgeRFMarker(element->attribute("name"),
                                                            type,
                                                            Value(element->attribute("value_real", "0")),
                                                            Value(element->attribute("value_imag", "0"))));
         break;
 
     case PhysicFieldBC_RF_MatchedBoundary:
-        Util::scene()->addEdgeMarker(new SceneEdgeRFMarker(element->attribute("name"),
+        Util::scene()->addBoundary(new SceneEdgeRFMarker(element->attribute("name"),
                                                            type,
                                                            Value(element->attribute("height", "0"))));
         break;
@@ -308,7 +308,7 @@ void HermesRF::readEdgeMarkerFromDomElement(QDomElement *element)
     }
 }
 
-void HermesRF::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+void HermesRF::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
     SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(marker);
 
@@ -331,9 +331,9 @@ void HermesRF::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker
     }
 }
 
-void HermesRF::readLabelMarkerFromDomElement(QDomElement *element)
+void HermesRF::readMaterialFromDomElement(QDomElement *element)
 {
-    Util::scene()->addLabelMarker(new SceneLabelRFMarker(element->attribute("name"),
+    Util::scene()->addMaterial(new SceneLabelRFMarker(element->attribute("name"),
                                                          Value(element->attribute("permittivity", "1")),
                                                          Value(element->attribute("permeability", "1")),
                                                          Value(element->attribute("conductivity", "0")),
@@ -341,7 +341,7 @@ void HermesRF::readLabelMarkerFromDomElement(QDomElement *element)
                                                          Value(element->attribute("current_density_imag", "0"))));
 }
 
-void HermesRF::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+void HermesRF::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
     SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(marker);
 
@@ -388,7 +388,7 @@ QStringList HermesRF::volumeIntegralValueHeader()
     return QStringList(headers);
 }
 
-SceneEdgeMarker *HermesRF::newEdgeMarker()
+SceneBoundary *HermesRF::newBoundary()
 {
     return new SceneEdgeRFMarker(tr("new boundary"),
                                  PhysicFieldBC_RF_ElectricField,
@@ -396,14 +396,14 @@ SceneEdgeMarker *HermesRF::newEdgeMarker()
                                  Value("0"));
 }
 
-SceneEdgeMarker *HermesRF::newEdgeMarker(PyObject *self, PyObject *args)
+SceneBoundary *HermesRF::newBoundary(PyObject *self, PyObject *args)
 {
     double value1, value2, height;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssdd|d", &name, &type, &value1, &value2, &height))
     {
         // check name
-        if (Util::scene()->getEdgeMarker(name)) return NULL;
+        if (Util::scene()->getBoundary(name)) return NULL;
 
         if (physicFieldBCFromStringKey(type) == (PhysicFieldBC_RF_ElectricField || PhysicFieldBC_RF_MagneticField || PhysicFieldBC_RF_Port))
         return new SceneEdgeRFMarker(name,
@@ -420,13 +420,13 @@ SceneEdgeMarker *HermesRF::newEdgeMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneEdgeMarker *HermesRF::modifyEdgeMarker(PyObject *self, PyObject *args)
+SceneBoundary *HermesRF::modifyBoundary(PyObject *self, PyObject *args)
 {
     double value1, value2, height;
     char *name, *type;
     if (PyArg_ParseTuple(args, "ssd|d", &name, &type, &value1, &value2, &height))
     {
-        if (SceneEdgeRFMarker *marker = dynamic_cast<SceneEdgeRFMarker *>(Util::scene()->getEdgeMarker(name)))
+        if (SceneEdgeRFMarker *marker = dynamic_cast<SceneEdgeRFMarker *>(Util::scene()->getBoundary(name)))
         {
             if (physicFieldBCFromStringKey(type))
             {
@@ -460,7 +460,7 @@ SceneEdgeMarker *HermesRF::modifyEdgeMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneLabelMarker *HermesRF::newLabelMarker()
+SceneMaterial *HermesRF::newMaterial()
 {
     return new SceneLabelRFMarker(tr("new material"),
                                   Value("1"),
@@ -470,14 +470,14 @@ SceneLabelMarker *HermesRF::newLabelMarker()
                                   Value("0"));
 }
 
-SceneLabelMarker *HermesRF::newLabelMarker(PyObject *self, PyObject *args)
+SceneMaterial *HermesRF::newMaterial(PyObject *self, PyObject *args)
 {
     double permittivity, permeability, conductivity, current_density_real, current_density_imag;
     char *name;
     if (PyArg_ParseTuple(args, "sddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
     {
         // check name
-        if (Util::scene()->getLabelMarker(name)) return NULL;
+        if (Util::scene()->getMaterial(name)) return NULL;
 
         return new SceneLabelRFMarker(name,
                                       Value(QString::number(permittivity)),
@@ -490,13 +490,13 @@ SceneLabelMarker *HermesRF::newLabelMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneLabelMarker *HermesRF::modifyLabelMarker(PyObject *self, PyObject *args)
+SceneMaterial *HermesRF::modifyMaterial(PyObject *self, PyObject *args)
 {
     double permittivity, permeability, conductivity, current_density_real, current_density_imag;
     char *name;
     if (PyArg_ParseTuple(args, "sddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
     {
-        if (SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(Util::scene()->getLabelMarker(name)))
+        if (SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(Util::scene()->getMaterial(name)))
         {
             marker->permittivity = Value(QString::number(permittivity));
             marker->permeability = Value(QString::number(permeability));
@@ -619,7 +619,7 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
     rfEdge[0].value_imag = 0.0;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
+        if (Util::scene()->boundaries.indexOf(Util::scene()->edges[i]->marker) == 0)
         {
             rfEdge[i+1].type = PhysicFieldBC_None;
             rfEdge[i+1].value_real = 0.0;
@@ -669,7 +669,7 @@ QList<SolutionArray *> HermesRF::solve(ProgressItemSolve *progressItemSolve)
     rfLabel = new RFLabel[Util::scene()->labels.count()];
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
+        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->marker) == 0)
         {
         }
         else
@@ -718,7 +718,7 @@ LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point
     if (Util::scene()->sceneSolution()->isSolved())
     {
         // value real
-        PointValue valueReal = PointValue(value, derivative, labelMarker);
+        PointValue valueReal = PointValue(value, derivative, material);
 
         SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(valueReal.marker);
         // solution
@@ -961,7 +961,7 @@ void ViewScalarFilterRF::calculateVariable(int i)
         break;
     case PhysicFieldVariable_RF_EnergyDensity:
     {
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             // FIX zeptat
@@ -978,7 +978,7 @@ void ViewScalarFilterRF::calculateVariable(int i)
     }
     case PhysicFieldVariable_RF_PowerLosses:
     {
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
             node->values[0][0][i] = (sqr(value1[i]) + sqr(value2[i])) * (marker->conductivity.number);
@@ -991,31 +991,31 @@ void ViewScalarFilterRF::calculateVariable(int i)
         break;
     case PhysicFieldVariable_RF_Permeability:
     {
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
         node->values[0][0][i] = marker->permeability.number;
     }
         break;
     case PhysicFieldVariable_RF_Permittivity:
     {
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
         node->values[0][0][i] = marker->permittivity.number;
     }
         break;
     case PhysicFieldVariable_RF_Conductivity:
     {
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
         node->values[0][0][i] = marker->conductivity.number;
     }
         break;
     case PhysicFieldVariable_RF_Current_density_real:
     {
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
         node->values[0][0][i] = marker->current_density_real.number;
     }
         break;
     case PhysicFieldVariable_RF_Current_density_imag:
     {
-        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(material);
         node->values[0][0][i] = marker->current_density_imag.number;
     }
         break;
@@ -1028,13 +1028,13 @@ void ViewScalarFilterRF::calculateVariable(int i)
 
 // *************************************************************************************************************************************
 
-SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag) : SceneEdgeMarker(name, type)
+SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag) : SceneBoundary(name, type)
 {
     this->value_real = value_real;
     this->value_imag = value_imag;
 }
 
-SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height) : SceneEdgeMarker(name, type)
+SceneEdgeRFMarker::SceneEdgeRFMarker(const QString &name, PhysicFieldBC type, Value height) : SceneBoundary(name, type)
 {
     this->height = height;
 }
@@ -1078,7 +1078,7 @@ int SceneEdgeRFMarker::showDialog(QWidget *parent)
 // *************************************************************************************************************************************
 
 SceneLabelRFMarker::SceneLabelRFMarker(const QString &name, Value permittivity,Value permeability, Value conductivity, Value current_density_real, Value current_density_imag)
-    : SceneLabelMarker(name)
+    : SceneMaterial(name)
 {
     this->permittivity = permittivity;
     this->permeability = permeability;
@@ -1117,9 +1117,9 @@ int SceneLabelRFMarker::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-DSceneEdgeRFMarker::DSceneEdgeRFMarker(SceneEdgeRFMarker *edgeRFMarker, QWidget *parent) : DSceneEdgeMarker(parent)
+DSceneEdgeRFMarker::DSceneEdgeRFMarker(SceneEdgeRFMarker *edgeRFMarker, QWidget *parent) : SceneBoundaryDialog(parent)
 {
-    m_edgeMarker = edgeRFMarker;
+    m_boundary = edgeRFMarker;
 
     createDialog();
 
@@ -1172,9 +1172,9 @@ void DSceneEdgeRFMarker::createContent()
 
 void DSceneEdgeRFMarker::load()
 {
-    DSceneEdgeMarker::load();
+    SceneBoundaryDialog::load();
 
-    SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(m_edgeMarker);
+    SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(m_boundary);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeRFMarker->type));
     txtValueReal->setValue(edgeRFMarker->value_real);
@@ -1183,9 +1183,9 @@ void DSceneEdgeRFMarker::load()
 }
 
 bool DSceneEdgeRFMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
+    if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(m_edgeMarker);
+    SceneEdgeRFMarker *edgeRFMarker = dynamic_cast<SceneEdgeRFMarker *>(m_boundary);
 
     edgeRFMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
@@ -1247,9 +1247,9 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-DSceneLabelRFMarker::DSceneLabelRFMarker(QWidget *parent, SceneLabelRFMarker *labelRFMarker) : DSceneLabelMarker(parent)
+DSceneLabelRFMarker::DSceneLabelRFMarker(QWidget *parent, SceneLabelRFMarker *labelRFMarker) : SceneMaterialDialog(parent)
 {
-    m_labelMarker = labelRFMarker;
+    m_material = labelRFMarker;
 
     createDialog();
 
@@ -1293,9 +1293,9 @@ void DSceneLabelRFMarker::createContent()
 
 void DSceneLabelRFMarker::load()
 {
-    DSceneLabelMarker::load();
+    SceneMaterialDialog::load();
 
-    SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(m_labelMarker);
+    SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(m_material);
 
     txtPermittivity->setValue(labelRFMarker->permittivity);
     txtPermeability->setValue(labelRFMarker->permeability);
@@ -1305,9 +1305,9 @@ void DSceneLabelRFMarker::load()
 }
 
 bool DSceneLabelRFMarker::save() {
-    if (!DSceneLabelMarker::save()) return false;;
+    if (!SceneMaterialDialog::save()) return false;;
 
-    SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(m_labelMarker);
+    SceneLabelRFMarker *labelRFMarker = dynamic_cast<SceneLabelRFMarker *>(m_material);
 
     if (txtPermittivity->evaluate())
         labelRFMarker->permittivity  = txtPermittivity->value();

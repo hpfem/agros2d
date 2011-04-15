@@ -27,7 +27,7 @@ class Quad2D;
 class RefMap;
 class Solution;
 
-class SceneLabelMarker;
+class SceneMaterial;
 
 class VolumeIntegralValue
 {
@@ -46,7 +46,7 @@ protected:
     Solution *sln1;
     Solution *sln2;
 
-    SceneLabelMarker *labelMarker;
+    SceneMaterial *material;
 
     void calculate();
     virtual void calculateVariables(int i) = 0;

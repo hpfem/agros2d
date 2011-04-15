@@ -275,8 +275,8 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
     if (angle > 180.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
-    SceneEdgeMarker *edgeMarker = Util::scene()->getEdgeMarker(QString(marker));
-    if (!edgeMarker)
+    SceneBoundary *boundary = Util::scene()->getBoundary(QString(marker));
+    if (!boundary)
         throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
 
     // start node
@@ -285,7 +285,7 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
     SceneNode *nodeEnd = Util::scene()->addNode(new SceneNode(Point(x2, y2)));
 
     // FIXME 0 -> variable
-    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, edgeMarker, angle, 0));
+    Util::scene()->addEdge(new SceneEdge(nodeStart, nodeEnd, boundary, angle, 0));
 }
 
 void pythonDeleteEdge(int index)
@@ -309,11 +309,11 @@ void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *
 {
     logMessage("pythonAddLabel()");
 
-    SceneLabelMarker *labelMarker = Util::scene()->getLabelMarker(QString(marker));
-    if (!labelMarker)
+    SceneMaterial *material = Util::scene()->getMaterial(QString(marker));
+    if (!material)
         throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
 
-    Util::scene()->addLabel(new SceneLabel(Point(x, y), labelMarker, area, polynomialOrder));
+    Util::scene()->addLabel(new SceneLabel(Point(x, y), material, area, polynomialOrder));
 }
 
 void pythonDeleteLabel(int index)
@@ -337,10 +337,10 @@ static PyObject *pythonAddBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonAddBoundary()");
 
-    SceneEdgeMarker *marker = Util::scene()->problemInfo()->hermes()->newEdgeMarker(self, args);
+    SceneBoundary *marker = Util::scene()->problemInfo()->hermes()->newBoundary(self, args);
     if (marker)
     {
-        Util::scene()->addEdgeMarker(marker);
+        Util::scene()->addBoundary(marker);
         Py_RETURN_NONE;
     }
     else
@@ -355,7 +355,7 @@ static PyObject *pythonModifyBoundary(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyBoundary()");
 
-    if (Util::scene()->problemInfo()->hermes()->modifyEdgeMarker(self,args))
+    if (Util::scene()->problemInfo()->hermes()->modifyBoundary(self,args))
         Py_RETURN_NONE;
     else
         return NULL;
@@ -366,10 +366,10 @@ static PyObject *pythonAddMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonAddMaterial()");
 
-    SceneLabelMarker *marker = Util::scene()->problemInfo()->hermes()->newLabelMarker(self, args);
+    SceneMaterial *marker = Util::scene()->problemInfo()->hermes()->newMaterial(self, args);
     if (marker)
     {
-        Util::scene()->addLabelMarker(marker);
+        Util::scene()->addMaterial(marker);
         Py_RETURN_NONE;
     }
     else
@@ -384,7 +384,7 @@ static PyObject *pythonModifyMaterial(PyObject *self, PyObject *args)
 {
     logMessage("pythonModifyMaterial()");
 
-    if (Util::scene()->problemInfo()->hermes()->modifyLabelMarker(self, args))
+    if (Util::scene()->problemInfo()->hermes()->modifyMaterial(self, args))
         Py_RETURN_NONE;
     else
         return NULL;

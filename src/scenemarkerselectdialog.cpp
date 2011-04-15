@@ -44,10 +44,10 @@ void SceneMarkerSelectDialog::createControls()
 
     // surface
     lstSurface = new QListWidget(this);
-    for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
+    for (int i = 1; i < Util::scene()->boundaries.count(); i++)
     {
         QListWidgetItem *item = new QListWidgetItem(lstSurface);
-        item->setText(Util::scene()->edgeMarkers[i]->name);
+        item->setText(Util::scene()->boundaries[i]->name);
         item->setCheckState(Qt::Unchecked);
         lstSurface->addItem(item);
     }
@@ -60,10 +60,10 @@ void SceneMarkerSelectDialog::createControls()
 
     // volume
     lstVolume = new QListWidget(this);
-    for (int i = 1; i < Util::scene()->labelMarkers.count(); i++)
+    for (int i = 1; i < Util::scene()->materials.count(); i++)
     {
         QListWidgetItem *item = new QListWidgetItem(lstVolume);
-        item->setText(Util::scene()->labelMarkers[i]->name);
+        item->setText(Util::scene()->materials[i]->name);
         item->setCheckState(Qt::Unchecked);
         lstVolume->addItem(item);
     }
@@ -107,7 +107,7 @@ void SceneMarkerSelectDialog::doAccept()
             {
                 for (int j = 0; j < Util::scene()->edges.count(); j++)
                 {
-                    if (Util::scene()->edges[j]->marker == Util::scene()->edgeMarkers[i+1])
+                    if (Util::scene()->edges[j]->boundary == Util::scene()->boundaries[i+1])
                         Util::scene()->edges[j]->isSelected = true;
                 }
             }
@@ -126,7 +126,7 @@ void SceneMarkerSelectDialog::doAccept()
             {
                 for (int j = 0; j < Util::scene()->labels.count(); j++)
                 {
-                    if (Util::scene()->labels[j]->marker == Util::scene()->labelMarkers[i+1])
+                    if (Util::scene()->labels[j]->material == Util::scene()->materials[i+1])
                         Util::scene()->labels[j]->isSelected = true;
                 }
             }

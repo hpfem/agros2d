@@ -24,7 +24,7 @@
 
 struct Element;
 
-class SceneLabelMarker;
+class SceneMaterial;
 
 class SurfaceIntegralValue
 {
@@ -39,7 +39,7 @@ protected:
 
     bool boundary;
 
-    SceneLabelMarker *labelMarker;
+    SceneMaterial *material;
 
     void calculate();
     virtual void calculateVariables(int i) = 0;

@@ -36,14 +36,22 @@
 
 extern double actualTime;
 
-class SceneEdgeMarker;
-class SceneLabelMarker;
+class SceneBoundary;
+class SceneMaterial;
 struct SceneViewSettings;
 struct SolutionArray;
 
 class ProgressItemSolve;
 
 class ViewScalarFilter;
+
+class WeakFormAgros : public WeakForm
+{
+public:
+    WeakFormAgros(unsigned int neq = 1) : WeakForm(neq) { }
+
+    virtual void updateTimeDep(double time) { };
+};
 
 struct HermesField : public QObject
 {
@@ -56,10 +64,10 @@ public:
     virtual bool hasHarmonic() const = 0;
     virtual bool hasTransient() const = 0;
 
-    virtual void readEdgeMarkerFromDomElement(QDomElement *element) = 0;
-    virtual void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker) = 0;
-    virtual void readLabelMarkerFromDomElement(QDomElement *element) = 0;
-    virtual void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker) = 0;
+    virtual void readBoundaryFromDomElement(QDomElement *element) = 0;
+    virtual void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker) = 0;
+    virtual void readMaterialFromDomElement(QDomElement *element) = 0;
+    virtual void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker) = 0;
 
     virtual LocalPointValue *localPointValue(const Point &point) = 0;
     virtual QStringList localPointValueHeader() = 0;
@@ -73,15 +81,15 @@ public:
     virtual bool physicFieldBCCheck(PhysicFieldBC physicFieldBC) = 0;
     virtual bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) = 0;
 
-    virtual SceneEdgeMarker *newEdgeMarker() = 0;
-    virtual SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args) = 0;
-    virtual SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args) = 0;
-    virtual SceneLabelMarker *newLabelMarker() = 0;
-    virtual SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args) = 0;
-    virtual SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args) = 0;
+    virtual SceneBoundary *newBoundary() = 0;
+    virtual SceneBoundary *newBoundary(PyObject *self, PyObject *args) = 0;
+    virtual SceneBoundary *modifyBoundary(PyObject *self, PyObject *args) = 0;
+    virtual SceneMaterial *newMaterial() = 0;
+    virtual SceneMaterial *newMaterial(PyObject *self, PyObject *args) = 0;
+    virtual SceneMaterial *modifyMaterial(PyObject *self, PyObject *args) = 0;
 
     virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
-    inline virtual void updateTimeFunctions(double time) { }
+    inline virtual void updateTimeFunctions(WeakFormAgros *wf, double time) { }
 
     virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
     virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;
@@ -120,7 +128,7 @@ protected:
     double *value1, *value2, *value3;
     double *x, *y;
 
-    SceneLabelMarker *labelMarker;
+    SceneMaterial *material;
 
     void precalculate(int order, int mask);
     virtual void calculateVariable(int i) = 0;
@@ -141,7 +149,7 @@ GeomType convertProblemType(ProblemType problemType);
 // solve
 QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                                          Hermes::vector<EssentialBCs> bcs,
-                                         WeakForm *wf);
+                                         WeakFormAgros *wf);
 
 // custom forms **************************************************************************************************************************
 

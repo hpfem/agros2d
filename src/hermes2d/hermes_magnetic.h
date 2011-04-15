@@ -34,10 +34,10 @@ public:
     inline bool hasHarmonic() const { return true; }
     inline bool hasTransient() const { return true; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
     LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
@@ -76,15 +76,15 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Magnetic_Velocity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Magnetic_LorentzForce); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-    virtual void updateTimeFunctions(double time);
+    virtual void updateTimeFunctions(WeakFormAgros *wf, double time);
 
     PhysicFieldVariable contourPhysicFieldVariable();
     PhysicFieldVariable scalarPhysicFieldVariable();
@@ -189,20 +189,20 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeMagneticMarker : public SceneEdgeMarker
+class SceneBoundaryMagnetic : public SceneBoundary
 {
 public:
     Value value_real;
     Value value_imag;
 
-    SceneEdgeMagneticMarker(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
+    SceneBoundaryMagnetic(const QString &name, PhysicFieldBC type, Value value_real, Value value_imag);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelMagneticMarker : public SceneLabelMarker
+class SceneMaterialMagnetic : public SceneMaterial
 {
 public:
     Value permeability;
@@ -215,7 +215,7 @@ public:
     Value velocity_y;
     Value velocity_angular;
 
-    SceneLabelMagneticMarker(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity,
+    SceneMaterialMagnetic(const QString &name, Value current_density_real, Value current_density_imag, Value permeability, Value conductivity,
                              Value remanence, Value remanence_angle, Value velocity_x, Value velocity_y, Value velocity_angular);
 
     QString script();
@@ -223,12 +223,12 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeMagneticMarker : public DSceneEdgeMarker
+class SceneEdgeMagneticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeMagneticMarker(SceneEdgeMagneticMarker *edgeMagneticMarker, QWidget *parent);
+    SceneEdgeMagneticDialog(SceneBoundaryMagnetic *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -246,12 +246,12 @@ private slots:
     void doTypeChanged(int index);
 };
 
-class DSceneLabelMagneticMarker : public DSceneLabelMarker
+class SceneMaterialMagneticDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelMagneticMarker(QWidget *parent, SceneLabelMagneticMarker *labelMagneticMarker);
+    SceneMaterialMagneticDialog(QWidget *parent, SceneMaterialMagnetic *material);
 
 protected:
     void createContent();

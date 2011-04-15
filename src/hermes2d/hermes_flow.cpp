@@ -115,7 +115,7 @@ void callbackFlowWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)
 
 // *******************************************************************************************************
 
-void HermesFlow::readEdgeMarkerFromDomElement(QDomElement *element)
+void HermesFlow::readBoundaryFromDomElement(QDomElement *element)
 {
     PhysicFieldBC type = physicFieldBCFromStringKey(element->attribute("type"));
     switch (type)
@@ -125,7 +125,7 @@ void HermesFlow::readEdgeMarkerFromDomElement(QDomElement *element)
     case PhysicFieldBC_Flow_Pressure:
     case PhysicFieldBC_Flow_Outlet:
     case PhysicFieldBC_Flow_Wall:
-        Util::scene()->addEdgeMarker(new SceneEdgeFlowMarker(element->attribute("name"),
+        Util::scene()->addBoundary(new SceneEdgeFlowMarker(element->attribute("name"),
                                                              type,
                                                              Value(element->attribute("velocityx", "0")),
                                                              Value(element->attribute("velocityy", "0")),
@@ -137,7 +137,7 @@ void HermesFlow::readEdgeMarkerFromDomElement(QDomElement *element)
     }
 }
 
-void HermesFlow::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker)
+void HermesFlow::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
     SceneEdgeFlowMarker *edgeFlowMarker = dynamic_cast<SceneEdgeFlowMarker *>(marker);
 
@@ -147,14 +147,14 @@ void HermesFlow::writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMark
     element->setAttribute("pressure", edgeFlowMarker->pressure.text);
 }
 
-void HermesFlow::readLabelMarkerFromDomElement(QDomElement *element)
+void HermesFlow::readMaterialFromDomElement(QDomElement *element)
 {
-    Util::scene()->addLabelMarker(new SceneLabelFlowMarker(element->attribute("name"),
+    Util::scene()->addMaterial(new SceneLabelFlowMarker(element->attribute("name"),
                                                            Value(element->attribute("dynamic_viscosity")),
                                                            Value(element->attribute("density"))));
 }
 
-void HermesFlow::writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker)
+void HermesFlow::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
     SceneLabelFlowMarker *labelFlowMarker = dynamic_cast<SceneLabelFlowMarker *>(marker);
 
@@ -198,7 +198,7 @@ QStringList HermesFlow::volumeIntegralValueHeader()
     return QStringList(headers);
 }
 
-SceneEdgeMarker *HermesFlow::newEdgeMarker()
+SceneBoundary *HermesFlow::newBoundary()
 {
     return new SceneEdgeFlowMarker(tr("new boundary"),
                                    PhysicFieldBC_Flow_Pressure,
@@ -207,7 +207,7 @@ SceneEdgeMarker *HermesFlow::newEdgeMarker()
                                    Value("0"));
 }
 
-SceneEdgeMarker *HermesFlow::newEdgeMarker(PyObject *self, PyObject *args)
+SceneBoundary *HermesFlow::newBoundary(PyObject *self, PyObject *args)
 {
 
     double valuex, valuey, press;
@@ -215,7 +215,7 @@ SceneEdgeMarker *HermesFlow::newEdgeMarker(PyObject *self, PyObject *args)
     if (PyArg_ParseTuple(args, "sssdd", &name, &type, &valuex, &valuey, &press))
     {
         // check name
-        if (Util::scene()->getEdgeMarker(name)) return NULL;
+        if (Util::scene()->getBoundary(name)) return NULL;
 
         return new SceneEdgeFlowMarker(name,
                                        physicFieldBCFromStringKey(type),
@@ -224,16 +224,16 @@ SceneEdgeMarker *HermesFlow::newEdgeMarker(PyObject *self, PyObject *args)
                                        Value(QString::number(press)));
     }
 
-    return Util::scene()->edgeMarkers[0];
+    return Util::scene()->boundaries[0];
 }
 
-SceneEdgeMarker *HermesFlow::modifyEdgeMarker(PyObject *self, PyObject *args)
+SceneBoundary *HermesFlow::modifyBoundary(PyObject *self, PyObject *args)
 {
     double valuex, valuey, press;
     char *name, *type;
     if (PyArg_ParseTuple(args, "sssdd", &name, &type, &valuex, &valuey, &press))
     {
-        if (SceneEdgeFlowMarker *marker = dynamic_cast<SceneEdgeFlowMarker *>(Util::scene()->getEdgeMarker(name)))
+        if (SceneEdgeFlowMarker *marker = dynamic_cast<SceneEdgeFlowMarker *>(Util::scene()->getBoundary(name)))
         {
             if (physicFieldBCFromStringKey(type))
             {
@@ -259,21 +259,21 @@ SceneEdgeMarker *HermesFlow::modifyEdgeMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneLabelMarker *HermesFlow::newLabelMarker()
+SceneMaterial *HermesFlow::newMaterial()
 {
     return new SceneLabelFlowMarker(tr("new material"),
                                     Value("8.9e-4"),
                                     Value("1000"));
 }
 
-SceneLabelMarker *HermesFlow::newLabelMarker(PyObject *self, PyObject *args)
+SceneMaterial *HermesFlow::newMaterial(PyObject *self, PyObject *args)
 {
     double dynamic_viscosity, density;
     char *name;
     if (PyArg_ParseTuple(args, "sdd", &name, &dynamic_viscosity, &density))
     {
         // check name
-        if (Util::scene()->getLabelMarker(name)) return NULL;
+        if (Util::scene()->getMaterial(name)) return NULL;
 
         return new SceneLabelFlowMarker(name,
                                         Value(QString::number(dynamic_viscosity)),
@@ -283,13 +283,13 @@ SceneLabelMarker *HermesFlow::newLabelMarker(PyObject *self, PyObject *args)
     return NULL;
 }
 
-SceneLabelMarker *HermesFlow::modifyLabelMarker(PyObject *self, PyObject *args)
+SceneMaterial *HermesFlow::modifyMaterial(PyObject *self, PyObject *args)
 {
     double dynamic_viscosity, density;
     char *name;
     if (PyArg_ParseTuple(args, "sdd", &name, &dynamic_viscosity, &density))
     {
-        if (SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(Util::scene()->getLabelMarker(name)))
+        if (SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(Util::scene()->getMaterial(name)))
         {
             marker->dynamic_viscosity = Value(QString::number(dynamic_viscosity));
             marker->density = Value(QString::number(density));
@@ -375,7 +375,7 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
     flowEdge[0].pressure = 0;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) == 0)
+        if (Util::scene()->boundaries.indexOf(Util::scene()->edges[i]->marker) == 0)
         {
             flowEdge[i+1].type = PhysicFieldBC_None;
             flowEdge[i+1].velocityX = 0;
@@ -436,7 +436,7 @@ QList<SolutionArray *> HermesFlow::solve(ProgressItemSolve *progressItemSolve)
     flowLabel = new FlowLabel[Util::scene()->labels.count()];
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
+        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->marker) == 0)
         {
         }
         else
@@ -472,7 +472,7 @@ LocalPointValueFlow::LocalPointValueFlow(const Point &point) : LocalPointValue(p
 
     if (Util::scene()->sceneSolution()->isSolved())
     {
-        if (labelMarker)
+        if (material)
         {
             Solution *slnX = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution());
             Solution *slnY = Util::scene()->sceneSolution()->sln(Util::scene()->sceneSolution()->timeStep() * Util::scene()->problemInfo()->hermes()->numberOfSolution() + 1);
@@ -485,7 +485,7 @@ LocalPointValueFlow::LocalPointValueFlow(const Point &point) : LocalPointValue(p
             velocity_y = valueY.value;
             pressure = valuePress.value;
 
-            SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
+            SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(material);
 
             dynamic_viscosity = marker->dynamic_viscosity.number;
             density = marker->density.number;
@@ -579,7 +579,7 @@ void ViewScalarFilterFlow::calculateVariable(int i)
     {
     case PhysicFieldVariable_Flow_Velocity:
     {
-        SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
+        SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(material);
 
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
@@ -606,7 +606,7 @@ void ViewScalarFilterFlow::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Flow_Pressure:
     {
-        SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(labelMarker);
+        SceneLabelFlowMarker *marker = dynamic_cast<SceneLabelFlowMarker *>(material);
 
         node->values[0][0][i] = value3[i];
     }
@@ -621,7 +621,7 @@ void ViewScalarFilterFlow::calculateVariable(int i)
 // *************************************************************************************************************************************
 
 SceneEdgeFlowMarker::SceneEdgeFlowMarker(const QString &name, PhysicFieldBC type, Value velocityX, Value velocityY, Value pressure)
-    : SceneEdgeMarker(name, type)
+    : SceneBoundary(name, type)
 {
     this->velocityX = velocityX;
     this->velocityY = velocityY;
@@ -659,7 +659,7 @@ int SceneEdgeFlowMarker::showDialog(QWidget *parent)
 // *************************************************************************************************************************************
 
 SceneLabelFlowMarker::SceneLabelFlowMarker(const QString &name, Value dynamic_viscosity, Value density)
-    : SceneLabelMarker(name)
+    : SceneMaterial(name)
 {
     this->dynamic_viscosity = dynamic_viscosity;
     this->density = density;
@@ -689,9 +689,9 @@ int SceneLabelFlowMarker::showDialog(QWidget *parent)
 
 // *************************************************************************************************************************************
 
-DSceneEdgeFlowMarker::DSceneEdgeFlowMarker(SceneEdgeFlowMarker *edgeEdgeFlowMarker, QWidget *parent) : DSceneEdgeMarker(parent)
+DSceneEdgeFlowMarker::DSceneEdgeFlowMarker(SceneEdgeFlowMarker *edgeEdgeFlowMarker, QWidget *parent) : SceneBoundaryDialog(parent)
 {
-    m_edgeMarker = edgeEdgeFlowMarker;
+    m_boundary = edgeEdgeFlowMarker;
 
     createDialog();
 
@@ -724,9 +724,9 @@ void DSceneEdgeFlowMarker::createContent()
 
 void DSceneEdgeFlowMarker::load()
 {
-    DSceneEdgeMarker::load();
+    SceneBoundaryDialog::load();
 
-    SceneEdgeFlowMarker *edgeFlowMarker = dynamic_cast<SceneEdgeFlowMarker *>(m_edgeMarker);
+    SceneEdgeFlowMarker *edgeFlowMarker = dynamic_cast<SceneEdgeFlowMarker *>(m_boundary);
 
     cmbType->setCurrentIndex(cmbType->findData(edgeFlowMarker->type));
 
@@ -736,9 +736,9 @@ void DSceneEdgeFlowMarker::load()
 }
 
 bool DSceneEdgeFlowMarker::save() {
-    if (!DSceneEdgeMarker::save()) return false;;
+    if (!SceneBoundaryDialog::save()) return false;;
 
-    SceneEdgeFlowMarker *edgeFlowMarker = dynamic_cast<SceneEdgeFlowMarker *>(m_edgeMarker);
+    SceneEdgeFlowMarker *edgeFlowMarker = dynamic_cast<SceneEdgeFlowMarker *>(m_boundary);
 
     edgeFlowMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
@@ -784,9 +784,9 @@ void DSceneEdgeFlowMarker::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-DSceneLabelFlowMarker::DSceneLabelFlowMarker(QWidget *parent, SceneLabelFlowMarker *labelFlowMarker) : DSceneLabelMarker(parent)
+DSceneLabelFlowMarker::DSceneLabelFlowMarker(QWidget *parent, SceneLabelFlowMarker *labelFlowMarker) : SceneMaterialDialog(parent)
 {
-    m_labelMarker = labelFlowMarker;
+    m_material = labelFlowMarker;
 
     createDialog();
 
@@ -809,9 +809,9 @@ void DSceneLabelFlowMarker::createContent()
 
 void DSceneLabelFlowMarker::load()
 {
-    DSceneLabelMarker::load();
+    SceneMaterialDialog::load();
 
-    SceneLabelFlowMarker *labelFlowMarker = dynamic_cast<SceneLabelFlowMarker *>(m_labelMarker);
+    SceneLabelFlowMarker *labelFlowMarker = dynamic_cast<SceneLabelFlowMarker *>(m_material);
 
     txtDynamicViscosity->setValue(labelFlowMarker->dynamic_viscosity);
     txtDensity->setValue(labelFlowMarker->density);
@@ -819,9 +819,9 @@ void DSceneLabelFlowMarker::load()
 
 bool DSceneLabelFlowMarker::save()
 {
-    if (!DSceneLabelMarker::save()) return false;
+    if (!SceneMaterialDialog::save()) return false;
 
-    SceneLabelFlowMarker *labelFlowMarker = dynamic_cast<SceneLabelFlowMarker *>(m_labelMarker);
+    SceneLabelFlowMarker *labelFlowMarker = dynamic_cast<SceneLabelFlowMarker *>(m_material);
 
     if (txtDynamicViscosity->evaluate())
         labelFlowMarker->dynamic_viscosity = txtDynamicViscosity->value();

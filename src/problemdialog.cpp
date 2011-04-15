@@ -365,7 +365,7 @@ bool ProblemDialog::save()
     {
         if (!this->m_isNewProblem)
         {
-            if (Util::scene()->edgeMarkers.count() != 1 || Util::scene()->labelMarkers.count() != 1)
+            if (Util::scene()->boundaries.count() != 1 || Util::scene()->materials.count() != 1)
             {
                 if (QMessageBox::question(this, tr("Change physical field type"), tr("Are you sure change physical field type?"), tr("&Yes"), tr("&No")) == 1)
                     return false;
@@ -377,14 +377,14 @@ bool ProblemDialog::save()
 
         m_problemInfo->setHermes(hermesFieldFactory((PhysicField) cmbPhysicField->itemData(cmbPhysicField->currentIndex()).toInt()));
 
-        for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
+        for (int i = 1; i < Util::scene()->boundaries.count(); i++)
         {
-            Util::scene()->replaceEdgeMarker(Util::scene()->edgeMarkers[1]);
+            Util::scene()->replaceBoundary(Util::scene()->boundaries[1]);
         }
 
-        for (int i = 1; i < Util::scene()->labelMarkers.count(); i++)
+        for (int i = 1; i < Util::scene()->materials.count(); i++)
         {
-            Util::scene()->replaceLabelMarker(Util::scene()->labelMarkers[1]);
+            Util::scene()->replaceMaterial(Util::scene()->materials[1]);
         }
     }
     else

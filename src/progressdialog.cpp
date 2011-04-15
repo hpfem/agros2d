@@ -319,7 +319,7 @@ bool ProgressItemMesh::writeToTriangle()
         // at least one boundary condition has to be assigned
         int count = 0;
         for (int i = 0; i<Util::scene()->edges.count(); i++)
-            if (Util::scene()->edgeMarkers.indexOf(Util::scene()->edges[i]->marker) > 0)
+            if (Util::scene()->boundaries.indexOf(Util::scene()->edges[i]->boundary) > 0)
                 count++;
 
         if (count == 0)
@@ -338,7 +338,7 @@ bool ProgressItemMesh::writeToTriangle()
         // at least one material has to be assigned
         int count = 0;
         for (int i = 0; i<Util::scene()->labels.count(); i++)
-            if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) > 0)
+            if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) > 0)
                 count++;
 
         if (count == 0)
@@ -347,14 +347,14 @@ bool ProgressItemMesh::writeToTriangle()
             return false;
         }
     }
-    if (Util::scene()->edgeMarkers.count() < 2) // + none marker
+    if (Util::scene()->boundaries.count() < 2) // + none marker
     {
-        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->edgeMarkers.count()), true, 0);
+        emit message(tr("Invalid number of boundary conditions (%1 < 1)").arg(Util::scene()->boundaries.count()), true, 0);
         return false;
     }
-    if (Util::scene()->labelMarkers.count() < 2) // + none marker
+    if (Util::scene()->materials.count() < 2) // + none marker
     {
-        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->labelMarkers.count()), true, 0);
+        emit message(tr("Invalid number of materials (%1 < 1)").arg(Util::scene()->materials.count()), true, 0);
         return false;
     }
 
@@ -455,11 +455,11 @@ bool ProgressItemMesh::writeToTriangle()
 
     // holes
     int holesCount = 0;
-    for (int i = 0; i<Util::scene()->labels.count(); i++) if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0) holesCount++;
+    for (int i = 0; i<Util::scene()->labels.count(); i++) if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) == 0) holesCount++;
     QString outHoles = QString("%1\n").arg(holesCount);
     for (int i = 0; i<Util::scene()->labels.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0)
+        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) == 0)
         {
             outHoles += QString("%1  %2  %3\n").
                     arg(i).
@@ -473,7 +473,7 @@ bool ProgressItemMesh::writeToTriangle()
     int labelsCount = 0;
     for(int i = 0; i<Util::scene()->labels.count(); i++)
     {
-        if (Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) > 0)
+        if (Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) > 0)
         {
             outLabels += QString("%1  %2  %3  %4  %5\n").
                     arg(labelsCount).
@@ -582,7 +582,7 @@ bool ProgressItemMesh::triangleToHermes2D()
     {
         if (edgeList[i].marker != 0)
         {
-            if (Util::scene()->edges[edgeList[i].marker-1]->marker->type != PhysicFieldBC_None)
+            if (Util::scene()->edges[edgeList[i].marker-1]->boundary->type != PhysicFieldBC_None)
             {
                 countEdges++;
                 outEdges += QString("  { %1, %2, %3 },\n").

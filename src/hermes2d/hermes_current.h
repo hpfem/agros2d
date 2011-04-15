@@ -34,10 +34,10 @@ public:
     inline bool hasHarmonic() const { return false; }
     inline bool hasTransient() const { return false; }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
     LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
@@ -56,12 +56,12 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Current_Losses ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Current_Conductivity); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
 
@@ -143,7 +143,7 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeCurrentMarker : public SceneEdgeMarker {
+class SceneEdgeCurrentMarker : public SceneBoundary {
 
 public:
     Value value;
@@ -155,7 +155,7 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelCurrentMarker : public SceneLabelMarker
+class SceneLabelCurrentMarker : public SceneMaterial
 {
 public:
     Value conductivity;
@@ -167,12 +167,12 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeCurrentMarker : public DSceneEdgeMarker
+class SceneBoundaryCurrentDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeCurrentMarker(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent);
+    SceneBoundaryCurrentDialog(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent);
 
 protected:
     void createContent();
@@ -189,12 +189,12 @@ private slots:
     void doTypeChanged(int index);
 };
 
-class DSceneLabelCurrentMarker : public DSceneLabelMarker
+class SceneMaterialCurrentDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelCurrentMarker(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker);
+    SceneMaterialCurrentDialog(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker);
 
 protected:
     void createContent();

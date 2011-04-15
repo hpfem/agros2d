@@ -50,8 +50,8 @@ void VolumeIntegralValue::calculate()
     {
         if (Util::scene()->labels[i]->isSelected)
         {
-            labelMarker = Util::scene()->labels[i]->marker;
-            int marker = Util::scene()->labelMarkers.indexOf(labelMarker);
+            material = Util::scene()->labels[i]->material;
+            int marker = Util::scene()->materials.indexOf(material);
 
             for_all_active_elements(e, mesh)
             {

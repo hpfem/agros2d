@@ -97,7 +97,7 @@ void SurfaceIntegralValue::calculate()
                         // x - coordinate
                         x = ru->get_phys_x(eo);
 
-                        labelMarker = Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->marker)]->marker;
+                        material = Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterial(e->marker)]->material;
 
                         for (int i = 0; i < quad2d->get_num_points(eo); i++)
                         {

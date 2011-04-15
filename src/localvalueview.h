@@ -23,7 +23,7 @@
 #include "util.h"
 
 class ValueLineEdit;
-class SceneLabelMarker;
+class SceneMaterial;
 class Solution;
 
 struct PointValue
@@ -35,7 +35,7 @@ struct PointValue
         this->marker = NULL;
     }
 
-    PointValue(double value, Point derivative, SceneLabelMarker *marker)
+    PointValue(double value, Point derivative, SceneMaterial *marker)
     {
         this->value = value;
         this->derivative = derivative;
@@ -44,7 +44,7 @@ struct PointValue
 
     double value;
     Point derivative;
-    SceneLabelMarker *marker;
+    SceneMaterial *marker;
 };
 
 class LocalPointValue
@@ -52,7 +52,7 @@ class LocalPointValue
 protected:
     double value;
     Point derivative;
-    SceneLabelMarker *labelMarker;
+    SceneMaterial *material;
 
     PointValue pointValue(Solution *sln, const Point &point);
 

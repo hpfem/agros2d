@@ -41,10 +41,10 @@ public:
 #endif
     }
 
-    void readEdgeMarkerFromDomElement(QDomElement *element);
-    void writeEdgeMarkerToDomElement(QDomElement *element, SceneEdgeMarker *marker);
-    void readLabelMarkerFromDomElement(QDomElement *element);
-    void writeLabelMarkerToDomElement(QDomElement *element, SceneLabelMarker *marker);
+    void readBoundaryFromDomElement(QDomElement *element);
+    void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
+    void readMaterialFromDomElement(QDomElement *element);
+    void writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker);
 
     LocalPointValue *localPointValue(const Point &point);
     QStringList localPointValueHeader();
@@ -69,15 +69,15 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_Acoustic_Density ||
                                                                                             physicFieldVariable == PhysicFieldVariable_Acoustic_Speed); }
 
-    SceneEdgeMarker *newEdgeMarker();
-    SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
-    SceneEdgeMarker *modifyEdgeMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *newLabelMarker();
-    SceneLabelMarker *newLabelMarker(PyObject *self, PyObject *args);
-    SceneLabelMarker *modifyLabelMarker(PyObject *self, PyObject *args);
+    SceneBoundary *newBoundary();
+    SceneBoundary *newBoundary(PyObject *self, PyObject *args);
+    SceneBoundary *modifyBoundary(PyObject *self, PyObject *args);
+    SceneMaterial *newMaterial();
+    SceneMaterial *newMaterial(PyObject *self, PyObject *args);
+    SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-    virtual void updateTimeFunctions(double time);
+    virtual void updateTimeFunctions(WeakFormAgros *wf, double time);
 
     PhysicFieldVariable contourPhysicFieldVariable();
     PhysicFieldVariable scalarPhysicFieldVariable();
@@ -141,38 +141,38 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeAcousticMarker : public SceneEdgeMarker
+class SceneBoundaryAcoustic : public SceneBoundary
 {
 public:
     Value value_real;
 
-    SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type, Value value_real);
-    SceneEdgeAcousticMarker(const QString &name, PhysicFieldBC type);
+    SceneBoundaryAcoustic(const QString &name, PhysicFieldBC type, Value value_real);
+    SceneBoundaryAcoustic(const QString &name, PhysicFieldBC type);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelAcousticMarker : public SceneLabelMarker
+class SceneMaterialAcoustic : public SceneMaterial
 {
 public:
     Value density;
     Value speed;
 
-    SceneLabelAcousticMarker(const QString &name, Value density, Value speed);
+    SceneMaterialAcoustic(const QString &name, Value density, Value speed);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeAcousticMarker : public DSceneEdgeMarker
+class SceneBoundaryAcousticDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeAcousticMarker(SceneEdgeAcousticMarker *edgeAcousticMarker, QWidget *parent);
+    SceneBoundaryAcousticDialog(SceneBoundaryAcoustic *edgeAcousticMarker, QWidget *parent);
 
 protected:
     void createContent();
@@ -189,12 +189,12 @@ private slots:
     void doTypeChanged(int index);
 };
 
-class DSceneLabelAcousticMarker : public DSceneLabelMarker
+class SceneMaterialAcousticDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelAcousticMarker(QWidget *parent, SceneLabelAcousticMarker *labelAcousticMarker);
+    SceneMaterialAcousticDialog(QWidget *parent, SceneMaterialAcoustic *labelAcousticMarker);
 
 protected:
     void createContent();

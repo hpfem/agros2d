@@ -122,23 +122,23 @@ QString createPythonFromModel()
     }
 
     // boundaries
-    if (Util::scene()->edgeMarkers.count() > 1)
+    if (Util::scene()->boundaries.count() > 1)
     {
         str += "# boundaries\n";
-        for (int i = 1; i<Util::scene()->edgeMarkers.count(); i++)
+        for (int i = 1; i<Util::scene()->boundaries.count(); i++)
         {
-            str += Util::scene()->edgeMarkers[i]->script() + "\n";
+            str += Util::scene()->boundaries[i]->script() + "\n";
         }
         str += "\n";
     }
 
     // materials
-    if (Util::scene()->labelMarkers.count() > 1)
+    if (Util::scene()->materials.count() > 1)
     {
         str += "# materials\n";
-        for (int i = 1; i<Util::scene()->labelMarkers.count(); i++)
+        for (int i = 1; i<Util::scene()->materials.count(); i++)
         {
-            str += Util::scene()->labelMarkers[i]->script() + "\n";
+            str += Util::scene()->materials[i]->script() + "\n";
         }
         str += "\n";
     }
@@ -155,7 +155,7 @@ QString createPythonFromModel()
                    arg(Util::scene()->edges[i]->nodeEnd->point.x).
                    arg(Util::scene()->edges[i]->nodeEnd->point.y).
                    arg(Util::scene()->edges[i]->angle).
-                   arg(Util::scene()->edges[i]->marker->name) + "\n";
+                   arg(Util::scene()->edges[i]->boundary->name) + "\n";
         }
         str += "\n";
     }
@@ -171,7 +171,7 @@ QString createPythonFromModel()
                    arg(Util::scene()->labels[i]->point.y).
                    arg(Util::scene()->labels[i]->area).
                    arg(Util::scene()->labels[i]->polynomialOrder).
-                   arg(Util::scene()->labels[i]->marker->name) + "\n";
+                   arg(Util::scene()->labels[i]->material->name) + "\n";
         }
 
     }

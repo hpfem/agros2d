@@ -586,9 +586,9 @@ QString ReportDialog::htmlMaterials()
     QString out;
 
     out  = "\n";
-    for (int i = 1; i < Util::scene()->labelMarkers.count(); i++)
+    for (int i = 1; i < Util::scene()->materials.count(); i++)
     {
-        SceneLabelMarker *marker = Util::scene()->labelMarkers[i];
+        SceneMaterial *marker = Util::scene()->materials[i];
         out += "<h4>" + marker->name + "</h4>";
 
         out += "<table>";
@@ -612,9 +612,9 @@ QString ReportDialog::htmlBoundaries()
     QString out;
 
     out  = "\n";
-    for (int i = 1; i < Util::scene()->edgeMarkers.count(); i++)
+    for (int i = 1; i < Util::scene()->boundaries.count(); i++)
     {
-        SceneEdgeMarker *marker = Util::scene()->edgeMarkers[i];
+        SceneBoundary *marker = Util::scene()->boundaries[i];
         out += "<h4>" + marker->name + "</h4>";
 
         out += "<table>";
@@ -671,7 +671,7 @@ QString ReportDialog::htmlGeometryEdges()
         out += "<td>" + QString::number(Util::scene()->edges[i]->nodeEnd->point.x, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->edges[i]->nodeEnd->point.y, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->edges[i]->angle, 'f', 2) + "</td>";
-        out += "<td>" + Util::scene()->edges[i]->marker->name + "</td></tr>";
+        out += "<td>" + Util::scene()->edges[i]->boundary->name + "</td></tr>";
     }
     out += "</table>";
     out += "\n";
@@ -696,7 +696,7 @@ QString ReportDialog::htmlGeometryLabels()
         out += "<tr><td>" + QString::number(Util::scene()->labels[i]->point.x, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->labels[i]->point.y, 'e', 3) + "</td>";
         out += "<td>" + QString::number(Util::scene()->labels[i]->area, 'e', 3) + "</td>";
-        out += "<td>" + Util::scene()->labels[i]->marker->name + "</td></tr>";
+        out += "<td>" + Util::scene()->labels[i]->material->name + "</td></tr>";
     }
     out += "</table>";
     out += "\n";

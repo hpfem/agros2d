@@ -37,7 +37,7 @@ LocalPointValue::LocalPointValue(const Point &point)
 
     value = val.value;
     derivative = val.derivative;
-    labelMarker = val.marker;
+    material = val.marker;
 }
 
 PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
@@ -46,7 +46,7 @@ PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
 
     double tmpValue;
     Point tmpDerivative;
-    SceneLabelMarker *tmpLabelMarker = NULL;
+    SceneMaterial *tmpMaterial = NULL;
 
     if (sln)
     {
@@ -65,11 +65,11 @@ PointValue LocalPointValue::pointValue(Solution *sln, const Point &point)
 
             // find marker
             Element *e = Util::scene()->sceneSolution()->meshInitial()->get_element_fast(index);
-            tmpLabelMarker = Util::scene()->labels[Util::scene()->sceneSolution()->agrosLabelMarker(e->marker)]->marker;
+            tmpMaterial = Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterial(e->marker)]->material;
         }
     }
 
-    return PointValue(tmpValue, tmpDerivative, tmpLabelMarker);
+    return PointValue(tmpValue, tmpDerivative, tmpMaterial);
 }
 
 // *************************************************************************************************************************************

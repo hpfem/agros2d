@@ -32,8 +32,8 @@ class SceneNode;
 class SceneEdge;
 class SceneLabel;
 
-class SceneEdgeMarker;
-class SceneLabelMarker;
+class SceneBoundary;
+class SceneMaterial;
 
 Q_DECLARE_METATYPE(SceneBasic *);
 Q_DECLARE_METATYPE(SceneNode *);
@@ -73,13 +73,13 @@ public:
 class SceneEdge : public SceneBasic
 {
 public:
-    SceneEdgeMarker *marker;
+    SceneBoundary *boundary;
     SceneNode *nodeStart;
     SceneNode *nodeEnd;
     double angle;
     int refineTowardsEdge;
 
-    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneEdgeMarker *marker, double angle, int refineTowardsEdge);
+    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, SceneBoundary *boundary, double angle, int refineTowardsEdge);
 
     Point center() const;
     double radius() const;
@@ -96,12 +96,12 @@ public:
 class SceneLabel : public SceneBasic 
 {
 public:
-    SceneLabelMarker *marker;
+    SceneMaterial *material;
     Point point;
     double area;
     int polynomialOrder;
 
-    SceneLabel(const Point &point, SceneLabelMarker *marker, double area, int polynomialOrder);
+    SceneLabel(const Point &point, SceneMaterial *material, double area, int polynomialOrder);
 
     double distance(const Point &point) const;
 
@@ -168,12 +168,12 @@ private slots:
 
 // *************************************************************************************************************************************
 
-class DSceneEdge : public DSceneBasic
+class SceneEdgeDialog : public DSceneBasic
 {
     Q_OBJECT
 
 public:
-    DSceneEdge(SceneEdge *edge, QWidget *parent, bool isNew);
+    SceneEdgeDialog(SceneEdge *edge, QWidget *parent, bool isNew);
 
 protected:
     QLayout *createContent();
@@ -185,7 +185,7 @@ private:
     QLabel *lblEquation;
     QComboBox *cmbNodeStart;
     QComboBox *cmbNodeEnd;
-    QComboBox *cmbMarker;
+    QComboBox *cmbBoundary;
     QPushButton *btnMarker;
     ValueLineEdit *txtAngle;
     QLabel *lblLength;
