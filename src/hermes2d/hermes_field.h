@@ -34,7 +34,6 @@
 #include "volumeintegralview.h"
 
 extern double actualTime;
-extern double timeStep;
 
 class SceneEdgeMarker;
 class SceneLabelMarker;

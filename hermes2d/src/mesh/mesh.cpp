@@ -818,34 +818,40 @@ static int rtb_criterion(Element* e)
 
 void Mesh::refine_towards_boundary(std::string marker, int depth, bool aniso, bool tria_to_quad, bool mark_as_initial)
 {
-  rtb_marker = this->boundary_markers_conversion.get_internal_marker(marker);
-  rtb_aniso  = aniso;
-  rtb_tria_to_quad = tria_to_quad;
+  if(marker == HERMES_ANY)
+    for(std::map<int, std::string>::iterator it = this->boundary_markers_conversion.conversion_table->begin(); it != this->boundary_markers_conversion.conversion_table->end(); it++)
+      refine_towards_boundary(it->second, depth, aniso, tria_to_quad, mark_as_initial);
 
-  // refinement: refine all elements to quad elements.
-  if (rtb_tria_to_quad)  
-    this->convert_triangles_to_quads();
+  else {
+    rtb_marker = this->boundary_markers_conversion.get_internal_marker(marker);
+    rtb_aniso  = aniso;
+    rtb_tria_to_quad = tria_to_quad;
 
-  for (int i = 0; i < depth; i++)
-  {
-    int size = get_max_node_id()+1;
-    rtb_vert = new char[size];
-    memset(rtb_vert, 0, sizeof(char) * size);
+    // refinement: refine all elements to quad elements.
+    if (rtb_tria_to_quad)  
+      this->convert_triangles_to_quads();
 
-    Element* e;
-    for_all_active_elements(e, this)
-      for (unsigned int j = 0; j < e->nvert; j++) {
-        if (e->en[j]->marker == this->boundary_markers_conversion.get_internal_marker(marker)) {
-          rtb_vert[e->vn[j]->id] = rtb_vert[e->vn[e->next_vert(j)]->id] = 1;
+    for (int i = 0; i < depth; i++)
+    {
+      int size = get_max_node_id()+1;
+      rtb_vert = new char[size];
+      memset(rtb_vert, 0, sizeof(char) * size);
+
+      Element* e;
+      for_all_active_elements(e, this)
+        for (unsigned int j = 0; j < e->nvert; j++) {
+          if (e->en[j]->marker == this->boundary_markers_conversion.get_internal_marker(marker)) {
+            rtb_vert[e->vn[j]->id] = rtb_vert[e->vn[e->next_vert(j)]->id] = 1;
+          }
         }
-      }
 
-    refine_by_criterion(rtb_criterion, 1);
-    delete [] rtb_vert;
+      refine_by_criterion(rtb_criterion, 1);
+      delete [] rtb_vert;
+    }
+
+    if(mark_as_initial)
+      ninitial = this->get_max_element_id();
   }
-
-  if(mark_as_initial)
-    ninitial = this->get_max_element_id();
 }
 
 void Mesh::unrefine_element_id(int id)
@@ -1317,20 +1323,86 @@ void Mesh::copy_converted(Mesh* mesh)
 ////convert a triangle element into three quadrilateral elements///////
 void Mesh::convert_triangles_to_quads()
 {
+  Element* e;
 
+  elements.set_append_only(true);
+  for_all_active_elements(e, this)
+    refine_element_to_quads_id(e->id);
+  elements.set_append_only(false);
+
+  Mesh mesh_tmp_for_convert;
+  mesh_tmp_for_convert.copy_converted(this);
+  for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+  {
+     if (mesh_tmp_for_convert.nodes[i].type == 1)
+     {
+       mesh_tmp_for_convert.nodes[i].y = 0.0;
+     }
+  }
+  H2DReader loader_mesh_tmp_for_convert;
+  char* mesh_file_tmp = NULL;
+  mesh_file_tmp = tmpnam(NULL);
+  loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+  loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+  remove(mesh_file_tmp);
+  copy(&mesh_tmp_for_convert);
 }
 
 ////convert a quad element into two triangle elements///////
 void Mesh::convert_quads_to_triangles()
 {
+  Element* e;
 
+  elements.set_append_only(true);
+  for_all_active_elements(e, this)
+    refine_element_to_triangles_id(e->id);
+  elements.set_append_only(false);
+
+  Mesh mesh_tmp_for_convert;
+  mesh_tmp_for_convert.copy_converted(this);
+  for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+  {
+     if (mesh_tmp_for_convert.nodes[i].type == 1)
+     {
+       mesh_tmp_for_convert.nodes[i].y = 0.0;
+     }
+  }
+  H2DReader loader_mesh_tmp_for_convert;
+  char* mesh_file_tmp = NULL;
+  mesh_file_tmp = tmpnam(NULL);
+  loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+  loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+  remove(mesh_file_tmp);
+  copy(&mesh_tmp_for_convert);
 }
 
 ////convert all active elements to a base mesh.///////
 
 void Mesh::convert_to_base()
 {
+  Element* e;
 
+  elements.set_append_only(true);
+  for_all_active_elements(e, this)
+    convert_element_to_base_id(e->id);
+  elements.set_append_only(false);
+
+  Mesh mesh_tmp_for_convert;
+  mesh_tmp_for_convert.copy_converted(this);
+  for (int i = 0; i < mesh_tmp_for_convert.ntopvert; i++)
+  {
+     if (mesh_tmp_for_convert.nodes[i].type == 1)
+     {
+       mesh_tmp_for_convert.nodes[i].y = 0.0;
+     }
+  }
+  H2DReader loader_mesh_tmp_for_convert;
+  char* mesh_file_tmp = NULL;
+  mesh_file_tmp = tmpnam(NULL);
+  loader_mesh_tmp_for_convert.save(mesh_file_tmp, &mesh_tmp_for_convert);
+  loader_mesh_tmp_for_convert.load(mesh_file_tmp, &mesh_tmp_for_convert);
+  remove(mesh_file_tmp);
+  copy(&mesh_tmp_for_convert);
 }
 
 void Mesh::refine_triangle_to_quads(Element* e)

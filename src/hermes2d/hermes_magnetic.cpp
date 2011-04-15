@@ -74,7 +74,7 @@ public:
                                                                 labelMagneticMarker->velocity_x.number, labelMagneticMarker->velocity_y.number,
                                                                 labelMagneticMarker->velocity_angular.number, HERMES_NONSYM,
                                                                 convertProblemType(Util::scene()->problemInfo()->problemType),
-                                                                (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 3)));
+                                                                (Util::scene()->problemInfo()->problemType == ProblemType_Planar ? 0 : 10)));
 
                 // external current density
                 if (fabs(labelMagneticMarker->current_density_real.number) > EPS_ZERO)

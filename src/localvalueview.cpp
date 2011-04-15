@@ -28,10 +28,11 @@ LocalPointValue::LocalPointValue(const Point &point)
     logMessage("LocalPointValue::LocalPointValue()");
 
     this->point = point;
+    /*
     if (Util::scene()->sceneSolution()->isSolved() &&
             Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
         Util::scene()->problemInfo()->hermes()->updateTimeFunctions(Util::scene()->sceneSolution()->time());
-
+    */
     PointValue val = pointValue(Util::scene()->sceneSolution()->sln(), point);
 
     value = val.value;

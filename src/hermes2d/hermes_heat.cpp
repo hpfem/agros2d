@@ -72,6 +72,17 @@ public:
                                                                                                    QString::number(i).toStdString(),
                                                                                                    labelHeatMarker->volume_heat.number,
                                                                                                    convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+
+                // transient analysis
+                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+                    if ((fabs(labelHeatMarker->density.number) > EPS_ZERO)
+                            && (fabs(labelHeatMarker->specific_heat.number) > EPS_ZERO))
+                        add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
+                                                                                                  QString::number(i).toStdString(),
+                                                                                                  labelHeatMarker->density.number * labelHeatMarker->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                                  HERMES_SYM,
+                                                                                                  convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }
     }
@@ -559,17 +570,6 @@ void HermesHeat::updateTimeFunctions(double time)
     {
         SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labelMarkers[i]);
         labelHeatMarker->volume_heat.evaluate(time);
-    }
-    // set values
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
-    {
-        // regular marker ("none" is reserved for holes)
-        if (!(Util::scene()->labelMarkers.indexOf(Util::scene()->labels[i]->marker) == 0))
-        {
-            SceneLabelHeatMarker *labelHeatMarker = dynamic_cast<SceneLabelHeatMarker *>(Util::scene()->labels[i]->marker);
-            // FIXME
-            // heatLabel[i].volume_heat = labelHeatMarker->volume_heat.number;
-        }
     }
 }
 

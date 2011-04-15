@@ -33,7 +33,6 @@
 #include "mesh/h2d_reader.h"
 
 double actualTime;
-double timeStep;
 
 HermesField *hermesFieldFactory(PhysicField physicField)
 {
@@ -177,10 +176,9 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
     int maxDOFs = Util::scene()->problemInfo()->maxDOFs;
     int numberOfSolution = Util::scene()->problemInfo()->hermes()->numberOfSolution();
     double timeTotal = Util::scene()->problemInfo()->timeTotal.number;
+    double timeStep = Util::scene()->problemInfo()->timeStep.number;
     double initialCondition = Util::scene()->problemInfo()->initialCondition.number;
     AnalysisType analysisType = Util::scene()->problemInfo()->analysisType;
-
-    timeStep = Util::scene()->problemInfo()->timeStep.number;
 
     bool isLinear = true;
 
