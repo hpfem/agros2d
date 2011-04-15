@@ -209,7 +209,7 @@ class SceneMaterialHeatDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialHeatDialog(QWidget *parent, SceneMaterialHeat *material);
+    SceneMaterialHeatDialog(SceneMaterialHeat *material, QWidget *parent);
 
 protected:
     void createContent();

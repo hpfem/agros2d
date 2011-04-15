@@ -179,7 +179,7 @@ int SceneLabel::showDialog(QWidget *parent, bool isNew)
 {
     logMessage("SceneLabel::showDialog()");
 
-    DSceneLabel *dialog = new DSceneLabel(this, parent, isNew);
+    SceneLabelDialog *dialog = new SceneLabelDialog(this, parent, isNew);
     return dialog->exec();
 }
 
@@ -374,10 +374,10 @@ QLayout* SceneEdgeDialog::createContent()
     connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
     connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
     cmbBoundary = new QComboBox();
-    connect(cmbBoundary, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
-    btnMarker = new QPushButton(icon("three-dots"), "");
-    btnMarker->setMaximumSize(btnMarker->sizeHint());
-    connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
+    connect(cmbBoundary, SIGNAL(currentIndexChanged(int)), this, SLOT(doBoundaryChanged(int)));
+    btnBoundary = new QPushButton(icon("three-dots"), "");
+    btnBoundary->setMaximumSize(btnBoundary->sizeHint());
+    connect(btnBoundary, SIGNAL(clicked()), this, SLOT(doBoundaryClicked()));
     txtAngle = new ValueLineEdit();
     txtAngle->setMinimum(0.0);
     txtAngle->setMaximum(180.0);
@@ -397,9 +397,9 @@ QLayout* SceneEdgeDialog::createContent()
     grpCoordinates->setLayout(layoutCoordinates);
 
     // marker
-    QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(cmbBoundary);
-    layoutMarker->addWidget(btnMarker);
+    QHBoxLayout *layoutBoundary = new QHBoxLayout();
+    layoutBoundary->addWidget(cmbBoundary);
+    layoutBoundary->addWidget(btnBoundary);
 
     // refine towards edge
     chkRefineTowardsEdge = new QCheckBox();
@@ -419,7 +419,7 @@ QLayout* SceneEdgeDialog::createContent()
 
     // layout
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(tr("Boundary condition:"), layoutMarker);
+    layout->addRow(tr("Boundary condition:"), layoutBoundary);
     layout->addRow(grpCoordinates);
     layout->addRow(grpMeshParameters);
     layout->addRow(tr("Length:"), lblLength);
@@ -521,16 +521,16 @@ bool SceneEdgeDialog::save()
     return true;
 }
 
-void SceneEdgeDialog::doMarkerChanged(int index)
+void SceneEdgeDialog::doBoundaryChanged(int index)
 {
-    logMessage("DSceneEdge::doMarkerChanged()");
+    logMessage("DSceneEdge::doBoundaryChanged()");
 
-    btnMarker->setEnabled(cmbBoundary->currentIndex() > 0);
+    btnBoundary->setEnabled(cmbBoundary->currentIndex() > 0);
 }
 
-void SceneEdgeDialog::doMarkerClicked()
+void SceneEdgeDialog::doBoundaryClicked()
 {
-    logMessage("DSceneEdge::doMarkerClicked()");
+    logMessage("DSceneEdge::doBoundaryClicked()");
 
     SceneBoundary *marker = cmbBoundary->itemData(cmbBoundary->currentIndex()).value<SceneBoundary *>();
     if (marker->showDialog(this) == QDialog::Accepted)
@@ -572,7 +572,7 @@ void SceneEdgeDialog::doRefineTowardsEdge(int state)
 
 // *************************************************************************************************************************************
 
-DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
+SceneLabelDialog::SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew) : DSceneBasic(parent, isNew)
 {
     logMessage("DSceneLabel::DSceneLabel()");
 
@@ -589,7 +589,7 @@ DSceneLabel::DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew) : DScen
     // setMaximumSize(sizeHint());
 }
 
-QLayout* DSceneLabel::createContent()
+QLayout* SceneLabelDialog::createContent()
 {
     logMessage("DSceneLabel::createContent()");
 
@@ -597,11 +597,11 @@ QLayout* DSceneLabel::createContent()
     txtPointY = new ValueLineEdit();
     connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    cmbMarker = new QComboBox();
-    connect(cmbMarker, SIGNAL(currentIndexChanged(int)), this, SLOT(doMarkerChanged(int)));
-    btnMarker = new QPushButton(icon("three-dots"), "");
-    btnMarker->setMaximumSize(btnMarker->sizeHint());
-    connect(btnMarker, SIGNAL(clicked()), this, SLOT(doMarkerClicked()));
+    cmbMaterial = new QComboBox();
+    connect(cmbMaterial, SIGNAL(currentIndexChanged(int)), this, SLOT(doMaterialChanged(int)));
+    btnMaterial = new QPushButton(icon("three-dots"), "");
+    btnMaterial->setMaximumSize(btnMaterial->sizeHint());
+    connect(btnMaterial, SIGNAL(clicked()), this, SLOT(doMaterialClicked()));
     txtArea = new ValueLineEdit();
     txtArea->setMinimum(0.0);
     connect(txtArea, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
@@ -622,9 +622,9 @@ QLayout* DSceneLabel::createContent()
     grpCoordinates->setLayout(layoutCoordinates);
 
     // marker
-    QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(cmbMarker);
-    layoutMarker->addWidget(btnMarker);
+    QHBoxLayout *layoutMaterial = new QHBoxLayout();
+    layoutMaterial->addWidget(cmbMaterial);
+    layoutMaterial->addWidget(btnMaterial);
 
     // order
     chkPolynomialOrder = new QCheckBox();
@@ -652,7 +652,7 @@ QLayout* DSceneLabel::createContent()
     grpMeshParameters->setLayout(layoutMeshParameters);
 
     QFormLayout *layout = new QFormLayout();
-    layout->addRow(tr("Material:"), layoutMarker);
+    layout->addRow(tr("Material:"), layoutMaterial);
     layout->addRow(grpCoordinates);
     layout->addRow(grpMeshParameters);
 
@@ -661,19 +661,19 @@ QLayout* DSceneLabel::createContent()
     return layout;
 }
 
-void DSceneLabel::fillComboBox()
+void SceneLabelDialog::fillComboBox()
 {
     logMessage("DSceneLabel::fillComboBox()");
 
     // markers
-    cmbMarker->clear();
+    cmbMaterial->clear();
     for (int i = 0; i<Util::scene()->materials.count(); i++)
     {
-        cmbMarker->addItem(Util::scene()->materials[i]->name, Util::scene()->materials[i]->variant());
+        cmbMaterial->addItem(Util::scene()->materials[i]->name, Util::scene()->materials[i]->variant());
     }
 }
 
-bool DSceneLabel::load()
+bool SceneLabelDialog::load()
 {
     logMessage("DSceneLabel::load()");
 
@@ -681,7 +681,7 @@ bool DSceneLabel::load()
 
     txtPointX->setNumber(sceneLabel->point.x);
     txtPointY->setNumber(sceneLabel->point.y);
-    cmbMarker->setCurrentIndex(cmbMarker->findData(sceneLabel->material->variant()));
+    cmbMaterial->setCurrentIndex(cmbMaterial->findData(sceneLabel->material->variant()));
     txtArea->setNumber(sceneLabel->area);
     chkArea->setChecked(sceneLabel->area > 0.0);
     txtArea->setEnabled(chkArea->isChecked());
@@ -692,7 +692,7 @@ bool DSceneLabel::load()
     return true;
 }
 
-bool DSceneLabel::save()
+bool SceneLabelDialog::save()
 {
     logMessage("DSceneLabel::save()");
 
@@ -729,40 +729,40 @@ bool DSceneLabel::save()
     }
 
     sceneLabel->point = point;
-    sceneLabel->material = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneMaterial *>();
+    sceneLabel->material = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
     sceneLabel->area = chkArea->isChecked() ? txtArea->number() : 0.0;
     sceneLabel->polynomialOrder = chkPolynomialOrder->isChecked() ? txtPolynomialOrder->value() : 0;
 
     return true;
 }
 
-void DSceneLabel::doMarkerChanged(int index)
+void SceneLabelDialog::doMaterialChanged(int index)
 {
-    logMessage("DSceneLabel::doMarkerChanged()");
+    logMessage("DSceneLabel::doMaterialChanged()");
 
-    btnMarker->setEnabled(cmbMarker->currentIndex() > 0);
+    btnMaterial->setEnabled(cmbMaterial->currentIndex() > 0);
 }
 
-void DSceneLabel::doMarkerClicked()
+void SceneLabelDialog::doMaterialClicked()
 {
-    logMessage("DSceneLabel::doMarkerClicked()");
+    logMessage("DSceneLabel::doMaterialClicked()");
 
-    SceneMaterial *marker = cmbMarker->itemData(cmbMarker->currentIndex()).value<SceneMaterial *>();
+    SceneMaterial *marker = cmbMaterial->itemData(cmbMaterial->currentIndex()).value<SceneMaterial *>();
     if (marker->showDialog(this) == QDialog::Accepted)
     {
-        cmbMarker->setItemText(cmbMarker->currentIndex(), marker->name);
+        cmbMaterial->setItemText(cmbMaterial->currentIndex(), marker->name);
         Util::scene()->refresh();
     }
 }
 
-void DSceneLabel::doPolynomialOrder(int state)
+void SceneLabelDialog::doPolynomialOrder(int state)
 {
     logMessage("DSceneLabel::doPolynomialOrder()");
 
     txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
 }
 
-void DSceneLabel::doArea(int state)
+void SceneLabelDialog::doArea(int state)
 {
     logMessage("DSceneLabel::doArea()");
 

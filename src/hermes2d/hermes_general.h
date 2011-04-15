@@ -164,7 +164,7 @@ class SceneBoundaryGeneralDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 public:
-    SceneBoundaryGeneralDialog(SceneBoundaryGeneral *edgeGeneralMarker, QWidget *parent);
+    SceneBoundaryGeneralDialog(SceneBoundaryGeneral *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -185,7 +185,7 @@ class SceneMaterialGeneralDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 public:
-    SceneMaterialGeneralDialog(QWidget *parent, SceneMaterialGeneral *labelGeneralMarker);
+    SceneMaterialGeneralDialog(SceneMaterialGeneral *material, QWidget *parent);
 
 protected:
     void createContent();

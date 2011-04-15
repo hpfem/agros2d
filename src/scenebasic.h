@@ -186,7 +186,7 @@ private:
     QComboBox *cmbNodeStart;
     QComboBox *cmbNodeEnd;
     QComboBox *cmbBoundary;
-    QPushButton *btnMarker;
+    QPushButton *btnBoundary;
     ValueLineEdit *txtAngle;
     QLabel *lblLength;
     QCheckBox *chkRefineTowardsEdge;
@@ -195,20 +195,20 @@ private:
     void fillComboBox();
 
 private slots:
-    void doMarkerChanged(int index);
-    void doMarkerClicked();
+    void doBoundaryChanged(int index);
+    void doBoundaryClicked();
     void doNodeChanged();
     void doRefineTowardsEdge(int state);
 };
 
 // *************************************************************************************************************************************
 
-class DSceneLabel : public DSceneBasic
+class SceneLabelDialog : public DSceneBasic
 {
     Q_OBJECT
 
 public:
-    DSceneLabel(SceneLabel *label, QWidget *parent, bool isNew = false);
+    SceneLabelDialog(SceneLabel *label, QWidget *parent, bool isNew = false);
 
 protected:
     QLayout *createContent();
@@ -219,8 +219,8 @@ protected:
 private:
     ValueLineEdit *txtPointX;
     ValueLineEdit *txtPointY;
-    QComboBox *cmbMarker;
-    QPushButton *btnMarker;
+    QComboBox *cmbMaterial;
+    QPushButton *btnMaterial;
     ValueLineEdit *txtArea;
     QSpinBox *txtPolynomialOrder;
     QCheckBox *chkArea;
@@ -229,8 +229,8 @@ private:
     void fillComboBox();
 
 private slots:
-    void doMarkerChanged(int index);
-    void doMarkerClicked();
+    void doMaterialChanged(int index);
+    void doMaterialClicked();
     void doArea(int);
     void doPolynomialOrder(int);
 };

@@ -683,7 +683,7 @@ QMap<QString, QString> SceneMaterialElectrostatic::data()
 
 int SceneMaterialElectrostatic::showDialog(QWidget *parent)
 {
-    SceneMaterialElectrostaticDialog *dialog = new SceneMaterialElectrostaticDialog(parent, this);
+    SceneMaterialElectrostaticDialog *dialog = new SceneMaterialElectrostaticDialog(this, parent);
     return dialog->exec();
 }
 
@@ -776,7 +776,7 @@ void SceneBoundaryElectrostaticDialog::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-SceneMaterialElectrostaticDialog::SceneMaterialElectrostaticDialog(QWidget *parent, SceneMaterialElectrostatic *material) : SceneMaterialDialog(parent)
+SceneMaterialElectrostaticDialog::SceneMaterialElectrostaticDialog(SceneMaterialElectrostatic *material, QWidget *parent) : SceneMaterialDialog(parent)
 {
     m_material = material;
 

@@ -194,7 +194,7 @@ class SceneMaterialElectrostaticDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 public:
-    SceneMaterialElectrostaticDialog(QWidget *parent, SceneMaterialElectrostatic *material);
+    SceneMaterialElectrostaticDialog(SceneMaterialElectrostatic *material, QWidget *parent);
 
 protected:
     void createContent();

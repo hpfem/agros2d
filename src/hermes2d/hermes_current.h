@@ -143,24 +143,24 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeCurrentMarker : public SceneBoundary {
+class SceneBoundaryCurrent : public SceneBoundary {
 
 public:
     Value value;
 
-    SceneEdgeCurrentMarker(const QString &name, PhysicFieldBC type, Value value);
+    SceneBoundaryCurrent(const QString &name, PhysicFieldBC type, Value value);
 
     QString script();
     QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelCurrentMarker : public SceneMaterial
+class SceneMaterialCurrent : public SceneMaterial
 {
 public:
     Value conductivity;
 
-    SceneLabelCurrentMarker(const QString &name, Value conductivity);
+    SceneMaterialCurrent(const QString &name, Value conductivity);
 
     QString script();
     QMap<QString, QString> data();
@@ -172,7 +172,7 @@ class SceneBoundaryCurrentDialog : public SceneBoundaryDialog
     Q_OBJECT
 
 public:
-    SceneBoundaryCurrentDialog(SceneEdgeCurrentMarker *edgeCurrentMarker, QWidget *parent);
+    SceneBoundaryCurrentDialog(SceneBoundaryCurrent *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -194,7 +194,7 @@ class SceneMaterialCurrentDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialCurrentDialog(QWidget *parent, SceneLabelCurrentMarker *labelCurrentMarker);
+    SceneMaterialCurrentDialog(SceneMaterialCurrent *material, QWidget *parent);
 
 protected:
     void createContent();

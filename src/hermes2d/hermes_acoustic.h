@@ -172,7 +172,7 @@ class SceneBoundaryAcousticDialog : public SceneBoundaryDialog
     Q_OBJECT
 
 public:
-    SceneBoundaryAcousticDialog(SceneBoundaryAcoustic *edgeAcousticMarker, QWidget *parent);
+    SceneBoundaryAcousticDialog(SceneBoundaryAcoustic *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -194,7 +194,7 @@ class SceneMaterialAcousticDialog : public SceneMaterialDialog
     Q_OBJECT
 
 public:
-    SceneMaterialAcousticDialog(QWidget *parent, SceneMaterialAcoustic *labelAcousticMarker);
+    SceneMaterialAcousticDialog(SceneMaterialAcoustic *material, QWidget *parent);
 
 protected:
     void createContent();

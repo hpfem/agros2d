@@ -369,12 +369,12 @@ SceneBoundarySelectDialog::SceneBoundarySelectDialog(QWidget *parent) : QDialog(
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(new QLabel(tr("Edge marker:")));
-    layoutMarker->addWidget(cmbBoundary);
+    QHBoxLayout *layoutBoundary = new QHBoxLayout();
+    layoutBoundary->addWidget(new QLabel(tr("Boundary:")));
+    layoutBoundary->addWidget(cmbBoundary);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutMarker);
+    layout->addLayout(layoutBoundary);
     layout->addStretch();
     layout->addWidget(buttonBox);
 
@@ -441,12 +441,12 @@ SceneMaterialSelectDialog::SceneMaterialSelectDialog(QWidget *parent) : QDialog(
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QHBoxLayout *layoutMarker = new QHBoxLayout();
-    layoutMarker->addWidget(new QLabel(tr("Label marker:")));
-    layoutMarker->addWidget(cmbMaterial);
+    QHBoxLayout *layoutMaterial = new QHBoxLayout();
+    layoutMaterial->addWidget(new QLabel(tr("Material:")));
+    layoutMaterial->addWidget(cmbMaterial);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutMarker);
+    layout->addLayout(layoutMaterial);
     layout->addStretch();
     layout->addWidget(buttonBox);
 

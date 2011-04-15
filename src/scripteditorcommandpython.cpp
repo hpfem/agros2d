@@ -277,7 +277,7 @@ void pythonAddEdge(double x1, double y1, double x2, double y2, double angle, cha
 
     SceneBoundary *boundary = Util::scene()->getBoundary(QString(marker));
     if (!boundary)
-        throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
+        throw invalid_argument(QObject::tr("Boundary '%1' is not defined.").arg(marker).toStdString());
 
     // start node
     SceneNode *nodeStart = Util::scene()->addNode(new SceneNode(Point(x1, y1)));
@@ -311,7 +311,7 @@ void pythonAddLabel(double x, double y, double area, int polynomialOrder, char *
 
     SceneMaterial *material = Util::scene()->getMaterial(QString(marker));
     if (!material)
-        throw invalid_argument(QObject::tr("Marker '%1' is not defined.").arg(marker).toStdString());
+        throw invalid_argument(QObject::tr("Material '%1' is not defined.").arg(marker).toStdString());
 
     Util::scene()->addLabel(new SceneLabel(Point(x, y), material, area, polynomialOrder));
 }

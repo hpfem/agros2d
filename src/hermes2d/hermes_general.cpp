@@ -30,15 +30,15 @@ public:
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
-            SceneBoundaryGeneral *edgeGeneralMarker = dynamic_cast<SceneBoundaryGeneral *>(Util::scene()->edges[i]->boundary);
+            SceneBoundaryGeneral *boundary = dynamic_cast<SceneBoundaryGeneral *>(Util::scene()->edges[i]->boundary);
 
-            if (edgeGeneralMarker && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
+            if (boundary && Util::scene()->edges[i]->boundary != Util::scene()->boundaries[0])
             {
-                if (edgeGeneralMarker->type == PhysicFieldBC_General_Derivative)
-                    if (fabs(edgeGeneralMarker->value.number) > EPS_ZERO)
+                if (boundary->type == PhysicFieldBC_General_Derivative)
+                    if (fabs(boundary->value.number) > EPS_ZERO)
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
-                                                                                                        edgeGeneralMarker->value.number,
+                                                                                                        boundary->value.number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }
@@ -46,19 +46,19 @@ public:
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
-            SceneMaterialGeneral *labelGeneralMarker = dynamic_cast<SceneMaterialGeneral *>(Util::scene()->labels[i]->material);
+            SceneMaterialGeneral *material = dynamic_cast<SceneMaterialGeneral *>(Util::scene()->labels[i]->material);
 
-            if (labelGeneralMarker && Util::scene()->labels[i]->material != Util::scene()->materials[0])
+            if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
                 add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(0, 0,
                                                                                                QString::number(i).toStdString(),
-                                                                                               labelGeneralMarker->constant.number * EPS0,
+                                                                                               material->constant.number * EPS0,
                                                                                                HERMES_SYM,
                                                                                                convertProblemType(Util::scene()->problemInfo()->problemType)));
-                if (fabs(labelGeneralMarker->rightside.number) > EPS_ZERO)
+                if (fabs(material->rightside.number) > EPS_ZERO)
                     add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
                                                                                                    QString::number(i).toStdString(),
-                                                                                                   labelGeneralMarker->rightside.number,
+                                                                                                   material->rightside.number,
                                                                                                    convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }
@@ -87,10 +87,10 @@ void HermesGeneral::readBoundaryFromDomElement(QDomElement *element)
 
 void HermesGeneral::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker)
 {
-    SceneBoundaryGeneral *edgeGeneralMarker = dynamic_cast<SceneBoundaryGeneral *>(marker);
+    SceneBoundaryGeneral *boundary = dynamic_cast<SceneBoundaryGeneral *>(marker);
 
-    element->setAttribute("type", physicFieldBCToStringKey(edgeGeneralMarker->type));
-    element->setAttribute("value", edgeGeneralMarker->value.text);
+    element->setAttribute("type", physicFieldBCToStringKey(boundary->type));
+    element->setAttribute("value", boundary->value.text);
 }
 
 void HermesGeneral::readMaterialFromDomElement(QDomElement *element)
@@ -102,10 +102,10 @@ void HermesGeneral::readMaterialFromDomElement(QDomElement *element)
 
 void HermesGeneral::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
 {
-    SceneMaterialGeneral *labelGeneralMarker = dynamic_cast<SceneMaterialGeneral *>(marker);
+    SceneMaterialGeneral *material = dynamic_cast<SceneMaterialGeneral *>(marker);
 
-    element->setAttribute("rightside", labelGeneralMarker->rightside.text);
-    element->setAttribute("constant", labelGeneralMarker->constant.text);
+    element->setAttribute("rightside", material->rightside.text);
+    element->setAttribute("constant", material->constant.text);
 }
 
 LocalPointValue *HermesGeneral::localPointValue(const Point &point)
@@ -298,32 +298,32 @@ QList<SolutionArray *> HermesGeneral::solve(ProgressItemSolve *progressItemSolve
     // edge markers
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
-        SceneBoundaryGeneral *edgeGeneralMarker = dynamic_cast<SceneBoundaryGeneral *>(Util::scene()->boundaries[i]);
+        SceneBoundaryGeneral *boundary = dynamic_cast<SceneBoundaryGeneral *>(Util::scene()->boundaries[i]);
 
         // evaluate script
-        if (!edgeGeneralMarker->value.evaluate()) return QList<SolutionArray *>();
+        if (!boundary->value.evaluate()) return QList<SolutionArray *>();
     }
 
     // label markers
     for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
-        SceneMaterialGeneral *labelGeneralMarker = dynamic_cast<SceneMaterialGeneral *>(Util::scene()->materials[i]);
+        SceneMaterialGeneral *material = dynamic_cast<SceneMaterialGeneral *>(Util::scene()->materials[i]);
 
         // evaluate script
-        if (!labelGeneralMarker->rightside.evaluate()) return QList<SolutionArray *>();
-        if (!labelGeneralMarker->constant.evaluate()) return QList<SolutionArray *>();
+        if (!material->rightside.evaluate()) return QList<SolutionArray *>();
+        if (!material->constant.evaluate()) return QList<SolutionArray *>();
     }
 
     // boundary conditions
     EssentialBCs bcs;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneBoundaryGeneral *edgeGeneralMarker = dynamic_cast<SceneBoundaryGeneral *>(Util::scene()->edges[i]->boundary);
+        SceneBoundaryGeneral *boundary = dynamic_cast<SceneBoundaryGeneral *>(Util::scene()->edges[i]->boundary);
 
-        if (edgeGeneralMarker)
+        if (boundary)
         {
-            if (edgeGeneralMarker->type == PhysicFieldBC_General_Value)
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), edgeGeneralMarker->value.number));
+            if (boundary->type == PhysicFieldBC_General_Value)
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value.number));
         }
     }
 
@@ -567,15 +567,15 @@ QMap<QString, QString> SceneMaterialGeneral::data()
 
 int SceneMaterialGeneral::showDialog(QWidget *parent)
 {
-    SceneMaterialGeneralDialog *dialog = new SceneMaterialGeneralDialog(parent, this);
+    SceneMaterialGeneralDialog *dialog = new SceneMaterialGeneralDialog(this, parent);
     return dialog->exec();
 }
 
 // *************************************************************************************************************************************
 
-SceneBoundaryGeneralDialog::SceneBoundaryGeneralDialog(SceneBoundaryGeneral *edgeGeneralMarker, QWidget *parent) : SceneBoundaryDialog(parent)
+SceneBoundaryGeneralDialog::SceneBoundaryGeneralDialog(SceneBoundaryGeneral *boundary, QWidget *parent) : SceneBoundaryDialog(parent)
 {
-    m_boundary = edgeGeneralMarker;
+    m_boundary = boundary;
 
     createDialog();
 
@@ -612,21 +612,21 @@ void SceneBoundaryGeneralDialog::load()
 {
     SceneBoundaryDialog::load();
 
-    SceneBoundaryGeneral *edgeGeneralMarker = dynamic_cast<SceneBoundaryGeneral *>(m_boundary);
+    SceneBoundaryGeneral *boundary = dynamic_cast<SceneBoundaryGeneral *>(m_boundary);
 
-    cmbType->setCurrentIndex(cmbType->findData(edgeGeneralMarker->type));
-    txtValue->setValue(edgeGeneralMarker->value);
+    cmbType->setCurrentIndex(cmbType->findData(boundary->type));
+    txtValue->setValue(boundary->value);
 }
 
 bool SceneBoundaryGeneralDialog::save() {
     if (!SceneBoundaryDialog::save()) return false;
 
-    SceneBoundaryGeneral *edgeGeneralMarker = dynamic_cast<SceneBoundaryGeneral *>(m_boundary);
+    SceneBoundaryGeneral *boundary = dynamic_cast<SceneBoundaryGeneral *>(m_boundary);
 
-    edgeGeneralMarker->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
+    boundary->type = (PhysicFieldBC) cmbType->itemData(cmbType->currentIndex()).toInt();
 
     if (txtValue->evaluate())
-        edgeGeneralMarker->value  = txtValue->value();
+        boundary->value  = txtValue->value();
     else
         return false;
 
@@ -664,9 +664,9 @@ void SceneBoundaryGeneralDialog::doTypeChanged(int index)
 
 // *************************************************************************************************************************************
 
-SceneMaterialGeneralDialog::SceneMaterialGeneralDialog(QWidget *parent, SceneMaterialGeneral *labelGeneralMarker) : SceneMaterialDialog(parent)
+SceneMaterialGeneralDialog::SceneMaterialGeneralDialog(SceneMaterialGeneral *material, QWidget *parent) : SceneMaterialDialog(parent)
 {
-    m_material = labelGeneralMarker;
+    m_material = material;
 
     createDialog();
 
@@ -699,24 +699,24 @@ void SceneMaterialGeneralDialog::load()
 {
     SceneMaterialDialog::load();
 
-    SceneMaterialGeneral *labelGeneralMarker = dynamic_cast<SceneMaterialGeneral *>(m_material);
+    SceneMaterialGeneral *material = dynamic_cast<SceneMaterialGeneral *>(m_material);
 
-    txtConstant->setValue(labelGeneralMarker->constant);
-    txtRightSide->setValue(labelGeneralMarker->rightside);
+    txtConstant->setValue(material->constant);
+    txtRightSide->setValue(material->rightside);
 }
 
 bool SceneMaterialGeneralDialog::save() {
     if (!SceneMaterialDialog::save()) return false;;
 
-    SceneMaterialGeneral *labelGeneralMarker = dynamic_cast<SceneMaterialGeneral *>(m_material);
+    SceneMaterialGeneral *material = dynamic_cast<SceneMaterialGeneral *>(m_material);
 
     if (txtConstant->evaluate())
-        labelGeneralMarker->constant = txtConstant->value();
+        material->constant = txtConstant->value();
     else
         return false;
 
     if (txtRightSide->evaluate())
-        labelGeneralMarker->rightside = txtRightSide->value();
+        material->rightside = txtRightSide->value();
     else
         return false;
 
