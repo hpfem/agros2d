@@ -1123,13 +1123,15 @@ ScriptResult PythonEngine::runPythonScript(const QString &script, const QString 
     return scriptResult;
 }
 
-ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
+ExpressionResult PythonEngine::runPythonExpression(const QString &expression, bool returnValue)
 {
-    logMessage("PythonEngine::runPythonExpression()");
-
     runPythonHeader();        
 
-    QString exp = QString("result = %1").arg(expression);
+    QString exp;
+    if (returnValue)
+        exp = QString("result = %1").arg(expression);
+    else
+        exp = expression;
 
     PyObject *output = PyRun_String(exp.toStdString().c_str(), Py_file_input, m_dict, m_dict);
 
@@ -1150,14 +1152,17 @@ ExpressionResult PythonEngine::runPythonExpression(const QString &expression)
         else
         {
             // parse result
-            PyObject *result = PyDict_GetItemString(m_dict, "result");
-            if (result)
+            if (returnValue)
             {
-                Py_INCREF(result);
-                PyArg_Parse(result, "d", &expressionResult.value);
-                if (fabs(expressionResult.value) < EPS_ZERO)
-                    expressionResult.value = 0.0;
-                Py_DECREF(result);
+                PyObject *result = PyDict_GetItemString(m_dict, "result");
+                if (result)
+                {
+                    Py_INCREF(result);
+                    PyArg_Parse(result, "d", &expressionResult.value);
+                    if (fabs(expressionResult.value) < EPS_ZERO)
+                        expressionResult.value = 0.0;
+                    Py_DECREF(result);
+                }
             }
         }
     }

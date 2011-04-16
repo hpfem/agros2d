@@ -322,7 +322,7 @@ ViewScalarFilter *HermesElectrostatic::viewScalarFilter(PhysicFieldVariable phys
 
 QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressItemSolve)
 {
-    // edge markers
+    // boundaries
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
         SceneBoundaryElectrostatic *material = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->boundaries[i]);
@@ -331,7 +331,7 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
         if (!material->value.evaluate()) return QList<SolutionArray *>();
     }
 
-    // label markers
+    // materials
     for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
         SceneMaterialElectrostatic *material = dynamic_cast<SceneMaterialElectrostatic *>(Util::scene()->materials[i]);
@@ -356,7 +356,10 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
 
     WeakFormElectrostatics wf;
 
+    QTime time;
+    // time.start();
     QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
+    // qDebug() << "solveSolutioArray: " << time.elapsed();
 
     return solutionArrayList;
 }

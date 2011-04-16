@@ -33,7 +33,7 @@ bool Value::evaluate(double time, bool quiet)
     logMessage("Value::evaluate()");
 
     // eval time
-    runPythonScript(QString("time = %1").arg(time));
+    runPythonExpression(QString("time = %1").arg(time), false);
 
     // eval expression
     ExpressionResult expressionResult;

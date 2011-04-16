@@ -50,11 +50,11 @@ ScriptResult runPythonScript(const QString &script, const QString &fileName)
     return pythonEngine->runPythonScript(script, fileName);
 }
 
-ExpressionResult runPythonExpression(const QString &expression)
+ExpressionResult runPythonExpression(const QString &expression, bool returnValue)
 {
     logMessage("runPythonExpression()");
 
-    return pythonEngine->runPythonExpression(expression);
+    return pythonEngine->runPythonExpression(expression, returnValue);
 }
 
 bool scriptIsRunning()

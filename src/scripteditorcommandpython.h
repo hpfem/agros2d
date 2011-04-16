@@ -38,7 +38,7 @@ public:
     void showMessage(const QString &message);
 
     ScriptResult runPythonScript(const QString &script, const QString &fileName);
-    ExpressionResult runPythonExpression(const QString &expression);
+    ExpressionResult runPythonExpression(const QString &expression, bool returnValue);
     ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }
 

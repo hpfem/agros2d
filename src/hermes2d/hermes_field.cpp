@@ -242,6 +242,8 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
         }
     }
 
+    QTime time;
+
     // RungeKutta *rungeKutta = NULL;
     if (analysisType == AnalysisType_Transient)
     {
@@ -301,8 +303,12 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                 }
 
                 DiscreteProblem dp(wf, space, isLinear);
-                dp.assemble(matrix, rhs);
 
+                // time.start();
+                dp.assemble(matrix, rhs);
+                // qDebug() << "assemble: " << time.elapsed();
+
+                // time.start();
                 if(solver->solve())
                 {
                     Solution::vector_to_solutions(solver->get_solution(), space, solution);
@@ -312,6 +318,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
                     isError = true;
                     progressItemSolve->emitMessage(QObject::tr("Matrix solver failed."), true, 1);
                 }
+                // qDebug() << "solve: " << time.elapsed();
             }
             else
             {
