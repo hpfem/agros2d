@@ -26,7 +26,7 @@
 struct HermesHeat : public HermesField
 {
     Q_OBJECT
-public:    
+public:
     PhysicField physicField() const { return PhysicField_Heat; }
 
     inline int numberOfSolution() const { return 1; }
