@@ -48,7 +48,7 @@ SOURCES += util.cpp \
     hermes2d/hermes_magnetic.cpp \
     hermes2d/hermes_magnetic_integrals.cpp \
     hermes2d/hermes_current.cpp \
-    #hermes2d/hermes_elasticity.cpp \
+    hermes2d/hermes_elasticity.cpp \
     #hermes2d/hermes_flow.cpp \
     #hermes2d/hermes_rf.cpp \
     hermes2d/hermes_acoustic.cpp \
@@ -95,7 +95,7 @@ HEADERS += util.h \
     hermes2d/hermes_heat.h \
     hermes2d/hermes_magnetic.h \
     hermes2d/hermes_current.h \
-    #hermes2d/hermes_elasticity.h \
+    hermes2d/hermes_elasticity.h \
     #hermes2d/hermes_flow.h \
     #hermes2d/hermes_rf.h \
     hermes2d/hermes_acoustic.h \

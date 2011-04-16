@@ -151,7 +151,7 @@ protected:
     void calculateVariable(int i);
 };
 
-class SceneEdgeElasticityMarker : public SceneBoundary
+class SceneBoundaryElasticity : public SceneBoundary
 {
 public:
     PhysicFieldBC typeX;
@@ -161,15 +161,15 @@ public:
     Value displacementX;
     Value displacementY;
 
-    QString script();
-    QMap<QString, QString> data();
-    SceneEdgeElasticityMarker(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY,
+    SceneBoundaryElasticity(const QString &name, PhysicFieldBC typeX, PhysicFieldBC typeY,
                               Value forceX, Value forceY, Value displacementX, Value displacementY);
 
+    QString script();
+    QMap<QString, QString> data();
     int showDialog(QWidget *parent);
 };
 
-class SceneLabelElasticityMarker : public SceneMaterial
+class SceneMaterialElasticity : public SceneMaterial
 {
 public:
     Value young_modulus;
@@ -180,7 +180,7 @@ public:
     Value temp;
     Value temp_ref;
 
-    SceneLabelElasticityMarker(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY,
+    SceneMaterialElasticity(const QString &name, Value young_modulus, Value poisson_ratio, Value forceX, Value forceY,
                                Value alpha, Value temp, Value temp_ref);
 
     // Lame constant
@@ -192,12 +192,12 @@ public:
     int showDialog(QWidget *parent);
 };
 
-class DSceneEdgeElasticityMarker : public SceneBoundaryDialog
+class SceneBoundaryElasticityDialog : public SceneBoundaryDialog
 {
     Q_OBJECT
 
 public:
-    DSceneEdgeElasticityMarker(SceneEdgeElasticityMarker *edgeEdgeElasticityMarker, QWidget *parent);
+    SceneBoundaryElasticityDialog(SceneBoundaryElasticity *boundary, QWidget *parent);
 
 protected:
     void createContent();
@@ -222,12 +222,12 @@ private slots:
     void doTypeYChanged(int index);
 };
 
-class DSceneLabelElasticityMarker : public SceneMaterialDialog
+class SceneMaterialElasticityDialog : public SceneMaterialDialog
 {
     Q_OBJECT
 
 public:
-    DSceneLabelElasticityMarker(QWidget *parent, SceneLabelElasticityMarker *labelElasticityMarker);
+    SceneMaterialElasticityDialog(SceneMaterialElasticity *material, QWidget *parent);
 
 protected:
     void createContent();

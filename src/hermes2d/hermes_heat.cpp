@@ -1079,14 +1079,14 @@ void SceneBoundaryHeatDialog::doTypeChanged(int index)
     {
     case PhysicFieldBC_Heat_Temperature:
     {
-        txtTemperature->setEnabled(true);        
+        txtTemperature->setEnabled(true);
     }
         break;
     case PhysicFieldBC_Heat_Flux:
     {
         txtHeatFlux->setEnabled(true);
         txtHeatTransferCoefficient->setEnabled(true);
-        txtExternalTemperature->setEnabled(true);        
+        txtExternalTemperature->setEnabled(true);
     }
         break;
     }
