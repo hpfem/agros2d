@@ -26,13 +26,13 @@
 class WeakFormHeat : public WeakFormAgros
 {
 public:
-    WeakFormHeat()
-    {
-        registerForms();
-    }
+    WeakFormHeat() : WeakFormAgros() { }
 
     void registerForms()
     {
+        // delete all forms
+        delete_all();
+
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
@@ -72,6 +72,7 @@ public:
                                                                                                material->thermal_conductivity.number,
                                                                                                HERMES_SYM,
                                                                                                convertProblemType(Util::scene()->problemInfo()->problemType)));
+
                 if (fabs(material->volume_heat.number) > EPS_ZERO)
                     add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
                                                                                                    QString::number(i).toStdString(),
@@ -80,37 +81,66 @@ public:
 
                 // transient analysis
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
-                    if ((fabs(material->density.number) > EPS_ZERO)
-                            && (fabs(material->specific_heat.number) > EPS_ZERO))
+                    if ((fabs(material->density.number) > EPS_ZERO) && (fabs(material->specific_heat.number) > EPS_ZERO))
                     {
-                        add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
-                                                                                                  QString::number(i).toStdString(),
-                                                                                                  material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
-                                                                                                  HERMES_SYM,
-                                                                                                  convertProblemType(Util::scene()->problemInfo()->problemType)));
+                        if (solution.size() > 0)
+                        {
 
-                        add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
-                                                                                                       QString::number(i).toStdString(),
-                                                                                                       material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
-                                                                                                       convertProblemType(Util::scene()->problemInfo()->problemType)));
+                            add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
+                                                                                                      QString::number(i).toStdString(),
+                                                                                                      material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                                      HERMES_SYM,
+                                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
 
+                            CustomVectorFormTimeDep *vector = new CustomVectorFormTimeDep(0,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType));
+                            vector->ext.push_back(solution[0]);
+                            add_vector_form(vector);
+                        }
                     }
             }
         }
     }
 
-    virtual void updateTimeDep(double time, Hermes::vector<Solution *> sln)
+    class CustomVectorFormTimeDep : public WeakForm::VectorFormVol
     {
-        // FIXME - temporary solution -> Runge - Kutta methods
+    public:
+        CustomVectorFormTimeDep(int i, scalar coeff, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i), coeff(coeff), gt(gt) { }
+        CustomVectorFormTimeDep(int i, std::string area, scalar coeff, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i, area), coeff(coeff), gt(gt) { }
 
-        // delete all forms
-        delete_all();
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            if (gt == HERMES_PLANAR)
+                return coeff * int_u_v<double, scalar>(n, wt, ext->fn[0], v);
+            else if (gt == HERMES_AXISYM_X)
+                return coeff * int_y_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
+            else
+                return coeff * int_x_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
+        }
 
-        // register forms
-        registerForms();
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
+                        ExtData<Ord> *ext) const {
+            if (gt == HERMES_PLANAR)
+                return int_u_v<Ord, Ord>(n, wt, ext->fn[0], v);
+            else if (gt == HERMES_AXISYM_X)
+                return int_y_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
+            else
+                return int_x_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
+        }
+
+        // This is to make the form usable in rk_time_step().
+        virtual WeakForm::VectorFormVol* clone() {
+            return new CustomVectorFormTimeDep(*this);
+        }
+
+    private:
+        scalar coeff;
+        GeomType gt;
     };
-
-
 };
 
 /*
@@ -588,17 +618,14 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
     */
 }
 
-void HermesHeat::updateTimeFunctions(WeakFormAgros *wf, double time, Hermes::vector<Solution *> sln)
+void HermesHeat::updateTimeFunctions(double time)
 {
-    // update markers
+    // update materials
     for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
         SceneMaterialHeat *material = dynamic_cast<SceneMaterialHeat *>(Util::scene()->materials[i]);
         material->volume_heat.evaluate(time);
     }
-
-    // update weakform
-    wf->updateTimeDep(time);
 }
 
 // ****************************************************************************************************************

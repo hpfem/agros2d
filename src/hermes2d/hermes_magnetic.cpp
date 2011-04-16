@@ -34,7 +34,9 @@ Scalar int_u_dvdx_over_x_check(int n, double *wt, Func<Real> *u, Func<Real> *v, 
 class WeakFormMagnetics : public WeakFormAgros
 {
 public:
-    WeakFormMagnetics(int neq) : WeakFormAgros(neq)
+    WeakFormMagnetics(int neq) : WeakFormAgros(neq) { }
+
+    void registerForms()
     {
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
@@ -77,8 +79,8 @@ public:
                 // velocity
                 if ((fabs(material->conductivity.number) > EPS_ZERO) &&
                         ((fabs(material->velocity_x.number) > EPS_ZERO) ||
-                        (fabs(material->velocity_y.number) > EPS_ZERO) ||
-                        (fabs(material->velocity_angular.number) > EPS_ZERO)))
+                         (fabs(material->velocity_y.number) > EPS_ZERO) ||
+                         (fabs(material->velocity_angular.number) > EPS_ZERO)))
                     add_matrix_form(new DefaultLinearMagnetostaticsVelocity(0, 0,
                                                                             QString::number(i).toStdString(),
                                                                             material->conductivity.number,
@@ -254,7 +256,7 @@ public:
 
     private:
         double gamma, vel_x, vel_y, vel_ang;
-    };
+    };    
 };
 
 /*
@@ -489,9 +491,9 @@ void HermesMagnetic::readBoundaryFromDomElement(QDomElement *element)
     case PhysicFieldBC_Magnetic_VectorPotential:
     case PhysicFieldBC_Magnetic_SurfaceCurrent:
         Util::scene()->addBoundary(new SceneBoundaryMagnetic(element->attribute("name"),
-                                                                 type,
-                                                                 Value(element->attribute("value_real", "0")),
-                                                                 Value(element->attribute("value_imag", "0"))));
+                                                             type,
+                                                             Value(element->attribute("value_real", "0")),
+                                                             Value(element->attribute("value_imag", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -511,15 +513,15 @@ void HermesMagnetic::writeBoundaryToDomElement(QDomElement *element, SceneBounda
 void HermesMagnetic::readMaterialFromDomElement(QDomElement *element)
 {
     Util::scene()->addMaterial(new SceneMaterialMagnetic(element->attribute("name"),
-                                                               Value(element->attribute("current_density_real", "0")),
-                                                               Value(element->attribute("current_density_imag", "0")),
-                                                               Value(element->attribute("permeability", "1")),
-                                                               Value(element->attribute("conductivity", "0")),
-                                                               Value(element->attribute("remanence", "0")),
-                                                               Value(element->attribute("remanence_angle", "0")),
-                                                               Value(element->attribute("velocity_x", "0")),
-                                                               Value(element->attribute("velocity_y", "0")),
-                                                               Value(element->attribute("velocity_angular", "0"))));
+                                                         Value(element->attribute("current_density_real", "0")),
+                                                         Value(element->attribute("current_density_imag", "0")),
+                                                         Value(element->attribute("permeability", "1")),
+                                                         Value(element->attribute("conductivity", "0")),
+                                                         Value(element->attribute("remanence", "0")),
+                                                         Value(element->attribute("remanence_angle", "0")),
+                                                         Value(element->attribute("velocity_x", "0")),
+                                                         Value(element->attribute("velocity_y", "0")),
+                                                         Value(element->attribute("velocity_angular", "0"))));
 }
 
 void HermesMagnetic::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
@@ -584,9 +586,9 @@ QStringList HermesMagnetic::volumeIntegralValueHeader()
 SceneBoundary *HermesMagnetic::newBoundary()
 {
     return new SceneBoundaryMagnetic(tr("new boundary"),
-                                       PhysicFieldBC_Magnetic_VectorPotential,
-                                       Value("0"),
-                                       Value("0"));
+                                     PhysicFieldBC_Magnetic_VectorPotential,
+                                     Value("0"),
+                                     Value("0"));
 }
 
 SceneBoundary *HermesMagnetic::newBoundary(PyObject *self, PyObject *args)
@@ -600,9 +602,9 @@ SceneBoundary *HermesMagnetic::newBoundary(PyObject *self, PyObject *args)
         if (Util::scene()->getBoundary(name)) return NULL;
 
         return new SceneBoundaryMagnetic(name,
-                                           physicFieldBCFromStringKey(type),
-                                           Value(QString::number(value_real)),
-                                           Value(QString::number(value_imag)));
+                                         physicFieldBCFromStringKey(type),
+                                         Value(QString::number(value_real)),
+                                         Value(QString::number(value_imag)));
     }
 
     return NULL;
@@ -642,15 +644,15 @@ SceneBoundary *HermesMagnetic::modifyBoundary(PyObject *self, PyObject *args)
 SceneMaterial *HermesMagnetic::newMaterial()
 {
     return new SceneMaterialMagnetic(tr("new material"),
-                                        Value("0"),
-                                        Value("0"),
-                                        Value("1"),
-                                        Value("0"),
-                                        Value("0"),
-                                        Value("0"),
-                                        Value("0"),
-                                        Value("0"),
-                                        Value("0"));
+                                     Value("0"),
+                                     Value("0"),
+                                     Value("1"),
+                                     Value("0"),
+                                     Value("0"),
+                                     Value("0"),
+                                     Value("0"),
+                                     Value("0"),
+                                     Value("0"));
 }
 
 SceneMaterial *HermesMagnetic::newMaterial(PyObject *self, PyObject *args)
@@ -663,15 +665,15 @@ SceneMaterial *HermesMagnetic::newMaterial(PyObject *self, PyObject *args)
         if (Util::scene()->getMaterial(name)) return NULL;
 
         return new SceneMaterialMagnetic(name,
-                                            Value(QString::number(current_density_real)),
-                                            Value(QString::number(current_density_imag)),
-                                            Value(QString::number(permeability)),
-                                            Value(QString::number(conductivity)),
-                                            Value(QString::number(remanence)),
-                                            Value(QString::number(remanence_angle)),
-                                            Value(QString::number(velocity_x)),
-                                            Value(QString::number(velocity_y)),
-                                            Value(QString::number(velocity_angular)));
+                                         Value(QString::number(current_density_real)),
+                                         Value(QString::number(current_density_imag)),
+                                         Value(QString::number(permeability)),
+                                         Value(QString::number(conductivity)),
+                                         Value(QString::number(remanence)),
+                                         Value(QString::number(remanence_angle)),
+                                         Value(QString::number(velocity_x)),
+                                         Value(QString::number(velocity_y)),
+                                         Value(QString::number(velocity_angular)));
     }
 
     return NULL;
@@ -1173,7 +1175,7 @@ QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolv
     return solutionArrayList;
 }
 
-void HermesMagnetic::updateTimeFunctions(WeakFormAgros *wf, double time, Hermes::vector<Solution *> sln)
+void HermesMagnetic::updateTimeFunctions(double time)
 {
     // update markers
     for (int i = 1; i<Util::scene()->materials.count(); i++)

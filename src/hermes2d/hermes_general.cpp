@@ -25,7 +25,9 @@
 class WeakFormGenerals : public WeakFormAgros
 {
 public:
-    WeakFormGenerals()
+    WeakFormGenerals() : WeakFormAgros() { }
+
+    void registerForms()
     {
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
@@ -62,6 +64,7 @@ public:
                                                                                                    convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }
+
     }
 };
 

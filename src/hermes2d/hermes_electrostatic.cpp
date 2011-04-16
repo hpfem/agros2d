@@ -25,7 +25,9 @@
 class WeakFormElectrostatics : public WeakFormAgros
 {
 public:
-    WeakFormElectrostatics()
+    WeakFormElectrostatics() : WeakFormAgros() { }
+
+    void registerForms()
     {
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)

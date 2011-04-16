@@ -51,7 +51,10 @@ class WeakFormAgros : public WeakForm
 public:
     WeakFormAgros(unsigned int neq = 1) : WeakForm(neq) { }
 
-    virtual void updateTimeDep(double time) { };
+    virtual void registerForms() = 0;
+
+    // previous solution
+    Hermes::vector<Solution *> solution;
 };
 
 struct HermesField : public QObject
@@ -90,7 +93,7 @@ public:
     virtual SceneMaterial *modifyMaterial(PyObject *self, PyObject *args) = 0;
 
     virtual QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve) = 0;
-    inline virtual void updateTimeFunctions(WeakFormAgros *wf, double time, Hermes::vector<Solution *> sln) { }
+    inline virtual void updateTimeFunctions(double time) { }
 
     virtual PhysicFieldVariable contourPhysicFieldVariable() = 0;
     virtual PhysicFieldVariable scalarPhysicFieldVariable() = 0;

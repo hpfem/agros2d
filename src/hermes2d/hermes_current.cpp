@@ -25,7 +25,9 @@
 class WeakFormCurrent : public WeakFormAgros
 {
 public:
-    WeakFormCurrent()
+    WeakFormCurrent() : WeakFormAgros() { }
+
+    void registerForms()
     {
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)

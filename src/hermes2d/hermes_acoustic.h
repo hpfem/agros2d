@@ -32,14 +32,7 @@ public:
     inline int numberOfSolution() const { return 2; }
     inline bool hasSteadyState() const { return false; }
     inline bool hasHarmonic() const { return true; }
-    inline bool hasTransient() const
-    {
-#ifdef BETA
-    return true;
-#else
-     return false;
-#endif
-    }
+    inline bool hasTransient() const { return true; }
 
     void readBoundaryFromDomElement(QDomElement *element);
     void writeBoundaryToDomElement(QDomElement *element, SceneBoundary *marker);
@@ -77,7 +70,7 @@ public:
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-    virtual void updateTimeFunctions(WeakFormAgros *wf, double time, Hermes::vector<Solution *> sln);
+    virtual void updateTimeFunctions(double time);
 
     PhysicFieldVariable contourPhysicFieldVariable();
     PhysicFieldVariable scalarPhysicFieldVariable();

@@ -25,7 +25,9 @@
 class WeakFormElasticity : public WeakFormAgros
 {
 public:
-    WeakFormElasticity()
+    WeakFormElasticity() : WeakFormAgros(2) { }
+
+    void registerForms()
     {
       // boundary conditions
       for (int i = 0; i<Util::scene()->edges.count(); i++)
