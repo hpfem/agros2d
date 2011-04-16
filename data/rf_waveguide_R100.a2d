@@ -4,11 +4,11 @@
             <scriptstartup></scriptstartup>
             <description></description>
             <edges>
-                <edge mode="TE Mode 0" value_imag="0" type="rf_electric_field" id="1" name="E = 0" value_real="0"/>
-                <edge mode="TE Mode 0" value_imag="0" type="rf_electric_field" id="2" name="E = +1" value_real="1"/>
-                <edge mode="TE Mode 0" value_imag="0" type="rf_electric_field" id="3" name="E = -1" value_real="-1"/>
+                <edge value_imag="0" type="rf_electric_field" id="1" name="E = 0" value_real="0"/>
+                <edge value_imag="0" type="rf_electric_field" id="2" name="E = +1" value_real="1"/>
+                <edge value_imag="0" type="rf_electric_field" id="3" name="E = -1" value_real="-1"/>
                 <edge height="0.01016" type="rf_matched_boundary" id="4" name="MB"/>
-                <edge mode="TE Mode 0" value_imag="0" type="rf_port" id="5" name="Port" value_real="1"/>
+                <edge mode="TE Mode 0" phase="0" height="0.01016" type="rf_port" id="5" name="Port" power="1"/>
             </edges>
             <labels>
                 <label current_density_real="0" conductivity="0" id="1" name="Air" current_density_imag="0" permeability="1" permittivity="1"/>

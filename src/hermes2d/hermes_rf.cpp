@@ -593,7 +593,7 @@ SceneLabelMarker *HermesRF::newLabelMarker(PyObject *self, PyObject *args)
 {
     double permittivity, permeability, conductivity, current_density_real, current_density_imag;
     char *name;
-    if (PyArg_ParseTuple(args, "sddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
+    if (PyArg_ParseTuple(args, "sddddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
     {
         // check name
         if (Util::scene()->getLabelMarker(name)) return NULL;
@@ -613,7 +613,7 @@ SceneLabelMarker *HermesRF::modifyLabelMarker(PyObject *self, PyObject *args)
 {
     double permittivity, permeability, conductivity, current_density_real, current_density_imag;
     char *name;
-    if (PyArg_ParseTuple(args, "sddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
+    if (PyArg_ParseTuple(args, "sddddd", &name, &permittivity, &permeability, &conductivity, &current_density_real, &current_density_imag))
     {
         if (SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(Util::scene()->getLabelMarker(name)))
         {
@@ -1291,7 +1291,8 @@ DSceneEdgeRFMarker::DSceneEdgeRFMarker(SceneEdgeRFMarker *edgeRFMarker, QWidget 
 
 void DSceneEdgeRFMarker::createContent()
 {
-    lblValueUnit = new QLabel("");
+    lblValueUnitReal = new QLabel("");
+    lblValueUnitImag = new QLabel("");
 
     cmbType = new QComboBox(this);
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_ElectricField), PhysicFieldBC_RF_ElectricField);
@@ -1300,9 +1301,9 @@ void DSceneEdgeRFMarker::createContent()
     cmbType->addItem(physicFieldBCString(PhysicFieldBC_RF_Port), PhysicFieldBC_RF_Port);
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
-    txtValueReal = new ValueLineEdit(this);
-    txtValueImag = new ValueLineEdit(this);
-    txtHeight = new ValueLineEdit(this);
+    txtValueReal = new ValueLineEdit(this, true);
+    txtValueImag = new ValueLineEdit(this, true);
+    txtHeight = new ValueLineEdit(this, true);
 
     cmbMode = new QComboBox(this);
     cmbMode->addItem(teModeString(TEMode_0), TEMode_0);
@@ -1316,20 +1317,20 @@ void DSceneEdgeRFMarker::createContent()
     connect(txtValueImag, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     connect(txtHeight, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
 
-    QHBoxLayout *layoutCurrentDensity = new QHBoxLayout();
-    layoutCurrentDensity->addWidget(txtValueReal);
-    layoutCurrentDensity->addWidget(new QLabel(" + j "));
-    layoutCurrentDensity->addWidget(txtValueImag);
+    QHBoxLayout *layoutPhysicField = new QHBoxLayout();
+    layoutPhysicField->addWidget(txtValueReal);
+    layoutPhysicField->addWidget(lblValueUnitImag, 10, 0);
+    layoutPhysicField->addWidget(txtValueImag);
 
     layout->addWidget(new QLabel(tr("BC type:")), 4, 0);
     layout->addWidget(cmbType, 4, 2);
-    layout->addWidget(lblValueUnit, 10, 0);
-    layout->addLayout(layoutCurrentDensity, 10, 2);
-    layout->addWidget(new QLabel(tr("TE mode:")), 11, 0);
-    layout->addWidget(cmbMode, 11, 2);
+    layout->addWidget(lblValueUnitReal, 10, 0);
+    layout->addLayout(layoutPhysicField, 10, 2);
+    layout->addWidget(new QLabel(tr("TE mode:")), 12, 0);
+    layout->addWidget(cmbMode, 12, 2);
     layout->addWidget(createLabel(tr("<i>h</i> (m)"),
-                                  tr("Height:")), 12, 0);
-    layout->addWidget(txtHeight, 12, 2);
+                                  tr("Height:")), 13, 0);
+    layout->addWidget(txtHeight, 13, 2);
 }
 
 void DSceneEdgeRFMarker::load()
@@ -1430,41 +1431,54 @@ void DSceneEdgeRFMarker::doTypeChanged(int index)
     txtValueImag->setEnabled(false);
     txtHeight->setEnabled(false);
     cmbMode->setEnabled(false);
-    //cmbMode->setShown(false);
 
     switch ((PhysicFieldBC) cmbType->itemData(index).toInt())
     {
     case PhysicFieldBC_RF_ElectricField:
     {
         txtValueReal->setEnabled(true);
+            lblValueUnitReal->setText(tr(""));
+            lblValueUnitReal->setToolTip(cmbType->itemText(index));
         txtValueImag->setEnabled(true);
+            lblValueUnitImag->setText(tr(" + j "));
+            lblValueUnitImag->setToolTip(cmbType->itemText(index));
     }
         break;
 
     case PhysicFieldBC_RF_MagneticField:
     {
         txtValueReal->setEnabled(true);
+           lblValueUnitReal->setText(tr(""));
+           lblValueUnitReal->setToolTip(cmbType->itemText(index));
         txtValueImag->setEnabled(true);
+            lblValueUnitImag->setText(tr(" + j "));
+            lblValueUnitImag->setToolTip(cmbType->itemText(index));
     }
         break;
 
     case PhysicFieldBC_RF_MatchedBoundary:
     {
         txtHeight->setEnabled(true);
+        lblValueUnitReal->setText(tr(""));
+        lblValueUnitImag->setText(tr(""));
     }
         break;
 
     case PhysicFieldBC_RF_Port:
     {
         txtValueReal->setEnabled(true);
+            lblValueUnitReal->setText(tr("Power (W):"));
+            lblValueUnitReal->setToolTip(cmbType->itemText(index));
         txtValueImag->setEnabled(true);
+            lblValueUnitImag->setText(tr("Phase (°):"));
+            lblValueUnitImag->setToolTip(cmbType->itemText(index));
         txtHeight->setEnabled(true);
-        cmbMode->setEnabled(true);
-        //cmbMode->setShown(true);
+        cmbMode->setEnabled(true);       
     }
         break;
     }
 }
+
 
 // *************************************************************************************************************************************
 

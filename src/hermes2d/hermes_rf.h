@@ -195,12 +195,14 @@ protected:
     bool save();
 
 private:
-    QLabel *lblValueUnit;
+    QLabel *lblValueUnitReal;
+    QLabel *lblValueUnitImag;
     QComboBox *cmbType;
     QComboBox *cmbMode;
     ValueLineEdit *txtValueReal;
     ValueLineEdit *txtValueImag;
     ValueLineEdit *txtHeight;
+
 
 private slots:
     void doTypeChanged(int index);
