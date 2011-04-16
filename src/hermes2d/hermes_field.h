@@ -157,50 +157,48 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
 
 // custom forms **************************************************************************************************************************
 
-template<typename Real, typename Scalar>
-Scalar int_x_v(int n, double *wt, Func<Real> *v, Geom<Real> *e)
+class CustomVectorFormTimeDep : public WeakForm::VectorFormVol
 {
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * e->x[i] * (v->val[i]);
-    return result;
-}
+public:
+    CustomVectorFormTimeDep(int i, scalar coeff, Solution *solution, GeomType gt = HERMES_PLANAR)
+        : WeakForm::VectorFormVol(i), coeff(coeff), gt(gt)
+    {
+        ext.push_back(solution);
+    }
+    CustomVectorFormTimeDep(int i, std::string area, scalar coeff, Solution *solution, GeomType gt = HERMES_PLANAR)
+        : WeakForm::VectorFormVol(i, area), coeff(coeff), gt(gt)
+    {
+        ext.push_back(solution);
+    }
 
-template<typename Real, typename Scalar>
-Scalar int_dvdx(int n, double *wt, Func<Real> *v)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (v->dx[i]);
-    return result;
-}
+    virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                         Geom<double> *e, ExtData<scalar> *ext) const {
+        if (gt == HERMES_PLANAR)
+            return coeff * int_u_v<double, scalar>(n, wt, ext->fn[0], v);
+        else if (gt == HERMES_AXISYM_X)
+            return coeff * int_y_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
+        else
+            return coeff * int_x_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
+    }
 
-template<typename Real, typename Scalar>
-Scalar int_dvdy(int n, double *wt, Func<Real> *v)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (v->dy[i]);
-    return result;
-}
+    virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
+                    ExtData<Ord> *ext) const {
+        if (gt == HERMES_PLANAR)
+            return int_u_v<Ord, Ord>(n, wt, ext->fn[0], v);
+        else if (gt == HERMES_AXISYM_X)
+            return int_y_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
+        else
+            return int_x_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
+    }
 
+    // This is to make the form usable in rk_time_step().
+    virtual WeakForm::VectorFormVol* clone() {
+        return new CustomVectorFormTimeDep(*this);
+    }
 
-template<typename Real, typename Scalar>
-Scalar int_velocity(int n, double *wt, Func<Real> *u, Func<Real> *v, Geom<Real> *e, double vx, double vy, double omega)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * u->val[i] * ((vx - e->y[i] * omega) * v->dx[i] + (vy + e->x[i] * omega) * v->dy[i]);
-    return result;
-}
-
-template<typename Real, typename Scalar>
-Scalar int_magnet(int n, double *wt, Func<Real> *v, double angle)
-{
-    Scalar result = 0;
-    for (int i = 0; i < n; i++)
-        result += wt[i] * (- sin(angle / 180.0 * M_PI) * v->dx[i] + cos(angle / 180.0 * M_PI) * v->dy[i]);
-    return result;
-}
+private:
+    scalar coeff;
+    GeomType gt;
+};
 
 #endif // HERMES_FIELD_H

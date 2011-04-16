@@ -81,66 +81,28 @@ public:
 
                 // transient analysis
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+                {
                     if ((fabs(material->density.number) > EPS_ZERO) && (fabs(material->specific_heat.number) > EPS_ZERO))
                     {
                         if (solution.size() > 0)
                         {
-
                             add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
                                                                                                       QString::number(i).toStdString(),
                                                                                                       material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
                                                                                                       HERMES_SYM,
                                                                                                       convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-                            CustomVectorFormTimeDep *vector = new CustomVectorFormTimeDep(0,
-                                                                                          QString::number(i).toStdString(),
-                                                                                          material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
-                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType));
-                            vector->ext.push_back(solution[0]);
-                            add_vector_form(vector);
+                            add_vector_form(new CustomVectorFormTimeDep(0,
+                                                                        QString::number(i).toStdString(),
+                                                                        material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                        solution[0],
+                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
                         }
                     }
+                }
             }
         }
     }
-
-    class CustomVectorFormTimeDep : public WeakForm::VectorFormVol
-    {
-    public:
-        CustomVectorFormTimeDep(int i, scalar coeff, GeomType gt = HERMES_PLANAR)
-            : WeakForm::VectorFormVol(i), coeff(coeff), gt(gt) { }
-        CustomVectorFormTimeDep(int i, std::string area, scalar coeff, GeomType gt = HERMES_PLANAR)
-            : WeakForm::VectorFormVol(i, area), coeff(coeff), gt(gt) { }
-
-        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
-                             Geom<double> *e, ExtData<scalar> *ext) const {
-            if (gt == HERMES_PLANAR)
-                return coeff * int_u_v<double, scalar>(n, wt, ext->fn[0], v);
-            else if (gt == HERMES_AXISYM_X)
-                return coeff * int_y_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
-            else
-                return coeff * int_x_u_v<double, scalar>(n, wt, ext->fn[0], v, e);
-        }
-
-        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v, Geom<Ord> *e,
-                        ExtData<Ord> *ext) const {
-            if (gt == HERMES_PLANAR)
-                return int_u_v<Ord, Ord>(n, wt, ext->fn[0], v);
-            else if (gt == HERMES_AXISYM_X)
-                return int_y_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
-            else
-                return int_x_u_v<Ord, Ord>(n, wt, ext->fn[0], v, e);
-        }
-
-        // This is to make the form usable in rk_time_step().
-        virtual WeakForm::VectorFormVol* clone() {
-            return new CustomVectorFormTimeDep(*this);
-        }
-
-    private:
-        scalar coeff;
-        GeomType gt;
-    };
 };
 
 /*

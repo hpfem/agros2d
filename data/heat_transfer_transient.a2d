@@ -1,6 +1,6 @@
 <document>
     <problems>
-        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="transient" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="40e3" type="heat" timestep="1e3" id="0" name="Heat Transfer Transient" initialcondition="10">
+        <problem adaptivitytolerance="1" maxdofs="60000" frequency="0" numberofrefinements="0" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="transient" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="40e3" type="heat" timestep="1e3" id="0" name="Heat Transfer Transient" initialcondition="10" date="2011-04-16">
             <scriptstartup></scriptstartup>
             <description>This model is an example.</description>
             <edges>
@@ -9,7 +9,7 @@
                 <edge temperature="0" type="heat_temperature" id="3" name="Temperature"/>
             </edges>
             <labels>
-                <label thermal_conductivity="385" specific_heat="385" volume_heat="1e4*(time&lt;10*1e3)" id="1" density="8700" name="Copper"/>
+                <label thermal_conductivity="385" specific_heat="385" volume_heat="1e4*(time&lt;=10*1e3)" id="1" density="8700" name="Copper"/>
             </labels>
         </problem>
     </problems>

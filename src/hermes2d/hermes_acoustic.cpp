@@ -24,7 +24,6 @@
 
 const double PRESSURE_MIN_AIR = 20e-6;
 
-
 class WeakFormAcousticsHarmonic : public WeakFormAgros
 {
 public:
@@ -169,13 +168,11 @@ public:
             {
                 if (boundary->type == PhysicFieldBC_Acoustic_NormalAcceleration)
                     if (fabs(boundary->value_real.number) > EPS_ZERO)
-                        ;
-                /*
                         add_vector_form_surf(new WeakFormsH1::SurfaceVectorForms::DefaultVectorFormSurf(0,
                                                                                                         QString::number(i + 1).toStdString(),
                                                                                                         boundary->value_real.number,
                                                                                                         convertProblemType(Util::scene()->problemInfo()->problemType)));
-                */
+
                 if (boundary->type == PhysicFieldBC_Acoustic_Impedance)
                 {
                     /*
@@ -209,6 +206,22 @@ public:
             }
         }
 
+        /*
+        wf->add_matrix_form(0, 0, callback(acoustic_matrix_form_time_velocity_velocity));
+        wf->add_matrix_form(0, 1, callback(acoustic_matrix_form_time_velocity_pressure));
+        wf->add_matrix_form(1, 0, callback(acoustic_matrix_form_time_pressure_velocity));
+        wf->add_matrix_form(1, 1, callback(acoustic_matrix_form_time_pressure_pressure));
+
+        wf->add_vector_form(0, callback(acoustic_vector_form_velocity), HERMES_ANY, slnArray.at(0));
+        wf->add_vector_form(1, callback(acoustic_vector_form_pressure), HERMES_ANY, slnArray.at(1));
+
+        // matched boundary and impedance
+        wf->add_matrix_form_surf(1, 0, callback(acoustic_matrix_form_surf_time));
+
+        // pressure normal derivative
+        wf->add_vector_form_surf(1, callback(acoustic_vector_form_surf_time));
+        */
+
         // materials
         for (int i = 0; i<Util::scene()->labels.count(); i++)
         {
@@ -216,13 +229,41 @@ public:
 
             if (material && Util::scene()->labels[i]->material != Util::scene()->materials[0])
             {
-                // Volumetric matrix forms.
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 1, 1.0, HERMES_NONSYM));
-                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(1, 0, - sqr(material->speed.number), HERMES_NONSYM));
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          1.0 / Util::scene()->problemInfo()->timeStep.number,
+                                                                                          HERMES_SYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-                // Volumetric surface forms.
-                add_vector_form(new VectorFormVolWaveMass());
-                add_vector_form(new VectorFormVolWaveDiffusion(sqr(material->speed.number)));
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 1,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          - 1.0,
+                                                                                          HERMES_SYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearDiffusion(1, 0,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          1.0 / material->density.number,
+                                                                                          HERMES_SYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(1, 1,
+                                                                                          QString::number(i).toStdString(),
+                                                                                          1.0 / (material->density.number * sqr(material->speed.number)) / Util::scene()->problemInfo()->timeStep.number,
+                                                                                          HERMES_SYM,
+                                                                                          convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_vector_form(new CustomVectorFormTimeDep(0,
+                                                            QString::number(i).toStdString(),
+                                                            1.0 / Util::scene()->problemInfo()->timeStep.number,
+                                                            solution[0],
+                                                            convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                add_vector_form(new CustomVectorFormTimeDep(1,
+                                                            QString::number(i).toStdString(),
+                                                            1.0 / (material->density.number * sqr(material->speed.number)) / Util::scene()->problemInfo()->timeStep.number,
+                                                            solution[1],
+                                                            convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }
     }
@@ -320,6 +361,44 @@ private:
 /*
 
 template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_time_velocity_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    return int_u_v<Real, Scalar>(n, wt, u, v) / timeStep;
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_time_velocity_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    return - int_u_v<Real, Scalar>(n, wt, u, v);
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_time_pressure_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    return 1.0 / acousticLabel[e->elem_marker].density * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_matrix_form_time_pressure_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    return 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
+        * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep;
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_vector_form_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    return int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep;
+}
+
+template<typename Real, typename Scalar>
+Scalar acoustic_vector_form_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
+{
+    return 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
+                * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep;
+}
+
+template<typename Real, typename Scalar>
 Scalar acoustic_matrix_form_surf_time(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
 {
     if (!(acousticEdge[e->edge_marker].type == PhysicFieldBC_Acoustic_Impedance
@@ -356,66 +435,7 @@ Scalar acoustic_vector_form_surf_time(int n, double *wt, Func<Real> *u_ext[], Fu
     else
         return an * 2 * M_PI * int_x_v<Real, Scalar>(n, wt, v, e);
 }
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_time_velocity_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return int_u_v<Real, Scalar>(n, wt, u, v) / timeStep;
-    else
-        return 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep;
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_time_velocity_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return - int_u_v<Real, Scalar>(n, wt, u, v);
-    else
-        return - 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, u, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_time_pressure_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return 1.0 / acousticLabel[e->elem_marker].density * int_grad_u_grad_v<Real, Scalar>(n, wt, u, v);
-    else
-        return 2 * M_PI * 1.0 / acousticLabel[e->elem_marker].density * int_x_grad_u_grad_v<Real, Scalar>(n, wt, u, v, e);
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_matrix_form_time_pressure_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *u, Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
-                * int_u_v<Real, Scalar>(n, wt, u, v) / timeStep;
-    else
-        return 2 * M_PI * 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
-                * int_x_u_v<Real, Scalar>(n, wt, u, v, e) / timeStep;
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_vector_form_velocity(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep;
-    else
-        return 2 * M_PI * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep;
-}
-
-template<typename Real, typename Scalar>
-Scalar acoustic_vector_form_pressure(int n, double *wt, Func<Real> *u_ext[], Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext)
-{
-    if (isPlanar)
-        return 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
-                * int_u_v<Real, Scalar>(n, wt, ext->fn[0], v) / timeStep;
-    else
-        return 2 * M_PI * 1.0 / (acousticLabel[e->elem_marker].density * sqr(acousticLabel[e->elem_marker].speed))
-                * int_x_u_v<Real, Scalar>(n, wt, ext->fn[0], v, e) / timeStep;
-}
 */
-
 // *****************************************************************************************
 /*
 void callbackAcousticWeakForm(WeakForm *wf, Hermes::vector<Solution *> slnArray)

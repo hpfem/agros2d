@@ -135,6 +135,28 @@ public:
                                                                                                        material->current_density_imag.number,
                                                                                                        HERMES_PLANAR));
                 }
+
+                // transient analysis
+                if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
+                {
+                    if (fabs(material->conductivity.number) > EPS_ZERO)
+                    {
+                        if (solution.size() > 0)
+                        {
+                            add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
+                                                                                                      QString::number(i).toStdString(),
+                                                                                                      material->conductivity.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                                      HERMES_SYM,
+                                                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                            add_vector_form(new CustomVectorFormTimeDep(0,
+                                                                        QString::number(i).toStdString(),
+                                                                        material->conductivity.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                        solution[0],
+                                                                        convertProblemType(Util::scene()->problemInfo()->problemType)));
+                        }
+                    }
+                }
             }
         }
     }
@@ -1177,25 +1199,14 @@ QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolv
 
 void HermesMagnetic::updateTimeFunctions(double time)
 {
-    // update markers
+    // update materials
     for (int i = 1; i<Util::scene()->materials.count(); i++)
     {
         SceneMaterialMagnetic *material = dynamic_cast<SceneMaterialMagnetic *>(Util::scene()->materials[i]);
+
         material->current_density_real.evaluate(time);
         material->current_density_imag.evaluate(time);
-    }
-    // set values
-    for (int i = 0; i<Util::scene()->labels.count(); i++)
-    {
-        // regular marker ("none" is reserved for holes)
-        if (!(Util::scene()->materials.indexOf(Util::scene()->labels[i]->material) == 0))
-        {
-            // FIXME
-            // SceneLabelMagneticMarker *material = dynamic_cast<SceneLabelMagneticMarker *>(Util::scene()->labels[i]->marker);
-            // magneticLabel[i].current_density_real = material->current_density_real.number;
-            // magneticLabel[i].current_density_imag = material->current_density_imag.number;
-        }
-    }
+    }    
 }
 
 // *************************************************************************************************************************************
