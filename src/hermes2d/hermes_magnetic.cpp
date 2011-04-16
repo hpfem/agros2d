@@ -1173,7 +1173,7 @@ QList<SolutionArray *> HermesMagnetic::solve(ProgressItemSolve *progressItemSolv
     return solutionArrayList;
 }
 
-void HermesMagnetic::updateTimeFunctions(WeakFormAgros *wf, double time)
+void HermesMagnetic::updateTimeFunctions(WeakFormAgros *wf, double time, Hermes::vector<Solution *> sln)
 {
     // update markers
     for (int i = 1; i<Util::scene()->materials.count(); i++)

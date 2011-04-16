@@ -63,7 +63,7 @@ public:
     SceneMaterial *modifyMaterial(PyObject *self, PyObject *args);
 
     QList<SolutionArray *> solve(ProgressItemSolve *progressItemSolve);
-    virtual void updateTimeFunctions(WeakFormAgros *wf, double time);
+    virtual void updateTimeFunctions(WeakFormAgros *wf, double time, Hermes::vector<Solution *> sln);
 
     inline PhysicFieldVariable contourPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }
     inline PhysicFieldVariable scalarPhysicFieldVariable() { return PhysicFieldVariable_Heat_Temperature; }

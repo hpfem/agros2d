@@ -697,7 +697,7 @@ QList<SolutionArray *> HermesAcoustic::solve(ProgressItemSolve *progressItemSolv
     return solutionArrayList;
 }
 
-void HermesAcoustic::updateTimeFunctions(WeakFormAgros *wf, double time)
+void HermesAcoustic::updateTimeFunctions(WeakFormAgros *wf, double time, Hermes::vector<Solution *> sln)
 {
     // update markers
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)

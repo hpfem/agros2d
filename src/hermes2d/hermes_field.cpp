@@ -416,7 +416,7 @@ QList<SolutionArray *> solveSolutioArray(ProgressItemSolve *progressItemSolve,
         {
             // set actual time
             actualTime = (n+1)*timeStep;
-            Util::scene()->problemInfo()->hermes()->updateTimeFunctions(wf, actualTime);
+            Util::scene()->problemInfo()->hermes()->updateTimeFunctions(wf, actualTime, solution);
 
             // transient
             if (timesteps > 1)

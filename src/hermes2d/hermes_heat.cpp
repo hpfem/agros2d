@@ -28,6 +28,11 @@ class WeakFormHeat : public WeakFormAgros
 public:
     WeakFormHeat()
     {
+        registerForms();
+    }
+
+    void registerForms()
+    {
         // boundary conditions
         for (int i = 0; i<Util::scene()->edges.count(); i++)
         {
@@ -73,26 +78,39 @@ public:
                                                                                                    material->volume_heat.number,
                                                                                                    convertProblemType(Util::scene()->problemInfo()->problemType)));
 
-
                 // transient analysis
                 if (Util::scene()->problemInfo()->analysisType == AnalysisType_Transient)
                     if ((fabs(material->density.number) > EPS_ZERO)
                             && (fabs(material->specific_heat.number) > EPS_ZERO))
+                    {
                         add_matrix_form(new WeakFormsH1::VolumetricMatrixForms::DefaultLinearMass(0, 0,
                                                                                                   QString::number(i).toStdString(),
                                                                                                   material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
                                                                                                   HERMES_SYM,
                                                                                                   convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                        add_vector_form(new WeakFormsH1::VolumetricVectorForms::DefaultVectorFormConst(0,
+                                                                                                       QString::number(i).toStdString(),
+                                                                                                       material->density.number * material->specific_heat.number / Util::scene()->problemInfo()->timeStep.number,
+                                                                                                       convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                    }
             }
         }
     }
 
-    virtual void updateTimeDep(double time)
+    virtual void updateTimeDep(double time, Hermes::vector<Solution *> sln)
     {
-        for (unsigned i = 0; i < vfvol.size(); i++)
-        {
-        }
+        // FIXME - temporary solution -> Runge - Kutta methods
+
+        // delete all forms
+        delete_all();
+
+        // register forms
+        registerForms();
     };
+
+
 };
 
 /*
@@ -142,14 +160,14 @@ void HermesHeat::readBoundaryFromDomElement(QDomElement *element)
         break;
     case PhysicFieldBC_Heat_Temperature:
         Util::scene()->addBoundary(new SceneBoundaryHeat(element->attribute("name"),
-                                                             type,
-                                                             Value(element->attribute("temperature", "0"))));
+                                                         type,
+                                                         Value(element->attribute("temperature", "0"))));
         break;
     case PhysicFieldBC_Heat_Flux:
         Util::scene()->addBoundary(new SceneBoundaryHeat(element->attribute("name"), type,
-                                                             Value(element->attribute("heat_flux", "0")),
-                                                             Value(element->attribute("h", "0")),
-                                                             Value(element->attribute("external_temperature", "0"))));
+                                                         Value(element->attribute("heat_flux", "0")),
+                                                         Value(element->attribute("h", "0")),
+                                                         Value(element->attribute("external_temperature", "0"))));
         break;
     default:
         std::cerr << tr("Boundary type '%1' doesn't exists.").arg(element->attribute("type")).toStdString() << endl;
@@ -178,10 +196,10 @@ void HermesHeat::writeBoundaryToDomElement(QDomElement *element, SceneBoundary *
 void HermesHeat::readMaterialFromDomElement(QDomElement *element)
 {
     Util::scene()->addMaterial(new SceneMaterialHeat(element->attribute("name"),
-                                                           Value(element->attribute("volume_heat", "0")),
-                                                           Value(element->attribute("thermal_conductivity", "0")),
-                                                           Value(element->attribute("density", "0")),
-                                                           Value(element->attribute("specific_heat", "0"))));
+                                                     Value(element->attribute("volume_heat", "0")),
+                                                     Value(element->attribute("thermal_conductivity", "0")),
+                                                     Value(element->attribute("density", "0")),
+                                                     Value(element->attribute("specific_heat", "0"))));
 }
 
 void HermesHeat::writeMaterialToDomElement(QDomElement *element, SceneMaterial *marker)
@@ -233,8 +251,8 @@ QStringList HermesHeat::volumeIntegralValueHeader()
 SceneBoundary *HermesHeat::newBoundary()
 {
     return new SceneBoundaryHeat(tr("new boundary"),
-                                   PhysicFieldBC_Heat_Temperature,
-                                   Value("0"));
+                                 PhysicFieldBC_Heat_Temperature,
+                                 Value("0"));
 }
 
 SceneBoundary *HermesHeat::newBoundary(PyObject *self, PyObject *args)
@@ -248,14 +266,14 @@ SceneBoundary *HermesHeat::newBoundary(PyObject *self, PyObject *args)
 
         if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Heat_Temperature)
             return new SceneBoundaryHeat(name,
-                                           physicFieldBCFromStringKey(type),
-                                           Value(QString::number(value)));
+                                         physicFieldBCFromStringKey(type),
+                                         Value(QString::number(value)));
         if (physicFieldBCFromStringKey(type) == PhysicFieldBC_Heat_Flux)
             return new SceneBoundaryHeat(name,
-                                           physicFieldBCFromStringKey(type),
-                                           Value(QString::number(value)),
-                                           Value(QString::number(h)),
-                                           Value(QString::number(externaltemperature)));
+                                         physicFieldBCFromStringKey(type),
+                                         Value(QString::number(value)),
+                                         Value(QString::number(h)),
+                                         Value(QString::number(externaltemperature)));
     }
 
     return NULL;
@@ -304,10 +322,10 @@ SceneBoundary *HermesHeat::modifyBoundary(PyObject *self, PyObject *args)
 SceneMaterial *HermesHeat::newMaterial()
 {
     return new SceneMaterialHeat(tr("new material"),
-                                    Value("0"),
-                                    Value("385"),
-                                    Value("0"),
-                                    Value("0"));
+                                 Value("0"),
+                                 Value("385"),
+                                 Value("0"),
+                                 Value("0"));
 }
 
 SceneMaterial *HermesHeat::newMaterial(PyObject *self, PyObject *args)
@@ -320,10 +338,10 @@ SceneMaterial *HermesHeat::newMaterial(PyObject *self, PyObject *args)
         if (Util::scene()->getMaterial(name)) return NULL;
 
         return new SceneMaterialHeat(name,
-                                        Value(QString::number(volume_heat)),
-                                        Value(QString::number(thermal_conductivity)),
-                                        Value(QString::number(density)),
-                                        Value(QString::number(specific_heat)));
+                                     Value(QString::number(volume_heat)),
+                                     Value(QString::number(thermal_conductivity)),
+                                     Value(QString::number(density)),
+                                     Value(QString::number(specific_heat)));
     }
 
     return NULL;
@@ -570,7 +588,7 @@ QList<SolutionArray *> HermesHeat::solve(ProgressItemSolve *progressItemSolve)
     */
 }
 
-void HermesHeat::updateTimeFunctions(WeakFormAgros *wf, double time)
+void HermesHeat::updateTimeFunctions(WeakFormAgros *wf, double time, Hermes::vector<Solution *> sln)
 {
     // update markers
     for (int i = 1; i<Util::scene()->materials.count(); i++)
