@@ -1053,9 +1053,20 @@ void ViewScalarFilterRF::calculateVariable(int i)
         break;
     case PhysicFieldVariable_RF_MagneticField:
     {
+            SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+
+            double mu = marker->permeability.number * MU0;
+            double eps = marker->permittivity.number * EPS0;
+            double sigma = marker->conductivity.number;
+
+            double a = (sqr(2 * M_PI * frequency) * mu * eps) / (sqr(2 * M_PI * frequency) * sqr(eps) + sqr(sigma));
+            double b = (2 * M_PI * frequency * mu * sigma) / (sqr(2 * M_PI * frequency) * sqr(eps) + sqr(sigma));
+            double Re_Z = sqrt( (a + sqrt(sqr(a)+sqr(b))) / 2);
+            double Im_Z = b * sqrt(1 / 2 * (a + sqrt(sqr(a)+sqr(b))));
+
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i]));
+            node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i])) / sqrt(sqr(Re_Z) + sqr(Im_Z));
         }
         else
         {
@@ -1065,21 +1076,44 @@ void ViewScalarFilterRF::calculateVariable(int i)
         break;
     case PhysicFieldVariable_RF_MagneticFieldReal:
     {
-        if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-        {
-            node->values[0][0][i] = value1[i];
-        }
-        else
-        {
-            node->values[0][0][i] = - value1[i] * x[i];
-        }
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+
+         double mu = marker->permeability.number * MU0;
+         double eps = marker->permittivity.number * EPS0;
+         double sigma = marker->conductivity.number;
+
+         double a = (sqr(2 * M_PI * frequency) * mu * eps) / (sqr(2 * M_PI * frequency) * sqr(eps) + sqr(sigma));
+         double b = (2 * M_PI * frequency * mu * sigma) / (sqr(2 * M_PI * frequency) * sqr(eps) + sqr(sigma));
+         double Re_Z = sqrt( (a + sqrt(sqr(a)+sqr(b))) / 2);
+
+         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
+         {
+             node->values[0][0][i] = value1[i] / Re_Z;
+         }
+         else
+         {
+             node->values[0][0][i] = - value1[i] * x[i];
+         }
     }
         break;
     case PhysicFieldVariable_RF_MagneticFieldImag:
     {
+        SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+
+        double mu = marker->permeability.number * MU0;
+        double eps = marker->permittivity.number * EPS0;
+        double sigma = marker->conductivity.number;
+
+        double a = (sqr(2 * M_PI * frequency) * mu * eps) / (sqr(2 * M_PI * frequency) * sqr(eps) + sqr(sigma));
+        double b = (2 * M_PI * frequency * mu * sigma) / (sqr(2 * M_PI * frequency) * sqr(eps) + sqr(sigma));
+        double Im_Z = b * sqrt(1 / 2 * (a + sqrt(sqr(a)+sqr(b))));
+
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            node->values[0][0][i] = value2[i];
+            if (!Im_Z == 0)
+                node->values[0][0][i] = value2[i] / Im_Z;
+            else
+                node->values[0][0][i] = 0;
         }
         else
         {
