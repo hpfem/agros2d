@@ -67,7 +67,7 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_PowerLosses ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_EnergyDensity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVector ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permittivity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permeability ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Conductivity ||

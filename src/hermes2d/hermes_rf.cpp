@@ -668,7 +668,7 @@ void HermesRF::fillComboBoxScalarVariable(QComboBox *cmbFieldVariable)
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityRealY), PhysicFieldVariable_RF_MagneticFluxDensityRealY);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_MagneticFluxDensityImagY), PhysicFieldVariable_RF_MagneticFluxDensityImagY);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_PowerLosses), PhysicFieldVariable_RF_PowerLosses);
-    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_EnergyDensity), PhysicFieldVariable_RF_EnergyDensity);
+    cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_PoyntingVector), PhysicFieldVariable_RF_PoyntingVector);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_Permittivity), PhysicFieldVariable_RF_Permittivity);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_Permeability), PhysicFieldVariable_RF_Permeability);
     cmbFieldVariable->addItem(physicFieldVariableString(PhysicFieldVariable_RF_Conductivity), PhysicFieldVariable_RF_Conductivity);
@@ -1091,7 +1091,6 @@ void ViewScalarFilterRF::calculateVariable(int i)
             }
         }
         break;
-        break;
     case PhysicFieldVariable_RF_MagneticFieldRealX:
     {
             SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
@@ -1231,23 +1230,23 @@ void ViewScalarFilterRF::calculateVariable(int i)
             }
         }
         break;
-    case PhysicFieldVariable_RF_EnergyDensity:
+    case PhysicFieldVariable_RF_PoyntingVector:
     {
         SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);
+
+        double mu = marker->permeability.number * MU0;
+        double w = 2 * M_PI * frequency;
+
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
         {
-            // FIX zeptat
-            node->values[0][0][i] = 0.25 * (sqr(dudx1[i]) + sqr(dudy1[i])) / (marker->permeability.number * MU0);
-            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                node->values[0][0][i] += 0.25 * (sqr(dudx2[i]) + sqr(dudy2[i])) / (marker->permeability.number * MU0);
+           node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i])) * sqrt(sqr(-(1/(w*mu)) * dudy2[i]) + sqr((1/(w*mu)) * dudy1[i]) + sqr((1/(w*mu)) * dudx2[i]) + sqr(-(1/(w*mu)) * dudx1[i]));
         }
         else
         {
-            node->values[0][0][i] = 0.25 * (sqr(dudy1[i]) + sqr(dudx1[i] + ((x[i] > 0) ? value1[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
-            if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-                node->values[0][0][i] += 0.25 * (sqr(dudy2[i]) + sqr(dudx2[i] + ((x > 0) ? value2[i] / x[i] : 0.0))) / (marker->permeability.number * MU0);
+            node->values[0][0][i] = sqrt(sqr(value1[i]) + sqr(value2[i])) * sqrt(sqr(-(1/(w*mu)) * dudy2[i]) + sqr((1/(w*mu)) * dudy1[i]) + sqr((1/(w*mu)) * dudx2[i]) + sqr(-(1/(w*mu)) * dudx1[i])) * x[i];
         }
     }
+        break;
     case PhysicFieldVariable_RF_PowerLosses:
     {
         SceneLabelRFMarker *marker = dynamic_cast<SceneLabelRFMarker *>(labelMarker);

@@ -166,7 +166,7 @@ void initLists()
     physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityRealY, "rf_magnetic_flux_density_real_Y");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_MagneticFluxDensityImagY, "rf_magnetic_flux_density_imag_Y");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_PowerLosses, "rf_power_losses");
-    physicFieldVariableList.insert(PhysicFieldVariable_RF_EnergyDensity, "rf_energy_density");
+    physicFieldVariableList.insert(PhysicFieldVariable_RF_PoyntingVector, "rf_poynting_vector");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permittivity, "rf_permittivity");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Permeability, "rf_permeability");
     physicFieldVariableList.insert(PhysicFieldVariable_RF_Conductivity, "rf_conductivity");
@@ -402,8 +402,8 @@ QString physicFieldVariableString(PhysicFieldVariable physicFieldVariable)
         return QObject::tr("Flux density Y - imag");
     case PhysicFieldVariable_RF_PowerLosses:
         return QObject::tr("Power losses");
-    case PhysicFieldVariable_RF_EnergyDensity:
-        return QObject::tr("Energy density");
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("Poynting vector");
     case PhysicFieldVariable_RF_Permittivity:
         return QObject::tr("Permittivity");
     case PhysicFieldVariable_RF_Permeability:
@@ -594,8 +594,8 @@ QString physicFieldVariableShortcutString(PhysicFieldVariable physicFieldVariabl
         return QObject::tr("By_im");
     case PhysicFieldVariable_RF_PowerLosses:
         return QObject::tr("pj");
-    case PhysicFieldVariable_RF_EnergyDensity:
-        return QObject::tr("w");
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("S");
     case PhysicFieldVariable_RF_Permittivity:
         return QObject::tr("epsr");
     case PhysicFieldVariable_RF_Permeability:
@@ -778,9 +778,9 @@ QString physicFieldVariableUnitsString(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
         return QObject::tr("T");
     case PhysicFieldVariable_RF_PowerLosses:
-        return QObject::tr("W/m3");
-    case PhysicFieldVariable_RF_EnergyDensity:
         return QObject::tr("J/m3");
+    case PhysicFieldVariable_RF_PoyntingVector:
+        return QObject::tr("W/m2");
     case PhysicFieldVariable_RF_Permittivity:
         return QObject::tr("F/m");
     case PhysicFieldVariable_RF_Permeability:
