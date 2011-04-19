@@ -431,15 +431,22 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_ElectricFieldReal,
     PhysicFieldVariable_RF_ElectricFieldImag,
     PhysicFieldVariable_RF_MagneticField,
-    PhysicFieldVariable_RF_MagneticFieldReal,
-    PhysicFieldVariable_RF_MagneticFieldImag,
+    PhysicFieldVariable_RF_MagneticFieldRealX,
+    PhysicFieldVariable_RF_MagneticFieldImagX,
+    PhysicFieldVariable_RF_MagneticFieldRealY,
+    PhysicFieldVariable_RF_MagneticFieldImagY,
+    PhysicFieldVariable_RF_MagneticFluxDensity,
+    PhysicFieldVariable_RF_MagneticFluxDensityRealX,
+    PhysicFieldVariable_RF_MagneticFluxDensityImagX,
+    PhysicFieldVariable_RF_MagneticFluxDensityRealY,
+    PhysicFieldVariable_RF_MagneticFluxDensityImagY,
     PhysicFieldVariable_RF_PowerLosses,
     PhysicFieldVariable_RF_EnergyDensity,
     PhysicFieldVariable_RF_Permittivity,
     PhysicFieldVariable_RF_Permeability,
     PhysicFieldVariable_RF_Conductivity,
-    PhysicFieldVariable_RF_Current_density_real,
-    PhysicFieldVariable_RF_Current_density_imag,
+    PhysicFieldVariable_RF_CurrentDensityReal,
+    PhysicFieldVariable_RF_CurrentDensityImag,
     PhysicFieldVariable_Acoustic_Pressure,
     PhysicFieldVariable_Acoustic_PressureReal,
     PhysicFieldVariable_Acoustic_PressureImag,
@@ -544,15 +551,22 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_ElectricFieldReal:
     case PhysicFieldVariable_RF_ElectricFieldImag:
     case PhysicFieldVariable_RF_MagneticField:
-    case PhysicFieldVariable_RF_MagneticFieldReal:
-    case PhysicFieldVariable_RF_MagneticFieldImag:
+    case PhysicFieldVariable_RF_MagneticFieldRealX:
+    case PhysicFieldVariable_RF_MagneticFieldImagX:
+    case PhysicFieldVariable_RF_MagneticFieldRealY:
+    case PhysicFieldVariable_RF_MagneticFieldImagY:
+    case PhysicFieldVariable_RF_MagneticFluxDensity:
+    case PhysicFieldVariable_RF_MagneticFluxDensityRealX:
+    case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
+    case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
+    case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
     case PhysicFieldVariable_RF_PowerLosses:
     case PhysicFieldVariable_RF_EnergyDensity:
     case PhysicFieldVariable_RF_Permittivity:
     case PhysicFieldVariable_RF_Permeability:
     case PhysicFieldVariable_RF_Conductivity:
-    case PhysicFieldVariable_RF_Current_density_real:
-    case PhysicFieldVariable_RF_Current_density_imag:
+    case PhysicFieldVariable_RF_CurrentDensityReal:
+    case PhysicFieldVariable_RF_CurrentDensityImag:
 
     case PhysicFieldVariable_Acoustic_Pressure:
     case PhysicFieldVariable_Acoustic_PressureReal:

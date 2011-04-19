@@ -55,8 +55,14 @@ public:
     inline bool teModeCheck(TEMode teMode) { return (teMode == TEMode_0 || teMode == TEMode_1 || teMode == TEMode_2); }
 
     inline bool physicFieldVariableCheck(PhysicFieldVariable physicFieldVariable) { return (physicFieldVariable == PhysicFieldVariable_RF_MagneticField ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldRealX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldImagX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFieldRealY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensity ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityRealX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityImagX ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityRealY ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityImagY ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricField ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
@@ -65,8 +71,8 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permittivity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permeability ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Conductivity ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Current_density_real ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_Current_density_imag); }
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_CurrentDensityReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_CurrentDensityImag); }
 
     SceneEdgeMarker *newEdgeMarker();
     SceneEdgeMarker *newEdgeMarker(PyObject *self, PyObject *args);
