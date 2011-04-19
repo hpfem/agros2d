@@ -325,10 +325,10 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
     // boundaries
     for (int i = 1; i<Util::scene()->boundaries.count(); i++)
     {
-        SceneBoundaryElectrostatic *material = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->boundaries[i]);
+        SceneBoundaryElectrostatic *boundary = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->boundaries[i]);
 
         // evaluate script
-        if (!material->value.evaluate()) return QList<SolutionArray *>();
+        if (!boundary->value.evaluate()) return QList<SolutionArray *>();
     }
 
     // materials
@@ -345,18 +345,18 @@ QList<SolutionArray *> HermesElectrostatic::solve(ProgressItemSolve *progressIte
     EssentialBCs bcs;
     for (int i = 0; i<Util::scene()->edges.count(); i++)
     {
-        SceneBoundaryElectrostatic *material = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->edges[i]->boundary);
+        SceneBoundaryElectrostatic *boundary = dynamic_cast<SceneBoundaryElectrostatic *>(Util::scene()->edges[i]->boundary);
 
-        if (material)
+        if (boundary)
         {
-            if (material->type == PhysicFieldBC_Electrostatic_Potential)
-                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), material->value.number));
+            if (boundary->type == PhysicFieldBC_Electrostatic_Potential)
+                bcs.add_boundary_condition(new DefaultEssentialBCConst(QString::number(i+1).toStdString(), boundary->value.number));
         }
     }
 
     WeakFormElectrostatics wf;
 
-    QTime time;
+    // QTime time;
     // time.start();
     QList<SolutionArray *> solutionArrayList = solveSolutioArray(progressItemSolve, bcs, &wf);
     // qDebug() << "solveSolutioArray: " << time.elapsed();
@@ -491,7 +491,8 @@ void SurfaceIntegralValueElectrostatic::calculateVariables(int i)
 {
     if (boundary)
     {
-            SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
+        SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
+
         if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
             surfaceCharge += pt[i][2] * tan[i][2] * EPS0 * marker->permittivity.number * (tan[i][1] * dudx[i] - tan[i][0] * dudy[i]);
         else
@@ -552,6 +553,8 @@ QStringList VolumeIntegralValueElectrostatic::variables()
 
 void ViewScalarFilterElectrostatic::calculateVariable(int i)
 {
+    SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
+
     switch (m_physicFieldVariable)
     {
     case PhysicFieldVariable_Electrostatic_Potential:
@@ -583,8 +586,6 @@ void ViewScalarFilterElectrostatic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Electrostatic_Displacement:
     {
-        SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
-
         switch (m_physicFieldVariableComp)
         {
         case PhysicFieldVariableComp_X:
@@ -607,13 +608,11 @@ void ViewScalarFilterElectrostatic::calculateVariable(int i)
         break;
     case PhysicFieldVariable_Electrostatic_EnergyDensity:
     {
-        SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
         node->values[0][0][i] = 0.5 * EPS0 * marker->permittivity.number * (sqr(dudx1[i]) + sqr(dudy1[i]));
     }
         break;
     case PhysicFieldVariable_Electrostatic_Permittivity:
     {
-        SceneMaterialElectrostatic *marker = dynamic_cast<SceneMaterialElectrostatic *>(material);
         node->values[0][0][i] = marker->permittivity.number;
     }
         break;
