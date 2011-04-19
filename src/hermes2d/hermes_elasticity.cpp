@@ -648,10 +648,10 @@ QList<SolutionArray *> HermesElasticity::solve(ProgressItemSolve *progressItemSo
         SceneMaterialElasticity *material = dynamic_cast<SceneMaterialElasticity *>(Util::scene()->materials[i]);
 
         // evaluate script
-        if (!material->forceX.evaluate()) return QList<SolutionArray *>();
-        if (!material->forceY.evaluate()) return QList<SolutionArray *>();
         if (!material->young_modulus.evaluate()) return QList<SolutionArray *>();
         if (!material->poisson_ratio.evaluate()) return QList<SolutionArray *>();
+        if (!material->forceX.evaluate()) return QList<SolutionArray *>();
+        if (!material->forceY.evaluate()) return QList<SolutionArray *>();
         if (!material->alpha.evaluate()) return QList<SolutionArray *>();
         if (!material->temp.evaluate()) return QList<SolutionArray *>();
         if (!material->temp_ref.evaluate()) return QList<SolutionArray *>();

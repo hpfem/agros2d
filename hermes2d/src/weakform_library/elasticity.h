@@ -33,9 +33,9 @@ class DefaultLinearXX : public WeakForm::MatrixFormVol
 {
 public:
   DefaultLinearXX(unsigned int i, unsigned int j, double lambda, double mu, GeomType gt = HERMES_PLANAR)
-    : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM), lambda(lambda), mu(mu), gt(gt) { }
+    : WeakForm::MatrixFormVol(i, j, HERMES_SYM), lambda(lambda), mu(mu), gt(gt) { }
   DefaultLinearXX(unsigned int i, unsigned int j, std::string area, double lambda, double mu, GeomType gt = HERMES_PLANAR)
-    : WeakForm::MatrixFormVol(i, j, HERMES_NONSYM, area), lambda(lambda), mu(mu), gt(gt) { }
+    : WeakForm::MatrixFormVol(i, j, HERMES_SYM, area), lambda(lambda), mu(mu), gt(gt) { }
 
   template<typename Real, typename Scalar>
   Scalar matrix_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *u,
@@ -133,7 +133,7 @@ public:
   DefaultLinearYY(unsigned int i, unsigned int j, double lambda, double mu, GeomType gt = HERMES_PLANAR)
     : WeakForm::MatrixFormVol(i, j, HERMES_SYM), lambda(lambda), mu(mu), gt(gt) { }
   DefaultLinearYY(unsigned int i, unsigned int j, std::string area, double lambda, double mu, GeomType gt = HERMES_PLANAR)
-    : WeakForm::MatrixFormVol(i, j, HERMES_SYM, area), lambda(lambda), mu(mu), gt(gt) { }
+    : WeakForm::MatrixFormVol(i, j, HERMES_NSYM, area), lambda(lambda), mu(mu), gt(gt) { }
 
   template<typename Real, typename Scalar>
   Scalar matrix_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *u,

@@ -1438,6 +1438,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     while(!n.isNull())
     {
         element = n.toElement();
+
         Point point = Point(element.attribute("x").toDouble(), element.attribute("y").toDouble());
 
         addNode(new SceneNode(point));
@@ -1450,6 +1451,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     while(!n.isNull())
     {
         element = n.toElement();
+
         SceneNode *nodeFrom = nodes[element.attribute("start").toInt()];
         SceneNode *nodeTo = nodes[element.attribute("end").toInt()];
         SceneBoundary *marker = boundaries[element.attribute("marker").toInt()];
