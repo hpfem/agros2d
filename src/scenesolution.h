@@ -51,7 +51,7 @@ public:
     void setMeshInitial(Mesh *meshInitial);
 
     // get marker
-    inline int agrosMaterial(int marker) { return conversion_table_labels[marker]; }
+    inline int agrosMaterialMarker(int marker) { return conversion_table_labels[marker]; }
     inline int agrosBoundaryMarker(int marker) { return conversion_table_boundaries[marker]; }
 
     // solution

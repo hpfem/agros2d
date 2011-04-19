@@ -123,7 +123,7 @@ public:
             else if (gt == HERMES_AXISYM_X) result = int_y_u_v<double, scalar>(n, wt, u, v, e);
             else result = int_x_u_v<double, scalar>(n, wt, u, v, e);
 
-            SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterial(e->elem_marker)]->material);
+            SceneMaterialAcoustic *material = dynamic_cast<SceneMaterialAcoustic *>(Util::scene()->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(e->elem_marker)]->material);
             return coeff / (material->density.number * material->speed.number) * result;
         }
 

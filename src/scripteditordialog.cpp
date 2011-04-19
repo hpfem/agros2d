@@ -616,8 +616,6 @@ void ScriptEditorDialog::doRunPython()
     terminalView->terminal()->doPrintStdout("Run script: " + tabWidget->tabText(tabWidget->currentIndex()).replace("* ", "") + "\n", Qt::gray);
     connect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));
 
-    qDebug() << "ScriptEditorDialog::doRunPython() - start";
-
     // benchmark
     QTime time;
     time.start();
@@ -647,8 +645,6 @@ void ScriptEditorDialog::doRunPython()
         if (!txtEditor->textCursor().hasSelection() && result.line >= 0)
             txtEditor->gotoLine(result.line, true);
     }
-
-    qDebug() << "ScriptEditorDialog::doRunPython() - end, elapsed time " << milisecondsToTime(time.elapsed()).toString("mm:ss.zzz");
 
     // disconnect
     disconnect(pythonEngine, SIGNAL(printStdout(QString)), terminalView->terminal(), SLOT(doPrintStdout(QString)));

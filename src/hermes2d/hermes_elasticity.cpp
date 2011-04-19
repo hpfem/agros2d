@@ -89,9 +89,113 @@ public:
                                                                                                    QString::number(i).toStdString(),
                                                                                                    material->forceY.number,
                                                                                                    convertProblemType(Util::scene()->problemInfo()->problemType)));
+
+                // thermoelasticity
+                if ((fabs(material->alpha.number) > EPS_ZERO) &&
+                        (fabs(material->temp.number - material->temp_ref.number) > EPS_ZERO))
+                    add_vector_form(new DefaultLinearThermoelasticityX(0, 0,
+                                                                      QString::number(i).toStdString(),
+                                                                      material->lambda(), material->mu(),
+                                                                      material->alpha.number, material->temp.number, material->temp_ref.number,
+                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
+                if ((fabs(material->alpha.number) > EPS_ZERO) &&
+                        (fabs(material->temp.number - material->temp_ref.number) > EPS_ZERO))
+                    add_vector_form(new DefaultLinearThermoelasticityY(1,
+                                                                      QString::number(i).toStdString(),
+                                                                      material->lambda(), material->mu(),
+                                                                      material->alpha.number, material->temp.number, material->temp_ref.number,
+                                                                      convertProblemType(Util::scene()->problemInfo()->problemType)));
             }
         }
     }
+
+    class DefaultLinearThermoelasticityX : public WeakForm::VectorFormVol
+    {
+    public:
+        DefaultLinearThermoelasticityX(int i, scalar lambda, scalar mu, scalar alpha, scalar temp, scalar temp_ref, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i), lambda(lambda), mu(mu), alpha(alpha), temp(temp), temp_ref(temp_ref), gt(gt) { }
+
+        DefaultLinearThermoelasticityX(int i, int j, std::string area, scalar lambda, scalar mu, scalar alpha, scalar temp, scalar temp_ref, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i, area), lambda(lambda), mu(mu), alpha(alpha), temp(temp), temp_ref(temp_ref), gt(gt) { }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            scalar result = 0.0;
+            if (gt == HERMES_PLANAR)
+            {
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * v->dx[i];
+            }
+            else if (gt == HERMES_AXISYM_X)
+                result = 0.0;
+            else
+                result = 0.0;
+
+            return (3 * lambda + 2 * mu) * alpha * (temp - temp_ref) * result;
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
+                        Geom<Ord> *e, ExtData<Ord> *ext) const {
+            Ord result = 0;
+            for (int i = 0; i < n; i++)
+                result += wt[i] * v->dx[i];
+
+            return result;
+        }
+
+        // This is to make the form usable in rk_time_step().
+        virtual WeakForm::VectorFormVol* clone() {
+            return new DefaultLinearThermoelasticityX(*this);
+        }
+
+    private:
+        scalar lambda, mu, alpha, temp, temp_ref, vel_ang;
+        GeomType gt;
+    };
+
+    class DefaultLinearThermoelasticityY : public WeakForm::VectorFormVol
+    {
+    public:
+        DefaultLinearThermoelasticityY(int i, scalar lambda, scalar mu, scalar alpha, scalar temp, scalar temp_ref, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i), lambda(lambda), mu(mu), alpha(alpha), temp(temp), temp_ref(temp_ref), gt(gt) { }
+
+        DefaultLinearThermoelasticityY(int i, std::string area, scalar lambda, scalar mu, scalar alpha, scalar temp, scalar temp_ref, GeomType gt = HERMES_PLANAR)
+            : WeakForm::VectorFormVol(i, area), lambda(lambda), mu(mu), alpha(alpha), temp(temp), temp_ref(temp_ref), gt(gt) { }
+
+        virtual scalar value(int n, double *wt, Func<scalar> *u_ext[], Func<double> *v,
+                             Geom<double> *e, ExtData<scalar> *ext) const {
+            scalar result = 0.0;
+            if (gt == HERMES_PLANAR)
+            {
+                for (int i = 0; i < n; i++)
+                    result += wt[i] * v->dy[i];
+            }
+            else if (gt == HERMES_AXISYM_X)
+                result = 0.0;
+            else
+                result = 0.0;
+
+            return (3 * lambda + 2 * mu) * alpha * (temp - temp_ref) * result;
+        }
+
+        virtual Ord ord(int n, double *wt, Func<Ord> *u_ext[], Func<Ord> *v,
+                        Geom<Ord> *e, ExtData<Ord> *ext) const {
+            Ord result = 0;
+            for (int i = 0; i < n; i++)
+                result += wt[i] * v->dy[i];
+
+            return result;
+        }
+
+        // This is to make the form usable in rk_time_step().
+       virtual WeakForm::VectorFormVol* clone() {
+            return new DefaultLinearThermoelasticityY(*this);
+        }
+
+    private:
+        scalar lambda, mu, alpha, temp, temp_ref, vel_ang;
+        GeomType gt;
+    };
 };
 
 /*

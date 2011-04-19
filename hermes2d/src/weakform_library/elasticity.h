@@ -92,8 +92,8 @@ public:
   Scalar matrix_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *u,
                      Func<Real> *v, Geom<Real> *e, ExtData<Scalar> *ext) const {
     if (gt == HERMES_PLANAR)
-      return lambda * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
-          mu * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
+        return lambda * int_dudy_dvdx<Real, Scalar>(n, wt, u, v) +
+                mu * int_dudx_dvdy<Real, Scalar>(n, wt, u, v);
     else if (gt == HERMES_AXISYM_X)
       return 0.0;
     else
@@ -133,7 +133,7 @@ public:
   DefaultLinearYY(unsigned int i, unsigned int j, double lambda, double mu, GeomType gt = HERMES_PLANAR)
     : WeakForm::MatrixFormVol(i, j, HERMES_SYM), lambda(lambda), mu(mu), gt(gt) { }
   DefaultLinearYY(unsigned int i, unsigned int j, std::string area, double lambda, double mu, GeomType gt = HERMES_PLANAR)
-    : WeakForm::MatrixFormVol(i, j, HERMES_NSYM, area), lambda(lambda), mu(mu), gt(gt) { }
+    : WeakForm::MatrixFormVol(i, j, HERMES_SYM, area), lambda(lambda), mu(mu), gt(gt) { }
 
   template<typename Real, typename Scalar>
   Scalar matrix_form(int n, double *wt, Func<Scalar> *u_ext[], Func<Real> *u,
@@ -173,6 +173,7 @@ private:
   double lambda, mu;
   GeomType gt;
 };
+
 
 /*
 class MultiComponentDefaultVolumetricMatrixFormLinearSym : public WeakForm::MultiComponentMatrixFormVol

@@ -2844,7 +2844,7 @@ void SceneView::mousePressEvent(QMouseEvent *event)
                     if (index != -1)
                     {
                         //  find label marker
-                        int labelIndex = Util::scene()->sceneSolution()->agrosMaterial(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker);
+                        int labelIndex = Util::scene()->sceneSolution()->agrosMaterialMarker(m_scene->sceneSolution()->meshInitial()->get_element_fast(index)->marker);
 
                         m_scene->labels[labelIndex]->isSelected = !m_scene->labels[labelIndex]->isSelected;
                         updateGL();
@@ -4008,7 +4008,7 @@ void SceneView::paintPostprocessorSelectedVolume()
     for (int i = 0; i < m_scene->sceneSolution()->meshInitial()->get_num_active_elements(); i++)
     {
         Element *element = m_scene->sceneSolution()->meshInitial()->get_element(i);
-        if (m_scene->labels[Util::scene()->sceneSolution()->agrosMaterial(element->marker)]->isSelected)
+        if (m_scene->labels[Util::scene()->sceneSolution()->agrosMaterialMarker(element->marker)]->isSelected)
         {
             if (element->is_triangle())
             {

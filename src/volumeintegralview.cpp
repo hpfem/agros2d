@@ -51,11 +51,10 @@ void VolumeIntegralValue::calculate()
         if (Util::scene()->labels[i]->isSelected)
         {
             material = Util::scene()->labels[i]->material;
-            int marker = Util::scene()->materials.indexOf(material);
 
             for_all_active_elements(e, mesh)
             {
-                if (e->marker == marker)
+                if (Util::scene()->sceneSolution()->agrosMaterialMarker(e->marker) == i)
                 {
                     update_limit_table(e->get_mode());
 
