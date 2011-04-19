@@ -107,11 +107,18 @@ public:
     double current_density_real;
     double current_density_imag;
 
-    double potential_real;
-    double potential_imag;
-
     double electric_field_real;
     double electric_field_imag;
+
+    double magnetic_field_realX;
+    double magnetic_field_imagX;
+    double magnetic_field_realY;
+    double magnetic_field_imagY;
+    double flux_density_realX;
+    double flux_density_imagX;
+    double flux_density_realY;
+    double flux_density_imagY;
+    double poynting_vector;
 
     LocalPointValueRF(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);

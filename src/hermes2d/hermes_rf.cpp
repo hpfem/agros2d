@@ -687,13 +687,11 @@ void HermesRF::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPoin
 {
     LocalPointValueRF *localPointValueRF = dynamic_cast<LocalPointValueRF *>(localPointValue);
 
-    // magnetic
+    // rf field
     QTreeWidgetItem *rfNode = new QTreeWidgetItem(trvWidget);
     rfNode->setText(0, tr("RF field"));
     rfNode->setExpanded(true);
 
-    if (Util::scene()->problemInfo()->analysisType == AnalysisType_Harmonic)
-    {
         // material
         addTreeWidgetItemValue(rfNode, tr("Permittivity:"), QString("%1").arg(localPointValueRF->permittivity, 0, 'f', 2), "");
         addTreeWidgetItemValue(rfNode, tr("Permeability:"), QString("%1").arg(localPointValueRF->permeability, 0, 'f', 2), "");
@@ -708,6 +706,31 @@ void HermesRF::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPoin
         addTreeWidgetItemValue(itemElectricField, tr("imag:"), QString("%1").arg(localPointValueRF->electric_field_imag, 0, 'e', 3), "V/m");
         addTreeWidgetItemValue(itemElectricField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->electric_field_real) + sqr(localPointValueRF->electric_field_imag)), 0, 'e', 3), "V/m");
 
+        // Magnetic Field
+        QTreeWidgetItem *itemMagneticField = new QTreeWidgetItem(rfNode);
+        itemMagneticField->setText(0, tr("Magnetic field"));
+        itemMagneticField->setExpanded(true);
+
+        addTreeWidgetItemValue(itemMagneticField, tr("real X:"), QString("%1").arg(localPointValueRF->magnetic_field_realX, 0, 'e', 3), "A/m");
+        addTreeWidgetItemValue(itemMagneticField, tr("imag X:"), QString("%1").arg(localPointValueRF->magnetic_field_imagX, 0, 'e', 3), "A/m");
+        addTreeWidgetItemValue(itemMagneticField, tr("real Y:"), QString("%1").arg(localPointValueRF->magnetic_field_realY, 0, 'e', 3), "A/m");
+        addTreeWidgetItemValue(itemMagneticField, tr("imag Y:"), QString("%1").arg(localPointValueRF->magnetic_field_imagY, 0, 'e', 3), "A/m");
+        addTreeWidgetItemValue(itemMagneticField, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->magnetic_field_realX) + sqr(localPointValueRF->magnetic_field_imagX) + sqr(localPointValueRF->magnetic_field_realY) + sqr(localPointValueRF->magnetic_field_imagY)), 0, 'e', 3), "A/m");
+
+        // Magnetic Flux Density
+        QTreeWidgetItem *itemFluxDensity = new QTreeWidgetItem(rfNode);
+        itemFluxDensity->setText(0, tr("Magnetic flux density"));
+        itemFluxDensity->setExpanded(true);
+
+        addTreeWidgetItemValue(itemFluxDensity, tr("real X:"), QString("%1").arg(localPointValueRF->flux_density_realX, 0, 'e', 3), "T");
+        addTreeWidgetItemValue(itemFluxDensity, tr("imag X:"), QString("%1").arg(localPointValueRF->flux_density_imagX, 0, 'e', 3), "T");
+        addTreeWidgetItemValue(itemFluxDensity, tr("real Y:"), QString("%1").arg(localPointValueRF->flux_density_realY, 0, 'e', 3), "T");
+        addTreeWidgetItemValue(itemFluxDensity, tr("imag Y:"), QString("%1").arg(localPointValueRF->flux_density_imagY, 0, 'e', 3), "T");
+        addTreeWidgetItemValue(itemFluxDensity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->flux_density_realX) + sqr(localPointValueRF->flux_density_imagX) + sqr(localPointValueRF->flux_density_realY) + sqr(localPointValueRF->flux_density_imagY)), 0, 'e', 3), "T");
+
+        // Poynting vector
+        addTreeWidgetItemValue(rfNode, tr("Poynting vector:"), QString("%1").arg(localPointValueRF->poynting_vector, 0, 'f', 2), "W/m2");
+
         // Current Density
         QTreeWidgetItem *itemCurrentDensity = new QTreeWidgetItem(rfNode);
         itemCurrentDensity->setText(0, tr("Current density"));
@@ -716,7 +739,6 @@ void HermesRF::showLocalValue(QTreeWidget *trvWidget, LocalPointValue *localPoin
         addTreeWidgetItemValue(itemCurrentDensity, tr("real:"), QString("%1").arg(localPointValueRF->current_density_real, 0, 'f', 2), "A/m2");
         addTreeWidgetItemValue(itemCurrentDensity, tr("imag:"), QString("%1").arg(localPointValueRF->current_density_imag, 0, 'f', 2), "A/m2");
         addTreeWidgetItemValue(itemCurrentDensity, tr("magnitude:"), QString("%1").arg(sqrt(sqr(localPointValueRF->current_density_real) + sqr(localPointValueRF->current_density_imag)), 0, 'f', 2), "A/m2");
-    }
 }
 
 void HermesRF::showSurfaceIntegralValue(QTreeWidget *trvWidget, SurfaceIntegralValue *surfaceIntegralValue)
@@ -867,6 +889,15 @@ LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point
 
     electric_field_real = 0;
     electric_field_imag = 0;
+    magnetic_field_realX = 0;
+    magnetic_field_imagX = 0;
+    magnetic_field_realY = 0;
+    magnetic_field_imagY = 0;
+    flux_density_realX = 0;
+    flux_density_imagX = 0;
+    flux_density_realY = 0;
+    flux_density_imagY = 0;
+    poynting_vector = 0;
 
     if (Util::scene()->sceneSolution()->isSolved())
     {
@@ -883,30 +914,30 @@ LocalPointValueRF::LocalPointValueRF(const Point &point) : LocalPointValue(point
 
                 // value imag
                 PointValue valueImag = pointValue(sln2, point);
-                double frequency = Util::scene()->problemInfo()->frequency;
-
+                // derivative
                 Point derReal = valueReal.derivative;
                 Point derImag = valueImag.derivative;
 
-                if (Util::scene()->problemInfo()->problemType == ProblemType_Planar)
-                {
-                    // potential
-                    electric_field_real = valueReal.value;
-                    electric_field_imag = valueImag.value;
+                // Electric Field
+                electric_field_real = valueReal.value;
+                electric_field_imag = valueImag.value;
 
-                    // B_real.x =  derReal.y;
-                    // B_real.y = -derReal.x;
+                // Magnetic Field
+                magnetic_field_realX = 0;
+                magnetic_field_imagX = 0;
+                magnetic_field_realY = 0;
+                magnetic_field_imagY = 0;
 
-                    // B_imag.x =  derImag.y;
-                    // B_imag.y = -derImag.x;
-                }
-                else
-                {
-                    // potential
-                    electric_field_real = valueReal.value;
-                    electric_field_imag = valueImag.value;
-                }
+                // Magnetic Flux Density
+                flux_density_realX = -(1/(2*M_PI*frequency))*derImag.y;
+                flux_density_imagX = (1/(2*M_PI*frequency))*derReal.y;
+                flux_density_realY = 0;
+                flux_density_imagY = 0;
 
+                // Poynting vector
+                poynting_vector = 0;
+
+                // material + current density
                 permittivity = marker->permittivity.number;
                 permeability = marker->permeability.number;
                 conductivity = marker->conductivity.number;
@@ -934,6 +965,11 @@ double LocalPointValueRF::variableValue(PhysicFieldVariable physicFieldVariable,
     case PhysicFieldVariable_RF_ElectricFieldImag:
     {
         return electric_field_imag;
+    }
+        break;
+    case PhysicFieldVariable_RF_PoyntingVector:
+    {
+        return poynting_vector;
     }
         break;
     case PhysicFieldVariable_RF_Permittivity:
