@@ -65,9 +65,11 @@ public:
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_MagneticFluxDensityImagY ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricField ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldReal ||
-                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PowerLosses ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_ElectricFieldImag ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_PoyntingVector ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorReal ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PoyntingVectorImag ||
+                                                                                            physicFieldVariable == PhysicFieldVariable_RF_PowerLosses ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permittivity ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Permeability ||
                                                                                             physicFieldVariable == PhysicFieldVariable_RF_Conductivity ||
@@ -118,7 +120,8 @@ public:
     double flux_density_imagX;
     double flux_density_realY;
     double flux_density_imagY;
-    double poynting_vector;
+    double poynting_vector_real;
+    double poynting_vector_imag;
 
     LocalPointValueRF(const Point &point);
     double variableValue(PhysicFieldVariable physicFieldVariable, PhysicFieldVariableComp physicFieldVariableComp);

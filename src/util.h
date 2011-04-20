@@ -440,8 +440,10 @@ enum PhysicFieldVariable
     PhysicFieldVariable_RF_MagneticFluxDensityImagX,
     PhysicFieldVariable_RF_MagneticFluxDensityRealY,
     PhysicFieldVariable_RF_MagneticFluxDensityImagY,
-    PhysicFieldVariable_RF_PowerLosses,
     PhysicFieldVariable_RF_PoyntingVector,
+    PhysicFieldVariable_RF_PoyntingVectorReal,
+    PhysicFieldVariable_RF_PoyntingVectorImag,
+    PhysicFieldVariable_RF_PowerLosses,
     PhysicFieldVariable_RF_Permittivity,
     PhysicFieldVariable_RF_Permeability,
     PhysicFieldVariable_RF_Conductivity,
@@ -560,8 +562,10 @@ inline bool isPhysicFieldVariableScalar(PhysicFieldVariable physicFieldVariable)
     case PhysicFieldVariable_RF_MagneticFluxDensityImagX:
     case PhysicFieldVariable_RF_MagneticFluxDensityRealY:
     case PhysicFieldVariable_RF_MagneticFluxDensityImagY:
-    case PhysicFieldVariable_RF_PowerLosses:
     case PhysicFieldVariable_RF_PoyntingVector:
+    case PhysicFieldVariable_RF_PoyntingVectorReal:
+    case PhysicFieldVariable_RF_PoyntingVectorImag:
+    case PhysicFieldVariable_RF_PowerLosses:
     case PhysicFieldVariable_RF_Permittivity:
     case PhysicFieldVariable_RF_Permeability:
     case PhysicFieldVariable_RF_Conductivity:
