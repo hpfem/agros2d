@@ -56,27 +56,25 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
 
     double mu = rfLabel[e->elem_marker].permeability * MU0;
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
-    // FIXME: pro port zadavat z GUI
-    int mode;
-    if (rfEdge[e->edge_marker].mode == TEMode_0)
-    {
-        mode = 1;
-        qDebug() << mode;
-    }
-    else
-        mode = 0;
+    int mode = 1;
 
-    // FIXME: zadavat z GUI
-    //double height = 0.01016;
     double beta = 0.0;
+    double Z = 0.0;
     double height = rfEdge[e->edge_marker].height;
 
     if(!rfEdge[e->edge_marker].height == 0)
+    {
         beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
-    else
-        beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps);
 
-    return beta * int_u_v<Real, Scalar>(n, wt, u, v);
+        return beta * int_u_v<Real, Scalar>(n, wt, u, v);
+    }
+    else
+    {
+        beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps);
+        Z = ((2 * M_PI * frequency) * mu ) / beta;
+
+        return Z * int_u_v<Real, Scalar>(n, wt, u, v);
+    }
 }
 
 template<typename Real, typename Scalar>
@@ -88,23 +86,25 @@ Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Fun
 
     double mu = rfLabel[e->elem_marker].permeability * MU0;
     double eps = rfLabel[e->elem_marker].permittivity * EPS0;
-    //int mode = 1;
-    int mode;
-    if (rfEdge[e->edge_marker].mode == TEMode_0)
-        mode = 1;
-    else
-        mode = 0;
-    //double height = 0.01016;
-    // double height = rfEdge[e->edge_marker].height;
+    int mode = 1;
+
     double beta = 0.0;
+    double Z = 0.0;
     double height = rfEdge[e->edge_marker].height;
 
     if(!rfEdge[e->edge_marker].height == 0)
+    {
         beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
-    else
-        beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps);
 
-    return - beta * int_u_v<Real, Scalar>(n, wt, u, v);
+        return beta * int_u_v<Real, Scalar>(n, wt, u, v);
+    }
+    else
+    {
+        beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps);
+        Z = ((2 * M_PI * frequency) * mu ) / beta;
+
+        return Z * int_u_v<Real, Scalar>(n, wt, u, v);
+    }
 }
 
 template<typename Real, typename Scalar>
@@ -1099,6 +1099,19 @@ QStringList LocalPointValueRF::variables()
            QString("%1").arg(electric_field_real, 0, 'e', 5) <<
            QString("%1").arg(electric_field_imag, 0, 'e', 5) <<
            QString("%1").arg(sqrt(sqr(electric_field_real) + sqr(electric_field_imag)), 0, 'e', 5) <<
+           QString("%1").arg(magnetic_field_realX, 0, 'e', 5) <<
+           QString("%1").arg(magnetic_field_imagX, 0, 'e', 5) <<
+           QString("%1").arg(magnetic_field_realY, 0, 'e', 5) <<
+           QString("%1").arg(magnetic_field_imagY, 0, 'e', 5) <<
+           QString("%1").arg(sqrt(sqr(magnetic_field_realX) + sqr(magnetic_field_imagX) + sqr(magnetic_field_realY) + sqr(magnetic_field_imagY)), 0, 'e', 5) <<
+           QString("%1").arg(flux_density_realX, 0, 'e', 5) <<
+           QString("%1").arg(flux_density_imagX, 0, 'e', 5) <<
+           QString("%1").arg(flux_density_realY, 0, 'e', 5) <<
+           QString("%1").arg(flux_density_imagY, 0, 'e', 5) <<
+           QString("%1").arg(sqrt(sqr(flux_density_realX) + sqr(flux_density_imagX) + sqr(flux_density_realY) + sqr(flux_density_imagY)), 0, 'e', 5) <<
+           QString("%1").arg(poynting_vector_real, 0, 'e', 5) <<
+           QString("%1").arg(poynting_vector_imag, 0, 'e', 5) <<
+           QString("%1").arg(sqrt(sqr(poynting_vector_real) + sqr(poynting_vector_imag)), 0, 'e', 5) <<
            QString("%1").arg(permittivity, 0, 'e', 5) <<
            QString("%1").arg(permeability, 0, 'f', 3) <<
            QString("%1").arg(conductivity, 0, 'e', 5) <<
