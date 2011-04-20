@@ -68,9 +68,13 @@ Scalar rf_matrix_form_surf_imag_real(int n, double *wt, Func<Real> *u_ext[], Fun
 
     // FIXME: zadavat z GUI
     //double height = 0.01016;
+    double beta = 0.0;
     double height = rfEdge[e->edge_marker].height;
 
-    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
+    if(!rfEdge[e->edge_marker].height == 0)
+        beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
+    else
+        beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps);
 
     return beta * int_u_v<Real, Scalar>(n, wt, u, v);
 }
@@ -92,8 +96,13 @@ Scalar rf_matrix_form_surf_real_imag(int n, double *wt, Func<Real> *u_ext[], Fun
         mode = 0;
     //double height = 0.01016;
     // double height = rfEdge[e->edge_marker].height;
+    double beta = 0.0;
+    double height = rfEdge[e->edge_marker].height;
 
-    double beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+    if(!rfEdge[e->edge_marker].height == 0)
+        beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / height));
+    else
+        beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps);
 
     return - beta * int_u_v<Real, Scalar>(n, wt, u, v);
 }
@@ -129,8 +138,11 @@ Scalar rf_vector_form_surf_real(int n, double *wt, Func<Real> *u_ext[], Func<Rea
         case TEMode_0:
         {
             mode = 1;
-            beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-            E0z =  rfEdge[e->edge_marker].power * sin((lengthPoint * M_PI) / length);
+            if(!rfEdge[e->edge_marker].height == 0)
+                beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            else
+                beta = sqr(2 * M_PI * frequency) * mu * eps;
+            E0z = rfEdge[e->edge_marker].power * sin((lengthPoint * M_PI) / length);
         }
 
             break;
@@ -194,8 +206,11 @@ Scalar rf_vector_form_surf_imag(int n, double *wt, Func<Real> *u_ext[], Func<Rea
         case TEMode_0:
         {
             mode = 1;
-            beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
-            E0z =  rfEdge[e->edge_marker].power * sin((lengthPoint * M_PI) / length);
+            if(!rfEdge[e->edge_marker].height == 0)
+                beta = sqrt(sqr(2 * M_PI * frequency) * mu * eps - sqr(mode * M_PI / (rfEdge[e->edge_marker].height)));
+            else
+                beta = sqr(2 * M_PI * frequency) * mu * eps;
+            E0z = rfEdge[e->edge_marker].power * sin((lengthPoint * M_PI) / length);
         }
 
             break;
